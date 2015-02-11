@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="/org.hawk.core"/>
+	<classpathentry kind="src" path="/org.hawk.graph"/>
+	<classpathentry kind="src" path="/org.hawk.localfolder"/>
+	<classpathentry kind="src" path="/org.hawk.neo4j-v2"/>
+	<classpathentry kind="src" path="/org.hawk.emf"/>
+	<classpathentry kind="src" path="/org.hawk.epsilon"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="/org.hawk.svn"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
