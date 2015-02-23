@@ -1,0 +1,213 @@
+package org.hawk.core.graph;
+
+import java.io.File;
+import java.util.HashSet;
+
+import org.hawk.core.*;
+import org.hawk.core.util.FileOperations;
+import org.hawk.epsilon.emc.GraphEpsilonModel;
+
+//import org.neo4j.graphdb.GraphDatabaseService;
+//import org.neo4j.graphdb.Node;
+//import org.neo4j.graphdb.Transaction;
+//import org.neo4j.graphdb.index.Index;
+//import org.neo4j.graphdb.index.IndexManager;
+//import org.neo4j.helpers.collection.MapUtil;
+//import org.neo4j.kernel.GraphDatabaseAPI;
+
+public class GraphIndex implements ModelUpdater {
+
+	private ModelIndexer indexer;
+	private String type;
+	private String name;
+	private String loc;
+	private GraphDatabase graph;
+	private AbstractConsole console;
+
+	private boolean isActive = false;
+	private ModelParser parser;
+
+	public GraphIndex(GraphDatabase g, ModelIndexer i) {
+		graph = g;
+		indexer = i;
+		registerShutdownHook(graph);
+	}
+
+	@Override
+	public void run(String type, String name, ModelParser p, AbstractConsole c,
+			ModelIndexer indexer) throws Exception {
+
+		syserr("run called");
+		System.exit(1);
+	}
+
+	@Override
+	public int[] updatestore(HashSet<VCSFileRevision> currrepositems,
+			HashSet<VCSFileRevision> currreposchangeditems) {
+
+		syserr("updatestore called");
+		System.exit(1);
+		return null;
+
+	}
+
+	private void registerShutdownHook(final GraphDatabase database) {
+
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				try {
+					long l = System.nanoTime();
+					database.shutdown();
+					sysout("SHUTDOWN HOOK INVOKED: (took ~"
+							+ (System.nanoTime() - l) / 1000000000
+							+ "sec to commit changes)");
+				} catch (Exception e) {
+				}
+			}
+		});
+	}
+
+	public void sysout(String s) {
+
+		console.println(s);
+
+	}
+
+	public void syserr(String s) {
+
+		console.printerrln(s);
+
+	}
+
+	@Override
+	public GraphDatabase getGraph() {
+		return graph;
+	}
+
+	@Override
+	public HashSet<VCSFileRevision> compareWithLocalFiles(
+			HashSet<VCSFileRevision> reposItems) {
+
+		HashSet<VCSFileRevision> changed = new HashSet<VCSFileRevision>();
+		changed.addAll(reposItems);
+
+		if (graph != null) {
+
+			try (GraphTransaction tx = graph.beginTransaction()) {
+				// operations on the graph
+				// ...
+
+				// index = graph.index();
+
+				GraphNodeIndex filedictionary = null;
+
+				filedictionary = graph.getFileIndex();
+
+				if (filedictionary != null
+						&& filedictionary.query("id", "*").size() > 0) {
+					for (VCSFileRevision r : reposItems) {
+						long rev = -2L;
+						try {
+							rev = ((Long) filedictionary
+									.query("id", r.getPath()).getSingle()
+									.getProperty("revision"));
+						} catch (Exception e) {
+
+							syserr("ERROR in accessing: "
+									+ r.getPath()
+									+ " in the filedictionary of the store, likely store corrupted, please remove the store from Hawk and let it re-create it");
+							// System.exit(1);
+							// XXX when adding many indexes you get this
+							// for no apparent reason, fix (doesn't affect
+							// actual updating)
+						}
+						if (r.getRevision() == rev)
+							changed.remove(r);
+						syserr("comparing revisions of: " + r.getPath() + " | "
+								+ +r.getRevision() + " | " + rev);
+
+					}
+				}
+
+				tx.success();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+
+		try {
+			// graph.shutdown();
+		} catch (Exception e) {
+		}
+
+		return changed;
+
+	}
+
+	@Override
+	public String getTempDir() {
+		return null;
+	}
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	@Override
+	public void runGrabatsBasic() {
+
+	}
+
+	@Override
+	public void runGrabatsAdvanced() {
+
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public void shutdown(boolean delete) {
+
+		try {
+			graph.shutdown();
+			if (delete)
+				delete();
+			graph = null;
+		} catch (Exception e) {
+
+		}
+
+	}
+
+	@Override
+	public void runEOL() {
+		try {
+			new GraphEpsilonModel().run(graph, console,
+					indexer.getModelParser());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void delete() {
+
+		FileOperations.deleteFiles(new File(graph.getPath()), true);
+
+	}
+
+	@Override
+	public String getType() {
+		return type;
+	}
+
+	@Override
+	public void logFull() throws Exception {
+
+	}
+}

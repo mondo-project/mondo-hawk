@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="ASCII"?>
+<dom:TypeDeclaration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dom="org.amma.dsl.jdt.dom" localTypeDeclaration="false" memberTypeDeclaration="false" packageMemberTypeDeclaration="true" interface="false">
+  <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+  <modifiers xsi:type="dom:Modifier" abstract="true" final="false" native="false" private="false" protected="false" public="false" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+  <javadoc>
+    <tags nested="false">
+      <fragments xsi:type="dom:TextElement" text="Implementation of ProcessingEnvironment when running inside IDE."/>
+      <fragments xsi:type="dom:TextElement" text="The lifetime of this object corresponds to the lifetime of the"/>
+      <fragments xsi:type="dom:TagElement" tagName="@link" nested="true">
+        <fragments xsi:type="dom:SimpleName" fullyQualifiedName="IdeAnnotationProcessorManager" identifier="IdeAnnotationProcessorManager" declaration="false"/>
+      </fragments>
+      <fragments xsi:type="dom:TextElement" text=" that owns it."/>
+    </tags>
+    <tags tagName="@see" nested="false">
+      <fragments xsi:type="dom:QualifiedName" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.BatchProcessingEnvImpl">
+        <name fullyQualifiedName="BatchProcessingEnvImpl" identifier="BatchProcessingEnvImpl" declaration="false"/>
+        <qualifier xsi:type="dom:QualifiedName" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch">
+          <name fullyQualifiedName="dispatch" identifier="dispatch" declaration="false"/>
+          <qualifier xsi:type="dom:QualifiedName" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt">
+            <name fullyQualifiedName="apt" identifier="apt" declaration="false"/>
+            <qualifier xsi:type="dom:QualifiedName" fullyQualifiedName="org.eclipse.jdt.internal.compiler">
+              <name fullyQualifiedName="compiler" identifier="compiler" declaration="false"/>
+              <qualifier xsi:type="dom:QualifiedName" fullyQualifiedName="org.eclipse.jdt.internal">
+                <name fullyQualifiedName="internal" identifier="internal" declaration="false"/>
+                <qualifier xsi:type="dom:QualifiedName" fullyQualifiedName="org.eclipse.jdt">
+                  <name fullyQualifiedName="jdt" identifier="jdt" declaration="false"/>
+                  <qualifier xsi:type="dom:QualifiedName" fullyQualifiedName="org.eclipse">
+                    <name fullyQualifiedName="eclipse" identifier="eclipse" declaration="false"/>
+                    <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="org" identifier="org" declaration="false"/>
+                  </qualifier>
+                </qualifier>
+              </qualifier>
+            </qualifier>
+          </qualifier>
+        </qualifier>
+      </fragments>
+    </tags>
+  </javadoc>
+  <bodyDeclarations xsi:type="dom:FieldDeclaration">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="true" protected="false" public="false" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="true" native="false" private="false" protected="false" public="false" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <fragments extraDimensions="0">
+      <name fullyQualifiedName="_dispatchManager" identifier="_dispatchManager" declaration="true"/>
+    </fragments>
+    <type xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="IdeAnnotationProcessorManager" identifier="IdeAnnotationProcessorManager" declaration="false"/>
+    </type>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:FieldDeclaration">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="true" protected="false" public="false" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="true" native="false" private="false" protected="false" public="false" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <fragments extraDimensions="0">
+      <name fullyQualifiedName="_javaProject" identifier="_javaProject" declaration="true"/>
+    </fragments>
+    <type xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="IJavaProject" identifier="IJavaProject" declaration="false"/>
+    </type>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:FieldDeclaration">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="true" public="false" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="true" native="false" private="false" protected="false" public="false" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <fragments extraDimensions="0">
+      <name fullyQualifiedName="_aptProject" identifier="_aptProject" declaration="true"/>
+    </fragments>
+    <type xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="AptProject" identifier="AptProject" declaration="false"/>
+    </type>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="true" varargs="false">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ExpressionStatement">
+        <expression xsi:type="dom:Assignment" operator="=">
+          <leftHandSide xsi:type="dom:SimpleName" fullyQualifiedName="_dispatchManager" identifier="_dispatchManager" declaration="false"/>
+          <rightHandSide xsi:type="dom:SimpleName" fullyQualifiedName="dispatchManager" identifier="dispatchManager" declaration="false"/>
+        </expression>
+      </statements>
+      <statements xsi:type="dom:ExpressionStatement">
+        <expression xsi:type="dom:Assignment" operator="=">
+          <leftHandSide xsi:type="dom:SimpleName" fullyQualifiedName="_javaProject" identifier="_javaProject" declaration="false"/>
+          <rightHandSide xsi:type="dom:SimpleName" fullyQualifiedName="jproject" identifier="jproject" declaration="false"/>
+        </expression>
+      </statements>
+      <statements xsi:type="dom:ExpressionStatement">
+        <expression xsi:type="dom:Assignment" operator="=">
+          <leftHandSide xsi:type="dom:SimpleName" fullyQualifiedName="_compiler" identifier="_compiler" declaration="false"/>
+          <rightHandSide xsi:type="dom:SimpleName" fullyQualifiedName="compiler" identifier="compiler" declaration="false"/>
+        </expression>
+      </statements>
+      <statements xsi:type="dom:ExpressionStatement">
+        <expression xsi:type="dom:Assignment" operator="=">
+          <leftHandSide xsi:type="dom:SimpleName" fullyQualifiedName="_aptProject" identifier="_aptProject" declaration="false"/>
+          <rightHandSide xsi:type="dom:MethodInvocation">
+            <arguments xsi:type="dom:SimpleName" fullyQualifiedName="jproject" identifier="jproject" declaration="false"/>
+            <expression xsi:type="dom:SimpleName" fullyQualifiedName="AptPlugin" identifier="AptPlugin" declaration="false"/>
+            <name fullyQualifiedName="getAptProject" identifier="getAptProject" declaration="false"/>
+          </rightHandSide>
+        </expression>
+      </statements>
+      <statements xsi:type="dom:ExpressionStatement">
+        <expression xsi:type="dom:Assignment" operator="=">
+          <leftHandSide xsi:type="dom:SimpleName" fullyQualifiedName="_filer" identifier="_filer" declaration="false"/>
+          <rightHandSide xsi:type="dom:ClassInstanceCreation">
+            <arguments xsi:type="dom:SimpleName" fullyQualifiedName="_dispatchManager" identifier="_dispatchManager" declaration="false"/>
+            <arguments xsi:type="dom:ThisExpression"/>
+            <type xsi:type="dom:SimpleType">
+              <name xsi:type="dom:SimpleName" fullyQualifiedName="IdeFilerImpl" identifier="IdeFilerImpl" declaration="false"/>
+            </type>
+          </rightHandSide>
+        </expression>
+      </statements>
+      <statements xsi:type="dom:ExpressionStatement">
+        <expression xsi:type="dom:Assignment" operator="=">
+          <leftHandSide xsi:type="dom:SimpleName" fullyQualifiedName="_messager" identifier="_messager" declaration="false"/>
+          <rightHandSide xsi:type="dom:ClassInstanceCreation">
+            <arguments xsi:type="dom:SimpleName" fullyQualifiedName="_dispatchManager" identifier="_dispatchManager" declaration="false"/>
+            <arguments xsi:type="dom:ThisExpression"/>
+            <type xsi:type="dom:SimpleType">
+              <name xsi:type="dom:SimpleName" fullyQualifiedName="IdeMessagerImpl" identifier="IdeMessagerImpl" declaration="false"/>
+            </type>
+          </rightHandSide>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="IdeProcessingEnvImpl" identifier="IdeProcessingEnvImpl" declaration="false"/>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="dispatchManager" identifier="dispatchManager" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="IdeAnnotationProcessorManager" identifier="IdeAnnotationProcessorManager" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="jproject" identifier="jproject" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="IJavaProject" identifier="IJavaProject" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="compiler" identifier="compiler" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="Compiler" identifier="Compiler" declaration="false"/>
+      </type>
+    </parameters>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:MarkerAnnotation">
+      <typeName xsi:type="dom:SimpleName" fullyQualifiedName="Override" identifier="Override" declaration="false"/>
+    </modifiers>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ReturnStatement">
+        <expression xsi:type="dom:MethodInvocation">
+          <expression xsi:type="dom:SimpleName" fullyQualifiedName="Locale" identifier="Locale" declaration="false"/>
+          <name fullyQualifiedName="getDefault" identifier="getDefault" declaration="false"/>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="getLocale" identifier="getLocale" declaration="true"/>
+    <returnType xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="Locale" identifier="Locale" declaration="false"/>
+    </returnType>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:MarkerAnnotation">
+      <typeName xsi:type="dom:SimpleName" fullyQualifiedName="Override" identifier="Override" declaration="false"/>
+    </modifiers>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:IfStatement">
+        <expression xsi:type="dom:InfixExpression" operator="==">
+          <leftOperand xsi:type="dom:NullLiteral"/>
+          <rightOperand xsi:type="dom:SimpleName" fullyQualifiedName="_processorOptions" identifier="_processorOptions" declaration="false"/>
+        </expression>
+        <thenStatement xsi:type="dom:Block">
+          <statements xsi:type="dom:VariableDeclarationStatement">
+            <fragments extraDimensions="0">
+              <initializer xsi:type="dom:MethodInvocation">
+                <arguments xsi:type="dom:SimpleName" fullyQualifiedName="_javaProject" identifier="_javaProject" declaration="false"/>
+                <expression xsi:type="dom:SimpleName" fullyQualifiedName="AptConfig" identifier="AptConfig" declaration="false"/>
+                <name fullyQualifiedName="getProcessorOptions" identifier="getProcessorOptions" declaration="false"/>
+              </initializer>
+              <name fullyQualifiedName="allOptions" identifier="allOptions" declaration="true"/>
+            </fragments>
+            <type xsi:type="dom:ParameterizedType">
+              <type xsi:type="dom:SimpleType">
+                <name xsi:type="dom:SimpleName" fullyQualifiedName="Map" identifier="Map" declaration="false"/>
+              </type>
+              <typeArguments xsi:type="dom:SimpleType">
+                <name xsi:type="dom:SimpleName" fullyQualifiedName="String" identifier="String" declaration="false"/>
+              </typeArguments>
+              <typeArguments xsi:type="dom:SimpleType">
+                <name xsi:type="dom:SimpleName" fullyQualifiedName="String" identifier="String" declaration="false"/>
+              </typeArguments>
+            </type>
+          </statements>
+          <statements xsi:type="dom:VariableDeclarationStatement">
+            <fragments extraDimensions="0">
+              <initializer xsi:type="dom:ClassInstanceCreation">
+                <type xsi:type="dom:ParameterizedType">
+                  <type xsi:type="dom:SimpleType">
+                    <name xsi:type="dom:SimpleName" fullyQualifiedName="HashMap" identifier="HashMap" declaration="false"/>
+                  </type>
+                  <typeArguments xsi:type="dom:SimpleType">
+                    <name xsi:type="dom:SimpleName" fullyQualifiedName="String" identifier="String" declaration="false"/>
+                  </typeArguments>
+                  <typeArguments xsi:type="dom:SimpleType">
+                    <name xsi:type="dom:SimpleName" fullyQualifiedName="String" identifier="String" declaration="false"/>
+                  </typeArguments>
+                </type>
+              </initializer>
+              <name fullyQualifiedName="procOptions" identifier="procOptions" declaration="true"/>
+            </fragments>
+            <type xsi:type="dom:ParameterizedType">
+              <type xsi:type="dom:SimpleType">
+                <name xsi:type="dom:SimpleName" fullyQualifiedName="Map" identifier="Map" declaration="false"/>
+              </type>
+              <typeArguments xsi:type="dom:SimpleType">
+                <name xsi:type="dom:SimpleName" fullyQualifiedName="String" identifier="String" declaration="false"/>
+              </typeArguments>
+              <typeArguments xsi:type="dom:SimpleType">
+                <name xsi:type="dom:SimpleName" fullyQualifiedName="String" identifier="String" declaration="false"/>
+              </typeArguments>
+            </type>
+          </statements>
+          <statements xsi:type="dom:EnhancedForStatement">
+            <body xsi:type="dom:Block">
+              <statements xsi:type="dom:IfStatement">
+                <expression xsi:type="dom:PrefixExpression" operator="!">
+                  <operand xsi:type="dom:MethodInvocation">
+                    <arguments xsi:type="dom:StringLiteral" escapedValue="&quot;-&quot;"/>
+                    <expression xsi:type="dom:MethodInvocation">
+                      <expression xsi:type="dom:SimpleName" fullyQualifiedName="entry" identifier="entry" declaration="false"/>
+                      <name fullyQualifiedName="getKey" identifier="getKey" declaration="false"/>
+                    </expression>
+                    <name fullyQualifiedName="startsWith" identifier="startsWith" declaration="false"/>
+                  </operand>
+                </expression>
+                <thenStatement xsi:type="dom:Block">
+                  <statements xsi:type="dom:ExpressionStatement">
+                    <expression xsi:type="dom:MethodInvocation">
+                      <arguments xsi:type="dom:MethodInvocation">
+                        <expression xsi:type="dom:SimpleName" fullyQualifiedName="entry" identifier="entry" declaration="false"/>
+                        <name fullyQualifiedName="getKey" identifier="getKey" declaration="false"/>
+                      </arguments>
+                      <arguments xsi:type="dom:MethodInvocation">
+                        <expression xsi:type="dom:SimpleName" fullyQualifiedName="entry" identifier="entry" declaration="false"/>
+                        <name fullyQualifiedName="getValue" identifier="getValue" declaration="false"/>
+                      </arguments>
+                      <expression xsi:type="dom:SimpleName" fullyQualifiedName="procOptions" identifier="procOptions" declaration="false"/>
+                      <name fullyQualifiedName="put" identifier="put" declaration="false"/>
+                    </expression>
+                  </statements>
+                </thenStatement>
+              </statements>
+            </body>
+            <expression xsi:type="dom:MethodInvocation">
+              <expression xsi:type="dom:SimpleName" fullyQualifiedName="allOptions" identifier="allOptions" declaration="false"/>
+              <name fullyQualifiedName="entrySet" identifier="entrySet" declaration="false"/>
+            </expression>
+            <parameter extraDimensions="0" varargs="false">
+              <name fullyQualifiedName="entry" identifier="entry" declaration="true"/>
+              <type xsi:type="dom:ParameterizedType">
+                <type xsi:type="dom:SimpleType">
+                  <name xsi:type="dom:QualifiedName" fullyQualifiedName="Map.Entry">
+                    <name fullyQualifiedName="Entry" identifier="Entry" declaration="false"/>
+                    <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="Map" identifier="Map" declaration="false"/>
+                  </name>
+                </type>
+                <typeArguments xsi:type="dom:SimpleType">
+                  <name xsi:type="dom:SimpleName" fullyQualifiedName="String" identifier="String" declaration="false"/>
+                </typeArguments>
+                <typeArguments xsi:type="dom:SimpleType">
+                  <name xsi:type="dom:SimpleName" fullyQualifiedName="String" identifier="String" declaration="false"/>
+                </typeArguments>
+              </type>
+            </parameter>
+          </statements>
+          <statements xsi:type="dom:ExpressionStatement">
+            <expression xsi:type="dom:MethodInvocation">
+              <arguments xsi:type="dom:StringLiteral" escapedValue="&quot;phase&quot;"/>
+              <arguments xsi:type="dom:MethodInvocation">
+                <expression xsi:type="dom:MethodInvocation">
+                  <name fullyQualifiedName="getPhase" identifier="getPhase" declaration="false"/>
+                </expression>
+                <name fullyQualifiedName="toString" identifier="toString" declaration="false"/>
+              </arguments>
+              <expression xsi:type="dom:SimpleName" fullyQualifiedName="procOptions" identifier="procOptions" declaration="false"/>
+              <name fullyQualifiedName="put" identifier="put" declaration="false"/>
+            </expression>
+          </statements>
+          <statements xsi:type="dom:ExpressionStatement">
+            <expression xsi:type="dom:Assignment" operator="=">
+              <leftHandSide xsi:type="dom:SimpleName" fullyQualifiedName="_processorOptions" identifier="_processorOptions" declaration="false"/>
+              <rightHandSide xsi:type="dom:MethodInvocation">
+                <arguments xsi:type="dom:SimpleName" fullyQualifiedName="procOptions" identifier="procOptions" declaration="false"/>
+                <expression xsi:type="dom:SimpleName" fullyQualifiedName="Collections" identifier="Collections" declaration="false"/>
+                <name fullyQualifiedName="unmodifiableMap" identifier="unmodifiableMap" declaration="false"/>
+              </rightHandSide>
+            </expression>
+          </statements>
+        </thenStatement>
+      </statements>
+      <statements xsi:type="dom:ReturnStatement">
+        <expression xsi:type="dom:SimpleName" fullyQualifiedName="_processorOptions" identifier="_processorOptions" declaration="false"/>
+      </statements>
+    </body>
+    <name fullyQualifiedName="getOptions" identifier="getOptions" declaration="true"/>
+    <returnType xsi:type="dom:ParameterizedType">
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="Map" identifier="Map" declaration="false"/>
+      </type>
+      <typeArguments xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="String" identifier="String" declaration="false"/>
+      </typeArguments>
+      <typeArguments xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="String" identifier="String" declaration="false"/>
+      </typeArguments>
+    </returnType>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ReturnStatement">
+        <expression xsi:type="dom:SimpleName" fullyQualifiedName="_aptProject" identifier="_aptProject" declaration="false"/>
+      </statements>
+    </body>
+    <name fullyQualifiedName="getAptProject" identifier="getAptProject" declaration="true"/>
+    <returnType xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="AptProject" identifier="AptProject" declaration="false"/>
+    </returnType>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ReturnStatement">
+        <expression xsi:type="dom:SimpleName" fullyQualifiedName="_javaProject" identifier="_javaProject" declaration="false"/>
+      </statements>
+    </body>
+    <name fullyQualifiedName="getJavaProject" identifier="getJavaProject" declaration="true"/>
+    <returnType xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="IJavaProject" identifier="IJavaProject" declaration="false"/>
+    </returnType>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ReturnStatement">
+        <expression xsi:type="dom:MethodInvocation">
+          <expression xsi:type="dom:SimpleName" fullyQualifiedName="_javaProject" identifier="_javaProject" declaration="false"/>
+          <name fullyQualifiedName="getProject" identifier="getProject" declaration="false"/>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="getProject" identifier="getProject" declaration="true"/>
+    <returnType xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="IProject" identifier="IProject" declaration="false"/>
+    </returnType>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <modifiers xsi:type="dom:Modifier" abstract="true" final="false" native="false" private="false" protected="false" public="false" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <javadoc>
+      <tags tagName="@return" nested="false">
+        <fragments xsi:type="dom:TextElement" text=" whether this environment supports building or reconciling."/>
+      </tags>
+    </javadoc>
+    <name fullyQualifiedName="getPhase" identifier="getPhase" declaration="true"/>
+    <returnType xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="Phase" identifier="Phase" declaration="false"/>
+    </returnType>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <javadoc>
+      <tags nested="false">
+        <fragments xsi:type="dom:TextElement" text="Get the IFile that contains or represents the specified source element."/>
+        <fragments xsi:type="dom:TextElement" text="If the element is a package, get the IFile corresponding to its"/>
+        <fragments xsi:type="dom:TextElement" text="package-info.java file.  If the element is a top-level type, get the"/>
+        <fragments xsi:type="dom:TextElement" text="IFile corresponding to its type.  If the element is a nested element"/>
+        <fragments xsi:type="dom:TextElement" text="of some sort (nested type, method, etc.) then get the IFile corresponding"/>
+        <fragments xsi:type="dom:TextElement" text="to the containing top-level type."/>
+        <fragments xsi:type="dom:TextElement" text="If the element is not a source type at all, then return null."/>
+      </tags>
+      <tags tagName="@param" nested="false">
+        <fragments xsi:type="dom:SimpleName" fullyQualifiedName="elem" identifier="elem" declaration="false"/>
+      </tags>
+      <tags tagName="@return" nested="false">
+        <fragments xsi:type="dom:TextElement" text=" may be null"/>
+      </tags>
+    </javadoc>
+    <body>
+      <statements xsi:type="dom:VariableDeclarationStatement">
+        <fragments extraDimensions="0">
+          <initializer xsi:type="dom:CastExpression">
+            <expression xsi:type="dom:SimpleName" fullyQualifiedName="elem" identifier="elem" declaration="false"/>
+            <type xsi:type="dom:SimpleType">
+              <name xsi:type="dom:SimpleName" fullyQualifiedName="IElementInfo" identifier="IElementInfo" declaration="false"/>
+            </type>
+          </initializer>
+          <name fullyQualifiedName="impl" identifier="impl" declaration="true"/>
+        </fragments>
+        <type xsi:type="dom:SimpleType">
+          <name xsi:type="dom:SimpleName" fullyQualifiedName="IElementInfo" identifier="IElementInfo" declaration="false"/>
+        </type>
+      </statements>
+      <statements xsi:type="dom:VariableDeclarationStatement">
+        <fragments extraDimensions="0">
+          <initializer xsi:type="dom:MethodInvocation">
+            <expression xsi:type="dom:SimpleName" fullyQualifiedName="impl" identifier="impl" declaration="false"/>
+            <name fullyQualifiedName="getFileName" identifier="getFileName" declaration="false"/>
+          </initializer>
+          <name fullyQualifiedName="name" identifier="name" declaration="true"/>
+        </fragments>
+        <type xsi:type="dom:SimpleType">
+          <name xsi:type="dom:SimpleName" fullyQualifiedName="String" identifier="String" declaration="false"/>
+        </type>
+      </statements>
+      <statements xsi:type="dom:IfStatement">
+        <expression xsi:type="dom:InfixExpression" operator="==">
+          <leftOperand xsi:type="dom:SimpleName" fullyQualifiedName="name" identifier="name" declaration="false"/>
+          <rightOperand xsi:type="dom:NullLiteral"/>
+        </expression>
+        <thenStatement xsi:type="dom:Block">
+          <statements xsi:type="dom:ReturnStatement">
+            <expression xsi:type="dom:NullLiteral"/>
+          </statements>
+        </thenStatement>
+      </statements>
+      <statements xsi:type="dom:VariableDeclarationStatement">
+        <fragments extraDimensions="0">
+          <initializer xsi:type="dom:MethodInvocation">
+            <arguments xsi:type="dom:ClassInstanceCreation">
+              <arguments xsi:type="dom:SimpleName" fullyQualifiedName="name" identifier="name" declaration="false"/>
+              <type xsi:type="dom:SimpleType">
+                <name xsi:type="dom:SimpleName" fullyQualifiedName="Path" identifier="Path" declaration="false"/>
+              </type>
+            </arguments>
+            <expression xsi:type="dom:MethodInvocation">
+              <expression xsi:type="dom:MethodInvocation">
+                <expression xsi:type="dom:SimpleName" fullyQualifiedName="_javaProject" identifier="_javaProject" declaration="false"/>
+                <name fullyQualifiedName="getProject" identifier="getProject" declaration="false"/>
+              </expression>
+              <name fullyQualifiedName="getParent" identifier="getParent" declaration="false"/>
+            </expression>
+            <name fullyQualifiedName="getFile" identifier="getFile" declaration="false"/>
+          </initializer>
+          <name fullyQualifiedName="file" identifier="file" declaration="true"/>
+        </fragments>
+        <type xsi:type="dom:SimpleType">
+          <name xsi:type="dom:SimpleName" fullyQualifiedName="IFile" identifier="IFile" declaration="false"/>
+        </type>
+      </statements>
+      <statements xsi:type="dom:ReturnStatement">
+        <expression xsi:type="dom:SimpleName" fullyQualifiedName="file" identifier="file" declaration="false"/>
+      </statements>
+    </body>
+    <name fullyQualifiedName="getEnclosingIFile" identifier="getEnclosingIFile" declaration="true"/>
+    <returnType xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="IFile" identifier="IFile" declaration="false"/>
+    </returnType>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="elem" identifier="elem" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="Element" identifier="Element" declaration="false"/>
+      </type>
+    </parameters>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <javadoc>
+      <tags nested="false">
+        <fragments xsi:type="dom:TextElement" text="Inform the environment that a new Java file has been generated."/>
+      </tags>
+      <tags tagName="@param" nested="false">
+        <fragments xsi:type="dom:SimpleName" fullyQualifiedName="result" identifier="result" declaration="false"/>
+        <fragments xsi:type="dom:TextElement" text=" must be non-null"/>
+      </tags>
+    </javadoc>
+    <body>
+      <statements xsi:type="dom:ExpressionStatement">
+        <expression xsi:type="dom:MethodInvocation">
+          <arguments xsi:type="dom:MethodInvocation">
+            <expression xsi:type="dom:SimpleName" fullyQualifiedName="result" identifier="result" declaration="false"/>
+            <name fullyQualifiedName="getFile" identifier="getFile" declaration="false"/>
+          </arguments>
+          <expression xsi:type="dom:MethodInvocation">
+            <expression xsi:type="dom:SimpleName" fullyQualifiedName="AptCompilationParticipant" identifier="AptCompilationParticipant" declaration="false"/>
+            <name fullyQualifiedName="getInstance" identifier="getInstance" declaration="false"/>
+          </expression>
+          <name fullyQualifiedName="addJava6GeneratedFile" identifier="addJava6GeneratedFile" declaration="false"/>
+        </expression>
+      </statements>
+      <statements xsi:type="dom:ExpressionStatement">
+        <expression xsi:type="dom:MethodInvocation">
+          <arguments xsi:type="dom:MethodInvocation">
+            <arguments xsi:type="dom:MethodInvocation">
+              <expression xsi:type="dom:SimpleName" fullyQualifiedName="result" identifier="result" declaration="false"/>
+              <name fullyQualifiedName="getFile" identifier="getFile" declaration="false"/>
+            </arguments>
+            <expression xsi:type="dom:SimpleName" fullyQualifiedName="_dispatchManager" identifier="_dispatchManager" declaration="false"/>
+            <name fullyQualifiedName="findCompilationUnit" identifier="findCompilationUnit" declaration="false"/>
+          </arguments>
+          <name fullyQualifiedName="addNewUnit" identifier="addNewUnit" declaration="false"/>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="addNewUnit" identifier="addNewUnit" declaration="true"/>
+    <returnType xsi:type="dom:PrimitiveType" code="void"/>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="result" identifier="result" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="FileGenerationResult" identifier="FileGenerationResult" declaration="false"/>
+      </type>
+    </parameters>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <javadoc>
+      <tags nested="false">
+        <fragments xsi:type="dom:TextElement" text="Inform the environment that a new non-Java file has been generated."/>
+        <fragments xsi:type="dom:TextElement" text="This file will not be submitted to a subsequent round of processing in"/>
+        <fragments xsi:type="dom:TextElement" text="the current build, even if the file happens to be in a source location"/>
+        <fragments xsi:type="dom:TextElement" text="and named with a Java-like name.  However, its dependencies will be"/>
+        <fragments xsi:type="dom:TextElement" text="tracked in the same manner as Java files, e.g., it will be deleted"/>
+        <fragments xsi:type="dom:TextElement" text="if changes in source cause it to no longer be generated."/>
+      </tags>
+      <tags tagName="@param" nested="false">
+        <fragments xsi:type="dom:SimpleName" fullyQualifiedName="file" identifier="file" declaration="false"/>
+        <fragments xsi:type="dom:TextElement" text=" must be non-null"/>
+      </tags>
+    </javadoc>
+    <body>
+      <statements xsi:type="dom:ExpressionStatement">
+        <expression xsi:type="dom:MethodInvocation">
+          <arguments xsi:type="dom:SimpleName" fullyQualifiedName="file" identifier="file" declaration="false"/>
+          <expression xsi:type="dom:MethodInvocation">
+            <expression xsi:type="dom:SimpleName" fullyQualifiedName="AptCompilationParticipant" identifier="AptCompilationParticipant" declaration="false"/>
+            <name fullyQualifiedName="getInstance" identifier="getInstance" declaration="false"/>
+          </expression>
+          <name fullyQualifiedName="addJava6GeneratedFile" identifier="addJava6GeneratedFile" declaration="false"/>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="addNewResource" identifier="addNewResource" declaration="true"/>
+    <returnType xsi:type="dom:PrimitiveType" code="void"/>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="file" identifier="file" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="IFile" identifier="IFile" declaration="false"/>
+      </type>
+    </parameters>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ReturnStatement">
+        <expression xsi:type="dom:BooleanLiteral" booleanValue="false"/>
+      </statements>
+    </body>
+    <name fullyQualifiedName="currentProcessorSupportsRTTG" identifier="currentProcessorSupportsRTTG" declaration="true"/>
+    <returnType xsi:type="dom:PrimitiveType" code="boolean"/>
+  </bodyDeclarations>
+  <name fullyQualifiedName="IdeProcessingEnvImpl" identifier="IdeProcessingEnvImpl" declaration="true"/>
+  <superclassType xsi:type="dom:SimpleType">
+    <name xsi:type="dom:SimpleName" fullyQualifiedName="BaseProcessingEnvImpl" identifier="BaseProcessingEnvImpl" declaration="false"/>
+  </superclassType>
+</dom:TypeDeclaration>

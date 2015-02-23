@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.hawk.core.ModelExtensionPoint">
+       <ModelP
+            ModelParser="org.hawk.emf.model.EMFModelResourceFactory">
+      </ModelP>
+   </extension>
+   <extension
+         point="org.hawk.core.MetaModelExtensionPoint">
+                      <MetaModelP
+            MetaModelParser="org.hawk.emf.metamodel.EMFMetaModelResourceFactory">
+      </MetaModelP>
+   </extension>
+
+</plugin>

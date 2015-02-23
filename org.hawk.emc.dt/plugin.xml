@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.epsilon.common.dt.modelType">
+      <modelType
+            class="org.hawk.emc.dt.HawkModel"
+            dialog="org.hawk.emc.dt.HawkModelConfigurationDialog"
+            icon="images/xml.png"
+            label="Hawk Model"
+            stable="true"
+            type="Hawk">
+      </modelType>
+   </extension>
+
+</plugin>
