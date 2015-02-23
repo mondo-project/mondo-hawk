@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ASCII"?>
+<dom:TypeDeclaration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dom="org.amma.dsl.jdt.dom" localTypeDeclaration="false" memberTypeDeclaration="false" packageMemberTypeDeclaration="true" interface="false">
+  <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+  <javadoc>
+    <tags nested="false">
+      <fragments xsi:type="dom:TextElement" text="ProcessingEnvironment for build phase in IDE."/>
+    </tags>
+    <tags tagName="@since" nested="false">
+      <fragments xsi:type="dom:TextElement" text=" 3.3"/>
+    </tags>
+  </javadoc>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="true" varargs="false">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:SuperConstructorInvocation">
+        <arguments xsi:type="dom:SimpleName" fullyQualifiedName="dispatchManager" identifier="dispatchManager" declaration="false"/>
+        <arguments xsi:type="dom:SimpleName" fullyQualifiedName="jproject" identifier="jproject" declaration="false"/>
+        <arguments xsi:type="dom:SimpleName" fullyQualifiedName="compiler" identifier="compiler" declaration="false"/>
+      </statements>
+    </body>
+    <name fullyQualifiedName="IdeBuildProcessingEnvImpl" identifier="IdeBuildProcessingEnvImpl" declaration="false"/>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="dispatchManager" identifier="dispatchManager" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="IdeAnnotationProcessorManager" identifier="IdeAnnotationProcessorManager" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="jproject" identifier="jproject" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="IJavaProject" identifier="IJavaProject" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="compiler" identifier="compiler" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="Compiler" identifier="Compiler" declaration="false"/>
+      </type>
+    </parameters>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:MarkerAnnotation">
+      <typeName xsi:type="dom:SimpleName" fullyQualifiedName="Override" identifier="Override" declaration="false"/>
+    </modifiers>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ReturnStatement">
+        <expression xsi:type="dom:QualifiedName" fullyQualifiedName="Phase.BUILD">
+          <name fullyQualifiedName="BUILD" identifier="BUILD" declaration="false"/>
+          <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="Phase" identifier="Phase" declaration="false"/>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="getPhase" identifier="getPhase" declaration="true"/>
+    <returnType xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="Phase" identifier="Phase" declaration="false"/>
+    </returnType>
+  </bodyDeclarations>
+  <name fullyQualifiedName="IdeBuildProcessingEnvImpl" identifier="IdeBuildProcessingEnvImpl" declaration="true"/>
+  <superclassType xsi:type="dom:SimpleType">
+    <name xsi:type="dom:SimpleName" fullyQualifiedName="IdeProcessingEnvImpl" identifier="IdeProcessingEnvImpl" declaration="false"/>
+  </superclassType>
+</dom:TypeDeclaration>

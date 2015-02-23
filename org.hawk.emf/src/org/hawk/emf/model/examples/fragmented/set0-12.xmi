@@ -1,0 +1,898 @@
+<?xml version="1.0" encoding="ASCII"?>
+<dom:TypeDeclaration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dom="org.amma.dsl.jdt.dom" localTypeDeclaration="false" memberTypeDeclaration="false" packageMemberTypeDeclaration="true" interface="false">
+  <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+  <javadoc>
+    <tags nested="false">
+      <fragments xsi:type="dom:TextElement" text="Implementation of the Filer interface that is used in IDE mode."/>
+    </tags>
+    <tags tagName="@see" nested="false">
+      <fragments xsi:type="dom:QualifiedName" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.BatchFilerImpl">
+        <name fullyQualifiedName="BatchFilerImpl" identifier="BatchFilerImpl" declaration="false"/>
+        <qualifier xsi:type="dom:QualifiedName" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch">
+          <name fullyQualifiedName="dispatch" identifier="dispatch" declaration="false"/>
+          <qualifier xsi:type="dom:QualifiedName" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt">
+            <name fullyQualifiedName="apt" identifier="apt" declaration="false"/>
+            <qualifier xsi:type="dom:QualifiedName" fullyQualifiedName="org.eclipse.jdt.internal.compiler">
+              <name fullyQualifiedName="compiler" identifier="compiler" declaration="false"/>
+              <qualifier xsi:type="dom:QualifiedName" fullyQualifiedName="org.eclipse.jdt.internal">
+                <name fullyQualifiedName="internal" identifier="internal" declaration="false"/>
+                <qualifier xsi:type="dom:QualifiedName" fullyQualifiedName="org.eclipse.jdt">
+                  <name fullyQualifiedName="jdt" identifier="jdt" declaration="false"/>
+                  <qualifier xsi:type="dom:QualifiedName" fullyQualifiedName="org.eclipse">
+                    <name fullyQualifiedName="eclipse" identifier="eclipse" declaration="false"/>
+                    <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="org" identifier="org" declaration="false"/>
+                  </qualifier>
+                </qualifier>
+              </qualifier>
+            </qualifier>
+          </qualifier>
+        </qualifier>
+      </fragments>
+    </tags>
+    <tags tagName="@since" nested="false">
+      <fragments xsi:type="dom:TextElement" text=" 3.3"/>
+    </tags>
+  </javadoc>
+  <bodyDeclarations xsi:type="dom:FieldDeclaration">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="true" protected="false" public="false" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="true" native="false" private="false" protected="false" public="false" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <fragments extraDimensions="0">
+      <name fullyQualifiedName="_env" identifier="_env" declaration="true"/>
+    </fragments>
+    <type xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="IdeProcessingEnvImpl" identifier="IdeProcessingEnvImpl" declaration="false"/>
+    </type>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="true" varargs="false">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ExpressionStatement">
+        <expression xsi:type="dom:Assignment" operator="=">
+          <leftHandSide xsi:type="dom:SimpleName" fullyQualifiedName="_env" identifier="_env" declaration="false"/>
+          <rightHandSide xsi:type="dom:SimpleName" fullyQualifiedName="env" identifier="env" declaration="false"/>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="IdeFilerImpl" identifier="IdeFilerImpl" declaration="false"/>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="dispatchManager" identifier="dispatchManager" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="IdeAnnotationProcessorManager" identifier="IdeAnnotationProcessorManager" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="env" identifier="env" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="IdeProcessingEnvImpl" identifier="IdeProcessingEnvImpl" declaration="false"/>
+      </type>
+    </parameters>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="true">
+    <modifiers xsi:type="dom:MarkerAnnotation">
+      <typeName xsi:type="dom:SimpleName" fullyQualifiedName="Override" identifier="Override" declaration="false"/>
+    </modifiers>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ThrowStatement">
+        <expression xsi:type="dom:ClassInstanceCreation">
+          <arguments xsi:type="dom:StringLiteral" escapedValue="&quot;Creating class files is not yet implemented&quot;"/>
+          <type xsi:type="dom:SimpleType">
+            <name xsi:type="dom:SimpleName" fullyQualifiedName="UnsupportedOperationException" identifier="UnsupportedOperationException" declaration="false"/>
+          </type>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="createClassFile" identifier="createClassFile" declaration="true"/>
+    <returnType xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="JavaFileObject" identifier="JavaFileObject" declaration="false"/>
+    </returnType>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="name" identifier="name" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="CharSequence" identifier="CharSequence" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="true">
+      <name fullyQualifiedName="originatingElements" identifier="originatingElements" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="Element" identifier="Element" declaration="false"/>
+      </type>
+    </parameters>
+    <thrownExceptions xsi:type="dom:SimpleName" fullyQualifiedName="IOException" identifier="IOException" declaration="false"/>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="true">
+    <modifiers xsi:type="dom:MarkerAnnotation">
+      <typeName xsi:type="dom:SimpleName" fullyQualifiedName="Override" identifier="Override" declaration="false"/>
+    </modifiers>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:IfStatement">
+        <expression xsi:type="dom:InfixExpression" operator="==">
+          <leftOperand xsi:type="dom:NullLiteral"/>
+          <rightOperand xsi:type="dom:SimpleName" fullyQualifiedName="location" identifier="location" declaration="false"/>
+        </expression>
+        <thenStatement xsi:type="dom:Block">
+          <statements xsi:type="dom:ThrowStatement">
+            <expression xsi:type="dom:ClassInstanceCreation">
+              <arguments xsi:type="dom:StringLiteral" escapedValue="&quot;Location is null&quot;"/>
+              <type xsi:type="dom:SimpleType">
+                <name xsi:type="dom:SimpleName" fullyQualifiedName="IllegalArgumentException" identifier="IllegalArgumentException" declaration="false"/>
+              </type>
+            </expression>
+          </statements>
+        </thenStatement>
+      </statements>
+      <statements xsi:type="dom:IfStatement">
+        <expression xsi:type="dom:PrefixExpression" operator="!">
+          <operand xsi:type="dom:MethodInvocation">
+            <expression xsi:type="dom:SimpleName" fullyQualifiedName="location" identifier="location" declaration="false"/>
+            <name fullyQualifiedName="isOutputLocation" identifier="isOutputLocation" declaration="false"/>
+          </operand>
+        </expression>
+        <thenStatement xsi:type="dom:Block">
+          <statements xsi:type="dom:ThrowStatement">
+            <expression xsi:type="dom:ClassInstanceCreation">
+              <arguments xsi:type="dom:InfixExpression" operator="+">
+                <extendedOperands xsi:type="dom:StringLiteral" escapedValue="&quot; is not an output location&quot;"/>
+                <leftOperand xsi:type="dom:StringLiteral" escapedValue="&quot;Location &quot;"/>
+                <rightOperand xsi:type="dom:MethodInvocation">
+                  <expression xsi:type="dom:SimpleName" fullyQualifiedName="location" identifier="location" declaration="false"/>
+                  <name fullyQualifiedName="getName" identifier="getName" declaration="false"/>
+                </rightOperand>
+              </arguments>
+              <type xsi:type="dom:SimpleType">
+                <name xsi:type="dom:SimpleName" fullyQualifiedName="IllegalArgumentException" identifier="IllegalArgumentException" declaration="false"/>
+              </type>
+            </expression>
+          </statements>
+        </thenStatement>
+      </statements>
+      <statements xsi:type="dom:IfStatement">
+        <expression xsi:type="dom:InfixExpression" operator="==">
+          <leftOperand xsi:type="dom:NullLiteral"/>
+          <rightOperand xsi:type="dom:SimpleName" fullyQualifiedName="pkg" identifier="pkg" declaration="false"/>
+        </expression>
+        <thenStatement xsi:type="dom:Block">
+          <statements xsi:type="dom:ThrowStatement">
+            <expression xsi:type="dom:ClassInstanceCreation">
+              <arguments xsi:type="dom:StringLiteral" escapedValue="&quot;Package is null&quot;"/>
+              <type xsi:type="dom:SimpleType">
+                <name xsi:type="dom:SimpleName" fullyQualifiedName="IllegalArgumentException" identifier="IllegalArgumentException" declaration="false"/>
+              </type>
+            </expression>
+          </statements>
+        </thenStatement>
+      </statements>
+      <statements xsi:type="dom:IfStatement">
+        <expression xsi:type="dom:InfixExpression" operator="==">
+          <leftOperand xsi:type="dom:NullLiteral"/>
+          <rightOperand xsi:type="dom:SimpleName" fullyQualifiedName="relativeName" identifier="relativeName" declaration="false"/>
+        </expression>
+        <thenStatement xsi:type="dom:Block">
+          <statements xsi:type="dom:ThrowStatement">
+            <expression xsi:type="dom:ClassInstanceCreation">
+              <arguments xsi:type="dom:StringLiteral" escapedValue="&quot;Relative name is null&quot;"/>
+              <type xsi:type="dom:SimpleType">
+                <name xsi:type="dom:SimpleName" fullyQualifiedName="IllegalArgumentException" identifier="IllegalArgumentException" declaration="false"/>
+              </type>
+            </expression>
+          </statements>
+        </thenStatement>
+      </statements>
+      <statements xsi:type="dom:IfStatement">
+        <expression xsi:type="dom:InfixExpression" operator="==">
+          <leftOperand xsi:type="dom:MethodInvocation">
+            <expression xsi:type="dom:SimpleName" fullyQualifiedName="relativeName" identifier="relativeName" declaration="false"/>
+            <name fullyQualifiedName="length" identifier="length" declaration="false"/>
+          </leftOperand>
+          <rightOperand xsi:type="dom:NumberLiteral" token="0"/>
+        </expression>
+        <thenStatement xsi:type="dom:Block">
+          <statements xsi:type="dom:ThrowStatement">
+            <expression xsi:type="dom:ClassInstanceCreation">
+              <arguments xsi:type="dom:StringLiteral" escapedValue="&quot;Relative name is zero length&quot;"/>
+              <type xsi:type="dom:SimpleType">
+                <name xsi:type="dom:SimpleName" fullyQualifiedName="IllegalArgumentException" identifier="IllegalArgumentException" declaration="false"/>
+              </type>
+            </expression>
+          </statements>
+        </thenStatement>
+      </statements>
+      <statements xsi:type="dom:VariableDeclarationStatement">
+        <fragments extraDimensions="0">
+          <initializer xsi:type="dom:MethodInvocation">
+            <arguments xsi:type="dom:SimpleName" fullyQualifiedName="location" identifier="location" declaration="false"/>
+            <arguments xsi:type="dom:SimpleName" fullyQualifiedName="pkg" identifier="pkg" declaration="false"/>
+            <arguments xsi:type="dom:SimpleName" fullyQualifiedName="relativeName" identifier="relativeName" declaration="false"/>
+            <name fullyQualifiedName="getFileFromOutputLocation" identifier="getFileFromOutputLocation" declaration="false"/>
+          </initializer>
+          <name fullyQualifiedName="file" identifier="file" declaration="true"/>
+        </fragments>
+        <type xsi:type="dom:SimpleType">
+          <name xsi:type="dom:SimpleName" fullyQualifiedName="IFile" identifier="IFile" declaration="false"/>
+        </type>
+      </statements>
+      <statements xsi:type="dom:VariableDeclarationStatement">
+        <fragments extraDimensions="0">
+          <initializer xsi:type="dom:ClassInstanceCreation">
+            <arguments xsi:type="dom:QualifiedName" fullyQualifiedName="originatingElements.length">
+              <name fullyQualifiedName="length" identifier="length" declaration="false"/>
+              <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="originatingElements" identifier="originatingElements" declaration="false"/>
+            </arguments>
+            <type xsi:type="dom:ParameterizedType">
+              <type xsi:type="dom:SimpleType">
+                <name xsi:type="dom:SimpleName" fullyQualifiedName="HashSet" identifier="HashSet" declaration="false"/>
+              </type>
+              <typeArguments xsi:type="dom:SimpleType">
+                <name xsi:type="dom:SimpleName" fullyQualifiedName="IFile" identifier="IFile" declaration="false"/>
+              </typeArguments>
+            </type>
+          </initializer>
+          <name fullyQualifiedName="parentFiles" identifier="parentFiles" declaration="true"/>
+        </fragments>
+        <type xsi:type="dom:ParameterizedType">
+          <type xsi:type="dom:SimpleType">
+            <name xsi:type="dom:SimpleName" fullyQualifiedName="Set" identifier="Set" declaration="false"/>
+          </type>
+          <typeArguments xsi:type="dom:SimpleType">
+            <name xsi:type="dom:SimpleName" fullyQualifiedName="IFile" identifier="IFile" declaration="false"/>
+          </typeArguments>
+        </type>
+      </statements>
+      <statements xsi:type="dom:EnhancedForStatement">
+        <body xsi:type="dom:Block">
+          <statements xsi:type="dom:VariableDeclarationStatement">
+            <fragments extraDimensions="0">
+              <initializer xsi:type="dom:MethodInvocation">
+                <arguments xsi:type="dom:SimpleName" fullyQualifiedName="elem" identifier="elem" declaration="false"/>
+                <expression xsi:type="dom:SimpleName" fullyQualifiedName="_env" identifier="_env" declaration="false"/>
+                <name fullyQualifiedName="getEnclosingIFile" identifier="getEnclosingIFile" declaration="false"/>
+              </initializer>
+              <name fullyQualifiedName="enclosing" identifier="enclosing" declaration="true"/>
+            </fragments>
+            <type xsi:type="dom:SimpleType">
+              <name xsi:type="dom:SimpleName" fullyQualifiedName="IFile" identifier="IFile" declaration="false"/>
+            </type>
+          </statements>
+          <statements xsi:type="dom:IfStatement">
+            <expression xsi:type="dom:InfixExpression" operator="!=">
+              <leftOperand xsi:type="dom:NullLiteral"/>
+              <rightOperand xsi:type="dom:SimpleName" fullyQualifiedName="enclosing" identifier="enclosing" declaration="false"/>
+            </expression>
+            <thenStatement xsi:type="dom:Block">
+              <statements xsi:type="dom:ExpressionStatement">
+                <expression xsi:type="dom:MethodInvocation">
+                  <arguments xsi:type="dom:SimpleName" fullyQualifiedName="enclosing" identifier="enclosing" declaration="false"/>
+                  <expression xsi:type="dom:SimpleName" fullyQualifiedName="parentFiles" identifier="parentFiles" declaration="false"/>
+                  <name fullyQualifiedName="add" identifier="add" declaration="false"/>
+                </expression>
+              </statements>
+            </thenStatement>
+          </statements>
+        </body>
+        <expression xsi:type="dom:SimpleName" fullyQualifiedName="originatingElements" identifier="originatingElements" declaration="false"/>
+        <parameter extraDimensions="0" varargs="false">
+          <name fullyQualifiedName="elem" identifier="elem" declaration="true"/>
+          <type xsi:type="dom:SimpleType">
+            <name xsi:type="dom:SimpleName" fullyQualifiedName="Element" identifier="Element" declaration="false"/>
+          </type>
+        </parameter>
+      </statements>
+      <statements xsi:type="dom:ReturnStatement">
+        <expression xsi:type="dom:ClassInstanceCreation">
+          <arguments xsi:type="dom:SimpleName" fullyQualifiedName="_env" identifier="_env" declaration="false"/>
+          <arguments xsi:type="dom:SimpleName" fullyQualifiedName="file" identifier="file" declaration="false"/>
+          <arguments xsi:type="dom:SimpleName" fullyQualifiedName="parentFiles" identifier="parentFiles" declaration="false"/>
+          <type xsi:type="dom:SimpleType">
+            <name xsi:type="dom:SimpleName" fullyQualifiedName="IdeOutputNonSourceFileObject" identifier="IdeOutputNonSourceFileObject" declaration="false"/>
+          </type>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="createResource" identifier="createResource" declaration="true"/>
+    <returnType xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="FileObject" identifier="FileObject" declaration="false"/>
+    </returnType>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="location" identifier="location" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="Location" identifier="Location" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="pkg" identifier="pkg" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="CharSequence" identifier="CharSequence" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="relativeName" identifier="relativeName" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="CharSequence" identifier="CharSequence" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="true">
+      <name fullyQualifiedName="originatingElements" identifier="originatingElements" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="Element" identifier="Element" declaration="false"/>
+      </type>
+    </parameters>
+    <thrownExceptions xsi:type="dom:SimpleName" fullyQualifiedName="IOException" identifier="IOException" declaration="false"/>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="true">
+    <modifiers xsi:type="dom:MarkerAnnotation">
+      <typeName xsi:type="dom:SimpleName" fullyQualifiedName="Override" identifier="Override" declaration="false"/>
+    </modifiers>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <javadoc>
+      <tags tagName="@param" nested="false">
+        <fragments xsi:type="dom:SimpleName" fullyQualifiedName="originatingElements" identifier="originatingElements" declaration="false"/>
+        <fragments xsi:type="dom:TextElement" text=" should all be source types; binary types (ie elements in jar files)"/>
+        <fragments xsi:type="dom:TextElement" text="will be ignored."/>
+      </tags>
+      <tags tagName="@see" nested="false">
+        <fragments xsi:type="dom:MethodRef">
+          <name fullyQualifiedName="createSourceFile" identifier="createSourceFile" declaration="false"/>
+          <qualifier xsi:type="dom:QualifiedName" fullyQualifiedName="javax.annotation.processing.Filer">
+            <name fullyQualifiedName="Filer" identifier="Filer" declaration="false"/>
+            <qualifier xsi:type="dom:QualifiedName" fullyQualifiedName="javax.annotation.processing">
+              <name fullyQualifiedName="processing" identifier="processing" declaration="false"/>
+              <qualifier xsi:type="dom:QualifiedName" fullyQualifiedName="javax.annotation">
+                <name fullyQualifiedName="annotation" identifier="annotation" declaration="false"/>
+                <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="javax" identifier="javax" declaration="false"/>
+              </qualifier>
+            </qualifier>
+          </qualifier>
+          <parameters varargs="false">
+            <type xsi:type="dom:SimpleType">
+              <name xsi:type="dom:QualifiedName" fullyQualifiedName="java.lang.CharSequence">
+                <name fullyQualifiedName="CharSequence" identifier="CharSequence" declaration="false"/>
+                <qualifier xsi:type="dom:QualifiedName" fullyQualifiedName="java.lang">
+                  <name fullyQualifiedName="lang" identifier="lang" declaration="false"/>
+                  <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="java" identifier="java" declaration="false"/>
+                </qualifier>
+              </name>
+            </type>
+          </parameters>
+          <parameters varargs="false">
+            <type xsi:type="dom:ArrayType" dimensions="1">
+              <componentType xsi:type="dom:SimpleType">
+                <name xsi:type="dom:QualifiedName" fullyQualifiedName="javax.lang.model.element.Element">
+                  <name fullyQualifiedName="Element" identifier="Element" declaration="false"/>
+                  <qualifier xsi:type="dom:QualifiedName" fullyQualifiedName="javax.lang.model.element">
+                    <name fullyQualifiedName="element" identifier="element" declaration="false"/>
+                    <qualifier xsi:type="dom:QualifiedName" fullyQualifiedName="javax.lang.model">
+                      <name fullyQualifiedName="model" identifier="model" declaration="false"/>
+                      <qualifier xsi:type="dom:QualifiedName" fullyQualifiedName="javax.lang">
+                        <name fullyQualifiedName="lang" identifier="lang" declaration="false"/>
+                        <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="javax" identifier="javax" declaration="false"/>
+                      </qualifier>
+                    </qualifier>
+                  </qualifier>
+                </name>
+              </componentType>
+            </type>
+          </parameters>
+        </fragments>
+      </tags>
+    </javadoc>
+    <body>
+      <statements xsi:type="dom:IfStatement">
+        <expression xsi:type="dom:InfixExpression" operator="==">
+          <leftOperand xsi:type="dom:NullLiteral"/>
+          <rightOperand xsi:type="dom:SimpleName" fullyQualifiedName="name" identifier="name" declaration="false"/>
+        </expression>
+        <thenStatement xsi:type="dom:Block">
+          <statements xsi:type="dom:ThrowStatement">
+            <expression xsi:type="dom:ClassInstanceCreation">
+              <arguments xsi:type="dom:StringLiteral" escapedValue="&quot;Name is null&quot;"/>
+              <type xsi:type="dom:SimpleType">
+                <name xsi:type="dom:SimpleName" fullyQualifiedName="IllegalArgumentException" identifier="IllegalArgumentException" declaration="false"/>
+              </type>
+            </expression>
+          </statements>
+        </thenStatement>
+      </statements>
+      <statements xsi:type="dom:VariableDeclarationStatement">
+        <fragments extraDimensions="0">
+          <initializer xsi:type="dom:ClassInstanceCreation">
+            <arguments xsi:type="dom:QualifiedName" fullyQualifiedName="originatingElements.length">
+              <name fullyQualifiedName="length" identifier="length" declaration="false"/>
+              <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="originatingElements" identifier="originatingElements" declaration="false"/>
+            </arguments>
+            <type xsi:type="dom:ParameterizedType">
+              <type xsi:type="dom:SimpleType">
+                <name xsi:type="dom:SimpleName" fullyQualifiedName="HashSet" identifier="HashSet" declaration="false"/>
+              </type>
+              <typeArguments xsi:type="dom:SimpleType">
+                <name xsi:type="dom:SimpleName" fullyQualifiedName="IFile" identifier="IFile" declaration="false"/>
+              </typeArguments>
+            </type>
+          </initializer>
+          <name fullyQualifiedName="parentFiles" identifier="parentFiles" declaration="true"/>
+        </fragments>
+        <type xsi:type="dom:ParameterizedType">
+          <type xsi:type="dom:SimpleType">
+            <name xsi:type="dom:SimpleName" fullyQualifiedName="Set" identifier="Set" declaration="false"/>
+          </type>
+          <typeArguments xsi:type="dom:SimpleType">
+            <name xsi:type="dom:SimpleName" fullyQualifiedName="IFile" identifier="IFile" declaration="false"/>
+          </typeArguments>
+        </type>
+      </statements>
+      <statements xsi:type="dom:EnhancedForStatement">
+        <body xsi:type="dom:Block">
+          <statements xsi:type="dom:VariableDeclarationStatement">
+            <fragments extraDimensions="0">
+              <initializer xsi:type="dom:MethodInvocation">
+                <arguments xsi:type="dom:SimpleName" fullyQualifiedName="elem" identifier="elem" declaration="false"/>
+                <expression xsi:type="dom:SimpleName" fullyQualifiedName="_env" identifier="_env" declaration="false"/>
+                <name fullyQualifiedName="getEnclosingIFile" identifier="getEnclosingIFile" declaration="false"/>
+              </initializer>
+              <name fullyQualifiedName="enclosing" identifier="enclosing" declaration="true"/>
+            </fragments>
+            <type xsi:type="dom:SimpleType">
+              <name xsi:type="dom:SimpleName" fullyQualifiedName="IFile" identifier="IFile" declaration="false"/>
+            </type>
+          </statements>
+          <statements xsi:type="dom:IfStatement">
+            <expression xsi:type="dom:InfixExpression" operator="!=">
+              <leftOperand xsi:type="dom:NullLiteral"/>
+              <rightOperand xsi:type="dom:SimpleName" fullyQualifiedName="enclosing" identifier="enclosing" declaration="false"/>
+            </expression>
+            <thenStatement xsi:type="dom:Block">
+              <statements xsi:type="dom:ExpressionStatement">
+                <expression xsi:type="dom:MethodInvocation">
+                  <arguments xsi:type="dom:SimpleName" fullyQualifiedName="enclosing" identifier="enclosing" declaration="false"/>
+                  <expression xsi:type="dom:SimpleName" fullyQualifiedName="parentFiles" identifier="parentFiles" declaration="false"/>
+                  <name fullyQualifiedName="add" identifier="add" declaration="false"/>
+                </expression>
+              </statements>
+            </thenStatement>
+          </statements>
+        </body>
+        <expression xsi:type="dom:SimpleName" fullyQualifiedName="originatingElements" identifier="originatingElements" declaration="false"/>
+        <parameter extraDimensions="0" varargs="false">
+          <name fullyQualifiedName="elem" identifier="elem" declaration="true"/>
+          <type xsi:type="dom:SimpleType">
+            <name xsi:type="dom:SimpleName" fullyQualifiedName="Element" identifier="Element" declaration="false"/>
+          </type>
+        </parameter>
+      </statements>
+      <statements xsi:type="dom:ReturnStatement">
+        <expression xsi:type="dom:ClassInstanceCreation">
+          <arguments xsi:type="dom:SimpleName" fullyQualifiedName="_env" identifier="_env" declaration="false"/>
+          <arguments xsi:type="dom:SimpleName" fullyQualifiedName="name" identifier="name" declaration="false"/>
+          <arguments xsi:type="dom:SimpleName" fullyQualifiedName="parentFiles" identifier="parentFiles" declaration="false"/>
+          <type xsi:type="dom:SimpleType">
+            <name xsi:type="dom:SimpleName" fullyQualifiedName="IdeOutputJavaFileObject" identifier="IdeOutputJavaFileObject" declaration="false"/>
+          </type>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="createSourceFile" identifier="createSourceFile" declaration="true"/>
+    <returnType xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="JavaFileObject" identifier="JavaFileObject" declaration="false"/>
+    </returnType>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="name" identifier="name" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="CharSequence" identifier="CharSequence" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="true">
+      <name fullyQualifiedName="originatingElements" identifier="originatingElements" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="Element" identifier="Element" declaration="false"/>
+      </type>
+    </parameters>
+    <thrownExceptions xsi:type="dom:SimpleName" fullyQualifiedName="IOException" identifier="IOException" declaration="false"/>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:MarkerAnnotation">
+      <typeName xsi:type="dom:SimpleName" fullyQualifiedName="Override" identifier="Override" declaration="false"/>
+    </modifiers>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:VariableDeclarationStatement">
+        <fragments extraDimensions="0">
+          <initializer xsi:type="dom:MethodInvocation">
+            <arguments xsi:type="dom:SimpleName" fullyQualifiedName="location" identifier="location" declaration="false"/>
+            <arguments xsi:type="dom:SimpleName" fullyQualifiedName="pkg" identifier="pkg" declaration="false"/>
+            <arguments xsi:type="dom:SimpleName" fullyQualifiedName="relativeName" identifier="relativeName" declaration="false"/>
+            <name fullyQualifiedName="getFileFromOutputLocation" identifier="getFileFromOutputLocation" declaration="false"/>
+          </initializer>
+          <name fullyQualifiedName="file" identifier="file" declaration="true"/>
+        </fragments>
+        <type xsi:type="dom:SimpleType">
+          <name xsi:type="dom:SimpleName" fullyQualifiedName="IFile" identifier="IFile" declaration="false"/>
+        </type>
+      </statements>
+      <statements xsi:type="dom:ReturnStatement">
+        <expression xsi:type="dom:ClassInstanceCreation">
+          <arguments xsi:type="dom:SimpleName" fullyQualifiedName="file" identifier="file" declaration="false"/>
+          <type xsi:type="dom:SimpleType">
+            <name xsi:type="dom:SimpleName" fullyQualifiedName="IdeInputFileObject" identifier="IdeInputFileObject" declaration="false"/>
+          </type>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="getResource" identifier="getResource" declaration="true"/>
+    <returnType xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="FileObject" identifier="FileObject" declaration="false"/>
+    </returnType>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="location" identifier="location" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="Location" identifier="Location" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="pkg" identifier="pkg" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="CharSequence" identifier="CharSequence" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="relativeName" identifier="relativeName" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="CharSequence" identifier="CharSequence" declaration="false"/>
+      </type>
+    </parameters>
+    <thrownExceptions xsi:type="dom:SimpleName" fullyQualifiedName="IOException" identifier="IOException" declaration="false"/>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="true" public="false" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <javadoc>
+      <tags nested="false">
+        <fragments xsi:type="dom:TextElement" text="Return a project-relative path.  This does not create the file nor its parent directories,"/>
+        <fragments xsi:type="dom:TextElement" text="but it does validate the path."/>
+      </tags>
+      <tags tagName="@param" nested="false">
+        <fragments xsi:type="dom:SimpleName" fullyQualifiedName="pkg" identifier="pkg" declaration="false"/>
+        <fragments xsi:type="dom:TextElement" text=" must be non-null but can be empty."/>
+      </tags>
+      <tags tagName="@param" nested="false">
+        <fragments xsi:type="dom:SimpleName" fullyQualifiedName="relPath" identifier="relPath" declaration="false"/>
+        <fragments xsi:type="dom:TextElement" text=" must be non-null and non-empty."/>
+      </tags>
+      <tags tagName="@throws" nested="false">
+        <fragments xsi:type="dom:SimpleName" fullyQualifiedName="IOException" identifier="IOException" declaration="false"/>
+        <fragments xsi:type="dom:TextElement" text=" if the path is not valid."/>
+      </tags>
+    </javadoc>
+    <body>
+      <statements xsi:type="dom:VariableDeclarationStatement">
+        <fragments extraDimensions="0">
+          <initializer xsi:type="dom:MethodInvocation">
+            <expression xsi:type="dom:MethodInvocation">
+              <expression xsi:type="dom:SimpleName" fullyQualifiedName="_env" identifier="_env" declaration="false"/>
+              <name fullyQualifiedName="getAptProject" identifier="getAptProject" declaration="false"/>
+            </expression>
+            <name fullyQualifiedName="getGeneratedSourceFolderManager" identifier="getGeneratedSourceFolderManager" declaration="false"/>
+          </initializer>
+          <name fullyQualifiedName="gsfm" identifier="gsfm" declaration="true"/>
+        </fragments>
+        <type xsi:type="dom:SimpleType">
+          <name xsi:type="dom:SimpleName" fullyQualifiedName="GeneratedSourceFolderManager" identifier="GeneratedSourceFolderManager" declaration="false"/>
+        </type>
+      </statements>
+      <statements xsi:type="dom:VariableDeclarationStatement">
+        <fragments extraDimensions="0">
+          <initializer xsi:type="dom:NullLiteral"/>
+          <name fullyQualifiedName="path" identifier="path" declaration="true"/>
+        </fragments>
+        <type xsi:type="dom:SimpleType">
+          <name xsi:type="dom:SimpleName" fullyQualifiedName="IPath" identifier="IPath" declaration="false"/>
+        </type>
+      </statements>
+      <statements xsi:type="dom:IfStatement">
+        <elseStatement xsi:type="dom:IfStatement">
+          <elseStatement xsi:type="dom:Block">
+            <statements xsi:type="dom:ThrowStatement">
+              <expression xsi:type="dom:ClassInstanceCreation">
+                <arguments xsi:type="dom:InfixExpression" operator="+">
+                  <leftOperand xsi:type="dom:StringLiteral" escapedValue="&quot;Unsupported location: &quot;"/>
+                  <rightOperand xsi:type="dom:SimpleName" fullyQualifiedName="loc" identifier="loc" declaration="false"/>
+                </arguments>
+                <type xsi:type="dom:SimpleType">
+                  <name xsi:type="dom:SimpleName" fullyQualifiedName="IllegalArgumentException" identifier="IllegalArgumentException" declaration="false"/>
+                </type>
+              </expression>
+            </statements>
+          </elseStatement>
+          <expression xsi:type="dom:InfixExpression" operator="==">
+            <leftOperand xsi:type="dom:SimpleName" fullyQualifiedName="loc" identifier="loc" declaration="false"/>
+            <rightOperand xsi:type="dom:QualifiedName" fullyQualifiedName="StandardLocation.SOURCE_OUTPUT">
+              <name fullyQualifiedName="SOURCE_OUTPUT" identifier="SOURCE_OUTPUT" declaration="false"/>
+              <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="StandardLocation" identifier="StandardLocation" declaration="false"/>
+            </rightOperand>
+          </expression>
+          <thenStatement xsi:type="dom:Block">
+            <statements xsi:type="dom:ExpressionStatement">
+              <expression xsi:type="dom:Assignment" operator="=">
+                <leftHandSide xsi:type="dom:SimpleName" fullyQualifiedName="path" identifier="path" declaration="false"/>
+                <rightHandSide xsi:type="dom:MethodInvocation">
+                  <expression xsi:type="dom:MethodInvocation">
+                    <expression xsi:type="dom:SimpleName" fullyQualifiedName="gsfm" identifier="gsfm" declaration="false"/>
+                    <name fullyQualifiedName="getFolder" identifier="getFolder" declaration="false"/>
+                  </expression>
+                  <name fullyQualifiedName="getProjectRelativePath" identifier="getProjectRelativePath" declaration="false"/>
+                </rightHandSide>
+              </expression>
+            </statements>
+          </thenStatement>
+        </elseStatement>
+        <expression xsi:type="dom:InfixExpression" operator="==">
+          <leftOperand xsi:type="dom:SimpleName" fullyQualifiedName="loc" identifier="loc" declaration="false"/>
+          <rightOperand xsi:type="dom:QualifiedName" fullyQualifiedName="StandardLocation.CLASS_OUTPUT">
+            <name fullyQualifiedName="CLASS_OUTPUT" identifier="CLASS_OUTPUT" declaration="false"/>
+            <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="StandardLocation" identifier="StandardLocation" declaration="false"/>
+          </rightOperand>
+        </expression>
+        <thenStatement xsi:type="dom:Block">
+          <statements xsi:type="dom:TryStatement">
+            <catchClauses>
+              <body>
+                <statements xsi:type="dom:ExpressionStatement">
+                  <expression xsi:type="dom:MethodInvocation">
+                    <arguments xsi:type="dom:SimpleName" fullyQualifiedName="e" identifier="e" declaration="false"/>
+                    <arguments xsi:type="dom:StringLiteral" escapedValue="&quot;Failure getting the binary output location&quot;"/>
+                    <expression xsi:type="dom:SimpleName" fullyQualifiedName="Apt6Plugin" identifier="Apt6Plugin" declaration="false"/>
+                    <name fullyQualifiedName="log" identifier="log" declaration="false"/>
+                  </expression>
+                </statements>
+                <statements xsi:type="dom:VariableDeclarationStatement">
+                  <fragments extraDimensions="0">
+                    <initializer xsi:type="dom:ClassInstanceCreation">
+                      <type xsi:type="dom:SimpleType">
+                        <name xsi:type="dom:SimpleName" fullyQualifiedName="IOException" identifier="IOException" declaration="false"/>
+                      </type>
+                    </initializer>
+                    <name fullyQualifiedName="ioe" identifier="ioe" declaration="true"/>
+                  </fragments>
+                  <type xsi:type="dom:SimpleType">
+                    <name xsi:type="dom:SimpleName" fullyQualifiedName="IOException" identifier="IOException" declaration="false"/>
+                  </type>
+                </statements>
+                <statements xsi:type="dom:ExpressionStatement">
+                  <expression xsi:type="dom:MethodInvocation">
+                    <arguments xsi:type="dom:SimpleName" fullyQualifiedName="e" identifier="e" declaration="false"/>
+                    <expression xsi:type="dom:SimpleName" fullyQualifiedName="ioe" identifier="ioe" declaration="false"/>
+                    <name fullyQualifiedName="initCause" identifier="initCause" declaration="false"/>
+                  </expression>
+                </statements>
+                <statements xsi:type="dom:ThrowStatement">
+                  <expression xsi:type="dom:SimpleName" fullyQualifiedName="ioe" identifier="ioe" declaration="false"/>
+                </statements>
+              </body>
+              <exception extraDimensions="0" varargs="false">
+                <name fullyQualifiedName="e" identifier="e" declaration="true"/>
+                <type xsi:type="dom:SimpleType">
+                  <name xsi:type="dom:SimpleName" fullyQualifiedName="JavaModelException" identifier="JavaModelException" declaration="false"/>
+                </type>
+              </exception>
+            </catchClauses>
+            <body>
+              <statements xsi:type="dom:ExpressionStatement">
+                <expression xsi:type="dom:Assignment" operator="=">
+                  <leftHandSide xsi:type="dom:SimpleName" fullyQualifiedName="path" identifier="path" declaration="false"/>
+                  <rightHandSide xsi:type="dom:MethodInvocation">
+                    <expression xsi:type="dom:SimpleName" fullyQualifiedName="gsfm" identifier="gsfm" declaration="false"/>
+                    <name fullyQualifiedName="getBinaryOutputLocation" identifier="getBinaryOutputLocation" declaration="false"/>
+                  </rightHandSide>
+                </expression>
+              </statements>
+            </body>
+          </statements>
+        </thenStatement>
+      </statements>
+      <statements xsi:type="dom:IfStatement">
+        <expression xsi:type="dom:InfixExpression" operator=">">
+          <leftOperand xsi:type="dom:MethodInvocation">
+            <expression xsi:type="dom:SimpleName" fullyQualifiedName="pkg" identifier="pkg" declaration="false"/>
+            <name fullyQualifiedName="length" identifier="length" declaration="false"/>
+          </leftOperand>
+          <rightOperand xsi:type="dom:NumberLiteral" token="0"/>
+        </expression>
+        <thenStatement xsi:type="dom:ExpressionStatement">
+          <expression xsi:type="dom:Assignment" operator="=">
+            <leftHandSide xsi:type="dom:SimpleName" fullyQualifiedName="path" identifier="path" declaration="false"/>
+            <rightHandSide xsi:type="dom:MethodInvocation">
+              <arguments xsi:type="dom:MethodInvocation">
+                <arguments xsi:type="dom:CharacterLiteral" escapedValue="'.'"/>
+                <arguments xsi:type="dom:QualifiedName" fullyQualifiedName="File.separatorChar">
+                  <name fullyQualifiedName="separatorChar" identifier="separatorChar" declaration="false"/>
+                  <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="File" identifier="File" declaration="false"/>
+                </arguments>
+                <expression xsi:type="dom:MethodInvocation">
+                  <expression xsi:type="dom:SimpleName" fullyQualifiedName="pkg" identifier="pkg" declaration="false"/>
+                  <name fullyQualifiedName="toString" identifier="toString" declaration="false"/>
+                </expression>
+                <name fullyQualifiedName="replace" identifier="replace" declaration="false"/>
+              </arguments>
+              <expression xsi:type="dom:SimpleName" fullyQualifiedName="path" identifier="path" declaration="false"/>
+              <name fullyQualifiedName="append" identifier="append" declaration="false"/>
+            </rightHandSide>
+          </expression>
+        </thenStatement>
+      </statements>
+      <statements xsi:type="dom:ExpressionStatement">
+        <expression xsi:type="dom:Assignment" operator="=">
+          <leftHandSide xsi:type="dom:SimpleName" fullyQualifiedName="path" identifier="path" declaration="false"/>
+          <rightHandSide xsi:type="dom:MethodInvocation">
+            <arguments xsi:type="dom:MethodInvocation">
+              <expression xsi:type="dom:SimpleName" fullyQualifiedName="relPath" identifier="relPath" declaration="false"/>
+              <name fullyQualifiedName="toString" identifier="toString" declaration="false"/>
+            </arguments>
+            <expression xsi:type="dom:SimpleName" fullyQualifiedName="path" identifier="path" declaration="false"/>
+            <name fullyQualifiedName="append" identifier="append" declaration="false"/>
+          </rightHandSide>
+        </expression>
+      </statements>
+      <statements xsi:type="dom:VariableDeclarationStatement">
+        <fragments extraDimensions="0">
+          <initializer xsi:type="dom:MethodInvocation">
+            <arguments xsi:type="dom:SimpleName" fullyQualifiedName="path" identifier="path" declaration="false"/>
+            <expression xsi:type="dom:MethodInvocation">
+              <expression xsi:type="dom:SimpleName" fullyQualifiedName="_env" identifier="_env" declaration="false"/>
+              <name fullyQualifiedName="getProject" identifier="getProject" declaration="false"/>
+            </expression>
+            <name fullyQualifiedName="getFile" identifier="getFile" declaration="false"/>
+          </initializer>
+          <name fullyQualifiedName="file" identifier="file" declaration="true"/>
+        </fragments>
+        <type xsi:type="dom:SimpleType">
+          <name xsi:type="dom:SimpleName" fullyQualifiedName="IFile" identifier="IFile" declaration="false"/>
+        </type>
+      </statements>
+      <statements xsi:type="dom:ExpressionStatement">
+        <expression xsi:type="dom:MethodInvocation">
+          <arguments xsi:type="dom:SimpleName" fullyQualifiedName="file" identifier="file" declaration="false"/>
+          <name fullyQualifiedName="validatePath" identifier="validatePath" declaration="false"/>
+        </expression>
+      </statements>
+      <statements xsi:type="dom:ReturnStatement">
+        <expression xsi:type="dom:SimpleName" fullyQualifiedName="file" identifier="file" declaration="false"/>
+      </statements>
+    </body>
+    <name fullyQualifiedName="getFileFromOutputLocation" identifier="getFileFromOutputLocation" declaration="true"/>
+    <returnType xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="IFile" identifier="IFile" declaration="false"/>
+    </returnType>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="loc" identifier="loc" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="Location" identifier="Location" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="pkg" identifier="pkg" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="CharSequence" identifier="CharSequence" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="relPath" identifier="relPath" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="CharSequence" identifier="CharSequence" declaration="false"/>
+      </type>
+    </parameters>
+    <thrownExceptions xsi:type="dom:SimpleName" fullyQualifiedName="IOException" identifier="IOException" declaration="false"/>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="true" protected="false" public="false" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <javadoc>
+      <tags nested="false">
+        <fragments xsi:type="dom:TextElement" text="Validate that a path fits the rules for being created."/>
+      </tags>
+      <tags tagName="@see" nested="false">
+        <fragments xsi:type="dom:MethodRef">
+          <name fullyQualifiedName="validatePath" identifier="validatePath" declaration="false"/>
+          <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="IWorkspace" identifier="IWorkspace" declaration="false"/>
+        </fragments>
+      </tags>
+      <tags tagName="@throws" nested="false">
+        <fragments xsi:type="dom:SimpleName" fullyQualifiedName="IOException" identifier="IOException" declaration="false"/>
+      </tags>
+    </javadoc>
+    <body>
+      <statements xsi:type="dom:VariableDeclarationStatement">
+        <fragments extraDimensions="0">
+          <initializer xsi:type="dom:MethodInvocation">
+            <arguments xsi:type="dom:MethodInvocation">
+              <expression xsi:type="dom:MethodInvocation">
+                <expression xsi:type="dom:SimpleName" fullyQualifiedName="file" identifier="file" declaration="false"/>
+                <name fullyQualifiedName="getFullPath" identifier="getFullPath" declaration="false"/>
+              </expression>
+              <name fullyQualifiedName="toOSString" identifier="toOSString" declaration="false"/>
+            </arguments>
+            <arguments xsi:type="dom:QualifiedName" fullyQualifiedName="IResource.FILE">
+              <name fullyQualifiedName="FILE" identifier="FILE" declaration="false"/>
+              <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="IResource" identifier="IResource" declaration="false"/>
+            </arguments>
+            <expression xsi:type="dom:MethodInvocation">
+              <expression xsi:type="dom:MethodInvocation">
+                <expression xsi:type="dom:SimpleName" fullyQualifiedName="_env" identifier="_env" declaration="false"/>
+                <name fullyQualifiedName="getProject" identifier="getProject" declaration="false"/>
+              </expression>
+              <name fullyQualifiedName="getWorkspace" identifier="getWorkspace" declaration="false"/>
+            </expression>
+            <name fullyQualifiedName="validatePath" identifier="validatePath" declaration="false"/>
+          </initializer>
+          <name fullyQualifiedName="status" identifier="status" declaration="true"/>
+        </fragments>
+        <type xsi:type="dom:SimpleType">
+          <name xsi:type="dom:SimpleName" fullyQualifiedName="IStatus" identifier="IStatus" declaration="false"/>
+        </type>
+      </statements>
+      <statements xsi:type="dom:IfStatement">
+        <expression xsi:type="dom:PrefixExpression" operator="!">
+          <operand xsi:type="dom:MethodInvocation">
+            <expression xsi:type="dom:SimpleName" fullyQualifiedName="status" identifier="status" declaration="false"/>
+            <name fullyQualifiedName="isOK" identifier="isOK" declaration="false"/>
+          </operand>
+        </expression>
+        <thenStatement xsi:type="dom:Block">
+          <statements xsi:type="dom:VariableDeclarationStatement">
+            <fragments extraDimensions="0">
+              <initializer xsi:type="dom:ClassInstanceCreation">
+                <arguments xsi:type="dom:SimpleName" fullyQualifiedName="status" identifier="status" declaration="false"/>
+                <type xsi:type="dom:SimpleType">
+                  <name xsi:type="dom:SimpleName" fullyQualifiedName="CoreException" identifier="CoreException" declaration="false"/>
+                </type>
+              </initializer>
+              <name fullyQualifiedName="ce" identifier="ce" declaration="true"/>
+            </fragments>
+            <type xsi:type="dom:SimpleType">
+              <name xsi:type="dom:SimpleName" fullyQualifiedName="CoreException" identifier="CoreException" declaration="false"/>
+            </type>
+          </statements>
+          <statements xsi:type="dom:VariableDeclarationStatement">
+            <fragments extraDimensions="0">
+              <initializer xsi:type="dom:ClassInstanceCreation">
+                <arguments xsi:type="dom:InfixExpression" operator="+">
+                  <leftOperand xsi:type="dom:StringLiteral" escapedValue="&quot;Invalid path: &quot;"/>
+                  <rightOperand xsi:type="dom:MethodInvocation">
+                    <expression xsi:type="dom:SimpleName" fullyQualifiedName="file" identifier="file" declaration="false"/>
+                    <name fullyQualifiedName="toString" identifier="toString" declaration="false"/>
+                  </rightOperand>
+                </arguments>
+                <type xsi:type="dom:SimpleType">
+                  <name xsi:type="dom:SimpleName" fullyQualifiedName="IOException" identifier="IOException" declaration="false"/>
+                </type>
+              </initializer>
+              <name fullyQualifiedName="ioe" identifier="ioe" declaration="true"/>
+            </fragments>
+            <type xsi:type="dom:SimpleType">
+              <name xsi:type="dom:SimpleName" fullyQualifiedName="IOException" identifier="IOException" declaration="false"/>
+            </type>
+          </statements>
+          <statements xsi:type="dom:ExpressionStatement">
+            <expression xsi:type="dom:MethodInvocation">
+              <arguments xsi:type="dom:SimpleName" fullyQualifiedName="ce" identifier="ce" declaration="false"/>
+              <expression xsi:type="dom:SimpleName" fullyQualifiedName="ioe" identifier="ioe" declaration="false"/>
+              <name fullyQualifiedName="initCause" identifier="initCause" declaration="false"/>
+            </expression>
+          </statements>
+          <statements xsi:type="dom:ThrowStatement">
+            <expression xsi:type="dom:SimpleName" fullyQualifiedName="ioe" identifier="ioe" declaration="false"/>
+          </statements>
+        </thenStatement>
+      </statements>
+    </body>
+    <name fullyQualifiedName="validatePath" identifier="validatePath" declaration="true"/>
+    <returnType xsi:type="dom:PrimitiveType" code="void"/>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="file" identifier="file" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="IFile" identifier="IFile" declaration="false"/>
+      </type>
+    </parameters>
+    <thrownExceptions xsi:type="dom:SimpleName" fullyQualifiedName="IOException" identifier="IOException" declaration="false"/>
+  </bodyDeclarations>
+  <name fullyQualifiedName="IdeFilerImpl" identifier="IdeFilerImpl" declaration="true"/>
+  <superInterfaceTypes xsi:type="dom:SimpleType">
+    <name xsi:type="dom:SimpleName" fullyQualifiedName="Filer" identifier="Filer" declaration="false"/>
+  </superInterfaceTypes>
+</dom:TypeDeclaration>

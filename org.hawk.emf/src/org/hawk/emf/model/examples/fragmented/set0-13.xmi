@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="ASCII"?>
+<dom:TypeDeclaration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dom="org.amma.dsl.jdt.dom" localTypeDeclaration="false" memberTypeDeclaration="false" packageMemberTypeDeclaration="true" interface="false">
+  <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+  <javadoc>
+    <tags nested="false">
+      <fragments xsi:type="dom:TextElement" text="Implementation of a FileObject returned by Filer.getResource()."/>
+    </tags>
+    <tags tagName="@since" nested="false">
+      <fragments xsi:type="dom:TextElement" text=" 3.4"/>
+    </tags>
+  </javadoc>
+  <bodyDeclarations xsi:type="dom:FieldDeclaration">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="true" protected="false" public="false" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="true" native="false" private="false" protected="false" public="false" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <fragments extraDimensions="0">
+      <name fullyQualifiedName="_file" identifier="_file" declaration="true"/>
+    </fragments>
+    <type xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="IFile" identifier="IFile" declaration="false"/>
+    </type>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="true" varargs="false">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ExpressionStatement">
+        <expression xsi:type="dom:Assignment" operator="=">
+          <leftHandSide xsi:type="dom:SimpleName" fullyQualifiedName="_file" identifier="_file" declaration="false"/>
+          <rightHandSide xsi:type="dom:SimpleName" fullyQualifiedName="file" identifier="file" declaration="false"/>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="IdeInputFileObject" identifier="IdeInputFileObject" declaration="false"/>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="file" identifier="file" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="IFile" identifier="IFile" declaration="false"/>
+      </type>
+    </parameters>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:MarkerAnnotation">
+      <typeName xsi:type="dom:SimpleName" fullyQualifiedName="Override" identifier="Override" declaration="false"/>
+    </modifiers>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ThrowStatement">
+        <expression xsi:type="dom:ClassInstanceCreation">
+          <arguments xsi:type="dom:StringLiteral" escapedValue="&quot;An annotation processor is not permitted to delete resources&quot;"/>
+          <type xsi:type="dom:SimpleType">
+            <name xsi:type="dom:SimpleName" fullyQualifiedName="IllegalStateException" identifier="IllegalStateException" declaration="false"/>
+          </type>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="delete" identifier="delete" declaration="true"/>
+    <returnType xsi:type="dom:PrimitiveType" code="boolean"/>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:MarkerAnnotation">
+      <typeName xsi:type="dom:SimpleName" fullyQualifiedName="Override" identifier="Override" declaration="false"/>
+    </modifiers>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ThrowStatement">
+        <expression xsi:type="dom:ClassInstanceCreation">
+          <arguments xsi:type="dom:StringLiteral" escapedValue="&quot;Not yet implemented&quot;"/>
+          <type xsi:type="dom:SimpleType">
+            <name xsi:type="dom:SimpleName" fullyQualifiedName="UnsupportedOperationException" identifier="UnsupportedOperationException" declaration="false"/>
+          </type>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="getCharContent" identifier="getCharContent" declaration="true"/>
+    <returnType xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="CharSequence" identifier="CharSequence" declaration="false"/>
+    </returnType>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="ignoreEncodingErrors" identifier="ignoreEncodingErrors" declaration="true"/>
+      <type xsi:type="dom:PrimitiveType" code="boolean"/>
+    </parameters>
+    <thrownExceptions xsi:type="dom:SimpleName" fullyQualifiedName="IOException" identifier="IOException" declaration="false"/>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:MarkerAnnotation">
+      <typeName xsi:type="dom:SimpleName" fullyQualifiedName="Override" identifier="Override" declaration="false"/>
+    </modifiers>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ReturnStatement">
+        <expression xsi:type="dom:MethodInvocation">
+          <expression xsi:type="dom:SimpleName" fullyQualifiedName="_file" identifier="_file" declaration="false"/>
+          <name fullyQualifiedName="getModificationStamp" identifier="getModificationStamp" declaration="false"/>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="getLastModified" identifier="getLastModified" declaration="true"/>
+    <returnType xsi:type="dom:PrimitiveType" code="long"/>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:MarkerAnnotation">
+      <typeName xsi:type="dom:SimpleName" fullyQualifiedName="Override" identifier="Override" declaration="false"/>
+    </modifiers>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ReturnStatement">
+        <expression xsi:type="dom:MethodInvocation">
+          <expression xsi:type="dom:MethodInvocation">
+            <expression xsi:type="dom:SimpleName" fullyQualifiedName="_file" identifier="_file" declaration="false"/>
+            <name fullyQualifiedName="getProjectRelativePath" identifier="getProjectRelativePath" declaration="false"/>
+          </expression>
+          <name fullyQualifiedName="toString" identifier="toString" declaration="false"/>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="getName" identifier="getName" declaration="true"/>
+    <returnType xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="String" identifier="String" declaration="false"/>
+    </returnType>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:MarkerAnnotation">
+      <typeName xsi:type="dom:SimpleName" fullyQualifiedName="Override" identifier="Override" declaration="false"/>
+    </modifiers>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:TryStatement">
+        <catchClauses>
+          <body>
+            <statements xsi:type="dom:ThrowStatement">
+              <expression xsi:type="dom:ClassInstanceCreation">
+                <arguments xsi:type="dom:SimpleName" fullyQualifiedName="e" identifier="e" declaration="false"/>
+                <type xsi:type="dom:SimpleType">
+                  <name xsi:type="dom:SimpleName" fullyQualifiedName="IOException" identifier="IOException" declaration="false"/>
+                </type>
+              </expression>
+            </statements>
+          </body>
+          <exception extraDimensions="0" varargs="false">
+            <name fullyQualifiedName="e" identifier="e" declaration="true"/>
+            <type xsi:type="dom:SimpleType">
+              <name xsi:type="dom:SimpleName" fullyQualifiedName="CoreException" identifier="CoreException" declaration="false"/>
+            </type>
+          </exception>
+        </catchClauses>
+        <body>
+          <statements xsi:type="dom:ReturnStatement">
+            <expression xsi:type="dom:MethodInvocation">
+              <expression xsi:type="dom:SimpleName" fullyQualifiedName="_file" identifier="_file" declaration="false"/>
+              <name fullyQualifiedName="getContents" identifier="getContents" declaration="false"/>
+            </expression>
+          </statements>
+        </body>
+      </statements>
+    </body>
+    <name fullyQualifiedName="openInputStream" identifier="openInputStream" declaration="true"/>
+    <returnType xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="InputStream" identifier="InputStream" declaration="false"/>
+    </returnType>
+    <thrownExceptions xsi:type="dom:SimpleName" fullyQualifiedName="IOException" identifier="IOException" declaration="false"/>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:MarkerAnnotation">
+      <typeName xsi:type="dom:SimpleName" fullyQualifiedName="Override" identifier="Override" declaration="false"/>
+    </modifiers>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ThrowStatement">
+        <expression xsi:type="dom:ClassInstanceCreation">
+          <arguments xsi:type="dom:StringLiteral" escapedValue="&quot;Writing to a non-generated file is not permitted&quot;"/>
+          <type xsi:type="dom:SimpleType">
+            <name xsi:type="dom:SimpleName" fullyQualifiedName="IllegalStateException" identifier="IllegalStateException" declaration="false"/>
+          </type>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="openOutputStream" identifier="openOutputStream" declaration="true"/>
+    <returnType xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="OutputStream" identifier="OutputStream" declaration="false"/>
+    </returnType>
+    <thrownExceptions xsi:type="dom:SimpleName" fullyQualifiedName="IOException" identifier="IOException" declaration="false"/>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:MarkerAnnotation">
+      <typeName xsi:type="dom:SimpleName" fullyQualifiedName="Override" identifier="Override" declaration="false"/>
+    </modifiers>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ReturnStatement">
+        <expression xsi:type="dom:ClassInstanceCreation">
+          <arguments xsi:type="dom:ClassInstanceCreation">
+            <arguments xsi:type="dom:MethodInvocation">
+              <name fullyQualifiedName="openInputStream" identifier="openInputStream" declaration="false"/>
+            </arguments>
+            <type xsi:type="dom:SimpleType">
+              <name xsi:type="dom:SimpleName" fullyQualifiedName="InputStreamReader" identifier="InputStreamReader" declaration="false"/>
+            </type>
+          </arguments>
+          <type xsi:type="dom:SimpleType">
+            <name xsi:type="dom:SimpleName" fullyQualifiedName="BufferedReader" identifier="BufferedReader" declaration="false"/>
+          </type>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="openReader" identifier="openReader" declaration="true"/>
+    <returnType xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="Reader" identifier="Reader" declaration="false"/>
+    </returnType>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="ignoreEncodingErrors" identifier="ignoreEncodingErrors" declaration="true"/>
+      <type xsi:type="dom:PrimitiveType" code="boolean"/>
+    </parameters>
+    <thrownExceptions xsi:type="dom:SimpleName" fullyQualifiedName="IOException" identifier="IOException" declaration="false"/>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:MarkerAnnotation">
+      <typeName xsi:type="dom:SimpleName" fullyQualifiedName="Override" identifier="Override" declaration="false"/>
+    </modifiers>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ThrowStatement">
+        <expression xsi:type="dom:ClassInstanceCreation">
+          <arguments xsi:type="dom:StringLiteral" escapedValue="&quot;Writing to a non-generated file is not permitted&quot;"/>
+          <type xsi:type="dom:SimpleType">
+            <name xsi:type="dom:SimpleName" fullyQualifiedName="IllegalStateException" identifier="IllegalStateException" declaration="false"/>
+          </type>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="openWriter" identifier="openWriter" declaration="true"/>
+    <returnType xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="Writer" identifier="Writer" declaration="false"/>
+    </returnType>
+    <thrownExceptions xsi:type="dom:SimpleName" fullyQualifiedName="IOException" identifier="IOException" declaration="false"/>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:MarkerAnnotation">
+      <typeName xsi:type="dom:SimpleName" fullyQualifiedName="Override" identifier="Override" declaration="false"/>
+    </modifiers>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ReturnStatement">
+        <expression xsi:type="dom:MethodInvocation">
+          <expression xsi:type="dom:SimpleName" fullyQualifiedName="_file" identifier="_file" declaration="false"/>
+          <name fullyQualifiedName="getLocationURI" identifier="getLocationURI" declaration="false"/>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="toUri" identifier="toUri" declaration="true"/>
+    <returnType xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="URI" identifier="URI" declaration="false"/>
+    </returnType>
+  </bodyDeclarations>
+  <name fullyQualifiedName="IdeInputFileObject" identifier="IdeInputFileObject" declaration="true"/>
+  <superInterfaceTypes xsi:type="dom:SimpleType">
+    <name xsi:type="dom:SimpleName" fullyQualifiedName="FileObject" identifier="FileObject" declaration="false"/>
+  </superInterfaceTypes>
+</dom:TypeDeclaration>

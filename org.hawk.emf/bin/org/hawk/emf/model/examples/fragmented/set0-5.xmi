@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="ASCII"?>
+<dom:TypeDeclaration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dom="org.amma.dsl.jdt.dom" localTypeDeclaration="false" memberTypeDeclaration="false" packageMemberTypeDeclaration="true" interface="false">
+  <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+  <javadoc>
+    <tags tagName="@since" nested="false">
+      <fragments xsi:type="dom:TextElement" text=" 3.3"/>
+    </tags>
+  </javadoc>
+  <bodyDeclarations xsi:type="dom:FieldDeclaration">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="true" protected="false" public="false" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="true" native="false" private="false" protected="false" public="false" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <fragments extraDimensions="0">
+      <name fullyQualifiedName="_manager" identifier="_manager" declaration="true"/>
+    </fragments>
+    <type xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="IdeAnnotationProcessorManager" identifier="IdeAnnotationProcessorManager" declaration="false"/>
+    </type>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:FieldDeclaration">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="true" protected="false" public="false" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="true" native="false" private="false" protected="false" public="false" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <fragments extraDimensions="0">
+      <name fullyQualifiedName="_env" identifier="_env" declaration="true"/>
+    </fragments>
+    <type xsi:type="dom:SimpleType">
+      <name xsi:type="dom:SimpleName" fullyQualifiedName="IdeProcessingEnvImpl" identifier="IdeProcessingEnvImpl" declaration="false"/>
+    </type>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="true" varargs="false">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ExpressionStatement">
+        <expression xsi:type="dom:Assignment" operator="=">
+          <leftHandSide xsi:type="dom:SimpleName" fullyQualifiedName="_manager" identifier="_manager" declaration="false"/>
+          <rightHandSide xsi:type="dom:SimpleName" fullyQualifiedName="manager" identifier="manager" declaration="false"/>
+        </expression>
+      </statements>
+      <statements xsi:type="dom:ExpressionStatement">
+        <expression xsi:type="dom:Assignment" operator="=">
+          <leftHandSide xsi:type="dom:SimpleName" fullyQualifiedName="_env" identifier="_env" declaration="false"/>
+          <rightHandSide xsi:type="dom:SimpleName" fullyQualifiedName="env" identifier="env" declaration="false"/>
+        </expression>
+      </statements>
+      <statements xsi:type="dom:IfStatement">
+        <expression xsi:type="dom:InfixExpression" operator="||">
+          <leftOperand xsi:type="dom:InfixExpression" operator="==">
+            <leftOperand xsi:type="dom:NullLiteral"/>
+            <rightOperand xsi:type="dom:SimpleName" fullyQualifiedName="_manager" identifier="_manager" declaration="false"/>
+          </leftOperand>
+          <rightOperand xsi:type="dom:InfixExpression" operator="==">
+            <leftOperand xsi:type="dom:NullLiteral"/>
+            <rightOperand xsi:type="dom:SimpleName" fullyQualifiedName="_env" identifier="_env" declaration="false"/>
+          </rightOperand>
+        </expression>
+        <thenStatement xsi:type="dom:Block">
+          <statements xsi:type="dom:ThrowStatement">
+            <expression xsi:type="dom:ClassInstanceCreation">
+              <type xsi:type="dom:SimpleType">
+                <name xsi:type="dom:SimpleName" fullyQualifiedName="NullPointerException" identifier="NullPointerException" declaration="false"/>
+              </type>
+            </expression>
+          </statements>
+        </thenStatement>
+      </statements>
+    </body>
+    <name fullyQualifiedName="IdeMessagerImpl" identifier="IdeMessagerImpl" declaration="false"/>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="manager" identifier="manager" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="IdeAnnotationProcessorManager" identifier="IdeAnnotationProcessorManager" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="env" identifier="env" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="IdeProcessingEnvImpl" identifier="IdeProcessingEnvImpl" declaration="false"/>
+      </type>
+    </parameters>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ExpressionStatement">
+        <expression xsi:type="dom:MethodInvocation">
+          <arguments xsi:type="dom:SimpleName" fullyQualifiedName="kind" identifier="kind" declaration="false"/>
+          <arguments xsi:type="dom:SimpleName" fullyQualifiedName="msg" identifier="msg" declaration="false"/>
+          <arguments xsi:type="dom:NullLiteral"/>
+          <arguments xsi:type="dom:NullLiteral"/>
+          <arguments xsi:type="dom:NullLiteral"/>
+          <name fullyQualifiedName="printMessage" identifier="printMessage" declaration="false"/>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="printMessage" identifier="printMessage" declaration="true"/>
+    <returnType xsi:type="dom:PrimitiveType" code="void"/>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="kind" identifier="kind" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="Kind" identifier="Kind" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="msg" identifier="msg" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="CharSequence" identifier="CharSequence" declaration="false"/>
+      </type>
+    </parameters>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ExpressionStatement">
+        <expression xsi:type="dom:MethodInvocation">
+          <arguments xsi:type="dom:SimpleName" fullyQualifiedName="kind" identifier="kind" declaration="false"/>
+          <arguments xsi:type="dom:SimpleName" fullyQualifiedName="msg" identifier="msg" declaration="false"/>
+          <arguments xsi:type="dom:SimpleName" fullyQualifiedName="e" identifier="e" declaration="false"/>
+          <arguments xsi:type="dom:NullLiteral"/>
+          <arguments xsi:type="dom:NullLiteral"/>
+          <name fullyQualifiedName="printMessage" identifier="printMessage" declaration="false"/>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="printMessage" identifier="printMessage" declaration="true"/>
+    <returnType xsi:type="dom:PrimitiveType" code="void"/>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="kind" identifier="kind" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="Kind" identifier="Kind" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="msg" identifier="msg" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="CharSequence" identifier="CharSequence" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="e" identifier="e" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="Element" identifier="Element" declaration="false"/>
+      </type>
+    </parameters>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:ExpressionStatement">
+        <expression xsi:type="dom:MethodInvocation">
+          <arguments xsi:type="dom:SimpleName" fullyQualifiedName="kind" identifier="kind" declaration="false"/>
+          <arguments xsi:type="dom:SimpleName" fullyQualifiedName="msg" identifier="msg" declaration="false"/>
+          <arguments xsi:type="dom:SimpleName" fullyQualifiedName="e" identifier="e" declaration="false"/>
+          <arguments xsi:type="dom:SimpleName" fullyQualifiedName="a" identifier="a" declaration="false"/>
+          <arguments xsi:type="dom:NullLiteral"/>
+          <name fullyQualifiedName="printMessage" identifier="printMessage" declaration="false"/>
+        </expression>
+      </statements>
+    </body>
+    <name fullyQualifiedName="printMessage" identifier="printMessage" declaration="true"/>
+    <returnType xsi:type="dom:PrimitiveType" code="void"/>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="kind" identifier="kind" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="Kind" identifier="Kind" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="msg" identifier="msg" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="CharSequence" identifier="CharSequence" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="e" identifier="e" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="Element" identifier="Element" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="a" identifier="a" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="AnnotationMirror" identifier="AnnotationMirror" declaration="false"/>
+      </type>
+    </parameters>
+  </bodyDeclarations>
+  <bodyDeclarations xsi:type="dom:MethodDeclaration" extraDimensions="0" constructor="false" varargs="false">
+    <modifiers xsi:type="dom:Modifier" abstract="false" final="false" native="false" private="false" protected="false" public="true" static="false" strictfp="false" synchronized="false" transient="false" volatile="false"/>
+    <body>
+      <statements xsi:type="dom:VariableDeclarationStatement">
+        <fragments extraDimensions="0">
+          <initializer xsi:type="dom:MethodInvocation">
+            <arguments xsi:type="dom:SimpleName" fullyQualifiedName="kind" identifier="kind" declaration="false"/>
+            <arguments xsi:type="dom:SimpleName" fullyQualifiedName="msg" identifier="msg" declaration="false"/>
+            <arguments xsi:type="dom:SimpleName" fullyQualifiedName="e" identifier="e" declaration="false"/>
+            <expression xsi:type="dom:SimpleName" fullyQualifiedName="BatchMessagerImpl" identifier="BatchMessagerImpl" declaration="false"/>
+            <name fullyQualifiedName="createProblem" identifier="createProblem" declaration="false"/>
+          </initializer>
+          <name fullyQualifiedName="problem" identifier="problem" declaration="true"/>
+        </fragments>
+        <type xsi:type="dom:SimpleType">
+          <name xsi:type="dom:SimpleName" fullyQualifiedName="AptProblem" identifier="AptProblem" declaration="false"/>
+        </type>
+      </statements>
+      <statements xsi:type="dom:IfStatement">
+        <elseStatement xsi:type="dom:IfStatement">
+          <elseStatement xsi:type="dom:Block">
+            <statements xsi:type="dom:ExpressionStatement">
+              <expression xsi:type="dom:MethodInvocation">
+                <arguments xsi:type="dom:ClassInstanceCreation">
+                  <arguments xsi:type="dom:QualifiedName" fullyQualifiedName="IStatus.INFO">
+                    <name fullyQualifiedName="INFO" identifier="INFO" declaration="false"/>
+                    <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="IStatus" identifier="IStatus" declaration="false"/>
+                  </arguments>
+                  <arguments xsi:type="dom:QualifiedName" fullyQualifiedName="Apt6Plugin.PLUGIN_ID">
+                    <name fullyQualifiedName="PLUGIN_ID" identifier="PLUGIN_ID" declaration="false"/>
+                    <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="Apt6Plugin" identifier="Apt6Plugin" declaration="false"/>
+                  </arguments>
+                  <arguments xsi:type="dom:QualifiedName" fullyQualifiedName="Apt6Plugin.STATUS_EXCEPTION">
+                    <name fullyQualifiedName="STATUS_EXCEPTION" identifier="STATUS_EXCEPTION" declaration="false"/>
+                    <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="Apt6Plugin" identifier="Apt6Plugin" declaration="false"/>
+                  </arguments>
+                  <arguments xsi:type="dom:MethodInvocation">
+                    <expression xsi:type="dom:SimpleName" fullyQualifiedName="problem" identifier="problem" declaration="false"/>
+                    <name fullyQualifiedName="getMessage" identifier="getMessage" declaration="false"/>
+                  </arguments>
+                  <arguments xsi:type="dom:NullLiteral"/>
+                  <type xsi:type="dom:SimpleType">
+                    <name xsi:type="dom:SimpleName" fullyQualifiedName="Status" identifier="Status" declaration="false"/>
+                  </type>
+                </arguments>
+                <expression xsi:type="dom:SimpleName" fullyQualifiedName="Apt6Plugin" identifier="Apt6Plugin" declaration="false"/>
+                <name fullyQualifiedName="log" identifier="log" declaration="false"/>
+              </expression>
+            </statements>
+          </elseStatement>
+          <expression xsi:type="dom:InfixExpression" operator="!=">
+            <leftOperand xsi:type="dom:NullLiteral"/>
+            <rightOperand xsi:type="dom:QualifiedName" fullyQualifiedName="problem._referenceContext">
+              <name fullyQualifiedName="_referenceContext" identifier="_referenceContext" declaration="false"/>
+              <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="problem" identifier="problem" declaration="false"/>
+            </rightOperand>
+          </expression>
+          <thenStatement xsi:type="dom:Block">
+            <statements xsi:type="dom:VariableDeclarationStatement">
+              <fragments extraDimensions="0">
+                <initializer xsi:type="dom:MethodInvocation">
+                  <expression xsi:type="dom:QualifiedName" fullyQualifiedName="problem._referenceContext">
+                    <name fullyQualifiedName="_referenceContext" identifier="_referenceContext" declaration="false"/>
+                    <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="problem" identifier="problem" declaration="false"/>
+                  </expression>
+                  <name fullyQualifiedName="compilationResult" identifier="compilationResult" declaration="false"/>
+                </initializer>
+                <name fullyQualifiedName="result" identifier="result" declaration="true"/>
+              </fragments>
+              <type xsi:type="dom:SimpleType">
+                <name xsi:type="dom:SimpleName" fullyQualifiedName="CompilationResult" identifier="CompilationResult" declaration="false"/>
+              </type>
+            </statements>
+            <statements xsi:type="dom:ExpressionStatement">
+              <expression xsi:type="dom:MethodInvocation">
+                <arguments xsi:type="dom:SimpleName" fullyQualifiedName="problem" identifier="problem" declaration="false"/>
+                <arguments xsi:type="dom:QualifiedName" fullyQualifiedName="problem._referenceContext">
+                  <name fullyQualifiedName="_referenceContext" identifier="_referenceContext" declaration="false"/>
+                  <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="problem" identifier="problem" declaration="false"/>
+                </arguments>
+                <expression xsi:type="dom:SimpleName" fullyQualifiedName="result" identifier="result" declaration="false"/>
+                <name fullyQualifiedName="record" identifier="record" declaration="false"/>
+              </expression>
+            </statements>
+          </thenStatement>
+        </elseStatement>
+        <expression xsi:type="dom:InfixExpression" operator="==">
+          <leftOperand xsi:type="dom:SimpleName" fullyQualifiedName="kind" identifier="kind" declaration="false"/>
+          <rightOperand xsi:type="dom:QualifiedName" fullyQualifiedName="Kind.NOTE">
+            <name fullyQualifiedName="NOTE" identifier="NOTE" declaration="false"/>
+            <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="Kind" identifier="Kind" declaration="false"/>
+          </rightOperand>
+        </expression>
+        <thenStatement xsi:type="dom:Block">
+          <statements xsi:type="dom:ExpressionStatement">
+            <expression xsi:type="dom:MethodInvocation">
+              <arguments xsi:type="dom:ClassInstanceCreation">
+                <arguments xsi:type="dom:QualifiedName" fullyQualifiedName="IStatus.INFO">
+                  <name fullyQualifiedName="INFO" identifier="INFO" declaration="false"/>
+                  <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="IStatus" identifier="IStatus" declaration="false"/>
+                </arguments>
+                <arguments xsi:type="dom:QualifiedName" fullyQualifiedName="Apt6Plugin.PLUGIN_ID">
+                  <name fullyQualifiedName="PLUGIN_ID" identifier="PLUGIN_ID" declaration="false"/>
+                  <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="Apt6Plugin" identifier="Apt6Plugin" declaration="false"/>
+                </arguments>
+                <arguments xsi:type="dom:QualifiedName" fullyQualifiedName="Apt6Plugin.STATUS_EXCEPTION">
+                  <name fullyQualifiedName="STATUS_EXCEPTION" identifier="STATUS_EXCEPTION" declaration="false"/>
+                  <qualifier xsi:type="dom:SimpleName" fullyQualifiedName="Apt6Plugin" identifier="Apt6Plugin" declaration="false"/>
+                </arguments>
+                <arguments xsi:type="dom:MethodInvocation">
+                  <expression xsi:type="dom:SimpleName" fullyQualifiedName="problem" identifier="problem" declaration="false"/>
+                  <name fullyQualifiedName="getMessage" identifier="getMessage" declaration="false"/>
+                </arguments>
+                <arguments xsi:type="dom:NullLiteral"/>
+                <type xsi:type="dom:SimpleType">
+                  <name xsi:type="dom:SimpleName" fullyQualifiedName="Status" identifier="Status" declaration="false"/>
+                </type>
+              </arguments>
+              <expression xsi:type="dom:SimpleName" fullyQualifiedName="Apt6Plugin" identifier="Apt6Plugin" declaration="false"/>
+              <name fullyQualifiedName="log" identifier="log" declaration="false"/>
+            </expression>
+          </statements>
+        </thenStatement>
+      </statements>
+    </body>
+    <name fullyQualifiedName="printMessage" identifier="printMessage" declaration="true"/>
+    <returnType xsi:type="dom:PrimitiveType" code="void"/>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="kind" identifier="kind" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="Kind" identifier="Kind" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="msg" identifier="msg" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="CharSequence" identifier="CharSequence" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="e" identifier="e" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="Element" identifier="Element" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="a" identifier="a" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="AnnotationMirror" identifier="AnnotationMirror" declaration="false"/>
+      </type>
+    </parameters>
+    <parameters extraDimensions="0" varargs="false">
+      <name fullyQualifiedName="v" identifier="v" declaration="true"/>
+      <type xsi:type="dom:SimpleType">
+        <name xsi:type="dom:SimpleName" fullyQualifiedName="AnnotationValue" identifier="AnnotationValue" declaration="false"/>
+      </type>
+    </parameters>
+  </bodyDeclarations>
+  <name fullyQualifiedName="IdeMessagerImpl" identifier="IdeMessagerImpl" declaration="true"/>
+  <superInterfaceTypes xsi:type="dom:SimpleType">
+    <name xsi:type="dom:SimpleName" fullyQualifiedName="Messager" identifier="Messager" declaration="false"/>
+  </superInterfaceTypes>
+</dom:TypeDeclaration>

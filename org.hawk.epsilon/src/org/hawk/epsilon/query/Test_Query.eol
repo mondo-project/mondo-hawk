@@ -1,0 +1,23 @@
+TypeDeclaration.all.select(
+        windowa | TypeDeclaration.all.exists(
+                        windowb | windowa.name = windowb.name and
+                                                windowa <> windowb)
+).size().println();
+
+TypeDeclaration.all.select(
+        windowa | TypeDeclaration.all.exists(
+                        windowb | windowa.name = windowb.name and
+                                                windowa <> windowb)
+).size().println();
+
+TypeDeclaration.all.select(
+        windowa | TypeDeclaration.all.exists(
+                        windowb | windowa.name.fullyQualifiedName = windowb.name.fullyQualifiedName and
+                                                windowa <> windowb)
+).size().println();
+
+TypeDeclaration.all.select(
+        windowa | TypeDeclaration.all.exists(
+                        windowb | windowa.name.fullyQualifiedName = windowb.name.fullyQualifiedName and
+                                                windowa == windowb)
+).size().println();

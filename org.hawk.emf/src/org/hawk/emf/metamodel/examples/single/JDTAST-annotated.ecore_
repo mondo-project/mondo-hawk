@@ -1,0 +1,1076 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore">
+  <ecore:EPackage xmi:id="_Jm-FkXnEEeKFB4XJnik-5A" name="Core" nsURI="org.amma.dsl.jdt.core"
+      nsPrefix="core">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_Jm-FknnEEeKFB4XJnik-5A" name="IJavaElement"
+        abstract="true">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH2kHnEEeKFB4XJnik-5A"
+          name="elementName" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH2kXnEEeKFB4XJnik-5A" name="PhysicalElement"
+        abstract="true">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH2knnEEeKFB4XJnik-5A"
+          name="path" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH2k3nEEeKFB4XJnik-5A"
+          name="isReadOnly" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH2lHnEEeKFB4XJnik-5A" name="IJavaModel"
+        eSuperTypes="#_JnH2kXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH2lnnEEeKFB4XJnik-5A"
+          name="javaProjects" upperBound="-1" eType="#_JnH2mHnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH2l3nEEeKFB4XJnik-5A"
+          name="externalPackageFragmentRoots" upperBound="-1" eType="#_JnH2n3nEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH2mHnEEeKFB4XJnik-5A" name="IJavaProject"
+        eSuperTypes="#_Jm-FknnEEeKFB4XJnik-5A #_JnH2kXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH2m3nEEeKFB4XJnik-5A"
+          name="packageFragmentRoots" upperBound="-1" eType="#_JnH2n3nEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH2nHnEEeKFB4XJnik-5A"
+          name="externalPackageFragmentRoots" ordered="false" upperBound="-1" eType="#_JnH2n3nEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH2nXnEEeKFB4XJnik-5A"
+          name="requiredProjects" upperBound="-1" eType="#_JnH2mHnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH2n3nEEeKFB4XJnik-5A" name="IPackageFragmentRoot"
+        abstract="true" eSuperTypes="#_Jm-FknnEEeKFB4XJnik-5A #_JnH2kXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH2onnEEeKFB4XJnik-5A"
+          name="packageFragments" ordered="false" upperBound="-1" eType="#_JnH2p3nEEeKFB4XJnik-5A"
+          containment="true" eOpposite="#_JnH2q3nEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH2o3nEEeKFB4XJnik-5A" name="BinaryPackageFragmentRoot"
+        eSuperTypes="#_JnH2n3nEEeKFB4XJnik-5A"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH2pXnEEeKFB4XJnik-5A" name="SourcePackageFragmentRoot"
+        eSuperTypes="#_JnH2n3nEEeKFB4XJnik-5A"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH2p3nEEeKFB4XJnik-5A" name="IPackageFragment"
+        eSuperTypes="#_Jm-FknnEEeKFB4XJnik-5A #_JnH2kXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH2qnnEEeKFB4XJnik-5A"
+          name="isDefaultPackage" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH2q3nEEeKFB4XJnik-5A"
+          name="packageFragmentRoot" ordered="false" lowerBound="1" eType="#_JnH2n3nEEeKFB4XJnik-5A"
+          eOpposite="#_JnH2onnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH2rXnEEeKFB4XJnik-5A"
+          name="classFiles" upperBound="-1" eType="#_JnH2unnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH2rnnEEeKFB4XJnik-5A"
+          name="compilationUnits" upperBound="-1" eType="#_JnH2snnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH2r3nEEeKFB4XJnik-5A" name="ITypeRoot"
+        abstract="true" eSuperTypes="#_Jm-FknnEEeKFB4XJnik-5A #_JnH2v3nEEeKFB4XJnik-5A #_JnH2kXnEEeKFB4XJnik-5A"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH2snnEEeKFB4XJnik-5A" name="ICompilationUnit"
+        eSuperTypes="#_JnH2r3nEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH2tHnEEeKFB4XJnik-5A"
+          name="allType" ordered="false" upperBound="-1" eType="#_JnH20XnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH2tXnEEeKFB4XJnik-5A"
+          name="imports" ordered="false" upperBound="-1" eType="#_JnH2wnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH2tnnEEeKFB4XJnik-5A"
+          name="types" upperBound="-1" eType="#_JnH20XnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH2t3nEEeKFB4XJnik-5A"
+          name="primary" ordered="false" lowerBound="1" eType="#_JnH2snnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH2uXnEEeKFB4XJnik-5A"
+          name="ast" ordered="false" lowerBound="1" eType="#_JnH3GnnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH2unnEEeKFB4XJnik-5A" name="IClassFile"
+        eSuperTypes="#_JnH2r3nEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH2vHnEEeKFB4XJnik-5A"
+          name="isClass" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH2vXnEEeKFB4XJnik-5A"
+          name="isInterface" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH2vnnEEeKFB4XJnik-5A"
+          name="type" ordered="false" lowerBound="1" eType="#_JnH20XnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH2v3nEEeKFB4XJnik-5A" name="ISourceReference"
+        abstract="true">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH2wHnEEeKFB4XJnik-5A"
+          name="source" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH2wXnEEeKFB4XJnik-5A"
+          name="sourceRange" ordered="false" lowerBound="1" eType="#_JnH2x3nEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH2wnnEEeKFB4XJnik-5A" name="IImportDeclaration"
+        eSuperTypes="#_Jm-FknnEEeKFB4XJnik-5A #_JnH2v3nEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH2xXnEEeKFB4XJnik-5A"
+          name="isOnDemand" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH2xnnEEeKFB4XJnik-5A"
+          name="isStatic" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH2x3nEEeKFB4XJnik-5A" name="ISourceRange">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH2yHnEEeKFB4XJnik-5A"
+          name="length" ordered="false" unique="false" lowerBound="1" eType="#_Jnaxw3nEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH2yXnEEeKFB4XJnik-5A"
+          name="offset" ordered="false" unique="false" lowerBound="1" eType="#_Jnaxw3nEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH2ynnEEeKFB4XJnik-5A" name="IMember"
+        abstract="true" eSuperTypes="#_Jm-FknnEEeKFB4XJnik-5A #_JnH2v3nEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH2zXnEEeKFB4XJnik-5A"
+          name="javadocRange" ordered="false" eType="#_JnH2x3nEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH2z3nEEeKFB4XJnik-5A"
+          name="nameRange" ordered="false" eType="#_JnH2x3nEEeKFB4XJnik-5A" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH20XnEEeKFB4XJnik-5A" name="IType"
+        eSuperTypes="#_JnH2ynnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH203nEEeKFB4XJnik-5A"
+          name="fullyQualifiedName" ordered="false" unique="false" lowerBound="1"
+          eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH21HnEEeKFB4XJnik-5A"
+          name="fullyQualifiedParametrizedName" ordered="false" unique="false" lowerBound="1"
+          eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH21XnEEeKFB4XJnik-5A"
+          name="initializers" upperBound="-1" eType="#_JnH233nEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH21nnEEeKFB4XJnik-5A"
+          name="fields" upperBound="-1" eType="#_JnH24XnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH213nEEeKFB4XJnik-5A"
+          name="methods" upperBound="-1" eType="#_JnH26HnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH22HnEEeKFB4XJnik-5A"
+          name="types" upperBound="-1" eType="#_JnH20XnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH22nnEEeKFB4XJnik-5A"
+          name="typeParameters" ordered="false" upperBound="-1" eType="#_JnH223nEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH223nEEeKFB4XJnik-5A" name="ITypeParameter"
+        eSuperTypes="#_Jm-FknnEEeKFB4XJnik-5A #_JnH2v3nEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH23nnEEeKFB4XJnik-5A"
+          name="bounds" ordered="false" unique="false" upperBound="-1" eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH233nEEeKFB4XJnik-5A" name="IInitializer"
+        eSuperTypes="#_JnH2ynnEEeKFB4XJnik-5A"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH24XnEEeKFB4XJnik-5A" name="IField"
+        eSuperTypes="#_JnH2ynnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH243nEEeKFB4XJnik-5A"
+          name="constant" ordered="false" unique="false" eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH25HnEEeKFB4XJnik-5A"
+          name="isEnumConstant" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH25XnEEeKFB4XJnik-5A"
+          name="typeSignature" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH25nnEEeKFB4XJnik-5A"
+          name="isVolatile" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH253nEEeKFB4XJnik-5A"
+          name="isTransient" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH26HnEEeKFB4XJnik-5A" name="IMethod"
+        eSuperTypes="#_JnH2ynnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH26nnEEeKFB4XJnik-5A"
+          name="returnType" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH263nEEeKFB4XJnik-5A"
+          name="isConstructor" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH27HnEEeKFB4XJnik-5A"
+          name="isMainMethod" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH27XnEEeKFB4XJnik-5A"
+          name="parameters" upperBound="-1" eType="#_JnH273nEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH27nnEEeKFB4XJnik-5A"
+          name="exceptionTypes" ordered="false" unique="false" upperBound="-1" eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH273nEEeKFB4XJnik-5A" name="Parameter">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH28HnEEeKFB4XJnik-5A"
+          name="name" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH28XnEEeKFB4XJnik-5A"
+          name="type" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" xmi:id="_JnH28nnEEeKFB4XJnik-5A" name="Modifiers">
+      <eLiterals xmi:id="_JnH283nEEeKFB4XJnik-5A" name="abstract" value="1"/>
+      <eLiterals xmi:id="_JnH29HnEEeKFB4XJnik-5A" name="annotation" value="2"/>
+      <eLiterals xmi:id="_JnH29XnEEeKFB4XJnik-5A" name="bridge" value="3"/>
+      <eLiterals xmi:id="_JnH29nnEEeKFB4XJnik-5A" name="default" value="4"/>
+      <eLiterals xmi:id="_JnH293nEEeKFB4XJnik-5A" name="deprecated" value="5"/>
+      <eLiterals xmi:id="_JnH2-HnEEeKFB4XJnik-5A" name="enum" value="6"/>
+      <eLiterals xmi:id="_JnH2-XnEEeKFB4XJnik-5A" name="final" value="7"/>
+      <eLiterals xmi:id="_JnH2-nnEEeKFB4XJnik-5A" name="interface" value="8"/>
+      <eLiterals xmi:id="_JnH2-3nEEeKFB4XJnik-5A" name="native" value="9"/>
+      <eLiterals xmi:id="_JnH2_HnEEeKFB4XJnik-5A" name="private" value="10"/>
+      <eLiterals xmi:id="_JnH2_XnEEeKFB4XJnik-5A" name="protected" value="11"/>
+      <eLiterals xmi:id="_JnH2_nnEEeKFB4XJnik-5A" name="public" value="12"/>
+      <eLiterals xmi:id="_JnH2_3nEEeKFB4XJnik-5A" name="static" value="13"/>
+      <eLiterals xmi:id="_JnH3AHnEEeKFB4XJnik-5A" name="strictfp" value="14"/>
+      <eLiterals xmi:id="_JnH3AXnEEeKFB4XJnik-5A" name="super" value="15"/>
+      <eLiterals xmi:id="_JnH3AnnEEeKFB4XJnik-5A" name="synchronized" value="16"/>
+      <eLiterals xmi:id="_JnH3A3nEEeKFB4XJnik-5A" name="synthetic" value="17"/>
+      <eLiterals xmi:id="_JnH3BHnEEeKFB4XJnik-5A" name="transient" value="18"/>
+      <eLiterals xmi:id="_JnH3BXnEEeKFB4XJnik-5A" name="varargs" value="19"/>
+      <eLiterals xmi:id="_JnH3BnnEEeKFB4XJnik-5A" name="volatile" value="20"/>
+    </eClassifiers>
+  </ecore:EPackage>
+  <ecore:EPackage xmi:id="_JnH3B3nEEeKFB4XJnik-5A" name="DOM" nsURI="org.amma.dsl.jdt.dom"
+      nsPrefix="dom">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3CHnEEeKFB4XJnik-5A" name="AST">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3CXnEEeKFB4XJnik-5A"
+          name="compilationUnits" ordered="false" lowerBound="1" eType="#_JnH3CnnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3CnnEEeKFB4XJnik-5A" name="ASTNode"
+        abstract="true"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3C3nEEeKFB4XJnik-5A" name="AnonymousClassDeclaration"
+        eSuperTypes="#_JnH3CnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3DXnEEeKFB4XJnik-5A"
+          name="bodyDeclarations" upperBound="-1" eType="#_JnH3DnnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3DnnEEeKFB4XJnik-5A" name="BodyDeclaration"
+        abstract="true" eSuperTypes="#_JnH3CnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3EHnEEeKFB4XJnik-5A"
+          name="modifiers" upperBound="-1" eType="#_JnH3P3nEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3EXnEEeKFB4XJnik-5A"
+          name="javadoc" ordered="false" lowerBound="1" eType="#_JnH3rnnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3EnnEEeKFB4XJnik-5A" name="CatchClause"
+        eSuperTypes="#_JnH3CnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3FHnEEeKFB4XJnik-5A"
+          name="body" ordered="false" lowerBound="1" eType="#_JnRBPnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3FXnEEeKFB4XJnik-5A"
+          name="exception" ordered="false" lowerBound="1" eType="#_JnaxpHnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3FnnEEeKFB4XJnik-5A" name="Comment"
+        abstract="true" eSuperTypes="#_JnH3CnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3GHnEEeKFB4XJnik-5A"
+          name="alternateRoot" ordered="false" lowerBound="1" eType="#_JnH3CnnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3GnnEEeKFB4XJnik-5A" name="CompilationUnit"
+        eSuperTypes="#_JnH3CnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3HHnEEeKFB4XJnik-5A"
+          name="comments" upperBound="-1" eType="#_JnH3FnnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3HnnEEeKFB4XJnik-5A"
+          name="package" ordered="false" lowerBound="1" eType="#_JnH3T3nEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3H3nEEeKFB4XJnik-5A"
+          name="imports" upperBound="-1" eType="#_JnH3J3nEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3IHnEEeKFB4XJnik-5A"
+          name="types" upperBound="-1" eType="#_JnH3bnnEEeKFB4XJnik-5A" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3IXnEEeKFB4XJnik-5A" name="Expression"
+        abstract="true" eSuperTypes="#_JnH3CnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3I3nEEeKFB4XJnik-5A"
+          name="resolveBoxing" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3JHnEEeKFB4XJnik-5A"
+          name="resolveUnboxing" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3JXnEEeKFB4XJnik-5A"
+          name="typeBinding" ordered="false" lowerBound="1" eType="#_JnH20XnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3J3nEEeKFB4XJnik-5A" name="ImportDeclaration"
+        eSuperTypes="#_JnH3CnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3KXnEEeKFB4XJnik-5A"
+          name="onDemand" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3KnnEEeKFB4XJnik-5A"
+          name="static" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3K3nEEeKFB4XJnik-5A"
+          name="name" ordered="false" lowerBound="1" eType="#_JnRA9nnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3LHnEEeKFB4XJnik-5A" name="MemberRef"
+        eSuperTypes="#_JnH3CnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3LnnEEeKFB4XJnik-5A"
+          name="name" ordered="false" lowerBound="1" eType="#_JnaxsnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3L3nEEeKFB4XJnik-5A"
+          name="qualifier" ordered="false" lowerBound="1" eType="#_JnRA9nnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3MHnEEeKFB4XJnik-5A" name="MemberValuePair"
+        eSuperTypes="#_JnH3CnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3MnnEEeKFB4XJnik-5A"
+          name="name" ordered="false" lowerBound="1" eType="#_JnaxsnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3M3nEEeKFB4XJnik-5A"
+          name="value" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3NXnEEeKFB4XJnik-5A" name="MethodRef"
+        eSuperTypes="#_JnH3CnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3N3nEEeKFB4XJnik-5A"
+          name="name" ordered="false" lowerBound="1" eType="#_JnaxsnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3OHnEEeKFB4XJnik-5A"
+          name="qualifier" ordered="false" lowerBound="1" eType="#_JnRA9nnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3OXnEEeKFB4XJnik-5A"
+          name="parameters" upperBound="-1" eType="#_JnH3OnnEEeKFB4XJnik-5A" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3OnnEEeKFB4XJnik-5A" name="MethodRefParameter"
+        eSuperTypes="#_JnH3CnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3PHnEEeKFB4XJnik-5A"
+          name="name" ordered="false" lowerBound="1" eType="#_JnaxsnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3PXnEEeKFB4XJnik-5A"
+          name="type" ordered="false" lowerBound="1" eType="#_JnH3YXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3PnnEEeKFB4XJnik-5A"
+          name="varargs" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3P3nEEeKFB4XJnik-5A" name="ExtendedModifier"
+        abstract="true"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3QHnEEeKFB4XJnik-5A" name="Modifier"
+        eSuperTypes="#_JnH3CnnEEeKFB4XJnik-5A #_JnH3P3nEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3Q3nEEeKFB4XJnik-5A"
+          name="abstract" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3RHnEEeKFB4XJnik-5A"
+          name="final" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3RXnEEeKFB4XJnik-5A"
+          name="native" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3RnnEEeKFB4XJnik-5A"
+          name="none" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3R3nEEeKFB4XJnik-5A"
+          name="private" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3SHnEEeKFB4XJnik-5A"
+          name="protected" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3SXnEEeKFB4XJnik-5A"
+          name="public" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3SnnEEeKFB4XJnik-5A"
+          name="static" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3S3nEEeKFB4XJnik-5A"
+          name="strictfp" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3THnEEeKFB4XJnik-5A"
+          name="synchronized" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3TXnEEeKFB4XJnik-5A"
+          name="transient" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3TnnEEeKFB4XJnik-5A"
+          name="volatile" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3T3nEEeKFB4XJnik-5A" name="PackageDeclaration"
+        eSuperTypes="#_JnH3CnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3UXnEEeKFB4XJnik-5A"
+          name="annotations" upperBound="-1" eType="#_JnH3tHnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3UnnEEeKFB4XJnik-5A"
+          name="javadoc" ordered="false" lowerBound="1" eType="#_JnH3rnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3U3nEEeKFB4XJnik-5A"
+          name="name" ordered="false" lowerBound="1" eType="#_JnRA9nnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3VHnEEeKFB4XJnik-5A"
+          name="binding" ordered="false" lowerBound="1" eType="#_JnH2p3nEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3VnnEEeKFB4XJnik-5A" name="Statement"
+        abstract="true" eSuperTypes="#_JnH3CnnEEeKFB4XJnik-5A"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3WHnEEeKFB4XJnik-5A" name="TagElement"
+        eSuperTypes="#_JnH3CnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3WnnEEeKFB4XJnik-5A"
+          name="fragments" upperBound="-1" eType="#_JnH3CnnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3XHnEEeKFB4XJnik-5A"
+          name="tagName" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3XXnEEeKFB4XJnik-5A"
+          name="nested" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3XnnEEeKFB4XJnik-5A" name="TextElement"
+        eSuperTypes="#_JnH3CnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3YHnEEeKFB4XJnik-5A"
+          name="text" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3YXnEEeKFB4XJnik-5A" name="Type"
+        abstract="true" eSuperTypes="#_JnH3CnnEEeKFB4XJnik-5A"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3Y3nEEeKFB4XJnik-5A" name="TypeParameter"
+        eSuperTypes="#_JnH3CnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3ZXnEEeKFB4XJnik-5A"
+          name="name" ordered="false" lowerBound="1" eType="#_JnaxsnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3ZnnEEeKFB4XJnik-5A"
+          name="typeBounds" upperBound="-1" eType="#_JnH3YXnEEeKFB4XJnik-5A" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3aHnEEeKFB4XJnik-5A" name="VariableDeclaration"
+        abstract="true" eSuperTypes="#_JnH3CnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3annEEeKFB4XJnik-5A"
+          name="extraDimensions" ordered="false" unique="false" lowerBound="1" eType="#_Jnaxw3nEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3a3nEEeKFB4XJnik-5A"
+          name="initializer" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3bXnEEeKFB4XJnik-5A"
+          name="name" ordered="false" lowerBound="1" eType="#_JnaxsnnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3bnnEEeKFB4XJnik-5A" name="AbstractTypeDeclaration"
+        abstract="true" eSuperTypes="#_JnH3DnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3cHnEEeKFB4XJnik-5A"
+          name="bodyDeclarations" upperBound="-1" eType="#_JnH3DnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3cnnEEeKFB4XJnik-5A"
+          name="name" ordered="false" lowerBound="1" eType="#_JnaxsnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3c3nEEeKFB4XJnik-5A"
+          name="localTypeDeclaration" ordered="false" unique="false" lowerBound="1"
+          eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3dHnEEeKFB4XJnik-5A"
+          name="memberTypeDeclaration" ordered="false" unique="false" lowerBound="1"
+          eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3dXnEEeKFB4XJnik-5A"
+          name="packageMemberTypeDeclaration" ordered="false" unique="false" lowerBound="1"
+          eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3dnnEEeKFB4XJnik-5A" name="AnnotationTypeMemberDeclaration"
+        eSuperTypes="#_JnH3DnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3eHnEEeKFB4XJnik-5A"
+          name="default" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3ennEEeKFB4XJnik-5A"
+          name="name" ordered="false" lowerBound="1" eType="#_JnaxsnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3e3nEEeKFB4XJnik-5A"
+          name="type" ordered="false" lowerBound="1" eType="#_JnH3YXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3fXnEEeKFB4XJnik-5A" name="EnumConstantDeclaration"
+        eSuperTypes="#_JnH3DnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3f3nEEeKFB4XJnik-5A"
+          name="arguments" upperBound="-1" eType="#_JnH3IXnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3gXnEEeKFB4XJnik-5A"
+          name="anonymousClassDeclaration" ordered="false" lowerBound="1" eType="#_JnH3C3nEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3g3nEEeKFB4XJnik-5A"
+          name="name" ordered="false" lowerBound="1" eType="#_JnaxsnnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3hHnEEeKFB4XJnik-5A" name="FieldDeclaration"
+        eSuperTypes="#_JnH3DnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3hnnEEeKFB4XJnik-5A"
+          name="fragments" upperBound="-1" eType="#_Jnaxq3nEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3h3nEEeKFB4XJnik-5A"
+          name="type" ordered="false" lowerBound="1" eType="#_JnH3YXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3iXnEEeKFB4XJnik-5A" name="Initializer"
+        eSuperTypes="#_JnH3DnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3i3nEEeKFB4XJnik-5A"
+          name="body" ordered="false" lowerBound="1" eType="#_JnRBPnnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3jHnEEeKFB4XJnik-5A" name="MethodDeclaration"
+        eSuperTypes="#_JnH3DnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3jnnEEeKFB4XJnik-5A"
+          name="body" ordered="false" lowerBound="1" eType="#_JnRBPnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3j3nEEeKFB4XJnik-5A"
+          name="extraDimensions" ordered="false" unique="false" lowerBound="1" eType="#_Jnaxw3nEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3kHnEEeKFB4XJnik-5A"
+          name="name" ordered="false" lowerBound="1" eType="#_JnaxsnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3kXnEEeKFB4XJnik-5A"
+          name="returnType" ordered="false" lowerBound="1" eType="#_JnH3YXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3k3nEEeKFB4XJnik-5A"
+          name="constructor" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3lHnEEeKFB4XJnik-5A"
+          name="varargs" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3lXnEEeKFB4XJnik-5A"
+          name="parameters" upperBound="-1" eType="#_JnaxpHnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3lnnEEeKFB4XJnik-5A"
+          name="thrownExceptions" upperBound="-1" eType="#_JnRA9nnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3l3nEEeKFB4XJnik-5A"
+          name="typeParameters" upperBound="-1" eType="#_JnH3Y3nEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3mXnEEeKFB4XJnik-5A"
+          name="binding" ordered="false" lowerBound="1" eType="#_JnH26HnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_gxnHYIDvEeKsO7n0jO-aVQ"
+          name="isPublic" eType="#_JnaxwnnEEeKFB4XJnik-5A" defaultValueLiteral=""
+          derived="true">
+        <eAnnotations xmi:id="_hnUAUIDvEeKsO7n0jO-aVQ" source="HawkDerivedIndexedFeature">
+          <details xmi:id="_3UHrAIDvEeKsO7n0jO-aVQ" key="EOLCode" value="self.modifiers.exists(mod:Modifier|mod.public==true)"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_R7h-YIWZEeKoN5SCcfUmsQ"
+          name="isStatic" eType="#_JnaxwnnEEeKFB4XJnik-5A" derived="true">
+        <eAnnotations xmi:id="_TIdEgIWZEeKoN5SCcfUmsQ" source="HawkDerivedIndexedFeature">
+          <details xmi:id="_TIdEgYWZEeKoN5SCcfUmsQ" key="EOLCode" value="self.modifiers.exists(mod:Modifier|mod.static==true)"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_Sna0AIWZEeKoN5SCcfUmsQ"
+          name="isSameReturnType" eType="#_JnaxwnnEEeKFB4XJnik-5A" derived="true">
+        <eAnnotations xmi:id="_TTAusIWZEeKoN5SCcfUmsQ" source="HawkDerivedIndexedFeature">
+          <details xmi:id="_TTAusYWZEeKoN5SCcfUmsQ" key="EOLCode" value="self.returnType.isTypeOf(SimpleType) and self.revRefNav_bodyDeclarations.isTypeOf(TypeDeclaration) and self.returnType.name.fullyQualifiedName == self.revRefNav_bodyDeclarations.name.fullyQualifiedName"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3m3nEEeKFB4XJnik-5A" name="AnnotationTypeDeclaration"
+        eSuperTypes="#_JnH3bnnEEeKFB4XJnik-5A"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3nXnEEeKFB4XJnik-5A" name="EnumDeclaration"
+        eSuperTypes="#_JnH3bnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3n3nEEeKFB4XJnik-5A"
+          name="superInterfaceTypes" upperBound="-1" eType="#_JnH3YXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3oXnEEeKFB4XJnik-5A"
+          name="enumConstants" upperBound="-1" eType="#_JnH3fXnEEeKFB4XJnik-5A" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3o3nEEeKFB4XJnik-5A" name="TypeDeclaration"
+        eSuperTypes="#_JnH3bnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3pXnEEeKFB4XJnik-5A"
+          name="superclassType" ordered="false" lowerBound="1" eType="#_JnH3YXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnH3p3nEEeKFB4XJnik-5A"
+          name="interface" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A">
+        <eAnnotations xmi:id="_RPFA4NarEeOVbdCXRBprsA" source="HawkIndexedFeature"/>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3qHnEEeKFB4XJnik-5A"
+          name="superInterfaceTypes" upperBound="-1" eType="#_JnH3YXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3qnnEEeKFB4XJnik-5A"
+          name="typeParameters" upperBound="-1" eType="#_JnH3Y3nEEeKFB4XJnik-5A" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3rHnEEeKFB4XJnik-5A" name="BlockComment"
+        eSuperTypes="#_JnH3FnnEEeKFB4XJnik-5A"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3rnnEEeKFB4XJnik-5A" name="Javadoc"
+        eSuperTypes="#_JnH3FnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3sHnEEeKFB4XJnik-5A"
+          name="tags" upperBound="-1" eType="#_JnH3WHnEEeKFB4XJnik-5A" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3snnEEeKFB4XJnik-5A" name="LineComment"
+        eSuperTypes="#_JnH3FnnEEeKFB4XJnik-5A"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3tHnEEeKFB4XJnik-5A" name="Annotation"
+        abstract="true" eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A #_JnH3P3nEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnH3t3nEEeKFB4XJnik-5A"
+          name="typeName" ordered="false" lowerBound="1" eType="#_JnRA9nnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnH3uHnEEeKFB4XJnik-5A" name="ArrayAccess"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAgHnEEeKFB4XJnik-5A"
+          name="array" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAgnnEEeKFB4XJnik-5A"
+          name="index" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRAhHnEEeKFB4XJnik-5A" name="ArrayCreation"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAhnnEEeKFB4XJnik-5A"
+          name="dimensions" upperBound="-1" eType="#_JnH3IXnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAiHnEEeKFB4XJnik-5A"
+          name="initializer" ordered="false" lowerBound="1" eType="#_JnRAinnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAiXnEEeKFB4XJnik-5A"
+          name="type" ordered="false" lowerBound="1" eType="#_JnaxhnnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRAinnEEeKFB4XJnik-5A" name="ArrayInitializer"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAjHnEEeKFB4XJnik-5A"
+          name="expressions" upperBound="-1" eType="#_JnH3IXnEEeKFB4XJnik-5A" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRAjnnEEeKFB4XJnik-5A" name="Assignment"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAkHnEEeKFB4XJnik-5A"
+          name="leftHandSide" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnRAknnEEeKFB4XJnik-5A"
+          name="operator" ordered="false" unique="false" lowerBound="1" eType="#_JnRAlXnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAk3nEEeKFB4XJnik-5A"
+          name="rightHandSide" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" xmi:id="_JnRAlXnEEeKFB4XJnik-5A" name="AssignmentOperatorKind">
+      <eLiterals xmi:id="_JnRAlnnEEeKFB4XJnik-5A" name="right_shift_signed_assign"
+          value="1" literal=">>="/>
+      <eLiterals xmi:id="_JnRAl3nEEeKFB4XJnik-5A" name="bit_xor_assign" value="2"
+          literal="^="/>
+      <eLiterals xmi:id="_JnRAmHnEEeKFB4XJnik-5A" name="times_assign" value="3" literal="*="/>
+      <eLiterals xmi:id="_JnRAmXnEEeKFB4XJnik-5A" name="divide_assign" value="4" literal="/="/>
+      <eLiterals xmi:id="_JnRAmnnEEeKFB4XJnik-5A" name="minus_assign" value="5" literal="-="/>
+      <eLiterals xmi:id="_JnRAm3nEEeKFB4XJnik-5A" name="bit_or_assign" value="6" literal="|="/>
+      <eLiterals xmi:id="_JnRAnHnEEeKFB4XJnik-5A" name="plus_assign" value="7" literal="+="/>
+      <eLiterals xmi:id="_JnRAnXnEEeKFB4XJnik-5A" name="assign" value="8" literal="="/>
+      <eLiterals xmi:id="_JnRAnnnEEeKFB4XJnik-5A" name="right_shift_unsigned_assign"
+          value="9" literal=">>>="/>
+      <eLiterals xmi:id="_JnRAn3nEEeKFB4XJnik-5A" name="remainder_assign" value="10"
+          literal="%="/>
+      <eLiterals xmi:id="_JnRAoHnEEeKFB4XJnik-5A" name="bit_and_assign" value="11"
+          literal="&amp;="/>
+      <eLiterals xmi:id="_JnRAoXnEEeKFB4XJnik-5A" name="left_shift_assign" value="12"
+          literal="&lt;&lt;="/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRAonnEEeKFB4XJnik-5A" name="BooleanLiteral"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnRApHnEEeKFB4XJnik-5A"
+          name="booleanValue" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRApXnEEeKFB4XJnik-5A" name="CastExpression"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAp3nEEeKFB4XJnik-5A"
+          name="expression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAqXnEEeKFB4XJnik-5A"
+          name="type" ordered="false" lowerBound="1" eType="#_JnH3YXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRAq3nEEeKFB4XJnik-5A" name="CharacterLiteral"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnRArXnEEeKFB4XJnik-5A"
+          name="charValue" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnRArnnEEeKFB4XJnik-5A"
+          name="escapedValue" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRAr3nEEeKFB4XJnik-5A" name="ClassInstanceCreation"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAsXnEEeKFB4XJnik-5A"
+          name="arguments" upperBound="-1" eType="#_JnH3IXnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAs3nEEeKFB4XJnik-5A"
+          name="anonymousClassDeclaration" ordered="false" lowerBound="1" eType="#_JnH3C3nEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAtXnEEeKFB4XJnik-5A"
+          name="expression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAt3nEEeKFB4XJnik-5A"
+          name="type" ordered="false" lowerBound="1" eType="#_JnH3YXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAuXnEEeKFB4XJnik-5A"
+          name="typeArguments" upperBound="-1" eType="#_JnH3YXnEEeKFB4XJnik-5A" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRAu3nEEeKFB4XJnik-5A" name="ConditionalExpression"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAvXnEEeKFB4XJnik-5A"
+          name="elseExpression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAv3nEEeKFB4XJnik-5A"
+          name="expression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAwXnEEeKFB4XJnik-5A"
+          name="thenExpression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRAw3nEEeKFB4XJnik-5A" name="FieldAccess"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAxXnEEeKFB4XJnik-5A"
+          name="expression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAx3nEEeKFB4XJnik-5A"
+          name="name" ordered="false" lowerBound="1" eType="#_JnaxsnnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRAyHnEEeKFB4XJnik-5A" name="InfixExpression"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAynnEEeKFB4XJnik-5A"
+          name="extendedOperands" upperBound="-1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAzHnEEeKFB4XJnik-5A"
+          name="leftOperand" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnRAznnEEeKFB4XJnik-5A"
+          name="operator" ordered="false" unique="false" lowerBound="1" eType="#_JnRA0XnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRAz3nEEeKFB4XJnik-5A"
+          name="rightOperand" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" xmi:id="_JnRA0XnEEeKFB4XJnik-5A" name="InfixExpressionOperatorKind">
+      <eLiterals xmi:id="_JnRA0nnEEeKFB4XJnik-5A" name="greater_equals" value="1"
+          literal=">="/>
+      <eLiterals xmi:id="_JnRA03nEEeKFB4XJnik-5A" name="or" value="2" literal="|"/>
+      <eLiterals xmi:id="_JnRA1HnEEeKFB4XJnik-5A" name="right_shift_signed" value="3"
+          literal=">>"/>
+      <eLiterals xmi:id="_JnRA1XnEEeKFB4XJnik-5A" name="minus" value="4" literal="-"/>
+      <eLiterals xmi:id="_JnRA1nnEEeKFB4XJnik-5A" name="xor" value="5" literal="^"/>
+      <eLiterals xmi:id="_JnRA13nEEeKFB4XJnik-5A" name="less_equals" value="6" literal="&lt;="/>
+      <eLiterals xmi:id="_JnRA2HnEEeKFB4XJnik-5A" name="equals" value="7" literal="=="/>
+      <eLiterals xmi:id="_JnRA2XnEEeKFB4XJnik-5A" name="not_equals" value="8" literal="!="/>
+      <eLiterals xmi:id="_JnRA2nnEEeKFB4XJnik-5A" name="and" value="9" literal="&amp;"/>
+      <eLiterals xmi:id="_JnRA23nEEeKFB4XJnik-5A" name="plus" value="10" literal="+"/>
+      <eLiterals xmi:id="_JnRA3HnEEeKFB4XJnik-5A" name="greater" value="11" literal=">"/>
+      <eLiterals xmi:id="_JnRA3XnEEeKFB4XJnik-5A" name="conditional_or" value="12"
+          literal="||"/>
+      <eLiterals xmi:id="_JnRA3nnEEeKFB4XJnik-5A" name="remainder" value="13" literal="%"/>
+      <eLiterals xmi:id="_JnRA33nEEeKFB4XJnik-5A" name="less" value="14" literal="&lt;"/>
+      <eLiterals xmi:id="_JnRA4HnEEeKFB4XJnik-5A" name="left_shift" value="15" literal="&lt;&lt;"/>
+      <eLiterals xmi:id="_JnRA4XnEEeKFB4XJnik-5A" name="right_shift_unsigned" value="16"
+          literal=">>>"/>
+      <eLiterals xmi:id="_JnRA4nnEEeKFB4XJnik-5A" name="conditional_and" value="17"
+          literal="&amp;&amp;"/>
+      <eLiterals xmi:id="_JnRA43nEEeKFB4XJnik-5A" name="times" value="18" literal="*"/>
+      <eLiterals xmi:id="_JnRA5HnEEeKFB4XJnik-5A" name="divide" value="19" literal="/"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRA5XnEEeKFB4XJnik-5A" name="InstanceofExpression"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRA53nEEeKFB4XJnik-5A"
+          name="leftOperand" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRA6XnEEeKFB4XJnik-5A"
+          name="rightOperand" ordered="false" lowerBound="1" eType="#_JnH3YXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRA63nEEeKFB4XJnik-5A" name="MethodInvocation"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRA7XnEEeKFB4XJnik-5A"
+          name="arguments" upperBound="-1" eType="#_JnH3IXnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRA73nEEeKFB4XJnik-5A"
+          name="expression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRA8XnEEeKFB4XJnik-5A"
+          name="name" ordered="false" lowerBound="1" eType="#_JnaxsnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRA8nnEEeKFB4XJnik-5A"
+          name="typeArguments" upperBound="-1" eType="#_JnH3YXnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRA9HnEEeKFB4XJnik-5A"
+          name="methodBinding" ordered="false" lowerBound="1" eType="#_JnH26HnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRA9nnEEeKFB4XJnik-5A" name="Name"
+        abstract="true" eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnRA-HnEEeKFB4XJnik-5A"
+          name="fullyQualifiedName" ordered="false" unique="false" lowerBound="1"
+          eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRA-XnEEeKFB4XJnik-5A" name="NullLiteral"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRA-3nEEeKFB4XJnik-5A" name="NumberLiteral"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnRA_XnEEeKFB4XJnik-5A"
+          name="token" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRA_nnEEeKFB4XJnik-5A" name="ParenthesizedExpression"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBAHnEEeKFB4XJnik-5A"
+          name="expression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBAnnEEeKFB4XJnik-5A" name="PostfixExpression"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBBHnEEeKFB4XJnik-5A"
+          name="operand" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnRBBnnEEeKFB4XJnik-5A"
+          name="operator" ordered="false" unique="false" lowerBound="1" eType="#_JnRBB3nEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" xmi:id="_JnRBB3nEEeKFB4XJnik-5A" name="PostfixExpressionOperatorKind">
+      <eLiterals xmi:id="_JnRBCHnEEeKFB4XJnik-5A" name="increment" value="1" literal="++"/>
+      <eLiterals xmi:id="_JnRBCXnEEeKFB4XJnik-5A" name="decrement" value="2" literal="--"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBCnnEEeKFB4XJnik-5A" name="PrefixExpression"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBDHnEEeKFB4XJnik-5A"
+          name="operand" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnRBDnnEEeKFB4XJnik-5A"
+          name="operator" ordered="false" unique="false" lowerBound="1" eType="#_JnRBD3nEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" xmi:id="_JnRBD3nEEeKFB4XJnik-5A" name="PrefixExpressionOperatorKind">
+      <eLiterals xmi:id="_JnRBEHnEEeKFB4XJnik-5A" name="minus" value="1" literal="-"/>
+      <eLiterals xmi:id="_JnRBEXnEEeKFB4XJnik-5A" name="not" value="2" literal="!"/>
+      <eLiterals xmi:id="_JnRBEnnEEeKFB4XJnik-5A" name="decrement" value="3" literal="--"/>
+      <eLiterals xmi:id="_JnRBE3nEEeKFB4XJnik-5A" name="complement" value="4" literal="~"/>
+      <eLiterals xmi:id="_JnRBFHnEEeKFB4XJnik-5A" name="increment" value="5" literal="++"/>
+      <eLiterals xmi:id="_JnRBFXnEEeKFB4XJnik-5A" name="plus" value="6" literal="+"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBFnnEEeKFB4XJnik-5A" name="StringLiteral"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnRBGHnEEeKFB4XJnik-5A"
+          name="escapedValue" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnRBGXnEEeKFB4XJnik-5A"
+          name="literalValue" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBGnnEEeKFB4XJnik-5A" name="SuperFieldAccess"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBHHnEEeKFB4XJnik-5A"
+          name="name" ordered="false" lowerBound="1" eType="#_JnaxsnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBHXnEEeKFB4XJnik-5A"
+          name="qualifier" ordered="false" lowerBound="1" eType="#_JnRA9nnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBH3nEEeKFB4XJnik-5A" name="SuperMethodInvocation"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBIXnEEeKFB4XJnik-5A"
+          name="arguments" upperBound="-1" eType="#_JnH3IXnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBI3nEEeKFB4XJnik-5A"
+          name="name" ordered="false" lowerBound="1" eType="#_JnRA9nnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBJXnEEeKFB4XJnik-5A"
+          name="qualifier" ordered="false" lowerBound="1" eType="#_JnRA9nnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBJ3nEEeKFB4XJnik-5A"
+          name="typeArguments" upperBound="-1" eType="#_JnH3YXnEEeKFB4XJnik-5A" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBKXnEEeKFB4XJnik-5A" name="ThisExpression"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBK3nEEeKFB4XJnik-5A"
+          name="qualifier" ordered="false" lowerBound="1" eType="#_JnRA9nnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBLXnEEeKFB4XJnik-5A" name="TypeLiteral"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBL3nEEeKFB4XJnik-5A"
+          name="type" ordered="false" lowerBound="1" eType="#_JnH3YXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBMXnEEeKFB4XJnik-5A" name="VariableDeclarationExpression"
+        eSuperTypes="#_JnH3IXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBM3nEEeKFB4XJnik-5A"
+          name="fragments" upperBound="-1" eType="#_Jnaxq3nEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBNHnEEeKFB4XJnik-5A"
+          name="modifiers" upperBound="-1" eType="#_JnH3P3nEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBNnnEEeKFB4XJnik-5A"
+          name="type" ordered="false" lowerBound="1" eType="#_JnH3YXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBOHnEEeKFB4XJnik-5A" name="AssertStatement"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBOnnEEeKFB4XJnik-5A"
+          name="expression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBPHnEEeKFB4XJnik-5A"
+          name="message" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBPnnEEeKFB4XJnik-5A" name="Block"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBQHnEEeKFB4XJnik-5A"
+          name="statements" upperBound="-1" eType="#_JnH3VnnEEeKFB4XJnik-5A" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBQnnEEeKFB4XJnik-5A" name="BreakStatement"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBRHnEEeKFB4XJnik-5A"
+          name="label" ordered="false" lowerBound="1" eType="#_JnaxsnnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBRXnEEeKFB4XJnik-5A" name="ConstructorInvocation"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBR3nEEeKFB4XJnik-5A"
+          name="arguments" upperBound="-1" eType="#_JnH3IXnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBSXnEEeKFB4XJnik-5A"
+          name="typeArguments" upperBound="-1" eType="#_JnH3YXnEEeKFB4XJnik-5A" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBS3nEEeKFB4XJnik-5A" name="ContinueStatement"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBTXnEEeKFB4XJnik-5A"
+          name="label" ordered="false" lowerBound="1" eType="#_JnaxsnnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBTnnEEeKFB4XJnik-5A" name="DoStatement"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBUHnEEeKFB4XJnik-5A"
+          name="body" ordered="false" lowerBound="1" eType="#_JnH3VnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBUnnEEeKFB4XJnik-5A"
+          name="expression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBVHnEEeKFB4XJnik-5A" name="EmptyStatement"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBVnnEEeKFB4XJnik-5A" name="EnhancedForStatement"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBWHnEEeKFB4XJnik-5A"
+          name="body" ordered="false" lowerBound="1" eType="#_JnH3VnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBWnnEEeKFB4XJnik-5A"
+          name="expression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBXHnEEeKFB4XJnik-5A"
+          name="parameter" ordered="false" lowerBound="1" eType="#_JnaxpHnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBXXnEEeKFB4XJnik-5A" name="ExpressionStatement"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBX3nEEeKFB4XJnik-5A"
+          name="expression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBYXnEEeKFB4XJnik-5A" name="ForStatement"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBY3nEEeKFB4XJnik-5A"
+          name="body" ordered="false" lowerBound="1" eType="#_JnH3VnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBZXnEEeKFB4XJnik-5A"
+          name="expression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBZ3nEEeKFB4XJnik-5A"
+          name="initializers" upperBound="-1" eType="#_JnH3IXnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBaXnEEeKFB4XJnik-5A"
+          name="updaters" upperBound="-1" eType="#_JnH3IXnEEeKFB4XJnik-5A" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBa3nEEeKFB4XJnik-5A" name="IfStatement"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBbXnEEeKFB4XJnik-5A"
+          name="elseStatement" ordered="false" lowerBound="1" eType="#_JnH3VnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBb3nEEeKFB4XJnik-5A"
+          name="expression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBcXnEEeKFB4XJnik-5A"
+          name="thenStatement" ordered="false" lowerBound="1" eType="#_JnH3VnnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBc3nEEeKFB4XJnik-5A" name="LabeledStatement"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBdXnEEeKFB4XJnik-5A"
+          name="body" ordered="false" lowerBound="1" eType="#_JnH3VnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBd3nEEeKFB4XJnik-5A"
+          name="label" ordered="false" lowerBound="1" eType="#_JnaxsnnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBeHnEEeKFB4XJnik-5A" name="ReturnStatement"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBennEEeKFB4XJnik-5A"
+          name="expression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBfHnEEeKFB4XJnik-5A" name="SuperConstructorInvocation"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBfnnEEeKFB4XJnik-5A"
+          name="arguments" upperBound="-1" eType="#_JnH3IXnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBgHnEEeKFB4XJnik-5A"
+          name="expression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBgnnEEeKFB4XJnik-5A"
+          name="typeArguments" upperBound="-1" eType="#_JnH3YXnEEeKFB4XJnik-5A" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBhHnEEeKFB4XJnik-5A" name="SwitchCase"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBhnnEEeKFB4XJnik-5A"
+          name="expression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnRBiHnEEeKFB4XJnik-5A"
+          name="default" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBiXnEEeKFB4XJnik-5A" name="SwitchStatement"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBi3nEEeKFB4XJnik-5A"
+          name="expression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBjXnEEeKFB4XJnik-5A"
+          name="statements" upperBound="-1" eType="#_JnH3VnnEEeKFB4XJnik-5A" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBj3nEEeKFB4XJnik-5A" name="SynchronizedStatement"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBkXnEEeKFB4XJnik-5A"
+          name="body" ordered="false" lowerBound="1" eType="#_JnRBPnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBk3nEEeKFB4XJnik-5A"
+          name="expression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBlXnEEeKFB4XJnik-5A" name="ThrowStatement"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBl3nEEeKFB4XJnik-5A"
+          name="expression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBmXnEEeKFB4XJnik-5A" name="TryStatement"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBm3nEEeKFB4XJnik-5A"
+          name="catchClauses" upperBound="-1" eType="#_JnH3EnnEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBnXnEEeKFB4XJnik-5A"
+          name="body" ordered="false" lowerBound="1" eType="#_JnRBPnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBn3nEEeKFB4XJnik-5A"
+          name="finally" ordered="false" lowerBound="1" eType="#_JnRBPnnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBoXnEEeKFB4XJnik-5A" name="TypeDeclarationStatement"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBo3nEEeKFB4XJnik-5A"
+          name="declaration" ordered="false" lowerBound="1" eType="#_JnH3bnnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnRBpXnEEeKFB4XJnik-5A" name="VariableDeclarationStatement"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBp3nEEeKFB4XJnik-5A"
+          name="fragments" upperBound="-1" eType="#_Jnaxq3nEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBqHnEEeKFB4XJnik-5A"
+          name="modifiers" upperBound="-1" eType="#_JnH3P3nEEeKFB4XJnik-5A" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnRBqnnEEeKFB4XJnik-5A"
+          name="type" ordered="false" lowerBound="1" eType="#_JnH3YXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnaxgHnEEeKFB4XJnik-5A" name="WhileStatement"
+        eSuperTypes="#_JnH3VnnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnaxgnnEEeKFB4XJnik-5A"
+          name="body" ordered="false" lowerBound="1" eType="#_JnH3VnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnaxhHnEEeKFB4XJnik-5A"
+          name="expression" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnaxhnnEEeKFB4XJnik-5A" name="ArrayType"
+        eSuperTypes="#_JnH3YXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnaxiHnEEeKFB4XJnik-5A"
+          name="componentType" ordered="false" lowerBound="1" eType="#_JnH3YXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnaxinnEEeKFB4XJnik-5A"
+          name="dimensions" ordered="false" unique="false" lowerBound="1" eType="#_Jnaxw3nEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Jnaxi3nEEeKFB4XJnik-5A"
+          name="elementType" ordered="false" lowerBound="1" eType="#_JnH3YXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnaxjXnEEeKFB4XJnik-5A" name="ParameterizedType"
+        eSuperTypes="#_JnH3YXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Jnaxj3nEEeKFB4XJnik-5A"
+          name="type" ordered="false" lowerBound="1" eType="#_JnH3YXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnaxkXnEEeKFB4XJnik-5A"
+          name="typeArguments" upperBound="-1" eType="#_JnH3YXnEEeKFB4XJnik-5A" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_Jnaxk3nEEeKFB4XJnik-5A" name="PrimitiveType"
+        eSuperTypes="#_JnH3YXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnaxlXnEEeKFB4XJnik-5A"
+          name="code" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnaxlnnEEeKFB4XJnik-5A" name="QualifiedType"
+        eSuperTypes="#_JnH3YXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnaxmHnEEeKFB4XJnik-5A"
+          name="name" ordered="false" lowerBound="1" eType="#_JnaxsnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnaxmXnEEeKFB4XJnik-5A"
+          name="qualifier" ordered="false" lowerBound="1" eType="#_JnH3YXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_Jnaxm3nEEeKFB4XJnik-5A" name="SimpleType"
+        eSuperTypes="#_JnH3YXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnaxnXnEEeKFB4XJnik-5A"
+          name="name" ordered="false" lowerBound="1" eType="#_JnRA9nnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_Jnaxn3nEEeKFB4XJnik-5A" name="WildcardType"
+        eSuperTypes="#_JnH3YXnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnaxoXnEEeKFB4XJnik-5A"
+          name="bound" ordered="false" lowerBound="1" eType="#_JnH3YXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_Jnaxo3nEEeKFB4XJnik-5A"
+          name="upperBound" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnaxpHnEEeKFB4XJnik-5A" name="SingleVariableDeclaration"
+        eSuperTypes="#_JnH3aHnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnaxpnnEEeKFB4XJnik-5A"
+          name="type" ordered="false" lowerBound="1" eType="#_JnH3YXnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnaxqHnEEeKFB4XJnik-5A"
+          name="varargs" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnaxqXnEEeKFB4XJnik-5A"
+          name="modifiers" upperBound="-1" eType="#_JnH3P3nEEeKFB4XJnik-5A" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_Jnaxq3nEEeKFB4XJnik-5A" name="VariableDeclarationFragment"
+        eSuperTypes="#_JnH3aHnEEeKFB4XJnik-5A"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnaxrXnEEeKFB4XJnik-5A" name="QualifiedName"
+        eSuperTypes="#_JnRA9nnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Jnaxr3nEEeKFB4XJnik-5A"
+          name="name" ordered="false" lowerBound="1" eType="#_JnaxsnnEEeKFB4XJnik-5A"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnaxsHnEEeKFB4XJnik-5A"
+          name="qualifier" ordered="false" lowerBound="1" eType="#_JnRA9nnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnaxsnnEEeKFB4XJnik-5A" name="SimpleName"
+        eSuperTypes="#_JnRA9nnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnaxtHnEEeKFB4XJnik-5A"
+          name="identifier" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwXnEEeKFB4XJnik-5A"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JnaxtXnEEeKFB4XJnik-5A"
+          name="declaration" ordered="false" unique="false" lowerBound="1" eType="#_JnaxwnnEEeKFB4XJnik-5A"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnaxtnnEEeKFB4XJnik-5A" name="MarkerAnnotation"
+        eSuperTypes="#_JnH3tHnEEeKFB4XJnik-5A"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnaxuHnEEeKFB4XJnik-5A" name="NormalAnnotation"
+        eSuperTypes="#_JnH3tHnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnaxunnEEeKFB4XJnik-5A"
+          name="values" upperBound="-1" eType="#_JnH3MHnEEeKFB4XJnik-5A" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JnaxvHnEEeKFB4XJnik-5A" name="SingleMemberAnnotation"
+        eSuperTypes="#_JnH3tHnEEeKFB4XJnik-5A">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JnaxvnnEEeKFB4XJnik-5A"
+          name="value" ordered="false" lowerBound="1" eType="#_JnH3IXnEEeKFB4XJnik-5A"
+          containment="true"/>
+    </eClassifiers>
+  </ecore:EPackage>
+  <ecore:EPackage xmi:id="_JnaxwHnEEeKFB4XJnik-5A" name="PrimitiveTypes" nsURI="org.amma.dsl.jdt.primitiveTypes"
+      nsPrefix="ptypes">
+    <eClassifiers xsi:type="ecore:EDataType" xmi:id="_JnaxwXnEEeKFB4XJnik-5A" name="String"
+        instanceClassName="java.lang.String"/>
+    <eClassifiers xsi:type="ecore:EDataType" xmi:id="_JnaxwnnEEeKFB4XJnik-5A" name="Boolean"
+        instanceClassName="java.lang.Boolean"/>
+    <eClassifiers xsi:type="ecore:EDataType" xmi:id="_Jnaxw3nEEeKFB4XJnik-5A" name="Integer"
+        instanceClassName="java.lang.Integer"/>
+  </ecore:EPackage>
+</xmi:XMI>
