@@ -1,0 +1,58 @@
+//deletes a random TypeDeclaration and keeps track of the total number of deleted elements (due to containments being deleted) in variable i
+operation deleteTypeDeclaration() {
+var td = TypeDeclaration.all.random();
+var it = td.eAllContents;
+	while(it.hasnext()){
+		it.next();i=i+1;
+	}
+i=i+1; 
+delete td;
+}
+
+//creates a new TypeDeclaration and gives it a random name
+operation createTypeDeclaration() {
+var t = new TypeDeclaration;
+var count = Sequence{0..1000}.random();
+var name = new SimpleName;
+name.fullyQualifiedName = "synthetic_name_"+count; t.name = name;
+}
+
+//adds a new MethodDeclaration to a random TypeDeclaration, setting its returnType to a randomly named type, and setting one random Modifier of the MethodDeclaration 
+operation addMethodDeclaration() {
+var t = TypeDeclaration.all.random();
+var m = new MethodDeclaration;
+var returnType = new SimpleType;
+var count = Sequence{0..1000}.random();
+var name = new SimpleName;
+name.fullyQualifiedName = "synthetic_name_"+count;
+returnType.name = name;
+m.returnType = returnType;
+var mod = new Modifier;
+var choice = Sequence{0..5}.random();
+	switch(choice){
+	case 0 : mod.public = true; case 1 : mod.protected = true;
+	case 2 : mod.private = true; case 3 : mod.static = true;
+	case 4 : mod.abstract = true; case 5 : mod.final = true;
+	}
+m.modifiers.add(mod);
+t.bodyDeclarations.add(m);
+}
+
+//changes a random Modifier of a random MethodDeclaration from true to false (if at least one exists)
+operation changeModifier(){
+var m = MethodDeclaration.all.random();
+var mods = m.modifiers;
+mods = mods.select(mod:Modifier|mod.public = true or mod.protected = true or mod.private = true or mod.static = true or mod.abstract = true or mod.final = true);
+	if(mods.size>0){
+		var mod = mods.random();
+		mod.public = false; mod.protected = false; mod.private = false; mod.static = false; mod.abstract = false; mod.final = false;
+	}
+}
+
+//renames a random TypeDeclaration to a random name
+operation renameTypeDeclaration(){
+var t = TypeDeclaration.all.random();
+var name = t.name;
+var count = Sequence{0..1000}.random();
+var n = "synthetic_name_"+count; name.fullyQualifiedName = n;
+}
