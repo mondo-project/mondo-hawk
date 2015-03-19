@@ -43,6 +43,12 @@ http://forge.modelio.org/projects/modelio3-development-app/files
 
 Screencast of running Hawk through its UI:
 
+running of basic operations:
+
+http://www.youtube_video_link_soon.com
+
+use of advanced features:
+
 http://www.youtube_video_link_soon.com
 
 note: in the interest of simplicity only the required plugins are used in this demo:
