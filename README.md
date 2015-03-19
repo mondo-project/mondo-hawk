@@ -33,6 +33,12 @@ http://eclipse.svnkit.com/1.8.x
 
 https://github.com/FTSRG/mondo-mondix
 
+[optional] Modelio, download:
+
+(download the latest version and import the (existing) projects into eclipse)
+
+http://forge.modelio.org/projects/modelio3-development-app/files
+
 --------------------------------------------------------------------------
 
 Screencast of running Hawk through its UI:
