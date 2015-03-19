@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="JavaPreCondition" version="3">
+  <DEPS>
+    <ID name="JavaPreCondition" mc="Stereotype" uid="007c037c-0000-0005-0000-000000000000"/>
+  </DEPS>
+  <OBJECT>
+    <ID name="JavaPreCondition" mc="Stereotype" uid="007c037c-0000-0005-0000-000000000000"/>
+    <PID name="JavaExtensions" mc="Profile" uid="25801104-0000-1069-0000-000000000000"/>
+    <ATTRIBUTES>
+      <ATT name="Image"></ATT>
+      <ATT name="Icon"></ATT>
+      <ATT name="IsHidden">false</ATT>
+      <ATT name="LabelKey"><![CDATA[Pre Conditions]]></ATT>
+      <ATT name="BaseClassName"><![CDATA[Constraint]]></ATT>
+      <ATT name="Name"><![CDATA[JavaPreCondition]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES></DEPENDENCIES>
+  </OBJECT>
+</EXT>

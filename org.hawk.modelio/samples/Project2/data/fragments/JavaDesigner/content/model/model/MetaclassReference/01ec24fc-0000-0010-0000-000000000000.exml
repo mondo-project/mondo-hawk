@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="" version="3">
+  <DEPS>
+    <ID name="" mc="MetaclassReference" uid="01ec24fc-0000-0010-0000-000000000000"/>
+  </DEPS>
+  <OBJECT>
+    <ID name="" mc="MetaclassReference" uid="01ec24fc-0000-0010-0000-000000000000"/>
+    <PID name="JavaCompatibility" mc="Profile" uid="01ec24fc-0000-0208-0000-000000000000"/>
+    <ATTRIBUTES>
+      <ATT name="ReferencedClassName"><![CDATA[Package]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="DefinedTagType">
+        <OBJECT>
+          <ID name="JavaBeanResource" mc="TagType" uid="00380098-0000-0568-0000-000000000000"/>
+          <PID name="" mc="MetaclassReference" uid="01ec24fc-0000-0010-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="ParamNumber"><![CDATA[1]]></ATT>
+            <ATT name="IsQualified">false</ATT>
+            <ATT name="BelongToPrototype">false</ATT>
+            <ATT name="IsHidden">true</ATT>
+            <ATT name="LabelKey"></ATT>
+            <ATT name="Name"><![CDATA[JavaBeanResource]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="JavaRoot" mc="TagType" uid="007c081c-0000-26ad-0000-000000000000"/>
+          <PID name="" mc="MetaclassReference" uid="01ec24fc-0000-0010-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="ParamNumber"><![CDATA[0]]></ATT>
+            <ATT name="IsQualified">false</ATT>
+            <ATT name="BelongToPrototype">false</ATT>
+            <ATT name="IsHidden">true</ATT>
+            <ATT name="LabelKey"></ATT>
+            <ATT name="Name"><![CDATA[JavaRoot]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

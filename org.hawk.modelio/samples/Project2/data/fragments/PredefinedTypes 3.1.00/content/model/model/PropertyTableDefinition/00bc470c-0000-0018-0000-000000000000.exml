@@ -1,0 +1,194 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="Goal Properties" version="3">
+  <DEPS>
+    <ID name="Goal Properties" mc="PropertyTableDefinition" uid="00bc470c-0000-0018-0000-000000000000"/>
+    <EXTID name="Boolean" mc="PropertyType" uid="01a40888-0000-002b-0000-000000000000"/>
+    <EXTID name="Kind" mc="EnumeratedPropertyType" uid="00bc470c-0000-002a-0000-000000000000"/>
+    <EXTID name="MultiText" mc="PropertyType" uid="00080cf0-0000-00cf-0000-000000000000"/>
+    <EXTID name="RichText" mc="PropertyType" uid="c37f01cf-273e-11e1-b78e-00137282c51b"/>
+    <EXTID name="Satisfaction" mc="EnumeratedPropertyType" uid="00bc470c-0000-0035-0000-000000000000"/>
+    <EXTID name="Scope" mc="EnumeratedPropertyType" uid="00bc470c-0000-001b-0000-000000000000"/>
+    <EXTID name="Text" mc="PropertyType" uid="01a40888-0000-002a-0000-000000000000"/>
+    <FOREIGNID name="goal_propertyset" mc="Stereotype" uid="01ec141c-0000-12f2-0000-000000000000"/>
+  </DEPS>
+  <OBJECT>
+    <ID name="Goal Properties" mc="PropertyTableDefinition" uid="00bc470c-0000-0018-0000-000000000000"/>
+    <PID name="Analyst Properties" mc="PropertyContainer" uid="7ef6b128-42e9-4b03-abdc-b05ab214b88b"/>
+    <ATTRIBUTES>
+      <ATT name="Name"><![CDATA[Goal Properties]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="Owned">
+        <OBJECT>
+          <ID name="Identifier" mc="PropertyDefinition" uid="01ec152c-0000-3103-0000-000000000000"/>
+          <PID name="Goal Properties" mc="PropertyTableDefinition" uid="00bc470c-0000-0018-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsEditable">true</ATT>
+            <ATT name="DefaultValue"></ATT>
+            <ATT name="Name"><![CDATA[Identifier]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Type">
+              <ID name="Text" mc="PropertyType" uid="01a40888-0000-002a-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="Documentation" mc="PropertyDefinition" uid="27dbbb29-273f-11e1-b78e-00137282c51b"/>
+          <PID name="Goal Properties" mc="PropertyTableDefinition" uid="00bc470c-0000-0018-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsEditable">true</ATT>
+            <ATT name="DefaultValue"></ATT>
+            <ATT name="Name"><![CDATA[Documentation]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Type">
+              <ID name="RichText" mc="PropertyType" uid="c37f01cf-273e-11e1-b78e-00137282c51b"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="Scope" mc="PropertyDefinition" uid="00bc470c-0000-001f-0000-000000000000"/>
+          <PID name="Goal Properties" mc="PropertyTableDefinition" uid="00bc470c-0000-0018-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsEditable">true</ATT>
+            <ATT name="DefaultValue"><![CDATA[Relative]]></ATT>
+            <ATT name="Name"><![CDATA[Scope]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Type">
+              <ID name="Scope" mc="EnumeratedPropertyType" uid="00bc470c-0000-001b-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="IsCorporate" mc="PropertyDefinition" uid="00bc470c-0000-0026-0000-000000000000"/>
+          <PID name="Goal Properties" mc="PropertyTableDefinition" uid="00bc470c-0000-0018-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsEditable">true</ATT>
+            <ATT name="DefaultValue"><![CDATA[true]]></ATT>
+            <ATT name="Name"><![CDATA[IsCorporate]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Type">
+              <ID name="Boolean" mc="PropertyType" uid="01a40888-0000-002b-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="Kind" mc="PropertyDefinition" uid="00bc470c-0000-002d-0000-000000000000"/>
+          <PID name="Goal Properties" mc="PropertyTableDefinition" uid="00bc470c-0000-0018-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsEditable">true</ATT>
+            <ATT name="DefaultValue"><![CDATA[Qualitative]]></ATT>
+            <ATT name="Name"><![CDATA[Kind]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Type">
+              <ID name="Kind" mc="EnumeratedPropertyType" uid="00bc470c-0000-002a-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="Requested Satisfaction" mc="PropertyDefinition" uid="00bc470c-0000-0038-0000-000000000000"/>
+          <PID name="Goal Properties" mc="PropertyTableDefinition" uid="00bc470c-0000-0018-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsEditable">true</ATT>
+            <ATT name="DefaultValue"><![CDATA[Hard]]></ATT>
+            <ATT name="Name"><![CDATA[Requested Satisfaction]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Type">
+              <ID name="Satisfaction" mc="EnumeratedPropertyType" uid="00bc470c-0000-0035-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="Unit Of Measurement" mc="PropertyDefinition" uid="00bc470c-0000-003c-0000-000000000000"/>
+          <PID name="Goal Properties" mc="PropertyTableDefinition" uid="00bc470c-0000-0018-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsEditable">true</ATT>
+            <ATT name="DefaultValue"></ATT>
+            <ATT name="Name"><![CDATA[Unit Of Measurement]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Type">
+              <ID name="Text" mc="PropertyType" uid="01a40888-0000-002a-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="Goal Value" mc="PropertyDefinition" uid="00bc470c-0000-0040-0000-000000000000"/>
+          <PID name="Goal Properties" mc="PropertyTableDefinition" uid="00bc470c-0000-0018-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsEditable">true</ATT>
+            <ATT name="DefaultValue"></ATT>
+            <ATT name="Name"><![CDATA[Goal Value]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Type">
+              <ID name="Text" mc="PropertyType" uid="01a40888-0000-002a-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="Current value" mc="PropertyDefinition" uid="00bc470c-0000-0044-0000-000000000000"/>
+          <PID name="Goal Properties" mc="PropertyTableDefinition" uid="00bc470c-0000-0018-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsEditable">true</ATT>
+            <ATT name="DefaultValue"></ATT>
+            <ATT name="Name"><![CDATA[Current value]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Type">
+              <ID name="Text" mc="PropertyType" uid="01a40888-0000-002a-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="Problems" mc="PropertyDefinition" uid="00bc470c-0000-0048-0000-000000000000"/>
+          <PID name="Goal Properties" mc="PropertyTableDefinition" uid="00bc470c-0000-0018-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsEditable">true</ATT>
+            <ATT name="DefaultValue"></ATT>
+            <ATT name="Name"><![CDATA[Problems]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Type">
+              <ID name="MultiText" mc="PropertyType" uid="00080cf0-0000-00cf-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="Source" mc="PropertyDefinition" uid="00bc470c-0000-004c-0000-000000000000"/>
+          <PID name="Goal Properties" mc="PropertyTableDefinition" uid="00bc470c-0000-0018-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsEditable">true</ATT>
+            <ATT name="DefaultValue"></ATT>
+            <ATT name="Name"><![CDATA[Source]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Type">
+              <ID name="Text" mc="PropertyType" uid="01a40888-0000-002a-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+      </COMP>
+      <LINK relation="Extension">
+        <FOREIGNID name="goal_propertyset" mc="Stereotype" uid="01ec141c-0000-12f2-0000-000000000000"/>
+      </LINK>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

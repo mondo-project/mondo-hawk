@@ -1,0 +1,154 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="" version="3">
+  <DEPS>
+    <ID name="" mc="MetaclassReference" uid="258010dc-0000-006d-0000-000000000000"/>
+  </DEPS>
+  <OBJECT>
+    <ID name="" mc="MetaclassReference" uid="258010dc-0000-006d-0000-000000000000"/>
+    <PID name="JavaExtensions" mc="Profile" uid="25801104-0000-1069-0000-000000000000"/>
+    <ATTRIBUTES>
+      <ATT name="ReferencedClassName"><![CDATA[AssociationEnd]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="DefinedNoteType">
+        <OBJECT>
+          <ID name="JavaInitValue" mc="NoteType" uid="00380080-0000-0994-0000-000000000000"/>
+          <PID name="" mc="MetaclassReference" uid="258010dc-0000-006d-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsHidden">false</ATT>
+            <ATT name="LabelKey"><![CDATA[Initial value]]></ATT>
+            <ATT name="Name"><![CDATA[JavaInitValue]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="JavaInitValueComment" mc="NoteType" uid="eb8c06dc-0000-0fac-0000-000000000000"/>
+          <PID name="" mc="MetaclassReference" uid="258010dc-0000-006d-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsHidden">false</ATT>
+            <ATT name="LabelKey"><![CDATA[Comment on the value]]></ATT>
+            <ATT name="Name"><![CDATA[JavaInitValueComment]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+      </COMP>
+      <COMP relation="DefinedTagType">
+        <OBJECT>
+          <ID name="JavaArrayDimension" mc="TagType" uid="eb8c1900-000f-68b5-0000-000000000000"/>
+          <PID name="" mc="MetaclassReference" uid="258010dc-0000-006d-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="ParamNumber"><![CDATA[1]]></ATT>
+            <ATT name="IsQualified">false</ATT>
+            <ATT name="BelongToPrototype">false</ATT>
+            <ATT name="IsHidden">false</ATT>
+            <ATT name="LabelKey"><![CDATA[Array Dimension]]></ATT>
+            <ATT name="Name"><![CDATA[JavaArrayDimension]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="JavaBind" mc="TagType" uid="000c0b48-0000-38f9-0000-000000000000"/>
+          <PID name="" mc="MetaclassReference" uid="258010dc-0000-006d-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="ParamNumber"><![CDATA[*]]></ATT>
+            <ATT name="IsQualified">false</ATT>
+            <ATT name="BelongToPrototype">false</ATT>
+            <ATT name="IsHidden">false</ATT>
+            <ATT name="LabelKey"><![CDATA[Bind]]></ATT>
+            <ATT name="Name"><![CDATA[JavaBind]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="JavaFinal" mc="TagType" uid="003800a8-0000-0180-0000-000000000000"/>
+          <PID name="" mc="MetaclassReference" uid="258010dc-0000-006d-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="ParamNumber"><![CDATA[0]]></ATT>
+            <ATT name="IsQualified">false</ATT>
+            <ATT name="BelongToPrototype">false</ATT>
+            <ATT name="IsHidden">false</ATT>
+            <ATT name="LabelKey"><![CDATA[Final]]></ATT>
+            <ATT name="Name"><![CDATA[JavaFinal]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="JavaFullName" mc="TagType" uid="01241558-0000-18e5-0000-000000000000"/>
+          <PID name="" mc="MetaclassReference" uid="258010dc-0000-006d-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="ParamNumber"><![CDATA[0]]></ATT>
+            <ATT name="IsQualified">false</ATT>
+            <ATT name="BelongToPrototype">false</ATT>
+            <ATT name="IsHidden">false</ATT>
+            <ATT name="LabelKey"><![CDATA[Generate full name]]></ATT>
+            <ATT name="Name"><![CDATA[JavaFullName]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="JavaImplementationType" mc="TagType" uid="000c11e0-0000-5a73-0000-000000000000"/>
+          <PID name="" mc="MetaclassReference" uid="258010dc-0000-006d-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="ParamNumber"><![CDATA[1]]></ATT>
+            <ATT name="IsQualified">false</ATT>
+            <ATT name="BelongToPrototype">false</ATT>
+            <ATT name="IsHidden">false</ATT>
+            <ATT name="LabelKey"><![CDATA[Collection implementation type]]></ATT>
+            <ATT name="Name"><![CDATA[JavaImplementationType]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="JavaTransient" mc="TagType" uid="003800a8-0000-0183-0000-000000000000"/>
+          <PID name="" mc="MetaclassReference" uid="258010dc-0000-006d-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="ParamNumber"><![CDATA[0]]></ATT>
+            <ATT name="IsQualified">false</ATT>
+            <ATT name="BelongToPrototype">false</ATT>
+            <ATT name="IsHidden">false</ATT>
+            <ATT name="LabelKey"><![CDATA[Transient]]></ATT>
+            <ATT name="Name"><![CDATA[JavaTransient]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="JavaTypeExpr" mc="TagType" uid="003800a8-0000-0187-0000-000000000000"/>
+          <PID name="" mc="MetaclassReference" uid="258010dc-0000-006d-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="ParamNumber"><![CDATA[1]]></ATT>
+            <ATT name="IsQualified">false</ATT>
+            <ATT name="BelongToPrototype">false</ATT>
+            <ATT name="IsHidden">false</ATT>
+            <ATT name="LabelKey"><![CDATA[Manual type expression]]></ATT>
+            <ATT name="Name"><![CDATA[JavaTypeExpr]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="JavaVolatile" mc="TagType" uid="003800a8-0000-0182-0000-000000000000"/>
+          <PID name="" mc="MetaclassReference" uid="258010dc-0000-006d-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="ParamNumber"><![CDATA[0]]></ATT>
+            <ATT name="IsQualified">false</ATT>
+            <ATT name="BelongToPrototype">false</ATT>
+            <ATT name="IsHidden">false</ATT>
+            <ATT name="LabelKey"><![CDATA[Volatile]]></ATT>
+            <ATT name="Name"><![CDATA[JavaVolatile]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

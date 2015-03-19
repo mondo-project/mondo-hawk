@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="" version="3">
+  <DEPS>
+    <ID name="" mc="MetaclassReference" uid="010c4ccc-0001-ca9a-0000-000000000000"/>
+  </DEPS>
+  <OBJECT>
+    <ID name="" mc="MetaclassReference" uid="010c4ccc-0001-ca9a-0000-000000000000"/>
+    <PID name="JavaExtensions" mc="Profile" uid="25801104-0000-1069-0000-000000000000"/>
+    <ATTRIBUTES>
+      <ATT name="ReferencedClassName"><![CDATA[TemplateParameter]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="DefinedTagType">
+        <OBJECT>
+          <ID name="JavaExtends" mc="TagType" uid="010c4ccc-0001-cdcc-0000-000000000000"/>
+          <PID name="" mc="MetaclassReference" uid="010c4ccc-0001-ca9a-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="ParamNumber"><![CDATA[1]]></ATT>
+            <ATT name="IsQualified">false</ATT>
+            <ATT name="BelongToPrototype">false</ATT>
+            <ATT name="IsHidden">false</ATT>
+            <ATT name="LabelKey"><![CDATA[Extends]]></ATT>
+            <ATT name="Name"><![CDATA[JavaExtends]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="JavaFullName" mc="TagType" uid="0057f47c-85d2-10f5-9a2d-001d7d0c9107"/>
+          <PID name="" mc="MetaclassReference" uid="010c4ccc-0001-ca9a-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="ParamNumber"><![CDATA[0]]></ATT>
+            <ATT name="IsQualified">false</ATT>
+            <ATT name="BelongToPrototype">false</ATT>
+            <ATT name="IsHidden">false</ATT>
+            <ATT name="LabelKey"><![CDATA[Generate full name]]></ATT>
+            <ATT name="Name"><![CDATA[JavaFullName]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

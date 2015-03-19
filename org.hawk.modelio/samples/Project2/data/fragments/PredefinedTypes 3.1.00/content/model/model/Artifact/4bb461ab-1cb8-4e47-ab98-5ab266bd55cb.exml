@@ -1,0 +1,506 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="PredefinedTypes" version="3">
+  <DEPS>
+    <ID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+    <EXTID name="Acceptance" mc="EnumeratedPropertyType" uid="01ec152c-0000-3152-0000-000000000000"/>
+    <EXTID name="Benefit" mc="EnumeratedPropertyType" uid="00080cf0-0000-00bc-0000-000000000000"/>
+    <EXTID name="Boolean" mc="PropertyType" uid="01a40888-0000-002b-0000-000000000000"/>
+    <EXTID name="BusinessRule Properties" mc="PropertyTableDefinition" uid="00bc470c-0000-0019-0000-000000000000"/>
+    <EXTID name="Date" mc="PropertyType" uid="136b356c-3951-473b-aa4a-001c0241b996"/>
+    <EXTID name="Design" mc="PropertyTableDefinition" uid="00080cf0-0000-001f-0000-000000000000"/>
+    <EXTID name="Dictionary Properties" mc="PropertyTableDefinition" uid="01ec152c-0000-144f-0000-000000000000"/>
+    <EXTID name="Element" mc="PropertyType" uid="b58969db-144e-4a1f-b946-cd6deacca9bd"/>
+    <EXTID name="Float" mc="PropertyType" uid="bc36b99e-8470-4aee-ba2a-5012c0a17525"/>
+    <EXTID name="Functionality" mc="PropertyTableDefinition" uid="00080cf0-0000-001a-0000-000000000000"/>
+    <EXTID name="Goal Properties" mc="PropertyTableDefinition" uid="00bc470c-0000-0018-0000-000000000000"/>
+    <EXTID name="Implementation" mc="PropertyTableDefinition" uid="00080cf0-0000-0020-0000-000000000000"/>
+    <EXTID name="Integer" mc="PropertyType" uid="01a40888-0000-002d-0000-000000000000"/>
+    <EXTID name="Kind" mc="EnumeratedPropertyType" uid="00bc470c-0000-002a-0000-000000000000"/>
+    <EXTID name="MultiText" mc="PropertyType" uid="00080cf0-0000-00cf-0000-000000000000"/>
+    <EXTID name="No Properties" mc="PropertyTableDefinition" uid="7649b5c8-8733-4a02-959c-a269422402b8"/>
+    <EXTID name="Performance" mc="PropertyTableDefinition" uid="00080cf0-0000-001d-0000-000000000000"/>
+    <EXTID name="Reliability" mc="PropertyTableDefinition" uid="00080cf0-0000-001c-0000-000000000000"/>
+    <EXTID name="RichText" mc="PropertyType" uid="c37f01cf-273e-11e1-b78e-00137282c51b"/>
+    <EXTID name="Risk" mc="EnumeratedPropertyType" uid="00080cf0-0000-0031-0000-000000000000"/>
+    <EXTID name="Satisfaction" mc="EnumeratedPropertyType" uid="00bc470c-0000-0035-0000-000000000000"/>
+    <EXTID name="Scope" mc="EnumeratedPropertyType" uid="00bc470c-0000-001b-0000-000000000000"/>
+    <EXTID name="Stability" mc="EnumeratedPropertyType" uid="00080cf0-0000-0032-0000-000000000000"/>
+    <EXTID name="Supportability" mc="PropertyTableDefinition" uid="00080cf0-0000-001e-0000-000000000000"/>
+    <EXTID name="Text" mc="PropertyType" uid="01a40888-0000-002a-0000-000000000000"/>
+    <EXTID name="Time" mc="PropertyType" uid="753fc9f9-c136-449c-949c-4fa467511d99"/>
+    <EXTID name="UML Types" mc="Package" uid="00000004-0000-0004-0000-000000000000"/>
+    <EXTID name="Unsigned" mc="PropertyType" uid="827950f7-671f-4db7-9374-23df864712ef"/>
+    <EXTID name="Usability" mc="PropertyTableDefinition" uid="00080cf0-0000-001b-0000-000000000000"/>
+    <FOREIGNID name="ModelComponentArchive" mc="Stereotype" uid="00140d80-0000-0110-0000-000000000000"/>
+    <FOREIGNID name="ModelComponentContributors" mc="TagType" uid="9834df4e-84a3-4ec8-b216-fd2adda71578"/>
+    <FOREIGNID name="ModelComponentFiles" mc="TagType" uid="00140d80-0000-0112-0000-000000000000"/>
+    <FOREIGNID name="ModelComponentVersion" mc="TagType" uid="00140d80-0000-020c-0000-000000000000"/>
+    <FOREIGNID name="description" mc="NoteType" uid="00000000-0000-3e81-0000-000000000000"/>
+  </DEPS>
+  <OBJECT>
+    <ID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+    <PID name="UML Types" mc="Package" uid="00000004-0000-0004-0000-000000000000"/>
+    <ATTRIBUTES>
+      <ATT name="FileName"></ATT>
+      <ATT name="IsAbstract">false</ATT>
+      <ATT name="IsLeaf">false</ATT>
+      <ATT name="IsRoot">false</ATT>
+      <ATT name="Visibility">Public</ATT>
+      <ATT name="Name"><![CDATA[PredefinedTypes]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="Utilized">
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="cd4519e9-f312-4025-89a1-1af135b869f3"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Unsigned" mc="PropertyType" uid="827950f7-671f-4db7-9374-23df864712ef"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="1ae08d05-da02-44a6-b108-46f3ee84d7b0"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Element" mc="PropertyType" uid="b58969db-144e-4a1f-b946-cd6deacca9bd"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="ff22f6fc-70ae-493d-96a5-446062a9cd44"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Float" mc="PropertyType" uid="bc36b99e-8470-4aee-ba2a-5012c0a17525"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="f748b4aa-b2a3-4c93-89b0-c95c1434d5f3"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="RichText" mc="PropertyType" uid="c37f01cf-273e-11e1-b78e-00137282c51b"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="9b50a558-d718-4983-89f6-3e9634cd62c4"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="UML Types" mc="Package" uid="00000004-0000-0004-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="3835a61d-adb7-4376-8c2b-e02d8c415516"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Functionality" mc="PropertyTableDefinition" uid="00080cf0-0000-001a-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="e475e46a-4636-4be4-888c-76d2a2ccaa9c"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Usability" mc="PropertyTableDefinition" uid="00080cf0-0000-001b-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="81a3c911-92ed-4c86-91c9-8a91359c958a"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Reliability" mc="PropertyTableDefinition" uid="00080cf0-0000-001c-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="3d7a2d75-1d36-43fb-9eda-6e81b2fb4f73"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Performance" mc="PropertyTableDefinition" uid="00080cf0-0000-001d-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="9b4b48cb-d46a-4b14-a082-f11b7648bbb4"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Supportability" mc="PropertyTableDefinition" uid="00080cf0-0000-001e-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="6ae7964a-fd43-4601-844f-dea94c4bc19f"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Design" mc="PropertyTableDefinition" uid="00080cf0-0000-001f-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="e44f6169-a890-43a2-8017-17e17179b79b"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Implementation" mc="PropertyTableDefinition" uid="00080cf0-0000-0020-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="6c8b7b6f-a9fe-4ae0-b4b0-342daff9bdbd"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Risk" mc="EnumeratedPropertyType" uid="00080cf0-0000-0031-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="1df89fe1-63ca-4f5b-af83-be470dc4b062"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Stability" mc="EnumeratedPropertyType" uid="00080cf0-0000-0032-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="14dab95b-f909-4193-aeb9-41404b1f490f"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Benefit" mc="EnumeratedPropertyType" uid="00080cf0-0000-00bc-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="64157976-a636-4299-9b66-197d62204951"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="MultiText" mc="PropertyType" uid="00080cf0-0000-00cf-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="724918eb-bf0b-421c-8446-42407b0312e9"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Goal Properties" mc="PropertyTableDefinition" uid="00bc470c-0000-0018-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="8853368f-0050-4e1d-b4ad-0f67b1a8f935"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="BusinessRule Properties" mc="PropertyTableDefinition" uid="00bc470c-0000-0019-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="b2ea0592-f4a8-4a70-b4ae-0452affcaf59"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Scope" mc="EnumeratedPropertyType" uid="00bc470c-0000-001b-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="abf77736-af3e-4b76-a608-5bbbeea9ac64"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Kind" mc="EnumeratedPropertyType" uid="00bc470c-0000-002a-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="310db7a4-9695-43c3-b55f-06c0a270b800"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Satisfaction" mc="EnumeratedPropertyType" uid="00bc470c-0000-0035-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="93f0cc21-6d6e-4640-b69f-c4814b72539f"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Text" mc="PropertyType" uid="01a40888-0000-002a-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="8df11518-c5cb-4be6-a359-c2d3a705c655"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Boolean" mc="PropertyType" uid="01a40888-0000-002b-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="bfe27876-f66c-4295-9a4c-00b7bb976ee4"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Integer" mc="PropertyType" uid="01a40888-0000-002d-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="e10b4fbc-ffec-4c62-beae-b47174778f2f"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Dictionary Properties" mc="PropertyTableDefinition" uid="01ec152c-0000-144f-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="73a293ab-e4cd-4182-93a6-0f22003ef738"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Acceptance" mc="EnumeratedPropertyType" uid="01ec152c-0000-3152-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="658af693-69fb-4618-8409-9e7de45df0b4"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Date" mc="PropertyType" uid="136b356c-3951-473b-aa4a-001c0241b996"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="d1f00786-2ed2-4b25-8fdb-920149f47cd2"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="Time" mc="PropertyType" uid="753fc9f9-c136-449c-949c-4fa467511d99"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="Manifestation" uid="0b1a8315-de18-49a6-b5d5-8a2b3a7a1fc8"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="UtilizedElement">
+              <ID name="No Properties" mc="PropertyTableDefinition" uid="7649b5c8-8733-4a02-959c-a269422402b8"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+      </COMP>
+      <LINK relation="Extension">
+        <FOREIGNID name="ModelComponentArchive" mc="Stereotype" uid="00140d80-0000-0110-0000-000000000000"/>
+      </LINK>
+      <COMP relation="Tag">
+        <OBJECT>
+          <ID name="" mc="TaggedValue" uid="b4f16313-3faf-4978-8ca7-1a6489d9e291"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <COMP relation="Actual">
+              <OBJECT>
+                <ID name="" mc="TagParameter" uid="1fe5aee1-4926-4793-8bd9-c9e83f4b352b"/>
+                <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+                <ATTRIBUTES>
+                  <ATT name="Value"><![CDATA[3.1.00]]></ATT>
+                  <ATT name="status">1970354901745664</ATT>
+                </ATTRIBUTES>
+                <DEPENDENCIES></DEPENDENCIES>
+              </OBJECT>
+            </COMP>
+            <LINK relation="Definition">
+              <FOREIGNID name="ModelComponentVersion" mc="TagType" uid="00140d80-0000-020c-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="TaggedValue" uid="d867b9c0-8522-48e0-aeb4-ef091620d837"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Definition">
+              <FOREIGNID name="ModelComponentFiles" mc="TagType" uid="00140d80-0000-0112-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="" mc="TaggedValue" uid="2e0e43bb-faba-48e9-b411-4dae5ce2b117"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Name"></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Definition">
+              <FOREIGNID name="ModelComponentContributors" mc="TagType" uid="9834df4e-84a3-4ec8-b216-fd2adda71578"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+      </COMP>
+      <COMP relation="Descriptor">
+        <OBJECT>
+          <ID name="Note" mc="Note" uid="f504e8a0-dfff-11de-8447-8000600fe800"/>
+          <PID name="PredefinedTypes" mc="Artifact" uid="4bb461ab-1cb8-4e47-ab98-5ab266bd55cb"/>
+          <ATTRIBUTES>
+            <ATT name="Content"><![CDATA[Predefined types model component provides the default types for UML and Analyst models.
+]]></ATT>
+            <ATT name="Name"><![CDATA[Note]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Model">
+              <FOREIGNID name="description" mc="NoteType" uid="00000000-0000-3e81-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

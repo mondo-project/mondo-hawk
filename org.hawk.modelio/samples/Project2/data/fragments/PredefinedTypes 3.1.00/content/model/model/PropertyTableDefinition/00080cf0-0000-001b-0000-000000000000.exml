@@ -1,0 +1,133 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="Usability" version="3">
+  <DEPS>
+    <ID name="Usability" mc="PropertyTableDefinition" uid="00080cf0-0000-001b-0000-000000000000"/>
+    <EXTID name="Benefit" mc="EnumeratedPropertyType" uid="00080cf0-0000-00bc-0000-000000000000"/>
+    <EXTID name="Integer" mc="PropertyType" uid="01a40888-0000-002d-0000-000000000000"/>
+    <EXTID name="RichText" mc="PropertyType" uid="c37f01cf-273e-11e1-b78e-00137282c51b"/>
+    <EXTID name="Risk" mc="EnumeratedPropertyType" uid="00080cf0-0000-0031-0000-000000000000"/>
+    <EXTID name="Stability" mc="EnumeratedPropertyType" uid="00080cf0-0000-0032-0000-000000000000"/>
+    <EXTID name="Text" mc="PropertyType" uid="01a40888-0000-002a-0000-000000000000"/>
+    <FOREIGNID name="requirement_propertyset" mc="Stereotype" uid="01ec141c-0000-12f7-0000-000000000000"/>
+  </DEPS>
+  <OBJECT>
+    <ID name="Usability" mc="PropertyTableDefinition" uid="00080cf0-0000-001b-0000-000000000000"/>
+    <PID name="Analyst Properties" mc="PropertyContainer" uid="7ef6b128-42e9-4b03-abdc-b05ab214b88b"/>
+    <ATTRIBUTES>
+      <ATT name="Name"><![CDATA[Usability]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="Owned">
+        <OBJECT>
+          <ID name="Documentation" mc="PropertyDefinition" uid="88cb4ad0-273f-11e1-b78e-00137282c51b"/>
+          <PID name="Usability" mc="PropertyTableDefinition" uid="00080cf0-0000-001b-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsEditable">true</ATT>
+            <ATT name="DefaultValue"></ATT>
+            <ATT name="Name"><![CDATA[Documentation]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Type">
+              <ID name="RichText" mc="PropertyType" uid="c37f01cf-273e-11e1-b78e-00137282c51b"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="Origin" mc="PropertyDefinition" uid="00080cf0-0000-0070-0000-000000000000"/>
+          <PID name="Usability" mc="PropertyTableDefinition" uid="00080cf0-0000-001b-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsEditable">true</ATT>
+            <ATT name="DefaultValue"></ATT>
+            <ATT name="Name"><![CDATA[Origin]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Type">
+              <ID name="Text" mc="PropertyType" uid="01a40888-0000-002a-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="Benefit" mc="PropertyDefinition" uid="00080cf0-0000-0072-0000-000000000000"/>
+          <PID name="Usability" mc="PropertyTableDefinition" uid="00080cf0-0000-001b-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsEditable">true</ATT>
+            <ATT name="DefaultValue"><![CDATA[Critical]]></ATT>
+            <ATT name="Name"><![CDATA[Benefit]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Type">
+              <ID name="Benefit" mc="EnumeratedPropertyType" uid="00080cf0-0000-00bc-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="Cost" mc="PropertyDefinition" uid="00080cf0-0000-0074-0000-000000000000"/>
+          <PID name="Usability" mc="PropertyTableDefinition" uid="00080cf0-0000-001b-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsEditable">true</ATT>
+            <ATT name="DefaultValue"><![CDATA[0]]></ATT>
+            <ATT name="Name"><![CDATA[Cost]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Type">
+              <ID name="Integer" mc="PropertyType" uid="01a40888-0000-002d-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="Risk" mc="PropertyDefinition" uid="00080cf0-0000-0076-0000-000000000000"/>
+          <PID name="Usability" mc="PropertyTableDefinition" uid="00080cf0-0000-001b-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsEditable">true</ATT>
+            <ATT name="DefaultValue"><![CDATA[Low]]></ATT>
+            <ATT name="Name"><![CDATA[Risk]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Type">
+              <ID name="Risk" mc="EnumeratedPropertyType" uid="00080cf0-0000-0031-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="Stability" mc="PropertyDefinition" uid="00080cf0-0000-0078-0000-000000000000"/>
+          <PID name="Usability" mc="PropertyTableDefinition" uid="00080cf0-0000-001b-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsEditable">true</ATT>
+            <ATT name="DefaultValue"><![CDATA[Low]]></ATT>
+            <ATT name="Name"><![CDATA[Stability]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Type">
+              <ID name="Stability" mc="EnumeratedPropertyType" uid="00080cf0-0000-0032-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="Target Release" mc="PropertyDefinition" uid="00080cf0-0000-007a-0000-000000000000"/>
+          <PID name="Usability" mc="PropertyTableDefinition" uid="00080cf0-0000-001b-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="IsEditable">true</ATT>
+            <ATT name="DefaultValue"><![CDATA[0]]></ATT>
+            <ATT name="Name"><![CDATA[Target Release]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES>
+            <LINK relation="Type">
+              <ID name="Integer" mc="PropertyType" uid="01a40888-0000-002d-0000-000000000000"/>
+            </LINK>
+          </DEPENDENCIES>
+        </OBJECT>
+      </COMP>
+      <LINK relation="Extension">
+        <FOREIGNID name="requirement_propertyset" mc="Stereotype" uid="01ec141c-0000-12f7-0000-000000000000"/>
+      </LINK>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

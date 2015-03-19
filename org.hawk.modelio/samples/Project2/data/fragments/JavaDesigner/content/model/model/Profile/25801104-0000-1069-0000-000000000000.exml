@@ -1,0 +1,98 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="JavaExtensions" version="3">
+  <DEPS>
+    <ID name="JavaExtensions" mc="Profile" uid="25801104-0000-1069-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="ccc1df05-0464-11e0-b652-002564c97630"/>
+    <COMPID name="" mc="MetaclassReference" uid="00d007fc-0003-d4af-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="00d01054-0001-1627-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="010c4ccc-0001-ca9a-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="258010dc-0000-006d-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="258010dc-0000-00b7-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="258010dc-0000-01e7-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="258010dc-0000-020f-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="258010dc-0000-0264-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="258010dc-0000-04d6-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="258010dc-0000-0575-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="258010dc-0000-05bf-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="258010dc-0000-05f1-0000-000000000000"/>
+    <COMPID name="JarFile" mc="Stereotype" uid="00c80378-0000-01c6-0000-000000000000"/>
+    <COMPID name="JavaAnnotation" mc="Stereotype" uid="000c0b48-0000-3a00-0000-000000000000"/>
+    <COMPID name="JavaAssociationEndProperty" mc="Stereotype" uid="a9eb2fd3-17fe-11e0-a45a-002564c97630"/>
+    <COMPID name="JavaAttributeProperty" mc="Stereotype" uid="a9808723-17fe-11e0-a45a-002564c97630"/>
+    <COMPID name="JavaClass" mc="Stereotype" uid="01ec23a8-0000-0258-0000-000000000000"/>
+    <COMPID name="JavaComponent" mc="Stereotype" uid="01ec1b44-0000-2111-0000-000000000000"/>
+    <COMPID name="JavaDataType" mc="Stereotype" uid="01ec23a8-0000-025d-0000-000000000000"/>
+    <COMPID name="JavaDocInvariant" mc="Stereotype" uid="007c081c-0000-0251-0000-000000000000"/>
+    <COMPID name="JavaEnumeration" mc="Stereotype" uid="01ec23a8-0000-0262-0000-000000000000"/>
+    <COMPID name="JavaFileGroup" mc="Stereotype" uid="eb8c18e0-0002-d167-0000-000000000000"/>
+    <COMPID name="JavaGetter" mc="Stereotype" uid="01ec23a8-0000-012b-0000-000000000000"/>
+    <COMPID name="JavaGetter" mc="Stereotype" uid="01ec25e8-0000-00f0-0000-000000000000"/>
+    <COMPID name="JavaInterface" mc="Stereotype" uid="01ec23a8-0000-0267-0000-000000000000"/>
+    <COMPID name="JavaInvariant" mc="Stereotype" uid="007c037c-0000-0003-0000-000000000000"/>
+    <COMPID name="JavaPackage" mc="Stereotype" uid="01ec23a8-0000-0126-0000-000000000000"/>
+    <COMPID name="JavaPostCondition" mc="Stereotype" uid="007c037c-0000-0007-0000-000000000000"/>
+    <COMPID name="JavaPreCondition" mc="Stereotype" uid="007c037c-0000-0005-0000-000000000000"/>
+    <COMPID name="JavaResource" mc="Stereotype" uid="00c80378-0001-ac88-0000-000000000000"/>
+    <COMPID name="JavaSetter" mc="Stereotype" uid="01ec23a8-0000-0130-0000-000000000000"/>
+    <COMPID name="JavaSetter" mc="Stereotype" uid="01ec25e8-0000-00f5-0000-000000000000"/>
+    <COMPID name="JavaStatic" mc="Stereotype" uid="000c0b48-0000-37da-0000-000000000000"/>
+    <COMPID name="SeeJavadoc" mc="Stereotype" uid="01240268-0000-00e0-0000-000000000000"/>
+    <COMPID name="StandardMethod" mc="Stereotype" uid="35d8b4ff-a669-11e1-8eb3-002564c97630"/>
+  </DEPS>
+  <OBJECT>
+    <ID name="JavaExtensions" mc="Profile" uid="25801104-0000-1069-0000-000000000000"/>
+    <PID name="JavaDesigner" mc="ModuleComponent" uid="003800a8-0000-022e-0000-000000000000"/>
+    <ATTRIBUTES>
+      <ATT name="JCode"></ATT>
+      <ATT name="IsInstantiable">false</ATT>
+      <ATT name="IsAbstract">false</ATT>
+      <ATT name="IsLeaf">false</ATT>
+      <ATT name="IsRoot">false</ATT>
+      <ATT name="Visibility">Public</ATT>
+      <ATT name="Name"><![CDATA[JavaExtensions]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="DefinedStereotype">
+        <COMPID name="JarFile" mc="Stereotype" uid="00c80378-0000-01c6-0000-000000000000"/>
+        <COMPID name="JavaAnnotation" mc="Stereotype" uid="000c0b48-0000-3a00-0000-000000000000"/>
+        <COMPID name="JavaAssociationEndProperty" mc="Stereotype" uid="a9eb2fd3-17fe-11e0-a45a-002564c97630"/>
+        <COMPID name="JavaAttributeProperty" mc="Stereotype" uid="a9808723-17fe-11e0-a45a-002564c97630"/>
+        <COMPID name="JavaComponent" mc="Stereotype" uid="01ec1b44-0000-2111-0000-000000000000"/>
+        <COMPID name="JavaClass" mc="Stereotype" uid="01ec23a8-0000-0258-0000-000000000000"/>
+        <COMPID name="JavaDataType" mc="Stereotype" uid="01ec23a8-0000-025d-0000-000000000000"/>
+        <COMPID name="JavaDocInvariant" mc="Stereotype" uid="007c081c-0000-0251-0000-000000000000"/>
+        <COMPID name="JavaEnumeration" mc="Stereotype" uid="01ec23a8-0000-0262-0000-000000000000"/>
+        <COMPID name="JavaFileGroup" mc="Stereotype" uid="eb8c18e0-0002-d167-0000-000000000000"/>
+        <COMPID name="JavaGetter" mc="Stereotype" uid="01ec25e8-0000-00f0-0000-000000000000"/>
+        <COMPID name="JavaGetter" mc="Stereotype" uid="01ec23a8-0000-012b-0000-000000000000"/>
+        <COMPID name="JavaInterface" mc="Stereotype" uid="01ec23a8-0000-0267-0000-000000000000"/>
+        <COMPID name="JavaInvariant" mc="Stereotype" uid="007c037c-0000-0003-0000-000000000000"/>
+        <COMPID name="JavaPackage" mc="Stereotype" uid="01ec23a8-0000-0126-0000-000000000000"/>
+        <COMPID name="JavaPostCondition" mc="Stereotype" uid="007c037c-0000-0007-0000-000000000000"/>
+        <COMPID name="JavaPreCondition" mc="Stereotype" uid="007c037c-0000-0005-0000-000000000000"/>
+        <COMPID name="JavaResource" mc="Stereotype" uid="00c80378-0001-ac88-0000-000000000000"/>
+        <COMPID name="JavaSetter" mc="Stereotype" uid="01ec25e8-0000-00f5-0000-000000000000"/>
+        <COMPID name="JavaSetter" mc="Stereotype" uid="01ec23a8-0000-0130-0000-000000000000"/>
+        <COMPID name="JavaStatic" mc="Stereotype" uid="000c0b48-0000-37da-0000-000000000000"/>
+        <COMPID name="SeeJavadoc" mc="Stereotype" uid="01240268-0000-00e0-0000-000000000000"/>
+        <COMPID name="StandardMethod" mc="Stereotype" uid="35d8b4ff-a669-11e1-8eb3-002564c97630"/>
+      </COMP>
+      <COMP relation="OwnedReference">
+        <COMPID name="" mc="MetaclassReference" uid="258010dc-0000-006d-0000-000000000000"/>
+        <COMPID name="" mc="MetaclassReference" uid="258010dc-0000-00b7-0000-000000000000"/>
+        <COMPID name="" mc="MetaclassReference" uid="258010dc-0000-01e7-0000-000000000000"/>
+        <COMPID name="" mc="MetaclassReference" uid="258010dc-0000-05f1-0000-000000000000"/>
+        <COMPID name="" mc="MetaclassReference" uid="00d007fc-0003-d4af-0000-000000000000"/>
+        <COMPID name="" mc="MetaclassReference" uid="258010dc-0000-020f-0000-000000000000"/>
+        <COMPID name="" mc="MetaclassReference" uid="258010dc-0000-0264-0000-000000000000"/>
+        <COMPID name="" mc="MetaclassReference" uid="258010dc-0000-05bf-0000-000000000000"/>
+        <COMPID name="" mc="MetaclassReference" uid="00d01054-0001-1627-0000-000000000000"/>
+        <COMPID name="" mc="MetaclassReference" uid="258010dc-0000-04d6-0000-000000000000"/>
+        <COMPID name="" mc="MetaclassReference" uid="258010dc-0000-0575-0000-000000000000"/>
+        <COMPID name="" mc="MetaclassReference" uid="ccc1df05-0464-11e0-b652-002564c97630"/>
+        <COMPID name="" mc="MetaclassReference" uid="010c4ccc-0001-ca9a-0000-000000000000"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="JavaAssociationEndProperty" version="3">
+  <DEPS>
+    <ID name="JavaAssociationEndProperty" mc="Stereotype" uid="a9eb2fd3-17fe-11e0-a45a-002564c97630"/>
+  </DEPS>
+  <OBJECT>
+    <ID name="JavaAssociationEndProperty" mc="Stereotype" uid="a9eb2fd3-17fe-11e0-a45a-002564c97630"/>
+    <PID name="JavaExtensions" mc="Profile" uid="25801104-0000-1069-0000-000000000000"/>
+    <ATTRIBUTES>
+      <ATT name="Image"><![CDATA[JavaDesigner/res/bmp/associationend_property.png]]></ATT>
+      <ATT name="Icon"><![CDATA[JavaDesigner/res/bmp/associationend_property.png]]></ATT>
+      <ATT name="IsHidden">false</ATT>
+      <ATT name="LabelKey"><![CDATA[JavaProperty]]></ATT>
+      <ATT name="BaseClassName"><![CDATA[AssociationEnd]]></ATT>
+      <ATT name="Name"><![CDATA[JavaAssociationEndProperty]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="DefinedTagType">
+        <OBJECT>
+          <ID name="JavaGetterVisibility" mc="TagType" uid="47c9d3eb-18ba-11e0-ae4e-002564c97630"/>
+          <PID name="JavaAssociationEndProperty" mc="Stereotype" uid="a9eb2fd3-17fe-11e0-a45a-002564c97630"/>
+          <ATTRIBUTES>
+            <ATT name="ParamNumber"><![CDATA[1]]></ATT>
+            <ATT name="IsQualified">false</ATT>
+            <ATT name="BelongToPrototype">false</ATT>
+            <ATT name="IsHidden">false</ATT>
+            <ATT name="LabelKey"><![CDATA[Getter visibility]]></ATT>
+            <ATT name="Name"><![CDATA[JavaGetterVisibility]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="JavaSetterVisibility" mc="TagType" uid="47c9d3ea-18ba-11e0-ae4e-002564c97630"/>
+          <PID name="JavaAssociationEndProperty" mc="Stereotype" uid="a9eb2fd3-17fe-11e0-a45a-002564c97630"/>
+          <ATTRIBUTES>
+            <ATT name="ParamNumber"><![CDATA[1]]></ATT>
+            <ATT name="IsQualified">false</ATT>
+            <ATT name="BelongToPrototype">false</ATT>
+            <ATT name="IsHidden">false</ATT>
+            <ATT name="LabelKey"><![CDATA[Setter visibility]]></ATT>
+            <ATT name="Name"><![CDATA[JavaSetterVisibility]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

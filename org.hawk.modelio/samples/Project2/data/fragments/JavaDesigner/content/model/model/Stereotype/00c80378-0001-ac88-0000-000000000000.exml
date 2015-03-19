@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="JavaResource" version="3">
+  <DEPS>
+    <ID name="JavaResource" mc="Stereotype" uid="00c80378-0001-ac88-0000-000000000000"/>
+  </DEPS>
+  <OBJECT>
+    <ID name="JavaResource" mc="Stereotype" uid="00c80378-0001-ac88-0000-000000000000"/>
+    <PID name="JavaExtensions" mc="Profile" uid="25801104-0000-1069-0000-000000000000"/>
+    <ATTRIBUTES>
+      <ATT name="Image"><![CDATA[JavaDesigner/res/bmp/file.png]]></ATT>
+      <ATT name="Icon"><![CDATA[JavaDesigner/res/bmp/file.png]]></ATT>
+      <ATT name="IsHidden">false</ATT>
+      <ATT name="LabelKey"></ATT>
+      <ATT name="BaseClassName"><![CDATA[Artifact]]></ATT>
+      <ATT name="Name"><![CDATA[JavaResource]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES></DEPENDENCIES>
+  </OBJECT>
+</EXT>

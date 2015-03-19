@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="JavaCompatibility" version="3">
+  <DEPS>
+    <ID name="JavaCompatibility" mc="Profile" uid="01ec24fc-0000-0208-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="01ec24fc-0000-0009-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="01ec24fc-0000-000a-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="01ec24fc-0000-000b-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="01ec24fc-0000-000c-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="01ec24fc-0000-000d-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="01ec24fc-0000-000f-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="01ec24fc-0000-0010-0000-000000000000"/>
+    <COMPID name="" mc="MetaclassReference" uid="01ec24fc-0000-0011-0000-000000000000"/>
+  </DEPS>
+  <OBJECT>
+    <ID name="JavaCompatibility" mc="Profile" uid="01ec24fc-0000-0208-0000-000000000000"/>
+    <PID name="JavaDesigner" mc="ModuleComponent" uid="003800a8-0000-022e-0000-000000000000"/>
+    <ATTRIBUTES>
+      <ATT name="JCode"></ATT>
+      <ATT name="IsInstantiable">false</ATT>
+      <ATT name="IsAbstract">false</ATT>
+      <ATT name="IsLeaf">false</ATT>
+      <ATT name="IsRoot">false</ATT>
+      <ATT name="Visibility">Public</ATT>
+      <ATT name="Name"><![CDATA[JavaCompatibility]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="OwnedReference">
+        <COMPID name="" mc="MetaclassReference" uid="01ec24fc-0000-0009-0000-000000000000"/>
+        <COMPID name="" mc="MetaclassReference" uid="01ec24fc-0000-000a-0000-000000000000"/>
+        <COMPID name="" mc="MetaclassReference" uid="01ec24fc-0000-000b-0000-000000000000"/>
+        <COMPID name="" mc="MetaclassReference" uid="01ec24fc-0000-000c-0000-000000000000"/>
+        <COMPID name="" mc="MetaclassReference" uid="01ec24fc-0000-000d-0000-000000000000"/>
+        <COMPID name="" mc="MetaclassReference" uid="01ec24fc-0000-000f-0000-000000000000"/>
+        <COMPID name="" mc="MetaclassReference" uid="01ec24fc-0000-0010-0000-000000000000"/>
+        <COMPID name="" mc="MetaclassReference" uid="01ec24fc-0000-0011-0000-000000000000"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

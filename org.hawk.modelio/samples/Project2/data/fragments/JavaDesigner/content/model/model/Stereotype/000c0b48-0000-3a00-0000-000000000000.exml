@@ -1,0 +1,79 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="JavaAnnotation" version="3">
+  <DEPS>
+    <ID name="JavaAnnotation" mc="Stereotype" uid="000c0b48-0000-3a00-0000-000000000000"/>
+  </DEPS>
+  <OBJECT>
+    <ID name="JavaAnnotation" mc="Stereotype" uid="000c0b48-0000-3a00-0000-000000000000"/>
+    <PID name="JavaExtensions" mc="Profile" uid="25801104-0000-1069-0000-000000000000"/>
+    <ATTRIBUTES>
+      <ATT name="Image"></ATT>
+      <ATT name="Icon"></ATT>
+      <ATT name="IsHidden">false</ATT>
+      <ATT name="LabelKey"><![CDATA[Annotation]]></ATT>
+      <ATT name="BaseClassName"><![CDATA[Class]]></ATT>
+      <ATT name="Name"><![CDATA[JavaAnnotation]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="DefinedTagType">
+        <OBJECT>
+          <ID name="JavaDocumentedAnnotation" mc="TagType" uid="000c0b48-0000-3a59-0000-000000000000"/>
+          <PID name="JavaAnnotation" mc="Stereotype" uid="000c0b48-0000-3a00-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="ParamNumber"><![CDATA[0]]></ATT>
+            <ATT name="IsQualified">false</ATT>
+            <ATT name="BelongToPrototype">false</ATT>
+            <ATT name="IsHidden">false</ATT>
+            <ATT name="LabelKey"><![CDATA[Documented Annotation]]></ATT>
+            <ATT name="Name"><![CDATA[JavaDocumentedAnnotation]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="JavaInheritedAnnotation" mc="TagType" uid="000c0b48-0000-3a5b-0000-000000000000"/>
+          <PID name="JavaAnnotation" mc="Stereotype" uid="000c0b48-0000-3a00-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="ParamNumber"><![CDATA[0]]></ATT>
+            <ATT name="IsQualified">false</ATT>
+            <ATT name="BelongToPrototype">false</ATT>
+            <ATT name="IsHidden">false</ATT>
+            <ATT name="LabelKey"><![CDATA[Inherited Annotation]]></ATT>
+            <ATT name="Name"><![CDATA[JavaInheritedAnnotation]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="JavaRetentionAnnotation" mc="TagType" uid="000c0b48-0000-3a5d-0000-000000000000"/>
+          <PID name="JavaAnnotation" mc="Stereotype" uid="000c0b48-0000-3a00-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="ParamNumber"><![CDATA[1]]></ATT>
+            <ATT name="IsQualified">false</ATT>
+            <ATT name="BelongToPrototype">false</ATT>
+            <ATT name="IsHidden">false</ATT>
+            <ATT name="LabelKey"><![CDATA[Retention Annotation]]></ATT>
+            <ATT name="Name"><![CDATA[JavaRetentionAnnotation]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+        <OBJECT>
+          <ID name="JavaTargetAnnotation" mc="TagType" uid="000c0b48-0000-3a5f-0000-000000000000"/>
+          <PID name="JavaAnnotation" mc="Stereotype" uid="000c0b48-0000-3a00-0000-000000000000"/>
+          <ATTRIBUTES>
+            <ATT name="ParamNumber"><![CDATA[*]]></ATT>
+            <ATT name="IsQualified">false</ATT>
+            <ATT name="BelongToPrototype">false</ATT>
+            <ATT name="IsHidden">false</ATT>
+            <ATT name="LabelKey"><![CDATA[Target Annotation]]></ATT>
+            <ATT name="Name"><![CDATA[JavaTargetAnnotation]]></ATT>
+            <ATT name="status">1970354901745664</ATT>
+          </ATTRIBUTES>
+          <DEPENDENCIES></DEPENDENCIES>
+        </OBJECT>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>
