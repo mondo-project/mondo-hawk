@@ -1,9 +1,0 @@
-IfcWindow.all.select(
-        windowa | IfcWindow.all.exists(
-                        windowb | windowa.Name = windowb.Name and
-                                                windowa <> windowb)
-).size().println();
-
-IfcWindow.all.size().println();
-
-Model.allContents().size().println();
