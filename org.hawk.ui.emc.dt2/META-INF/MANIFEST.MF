@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hawk EMC development tools
+Bundle-SymbolicName: org.hawk.ui.emc.dt2;singleton:=true
+Bundle-Version: 1.2.0.qualifier
+Require-Bundle: org.eclipse.epsilon.common.dt,
+ org.hawk.core,
+ org.hawk.epsilon,
+ org.hawk.ui2
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Eclipse.org
+Export-Package: org.hawk.ui.emc.dt2

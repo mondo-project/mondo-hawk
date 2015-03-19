@@ -36,8 +36,6 @@ import org.hawk.svn.SvnManager;
 
 public class Runtime_example {
 
-	private final static char[] adminpw = "admin".toCharArray();
-
 	private static IQueryEngine q;
 	private static IModelIndexer i;
 
@@ -63,28 +61,27 @@ public class Runtime_example {
 	}
 
 	/**
+	 * 
 	 * @param args
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
 
+		// create an empty hawk model indexer
 		i = new ModelIndexerImpl("hawk1", parent, new DefaultConsole());
 
-		// metamodel
+		// add a metamodel factory
 		i.addMetaModelResourceFactory(new EMFMetaModelResourceFactory());
 
-		// model
+		// add a model factory
 		i.addModelResourceFactory(new EMFModelResourceFactory());
 
 		IGraphDatabase db = (new Neo4JDatabase());
-		// create the indexer with relevant database
+		// create the model index with relevant database
 		db.run("epsilon_test_db", i.getParentFolder(), i.getConsole());
 		i.setDB(db);
 
-		// set path of vcs
-
-		// String vcsloc =
-		// "https://hawk.googlecode.com/svn/trunk/hawk-images-model-tests/models/single/";
+		// set path of vcs to monitor
 
 		// String vcsloc =
 		// "C:/Users/kb/Desktop/workspace_runtime/EOL_tests/hawk_model_tests/0";
@@ -94,9 +91,10 @@ public class Runtime_example {
 
 		//
 
-		//String vcsloc = "../org.hawk.emf/src/org/hawk/emf/model/examples/single/0";
+		// String vcsloc =
+		// "../org.hawk.emf/src/org/hawk/emf/model/examples/single/0";
 
-		String vcsloc = "../_hawk_runtime_example/runtime_data/model/3";
+		String vcsloc = "../_hawk_runtime_example/runtime_data/model/0";
 
 		//
 
@@ -106,27 +104,29 @@ public class Runtime_example {
 		// your own user name and password!)
 		//
 		// String vcsloc =
-		// "https://svn.cs.york.ac.uk/svn/sosym/kostas/Hawk/org.hawk.emf/src/org/hawk/emf/model/examples/single/0";
+		// "https://cssvn.york.ac.uk/repos/sosym/kostas/Hawk/org.hawk.emf/src/org/hawk/emf/model/examples/single/0";
 
-		// add vcs monitors
+		// add a vcs monitor
 		// IVcsManager vcs = new SvnManager();
 		IVcsManager vcs = new LocalFolder();
 
 		String pw;
 
+		// do not ask for a password if the vcs monitor is a LocalFolder
+		// instance otherwise ask for a password
 		if (vcs instanceof LocalFolder)
 			pw = "noneed";
 		else
 			pw = password();
 
 		if (pw != null) {
-			vcs.run(vcsloc, "kb", pw, i.getConsole());
+			vcs.run(vcsloc, "kb634", pw, i.getConsole());
 		} else
 			System.exit(1);
 		pw = null;
 		i.addVCSManager(vcs);
 
-		// metamodel updater
+		// add a metamodel updater
 		i.setMetaModelUpdater(new GraphMetaModelUpdater());
 
 		// add one or more metamodel files
@@ -137,18 +137,19 @@ public class Runtime_example {
 		// i.removeMetamodel(metamodel);
 
 		//
-		//addDerivedandIndexedAttributes();
+		addDerivedandIndexedAttributes();
 		//
-		
-		// model updater
+
+		// add a (default) model updater
 		i.addModelUpdater(new GraphModelUpdater());
 
-		// query language
+		// add a query language
 		q = new EOLQueryEngine();
 		i.addQueryEngine(q);
 
-		// initialise the server for real-time updates to changes
-		i.init(adminpw);
+		// initialise the server for real-time updates to changes -- this has to
+		// be done after initialising all the relevant plugins you want online
+		i.init();
 
 		// add console interaction if needed
 		Thread t = consoleInteraction(i);
@@ -200,10 +201,9 @@ public class Runtime_example {
 								|| s.equalsIgnoreCase("e")) {
 							i2.shutdown(null, true);
 							System.exit(0);
-						} 	else if (s.equalsIgnoreCase("adi")) {
+						} else if (s.equalsIgnoreCase("adi")) {
 							addDerivedandIndexedAttributes();
-						}
-						else if (s.equalsIgnoreCase("qq")) {
+						} else if (s.equalsIgnoreCase("qq")) {
 							i2.query(testquery, queryLangID);
 						} else if (s.equalsIgnoreCase("query")
 								|| s.equalsIgnoreCase("q")) {
@@ -235,14 +235,9 @@ public class Runtime_example {
 
 						} else if (s.equalsIgnoreCase("tf")) {
 
-							i.addDerivedAttribute(
-									"org.amma.dsl.jdt.dom",
-									"MethodDeclaration",
-									"isSameReturnType",
-									"Boolean",
-									false,
-									true,
-									true,
+							i.addDerivedAttribute("org.amma.dsl.jdt.dom",
+									"MethodDeclaration", "isSameReturnType",
+									"Boolean", false, true, true,
 									"org.hawk.epsilon.emc.GraphEpsilonModel",
 									// always false
 									"self.returnType.isTypeOf(MethodDeclaration)");

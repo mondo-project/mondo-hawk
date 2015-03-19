@@ -43,9 +43,11 @@ public class SvnManager extends AbstractVcsManager {
 	private boolean isActive = false;
 
 	private static String password() {
-		// keeps jvm alive for ever, why ? !
 		final JFrame parent = new JFrame();
-		return JOptionPane.showInputDialog(parent, "pw plz", "hi there");
+		parent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		String s = JOptionPane.showInputDialog(parent, "pw plz", "hi there");
+		parent.dispose();
+		return s;
 	}
 
 	public SvnManager() {
@@ -56,21 +58,26 @@ public class SvnManager extends AbstractVcsManager {
 	}
 
 	public static void main(String[] _) throws Exception {
+		System.err.println("testing");
 		String pass = password();
+		System.err.println("testing2");
 		SvnManager m = new SvnManager();
-		m.run("https://svn.cs.york.ac.uk/svn/sosym/kostas/Hawk/org.hawk.emf/src/org/hawk/emf/model/examples/single/",
-				"kb", pass, null);
+		System.err.println("testing3");
+		m.run("https://cssvn.york.ac.uk/repos/sosym/kostas/Hawk/org.hawk.emf/src/org/hawk/emf/model/examples/single/0",
+				"kb634", pass, null);
+		System.err.println("testing4");
 		m.test();
+		System.err.println("testing5-end");
 	}
 
 	private void test() {
 		try {
 			console = new DefaultConsole();
 			System.err.println("------------");
-			System.out.println(getDelta(getRepository(), "0"));
+			System.err.println(getDelta(getRepository(), "0"));
 			shutdown();
 			System.err.println("------------");
-			System.exit(0);
+			// System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -126,20 +133,26 @@ public class SvnManager extends AbstractVcsManager {
 		delta.setRepository(repository);
 
 		String userProviderURL = _svnRepository.getUrl();
+		// System.err.println(_svnRepository.getUrl());
 		String rootURL = svnRepository.getRepositoryRoot(false)
 				.toDecodedString();
+		// System.err.println(rootURL);
 
 		String overLappedURL = makeRelative(rootURL, userProviderURL);
-		if (!overLappedURL.startsWith("/")) {
-			overLappedURL = "/" + overLappedURL;
-		}
+		// if (!overLappedURL.startsWith("/")) {
+		// overLappedURL = "/" + overLappedURL;
+		// }
+		// System.err.println(overLappedURL);
 
 		if (!startRevision.equals(endRevision)) {
 			Collection<?> c = svnRepository.log(new String[] { "" }, null,
 					Long.valueOf(startRevision), Long.valueOf(endRevision),
 					true, true);
 
+			// System.err.println(c);
+
 			for (Object o : c) {
+
 				SVNLogEntry svnLogEntry = (SVNLogEntry) o;
 
 				VcsCommit commit = new VcsCommit();
@@ -172,39 +185,45 @@ public class SvnManager extends AbstractVcsManager {
 					// !Arrays.asList(blacklist).contains(ext));
 					if (!Arrays.asList(blacklist).contains(ext)) {
 
-						VcsCommitItem commitItem = new VcsCommitItem();
-						commit.getItems().add(commitItem);
-						commitItem.setCommit(commit);
+						if (path.contains(overLappedURL)) {
 
-						// XXX KOSTAS - removed starting / for Hawk.
-						String relativePath = makeRelative(overLappedURL, path);
-						// if (!relativePath.startsWith("/")) {
-						// relativePath = "/" + relativePath;
-						// }
-						commitItem.setPath(relativePath);
+							VcsCommitItem commitItem = new VcsCommitItem();
+							commit.getItems().add(commitItem);
+							commitItem.setCommit(commit);
 
-						if (svnLogEntryPath.getType() == 'A') {
-							commitItem.setChangeType(VcsChangeType.ADDED);
-						} else if (svnLogEntryPath.getType() == 'M') {
-							commitItem.setChangeType(VcsChangeType.UPDATED);
-						} else if (svnLogEntryPath.getType() == 'D') {
-							commitItem.setChangeType(VcsChangeType.DELETED);
-						} else if (svnLogEntryPath.getType() == 'R') {
-							commitItem.setChangeType(VcsChangeType.REPLACED);
-						} else {
-							System.err
-									.println("Found unrecognised svn log entry type: "
-											+ svnLogEntryPath.getType());
-							commitItem.setChangeType(VcsChangeType.UNKNOWN);
+							// XXX KOSTAS - removed starting / for Hawk + entire
+							// relative making.
+							// String relativePath = makeRelative(overLappedURL,
+							// path);
+							// if (!relativePath.startsWith("/")) {
+							// relativePath = "/" + relativePath;
+							// }
+							// commitItem.setPath(relativePath);
+							commitItem.setPath(path);
+
+							if (svnLogEntryPath.getType() == 'A') {
+								commitItem.setChangeType(VcsChangeType.ADDED);
+							} else if (svnLogEntryPath.getType() == 'M') {
+								commitItem.setChangeType(VcsChangeType.UPDATED);
+							} else if (svnLogEntryPath.getType() == 'D') {
+								commitItem.setChangeType(VcsChangeType.DELETED);
+							} else if (svnLogEntryPath.getType() == 'R') {
+								commitItem
+										.setChangeType(VcsChangeType.REPLACED);
+							} else {
+								System.err
+										.println("Found unrecognised svn log entry type: "
+												+ svnLogEntryPath.getType());
+								commitItem.setChangeType(VcsChangeType.UNKNOWN);
+							}
 						}
 					}
-					// }
 				}
 			}
 		}
 
 		for (VcsCommitItem c : delta.getCompactedCommitItems()) {
-			console.println(c.toString());
+			System.out.println(c.getPath());
 		}
 
 		return delta;

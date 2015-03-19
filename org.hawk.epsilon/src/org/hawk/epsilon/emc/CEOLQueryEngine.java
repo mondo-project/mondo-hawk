@@ -2,13 +2,17 @@ package org.hawk.epsilon.emc;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
+import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
+import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
@@ -17,6 +21,19 @@ import org.hawk.core.graph.IGraphTransaction;
 public class CEOLQueryEngine extends EOLQueryEngine {
 
 	Set<IGraphNode> files = null;
+
+	@Override
+	public void load(IGraphDatabase g) throws EolModelLoadingException {
+		super.load(g);
+		load(config);
+	}
+
+	public void load(StringProperties config) {
+		Map<String, String> m = new HashMap<String, String>();
+		for (Object s : config.keySet())
+			m.put(((String) (s)), config.getProperty((String) (s)));
+		load(m);
+	}
 
 	public void load(Map<String, String> context) {
 
@@ -248,9 +265,9 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 
 							IGraphNode node = n.getStartNode();
 
-							//System.err.println(Arrays.toString(files.toArray()));
-							//System.err.println(files.iterator().next().getGraph());
-							//System.err.println(node.getOutgoingWithType("file").iterator().next().getEndNode().getGraph());
+							// System.err.println(Arrays.toString(files.toArray()));
+							// System.err.println(files.iterator().next().getGraph());
+							// System.err.println(node.getOutgoingWithType("file").iterator().next().getEndNode().getGraph());
 
 							if (files.contains(node.getOutgoingWithType("file")
 									.iterator().next().getEndNode())) {

@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -38,6 +39,7 @@ import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphChangeDescriptor;
 import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.model.IHawkMetaModelResource;
@@ -483,11 +485,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 					"\\\\", "/");
 
 			// change to workspace directory or a generic one on release
-			filechoser
-					.setCurrentDirectory(new File(
-							new File(parent).getParentFile().getAbsolutePath()
-									.replaceAll("\\\\", "/")
-									+ "workspace/org.hawk.epsilon/src/org/hawk/epsilon/query"));
+			filechoser.setCurrentDirectory(new File(new File(parent)
+					.getParentFile().getAbsolutePath().replaceAll("\\\\", "/")
+					+ "workspace/org.hawk.epsilon/src/org/hawk/epsilon/query"));
 
 			if (filechoser.showDialog(fileChoserWindow, "Select File") == JFileChooser.APPROVE_OPTION)
 				query = filechoser.getSelectedFile();
@@ -1122,4 +1122,105 @@ public class ModelIndexerImpl implements IModelIndexer {
 		return q.contextlessQuery(graph, query);
 	}
 
+	@Override
+	public Collection<String> getDerivedAttributes() {
+
+		HashSet<String> ret = new HashSet<String>();
+
+		try (IGraphTransaction t = graph.beginTransaction()) {
+
+			ret.addAll(graph.getNodeIndexNames());
+
+			Iterator<String> it = ret.iterator();
+			while (it.hasNext()) {
+				String s = it.next();
+				if (!s.matches("(.*)##(.*)##(.*)"))
+					it.remove();
+
+			}
+
+			it = ret.iterator();
+			while (it.hasNext()) {
+				String s = it.next();
+				String[] split = s.split("##");
+				IGraphNode epackagenode = graph.getMetamodelIndex()
+						.get("id", split[0]).iterator().next();
+				IGraphNode typenode = null;
+				for (IGraphEdge e : epackagenode
+						.getIncomingWithType("epackage")) {
+					IGraphNode temp = e.getStartNode();
+					if (temp.getProperty("id").equals(split[1]))
+						if (typenode == null)
+							typenode = temp;
+						else
+							System.err
+									.println("error in getDerivedAttributes, typenode had more than 1 type found");
+				}
+				if (!((String[]) typenode.getProperty(split[2]))[0].equals("d"))
+					it.remove();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ret;
+
+	}
+
+	@Override
+	public Collection<String> getIndexedAttributes() {
+
+		HashSet<String> ret = new HashSet<String>();
+
+		try (IGraphTransaction t = graph.beginTransaction()) {
+
+			ret.addAll(graph.getNodeIndexNames());
+
+			Iterator<String> it = ret.iterator();
+			while (it.hasNext()) {
+				String s = it.next();
+				if (!s.matches("(.*)##(.*)##(.*)"))
+					it.remove();
+
+			}
+
+			it = ret.iterator();
+			while (it.hasNext()) {
+				String s = it.next();
+				String[] split = s.split("##");
+				IGraphNode epackagenode = graph.getMetamodelIndex()
+						.get("id", split[0]).iterator().next();
+				IGraphNode typenode = null;
+				for (IGraphEdge e : epackagenode
+						.getIncomingWithType("epackage")) {
+					IGraphNode temp = e.getStartNode();
+					if (temp.getProperty("id").equals(split[1]))
+						if (typenode == null)
+							typenode = temp;
+						else
+							System.err
+									.println("error in getDerivedAttributes, typenode had more than 1 type found");
+				}
+				if (((String[]) typenode.getProperty(split[2]))[0].equals("d"))
+					it.remove();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ret;
+
+	}
+
+	@Override
+	public Collection<String> getIndexes() {
+
+		try (IGraphTransaction t = graph.beginTransaction()) {
+			return graph.getNodeIndexNames();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new HashSet<String>();
+
+	}
 }

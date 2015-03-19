@@ -90,4 +90,9 @@ public class GraphMetaModelUpdater implements IMetaModelUpdater {
 
 	}
 
+	@Override
+	public String getName() {
+		return "Default Hawk GraphMetaModelUpdater (v1.0)";
+	}
+
 }

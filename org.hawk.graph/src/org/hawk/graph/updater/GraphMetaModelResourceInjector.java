@@ -12,6 +12,7 @@ package org.hawk.graph.updater;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -965,7 +966,8 @@ public class GraphMetaModelResourceInjector {
 									+ "#"
 									+ typename
 									+ " does not exist, aborting operation: addIndexedAttribute");
-				} else if (metadata[0] != "a") {
+				} else if (!metadata[0].equals("a")) {
+					// System.err.println(Arrays.toString(metadata));
 					System.err
 							.println(metamodeluri
 									+ "#"

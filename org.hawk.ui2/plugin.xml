@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="Hawk"
+            id="hawk.ui.plugin">
+      </category>
+      <wizard
+            name="Hawk Instance"
+            icon="icons/repo_rep.gif"
+            category="hawk.ui.plugin"
+            class="org.hawk.ui2.wizard.HWizard"
+            id="hawk.ui.wizard.HawkNewWizard">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Hawk"
+            id="hawk">
+      </category>
+      <view
+            name="Hawk"
+            icon="icons/repo_rep.gif"
+            category="hawk"
+            class="org.hawk.ui2.view.HView"
+            id="hawk.ui.view.HawkView">
+      </view>
+   </extension>
+</plugin>

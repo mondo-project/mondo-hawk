@@ -34,4 +34,6 @@ public interface IMetaModelUpdater {
 	public abstract IGraphChangeDescriptor removeMetamodels(
 			Set<IHawkMetaModelResource> set, IModelIndexer indexer);
 
+	public abstract String getName();
+
 }

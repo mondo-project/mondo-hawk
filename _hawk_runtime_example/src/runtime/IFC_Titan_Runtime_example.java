@@ -15,11 +15,10 @@ import org.hawk.emf.model.EMFModelResourceFactory;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.updater.GraphMetaModelUpdater;
 import org.hawk.graph.updater.GraphModelUpdater;
+import org.hawk.ifc.IFCModelFactory;
+import org.hawk.ifc.mm.IFCMetaModelResourceFactory;
 import org.hawk.localfolder.LocalFolder;
 import org.hawk.neo4j_v2.Neo4JDatabase;
-
-import uk.ac.york.cs.mde.hawk.ifc.IFCModelFactory;
-import uk.ac.york.cs.mde.hawk.ifc.mm.IFCMetaModelResourceFactory;
 
 //import org.hawk.core.query.IQueryLanguage;
 

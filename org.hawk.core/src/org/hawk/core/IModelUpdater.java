@@ -33,7 +33,8 @@ public interface IModelUpdater {
 	public abstract IGraphChangeDescriptor updateStore(
 			Map<VcsCommitItem, IHawkModelResource> VcsCommitItemtoResourceMap);
 
-	void run(IAbstractConsole console, IModelIndexer modelIndexer) throws Exception;
+	void run(IAbstractConsole console, IModelIndexer modelIndexer)
+			throws Exception;
 
 	public abstract void shutdown();
 
@@ -46,5 +47,7 @@ public interface IModelUpdater {
 
 	public void updateIndexedAttribute(String metamodeluri, String typename,
 			String attributename);
+
+	public String getName();
 
 }

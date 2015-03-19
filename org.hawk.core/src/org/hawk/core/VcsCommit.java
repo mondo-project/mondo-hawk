@@ -74,4 +74,10 @@ public class VcsCommit implements Serializable {
 		return items;
 	}
 
+	public String toString() {
+
+		return revision + " : " + items;
+
+	}
+
 }

@@ -174,23 +174,24 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 		HashSet<IHawkMetaModelResource> set = new HashSet<>();
 
-		Registry globalRegistry = EPackage.Registry.INSTANCE;
-
-		HashSet<String> keys = new HashSet<>();
-
-		keys.addAll(globalRegistry.keySet());
-
-		for (String e : keys)
-			if (notDefaultPackage(e)) {
-				// System.out.println(">" + e);
-				Object ep = globalRegistry.get(e);
-				if (ep instanceof EPackage)
-					set.add(new EMFMetaModelResource(((EPackage) ep)
-							.eResource(), this));
-				else if (ep instanceof EPackage.Descriptor)
-					set.add(new EMFMetaModelResource(((EPackage.Descriptor) ep)
-							.getEPackage().eResource(), this));
-			}
+		// Registry globalRegistry = EPackage.Registry.INSTANCE;
+		//
+		// HashSet<String> keys = new HashSet<>();
+		//
+		// keys.addAll(globalRegistry.keySet());
+		//
+		// for (String e : keys)
+		// if (notDefaultPackage(e)) {
+		// // System.out.println(">" + e);
+		// Object ep = globalRegistry.get(e);
+		// if (ep instanceof EPackage)
+		// set.add(new EMFMetaModelResource(((EPackage) ep)
+		// .eResource(), this));
+		// else if (ep instanceof EPackage.Descriptor)
+		// set.add(new EMFMetaModelResource(((EPackage.Descriptor) ep)
+		// .getEPackage().eResource(), this));
+		// }
+		//
 		// System.err.println(set);
 
 		// if (set.size() > 0)

@@ -11,6 +11,7 @@
 package org.hawk.core;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -164,5 +165,11 @@ public interface IModelIndexer {
 
 	public abstract Object query(String query, String queryLangID)
 			throws Exception;
+
+	public abstract Collection<String> getDerivedAttributes();
+
+	public abstract Collection<String> getIndexedAttributes();
+
+	public abstract Collection<String> getIndexes();
 
 }

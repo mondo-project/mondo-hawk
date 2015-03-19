@@ -49,7 +49,7 @@ public class GraphModelUpdater implements IModelUpdater {
 			Map<VcsCommitItem, IHawkModelResource> r) {
 
 		long start = System.currentTimeMillis();
-		
+
 		// for (VCSFileRevision s : currreposchangeditems) {
 		// try {
 		// // if (s.getPath().endsWith(".ecore")) {
@@ -86,8 +86,9 @@ public class GraphModelUpdater implements IModelUpdater {
 		// System.err.println("change: " + change)
 
 		long end = System.currentTimeMillis();
-		syserr((end-start)/1000+"s"+(end-start)%1000+"ms [pure insertion]");
-		
+		syserr((end - start) / 1000 + "s" + (end - start) % 1000
+				+ "ms [pure insertion]");
+
 		// System.err.println("ret[0]: " + ret[0]);
 
 		// if (error) {
@@ -101,9 +102,9 @@ public class GraphModelUpdater implements IModelUpdater {
 
 		sysout("attempting to resolve any derived proxies...");
 		try {
-			ret.setUnresolvedDerivedProperties((new GraphModelInserter(indexer).resolveDerivedAttributeProxies(
-					indexer.getGraph(), indexer,
-					"org.hawk.epsilon.emc.GraphEpsilonModel")));
+			ret.setUnresolvedDerivedProperties((new GraphModelInserter(indexer)
+					.resolveDerivedAttributeProxies(indexer.getGraph(),
+							indexer, "org.hawk.epsilon.emc.GraphEpsilonModel")));
 		} catch (Exception e) {
 			syserr("Exception in updateStore - resolving DERIVED proxies, returning 0:");
 			e.printStackTrace();
@@ -190,6 +191,11 @@ public class GraphModelUpdater implements IModelUpdater {
 			String attributename) {
 		new GraphModelInserter(indexer).updateIndexedAttribute(metamodeluri,
 				typename, attributename);
+	}
+
+	@Override
+	public String getName() {
+		return "Default Hawk GraphModelUpdater (v1.0)";
 	}
 
 }
