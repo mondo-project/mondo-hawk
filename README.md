@@ -45,4 +45,15 @@ Screencast of running Hawk through its UI:
 
 http://www.youtube_video_link_soon.com
 
+note: in the interest of simplicity only the required plugins are used in this demo:
+org.hawk.core
+org.hawk.emf
+org.hawk.epsilon
+org.hawk.graph
+org.hawk.localfolder
+org.hawk.neo4j-v2
+org.hawk.neo4j-v2.dependencies
+org.hawk.ui.emc.dt2
+org.hawk.ui2
+
 --------------------------------------------------------------------------
