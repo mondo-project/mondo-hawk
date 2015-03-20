@@ -149,7 +149,15 @@ public class Runtime_example {
 
 		// initialise the server for real-time updates to changes -- this has to
 		// be done after initialising all the relevant plugins you want online
-		i.init();
+
+		char[] init = new char[5];
+		init[0] = 'a';
+		init[1] = 'd';
+		init[2] = 'm';
+		init[3] = 'i';
+		init[4] = 'n';
+
+		i.init(init);
 
 		// add console interaction if needed
 		Thread t = consoleInteraction(i);

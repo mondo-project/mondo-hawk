@@ -11,6 +11,7 @@
 package org.hawk.core.query;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 import org.hawk.core.graph.IGraphDatabase;
@@ -24,7 +25,7 @@ public interface IQueryEngine {
 
 	Object contextlessQuery(IGraphDatabase g, String query);
 
-	Object contextlessQuery(IGraphDatabase g, File query) throws Exception;
+	Object contextlessQuery(IGraphDatabase g, File query);
 
 	Object contextfullQuery(IGraphDatabase g, String query,
 			Map<String, String> context);
@@ -36,5 +37,7 @@ public interface IQueryEngine {
 			Iterable<IGraphNode> nodes);
 
 	String getType();
+
+	List<String> validate(String derivationlogic);
 
 }

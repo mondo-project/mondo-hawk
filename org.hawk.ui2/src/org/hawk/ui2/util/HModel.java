@@ -1,18 +1,13 @@
 package org.hawk.ui2.util;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.hawk.core.IMetaModelResourceFactory;
@@ -24,9 +19,11 @@ import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.runtime.ModelIndexerImpl;
+import org.hawk.core.runtime.util.SecurityManager;
 
 public class HModel {
 
+	private static char[] apw;
 	private IModelIndexer index;
 	private String dbid;
 	private boolean running;
@@ -49,6 +46,12 @@ public class HModel {
 		allowedPlugins = new ArrayList<String>();
 		running = r;
 		registeredMetamodels = new ArrayList<String>();
+		apw = new char[5];
+		apw[0] = 'a';
+		apw[1] = 'd';
+		apw[2] = 'm';
+		apw[3] = 'i';
+		apw[4] = 'n';
 	}
 
 	private static HConsole myConsole;
@@ -80,6 +83,10 @@ public class HModel {
 				m.addModelUpdater((IModelUpdater) updater
 						.createExecutableExtension("ModelUpdater"));
 
+			// hard coded metamodel updater?
+			IMetaModelUpdater metaModelUpdater = HManager.getMetaModelUpdater();
+			m.setMetaModelUpdater(metaModelUpdater);
+
 		} catch (Exception e) {
 			System.err
 					.println("Exception in trying to add create Indexer from folder:");
@@ -93,83 +100,124 @@ public class HModel {
 
 	}
 
-	private void loadConfig() {
-		loadLocalFolderConfig();
-	}
+	private void loadIndexerMetadata(String indexname) {
 
-	private void saveConfig() {
-		saveLocalFolderConfig();
-	}
+		File config = new File(getFolder() + File.separator + ".metadata_"
+				+ indexname);
 
-	private void saveLocalFolderConfig() {
-		Properties p = createPropertyList("folder",
-				(List<String>) this.getLocalLocations());
-		saveConfig(index.getParentFolder().getAbsolutePath(), ".localfolder", p);
-	}
-
-	private void loadLocalFolderConfig() {
-		for (String folder : getPropertyList(
-				loadConfig(this.getFolder(), ".localfolder"), "folder")) {
-			this.addLocal(folder);
-		}
-	}
-
-	private static Properties loadConfig(String folderName, String configName) {
-		File config = new File(folderName + File.separator + configName);
-		Properties p = new Properties();
 		if (config.exists() && config.isFile() && config.canRead()) {
 			try {
-				FileInputStream fis = new FileInputStream(
-						config.getAbsolutePath());
-				p.load(fis);
-				fis.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-			}
-		}
-		return p;
-	}
 
-	private static void saveConfig(String folderName, String configName,
-			Properties p) {
-		File config = new File(folderName + File.separator + configName);
+				BufferedReader r = new BufferedReader(new FileReader(config));
+				String indexer = r.readLine();
 
-		if (config.exists() && config.isFile() && config.canWrite()) {
-			config.delete();
-		}
+				String[] parse = indexer.split("\t");
 
-		if (!config.exists()) {
-			try {
-				FileOutputStream fos = new FileOutputStream(
-						config.getAbsolutePath());
-				p.store(fos, "");
-				fos.close();
+				if (parse.length > 3) {
+
+					String monitormetadata = parse[3];
+					for (String vcs : monitormetadata.split(":;:")) {
+
+						String[] vcsmd = vcs.split(";:;");
+
+						addencryptedVCS(vcsmd[0], vcsmd[1], vcsmd[2], vcsmd[3]);
+
+					}
+
+					// myConsole.println("indexer '" + parse[0] + "' loaded");
+
+				}
+
+				r.close();
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+
 		}
+
+		else {
+			System.err.println(config.exists() + " " + config.isFile() + " "
+					+ config.canRead());
+		}
+
 	}
 
-	private static List<String> getPropertyList(Properties properties,
-			String name) {
-		List<String> result = new ArrayList<String>();
-		for (Entry<Object, Object> entry : properties.entrySet()) {
-			if (((String) entry.getKey()).matches("^" + Pattern.quote(name)
-					+ "\\.\\d+$")) {
-				result.add((String) entry.getValue());
-			}
-		}
-		return result;
-	}
+	// private void saveConfig() {
+	// saveLocalFolderConfig();
+	// }
 
-	private static Properties createPropertyList(String key, List<String> values) {
-		Properties p = new Properties();
-		for (int i = 0; i < values.size(); i++) {
-			p.setProperty(key + "." + i, values.get(i));
-		}
-		return p;
-	}
+	// private void saveLocalFolderConfig() {
+	// Properties p = createPropertyList("folder",
+	// (List<String>) this.getLocalLocations());
+	// saveConfig(index.getParentFolder().getAbsolutePath(), ".localfolder", p);
+	// }
+
+	// private void loadLocalFolderConfig() {
+	// for (String folder : getPropertyList(
+	// loadConfig(this.getFolder(), ".localfolder"), "folder")) {
+	// this.addLocal(folder);
+	// }
+	// }
+
+	// private static Properties loadConfig(String folderName, String
+	// configName) {
+	// File config = new File(folderName + File.separator + configName);
+	// Properties p = new Properties();
+	// if (config.exists() && config.isFile() && config.canRead()) {
+	// try {
+	// FileInputStream fis = new FileInputStream(
+	// config.getAbsolutePath());
+	// p.load(fis);
+	// fis.close();
+	// } catch (FileNotFoundException e) {
+	// e.printStackTrace();
+	// } catch (IOException e) {
+	// }
+	// }
+	// return p;
+	// }
+
+	// private static void saveConfig(String folderName, String configName,
+	// Properties p) {
+	// File config = new File(folderName + File.separator + configName);
+	//
+	// if (config.exists() && config.isFile() && config.canWrite()) {
+	// config.delete();
+	// }
+	//
+	// if (!config.exists()) {
+	// try {
+	// FileOutputStream fos = new FileOutputStream(
+	// config.getAbsolutePath());
+	// p.store(fos, "");
+	// fos.close();
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
+	// }
+
+	// private static List<String> getPropertyList(Properties properties,
+	// String name) {
+	// List<String> result = new ArrayList<String>();
+	// for (Entry<Object, Object> entry : properties.entrySet()) {
+	// if (((String) entry.getKey()).matches("^" + Pattern.quote(name)
+	// + "\\.\\d+$")) {
+	// result.add((String) entry.getValue());
+	// }
+	// }
+	// return result;
+	// }
+
+	// private static Properties createPropertyList(String key, List<String>
+	// values) {
+	// Properties p = new Properties();
+	// for (int i = 0; i < values.size(); i++) {
+	// p.setProperty(key + "." + i, values.get(i));
+	// }
+	// return p;
+	// }
 
 	public static HModel create(String indexerName, String folderName,
 			String dbid, List<String> plugins) {
@@ -230,7 +278,7 @@ public class HModel {
 					+ metaModelUpdater.getName());
 			m.setMetaModelUpdater(metaModelUpdater);
 
-			m.init();
+			m.init(apw);
 			HModel hm = new HModel(m, dbid, true);
 
 			HManager.addHawk(hm);
@@ -277,14 +325,10 @@ public class HModel {
 			db.run(this.getName(), new File(this.getFolder()), myConsole);
 			index.setDB(db);
 
-			// hard coded metamodel updater?
-			IMetaModelUpdater metaModelUpdater = HManager.getMetaModelUpdater();
-			index.setMetaModelUpdater(metaModelUpdater);
+			this.loadIndexerMetadata(index.getName());
 
-			index.init();
+			index.init(apw);
 			running = true;
-
-			this.loadConfig();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -293,7 +337,7 @@ public class HModel {
 
 	public void stop() {
 		try {
-			this.saveConfig();
+			// this.saveConfig();
 			String metaData = index.getParentFolder().getAbsolutePath()
 					+ File.separator + ".metadata_" + index.getName();
 			index.shutdown(new File(metaData), false);
@@ -381,7 +425,7 @@ public class HModel {
 		return ret != null ? ret.toString() : "null";
 	}
 
-	public String query(File query, String ql) throws Exception {
+	public String query(File query, String ql) {
 		IQueryEngine q = index.getKnownQueryLanguages().get(ql);
 
 		Object ret = q.contextlessQuery(index.getGraph(), query);
@@ -405,11 +449,24 @@ public class HModel {
 		return HManager.getVCSTypes();
 	}
 
-	public void addSVN(String loc, String user, String pass) {
+	public void addencryptedVCS(String loc, String type, String user,
+			String pass) {
 		try {
 			if (!this.getLocations().contains(loc)) {
-				IVcsManager mo = HManager
-						.createVCSManager("org.hawk.svn.SvnManager");
+				IVcsManager mo = HManager.createVCSManager(type);
+				mo.run(loc, SecurityManager.decrypt(user, apw),
+						SecurityManager.decrypt(pass, apw), myConsole);
+				index.addVCSManager(mo);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void addVCS(String loc, String type, String user, String pass) {
+		try {
+			if (!this.getLocations().contains(loc)) {
+				IVcsManager mo = HManager.createVCSManager(type);
 				mo.run(loc, user, pass, myConsole);
 				index.addVCSManager(mo);
 			}
@@ -418,18 +475,18 @@ public class HModel {
 		}
 	}
 
-	public void addLocal(String loc) {
-		try {
-			if (!this.getLocations().contains(loc)) {
-				IVcsManager mo = HManager
-						.createVCSManager("org.hawk.localfolder.LocalFolder");
-				mo.run(loc, "", "", myConsole);
-				index.addVCSManager(mo);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	// public void addLocal(String loc) {
+	// try {
+	// if (!this.getLocations().contains(loc)) {
+	// IVcsManager mo = HManager
+	// .createVCSManager("org.hawk.localfolder.LocalFolder");
+	// mo.run(loc, "", "", myConsole);
+	// index.addVCSManager(mo);
+	// }
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
 
 	public Collection<String> getLocations() {
 
@@ -480,6 +537,11 @@ public class HModel {
 
 	public Collection<String> getIndexes() {
 		return index.getIndexes();
+	}
+
+	public List<String> validateExpression(String derivationlanguage,
+			String derivationlogic) {
+		return index.validateExpression(derivationlanguage, derivationlogic);
 	}
 
 }

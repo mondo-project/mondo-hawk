@@ -16,7 +16,7 @@ import org.hawk.core.graph.IGraphTransaction;
 
 public class GraphNodeWrapper {
 
-	private IGraphDatabase container;
+	// private IGraphDatabase container;
 	private String id;
 	private EOLQueryEngine containerModel;
 
@@ -25,7 +25,7 @@ public class GraphNodeWrapper {
 
 		try {
 
-			this.container = object;
+			// this.container = object;
 			this.id = id;
 
 		} catch (Exception e) {
@@ -63,9 +63,10 @@ public class GraphNodeWrapper {
 
 		String type = "";
 
-		try (IGraphTransaction t = container.beginTransaction()) {
+		try (IGraphTransaction t = containerModel.getBackend()
+				.beginTransaction()) {
 
-			IGraphNode n = container.getNodeById(id);
+			IGraphNode n = containerModel.getBackend().getNodeById(id);
 
 			type = n.getOutgoingWithType("typeOf").iterator().next()
 					.getEndNode().getProperty("id").toString();
@@ -90,14 +91,15 @@ public class GraphNodeWrapper {
 
 		String info = "";
 
-		try (IGraphTransaction t = container.beginTransaction()) {
+		try (IGraphTransaction t = containerModel.getBackend()
+				.beginTransaction()) {
 
 			// Node n = container.getNodeById(id);
 
 			// HawkClass e = new MetamodelUtils().getTypeOfFromNode(n,
 			// containerModel.parser);
 
-			info += "of type: " + getTypeName();
+			info += "type:" + getTypeName();
 			info += "";
 
 			// + (e != null ? e.getName() : new MetamodelUtils()
@@ -110,15 +112,19 @@ public class GraphNodeWrapper {
 			e.printStackTrace();
 		}
 
-		return "Wrapper with id: "
-				+ id
-				+ " $ in model: "
-				+ (containerModel != null ? containerModel.toString()
-						: "(null container model!)")
-				+ " (name: "
-				+ (containerModel != null ? containerModel.getName()
-						: "(null container model!)") + ") $ "
+		// return "Wrapper with id: "
+		// + id
+		// + " $ in model: "
+		// + (containerModel != null ? containerModel.toString()
+		// : "(null container model!)")
+		// + " (name: "
+		// + (containerModel != null ? containerModel.getName()
+		// : "(null container model!)") + ") $ "
+		// + (info.equals("") ? "[no meta-info]" : info) + "";
+
+		return "GNW|id:" + id + "|"
 				+ (info.equals("") ? "[no meta-info]" : info) + "";
+
 	}
 
 	// public String toString(){

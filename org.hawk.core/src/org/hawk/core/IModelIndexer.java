@@ -12,6 +12,7 @@ package org.hawk.core;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,12 +30,12 @@ public interface IModelIndexer {
 	 */
 	public abstract boolean synchronise() throws Exception;
 
-	/**
-	 * shuts down, not persisting any metadata
-	 * 
-	 * @throws Exception
-	 */
-	public abstract void shutdown() throws Exception;
+	// /**
+	// * shuts down, not persisting any metadata
+	// *
+	// * @throws Exception
+	// */
+	// public abstract void shutdown() throws Exception;
 
 	/**
 	 * shuts down, persisting metadata (used in default ui plugin to load) also
@@ -102,20 +103,22 @@ public interface IModelIndexer {
 	/**
 	 * starts hawk -- given an admit password for de-serialising any stored
 	 * passwords for saved version control systems NOTE: run init() with no
-	 * parameters to disregard serialisation of hawk metadata
+	 * parameters to disregard serialisation of hawk metadata. NOTE: do not call
+	 * this method before setting all the required factories and parsers you
+	 * wish to use in this hawk!
 	 * 
 	 * @param adminpw
 	 * @throws Exception
 	 */
 	public abstract void init(char[] adminpw) throws Exception;
 
-	/**
-	 * NOTE: do not call this method before setting all the required factories
-	 * and parsers you wish to use in this hawk!
-	 * 
-	 * @throws Exception
-	 */
-	public abstract void init() throws Exception;
+	// /**
+	// * NOTE: do not call this method before setting all the required factories
+	// * and parsers you wish to use in this hawk!
+	// *
+	// * @throws Exception
+	// */
+	// public abstract void init() throws Exception;
 
 	public abstract IModelResourceFactory getModelParser(String type);
 
@@ -171,5 +174,8 @@ public interface IModelIndexer {
 	public abstract Collection<String> getIndexedAttributes();
 
 	public abstract Collection<String> getIndexes();
+
+	public abstract List<String> validateExpression(String derivationlanguage,
+			String derivationlogic);
 
 }

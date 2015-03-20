@@ -1,7 +1,6 @@
 package org.hawk.ui2.dialog;
 
 import java.io.File;
-import java.util.Collections;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.dialogs.Dialog;
@@ -14,6 +13,8 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -106,7 +107,7 @@ public class HConfigDialog extends Dialog {
 	private Composite dTab(TabFolder parent) {
 		final Composite composite = new Composite(parent, SWT.BORDER);
 		final GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 1;
+		gridLayout.numColumns = 2;
 		composite.setLayout(gridLayout);
 
 		daList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
@@ -122,8 +123,17 @@ public class HConfigDialog extends Dialog {
 
 		updateDAList();
 
+		Button remove = new Button(composite, SWT.PUSH);
+		remove.setText("Remove");
+		remove.setEnabled(false);
+		remove.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				// remove action
+			}
+		});
+
 		Button b = new Button(composite, SWT.NONE);
-		b.setText("Add new Derived Attribute");
+		b.setText("Add...");
 		b.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				dAdd();
@@ -136,7 +146,7 @@ public class HConfigDialog extends Dialog {
 	private Composite iTab(TabFolder parent) {
 		final Composite composite = new Composite(parent, SWT.BORDER);
 		final GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 1;
+		gridLayout.numColumns = 2;
 		composite.setLayout(gridLayout);
 
 		iaList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
@@ -152,8 +162,17 @@ public class HConfigDialog extends Dialog {
 
 		updateIAList();
 
+		Button remove = new Button(composite, SWT.PUSH);
+		remove.setText("Remove");
+		remove.setEnabled(false);
+		remove.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				// remove action
+			}
+		});
+
 		Button b = new Button(composite, SWT.NONE);
-		b.setText("Add new Indexed Attribute");
+		b.setText("Add...");
 		b.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				iAdd();
@@ -340,6 +359,33 @@ public class HConfigDialog extends Dialog {
 			Boolean isUnique = false;
 			String derivationlanguage = "";
 			String derivationlogic = "self.bodyDeclarations.exists(md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public==true) and md.modifiers.exists(mod:Modifier|mod.static==true) and md.returnType.isTypeOf(SimpleType) and md.returnType.name.fullyQualifiedName == self.name.fullyQualifiedName)";
+			String error = "";
+
+			private boolean check() {
+
+				java.util.List<String> l = index.validateExpression(
+						derivationlanguage, derivationlogic);
+
+				if (l.size() > 0) {
+
+					error = "";
+
+					for (int i = 0; i < l.size(); i++) {
+						String s = l.get(i);
+						error = error + (i + 1) + ") " + s + "\n";
+					}
+
+				} else
+					error = "";
+
+				// System.out.println(error);
+
+				return !uri.equals("") && !type.equals("") && !name.equals("")
+						&& !atttype.equals("")
+						&& !derivationlanguage.equals("")
+						&& !derivationlogic.equals("") && l.size() == 0;
+
+			}
 
 			protected Control createDialogArea(Composite parent) {
 
@@ -364,19 +410,6 @@ public class HConfigDialog extends Dialog {
 				final Combo c = new Combo(composite, SWT.READ_ONLY);
 				for (String s : index.getRegisteredMetamodels())
 					c.add(s);
-				c.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						uri = c.getText();
-						Button ok = getButton(IDialogConstants.OK_ID);
-						if (!uri.equals("") && !type.equals("")
-								&& !name.equals("") && !atttype.equals("")
-								&& !derivationlanguage.equals("")
-								&& !derivationlogic.equals(""))
-							ok.setEnabled(true);
-						else
-							ok.setEnabled(false);
-					}
-				});
 
 				l = new Label(composite, SWT.NONE);
 				l.setText(" Type Name: ");
@@ -387,21 +420,6 @@ public class HConfigDialog extends Dialog {
 				data.minimumWidth = 200;
 				t.setLayoutData(data);
 				t.setText(type);
-				t.addModifyListener(new ModifyListener() {
-
-					@Override
-					public void modifyText(ModifyEvent e) {
-						type = t.getText().trim();
-						Button ok = getButton(IDialogConstants.OK_ID);
-						if (!uri.equals("") && !type.equals("")
-								&& !name.equals("") && !atttype.equals("")
-								&& !derivationlanguage.equals("")
-								&& !derivationlogic.equals(""))
-							ok.setEnabled(true);
-						else
-							ok.setEnabled(false);
-					}
-				});
 
 				// Button b = new Button(composite, SWT.NONE);
 				// data = new GridData(SWT.BEGINNING, SWT.BEGINNING, false,
@@ -417,21 +435,6 @@ public class HConfigDialog extends Dialog {
 				data.minimumWidth = 200;
 				t2.setLayoutData(data);
 				t2.setText(name);
-				t2.addModifyListener(new ModifyListener() {
-
-					@Override
-					public void modifyText(ModifyEvent e) {
-						name = t2.getText().trim();
-						Button ok = getButton(IDialogConstants.OK_ID);
-						if (!uri.equals("") && !type.equals("")
-								&& !name.equals("") && !atttype.equals("")
-								&& !derivationlanguage.equals("")
-								&& !derivationlogic.equals(""))
-							ok.setEnabled(true);
-						else
-							ok.setEnabled(false);
-					}
-				});
 
 				l = new Label(composite, SWT.NONE);
 				l.setText(" Attribute Type: ");
@@ -440,19 +443,7 @@ public class HConfigDialog extends Dialog {
 				cc.add("String");
 				cc.add("Integer");
 				cc.add("Boolean");
-				cc.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						atttype = cc.getText();
-						Button ok = getButton(IDialogConstants.OK_ID);
-						if (!uri.equals("") && !type.equals("")
-								&& !name.equals("") && !atttype.equals("")
-								&& !derivationlanguage.equals("")
-								&& !derivationlogic.equals(""))
-							ok.setEnabled(true);
-						else
-							ok.setEnabled(false);
-					}
-				});
+
 				cc.select(0);
 				atttype = cc.getText();
 
@@ -462,19 +453,7 @@ public class HConfigDialog extends Dialog {
 				final Combo ccc = new Combo(composite, SWT.READ_ONLY);
 				ccc.add("True");
 				ccc.add("False");
-				ccc.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						isMany = Boolean.parseBoolean(ccc.getText());
-						Button ok = getButton(IDialogConstants.OK_ID);
-						if (!uri.equals("") && !type.equals("")
-								&& !name.equals("") && !atttype.equals("")
-								&& !derivationlanguage.equals("")
-								&& !derivationlogic.equals(""))
-							ok.setEnabled(true);
-						else
-							ok.setEnabled(false);
-					}
-				});
+
 				ccc.select(1);
 				isMany = Boolean.parseBoolean(ccc.getText());
 
@@ -484,19 +463,7 @@ public class HConfigDialog extends Dialog {
 				final Combo cccc = new Combo(composite, SWT.READ_ONLY);
 				cccc.add("True");
 				cccc.add("False");
-				cccc.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						isOrdered = Boolean.parseBoolean(cccc.getText());
-						Button ok = getButton(IDialogConstants.OK_ID);
-						if (!uri.equals("") && !type.equals("")
-								&& !name.equals("") && !atttype.equals("")
-								&& !derivationlanguage.equals("")
-								&& !derivationlogic.equals(""))
-							ok.setEnabled(true);
-						else
-							ok.setEnabled(false);
-					}
-				});
+
 				cccc.select(1);
 				isOrdered = Boolean.parseBoolean(cccc.getText());
 
@@ -506,19 +473,7 @@ public class HConfigDialog extends Dialog {
 				final Combo ccccc = new Combo(composite, SWT.READ_ONLY);
 				ccccc.add("True");
 				ccccc.add("False");
-				ccccc.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						isUnique = Boolean.parseBoolean(ccccc.getText());
-						Button ok = getButton(IDialogConstants.OK_ID);
-						if (!uri.equals("") && !type.equals("")
-								&& !name.equals("") && !atttype.equals("")
-								&& !derivationlanguage.equals("")
-								&& !derivationlogic.equals(""))
-							ok.setEnabled(true);
-						else
-							ok.setEnabled(false);
-					}
-				});
+
 				ccccc.select(1);
 				isUnique = Boolean.parseBoolean(ccccc.getText());
 
@@ -528,44 +483,152 @@ public class HConfigDialog extends Dialog {
 				final Combo cccccc = new Combo(composite, SWT.READ_ONLY);
 				for (String s : index.getKnownQueryLanguages())
 					cccccc.add(s);
-				cccccc.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						derivationlanguage = cccccc.getText();
-						Button ok = getButton(IDialogConstants.OK_ID);
-						if (!uri.equals("") && !type.equals("")
-								&& !name.equals("") && !atttype.equals("")
-								&& !derivationlanguage.equals("")
-								&& !derivationlogic.equals(""))
-							ok.setEnabled(true);
-						else
-							ok.setEnabled(false);
-					}
-				});
+
 				cccccc.select(0);
 				derivationlanguage = cccccc.getText();
 
 				l = new Label(composite, SWT.NONE);
 				l.setText(" Derivation Logic: ");
 
-				final Text t4 = new Text(composite, SWT.BORDER);
+				final Text t4 = new Text(composite, SWT.MULTI | SWT.BORDER
+						| SWT.WRAP | SWT.V_SCROLL);
+
 				data = new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false);
 				data.minimumWidth = 200;
-				data.widthHint = 240;
+				data.widthHint = 225;
+				data.heightHint = 150;
+				data.verticalSpan = 2;
 				t4.setLayoutData(data);
 				t4.setText(derivationlogic);
+
+				final Text t5 = new Text(composite, SWT.MULTI | SWT.WRAP);
+
+				data = new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false);
+				data.widthHint = 115;
+				data.heightHint = 135;
+				t5.setForeground(new Color(getShell().getDisplay(), 255, 0, 0));
+				t5.setBackground(composite.getBackground());
+				FontData fd = t5.getFont().getFontData()[0];
+				Font f = new Font(composite.getDisplay(), fd.getName(),
+						fd.getHeight() - 1, SWT.NORMAL);
+				t5.setFont(f);
+				t5.setLayoutData(data);
+				t5.setText("");
+				t5.setEditable(false);
+				t5.setVisible(true);
+
+				c.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						uri = c.getText();
+						Button ok = getButton(IDialogConstants.OK_ID);
+						if (check())
+							ok.setEnabled(true);
+						else
+							ok.setEnabled(false);
+						t5.setText(error);
+
+					}
+				});
+
+				t.addModifyListener(new ModifyListener() {
+
+					@Override
+					public void modifyText(ModifyEvent e) {
+						type = t.getText().trim();
+						Button ok = getButton(IDialogConstants.OK_ID);
+						if (check())
+							ok.setEnabled(true);
+						else
+							ok.setEnabled(false);
+						t5.setText(error);
+					}
+				});
+
+				t2.addModifyListener(new ModifyListener() {
+
+					@Override
+					public void modifyText(ModifyEvent e) {
+						name = t2.getText().trim();
+						Button ok = getButton(IDialogConstants.OK_ID);
+						if (check())
+							ok.setEnabled(true);
+						else
+							ok.setEnabled(false);
+						t5.setText(error);
+					}
+				});
+
+				cc.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						atttype = cc.getText();
+						Button ok = getButton(IDialogConstants.OK_ID);
+						if (check())
+							ok.setEnabled(true);
+						else
+							ok.setEnabled(false);
+						t5.setText(error);
+					}
+				});
+
+				ccc.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						isMany = Boolean.parseBoolean(ccc.getText());
+						Button ok = getButton(IDialogConstants.OK_ID);
+						if (check())
+							ok.setEnabled(true);
+						else
+							ok.setEnabled(false);
+						t5.setText(error);
+					}
+				});
+
+				cccc.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						isOrdered = Boolean.parseBoolean(cccc.getText());
+						Button ok = getButton(IDialogConstants.OK_ID);
+						if (check())
+							ok.setEnabled(true);
+						else
+							ok.setEnabled(false);
+						t5.setText(error);
+					}
+				});
+
+				ccccc.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						isUnique = Boolean.parseBoolean(ccccc.getText());
+						Button ok = getButton(IDialogConstants.OK_ID);
+						if (check())
+							ok.setEnabled(true);
+						else
+							ok.setEnabled(false);
+						t5.setText(error);
+					}
+				});
+
+				cccccc.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						derivationlanguage = cccccc.getText();
+						Button ok = getButton(IDialogConstants.OK_ID);
+						if (check())
+							ok.setEnabled(true);
+						else
+							ok.setEnabled(false);
+						t5.setText(error);
+					}
+				});
+
 				t4.addModifyListener(new ModifyListener() {
 
 					@Override
 					public void modifyText(ModifyEvent e) {
 						derivationlogic = t4.getText().trim();
 						Button ok = getButton(IDialogConstants.OK_ID);
-						if (!uri.equals("") && !type.equals("")
-								&& !name.equals("") && !atttype.equals("")
-								&& !derivationlanguage.equals("")
-								&& !derivationlogic.equals(""))
+						if (check())
 							ok.setEnabled(true);
 						else
 							ok.setEnabled(false);
+						t5.setText(error);
 					}
 				});
 
@@ -584,20 +647,18 @@ public class HConfigDialog extends Dialog {
 				ca.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 
-						System.out.println(uri + " " + type + " " + name + " "
-								+ atttype + " " + isMany + " " + isOrdered
-								+ " " + isUnique + " " + derivationlanguage
-								+ " " + derivationlogic);
+						// System.out.println(uri + " " + type + " " + name +
+						// " "
+						// + atttype + " " + isMany + " " + isOrdered
+						// + " " + isUnique + " " + derivationlanguage
+						// + " " + derivationlogic);
 
 					}
 				});
 
 				ok.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
-						if (!uri.equals("") && !type.equals("")
-								&& !name.equals("") && !atttype.equals("")
-								&& !derivationlanguage.equals("")
-								&& !derivationlogic.equals("")) {
+						if (check()) {
 
 							// System.err.println(">");
 							// System.err.println(uri);
@@ -790,12 +851,7 @@ public class HConfigDialog extends Dialog {
 		add.setText("Add");
 		add.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				if (validateSVN()) {
-					index.addSVN(location.getText(), user, pass);
-				}
-				if (validateFolder()) {
-					index.addLocal(location.getText());
-				}
+				index.addVCS(location.getText(), combo.getText(), user, pass);
 				location.setText("");
 				// combo.setItems (index.getVCSTypeNames().toArray(new
 				// String[0]));
@@ -859,8 +915,8 @@ public class HConfigDialog extends Dialog {
 			UsernamePasswordDialog upd = new UsernamePasswordDialog(getShell());
 			userPassOK = (upd.open() == Window.OK);
 			if (userPassOK) {
-				user = upd.getPassword();
-				pass = upd.getUsername();
+				user = upd.getUsername();
+				pass = upd.getPassword();
 			}
 			setAddButton();
 		}

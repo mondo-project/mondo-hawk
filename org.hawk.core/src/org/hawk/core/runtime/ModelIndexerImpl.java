@@ -411,20 +411,20 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	}
 
-	@Override
-	public void shutdown() throws Exception {
-
-		for (Timer t : TimerManager.timers)
-			t.cancel();
-		TimerManager.timers = new HashSet<>();
-
-		for (IVcsManager monitor : monitors)
-			monitor.shutdown();
-		monitors = new ArrayList<>();
-
-		graph = null;
-
-	}
+	// @Override
+	// public void shutdown() throws Exception {
+	//
+	// for (Timer t : TimerManager.timers)
+	// t.cancel();
+	// TimerManager.timers = new HashSet<>();
+	//
+	// for (IVcsManager monitor : monitors)
+	// monitor.shutdown();
+	// monitors = new ArrayList<>();
+	//
+	// graph = null;
+	//
+	// }
 
 	public String getCurrLocalTopRevision(int i) {
 		return currLocalTopRevisions.get(i);
@@ -810,7 +810,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 			metamodelupdater = u;
 		} else {
 			System.err
-					.println("metamodel updater alredy rgistered, cannot have more than one");
+					.println("metamodel updater alredy registered, cannot have more than one");
 		}
 
 	}
@@ -840,34 +840,34 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 				if (getGraph() != null) {
 
-					FileWriter r = new FileWriter(metadata, true);
+					FileWriter r = new FileWriter(metadata, false);
 
-					r.append(name + "\t" + getGraph().getName() + "\t"
+					r.write(name + "\t" + getGraph().getName() + "\t"
 							+ getGraph().getType() + "\t");
 
 					for (int i = 0; i < monitors.size(); i++) {
 
 						IVcsManager m = monitors.get(i);
 
-						r.append(m.getLocation() + ";:;" + m.getType() + ";:;");
+						r.write(m.getLocation() + ";:;" + m.getType() + ";:;");
 
 						if (m.getUn() != null && m.getPw() != null) {
 
-							r.append(SecurityManager.encrypt(m.getUn(), adminPw)
-									+ ""
+							r.write(SecurityManager.encrypt(m.getUn(), adminPw)
+									+ ";:;"
 									+ SecurityManager.encrypt(m.getPw(),
 											adminPw));
 
 						} else {
-							r.append("?" + ";:;" + "?");
+							r.write("?" + ";:;" + "?");
 						}
 
 						if (!(i == (monitors.size() - 1)))
-							r.append(":;:");
+							r.write(":;:");
 
 					}
 
-					r.append("\r\n");
+					r.write("\r\n");
 
 					r.flush();
 					r.close();
@@ -901,19 +901,19 @@ public class ModelIndexerImpl implements IModelIndexer {
 		graph = db;
 	}
 
-	@Override
-	public void init() throws Exception {
-
-		char[] init = new char[5];
-		init[0] = 'a';
-		init[1] = 'd';
-		init[2] = 'm';
-		init[3] = 'i';
-		init[4] = 'n';
-
-		init(init);
-
-	}
+	// @Override
+	// public void init() throws Exception {
+	//
+	// char[] init = new char[5];
+	// init[0] = 'a';
+	// init[1] = 'd';
+	// init[2] = 'm';
+	// init[3] = 'i';
+	// init[4] = 'n';
+	//
+	// init(init);
+	//
+	// }
 
 	@Override
 	public void init(char[] apw) throws Exception {
@@ -1160,6 +1160,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 					it.remove();
 			}
 
+			t.success();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1205,6 +1206,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 					it.remove();
 			}
 
+			t.success();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1215,12 +1217,26 @@ public class ModelIndexerImpl implements IModelIndexer {
 	@Override
 	public Collection<String> getIndexes() {
 
+		HashSet<String> ret = new HashSet<String>();
+
 		try (IGraphTransaction t = graph.beginTransaction()) {
-			return graph.getNodeIndexNames();
+
+			ret.addAll(graph.getNodeIndexNames());
+
+			t.success();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new HashSet<String>();
+		return ret;
 
+	}
+
+	@Override
+	public List<String> validateExpression(String derivationlanguage,
+			String derivationlogic) {
+
+		IQueryEngine q = knownQueryLanguages.get(derivationlanguage);
+
+		return q.validate(derivationlogic);
 	}
 }

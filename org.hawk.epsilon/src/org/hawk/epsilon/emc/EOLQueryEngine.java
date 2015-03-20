@@ -20,12 +20,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-
+import org.eclipse.epsilon.common.parse.problem.ParseProblem;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.eol.EolModule;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
@@ -81,113 +80,116 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 	 * @param c
 	 * @throws Exception
 	 */
-	public void run(IGraphDatabase g, IAbstractConsole c) throws Exception {
-
-		// this.parser = parser;
-		console = c;
-		graph = g;
-		boolean exit = false;
-
-		if (propertygetter == null)
-			propertygetter = new GraphPropertyGetter(graph, this);
-
-		JFrame fileChoserWindow = null;
-		File selectedEOL = null;
-
-		fileChoserWindow = new JFrame();
-
-		JFileChooser filechoser = new JFileChooser();
-		filechoser.setDialogTitle("Chose EOL File to run:");
-		File genericWorkspaceFile = new File("");
-		String parent = genericWorkspaceFile.getAbsolutePath().replaceAll(
-				"\\\\", "/");
-
-		// change to workspace directory or a generic one on release
-		filechoser.setCurrentDirectory(new File(new File(parent)
-				.getParentFile().getAbsolutePath()
-				+ "workspace/org.hawk.neo4j/src/org/hawk/neo4j/emc"));
-
-		// filechoser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-		if (filechoser.showDialog(fileChoserWindow, "Select File") == JFileChooser.APPROVE_OPTION)
-			selectedEOL = filechoser.getSelectedFile();
-		else {
-			System.err.println("Chosing of EOL file canceled");
-			exit = true;
-		}
-
-		fileChoserWindow.dispose();
-
-		if (!exit) {
-
-			EolModule module = new EolModule();
-
-			module.parse(selectedEOL);
-
-			System.out.println("PARSING:\n----------\n" + selectedEOL
-					+ "\n----------");
-
-			// Neo4JEpsilonModel model = new Neo4JEpsilonModel();
-
-			System.out.println("Graph path: " + g.getPath() + "\n----------");
-
-			//
-			StringProperties configuration = new StringProperties();
-
-			long x = Runtime.getRuntime().maxMemory() / 1000000 / 60;
-			// configuration.put("DUMP_DATABASE_CONFIG_ON_EXIT", true);
-			// configuration.put("DUMP_MODEL_CONFIG_ON_EXIT", true);
-			// configuration.put("DUMP_FULL_DATABASE_CONFIG_ON_EXIT", true);
-
-			configuration.put("DATABASE_LOCATION", g.getPath());
-			configuration.put("name", "Model");
-			configuration.put("ENABLE_CASHING", true);
-
-			// HashSet<String> ep = new HashSet<String>();
-			// ep.add("org.amma.dsl.jdt.core");
-			// ep.add("org.amma.dsl.jdt.primitiveTypes");
-			// ep.add("org.amma.dsl.jdt.dom");
-			//
-			// configuration.put("EPACKAGES", ep);
-
-			configuration.put("neostore.nodestore.db.mapped_memory", 5 * x
-					+ "M");
-			configuration.put("neostore.relationshipstore.db.mapped_memory", 15
-					* x + "M");
-			configuration.put("neostore.propertystore.db.mapped_memory", 20 * x
-					+ "M");
-			configuration.put(
-					"neostore.propertystore.db.strings.mapped_memory", 2 * x
-							+ "M");
-			configuration.put("neostore.propertystore.db.arrays.mapped_memory",
-					x + "M");
-			//
-
-			setDatabaseConfig(configuration);
-
-			load();
-
-			module.getContext().getModelRepository().addModel(this);
-
-			long init = System.nanoTime();
-
-			module.execute();
-
-			System.out.println("PROGRAM TOOK ~" + (System.nanoTime() - init)
-					/ 1000000000 + "s to run");
-
-			init = System.nanoTime();
-
-			this.dispose();
-
-			System.out.println("DISPOSAL TOOK ~" + (System.nanoTime() - init)
-					/ 1000000000 + "s to run");
-
-			// System.err.println("Time (s) spent in tracked method: "+time/1000000000+"."+time%1000000000
-			// +
-			// " (number of times visited) "+count+"\nsecond time tracker: "+time2/1000000000+"."+time2%1000000000);
-		}
-	}
+	// public void run(IGraphDatabase g, IAbstractConsole c) throws Exception {
+	//
+	// // this.parser = parser;
+	// console = c;
+	// graph = g;
+	// boolean exit = false;
+	//
+	// if (propertygetter == null)
+	// propertygetter = new GraphPropertyGetter(graph, this);
+	//
+	// JFrame fileChoserWindow = null;
+	// File selectedEOL = null;
+	//
+	// fileChoserWindow = new JFrame();
+	//
+	// JFileChooser filechoser = new JFileChooser();
+	// filechoser.setDialogTitle("Chose EOL File to run:");
+	// File genericWorkspaceFile = new File("");
+	// String parent = genericWorkspaceFile.getAbsolutePath().replaceAll(
+	// "\\\\", "/");
+	//
+	// // change to workspace directory or a generic one on release
+	// filechoser.setCurrentDirectory(new File(new File(parent)
+	// .getParentFile().getAbsolutePath()
+	// + "workspace/org.hawk.neo4j/src/org/hawk/neo4j/emc"));
+	//
+	// // filechoser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+	//
+	// if (filechoser.showDialog(fileChoserWindow, "Select File") ==
+	// JFileChooser.APPROVE_OPTION)
+	// selectedEOL = filechoser.getSelectedFile();
+	// else {
+	// System.err.println("Chosing of EOL file canceled");
+	// exit = true;
+	// }
+	//
+	// fileChoserWindow.dispose();
+	//
+	// if (!exit) {
+	//
+	// EolModule module = new EolModule();
+	//
+	// module.parse(selectedEOL);
+	//
+	// System.out.println("PARSING:\n----------\n" + selectedEOL
+	// + "\n----------");
+	//
+	// // Neo4JEpsilonModel model = new Neo4JEpsilonModel();
+	//
+	// System.out.println("Graph path: " + g.getPath() + "\n----------");
+	//
+	// //
+	// StringProperties configuration = new StringProperties();
+	//
+	// long x = Runtime.getRuntime().maxMemory() / 1000000 / 60;
+	// // configuration.put("DUMP_DATABASE_CONFIG_ON_EXIT", true);
+	// // configuration.put("DUMP_MODEL_CONFIG_ON_EXIT", true);
+	// // configuration.put("DUMP_FULL_DATABASE_CONFIG_ON_EXIT", true);
+	//
+	// configuration.put("DATABASE_LOCATION", g.getPath());
+	// configuration.put("name", "Model");
+	// configuration.put("ENABLE_CASHING", true);
+	//
+	// // HashSet<String> ep = new HashSet<String>();
+	// // ep.add("org.amma.dsl.jdt.core");
+	// // ep.add("org.amma.dsl.jdt.primitiveTypes");
+	// // ep.add("org.amma.dsl.jdt.dom");
+	// //
+	// // configuration.put("EPACKAGES", ep);
+	//
+	// configuration.put("neostore.nodestore.db.mapped_memory", 5 * x
+	// + "M");
+	// configuration.put("neostore.relationshipstore.db.mapped_memory", 15
+	// * x + "M");
+	// configuration.put("neostore.propertystore.db.mapped_memory", 20 * x
+	// + "M");
+	// configuration.put(
+	// "neostore.propertystore.db.strings.mapped_memory", 2 * x
+	// + "M");
+	// configuration.put("neostore.propertystore.db.arrays.mapped_memory",
+	// x + "M");
+	// //
+	//
+	// setDatabaseConfig(configuration);
+	//
+	// load();
+	//
+	// module.getContext().getModelRepository().addModel(this);
+	//
+	// long init = System.nanoTime();
+	//
+	// module.execute();
+	//
+	// System.out.println("PROGRAM TOOK ~" + (System.nanoTime() - init)
+	// / 1000000000 + "s to run");
+	//
+	// init = System.nanoTime();
+	//
+	// this.dispose();
+	//
+	// System.out.println("DISPOSAL TOOK ~" + (System.nanoTime() - init)
+	// / 1000000000 + "s to run");
+	//
+	// //
+	// System.err.println("Time (s) spent in tracked method: "+time/1000000000+"."+time%1000000000
+	// // +
+	// //
+	// " (number of times visited) "+count+"\nsecond time tracker: "+time2/1000000000+"."+time2%1000000000);
+	// }
+	// }
 
 	/**
 	 * Returns all of the contents of the database in the form of lightweight
@@ -497,7 +499,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 								"property_unused_type_or_kind");
 
 		}
- 
+
 	}
 
 	@Override
@@ -764,8 +766,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		)
 			graph = g;
 
-		if (propertygetter == null)
-			propertygetter = new GraphPropertyGetter(graph, this);
+		// if (propertygetter == null)
+		propertygetter = new GraphPropertyGetter(graph, this);
 
 		backendURI = (String) config.get("DATABASE_LOCATION");
 		// if (backendURI != null && graph == null) {
@@ -776,7 +778,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		name = (String) config.get(EOLQueryEngine.PROPERTY_NAME);
 		String ec = (String) config.get(EOLQueryEngine.PROPERTY_ENABLE_CASHING);
 		enableCache = Boolean.parseBoolean((ec == null) ? "true" : ec);
-		//System.err.println("EOL EC: " + enableCache);
+		// System.err.println("EOL EC: " + enableCache);
 
 		// limit to declared epckages if applicable
 		Object pa = config.get(EOLQueryEngine.PROPERTY_METAMODELS);
@@ -1154,13 +1156,12 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 	}
 
 	public Object contextlessQuery(IGraphDatabase g, String query, String name) {
-		graph = g;
+
 		Object ret = null;
 
-		if (propertygetter == null)
-			propertygetter = new GraphPropertyGetter(graph, this);
-
 		try {
+
+			load(g);
 
 			long truestart = System.currentTimeMillis();
 
@@ -1174,8 +1175,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 			System.out.println("Graph path: " + graph.getPath()
 					+ "\n----------");
-
-			load();
 
 			module.getContext().getModelRepository().addModel(this);
 
@@ -1235,7 +1234,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 	public Object contextfullQuery(IGraphDatabase g, String query,
 			Map<String, String> context) {
 
-		graph = g;
 		Object ret = null;
 
 		String interestingFiles = null;
@@ -1246,6 +1244,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		if (interestingFiles != null) {
 
 			try {
+
+				load(g);
 
 				long truestart = System.currentTimeMillis();
 
@@ -1336,6 +1336,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 	@Override
 	public Object contextfullQuery(IGraphDatabase g, File query,
 			Map<String, String> context) {
+		graph = g;
 		String code = "";
 		try {
 			BufferedReader r = new BufferedReader(new FileReader(query));
@@ -1496,6 +1497,30 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 	@Override
 	public String getType() {
 		return "org.hawk.epsilon.emc.GraphEpsilonModel";
+	}
+
+	@Override
+	public List<String> validate(String derivationlogic) {
+
+		// System.err.println("validating:");
+		// System.err.println(derivationlogic);
+
+		EolModule module = new EolModule();
+
+		List<String> ret = new LinkedList<>();
+
+		try {
+			derivationlogic = "return " + derivationlogic + ";";
+			module.parse(derivationlogic);
+			for (ParseProblem p : module.getParseProblems())
+				ret.add(p.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		// System.err.println(ret);
+
+		return ret;
 	}
 
 }
