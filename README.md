@@ -43,6 +43,10 @@ http://forge.modelio.org/projects/modelio3-development-app/files
 
 Screencast of running Hawk through its UI:
 
+download and configuration of Hawk onto a fresh Eclipse Luna (Modeling Tools) distribution:
+
+http://www.youtube_video_link_soon.com
+
 running of basic operations:
 
 http://www.youtube_video_link_soon.com
