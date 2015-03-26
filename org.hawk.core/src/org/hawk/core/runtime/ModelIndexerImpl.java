@@ -360,7 +360,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 										+ " unresolved references and "
 										+ change.getUnresolvedDerivedProperties()
 										+ " unresolved DERIVED properties, please ensure your new models are consistent");
-								// System.exit(1);
 							}
 						}
 						// delete temporary files

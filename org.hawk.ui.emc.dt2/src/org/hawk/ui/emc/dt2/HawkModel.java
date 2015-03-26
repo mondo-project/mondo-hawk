@@ -69,7 +69,7 @@ public class HawkModel extends ModelReference {
 		else
 			throw new EolModelLoadingException(
 					new Exception(
-							"The selected Hawk cannot connect to its back-end, are you sure it is not paused?"),
+							"The selected Hawk cannot connect to its back-end, are you sure it is not stopped?"),
 					this);
 	}
 

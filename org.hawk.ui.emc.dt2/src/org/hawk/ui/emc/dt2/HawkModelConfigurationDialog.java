@@ -27,7 +27,7 @@ public class HawkModelConfigurationDialog extends
 	}
 
 	protected String getModelName() {
-		return "Hawk Model";
+		return "Hawk Index";
 	}
 
 	protected String getModelType() {
@@ -85,8 +85,9 @@ public class HawkModelConfigurationDialog extends
 		uriTextLabel = new Label(groupContent, SWT.NONE);
 
 		t = new Text(groupContent, SWT.BORDER);
-		GridData gd = new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false);
-		gd.minimumWidth = 320;
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		//gd.widthHint = GridData.GRAB_HORIZONTAL;
+		//gd.minimumWidth = 320;
 		t.setLayoutData(gd);
 
 		populate();

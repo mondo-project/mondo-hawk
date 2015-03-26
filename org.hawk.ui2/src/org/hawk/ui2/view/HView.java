@@ -31,6 +31,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.wizards.IWizardDescriptor;
+import org.hawk.ui2.Activator;
 import org.hawk.ui2.dialog.HConfigDialog;
 import org.hawk.ui2.dialog.HQueryDialog;
 import org.hawk.ui2.util.HManager;
@@ -62,7 +63,7 @@ public class HView extends ViewPart {
 	private TableViewer viewer;
 	private Action query;
 	private Action start;
-	private Action pause;
+	private Action stop;
 	private Action delete;
 	private Action add;
 	private Action config;
@@ -78,6 +79,9 @@ public class HView extends ViewPart {
 
 	class ViewLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
+		
+		protected Image image = null;
+		
 		public String getColumnText(Object obj, int index) {
 			return getText(obj);
 		}
@@ -87,8 +91,12 @@ public class HView extends ViewPart {
 		}
 
 		public Image getImage(Object obj) {
-			return PlatformUI.getWorkbench().getSharedImages()
-					.getImage(ISharedImages.IMG_OBJ_FILE);
+			
+			if (image == null) {
+				image = Activator.getImageDescriptor("icons/hawk.png").createImage();
+			}
+			
+			return image;
 		}
 	}
 
@@ -134,11 +142,11 @@ public class HView extends ViewPart {
 
 					if (((HModel) selection.getFirstElement()).isRunning()) {
 						start.setEnabled(false);
-						pause.setEnabled(true);
+						stop.setEnabled(true);
 						query.setEnabled(true);
 						config.setEnabled(true);
 					} else {
-						pause.setEnabled(false);
+						stop.setEnabled(false);
 						start.setEnabled(true);
 						query.setEnabled(false);
 						config.setEnabled(false);
@@ -153,7 +161,7 @@ public class HView extends ViewPart {
 	private void initButtons() {
 		query.setEnabled(false);
 		start.setEnabled(false);
-		pause.setEnabled(false);
+		stop.setEnabled(false);
 		delete.setEnabled(false);
 
 		config.setEnabled(false);
@@ -162,7 +170,7 @@ public class HView extends ViewPart {
 	private void enableButtons() {
 		query.setEnabled(true);
 		start.setEnabled(true);
-		pause.setEnabled(true);
+		stop.setEnabled(true);
 		delete.setEnabled(true);
 
 		config.setEnabled(true);
@@ -190,7 +198,7 @@ public class HView extends ViewPart {
 	private void fillLocalPullDown(IMenuManager manager) {
 		manager.add(query);
 		manager.add(start);
-		manager.add(pause);
+		manager.add(stop);
 		manager.add(delete);
 		manager.add(add);
 		manager.add(config);
@@ -199,7 +207,7 @@ public class HView extends ViewPart {
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(query);
 		manager.add(start);
-		manager.add(pause);
+		manager.add(stop);
 		manager.add(delete);
 		manager.add(add);
 		manager.add(config);
@@ -208,7 +216,7 @@ public class HView extends ViewPart {
 	private void fillLocalToolBar(IToolBarManager manager) {
 		manager.add(query);
 		manager.add(start);
-		manager.add(pause);
+		manager.add(stop);
 		manager.add(delete);
 		manager.add(add);
 		manager.add(config);
@@ -241,7 +249,7 @@ public class HView extends ViewPart {
 					((HModel) selected.getFirstElement()).start();
 					viewer.refresh();
 					start.setEnabled(false);
-					pause.setEnabled(true);
+					stop.setEnabled(true);
 					query.setEnabled(true);
 					config.setEnabled(true);
 				}
@@ -253,7 +261,7 @@ public class HView extends ViewPart {
 				.find(FrameworkUtil.getBundle(this.getClass()), new Path(
 						"icons/nav_go.gif"), null)));
 
-		pause = new Action() {
+		stop = new Action() {
 			public void run() {
 				IStructuredSelection selected = (IStructuredSelection) viewer
 						.getSelection();
@@ -261,17 +269,17 @@ public class HView extends ViewPart {
 					((HModel) selected.getFirstElement()).stop();
 					viewer.refresh();
 					start.setEnabled(true);
-					pause.setEnabled(false);
+					stop.setEnabled(false);
 					query.setEnabled(false);
 					config.setEnabled(false);
 				}
 			}
 		};
-		pause.setText("Pause");
-		pause.setToolTipText("Pause");
-		pause.setImageDescriptor(ImageDescriptor.createFromURL(FileLocator
+		stop.setText("Stop");
+		stop.setToolTipText("Stop");
+		stop.setImageDescriptor(ImageDescriptor.createFromURL(FileLocator
 				.find(FrameworkUtil.getBundle(this.getClass()), new Path(
-						"icons/pause.gif"), null)));
+						"icons/stop.gif"), null)));
 
 		delete = new Action() {
 			public void run() {
@@ -287,7 +295,7 @@ public class HView extends ViewPart {
 		delete.setToolTipText("Delete");
 		delete.setImageDescriptor(ImageDescriptor.createFromURL(FileLocator
 				.find(FrameworkUtil.getBundle(this.getClass()), new Path(
-						"icons/trash.gif"), null)));
+						"icons/rem_co.gif"), null)));
 
 		add = new Action() {
 			public void run() {
@@ -313,7 +321,7 @@ public class HView extends ViewPart {
 		add.setToolTipText("Add");
 		add.setImageDescriptor(ImageDescriptor.createFromURL(FileLocator.find(
 				FrameworkUtil.getBundle(this.getClass()), new Path(
-						"icons/add_obj.gif"), null)));
+						"icons/new-hawk.png"), null)));
 
 		config = new Action() {
 			public void run() {
@@ -326,11 +334,11 @@ public class HView extends ViewPart {
 				dialog.open();
 			}
 		};
-		config.setText("Config");
-		config.setToolTipText("Config");
+		config.setText("Configure");
+		config.setToolTipText("Configure");
 		config.setImageDescriptor(ImageDescriptor.createFromURL(FileLocator
 				.find(FrameworkUtil.getBundle(this.getClass()), new Path(
-						"icons/conf.gif"), null)));
+						"icons/configure.gif"), null)));
 
 		initButtons();
 	}

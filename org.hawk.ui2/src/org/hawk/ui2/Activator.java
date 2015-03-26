@@ -10,7 +10,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "hawk.ui.plugin"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "org.hawk.ui2"; //$NON-NLS-1$
 
 	// The shared instance
 	private static Activator plugin;

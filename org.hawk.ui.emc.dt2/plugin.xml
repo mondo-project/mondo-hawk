@@ -6,8 +6,8 @@
       <modelType
             class="org.hawk.ui.emc.dt2.HawkModel"
             dialog="org.hawk.ui.emc.dt2.HawkModelConfigurationDialog"
-            icon="images/xml.png"
-            label="Hawk Model"
+            icon="images/hawk.png"
+            label="Hawk Index"
             stable="true"
             type="Hawk">
       </modelType>

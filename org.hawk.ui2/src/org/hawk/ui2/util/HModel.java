@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.hawk.core.IAbstractConsole;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.IMetaModelUpdater;
 import org.hawk.core.IModelIndexer;
@@ -23,7 +24,7 @@ import org.hawk.core.runtime.util.SecurityManager;
 
 public class HModel {
 
-	private static char[] apw;
+	private static String apw = "admin";
 	private IModelIndexer index;
 	private String dbid;
 	private boolean running;
@@ -46,21 +47,15 @@ public class HModel {
 		allowedPlugins = new ArrayList<String>();
 		running = r;
 		registeredMetamodels = new ArrayList<String>();
-		apw = new char[5];
-		apw[0] = 'a';
-		apw[1] = 'd';
-		apw[2] = 'm';
-		apw[3] = 'i';
-		apw[4] = 'n';
 	}
 
-	private static HConsole myConsole;
+	private static IAbstractConsole myConsole;
 
 	public static HModel createFromFolder(String indexerName,
 			String folderName, String dbid) {
 
 		if (myConsole == null)
-			myConsole = new HConsole("Hawk Console V2");
+			myConsole = new EclipseLogConsole(); //new HConsole("Hawk Console V2");
 		IModelIndexer m = null;
 
 		try {
@@ -223,11 +218,14 @@ public class HModel {
 			String dbid, List<String> plugins) {
 
 		if (myConsole == null)
-			myConsole = new HConsole("Hawk Console V2");
+			myConsole = new EclipseLogConsole(); //new HConsole("Hawk Console V2");
 
 		IModelIndexer m;
 		IGraphDatabase db = null;
 		try {
+			
+			//TODO: Do something with the indexer name
+			
 			m = new ModelIndexerImpl(indexerName, new File(folderName),
 					myConsole);
 
@@ -278,7 +276,7 @@ public class HModel {
 					+ metaModelUpdater.getName());
 			m.setMetaModelUpdater(metaModelUpdater);
 
-			m.init(apw);
+			m.init(apw.toCharArray());
 			HModel hm = new HModel(m, dbid, true);
 
 			HManager.addHawk(hm);
@@ -327,7 +325,7 @@ public class HModel {
 
 			this.loadIndexerMetadata(index.getName());
 
-			index.init(apw);
+			index.init(apw.toCharArray());
 			running = true;
 
 		} catch (Exception e) {
@@ -385,7 +383,7 @@ public class HModel {
 
 	public String toString() {
 		return this.getName()
-				+ (this.isRunning() ? " (running) " : " (paused) ") + " ["
+				+ (this.isRunning() ? " (running) " : " (stopped) ") + " ["
 				+ this.getFolder() + "] ";
 	}
 
@@ -454,8 +452,8 @@ public class HModel {
 		try {
 			if (!this.getLocations().contains(loc)) {
 				IVcsManager mo = HManager.createVCSManager(type);
-				mo.run(loc, SecurityManager.decrypt(user, apw),
-						SecurityManager.decrypt(pass, apw), myConsole);
+				mo.run(loc, SecurityManager.decrypt(user, apw.toCharArray()),
+						SecurityManager.decrypt(pass, apw.toCharArray()), myConsole);
 				index.addVCSManager(mo);
 			}
 		} catch (Exception e) {
