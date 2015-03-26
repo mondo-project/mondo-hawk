@@ -21,10 +21,11 @@ public interface IGraphDatabase {
 
 	String fileIndexName = "FILEINDEX";
 	String metamodelIndexName = "METAMODELINDEX";
+	String databaseName = "db";
 
 	String getPath();
 
-	void run(String name, File parentfolder, IAbstractConsole c);
+	void run(File parentfolder, IAbstractConsole c);
 
 	void shutdown(boolean b) throws Exception;
 
@@ -75,8 +76,6 @@ public interface IGraphDatabase {
 	Set<VcsCommitItem> compareWithLocalFiles(Set<VcsCommitItem> reposItems);
 
 	public abstract void logFull() throws Exception;
-
-	String getName();
 
 	String currentMode();
 

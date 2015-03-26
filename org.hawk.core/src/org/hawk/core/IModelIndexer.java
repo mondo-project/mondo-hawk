@@ -44,7 +44,7 @@ public interface IModelIndexer {
 	 * 
 	 * @throws Exception
 	 */
-	public abstract void shutdown(File metadata, boolean delete)
+	public abstract void shutdown(boolean delete)
 			throws Exception;
 
 	/**
@@ -74,12 +74,6 @@ public interface IModelIndexer {
 	public abstract void removeMetamodel(File[] metamodel) throws Exception;
 
 	public abstract void removeMetamodel(File metamodel) throws Exception;
-
-	/**
-	 * 
-	 * @return the name of the Hawk instance (not that of its back-end)
-	 */
-	public abstract String getName();
 
 	public abstract IAbstractConsole getConsole();
 
@@ -177,5 +171,7 @@ public interface IModelIndexer {
 
 	public abstract List<String> validateExpression(String derivationlanguage,
 			String derivationlogic);
+
+	public String getName();
 
 }

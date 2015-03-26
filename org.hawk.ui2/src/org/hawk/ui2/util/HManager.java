@@ -22,18 +22,26 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.PlatformUI;
+import org.hawk.core.IHawk;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.IMetaModelUpdater;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.IModelUpdater;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.util.HawkConfig;
+import org.hawk.core.util.HawkProperties;
 import org.hawk.ui2.view.HView;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class HManager implements IStructuredContentProvider, IWorkbenchListener {
 
@@ -77,7 +85,7 @@ public class HManager implements IStructuredContentProvider, IWorkbenchListener 
 
 	public Object[] getElements(Object parent) {
 		if (firstRun)
-			loadFromWorkspace();
+			loadHawksFromMetadata();
 		return all.toArray();
 	}
 
@@ -93,7 +101,7 @@ public class HManager implements IStructuredContentProvider, IWorkbenchListener 
 
 	public static Set<HModel> getHawks() {
 		if (firstRun)
-			loadFromWorkspace();
+			loadHawksFromMetadata();
 		return all;
 	}
 
@@ -111,71 +119,32 @@ public class HManager implements IStructuredContentProvider, IWorkbenchListener 
 
 	private static boolean firstRun = true;
 
-	private static void loadFromWorkspace() {
+	private static void loadHawksFromMetadata() {
 
-		System.out.println("Loading saved hawk indexers from workspace...");
+		// ...
 
-		PlatformUI.getWorkbench().addWorkbenchListener(getInstance());
+		IEclipsePreferences preferences = InstanceScope.INSTANCE
+				.getNode("org.hawk.ui2");
 
-		File workspace = ResourcesPlugin.getWorkspace().getRoot().getLocation()
-				.toFile();
+		Collection<String> hawks = new HashSet<String>();
 
-		System.out.println(workspace);
+		String xml = preferences.get("config", "error");
 
-		if (workspace.exists() && workspace.isDirectory()
-				&& workspace.canRead()) {
-			String[] subs = workspace.list();
+		if (!xml.equals("error")) {
+			XStream stream = new XStream(new DomDriver());
+			stream.processAnnotations(HawkConfig.class);
+			HawkConfig hc = (HawkConfig) stream.fromXML(xml);
+			for (String s : hc.locs)
+				hawks.add(s);
+		}
 
-			try {
-				for (String sub : subs) {
-					File subFolder = new File(workspace, sub);
-					if (subFolder.exists() && subFolder.isDirectory()
-							&& subFolder.canRead()) {
-						if (subFolder.list().length >= 2) {
-							// check if the names match up
-							// /x
-							// /x/x
-							// /.metadata_x
-							boolean isHFolder = false;
-							boolean isHMetadata = false;
-							File metadata = null;
-							for (String hawkfile : subFolder.list()) {
-								if (hawkfile.equals(".metadata_" + sub)) {
-									isHMetadata = true;
-									metadata = new File(subFolder
-											+ File.separator + hawkfile);
-								}
-
-								if (hawkfile.equals(sub))
-									isHFolder = true;
-							}
-
-							if (isHFolder && isHMetadata) {
-								// assume it is an HModel
-								BufferedReader r = new BufferedReader(
-										new FileReader(metadata));
-
-								String line = r.readLine();
-
-								r.close();
-
-								String[] split = line.split("\t");
-
-								HModel hm = HModel.createFromFolder(sub,
-										ResourcesPlugin.getWorkspace()
-												.getRoot().getLocation()
-												.toString()
-												+ File.separator + sub,
-										split[2]);
-								all.add(hm);
-							}
-
-						}
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+		try {
+			for (String s : hawks) {
+				addHawk(HModel.createFromFolder(s));
 			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		firstRun = false;
 	}
@@ -248,16 +217,17 @@ public class HManager implements IStructuredContentProvider, IWorkbenchListener 
 		}
 	}
 
-	public static IGraphDatabase createGraph(String s) throws Exception {
+	public static IGraphDatabase createGraph(IHawk hawk) throws Exception {
 
 		for (IConfigurationElement i : getBackends()) {
-			if (i.getAttribute("store").equals(s)) {
+			if (i.getAttribute("store").equals(hawk.getDbtype())) {
 
 				return (IGraphDatabase) i.createExecutableExtension("store");
 
 			}
 		}
-		throw new Exception("cannot instatate this type of graph: " + s);
+		throw new Exception("cannot instatate this type of graph: "
+				+ hawk.getDbtype());
 
 	}
 
@@ -440,9 +410,41 @@ public class HManager implements IStructuredContentProvider, IWorkbenchListener 
 
 	@Override
 	public boolean preShutdown(IWorkbench workbench, boolean forced) {
-		for (HModel hm : all)
+
+		IEclipsePreferences preferences = InstanceScope.INSTANCE
+				.getNode("org.hawk.ui2");
+
+		String xml = preferences.get("config", "error");
+
+		XStream stream = new XStream(new DomDriver());
+		stream.processAnnotations(HawkConfig.class);
+
+		HawkConfig hc = null;
+
+		if (!xml.equals("error")) {
+			hc = (HawkConfig) stream.fromXML(xml);
+		}
+
+		HashSet<String> locs = new HashSet<String>();
+
+		for (HModel hm : all) {
+			if (hc == null) {
+				locs.add(hm.getFolder());
+			} else {
+				hc.locs.add(hm.getFolder());
+			}
 			if (hm.isRunning())
 				hm.stop();
+		}
+
+		if (hc == null) {
+			hc = new HawkConfig(locs);
+			xml = stream.toXML(hc);
+		} else {
+			xml = stream.toXML(hc);
+		}
+		preferences.put("config", xml);
+
 		return true;
 	}
 

@@ -51,7 +51,6 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 	private String loc;
 	private String tempdir;
-	private String name;
 
 	private GraphDatabaseService graph;
 	private IndexManager indexer;
@@ -67,11 +66,9 @@ public class Neo4JDatabase implements IGraphDatabase {
 	public Neo4JDatabase() {
 	}
 
-	public void run(String name, File location, IAbstractConsole c) {
+	public void run(File location, IAbstractConsole c) {
 
 		console = c;
-
-		this.name = name;
 
 		if (location == null) {
 			File runtimeDir = new File("runtime_data");
@@ -83,7 +80,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 		tempdir = loc + "/temp";
 
-		loc += "/" + name;
+		loc += "/" + databaseName;
 
 		// init it
 		graph = Neo4JBatchUtil.createGraphService(loc);
@@ -183,7 +180,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 		// System.err.println(new File(getPath()).exists());
 
 		// System.err.println(
-		System.err.println("deleted store(" + name + "): "
+		System.err.println("deleted store(" + databaseName + "): "
 				+ FileOperations.deleteFiles(new File(getPath()), true));
 
 	}
@@ -600,11 +597,6 @@ public class Neo4JDatabase implements IGraphDatabase {
 		w.flush();
 		w.close();
 
-	}
-
-	@Override
-	public String getName() {
-		return name;
 	}
 
 	@Override

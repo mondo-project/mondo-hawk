@@ -78,7 +78,7 @@ public class Runtime_example {
 
 		IGraphDatabase db = (new Neo4JDatabase());
 		// create the model index with relevant database
-		db.run("epsilon_test_db", i.getParentFolder(), i.getConsole());
+		db.run(i.getParentFolder(), i.getConsole());
 		i.setDB(db);
 
 		// set path of vcs to monitor

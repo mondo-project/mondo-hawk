@@ -137,14 +137,12 @@ public class LocalFolder implements IVcsManager {
 
 	@Override
 	public String getUn() {
-		return null;
+		return "na";
 	}
 
 	@Override
 	public String getPw() {
-
-		return null;
-
+		return "na";
 	}
 
 	@Override

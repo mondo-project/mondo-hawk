@@ -8,6 +8,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.operation.*;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
@@ -49,14 +50,13 @@ public class HWizard extends Wizard implements INewWizard {
 	 */
 	public boolean performFinish() {
 		final String folder = page.getContainerName();
-		final String index = page.getIndexerName();
-		final String dbid = page.getDBID();
+		final String dbType = page.getDBID();
 		final List<String> plugins = page.getPlugins();
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor)
 					throws InvocationTargetException {
 				try {
-					doFinish(folder, index, dbid, plugins, monitor);
+					doFinish(new File(folder), dbType, plugins, monitor);
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				} finally {
@@ -79,18 +79,19 @@ public class HWizard extends Wizard implements INewWizard {
 
 	/**
 	 * The worker method.
+	 * 
+	 * @param dbType
 	 */
 
-	private void doFinish(String folderName, String indexerName, String dbid,
-			List<String> plugins, IProgressMonitor monitor)
-			throws CoreException {
+	private void doFinish(File folder, String dbType, List<String> plugins,
+			IProgressMonitor monitor) throws CoreException {
 
 		// set up a new Hawk with the selected plugins
 
 		try {
 			// create a new hawk index at containerName folder with name
 			// fileName
-			HModel.create(indexerName, folderName, dbid, plugins);
+			HModel.create(folder, dbType, plugins);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -98,7 +99,7 @@ public class HWizard extends Wizard implements INewWizard {
 
 		// open hawk view, tell the view about the new index
 
-		monitor.beginTask("Creating " + indexerName, 2);
+		monitor.beginTask("Creating ", 2);
 
 		monitor.worked(1);
 		monitor.setTaskName("Opening Hawk interface...");

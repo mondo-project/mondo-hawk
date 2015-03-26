@@ -11,9 +11,11 @@
 package org.hawk.core.runtime;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,14 +49,17 @@ import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.runtime.util.SecurityManager;
 import org.hawk.core.runtime.util.TimerManager;
-import org.hawk.core.util.DefaultConsole;
 import org.hawk.core.util.FileOperations;
+import org.hawk.core.util.HawkProperties;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class ModelIndexerImpl implements IModelIndexer {
 
-	private String name;
-
 	public static final String ID = "org.hawk.core.ModelIndexer";
+
+	private String name;
 
 	private ArrayList<IVcsManager> monitors = new ArrayList<>();
 	private IGraphDatabase graph = null;
@@ -91,7 +96,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 	 * Creates an indexer with a name, with its contents saved in parentfolder
 	 * and printing to console c.
 	 * 
-	 * @param name
 	 * @param parentfolder
 	 * @param c
 	 * @throws Exception
@@ -101,25 +105,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		this.name = name;
 		console = c;
-		this.parentfolder = parentfolder;
-		// registerMetamodelFiles();
-	}
-
-	/**
-	 * 
-	 * Creates an indexer with a name, with its contents saved in parentfolder
-	 * and printing to the default console -- see ModelIndexerImpl(String name,
-	 * File parentfolder, IAbstractConsole c) to print to a specific console or
-	 * other output mechanism.
-	 * 
-	 * @param name
-	 * @param parentfolder
-	 * @throws Exception
-	 */
-	public ModelIndexerImpl(String name, File parentfolder) throws Exception {
-
-		this.name = name;
-		console = new DefaultConsole();
 		this.parentfolder = parentfolder;
 		// registerMetamodelFiles();
 	}
@@ -391,10 +376,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public void shutdown(File f, boolean delete) throws Exception {
+	public void shutdown(boolean delete) throws Exception {
 
-		if (f != null)
-			saveIndexer(f);
+		saveIndexer();
 
 		for (Timer t : TimerManager.timers)
 			t.cancel();
@@ -465,7 +449,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 	@Override
 	public String getId() {
 
-		return "ModelIndexer | " + " | " + name;
+		return "ModelIndexer | " + " | " + this;
 
 	}
 
@@ -717,12 +701,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public String getName() {
-
-		return name;
-	}
-
-	@Override
 	public IAbstractConsole getConsole() {
 		return console;
 	}
@@ -814,75 +792,32 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	}
 
-	private void saveIndexer(File f) {
+	public void saveIndexer() throws IOException {
 
-		// save indexers
-		try {
+		// ...
 
-			File metadata = f;
+		XStream stream = new XStream(new DomDriver());
+		stream.processAnnotations(HawkProperties.class);
 
-			if (metadata == null) {
-				metadata = new File(parentfolder.getAbsolutePath().replaceAll(
-						"\\\\", "/")
-						+ "/.metadata_" + name);
-				metadata.delete();
-			}
-			// System.err.println(metadata.getAbsolutePath());
+		HashSet<String> set = new HashSet<String>();
+		for (IVcsManager s : getRunningVCSManagers())
+			set.add(s.getLocation() + ";:;" + s.getType() + ";:;" + s.getUn()
+					+ ";:;" + s.getPw());
 
-			if (!metadata.exists())
-				metadata.createNewFile();
+		HawkProperties hp = new HawkProperties(graph.getType(), set);
 
-			System.out.println("saving metadata of indexer: " + name
-					+ " to file: " + metadata);
+		String out = stream.toXML(hp);
 
-			if (adminPw != null) {
+		// System.out.println(out);
 
-				if (getGraph() != null) {
+		BufferedWriter b = new BufferedWriter(new FileWriter(getParentFolder()
+				+ File.separator + "properties.xml"));
 
-					FileWriter r = new FileWriter(metadata, false);
+		b.write(out);
 
-					r.write(name + "\t" + getGraph().getName() + "\t"
-							+ getGraph().getType() + "\t");
+		b.flush();
 
-					for (int i = 0; i < monitors.size(); i++) {
-
-						IVcsManager m = monitors.get(i);
-
-						r.write(m.getLocation() + ";:;" + m.getType() + ";:;");
-
-						if (m.getUn() != null && m.getPw() != null) {
-
-							r.write(SecurityManager.encrypt(m.getUn(), adminPw)
-									+ ";:;"
-									+ SecurityManager.encrypt(m.getPw(),
-											adminPw));
-
-						} else {
-							r.write("?" + ";:;" + "?");
-						}
-
-						if (!(i == (monitors.size() - 1)))
-							r.write(":;:");
-
-					}
-
-					r.write("\r\n");
-
-					r.flush();
-					r.close();
-				}
-				System.out
-						.println("indexer metadata saved successfuly to file: "
-								+ metadata.getAbsolutePath());
-			} else {
-				System.err.println("null adminpw");
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.err
-					.println("error in saving metadata file, indexers not saved and need to be manually added on next Hawk startup (index data still saved on disk)");
-		}
+		b.close();
 
 	}
 
@@ -971,7 +906,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		boolean allSame = true;
 
-		console.println("updating indexer: " + getName());
+		console.println("updating indexer: ");
 
 		boolean synchronised = false;
 
@@ -1237,5 +1172,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 		IQueryEngine q = knownQueryLanguages.get(derivationlanguage);
 
 		return q.validate(derivationlogic);
+	}
+
+	@Override
+	public String getName() {
+		return name;
 	}
 }

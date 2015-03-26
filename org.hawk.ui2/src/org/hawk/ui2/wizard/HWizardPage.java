@@ -3,16 +3,12 @@ package org.hawk.ui2.wizard;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -37,8 +33,6 @@ import org.hawk.ui2.util.HManager;
 public class HWizardPage extends WizardPage {
 	private Text folderText;
 
-	private Text indexerNameText;
-
 	private Combo dbidText;
 
 	private Table pluginTable;
@@ -58,61 +52,24 @@ public class HWizardPage extends WizardPage {
 	 * @see IDialogPage#createControl(Composite)
 	 */
 	public void createControl(Composite parent) {
-		
+
 		Composite container = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
 		container.setLayout(layout);
+
+		Label label = new Label(container, SWT.NULL);
+		label.setText("&Local storage folder:");
+
 		layout.numColumns = 3;
 		layout.verticalSpacing = 9;
 
-		Label label = new Label(container, SWT.NULL);
-		label.setText("&Indexer Name:");
-
-		indexerNameText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		indexerNameText.setLayoutData(gd);
-
-		label = new Label(container, SWT.NULL);
-		label.setText("");
-
-		label = new Label(container, SWT.NULL);
-		label.setText("&Local storage folder:");
-
 		folderText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		folderText.setLayoutData(gd);
-		folderText.setEditable(false);
+		// folderText.setEditable(false);
 
 		initialize();
-
-		ModifyListener ml = new ModifyListener() {
-
-			public void modifyText(ModifyEvent e) {
-				try {
-					if (e.getSource() == indexerNameText) {
-						String[] nm = folderText.getText().split(
-								File.separator.equals("\\") ? "\\\\"
-										: File.separator);
-						if (nm[nm.length - 1] != getIndexerName()) {
-							String temp = "";
-							for (int i = 0; i < nm.length - 1; i++) {
-								temp += nm[i] + File.separator;
-							}
-							temp = temp.substring(0, temp.length() - 1);
-							folderText.setText(temp + File.separator
-									+ getIndexerName());
-						}
-					} else if (e.getSource() == folderText) {
-
-					}
-				} catch (Exception e2) {
-					System.err.println(getIndexerName());
-					System.err.println(folderText.getText());
-					e2.printStackTrace();
-				}
-				dialogChanged();
-			}
-		};
 
 		// ModifyListener ml = new ModifyListener() {
 		//
@@ -141,9 +98,6 @@ public class HWizardPage extends WizardPage {
 		// dialogChanged();
 		// }
 		// };
-
-		indexerNameText.addModifyListener(ml);
-		folderText.addModifyListener(ml);
 
 		Button button = new Button(container, SWT.PUSH);
 		button.setText("Browse...");
@@ -247,7 +201,7 @@ public class HWizardPage extends WizardPage {
 	private void initialize() {
 
 		// set the default indexer name "MyHawk"
-		indexerNameText.setText("myhawk");
+		// indexerNameText.setText("myhawk");
 		// set the default indexer location
 		folderText.setText(basePath + File.separator + "myhawk");
 	}
@@ -270,9 +224,7 @@ public class HWizardPage extends WizardPage {
 		String result = dd.open();
 
 		if (result != null) {
-			basePath = result;
-			folderText.setText(basePath + File.separator
-					+ this.getIndexerName());
+			folderText.setText(result);
 		}
 
 	}
@@ -280,22 +232,13 @@ public class HWizardPage extends WizardPage {
 	/**
 	 * Ensures that both text fields are set.
 	 */
-	private static final Pattern PATTERN = Pattern.compile("[^a-z0-9_]");
-
 	private void dialogChanged() {
 
-		String indexerName = getIndexerName();
-
-		if (indexerName.length() == 0 || getContainerName().length() == 0) {
+		if (getContainerName().length() == 0) {
 			updateStatus("Indexer name/folder must be specified");
 			return;
 		}
-		// valid chars in indexername
-		Matcher m = PATTERN.matcher(indexerName);
-		if (m.find()) {
-			updateStatus("File name must be lowercase with only numbers and underscores allowed.");
-			return;
-		}
+
 		if (getContainerName().length() == 0) {
 			updateStatus("Index storage folder must be specified");
 			return;
@@ -330,10 +273,6 @@ public class HWizardPage extends WizardPage {
 
 	public String getContainerName() {
 		return folderText.getText();
-	}
-
-	public String getIndexerName() {
-		return indexerNameText.getText();
 	}
 
 	public List<String> getPlugins() {
