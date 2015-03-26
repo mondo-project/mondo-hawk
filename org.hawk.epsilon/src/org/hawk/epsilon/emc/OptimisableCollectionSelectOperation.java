@@ -53,8 +53,9 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 		try {
 			parseAST(iterator, ast);
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(1);
+			throw new EolRuntimeException(
+					"OptimisableCollectionSelectOperation: parseAST(iterator, ast) failed:",
+					ast);
 		}
 
 		return modifiedlist;
@@ -251,7 +252,7 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 
 				for (IGraphNode hit : hits) {
 
-					filter.add(new GraphNodeWrapper(graph, hit.getId()
+					filter.add(new GraphNodeWrapper(hit.getId()
 							.toString(), model));
 
 					// ((OptimisableCollection) modifiedlist)
@@ -337,9 +338,10 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 			}
 
 		} catch (Exception e) {
-			System.err.println("suppressed exception: " + e.getCause());
+			System.err
+					.println("OptimisableCollectionSelectOperation, isIndexed, suppressed exception: "
+							+ e.getCause());
 			e.printStackTrace();
-			// System.exit(1);
 		}
 
 		return null;

@@ -511,13 +511,13 @@ public class Neo4JDatabase implements IGraphDatabase {
 							// System.err.println("-");
 
 							// e.printStackTrace();
-							// System.exit(1);
+							// oldSystemdotexit(1);
 
 						}
 						if (r.getCommit().getRevision().equals(rev))
 							changed.remove(r);
 
-						console.printerrln("comparing revisions of: "
+						console.println("comparing revisions of: "
 								+ r.getPath() + " | "
 								+ r.getCommit().getRevision() + " | " + rev);
 

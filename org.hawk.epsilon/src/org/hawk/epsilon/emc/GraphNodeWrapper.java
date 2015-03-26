@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.hawk.epsilon.emc;
 
-import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTransaction;
 
@@ -20,20 +19,9 @@ public class GraphNodeWrapper {
 	private String id;
 	private EOLQueryEngine containerModel;
 
-	public GraphNodeWrapper(IGraphDatabase object, String id,
-			EOLQueryEngine containerModel) {
+	public GraphNodeWrapper(String id, EOLQueryEngine containerModel) {
 
-		try {
-
-			// this.container = object;
-			this.id = id;
-
-		} catch (Exception e) {
-			System.err.println("non graph store used with a GraphNodeWrapper!");
-			e.printStackTrace();
-			System.exit(1);
-		}
-
+		this.id = id;
 		this.containerModel = containerModel;
 
 	}

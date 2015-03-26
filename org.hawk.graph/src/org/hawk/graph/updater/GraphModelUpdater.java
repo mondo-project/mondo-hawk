@@ -86,7 +86,7 @@ public class GraphModelUpdater implements IModelUpdater {
 		// System.err.println("change: " + change)
 
 		long end = System.currentTimeMillis();
-		syserr((end - start) / 1000 + "s" + (end - start) % 1000
+		sysout((end - start) / 1000 + "s" + (end - start) % 1000
 				+ "ms [pure insertion]");
 
 		// System.err.println("ret[0]: " + ret[0]);

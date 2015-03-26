@@ -230,7 +230,7 @@ public class GraphModelBatchInjector {
 
 		long init = System.nanoTime();
 
-		//String currentFile = originatingFile.getProperty("id").toString();
+		// String currentFile = originatingFile.getProperty("id").toString();
 		//
 		// while (children.hasNext()) {
 		for (IHawkObject child : children) {
@@ -256,7 +256,7 @@ public class GraphModelBatchInjector {
 				default:
 					System.err.println("parse option: " + parseOption
 							+ " not recognised! ending program!");
-					System.exit(1);
+
 				}
 
 				// if ((objectCount[0] % 2000 == 0 && ref && clas)
@@ -398,7 +398,7 @@ public class GraphModelBatchInjector {
 		// if(eObject.eIsProxy()){System.err.println("PROXY OBJECT FOUND !");
 		// System.err.println(eObject.geturi());
 		// System.err.println(eObject.geturifragment());
-		// System.exit(1);
+		// oldSystemdotexit(1);
 		// }
 
 		// if (eObject.eClass().getName().equals("TypeDeclaration")) {
@@ -648,9 +648,9 @@ public class GraphModelBatchInjector {
 		}
 
 		catch (Exception e) {
-			System.err.println("error in inserting attributes: ");
+			System.err
+					.println("GraphModelBatchInjector: createEobjectNode: error in inserting attributes: ");
 			e.printStackTrace();
-			System.exit(1);
 		}
 
 		// dictionary.add(node, "id", eObjectId);

@@ -77,10 +77,8 @@ public class SvnManager extends AbstractVcsManager {
 			System.err.println(getDelta(getRepository(), "0"));
 			shutdown();
 			System.err.println("------------");
-			// System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.exit(1);
 		}
 	}
 

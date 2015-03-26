@@ -192,7 +192,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 							if (c.getChangeType().equals(VcsChangeType.DELETED)) {
 
-								console.printerrln("-->" + c.getPath()
+								console.println("-->" + c.getPath()
 										+ " HAS CHANGED (" + c.getChangeType()
 										+ "), PROPAGATING CHANGES");
 
@@ -207,7 +207,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 						// create temp files with changed repos files
 						for (VcsCommitItem s : currreposchangeditems) {
 
-							console.printerrln("-->" + s.getPath()
+							console.println("-->" + s.getPath()
 									+ " HAS CHANGED (" + s.getChangeType()
 									+ "), PROPAGATING CHANGES");
 
@@ -367,7 +367,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 						// example using git)
 						if (!FileOperations.deleteFiles(
 								new File(monitorTempDir), true))
-							console.printerrln("ERROR IN DELETING TEMPORARY LOCAL VCS FILES");
+							console.printerrln("error in deleting temporary local vcs files");
 
 						if (success)
 							currLocalTopRevisions.set(i,
@@ -546,7 +546,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 					// )
 					;
 				else
-					console.printerrln("WARNING: cannot register metamodel in graph, named: "
+					console.printerrln("cannot register metamodel in graph, named: "
 							+ ep
 							+ ", with type: "
 							+ type

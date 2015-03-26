@@ -123,7 +123,7 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 			// file based!
 			for (IGraphNode filenode : files) {
 				for (IGraphEdge edge : filenode.getIncomingWithType("file")) {
-					GraphNodeWrapper wrapper = new GraphNodeWrapper(graph, edge
+					GraphNodeWrapper wrapper = new GraphNodeWrapper(edge
 							.getStartNode().getId().toString(), this);
 					allContents.add(wrapper);
 				}
@@ -250,9 +250,10 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 
 				// HashSet<Object> nodes = new HashSet<>();
 
-				COptimisableCollection nodes = new COptimisableCollection(this,
-						new GraphNodeWrapper(graph,
-								typeNode.getId().toString(), this), files);
+				COptimisableCollection nodes = new COptimisableCollection(
+						this,
+						new GraphNodeWrapper(typeNode.getId().toString(), this),
+						files);
 
 				if (typeNode != null) {
 
@@ -271,8 +272,8 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 
 							if (files.contains(node.getOutgoingWithType("file")
 									.iterator().next().getEndNode())) {
-								nodes.add(new GraphNodeWrapper(graph, node
-										.getId().toString(), this));
+								nodes.add(new GraphNodeWrapper(node.getId()
+										.toString(), this));
 							}
 						}
 						tx.success();

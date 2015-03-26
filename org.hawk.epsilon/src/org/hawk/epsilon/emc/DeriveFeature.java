@@ -64,7 +64,7 @@ public class DeriveFeature {
 
 			}
 
-			GraphNodeWrapper gnw = new GraphNodeWrapper(g, n.getIncoming()
+			GraphNodeWrapper gnw = new GraphNodeWrapper(n.getIncoming()
 					.iterator().next().getStartNode().getId().toString(),
 					containerModel);
 
@@ -90,9 +90,8 @@ public class DeriveFeature {
 								+ containerModel
 								+ "\n"
 								+ EOLScript
-								+ "\n------------");
+								+ "\n------------\nreturning null as value\n");
 				e.printStackTrace();
-				System.exit(1);
 			}
 
 			// System.out.println(ret.getClass());

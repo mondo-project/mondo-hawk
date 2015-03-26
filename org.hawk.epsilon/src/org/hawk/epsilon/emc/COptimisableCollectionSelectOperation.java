@@ -39,8 +39,9 @@ public class COptimisableCollectionSelectOperation extends
 		try {
 			parseAST(iterator, ast);
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(1);
+			throw new EolRuntimeException(
+					"COptimisableCollectionSelectOperation: parseAST(iterator, ast) failed:",
+					ast);
 		}
 
 		try (IGraphTransaction t = graph.beginTransaction()) {

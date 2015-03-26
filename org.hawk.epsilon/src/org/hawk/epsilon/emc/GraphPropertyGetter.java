@@ -78,15 +78,15 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				for (IGraphEdge r : node.getIncomingWithType(property2)) {
 
 					if (r.getProperty("isContainment") != null) {
-						ret = new GraphNodeWrapper(graph, r.getStartNode()
-								.getId().toString(), m);
+						ret = new GraphNodeWrapper(r.getStartNode().getId()
+								.toString(), m);
 					} else {
 						System.err.println(r.getType() + " : not containment");
 						if (ret == null)
 							ret = new EolBag<GraphNodeWrapper>();
 						((EolBag<GraphNodeWrapper>) ret)
-								.add(new GraphNodeWrapper(graph, r
-										.getStartNode().getId().toString(), m));
+								.add(new GraphNodeWrapper(r.getStartNode()
+										.getId().toString(), m));
 					}
 				}
 
@@ -118,8 +118,8 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 					if (r.getProperty("isContainment") != null) {
 
-						ret = new GraphNodeWrapper(graph, r.getStartNode()
-								.getId().toString(), m);
+						ret = new GraphNodeWrapper(r.getStartNode().getId()
+								.toString(), m);
 
 						break;
 
@@ -212,11 +212,11 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 				for (IGraphEdge r : node.getOutgoingWithType(property)) {
 					if (otherNodes != null)
-						otherNodes.add(new GraphNodeWrapper(graph, r
-								.getEndNode().getId().toString(), m));
+						otherNodes.add(new GraphNodeWrapper(r.getEndNode()
+								.getId().toString(), m));
 					else if (otherNode == null)
-						otherNode = new GraphNodeWrapper(graph, r.getEndNode()
-								.getId().toString(), m);
+						otherNode = new GraphNodeWrapper(r.getEndNode().getId()
+								.toString(), m);
 					else
 						throw new EolRuntimeException(
 								"A relationship with arity 1 ( " + property

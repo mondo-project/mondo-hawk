@@ -867,7 +867,7 @@ public class GraphModelInserter {
 			// if (!deleteDir(fi)) {
 			// System.err
 			// .println("Cannot delete database, exiting program, io error!");
-			// System.exit(1);
+			// oldSystemdotexit(1);
 			// }
 			// }
 

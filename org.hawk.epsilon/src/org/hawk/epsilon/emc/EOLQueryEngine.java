@@ -206,7 +206,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			try (IGraphTransaction t = graph.beginTransaction()) {
 
 				for (IGraphNode node : graph.allNodes("eobject")) {
-					GraphNodeWrapper wrapper = new GraphNodeWrapper(graph, node
+					GraphNodeWrapper wrapper = new GraphNodeWrapper(node
 							.getId().toString(), this);
 					allContents.add(wrapper);
 				}
@@ -437,8 +437,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 				// HashSet<Object> nodes = new HashSet<>();
 
 				OptimisableCollection nodes = new OptimisableCollection(this,
-						new GraphNodeWrapper(graph,
-								typeNode.getId().toString(), this));
+						new GraphNodeWrapper(typeNode.getId().toString(), this));
 
 				if (typeNode != null) {
 
@@ -449,8 +448,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 						for (IGraphEdge n : typeNode
 								.getIncomingWithType(typeorkind)) {
 
-							nodes.add(new GraphNodeWrapper(graph, n
-									.getStartNode().getId().toString(), this));
+							nodes.add(new GraphNodeWrapper(n.getStartNode()
+									.getId().toString(), this));
 						}
 						tx.success();
 						tx.close();
@@ -523,7 +522,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			if (isnull)
 				return null;
 			else
-				return new GraphNodeWrapper(graph, id.toString(), this);
+				return new GraphNodeWrapper(id.toString(), this);
 		} catch (NumberFormatException e) {
 			System.err.println("NumberFormatException returning null");
 			return null;
@@ -592,8 +591,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		}
 
 		if (typeNode != null)
-			return new GraphNodeWrapper(graph, typeNode.getId().toString(),
-					this);
+			return new GraphNodeWrapper(typeNode.getId().toString(), this);
 		else
 			return null;
 	}
