@@ -45,15 +45,15 @@ Screencast of running Hawk through its UI:
 
 download and configuration of Hawk onto a fresh Eclipse Luna (Modeling Tools) distribution:
 
-http://www.youtube_video_link_soon.com
+https://www.youtube.com/watch?v=d_DqR-0v_4s
 
 running of basic operations:
 
-http://www.youtube_video_link_soon.com
+https://www.youtube.com/watch?v=hQbkA0jmBTY
 
 use of advanced features:
 
-http://www.youtube_video_link_soon.com
+https://www.youtube.com/watch?v=pGL2-lJ0HAg
 
 note: in the interest of simplicity only the required plugins are used in this demo:
 
