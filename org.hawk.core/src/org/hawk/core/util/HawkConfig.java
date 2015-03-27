@@ -1,33 +1,57 @@
 package org.hawk.core.util;
 
-import java.util.Collection;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("hawkConfig")
 public class HawkConfig {
 
-	@XStreamAlias("locations")
-	protected Collection<String> locs;
+	@XStreamAlias("hawkName")
+	protected String name;
 
-	public Collection<String> getLocs() {
-		return locs;
+	@XStreamAlias("hawkLoc")
+	protected String loc;
+
+	public HawkConfig() {
 	}
 
-	public void setLocs(Collection<String> locs) {
-		this.locs = locs;
+	public HawkConfig(String n, String l) {
+		name = n;
+		loc = l;
 	}
 
-	public HawkConfig(Collection<String> locations) {
-		this.locs = locations;
+	public String getName() {
+		return name;
 	}
 
-	public void addLocs(String folder) {
-		this.locs.add(folder);
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public void removeLoc(String folder) {
-		this.locs.remove(folder);
+	public String getLoc() {
+		return loc;
+	}
+
+	public void setLoc(String loc) {
+		this.loc = loc;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+
+		if (!(o instanceof HawkConfig))
+			return false;
+		else {
+			boolean ret = ((HawkConfig) o).getLoc().equals(this.getLoc());
+			// System.err.println("equals: " + ((HawkConfig) o).getLoc() + " : "
+			// + this.getLoc() + " : " + ret);
+			return ret;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		// System.err.println("hashcode");
+		return getLoc().hashCode();
 	}
 
 }

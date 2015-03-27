@@ -32,6 +32,7 @@ import org.hawk.core.IModelUpdater;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.util.HawkConfig;
+import org.hawk.core.util.HawksConfig;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -102,32 +103,19 @@ public class HManager implements IStructuredContentProvider, IWorkbenchListener 
 		all.add(e);
 	}
 
-	public static void delete(HModel o) {
+	public static void delete(HModel o, boolean exists) {
+		// System.err.println("delete called on " + o.getName() + " " +
+		// o.getFolder());
 		if (all.contains(o)) {
-			removeHawkFromMetadata(o.getFolder());
-			o.stop();
-			o.delete();
+			if (exists) {
+				o.stop();
+				o.delete();
+			} else
+				o.removeHawkFromMetadata(new HawkConfig(o.getName(), o
+						.getFolder()));
 			all.remove(o);
-		}
-	}
-
-	private static void removeHawkFromMetadata(String folder) {
-
-		IEclipsePreferences preferences = InstanceScope.INSTANCE
-				.getNode("org.hawk.ui2");
-
-		String xml = preferences.get("config", "error");
-
-		if (!xml.equals("error")) {
-			XStream stream = new XStream(new DomDriver());
-			stream.processAnnotations(HawkConfig.class);
-			stream.setClassLoader(HawkConfig.class.getClassLoader());
-			HawkConfig hc = (HawkConfig) stream.fromXML(xml);
-			hc.removeLoc(folder);
-		} else {
-			System.err
-					.println("removeHawkFromMetadata tried to load preferences but it could not.");
-		}
+		} else
+			o.removeHawkFromMetadata(new HawkConfig(o.getName(), o.getFolder()));
 	}
 
 	private static boolean firstRun = true;
@@ -136,30 +124,32 @@ public class HManager implements IStructuredContentProvider, IWorkbenchListener 
 
 		// ...
 
+		IEclipsePreferences preferences = InstanceScope.INSTANCE
+				.getNode("org.hawk.ui2");
+
 		try {
 
-			IEclipsePreferences preferences = InstanceScope.INSTANCE
-					.getNode("org.hawk.ui2");
+			Collection<HawkConfig> hawks = new HashSet<HawkConfig>();
 
-			Collection<String> hawks = new HashSet<String>();
+			String xml = preferences.get("config", null);
 
-			String xml = preferences.get("config", "error");
-
-			if (!xml.equals("error")) {
+			if (xml != null) {
 				XStream stream = new XStream(new DomDriver());
+				stream.processAnnotations(HawksConfig.class);
 				stream.processAnnotations(HawkConfig.class);
-				stream.setClassLoader(HawkConfig.class.getClassLoader());
-				HawkConfig hc = (HawkConfig) stream.fromXML(xml);
-				for (String s : hc.getLocs())
+				stream.setClassLoader(HawksConfig.class.getClassLoader());
+				HawksConfig hc = (HawksConfig) stream.fromXML(xml);
+				for (HawkConfig s : hc.getConfigs())
 					hawks.add(s);
 			}
 
-			for (String s : hawks) {
+			for (HawkConfig s : hawks) {
 				addHawk(HModel.createFromFolder(s));
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			preferences.remove("config");
 		}
 		firstRun = false;
 	}
@@ -425,15 +415,20 @@ public class HManager implements IStructuredContentProvider, IWorkbenchListener 
 
 	@Override
 	public boolean preShutdown(IWorkbench workbench, boolean forced) {
+		System.out.println("shutting down hawk:");
 		for (HModel hm : all) {
-			if (hm.isRunning())
+			if (hm.isRunning()) {
+				System.out.println("stopping: " + hm.getName() + " : "
+						+ hm.getFolder());
 				hm.stop();
+			}
 		}
 		return true;
 	}
 
 	@Override
 	public void postShutdown(IWorkbench workbench) {
+		System.out.println("(POST SHUTDOWN) hawk terminated");
 		for (HModel hm : all)
 			if (hm.isRunning())
 				hm.stop();

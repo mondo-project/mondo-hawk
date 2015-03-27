@@ -1,8 +1,6 @@
 package org.hawk.core.runtime;
 
 import java.io.File;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 
 import org.hawk.core.IAbstractConsole;
 import org.hawk.core.IHawk;
@@ -47,25 +45,23 @@ public class RemoteHawk implements IHawk {
 	@Override
 	public void setDbtype(String dbtype) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void init() throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public String decrypt(String user) throws GeneralSecurityException,
-			IOException {
+	public boolean exists() {
 		// TODO Auto-generated method stub
-		return null;
+		return false;
 	}
 
 	@Override
-	public String encrypt(String user) throws GeneralSecurityException,
-			IOException {
+	public String decrypt(String user) {
 		// TODO Auto-generated method stub
 		return null;
 	}

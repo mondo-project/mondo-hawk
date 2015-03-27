@@ -62,15 +62,13 @@ public class LocalHawk implements IHawk {
 	}
 
 	@Override
-	public String decrypt(String user) throws GeneralSecurityException,
-			IOException {
-		return SecurityManager.decrypt(user, apw.toCharArray());
+	public boolean exists() {
+		return location.exists();
 	}
 
 	@Override
-	public String encrypt(String user) throws GeneralSecurityException,
-			IOException {
-		return SecurityManager.encrypt(user, apw.toCharArray());
+	public String decrypt(String user) throws GeneralSecurityException, IOException {
+		return SecurityManager.decrypt(user, apw.toCharArray());
 	}
 
 }

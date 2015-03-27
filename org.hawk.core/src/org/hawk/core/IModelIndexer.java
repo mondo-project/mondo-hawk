@@ -44,8 +44,7 @@ public interface IModelIndexer {
 	 * 
 	 * @throws Exception
 	 */
-	public abstract void shutdown(boolean delete)
-			throws Exception;
+	public abstract void shutdown(boolean delete) throws Exception;
 
 	/**
 	 * 

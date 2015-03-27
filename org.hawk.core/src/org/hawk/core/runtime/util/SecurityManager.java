@@ -13,6 +13,7 @@ package org.hawk.core.runtime.util;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
+import java.util.Arrays;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -58,6 +59,9 @@ public class SecurityManager {
 
 	public static String decrypt(String property, char[] adminPw)
 			throws GeneralSecurityException, IOException {
+
+		// System.out.println("decrypting: " + property + " with password: " +
+		// Arrays.toString(adminPw));
 
 		PASSWORD = adminPw;
 

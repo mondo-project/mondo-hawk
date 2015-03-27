@@ -6,9 +6,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.hawk.core.IAbstractConsole;
 import org.hawk.core.IHawk;
 import org.hawk.core.IMetaModelResourceFactory;
@@ -21,6 +22,7 @@ import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.runtime.LocalHawk;
 import org.hawk.core.util.HawkConfig;
 import org.hawk.core.util.HawkProperties;
+import org.hawk.core.util.HawksConfig;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -42,13 +44,8 @@ public class HModel {
 		);
 	}
 
-	private HModel(File storageFolder, String databaseType, boolean r)
-			throws Exception {
-		// System.err.println(storageFolder.getPath());
-		String[] path = storageFolder.getCanonicalPath().split(
-				Pattern.quote(File.separator));
-
-		String name = path[path.length - 1];
+	private HModel(String name, File storageFolder, String databaseType,
+			boolean r) throws Exception {
 
 		hawk = new LocalHawk(name, storageFolder, myConsole);
 		hawk.setDbtype(databaseType);
@@ -58,13 +55,9 @@ public class HModel {
 
 	}
 
-	public HModel(String folder, boolean b) throws Exception {
-		// System.err.println(storageFolder.getPath());
-		String[] path = folder.split(Pattern.quote(File.separator));
+	public HModel(HawkConfig s, boolean b) throws Exception {
 
-		String name = path[path.length - 1];
-
-		hawk = new LocalHawk(name, new File(folder), myConsole);
+		hawk = new LocalHawk(s.getName(), new File(s.getLoc()), myConsole);
 		// hawk.setDbtype(databaseType);
 		allowedPlugins = new ArrayList<String>();
 		running = b;
@@ -73,15 +66,15 @@ public class HModel {
 
 	private static IAbstractConsole myConsole;
 
-	public static HModel createFromFolder(String folder) throws Exception {
+	public static HModel createFromFolder(HawkConfig s) throws Exception {
 
 		if (myConsole == null)
 			myConsole = new EclipseLogConsole(); // new
 													// HConsole("Hawk Console V2");
 
-		HModel hm = new HModel(folder, false);
+		HModel hm = new HModel(s, false);
 
-		hm.loadIndexerMetadata();
+		// hm.loadIndexerMetadata();
 
 		try {
 
@@ -121,14 +114,14 @@ public class HModel {
 
 	}
 
-	public static HModel create(File folder, String dbType, List<String> plugins)
-			throws Exception {
+	public static HModel create(String name, File folder, String dbType,
+			List<String> plugins) throws Exception {
 
 		if (myConsole == null)
 			myConsole = new EclipseLogConsole(); // new
 													// HConsole("Hawk Console V2");
 
-		HModel hm = new HModel(folder, dbType, true);
+		HModel hm = new HModel(name, folder, dbType, true);
 
 		IGraphDatabase db = null;
 		try {
@@ -211,48 +204,61 @@ public class HModel {
 		return running;
 	}
 
-	public void start() {
-		try {
-			// create the indexer with relevant database
-			IGraphDatabase db = HManager.createGraph(hawk);
-			db.run(new File(this.getFolder()), myConsole);
-			hawk.getModelIndexer().setDB(db);
+	public boolean start() {
 
-			loadIndexerMetadata();
+		if (!loadIndexerMetadata()) {
 
-			hawk.init();
-			running = true;
+			try {
+				// create the indexer with relevant database
+				IGraphDatabase db = HManager.createGraph(hawk);
+				db.run(new File(this.getFolder()), myConsole);
+				hawk.getModelIndexer().setDB(db);
 
-		} catch (Exception e) {
-			e.printStackTrace();
+				hawk.init();
+				running = true;
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
+		return running;
 	}
 
-	private void loadIndexerMetadata() {
+	private boolean loadIndexerMetadata() {
 
 		// ...
 
-		XStream stream = new XStream(new DomDriver());
-		stream.processAnnotations(HawkProperties.class);
-		stream.setClassLoader(HawkProperties.class.getClassLoader());
-		// stream.createObjectInputStream(in)
+		boolean error = false;
 
-		String path = hawk.getModelIndexer().getParentFolder() + File.separator
-				+ "properties.xml";
+		try {
 
-		// System.out.println(path);
+			XStream stream = new XStream(new DomDriver());
+			stream.processAnnotations(HawkProperties.class);
+			stream.setClassLoader(HawkProperties.class.getClassLoader());
+			// stream.createObjectInputStream(in)
 
-		HawkProperties hp = (HawkProperties) stream.fromXML(new File(path));
+			String path = hawk.getModelIndexer().getParentFolder()
+					+ File.separator + "properties.xml";
 
-		// System.out.println(stream.toXML(hp));
+			// System.out.println(path);
 
-		hawk.setDbtype(hp.getDbType());
+			HawkProperties hp = (HawkProperties) stream.fromXML(new File(path));
 
-		for (String[] s : hp.getMonitoredVCS()) {
+			// System.out.println(stream.toXML(hp));
 
-			addencryptedVCS(s[0], s[1], s[2], s[3]);
+			hawk.setDbtype(hp.getDbType());
 
+			for (String[] s : hp.getMonitoredVCS()) {
+
+				addencryptedVCS(s[0], s[1], s[2], s[3]);
+
+			}
+		} catch (Exception e) {
+			// removeHawkFromMetadata(new HawkConfig(getName(), getFolder()));
+			error = true;
 		}
+
+		return error;
 
 	}
 
@@ -269,6 +275,8 @@ public class HModel {
 	}
 
 	public void delete() {
+
+		removeHawkFromMetadata(new HawkConfig(getName(), getFolder()));
 
 		File f = hawk.getModelIndexer().getParentFolder();
 		while (this.isRunning()) {
@@ -481,6 +489,32 @@ public class HModel {
 
 	public String getName() {
 		return hawk.getModelIndexer().getName();
+	}
+
+	public void removeHawkFromMetadata(HawkConfig config) {
+
+		IEclipsePreferences preferences = InstanceScope.INSTANCE
+				.getNode("org.hawk.ui2");
+
+		String xml = preferences.get("config", null);
+
+		if (xml != null) {
+			XStream stream = new XStream(new DomDriver());
+			stream.processAnnotations(HawksConfig.class);
+			stream.processAnnotations(HawkConfig.class);
+			stream.setClassLoader(HawksConfig.class.getClassLoader());
+			HawksConfig hc = (HawksConfig) stream.fromXML(xml);
+			hc.removeLoc(config);
+			xml = stream.toXML(hc);
+			preferences.put("config", xml);
+		} else {
+			System.err
+					.println("removeHawkFromMetadata tried to load preferences but it could not.");
+		}
+	}
+
+	public boolean exists() {
+		return hawk != null && hawk.exists();
 	}
 
 }

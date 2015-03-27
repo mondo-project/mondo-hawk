@@ -246,12 +246,18 @@ public class HView extends ViewPart {
 				IStructuredSelection selected = (IStructuredSelection) viewer
 						.getSelection();
 				if (selected.size() == 1) {
-					((HModel) selected.getFirstElement()).start();
-					viewer.refresh();
-					start.setEnabled(false);
-					stop.setEnabled(true);
-					query.setEnabled(true);
-					config.setEnabled(true);
+					if (((HModel) selected.getFirstElement()).start()) {
+						viewer.refresh();
+						start.setEnabled(false);
+						stop.setEnabled(true);
+						query.setEnabled(true);
+						config.setEnabled(true);
+					} else {
+						viewer.refresh();
+						// FIXME handle start
+						// HModel hm = (HModel) selected.getFirstElement();
+						// HManager.delete(hm, hm.exists());
+					}
 				}
 			}
 		};
@@ -286,7 +292,8 @@ public class HView extends ViewPart {
 				IStructuredSelection selected = (IStructuredSelection) viewer
 						.getSelection();
 				if (selected.size() == 1) {
-					HManager.delete((HModel) selected.getFirstElement());
+					HModel hm = (HModel) selected.getFirstElement();
+					HManager.delete(hm, hm.exists());
 					viewer.refresh();
 				}
 			}

@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ui.*;
 import org.hawk.core.util.HawkConfig;
+import org.hawk.core.util.HawksConfig;
 import org.hawk.ui2.util.HModel;
 import org.hawk.ui2.view.HView;
 
@@ -56,6 +57,7 @@ public class HWizard extends Wizard implements INewWizard {
 	 * will create an operation and run it using wizard as execution context.
 	 */
 	public boolean performFinish() {
+		final String name = page.getHawkName();
 		final String folder = page.getContainerName();
 		final String dbType = page.getDBID();
 		final List<String> plugins = page.getPlugins();
@@ -63,7 +65,7 @@ public class HWizard extends Wizard implements INewWizard {
 			public void run(IProgressMonitor monitor)
 					throws InvocationTargetException {
 				try {
-					doFinish(folder, dbType, plugins, monitor);
+					doFinish(name, folder, dbType, plugins, monitor);
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				} finally {
@@ -91,15 +93,16 @@ public class HWizard extends Wizard implements INewWizard {
 	 * @param dbType
 	 */
 
-	private void doFinish(String folder, String dbType, List<String> plugins,
-			IProgressMonitor monitor) throws CoreException {
+	private void doFinish(String name, String folder, String dbType,
+			List<String> plugins, IProgressMonitor monitor)
+			throws CoreException {
 
 		// set up a new Hawk with the selected plugins
 
 		try {
 			// create a new hawk index at containerName folder with name
 			// fileName
-			HModel.create(new File(folder), dbType, plugins);
+			HModel.create(name, new File(folder), dbType, plugins);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -128,33 +131,35 @@ public class HWizard extends Wizard implements INewWizard {
 		IEclipsePreferences preferences = InstanceScope.INSTANCE
 				.getNode("org.hawk.ui2");
 
-		String xml = preferences.get("config", "error");
+		String xml = preferences.get("config", null);
 
 		XStream stream = new XStream(new DomDriver());
+		stream.processAnnotations(HawksConfig.class);
 		stream.processAnnotations(HawkConfig.class);
-		stream.setClassLoader(HawkConfig.class.getClassLoader());
+		stream.setClassLoader(HawksConfig.class.getClassLoader());
 
-		HawkConfig hc = null;
+		HawksConfig hc = null;
 
 		try {
 
-			if (!xml.equals("error")) {
-				hc = (HawkConfig) stream.fromXML(xml);
+			if (xml != null) {
+				hc = (HawksConfig) stream.fromXML(xml);
 			}
 
-			HashSet<String> locs = new HashSet<String>();
+			HashSet<HawkConfig> locs = new HashSet<HawkConfig>();
 
 			if (hc != null)
-				locs.addAll(hc.getLocs());
+				locs.addAll(hc.getConfigs());
 
-			locs.add(folder);
+			locs.add(new HawkConfig(name, folder));
 
-			xml = stream.toXML(new HawkConfig(locs));
+			xml = stream.toXML(new HawksConfig(locs));
 
 			preferences.put("config", xml);
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			preferences.remove("config");
 		}
 
 		monitor.worked(1);

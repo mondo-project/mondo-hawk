@@ -15,7 +15,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,6 +46,7 @@ import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.query.IQueryEngine;
+import org.hawk.core.runtime.util.SecurityManager;
 import org.hawk.core.runtime.util.TimerManager;
 import org.hawk.core.util.FileOperations;
 import org.hawk.core.util.HawkProperties;
@@ -377,7 +377,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 	@Override
 	public void shutdown(boolean delete) throws Exception {
 
-		saveIndexer();
+		try {
+			saveIndexer();
+		} catch (Exception e) {
+			System.err.println("shutdown tried to saveIndexer but failed");
+		}
 
 		for (Timer t : TimerManager.timers)
 			t.cancel();
@@ -791,9 +795,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	}
 
-	public void saveIndexer() throws IOException {
+	public void saveIndexer() throws Exception {
 
 		// ...
+		System.out.println("saving indexer...");
 
 		XStream stream = new XStream(new DomDriver());
 		stream.processAnnotations(HawkProperties.class);
@@ -803,8 +808,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 			String[] meta = new String[4];
 			meta[0] = s.getLocation();
 			meta[1] = s.getType();
-			meta[2] = s.getUn();
-			meta[3] = s.getPw();
+			meta[2] = SecurityManager.encrypt(s.getUn(), adminPw);
+			meta[3] = SecurityManager.encrypt(s.getPw(), adminPw);
+			System.out.println("adding: " + meta[0] + ":" + meta[1]);
 			set.add(meta);
 		}
 		HawkProperties hp = new HawkProperties(graph.getType(), set);
@@ -831,11 +837,22 @@ public class ModelIndexerImpl implements IModelIndexer {
 		currLocalTopRevisions.add("-3");
 		currReposTopRevisions.add("-4");
 
+		try {
+			saveIndexer();
+		} catch (Exception e) {
+			System.err.println("addVCSManager tried to saveIndexer but failed");
+		}
+
 	}
 
 	@Override
 	public void setDB(IGraphDatabase db) {
 		graph = db;
+		try {
+			saveIndexer();
+		} catch (Exception e) {
+			System.err.println("setDB tried to saveIndexer but failed");
+		}
 	}
 
 	// @Override

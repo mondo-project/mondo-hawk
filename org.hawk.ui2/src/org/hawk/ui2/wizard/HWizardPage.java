@@ -3,6 +3,8 @@ package org.hawk.ui2.wizard;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.dialogs.IDialogPage;
@@ -36,6 +38,8 @@ public class HWizardPage extends WizardPage {
 
 	private static final String hawkConnectWarning = "Index storage folder must be empty -- Hawk will try to connect to an existing Hawk in this location";
 
+	private Text nameText;
+
 	private Text folderText;
 
 	private Combo dbidText;
@@ -60,15 +64,31 @@ public class HWizardPage extends WizardPage {
 
 		Composite container = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
+		layout.numColumns = 3;
+		layout.verticalSpacing = 9;
 		container.setLayout(layout);
 
 		Label label = new Label(container, SWT.NULL);
-		label.setText("&Local storage folder:");
-
-		layout.numColumns = 3;
-		layout.verticalSpacing = 9;
+		label.setText("&Hawk name:");
 
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+
+		nameText = new Text(container, SWT.BORDER | SWT.SINGLE);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		nameText.setLayoutData(gd);
+		nameText.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				dialogChanged();
+			}
+		});
+
+		label = new Label(container, SWT.NULL);
+		label.setText("");
+
+		label = new Label(container, SWT.NULL);
+		label.setText("&Local storage folder:");
+
 		folderText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		folderText.setLayoutData(gd);
@@ -79,8 +99,6 @@ public class HWizardPage extends WizardPage {
 				dialogChanged();
 			}
 		});
-
-		initialize();
 
 		// ModifyListener ml = new ModifyListener() {
 		//
@@ -191,6 +209,8 @@ public class HWizardPage extends WizardPage {
 			}
 		});
 
+		initialize();
+
 		dialogChanged();
 		setControl(container);
 	}
@@ -212,7 +232,7 @@ public class HWizardPage extends WizardPage {
 	private void initialize() {
 
 		// set the default indexer name "MyHawk"
-		// indexerNameText.setText("myhawk");
+		nameText.setText("myhawk");
 		// set the default indexer location
 		folderText.setText(basePath + File.separator + "myhawk");
 	}
@@ -244,6 +264,19 @@ public class HWizardPage extends WizardPage {
 	 * Ensures that both text fields are set.
 	 */
 	private void dialogChanged() {
+
+		final Pattern PATTERN = Pattern.compile("[^A-Za-z0-9_]");
+
+		// name empty or valid chars in indexername
+		if (getHawkName().trim().equals("")) {
+			updateStatus("Hawk name must not be empty.");
+			return;
+		}
+		Matcher m = PATTERN.matcher(getHawkName());
+		if (m.find()) {
+			updateStatus("Hawk name must contain only letters, numbers or underscores.");
+			return;
+		}
 
 		if (getContainerName().length() == 0) {
 			updateStatus("Indexer name/folder must be specified");
@@ -299,5 +332,9 @@ public class HWizardPage extends WizardPage {
 
 	public String getDBID() {
 		return dbidText.getText();
+	}
+
+	public String getHawkName() {
+		return nameText.getText();
 	}
 }
