@@ -9,6 +9,8 @@ import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -31,6 +33,9 @@ import org.hawk.ui2.util.HManager;
  */
 
 public class HWizardPage extends WizardPage {
+
+	private static final String hawkConnectWarning = "Index storage folder must be empty -- Hawk will try to connect to an existing Hawk in this location";
+
 	private Text folderText;
 
 	private Combo dbidText;
@@ -68,6 +73,12 @@ public class HWizardPage extends WizardPage {
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		folderText.setLayoutData(gd);
 		// folderText.setEditable(false);
+		folderText.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				dialogChanged();
+			}
+		});
 
 		initialize();
 
@@ -246,7 +257,7 @@ public class HWizardPage extends WizardPage {
 		// must not already exist
 		File f = new File(getContainerName());
 		if (f.exists() && f.isDirectory() && f.listFiles().length > 0) {
-			updateStatus("Index storage folder must be empty");
+			updateStatus(hawkConnectWarning);
 			return;
 		}
 		// must be writable
@@ -268,7 +279,7 @@ public class HWizardPage extends WizardPage {
 
 	private void updateStatus(String message) {
 		setErrorMessage(message);
-		setPageComplete(message == null);
+		setPageComplete(message == null || message.equals(hawkConnectWarning));
 	}
 
 	public String getContainerName() {

@@ -47,7 +47,6 @@ import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.query.IQueryEngine;
-import org.hawk.core.runtime.util.SecurityManager;
 import org.hawk.core.runtime.util.TimerManager;
 import org.hawk.core.util.FileOperations;
 import org.hawk.core.util.HawkProperties;
@@ -799,11 +798,15 @@ public class ModelIndexerImpl implements IModelIndexer {
 		XStream stream = new XStream(new DomDriver());
 		stream.processAnnotations(HawkProperties.class);
 
-		HashSet<String> set = new HashSet<String>();
-		for (IVcsManager s : getRunningVCSManagers())
-			set.add(s.getLocation() + ";:;" + s.getType() + ";:;" + s.getUn()
-					+ ";:;" + s.getPw());
-
+		HashSet<String[]> set = new HashSet<String[]>();
+		for (IVcsManager s : getRunningVCSManagers()) {
+			String[] meta = new String[4];
+			meta[0] = s.getLocation();
+			meta[1] = s.getType();
+			meta[2] = s.getUn();
+			meta[3] = s.getPw();
+			set.add(meta);
+		}
 		HawkProperties hp = new HawkProperties(graph.getType(), set);
 
 		String out = stream.toXML(hp);

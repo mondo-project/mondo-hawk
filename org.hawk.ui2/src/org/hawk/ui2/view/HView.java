@@ -8,7 +8,6 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -27,7 +26,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.wizards.IWizardDescriptor;
@@ -67,7 +65,8 @@ public class HView extends ViewPart {
 	private Action delete;
 	private Action add;
 	private Action config;
-	private Action doubleClickAction;
+
+	// private Action doubleClickAction;
 
 	/*
 	 * The content provider class is responsible for providing objects to the
@@ -79,9 +78,9 @@ public class HView extends ViewPart {
 
 	class ViewLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
-		
+
 		protected Image image = null;
-		
+
 		public String getColumnText(Object obj, int index) {
 			return getText(obj);
 		}
@@ -91,11 +90,12 @@ public class HView extends ViewPart {
 		}
 
 		public Image getImage(Object obj) {
-			
+
 			if (image == null) {
-				image = Activator.getImageDescriptor("icons/hawk.png").createImage();
+				image = Activator.getImageDescriptor("icons/hawk.png")
+						.createImage();
 			}
-			
+
 			return image;
 		}
 	}
@@ -277,8 +277,8 @@ public class HView extends ViewPart {
 		};
 		stop.setText("Stop");
 		stop.setToolTipText("Stop");
-		stop.setImageDescriptor(ImageDescriptor.createFromURL(FileLocator
-				.find(FrameworkUtil.getBundle(this.getClass()), new Path(
+		stop.setImageDescriptor(ImageDescriptor.createFromURL(FileLocator.find(
+				FrameworkUtil.getBundle(this.getClass()), new Path(
 						"icons/stop.gif"), null)));
 
 		delete = new Action() {
@@ -352,10 +352,10 @@ public class HView extends ViewPart {
 		});
 	}
 
-	private void showMessage(String message) {
-		MessageDialog.openInformation(viewer.getControl().getShell(), "Hawk",
-				message);
-	}
+	// private void showMessage(String message) {
+	// MessageDialog.openInformation(viewer.getControl().getShell(), "Hawk",
+	// message);
+	// }
 
 	/**
 	 * Passing the focus request to the viewer's control.

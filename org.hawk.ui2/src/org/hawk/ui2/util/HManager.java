@@ -10,15 +10,11 @@
  ******************************************************************************/
 package org.hawk.ui2.util;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -28,7 +24,6 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
-import org.eclipse.ui.PlatformUI;
 import org.hawk.core.IHawk;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.IMetaModelUpdater;
@@ -37,8 +32,6 @@ import org.hawk.core.IModelUpdater;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.util.HawkConfig;
-import org.hawk.core.util.HawkProperties;
-import org.hawk.ui2.view.HView;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -111,9 +104,29 @@ public class HManager implements IStructuredContentProvider, IWorkbenchListener 
 
 	public static void delete(HModel o) {
 		if (all.contains(o)) {
+			removeHawkFromMetadata(o.getFolder());
 			o.stop();
 			o.delete();
 			all.remove(o);
+		}
+	}
+
+	private static void removeHawkFromMetadata(String folder) {
+
+		IEclipsePreferences preferences = InstanceScope.INSTANCE
+				.getNode("org.hawk.ui2");
+
+		String xml = preferences.get("config", "error");
+
+		if (!xml.equals("error")) {
+			XStream stream = new XStream(new DomDriver());
+			stream.processAnnotations(HawkConfig.class);
+			stream.setClassLoader(HawkConfig.class.getClassLoader());
+			HawkConfig hc = (HawkConfig) stream.fromXML(xml);
+			hc.removeLoc(folder);
+		} else {
+			System.err
+					.println("removeHawkFromMetadata tried to load preferences but it could not.");
 		}
 	}
 
@@ -123,22 +136,24 @@ public class HManager implements IStructuredContentProvider, IWorkbenchListener 
 
 		// ...
 
-		IEclipsePreferences preferences = InstanceScope.INSTANCE
-				.getNode("org.hawk.ui2");
-
-		Collection<String> hawks = new HashSet<String>();
-
-		String xml = preferences.get("config", "error");
-
-		if (!xml.equals("error")) {
-			XStream stream = new XStream(new DomDriver());
-			stream.processAnnotations(HawkConfig.class);
-			HawkConfig hc = (HawkConfig) stream.fromXML(xml);
-			for (String s : hc.locs)
-				hawks.add(s);
-		}
-
 		try {
+
+			IEclipsePreferences preferences = InstanceScope.INSTANCE
+					.getNode("org.hawk.ui2");
+
+			Collection<String> hawks = new HashSet<String>();
+
+			String xml = preferences.get("config", "error");
+
+			if (!xml.equals("error")) {
+				XStream stream = new XStream(new DomDriver());
+				stream.processAnnotations(HawkConfig.class);
+				stream.setClassLoader(HawkConfig.class.getClassLoader());
+				HawkConfig hc = (HawkConfig) stream.fromXML(xml);
+				for (String s : hc.getLocs())
+					hawks.add(s);
+			}
+
 			for (String s : hawks) {
 				addHawk(HModel.createFromFolder(s));
 			}
@@ -410,41 +425,10 @@ public class HManager implements IStructuredContentProvider, IWorkbenchListener 
 
 	@Override
 	public boolean preShutdown(IWorkbench workbench, boolean forced) {
-
-		IEclipsePreferences preferences = InstanceScope.INSTANCE
-				.getNode("org.hawk.ui2");
-
-		String xml = preferences.get("config", "error");
-
-		XStream stream = new XStream(new DomDriver());
-		stream.processAnnotations(HawkConfig.class);
-
-		HawkConfig hc = null;
-
-		if (!xml.equals("error")) {
-			hc = (HawkConfig) stream.fromXML(xml);
-		}
-
-		HashSet<String> locs = new HashSet<String>();
-
 		for (HModel hm : all) {
-			if (hc == null) {
-				locs.add(hm.getFolder());
-			} else {
-				hc.locs.add(hm.getFolder());
-			}
 			if (hm.isRunning())
 				hm.stop();
 		}
-
-		if (hc == null) {
-			hc = new HawkConfig(locs);
-			xml = stream.toXML(hc);
-		} else {
-			xml = stream.toXML(hc);
-		}
-		preferences.put("config", xml);
-
 		return true;
 	}
 

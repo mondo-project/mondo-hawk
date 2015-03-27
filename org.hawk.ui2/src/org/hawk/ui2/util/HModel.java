@@ -19,6 +19,7 @@ import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.runtime.LocalHawk;
+import org.hawk.core.util.HawkConfig;
 import org.hawk.core.util.HawkProperties;
 
 import com.thoughtworks.xstream.XStream;
@@ -233,6 +234,7 @@ public class HModel {
 
 		XStream stream = new XStream(new DomDriver());
 		stream.processAnnotations(HawkProperties.class);
+		stream.setClassLoader(HawkProperties.class.getClassLoader());
 		// stream.createObjectInputStream(in)
 
 		String path = hawk.getModelIndexer().getParentFolder() + File.separator
@@ -244,13 +246,11 @@ public class HModel {
 
 		// System.out.println(stream.toXML(hp));
 
-		hawk.setDbtype(hp.dbType);
+		hawk.setDbtype(hp.getDbType());
 
-		for (String s : hp.monitoredVCS) {
+		for (String[] s : hp.getMonitoredVCS()) {
 
-			String[] vcs = s.split(";:;");
-
-			addencryptedVCS(vcs[0], vcs[1], vcs[2], vcs[3]);
+			addencryptedVCS(s[0], s[1], s[2], s[3]);
 
 		}
 

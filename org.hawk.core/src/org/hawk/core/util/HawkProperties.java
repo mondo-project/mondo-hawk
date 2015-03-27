@@ -4,16 +4,35 @@ import java.util.Collection;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@XStreamAlias("hawkproperties")
+@XStreamAlias("hawkProperties")
 public class HawkProperties {
 
-	@XStreamAlias("type")
-	public String dbType;
+	@XStreamAlias("dbType")
+	protected String dbType;
 
-	@XStreamAlias("monitored")
-	public Collection<String> monitoredVCS;
+	@XStreamAlias("monitoredVCS")
+	protected Collection<String[]> monitoredVCS;
 
-	public HawkProperties(String dbType, Collection<String> monitoredVCS) {
+	public String getDbType() {
+		return dbType;
+	}
+
+	public void setDbType(String dbType) {
+		this.dbType = dbType;
+	}
+
+	public Collection<String[]> getMonitoredVCS() {
+		return monitoredVCS;
+	}
+
+	public void setMonitoredVCS(Collection<String[]> monitoredVCS) {
+		this.monitoredVCS = monitoredVCS;
+	}
+
+	public HawkProperties() {
+	}
+
+	public HawkProperties(String dbType, Collection<String[]> monitoredVCS) {
 		this.dbType = dbType;
 		this.monitoredVCS = monitoredVCS;
 	}
