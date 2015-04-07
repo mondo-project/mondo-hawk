@@ -69,7 +69,7 @@ public class HWizardPage extends WizardPage {
 		container.setLayout(layout);
 
 		Label label = new Label(container, SWT.NULL);
-		label.setText("&Hawk name:");
+		label.setText("&Name:");
 
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 
@@ -139,7 +139,7 @@ public class HWizardPage extends WizardPage {
 
 		gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		label.setLayoutData(gd);
-		label.setText("&Hawk plugins:");
+		label.setText("&Enabled plugins:");
 
 		pluginTable = new Table(container, SWT.BORDER | SWT.V_SCROLL
 				| SWT.H_SCROLL);
@@ -147,7 +147,8 @@ public class HWizardPage extends WizardPage {
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		pluginTable.setLayoutData(gd);
 		pluginTable.setHeaderVisible(false);
-
+		pluginTable.setEnabled(false);
+		
 		TableColumn column = new TableColumn(pluginTable, SWT.NULL);
 		column.setText("plugin");
 
@@ -173,7 +174,7 @@ public class HWizardPage extends WizardPage {
 		label.setText("");
 
 		label = new Label(container, SWT.NULL);
-		label.setText("Selected Hawk Back-end:");
+		label.setText("Back-end:");
 
 		dbidText = new Combo(container, SWT.READ_ONLY);
 		gd = new GridData(GridData.FILL_HORIZONTAL);

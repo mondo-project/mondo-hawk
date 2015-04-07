@@ -314,7 +314,7 @@ public class HModel {
 	public String toString() {
 		String ret = "";
 		try {
-			ret = getFolder()
+			ret = getName()
 					+ (this.isRunning() ? " (running) " : " (stopped) ") + " ["
 					+ this.getFolder() + "] ";
 		} catch (Exception e) {
