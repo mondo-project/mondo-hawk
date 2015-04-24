@@ -49,7 +49,7 @@ IMondixView {
 	public static void main(String[] _) throws Exception {
 
 		IGraphDatabase d = new Neo4JDatabase();
-		d.run("test_db_fragmented", new File(
+		d.run(new File(
 				"D:/workspace/_hawk_runtime_example/runtime_data"), console);
 		HawkFileQueryInstance h = new HawkFileQueryInstance(
 				new HawkFileMondixRelation(new HawkMondixInstance(d)), d);

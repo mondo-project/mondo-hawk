@@ -52,7 +52,7 @@ public class HawkContainmentQueryInstanceCypher extends HawkQueryInstance
 	public static void main(String[] _) throws Exception {
 
 		Neo4JDatabase d = new Neo4JDatabase();
-		d.run("test_db", new File(
+		d.run(new File(
 				"D:/workspace/_hawk_runtime_example/runtime_data"), console);
 		HawkContainmentQueryInstanceCypher h = new HawkContainmentQueryInstanceCypher(
 				null, d);

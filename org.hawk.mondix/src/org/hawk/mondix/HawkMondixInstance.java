@@ -46,7 +46,7 @@ public class HawkMondixInstance implements IMondixInstance {
 		LinkedList<String> ret = new LinkedList<>();
 
 		IGraphDatabase d = new Neo4JDatabase();
-		d.run("epsilon_test_db", new File(
+		d.run(new File(
 				"../_hawk_runtime_example/runtime_data"), console);
 		HawkMondixInstance i = new HawkMondixInstance(d);
 
