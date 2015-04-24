@@ -56,7 +56,7 @@ public class Modelio_Titan_Runtime_example {
 
 		IGraphDatabase db = (new Neo4JDatabase());
 		// create the indexer with relevant database
-		db.run("test_db", i.getParentFolder(), i.getConsole());
+		db.run(i.getParentFolder(), i.getConsole());
 		i.setDB(db);
 
 		// set path of vcs
@@ -118,7 +118,7 @@ public class Modelio_Titan_Runtime_example {
 						if (s.equalsIgnoreCase("quit")
 								|| s.equalsIgnoreCase("exit")
 								|| s.equalsIgnoreCase("e")) {
-							i2.shutdown(null, true);
+							i2.shutdown(true);
 							System.exit(0);
 						}
 						if (s.equalsIgnoreCase("query")

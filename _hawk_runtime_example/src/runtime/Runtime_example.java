@@ -207,7 +207,7 @@ public class Runtime_example {
 						if (s.equalsIgnoreCase("quit")
 								|| s.equalsIgnoreCase("exit")
 								|| s.equalsIgnoreCase("e")) {
-							i2.shutdown(null, true);
+							i2.shutdown(true);
 							System.exit(0);
 						} else if (s.equalsIgnoreCase("adi")) {
 							addDerivedandIndexedAttributes();
