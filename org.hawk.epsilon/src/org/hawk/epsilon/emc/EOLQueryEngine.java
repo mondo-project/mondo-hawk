@@ -49,7 +49,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 	protected HashSet<String> cachedTypes = new HashSet<String>();
 	protected String backendURI = null;
 	protected StringProperties config = null;
-	protected boolean enableCache = true;
+	// TODO try re-enable the use of a cache
+	// protected boolean enableCache = true;
 
 	protected static IGraphDatabase graph = null;
 
@@ -199,23 +200,23 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 	public Collection<?> allContents() {
 		// TODOdone limit to packages / files of interest -- implemented in
 		// CEOLQueryEngine
-		if (!enableCache || (enableCache && allContents == null)) {
-			allContents = new HashSet<Object>();
-			// GlobalGraphOperations ops = GlobalGraphOperations.at(graph);
+		// if (!enableCache || (enableCache && allContents == null)) {
+		allContents = new HashSet<Object>();
+		// GlobalGraphOperations ops = GlobalGraphOperations.at(graph);
 
-			try (IGraphTransaction t = graph.beginTransaction()) {
+		try (IGraphTransaction t = graph.beginTransaction()) {
 
-				for (IGraphNode node : graph.allNodes("eobject")) {
-					GraphNodeWrapper wrapper = new GraphNodeWrapper(node
-							.getId().toString(), this);
-					allContents.add(wrapper);
-				}
-				t.success();
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (IGraphNode node : graph.allNodes("eobject")) {
+				GraphNodeWrapper wrapper = new GraphNodeWrapper(node.getId()
+						.toString(), this);
+				allContents.add(wrapper);
 			}
-
+			t.success();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+
+		// }
 		broadcastAllOfXAccess(allContents);
 		return allContents;
 	}
@@ -318,20 +319,21 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			if (hasType(arg0)) {
 
 				// cashing
-				if (enableCache) {
-
-					OptimisableCollection ret = typeorkind.equals("typeOf") ? typeContents
-							.get(arg0) : superTypeContents.get(arg0);
-
-					if (ret != null) {
-						// System.err.println("using cashed collection of all: "
-						// +
-						// typeorkind + " : " + arg0);
-						broadcastAllOfXAccess(ret);
-						return ret;
-					}
-
-				}
+				// if (enableCache) {
+				//
+				// OptimisableCollection ret = typeorkind.equals("typeOf") ?
+				// typeContents
+				// .get(arg0) : superTypeContents.get(arg0);
+				//
+				// if (ret != null) {
+				// // System.err.println("using cashed collection of all: "
+				// // +
+				// // typeorkind + " : " + arg0);
+				// broadcastAllOfXAccess(ret);
+				// return ret;
+				// }
+				//
+				// }
 
 				IGraphNode typeNode = null;
 
@@ -461,16 +463,16 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 				// for(NeoIdWrapper n:nodes){System.out.println(new
 				// IsOf().isOfClass(graph.getNodeById(n.getId())));}
 
-				if (enableCache) {
-
-					if (typeorkind.equals("typeOf")
-							&& !typeContents.containsKey(arg0))
-						typeContents.put(arg0, nodes);
-					else if (typeorkind.equals("kind")
-							&& !superTypeContents.containsKey(arg0))
-						superTypeContents.put(arg0, nodes);
-
-				}
+				// if (enableCache) {
+				//
+				// if (typeorkind.equals("typeOf")
+				// && !typeContents.containsKey(arg0))
+				// typeContents.put(arg0, nodes);
+				// else if (typeorkind.equals("kind")
+				// && !superTypeContents.containsKey(arg0))
+				// superTypeContents.put(arg0, nodes);
+				//
+				// }
 
 				broadcastAllOfXAccess(nodes);
 				return nodes;
@@ -774,8 +776,9 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		// }
 
 		name = (String) config.get(EOLQueryEngine.PROPERTY_NAME);
-		String ec = (String) config.get(EOLQueryEngine.PROPERTY_ENABLE_CASHING);
-		enableCache = Boolean.parseBoolean((ec == null) ? "true" : ec);
+		// String ec = (String)
+		// config.get(EOLQueryEngine.PROPERTY_ENABLE_CASHING);
+		// enableCache = Boolean.parseBoolean((ec == null) ? "true" : ec);
 		// System.err.println("EOL EC: " + enableCache);
 
 		// limit to declared epckages if applicable
@@ -1261,8 +1264,10 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 					name = "Model";
 
 				// defaults to true
-				String ec = context.get(EOLQueryEngine.PROPERTY_ENABLE_CASHING);
-				enableCache = ec == null ? true : ec.equalsIgnoreCase("true");
+				// String ec =
+				// context.get(EOLQueryEngine.PROPERTY_ENABLE_CASHING);
+				// enableCache = ec == null ? true :
+				// ec.equalsIgnoreCase("true");
 
 				// limit to declared packages if applicable
 				String pa = context.get(EOLQueryEngine.PROPERTY_METAMODELS);

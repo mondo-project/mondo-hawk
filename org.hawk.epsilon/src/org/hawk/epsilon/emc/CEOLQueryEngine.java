@@ -73,8 +73,8 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 				name = "Model";
 
 			// defaults to true
-			String ec = context.get(EOLQueryEngine.PROPERTY_ENABLE_CASHING);
-			enableCache = ec == null ? true : ec.equalsIgnoreCase("true");
+			// String ec = context.get(EOLQueryEngine.PROPERTY_ENABLE_CASHING);
+			// enableCache = ec == null ? true : ec.equalsIgnoreCase("true");
 
 			// limit to declared packages if applicable
 			String pa = context.get(EOLQueryEngine.PROPERTY_METAMODELS);

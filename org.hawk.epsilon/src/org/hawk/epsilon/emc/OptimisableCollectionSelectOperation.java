@@ -29,41 +29,15 @@ import org.hawk.core.model.IHawkIterable;
 public class OptimisableCollectionSelectOperation extends SelectOperation {
 
 	protected EOLQueryEngine model;
-	protected Collection<Object> modifiedlist;
 	IEolContext context;
 	boolean returnOnFirstMatch;
+	Variable iterator;
 
+	IGraphNode metaclass;
 	IGraphDatabase graph = null;
 
-	// IndexManager indexManager = null;
-
-	@Override
-	public Object execute(Object target, Variable iterator, Expression ast,
-			IEolContext context, boolean returnOnFirstMatch)
-			throws EolRuntimeException {
-
-		modifiedlist = (OptimisableCollection) target;
-
-		model = (EOLQueryEngine) ((OptimisableCollection) target)
-				.getOwningModel();
-		this.context = context;
-		this.returnOnFirstMatch = returnOnFirstMatch;
-
-		// Object ret =
-		try {
-			parseAST(iterator, ast);
-		} catch (Exception e) {
-			throw new EolRuntimeException(
-					"OptimisableCollectionSelectOperation: parseAST(iterator, ast) failed:",
-					ast);
-		}
-
-		return modifiedlist;
-
-	}
-
 	// @Override
-	// public Object execute(Object target, Variable iterator, AST ast,
+	// public Object execute(Object target, Variable iterator, Expression ast,
 	// IEolContext context, boolean returnOnFirstMatch)
 	// throws EolRuntimeException {
 	//
@@ -72,146 +46,254 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 	//
 	// }
 
-	/**
-	 * Returns if this ast is optimisable
-	 * 
-	 * @param iterator
-	 * @param ast
-	 * @return
-	 * @throws Exception
-	 */
+	 @Override
+	 public Object execute(Object target, Variable iterator, Expression ast,
+	 IEolContext context, boolean returnOnFirstMatch)
+	 throws EolRuntimeException {
+	
+	 System.err
+	 .println("OptimisableCollectionSelectOperation execute called!");
+	
+	 try {
+	
+	 this.context = context;
+	 this.returnOnFirstMatch = returnOnFirstMatch;
+	 this.iterator = iterator;
+	 model = (EOLQueryEngine) ((OptimisableCollection) target)
+	 .getOwningModel();
+	
+	 graph = model.getBackend();
+	 try (IGraphTransaction ignored = graph.beginTransaction()) {
+	 metaclass = graph
+	 .getNodeById(((OptimisableCollection) target).type
+	 .getId());
+	 ignored.success();
+	 } catch (Exception e) {
+	 e.printStackTrace();
+	 throw new EolRuntimeException(
+	 "OptimisableCollectionSelectOperation: parseAST(iterator, ast) failed:",
+	 ast);
+	 }
+	
+	 return decomposeAST(target, ast);
+	
+	 } catch (Exception e) {
+	 e.printStackTrace();
+	 throw new EolRuntimeException(
+	 "OptimisableCollectionSelectOperation: parseAST(iterator, ast) failed:",
+	 ast);
+	 }
+	
+	 }
+
 	@SuppressWarnings("unchecked")
-	protected void parseAST(Variable iterator, AST ast) throws Exception {
-
-		// Iterator<?> it = modifiedlist.iterator();
-		// int count = 0;
-		// while (it.hasNext()) {
-		// NeoIdWrapperDebuggable item = ((NeoIdWrapperDebuggable) it.next());
-		// if(count<5)System.err.print(item.getId() + ":" + item.getTypeName() +
-		// " | ");
-		// //else System.err.print(".");
-		// count++;
-		// }
-		// System.err.println();
-		// System.err.println(count);
-
-		// System.out.println("parseAST:: printing ast:");
-		// System.out.println(ast.toStringTree());
-
-		// FIXME takes last argument of a complex statement first (a and b and c
-		// -- it takes c)
+	protected Collection<Object> decomposeAST(Object target, AST ast)
+			throws Exception {
 
 		if (ast.getType() == EolParser.OPERATOR && ast.getText().equals("and")) {
-
-			and(ast, iterator);
-
-		}
-
-		else if (ast.getType() == EolParser.OPERATOR
+			return and(target, ast);
+		} else if (ast.getType() == EolParser.OPERATOR
 				&& ast.getText().equals("or")) {
-
-			or(ast, iterator);
-
-		}
-
-		else if (ast.getType() == EolParser.OPERATOR
+			return or(target, ast);
+		} else if (ast.getType() == EolParser.OPERATOR
 				&& ast.getText().equals("xor")) {
-
+			return xor(target, ast);
 			// ( a or b ) and ( not(a and b) )
-
-		}
-
-		else if (ast.getType() == EolParser.OPERATOR
+			// a != b
+		} else if (ast.getType() == EolParser.OPERATOR
 				&& ast.getText().equals("implies")) {
-
+			return implies(target, ast);
 			// not(a) or b
-
-		}
-
-		else if (isOptimisable(ast, iterator)) {
-
-			optimise(iterator, ast, true);
-
+			// not( a and not(b) )
+		} else if (ast.getType() == EolParser.OPERATOR
+				&& ast.getText().equals("not")) {
+			return not(target, ast);
+		} else if (isOptimisable(ast)) {
+			return optimisedExecution(target, ast);
 		} else {
 			// System.err.println("giving to super: "+ast.toStringTree());
-			modifiedlist.retainAll((Collection<Object>) super.execute(
-					modifiedlist, iterator, (Expression) ast, context,
-					returnOnFirstMatch));
+			return (Collection<Object>) super.execute(target, iterator,
+					(Expression) ast, context, returnOnFirstMatch);
 			// System.err.println("super returns: "+rett.getClass());
 		}
 
 	}
 
 	@SuppressWarnings("unchecked")
-	private void or(AST ast, Variable iterator) throws Exception {
+	private Collection<Object> implies(Object target, AST ast) throws Exception {
 
-		// System.err.println("anding: "+ast.getFirstChild().toStringTree()+"\n"+ast.getChild(1).toStringTree());
+		boolean a = isOptimisable(ast.getFirstChild());
+		boolean b = isOptimisable(ast.getChild(1));
 
-		if (isOptimisable(ast.getFirstChild(), iterator)
-				&& (isOptimisable(ast.getChild(1), iterator))) {
+		HashSet<Object> filter = new HashSet<Object>();
+		filter.addAll((Collection<Object>) target);
 
-			Collection<Object> filter = new HashSet<Object>();
+		if (a) {
 
-			filter.addAll(optimise(iterator, ast.getFirstChild(), false));
-			filter.addAll(optimise(iterator, ast.getChild(1), false));
+			if (a && b) {
 
-			modifiedlist.retainAll(filter);
+				// not(a) or b
+				Collection<Object> aa = optimisedExecution(target,
+						ast.getFirstChild());
+				Collection<Object> bb = optimisedExecution(target,
+						ast.getChild(1));
+
+				filter.removeAll(aa);
+				filter.addAll(bb);
+				return filter;
+
+			}
+
+			else {
+
+				// not( a and not(b) )
+				Collection<Object> lhsResult = optimisedExecution(target,
+						ast.getFirstChild());
+
+				lhsResult.removeAll((Collection<Object>) decomposeAST(
+						lhsResult, ast.getChild(1)));
+
+				filter.removeAll(lhsResult);
+				return filter;
+
+			}
 
 		}
 
 		else {
 
-			modifiedlist.retainAll((Collection<Object>) super.execute(
-					modifiedlist, iterator, (Expression) ast, context,
-					returnOnFirstMatch));
+			// not(a) or b
+			Collection<Object> aa = decomposeAST(target, ast.getFirstChild());
+			Collection<Object> bb = decomposeAST(target, ast.getChild(1));
 
-		}
-
-	}
-
-	private void and(AST ast, Variable iterator) throws Exception {
-
-		// System.err.println("anding: "+ast.getFirstChild().toStringTree()+"\n"+ast.getChild(1).toStringTree());
-		boolean firstChild = false;
-		boolean secondChild = false;
-
-		if (isOptimisable(ast.getFirstChild(), iterator)) {
-			firstChild = true;
-			optimise(iterator, ast.getFirstChild(), true);
-		}
-
-		if (isOptimisable(ast.getChild(1), iterator)) {
-			secondChild = true;
-			optimise(iterator, ast.getChild(1), true);
-		}
-
-		if (firstChild && secondChild) {
-		}
-
-		else if (firstChild) {
-			parseAST(iterator, ast.getChild(1));
-		}
-
-		else if (secondChild) {
-			parseAST(iterator, ast.getFirstChild());
-		}
-
-		else {
-
-			parseAST(iterator, ast.getFirstChild());
-			parseAST(iterator, ast.getChild(1));
-
-			// modifiedlist = (Collection<?>)
-			// super.execute(modifiedlist,iterator, ast, context,
-			// returnOnFirstMatch);
+			filter.removeAll(aa);
+			filter.addAll(bb);
+			return filter;
 
 		}
 
 	}
 
 	@SuppressWarnings("unchecked")
-	private Collection<Object> optimise(Variable iterator, AST ast,
-			boolean alterlist) throws EolRuntimeException {
+	private Collection<Object> not(Object target, AST ast) throws Exception {
+
+		HashSet<Object> filter = new HashSet<Object>();
+		filter.addAll((Collection<Object>) target);
+
+		if (isOptimisable(ast.getFirstChild())) {
+
+			filter.removeAll(optimisedExecution(target, ast.getFirstChild()));
+
+		}
+
+		else {
+
+			filter.removeAll(decomposeAST(target, ast.getFirstChild()));
+
+		}
+
+		return filter;
+
+	}
+
+	private Collection<Object> xor(Object target, AST ast) throws Exception {
+
+		Collection<Object> filter = new HashSet<Object>();
+		Collection<Object> a = null;
+		Collection<Object> b = null;
+
+		if (isOptimisable(ast.getFirstChild())
+				&& (isOptimisable(ast.getChild(1)))) {
+
+			a = optimisedExecution(target, ast.getFirstChild());
+			b = optimisedExecution(target, ast.getChild(1));
+
+		}
+
+		else {
+
+			a = decomposeAST(target, ast.getFirstChild());
+			b = decomposeAST(target, ast.getChild(1));
+
+		}
+
+		// a or b
+		filter.addAll(a);
+		filter.addAll(b);
+
+		// intersection of a and b
+		a.retainAll(b);
+
+		// a xor b
+		filter.removeAll(a);
+
+		//
+
+		return filter;
+
+	}
+
+	private Collection<Object> or(Object target, AST ast) throws Exception {
+
+		// System.err.println("anding: "+ast.getFirstChild().toStringTree()+"\n"+ast.getChild(1).toStringTree());
+
+		Collection<Object> filter = new HashSet<Object>();
+
+		if (isOptimisable(ast.getFirstChild())
+				&& (isOptimisable(ast.getChild(1)))) {
+
+			filter.addAll(optimisedExecution(target, ast.getFirstChild()));
+			filter.addAll(optimisedExecution(target, ast.getChild(1)));
+
+		}
+
+		else {
+
+			filter.addAll(decomposeAST(target, ast.getFirstChild()));
+			filter.addAll(decomposeAST(target, ast.getChild(1)));
+
+		}
+
+		return filter;
+
+	}
+
+	private Collection<Object> and(Object target, AST ast) throws Exception {
+
+		// System.err.println("anding: "+ast.getFirstChild().toStringTree()+"\n"+ast.getChild(1).toStringTree());
+
+		boolean a = isOptimisable(ast.getFirstChild());
+		boolean b = isOptimisable(ast.getChild(1));
+
+		Collection<Object> filter = new HashSet<>();
+
+		if (a && b) {
+			filter.addAll(optimisedExecution(
+					optimisedExecution(target, ast.getFirstChild()),
+					ast.getChild(1)));
+		} else if (a) {
+			filter.addAll(decomposeAST(
+					optimisedExecution(target, ast.getFirstChild()),
+					ast.getChild(1)));
+		} else if (b) {
+			filter.addAll(decomposeAST(
+					optimisedExecution(target, ast.getChild(1)),
+					ast.getFirstChild()));
+		} else {
+			filter.addAll(decomposeAST(
+					decomposeAST(target, ast.getFirstChild()), ast.getChild(1)));
+			// modifiedlist = (Collection<?>)
+			// super.execute(modifiedlist,iterator, ast, context,
+			// returnOnFirstMatch);
+		}
+
+		return filter;
+
+	}
+
+	@SuppressWarnings("unchecked")
+	private Collection<Object> optimisedExecution(Object target, AST ast)
+			throws EolRuntimeException {
 
 		// System.err.println(">"+ast.toStringTree());
 
@@ -232,11 +314,15 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 
 		if ((indexname = isIndexed(attributename)) != null) {
 
+			HashSet<Object> result = new HashSet<Object>();
+			result.addAll((Collection<Object>) target);
+
 			System.err.println("indexed ast found: "
 					+ ast.getFirstChild().getFirstChild().getText()
 					+ ast.getFirstChild().getText() + attributename
 					+ ast.getText() + attributevalue);
 
+			HashSet<Object> filter = new HashSet<Object>();
 			// use index to query
 			try (IGraphTransaction ignored = graph.beginTransaction()) {
 
@@ -248,12 +334,10 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 
 				// modifiedlist.clear();
 
-				HashSet<Object> filter = new HashSet<Object>();
-
 				for (IGraphNode hit : hits) {
 
-					filter.add(new GraphNodeWrapper(hit.getId()
-							.toString(), model));
+					filter.add(new GraphNodeWrapper(hit.getId().toString(),
+							model));
 
 					// ((OptimisableCollection) modifiedlist)
 					// .add(new NeoIdWrapperDebuggable(graph, hit
@@ -261,16 +345,17 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 
 				}
 
-				if (alterlist)
-					modifiedlist.retainAll(filter);
-				else
-					return filter;
-
 				ignored.success();
+
 			} catch (Exception e) {
 				e.printStackTrace();
+				throw new EolRuntimeException(
+						"optimise(Object target, AST ast) crashed (see above)");
+
 			}
 
+			result.retainAll(filter);
+			return result;
 			// System.err.println(Arrays.toString(ret.toArray()));
 			// return ret;
 
@@ -278,64 +363,53 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 
 			// System.err.println("giving to super: "+ast.toStringTree());
 
-			Collection<Object> filter = (Collection<Object>) super.execute(
-					modifiedlist, iterator, (Expression) ast, context,
-					returnOnFirstMatch);
+			return (Collection<Object>) super.execute(target, iterator,
+					(Expression) ast, context, returnOnFirstMatch);
 
-			if (alterlist)
-				modifiedlist.retainAll(filter);
-			else
-				return filter;
 			// System.err.println("super returns: "+rett.getClass());
 			// return rett;
 
 		}
 
-		return null;
-
 	}
 
-	private boolean isOptimisable(AST ast, Variable iterator) {
+	private boolean isOptimisable(AST ast) {
 
-		return ast.getType() == EolParser.OPERATOR
-				&& (ast.getText().equals("=") || ast.getText().equals("=="))
-				&& ast.getFirstChild().getType() == EolParser.POINT
-				&& ast.getFirstChild().getFirstChild().getText()
-						.equals(iterator.getName());
+		// TODO extend to numeric operations
+
+		try {
+
+			return ast.getType() == EolParser.OPERATOR
+					&& (ast.getText().equals("=") || ast.getText().equals("=="))
+					&& ast.getFirstChild().getType() == EolParser.POINT
+					&& ast.getFirstChild().getFirstChild().getText()
+							.equals(iterator.getName());
+
+		} catch (Exception e) {
+			return false;
+		}
 
 	}
 
 	private String isIndexed(String attributename) {
 
-		try {
+		String result = null;
 
-			// indexname = ...
-			if (graph == null)
-				graph = model.getBackend();
+		try (IGraphTransaction ignored = graph.beginTransaction()) {
 
-			try (IGraphTransaction ignored = graph.beginTransaction()) {
+			String indexname = metaclass.getOutgoingWithType("epackage")
+					.iterator().next().getEndNode().getProperty("id")
+					+ "##" + metaclass.getProperty("id") + "##" + attributename;
 
-				IGraphNode metaclass = graph
-						.getNodeById(((OptimisableCollection) modifiedlist).type
-								.getId());
+			// if (indexManager == null) indexManager = graph.index();
 
-				String indexname = metaclass.getOutgoingWithType("epackage")
-						.iterator().next().getEndNode().getProperty("id")
-						+ "##"
-						+ metaclass.getProperty("id")
-						+ "##"
-						+ attributename;
+			// System.err.println(indexname);
+			// System.err.println(graph.getNodeIndexNames());
 
-				// if (indexManager == null) indexManager = graph.index();
+			if (graph.nodeIndexExists(indexname))
+				result = indexname;
 
-				// System.err.println(indexname);
-				// System.err.println(graph.getNodeIndexNames());
-
-				if (graph.nodeIndexExists(indexname))
-					return indexname;
-
-				ignored.success();
-			}
+			ignored.success();
 
 		} catch (Exception e) {
 			System.err
@@ -344,8 +418,7 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 			e.printStackTrace();
 		}
 
-		return null;
+		return result;
 
 	}
-
 }

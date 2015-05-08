@@ -1,5 +1,6 @@
 package org.hawk.epsilon.emc;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -28,7 +29,7 @@ public class COptimisableCollectionSelectOperation extends
 			IEolContext context, boolean returnOnFirstMatch)
 			throws EolRuntimeException {
 
-		modifiedlist = (OptimisableCollection) target;
+		Collection<Object> filter = null;
 
 		model = (EOLQueryEngine) ((OptimisableCollection) target)
 				.getOwningModel();
@@ -37,7 +38,7 @@ public class COptimisableCollectionSelectOperation extends
 
 		// Object ret =
 		try {
-			parseAST(iterator, ast);
+			filter = decomposeAST(target, ast);
 		} catch (Exception e) {
 			throw new EolRuntimeException(
 					"COptimisableCollectionSelectOperation: parseAST(iterator, ast) failed:",
@@ -46,13 +47,13 @@ public class COptimisableCollectionSelectOperation extends
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
 			// limit to files
-			Iterator<Object> it = modifiedlist.iterator();
+			Iterator<Object> it = filter.iterator();
 			while (it.hasNext()) {
 				GraphNodeWrapper o = (GraphNodeWrapper) it.next();
 				if (!files.contains(graph.getNodeById(o.getId())
 						.getOutgoingWithType("file").iterator().next()
 						.getEndNode()))
-					modifiedlist.remove(o);
+					filter.remove(o);
 			}
 			t.success();
 		} catch (Exception e) {
@@ -60,7 +61,7 @@ public class COptimisableCollectionSelectOperation extends
 					"execute failed in COptimisableCollectionSelectOperation");
 		}
 
-		return modifiedlist;
+		return filter;
 
 	}
 	// if (files.contains(node.getOutgoingWithType("file").iterator().next()))

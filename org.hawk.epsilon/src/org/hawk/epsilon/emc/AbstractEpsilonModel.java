@@ -28,9 +28,10 @@ public abstract class AbstractEpsilonModel extends Model {
 	protected HashSet<String> cachedTypes = new HashSet<String>();
 	protected String backendURI = null;
 	protected StringProperties config = null;
-	protected boolean enableCache = true;
+	//TODO try re-enable the use of a cache
+	//protected boolean enableCache = true;
 
-	//protected ModelParser parser;
+	// protected ModelParser parser;
 
 	// protected ModelIndexer hawkContainer;
 
