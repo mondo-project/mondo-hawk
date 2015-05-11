@@ -98,14 +98,18 @@ public class DeriveFeature {
 			// System.out.println(ret);
 
 			if (!(ret instanceof Collection<?>)) {
-				if (ret instanceof Boolean || ret instanceof Integer)
+				if (ret instanceof Boolean || ret instanceof String
+						|| ret instanceof Integer || ret instanceof Float
+						|| ret instanceof Double)
 					return ret;
 				else
 					return ret.toString();
 			} else {
+				// TODO handle collections as returns to derived features --
+				// need to type cast them for storage in the db
 				System.err
-						.println("Derivefeature got a collection back from EOL, this is not supported yet! returning null");
-				return null;
+						.println("Derivefeature got a collection back from EOL, this is not supported yet! returning \"HAWK_ERROR\"");
+				return "HAWK_ERROR";
 			}
 
 		} catch (Exception e) {

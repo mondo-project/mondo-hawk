@@ -28,6 +28,10 @@ import org.hawk.core.model.IHawkIterable;
 
 public class OptimisableCollectionSelectOperation extends SelectOperation {
 
+	// XXX can also index subsets of X.all as the context is kept. but this may
+	// be counter-productive as you may end up doing a retain all on a list of a
+	// couple of elements into an indexed result of millions
+
 	protected EOLQueryEngine model;
 	IEolContext context;
 	boolean returnOnFirstMatch;
@@ -46,45 +50,45 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 	//
 	// }
 
-	 @Override
-	 public Object execute(Object target, Variable iterator, Expression ast,
-	 IEolContext context, boolean returnOnFirstMatch)
-	 throws EolRuntimeException {
-	
-	 System.err
-	 .println("OptimisableCollectionSelectOperation execute called!");
-	
-	 try {
-	
-	 this.context = context;
-	 this.returnOnFirstMatch = returnOnFirstMatch;
-	 this.iterator = iterator;
-	 model = (EOLQueryEngine) ((OptimisableCollection) target)
-	 .getOwningModel();
-	
-	 graph = model.getBackend();
-	 try (IGraphTransaction ignored = graph.beginTransaction()) {
-	 metaclass = graph
-	 .getNodeById(((OptimisableCollection) target).type
-	 .getId());
-	 ignored.success();
-	 } catch (Exception e) {
-	 e.printStackTrace();
-	 throw new EolRuntimeException(
-	 "OptimisableCollectionSelectOperation: parseAST(iterator, ast) failed:",
-	 ast);
-	 }
-	
-	 return decomposeAST(target, ast);
-	
-	 } catch (Exception e) {
-	 e.printStackTrace();
-	 throw new EolRuntimeException(
-	 "OptimisableCollectionSelectOperation: parseAST(iterator, ast) failed:",
-	 ast);
-	 }
-	
-	 }
+	@Override
+	public Object execute(Object target, Variable iterator, Expression ast,
+			IEolContext context, boolean returnOnFirstMatch)
+			throws EolRuntimeException {
+
+		// System.err.println("OptimisableCollectionSelectOperation execute called!");
+
+		try {
+
+			this.context = context;
+			// cannot guarantee correctness if returnOnFirstMatch is used
+			this.returnOnFirstMatch = false;
+			this.iterator = iterator;
+			model = (EOLQueryEngine) ((OptimisableCollection) target)
+					.getOwningModel();
+
+			graph = model.getBackend();
+			try (IGraphTransaction ignored = graph.beginTransaction()) {
+				metaclass = graph
+						.getNodeById(((OptimisableCollection) target).type
+								.getId());
+				ignored.success();
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new EolRuntimeException(
+						"OptimisableCollectionSelectOperation: parseAST(iterator, ast) failed:",
+						ast);
+			}
+
+			return decomposeAST(target, ast);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new EolRuntimeException(
+					"OptimisableCollectionSelectOperation: parseAST(iterator, ast) failed:",
+					ast);
+		}
+
+	}
 
 	@SuppressWarnings("unchecked")
 	protected Collection<Object> decomposeAST(Object target, AST ast)
@@ -307,6 +311,9 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 			attributevalue = sibling.getText().equals("true") ? true : false;
 		else if (sibling.getType() == EolParser.INT)
 			attributevalue = Integer.parseInt(sibling.getText());
+		// XXX epsilon uses float but real can be float or bouble
+		else if (sibling.getType() == EolParser.FLOAT)
+			attributevalue = Double.parseDouble(sibling.getText());
 		else
 			attributevalue = sibling.getText();
 
@@ -375,7 +382,8 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 
 	private boolean isOptimisable(AST ast) {
 
-		// TODO extend to numeric operations
+		// TODO extend to numeric operations -- need to adapt neo4j lucene for
+		// all numbers
 
 		try {
 

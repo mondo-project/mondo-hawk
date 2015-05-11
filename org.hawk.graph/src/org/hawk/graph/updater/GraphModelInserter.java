@@ -38,6 +38,7 @@ import org.hawk.core.model.IHawkReference;
 import org.hawk.core.query.IAccess;
 import org.hawk.core.query.IAccessListener;
 import org.hawk.core.query.IQueryEngine;
+import org.hawk.graph.util.GraphUtil;
 
 /**
  * creates a database with the input xmi file (in args[0]) or reads it if the
@@ -266,7 +267,7 @@ public class GraphModelInserter {
 					//
 
 					remove(node, fileNode);
-					//new DeletionUtils(graph).delete(node);
+					// new DeletionUtils(graph).delete(node);
 
 				}
 
@@ -485,12 +486,12 @@ public class GraphModelInserter {
 
 			Object oldproperty = node.getProperty(a.getName());
 
-			String type = a.getType().getName();
+			String type = GraphUtil.toJavaType(a.getType().getName());
 
 			if (!a.isMany()) {
 
 				if (type.equals("String") || type.equals("Boolean")
-						|| type.equals("Integer")) {
+						|| type.equals("Integer") || type.equals("Real")) {
 					if (!eObject.get(a).equals(oldproperty)) {
 						// track changed property (primitive)
 						changes.add(new GraphChangeImpl(false,
@@ -533,7 +534,7 @@ public class GraphModelInserter {
 				for (Object o : (Collection<?>) eObject.get(a)) {
 
 					if (type.equals("String") || type.equals("Boolean")
-							|| type.equals("Integer"))
+							|| type.equals("Integer") || type.equals("Real"))
 						collection.add(o);
 
 					else
@@ -545,6 +546,8 @@ public class GraphModelInserter {
 
 				if (type.equals("Integer")) {
 					r = Array.newInstance(Integer.class, 1);
+				} else if (type.equals("Real")) {
+					r = Array.newInstance(Double.class, 1);
 				} else if (type.equals("Boolean")) {
 					r = Array.newInstance(Boolean.class, 1);
 				} else {
@@ -614,12 +617,12 @@ public class GraphModelInserter {
 					eObject.getType().getPackageNSURI() + "##"
 							+ eObject.getType().getName() + "##" + a.getName());
 
-			String type = a.getType().getName();
+			String type = GraphUtil.toJavaType(a.getType().getName());
 
 			if (!a.isMany()) {
 
 				if (type.equals("String") || type.equals("Boolean")
-						|| type.equals("Integer"))
+						|| type.equals("Integer") || type.equals("Real"))
 					i.add(node, a.getName(), eObject.get(a));
 
 				else
@@ -643,7 +646,7 @@ public class GraphModelInserter {
 				for (Object o : (Collection<?>) eObject.get(a)) {
 
 					if (type.equals("String") || type.equals("Boolean")
-							|| type.equals("Integer"))
+							|| type.equals("Integer") || type.equals("Real"))
 						collection.add(o);
 
 					else
@@ -655,6 +658,8 @@ public class GraphModelInserter {
 
 				if (type.equals("Integer")) {
 					r = Array.newInstance(Integer.class, 1);
+				} else if (type.equals("Real")) {
+					r = Array.newInstance(Double.class, 1);
 				} else if (type.equals("Boolean")) {
 					r = Array.newInstance(Boolean.class, 1);
 				} else {
@@ -1413,7 +1418,7 @@ public class GraphModelInserter {
 			// a isMany isOrdered isUnique attrType isIndexed
 			String[] metadata = (String[]) typeNode.getProperty(attributename);
 
-			String type = metadata[4];
+			String type = GraphUtil.toJavaType(metadata[4]);
 
 			HashSet<IGraphNode> nodes = new HashSet<>();
 			for (IGraphEdge e : typeNode.getIncomingWithType("typeOf")) {
@@ -1430,7 +1435,7 @@ public class GraphModelInserter {
 				if (!(metadata[1] == "t")) {
 
 					if (type.equals("String") || type.equals("Boolean")
-							|| type.equals("Integer"))
+							|| type.equals("Integer") || type.equals("Real"))
 						m.put(attributename, node.getProperty(attributename));
 
 					else
@@ -1452,10 +1457,12 @@ public class GraphModelInserter {
 					else
 						collection = new LinkedList<Object>();
 
-					for (Object o : (Collection<?>) node.getProperty(attributename)) {
+					for (Object o : (Collection<?>) node
+							.getProperty(attributename)) {
 
 						if (type.equals("String") || type.equals("Boolean")
-								|| type.equals("Integer"))
+								|| type.equals("Integer")
+								|| type.equals("Real"))
 							collection.add(o);
 
 						else
@@ -1467,6 +1474,8 @@ public class GraphModelInserter {
 
 					if (type.equals("Integer")) {
 						r = Array.newInstance(Integer.class, 1);
+					} else if (type.equals("Real")) {
+						r = Array.newInstance(Double.class, 1);
 					} else if (type.equals("Boolean")) {
 						r = Array.newInstance(Boolean.class, 1);
 					} else {

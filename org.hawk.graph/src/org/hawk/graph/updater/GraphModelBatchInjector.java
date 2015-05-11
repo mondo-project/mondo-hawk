@@ -34,6 +34,7 @@ import org.hawk.core.model.IHawkIterable;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
+import org.hawk.graph.util.GraphUtil;
 
 public class GraphModelBatchInjector {
 
@@ -456,12 +457,12 @@ public class GraphModelBatchInjector {
 
 			for (IHawkAttribute a : normalattributes) {
 
-				String type = a.getType().getName();
+				String type = GraphUtil.toJavaType(a.getType().getName());
 
 				if (!a.isMany()) {
 
 					if (type.equals("String") || type.equals("Boolean")
-							|| type.equals("Integer"))
+							|| type.equals("Integer") || type.equals("Real"))
 						m.put(a.getName(), eObject.get(a));
 
 					else
@@ -485,7 +486,8 @@ public class GraphModelBatchInjector {
 					for (Object o : (Collection<?>) eObject.get(a)) {
 
 						if (type.equals("String") || type.equals("Boolean")
-								|| type.equals("Integer"))
+								|| type.equals("Integer")
+								|| type.equals("Real"))
 							collection.add(o);
 
 						else
@@ -497,6 +499,8 @@ public class GraphModelBatchInjector {
 
 					if (type.equals("Integer")) {
 						r = Array.newInstance(Integer.class, 1);
+					} else if (type.equals("Real")) {
+						r = Array.newInstance(Double.class, 1);
 					} else if (type.equals("Boolean")) {
 						r = Array.newInstance(Boolean.class, 1);
 					} else {
@@ -589,12 +593,12 @@ public class GraphModelBatchInjector {
 				// graph.setNodeProperty(node,"value",
 				// eObject.eGet(a).toString());
 
-				String type = a.getType().getName();
+				String type = GraphUtil.toJavaType(a.getType().getName());
 
 				if (!a.isMany()) {
 
 					if (type.equals("String") || type.equals("Boolean")
-							|| type.equals("Integer"))
+							|| type.equals("Integer") || type.equals("Real"))
 						m.put(a.getName(), eObject.get(a));
 
 					else
@@ -618,7 +622,8 @@ public class GraphModelBatchInjector {
 					for (Object o : (Collection<?>) eObject.get(a)) {
 
 						if (type.equals("String") || type.equals("Boolean")
-								|| type.equals("Integer"))
+								|| type.equals("Integer")
+								|| type.equals("Real"))
 							collection.add(o);
 
 						else
@@ -630,6 +635,8 @@ public class GraphModelBatchInjector {
 
 					if (type.equals("Integer")) {
 						r = Array.newInstance(Integer.class, 1);
+					} else if (type.equals("Real")) {
+						r = Array.newInstance(Double.class, 1);
 					} else if (type.equals("Boolean")) {
 						r = Array.newInstance(Boolean.class, 1);
 					} else {
