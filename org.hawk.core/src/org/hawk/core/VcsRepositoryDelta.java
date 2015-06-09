@@ -16,10 +16,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.event.ListSelectionEvent;
-
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
-
 public class VcsRepositoryDelta implements Serializable {
 
 	private static final long serialVersionUID = 1L;

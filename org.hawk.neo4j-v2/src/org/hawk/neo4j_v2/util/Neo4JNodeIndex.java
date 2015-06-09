@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hawk.core.graph.*;
-import org.hawk.core.model.IHawkIterable;
 import org.hawk.neo4j_v2.Neo4JDatabase;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -54,7 +53,7 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 		return name;
 	}
 
-	public IHawkIterable<IGraphNode> query(String key, Object valueExpr) {
+	public IGraphIterable<IGraphNode> query(String key, Object valueExpr) {
 
 		// valueExpr =
 		// StringFormatter.escapeLuceneAllSpecalCharacters(valueExpr);
@@ -68,7 +67,7 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 		}
 	}
 
-	public IHawkIterable<IGraphNode> get(String key, Object valueExpr) {
+	public IGraphIterable<IGraphNode> get(String key, Object valueExpr) {
 
 		// valueExpr =
 		// StringFormatter.escapeLuceneAllSpecalCharacters(valueExpr);

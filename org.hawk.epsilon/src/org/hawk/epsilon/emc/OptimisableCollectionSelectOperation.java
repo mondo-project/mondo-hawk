@@ -24,7 +24,7 @@ import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
-import org.hawk.core.model.IHawkIterable;
+import org.hawk.core.graph.IGraphIterable;
 
 public class OptimisableCollectionSelectOperation extends SelectOperation {
 
@@ -132,35 +132,45 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 		HashSet<Object> filter = new HashSet<Object>();
 		filter.addAll((Collection<Object>) target);
 
+		if (a && b) {
+
+			// not(a) or b
+			Collection<Object> aa = optimisedExecution(target,
+					ast.getFirstChild());
+			Collection<Object> bb = optimisedExecution(target, ast.getChild(1));
+
+			filter.removeAll(aa);
+			filter.addAll(bb);
+			return filter;
+
+		}
+
 		if (a) {
 
-			if (a && b) {
+			// not( a and not(b) )
+			Collection<Object> lhsResult = optimisedExecution(target,
+					ast.getFirstChild());
 
-				// not(a) or b
-				Collection<Object> aa = optimisedExecution(target,
-						ast.getFirstChild());
-				Collection<Object> bb = optimisedExecution(target,
-						ast.getChild(1));
+			lhsResult.removeAll((Collection<Object>) decomposeAST(lhsResult,
+					ast.getChild(1)));
 
-				filter.removeAll(aa);
-				filter.addAll(bb);
-				return filter;
+			filter.removeAll(lhsResult);
+			return filter;
 
-			}
+		}
 
-			else {
+		if (b) {
 
-				// not( a and not(b) )
-				Collection<Object> lhsResult = optimisedExecution(target,
-						ast.getFirstChild());
+			// not( not(b) and a )
+			Collection<Object> lhsResult = optimisedExecution(target,
+					ast.getChild(1));
 
-				lhsResult.removeAll((Collection<Object>) decomposeAST(
-						lhsResult, ast.getChild(1)));
+			Collection<Object> notb = new HashSet<Object>();
+			notb.addAll((Collection<Object>) target);
+			notb.removeAll(lhsResult);
 
-				filter.removeAll(lhsResult);
-				return filter;
-
-			}
+			filter.removeAll(decomposeAST(notb, ast.getFirstChild()));
+			return filter;
 
 		}
 
@@ -336,7 +346,7 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 				IGraphNodeIndex index = graph.getOrCreateNodeIndex(indexname);
 
 				//
-				IHawkIterable<IGraphNode> hits = index.get(attributename,
+				IGraphIterable<IGraphNode> hits = index.get(attributename,
 						attributevalue);
 
 				// modifiedlist.clear();

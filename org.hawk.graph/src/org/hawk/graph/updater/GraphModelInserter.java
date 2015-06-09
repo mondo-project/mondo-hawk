@@ -29,9 +29,9 @@ import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
-import org.hawk.core.model.IHawkIterable;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
@@ -901,7 +901,7 @@ public class GraphModelInserter {
 			IGraphNodeIndex proxydictionary = graph
 					.getOrCreateNodeIndex("proxydictionary");
 
-			IHawkIterable<IGraphNode> resolvedProxies = proxydictionary.query(
+			IGraphIterable<IGraphNode> resolvedProxies = proxydictionary.query(
 					"_proxyRef", "*");
 
 			if (resolvedProxies != null && resolvedProxies.size() > 0) {
@@ -1038,7 +1038,7 @@ public class GraphModelInserter {
 
 			allUnresolved = derivedProxyDictionary.query("derived", "*");
 
-			size = ((IHawkIterable<IGraphNode>) allUnresolved).size();
+			size = ((IGraphIterable<IGraphNode>) allUnresolved).size();
 
 			tx.success();
 		}
@@ -1118,7 +1118,7 @@ public class GraphModelInserter {
 			// operations on the graph
 			// ...
 
-			derivedLeft = ((IHawkIterable<IGraphNode>) derivedProxyDictionary
+			derivedLeft = ((IGraphIterable<IGraphNode>) derivedProxyDictionary
 					.query("derived", "*")).size();
 			tx.success();
 		}

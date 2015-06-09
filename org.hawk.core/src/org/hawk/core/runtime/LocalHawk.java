@@ -17,7 +17,7 @@ public class LocalHawk implements IHawk {
 
 	private String dbtype;
 
-	// not accessible or changable as security is not yet handled
+	// not accessible or changeable as security is not yet handled
 	private static String apw = "admin";
 
 	public LocalHawk(String name, File loc, IAbstractConsole c)
@@ -26,18 +26,6 @@ public class LocalHawk implements IHawk {
 		location = loc;
 
 		indexer = new ModelIndexerImpl(name, location, c);
-
-	}
-
-	@Override
-	public void loadPropertiesXML() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void savePropertiesXML() {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -67,8 +55,8 @@ public class LocalHawk implements IHawk {
 	}
 
 	@Override
-	public String decrypt(String user) throws GeneralSecurityException, IOException {
-		return SecurityManager.decrypt(user, apw.toCharArray());
+	public String decrypt(String pw) throws GeneralSecurityException, IOException {
+		return SecurityManager.decrypt(pw, apw.toCharArray());
 	}
 
 }

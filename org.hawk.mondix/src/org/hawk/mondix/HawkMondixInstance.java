@@ -41,7 +41,7 @@ public class HawkMondixInstance implements IMondixInstance {
 
 	private static IAbstractConsole console = new DefaultConsole();
 
-	public static void main(String[] _) {
+	public static void main(String[] _a) {
 
 		LinkedList<String> ret = new LinkedList<>();
 

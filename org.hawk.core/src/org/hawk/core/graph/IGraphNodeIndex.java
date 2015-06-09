@@ -12,15 +12,13 @@ package org.hawk.core.graph;
 
 import java.util.Map;
 
-import org.hawk.core.model.IHawkIterable;
-
 public interface IGraphNodeIndex {
 
 	String getName();
 
-	IHawkIterable<IGraphNode> query(String key, Object valueExpr);
+	IGraphIterable<IGraphNode> query(String key, Object valueExpr);
 
-	IHawkIterable<IGraphNode> get(String key, Object valueExpr);
+	IGraphIterable<IGraphNode> get(String key, Object valueExpr);
 
 	void add(IGraphNode n, Map<String, Object> derived);
 

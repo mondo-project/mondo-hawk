@@ -27,10 +27,10 @@ import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
+import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkClassifier;
-import org.hawk.core.model.IHawkIterable;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
@@ -103,7 +103,7 @@ public class GraphModelBatchInjector {
 		IGraphNode fileNode = null;
 		long filerevision = 0L;
 		try {
-			fileNode = ((IHawkIterable<IGraphNode>) filedictionary.get("id",
+			fileNode = ((IGraphIterable<IGraphNode>) filedictionary.get("id",
 					s.getPath())).getSingle();
 			if (fileNode != null)
 				filerevision = (Long) fileNode.getProperty("revision");
@@ -178,7 +178,7 @@ public class GraphModelBatchInjector {
 								+ (System.nanoTime() - startTime) / 1000000000
 								+ "sec)");
 
-				System.out.println(((IHawkIterable<IGraphNode>) proxydictionary
+				System.out.println(((IGraphIterable<IGraphNode>) proxydictionary
 						.query("_proxyRef", "*")).size()
 						+ " - sets of proxy references left in the store");
 

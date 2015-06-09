@@ -6,6 +6,7 @@
       <VCS
             VCSManager="org.hawk.svn.SvnManager">
       </VCS>
+      
    </extension>
 
 </plugin>

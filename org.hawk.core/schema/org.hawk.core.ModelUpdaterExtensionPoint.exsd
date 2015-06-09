@@ -18,6 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
+            <element ref="model"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -46,7 +47,7 @@
       </complexType>
    </element>
 
-   <element name="DataStore">
+   <element name="model">
       <complexType>
          <attribute name="ModelUpdater" type="string" use="required">
             <annotation>
@@ -54,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.hawk.core.ModelUpdater"/>
+                  <meta.attribute kind="java" basedOn=":org.hawk.core.IModelUpdater"/>
                </appinfo>
             </annotation>
          </attribute>

@@ -4,9 +4,13 @@
    <extension
          point="org.hawk.core.ModelExtensionPoint">
        <ModelP
-            ModelParser="org.hawk.modelio.ModelioModelFactory">
+             ModelParser="org.hawk.modelio.ModelioModelFactory">
       </ModelP>
    </extension>
-
-
+   <extension
+         point="org.hawk.core.MetaModelExtensionPoint">
+      <MetaModelP
+            MetaModelParser="org.hawk.modelio.mm.ModelioMetaModelResourceFactory">
+      </MetaModelP>
+   </extension>
 </plugin>

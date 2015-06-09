@@ -10,13 +10,10 @@
  ******************************************************************************/
 package org.hawk.core.graph;
 
+public interface IGraphIterable<T> extends Iterable<T> {
 
-public interface IGraphEdgeIndex {
+	int size();
 
-	String getName();
-
-	IGraphIterable<IGraphEdge> query(String key, Object valueExpr);
-
-	IGraphIterable<IGraphEdge> get(String key, Object valueExpr);
+	T getSingle();
 
 }

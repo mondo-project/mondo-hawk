@@ -255,7 +255,7 @@ public class MetamodelUtils {
 					}
 				}
 			} else {
-				IHawkIterable<IGraphNode> eps = epackagedictionary.query("id",
+				IGraphIterable<IGraphNode> eps = epackagedictionary.query("id",
 						"*");
 				for (IGraphNode epp : eps) {
 					for (IGraphEdge r : epp.getIncomingWithType("epackage")) {

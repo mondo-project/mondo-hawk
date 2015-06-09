@@ -34,7 +34,6 @@ import org.modelio.vbasic.progress.NullProgress;
 import org.modelio.vcore.smkernel.mapi.MObject;
 import org.modelio.xmi.generation.ExportServices;
 import org.modelio.xmi.generation.GenerationProperties;
-import org.modelio.xmi.plugin.Xmi;
 //import org.eclipse.swt.widgets.Shell;
 
 public class MProjectReader {

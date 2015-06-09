@@ -48,7 +48,7 @@ IMondixView {
 	Boolean isPrimitive = null;
 	private static IAbstractConsole console = new DefaultConsole();
 
-	public static void main(String[] _) throws Exception {
+	public static void main(String[] _a) throws Exception {
 
 		IGraphDatabase d = new Neo4JDatabase();
 		d.run(new File(
