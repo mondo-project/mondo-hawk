@@ -12,7 +12,8 @@ public class GraphUtil {
 		// TODO complete set of known types -- possibly delegate to factories to
 		// expose them?
 
-		if (type.contains("Int") || type.contains("int"))
+		if (type.contains("Int") || type.contains("int")
+				|| type.contains("Long") || type.contains("long"))
 			return "Integer";
 		if (type.contains("Bool") || type.contains("bool"))
 			return "Boolean";

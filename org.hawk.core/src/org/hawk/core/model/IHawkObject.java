@@ -15,6 +15,8 @@ public interface IHawkObject {
 	boolean isProxy();
 
 	// only to be called after isProxy() returns true
+	String proxyURIFragment();
+
 	String proxyURI();
 
 	// full uri of element

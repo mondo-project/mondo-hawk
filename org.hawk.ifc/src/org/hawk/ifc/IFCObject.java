@@ -5,7 +5,6 @@ import java.util.HashSet;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.hawk.core.model.*;
 
 public class IFCObject implements IHawkObject {
@@ -29,8 +28,13 @@ public class IFCObject implements IHawkObject {
 	}
 
 	@Override
-	public String proxyURI() {
+	public String proxyURIFragment() {
 		return ((InternalEObject) eob).eProxyURI().fragment();
+	}
+
+	@Override
+	public String proxyURI() {
+		return ((InternalEObject) eob).eProxyURI().toString();
 	}
 
 	@Override
@@ -114,13 +118,11 @@ public class IFCObject implements IHawkObject {
 		ret += ">" + eob + "\n";
 
 		for (EAttribute e : eob.eClass().getEAllAttributes())
-			ret += e + " : "+ eob.eGet(e);
+			ret += e + " : " + eob.eGet(e);
 		ret += "\n";
 
 		return ret;
 
 	}
-
-
 
 }

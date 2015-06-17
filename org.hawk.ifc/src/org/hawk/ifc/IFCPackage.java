@@ -5,7 +5,6 @@ import java.util.HashSet;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.hawk.core.model.*;
 
 public class IFCPackage extends IFCObject implements IHawkPackage {
@@ -45,9 +44,9 @@ public class IFCPackage extends IFCObject implements IHawkPackage {
 	}
 
 	@Override
-	public HashSet<IHawkClass> getClasses() {
+	public HashSet<IHawkClassifier> getClasses() {
 
-		HashSet<IHawkClass> ret = new HashSet<>();
+		HashSet<IHawkClassifier> ret = new HashSet<>();
 
 		for (EClassifier e : ep.getEClassifiers())
 			if (e instanceof EClass)

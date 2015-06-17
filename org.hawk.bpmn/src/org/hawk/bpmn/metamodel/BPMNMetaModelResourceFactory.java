@@ -8,11 +8,10 @@
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
  ******************************************************************************/
-package org.hawk.ifc.mm;
+package org.hawk.bpmn.metamodel;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 
@@ -24,20 +23,31 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.hawk.bpmn.EMFpackage;
+import org.hawk.bpmn.model.util.RegisterMeta;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkPackage;
-import org.hawk.ifc.IFCPackage;
-import org.hawk.ifc.mm.IFCMetaModelResource;
 
-public class IFCMetaModelResourceFactory implements IMetaModelResourceFactory {
+public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 
-	String type = "com.googlecode.hawk.emf.metamodel.ModelioMetaModelResourceFactory";
+	String type = "org.hawk.emf.metamodel.BPMNMetaModelParser";
+	String hrn = "BPMN Metamodel Resource Factory";
 	// GraphDatabase graph;
 
+	HashSet<String> metamodelExtensions;
+	HashSet<String> modelExtensions;
 	ResourceSet resourceSet = null;
 
-	public IFCMetaModelResourceFactory() {
+	public BPMNMetaModelResourceFactory() {
+
+		metamodelExtensions = new HashSet<String>();
+		modelExtensions = new HashSet<String>();
+
+		// metamodelExtensions.add("ecore");
+		// metamodelExtensions.add("ECORE");
+		modelExtensions.add("bpmn2");
+		modelExtensions.add("BPMN2");
 
 		if (resourceSet == null) {
 			resourceSet = new ResourceSetImpl();
@@ -54,15 +64,22 @@ public class IFCMetaModelResourceFactory implements IMetaModelResourceFactory {
 	}
 
 	@Override
+	public String getHumanReadableName() {
+		return hrn;
+	}
+
+	@Override
 	public void shutdown() {
 		type = null;
+		metamodelExtensions = null;
+		modelExtensions = null;
 		resourceSet = null;
 	}
 
 	@Override
 	public IHawkMetaModelResource parse(File f) throws Exception {
 
-		IFCMetaModelResource ret;
+		BPMNMetaModelResource ret;
 
 		Resource r = resourceSet.createResource(URI.createFileURI(f
 				.getAbsolutePath()));
@@ -71,7 +88,7 @@ public class IFCMetaModelResourceFactory implements IMetaModelResourceFactory {
 		//
 		RegisterMeta.registerPackages(r);
 
-		ret = new IFCMetaModelResource(r, this);
+		ret = new BPMNMetaModelResource(r, this);
 
 		return ret;
 
@@ -80,7 +97,7 @@ public class IFCMetaModelResourceFactory implements IMetaModelResourceFactory {
 	@Override
 	public HashSet<String> getMetaModelExtensions() {
 
-		return new HashSet<String>();
+		return metamodelExtensions;
 	}
 
 	@Override
@@ -89,9 +106,9 @@ public class IFCMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 		Resource r = resourceSet.createResource(URI.createURI(s));
 
-		r.getContents().add(((IFCPackage) p).getEObject());
+		r.getContents().add(((EMFpackage) p).getEObject());
 
-		return new IFCMetaModelResource(r, this);
+		return new BPMNMetaModelResource(r, this);
 
 	}
 
@@ -111,7 +128,7 @@ public class IFCMetaModelResourceFactory implements IMetaModelResourceFactory {
 			//
 			RegisterMeta.registerPackages(r);
 
-			return new IFCMetaModelResource(r, this);
+			return new BPMNMetaModelResource(r, this);
 		} else
 			return null;
 	}
@@ -144,75 +161,49 @@ public class IFCMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 	@Override
 	public boolean canParse(File f) {
+		String[] split = f.getPath().split("\\.");
+		String extension = split[split.length - 1];
 
-		return false;
+		return getMetaModelExtensions().contains(extension);
 	}
 
 	@Override
 	public HashSet<IHawkMetaModelResource> getStaticMetamodels() {
 
-
 		HashSet<IHawkMetaModelResource> set = new HashSet<>();
 
 		Registry globalRegistry = EPackage.Registry.INSTANCE;
 
-		HashSet<String> keys = new HashSet<>();
+		set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
+				.get("http://www.eclipse.org/emf/2003/XMLType")).eResource(),
+				this));
 
-		keys.addAll(globalRegistry.keySet());
+		set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
+				.get("http://www.omg.org/spec/BPMN/20100524/MODEL-XMI"))
+				.eResource(), this));
 
-		IFCMetaModelResource ret;
-		
-		File f = new File("../org.hawk.ifc/models/ifc2x3tc1.ecore");
+		set.add(new BPMNMetaModelResource(
+				((EPackage) globalRegistry
+						.get("http://www.omg.org/spec/DD/20100524/DC-XMI"))
+						.eResource(), this));
 
-		
-		File sf = new File(".");
-		
-		try {
-			System.out.println("DEBUG . is "+sf.getCanonicalPath());
-		} catch (IOException e1) {
-		}
-		
+		set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
+				.get("http://www.eclipse.org/emf/2002/Ecore")).eResource(),
+				this));
 
-		Resource r = resourceSet.createResource(URI.createFileURI(f
-				.getAbsolutePath()));
-		try {
-			r.load(null);
-		} catch (IOException e) {
-			System.err.print("could not load IFC metamodel");
-		}
+		set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
+				.get("http://www.omg.org/spec/BPMN/20100524/DI-XMI"))
+				.eResource(), this));
 
-		//
-		RegisterMeta.registerPackages(r);
+		set.add(new BPMNMetaModelResource(
+				((EPackage) globalRegistry
+						.get("http://www.omg.org/spec/DD/20100524/DI-XMI"))
+						.eResource(), this));
 
-		ret = new IFCMetaModelResource(r, this);
-		
-		set.add(ret);
+		//System.err.println(set);
 		
 		return set;
+
 	}
 
-	private boolean notDefaultPackage(String e) {
-		// System.err.println(">" + e);
-
-		// new eclipse populates the registry with MANY random metamodels so no
-		// way to pre-populate this in emf without ignoring www.eclipse
-
-		// http://www.eclipse.org/emf/2003/XMLType,
-		// http://www.eclipse.org/emf/2002/Ecore,
-		// http://www.w3.org/XML/1998/namespace
-
-		// if (e.contains("www.eclipse.org/emf/") && e.contains("XMLType")
-		// || e.contains("www.eclipse.org/emf/") && e.contains("Ecore")
-		// || e.contains("www.w3.org/XML") && e.contains("namespace"))
-		if (e.contains("http://www.eclipse.org/")||e.contains("http:///org/eclipse/")
-				|| e.contains("www.w3.org/XML") && e.contains("namespace"))
-			return false;
-		else
-			return true;
-	}
-
-	@Override
-	public String getHumanReadableName() {
-		return "IFC Metamodel parser";
-	}
 }

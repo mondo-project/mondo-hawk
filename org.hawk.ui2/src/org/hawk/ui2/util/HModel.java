@@ -32,7 +32,8 @@ public class HModel {
 	private IHawk hawk;
 	private boolean running;
 	private List<String> allowedPlugins;
-	private List<String> registeredMetamodels;
+
+	// private List<String> registeredMetamodels;
 
 	public List<String> getAllowedPlugins() {
 		return allowedPlugins;
@@ -51,7 +52,6 @@ public class HModel {
 		hawk.setDbtype(databaseType);
 		allowedPlugins = new ArrayList<String>();
 		running = r;
-		registeredMetamodels = new ArrayList<String>();
 
 	}
 
@@ -61,7 +61,7 @@ public class HModel {
 		// hawk.setDbtype(databaseType);
 		allowedPlugins = new ArrayList<String>();
 		running = b;
-		registeredMetamodels = new ArrayList<String>();
+
 	}
 
 	private static IAbstractConsole myConsole;
@@ -376,14 +376,14 @@ public class HModel {
 	}
 
 	public boolean registerMeta(File f) {
-		if (registeredMetamodels.contains(f.getAbsolutePath()))
-			return true;
+		// if (registeredMetamodels.contains(f.getAbsolutePath()))
+		// return true;
 		try {
 			hawk.getModelIndexer().registerMetamodel(f);
 		} catch (Exception e) {
 			return false;
 		}
-		this.registeredMetamodels.add(f.getAbsolutePath());
+		// this.registeredMetamodels.add(f.getAbsolutePath());
 		return true;
 	}
 

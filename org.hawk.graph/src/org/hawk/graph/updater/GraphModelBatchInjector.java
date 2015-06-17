@@ -19,6 +19,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.hawk.core.VcsCommitItem;
@@ -178,9 +179,10 @@ public class GraphModelBatchInjector {
 								+ (System.nanoTime() - startTime) / 1000000000
 								+ "sec)");
 
-				System.out.println(((IGraphIterable<IGraphNode>) proxydictionary
-						.query("_proxyRef", "*")).size()
-						+ " - sets of proxy references left in the store");
+				System.out
+						.println(((IGraphIterable<IGraphNode>) proxydictionary
+								.query("_proxyRef", "*")).size()
+								+ " - sets of proxy references left in the store");
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -705,7 +707,7 @@ public class GraphModelBatchInjector {
 			try {
 				epackagenode = epackagedictionary.get("id",
 						eClass.getPackageNSURI()).getSingle();
-			} catch (NullPointerException ex) {
+			} catch (NoSuchElementException ex) {
 
 				// graph.exitBatchMode();
 				// //

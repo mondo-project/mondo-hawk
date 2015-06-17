@@ -8,7 +8,7 @@
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
  ******************************************************************************/
-package org.hawk.emf;
+package org.hawk.bpmn;
 
 import java.util.HashSet;
 
@@ -21,6 +21,8 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.hawk.core.model.*;
 
 public class EMFclass extends EMFobject implements IHawkClass {
+
+	private static boolean hasAtLeastOneIgnoredIDproperty = false;
 
 	private EClass eclass;
 
@@ -61,9 +63,23 @@ public class EMFclass extends EMFobject implements IHawkClass {
 
 		HashSet<IHawkAttribute> atts = new HashSet<IHawkAttribute>();
 
-		for (EAttribute att : eclass.getEAllAttributes())
+		for (EAttribute att : eclass.getEAllAttributes()) {
+
+			// FIXME major -- attributes named "id" are ignored
+			if (att.getName().equals("id")) {
+				if (!hasAtLeastOneIgnoredIDproperty) {
+					hasAtLeastOneIgnoredIDproperty = true;
+					System.err
+							.println("warning, type: "
+									+ getName()
+									+ " has a property named \"id\" which is ignored by Hawk (any other types with this property will also have it ignored)");
+				}
+				break;
+			}
+
 			atts.add(new EMFattribute(att));
 
+		}
 		return atts;
 	}
 

@@ -8,7 +8,7 @@
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
  ******************************************************************************/
-package org.hawk.emf;
+package org.hawk.bpmn;
 
 import java.util.HashSet;
 

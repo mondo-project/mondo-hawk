@@ -29,6 +29,8 @@ import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
+import org.hawk.core.model.IHawkClassifier;
+import org.hawk.core.model.IHawkDataType;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
@@ -316,7 +318,10 @@ public class GraphMetaModelResourceInjector {
 
 		}
 
-		for (IHawkPackage epackage : addedepackages) {
+		Iterator<IHawkPackage> it = addedepackages.iterator();
+		while (it.hasNext()) {
+
+			IHawkPackage epackage = it.next();
 
 			try (IGraphTransaction t = graph.beginTransaction()) {
 
@@ -345,17 +350,28 @@ public class GraphMetaModelResourceInjector {
 					changes.addAll(tempchanges);
 					tempchanges.clear();
 				} else {
+					it.remove();
 					tempchanges.clear();
 					t.failure();
 					t.close();
 					try (IGraphTransaction t2 = graph.beginTransaction()) {
+
+						// System.err.println(">>>>>>>>>");
+						// IGraphIterable<IGraphNode> mmnodes =
+						// epackagedictionary
+						// .query("*", "*");
+						// for (IGraphNode n : mmnodes)
+						// System.err.println(n.getProperty("id").toString());
+						// System.err.println("<<<<<<<<<<");
+
 						IGraphNode ePackageNode = epackagedictionary
 								.get("id", epackage.getNsURI()).iterator()
 								.next();
+
 						epackagedictionary.remove(ePackageNode);
 						ePackageNode.delete();
-						t.success();
-						t.close();
+						t2.success();
+						t2.close();
 					} catch (Exception e) {
 						System.err.println("e1");
 						e.printStackTrace();
@@ -435,13 +451,23 @@ public class GraphMetaModelResourceInjector {
 
 		boolean success = true;
 
-		for (IHawkClass child : ePackage.getClasses()) {
+		for (IHawkClassifier child : ePackage.getClasses()) {
 
 			if (!success)
 				break;
 
 			if (child instanceof IHawkClass)
-				success = success && addMetaClass(child);
+				success = success && addMetaClass((IHawkClass) child);
+
+			else if (child instanceof IHawkDataType) {
+				// FIXME need to handle datatypes?
+				// System.err.println("datatype! (" + child.getName() +
+				// ") -- handle it.");
+			}
+
+			else
+				System.err.println("unknown classifier: (" + child.getName()
+						+ "): " + child.getClass());
 
 		}
 
@@ -524,8 +550,8 @@ public class GraphMetaModelResourceInjector {
 
 		// hash.put(eClass, node);
 
-		IGraphNode node2 = ((IGraphIterable<IGraphNode>) epackagedictionary.get(
-				"id", eClass.getPackageNSURI())).getSingle();
+		IGraphNode node2 = ((IGraphIterable<IGraphNode>) epackagedictionary
+				.get("id", eClass.getPackageNSURI())).getSingle();
 
 		// System.out.println(new
 		// ToString().toString(epackagedictionary.query("id","*")));
@@ -553,7 +579,8 @@ public class GraphMetaModelResourceInjector {
 						.println("EClass "
 								+ eClass.getName()
 								+ "has supertype "
-								+ e.getName()
+								+ (e.getName() == null ? e.proxyURI() : e
+										.getName())
 								+ " which is in a package not registered yet, reverting all changes to this package registration, please register package with uri: "
 								+ uri + " first");
 				return false;
@@ -617,7 +644,8 @@ public class GraphMetaModelResourceInjector {
 						.println("EAttribute "
 								+ e.getName()
 								+ " has type "
-								+ e.getType().getName()
+								+ (e.getType().getName() == null ? e.getType()
+										.proxyURI() : e.getType().getName())
 								+ " which is in a package not registered yet, reverting all changes to this package registration, please register package with uri: "
 								+ uri + " first");
 				return false;
@@ -686,11 +714,11 @@ public class GraphMetaModelResourceInjector {
 			String uri = null;
 
 			if (r.isProxy())
-				uri = r.proxyURI()
+				uri = r.proxyURIFragment()
 				// ((InternalEObject) r)
 				// .eProxyURI()
 				// .toString()
-						.substring(0, r.proxyURI()
+						.substring(0, r.proxyURIFragment()
 						// ((InternalEObject) r).eProxyURI().toString()
 								.indexOf("#"));
 
@@ -702,7 +730,8 @@ public class GraphMetaModelResourceInjector {
 						.println("EReference "
 								+ r.getName()
 								+ " has type "
-								+ r.getType().getName()
+								+ (r.getType().getName() == null ? r.getType()
+										.proxyURI() : r.getType().getName())
 								+ " which is in a package not registered yet, reverting all changes to this package registration, please register package with uri: "
 								+ uri + " first");
 				return false;
@@ -789,7 +818,7 @@ public class GraphMetaModelResourceInjector {
 	 */
 	private boolean addMetaClass(IHawkClass eClass) {
 
-		// System.out.println(child);
+		// System.out.println(eClass.getName());
 
 		String id = (eClass).getName();
 

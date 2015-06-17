@@ -27,8 +27,13 @@ public class ModelioObject implements IHawkObject {
 	}
 
 	@Override
-	public String proxyURI() {
+	public String proxyURIFragment() {
 		return ((InternalEObject) eob).eProxyURI().fragment();
+	}
+
+	@Override
+	public String proxyURI() {
+		return ((InternalEObject) eob).eProxyURI().toString();
 	}
 
 	@Override
@@ -112,13 +117,11 @@ public class ModelioObject implements IHawkObject {
 		ret += ">" + eob + "\n";
 
 		for (EAttribute e : eob.eClass().getEAllAttributes())
-			ret += e + " : "+ eob.eGet(e);
+			ret += e + " : " + eob.eGet(e);
 		ret += "\n";
 
 		return ret;
 
 	}
-
-
 
 }

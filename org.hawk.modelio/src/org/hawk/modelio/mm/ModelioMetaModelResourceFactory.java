@@ -160,9 +160,9 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 
 		keys.addAll(globalRegistry.keySet());
 		
-		File f = new File("../uk.ac.york.cs.mde.hawk.modelio/models/UML.ecore");
+		File f = new File("../org.hawk.modelio/models/UML.ecore");
 
-		File fr = new File("../uk.ac.york.cs.mde.hawk.modelio/models/Types.ecore");
+		File fr = new File("../org.hawk.modelio/models/Types.ecore");
 
 
 		Resource r = resourceSet.createResource(URI.createFileURI(f

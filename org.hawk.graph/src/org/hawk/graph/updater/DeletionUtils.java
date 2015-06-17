@@ -16,13 +16,14 @@ public class DeletionUtils {
 
 	public DeletionUtils(IGraphDatabase graph) {
 		this.graph = graph;
-		try (IGraphTransaction t = graph.beginTransaction()) {
-			filedictionary = graph.getFileIndex();
-			proxydictionary = graph.getOrCreateNodeIndex("proxydictionary");
-			t.success();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		if (graph.currentMode().equals("TRANSACTIONAL_MODE"))
+			try (IGraphTransaction t = graph.beginTransaction()) {
+				filedictionary = graph.getFileIndex();
+				proxydictionary = graph.getOrCreateNodeIndex("proxydictionary");
+				t.success();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 	}
 
 	protected void delete(IGraphNode modelElement) {

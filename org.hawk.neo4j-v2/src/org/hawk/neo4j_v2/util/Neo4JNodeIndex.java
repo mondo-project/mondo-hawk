@@ -105,11 +105,14 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 				node = g.getNodeById(l);
 			} catch (Exception e) {
 				System.err.println("tried to remove node: " + l
-						+ " from index " + name + " but it doese not exist");
+						+ " from index " + name + " but it does not exist");
 			}
 
 			if (node != null)
 				index.remove(node);
+			else
+				System.err.println("tried to remove node: " + l
+						+ " from index " + name + " but it does not exist");
 
 		} else {
 			System.err
