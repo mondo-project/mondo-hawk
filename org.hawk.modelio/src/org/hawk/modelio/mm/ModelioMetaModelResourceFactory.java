@@ -173,7 +173,7 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 			r.load(null);
 			rr.load(null);
 		} catch (IOException e) {
-			System.err.print("could not load UML metamodel");
+			System.err.print("WARNING: static metamodel of UML was not found, no static metamodels inserted for this plugin, please insert the relevant metamodels manually");
 		}
 
 		//

@@ -321,7 +321,7 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 			attributevalue = sibling.getText().equals("true") ? true : false;
 		else if (sibling.getType() == EolParser.INT)
 			attributevalue = Integer.parseInt(sibling.getText());
-		// XXX epsilon uses float but real can be float or bouble
+		// XXX epsilon uses float but real can be float or double
 		else if (sibling.getType() == EolParser.FLOAT)
 			attributevalue = Double.parseDouble(sibling.getText());
 		else
@@ -346,8 +346,65 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 				IGraphNodeIndex index = graph.getOrCreateNodeIndex(indexname);
 
 				//
-				IGraphIterable<IGraphNode> hits = index.get(attributename,
-						attributevalue);
+				IGraphIterable<IGraphNode> hits = null;
+
+				if (ast.getText().equals("=") || ast.getText().equals("=="))
+					if (attributevalue instanceof Integer)
+						hits = index.query(attributename, (int) attributevalue,
+								(int) attributevalue, true, true);
+					else if (attributevalue instanceof Double)
+						hits = index.query(attributename,
+								(double) attributevalue,
+								(double) attributevalue, true, true);
+					else
+						hits = index.get(attributename, attributevalue);
+				else if (ast.getText().equals(">")) {
+					if (attributevalue instanceof Integer)
+						hits = index.query(attributename, (int) attributevalue,
+								Integer.MAX_VALUE, false, true);
+					else if (attributevalue instanceof Double)
+						hits = index.query(attributename,
+								(double) attributevalue, Double.MAX_VALUE,
+								false, true);
+					else
+						throw new EolRuntimeException(
+								"> used with a non numeric value ("
+										+ attributevalue.getClass() + ")");
+				} else if (ast.getText().equals(">=")) {
+					if (attributevalue instanceof Integer)
+						hits = index.query(attributename, (int) attributevalue,
+								Integer.MAX_VALUE, true, true);
+					else if (attributevalue instanceof Double)
+						hits = index.query(attributename,
+								(double) attributevalue, Double.MAX_VALUE,
+								true, true);
+					else
+						throw new EolRuntimeException(
+								"> used with a non numeric value ("
+										+ attributevalue.getClass() + ")");
+				} else if (ast.getText().equals("<")) {
+					if (attributevalue instanceof Integer)
+						hits = index.query(attributename, Integer.MIN_VALUE,
+								(int) attributevalue, true, false);
+					else if (attributevalue instanceof Double)
+						hits = index.query(attributename, Double.MIN_VALUE,
+								(double) attributevalue, true, false);
+					else
+						throw new EolRuntimeException(
+								"> used with a non numeric value ("
+										+ attributevalue.getClass() + ")");
+				} else if (ast.getText().equals("<=")) {
+					if (attributevalue instanceof Integer)
+						hits = index.query(attributename, Integer.MIN_VALUE,
+								(int) attributevalue, true, true);
+					else if (attributevalue instanceof Double)
+						hits = index.query(attributename, Double.MIN_VALUE,
+								(double) attributevalue, true, true);
+					else
+						throw new EolRuntimeException(
+								"> used with a non numeric value ("
+										+ attributevalue.getClass() + ")");
+				}
 
 				// modifiedlist.clear();
 
@@ -398,7 +455,11 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 		try {
 
 			return ast.getType() == EolParser.OPERATOR
-					&& (ast.getText().equals("=") || ast.getText().equals("=="))
+					&& (ast.getText().equals("=") || ast.getText().equals("==")
+							|| ast.getText().equals(">")
+							|| ast.getText().equals(">=")
+							|| ast.getText().equals("<") || ast.getText()
+							.equals("<="))
 					&& ast.getFirstChild().getType() == EolParser.POINT
 					&& ast.getFirstChild().getFirstChild().getText()
 							.equals(iterator.getName());

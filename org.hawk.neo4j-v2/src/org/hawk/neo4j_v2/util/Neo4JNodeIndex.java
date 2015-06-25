@@ -20,6 +20,8 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexManager;
 import org.neo4j.helpers.collection.MapUtil;
+import org.neo4j.index.lucene.QueryContext;
+import org.neo4j.index.lucene.ValueContext;
 import org.neo4j.unsafe.batchinsert.BatchInserterIndex;
 
 public class Neo4JNodeIndex implements IGraphNodeIndex {
@@ -84,11 +86,18 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 	@Override
 	public void add(IGraphNode n, String s, Object value) {
 
+		Object wrappedValue = value;
+
+		if (value instanceof Integer || value instanceof Long
+				|| value instanceof Double)
+			wrappedValue = new ValueContext(value).indexNumeric();
+
 		if (index != null) {
-			index.add(graph.getGraph().getNodeById((long) n.getId()), s, value);
+			index.add(graph.getGraph().getNodeById((long) n.getId()), s,
+					wrappedValue);
 		} else {
 			Map<String, Object> m = new HashMap<>();
-			m.put(s, value);
+			m.put(s, wrappedValue);
 			batchIndex.add((long) n.getId(), m);
 		}
 
@@ -127,12 +136,35 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 		if (index != null) {
 
 			for (String s : m.keySet()) {
+
+				Object wrappedValue = m.get(s);
+
+				if (wrappedValue instanceof Integer
+						|| wrappedValue instanceof Long
+						|| wrappedValue instanceof Double)
+					wrappedValue = new ValueContext(m.get(s)).indexNumeric();
+
 				index.add(graph.getGraph().getNodeById((long) n.getId()), s,
-						m.get(s));
+						wrappedValue);
 			}
 
 		} else {
-			batchIndex.add((long) n.getId(), m);
+
+			Map<String, Object> wrappedMap = new HashMap<>();
+
+			for (String s : m.keySet()) {
+
+				Object wrappedValue = m.get(s);
+
+				if (wrappedValue instanceof Integer
+						|| wrappedValue instanceof Long
+						|| wrappedValue instanceof Double)
+					wrappedValue = new ValueContext(m.get(s)).indexNumeric();
+
+				wrappedMap.put(s, wrappedValue);
+			}
+
+			batchIndex.add((long) n.getId(), wrappedMap);
 		}
 
 	}
@@ -142,6 +174,38 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 
 		if (batchIndex != null)
 			batchIndex.flush();
+
+	}
+
+	@Override
+	public IGraphIterable<IGraphNode> query(String key, int from, int to,
+			boolean fromInclusive, boolean toInclusive) {
+
+		if (index != null) {
+			return new Neo4JIterable<IGraphNode>(index.query(QueryContext
+					.numericRange(key, from, to, fromInclusive, toInclusive)),
+					graph);
+		} else {
+			return new Neo4JIterable<IGraphNode>(batchIndex.query(QueryContext
+					.numericRange(key, from, to, fromInclusive, toInclusive)),
+					graph);
+		}
+
+	}
+
+	@Override
+	public IGraphIterable<IGraphNode> query(String key, double from, double to,
+			boolean fromInclusive, boolean toInclusive) {
+
+		if (index != null) {
+			return new Neo4JIterable<IGraphNode>(index.query(QueryContext
+					.numericRange(key, from, to, fromInclusive, toInclusive)),
+					graph);
+		} else {
+			return new Neo4JIterable<IGraphNode>(batchIndex.query(QueryContext
+					.numericRange(key, from, to, fromInclusive, toInclusive)),
+					graph);
+		}
 
 	}
 }

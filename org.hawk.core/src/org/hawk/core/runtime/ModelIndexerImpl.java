@@ -1154,7 +1154,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 							typenode = temp;
 						else
 							System.err
-									.println("error in getDerivedAttributes, typenode had more than 1 type found");
+									.println("error in getIndexedAttributes, typenode had more than 1 type found");
 				}
 				if (((String[]) typenode.getProperty(split[2]))[0].equals("d"))
 					it.remove();

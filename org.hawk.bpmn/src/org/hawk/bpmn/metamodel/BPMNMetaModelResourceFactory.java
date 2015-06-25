@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
@@ -174,34 +175,62 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 		Registry globalRegistry = EPackage.Registry.INSTANCE;
 
-		set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
-				.get("http://www.eclipse.org/emf/2003/XMLType")).eResource(),
-				this));
+		LinkedList<String> missingPackages = new LinkedList<>();
 
-		set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
-				.get("http://www.omg.org/spec/BPMN/20100524/MODEL-XMI"))
-				.eResource(), this));
+		if (!globalRegistry
+				.containsKey("http://www.eclipse.org/emf/2003/XMLType"))
+			missingPackages.add("http://www.eclipse.org/emf/2003/XMLType");
+		if (!globalRegistry
+				.containsKey("http://www.omg.org/spec/BPMN/20100524/MODEL-XMI"))
+			missingPackages
+					.add("http://www.omg.org/spec/BPMN/20100524/MODEL-XMI");
+		if (!globalRegistry
+				.containsKey("http://www.omg.org/spec/DD/20100524/DC-XMI"))
+			missingPackages.add("http://www.omg.org/spec/DD/20100524/DC-XMI");
+		if (!globalRegistry
+				.containsKey("http://www.eclipse.org/emf/2002/Ecore"))
+			missingPackages.add("http://www.eclipse.org/emf/2002/Ecore");
+		if (!globalRegistry
+				.containsKey("http://www.omg.org/spec/BPMN/20100524/DI-XMI"))
+			missingPackages.add("http://www.omg.org/spec/BPMN/20100524/DI-XMI");
+		if (!globalRegistry
+				.containsKey("http://www.omg.org/spec/DD/20100524/DI-XMI"))
+			missingPackages.add("http://www.omg.org/spec/DD/20100524/DI-XMI");
 
-		set.add(new BPMNMetaModelResource(
-				((EPackage) globalRegistry
-						.get("http://www.omg.org/spec/DD/20100524/DC-XMI"))
-						.eResource(), this));
+		if (missingPackages.size() == 0) {
 
-		set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
-				.get("http://www.eclipse.org/emf/2002/Ecore")).eResource(),
-				this));
+			set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
+					.get("http://www.eclipse.org/emf/2003/XMLType"))
+					.eResource(), this));
 
-		set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
-				.get("http://www.omg.org/spec/BPMN/20100524/DI-XMI"))
-				.eResource(), this));
+			set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
+					.get("http://www.omg.org/spec/BPMN/20100524/MODEL-XMI"))
+					.eResource(), this));
 
-		set.add(new BPMNMetaModelResource(
-				((EPackage) globalRegistry
-						.get("http://www.omg.org/spec/DD/20100524/DI-XMI"))
-						.eResource(), this));
+			set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
+					.get("http://www.omg.org/spec/DD/20100524/DC-XMI"))
+					.eResource(), this));
 
-		//System.err.println(set);
-		
+			set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
+					.get("http://www.eclipse.org/emf/2002/Ecore")).eResource(),
+					this));
+
+			set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
+					.get("http://www.omg.org/spec/BPMN/20100524/DI-XMI"))
+					.eResource(), this));
+
+			set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
+					.get("http://www.omg.org/spec/DD/20100524/DI-XMI"))
+					.eResource(), this));
+
+		} else {
+			System.err
+					.println("WARNING: one or more of the static metamodels of BPMN were not found, no static metamodels inserted for this plugin, please insert the relevant metamodels manually:\n"
+							+ missingPackages.toString());
+		}
+
+		// System.err.println(set);
+
 		return set;
 
 	}

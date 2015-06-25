@@ -281,16 +281,17 @@ public class HModel {
 		File f = hawk.getModelIndexer().getParentFolder();
 		while (this.isRunning()) {
 			try {
-				hawk.getModelIndexer().shutdown(true);
+				// XXX shutting down hawk does not delete the storage.
+				hawk.getModelIndexer().shutdown(false);
 				running = false;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 
-		for (int i = 0; i < 5 || deleteDir(f); i++) {
+		// for (int i = 0; i < 5 || deleteDir(f); i++) {
 
-		}
+		// }
 
 		if (f.exists())
 			System.err.println("failed to delete directory: " + f);
