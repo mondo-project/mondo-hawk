@@ -32,7 +32,7 @@ public class LocalFolder implements IVcsManager {
 
 	private String loc;
 
-	private HashSet<File> cashedFiles = new HashSet<>();
+	private HashSet<File> cachedFiles = new HashSet<>();
 
 	private static int version = 0;
 
@@ -175,9 +175,9 @@ public class LocalFolder implements IVcsManager {
 		// System.err.println("files = "+files);
 
 		//
-		cashedFiles.removeAll(files);
+		cachedFiles.removeAll(files);
 
-		for (File f : cashedFiles) {
+		for (File f : cachedFiles) {
 
 			VcsCommit commit = new VcsCommit();
 			commit.setAuthor("i am a local folder driver - no authors recorded");
@@ -196,12 +196,12 @@ public class LocalFolder implements IVcsManager {
 
 		}
 
-		cashedFiles.clear();
+		cachedFiles.clear();
 
 		if (files != null && files.size() > 0)
 			for (File f : files) {
 
-				cashedFiles.add(f);
+				cachedFiles.add(f);
 
 				VcsCommit commit = new VcsCommit();
 				commit.setAuthor("i am a local folder driver - no authors recorded");
