@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.hawk.localfolder.feature"
+      label="Hawk Local Folder Connector Feature"
+      version="1.0.0.qualifier"
+      provider-name="University of York">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui.console" version="3.5.100" match="greaterOrEqual"/>
+      <import plugin="org.hawk.core" version="1.0.0" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.hawk.localfolder"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

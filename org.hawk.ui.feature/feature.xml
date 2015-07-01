@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.hawk.ui.feature"
+      label="Hawk Eclipse UI Feature"
+      version="1.0.0.qualifier"
+      provider-name="University of York">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.epsilon.common.dt"/>
+      <import plugin="org.hawk.core"/>
+      <import plugin="org.hawk.epsilon"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.hawk.core.dependencies" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.console"/>
+   </requires>
+
+   <plugin
+         id="org.hawk.ui.emc.dt2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.hawk.ui2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
