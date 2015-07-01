@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,19 +27,12 @@ import java.util.Set;
 import org.eclipse.epsilon.common.parse.problem.ParseProblem;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.eol.EolModule;
-import org.eclipse.epsilon.eol.analysis.optimisation.loading.impl.LoadingOptimisationAnalyser;
-import org.eclipse.epsilon.eol.ast2eol.Ast2EolContext;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertyGetter;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertySetter;
-import org.eclipse.epsilon.eol.metamodel.EolElement;
-import org.eclipse.epsilon.eol.visitor.resolution.type.tier1.impl.TypeResolver;
-import org.eclipse.epsilon.eol.visitor.resolution.variable.impl.VariableResolver;
-import org.eclipse.epsilon.labs.effectivemetamodel.impl.EffectiveFeature;
-import org.eclipse.epsilon.labs.effectivemetamodel.impl.EffectiveMetamodel;
 import org.eclipse.epsilon.labs.effectivemetamodel.impl.EffectiveType;
 import org.hawk.core.IAbstractConsole;
 import org.hawk.core.graph.IGraphDatabase;
@@ -208,58 +200,6 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 	// }
 	// }
 
-	private Map<String, Object> computeAttributesToBeCached(IGraphNode node) {
-
-		EffectiveType et = getEffectiveType(node);
-
-		Map<String, Object> properties = new HashMap<>();
-
-		for (EffectiveFeature ef : et.getAttributes()) {
-			properties.put(ef.getName(), node.getProperty(ef.getName()));
-		}
-
-		return properties;
-
-	}
-
-	private Map<String, Object> computeReferencesToBeCached(IGraphNode node) {
-
-		EffectiveType et = getEffectiveType(node);
-
-		Map<String, Object> properties = new HashMap<>();
-
-		for (EffectiveFeature ef : et.getReferences()) {
-
-			final List<String> ids = new ArrayList<>();
-
-			for (IGraphEdge e : node.getOutgoingWithType(ef.getName())) {
-
-				IGraphNode n = e.getEndNode();
-				String id = (String) n.getId();
-
-				ids.add(id);
-
-			}
-			properties.put(ef.getName(), ids);
-
-		}
-
-		return properties;
-
-	}
-
-	private EffectiveType getEffectiveType(IGraphNode node) {
-		IGraphNode typeNode = node.getOutgoingWithType("typeOf").iterator()
-				.next().getEndNode();
-		String typeName = (String) typeNode.getProperty("id");
-		IGraphNode packageNode = typeNode.getOutgoingWithType("epackage")
-				.iterator().next().getEndNode();
-		String packageURI = (String) packageNode.getProperty("id");
-
-		EffectiveType et = effectiveTypes.get(packageURI + "#" + typeName);
-		return et;
-	}
-
 	/**
 	 * Returns all of the contents of the database in the form of lightweight
 	 * NeoIdWrapper objects
@@ -275,9 +215,11 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 		try (IGraphTransaction t = graph.beginTransaction()) {
 
 			for (IGraphNode node : graph.allNodes("eobject")) {
-				Map<String, Object> cachedAttributes = computeAttributesToBeCached(node);
-				Map<String, Object> cachedReferences = computeReferencesToBeCached(node);
-				ContextAwareGraphNodeWrapper wrapper = new ContextAwareGraphNodeWrapper(
+				Map<String, Object> cachedAttributes = new QueryAnalysis()
+						.computeAttributesToBeCached(effectiveTypes, node);
+				Map<String, Object> cachedReferences = new QueryAnalysis()
+						.computeReferencesToBeCached(effectiveTypes, node);
+				QueryAwareGraphNodeWrapper wrapper = new QueryAwareGraphNodeWrapper(
 						node.getId().toString(), this, cachedAttributes,
 						cachedReferences);
 				allContents.add(wrapper);
@@ -521,10 +463,14 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 						for (IGraphEdge n : typeNode
 								.getIncomingWithType(typeorkind)) {
 							IGraphNode node = n.getStartNode();
-							nodes.add(new ContextAwareGraphNodeWrapper(node
+							nodes.add(new QueryAwareGraphNodeWrapper(node
 									.getId().toString(), this,
-									computeAttributesToBeCached(node),
-									computeReferencesToBeCached(node)));
+									new QueryAnalysis()
+											.computeAttributesToBeCached(
+													effectiveTypes, node),
+									new QueryAnalysis()
+											.computeReferencesToBeCached(
+													effectiveTypes, node)));
 						}
 						tx.success();
 						tx.close();
@@ -555,6 +501,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 						arg0);
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new EolModelElementTypeNotFoundException(this.getName(), arg0);
 		}
 	}
@@ -598,9 +545,11 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 				return null;
 			else {
 				IGraphNode node = graph.getNodeById(id);
-				return new ContextAwareGraphNodeWrapper(id.toString(), this,
-						computeAttributesToBeCached(node),
-						computeReferencesToBeCached(node));
+				return new QueryAwareGraphNodeWrapper(id.toString(), this,
+						new QueryAnalysis().computeAttributesToBeCached(
+								effectiveTypes, node),
+						new QueryAnalysis().computeReferencesToBeCached(
+								effectiveTypes, node));
 			}
 		} catch (NumberFormatException e) {
 			System.err.println("NumberFormatException returning null");
@@ -844,7 +793,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 			graph = g;
 
 		// if (propertygetter == null)
-		propertygetter = new GraphPropertyGetter(graph, this);
+		propertygetter = new QueryAwareGraphPropertyGetter(graph, this);
 
 		backendURI = (String) config.get("DATABASE_LOCATION");
 		// if (backendURI != null && graph == null) {
@@ -1247,7 +1196,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 
 			module.parse(query);
 
-			effectiveTypes = analyze(module);
+			effectiveTypes = new QueryAnalysis().analyze(module);
 
 			//
 
@@ -1314,53 +1263,6 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 		return contextlessQuery(g, code, query.getPath());
 	}
 
-	private Map<String, EffectiveType> analyze(EolModule module) {
-
-		Ast2EolContext astContext = new Ast2EolContext();
-		EolElement dom = astContext.getEolElementCreatorFactory()
-				.createDomElement(module.getAst(), null, astContext);
-
-		VariableResolver vr = new VariableResolver();
-		vr.run(dom);
-
-		TypeResolver tr = new TypeResolver();
-		tr.getTypeResolutionContext().setModule(module);
-		tr.run(dom);
-
-		LoadingOptimisationAnalyser loa = new LoadingOptimisationAnalyser();
-		loa.run(dom);
-
-		Collection<EffectiveMetamodel> col = loa.getTypeResolutionContext()
-				.getEffectiveMetamodels();
-
-		Map<String, EffectiveType> emm = new HashMap<>();
-
-		for (EffectiveMetamodel em : col) {
-
-			for (EffectiveType et : em.getAllOfType()) {
-
-				emm.put(em.getNsuri() + "#" + et.getName(), et);
-
-			}
-
-			for (EffectiveType et : em.getAllOfKind()) {
-
-				emm.put(em.getNsuri() + "#" + et.getName(), et);
-
-			}
-
-			for (EffectiveType et : em.getTypes()) {
-
-				emm.put(em.getNsuri() + "#" + et.getName(), et);
-
-			}
-
-		}
-
-		return emm;
-
-	}
-
 	@Override
 	public Object contextfullQuery(IGraphDatabase g, String query,
 			Map<String, String> context) {
@@ -1384,7 +1286,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 
 				module.parse(query);
 
-				effectiveTypes = analyze(module);
+				effectiveTypes = new QueryAnalysis().analyze(module);
 
 				//
 
@@ -1502,7 +1404,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 			config = getDatabaseConfig();
 
 		if (propertygetter == null)
-			propertygetter = new GraphPropertyGetter(graph, this);
+			propertygetter = new QueryAwareGraphPropertyGetter(graph, this);
 
 		StringProperties configuration = new StringProperties();
 		configuration.put(QueryAwareEOLQueryEngine.PROPERTY_ENABLE_CASHING,
@@ -1637,7 +1539,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 
 	@Override
 	public String getType() {
-		return "org.hawk.epsilon.emc.GraphEpsilonModel";
+		return "org.hawk.epsilon.emc.QueryAwareEOLQueryEngine";
 	}
 
 	@Override

@@ -12,11 +12,13 @@ package org.hawk.epsilon.queryaware;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.epsilon.common.parse.problem.ParseProblem;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.eol.EolModule;
 import org.eclipse.epsilon.eol.execute.context.Variable;
+import org.eclipse.epsilon.labs.effectivemetamodel.impl.EffectiveType;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphNode;
 
@@ -26,8 +28,9 @@ public class DeriveFeature {
 	}
 
 	public Object deriveFeature(HashMap<String, EolModule> cashedModules,
-			IGraphDatabase g, IGraphNode n, QueryAwareEOLQueryEngine containerModel,
-			String propertyName, String EOLScript) throws Exception {
+			IGraphDatabase g, IGraphNode n,
+			QueryAwareEOLQueryEngine containerModel, String propertyName,
+			String EOLScript) throws Exception {
 
 		// remove prefix (_NYD)
 		String actualEOLScript = EOLScript.startsWith("_NYD##") ? EOLScript
@@ -36,6 +39,8 @@ public class DeriveFeature {
 		actualEOLScript = "return " + actualEOLScript + ";";
 
 		EolModule currentModule = null;
+
+		Map<String, EffectiveType> etm = null;
 
 		// FIXMEdone currently containerModel == null (from: Neo4JMonitorMInsert
 		// :
@@ -52,6 +57,8 @@ public class DeriveFeature {
 
 				currentModule.parse(actualEOLScript);
 
+				etm = new QueryAnalysis().analyze(currentModule);
+
 				for (ParseProblem p : currentModule.getParseProblems())
 					System.err.println("PARSE PROBLEM: " + p);
 
@@ -64,14 +71,17 @@ public class DeriveFeature {
 
 			}
 
-			ContextAwareGraphNodeWrapper gnw = new ContextAwareGraphNodeWrapper(n.getIncoming()
-					.iterator().next().getStartNode().getId().toString(),
-					containerModel);
+			IGraphNode node = n.getIncoming().iterator().next().getStartNode();
+
+			QueryAwareGraphNodeWrapper gnw = new QueryAwareGraphNodeWrapper(
+					node.getId().toString(), containerModel,
+					new QueryAnalysis().computeAttributesToBeCached(etm, node),
+					new QueryAnalysis().computeReferencesToBeCached(etm, node));
 
 			currentModule.getContext().getFrameStack()
 					.put(Variable.createReadOnlyVariable("self", gnw));
 
-			((GraphPropertyGetter) containerModel.getPropertyGetter())
+			((QueryAwareGraphPropertyGetter) containerModel.getPropertyGetter())
 					.getAccessListener().setSourceObject(n.getId() + "");
 
 			// System.out.println("-\n" + actualEOLScript + "\n-");
@@ -124,8 +134,8 @@ public class DeriveFeature {
 
 	}
 
-	private EolModule initModule(IGraphDatabase g, QueryAwareEOLQueryEngine model)
-			throws Exception {
+	private EolModule initModule(IGraphDatabase g,
+			QueryAwareEOLQueryEngine model) throws Exception {
 
 		EolModule currentModule = new EolModule();
 
