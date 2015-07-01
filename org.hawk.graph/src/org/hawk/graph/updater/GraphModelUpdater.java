@@ -113,7 +113,7 @@ public class GraphModelUpdater implements IModelUpdater {
 		sysout("attempting to update any relevant derived attributes...");
 		try {
 			new GraphModelInserter(indexer).updateDerivedAttributes(ret,
-					"org.hawk.epsilon.emc.GraphEpsilonModel");
+					"org.hawk.epsilon.emc.EOLQueryEngine");
 		} catch (Exception e) {
 			syserr("Exception in updateStore - UPDATING DERIVED attributes");
 			e.printStackTrace();

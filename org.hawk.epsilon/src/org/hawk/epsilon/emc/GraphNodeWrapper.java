@@ -16,8 +16,8 @@ import org.hawk.core.graph.IGraphTransaction;
 public class GraphNodeWrapper {
 
 	// private IGraphDatabase container;
-	private String id;
-	private EOLQueryEngine containerModel;
+	protected String id;
+	protected EOLQueryEngine containerModel;
 
 	public GraphNodeWrapper(String id, EOLQueryEngine containerModel) {
 

@@ -26,8 +26,8 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 	private boolean broadcastAccess = false;
 
-	private IGraphDatabase graph;
-	private EOLQueryEngine m;
+	protected IGraphDatabase graph;
+	protected EOLQueryEngine m;
 
 	// private HawkClass featureStartingNodeClass = null;
 	private IGraphNode featureStartingNodeClassNode = null;
@@ -47,7 +47,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 		Object ret = null;
 
-		// System.err.println("INVOKE: "+object+" ::::: "+property);
+		//System.err.println("GraphPropertyGetter INVOKE: "+object+" ::::: "+property);
 
 		// if (object.equals(null))
 		// throw new EolRuntimeException(

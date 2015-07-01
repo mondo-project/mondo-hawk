@@ -1499,7 +1499,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 	@Override
 	public String getType() {
-		return "org.hawk.epsilon.emc.GraphEpsilonModel";
+		return "org.hawk.epsilon.emc.EOLQueryEngine";
 	}
 
 	@Override
