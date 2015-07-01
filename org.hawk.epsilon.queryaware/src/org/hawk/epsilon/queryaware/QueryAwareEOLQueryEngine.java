@@ -41,7 +41,6 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.epsilon.emc.AccessListener;
-import org.hawk.epsilon.emc.CEOLQueryEngine;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.epsilon.emc.GraphNodeWrapper;
 import org.hawk.epsilon.emc.GraphPropertyGetter;
@@ -1201,10 +1200,10 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 			//
 
 			if (name != null)
-				System.out.println("PARSING:\n----------\n" + name
+				System.out.println("(queryaware) PARSING:\n----------\n" + name
 						+ "\n----------");
 
-			System.out.println("Graph path: " + graph.getPath()
+			System.out.println("(queryaware) Graph path: " + graph.getPath()
 					+ "\n----------");
 
 			module.getContext().getModelRepository().addModel(this);
@@ -1290,10 +1289,10 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 
 				//
 
-				System.out.println("Graph path: " + graph.getPath()
+				System.out.println("(queryaware) Graph path: " + graph.getPath()
 						+ "\n----------");
 
-				CEOLQueryEngine q = new CEOLQueryEngine();
+				CQueryAwareEOLQueryEngine q = new CQueryAwareEOLQueryEngine();
 
 				//
 
