@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?><target name="Hawk Target Platform" sequenceNumber="35">
+<locations>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.epsilon.emf.dt.feature.feature.group" version="1.3.0.201506302302"/>
+<unit id="org.eclipse.epsilon.emf.feature.feature.group" version="1.3.0.201506302302"/>
+<unit id="org.eclipse.epsilon.core.feature.feature.group" version="1.3.0.201506302302"/>
+<unit id="org.eclipse.epsilon.core.dt.feature.feature.group" version="1.3.0.201506302302"/>
+<repository location="http://download.eclipse.org/epsilon/interim/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.tmatesoft.svnkit.feature.group" version="1.8.10.r10446_v20150526_1454"/>
+<repository location="http://eclipse.svnkit.com/1.8.x"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.platform.feature.group" version="4.4.2.v20150204-1700"/>
+<unit id="org.eclipse.e4.rcp.source.feature.group" version="1.3.101.v20150204-1353"/>
+<unit id="epp.package.java" version="4.4.2.20150219-0708"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.10.2.v20150123-0452"/>
+<unit id="org.eclipse.rcp.feature.group" version="4.4.2.v20150204-1700"/>
+<unit id="org.eclipse.gef.sdk.feature.group" version="3.9.101.201408150207"/>
+<unit id="org.eclipse.jdt.feature.group" version="3.10.1.v20150204-1700"/>
+<repository location="http://download.eclipse.org/releases/luna/"/>
+</location>
+<location path="${resource_loc:/ktable/plugins}" type="Directory"/>
+<location path="${resource_loc:/nebula/plugins}" type="Directory"/>
+<location path="${resource_loc:/nebula-incubator/plugins}" type="Directory"/>
+<location path="${resource_loc:/nebula-nattable/plugins}" type="Directory"/>
+<location path="${resource_loc:/uml2_3.2/plugins}" type="Directory"/>
+</locations>
+</target>

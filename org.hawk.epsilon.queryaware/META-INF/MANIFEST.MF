@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Queryaware
-Bundle-SymbolicName: org.hawk.epsilon.queryaware
+Bundle-SymbolicName: org.hawk.epsilon.queryaware;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.hawk.epsilon.queryaware.Activator
 Require-Bundle: org.eclipse.ui,

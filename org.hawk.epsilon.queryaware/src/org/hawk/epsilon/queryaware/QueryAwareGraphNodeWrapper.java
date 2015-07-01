@@ -15,32 +15,31 @@ import java.util.Map;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.epsilon.emc.EOLQueryEngine;
+import org.hawk.epsilon.emc.GraphNodeWrapper;
 
-public class ContextAwareGraphNodeWrapper {
+public class QueryAwareGraphNodeWrapper extends GraphNodeWrapper {
 
 	// private IGraphDatabase container;
-	private String id;
-	private EOLQueryEngine containerModel;
 	private Map<String, Object> cachedAttributes;
 	private Map<String, Object> cachedReferences;
 
-	public ContextAwareGraphNodeWrapper(String id, EOLQueryEngine containerModel) {
-
-		this.id = id;
-		this.containerModel = containerModel;
-
-	}
-
-	public ContextAwareGraphNodeWrapper(String id,
-			EOLQueryEngine containerModel,
+	public QueryAwareGraphNodeWrapper(String id, EOLQueryEngine containerModel,
 			Map<String, Object> cachedAttributes,
 			Map<String, Object> cachedReferences) {
 
-		this.id = id;
-		this.containerModel = containerModel;
+		super(id, containerModel);
+
 		this.cachedAttributes = cachedAttributes;
 		this.cachedReferences = cachedReferences;
 
+	}
+
+	public Object getAttributeValue(String name) {
+		return cachedAttributes.get(name);
+	}
+
+	public Object getReference(String name) {
+		return cachedReferences.get(name);
 	}
 
 	public String getId() {
@@ -54,10 +53,10 @@ public class ContextAwareGraphNodeWrapper {
 	@Override
 	public boolean equals(Object o) {
 		// System.out.println(o+" >< "+this);
-		if (!(o instanceof ContextAwareGraphNodeWrapper))
+		if (!(o instanceof QueryAwareGraphNodeWrapper))
 			return false;
-		if (((ContextAwareGraphNodeWrapper) o).id.equals(this.id)
-				&& ((ContextAwareGraphNodeWrapper) o).containerModel
+		if (((QueryAwareGraphNodeWrapper) o).id.equals(this.id)
+				&& ((QueryAwareGraphNodeWrapper) o).containerModel
 						.equals(this.containerModel))
 			return true;
 		return false;
