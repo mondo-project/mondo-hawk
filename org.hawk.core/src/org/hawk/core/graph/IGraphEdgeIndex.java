@@ -10,14 +10,13 @@
  ******************************************************************************/
 package org.hawk.core.graph;
 
-import org.hawk.core.model.IHawkIterable;
 
 public interface IGraphEdgeIndex {
 
 	String getName();
 
-	IHawkIterable<IGraphEdge> query(String key, Object valueExpr);
+	IGraphIterable<IGraphEdge> query(String key, Object valueExpr);
 
-	IHawkIterable<IGraphEdge> get(String key, Object valueExpr);
+	IGraphIterable<IGraphEdge> get(String key, Object valueExpr);
 
 }

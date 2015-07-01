@@ -6,7 +6,7 @@
          <Backend
                store="org.hawk.neo4j_v2.Neo4JDatabase">
          </Backend>
+         
    </extension>
-
 </plugin>
 

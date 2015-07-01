@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
-
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -16,9 +15,11 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.uml2.uml.Element;
 import org.eclipse.uml2.uml.Model;
-import org.eclipse.uml2.uml.UMLPackage;
 import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl;
 import org.eclipse.uml2.uml.resource.UMLResource;
+import org.hawk.core.IModelResourceFactory;
+import org.hawk.core.model.IHawkModelResource;
+import org.hawk.core.model.IHawkObject;
 import org.modelio.gproject.data.project.DefinitionScope;
 import org.modelio.gproject.data.project.FragmentType;
 import org.modelio.gproject.data.project.ProjectDescriptor;
@@ -37,9 +38,6 @@ import org.modelio.vbasic.progress.NullProgress;
 import org.modelio.vcore.smkernel.mapi.MObject;
 import org.modelio.xmi.generation.ExportServices;
 import org.modelio.xmi.generation.GenerationProperties;
-
-import org.hawk.core.model.*;
-import org.hawk.core.IModelResourceFactory;;
 
 public class ModelioModelResource implements IHawkModelResource {
 

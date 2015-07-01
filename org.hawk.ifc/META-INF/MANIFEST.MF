@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.emf.ecore;bundle-version="2.7.0",
  org.eclipse.emf.ecore.xmi;bundle-version="2.7.0",
  org.hawk.core
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/antlr-3.1.1-runtime.jar,
  lib/antlr-3.1.1.jar,

@@ -18,6 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
+            <element ref="ModelP"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -54,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.hawk.core.ModelParser"/>
+                  <meta.attribute kind="java" basedOn=":org.hawk.core.IModelResourceFactory"/>
                </appinfo>
             </annotation>
          </attribute>

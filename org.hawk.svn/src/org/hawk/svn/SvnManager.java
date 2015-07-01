@@ -57,7 +57,7 @@ public class SvnManager extends AbstractVcsManager {
 		return r;
 	}
 
-	public static void main(String[] _) throws Exception {
+	public static void main(String[] _a) throws Exception {
 		System.err.println("testing");
 		String pass = password();
 		System.err.println("testing2");

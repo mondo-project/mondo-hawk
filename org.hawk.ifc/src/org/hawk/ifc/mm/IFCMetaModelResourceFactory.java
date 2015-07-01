@@ -162,7 +162,7 @@ public class IFCMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 		IFCMetaModelResource ret;
 		
-		File f = new File("../uk.ac.york.cs.mde.hawk.ifc/models/ifc2x3tc1.ecore");
+		File f = new File("../org.hawk.ifc/models/ifc2x3tc1.ecore");
 
 		
 		File sf = new File(".");
@@ -178,7 +178,7 @@ public class IFCMetaModelResourceFactory implements IMetaModelResourceFactory {
 		try {
 			r.load(null);
 		} catch (IOException e) {
-			System.err.print("could not load UML metamodel");
+			System.err.print("WARNING: static metamodel of IFC was not found, no static metamodels inserted for this plugin, please insert the relevant metamodels manually");
 		}
 
 		//

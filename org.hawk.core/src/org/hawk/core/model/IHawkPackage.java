@@ -20,7 +20,7 @@ public interface IHawkPackage extends IHawkObject {
 
 	String getNsURI();
 
-	HashSet<IHawkClass> getClasses();
+	HashSet<IHawkClassifier> getClasses();
 
 	IHawkMetaModelResource getResource();
 

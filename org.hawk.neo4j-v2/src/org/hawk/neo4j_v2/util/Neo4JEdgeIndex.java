@@ -10,8 +10,9 @@
  ******************************************************************************/
 package org.hawk.neo4j_v2.util;
 
-import org.hawk.core.graph.*;
-import org.hawk.core.model.*;
+import org.hawk.core.graph.IGraphEdge;
+import org.hawk.core.graph.IGraphEdgeIndex;
+import org.hawk.core.graph.IGraphIterable;
 import org.hawk.neo4j_v2.Neo4JDatabase;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.index.Index;
@@ -50,7 +51,7 @@ public class Neo4JEdgeIndex implements IGraphEdgeIndex {
 		return name;
 	}
 
-	public IHawkIterable<IGraphEdge> query(String key, Object valueExpr) {
+	public IGraphIterable<IGraphEdge> query(String key, Object valueExpr) {
 
 		if (index != null) {
 			return new Neo4JIterable<IGraphEdge>(index.query(key, valueExpr),
@@ -62,7 +63,7 @@ public class Neo4JEdgeIndex implements IGraphEdgeIndex {
 
 	}
 
-	public IHawkIterable<IGraphEdge> get(String key, Object valueExpr) {
+	public IGraphIterable<IGraphEdge> get(String key, Object valueExpr) {
 
 		if (index != null) {
 			return new Neo4JIterable<IGraphEdge>(index.get(key, valueExpr),

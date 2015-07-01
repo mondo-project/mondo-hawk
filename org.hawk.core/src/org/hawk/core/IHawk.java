@@ -4,10 +4,6 @@ import java.io.IOException;
 
 public interface IHawk {
 
-	public void loadPropertiesXML();
-
-	public void savePropertiesXML();
-
 	public IModelIndexer getModelIndexer();
 
 	String getDbtype();

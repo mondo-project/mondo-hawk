@@ -14,6 +14,7 @@ import java.util.HashSet;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EPackage;
 import org.hawk.core.model.*;
 
@@ -54,13 +55,16 @@ public class EMFpackage extends EMFobject implements IHawkPackage {
 	}
 
 	@Override
-	public HashSet<IHawkClass> getClasses() {
+	public HashSet<IHawkClassifier> getClasses() {
 
-		HashSet<IHawkClass> ret = new HashSet<>();
+		HashSet<IHawkClassifier> ret = new HashSet<>();
 
-		for (EClassifier e : ep.getEClassifiers())
+		for (EClassifier e : ep.getEClassifiers()) {
 			if (e instanceof EClass)
 				ret.add(new EMFclass(((EClass) e)));
+			else if (e instanceof EDataType)
+				ret.add(new EMFDataType((EDataType) e));
+		}
 
 		return ret;
 	}

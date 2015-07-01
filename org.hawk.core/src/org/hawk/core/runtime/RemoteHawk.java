@@ -20,18 +20,6 @@ public class RemoteHawk implements IHawk {
 	}
 
 	@Override
-	public void loadPropertiesXML() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void savePropertiesXML() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public IModelIndexer getModelIndexer() {
 		return indexer;
 	}

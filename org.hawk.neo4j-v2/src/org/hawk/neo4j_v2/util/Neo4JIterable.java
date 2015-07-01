@@ -12,11 +12,11 @@ package org.hawk.neo4j_v2.util;
 
 import java.util.Iterator;
 
-import org.hawk.core.graph.*;
-import org.hawk.core.model.*;
+import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphIterable;
 import org.neo4j.graphdb.index.IndexHits;
 
-public class Neo4JIterable<T> implements IHawkIterable<T> {
+public class Neo4JIterable<T> implements IGraphIterable<T> {
 
 	Iterable<?> parent;
 	IGraphDatabase graph;

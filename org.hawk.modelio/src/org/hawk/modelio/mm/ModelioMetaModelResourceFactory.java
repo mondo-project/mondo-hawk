@@ -160,9 +160,9 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 
 		keys.addAll(globalRegistry.keySet());
 		
-		File f = new File("../uk.ac.york.cs.mde.hawk.modelio/models/UML.ecore");
+		File f = new File("../org.hawk.modelio/models/UML.ecore");
 
-		File fr = new File("../uk.ac.york.cs.mde.hawk.modelio/models/Types.ecore");
+		File fr = new File("../org.hawk.modelio/models/Types.ecore");
 
 
 		Resource r = resourceSet.createResource(URI.createFileURI(f
@@ -173,7 +173,7 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 			r.load(null);
 			rr.load(null);
 		} catch (IOException e) {
-			System.err.print("could not load UML metamodel");
+			System.err.print("WARNING: static metamodel of UML was not found, no static metamodels inserted for this plugin, please insert the relevant metamodels manually");
 		}
 
 		//

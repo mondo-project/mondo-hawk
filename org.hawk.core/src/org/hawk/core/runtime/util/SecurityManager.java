@@ -13,7 +13,6 @@ package org.hawk.core.runtime.util;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;

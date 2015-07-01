@@ -23,7 +23,7 @@ import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
-import org.hawk.core.model.IHawkIterable;
+import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.util.DefaultConsole;
 import org.hawk.mondix.HawkMondixInstance;
 import org.hawk.mondix.relations.HawkFileMondixRelation;
@@ -46,7 +46,7 @@ IMondixView {
 	String uri = null;
 	private static IAbstractConsole console = new DefaultConsole();
 
-	public static void main(String[] _) throws Exception {
+	public static void main(String[] _a) throws Exception {
 
 		IGraphDatabase d = new Neo4JDatabase();
 		d.run(new File(
@@ -155,13 +155,13 @@ IMondixView {
 			IGraphNodeIndex fileindex = graph.getFileIndex();
 
 			if (id == null && uri == null) {
-				IHawkIterable<IGraphNode> filenodes = fileindex
+				IGraphIterable<IGraphNode> filenodes = fileindex
 						.query("id", "*");
 				for (IGraphNode n : filenodes)
 					addToContents(n.getId() + "", n.getProperty("id"));
 
 			} else if (uri != null) {
-				IHawkIterable<IGraphNode> filenodes = fileindex.get("id", uri);
+				IGraphIterable<IGraphNode> filenodes = fileindex.get("id", uri);
 				int size = filenodes.size();
 				if (size == 1) {
 					addToContents(filenodes.getSingle().getId() + "", uri);

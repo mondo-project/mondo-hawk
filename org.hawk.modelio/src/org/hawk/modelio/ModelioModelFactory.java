@@ -1,13 +1,13 @@
 package org.hawk.modelio;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 
+import org.hawk.core.IModelResourceFactory;
+import org.hawk.core.model.IHawkModelResource;
 import org.modelio.gproject.data.project.DefinitionScope;
 import org.modelio.gproject.data.project.ProjectDescriptor;
 import org.modelio.gproject.data.project.ProjectDescriptorReader;
@@ -17,10 +17,6 @@ import org.modelio.gproject.module.catalog.FileModuleStore;
 import org.modelio.metamodel.data.MetamodelLoader;
 import org.modelio.vbasic.auth.NoneAuthData;
 import org.modelio.vbasic.progress.NullProgress;
-
-
-import org.hawk.core.IModelResourceFactory;
-import org.hawk.core.model.IHawkModelResource;
 
 public class ModelioModelFactory implements IModelResourceFactory {
 

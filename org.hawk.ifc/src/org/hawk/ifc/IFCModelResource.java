@@ -1,7 +1,6 @@
 package org.hawk.ifc;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -12,9 +11,9 @@ import org.bimserver.emf.IfcModelInterface;
 import org.bimserver.ifc.step.deserializer.IfcStepDeserializer;
 import org.bimserver.ifc.xml.deserializer.IfcXmlDeserializer;
 import org.bimserver.plugins.deserializers.Deserializer;
-
-import org.hawk.core.model.*;
-import org.hawk.core.IModelResourceFactory;;
+import org.hawk.core.IModelResourceFactory;
+import org.hawk.core.model.IHawkModelResource;
+import org.hawk.core.model.IHawkObject;
 
 public class IFCModelResource implements IHawkModelResource {
 

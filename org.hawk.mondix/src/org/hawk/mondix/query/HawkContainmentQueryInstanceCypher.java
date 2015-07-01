@@ -49,7 +49,7 @@ public class HawkContainmentQueryInstanceCypher extends HawkQueryInstance
 	Long contentId = null;
 	private static IAbstractConsole console = new FileOutputConsole();
 
-	public static void main(String[] _) throws Exception {
+	public static void main(String[] _a) throws Exception {
 
 		Neo4JDatabase d = new Neo4JDatabase();
 		d.run(new File(

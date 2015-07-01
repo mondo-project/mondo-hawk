@@ -25,7 +25,6 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.util.DefaultConsole;
 import org.hawk.mondix.HawkMondixInstance;
-import org.hawk.mondix.relations.HawkFileMondixRelation;
 import org.hawk.mondix.relations.HawkObjectMondixRelation;
 import org.hawk.neo4j_v2.Neo4JDatabase;
 
@@ -48,7 +47,7 @@ IMondixView {
 	String fileId = null;
 	private static IAbstractConsole console = new DefaultConsole();
 
-	public static void main(String[] _) throws Exception {
+	public static void main(String[] _a) throws Exception {
 
 		IGraphDatabase d = new Neo4JDatabase();
 		d.run(new File(

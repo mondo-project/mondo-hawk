@@ -12,15 +12,19 @@ package org.hawk.core.graph;
 
 import java.util.Map;
 
-import org.hawk.core.model.IHawkIterable;
-
 public interface IGraphNodeIndex {
 
 	String getName();
 
-	IHawkIterable<IGraphNode> query(String key, Object valueExpr);
+	IGraphIterable<IGraphNode> query(String key, Object valueExpr);
 
-	IHawkIterable<IGraphNode> get(String key, Object valueExpr);
+	IGraphIterable<IGraphNode> query(String key, int from, int to,
+			boolean fromInclusive, boolean toInclusive);
+
+	IGraphIterable<IGraphNode> query(String key, double from, double to,
+			boolean fromInclusive, boolean toInclusive);
+	
+	IGraphIterable<IGraphNode> get(String key, Object valueExpr);
 
 	void add(IGraphNode n, Map<String, Object> derived);
 

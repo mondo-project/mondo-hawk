@@ -17,6 +17,9 @@
          </appinfo>
       </annotation>
       <complexType>
+         <sequence>
+            <element ref="Backend"/>
+         </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
                <documentation>
@@ -52,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.hawk.core.graph.GraphDatabase"/>
+                  <meta.attribute kind="java" basedOn=":org.hawk.core.graph.IGraphDatabase"/>
                </appinfo>
             </annotation>
          </attribute>

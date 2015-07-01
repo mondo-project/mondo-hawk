@@ -45,10 +45,15 @@ public class EMFobject implements IHawkObject {
 	}
 
 	@Override
-	public String proxyURI() {
+	public String proxyURIFragment() {
 		return ((InternalEObject) eob).eProxyURI().fragment();
 	}
 
+	@Override
+	public String proxyURI() {
+		return ((InternalEObject) eob).eProxyURI().toString();
+	}
+	
 	@Override
 	public String getUri() {
 		String uri = org.eclipse.emf.ecore.util.EcoreUtil.getURI(eob)

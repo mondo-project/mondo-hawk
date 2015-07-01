@@ -26,7 +26,7 @@ import org.hawk.core.graph.IGraphEdgeIndex;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
-import org.hawk.core.model.IHawkIterable;
+import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.util.FileOperations;
 import org.hawk.neo4j_v2.util.Neo4JBatchUtil;
 import org.hawk.neo4j_v2.util.Neo4JEdge;
@@ -476,7 +476,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 							// for(GraphNode n:filedictionary.query("id", "*"))
 							// System.err.println(n.getProperty("id")+" : "+n.getProperty("revision"));
 
-							IHawkIterable<IGraphNode> ret = filedictionary.get(
+							IGraphIterable<IGraphNode> ret = filedictionary.get(
 									"id", r.getPath());
 
 							IGraphNode n = ret.getSingle();
@@ -606,7 +606,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 		try (IGraphTransaction t = beginTransaction()) {
 
-			IHawkIterable<IGraphNode> mmnodes = metamodelindex.query("*", "*");
+			IGraphIterable<IGraphNode> mmnodes = metamodelindex.query("*", "*");
 
 			for (IGraphNode n : mmnodes)
 				ret.add(n.getProperty("id").toString());

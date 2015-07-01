@@ -76,8 +76,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 	// limited for testing (usual cap: 512)
 	private int maxdelay = 1000 * 4;
 
-	private Timer t = null;
-	private Timer t2 = null;
+	private Timer updateTimer = null;
+	private Timer countdownTimer = null;
 
 	public boolean permanentDelete = false;
 	public int currentdelay = 1000;
@@ -895,16 +895,16 @@ public class ModelIndexerImpl implements IModelIndexer {
 		// begin scheduled updates from vcs
 		if (runSchedule) {
 
-			t = TimerManager.createNewTimer("t", false);
-			t.schedule(new TimerTask() {
+			updateTimer = TimerManager.createNewTimer("t", false);
+			updateTimer.schedule(new TimerTask() {
 
 				@Override
 				public void run() {
-					runtask();
+					runUpdateTask();
 				}
 			}, 0);
 
-			t2 = TimerManager.createNewTimer("t2", false);
+			countdownTimer = TimerManager.createNewTimer("t2", false);
 
 			TimerTask task2 = new TimerTask() {
 
@@ -915,11 +915,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 				}
 			};
 
-			t2.scheduleAtFixedRate(task2, 2000, 1000);
+			countdownTimer.scheduleAtFixedRate(task2, 2000, 1000);
 		}
 	}
 
-	private void runtask() {
+	private void runUpdateTask() {
 
 		long start = System.currentTimeMillis();
 		System.err.println("------------------ starting update task");
@@ -984,11 +984,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		}
 
-		t.schedule(new TimerTask() {
+		updateTimer.schedule(new TimerTask() {
 
 			@Override
 			public void run() {
-				runtask();
+				runUpdateTask();
 			}
 		}, currentdelay);
 		// updateTimers(false);
@@ -1010,13 +1010,13 @@ public class ModelIndexerImpl implements IModelIndexer {
 		currentdelay = 1000;
 		leftoverdelay = 1000;
 
-		t.cancel();
-		t = TimerManager.createNewTimer("t", true);
-		t.schedule(new TimerTask() {
+		updateTimer.cancel();
+		updateTimer = TimerManager.createNewTimer("t", true);
+		updateTimer.schedule(new TimerTask() {
 
 			@Override
 			public void run() {
-				runtask();
+				runUpdateTask();
 			}
 		}, currentdelay);
 
@@ -1154,7 +1154,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 							typenode = temp;
 						else
 							System.err
-									.println("error in getDerivedAttributes, typenode had more than 1 type found");
+									.println("error in getIndexedAttributes, typenode had more than 1 type found");
 				}
 				if (((String[]) typenode.getProperty(split[2]))[0].equals("d"))
 					it.remove();
