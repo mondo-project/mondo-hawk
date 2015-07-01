@@ -39,7 +39,7 @@ These instructions are from a clean download of an Eclipse Luna Modelling distri
 
 1. Clone this Git repository on your Eclipse instance (e.g. using `git clone` or EGit) and import all projects into the workspace (File > Import > Existing Projects into Workspace).
 2. Clone the [MONDIX repository](https://github.com/FTSRG/mondo-mondix) and import the `eu.mondo.mondix.interfaces` project into the workspace.
-3. Import the following projects from [the MONDO Modelio 3.2 SVN repository](https://opensourceprojects.eu/svn/p/mondo/code/trunk/modelio) using the "SVN Repositories" view in the "SVN Repository Exploring" perspective:
+3. Import the following projects from [the MONDO Modelio 3.2 SVN repository](https://opensourceprojects.eu/svn/p/mondo/code/trunk/modelio) using the "SVN Repositories" view in the "SVN Repository Exploring" perspective (you'll need the "Subversive SVN" client from the Eclipse Marketplace):
     * api
     * app.core
     * app.preferences
