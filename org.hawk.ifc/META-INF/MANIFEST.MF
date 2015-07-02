@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: ifc
+Bundle-Name: Hawk Ifc Plugin
 Bundle-SymbolicName: org.hawk.ifc;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.hawk.ifc.Activator
-Bundle-Vendor: yorkmde
+Bundle-Vendor: University of York
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.emf.ecore;bundle-version="2.7.0",

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: graph
+Bundle-Name: Hawk Graph Plugin
 Bundle-SymbolicName: org.hawk.graph;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.hawk.graph.Activator
@@ -8,3 +8,4 @@ Require-Bundle: org.eclipse.core.runtime,
  org.hawk.core;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: University of York

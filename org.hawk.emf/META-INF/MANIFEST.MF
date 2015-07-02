@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Emf
+Bundle-Name: Hawk Emf Plugin
 Bundle-SymbolicName: org.hawk.emf;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.hawk.emf.Activator
-Bundle-Vendor: GOOGLECODE
+Bundle-Vendor: University of York
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.emf.ecore,

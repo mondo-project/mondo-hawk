@@ -170,9 +170,9 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 				if (object instanceof QueryAwareGraphNodeWrapper) {
 					ret = ((QueryAwareGraphNodeWrapper) object)
 							.getAttributeValue(property);
-					System.err
-							.println("QueryAwareGraphNodeWrapper found, attribute: "
-									+ property + " :: " + ret);
+					// System.err
+					// .println("QueryAwareGraphNodeWrapper found, attribute: "
+					// + property + " :: " + ret);
 				}
 
 				if (ret != null || node.getProperty(property) != null) {
@@ -213,9 +213,9 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 				if (object instanceof QueryAwareGraphNodeWrapper) {
 					ret = ((QueryAwareGraphNodeWrapper) object)
 							.getReference(property);
-					System.err
-							.println("QueryAwareGraphNodeWrapper found, reference: "
-									+ property + " :: " + ret);
+					// System.err
+					// .println("QueryAwareGraphNodeWrapper found, reference: "
+					// + property + " :: " + ret);
 				}
 
 				GraphNodeWrapper otherNode = null;

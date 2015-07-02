@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: epsilon
+Bundle-Name: Hawk Epsilon Plugin
 Bundle-SymbolicName: org.hawk.epsilon;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: GOOGLECODE
+Bundle-Vendor: University of York
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.hawk.core;bundle-version="1.0.0",

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: A
+Bundle-Name: Hawk Neo4j-v2 Dependencies Plugin
 Bundle-SymbolicName: org.hawk.neo4j-v2.dependencies
 Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -255,3 +255,4 @@ Export-Package: com.googlecode.concurrentlinkedhashmap,
  scala.xml.persistent,
  scala.xml.pull,
  scala.xml.transform
+Bundle-Vendor: University of York

@@ -738,7 +738,8 @@ public class GraphModelBatchInjector {
 
 				IGraphNode othernode = r.getStartNode();
 
-				if (othernode.getProperty("id").equals(eClass.getName())) {
+				if (!othernode.equals(epackagenode)
+						&& othernode.getProperty("id").equals(eClass.getName())) {
 					classnode = othernode;
 					break;
 				}
@@ -801,6 +802,12 @@ public class GraphModelBatchInjector {
 		proxydictionary = graph.getOrCreateNodeIndex("proxydictionary");
 
 		IGraphNode eClass = getEClassNode(eObject.getType());
+
+		// System.err.println("EOBJECT IS:\n"+eObject);
+
+		// System.err.println("ECLASS IS:\n"+eObject.getType());
+
+		// System.err.println("ECLASS (node) IS:\n"+eClass+"\n"+eClass.getPropertyKeys());
 
 		IGraphNode node = createEObjectNode(eObject, eClass);
 

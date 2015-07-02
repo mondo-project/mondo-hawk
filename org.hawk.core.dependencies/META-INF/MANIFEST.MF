@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Dependencies
+Bundle-Name: Hawk Core Dependencies Plugin
 Bundle-SymbolicName: org.hawk.core.dependencies;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ActivationPolicy: lazy
@@ -28,3 +28,4 @@ Export-Package: com.thoughtworks.xstream,
  com.thoughtworks.xstream.mapper,
  com.thoughtworks.xstream.persistence,
  com.thoughtworks.xstream.security
+Bundle-Vendor: University of York

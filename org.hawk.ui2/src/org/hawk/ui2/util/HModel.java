@@ -294,7 +294,7 @@ public class HModel {
 		// }
 
 		if (f.exists())
-			System.err.println("failed to delete directory: " + f);
+			System.err.println("Failed to delete directory: " + f+"\nEither deletion is turned off or the directory is still in use.");
 
 	}
 

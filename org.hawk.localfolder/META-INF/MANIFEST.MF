@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Localfolder
+Bundle-Name: Hawk Localfolder Plugin
 Bundle-SymbolicName: org.hawk.localfolder;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.hawk.localfolder.Activator
-Bundle-Vendor: GOOGLECODE
+Bundle-Vendor: University of York
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.console;bundle-version="3.5.100",
  org.hawk.core;bundle-version="1.0.0"

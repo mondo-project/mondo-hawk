@@ -150,7 +150,7 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 		if (found)
 			try {
 				rem.delete(null);
-				EPackage.Registry.INSTANCE.remove(property);
+				// EPackage.Registry.INSTANCE.remove(property);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -199,29 +199,29 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 		if (missingPackages.size() == 0) {
 
-			set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
-					.get("http://www.eclipse.org/emf/2003/XMLType"))
-					.eResource(), this));
-
-			set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
-					.get("http://www.omg.org/spec/BPMN/20100524/MODEL-XMI"))
-					.eResource(), this));
-
-			set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
-					.get("http://www.omg.org/spec/DD/20100524/DC-XMI"))
-					.eResource(), this));
-
-			set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
-					.get("http://www.eclipse.org/emf/2002/Ecore")).eResource(),
+			set.add(new BPMNMetaModelResource(globalRegistry.getEPackage(
+					"http://www.eclipse.org/emf/2003/XMLType").eResource(),
 					this));
 
-			set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
-					.get("http://www.omg.org/spec/BPMN/20100524/DI-XMI"))
+			set.add(new BPMNMetaModelResource(globalRegistry.getEPackage(
+					"http://www.omg.org/spec/BPMN/20100524/MODEL-XMI")
 					.eResource(), this));
 
-			set.add(new BPMNMetaModelResource(((EPackage) globalRegistry
-					.get("http://www.omg.org/spec/DD/20100524/DI-XMI"))
-					.eResource(), this));
+			set.add(new BPMNMetaModelResource(globalRegistry.getEPackage(
+					"http://www.omg.org/spec/DD/20100524/DC-XMI").eResource(),
+					this));
+
+			set.add(new BPMNMetaModelResource(globalRegistry.getEPackage(
+					"http://www.eclipse.org/emf/2002/Ecore").eResource(), this));
+
+			set.add(new BPMNMetaModelResource(
+					globalRegistry.getEPackage(
+							"http://www.omg.org/spec/BPMN/20100524/DI-XMI")
+							.eResource(), this));
+
+			set.add(new BPMNMetaModelResource(globalRegistry.getEPackage(
+					"http://www.omg.org/spec/DD/20100524/DI-XMI").eResource(),
+					this));
 
 		} else {
 			System.err

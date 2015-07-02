@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Neo4j-v2
+Bundle-Name: Hawk Neo4j-v2 Plugin
 Bundle-SymbolicName: org.hawk.neo4j-v2;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.hawk.neo4j_v2.Activator
@@ -12,3 +12,4 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.hawk.neo4j_v2,
  org.hawk.neo4j_v2.util
+Bundle-Vendor: University of York

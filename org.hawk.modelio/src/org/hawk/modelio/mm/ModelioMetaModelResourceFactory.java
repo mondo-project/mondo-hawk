@@ -132,7 +132,7 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 		if (found)
 			try {
 				rem.delete(null);
-				EPackage.Registry.INSTANCE.remove(property);
+				//EPackage.Registry.INSTANCE.remove(property);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

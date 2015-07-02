@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Hawk EMC development tools
+Bundle-Name: Hawk EMC Development Tools (Queryaware) Plugin
 Bundle-SymbolicName: org.hawk.ui.emc.dt2.queryaware;singleton:=true
 Bundle-Version: 1.2.0.qualifier
 Require-Bundle: org.eclipse.epsilon.common.dt,
