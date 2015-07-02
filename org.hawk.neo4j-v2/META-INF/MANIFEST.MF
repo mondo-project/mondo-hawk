@@ -9,6 +9,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.hawk.core;bundle-version="1.0.0",
  org.hawk.graph;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.hawk.neo4j_v2,
  org.hawk.neo4j_v2.util
