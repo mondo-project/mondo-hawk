@@ -6,7 +6,7 @@
       provider-name="University of York">
 
    <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+      Implements a Neo4Jv2 backend for storing Hawk&apos;s index.
    </description>
 
    <copyright url="http://www.example.com/copyright">
