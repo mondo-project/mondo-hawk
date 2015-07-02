@@ -6,7 +6,7 @@
       provider-name="University of York">
 
    <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+      Allows querying a Hawk index using the Epsilon Object Language.
    </description>
 
    <copyright url="http://www.example.com/copyright">
@@ -22,10 +22,46 @@
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.hawk.core" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.epsilon.eol.engine" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.antlr.runtime_3.1.b1" version="3.1.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
          id="org.hawk.epsilon"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.epsilon.eol.engine"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.epsilon.common"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.epsilon.dependencies"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.epsilon.erl.engine"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.antlr.runtime_3.1.b1"
          download-size="0"
          install-size="0"
          version="0.0.0"

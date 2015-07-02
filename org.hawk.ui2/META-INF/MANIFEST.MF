@@ -11,7 +11,7 @@ Require-Bundle: org.eclipse.ui,
  org.hawk.core,
  org.hawk.core.dependencies;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.ui.console
 Export-Package: org.hawk.ui2.util
 Bundle-Vendor: University of York

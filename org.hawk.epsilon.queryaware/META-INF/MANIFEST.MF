@@ -15,7 +15,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.epsilon.eol.visitor.resolution.variable,
  org.eclipse.epsilon.labs.effectivemetamodel,
  org.hawk.epsilon;bundle-version="1.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: org.hawk.epsilon.queryaware
 Bundle-Vendor: University of York

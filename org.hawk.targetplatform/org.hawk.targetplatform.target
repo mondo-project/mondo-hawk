@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Hawk Target Platform" sequenceNumber="35">
+<?pde version="3.8"?><target name="Hawk Target Platform" sequenceNumber="36">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.epsilon.emf.dt.feature.feature.group" version="1.3.0.201506302302"/>
@@ -27,5 +27,12 @@
 <location path="${resource_loc:/nebula-incubator/plugins}" type="Directory"/>
 <location path="${resource_loc:/nebula-nattable/plugins}" type="Directory"/>
 <location path="${resource_loc:/uml2_3.2/plugins}" type="Directory"/>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.apache.commons.lang.source" version="2.6.0.v201404270220"/>
+<unit id="org.apache.commons.lang3" version="3.1.0.v201403281430"/>
+<unit id="org.apache.commons.lang" version="2.6.0.v201404270220"/>
+<unit id="org.apache.commons.lang3.source" version="3.1.0.v201403281430"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150124073747/repository/"/>
+</location>
 </locations>
 </target>
