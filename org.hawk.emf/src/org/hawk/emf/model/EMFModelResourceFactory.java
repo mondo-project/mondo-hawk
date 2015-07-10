@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2014 The University of York.
+ * Copyright (c) 2011-2015 The University of York.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,6 +53,8 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 		metamodelExtensions.add("ECORE");
 		modelExtensions.add("xmi");
 		modelExtensions.add("XMI");
+		modelExtensions.add("model");
+		modelExtensions.add("MODEL");
 
 		if (resourceSet == null) {
 			resourceSet = new ResourceSetImpl();

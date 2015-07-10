@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2011-2015 The University of York.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Seyyed Shah - initial API and implementation
+ *     Konstantinos Barmpis - updates and maintenance
+ ******************************************************************************/
 package org.hawk.ui2.util;
 
 import java.io.File;
@@ -376,7 +387,7 @@ public class HModel {
 		return ret != null ? ret.toString() : "null";
 	}
 
-	public boolean registerMeta(File f) {
+	public boolean registerMeta(File[] f) {
 		// if (registeredMetamodels.contains(f.getAbsolutePath()))
 		// return true;
 		try {

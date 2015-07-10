@@ -1,6 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2011-2015 The University of York.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Seyyed Shah - initial API and implementation
+ *     Konstantinos Barmpis - updates and maintenance
+ ******************************************************************************/
 package org.hawk.ui2.dialog;
 
 import java.io.File;
+import java.util.Arrays;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.dialogs.Dialog;
@@ -726,19 +738,37 @@ public class HConfigDialog extends Dialog {
 	}
 
 	private void mmBrowse() {
-		FileDialog fd = new FileDialog(getShell(), SWT.OPEN);
+		FileDialog fd = new FileDialog(getShell(), SWT.MULTI);
 
 		fd.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation()
 				.toFile().toString());
 		// TODO: allow selection of only parse-able/known metamodels-file-types
 		fd.setFilterExtensions(new String[] { "*.ecore" });
-		fd.setText("Select a metamodel");
+		fd.setText("Select metamodels");
 		String result = fd.open();
 
 		if (result != null) {
-			File metaModel = new File(result);
-			if (metaModel.exists() && metaModel.canRead() && metaModel.isFile()) {
-				index.registerMeta(metaModel);
+
+			String[] metaModels = fd.getFileNames();
+			File[] metaModelFiles = new File[metaModels.length];
+
+			// System.err.println(fd.getFilterPath());
+			// System.err.println(Arrays.toString(metaModels));
+
+			boolean error = false;
+
+			for (int i = 0; i < metaModels.length; i++) {
+				File file = new File(fd.getFilterPath() + File.separator
+						+ metaModels[i]);
+				if (!file.exists() || !file.canRead() || !file.isFile())
+					error = true;
+				else
+					metaModelFiles[i] = file;
+
+			}
+
+			if (!error) {
+				index.registerMeta(metaModelFiles);
 				updateMMList();
 			}
 		}
