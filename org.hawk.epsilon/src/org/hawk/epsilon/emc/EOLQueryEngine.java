@@ -46,6 +46,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 // implements IOperationContributorProvider
 {
 
+	public static final String TYPE = "org.hawk.epsilon.emc.EOLQueryEngine";
+
 	protected HashSet<String> cachedTypes = new HashSet<String>();
 	protected String backendURI = null;
 	protected StringProperties config = null;
@@ -1499,7 +1501,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 	@Override
 	public String getType() {
-		return "org.hawk.epsilon.emc.EOLQueryEngine";
+		return TYPE;
 	}
 
 	@Override
