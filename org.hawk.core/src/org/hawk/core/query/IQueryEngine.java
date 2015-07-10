@@ -23,18 +23,18 @@ public interface IQueryEngine {
 	public static final String PROPERTY_ENABLE_CASHING = "ENABLE_CASHING";
 	public static final String PROPERTY_METAMODELS = "METAMODELS";
 
-	Object contextlessQuery(IGraphDatabase g, String query);
+	Object contextlessQuery(IGraphDatabase g, String query) throws InvalidQueryException, QueryExecutionException;
 
-	Object contextlessQuery(IGraphDatabase g, File query);
+	Object contextlessQuery(IGraphDatabase g, File query) throws InvalidQueryException, QueryExecutionException;
 
 	Object contextfullQuery(IGraphDatabase g, String query,
-			Map<String, String> context);
+			Map<String, String> context) throws InvalidQueryException, QueryExecutionException;
 
 	Object contextfullQuery(IGraphDatabase g, File query,
-			Map<String, String> context);
+			Map<String, String> context) throws InvalidQueryException, QueryExecutionException;
 
 	IAccessListener calculateDerivedAttributes(IGraphDatabase g,
-			Iterable<IGraphNode> nodes);
+			Iterable<IGraphNode> nodes) throws InvalidQueryException, QueryExecutionException;
 
 	String getType();
 
