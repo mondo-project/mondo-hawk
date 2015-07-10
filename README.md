@@ -52,7 +52,7 @@ These instructions are from a clean download of an Eclipse Luna Modelling distri
     * core.estore.exml
     * core.ui
     * core.utils
-    * jdbm
+    * jdbm (you'll need to create its "src" source folder)
     * RCPTARGET/ktable
     * lib
     * log
@@ -63,7 +63,7 @@ These instructions are from a clean download of an Eclipse Luna Modelling distri
     * RCPTARGET/nebula
     * RCPTARGET/nebula-incubator
     * RCPTARGET/nebula-nattable
-    * practicalxml
+    * practicalxml (you'll need to create its "src" source folder)
     * script.engine
     * ui
     * RCPTARGET/uml2_3.2
