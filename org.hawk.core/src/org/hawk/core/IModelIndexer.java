@@ -28,14 +28,14 @@ public interface IModelIndexer {
 	 * @return
 	 * @throws Exception
 	 */
-	public abstract boolean synchronise() throws Exception;
+	boolean synchronise() throws Exception;
 
 	// /**
 	// * shuts down, not persisting any metadata
 	// *
 	// * @throws Exception
 	// */
-	// public abstract void shutdown() throws Exception;
+	// void shutdown() throws Exception;
 
 	/**
 	 * shuts down, persisting metadata (used in default ui plugin to load) also
@@ -44,54 +44,54 @@ public interface IModelIndexer {
 	 * 
 	 * @throws Exception
 	 */
-	public abstract void shutdown(boolean delete) throws Exception;
+	void shutdown(boolean delete) throws Exception;
 
 	/**
 	 * 
 	 * @return running back-end
 	 */
-	public abstract IGraphDatabase getGraph();
+	IGraphDatabase getGraph();
 
 	/**
 	 * 
 	 * @return running vcs managers
 	 */
-	public abstract Set<IVcsManager> getRunningVCSManagers();
+	Set<IVcsManager> getRunningVCSManagers();
 
 	/**
 	 * 
 	 * @return current known metamodels in hawk
 	 */
-	public abstract Set<String> getKnownMMUris();
+	Set<String> getKnownMMUris();
 
-	public abstract String getId();
+	String getId();
 
-	public abstract void registerMetamodel(File[] f) throws Exception;
+	void registerMetamodel(File[] f) throws Exception;
 
-	public abstract void registerMetamodel(File f) throws Exception;
+	void registerMetamodel(File f) throws Exception;
 
-	public abstract void removeMetamodel(File[] metamodel) throws Exception;
+	void removeMetamodel(File[] metamodel) throws Exception;
 
-	public abstract void removeMetamodel(File metamodel) throws Exception;
+	void removeMetamodel(File metamodel) throws Exception;
 
-	public abstract IAbstractConsole getConsole();
+	IAbstractConsole getConsole();
 
 	// deprecated -- internal method now
-	// public abstract void saveIndexer(File f);
+	// void saveIndexer(File f);
 
-	public abstract void addVCSManager(IVcsManager vcs);
+	void addVCSManager(IVcsManager vcs);
 
-	public abstract void addModelUpdater(IModelUpdater updater);
+	void addModelUpdater(IModelUpdater updater);
 
-	public abstract void addMetaModelResourceFactory(
+	void addMetaModelResourceFactory(
 			IMetaModelResourceFactory metaModelParser);
 
-	public abstract void addModelResourceFactory(
+	void addModelResourceFactory(
 			IModelResourceFactory modelParser);
 
-	public abstract void setDB(IGraphDatabase db);
+	void setDB(IGraphDatabase db);
 
-	public abstract void addQueryEngine(IQueryEngine q);
+	void addQueryEngine(IQueryEngine q);
 
 	/**
 	 * starts hawk -- given an admit password for de-serialising any stored
@@ -103,7 +103,7 @@ public interface IModelIndexer {
 	 * @param adminpw
 	 * @throws Exception
 	 */
-	public abstract void init(char[] adminpw) throws Exception;
+	void init(char[] adminpw) throws Exception;
 
 	// /**
 	// * NOTE: do not call this method before setting all the required factories
@@ -111,27 +111,27 @@ public interface IModelIndexer {
 	// *
 	// * @throws Exception
 	// */
-	// public abstract void init() throws Exception;
+	// void init() throws Exception;
 
-	public abstract IModelResourceFactory getModelParser(String type);
+	IModelResourceFactory getModelParser(String type);
 
-	public abstract IMetaModelResourceFactory getMetaModelParser(
+	IMetaModelResourceFactory getMetaModelParser(
 			String metaModelType);
 
-	public abstract Map<String, IQueryEngine> getKnownQueryLanguages();
+	Map<String, IQueryEngine> getKnownQueryLanguages();
 
 	/**
 	 * 
 	 * @return the folder the entire hawk structure is stored in
 	 */
-	public abstract File getParentFolder();
+	File getParentFolder();
 
 	// deprecated -- use IQueryEngine.contextlessQuery(IGraphDatabase g, String
 	// query) with a specific query engine (such as epsilon's eol) to run a
 	// query on hawk -- to find them use getKnownQueryLanguages() -- keyset
 	// gives their identifiers and get() the runtime classes
 
-	// public abstract void runEOL();
+	// void runEOL();
 
 	/**
 	 * creates a comprehensive log of the entire contents of hawk -- use
@@ -139,37 +139,42 @@ public interface IModelIndexer {
 	 * 
 	 * @throws Exception
 	 */
-	public abstract void logFullStore() throws Exception;
+	void logFullStore() throws Exception;
 
 	/**
 	 * resets the timer for running synchronise() on hawk
 	 */
-	public abstract void resetScheduler();
+	void resetScheduler();
 
-	public abstract void setMetaModelUpdater(IMetaModelUpdater metaModelUpdater);
+	void setMetaModelUpdater(IMetaModelUpdater metaModelUpdater);
 
-	public abstract void addDerivedAttribute(String metamodeluri,
+	void addDerivedAttribute(String metamodeluri,
 			String typename, String attributename, String attributetype,
 			boolean isMany, boolean isOrdered, boolean isUnique,
 			String derivationlanguage, String derivationlogic);
 
-	public abstract void addIndexedAttribute(String metamodeluri,
+	void addIndexedAttribute(String metamodeluri,
 			String typename, String attributename);
 
-	public abstract Object query(File query, String queryLangID)
+	Object query(File query, String queryLangID)
 			throws Exception;
 
-	public abstract Object query(String query, String queryLangID)
+	Object query(String query, String queryLangID)
 			throws Exception;
 
-	public abstract Collection<String> getDerivedAttributes();
+	Collection<String> getDerivedAttributes();
 
-	public abstract Collection<String> getIndexedAttributes();
+	/**
+	 * Returns a collection of strings of the form <code>mmuri##typename##attrname</code>,
+	 * where <code>mmuri</code> is the URI of the EPackage, <code>typename</code> is the
+	 * unqualified name of the type, and <code>attrname</code> is the name of the attribute
+	 * being indexed.
+	 */
+	Collection<String> getIndexedAttributes();
 
-	public abstract Collection<String> getIndexes();
+	Collection<String> getIndexes();
 
-	public abstract List<String> validateExpression(String derivationlanguage,
-			String derivationlogic);
+	List<String> validateExpression(String derivationlanguage, String derivationlogic);
 
 	public String getName();
 
