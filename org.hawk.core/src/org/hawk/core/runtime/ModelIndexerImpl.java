@@ -58,6 +58,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	public static final String ID = "org.hawk.core.ModelIndexer";
 
+	private static final boolean IS_DERIVED = true;
+	private static final boolean IS_INDEXED = false;
+
 	private String name;
 
 	private ArrayList<IVcsManager> monitors = new ArrayList<>();
@@ -1078,57 +1081,30 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	@Override
 	public Collection<String> getDerivedAttributes() {
-
-		HashSet<String> ret = new HashSet<String>();
-
-		try (IGraphTransaction t = graph.beginTransaction()) {
-
-			ret.addAll(graph.getNodeIndexNames());
-
-			Iterator<String> it = ret.iterator();
-			while (it.hasNext()) {
-				String s = it.next();
-				if (!s.matches("(.*)##(.*)##(.*)"))
-					it.remove();
-
-			}
-
-			it = ret.iterator();
-			while (it.hasNext()) {
-				String s = it.next();
-				String[] split = s.split("##");
-				IGraphNode epackagenode = graph.getMetamodelIndex()
-						.get("id", split[0]).iterator().next();
-				IGraphNode typenode = null;
-				for (IGraphEdge e : epackagenode
-						.getIncomingWithType("epackage")) {
-					IGraphNode temp = e.getStartNode();
-					if (temp.getProperty("id").equals(split[1]))
-						if (typenode == null)
-							typenode = temp;
-						else
-							System.err
-									.println("error in getDerivedAttributes, typenode had more than 1 type found");
-				}
-				if (!((String[]) typenode.getProperty(split[2]))[0].equals("d"))
-					it.remove();
-			}
-
-			t.success();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return ret;
-
+		return getExtraAttributes(IS_DERIVED);
 	}
 
 	@Override
 	public Collection<String> getIndexedAttributes() {
+		return getExtraAttributes(IS_INDEXED);
+	}
 
-		HashSet<String> ret = new HashSet<String>();
+	/**
+	 * Returns {@link #IS_DERIVED} if the attribute is derived or {@link #IS_INDEXED} if not.
+	 */
+	private boolean isDerivedAttribute(IGraphNode typenode, final String attrName) {
+		return ((String[]) typenode.getProperty(attrName))[0].equals("d");
+	}
+
+	/**
+	 * Lists all the Hawk-specific attributes available. If <code>isDerived</code> is {@link #IS_DERIVED},
+	 * it will list all the derived attributes. If it is {@link #IS_INDEXED}, it will list all the indexed
+	 * attributes.
+	 */
+	private Collection<String> getExtraAttributes(final boolean isDerived) {
+		Set<String> ret = new HashSet<String>();
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
-
 			ret.addAll(graph.getNodeIndexNames());
 
 			Iterator<String> it = ret.iterator();
@@ -1136,28 +1112,32 @@ public class ModelIndexerImpl implements IModelIndexer {
 				String s = it.next();
 				if (!s.matches("(.*)##(.*)##(.*)"))
 					it.remove();
-
 			}
 
 			it = ret.iterator();
 			while (it.hasNext()) {
 				String s = it.next();
 				String[] split = s.split("##");
-				IGraphNode epackagenode = graph.getMetamodelIndex()
-						.get("id", split[0]).iterator().next();
+				final String mmURI = split[0];
+
+				IGraphNode epackagenode = graph.getMetamodelIndex().get("id", mmURI).iterator().next();
 				IGraphNode typenode = null;
-				for (IGraphEdge e : epackagenode
-						.getIncomingWithType("epackage")) {
+				for (IGraphEdge e : epackagenode.getIncomingWithType("epackage")) {
 					IGraphNode temp = e.getStartNode();
-					if (temp.getProperty("id").equals(split[1]))
-						if (typenode == null)
+					final String typeName = split[1];
+					if (temp.getProperty("id").equals(typeName)) {
+						if (typenode == null) {
 							typenode = temp;
-						else
-							System.err
-									.println("error in getIndexedAttributes, typenode had more than 1 type found");
+						} else {
+							System.err.println("error in getExtraAttributes, typenode had more than 1 type found");
+						}
+					}
 				}
-				if (((String[]) typenode.getProperty(split[2]))[0].equals("d"))
+
+				final String attrName = split[2];
+				if (isDerivedAttribute(typenode, attrName) != isDerived) {
 					it.remove();
+				}
 			}
 
 			t.success();
@@ -1165,7 +1145,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 			e.printStackTrace();
 		}
 		return ret;
-
 	}
 
 	@Override
