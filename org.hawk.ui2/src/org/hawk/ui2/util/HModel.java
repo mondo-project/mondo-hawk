@@ -30,6 +30,8 @@ import org.hawk.core.IModelUpdater;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
+import org.hawk.core.query.InvalidQueryException;
+import org.hawk.core.query.QueryExecutionException;
 import org.hawk.core.runtime.LocalHawk;
 import org.hawk.core.util.HawkConfig;
 import org.hawk.core.util.HawkProperties;
@@ -309,19 +311,6 @@ public class HModel {
 
 	}
 
-	private static boolean deleteDir(File dir) {
-		if (dir.isDirectory()) {
-			String[] children = dir.list();
-			for (int i = 0; i < children.length; i++) {
-				boolean success = deleteDir(new File(dir, children[i]));
-				if (!success) {
-					return false;
-				}
-			}
-		}
-		return dir.delete();
-	}
-
 	@Override
 	public String toString() {
 		String ret = "";
@@ -346,7 +335,7 @@ public class HModel {
 	}
 
 	public String contextFullQuery(String query, String ql,
-			Map<String, String> context) {
+			Map<String, String> context) throws InvalidQueryException, QueryExecutionException {
 		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages()
 				.get(ql);
 
@@ -357,7 +346,7 @@ public class HModel {
 	}
 
 	public String contextFullQuery(File query, String ql,
-			Map<String, String> context) {
+			Map<String, String> context) throws InvalidQueryException, QueryExecutionException  {
 		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages()
 				.get(ql);
 
@@ -367,7 +356,7 @@ public class HModel {
 		return ret != null ? ret.toString() : "null";
 	}
 
-	public String query(String query, String ql) {
+	public String query(String query, String ql) throws InvalidQueryException, QueryExecutionException  {
 		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages()
 				.get(ql);
 
@@ -377,7 +366,7 @@ public class HModel {
 		return ret != null ? ret.toString() : "null";
 	}
 
-	public String query(File query, String ql) {
+	public String query(File query, String ql) throws InvalidQueryException, QueryExecutionException  {
 		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages()
 				.get(ql);
 
