@@ -384,6 +384,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 			saveIndexer();
 		} catch (Exception e) {
 			System.err.println("shutdown tried to saveIndexer but failed");
+			e.printStackTrace();
 		}
 
 		for (Timer t : TimerManager.timers)
@@ -799,8 +800,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	public void saveIndexer() throws Exception {
-
-		// ...
 		System.out.println("saving indexer...");
 
 		XStream stream = new XStream(new DomDriver());
@@ -819,18 +818,13 @@ public class ModelIndexerImpl implements IModelIndexer {
 		HawkProperties hp = new HawkProperties(graph.getType(), set);
 
 		String out = stream.toXML(hp);
-
-		// System.out.println(out);
-
-		BufferedWriter b = new BufferedWriter(new FileWriter(getParentFolder()
-				+ File.separator + "properties.xml"));
-
-		b.write(out);
-
-		b.flush();
-
-		b.close();
-
+		try(
+			BufferedWriter b = new BufferedWriter(new FileWriter(
+				getParentFolder() + File.separator + "properties.xml"))
+		) {
+			b.write(out);
+			b.flush();
+		}
 	}
 
 	@Override
@@ -844,8 +838,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 			saveIndexer();
 		} catch (Exception e) {
 			System.err.println("addVCSManager tried to saveIndexer but failed");
+			e.printStackTrace();
 		}
-
 	}
 
 	@Override
@@ -855,6 +849,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 			saveIndexer();
 		} catch (Exception e) {
 			System.err.println("setDB tried to saveIndexer but failed");
+			e.printStackTrace();
 		}
 	}
 
