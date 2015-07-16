@@ -40,12 +40,14 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.wizards.IWizardDescriptor;
+import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.Activator;
 import org.hawk.ui2.dialog.HConfigDialog;
 import org.hawk.ui2.dialog.HQueryDialog;
-import org.hawk.ui2.util.HManager;
-import org.hawk.ui2.util.HModel;
+import org.hawk.ui2.util.HUIManager;
+import org.hawk.ui2.util.PasswordDialog;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * This sample class demonstrates how to plug-in a new workbench view. The view
@@ -120,14 +122,22 @@ public class HView extends ViewPart {
 	public HView() {
 	}
 
+	HUIManager hm;
+
+	private Shell shell;
+
 	/**
 	 * This is a callback that will allow us to create the viewer and initialize
 	 * it.
 	 */
 	public void createPartControl(Composite parent) {
+		
+		shell = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getShell();
+		
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL);
-		HManager hm = HManager.getInstance();
+		hm = HUIManager.getInstance();
 		// hm.setView(this);
 		viewer.setContentProvider(hm);
 		viewer.setLabelProvider(new ViewLabelProvider());
@@ -239,8 +249,7 @@ public class HView extends ViewPart {
 				IStructuredSelection selected = (IStructuredSelection) viewer
 						.getSelection();
 
-				HQueryDialog dialog = new HQueryDialog(PlatformUI
-						.getWorkbench().getActiveWorkbenchWindow().getShell(),
+				HQueryDialog dialog = new HQueryDialog(shell,
 						(HModel) selected.getFirstElement());
 				dialog.open();
 			}
@@ -257,7 +266,11 @@ public class HView extends ViewPart {
 				IStructuredSelection selected = (IStructuredSelection) viewer
 						.getSelection();
 				if (selected.size() == 1) {
-					if (((HModel) selected.getFirstElement()).start()) {
+
+					char[] apw = new PasswordDialog(shell)
+							.getPassword();
+
+					if (((HModel) selected.getFirstElement()).start(hm, apw)) {
 						viewer.refresh();
 						start.setEnabled(false);
 						stop.setEnabled(true);
@@ -304,7 +317,11 @@ public class HView extends ViewPart {
 						.getSelection();
 				if (selected.size() == 1) {
 					HModel hm = (HModel) selected.getFirstElement();
-					HManager.delete(hm, hm.exists());
+					try {
+						hm.delete();
+					} catch (BackingStoreException e) {
+						e.printStackTrace();
+					}
 					viewer.refresh();
 				}
 			}
@@ -321,12 +338,10 @@ public class HView extends ViewPart {
 						.getNewWizardRegistry()
 						.findWizard("hawk.ui.wizard.HawkNewWizard");
 				if (descriptor != null) {
-					Shell activeShell = PlatformUI.getWorkbench()
-							.getActiveWorkbenchWindow().getShell();
 					IWizard wizard;
 					try {
 						wizard = descriptor.createWizard();
-						WizardDialog wd = new WizardDialog(activeShell, wizard);
+						WizardDialog wd = new WizardDialog(shell, wizard);
 						wd.setTitle(wizard.getWindowTitle());
 						wd.open();
 					} catch (CoreException e) {

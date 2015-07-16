@@ -12,7 +12,6 @@
 package org.hawk.ui2.dialog;
 
 import java.io.File;
-import java.util.Arrays;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.dialogs.Dialog;
@@ -45,7 +44,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
-import org.hawk.ui2.util.HModel;
+import org.hawk.osgiserver.HModel;
 
 public class HConfigDialog extends Dialog {
 
@@ -341,7 +340,11 @@ public class HConfigDialog extends Dialog {
 							// System.err.println(name);
 							// System.err.println("<");
 
-							index.addIndexedAttribute(uri, type, name);
+							try {
+								index.addIndexedAttribute(uri, type, name);
+							} catch (Exception e1) {
+								e1.printStackTrace();
+							}
 
 						}
 					}
@@ -678,9 +681,13 @@ public class HConfigDialog extends Dialog {
 							// System.err.println(name);
 							// System.err.println("<");
 
-							index.addDerivedAttribute(uri, type, name, atttype,
-									isMany, isOrdered, isUnique,
-									derivationlanguage, derivationlogic);
+							try {
+								index.addDerivedAttribute(uri, type, name, atttype,
+										isMany, isOrdered, isUnique,
+										derivationlanguage, derivationlogic);
+							} catch (Exception e1) {
+								e1.printStackTrace();
+							}
 
 						}
 					}

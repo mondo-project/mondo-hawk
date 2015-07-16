@@ -11,28 +11,28 @@
  ******************************************************************************/
 package org.hawk.ui2.wizard;
 
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.INewWizard;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.core.runtime.*;
-import org.eclipse.jface.operation.*;
-
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.List;
 
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.ui.*;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.INewWizard;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.hawk.core.util.HawkConfig;
 import org.hawk.core.util.HawksConfig;
-import org.hawk.ui2.util.HModel;
+import org.hawk.osgiserver.HManager;
+import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.view.HView;
 
 import com.thoughtworks.xstream.XStream;
@@ -72,11 +72,13 @@ public class HWizard extends Wizard implements INewWizard {
 		final String folder = page.getContainerName();
 		final String dbType = page.getDBID();
 		final List<String> plugins = page.getPlugins();
+		final char[] apw = page.getApw();
+		
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor)
 					throws InvocationTargetException {
 				try {
-					doFinish(name, folder, dbType, plugins, monitor);
+					doFinish(name, folder, dbType, plugins, monitor,apw);
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				} finally {
@@ -105,7 +107,7 @@ public class HWizard extends Wizard implements INewWizard {
 	 */
 
 	private void doFinish(String name, String folder, String dbType,
-			List<String> plugins, IProgressMonitor monitor)
+			List<String> plugins, IProgressMonitor monitor, char[] apw)
 			throws CoreException {
 
 		// set up a new Hawk with the selected plugins
@@ -113,7 +115,8 @@ public class HWizard extends Wizard implements INewWizard {
 		try {
 			// create a new hawk index at containerName folder with name
 			// fileName
-			HModel.create(name, new File(folder), dbType, plugins);
+			HModel.create(name, new File(folder), dbType, plugins,
+					HManager.getInstance(), apw);
 
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -11,3 +11,4 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: University of York
 Export-Package: org.hawk.ui.emc.dt2
+Import-Package: org.hawk.osgiserver

@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.hawk.ui2.util.HManager;
+import org.hawk.osgiserver.HManager;
 
 /**
  * 
@@ -57,6 +57,10 @@ public class HWizardPage extends WizardPage {
 
 	private Table pluginTable;
 
+	private Text apwText;
+
+	private HManager hminstance;
+
 	/**
 	 * Constructor for .
 	 * 
@@ -73,6 +77,8 @@ public class HWizardPage extends WizardPage {
 	 */
 	public void createControl(Composite parent) {
 
+		hminstance = HManager.getInstance();
+
 		Composite container = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
@@ -83,6 +89,16 @@ public class HWizardPage extends WizardPage {
 		label.setText("&Name:");
 
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+
+		apwText = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.PASSWORD);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		apwText.setLayoutData(gd);
+		apwText.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				dialogChanged();
+			}
+		});
 
 		nameText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -159,7 +175,7 @@ public class HWizardPage extends WizardPage {
 		pluginTable.setLayoutData(gd);
 		pluginTable.setHeaderVisible(false);
 		pluginTable.setEnabled(false);
-		
+
 		TableColumn column = new TableColumn(pluginTable, SWT.NULL);
 		column.setText("plugin");
 
@@ -191,7 +207,7 @@ public class HWizardPage extends WizardPage {
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		// dbidText.set
 		dbidText.setLayoutData(gd);
-		for (String db : HManager.getIndexTypes())
+		for (String db : hminstance.getIndexTypes())
 			dbidText.add(db);
 		dbidText.select(0);
 
@@ -229,11 +245,11 @@ public class HWizardPage extends WizardPage {
 
 	private List<String> getHawkPlugins() {
 		List<String> all = new ArrayList<String>();
-		all.addAll(HManager.getUpdaterTypes());
-		all.addAll(HManager.getIndexTypes());
-		all.addAll(HManager.getMetaModelTypes());
-		all.addAll(HManager.getModelTypes());
-		all.addAll(HManager.getVCSTypes());
+		all.addAll(hminstance.getUpdaterTypes());
+		all.addAll(hminstance.getIndexTypes());
+		all.addAll(hminstance.getMetaModelTypes());
+		all.addAll(hminstance.getModelTypes());
+		all.addAll(hminstance.getVCSTypes());
 		return all;
 	}
 
@@ -278,6 +294,12 @@ public class HWizardPage extends WizardPage {
 	private void dialogChanged() {
 
 		final Pattern PATTERN = Pattern.compile("[^A-Za-z0-9_]");
+
+		// empty adminpw
+		if (getApw().length == 0) {
+			updateStatus("Hawk admin password must not be empty.");
+			return;
+		}
 
 		// name empty or valid chars in indexername
 		if (getHawkName().trim().equals("")) {
@@ -348,5 +370,10 @@ public class HWizardPage extends WizardPage {
 
 	public String getHawkName() {
 		return nameText.getText();
+	}
+
+	public char[] getApw() {
+
+		return apwText.getText().toCharArray();
 	}
 }

@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.hawk.ui2.util.HManager;
+import org.hawk.osgiserver.HManager;
 
 public class HawkModelConfigurationDialog extends
 		AbstractModelConfigurationDialog {
@@ -104,7 +104,7 @@ public class HawkModelConfigurationDialog extends
 
 	private void populate() {
 
-		for (String i : HManager.getIndexerNames())
+		for (String i : HManager.getInstance().getIndexerNames())
 			selectIndexer.add(i);
 
 	}

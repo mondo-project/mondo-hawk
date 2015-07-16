@@ -22,7 +22,7 @@ import org.eclipse.epsilon.eol.models.java.JavaModel;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.epsilon.emc.CEOLQueryEngine;
 import org.hawk.epsilon.emc.EOLQueryEngine;
-import org.hawk.ui2.util.HManager;
+import org.hawk.osgiserver.HManager;
 
 public class HawkModel extends ModelReference {
 
@@ -55,7 +55,7 @@ public class HawkModel extends ModelReference {
 		eolQueryEngine.setDatabaseConfig(properties);
 
 		//
-		database = HManager.getGraphByIndexerName(properties
+		database = HManager.getInstance().getGraphByIndexerName(properties
 				.getProperty(PROPERTY_INDEXER_NAME));
 
 		String[] aliases = properties.getProperty("aliases").split(",");

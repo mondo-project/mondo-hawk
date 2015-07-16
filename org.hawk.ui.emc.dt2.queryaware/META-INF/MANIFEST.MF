@@ -12,3 +12,4 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Eclipse.org
 Export-Package: org.hawk.ui.emc.dt2.queryaware
+Import-Package: org.hawk.osgiserver

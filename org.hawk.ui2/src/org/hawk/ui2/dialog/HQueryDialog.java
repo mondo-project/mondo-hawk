@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.hawk.ui2.util.HModel;
+import org.hawk.osgiserver.HModel;
 
 public class HQueryDialog extends Dialog {
 
@@ -171,16 +171,19 @@ public class HQueryDialog extends Dialog {
 
 							String fileText = contextFiles.getText();
 							if (fileText.trim().equals(""))
-								resultField.setText(index
-										.query(new File(queryField.getText()
-												.substring(12)), ql));
+								resultField
+										.setText(index.query(
+												new File(queryField.getText()
+														.substring(12)), ql)
+												.toString());
 							else {
 								Map<String, String> map = new HashMap<>();
 								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_FILECONTEXT,
 										fileText);
 								resultField.setText(index.contextFullQuery(
 										new File(queryField.getText()
-												.substring(12)), ql, map));
+												.substring(12)), ql, map)
+										.toString());
 							}
 						}
 
@@ -189,13 +192,14 @@ public class HQueryDialog extends Dialog {
 							String fileText = contextFiles.getText();
 							if (fileText.trim().equals(""))
 								resultField.setText(index.query(
-										queryField.getText(), ql));
+										queryField.getText(), ql).toString());
 							else {
 								Map<String, String> map = new HashMap<>();
 								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_FILECONTEXT,
 										fileText);
 								resultField.setText(index.contextFullQuery(
-										queryField.getText(), ql, map));
+										queryField.getText(), ql, map)
+										.toString());
 							}
 
 						}
