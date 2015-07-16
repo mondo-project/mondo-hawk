@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - extract queries into GraphWrapper
  ******************************************************************************/
 package org.hawk.epsilon.emc;
 
@@ -110,27 +111,17 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 	 */
 	@Override
 	public Collection<?> allContents() {
-
-		HashSet<GraphNodeWrapper> allContents = new HashSet<GraphNodeWrapper>();
-
-		try (IGraphTransaction t = graph.beginTransaction()) {
-			// file based!
-			for (IGraphNode filenode : files) {
-				for (IGraphEdge edge : filenode.getIncomingWithType("file")) {
-					GraphNodeWrapper wrapper = new GraphNodeWrapper(edge
-							.getStartNode().getId().toString(), this);
-					allContents.add(wrapper);
-				}
+		final Set<GraphNodeWrapper> allContents = new HashSet<GraphNodeWrapper>();
+		try {
+			for (IGraphNode modelElementNode : new GraphWrapper(graph).getModelElementsFromFiles(files)) {
+				GraphNodeWrapper wrapper = new GraphNodeWrapper(modelElementNode.getId().toString(), this);
+				allContents.add(wrapper);
 			}
-
-			t.success();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		System.err.println("allContents called: " + allContents.size()
-				+ " elements");
+		System.err.println("allContents called: " + allContents.size() + " elements");
 		return allContents;
 	}
 

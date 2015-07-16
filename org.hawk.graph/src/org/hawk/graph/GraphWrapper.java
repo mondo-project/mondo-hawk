@@ -10,10 +10,12 @@
  ******************************************************************************/
 package org.hawk.graph;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
@@ -35,8 +37,11 @@ public class GraphWrapper {
 	}
 
 	/**
-	 * Returns a set of file nodes matching the specified patterns. The patterns are
-	 * of the form '*.extension' or 'file.ext'.
+	 * Returns a set of file nodes matching the specified patterns. The patterns
+	 * are of the form '*.extension' or 'file.ext'.
+	 *
+	 * @throws Exception
+	 *             Could not begin the transaction on the graph.
 	 */
 	public Set<IGraphNode> getFileNodes(String... patterns) throws Exception {
 		final Set<IGraphNode> interestingFileNodes = new HashSet<>();
@@ -54,4 +59,25 @@ public class GraphWrapper {
 		}
 	}
 
+	/**
+	 * Returns all the nodes representing model elements for the specified file
+	 * nodes.
+	 *
+	 * @throws Exception
+	 *             Could not begin the transaction on the graph.
+	 */
+	public Set<IGraphNode> getModelElementsFromFiles(Collection<IGraphNode> fileNodes) throws Exception {
+		try (IGraphTransaction tx = graph.beginTransaction()) {
+			final Set<IGraphNode> elemNodes = new HashSet<IGraphNode>();
+
+			for (IGraphNode filenode : fileNodes) {
+				for (IGraphEdge edge : filenode.getIncomingWithType("file")) {
+					elemNodes.add(edge.getStartNode());
+				}
+			}
+
+			tx.success();
+			return elemNodes;
+		}
+	}
 }
