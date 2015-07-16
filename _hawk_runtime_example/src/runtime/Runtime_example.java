@@ -28,11 +28,10 @@ import org.hawk.core.util.DefaultConsole;
 import org.hawk.emf.metamodel.EMFMetaModelResourceFactory;
 import org.hawk.emf.model.EMFModelResourceFactory;
 import org.hawk.epsilon.emc.EOLQueryEngine;
-import org.hawk.graph.updater.GraphMetaModelUpdater;
-import org.hawk.graph.updater.GraphModelUpdater;
+import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
+import org.hawk.graph.internal.updater.GraphModelUpdater;
 import org.hawk.localfolder.LocalFolder;
 import org.hawk.neo4j_v2.Neo4JDatabase;
-import org.hawk.svn.SvnManager;
 
 public class Runtime_example {
 
