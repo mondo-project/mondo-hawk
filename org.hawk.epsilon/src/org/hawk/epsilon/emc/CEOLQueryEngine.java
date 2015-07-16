@@ -113,7 +113,7 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 	public Collection<?> allContents() {
 		final Set<GraphNodeWrapper> allContents = new HashSet<GraphNodeWrapper>();
 		try {
-			for (IGraphNode modelElementNode : new GraphWrapper(graph).getModelElementsFromFiles(files)) {
+			for (IGraphNode modelElementNode : new GraphWrapper(graph).getModelElementsFromFileNodes(files)) {
 				GraphNodeWrapper wrapper = new GraphNodeWrapper(modelElementNode.getId().toString(), this);
 				allContents.add(wrapper);
 			}

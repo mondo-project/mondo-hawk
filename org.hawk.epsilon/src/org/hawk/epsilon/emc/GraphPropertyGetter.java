@@ -165,14 +165,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 						ret = node.getProperty(property);
 					else {
 
-						if (isOrdered(property) && isUnique(property))
-							ret = new EolOrderedSet<GraphNodeWrapper>();
-						else if (isOrdered(property))
-							ret = new EolSequence<GraphNodeWrapper>();
-						else if (isUnique(property))
-							ret = new EolSet<GraphNodeWrapper>();
-						else
-							ret = new EolBag<GraphNodeWrapper>();
+						ret = getCollectionForProperty(property);
 
 						Object[] array = ((Object[]) node.getProperty(property));
 
@@ -198,16 +191,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				// FIXMEdone arity etc in metamodel
 				// otherNodes = new EolBag<NeoIdWrapperDebuggable>();
 				if (isMany(property)) {
-
-					if (isOrdered(property) && isUnique(property))
-						otherNodes = new EolOrderedSet<GraphNodeWrapper>();
-					else if (isOrdered(property))
-						otherNodes = new EolSequence<GraphNodeWrapper>();
-					else if (isUnique(property))
-						otherNodes = new EolSet<GraphNodeWrapper>();
-					else
-						otherNodes = new EolBag<GraphNodeWrapper>();
-
+					otherNodes = getCollectionForProperty(property);
 				}
 
 				for (IGraphEdge r : node.getOutgoingWithType(property)) {
@@ -284,6 +268,17 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 		return ret;
 
+	}
+
+	private Collection<GraphNodeWrapper> getCollectionForProperty(final String property) {
+		if (isOrdered(property) && isUnique(property))
+			return new EolOrderedSet<GraphNodeWrapper>();
+		else if (isOrdered(property))
+			return new EolSequence<GraphNodeWrapper>();
+		else if (isUnique(property))
+			return new EolSet<GraphNodeWrapper>();
+		else
+			return new EolBag<GraphNodeWrapper>();
 	}
 
 	private void broadcastAccess(Object object, String property) {
