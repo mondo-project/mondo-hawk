@@ -48,7 +48,11 @@ public class HModel {
 			CONSOLE = new SLF4JConsole();
 		return CONSOLE;
 	}
-
+	
+	public static void setConsole(IAbstractConsole c) {
+		CONSOLE = c;
+	}
+	
 	public static HModel create(String name, File folder, String dbType,
 			List<String> plugins, HManager manager, char[] apw)
 			throws Exception {
@@ -98,7 +102,7 @@ public class HModel {
 			console.println("setting up hawk's back-end store:");
 			db = manager.createGraph(hm.hawk);
 			db.run(folder, console);
-			hm.hawk.getModelIndexer().setDB(db);
+			hm.hawk.getModelIndexer().setDB(db,true);
 
 			// hard coded metamodel updater?
 			IMetaModelUpdater metaModelUpdater = manager.getMetaModelUpdater();
@@ -199,13 +203,13 @@ public class HModel {
 				derivationlanguage, derivationlogic);
 	}
 
-	public void addEncryptedVCS(String loc, String type, String user,
+	private void loadEncryptedVCS(String loc, String type, String user,
 			String pass) throws Exception {
 		if (!this.getLocations().contains(loc)) {
 			IVcsManager mo = manager.createVCSManager(type);
 			mo.run(loc, hawk.getModelIndexer().decrypt(user), hawk
 					.getModelIndexer().decrypt(pass), getConsole());
-			hawk.getModelIndexer().addVCSManager(mo);
+			hawk.getModelIndexer().addVCSManager(mo,false);
 		}
 	}
 
@@ -220,7 +224,7 @@ public class HModel {
 			if (!this.getLocations().contains(loc)) {
 				IVcsManager mo = manager.createVCSManager(type);
 				mo.run(loc, user, pass, getConsole());
-				hawk.getModelIndexer().addVCSManager(mo);
+				hawk.getModelIndexer().addVCSManager(mo,true);
 			}
 		} catch (Exception e) {
 			getConsole().printerrln(e.getMessage());
@@ -267,6 +271,7 @@ public class HModel {
 	}
 
 	public void delete() throws BackingStoreException {
+		
 		removeHawkFromMetadata(new HawkConfig(getName(), getFolder()));
 
 		File f = hawk.getModelIndexer().getParentFolder();
@@ -408,7 +413,7 @@ public class HModel {
 			// create the indexer with relevant database
 			IGraphDatabase db = manager.createGraph(hawk);
 			db.run(new File(this.getFolder()), getConsole());
-			hawk.getModelIndexer().setDB(db);
+			hawk.getModelIndexer().setDB(db,false);
 
 			hawk.getModelIndexer().init();
 
@@ -458,7 +463,7 @@ public class HModel {
 		HawkProperties hp = (HawkProperties) stream.fromXML(new File(path));
 		hawk.setDbtype(hp.getDbType());
 		for (String[] s : hp.getMonitoredVCS()) {
-			addEncryptedVCS(s[0], s[1], s[2], s[3]);
+			loadEncryptedVCS(s[0], s[1], s[2], s[3]);
 		}
 	}
 

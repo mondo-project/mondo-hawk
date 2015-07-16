@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.hawk.osgiserver.HManager;
+import org.hawk.ui2.util.HUIManager;
 
 /**
  * 
@@ -59,7 +59,7 @@ public class HWizardPage extends WizardPage {
 
 	private Text apwText;
 
-	private HManager hminstance;
+	private HUIManager hminstance;
 
 	/**
 	 * Constructor for .
@@ -77,7 +77,7 @@ public class HWizardPage extends WizardPage {
 	 */
 	public void createControl(Composite parent) {
 
-		hminstance = HManager.getInstance();
+		hminstance = HUIManager.getInstance();
 
 		Composite container = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
@@ -86,7 +86,7 @@ public class HWizardPage extends WizardPage {
 		container.setLayout(layout);
 
 		Label label = new Label(container, SWT.NULL);
-		label.setText("&Name:");
+		label.setText("&Admin Password:");
 
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 
@@ -99,6 +99,12 @@ public class HWizardPage extends WizardPage {
 				dialogChanged();
 			}
 		});
+
+		label = new Label(container, SWT.NULL);
+		label.setText("");
+
+		label = new Label(container, SWT.NULL);
+		label.setText("&Name:");
 
 		nameText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_HORIZONTAL);

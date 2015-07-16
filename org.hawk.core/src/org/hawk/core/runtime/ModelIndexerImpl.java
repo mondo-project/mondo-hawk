@@ -828,14 +828,14 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public void addVCSManager(IVcsManager vcs) {
+	public void addVCSManager(IVcsManager vcs,boolean persist) {
 
 		monitors.add(vcs);
 		currLocalTopRevisions.add("-3");
 		currReposTopRevisions.add("-4");
 
 		try {
-			saveIndexer();
+			if(persist)saveIndexer();
 		} catch (Exception e) {
 			System.err.println("addVCSManager tried to saveIndexer but failed");
 			e.printStackTrace();
@@ -843,10 +843,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public void setDB(IGraphDatabase db) {
+	public void setDB(IGraphDatabase db,boolean persist) {
 		graph = db;
 		try {
-			saveIndexer();
+			if(persist)saveIndexer();
 		} catch (Exception e) {
 			System.err.println("setDB tried to saveIndexer but failed");
 			e.printStackTrace();

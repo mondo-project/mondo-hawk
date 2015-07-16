@@ -81,17 +81,15 @@ public interface IModelIndexer {
 	// deprecated -- internal method now
 	// void saveIndexer(File f);
 
-	void addVCSManager(IVcsManager vcs);
+	void addVCSManager(IVcsManager vcs, boolean persist);
 
 	void addModelUpdater(IModelUpdater updater);
 
-	void addMetaModelResourceFactory(
-			IMetaModelResourceFactory metaModelParser);
+	void addMetaModelResourceFactory(IMetaModelResourceFactory metaModelParser);
 
-	void addModelResourceFactory(
-			IModelResourceFactory modelParser);
+	void addModelResourceFactory(IModelResourceFactory modelParser);
 
-	void setDB(IGraphDatabase db);
+	void setDB(IGraphDatabase db, boolean persist);
 
 	void addQueryEngine(IQueryEngine q);
 
@@ -117,8 +115,7 @@ public interface IModelIndexer {
 
 	IModelResourceFactory getModelParser(String type);
 
-	IMetaModelResourceFactory getMetaModelParser(
-			String metaModelType);
+	IMetaModelResourceFactory getMetaModelParser(String metaModelType);
 
 	Map<String, IQueryEngine> getKnownQueryLanguages();
 
@@ -150,38 +147,39 @@ public interface IModelIndexer {
 
 	void setMetaModelUpdater(IMetaModelUpdater metaModelUpdater);
 
-	void addDerivedAttribute(String metamodeluri,
-			String typename, String attributename, String attributetype,
-			boolean isMany, boolean isOrdered, boolean isUnique,
-			String derivationlanguage, String derivationlogic);
+	void addDerivedAttribute(String metamodeluri, String typename,
+			String attributename, String attributetype, boolean isMany,
+			boolean isOrdered, boolean isUnique, String derivationlanguage,
+			String derivationlogic);
 
-	void addIndexedAttribute(String metamodeluri,
-			String typename, String attributename);
+	void addIndexedAttribute(String metamodeluri, String typename,
+			String attributename);
 
-	Object query(File query, String queryLangID)
-			throws Exception;
+	Object query(File query, String queryLangID) throws Exception;
 
-	Object query(String query, String queryLangID)
-			throws Exception;
+	Object query(String query, String queryLangID) throws Exception;
 
 	Collection<String> getDerivedAttributes();
 
 	/**
-	 * Returns a collection of strings of the form <code>mmuri##typename##attrname</code>,
-	 * where <code>mmuri</code> is the URI of the EPackage, <code>typename</code> is the
-	 * unqualified name of the type, and <code>attrname</code> is the name of the attribute
-	 * being indexed.
+	 * Returns a collection of strings of the form
+	 * <code>mmuri##typename##attrname</code>, where <code>mmuri</code> is the
+	 * URI of the EPackage, <code>typename</code> is the unqualified name of the
+	 * type, and <code>attrname</code> is the name of the attribute being
+	 * indexed.
 	 */
 	Collection<String> getIndexedAttributes();
 
 	Collection<String> getIndexes();
 
-	List<String> validateExpression(String derivationlanguage, String derivationlogic);
+	List<String> validateExpression(String derivationlanguage,
+			String derivationlogic);
 
 	public String getName();
 
 	/**
 	 * Only sets the admin password if it is currently unset.
+	 * 
 	 * @param pw
 	 */
 	void setAdminPassword(char[] pw);

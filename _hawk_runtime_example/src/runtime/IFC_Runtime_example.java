@@ -60,7 +60,7 @@ public class IFC_Runtime_example {
 		IGraphDatabase db = (new Neo4JDatabase());
 		// create the indexer with relevant database
 		db.run(i.getParentFolder(), i.getConsole());
-		i.setDB(db);
+		i.setDB(db,true);
 
 		// set path of vcs
 		String vcsloc = "C:/Users/kb/Desktop/workspace-luna/uk.ac.york.cs.mde.hawk.ifc/samples";
@@ -68,7 +68,7 @@ public class IFC_Runtime_example {
 		// add vcs monitors
 		IVcsManager vcs = new LocalFolder();
 		vcs.run(vcsloc, "un", "pw", i.getConsole());
-		i.addVCSManager(vcs);
+		i.addVCSManager(vcs,true);
 
 		// metamodel updater
 		i.setMetaModelUpdater(new GraphMetaModelUpdater());
@@ -93,7 +93,8 @@ public class IFC_Runtime_example {
 		i.addQueryEngine(q);
 
 		// initialise the server for real-time updates to changes
-		i.init(adminpw);
+		i.setAdminPassword(adminpw);
+		i.init();
 
 		// add console interaction if needed
 		Thread t = consoleInteraction(i);

@@ -31,8 +31,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.hawk.core.util.HawkConfig;
 import org.hawk.core.util.HawksConfig;
-import org.hawk.osgiserver.HManager;
 import org.hawk.osgiserver.HModel;
+import org.hawk.ui2.util.HUIManager;
 import org.hawk.ui2.view.HView;
 
 import com.thoughtworks.xstream.XStream;
@@ -116,7 +116,7 @@ public class HWizard extends Wizard implements INewWizard {
 			// create a new hawk index at containerName folder with name
 			// fileName
 			HModel.create(name, new File(folder), dbType, plugins,
-					HManager.getInstance(), apw);
+					HUIManager.getInstance(), apw);
 
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -79,7 +79,7 @@ public class Runtime_example {
 		IGraphDatabase db = (new Neo4JDatabase());
 		// create the model index with relevant database
 		db.run(i.getParentFolder(), i.getConsole());
-		i.setDB(db);
+		i.setDB(db,true);
 
 		// set path of vcs to monitor
 
@@ -124,7 +124,7 @@ public class Runtime_example {
 		} else
 			System.exit(1);
 		pw = null;
-		i.addVCSManager(vcs);
+		i.addVCSManager(vcs,true);
 
 		// add a metamodel updater
 		i.setMetaModelUpdater(new GraphMetaModelUpdater());
@@ -157,7 +157,8 @@ public class Runtime_example {
 		init[3] = 'i';
 		init[4] = 'n';
 
-		i.init(init);
+		i.setAdminPassword(init);
+		i.init();
 
 		// add console interaction if needed
 		Thread t = consoleInteraction(i);

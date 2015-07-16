@@ -19,6 +19,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -131,10 +132,9 @@ public class HView extends ViewPart {
 	 * it.
 	 */
 	public void createPartControl(Composite parent) {
-		
-		shell = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getShell();
-		
+
+		shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL);
 		hm = HUIManager.getInstance();
@@ -267,20 +267,27 @@ public class HView extends ViewPart {
 						.getSelection();
 				if (selected.size() == 1) {
 
-					char[] apw = new PasswordDialog(shell)
-							.getPassword();
+					PasswordDialog pwd = new PasswordDialog(shell);
+					pwd.setBlockOnOpen(true);
+					int ret = pwd.open();
 
-					if (((HModel) selected.getFirstElement()).start(hm, apw)) {
-						viewer.refresh();
-						start.setEnabled(false);
-						stop.setEnabled(true);
-						query.setEnabled(true);
-						config.setEnabled(true);
-					} else {
-						viewer.refresh();
-						// FIXME handle start
-						// HModel hm = (HModel) selected.getFirstElement();
-						// HManager.delete(hm, hm.exists());
+					if (ret == Dialog.OK) {
+
+						char[] apw = pwd.getPassword();
+
+						if (((HModel) selected.getFirstElement())
+								.start(hm, apw)) {
+							viewer.refresh();
+							start.setEnabled(false);
+							stop.setEnabled(true);
+							query.setEnabled(true);
+							config.setEnabled(true);
+						} else {
+							viewer.refresh();
+							// FIXME handle start
+							// HModel hm = (HModel) selected.getFirstElement();
+							// HManager.delete(hm, hm.exists());
+						}
 					}
 				}
 			}
@@ -316,9 +323,9 @@ public class HView extends ViewPart {
 				IStructuredSelection selected = (IStructuredSelection) viewer
 						.getSelection();
 				if (selected.size() == 1) {
-					HModel hm = (HModel) selected.getFirstElement();
+					HModel hawkmodel = (HModel) selected.getFirstElement();
 					try {
-						hm.delete();
+						hm.delete(hawkmodel, hawkmodel.exists());
 					} catch (BackingStoreException e) {
 						e.printStackTrace();
 					}
