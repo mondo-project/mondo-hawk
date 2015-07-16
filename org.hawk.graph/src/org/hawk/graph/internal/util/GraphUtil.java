@@ -8,7 +8,7 @@
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
  ******************************************************************************/
-package org.hawk.graph.util;
+package org.hawk.graph.internal.util;
 
 import java.util.HashSet;
 

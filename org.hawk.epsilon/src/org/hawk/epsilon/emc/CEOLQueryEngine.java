@@ -25,8 +25,8 @@ import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
-import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.graph.GraphWrapper;
 
 public class CEOLQueryEngine extends EOLQueryEngine {
 
@@ -46,35 +46,24 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 	}
 
 	public void load(Map<String, String> context) {
-
-		String interestingFiles = null;
+		final GraphWrapper gw = new GraphWrapper(graph);
+		String sFilePatterns = null;
 
 		if (context != null)
-			interestingFiles = context.get(PROPERTY_FILECONTEXT);
+			sFilePatterns = context.get(PROPERTY_FILECONTEXT);
 
-		if (interestingFiles != null) {
-
-			String[] interestingFilesArray = interestingFiles.split(",");
-
-			final Set<IGraphNode> interestingFileNodes = new HashSet<>();
-			try (IGraphTransaction tx = graph.beginTransaction()) {
-				IGraphNodeIndex fileIndex = graph.getFileIndex();
-
-				for (String s : interestingFilesArray) {
-					for (IGraphNode n : fileIndex.query("id", s)) {
-						interestingFileNodes.add(n);
-					}
-				}
-
-				tx.success();
+		if (sFilePatterns != null) {
+			final String[] filePatterns = sFilePatterns.split(",");
+			final Set<IGraphNode> fileNodes = new HashSet<>();
+			try {
+				fileNodes.addAll(gw.getFileNodes(filePatterns));
+				console.println("running CEOLQueryEngine with files: "
+						+ Arrays.toString(filePatterns));
 			} catch (Exception e) {
-				System.err
-						.println("internal error trying to retreive file nodes for contextfullQuery");
+				console.printerrln("internal error trying to retreive file nodes for contextfullQuery");
 				e.printStackTrace();
 			}
-			System.err.println("running CEOLQueryEngine with files: "
-					+ Arrays.toString(interestingFilesArray));
-			this.files = interestingFileNodes;
+			this.files = fileNodes;
 
 			if (propertygetter == null)
 				propertygetter = new GraphPropertyGetter(graph, this);
@@ -125,7 +114,6 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 		HashSet<GraphNodeWrapper> allContents = new HashSet<GraphNodeWrapper>();
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
-
 			// file based!
 			for (IGraphNode filenode : files) {
 				for (IGraphEdge edge : filenode.getIncomingWithType("file")) {

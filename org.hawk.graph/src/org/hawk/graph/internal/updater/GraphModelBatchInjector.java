@@ -8,7 +8,7 @@
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
  ******************************************************************************/
-package org.hawk.graph.updater;
+package org.hawk.graph.internal.updater;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -35,7 +35,7 @@ import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
-import org.hawk.graph.util.GraphUtil;
+import org.hawk.graph.internal.util.GraphUtil;
 
 public class GraphModelBatchInjector {
 

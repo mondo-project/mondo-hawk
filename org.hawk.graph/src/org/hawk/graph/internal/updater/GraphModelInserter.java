@@ -8,7 +8,7 @@
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
  ******************************************************************************/
-package org.hawk.graph.updater;
+package org.hawk.graph.internal.updater;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -38,7 +38,7 @@ import org.hawk.core.model.IHawkReference;
 import org.hawk.core.query.IAccess;
 import org.hawk.core.query.IAccessListener;
 import org.hawk.core.query.IQueryEngine;
-import org.hawk.graph.util.GraphUtil;
+import org.hawk.graph.internal.util.GraphUtil;
 
 /**
  * creates a database with the input xmi file (in args[0]) or reads it if the
