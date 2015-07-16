@@ -16,8 +16,8 @@ import org.hawk.core.IAbstractConsole;
 
 public class DefaultConsole implements IAbstractConsole {
 
-	static PrintStream out = null;
-	static PrintStream err = null;
+	PrintStream out = null;
+	PrintStream err = null;
 
 	/**
 	 * 
@@ -49,6 +49,12 @@ public class DefaultConsole implements IAbstractConsole {
 
 		out.print(s);
 
+	}
+
+	@Override
+	public void printerrln(Throwable t) {
+		err.println(t.getMessage());
+		t.printStackTrace(err);
 	}
 
 }

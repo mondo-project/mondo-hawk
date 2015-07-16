@@ -12,6 +12,8 @@ package org.hawk.core.util;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import org.hawk.core.IAbstractConsole;
 
@@ -74,6 +76,14 @@ public class FileOutputConsole implements IAbstractConsole {
 			e.printStackTrace();
 		}
 
+	}
+
+	@Override
+	public void printerrln(Throwable t) {
+		printerrln(t.getMessage());
+		StringWriter sr = new StringWriter();
+		t.printStackTrace(new PrintWriter(sr));
+		printerrln(sr.toString());
 	}
 
 }

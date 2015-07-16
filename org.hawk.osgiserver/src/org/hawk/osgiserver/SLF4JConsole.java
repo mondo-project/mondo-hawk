@@ -60,4 +60,10 @@ public class SLF4JConsole implements IAbstractConsole {
 	private static Logger getCallerLogger() {
 		return LoggerFactory.getLogger(getCallerClassName());
 	}
+
+	@Override
+	public void printerrln(Throwable t) {
+		// TODO Auto-generated method stub
+		
+	}
 }

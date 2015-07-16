@@ -14,20 +14,32 @@ public interface IAbstractConsole {
 
 	/**
 	 * Outputs String s and then a new line
+	 * 
 	 * @param s
 	 */
-	public abstract void println(String s);
+	void println(String s);
 
 	/**
-	 * Outputs String s and then a new line, attempting to use red as the colour used 
+	 * Outputs String s and then a new line, attempting to use red as the colour
+	 * used
+	 * 
 	 * @param s
 	 */
-	public abstract void printerrln(String s);
+	void printerrln(String s);
 
 	/**
 	 * Outputs String s
+	 * 
 	 * @param s
 	 */
-	public abstract void print(String s);
-	
+	void print(String s);
+
+	/**
+	 * Outputs Throwable t (if possible) and then a new line, attempting to use
+	 * red as the colour used
+	 * 
+	 * @param s
+	 */
+	void printerrln(Throwable t);
+
 }
