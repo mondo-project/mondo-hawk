@@ -818,10 +818,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 		HawkProperties hp = new HawkProperties(graph.getType(), set);
 
 		String out = stream.toXML(hp);
-		try(
-			BufferedWriter b = new BufferedWriter(new FileWriter(
-				getParentFolder() + File.separator + "properties.xml"))
-		) {
+		try (BufferedWriter b = new BufferedWriter(new FileWriter(
+				getParentFolder() + File.separator + "properties.xml"))) {
 			b.write(out);
 			b.flush();
 		}
@@ -867,12 +865,21 @@ public class ModelIndexerImpl implements IModelIndexer {
 	//
 	// }
 
+	
+	@Override
+	public void setAdminPassword(char[] pw){
+		if (adminPw == null)
+			adminPw = pw;
+		else console.println("Admin password has already been set, this method did nothing.");
+	}
+	
+	
 	@Override
 	public void init(char[] apw) throws Exception {
 
 		// System.err.println("warning: automatic loading of persisted indexes on startup is only supported through the eclipse UI view extension");
 
-		adminPw = apw;
+		setAdminPassword(apw);
 
 		// register all metamodels in graph to their factories
 		registerMetamodelFiles();
@@ -1085,16 +1092,19 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	/**
-	 * Returns {@link #IS_DERIVED} if the attribute is derived or {@link #IS_INDEXED} if not.
+	 * Returns {@link #IS_DERIVED} if the attribute is derived or
+	 * {@link #IS_INDEXED} if not.
 	 */
-	private boolean isDerivedAttribute(IGraphNode typenode, final String attrName) {
+	private boolean isDerivedAttribute(IGraphNode typenode,
+			final String attrName) {
 		return ((String[]) typenode.getProperty(attrName))[0].equals("d");
 	}
 
 	/**
-	 * Lists all the Hawk-specific attributes available. If <code>isDerived</code> is {@link #IS_DERIVED},
-	 * it will list all the derived attributes. If it is {@link #IS_INDEXED}, it will list all the indexed
-	 * attributes.
+	 * Lists all the Hawk-specific attributes available. If
+	 * <code>isDerived</code> is {@link #IS_DERIVED}, it will list all the
+	 * derived attributes. If it is {@link #IS_INDEXED}, it will list all the
+	 * indexed attributes.
 	 */
 	private Collection<String> getExtraAttributes(final boolean isDerived) {
 		Set<String> ret = new HashSet<String>();
@@ -1115,16 +1125,19 @@ public class ModelIndexerImpl implements IModelIndexer {
 				String[] split = s.split("##");
 				final String mmURI = split[0];
 
-				IGraphNode epackagenode = graph.getMetamodelIndex().get("id", mmURI).iterator().next();
+				IGraphNode epackagenode = graph.getMetamodelIndex()
+						.get("id", mmURI).iterator().next();
 				IGraphNode typenode = null;
-				for (IGraphEdge e : epackagenode.getIncomingWithType("epackage")) {
+				for (IGraphEdge e : epackagenode
+						.getIncomingWithType("epackage")) {
 					IGraphNode temp = e.getStartNode();
 					final String typeName = split[1];
 					if (temp.getProperty("id").equals(typeName)) {
 						if (typenode == null) {
 							typenode = temp;
 						} else {
-							System.err.println("error in getExtraAttributes, typenode had more than 1 type found");
+							System.err
+									.println("error in getExtraAttributes, typenode had more than 1 type found");
 						}
 					}
 				}

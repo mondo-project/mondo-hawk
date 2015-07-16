@@ -178,4 +178,10 @@ public interface IModelIndexer {
 
 	public String getName();
 
+	/**
+	 * Only sets the admin password if it is currently unset.
+	 * @param pw
+	 */
+	void setAdminPassword(char[] pw);
+
 }
