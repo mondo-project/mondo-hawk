@@ -11,6 +11,8 @@
 package org.hawk.core;
 
 import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -103,7 +105,7 @@ public interface IModelIndexer {
 	 * @param adminpw
 	 * @throws Exception
 	 */
-	void init(char[] adminpw) throws Exception;
+	void init() throws Exception;
 
 	// /**
 	// * NOTE: do not call this method before setting all the required factories
@@ -183,5 +185,7 @@ public interface IModelIndexer {
 	 * @param pw
 	 */
 	void setAdminPassword(char[] pw);
+
+	String decrypt(String pw) throws GeneralSecurityException, IOException;
 
 }

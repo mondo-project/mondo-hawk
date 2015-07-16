@@ -15,6 +15,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -865,21 +867,22 @@ public class ModelIndexerImpl implements IModelIndexer {
 	//
 	// }
 
-	
 	@Override
-	public void setAdminPassword(char[] pw){
+	public void setAdminPassword(char[] pw) {
 		if (adminPw == null)
 			adminPw = pw;
-		else console.println("Admin password has already been set, this method did nothing.");
+		else
+			console.println("Admin password has already been set, this method did nothing.");
 	}
-	
-	
+
 	@Override
-	public void init(char[] apw) throws Exception {
+	public void init() throws Exception {
 
 		// System.err.println("warning: automatic loading of persisted indexes on startup is only supported through the eclipse UI view extension");
 
-		setAdminPassword(apw);
+		if (adminPw == null)
+			throw new Exception(
+					"Please set the admin password using setAdminPassword(...) before calling init");
 
 		// register all metamodels in graph to their factories
 		registerMetamodelFiles();
@@ -1185,4 +1188,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 	public String getName() {
 		return name;
 	}
+
+	@Override
+	public String decrypt(String pw) throws GeneralSecurityException,
+			IOException {
+		return SecurityManager.decrypt(pw, adminPw);
+	}
+
 }
