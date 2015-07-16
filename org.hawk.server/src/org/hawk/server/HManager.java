@@ -32,15 +32,12 @@ import org.hawk.core.util.HawkConfig;
 import org.hawk.core.util.HawksConfig;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.prefs.BackingStoreException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class HManager {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(HManager.class);
 	private static HManager inst;
 
 	public static HManager getInstance() {
@@ -50,7 +47,8 @@ public class HManager {
 	}
 
 	public static IEclipsePreferences getPreferences() {
-		final String bundleName = FrameworkUtil.getBundle(HManager.class).getSymbolicName();
+		final String bundleName = FrameworkUtil.getBundle(HManager.class)
+				.getSymbolicName();
 		return InstanceScope.INSTANCE.getNode(bundleName);
 	}
 
@@ -75,17 +73,16 @@ public class HManager {
 		ArrayList<IConfigurationElement> els = new ArrayList<IConfigurationElement>();
 		if (Platform.isRunning()) {
 			IConfigurationElement[] e = Platform.getExtensionRegistry()
-					.getConfigurationElementsFor(
-							extensionPointId);
+					.getConfigurationElementsFor(extensionPointId);
 
 			els.addAll(Arrays.asList(e));
 		}
 		return els;
 	}
 
-	private Set<HModel> all = new HashSet<HModel>();
+	protected Set<HModel> all = new HashSet<HModel>();
 
-	private boolean firstRun = true;
+	protected boolean firstRun = true;
 
 	public HManager() {
 		try {
@@ -97,10 +94,10 @@ public class HManager {
 			getLanguages();
 
 			/*
-			for (IConfigurationElement i : languages) {
-				h.addQueryLanguage((IQueryEngine) i.createExecutableExtension("query_language"));
-			}
-			*/
+			 * for (IConfigurationElement i : languages) {
+			 * h.addQueryLanguage((IQueryEngine)
+			 * i.createExecutableExtension("query_language")); }
+			 */
 		} catch (Exception e) {
 			System.err.println("error in initialising osgi config:");
 			e.printStackTrace();
@@ -117,7 +114,8 @@ public class HManager {
 				return (IGraphDatabase) i.createExecutableExtension("store");
 			}
 		}
-		throw new Exception("cannot instantiate this type of graph: " + hawk.getDbtype());
+		throw new Exception("cannot instantiate this type of graph: "
+				+ hawk.getDbtype());
 	}
 
 	/**
@@ -134,7 +132,8 @@ public class HManager {
 				return (IVcsManager) i.createExecutableExtension("VCSManager");
 			}
 		}
-		throw new NoSuchElementException("cannot instantiate this type of manager: " + s);
+		throw new NoSuchElementException(
+				"cannot instantiate this type of manager: " + s);
 	}
 
 	public void delete(HModel o, boolean exists) throws BackingStoreException {
@@ -143,7 +142,8 @@ public class HManager {
 				o.stop();
 				o.delete();
 			} else {
-				o.removeHawkFromMetadata(new HawkConfig(o.getName(), o.getFolder()));
+				o.removeHawkFromMetadata(new HawkConfig(o.getName(), o
+						.getFolder()));
 			}
 			all.remove(o);
 		} else {
@@ -220,9 +220,9 @@ public class HManager {
 		for (IConfigurationElement ii : e) {
 			if (i == null) {
 				i = ii;
-			}
-			else {
-				System.err.println("more than one metamodel updater found, only one allowed");
+			} else {
+				System.err
+						.println("more than one metamodel updater found, only one allowed");
 			}
 		}
 
@@ -266,14 +266,15 @@ public class HManager {
 		System.out.println("shutting down hawk:");
 		for (HModel hm : all) {
 			if (hm.isRunning()) {
-				System.out.println("stopping: " + hm.getName() + " : " + hm.getFolder());
+				System.out.println("stopping: " + hm.getName() + " : "
+						+ hm.getFolder());
 				hm.stop();
 			}
 		}
 		return true;
 	}
 
-	private void loadHawksFromMetadata() {
+	protected void loadHawksFromMetadata() {
 		IEclipsePreferences preferences = getPreferences();
 
 		try {

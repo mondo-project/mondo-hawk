@@ -13,3 +13,4 @@ Bundle-ActivationPolicy: lazy
 Bundle-Vendor: University of York
 Import-Package: org.slf4j,
  org.slf4j.spi;version="1.7.2"
+Export-Package: org.hawk.server
