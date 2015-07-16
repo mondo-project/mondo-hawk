@@ -56,10 +56,8 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 
 			String[] interestingFilesArray = interestingFiles.split(",");
 
-			Set<IGraphNode> interestingFileNodes = new HashSet<>();
-
+			final Set<IGraphNode> interestingFileNodes = new HashSet<>();
 			try (IGraphTransaction tx = graph.beginTransaction()) {
-
 				IGraphNodeIndex fileIndex = graph.getFileIndex();
 
 				for (String s : interestingFilesArray) {
@@ -74,6 +72,9 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 						.println("internal error trying to retreive file nodes for contextfullQuery");
 				e.printStackTrace();
 			}
+			System.err.println("running CEOLQueryEngine with files: "
+					+ Arrays.toString(interestingFilesArray));
+			this.files = interestingFileNodes;
 
 			if (propertygetter == null)
 				propertygetter = new GraphPropertyGetter(graph, this);
@@ -102,11 +103,6 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 					}
 				}
 			}
-
-			System.err.println("running CEOLQueryEngine with files: "
-					+ Arrays.toString(interestingFilesArray));
-
-			this.files = interestingFileNodes;
 
 			try (IGraphTransaction tx = graph.beginTransaction()) {
 
