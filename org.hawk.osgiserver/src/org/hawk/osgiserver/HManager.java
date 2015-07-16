@@ -7,7 +7,7 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
- *     Antonio Garcia-Dominguez - move to servlet project, remove dependency on eclipse.ui
+ *     Antonio Garcia-Dominguez - remove dependency on eclipse.ui
  ******************************************************************************/
 package org.hawk.osgiserver;
 

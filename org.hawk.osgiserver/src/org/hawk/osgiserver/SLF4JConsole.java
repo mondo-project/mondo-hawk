@@ -6,8 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Konstantinos Barmpis - initial API and implementation
- *     Antonio Garcia-Dominguez - move to servlet project, switch to SLF4J
+ *     Antonio Garcia-Dominguez - switch to SLF4J
  ******************************************************************************/
 package org.hawk.osgiserver;
 

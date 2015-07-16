@@ -7,7 +7,7 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
- *     Antonio Garcia-Dominguez - move to servlet project, use explicit HManager instances
+ *     Antonio Garcia-Dominguez - use explicit HManager instances
  ******************************************************************************/
 package org.hawk.osgiserver;
 
