@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hawk Server Plugin
+Bundle-SymbolicName: org.hawk.osgiserver;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.hawk.osgiserver.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.hawk.core;bundle-version="1.0.0",
+ org.hawk.core.dependencies
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: University of York
+Import-Package: org.slf4j,
+ org.slf4j.spi;version="1.7.2"
+Export-Package: org.hawk.osgiserver
