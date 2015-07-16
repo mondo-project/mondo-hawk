@@ -86,52 +86,40 @@ public class GraphModelUpdater implements IModelUpdater {
 		// System.err.println("change: " + change)
 
 		long end = System.currentTimeMillis();
-		sysout((end - start) / 1000 + "s" + (end - start) % 1000
+		console.println((end - start) / 1000 + "s" + (end - start) % 1000
 				+ "ms [pure insertion]");
 
 		// System.err.println("ret[0]: " + ret[0]);
 
 		// if (error) {
-		sysout("attempting to resolve any leftover cross-file references...");
+		console.println("attempting to resolve any leftover cross-file references...");
 		try {
 			GraphModelInserter.resolveProxies(indexer.getGraph(), ret);
 		} catch (Exception e) {
-			syserr("Exception in updateStore - resolving proxies, returning 0:");
-			e.printStackTrace();
+			console.printerrln("Exception in updateStore - resolving proxies, returning 0:");
+			console.printerrln(e);
 		}
 
-		sysout("attempting to resolve any derived proxies...");
+		console.println("attempting to resolve any derived proxies...");
 		try {
 			ret.setUnresolvedDerivedProperties((new GraphModelInserter(indexer)
 					.resolveDerivedAttributeProxies(indexer.getGraph(),
 							indexer, "org.hawk.epsilon.emc.GraphEpsilonModel")));
 		} catch (Exception e) {
-			syserr("Exception in updateStore - resolving DERIVED proxies, returning 0:");
-			e.printStackTrace();
+			console.printerrln("Exception in updateStore - resolving DERIVED proxies, returning 0:");
+			console.printerrln(e);
 		}
 
-		sysout("attempting to update any relevant derived attributes...");
+		console.println("attempting to update any relevant derived attributes...");
 		try {
 			new GraphModelInserter(indexer).updateDerivedAttributes(ret,
 					"org.hawk.epsilon.emc.EOLQueryEngine");
 		} catch (Exception e) {
-			syserr("Exception in updateStore - UPDATING DERIVED attributes");
-			e.printStackTrace();
+			console.printerrln("Exception in updateStore - UPDATING DERIVED attributes");
+			console.printerrln(e);
 		}
 
 		return ret;
-
-	}
-
-	public void sysout(String s) {
-
-		console.println(s);
-
-	}
-
-	public void syserr(String s) {
-
-		console.printerrln(s);
 
 	}
 

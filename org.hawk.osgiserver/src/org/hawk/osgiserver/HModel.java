@@ -48,11 +48,11 @@ public class HModel {
 			CONSOLE = new SLF4JConsole();
 		return CONSOLE;
 	}
-	
+
 	public static void setConsole(IAbstractConsole c) {
 		CONSOLE = c;
 	}
-	
+
 	public static HModel create(String name, File folder, String dbType,
 			List<String> plugins, HManager manager, char[] apw)
 			throws Exception {
@@ -102,7 +102,7 @@ public class HModel {
 			console.println("setting up hawk's back-end store:");
 			db = manager.createGraph(hm.hawk);
 			db.run(folder, console);
-			hm.hawk.getModelIndexer().setDB(db,true);
+			hm.hawk.getModelIndexer().setDB(db, true);
 
 			// hard coded metamodel updater?
 			IMetaModelUpdater metaModelUpdater = manager.getMetaModelUpdater();
@@ -119,8 +119,10 @@ public class HModel {
 			return hm;
 
 		} catch (Exception e) {
-			console.printerrln(e.getMessage());
+
 			console.printerrln("Adding of indexer aborted, please try again.\nShutting down and removing back-end (if it was created)");
+			console.printerrln(e);
+
 			try {
 				db.shutdown(true);
 			} catch (Exception e2) {
@@ -128,6 +130,7 @@ public class HModel {
 			}
 			console.printerrln("aborting finished.");
 			throw e;
+
 		}
 	}
 
@@ -209,7 +212,7 @@ public class HModel {
 			IVcsManager mo = manager.createVCSManager(type);
 			mo.run(loc, hawk.getModelIndexer().decrypt(user), hawk
 					.getModelIndexer().decrypt(pass), getConsole());
-			hawk.getModelIndexer().addVCSManager(mo,false);
+			hawk.getModelIndexer().addVCSManager(mo, false);
 		}
 	}
 
@@ -224,10 +227,10 @@ public class HModel {
 			if (!this.getLocations().contains(loc)) {
 				IVcsManager mo = manager.createVCSManager(type);
 				mo.run(loc, user, pass, getConsole());
-				hawk.getModelIndexer().addVCSManager(mo,true);
+				hawk.getModelIndexer().addVCSManager(mo, true);
 			}
 		} catch (Exception e) {
-			getConsole().printerrln(e.getMessage());
+			getConsole().printerrln(e);
 		}
 	}
 
@@ -271,7 +274,7 @@ public class HModel {
 	}
 
 	public void delete() throws BackingStoreException {
-		
+
 		removeHawkFromMetadata(new HawkConfig(getName(), getFolder()));
 
 		File f = hawk.getModelIndexer().getParentFolder();
@@ -413,13 +416,13 @@ public class HModel {
 			// create the indexer with relevant database
 			IGraphDatabase db = manager.createGraph(hawk);
 			db.run(new File(this.getFolder()), getConsole());
-			hawk.getModelIndexer().setDB(db,false);
+			hawk.getModelIndexer().setDB(db, false);
 
 			hawk.getModelIndexer().init();
 
 			running = true;
 		} catch (Exception e) {
-			getConsole().printerrln(e.getMessage());
+			getConsole().printerrln(e);
 		}
 
 		return running;
@@ -430,7 +433,7 @@ public class HModel {
 			hawk.getModelIndexer().shutdown(false);
 			running = false;
 		} catch (Exception e) {
-			getConsole().printerrln(e.getMessage());
+			getConsole().printerrln(e);
 		}
 	}
 

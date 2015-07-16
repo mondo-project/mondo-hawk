@@ -293,7 +293,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 							} catch (Exception e) {
 								console.printerrln("updater: " + u
 										+ "failed to update store");
-								e.printStackTrace();
+								console.printerrln(e);
 
 							}
 						}
