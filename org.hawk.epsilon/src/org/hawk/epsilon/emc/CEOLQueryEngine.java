@@ -27,7 +27,9 @@ import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.graph.FileNode;
 import org.hawk.graph.GraphWrapper;
+import org.hawk.graph.ModelElementNode;
 
 public class CEOLQueryEngine extends EOLQueryEngine {
 
@@ -55,16 +57,18 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 
 		if (sFilePatterns != null) {
 			final String[] filePatterns = sFilePatterns.split(",");
-			final Set<IGraphNode> fileNodes = new HashSet<>();
-			try {
-				fileNodes.addAll(gw.getFileNodes(filePatterns));
-				console.println("running CEOLQueryEngine with files: "
-						+ Arrays.toString(filePatterns));
+			try (IGraphTransaction tx = graph.beginTransaction()) {
+				this.files = new HashSet<>();
+				final Set<FileNode> fileNodes = gw.getFileNodes(Arrays.asList(filePatterns));
+				for (FileNode fn : fileNodes) {
+					this.files.add(fn.getNode());
+				}
+
+				System.out.println("running CEOLQueryEngine with files: " + fileNodes);
 			} catch (Exception e) {
-				console.printerrln("internal error trying to retreive file nodes for contextfullQuery");
+				System.err.println("internal error trying to retreive file nodes for contextfullQuery");
 				e.printStackTrace();
 			}
-			this.files = fileNodes;
 
 			if (propertygetter == null)
 				propertygetter = new GraphPropertyGetter(graph, this);
@@ -112,16 +116,17 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 	@Override
 	public Collection<?> allContents() {
 		final Set<GraphNodeWrapper> allContents = new HashSet<GraphNodeWrapper>();
-		try {
-			for (IGraphNode modelElementNode : new GraphWrapper(graph).getModelElementsFromFileNodes(files)) {
-				GraphNodeWrapper wrapper = new GraphNodeWrapper(modelElementNode.getId().toString(), this);
-				allContents.add(wrapper);
+		try(IGraphTransaction tx = graph.beginTransaction()) {
+			for (IGraphNode rawFileNode : files) {
+				final FileNode f = new FileNode(rawFileNode);
+				for (ModelElementNode me : f.getModelElements()) {
+					GraphNodeWrapper wrapper = new GraphNodeWrapper(me.getNode().getId().toString(), this);
+					allContents.add(wrapper);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		System.err.println("allContents called: " + allContents.size() + " elements");
 		return allContents;
 	}
 
@@ -232,8 +237,6 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 
 					}
 				}
-
-				// HashSet<Object> nodes = new HashSet<>();
 
 				COptimisableCollection nodes = new COptimisableCollection(
 						this,

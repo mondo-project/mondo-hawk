@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.hawk.osgiserver.feature"
+      label="Hawk OSGi-based Server Feature"
+      version="1.0.0.qualifier"
+      provider-name="University of York">
+
+   <description url="http://www.example.com/description">
+      Feature for an OSGi-based server for Hawk.
+
+TODO: move the Hawk servlet/Thrift API from MONDO integration back into this project?
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.hawk.core" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.hawk.core.dependencies"/>
+      <import plugin="org.slf4j.api"/>
+   </requires>
+
+   <plugin
+         id="org.hawk.osgiserver"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

@@ -25,11 +25,15 @@
       <category name="hawk.queries"/>
    </feature>
    <feature url="features/org.hawk.ui.feature_1.0.0.qualifier.jar" id="org.hawk.ui.feature" version="1.0.0.qualifier">
-      <category name="hawk.core"/>
+      <category name="hawk.clients"/>
    </feature>
-   <category-def name="hawk.core" label="Hawk Core and UI"/>
+   <feature url="features/org.hawk.osgiserver.feature_1.0.0.qualifier.jar" id="org.hawk.osgiserver.feature" version="1.0.0.qualifier">
+      <category name="hawk.clients"/>
+   </feature>
+   <category-def name="hawk.core" label="Hawk Core"/>
    <category-def name="hawk.connectors" label="Hawk Connectors"/>
    <category-def name="hawk.backends" label="Hawk Backends"/>
    <category-def name="hawk.drivers" label="Hawk Model Drivers"/>
    <category-def name="hawk.queries" label="Hawk Query Languages"/>
+   <category-def name="hawk.clients" label="Hawk Clients"/>
 </site>
