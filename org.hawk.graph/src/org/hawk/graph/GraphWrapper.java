@@ -11,6 +11,7 @@
 package org.hawk.graph;
 
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.hawk.core.graph.IGraphDatabase;
@@ -51,4 +52,24 @@ public class GraphWrapper {
 		return files;
 	}
 
+	/**
+	 * Returns the graph wrapped by this instance.
+	 */
+	public IGraphDatabase getGraph() {
+		return graph;
+	}
+
+	/**
+	 * Retrieves a {@link ModelElementNode} by identifier.
+	 *
+	 * @throws NoSuchElementException
+	 *             No node with that identifier exists.
+	 */
+	public ModelElementNode getModelElementNodeById(String id) {
+		final IGraphNode rawNode = graph.getNodeById(id);
+		if (rawNode == null) {
+			throw new NoSuchElementException();
+		}
+		return new ModelElementNode(rawNode);
+	}
 }
