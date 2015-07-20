@@ -482,11 +482,6 @@ public class HModel {
 
 	}
 
-	public Iterable<ModelElement> resolveProxies(List<String> ids) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public void removeRepository(String uri) throws Exception {
 		// TODO Auto-generated method stub
 
