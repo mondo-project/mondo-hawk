@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.hawk.osgiserver.HModel;
+import org.hawk.ui2.view.HView;
 
 public class HConfigDialog extends Dialog {
 
@@ -70,8 +71,7 @@ public class HConfigDialog extends Dialog {
 		setButtonLayoutData(cancel);
 	}
 
-	protected Button createButton(Composite parent, int id, String label,
-			boolean defaultButton) {
+	protected Button createButton(Composite parent, int id, String label, boolean defaultButton) {
 		if (id == IDialogConstants.CANCEL_ID)
 			return null;
 		return super.createButton(parent, id, label, defaultButton);
@@ -81,9 +81,8 @@ public class HConfigDialog extends Dialog {
 
 		try {
 
-			setDefaultImage(PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow().getActivePage()
-					.showView("hawk.ui.view.HawkView").getTitleImage());
+			setDefaultImage(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(HView.ID)
+					.getTitleImage());
 
 		} catch (Exception e1) {
 			e1.printStackTrace();
@@ -121,8 +120,7 @@ public class HConfigDialog extends Dialog {
 		gridLayout.numColumns = 2;
 		composite.setLayout(gridLayout);
 
-		daList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
-				| SWT.H_SCROLL);
+		daList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
 		GridData gridDataQ = new GridData();
 		gridDataQ.grabExcessHorizontalSpace = true;
 		gridDataQ.horizontalAlignment = GridData.FILL_BOTH;
@@ -160,8 +158,7 @@ public class HConfigDialog extends Dialog {
 		gridLayout.numColumns = 2;
 		composite.setLayout(gridLayout);
 
-		iaList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
-				| SWT.H_SCROLL);
+		iaList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
 		GridData gridDataQ = new GridData();
 		gridDataQ.grabExcessHorizontalSpace = true;
 		gridDataQ.horizontalAlignment = GridData.FILL_BOTH;
@@ -199,8 +196,7 @@ public class HConfigDialog extends Dialog {
 		gridLayout.numColumns = 1;
 		composite.setLayout(gridLayout);
 
-		iList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
-				| SWT.H_SCROLL);
+		iList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
 		GridData gridDataQ = new GridData();
 		gridDataQ.grabExcessHorizontalSpace = true;
 		gridDataQ.horizontalAlignment = GridData.FILL_BOTH;
@@ -251,8 +247,7 @@ public class HConfigDialog extends Dialog {
 					public void widgetSelected(SelectionEvent e) {
 						uri = c.getText();
 						Button ok = getButton(IDialogConstants.OK_ID);
-						if (!type.equals("") && !uri.equals("")
-								&& !name.equals(""))
+						if (!type.equals("") && !uri.equals("") && !name.equals(""))
 							ok.setEnabled(true);
 						else
 							ok.setEnabled(false);
@@ -266,8 +261,7 @@ public class HConfigDialog extends Dialog {
 				l.setText(" Type Name: ");
 
 				final Text t = new Text(parent, SWT.BORDER);
-				GridData data = new GridData(SWT.BEGINNING, SWT.BEGINNING,
-						true, false);
+				GridData data = new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false);
 				data.minimumWidth = 200;
 				t.setLayoutData(data);
 				t.setText(type);
@@ -277,8 +271,7 @@ public class HConfigDialog extends Dialog {
 					public void modifyText(ModifyEvent e) {
 						type = t.getText().trim();
 						Button ok = getButton(IDialogConstants.OK_ID);
-						if (!type.equals("") && !uri.equals("")
-								&& !name.equals(""))
+						if (!type.equals("") && !uri.equals("") && !name.equals(""))
 							ok.setEnabled(true);
 						else
 							ok.setEnabled(false);
@@ -308,8 +301,7 @@ public class HConfigDialog extends Dialog {
 					public void modifyText(ModifyEvent e) {
 						name = t2.getText().trim();
 						Button ok = getButton(IDialogConstants.OK_ID);
-						if (!type.equals("") && !uri.equals("")
-								&& !name.equals(""))
+						if (!type.equals("") && !uri.equals("") && !name.equals(""))
 							ok.setEnabled(true);
 						else
 							ok.setEnabled(false);
@@ -331,8 +323,7 @@ public class HConfigDialog extends Dialog {
 
 				ok.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
-						if (!uri.equals("") && !type.equals("")
-								&& !name.equals("")) {
+						if (!uri.equals("") && !type.equals("") && !name.equals("")) {
 
 							// System.err.println(">");
 							// System.err.println(uri);
@@ -378,8 +369,7 @@ public class HConfigDialog extends Dialog {
 
 			private boolean check() {
 
-				java.util.List<String> l = index.validateExpression(
-						derivationlanguage, derivationlogic);
+				java.util.List<String> l = index.validateExpression(derivationlanguage, derivationlogic);
 
 				if (l.size() > 0) {
 
@@ -395,10 +385,8 @@ public class HConfigDialog extends Dialog {
 
 				// System.out.println(error);
 
-				return !uri.equals("") && !type.equals("") && !name.equals("")
-						&& !atttype.equals("")
-						&& !derivationlanguage.equals("")
-						&& !derivationlogic.equals("") && l.size() == 0;
+				return !uri.equals("") && !type.equals("") && !name.equals("") && !atttype.equals("")
+						&& !derivationlanguage.equals("") && !derivationlogic.equals("") && l.size() == 0;
 
 			}
 
@@ -406,8 +394,7 @@ public class HConfigDialog extends Dialog {
 
 				parent.getShell().setText("Add a derived attribute");
 
-				Composite composite = (Composite) super
-						.createDialogArea(parent);
+				Composite composite = (Composite) super.createDialogArea(parent);
 
 				GridLayout la = new GridLayout();
 				la.numColumns = 2;
@@ -430,8 +417,7 @@ public class HConfigDialog extends Dialog {
 				l.setText(" Type Name: ");
 
 				final Text t = new Text(composite, SWT.BORDER);
-				GridData data = new GridData(SWT.BEGINNING, SWT.BEGINNING,
-						true, false);
+				GridData data = new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false);
 				data.minimumWidth = 200;
 				t.setLayoutData(data);
 				t.setText(type);
@@ -505,8 +491,7 @@ public class HConfigDialog extends Dialog {
 				l = new Label(composite, SWT.NONE);
 				l.setText(" Derivation Logic: ");
 
-				final Text t4 = new Text(composite, SWT.MULTI | SWT.BORDER
-						| SWT.WRAP | SWT.V_SCROLL);
+				final Text t4 = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
 
 				data = new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false);
 				data.minimumWidth = 200;
@@ -524,8 +509,7 @@ public class HConfigDialog extends Dialog {
 				t5.setForeground(new Color(getShell().getDisplay(), 255, 0, 0));
 				t5.setBackground(composite.getBackground());
 				FontData fd = t5.getFont().getFontData()[0];
-				Font f = new Font(composite.getDisplay(), fd.getName(),
-						fd.getHeight() - 1, SWT.NORMAL);
+				Font f = new Font(composite.getDisplay(), fd.getName(), fd.getHeight() - 1, SWT.NORMAL);
 				t5.setFont(f);
 				t5.setLayoutData(data);
 				t5.setText("");
@@ -682,8 +666,7 @@ public class HConfigDialog extends Dialog {
 							// System.err.println("<");
 
 							try {
-								index.addDerivedAttribute(uri, type, name, atttype,
-										isMany, isOrdered, isUnique,
+								index.addDerivedAttribute(uri, type, name, atttype, isMany, isOrdered, isUnique,
 										derivationlanguage, derivationlogic);
 							} catch (Exception e1) {
 								e1.printStackTrace();
@@ -711,8 +694,7 @@ public class HConfigDialog extends Dialog {
 		gridLayout.numColumns = 2;
 		composite.setLayout(gridLayout);
 
-		mmList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
-				| SWT.H_SCROLL);
+		mmList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
 		GridData gridDataQ = new GridData();
 		gridDataQ.grabExcessHorizontalSpace = true;
 		gridDataQ.horizontalAlignment = GridData.FILL_BOTH;
@@ -747,8 +729,7 @@ public class HConfigDialog extends Dialog {
 	private void mmBrowse() {
 		FileDialog fd = new FileDialog(getShell(), SWT.MULTI);
 
-		fd.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation()
-				.toFile().toString());
+		fd.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile().toString());
 		// TODO: allow selection of only parse-able/known metamodels-file-types
 		fd.setFilterExtensions(new String[] { "*.ecore" });
 		fd.setText("Select metamodels");
@@ -765,8 +746,7 @@ public class HConfigDialog extends Dialog {
 			boolean error = false;
 
 			for (int i = 0; i < metaModels.length; i++) {
-				File file = new File(fd.getFilterPath() + File.separator
-						+ metaModels[i]);
+				File file = new File(fd.getFilterPath() + File.separator + metaModels[i]);
 				if (!file.exists() || !file.canRead() || !file.isFile())
 					error = true;
 				else
@@ -834,8 +814,7 @@ public class HConfigDialog extends Dialog {
 		gridLayout.numColumns = 5;
 		composite.setLayout(gridLayout);
 
-		locList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
-				| SWT.H_SCROLL);
+		locList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
 		GridData gridDataQ = new GridData();
 		gridDataQ.grabExcessHorizontalSpace = true;
 		gridDataQ.horizontalAlignment = GridData.FILL_BOTH;
@@ -907,8 +886,7 @@ public class HConfigDialog extends Dialog {
 
 	private void setAuthBrowseButton() {
 		if (authBrowse != null) {
-			if (authRequired()
-					&& !authBrowse.getText().equals("Authenticate...")) {
+			if (authRequired() && !authBrowse.getText().equals("Authenticate...")) {
 				authBrowse.removeListener(SWT.Selection, browseFolder);
 				authBrowse.addListener(SWT.Selection, authenticate);
 				authBrowse.setText("Authenticate...");
@@ -929,8 +907,7 @@ public class HConfigDialog extends Dialog {
 		public void handleEvent(Event e) {
 			DirectoryDialog dd = new DirectoryDialog(getShell(), SWT.OPEN);
 
-			dd.setFilterPath(ResourcesPlugin.getWorkspace().getRoot()
-					.getLocation().toFile().toString());
+			dd.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile().toString());
 			dd.setMessage("Select a folder to add to the indexer");
 			dd.setText("Select a directory");
 			String result = dd.open();
@@ -960,8 +937,7 @@ public class HConfigDialog extends Dialog {
 	};
 
 	private boolean validateSVN() {
-		if (authRequired() && userPassOK && !user.equals("")
-				&& !pass.equals("")) {
+		if (authRequired() && userPassOK && !user.equals("") && !pass.equals("")) {
 			// could do an SVN connect test
 			return validSVNLoc();
 		}
@@ -970,8 +946,7 @@ public class HConfigDialog extends Dialog {
 
 	private boolean validSVNLoc() {
 		String loc = location.getText().toLowerCase();
-		if (loc.startsWith("http://") || loc.startsWith("https://")
-				|| loc.startsWith("svn://"))
+		if (loc.startsWith("http://") || loc.startsWith("https://") || loc.startsWith("svn://"))
 			return true;
 		else
 			return false;
@@ -979,8 +954,7 @@ public class HConfigDialog extends Dialog {
 
 	private boolean validateFolder() {
 		File dir = new File(location.getText());
-		if (!authRequired() && dir.exists() && dir.isDirectory()
-				&& dir.canRead())
+		if (!authRequired() && dir.exists() && dir.isDirectory() && dir.canRead())
 			return true;
 		return false;
 	}
@@ -1006,8 +980,7 @@ public class HConfigDialog extends Dialog {
 		if (combo.getSelectionIndex() < 0)
 			return false;
 		String selection = combo.getItem(combo.getSelectionIndex());
-		return selection.toLowerCase().contains("svn")
-				|| selection.toLowerCase().contains("git");
+		return selection.toLowerCase().contains("svn") || selection.toLowerCase().contains("git");
 	}
 
 	protected void configureShell(Shell newShell) {
