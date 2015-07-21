@@ -22,7 +22,7 @@ import org.eclipse.epsilon.eol.models.java.JavaModel;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.epsilon.queryaware.CQueryAwareEOLQueryEngine;
 import org.hawk.epsilon.queryaware.QueryAwareEOLQueryEngine;
-import org.hawk.osgiserver.HManager;
+import org.hawk.ui2.util.HUIManager;
 
 public class HawkModel extends ModelReference {
 
@@ -35,8 +35,7 @@ public class HawkModel extends ModelReference {
 	}
 
 	@Override
-	public void load(StringProperties properties, IRelativePathResolver resolver)
-			throws EolModelLoadingException {
+	public void load(StringProperties properties, IRelativePathResolver resolver) throws EolModelLoadingException {
 
 		this.name = properties.getProperty(Model.PROPERTY_NAME);
 
@@ -53,11 +52,9 @@ public class HawkModel extends ModelReference {
 
 		target = eolQueryEngine;
 		eolQueryEngine.setDatabaseConfig(properties);
-		
 
 		//
-		database = HManager.getInstance().getGraphByIndexerName(properties
-				.getProperty(PROPERTY_INDEXER_NAME));
+		database = HUIManager.getInstance().getGraphByIndexerName(properties.getProperty(PROPERTY_INDEXER_NAME));
 
 		String[] aliases = properties.getProperty("aliases").split(",");
 		for (int i = 0; i < aliases.length; i++) {
@@ -79,8 +76,7 @@ public class HawkModel extends ModelReference {
 			eolQueryEngine.load(database);
 		else
 			throw new EolModelLoadingException(
-					new Exception(
-							"The selected Hawk cannot connect to its back-end, are you sure it is not stopped?"),
+					new Exception("The selected Hawk cannot connect to its back-end, are you sure it is not stopped?"),
 					this);
 	}
 

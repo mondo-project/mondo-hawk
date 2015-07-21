@@ -27,7 +27,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.hawk.core.util.HawkConfig;
 import org.hawk.core.util.HawksConfig;
@@ -73,12 +72,11 @@ public class HWizard extends Wizard implements INewWizard {
 		final String dbType = page.getDBID();
 		final List<String> plugins = page.getPlugins();
 		final char[] apw = page.getApw();
-		
+
 		IRunnableWithProgress op = new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor)
-					throws InvocationTargetException {
+			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
-					doFinish(name, folder, dbType, plugins, monitor,apw);
+					doFinish(name, folder, dbType, plugins, monitor, apw);
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				} finally {
@@ -93,8 +91,7 @@ public class HWizard extends Wizard implements INewWizard {
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 			Throwable realException = e.getTargetException();
-			MessageDialog.openError(getShell(), "Error",
-					realException.getMessage());
+			MessageDialog.openError(getShell(), "Error", realException.getMessage());
 			return false;
 		}
 		return true;
@@ -106,17 +103,15 @@ public class HWizard extends Wizard implements INewWizard {
 	 * @param dbType
 	 */
 
-	private void doFinish(String name, String folder, String dbType,
-			List<String> plugins, IProgressMonitor monitor, char[] apw)
-			throws CoreException {
+	private void doFinish(String name, String folder, String dbType, List<String> plugins, IProgressMonitor monitor,
+			char[] apw) throws CoreException {
 
 		// set up a new Hawk with the selected plugins
 
 		try {
 			// create a new hawk index at containerName folder with name
 			// fileName
-			HModel.create(name, new File(folder), dbType, plugins,
-					HUIManager.getInstance(), apw);
+			HModel.create(name, new File(folder), dbType, plugins, HUIManager.getInstance(), apw);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -131,19 +126,17 @@ public class HWizard extends Wizard implements INewWizard {
 		getShell().getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				try {
-					HView view = (HView) PlatformUI.getWorkbench()
-							.getActiveWorkbenchWindow().getActivePage()
-							.showView("hawk.ui.view.HawkView");
+					HView view = (HView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+							.findView(HView.ID);
 					view.update();
-				} catch (PartInitException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
 
 		// add this new hawk to metadata
-		IEclipsePreferences preferences = InstanceScope.INSTANCE
-				.getNode("org.hawk.ui2");
+		IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode("org.hawk.ui2");
 
 		String xml = preferences.get("config", null);
 
