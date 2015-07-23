@@ -10,12 +10,14 @@
  ******************************************************************************/
 package org.hawk.graph;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
+
 
 /**
  * Read-only abstraction of a model element within the graph populated by this
@@ -73,10 +75,17 @@ public class ModelElementNode {
 	public Object getSlotValue(Slot slot) {
 		final Object rawValue = node.getProperty(slot.getPropertyName());
 		if (slot.isAttribute() && rawValue != null && slot.isMany()) {
-			return slot.getCollection().addAll(
-					Arrays.asList((Object[]) rawValue));
+			final Collection<Object> collection = slot.getCollection();
+			collection.addAll(Arrays.asList((Object[]) rawValue));
+			return collection;
 		} else if (slot.isReference()) {
-			final Collection<Object> referencedIds = slot.getCollection();
+			final Collection<Object> referencedIds;
+			if (slot.isMany()) {
+				referencedIds = slot.getCollection();
+			} else {
+				referencedIds = new ArrayList<>();
+			}
+
 			for (IGraphEdge r : node
 					.getOutgoingWithType(slot.getPropertyName())) {
 				final String id = r.getEndNode().getId().toString();

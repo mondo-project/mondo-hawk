@@ -10,8 +10,7 @@
  ******************************************************************************/
 package org.hawk.graph;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Iterator;
 
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
@@ -38,12 +37,26 @@ public class FileNode {
 	 * Returns all the {@link ModelElementNode}s representing model elements for
 	 * this file node.
 	 */
-	public Set<ModelElementNode> getModelElements() {
-		final Set<ModelElementNode> elemNodes = new HashSet<>();
-		for (IGraphEdge edge : node.getIncomingWithType("file")) {
-			elemNodes.add(new ModelElementNode(edge.getStartNode()));
-		}
-		return elemNodes;
+	public Iterable<ModelElementNode> getModelElements() {
+		return new Iterable<ModelElementNode>() {
+			@Override
+			public Iterator<ModelElementNode> iterator() {
+				final Iterable<IGraphEdge> incomingWithType = node.getIncomingWithType("file");
+				final Iterator<IGraphEdge> it = incomingWithType.iterator();
+
+				return new Iterator<ModelElementNode>() {
+					@Override
+					public boolean hasNext() {
+						return it.hasNext();
+					}
+
+					@Override
+					public ModelElementNode next() {
+						return new ModelElementNode(it.next().getStartNode());
+					}
+				};
+			}
+		};
 	}
 
 	@Override

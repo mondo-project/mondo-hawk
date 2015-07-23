@@ -119,4 +119,12 @@ public class Slot {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "Slot [typeNode=" + typeNode + ", propertyName=" + propertyName
+				+ ", isAttribute=" + isAttribute + ", isReference="
+				+ isReference + ", isMany=" + isMany + ", isOrdered="
+				+ isOrdered + ", isUnique=" + isUnique + "]";
+	}
+
 }

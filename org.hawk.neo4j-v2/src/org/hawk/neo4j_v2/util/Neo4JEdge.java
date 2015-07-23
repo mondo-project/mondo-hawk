@@ -13,37 +13,31 @@ package org.hawk.neo4j_v2.util;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.hawk.core.graph.*;
+import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphEdge;
+import org.hawk.core.graph.IGraphNode;
 import org.hawk.neo4j_v2.Neo4JDatabase;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.unsafe.batchinsert.BatchRelationship;
 
 public class Neo4JEdge implements IGraphEdge {
 
-	String type;
-
-	Neo4JDatabase graph;
-
-	Relationship rel;
-	BatchRelationship batchrel;
-
-	Long id;
+	private String type;
+	private Neo4JDatabase graph;
+	private Relationship rel;
+	private BatchRelationship batchrel;
+	private Long id;
 
 	public Neo4JEdge(Relationship r, Neo4JDatabase graph) {
-
 		id = r.getId();
 		rel = r;
-		type = r.getType().name();
 		this.graph = graph;
 	}
 
 	public Neo4JEdge(BatchRelationship r, Neo4JDatabase graph) {
-
 		id = r.getId();
 		batchrel = r;
-		type = r.getType().name();
 		this.graph = graph;
-
 	}
 
 	@Override
@@ -53,12 +47,14 @@ public class Neo4JEdge implements IGraphEdge {
 
 	@Override
 	public String getType() {
+		if (type == null) {
+			type = rel.getType().name();
+		}
 		return type;
 	}
 
 	@Override
 	public HashSet<String> getPropertyKeys() {
-
 		HashSet<String> ret = new HashSet<>();
 
 		if (graph.getGraph() != null) {
@@ -159,6 +155,12 @@ public class Neo4JEdge implements IGraphEdge {
 	public int hashCode() {
 
 		return id.hashCode() + graph.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return "Neo4JEdge [type=" + type + ", graph=" + graph + ", rel=" + rel
+				+ ", batchrel=" + batchrel + ", id=" + id + "]";
 	}
 
 }
