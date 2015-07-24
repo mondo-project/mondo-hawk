@@ -54,6 +54,11 @@ public class FileNode {
 					public ModelElementNode next() {
 						return new ModelElementNode(it.next().getStartNode());
 					}
+
+					@Override
+					public void remove() {
+						throw new UnsupportedOperationException();
+					}
 				};
 			}
 		};
