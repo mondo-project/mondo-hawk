@@ -62,7 +62,11 @@ public class SLF4JConsole implements IAbstractConsole {
 
 	@Override
 	public void printerrln(Throwable t) {
-		// TODO Auto-generated method stub
-		
+		final Logger logger = getCallerLogger();
+		if (logger instanceof LocationAwareLogger) {
+			((LocationAwareLogger) logger).log(null, FQCN, LocationAwareLogger.ERROR_INT, t.getMessage(), null, t);
+		} else {
+			logger.error(t.getMessage());
+		}
 	}
 }
