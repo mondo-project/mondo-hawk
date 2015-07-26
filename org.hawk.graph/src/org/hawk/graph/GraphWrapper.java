@@ -65,7 +65,7 @@ public class GraphWrapper {
 	 * @throws NoSuchElementException
 	 *             No node with that identifier exists.
 	 */
-	public ModelElementNode getModelElementNodeById(String id) {
+	public ModelElementNode getModelElementNodeById(Object id) {
 		final IGraphNode rawNode = graph.getNodeById(id);
 		if (rawNode == null) {
 			throw new NoSuchElementException();

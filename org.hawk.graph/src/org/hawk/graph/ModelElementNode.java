@@ -13,6 +13,7 @@ package org.hawk.graph;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.hawk.core.graph.IGraphEdge;
@@ -59,6 +60,7 @@ public class ModelElementNode {
 	public void getSlotValues(Map<String, Object> attributeValues, Map<String, Object> referenceValues) {
 			for (Slot s : getTypeNode().getSlots()) {
 				final Object value = getSlotValue(s);
+				if (value == null) continue;
 				if (s.isAttribute()) {
 					attributeValues.put(s.getPropertyName(), value);
 				} else if (s.isReference()) {
@@ -88,7 +90,7 @@ public class ModelElementNode {
 
 			for (IGraphEdge r : node
 					.getOutgoingWithType(slot.getPropertyName())) {
-				final String id = r.getEndNode().getId().toString();
+				final Object id = r.getEndNode().getId();
 				referencedIds.add(id);
 			}
 
@@ -135,5 +137,18 @@ public class ModelElementNode {
 		} else if (!node.equals(other.node))
 			return false;
 		return true;
+	}
+
+	public boolean isContainment(String featureName) {
+		// TODO Shouldn't this information be in the type node property?
+		Iterator<IGraphEdge> edges = getNode().getOutgoingWithType(featureName).iterator();
+		if (edges.hasNext()) {
+			return edges.next().getProperty("isContainment") != null;
+		}
+		return false;
+	}
+
+	public Long getId() {
+		return (Long)getNode().getId();
 	}
 }
