@@ -51,8 +51,8 @@ public class ModelElementNode {
 	/**
 	 * Fills in the <code>attributeValues</code> and
 	 * <code>referenceValues</code> maps with the contents of the slots of the
-	 * <code>modelElementNode</code>. Derived attributes and reverse references
-	 * are *not* included.
+	 * <code>modelElementNode</code>. Derived attributes and
+	 * reverse references are *not* included either.
 	 *
 	 * @throws Exception
 	 *             Could not begin the transaction on the graph.
@@ -140,7 +140,6 @@ public class ModelElementNode {
 	}
 
 	public boolean isContainment(String featureName) {
-		// TODO Shouldn't this information be in the type node property?
 		Iterator<IGraphEdge> edges = getNode().getOutgoingWithType(featureName).iterator();
 		if (edges.hasNext()) {
 			return edges.next().getProperty("isContainment") != null;
@@ -148,7 +147,7 @@ public class ModelElementNode {
 		return false;
 	}
 
-	public Long getId() {
-		return (Long)getNode().getId();
+	public String getId() {
+		return getNode().getId().toString();
 	}
 }
