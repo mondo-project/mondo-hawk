@@ -7,12 +7,16 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - use Java 7 Path instead of File+string processing
  ******************************************************************************/
 package org.hawk.localfolder;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hawk.core.IAbstractConsole;
 import org.hawk.core.IVcsManager;
@@ -29,10 +33,9 @@ public class LocalFolder implements IVcsManager {
 
 	private String type;
 	private String hrn;
+	private Path rootLocation;
 
-	private String loc;
-
-	private HashSet<File> cachedFiles = new HashSet<>();
+	private Set<File> previousFiles = new HashSet<>();
 
 	private static int version = 0;
 
@@ -41,23 +44,11 @@ public class LocalFolder implements IVcsManager {
 	}
 
 	@Override
-	public void run(String vcsloc, String un, String pw, IAbstractConsole c)
-			throws Exception {
-
+	public void run(String vcsloc, String un, String pw, IAbstractConsole c) throws Exception {
 		type = "org.hawk.localfolder.LocalFolder";
 		hrn = "Local Folder Monitor";
-
 		console = c;
-		loc = vcsloc;
-
-	}
-
-	public void sysout(String s) {
-
-		// System.out.println(s);
-
-		console.println(s);
-
+		rootLocation = Paths.get(vcsloc).toRealPath();
 	}
 
 	@Override
@@ -68,7 +59,6 @@ public class LocalFolder implements IVcsManager {
 		// file in the folder
 		version++;
 		return version + "";
-
 	}
 
 	@Override
@@ -79,21 +69,15 @@ public class LocalFolder implements IVcsManager {
 		// file in the folder
 		version++;
 		return version + "";
-
 	}
 
 	@Override
 	public void importFiles(String path, File temp) {
-
 		try {
-			// System.err.println(path);
-			// System.err.println(temp);
-			FileOperations.copyFile(new File(loc + "/" + path), temp);
-
+			FileOperations.copyFile(rootLocation.resolve(path).toFile(), temp);
 		} catch (Exception e) {
-			e.printStackTrace();
+			console.printerrln(e);
 		}
-
 	}
 
 	public static void main(String[] a) throws Exception {
@@ -109,20 +93,17 @@ public class LocalFolder implements IVcsManager {
 
 	@Override
 	public boolean isActive() {
-		// System.err.println(loc);
-		return loc == null ? false : new File(loc).exists();
+		return rootLocation == null ? false : rootLocation.toFile().exists();
 	}
 
 	@Override
 	public void shutdown() {
-
-		loc = null;
-
+		rootLocation = null;
 	}
 
 	@Override
 	public String getLocation() {
-		return loc.toString();
+		return rootLocation.toString();
 	}
 
 	@Override
@@ -160,25 +141,15 @@ public class LocalFolder implements IVcsManager {
 	public VcsRepositoryDelta getDelta(VcsRepository repository,
 			String startRevision, String endRevision) throws Exception {
 
-		// System.err.println("cashed files = "+cashedFiles);
-
 		VcsRepositoryDelta delta = new VcsRepositoryDelta();
 		delta.setLatestRevision(getCurrentRevision());
 		delta.setRepository(repository);
 
-		//
+		Set<File> files = new HashSet<>();
+		addAllFiles(rootLocation.toFile(), files);
+		previousFiles.removeAll(files);
 
-		File root = new File(loc);
-
-		HashSet<File> files = allFiles(root);
-
-		// System.err.println("files = "+files);
-
-		//
-		cachedFiles.removeAll(files);
-
-		for (File f : cachedFiles) {
-
+		for (File f : previousFiles) {
 			VcsCommit commit = new VcsCommit();
 			commit.setAuthor("i am a local folder driver - no authors recorded");
 			commit.setDelta(delta);
@@ -190,18 +161,15 @@ public class LocalFolder implements IVcsManager {
 			VcsCommitItem c = new VcsCommitItem();
 			c.setChangeType(VcsChangeType.DELETED);
 			c.setCommit(commit);
-			c.setPath(f.getPath().replaceAll("\\\\", "/")
-					.replaceAll(loc.replaceAll("\\\\", "/"), "").substring(1));
+			c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 			commit.getItems().add(c);
-
 		}
 
-		cachedFiles.clear();
+		previousFiles.clear();
 
 		if (files != null && files.size() > 0)
 			for (File f : files) {
-
-				cachedFiles.add(f);
+				previousFiles.add(f);
 
 				VcsCommit commit = new VcsCommit();
 				commit.setAuthor("i am a local folder driver - no authors recorded");
@@ -214,30 +182,22 @@ public class LocalFolder implements IVcsManager {
 				VcsCommitItem c = new VcsCommitItem();
 				c.setChangeType(VcsChangeType.UPDATED);
 				c.setCommit(commit);
-				c.setPath(f.getPath().replaceAll("\\\\", "/")
-						.replaceAll(loc.replaceAll("\\\\", "/"), "")
-						.substring(1));
+				c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 				commit.getItems().add(c);
-
 			}
 
 		return delta;
 	}
 
-	private HashSet<File> allFiles(File dir) {
-
-		HashSet<File> ret = new HashSet<>();
-
+	private void addAllFiles(File dir, Set<File> ret) {
 		File[] files = dir.listFiles();
-
 		for (File file : files) {
-			if (!file.isDirectory())
+			if (!file.isDirectory()) {
 				ret.add(file);
-			else
-				ret.addAll(allFiles(file));
+			} else {
+				addAllFiles(file, ret);
+			}
 		}
-
-		return ret;
 	}
 
 	@Override

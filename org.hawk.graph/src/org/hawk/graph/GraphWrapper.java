@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.hawk.graph;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -43,7 +43,7 @@ public class GraphWrapper {
 	public Set<FileNode> getFileNodes(Iterable<String> patterns) {
 		final IGraphNodeIndex fileIndex = graph.getFileIndex();
 
-		final Set<FileNode> files = new HashSet<>();
+		final Set<FileNode> files = new LinkedHashSet<>();
 		for (String s : patterns) {
 			for (IGraphNode n : fileIndex.query("id", s)) {
 				files.add(new FileNode(n));
