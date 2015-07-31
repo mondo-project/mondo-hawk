@@ -227,7 +227,7 @@ public class GraphModelInserter {
 
 					// node.setProperty("id", o.getUriFragment());
 					node.setProperty("hashCode", o.hashCode());
-					updateNodeProperties(node, o, ret);
+					updateNodeProperties(fileNode, node, o, ret);
 					//
 					// for (String ss : node.getPropertyKeys()) {
 					// System.err.println("new attribute:\t" + ss);
@@ -428,7 +428,7 @@ public class GraphModelInserter {
 		return true;
 	}
 
-	private void updateNodeProperties(IGraphNode node, IHawkObject eObject,
+	private void updateNodeProperties(IGraphNode fileNode, IGraphNode node, IHawkObject eObject,
 			LinkedList<IGraphChange> changes) {
 
 		LinkedList<IHawkAttribute> normalattributes = new LinkedList<IHawkAttribute>();
@@ -650,6 +650,13 @@ public class GraphModelInserter {
 
 		}
 
+		final IGraphNodeIndex rootDictionary = indexer.getGraph()
+				.getOrCreateNodeIndex(GraphModelBatchInjector.ROOT_DICT_NAME);
+		if (eObject.isRoot()) {
+			rootDictionary.add(node, GraphModelBatchInjector.ROOT_DICT_FILE_KEY, fileNode.getId());
+		} else {
+			rootDictionary.remove(node);
+		}
 	}
 
 	private LinkedList<IGraphChange> batchUpdate() throws Exception {

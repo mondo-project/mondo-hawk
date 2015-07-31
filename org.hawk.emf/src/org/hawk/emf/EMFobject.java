@@ -29,14 +29,11 @@ public class EMFobject implements IHawkObject {
 	protected EObject eob;
 
 	public EMFobject(EObject o) {
-
 		eob = o;
-
 	}
 
 	public EObject getEObject() {
 		return eob;
-
 	}
 
 	@Override
@@ -236,22 +233,9 @@ public class EMFobject implements IHawkObject {
 
 	}
 
-	// @Override
-	// public HawkResource getResource() {
-	//
-	// return eob.eResource();
-	// }
-
-	// @Override
-	// public HashSet<?> getAllSetAttributes() {
-	//
-	// return null;
-	// }
-	//
-	// @Override
-	// public HashSet<?> getAllSetReferences() {
-	//
-	// return null;
-	// }
+	@Override
+	public boolean isRoot() {
+		return eob.eContainer() == null;
+	}
 
 }

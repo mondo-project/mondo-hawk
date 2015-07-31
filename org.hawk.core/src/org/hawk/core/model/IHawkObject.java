@@ -14,6 +14,11 @@ public interface IHawkObject {
 
 	boolean isProxy();
 
+	/**
+	 * Returns <code>true</code> if this object is not contained in any other.
+	 */
+	boolean isRoot();
+
 	// only to be called after isProxy() returns true
 	String proxyURIFragment();
 

@@ -40,6 +40,9 @@ import org.hawk.graph.internal.util.GraphUtil;
 
 public class GraphModelBatchInjector {
 
+	public static final String ROOT_DICT_FILE_KEY = "file";
+	public static final String ROOT_DICT_NAME = "rootdictionary";
+
 	// integer array containing the current number of added elements:
 	// (element,((ofType)M->MM)reference,((ofKind)M->MM)reference,(unset(M->M))reference)
 	private int[] objectCount = { 0, 0, 0, 0 };
@@ -50,21 +53,14 @@ public class GraphModelBatchInjector {
 	};
 
 	private IGraphDatabase graph;
-	// private IHawkModelResource resource;
-	// private VCSFileRevision filerev;
-	// private IModelIndexer indexer;
-	// private String databaseloc = "";
 
-	private Hashtable<IHawkObject, IGraphNode> hash; // temporary link between
-														// resource
-														// uri and graph node
-														// for
-														// model
-														// elements
+	/*
+	 * temporary link between resource uri and graph node for model elements
+	 */
+	private Hashtable<IHawkObject, IGraphNode> hash;
 
-	IGraphNodeIndex epackagedictionary;
-	IGraphNodeIndex filedictionary;
-	IGraphNodeIndex proxydictionary;
+	IGraphNodeIndex epackageDictionary, fileDictionary, proxyDictionary, rootDictionary;
+
 	long startTime;
 	String tempDir;
 
@@ -96,16 +92,17 @@ public class GraphModelBatchInjector {
 		// dictionary = index.forNodes("dictionary", MapUtil.stringMap(
 		// IndexManager.PROVIDER, "lucene", "type", "exact"));
 
-		epackagedictionary = graph.getMetamodelIndex();
-		filedictionary = graph.getFileIndex();
-		proxydictionary = graph.getOrCreateNodeIndex("proxydictionary");
+		epackageDictionary = graph.getMetamodelIndex();
+		fileDictionary = graph.getFileIndex();
+		proxyDictionary = graph.getOrCreateNodeIndex("proxydictionary");
+		rootDictionary = graph.getOrCreateNodeIndex(ROOT_DICT_NAME);
 
 		boolean isNew = false;
 
 		IGraphNode fileNode = null;
 		long filerevision = 0L;
 		try {
-			fileNode = ((IGraphIterable<IGraphNode>) filedictionary.get("id",
+			fileNode = ((IGraphIterable<IGraphNode>) fileDictionary.get("id",
 					s.getPath())).getSingle();
 			if (fileNode != null)
 				filerevision = (Long) fileNode.getProperty("revision");
@@ -131,7 +128,7 @@ public class GraphModelBatchInjector {
 
 				Map<String, Object> map2 = new HashMap<>();
 				map2.put("id", s.getPath());
-				filedictionary.add(fileNode, map2);
+				fileDictionary.add(fileNode, map2);
 
 				// propagate changes to listeners
 				changes.add(new GraphChangeImpl(true, GraphChangeImpl.FILE,
@@ -181,7 +178,7 @@ public class GraphModelBatchInjector {
 								+ "sec)");
 
 				System.out
-						.println(((IGraphIterable<IGraphNode>) proxydictionary
+						.println(((IGraphIterable<IGraphNode>) proxyDictionary
 								.query("_proxyRef", "*")).size()
 								+ " - sets of proxy references left in the store");
 
@@ -220,9 +217,9 @@ public class GraphModelBatchInjector {
 			throws Exception {
 
 		graph.enterBatchMode();
-		epackagedictionary = graph.getMetamodelIndex();
-		filedictionary = graph.getFileIndex();
-		proxydictionary = graph.getOrCreateNodeIndex("proxydictionary");
+		epackageDictionary = graph.getMetamodelIndex();
+		fileDictionary = graph.getFileIndex();
+		proxyDictionary = graph.getOrCreateNodeIndex("proxydictionary");
 
 		objectCount[0] = 0;
 		objectCount[1] = 0;
@@ -681,7 +678,7 @@ public class GraphModelBatchInjector {
 
 			IGraphNode epackagenode = null;
 			try {
-				epackagenode = epackagedictionary.get("id",
+				epackagenode = epackageDictionary.get("id",
 						eClass.getPackageNSURI()).getSingle();
 			} catch (NoSuchElementException ex) {
 
@@ -757,12 +754,12 @@ public class GraphModelBatchInjector {
 	 * @return
 	 * @throws Exception
 	 */
-	protected IGraphNode addEObject(IGraphNode originatingFile,
-			IHawkObject eObject) throws Exception {
+	protected IGraphNode addEObject(IGraphNode originatingFile, IHawkObject eObject) throws Exception {
 
-		epackagedictionary = graph.getMetamodelIndex();
-		filedictionary = graph.getFileIndex();
-		proxydictionary = graph.getOrCreateNodeIndex("proxydictionary");
+		epackageDictionary = graph.getMetamodelIndex();
+		fileDictionary = graph.getFileIndex();
+		proxyDictionary = graph.getOrCreateNodeIndex("proxydictionary");
+		rootDictionary = graph.getOrCreateNodeIndex(ROOT_DICT_NAME);
 
 		IGraphNode eClass = getEClassNode(eObject.getType());
 		IGraphNode node = createEObjectNode(eObject, eClass);
@@ -784,6 +781,10 @@ public class GraphModelBatchInjector {
 		}
 
 		objectCount[0]++;
+
+		if (eObject.isRoot()) {
+			rootDictionary.add(node, ROOT_DICT_FILE_KEY, originatingFile.getId().toString());
+		}
 
 		return node;
 	}
@@ -1111,7 +1112,7 @@ public class GraphModelBatchInjector {
 			HashMap<String, Object> m = new HashMap<>();
 			m.put("_proxyRef", relativeFileURI);
 
-			proxydictionary.add(node, m);
+			proxyDictionary.add(node, m);
 
 		} catch (Exception e) {
 			System.err.println("proxydictionary error:");

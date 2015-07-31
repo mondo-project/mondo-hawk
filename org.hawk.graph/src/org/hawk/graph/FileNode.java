@@ -11,9 +11,12 @@
 package org.hawk.graph;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.IGraphNodeIndex;
+import org.hawk.graph.internal.updater.GraphModelBatchInjector;
 
 /**
  * Read-only abstraction of a file within the graph populated by this updater.
@@ -53,6 +56,38 @@ public class FileNode {
 					@Override
 					public ModelElementNode next() {
 						return new ModelElementNode(it.next().getStartNode());
+					}
+
+					@Override
+					public void remove() {
+						throw new UnsupportedOperationException();
+					}
+				};
+			}
+		};
+	}
+
+
+	public Iterable<ModelElementNode> getRootModelElements() {
+		final IGraphNodeIndex rootDictionary = node.getGraph()
+			.getOrCreateNodeIndex(GraphModelBatchInjector.ROOT_DICT_NAME);
+		final Iterable<IGraphNode> roots = rootDictionary
+			.get(GraphModelBatchInjector.ROOT_DICT_FILE_KEY, node.getId().toString());
+
+		return new Iterable<ModelElementNode>() {
+			@Override
+			public Iterator<ModelElementNode> iterator() {
+				final Iterator<IGraphNode> it = roots.iterator();
+
+				return new Iterator<ModelElementNode>() {
+					@Override
+					public boolean hasNext() {
+						return it.hasNext();
+					}
+
+					@Override
+					public ModelElementNode next() {
+						return new ModelElementNode(it.next());
 					}
 
 					@Override
