@@ -236,6 +236,11 @@ public class EMFobject implements IHawkObject {
 
 	}
 
+	@Override
+	public boolean isRoot() {
+		return eob.eContainer() == null;
+	}
+
 	// @Override
 	// public HawkResource getResource() {
 	//

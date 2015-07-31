@@ -124,4 +124,9 @@ public class ModelioObject implements IHawkObject {
 
 	}
 
+	@Override
+	public boolean isRoot() {
+		return eob.eContainer() == null;
+	}
+
 }

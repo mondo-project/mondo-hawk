@@ -125,4 +125,9 @@ public class IFCObject implements IHawkObject {
 
 	}
 
+	@Override
+	public boolean isRoot() {
+		return eob.eContainer() == null;
+	}
+
 }
