@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
@@ -26,10 +27,10 @@ import org.hawk.core.graph.IGraphChange;
 import org.hawk.core.graph.IGraphChangeDescriptor;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
+import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
-import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkModelResource;
@@ -136,12 +137,6 @@ public class GraphModelInserter {
 	}
 
 	private LinkedList<IGraphChange> transactionalUpdate() throws Exception {
-		System.err.println("transactional update called");
-
-		System.err.println("unchanged: " + unchanged.size());
-		System.err.println("delta: " + delta.size());
-		System.err.println("added: " + added.size());
-
 		LinkedList<IGraphChange> ret = new LinkedList<>();
 
 		IGraphDatabase graph = indexer.getGraph();
@@ -198,8 +193,7 @@ public class GraphModelInserter {
 
 			// references of added object and tracking of changes
 			for (IGraphNode node : addedNodes.keySet()) {
-				ret.addAll(inj.addEReference(node, addedNodes.get(node),
-						addedNodesHash, nodes));
+				ret.addAll(inj.addEReferences(node, addedNodes.get(node), addedNodesHash, nodes));
 			}
 
 			// delete obsolete nodes and change attributes
@@ -275,121 +269,103 @@ public class GraphModelInserter {
 
 			// change references
 			for (String o : delta.keySet()) {
-
 				IHawkObject ob = delta.get(o);
-
 				IGraphNode node = nodes.get(ob.getUriFragment());
 
 				// its null if it was just inserted (above), this is fine.
-				if (node != null) {
+				if (node == null) continue;
 
-					for (IHawkReference r : ((IHawkClass) ob.getType())
-							.getAllReferences()) {
+				for (IHawkReference r : ((IHawkClass) ob.getType()).getAllReferences()) {
 
-						if (ob.isSet(r)) {
+					if (ob.isSet(r)) {
 
-							Object targets = ob.get(r, false);
-							String refname = r.getName();
-							boolean isContainment = r.isContainment();
-							HashSet<String> targetids = new HashSet<>();
+						Object targets = ob.get(r, false);
+						String refname = r.getName();
+						boolean isContainment = r.isContainment();
+						Set<String> targetids = new HashSet<>();
 
-							//
-
-							if (targets instanceof Iterable<?>) {
-
-								for (IHawkObject h : ((Iterable<IHawkObject>) targets)) {
-									if (!h.isProxy())
-										targetids.add(h.getUriFragment());
-									else {
-										addProxyRef(node, h, refname);
-									}
-								}
-							} else {
-								if (!((IHawkObject) targets).isProxy())
-									targetids.add(((IHawkObject) targets)
-											.getUriFragment());
+						if (targets instanceof Iterable<?>) {
+							for (IHawkObject h : ((Iterable<IHawkObject>) targets)) {
+								if (!h.isProxy())
+									targetids.add(h.getUriFragment());
 								else {
-									addProxyRef(node, (IHawkObject) targets,
-											refname);
+									addProxyRef(node, h, refname);
 								}
 							}
-
-							//
-							Iterable<IGraphEdge> graphtargets = node
-									.getOutgoingWithType(refname);
-
-							for (IGraphEdge e : graphtargets) {
-
-								IGraphNode n = e.getEndNode();
-
-								if (targetids.contains(n.getProperty("id"))) {
-									// update changed list
-									targetids.remove(n.getProperty("id"));
-								} else {
-									// System.err.println("reference deleted in model, deleting from graph");
-									// delete removed reference
-
-									// track change deleted reference
-									ret.add(new GraphChangeImpl(false,
-											IGraphChange.REFERENCE, node
-													.getId()
-													+ "::"
-													+ e.getType(), n.getId()
-													+ "", false));
-									e.delete();
-								}
-							}
-
-							for (String s : targetids) {
-
-								IGraphNode dest = nodes.get(s);
-								if (dest != null) {
-									// System.err.println("new reference added to :"+
-									// s);
-									IGraphEdge e = graph.createRelationship(
-											node, dest, refname);
-									if (isContainment)
-										e.setProperty("isContainment", "true");
-									// track change new reference
-									ret.add(new GraphChangeImpl(true,
-											IGraphChange.REFERENCE, node
-													.getId()
-													+ "::"
-													+ e.getType(), dest.getId()
-													+ "", false));
-
-								} else {
-									// proxy reference, handled above
-								}
-							}
-
 						} else {
-							// delete unset references which may have been
-							// previously set
-							String refname = r.getName();
-							Iterable<IGraphEdge> graphtargets = node
-									.getOutgoingWithType(refname);
-							// track change deleted references
-							for (IGraphEdge e : graphtargets) {
-								ret.add(new GraphChangeImpl(false,
-										IGraphChange.REFERENCE, node.getId()
-												+ "::" + e.getType(), e
-												.getEndNode().getId() + "",
-										false));
-								e.delete();
+							if (!((IHawkObject) targets).isProxy())
+								targetids.add(((IHawkObject) targets)
+										.getUriFragment());
+							else {
+								addProxyRef(node, (IHawkObject) targets,
+										refname);
 							}
-
 						}
 
+						//
+						Iterable<IGraphEdge> graphtargets = node
+								.getOutgoingWithType(refname);
+
+						for (IGraphEdge e : graphtargets) {
+							IGraphNode n = e.getEndNode();
+
+							if (targetids.contains(n.getProperty("id"))) {
+								// update changed list
+								targetids.remove(n.getProperty("id"));
+							} else {
+								// delete removed reference
+								e.delete();
+
+								// track change deleted reference
+								ret.add(new GraphChangeImpl(false,
+										IGraphChange.REFERENCE, node.getId()
+												+ "::" + e.getType(), n.getId()
+												+ "", false));
+							}
+						}
+
+						for (String s : targetids) {
+
+							IGraphNode dest = nodes.get(s);
+							if (dest != null) {
+								// add new reference
+								IGraphEdge e = graph.createRelationship(node, dest, refname);
+								if (isContainment) {
+									e.setProperty("isContainment", "true");
+								}
+
+								// track change new reference
+								ret.add(new GraphChangeImpl(true,
+										IGraphChange.REFERENCE, node.getId()
+												+ "::" + e.getType(), dest
+												.getId() + "", false));
+
+							} else {
+								// proxy reference, handled above
+							}
+						}
+
+					} else {
+						// delete unset references which may have been
+						// previously set
+						String refname = r.getName();
+						Iterable<IGraphEdge> graphtargets = node
+								.getOutgoingWithType(refname);
+						// track change deleted references
+						for (IGraphEdge e : graphtargets) {
+							e.delete();
+							ret.add(new GraphChangeImpl(false,
+									IGraphChange.REFERENCE, node.getId() + "::"
+											+ e.getType(), e.getEndNode()
+											.getId() + "", false));
+						}
 					}
-				} else {
-					// System.out.println("WARNING: null node: " + o + " ::: " +
-					// ob.getUriFragment());
-				}
-			}
+
+				} // for (IHawkReference r)
+
+			} // for (String o)
 
 			fileNode.setProperty("revision", s.getCommit().getRevision());
-
 			t.success();
 		} catch (Exception e) {
 			System.err.println("exception in transactionalUpdate()");
