@@ -33,6 +33,11 @@ public class ModelioReference extends ModelioObject implements IHawkReference {
 	}
 
 	@Override
+	public boolean isContainer() {
+		return r.isContainer();
+	}
+
+	@Override
 	public boolean isMany() {
 
 		return r.isMany();

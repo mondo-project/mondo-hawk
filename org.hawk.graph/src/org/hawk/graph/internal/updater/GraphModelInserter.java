@@ -282,6 +282,7 @@ public class GraphModelInserter {
 						Object targets = ob.get(r, false);
 						String refname = r.getName();
 						boolean isContainment = r.isContainment();
+						boolean isContainer = r.isContainer();
 						Set<String> targetids = new HashSet<>();
 
 						if (targets instanceof Iterable<?>) {
@@ -332,6 +333,9 @@ public class GraphModelInserter {
 								IGraphEdge e = graph.createRelationship(node, dest, refname);
 								if (isContainment) {
 									e.setProperty("isContainment", "true");
+								}
+								if (isContainer) {
+									e.setProperty("isContainer", "true");
 								}
 
 								// track change new reference

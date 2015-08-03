@@ -33,6 +33,11 @@ public class IFCReference extends IFCObject implements IHawkReference {
 	}
 
 	@Override
+	public boolean isContainer() {
+		return r.isContainer();
+	}
+
+	@Override
 	public boolean isMany() {
 
 		return r.isMany();

@@ -140,9 +140,18 @@ public class ModelElementNode {
 	}
 
 	public boolean isContainment(String featureName) {
+		return outgoingEdgeWithTypeHasProperty(featureName, "isContainment");
+	}
+
+	public boolean isContainer(String featureName) {
+		return outgoingEdgeWithTypeHasProperty(featureName, "isContainer");
+	}
+
+	private boolean outgoingEdgeWithTypeHasProperty(String featureName,
+			final String propertyName) {
 		Iterator<IGraphEdge> edges = getNode().getOutgoingWithType(featureName).iterator();
 		if (edges.hasNext()) {
-			return edges.next().getProperty("isContainment") != null;
+			return edges.next().getProperty(propertyName) != null;
 		}
 		return false;
 	}

@@ -799,7 +799,7 @@ public class GraphModelBatchInjector {
 	 * @throws Exception
 	 */
 	private void addEdge(IHawkObject from, IHawkObject to,
-			final String edgelabel, boolean isContainment) throws Exception {
+			final String edgelabel, boolean isContainment, boolean isContainer) throws Exception {
 
 		IGraphNode source = null;
 		IGraphNode destination = null;
@@ -839,6 +839,8 @@ public class GraphModelBatchInjector {
 
 				if (isContainment)
 					props.put("isContainment", "true");
+				if (isContainer)
+					props.put("isContainer", "true");
 
 				createReference(edgelabel, source, destination, props, true);
 
@@ -949,6 +951,9 @@ public class GraphModelBatchInjector {
 								if (eReference.isContainment()) {
 									props.put("isContainment", "true");
 								}
+								if (eReference.isContainer()) {
+									props.put("isContainer", "true");
+								}
 
 								createReference(edgelabel, node, dest, props, false);
 							} else {
@@ -979,6 +984,9 @@ public class GraphModelBatchInjector {
 
 							if (eReference.isContainment()) {
 								props.put("isContainment", "true");
+							}
+							if (eReference.isContainer()) {
+								props.put("isContainer", "true");
 							}
 
 							createReference(edgelabel, node, dest, props, false);
@@ -1017,12 +1025,10 @@ public class GraphModelBatchInjector {
 	private boolean addEReferences(IHawkObject eObject) throws Exception {
 
 		boolean atLeastOneSetReference = false;
-		boolean atLeastOneContainmentReference = false;
 
 		for (final IHawkReference eReference : ((IHawkClass) eObject.getType()).getAllReferences()) {
 			if (eObject.isSet(eReference)) {
 				atLeastOneSetReference = true;
-				atLeastOneContainmentReference = atLeastOneContainmentReference || eReference.isContainment();
 
 				final String edgelabel = eReference.getName();
 				// XXX NOTE THIS SPECIFICALLY DOES NOT RESOLVE PROXIES -
@@ -1033,7 +1039,7 @@ public class GraphModelBatchInjector {
 					for (Object destinationEObject : ((Iterable<?>) destinationObject)) {
 						final IHawkObject destinationHawkObject = (IHawkObject) destinationEObject;
 						if (!destinationHawkObject.isProxy()) {
-							addEdge(eObject, destinationHawkObject, edgelabel, eReference.isContainment());
+							addEdge(eObject, destinationHawkObject, edgelabel, eReference.isContainment(), eReference.isContainer());
 						} else {
 							System.err
 									.println("adding proxy [iterable] reference ("
@@ -1049,7 +1055,7 @@ public class GraphModelBatchInjector {
 				} else /* if destination is not iterable */ {
 					final IHawkObject destinationHawkObject = (IHawkObject) destinationObject;
 					if (!destinationHawkObject.isProxy()) {
-						addEdge(eObject, destinationHawkObject, edgelabel, eReference.isContainment());
+						addEdge(eObject, destinationHawkObject, edgelabel, eReference.isContainment(), eReference.isContainer());
 					} else {
 						System.err.println("adding proxy reference ("
 								+ edgelabel

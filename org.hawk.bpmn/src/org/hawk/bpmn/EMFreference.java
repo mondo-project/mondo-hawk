@@ -43,6 +43,11 @@ public class EMFreference extends EMFobject implements IHawkReference {
 	}
 
 	@Override
+	public boolean isContainer() {
+		return r.isContainer();
+	}
+
+	@Override
 	public boolean isMany() {
 
 		return r.isMany();

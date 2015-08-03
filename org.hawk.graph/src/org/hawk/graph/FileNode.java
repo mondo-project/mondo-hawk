@@ -11,7 +11,6 @@
 package org.hawk.graph;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;

@@ -13,6 +13,7 @@ package org.hawk.core.model;
 public interface IHawkReference extends IHawkStructuralFeature {
 
 	boolean isContainment();
+	boolean isContainer();
 
 	//boolean isChangeable();
 
