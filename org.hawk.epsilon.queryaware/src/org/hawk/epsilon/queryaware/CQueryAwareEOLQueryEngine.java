@@ -65,8 +65,10 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine implemen
 
 				IGraphNodeIndex fileIndex = graph.getFileIndex();
 
+				String repoURI = context.get(PROPERTY_REPOSITORYCONTEXT);
+				
 				for (String s : interestingFilesArray) {
-					for (IGraphNode n : fileIndex.query("id", s)) {
+					for (IGraphNode n : fileIndex.query(repoURI, s)) {
 						interestingFileNodes.add(n);
 					}
 				}

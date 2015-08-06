@@ -1406,7 +1406,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 			propertygetter = new QueryAwareGraphPropertyGetter(graph, this);
 
 		StringProperties configuration = new StringProperties();
-		configuration.put(QueryAwareEOLQueryEngine.PROPERTY_ENABLE_CASHING,
+		configuration.put(QueryAwareEOLQueryEngine.PROPERTY_ENABLE_CACHING,
 				true);
 		setDatabaseConfig(configuration);
 
@@ -1441,7 +1441,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 						Object derived = "DERIVATION_EXCEPTION";
 						try {
 							Object enablecashing = getDatabaseConfig()
-									.get(QueryAwareEOLQueryEngine.PROPERTY_ENABLE_CASHING);
+									.get(QueryAwareEOLQueryEngine.PROPERTY_ENABLE_CACHING);
 							if (enablecashing != null
 									&& (enablecashing.equals("true") || enablecashing
 											.equals(true))) {
