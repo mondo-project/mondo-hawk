@@ -1,26 +1,24 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2015 The University of York.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- * 	   Nikolas Matragkas, James Williams, Dimitris Kolovos - initial API and implementation
- *     Konstantinos Barmpis - adaption for use in Hawk
+ *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.core;
+package org.hawk.localfolder;
 
-public abstract class VcsRepository {
+import org.hawk.core.VcsRepository;
 
-	private final String url;
-
-	public VcsRepository(String url) {
-		this.url = url;
+public class LocalFolderRepository extends VcsRepository {
+	public LocalFolderRepository(String url) {
+		super(url);
 	}
 
-	public String getUrl() {
-		return url;
+	@Override
+	public String toString() {
+		return "LocalFolderRepository [getUrl()=" + getUrl() + "]";
 	}
-
 }

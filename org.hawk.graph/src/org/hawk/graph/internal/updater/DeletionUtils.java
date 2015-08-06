@@ -49,13 +49,13 @@ public class DeletionUtils {
 
 	}
 
-	protected void deleteAll(String filepath) throws Exception {
+	protected void deleteAll(String repository, String filepath) throws Exception {
 
 		long start = System.currentTimeMillis();
 
 		try (IGraphTransaction transaction = graph.beginTransaction()) {
 
-			IGraphNode file = graph.getFileIndex().get("id", filepath)
+			IGraphNode file = graph.getFileIndex().get(repository, filepath)
 					.iterator().next();
 
 			System.out.println("deleting nodes from file: "
@@ -73,7 +73,7 @@ public class DeletionUtils {
 			}
 
 			for (IGraphNode node : modelElements) {
-				makeProxyRefs(node, file);
+				makeProxyRefs(node, repository, file);
 			}
 
 			for (IGraphNode node : modelElements) {
@@ -135,7 +135,7 @@ public class DeletionUtils {
 		}
 	}
 
-	protected void makeProxyRefs(IGraphNode modelElement, IGraphNode fileNode) {
+	protected void makeProxyRefs(IGraphNode modelElement, String repositoryURL, IGraphNode fileNode) {
 
 		// handle any incoming references (after dereference, aka other file
 		// ones)
@@ -160,7 +160,7 @@ public class DeletionUtils {
 				// .getNewRelationshipType("file"))
 				// .iterator().next().getEndNode().getProperty("id"));
 
-				String relativeFileURI = new DeletionUtils(graph)
+				String relativeFileURI = repositoryURL + "$" + new DeletionUtils(graph)
 						.getRelativeURI(fileID.toString());
 
 				String relativeElementURI = relativeFileURI + "#"
@@ -179,8 +179,7 @@ public class DeletionUtils {
 						proxies);
 
 				proxydictionary = graph.getOrCreateNodeIndex("proxydictionary");
-				proxydictionary.add(referencingNode, "_proxyRef",
-						relativeFileURI);
+				proxydictionary.add(referencingNode, "_proxyRef", relativeFileURI);
 
 				rel.delete();
 

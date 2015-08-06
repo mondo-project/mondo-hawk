@@ -99,11 +99,11 @@ public class GraphModelBatchInjector {
 
 		boolean isNew = false;
 
+		final String repositoryURL = s.getCommit().getDelta().getRepository().getUrl();
 		IGraphNode fileNode = null;
 		long filerevision = 0L;
 		try {
-			fileNode = ((IGraphIterable<IGraphNode>) fileDictionary.get("id",
-					s.getPath())).getSingle();
+			fileNode = ((IGraphIterable<IGraphNode>) fileDictionary.get(repositoryURL, s.getPath())).getSingle();
 			if (fileNode != null)
 				filerevision = (Long) fileNode.getProperty("revision");
 		} catch (Exception e) {
@@ -127,7 +127,7 @@ public class GraphModelBatchInjector {
 				fileNode = graph.createNode(map, "file");
 
 				Map<String, Object> map2 = new HashMap<>();
-				map2.put("id", s.getPath());
+				map2.put(repositoryURL, s.getPath());
 				fileDictionary.add(fileNode, map2);
 
 				// propagate changes to listeners
@@ -191,7 +191,7 @@ public class GraphModelBatchInjector {
 								+ s.getPath()
 								+ "\nReverting all changes on that file.");
 
-				new DeletionUtils(graph).deleteAll(s.getPath());
+				new DeletionUtils(graph).deleteAll(repositoryURL, s.getPath());
 
 			}
 		}

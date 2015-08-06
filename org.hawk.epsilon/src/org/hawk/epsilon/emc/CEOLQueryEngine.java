@@ -51,15 +51,18 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 	public void load(Map<String, String> context) {
 		final GraphWrapper gw = new GraphWrapper(graph);
 		String sFilePatterns = null;
+		String sRepoPattern = null;
 
-		if (context != null)
+		if (context != null) {
 			sFilePatterns = context.get(PROPERTY_FILECONTEXT);
+			sRepoPattern = context.get(PROPERTY_REPOSITORYCONTEXT);
+		}
 
 		if (sFilePatterns != null) {
 			final String[] filePatterns = sFilePatterns.split(",");
 			try (IGraphTransaction tx = graph.beginTransaction()) {
 				this.files = new HashSet<>();
-				final Set<FileNode> fileNodes = gw.getFileNodes(Arrays.asList(filePatterns));
+				final Set<FileNode> fileNodes = gw.getFileNodes(sRepoPattern, Arrays.asList(filePatterns));
 				for (FileNode fn : fileNodes) {
 					this.files.add(fn.getNode());
 				}

@@ -156,12 +156,13 @@ IMondixView {
 
 			if (id == null && uri == null) {
 				IGraphIterable<IGraphNode> filenodes = fileindex
-						.query("id", "*");
+						.query("*", "*");
 				for (IGraphNode n : filenodes)
 					addToContents(n.getId() + "", n.getProperty("id"));
 
 			} else if (uri != null) {
-				IGraphIterable<IGraphNode> filenodes = fileindex.get("id", uri);
+				// TODO Ask Kostas - would id be the repository URL?
+				IGraphIterable<IGraphNode> filenodes = fileindex.get(id != null ? id : "*", uri);
 				int size = filenodes.size();
 				if (size == 1) {
 					addToContents(filenodes.getSingle().getId() + "", uri);

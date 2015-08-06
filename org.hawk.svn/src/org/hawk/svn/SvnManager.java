@@ -89,8 +89,7 @@ public class SvnManager extends AbstractVcsManager {
 
 			console = c;
 
-			r = new SvnRepository();
-			r.setUrl(vcsloc);
+			r = new SvnRepository(vcsloc);
 			r.setUsername(un);
 			r.setPassword(pw);
 			pw = null;

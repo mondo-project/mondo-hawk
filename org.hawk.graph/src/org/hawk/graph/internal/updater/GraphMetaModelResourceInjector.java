@@ -817,17 +817,9 @@ public class GraphMetaModelResourceInjector {
 	 * @param eClass
 	 */
 	private boolean addMetaClass(IHawkClass eClass) {
-
-		// System.out.println(eClass.getName());
-
 		String id = (eClass).getName();
-
 		objectCount++;
-
 		return createEClassNode(eClass, id);
-
-		// metacdictionary.add(node, "id", id);
-
 	}
 
 	public int getUnset() {

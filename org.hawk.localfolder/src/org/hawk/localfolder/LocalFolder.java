@@ -37,6 +37,8 @@ public class LocalFolder implements IVcsManager {
 
 	private Set<File> previousFiles = new HashSet<>();
 
+	private LocalFolderRepository repository;
+
 	private static int version = 0;
 
 	public LocalFolder() {
@@ -49,6 +51,7 @@ public class LocalFolder implements IVcsManager {
 		hrn = "Local Folder Monitor";
 		console = c;
 		rootLocation = Paths.get(vcsloc).toRealPath();
+		repository = new LocalFolderRepository(vcsloc);
 	}
 
 	@Override
@@ -202,7 +205,7 @@ public class LocalFolder implements IVcsManager {
 
 	@Override
 	public List<VcsCommitItem> getDelta(String string) throws Exception {
-		return getDelta(null, string).getCompactedCommitItems();
+		return getDelta(repository, string).getCompactedCommitItems();
 	}
 
 }

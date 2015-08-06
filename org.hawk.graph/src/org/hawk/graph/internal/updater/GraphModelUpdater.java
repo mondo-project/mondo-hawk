@@ -160,8 +160,8 @@ public class GraphModelUpdater implements IModelUpdater {
 	}
 
 	@Override
-	public void deleteAll(String filepath) throws Exception {
-		new DeletionUtils(indexer.getGraph()).deleteAll(filepath);
+	public void deleteAll(String repository, String filepath) throws Exception {
+		new DeletionUtils(indexer.getGraph()).deleteAll(repository, filepath);
 	}
 
 	@Override

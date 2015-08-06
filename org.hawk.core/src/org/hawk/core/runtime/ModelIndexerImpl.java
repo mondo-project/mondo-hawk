@@ -270,8 +270,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 						try {
 							for (VcsCommitItem c : deleteditems) {
-								for (IModelUpdater u : updaters)
-									u.deleteAll(c.getPath());
+								for (IModelUpdater u : updaters) {
+									final String repositoryURL = c.getCommit().getDelta().getRepository().getUrl();
+									u.deleteAll(repositoryURL, c.getPath());
+								}
 							}
 						} catch (Exception e) {
 							System.err

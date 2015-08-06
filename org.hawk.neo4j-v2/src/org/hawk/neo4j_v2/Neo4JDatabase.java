@@ -448,13 +448,15 @@ public class Neo4JDatabase implements IGraphDatabase {
 	}
 
 	@Override
-	public Set<VcsCommitItem> compareWithLocalFiles(
-			Set<VcsCommitItem> reposItems) {
+	public Set<VcsCommitItem> compareWithLocalFiles(Set<VcsCommitItem> reposItems) {
+		if (reposItems.isEmpty()) {
+			return reposItems;
+		}
 
-		Set<VcsCommitItem> changed = new HashSet<VcsCommitItem>();
+		final VcsCommitItem firstItem = reposItems.iterator().next();
+		final String repositoryURL = firstItem.getCommit().getDelta().getRepository().getUrl();
+		final Set<VcsCommitItem> changed = new HashSet<VcsCommitItem>();
 		changed.addAll(reposItems);
-
-		// System.out.println(currentMode());
 
 		if (graph != null) {
 
@@ -466,50 +468,18 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 				filedictionary = getFileIndex();
 
-				if (filedictionary != null
-						&& filedictionary.query("id", "*").size() > 0) {
+				if (filedictionary != null && filedictionary.query(repositoryURL, "*").iterator().hasNext()) {
 					for (VcsCommitItem r : reposItems) {
 						String rev = "-2";
 						try {
-
-							// System.err.println(r.getPath());
-							// for(GraphNode n:filedictionary.query("id", "*"))
-							// System.err.println(n.getProperty("id")+" : "+n.getProperty("revision"));
-
-							IGraphIterable<IGraphNode> ret = filedictionary.get(
-									"id", r.getPath());
+							IGraphIterable<IGraphNode> ret = filedictionary.get(repositoryURL, r.getPath());
 
 							IGraphNode n = ret.getSingle();
 
 							rev = (String) n.getProperty("revision");
 
 						} catch (Exception e) {
-
-							// console.printerrln("ERROR in accessing: "
-							// + r.getPath()
-							// + " in the filedictionary of the store, "
-							// // +likely store corrupted, please remove
-							// // the store
-							// // from Hawk and let it re-create it");
-							// + "adding it when needed");
-							//
-							// System.err.println("filedictionary contains:\n-");
-							// for (IGraphNode o : filedictionary.query("id",
-							// "*")) {
-							// System.err.print(o.getProperty("id")
-							// + " || containing: ");
-							// int i = 0;
-							// for (IGraphEdge n : o
-							// .getIncomingWithType("file"))
-							// i++;
-							// System.err.println(i
-							// + " incoming edges type 'file'");
-							// }
-							// System.err.println("-");
-
-							// e.printStackTrace();
-							// oldSystemdotexit(1);
-
+							e.printStackTrace();
 						}
 						if (r.getCommit().getRevision().equals(rev))
 							changed.remove(r);
@@ -528,13 +498,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 		}
 
-		try {
-			// graph.shutdown();
-		} catch (Exception e) {
-		}
-
 		return changed;
-
 	}
 
 	public String currentMode() {

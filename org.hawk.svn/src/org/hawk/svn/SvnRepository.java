@@ -18,8 +18,8 @@ public class SvnRepository extends VcsRepository {
 	private String un;
 	private String pw;
 
-	public SvnRepository() {
-
+	public SvnRepository(String url) {
+		super(url);
 	}
 
 	public String getUsername() {

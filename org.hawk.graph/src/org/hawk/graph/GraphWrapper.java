@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.hawk.graph;
 
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -37,15 +38,30 @@ public class GraphWrapper {
 	}
 
 	/**
-	 * Convenience version of {@link #getRawFileNodes(Iterable)} that wraps all
-	 * results as {@link FileNode}s.
+	 * Returns all the file nodes with repository URLs that match the
+	 * <code>repositoryPattern</code> and at least one of the
+	 * <code>patterns</code>.
+	 *
+	 * @param repositoryPattern
+	 *            Pattern for the repository (
+	 *            <code>null<code> or <code>"*"</code>) for all repositories.
+	 * @param filePatterns
+	 *            Patterns for the files (<code>"*"</code> for all
+	 *            repositories). Passing in a <code>null</code> {@link Iterable}
+	 *            is also treated as "*".
 	 */
-	public Set<FileNode> getFileNodes(Iterable<String> patterns) {
+	public Set<FileNode> getFileNodes(String repositoryPattern, Iterable<String> filePatterns) {
 		final IGraphNodeIndex fileIndex = graph.getFileIndex();
+		if (repositoryPattern == null) {
+			repositoryPattern = "*";
+		}
+		if (filePatterns == null) {
+			filePatterns = Arrays.asList("*");
+		}
 
 		final Set<FileNode> files = new LinkedHashSet<>();
-		for (String s : patterns) {
-			for (IGraphNode n : fileIndex.query("id", s)) {
+		for (String s : filePatterns) {
+			for (IGraphNode n : fileIndex.query(repositoryPattern, s)) {
 				files.add(new FileNode(n));
 			}
 		}

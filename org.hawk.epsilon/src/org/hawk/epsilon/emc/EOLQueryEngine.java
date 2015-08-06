@@ -1240,11 +1240,15 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		Object ret = null;
 
 		String interestingFiles = null;
+		String interestingRepos = null;
 
-		if (context != null)
+		if (context != null) {
 			interestingFiles = context.get(PROPERTY_FILECONTEXT);
+			interestingRepos = context.get(PROPERTY_REPOSITORYCONTEXT);
+		}
 
 		if (interestingFiles != null) {
+			// interestingFiles is not used here?
 
 			try {
 
@@ -1370,7 +1374,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			propertygetter = new GraphPropertyGetter(graph, this);
 
 		StringProperties configuration = new StringProperties();
-		configuration.put(EOLQueryEngine.PROPERTY_ENABLE_CASHING, true);
+		configuration.put(EOLQueryEngine.PROPERTY_ENABLE_CACHING, true);
 		setDatabaseConfig(configuration);
 
 		try {
@@ -1404,7 +1408,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 						Object derived = "DERIVATION_EXCEPTION";
 						try {
 							Object enablecashing = getDatabaseConfig().get(
-									EOLQueryEngine.PROPERTY_ENABLE_CASHING);
+									EOLQueryEngine.PROPERTY_ENABLE_CACHING);
 							if (enablecashing != null
 									&& (enablecashing.equals("true") || enablecashing
 											.equals(true))) {

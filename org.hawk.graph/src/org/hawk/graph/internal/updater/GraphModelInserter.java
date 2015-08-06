@@ -12,6 +12,8 @@ package org.hawk.graph.internal.updater;
 
 import java.io.File;
 import java.lang.reflect.Array;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,29 +50,21 @@ import org.hawk.graph.internal.util.GraphUtil;
  */
 public class GraphModelInserter {
 
-	// private ResourceSet modelResourceSet; // model resource set
-	// private File f; // xmi file to import model from
-	// private EmbeddedGraphDatabase graph; // database
-	// private Hashtable<EObject, Long> hash; // temporary hash for new database
-	// // references insertion
-	// private Resource metamodelResource; // metamodel resource
-
 	private static final int maxTransactionalAcceptableLoad = Integer.MAX_VALUE;
 
 	@SuppressWarnings("unused")
 	private int unset = 0; // number of unset references (used for logging)
 
 	private IHawkModelResource resource;
-	private HashMap<String, IHawkObject> delta = new HashMap<>();
-	private HashMap<String, IHawkObject> added = new HashMap<>();
-	private HashMap<String, IHawkObject> unchanged = new HashMap<>();
+	private Map<String, IHawkObject> delta = new HashMap<>();
+	private Map<String, IHawkObject> added = new HashMap<>();
+	private Map<String, IHawkObject> unchanged = new HashMap<>();
 
 	private IModelIndexer indexer;
-	GraphModelBatchInjector inj;
+	private GraphModelBatchInjector inj;
+	private VcsCommitItem s;
 
-	VcsCommitItem s;
-
-	HashMap<String, IGraphNode> nodes = new HashMap<>();
+	private Map<String, IGraphNode> nodes = new HashMap<>();
 
 	public GraphModelInserter(IModelIndexer hawk) {
 		indexer = hawk;
@@ -145,8 +139,9 @@ public class GraphModelInserter {
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
 
+			final String repositoryURL = s.getCommit().getDelta().getRepository().getUrl();
 			IGraphNode fileNode = indexer.getGraph().getFileIndex()
-					.get("id", s.getPath()).iterator().next();
+					.get(repositoryURL, s.getPath()).iterator().next();
 
 			// add new nodes
 			HashMap<IGraphNode, IHawkObject> addedNodes = new HashMap<>();
@@ -260,7 +255,7 @@ public class GraphModelInserter {
 					}
 					//
 
-					remove(node, fileNode);
+					remove(node, repositoryURL, fileNode);
 					// new DeletionUtils(graph).delete(node);
 
 				}
@@ -672,7 +667,8 @@ public class GraphModelInserter {
 
 		graph.exitBatchMode();
 
-		new DeletionUtils(graph).deleteAll(s.getPath());
+		final String repositoryURL = s.getCommit().getDelta().getRepository().getUrl();
+		new DeletionUtils(graph).deleteAll(repositoryURL, s.getPath());
 		ret.addAll(inj.getChanges());
 		inj.clearChanges();
 
@@ -697,25 +693,22 @@ public class GraphModelInserter {
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
 
+			final String repositoryURL = s.getCommit().getDelta().getRepository().getUrl();
 			boolean modelfilealreadypresent = graph.getFileIndex()
-					.get("id", s.getPath()).iterator().hasNext();
+					.get(repositoryURL, s.getPath()).iterator().hasNext();
 
 			if (modelfilealreadypresent) {
 				int delta = 0;
 				HashMap<String, Integer> hashCodes = new HashMap<>();
 
-				for (IGraphEdge e : graph.getFileIndex().get("id", s.getPath())
+				for (IGraphEdge e : graph.getFileIndex().get(repositoryURL, s.getPath())
 						.getSingle().getIncomingWithType("file")) {
 					IGraphNode n = e.getStartNode();
-					// nodeIds.put((String) n.getProperty("id"), n);
+
+					// TODO Ask Kostas - this map only takes into account the name of the file and not the repo: is it safe as is?
 					nodes.put(n.getProperty("id").toString(), n);
-					hashCodes.put((String) n.getProperty("id"),
-							(int) n.getProperty("hashCode"));
-					// if (prev != null) {
-					// System.out.println(">" + prev);
-					// System.out.println(">>" + n);
-					// System.out.println();
-					// }
+
+					hashCodes.put((String) n.getProperty("id"), (int) n.getProperty("hashCode"));
 				}
 				System.err.println("file contains: " + nodes.size() + " ("
 						+ hashCodes.size() + ") nodes in store");
@@ -801,13 +794,13 @@ public class GraphModelInserter {
 
 	}
 
-	private void remove(IGraphNode modelElement, IGraphNode fileNode) {
+	private void remove(IGraphNode modelElement, String repositoryURL, IGraphNode fileNode) {
 
 		DeletionUtils del = new DeletionUtils(indexer.getGraph());
 
 		del.dereference(modelElement);
 
-		del.makeProxyRefs(modelElement, fileNode);
+		del.makeProxyRefs(modelElement, repositoryURL, fileNode);
 
 		del.delete(modelElement);
 	}
@@ -895,13 +888,14 @@ public class GraphModelInserter {
 
 				for (IGraphNode n : resolvedProxies) {
 
-					HashSet<String[]> allProxies = new HashSet<String[]>();
-
+					Map<String[], String> allProxies = new HashMap<>();
 					for (String s : n.getPropertyKeys()) {
 
-						if (s.contains("_proxyRef:"))
-
-							allProxies.add((String[]) n.getProperty(s));
+						if (s.contains("_proxyRef:")) {
+							final String repoURL = s.replaceFirst("_proxyRef:", "").split("[$]", 1)[0];
+							final String[] propertyValue = (String[]) n.getProperty(s);
+							allProxies.put(propertyValue, repoURL);
+						}
 
 					}
 
@@ -911,7 +905,9 @@ public class GraphModelInserter {
 					// }
 					// System.err.println("--------");
 
-					for (String[] proxies : allProxies) {
+					for (Map.Entry<String[], String> entries : allProxies.entrySet()) {
+						final String[] proxies = entries.getKey();
+						final String repoURL = entries.getValue();
 
 						// System.out
 						// .println(new
@@ -919,8 +915,8 @@ public class GraphModelInserter {
 						// .tostring(proxies));
 
 						int sub = proxies[0].indexOf("#/");
-						String fileName = proxies[0].substring(0,
-								sub == -1 ? proxies[0].indexOf("#") : sub);
+						// TODO how to find out repository URL from the proxy?
+						String fileName = proxies[0].substring(0, sub == -1 ? proxies[0].indexOf("#") : sub);
 
 						for (int i = 0; i < proxies.length; i = i + 2) {
 
@@ -928,11 +924,8 @@ public class GraphModelInserter {
 
 							// System.err.println(Arrays.toString(proxies));
 
-							Iterable<IGraphEdge> rels = allNodesWithFile(graph,
-									fileName);
-
+							Iterable<IGraphEdge> rels = allNodesWithFile(graph, repoURL, fileName);
 							if (rels != null) {
-
 								HashSet<IGraphNode> nodes = new HashSet<IGraphNode>();
 								for (IGraphEdge r : rels)
 									nodes.add(r.getStartNode());
@@ -1236,23 +1229,13 @@ public class GraphModelInserter {
 		}
 	}
 
-	private static Iterable<IGraphEdge> allNodesWithFile(IGraphDatabase graph,
-			String file) {
+	private static Iterable<IGraphEdge> allNodesWithFile(IGraphDatabase graph, String repositoryURL, String file) {
 
 		IGraphNodeIndex filedictionary = graph.getFileIndex();
 
-		String[] path = file.replaceAll("\\\\", "/").split("/");
-		String relative = path[path.length - 1];
-
-		// System.out.println(">>>>>"+file);
-		// for(Node n:filedictionary.query("id",
-		// "*"))System.out.println(n.getProperty("id"));
-
-		// System.out.println(">>>>>>>>>>>>>>");
-		// System.out.println(file);
-		// System.out.println("<<<<<<<<<<<<<<<<");
-
-		IGraphNode fileNode = filedictionary.get("id", relative).getSingle();
+		Path path = Paths.get(file);
+		String relative = path.getFileName().toString();
+		IGraphNode fileNode = filedictionary.get(repositoryURL, relative).getSingle();
 
 		if (fileNode != null)
 			return fileNode.getIncomingWithType("file");
