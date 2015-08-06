@@ -25,7 +25,7 @@ public class DeriveFeature {
 	public DeriveFeature() throws Exception {
 	}
 
-	public Object deriveFeature(HashMap<String, EolModule> cashedModules,
+	public Object deriveFeature(HashMap<String, EolModule> cachedModules,
 			IGraphDatabase g, IGraphNode n, EOLQueryEngine containerModel,
 			String propertyName, String EOLScript) throws Exception {
 
@@ -43,10 +43,10 @@ public class DeriveFeature {
 		try {
 
 			// not already parsed
-			if (!cashedModules.containsKey(actualEOLScript)) {
+			if (!cachedModules.containsKey(actualEOLScript)) {
 				// if (cashedModules == null) {
 				// bodyDeclarations.exists(md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public=='true'))
-				System.err.println("adding new module to cashe, key:"
+				System.err.println("adding new module to cache, key:"
 						+ actualEOLScript);
 				currentModule = initModule(g, containerModel);
 
@@ -55,12 +55,12 @@ public class DeriveFeature {
 				for (ParseProblem p : currentModule.getParseProblems())
 					System.err.println("PARSE PROBLEM: " + p);
 
-				cashedModules.put(actualEOLScript, currentModule);
+				cachedModules.put(actualEOLScript, currentModule);
 
 			} else {
 
 				// already parsed
-				currentModule = cashedModules.get(actualEOLScript);
+				currentModule = cachedModules.get(actualEOLScript);
 
 			}
 
@@ -135,9 +135,9 @@ public class DeriveFeature {
 		// configuration.put("DUMP_DATABASE_CONFIG_ON_EXIT", true);
 		// configuration.put("DUMP_MODEL_CONFIG_ON_EXIT", true);
 		// configuration.put("DUMP_FULL_DATABASE_CONFIG_ON_EXIT", true);
-		configuration.put("DATABASE_LOCATION", g.getPath());
+		configuration.put(AbstractEpsilonModel.databaseLocation, g.getPath());
 		configuration.put("name", "Model");
-		configuration.put("ENABLE_CASHING", true);
+		configuration.put(AbstractEpsilonModel.enableCaching, true);
 
 		configuration.put("neostore.nodestore.db.mapped_memory", 3 * x + "M");
 		configuration.put("neostore.relationshipstore.db.mapped_memory", 14 * x

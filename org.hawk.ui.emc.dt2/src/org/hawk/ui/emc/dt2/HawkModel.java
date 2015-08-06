@@ -20,6 +20,7 @@ import org.eclipse.epsilon.eol.models.Model;
 import org.eclipse.epsilon.eol.models.ModelReference;
 import org.eclipse.epsilon.eol.models.java.JavaModel;
 import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.query.IQueryEngine;
 import org.hawk.epsilon.emc.CEOLQueryEngine;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.ui2.util.HUIManager;
@@ -27,7 +28,6 @@ import org.hawk.ui2.util.HUIManager;
 public class HawkModel extends ModelReference {
 
 	public static String PROPERTY_INDEXER_NAME = "databaseName";
-	public static String PROPERTY_FILE_INCLUSION_PATTERN = "FILE";
 	protected IGraphDatabase database = null;
 
 	public HawkModel() {
@@ -42,11 +42,14 @@ public class HawkModel extends ModelReference {
 
 		EOLQueryEngine eolQueryEngine;
 
-		String fip = properties.getProperty(PROPERTY_FILE_INCLUSION_PATTERN);
+		String rip = properties.getProperty(IQueryEngine.PROPERTY_REPOSITORYCONTEXT);
 
+		String fip = properties.getProperty(IQueryEngine.PROPERTY_FILECONTEXT);
+
+		// System.err.println(rip);
 		// System.err.println(fip);
 
-		if (fip.equals(""))
+		if (rip != null && fip != null && rip.equals("") && fip.equals(""))
 			eolQueryEngine = new EOLQueryEngine();
 		else
 			eolQueryEngine = new CEOLQueryEngine();
@@ -55,8 +58,8 @@ public class HawkModel extends ModelReference {
 		eolQueryEngine.setDatabaseConfig(properties);
 
 		//
-		database = HUIManager.getInstance().getGraphByIndexerName(properties
-				.getProperty(PROPERTY_INDEXER_NAME));
+		database = HUIManager.getInstance().getGraphByIndexerName(
+				properties.getProperty(PROPERTY_INDEXER_NAME));
 
 		String[] aliases = properties.getProperty("aliases").split(",");
 		for (int i = 0; i < aliases.length; i++) {

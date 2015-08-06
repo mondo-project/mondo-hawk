@@ -496,7 +496,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 				// System.err.println(getKnownQueryLanguages().keySet());
 
 				IQueryEngine q = knownQueryLanguages
-						.get("org.hawk.epsilon.emc.GraphEpsilonModel");
+						.get("org.hawk.epsilon.emc.EOLQueryEngine");
 				//
 				//
 				Object ret = q.contextlessQuery(graph, query);

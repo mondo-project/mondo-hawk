@@ -40,7 +40,7 @@ public class Runtime_example {
 
 	private static File parent = new File("runtime_data");
 
-	private static final String queryLangID = "org.hawk.epsilon.emc.GraphEpsilonModel";
+	private static final String queryLangID = "org.hawk.epsilon.emc.EOLQueryEngine";
 
 	private static File testquery = new File(
 			"../org.hawk.epsilon/src/org/hawk/epsilon/query/Test_Query.eol");
@@ -172,12 +172,12 @@ public class Runtime_example {
 
 		i.addDerivedAttribute("org.amma.dsl.jdt.dom", "MethodDeclaration",
 				"isPublic", "Boolean", false, true, true,
-				"org.hawk.epsilon.emc.GraphEpsilonModel",
+				queryLangID,
 				"self.modifiers.exists(mod:Modifier|mod.public==true)");
 
 		i.addDerivedAttribute("org.amma.dsl.jdt.dom", "MethodDeclaration",
 				"isStatic", "Boolean", false, true, true,
-				"org.hawk.epsilon.emc.GraphEpsilonModel",
+				queryLangID,
 				"self.modifiers.exists(mod:Modifier|mod.static==true)");
 
 		i.addDerivedAttribute(
@@ -188,7 +188,7 @@ public class Runtime_example {
 				false,
 				true,
 				true,
-				"org.hawk.epsilon.emc.GraphEpsilonModel",
+				queryLangID,
 				"self.returnType.isTypeOf(SimpleType) and self.revRefNav_bodyDeclarations.isTypeOf(TypeDeclaration) and self.returnType.name.fullyQualifiedName == self.revRefNav_bodyDeclarations.name.fullyQualifiedName");
 
 		// i.addIndexedAttribute("org.amma.dsl.jdt.dom", "Modifier", "static");
@@ -246,7 +246,7 @@ public class Runtime_example {
 							i.addDerivedAttribute("org.amma.dsl.jdt.dom",
 									"MethodDeclaration", "isSameReturnType",
 									"Boolean", false, true, true,
-									"org.hawk.epsilon.emc.GraphEpsilonModel",
+									queryLangID,
 									// always false
 									"self.returnType.isTypeOf(MethodDeclaration)");
 
@@ -260,7 +260,7 @@ public class Runtime_example {
 									false,
 									true,
 									true,
-									"org.hawk.epsilon.emc.GraphEpsilonModel",
+									queryLangID,
 									"self.returnType.isTypeOf(SimpleType) and self.revRefNav_bodyDeclarations.isTypeOf(TypeDeclaration) and self.returnType.name.fullyQualifiedName == self.revRefNav_bodyDeclarations.name.fullyQualifiedName");
 
 						}

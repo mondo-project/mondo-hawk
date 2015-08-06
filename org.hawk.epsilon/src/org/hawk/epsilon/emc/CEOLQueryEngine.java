@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -56,13 +57,21 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 		if (context != null) {
 			sFilePatterns = context.get(PROPERTY_FILECONTEXT);
 			sRepoPattern = context.get(PROPERTY_REPOSITORYCONTEXT);
+			sRepoPattern = (sRepoPattern!=null&&sRepoPattern.trim().length()!=0)?sRepoPattern.trim():null;
 		}
 
-		if (sFilePatterns != null) {
-			final String[] filePatterns = sFilePatterns.split(",");
+		System.err.println(sFilePatterns);
+		System.err.println(sRepoPattern);
+		
+		//if (sFilePatterns != null) {
+			final String[] filePatterns = (sFilePatterns != null&&sFilePatterns.trim().length()!=0)?sFilePatterns.split(","):null;
 			try (IGraphTransaction tx = graph.beginTransaction()) {
 				this.files = new HashSet<>();
-				final Set<FileNode> fileNodes = gw.getFileNodes(sRepoPattern, Arrays.asList(filePatterns));
+				
+				List<String> fplist = (filePatterns!=null)?Arrays.asList(filePatterns):null;
+				
+				final Set<FileNode> fileNodes = gw.getFileNodes(sRepoPattern, 
+						fplist);
 				for (FileNode fn : fileNodes) {
 					this.files.add(fn.getNode());
 				}
@@ -109,7 +118,7 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}
+		
 	}
 
 	/**

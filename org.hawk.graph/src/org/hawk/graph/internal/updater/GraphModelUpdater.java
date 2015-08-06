@@ -104,7 +104,7 @@ public class GraphModelUpdater implements IModelUpdater {
 		try {
 			ret.setUnresolvedDerivedProperties((new GraphModelInserter(indexer)
 					.resolveDerivedAttributeProxies(indexer.getGraph(),
-							indexer, "org.hawk.epsilon.emc.GraphEpsilonModel")));
+							indexer, "org.hawk.epsilon.emc.EOLQueryEngine")));
 		} catch (Exception e) {
 			console.printerrln("Exception in updateStore - resolving DERIVED proxies, returning 0:");
 			console.printerrln(e);

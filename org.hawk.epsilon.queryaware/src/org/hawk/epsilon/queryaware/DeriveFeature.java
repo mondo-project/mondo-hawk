@@ -21,6 +21,7 @@ import org.eclipse.epsilon.eol.execute.context.Variable;
 import org.eclipse.epsilon.labs.effectivemetamodel.impl.EffectiveType;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.epsilon.emc.AbstractEpsilonModel;
 
 public class DeriveFeature {
 
@@ -145,9 +146,9 @@ public class DeriveFeature {
 		// configuration.put("DUMP_DATABASE_CONFIG_ON_EXIT", true);
 		// configuration.put("DUMP_MODEL_CONFIG_ON_EXIT", true);
 		// configuration.put("DUMP_FULL_DATABASE_CONFIG_ON_EXIT", true);
-		configuration.put("DATABASE_LOCATION", g.getPath());
+		configuration.put(AbstractEpsilonModel.databaseLocation, g.getPath());
 		configuration.put("name", "Model");
-		configuration.put("ENABLE_CASHING", true);
+		configuration.put(AbstractEpsilonModel.enableCaching, true);
 
 		configuration.put("neostore.nodestore.db.mapped_memory", 3 * x + "M");
 		configuration.put("neostore.relationshipstore.db.mapped_memory", 14 * x

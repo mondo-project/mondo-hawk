@@ -28,8 +28,9 @@ public abstract class AbstractEpsilonModel extends Model {
 	protected HashSet<String> cachedTypes = new HashSet<String>();
 	protected String backendURI = null;
 	protected StringProperties config = null;
-	//TODO try re-enable the use of a cache
-	//protected boolean enableCache = true;
+
+	// TODO try re-enable the use of a cache
+	// protected boolean enableCache = true;
 
 	// protected ModelParser parser;
 
@@ -199,11 +200,11 @@ public abstract class AbstractEpsilonModel extends Model {
 	 * The full path of the database using '/' as separators (if the database
 	 * folder does not exist a new one will be created at that location)
 	 */
-	public final String databaseLocation = "DATABASE_LOCATION";
-	public final String enableCashing = "ENABLE_CASHING";
-	public final String dumpModelConfig = "DUMP_MODEL_CONFIG_ON_EXIT";
-	public final String dumpMinimalDatabaseConfig = "DUMP_DATABASE_CONFIG_ON_EXIT";
-	public final String dumpDatabaseConfig = "DUMP_FULL_DATABASE_CONFIG_ON_EXIT";
+	public final static String databaseLocation = "DATABASE_LOCATION";
+	public final static String enableCaching = "ENABLE_CACHING";
+	public final static String dumpModelConfig = "DUMP_MODEL_CONFIG_ON_EXIT";
+	public final static String dumpMinimalDatabaseConfig = "DUMP_DATABASE_CONFIG_ON_EXIT";
+	public final static String dumpDatabaseConfig = "DUMP_FULL_DATABASE_CONFIG_ON_EXIT";
 
 	@Override
 	public void load(StringProperties properties, String basePath)

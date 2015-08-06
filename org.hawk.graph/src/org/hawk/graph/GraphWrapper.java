@@ -52,16 +52,39 @@ public class GraphWrapper {
 	 */
 	public Set<FileNode> getFileNodes(String repositoryPattern, Iterable<String> filePatterns) {
 		final IGraphNodeIndex fileIndex = graph.getFileIndex();
-		if (repositoryPattern == null) {
+		
+		//NB repo needs total match or no match / files can be partial matches
+		
+		if (repositoryPattern == null && filePatterns == null) {
 			repositoryPattern = "*";
-		}
-		if (filePatterns == null) {
 			filePatterns = Arrays.asList("*");
 		}
-
+			
+		if (repositoryPattern != null && filePatterns == null) {
+			if(repositoryPattern.length()==0)repositoryPattern="*";
+			filePatterns = Arrays.asList("*");
+		}
+		
+		if (repositoryPattern != null && filePatterns != null) {
+		//prey to god they formatted it correctly!
+		}
+		
 		final Set<FileNode> files = new LinkedHashSet<>();
+		
+		if ((repositoryPattern == null || repositoryPattern.length()==0) && filePatterns != null) {
+		//hard case need to naively find all repositories and find file matches
+			
+			for (IGraphNode n : fileIndex.query("*","*")) {
+				for (String s : filePatterns){
+					if(n.getProperty("id").toString().matches(s.trim().replaceAll("\\*","(.\\*)")))files.add(new FileNode(n));			
+				}				
+			}
+			
+			return files;
+		}
+		
 		for (String s : filePatterns) {
-			for (IGraphNode n : fileIndex.query(repositoryPattern, s)) {
+			for (IGraphNode n : fileIndex.query(repositoryPattern, s.trim())) {
 				files.add(new FileNode(n));
 			}
 		}

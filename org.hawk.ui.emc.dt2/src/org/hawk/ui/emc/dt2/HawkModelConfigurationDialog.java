@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.hawk.core.query.IQueryEngine;
 import org.hawk.ui2.util.HUIManager;
 
 public class HawkModelConfigurationDialog extends
@@ -36,6 +37,7 @@ public class HawkModelConfigurationDialog extends
 
 	protected Label uriTextLabel;
 	protected Combo selectIndexer;
+	protected Text t1;
 	protected Text t;
 
 	protected void createGroups(Composite control) {
@@ -80,14 +82,28 @@ public class HawkModelConfigurationDialog extends
 
 		uriTextLabel = new Label(groupContent, SWT.NONE);
 		uriTextLabel
-				.setText("File inclusion pattern (leave blank to include all files in Hawk): ");
+				.setText("Repository inclusion pattern (leave blank to include all repositories in Hawk): ");
+
+		uriTextLabel = new Label(groupContent, SWT.NONE);
+
+		t1 = new Text(groupContent, SWT.BORDER);
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		// gd.widthHint = GridData.GRAB_HORIZONTAL;
+		// gd.minimumWidth = 320;
+		t1.setLayoutData(gd);
+
+		uriTextLabel = new Label(groupContent, SWT.NONE);
+		
+		uriTextLabel = new Label(groupContent, SWT.NONE);
+		uriTextLabel
+				.setText("File inclusion pattern (leave blank to include all files): ");
 
 		uriTextLabel = new Label(groupContent, SWT.NONE);
 
 		t = new Text(groupContent, SWT.BORDER);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		//gd.widthHint = GridData.GRAB_HORIZONTAL;
-		//gd.minimumWidth = 320;
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		// gd.widthHint = GridData.GRAB_HORIZONTAL;
+		// gd.minimumWidth = 320;
 		t.setLayoutData(gd);
 
 		populate();
@@ -125,8 +141,13 @@ public class HawkModelConfigurationDialog extends
 
 		selectIndexer.select(found);
 
+		String repos = properties
+				.getProperty(IQueryEngine.PROPERTY_REPOSITORYCONTEXT);
+
+		t1.setText(repos);
+
 		String files = properties
-				.getProperty(HawkModel.PROPERTY_FILE_INCLUSION_PATTERN);
+				.getProperty(IQueryEngine.PROPERTY_FILECONTEXT);
 
 		t.setText(files);
 
@@ -134,9 +155,14 @@ public class HawkModelConfigurationDialog extends
 
 	protected void storeProperties() {
 		super.storeProperties();
+
+		String repos = t1.getText().trim();
+		if (!repos.equals(""))
+			properties.put(IQueryEngine.PROPERTY_REPOSITORYCONTEXT, repos);
+
 		String files = t.getText().trim();
 		if (!files.equals(""))
-			properties.put(HawkModel.PROPERTY_FILE_INCLUSION_PATTERN, files);
+			properties.put(IQueryEngine.PROPERTY_FILECONTEXT, files);
 
 		if (selectIndexer.getSelectionIndex() != -1)
 			properties.put(HawkModel.PROPERTY_INDEXER_NAME,

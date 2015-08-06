@@ -1247,8 +1247,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			interestingRepos = context.get(PROPERTY_REPOSITORYCONTEXT);
 		}
 
-		if (interestingFiles != null) {
-			// interestingFiles is not used here?
+		if (interestingRepos != null || interestingFiles != null) {
 
 			try {
 
@@ -1391,7 +1390,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		// init eol stuff
 		//
 
-		HashMap<String, EolModule> cashedModules = new HashMap<String, EolModule>();
+		HashMap<String, EolModule> cachedModules = new HashMap<String, EolModule>();
 
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 
@@ -1407,19 +1406,26 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 						Object derived = "DERIVATION_EXCEPTION";
 						try {
-							Object enablecashing = getDatabaseConfig().get(
+
+							// System.out.println(getDatabaseConfig().keySet());
+
+							Object enablecaching = getDatabaseConfig().get(
 									EOLQueryEngine.PROPERTY_ENABLE_CACHING);
-							if (enablecashing != null
-									&& (enablecashing.equals("true") || enablecashing
+
+							// System.out.println(enablecaching);
+
+							if (enablecaching != null
+									&& (enablecaching.equals("true") || enablecaching
 											.equals(true))) {
 
 								derived = new DeriveFeature().deriveFeature(
-										cashedModules, graph, n, this, s, prop);
+										cachedModules, graph, n, this, s, prop);
 
 							} else
 
 								derived = new DeriveFeature().deriveFeature(
-										null, graph, n, this, s, prop);
+										new HashMap<String, EolModule>(),
+										graph, n, this, s, prop);
 
 						} catch (Exception e1) {
 							System.err

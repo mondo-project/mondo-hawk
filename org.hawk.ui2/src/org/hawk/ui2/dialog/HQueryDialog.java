@@ -137,10 +137,24 @@ public class HQueryDialog extends Dialog {
 			queryLanguage.select(0);
 
 		l = new Label(container, SWT.READ_ONLY);
-		l.setText(" Context Files:");
+		l.setText(" Context Repository (exact match or empty):");
 
-		final StyledText contextFiles = new StyledText(container, SWT.NONE);
+		final StyledText contextRepo = new StyledText(container, SWT.NONE);
 		GridData gridData = new GridData();
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.minimumWidth = 250;
+		contextRepo.setLayoutData(gridData);
+		
+		l = new Label(container, SWT.READ_ONLY);
+		l.setText(" Context Files (comma separated (partial)");
+
+		l = new Label(container, SWT.READ_ONLY);
+		
+		l = new Label(container, SWT.READ_ONLY);
+		l.setText(" matches using * as wildcard):");
+		
+		final StyledText contextFiles = new StyledText(container, SWT.NONE);
+		gridData = new GridData();
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.minimumWidth = 250;
 		contextFiles.setLayoutData(gridData);
@@ -169,8 +183,10 @@ public class HQueryDialog extends Dialog {
 
 						if (queryField.getText().startsWith("FILE QUERY: ")) {
 
+							String file1Text = contextRepo.getText();
 							String fileText = contextFiles.getText();
-							if (fileText.trim().equals(""))
+														
+							if (file1Text.trim().equals("")&&fileText.trim().equals(""))
 								resultField
 										.setText(index.query(
 												new File(queryField.getText()
@@ -178,8 +194,12 @@ public class HQueryDialog extends Dialog {
 												.toString());
 							else {
 								Map<String, String> map = new HashMap<>();
+								
 								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_FILECONTEXT,
 										fileText);
+								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_REPOSITORYCONTEXT,
+										file1Text);
+								
 								resultField.setText(index.contextFullQuery(
 										new File(queryField.getText()
 												.substring(12)), ql, map)
@@ -190,13 +210,17 @@ public class HQueryDialog extends Dialog {
 						else {
 
 							String fileText = contextFiles.getText();
-							if (fileText.trim().equals(""))
+							String file1Text = contextRepo.getText();
+							
+							if (file1Text.trim().equals("")&&fileText.trim().equals(""))
 								resultField.setText(index.query(
 										queryField.getText(), ql).toString());
 							else {
 								Map<String, String> map = new HashMap<>();
 								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_FILECONTEXT,
 										fileText);
+								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_REPOSITORYCONTEXT,
+										file1Text);
 								resultField.setText(index.contextFullQuery(
 										queryField.getText(), ql, map)
 										.toString());
