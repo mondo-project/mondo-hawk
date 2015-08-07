@@ -10,10 +10,13 @@
  ******************************************************************************/
 package org.hawk.graph;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphNode;
@@ -42,50 +45,52 @@ public class GraphWrapper {
 	 * <code>repositoryPattern</code> and at least one of the
 	 * <code>patterns</code>.
 	 *
-	 * @param repositoryPattern
-	 *            Pattern for the repository (
-	 *            <code>null<code> or <code>"*"</code>) for all repositories.
+	 * @param repository
+	 *            Either the exact repository URL, or "*", "", or null for looking
+	 *            through all repositories.
 	 * @param filePatterns
-	 *            Patterns for the files (<code>"*"</code> for all
-	 *            repositories). Passing in a <code>null</code> {@link Iterable}
-	 *            is also treated as "*".
+	 *            Patterns for the files. Having <code>"*"</code> as an element
+	 *            or passing a null or empty {@link Iterable} will return all
+	 *            files in the selected repository or repositories.
 	 */
-	public Set<FileNode> getFileNodes(String repositoryPattern, Iterable<String> filePatterns) {
-		final IGraphNodeIndex fileIndex = graph.getFileIndex();
-		
-		//NB repo needs total match or no match / files can be partial matches
-		
-		if (repositoryPattern == null && filePatterns == null) {
-			repositoryPattern = "*";
+	public Set<FileNode> getFileNodes(String repository, Iterable<String> filePatterns) {
+		if (repository == null || repository.trim().length() == 0) {
+			/*
+			 * Use "*" as the default value. This will look through all
+			 * repositories. Note that Lucene only allows exact
+			 * values for the keys of the file index (which use full repository
+			 * URLs), so we'll have to do our own looping.
+			 */
+			repository = "*";
+		}
+		if (filePatterns == null || !filePatterns.iterator().hasNext()) {
 			filePatterns = Arrays.asList("*");
 		}
-			
-		if (repositoryPattern != null && filePatterns == null) {
-			if(repositoryPattern.length()==0)repositoryPattern="*";
-			filePatterns = Arrays.asList("*");
-		}
-		
-		if (repositoryPattern != null && filePatterns != null) {
-		//prey to god they formatted it correctly!
-		}
-		
+
 		final Set<FileNode> files = new LinkedHashSet<>();
-		
-		if ((repositoryPattern == null || repositoryPattern.length()==0) && filePatterns != null) {
-		//hard case need to naively find all repositories and find file matches
-			
-			for (IGraphNode n : fileIndex.query("*","*")) {
-				for (String s : filePatterns){
-					if(n.getProperty("id").toString().matches(s.trim().replaceAll("\\*","(.\\*)")))files.add(new FileNode(n));			
-				}				
+		final IGraphNodeIndex fileIndex = graph.getFileIndex();
+		if ("*".equals(repository)) {
+			final List<Pattern> patterns = new ArrayList<>();
+			for (String s : filePatterns) {
+				patterns.add(Pattern.compile(s.trim().replaceAll("\\*","(.\\*)")));
 			}
-			
-			return files;
-		}
-		
-		for (String s : filePatterns) {
-			for (IGraphNode n : fileIndex.query(repositoryPattern, s.trim())) {
-				files.add(new FileNode(n));
+
+			nodeLoop:
+			for (IGraphNode n : fileIndex.query("*", "*")) {
+				final FileNode fileNode = new FileNode(n);
+				final String fileName = fileNode.getFileName();
+				for (Pattern p : patterns) {
+					if (p.matcher(fileName).matches()) {
+						files.add(fileNode);
+						continue nodeLoop;
+					}
+				}
+			}
+		} else {
+			for (String s : filePatterns) {
+				for (IGraphNode n : fileIndex.query(repository, s.trim())) {
+					files.add(new FileNode(n));
+				}
 			}
 		}
 		return files;
