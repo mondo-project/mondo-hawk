@@ -162,7 +162,7 @@ IMondixView {
 
 			} else if (uri != null) {
 				// TODO Ask Kostas - would id be the repository URL?
-				IGraphIterable<IGraphNode> filenodes = fileindex.get(id != null ? id : "*", uri);
+				IGraphIterable<IGraphNode> filenodes = fileindex.get("id", uri);
 				int size = filenodes.size();
 				if (size == 1) {
 					addToContents(filenodes.getSingle().getId() + "", uri);

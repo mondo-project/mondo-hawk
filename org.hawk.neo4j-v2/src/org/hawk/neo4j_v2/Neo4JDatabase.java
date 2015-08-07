@@ -23,10 +23,10 @@ import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphEdgeIndex;
+import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
-import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.util.FileOperations;
 import org.hawk.neo4j_v2.util.Neo4JBatchUtil;
 import org.hawk.neo4j_v2.util.Neo4JEdge;
@@ -49,6 +49,14 @@ import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
 
 public class Neo4JDatabase implements IGraphDatabase {
 
+	/**
+	 * This plugin's own copy of the FILEINDEX_REPO_SEPARATOR constant from the
+	 * GraphModelBatchInjector.
+	 *
+	 * TODO: refactor {@link #compareWithLocalFiles(Set)} out of this class so
+	 * this constant isn't need here anymore.
+	 */
+	private static final String FILEINDEX_REPO_SEPARATOR = "___";
 	private String loc;
 	private String tempdir;
 
@@ -468,11 +476,13 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 				filedictionary = getFileIndex();
 
-				if (filedictionary != null && filedictionary.query(repositoryURL, "*").iterator().hasNext()) {
+				// TODO: this class shouldn't have to know how we've set up the file index.
+				// Also, why is the Neo4j backend implementing this bit of functionality?
+				if (filedictionary != null && filedictionary.query("id", repositoryURL + FILEINDEX_REPO_SEPARATOR + "*").iterator().hasNext()) {
 					for (VcsCommitItem r : reposItems) {
 						String rev = "-2";
 						try {
-							IGraphIterable<IGraphNode> ret = filedictionary.get(repositoryURL, r.getPath());
+							IGraphIterable<IGraphNode> ret = filedictionary.get("id", repositoryURL + FILEINDEX_REPO_SEPARATOR + r.getPath());
 
 							IGraphNode n = ret.getSingle();
 

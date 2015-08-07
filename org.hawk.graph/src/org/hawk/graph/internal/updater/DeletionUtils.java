@@ -55,8 +55,8 @@ public class DeletionUtils {
 
 		try (IGraphTransaction transaction = graph.beginTransaction()) {
 
-			IGraphNode file = graph.getFileIndex().get(repository, filepath)
-					.iterator().next();
+			IGraphNode file = graph.getFileIndex().get("id",
+					repository + GraphModelBatchInjector.FILEINDEX_REPO_SEPARATOR + filepath).iterator().next();
 
 			System.out.println("deleting nodes from file: "
 					+ file.getProperty("id"));

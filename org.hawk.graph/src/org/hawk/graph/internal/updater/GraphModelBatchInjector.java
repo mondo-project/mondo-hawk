@@ -42,6 +42,7 @@ public class GraphModelBatchInjector {
 
 	public static final String ROOT_DICT_FILE_KEY = "file";
 	public static final String ROOT_DICT_NAME = "rootdictionary";
+	public static final String FILEINDEX_REPO_SEPARATOR = "___";
 
 	// integer array containing the current number of added elements:
 	// (element,((ofType)M->MM)reference,((ofKind)M->MM)reference,(unset(M->M))reference)
@@ -103,7 +104,8 @@ public class GraphModelBatchInjector {
 		IGraphNode fileNode = null;
 		long filerevision = 0L;
 		try {
-			fileNode = ((IGraphIterable<IGraphNode>) fileDictionary.get(repositoryURL, s.getPath())).getSingle();
+			fileNode = ((IGraphIterable<IGraphNode>) fileDictionary.get(
+					"id", repositoryURL + FILEINDEX_REPO_SEPARATOR + s.getPath())).getSingle();
 			if (fileNode != null)
 				filerevision = (Long) fileNode.getProperty("revision");
 		} catch (Exception e) {
@@ -127,7 +129,7 @@ public class GraphModelBatchInjector {
 				fileNode = graph.createNode(map, "file");
 
 				Map<String, Object> map2 = new HashMap<>();
-				map2.put(repositoryURL, s.getPath());
+				map2.put("id", repositoryURL + FILEINDEX_REPO_SEPARATOR + s.getPath());
 				fileDictionary.add(fileNode, map2);
 
 				// propagate changes to listeners
@@ -654,7 +656,6 @@ public class GraphModelBatchInjector {
 
 	private Hashtable<IHawkClass, IGraphNode> hashedeclasses = new Hashtable<>();
 	private Hashtable<IGraphNode, Hashtable<String, Object>> hashedeclassproperties = new Hashtable<>();
-
 	/**
 	 * 
 	 * @param eClass

@@ -142,7 +142,7 @@ public class GraphModelInserter {
 			final String repositoryURL = s.getCommit().getDelta()
 					.getRepository().getUrl();
 			IGraphNode fileNode = indexer.getGraph().getFileIndex()
-					.get(repositoryURL, s.getPath()).iterator().next();
+					.get("id", repositoryURL + GraphModelBatchInjector.FILEINDEX_REPO_SEPARATOR + s.getPath()).iterator().next();
 
 			// add new nodes
 			HashMap<IGraphNode, IHawkObject> addedNodes = new HashMap<>();
@@ -704,14 +704,14 @@ public class GraphModelInserter {
 			final String repositoryURL = s.getCommit().getDelta()
 					.getRepository().getUrl();
 			boolean modelfilealreadypresent = graph.getFileIndex()
-					.get(repositoryURL, s.getPath()).iterator().hasNext();
+					.get("id", repositoryURL + GraphModelBatchInjector.FILEINDEX_REPO_SEPARATOR + s.getPath()).iterator().hasNext();
 
 			if (modelfilealreadypresent) {
 				int delta = 0;
 				HashMap<String, Integer> hashCodes = new HashMap<>();
 
 				for (IGraphEdge e : graph.getFileIndex()
-						.get(repositoryURL, s.getPath()).getSingle()
+						.get("id", repositoryURL + GraphModelBatchInjector.FILEINDEX_REPO_SEPARATOR + s.getPath()).getSingle()
 						.getIncomingWithType("file")) {
 					IGraphNode n = e.getStartNode();
 
@@ -931,7 +931,6 @@ public class GraphModelInserter {
 						// .tostring(proxies));
 
 						int sub = proxies[0].indexOf("#/");
-						// TODO how to find out repository URL from the proxy?
 						String fileName = proxies[0].substring(0,
 								sub == -1 ? proxies[0].indexOf("#") : sub);
 
@@ -1256,7 +1255,7 @@ public class GraphModelInserter {
 
 		Path path = Paths.get(file);
 		String relative = path.getFileName().toString();
-		IGraphNode fileNode = filedictionary.get(repositoryURL, relative)
+		IGraphNode fileNode = filedictionary.get("id", repositoryURL + GraphModelBatchInjector.FILEINDEX_REPO_SEPARATOR + relative)
 				.getSingle();
 
 		if (fileNode != null)
