@@ -21,11 +21,13 @@ import java.util.Set;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EPackage.Registry;
+import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.eclipse.uml2.uml.UMLPackage;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkPackage;
@@ -140,26 +142,19 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 		HashSet<String> keys = new HashSet<>();
 		keys.addAll(globalRegistry.keySet());
 
-		File f = new File("../org.hawk.modelio/models/UML.ecore");
-		File fr = new File("../org.hawk.modelio/models/Types.ecore");
-
-		Resource r = resourceSet.createResource(URI.createFileURI(f.getAbsolutePath()));
-		Resource rr = resourceSet.createResource(URI.createFileURI(fr.getAbsolutePath()));
+		Resource rEcore = EcorePackage.eINSTANCE.eResource();
+		Resource rUML = UMLPackage.eINSTANCE.eResource();
+		//Resource rr = PrimitiveType resourceSet.createResource(URI.createFileURI(fr.getAbsolutePath()));
 		try {
-			r.load(null);
-			rr.load(null);
+			rEcore.load(null);
+			rUML.load(null);
+			//rr.load(null);
 		} catch (IOException e) {
 			System.err.print("WARNING: static metamodel of UML was not found, no static metamodels inserted for this plugin, please insert the relevant metamodels manually");
 		}
 
-		RegisterMeta.registerPackages(r);
-		RegisterMeta.registerPackages(rr);
-
-		ModelioMetaModelResource ret = new ModelioMetaModelResource(r, this);
-		ModelioMetaModelResource ret2 = new ModelioMetaModelResource(rr, this);
-
-		set.add(ret);
-		set.add(ret2);
+		set.add(new ModelioMetaModelResource(rEcore, this));
+		set.add(new ModelioMetaModelResource(rUML, this));
 
 		return set;
 	}

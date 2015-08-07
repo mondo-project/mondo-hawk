@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="build-site">
+	<target name="build-site">
+		<pde.exportFeatures
+			useworkspacecompiledclasses="true"
+			exportsource="true"
+			exporttype="folder"
+			features="org.hawk.emf.feature,org.hawk.epsilon.feature,org.hawk.ifc.feature,org.hawk.localfolder.feature,org.hawk.modelio.feature,org.hawk.osgiserver.feature,org.hawk.svn.feature,org.hawk.ui.feature,org.hawk.neo4jv2.feature"
+			destination="." />
+	</target>
+
+	<target name="publish-site">
+		<eclipse.refreshLocal
+			resource="org.hawk.updatesite"
+			depth="project" />
+
+		<delete dir="${basedir}" includes="artifact.xml,content.xml"/>
+
+		<eclipse.publish.featuresAndBundles
+			repository="file:/${basedir}/"
+			category="file:/${basedir}/category.xml"
+			compress="true">
+			<features dir="${basedir}/features" />
+			<bundles dir="${basedir}/plugins" />
+		</eclipse.publish.featuresAndBundles>
+
+		<tstamp/>
+		<zip
+			basedir="${basedir}"
+			zipfile="hawk-updatesite-${DSTAMP}.zip"
+			includes="features,plugins,*.jar"
+			update="false"/>
+
+		<eclipse.refreshLocal
+			resource="org.hawk.updatesite"
+			depth="project" />
+	</target>
+</project>

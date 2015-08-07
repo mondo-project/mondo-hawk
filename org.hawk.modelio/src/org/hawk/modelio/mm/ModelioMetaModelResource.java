@@ -13,10 +13,10 @@ package org.hawk.modelio.mm;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -29,9 +29,8 @@ import org.hawk.modelio.ModelioPackage;
 
 public class ModelioMetaModelResource implements IHawkMetaModelResource {
 
-	Resource res;
-	IMetaModelResourceFactory p;
-	HashSet<IHawkObject> contents = new HashSet<>();
+	private Resource res;
+	private IMetaModelResourceFactory p;
 
 	@Override
 	public void unload() {
@@ -45,8 +44,8 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 
 	@Override
 	public Set<IHawkObject> getAllContents() {
-		TreeIterator<EObject> it = res.getAllContents();
-		HashSet<IHawkObject> ret = new HashSet<IHawkObject>();
+		final Iterator<EObject> it = res.getAllContents();
+		final Set<IHawkObject> ret = new HashSet<IHawkObject>();
 
 		while (it.hasNext()) {
 			Object o = it.next();
@@ -64,9 +63,9 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 	}
 
 	@Override
-	public void save(OutputStream output, Map<Object, Object> hashMap)
+	public void save(OutputStream output, Map<Object, Object> options)
 			throws IOException {
-		res.save(output, hashMap);
+		res.save(output, options);
 	}
 
 	@Override

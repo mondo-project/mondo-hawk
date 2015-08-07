@@ -3,17 +3,14 @@
    <feature url="features/org.hawk.core.feature_1.0.0.qualifier.jar" id="org.hawk.core.feature" version="1.0.0.qualifier">
       <category name="hawk.core"/>
    </feature>
-   <feature url="features/org.hawk.localfolder.feature_1.0.0.qualifier.jar" id="org.hawk.localfolder.feature" version="1.0.0.qualifier">
+   <feature url="features/org.hawk.svn.feature_1.0.0.qualifier.jar" id="org.hawk.svn.feature" version="1.0.0.qualifier">
       <category name="hawk.connectors"/>
    </feature>
-   <feature url="features/org.hawk.svn.feature_1.0.0.qualifier.jar" id="org.hawk.svn.feature" version="1.0.0.qualifier">
+   <feature url="features/org.hawk.localfolder.feature_1.0.0.qualifier.jar" id="org.hawk.localfolder.feature" version="1.0.0.qualifier">
       <category name="hawk.connectors"/>
    </feature>
    <feature url="features/org.hawk.neo4jv2.feature_1.0.0.qualifier.jar" id="org.hawk.neo4jv2.feature" version="1.0.0.qualifier">
       <category name="hawk.backends"/>
-   </feature>
-   <feature url="features/org.hawk.ifc.feature_1.0.0.qualifier.jar" id="org.hawk.ifc.feature" version="1.0.0.qualifier">
-      <category name="hawk.drivers"/>
    </feature>
    <feature url="features/org.hawk.emf.feature_1.0.0.qualifier.jar" id="org.hawk.emf.feature" version="1.0.0.qualifier">
       <category name="hawk.drivers"/>
@@ -21,13 +18,16 @@
    <feature url="features/org.hawk.modelio.feature_1.0.0.qualifier.jar" id="org.hawk.modelio.feature" version="1.0.0.qualifier">
       <category name="hawk.drivers"/>
    </feature>
+   <feature url="features/org.hawk.ifc.feature_1.0.0.qualifier.jar" id="org.hawk.ifc.feature" version="1.0.0.qualifier">
+      <category name="hawk.drivers"/>
+   </feature>
    <feature url="features/org.hawk.epsilon.feature_1.0.0.qualifier.jar" id="org.hawk.epsilon.feature" version="1.0.0.qualifier">
       <category name="hawk.queries"/>
    </feature>
-   <feature url="features/org.hawk.ui.feature_1.0.0.qualifier.jar" id="org.hawk.ui.feature" version="1.0.0.qualifier">
+   <feature url="features/org.hawk.osgiserver.feature_1.0.0.qualifier.jar" id="org.hawk.osgiserver.feature" version="1.0.0.qualifier">
       <category name="hawk.clients"/>
    </feature>
-   <feature url="features/org.hawk.osgiserver.feature_1.0.0.qualifier.jar" id="org.hawk.osgiserver.feature" version="1.0.0.qualifier">
+   <feature url="features/org.hawk.ui.feature_1.0.0.qualifier.jar" id="org.hawk.ui.feature" version="1.0.0.qualifier">
       <category name="hawk.clients"/>
    </feature>
    <category-def name="hawk.core" label="Hawk Core"/>
