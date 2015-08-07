@@ -104,8 +104,7 @@ public class GraphMetaModelResourceInjector {
 				// if (resourceset == null)
 				// resourceset = metamodelResource.getResourceSet();
 
-				HashSet<IHawkObject> children = metamodelResource
-						.getAllContents();
+				Set<IHawkObject> children = metamodelResource.getAllContents();
 
 				for (IHawkObject child : children) {
 
@@ -294,8 +293,7 @@ public class GraphMetaModelResourceInjector {
 				// if (resourceset == null)
 				// resourceset = metamodelResource.getResourceSet();
 
-				HashSet<IHawkObject> children = metamodelResource
-						.getAllContents();
+				Set<IHawkObject> children = metamodelResource.getAllContents();
 
 				for (IHawkObject child : children) {
 

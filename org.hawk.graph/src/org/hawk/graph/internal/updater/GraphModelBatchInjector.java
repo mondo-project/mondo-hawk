@@ -148,7 +148,7 @@ public class GraphModelBatchInjector {
 
 				// Iterator<HawkObject> resc = res.getAllContents();
 
-				HashSet<IHawkObject> children = r.getAllContentsSet();
+				Set<IHawkObject> children = r.getAllContentsSet();
 
 				startTime = System.nanoTime();
 
@@ -215,7 +215,7 @@ public class GraphModelBatchInjector {
 	 * @return
 	 */
 	private int[] parseResource(IGraphNode originatingFile,
-			ParseOptions parseOption, HashSet<IHawkObject> children)
+			ParseOptions parseOption, Set<IHawkObject> children)
 			throws Exception {
 
 		graph.enterBatchMode();

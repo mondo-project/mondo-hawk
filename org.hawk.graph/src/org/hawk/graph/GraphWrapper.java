@@ -10,13 +10,10 @@
  ******************************************************************************/
 package org.hawk.graph;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphNode;

@@ -14,7 +14,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.uml2.uml,
  org.modelio.metamodel.emfapi,
  org.modelio.core.kernel,
- org.modelio.core.project.data
+ org.modelio.core.project.data,
+ org.modelio.xmi;bundle-version="3.2.0",
+ org.slf4j.api;bundle-version="1.7.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Import-Package: org.modelio.metamodel.data

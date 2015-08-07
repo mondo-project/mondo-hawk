@@ -12,20 +12,20 @@ package org.hawk.modelio.mm;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.hawk.modelio.ModelioClass;
-import org.hawk.modelio.ModelioPackage;
-
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkObject;
+import org.hawk.modelio.ModelioClass;
+import org.hawk.modelio.ModelioPackage;
 
 public class ModelioMetaModelResource implements IHawkMetaModelResource {
 
@@ -36,31 +36,15 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 	@Override
 	public void unload() {
 		res = null;
-
 	}
 
-	// @Override
-	// public Resource getEMFResource() {
-	// return res;
-	//
-	// }
-	//
-	// @Override
-	// public ResourceSet getEMFResourceSet() {
-	// return set;
-	//
-	// }
-
 	public ModelioMetaModelResource(Resource r, IMetaModelResourceFactory pa) {
-
 		res = r;
 		p = pa;
-
 	}
 
 	@Override
-	public HashSet<IHawkObject> getAllContents() {
-
+	public Set<IHawkObject> getAllContents() {
 		TreeIterator<EObject> it = res.getAllContents();
 		HashSet<IHawkObject> ret = new HashSet<IHawkObject>();
 
@@ -72,7 +56,6 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 				ret.add(new ModelioPackage((EPackage) o, this));
 		}
 		return ret;
-
 	}
 
 	@Override
@@ -81,16 +64,14 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 	}
 
 	@Override
-	public void save(OutputStream output, HashMap<Object, Object> hashMap)
+	public void save(OutputStream output, Map<Object, Object> hashMap)
 			throws IOException {
 		res.save(output, hashMap);
 	}
 
 	@Override
 	public String toString() {
-
 		return res.getURI().toString();
-
 	}
 
 }

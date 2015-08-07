@@ -68,7 +68,7 @@ These instructions are from a clean download of an Eclipse Luna Modelling distri
     * ui
     * RCPTARGET/uml2_3.2
     * vaudit
-    * xmi (you'll need to edit its `META-INF/MANIFEST.MF` file and remove its dependency on `org.modelio.model.browser`)
+    * xmi (edit its `META-INF/MANIFEST.MF` file, removing its dependency on `org.modelio.model.browser` and exporting the `org.modelio.xmi.generation` package)
 4. Open the `org.hawk.targetplatform/org.hawk.targetplatform.target` file, wait for the target definition to be resolved and click on `Set as Target Platform`.
 5. Close the `_hawk_runtime_example` project (it is an example project running Hawk in standalone mode) if you do not need it.
 6. Close the experimental `org.hawk.epsilon.queryaware` project if you do not need it. If you do, you'll need to import the `StaticAnalysis` projects within [epsilonlabs](https://github.com/epsilonlabs/epsilonlabs) and the [effectivemetamodel](https://github.com/wrwei/org.eclipse.epsilon.labs.effectivemetamodel) project.

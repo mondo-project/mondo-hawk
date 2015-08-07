@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.hawk.core.model;
 
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 public interface IHawkModelResource extends IHawkResource {
 
@@ -20,7 +20,7 @@ public interface IHawkModelResource extends IHawkResource {
 
 	Iterator<IHawkObject> getAllContents();
 
-	HashSet<IHawkObject> getAllContentsSet();
+	Set<IHawkObject> getAllContentsSet();
 
 	int getSignature(IHawkObject o);
 }

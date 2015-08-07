@@ -12,14 +12,14 @@ package org.hawk.core.model;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.hawk.core.IMetaModelResourceFactory;
 
 public interface IHawkMetaModelResource extends IHawkResource {
 
-	HashSet<IHawkObject> getAllContents();
+	Set<IHawkObject> getAllContents();
 
 	// returns the factory used to create this resource
 	IMetaModelResourceFactory getMetaModelResourceFactory();
@@ -27,7 +27,7 @@ public interface IHawkMetaModelResource extends IHawkResource {
 	// saves the resource to an output stream (such as a string writer), with
 	// optional options "options" - used to persist the metamodel into the
 	// database for re-creation upon rebooting of hawk
-	void save(OutputStream output, HashMap<Object, Object> options)
+	void save(OutputStream output, Map<Object, Object> options)
 			throws IOException;
 
 }

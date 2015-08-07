@@ -12,8 +12,8 @@ package org.hawk.emf.metamodel;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EClass;
@@ -80,7 +80,7 @@ public class EMFMetaModelResource implements IHawkMetaModelResource {
 	}
 
 	@Override
-	public void save(OutputStream output, HashMap<Object, Object> hashMap)
+	public void save(OutputStream output, Map<Object, Object> hashMap)
 			throws IOException {
 		res.save(output, hashMap);
 	}

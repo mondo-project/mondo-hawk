@@ -4,19 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.uml2.uml.Element;
 import org.eclipse.uml2.uml.Model;
-import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl;
-import org.eclipse.uml2.uml.resource.UMLResource;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
@@ -38,17 +33,21 @@ import org.modelio.vbasic.progress.NullProgress;
 import org.modelio.vcore.smkernel.mapi.MObject;
 import org.modelio.xmi.generation.ExportServices;
 import org.modelio.xmi.generation.GenerationProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ModelioModelResource implements IHawkModelResource {
 
-	File modelioProj;
-	private IModelResourceFactory parser;
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioModelResource.class);
+
+	private File modelioProj;
+	private final IModelResourceFactory parser;
 
 	@Override
 	public void unload() {
 		modelioProj = null;
 	}
-	
+
 	public ModelioModelResource(File f, IModelResourceFactory p) {
 		parser = p;
 		modelioProj = f;
@@ -60,150 +59,88 @@ public class ModelioModelResource implements IHawkModelResource {
 	}
 
 	@Override
-	public HashSet<IHawkObject> getAllContentsSet() {
-
-		HashSet<IHawkObject> allElements = new HashSet<IHawkObject>();
-		
-		Model modelioElements = null;
-		
+	public Set<IHawkObject> getAllContentsSet() {
 		try {
-			modelioElements = getModel(modelioProj.getCanonicalPath());
-		} catch (IOException e) {
+			final Model modelioElements = getModel(modelioProj.getCanonicalPath());
+			Set<IHawkObject> allElements = new HashSet<IHawkObject>();
 
-		}
-		
-		if (modelioElements != null){
 			EList<Element> all = modelioElements.allOwnedElements();
-			
-			for (Element e:all){
+			for (Element e : all) {
 				allElements.add(new ModelioObject(e));
 			}
+			return allElements;
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage(), e);
+			return Collections.emptySet();
 		}
-		
-		return allElements;
-
 	}
-	
-	private Model getModel(String path){
-       //Load a Modelio project 
-		Model m = null;
-        
-        //Start by loading the Modelio Metamodel
-        MetamodelLoader.Load();
 
-        //Load the description of a given project
-        //Path p = Paths.get("/home/shah/modelio/workspace/Project2/project.conf");
-        Path p = Paths.get("/media/titan-data/Hawk/uk.ac.york.cs.mde.hawk.modelio/samples/Project2/project.conf");
-       // Path p = Paths.get(path);
-        System.err.println("Path is: "+ path);
+	private Model getModel(String path) {
+		// Start by loading the Modelio Metamodel
+		MetamodelLoader.Load();
 
-        ProjectDescriptor pd;
-        GProject gp =null;
+		// Load the description of a given project
+		GProject gp = null;
 		try {
-			pd = new ProjectDescriptorReader().read(p, DefinitionScope.LOCAL);
+			final String modulesPath = System.getProperty(ModelioModelFactory.MODULES_PATH_PROPERTY);
+			if (modulesPath == null) {
+				LOGGER.error(ModelioModelFactory.MODULES_PATH_PROPERTY
+					+ " has not been set to the path to the Modelio modules directory: cannot parse {}",
+					path);
+				return null;
+			}
+			final Path fms = Paths.get(modulesPath);
 
+			final Path p = modelioProj.toPath();
+			LOGGER.info("Loading {}", p);
+			ProjectDescriptor pd = new ProjectDescriptorReader().read(p, DefinitionScope.LOCAL);
 
-			//Load the project
-			Path fms = Paths.get(System.getProperty("java.io.tmpdir")+"/.modelio/3.2/modules");
-			//@SuppressWarnings("deprecation")
-			gp = (GProject) GProjectFactory.openProject(pd, new NoneAuthData(), new FileModuleStore(fms), new NullProgress());
+			gp = (GProject) GProjectFactory.openProject(pd, new NoneAuthData(),
+					new FileModuleStore(fms), null, new NullProgress());
 
+			// Navigate through the modelio model
+			for (IProjectFragment ipf : gp.getOwnFragments()) {
+				if (ipf.getType().equals(FragmentType.EXML)) {
 
-        //Navigate through the modelio model
-        for ( IProjectFragment ipf :  gp.getOwnFragments()){
-            if(ipf.getType().equals(FragmentType.EXML)){
+					ExmlFragment ef = (ExmlFragment) ipf;
 
-                ExmlFragment ef = (ExmlFragment)ipf;
+					Iterator<MObject> iterator = ef.doGetRoots().iterator();
+					Project o = (Project) iterator.next();
 
-                Iterator<MObject> iterator = ef.doGetRoots().iterator(); 
-                Project o = (Project) iterator.next();
-                
-                //Get the Model package of the first fragment
-                Package entryPoint = o.getModel();
+					// Get the Model package of the first fragment
+					Package entryPoint = o.getModel();
 
-                //Specify the XMI file
-               // File file = new File("/tmp/export.xmi");
+					// XMI Export
 
-                
-                // XMI Export
+					// Initiate the generation properties
+					GenerationProperties genProp = GenerationProperties.getInstance();
+					genProp.initialize(new MModelServices(gp));
+					genProp.setTimeDisplayerActivated(false);
+					genProp.setSelectedPackage(entryPoint);
 
-                    //Initiate the generation properties
-                    GenerationProperties genProp = GenerationProperties.getInstance();
-                    genProp.initialize(new MModelServices(gp));
-                    genProp.setTimeDisplayerActivated(false);
-                    genProp.setSelectedPackage(entryPoint);
-                   // genProp.setFilePath(file);
-                    
-                    genProp.setSelectedPackage(entryPoint);
-                   // genProp.setRoundtripEnabled(false);
-
-                    
-                    //Create a EMF resource
-                   // Resource resource = createResource(file.getAbsolutePath());
-                     
-                    //XMI Export
-                    ExportServices exportService = new ExportServices();
-                    //exportService.createEcoreModel(resource, null);
-                    m= exportService.createEcoreModel(entryPoint, null);
-               
-
-            }
-        }
+					// XMI Export
+					ExportServices exportService = new ExportServices();
+					return exportService.createEcoreModel(entryPoint, null);
+				}
+			}
 		} catch (IOException e1) {
-
-		}finally{
-			if (gp !=null)
-			gp.close();
+			LOGGER.error(e1.getMessage(), e1);
+		} finally {
+			if (gp != null) {
+				gp.close();
+			}
 		}
-		return m;
+
+		return null;
 	}
 
 	@Override
 	public String getType() {
 		return parser.getType();
 	}
+
 	@Override
 	public int getSignature(IHawkObject o) {
 		return o.hashCode();
 	}
-    private static Resource createResource(final String resourcePath) {
-        File file = new File(resourcePath);
-
-        if (!file.exists()) {
-            file.getParentFile().mkdirs();
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-               // Xmi.LOG.error(e);
-            }
-        }
-
-        ResourceSet resourceSet2 = new ResourceSetImpl();
-
-        // Register the default resource factory -- only needed for
-        // stand-alone!
-
-        //resourceSet2.getPackageRegistry().put(org.eclipse.uml2.uml.UMLPackage.eNS_URI,        UMLPackage.eINSTANCE);
-
-        resourceSet2.getResourceFactoryRegistry().getExtensionToFactoryMap()
-        .put(UMLResource.FILE_EXTENSION, UMLResource.Factory.INSTANCE);
-        Map<URI, URI> uriMap = resourceSet2.getURIConverter().getURIMap();
-
-        //URI uri = URI.createURI("jar:file:/D:/work/phoenix/toolkit/modeliotool/plugins.org.eclipse.uml2.uml.resources_org.eclipse.uml2.uml.resources_3.1.100.v201008191510.jar!/"); // for example
-        URI uri = URI.createURI("jar:file:/media/titan-data/experiments-parsers/modelio/modelio3.1-src/RCPTARGET/uml2_3.2/plugins/org.eclipse.uml2.uml.resources_3.1.100.v201008191510.jar!/");
-        uriMap.put(URI.createURI(UMLResource.LIBRARIES_PATHMAP), uri.appendSegment("libraries").appendSegment(""));
-        uriMap.put(URI.createURI(UMLResource.METAMODELS_PATHMAP), uri.appendSegment("metamodels").appendSegment(""));
-        uriMap.put(URI.createURI(UMLResource.PROFILES_PATHMAP), uri.appendSegment("profiles").appendSegment(""));
-        resourceSet2.getResourceFactoryRegistry().getExtensionToFactoryMap()
-        .put(Resource.Factory.Registry.DEFAULT_EXTENSION,
-                new UMLResourceFactoryImpl());
-
-        // Get the URI of the model file.
-
-        URI fileURI2 = URI.createFileURI(file.getAbsolutePath());
-        Resource resource2 = resourceSet2.createResource(fileURI2);
-       
-        return resource2;
-    }
-	
 }

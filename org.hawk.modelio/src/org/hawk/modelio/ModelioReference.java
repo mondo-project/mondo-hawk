@@ -14,18 +14,12 @@ public class ModelioReference extends ModelioObject implements IHawkReference {
 	public ModelioReference(EReference re) {
 		super(re);
 		r = re;
-
 	}
 
 	@Override
 	public String getName() {
 		return r.getName();
 	}
-
-	// @Override
-	// public EStructuralFeature getEMFreference() {
-	// return r;
-	// }
 
 	@Override
 	public boolean isContainment() {
@@ -42,24 +36,6 @@ public class ModelioReference extends ModelioObject implements IHawkReference {
 
 		return r.isMany();
 	}
-
-	// @Override
-	// public boolean isChangeable() {
-	//
-	// return r.isChangeable();
-	// }
-
-	// @Override
-	// public int getUpperBound() {
-	//
-	// return r.getUpperBound();
-	// }
-
-	// @Override
-	// public HawkClass getType() {
-	//
-	// return new EMFclass((EClass) r.getEType());
-	// }
 
 	@Override
 	public boolean isOrdered() {

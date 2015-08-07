@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
@@ -17,24 +19,13 @@ import org.modelio.gproject.module.catalog.FileModuleStore;
 import org.modelio.metamodel.data.MetamodelLoader;
 import org.modelio.vbasic.auth.NoneAuthData;
 import org.modelio.vbasic.progress.NullProgress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ModelioModelFactory implements IModelResourceFactory {
 
-	String type = "uk.ac.york.cs.mde.hawk.ifc.model.ModelioModelFactory";
-	String metamodeltype = "com.googlecode.hawk.emf.metamodel.EMFMetaModelParser";
-	HashSet<String> modelExtensions;
-
-	public ModelioModelFactory() {
-		modelExtensions = new HashSet<String>();
-
-		modelExtensions.add("conf");
-
-	}
-
-	public void init(String t, String t2) {
-		type = t;
-		metamodeltype = t2;
-	}
+	static final String MODULES_PATH_PROPERTY = "org.hawk.modelio.modules.path";
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioModelFactory.class);
 
 	@Override
 	public String getType() {
@@ -43,72 +34,56 @@ public class ModelioModelFactory implements IModelResourceFactory {
 
 	@Override
 	public IHawkModelResource parse(File f) {
-
 		return new ModelioModelResource(f, this);
-
 	}
-
-
 
 	@Override
 	public void shutdown() {
-		type = null;
-		modelExtensions = null;
+		// nothing to do!
 	}
 
 	@Override
-	public HashSet<String> getModelExtensions() {
-
-		return modelExtensions;
-
+	public Set<String> getModelExtensions() {
+		return new HashSet<String>(Arrays.asList("conf"));
 	}
 
 	@Override
-	public boolean canParse(File f)  {
-		boolean parseable = false;
-		
-		if(!f.canRead() && !f.isFile() && !f.getName().endsWith("conf")){
+	public boolean canParse(File f) {
+		if (!f.canRead() || !f.isFile() || !f.getName().endsWith("conf")) {
 			return false;
 		}
-        //Load a Modelio project 
-        
-        //Start by loading the Modelio Metamodel
-        MetamodelLoader.Load();
 
+		// Start by loading the Modelio Metamodel
+		MetamodelLoader.Load();
 
-        ProjectDescriptor pd;
-		try { 
-			String path = f.getCanonicalPath();
-             
-			//Load the description of a given project
+		try {
+			final String modulesPath = System.getProperty(MODULES_PATH_PROPERTY);
+			if (modulesPath == null) {
+				LOGGER.error(MODULES_PATH_PROPERTY + " has not been set to the path to the Modelio modules directory: cannot parse {}", f);
+				return false;
+			}
+			final Path fms = Paths.get(modulesPath);
 
-			Path p = Paths.get(path);
-			pd = new ProjectDescriptorReader().read(p, DefinitionScope.LOCAL);
-		
-			//Load the project
-			Path fms = Paths.get("/home/shah/.modelio/3.0/modules");
-        	@SuppressWarnings("deprecation")
-			GProject gp = GProjectFactory.openProject(pd, new NoneAuthData(), new FileModuleStore(fms), new NullProgress());
+			// Load the description of a given project
+			final Path p = Paths.get(f.getCanonicalPath());
+			final ProjectDescriptorReader reader = new ProjectDescriptorReader();
+			final ProjectDescriptor pd = reader.read(p, DefinitionScope.LOCAL);
+
+			// Load the project
+			final GProject gp = GProjectFactory.openProject(pd, new NoneAuthData(),
+					new FileModuleStore(fms), null, new NullProgress());
 			gp.close();
-			parseable= true;
+
+			return true;
 		} catch (IOException e) {
-			parseable= false;
+			LOGGER.error(e.getMessage(), e);
+			return false;
 		}
-
-		return parseable;
-
-	}
-
-	
-	public String getMetaModelType() {
-		return metamodeltype;
 	}
 
 	@Override
 	public String getHumanReadableName() {
-		// TODO Auto-generated method stub
 		return "Modelio parser for Hawk";
 	}
-
 
 }
