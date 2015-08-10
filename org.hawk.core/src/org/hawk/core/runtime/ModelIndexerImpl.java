@@ -150,7 +150,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 								monitorTempDir);
 						temp.mkdir();
 
-						Set<VcsCommitItem> currreposchangeditems = new HashSet<VcsCommitItem>();
 						Set<VcsCommitItem> deleteditems = new HashSet<VcsCommitItem>();
 
 						// limit to "interesting" files
@@ -190,7 +189,15 @@ public class ModelIndexerImpl implements IModelIndexer {
 							}
 						}
 
-						currreposchangeditems = graph
+						//FIXME
+						
+						LinkedList<IGraphChangeDescriptor> changes = new LinkedList<>();
+						
+						HashMap<VcsCommitItem, IHawkModelResource> fileToResourceMap = new HashMap<>();
+						
+						for(IModelUpdater u : getUpdaters()){
+						
+							Set<VcsCommitItem> 	currreposchangeditems = u
 								.compareWithLocalFiles(interestingfiles);
 
 						// create temp files with changed repos files
@@ -200,8 +207,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 									+ " HAS CHANGED (" + s.getChangeType()
 									+ "), PROPAGATING CHANGES");
 
-							String[] a = s.getPath().replaceAll("\\\\", "/")
-									.split("/");
+							String[] a = s.getPath().split("/");
 
 							if (a.length > 1) {
 								String path = monitorTempDir;
@@ -212,14 +218,12 @@ public class ModelIndexerImpl implements IModelIndexer {
 									path = path + "/" + a[ii];
 
 								}
-								temp = new File(path.replaceAll("\\\\", "/")
-										+ "/" + a[a.length - 1]);
+								temp = new File(path + "/" + a[a.length - 1]);
 							} else
-								temp = new File(monitorTempDir.replaceAll(
-										"\\\\", "/")
-										+ "/"
-										+ s.getPath().replaceAll("\\\\", "/"));
+								temp = new File(monitorTempDir	+ "/"
+										+ s.getPath());
 
+							if(!temp.exists())							
 							m.importFiles(s.getPath(), temp);
 
 						}
@@ -227,23 +231,17 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 						// int[] upd = { 0, 0, 0 };
 
-						boolean careAboutResources = false;
-
-						for (IModelUpdater u : getUpdaters())
-							if (u.caresAboutResources()) {
-								careAboutResources = true;
-								break;
-							}
-
 						// changedfiles / resourcessd
-						HashMap<VcsCommitItem, IHawkModelResource> map = new HashMap<>();
-						for (VcsCommitItem f : currreposchangeditems)
-							map.put(f, null);
 
-						if (careAboutResources) {
+						for (VcsCommitItem f : currreposchangeditems)
+							fileToResourceMap.put(f, null);
+
+						if (u.caresAboutResources()) {
 
 							for (VcsCommitItem f : currreposchangeditems) {
 
+								if(fileToResourceMap.get(f)!=null)continue;
+								
 								String[] split = f.getPath().split("\\.");
 								String extension = split[split.length - 1];
 
@@ -259,7 +257,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 								} else {
 									IHawkModelResource r = getModelParserWithModelExtension(
 											extension).parse(file);
-									map.put(f, r);
+									fileToResourceMap.put(f, r);
 								}
 
 							}
@@ -270,10 +268,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 						try {
 							for (VcsCommitItem c : deleteditems) {
-								for (IModelUpdater u : updaters) {
-									final String repositoryURL = c.getCommit().getDelta().getRepository().getUrl();
-									u.deleteAll(repositoryURL, c.getPath());
-								}
+									u.deleteAll(c.getCommit().getDelta().getRepository().getUrl(), c.getPath());								
 							}
 						} catch (Exception e) {
 							System.err
@@ -281,17 +276,14 @@ public class ModelIndexerImpl implements IModelIndexer {
 							e.printStackTrace();
 						}
 
-						LinkedList<IGraphChangeDescriptor> changes = new LinkedList<>();
-
 						if (metamodelchanges.size() > 0) {
 							changes.addAll(metamodelchanges);
 							metamodelchanges.clear();
 						}
 
-						for (IModelUpdater u : getUpdaters()) {
 							try {
 								if (currreposchangeditems.size() > 0)
-									changes.add(u.updateStore(map));
+									changes.add(u.updateStore(fileToResourceMap));
 							} catch (Exception e) {
 								console.printerrln("updater: " + u
 										+ "failed to update store");
@@ -299,7 +291,12 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 							}
 						}
-
+						
+						for(IHawkModelResource r:fileToResourceMap.values()){
+							if(r!=null)
+								r.dispose();							
+						}
+						
 						// FIXME manage changes (propagate to mondix / derived
 						// updaters etc)
 
@@ -354,8 +351,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 							}
 						}
 						// delete temporary files
-						// TODO remove if you want non temp local files (for
-						// example using git)
 						if (!FileOperations.deleteFiles(
 								new File(monitorTempDir), true))
 							console.printerrln("error in deleting temporary local vcs files");

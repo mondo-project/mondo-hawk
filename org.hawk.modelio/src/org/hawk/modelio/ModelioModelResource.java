@@ -143,4 +143,10 @@ public class ModelioModelResource implements IHawkModelResource {
 	public int getSignature(IHawkObject o) {
 		return o.hashCode();
 	}
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		
+	}
 }

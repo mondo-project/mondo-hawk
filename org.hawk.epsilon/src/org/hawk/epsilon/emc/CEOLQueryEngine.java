@@ -52,25 +52,26 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 	public void load(Map<String, String> context) {
 		final GraphWrapper gw = new GraphWrapper(graph);
 		String sFilePatterns = null;
-		String sRepoPattern = null;
+		String sRepoPatterns = null;
 
 		if (context != null) {
 			sFilePatterns = context.get(PROPERTY_FILECONTEXT);
-			sRepoPattern = context.get(PROPERTY_REPOSITORYCONTEXT);
-			sRepoPattern = (sRepoPattern!=null&&sRepoPattern.trim().length()!=0)?sRepoPattern.trim():null;
+			sRepoPatterns = context.get(PROPERTY_REPOSITORYCONTEXT);
 		}
 
 		System.err.println(sFilePatterns);
-		System.err.println(sRepoPattern);
+		System.err.println(sRepoPatterns);
 		
 		//if (sFilePatterns != null) {
 			final String[] filePatterns = (sFilePatterns != null&&sFilePatterns.trim().length()!=0)?sFilePatterns.split(","):null;
+			final String[] repoPatterns = (sRepoPatterns != null&&sRepoPatterns.trim().length()!=0)?sRepoPatterns.split(","):null;
 			try (IGraphTransaction tx = graph.beginTransaction()) {
 				this.files = new HashSet<>();
 				
 				List<String> fplist = (filePatterns!=null)?Arrays.asList(filePatterns):null;
-				
-				final Set<FileNode> fileNodes = gw.getFileNodes(sRepoPattern, 
+				List<String> rplist = (repoPatterns!=null)?Arrays.asList(repoPatterns):null;
+								
+				final Set<FileNode> fileNodes = gw.getFileNodes(rplist, 
 						fplist);
 				for (FileNode fn : fileNodes) {
 					this.files.add(fn.getNode());

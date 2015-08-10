@@ -142,7 +142,7 @@ public class GraphModelInserter {
 			final String repositoryURL = s.getCommit().getDelta()
 					.getRepository().getUrl();
 			IGraphNode fileNode = indexer.getGraph().getFileIndex()
-					.get("id", repositoryURL + GraphModelBatchInjector.FILEINDEX_REPO_SEPARATOR + s.getPath()).iterator().next();
+					.get("id", repositoryURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + s.getPath()).iterator().next();
 
 			// add new nodes
 			HashMap<IGraphNode, IHawkObject> addedNodes = new HashMap<>();
@@ -704,14 +704,14 @@ public class GraphModelInserter {
 			final String repositoryURL = s.getCommit().getDelta()
 					.getRepository().getUrl();
 			boolean modelfilealreadypresent = graph.getFileIndex()
-					.get("id", repositoryURL + GraphModelBatchInjector.FILEINDEX_REPO_SEPARATOR + s.getPath()).iterator().hasNext();
+					.get("id", repositoryURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + s.getPath()).iterator().hasNext();
 
 			if (modelfilealreadypresent) {
 				int delta = 0;
 				HashMap<String, Integer> hashCodes = new HashMap<>();
 
 				for (IGraphEdge e : graph.getFileIndex()
-						.get("id", repositoryURL + GraphModelBatchInjector.FILEINDEX_REPO_SEPARATOR + s.getPath()).getSingle()
+						.get("id", repositoryURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + s.getPath()).getSingle()
 						.getIncomingWithType("file")) {
 					IGraphNode n = e.getStartNode();
 
@@ -1255,7 +1255,7 @@ public class GraphModelInserter {
 
 		Path path = Paths.get(file);
 		String relative = path.getFileName().toString();
-		IGraphNode fileNode = filedictionary.get("id", repositoryURL + GraphModelBatchInjector.FILEINDEX_REPO_SEPARATOR + relative)
+		IGraphNode fileNode = filedictionary.get("id", repositoryURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + relative)
 				.getSingle();
 
 		if (fileNode != null)

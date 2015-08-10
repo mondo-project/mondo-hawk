@@ -80,5 +80,11 @@ public class IFCModelResource implements IHawkModelResource {
 		return o.hashCode();
 	}
 
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 }

@@ -12,13 +12,14 @@ package org.hawk.graph;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
-import org.hawk.graph.internal.updater.GraphModelBatchInjector;
+import org.hawk.graph.internal.updater.GraphModelUpdater;
 
 /**
  * Wraps an {@link IGraphDatabase} that has been updated by this plugin. This is
@@ -43,7 +44,7 @@ public class GraphWrapper {
 	 * <code>repositoryPattern</code> and at least one of the
 	 * <code>patterns</code>.
 	 *
-	 * @param repositoryPattern
+	 * @param rplist
 	 *            Pattern for the repository URL. <code>null</code> or
 	 *            <code>"*"</code> will access all repositories.
 	 * @param filePatterns
@@ -51,15 +52,9 @@ public class GraphWrapper {
 	 *            or passing a null or empty {@link Iterable} will return all
 	 *            files in the selected repository or repositories.
 	 */
-	public Set<FileNode> getFileNodes(String repositoryPattern, Iterable<String> filePatterns) {
-		if (repositoryPattern == null || repositoryPattern.trim().length() == 0) {
-			/*
-			 * Use "*" as the default value. This will look through all
-			 * repositories. Note that Lucene only allows exact
-			 * values for the keys of the file index (which use full repository
-			 * URLs), so we'll have to do our own looping.
-			 */
-			repositoryPattern = "*";
+	public Set<FileNode> getFileNodes(List<String> repoPatterns, Iterable<String> filePatterns) {
+		if (repoPatterns == null || !repoPatterns.iterator().hasNext()) {
+			repoPatterns = Arrays.asList("*");
 		}
 		if (filePatterns == null || !filePatterns.iterator().hasNext()) {
 			filePatterns = Arrays.asList("*");
@@ -67,13 +62,15 @@ public class GraphWrapper {
 
 		final Set<FileNode> files = new LinkedHashSet<>();
 		final IGraphNodeIndex fileIndex = graph.getFileIndex();
-		for (String s : filePatterns) {
-			final String fullPattern = repositoryPattern.trim()
-					+ GraphModelBatchInjector.FILEINDEX_REPO_SEPARATOR
-					+ s.trim();
+		for(String repo : repoPatterns){
+		for (String file : filePatterns) {
+			final String fullPattern = repo.trim()
+					+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+					+ file.trim();
 			for (IGraphNode n : fileIndex.query("id", fullPattern)) {
 				files.add(new FileNode(n));
 			}
+		}
 		}
 		return files;
 	}

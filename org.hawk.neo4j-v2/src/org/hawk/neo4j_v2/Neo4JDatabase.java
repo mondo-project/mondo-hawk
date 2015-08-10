@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hawk.core.IAbstractConsole;
-import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphEdgeIndex;
@@ -453,62 +452,6 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 		return tempdir;
 
-	}
-
-	@Override
-	public Set<VcsCommitItem> compareWithLocalFiles(Set<VcsCommitItem> reposItems) {
-		if (reposItems.isEmpty()) {
-			return reposItems;
-		}
-
-		final VcsCommitItem firstItem = reposItems.iterator().next();
-		final String repositoryURL = firstItem.getCommit().getDelta().getRepository().getUrl();
-		final Set<VcsCommitItem> changed = new HashSet<VcsCommitItem>();
-		changed.addAll(reposItems);
-
-		if (graph != null) {
-
-			try (IGraphTransaction tx = beginTransaction()) {
-				// operations on the graph
-				// ...
-
-				IGraphNodeIndex filedictionary = null;
-
-				filedictionary = getFileIndex();
-
-				// TODO: this class shouldn't have to know how we've set up the file index.
-				// Also, why is the Neo4j backend implementing this bit of functionality?
-				if (filedictionary != null && filedictionary.query("id", repositoryURL + FILEINDEX_REPO_SEPARATOR + "*").iterator().hasNext()) {
-					for (VcsCommitItem r : reposItems) {
-						String rev = "-2";
-						try {
-							IGraphIterable<IGraphNode> ret = filedictionary.get("id", repositoryURL + FILEINDEX_REPO_SEPARATOR + r.getPath());
-
-							IGraphNode n = ret.getSingle();
-
-							rev = (String) n.getProperty("revision");
-
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						if (r.getCommit().getRevision().equals(rev))
-							changed.remove(r);
-
-						console.println("comparing revisions of: "
-								+ r.getPath() + " | "
-								+ r.getCommit().getRevision() + " | " + rev);
-
-					}
-				}
-
-				tx.success();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-		}
-
-		return changed;
 	}
 
 	public String currentMode() {

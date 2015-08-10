@@ -73,7 +73,7 @@ public interface IGraphDatabase {
 
 	String getTempDir();
 
-	Set<VcsCommitItem> compareWithLocalFiles(Set<VcsCommitItem> reposItems);
+	//Set<VcsCommitItem> compareWithLocalFiles(Set<VcsCommitItem> reposItems);
 
 	public abstract void logFull() throws Exception;
 

@@ -11,6 +11,7 @@
 package org.hawk.core;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.hawk.core.graph.IGraphChangeDescriptor;
 import org.hawk.core.model.IHawkModelResource;
@@ -49,5 +50,7 @@ public interface IModelUpdater {
 			String attributename);
 
 	public String getName();
+
+	public Set<VcsCommitItem> compareWithLocalFiles(Set<VcsCommitItem> interestingfiles);
 
 }

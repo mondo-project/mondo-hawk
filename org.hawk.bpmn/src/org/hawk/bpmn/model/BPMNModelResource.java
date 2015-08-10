@@ -111,4 +111,10 @@ public class BPMNModelResource implements IHawkModelResource {
 		return o.hashCode();
 	}
 
+	@Override
+	public void dispose() {
+res.unload();
+res.getResourceSet().getResources().remove(res);
+	}
+
 }
