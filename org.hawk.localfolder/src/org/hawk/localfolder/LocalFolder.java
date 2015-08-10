@@ -50,8 +50,9 @@ public class LocalFolder implements IVcsManager {
 		type = "org.hawk.localfolder.LocalFolder";
 		hrn = "Local Folder Monitor";
 		console = c;
-		rootLocation = Paths.get(vcsloc).toRealPath();
-		repository = new LocalFolderRepository(vcsloc);
+		Path path = Paths.get(vcsloc);
+		rootLocation = path.toRealPath();
+		repository = new LocalFolderRepository(rootLocation.toUri().toString());
 	}
 
 	@Override
@@ -163,8 +164,11 @@ public class LocalFolder implements IVcsManager {
 
 			VcsCommitItem c = new VcsCommitItem();
 			c.setChangeType(VcsChangeType.DELETED);
-			c.setCommit(commit);
-			c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
+			c.setCommit(commit);		
+			
+			c.setPath(makeRelative(repository.getUrl(), f.toPath().toUri().toString()));
+			
+			//c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 			commit.getItems().add(c);
 		}
 
@@ -185,13 +189,26 @@ public class LocalFolder implements IVcsManager {
 				VcsCommitItem c = new VcsCommitItem();
 				c.setChangeType(VcsChangeType.UPDATED);
 				c.setCommit(commit);
-				c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
+				
+				c.setPath(makeRelative(repository.getUrl(), f.toPath().toUri().toString()));
+							
+				//c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 				commit.getItems().add(c);
 			}
 
 		return delta;
 	}
 
+	private String makeRelative(String base, String extension) {
+
+		if(!extension.startsWith(base)) return extension;
+		
+		String ret = extension.substring(base.length());
+		
+		return ret;
+		
+	}
+	
 	private void addAllFiles(File dir, Set<File> ret) {
 		File[] files = dir.listFiles();
 		for (File file : files) {
