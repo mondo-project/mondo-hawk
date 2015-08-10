@@ -34,7 +34,7 @@ public class GraphModelUpdater implements IModelUpdater {
 	private IAbstractConsole console;
 
 	private boolean isActive = false;
-	public static final String FILEINDEX_REPO_SEPARATOR = "___";
+	public static final String FILEINDEX_REPO_SEPARATOR = "////";
 
 	// private GraphDatabase graph;
 

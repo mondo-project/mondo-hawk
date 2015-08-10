@@ -188,8 +188,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 								interestingfiles.remove(c);
 							}
 						}
-
-						//FIXME
 						
 						LinkedList<IGraphChangeDescriptor> changes = new LinkedList<>();
 						

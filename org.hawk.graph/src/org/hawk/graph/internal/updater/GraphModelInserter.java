@@ -881,6 +881,8 @@ public class GraphModelInserter {
 	public static int resolveProxies(IGraphDatabase graph,
 			IGraphChangeDescriptor ret) throws Exception {
 
+		//FIXME _update proxy handling to use the new file index structure
+		
 		long start = System.currentTimeMillis();
 
 		int proxiesLeft = -1;
