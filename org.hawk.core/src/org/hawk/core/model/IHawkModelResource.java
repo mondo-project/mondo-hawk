@@ -24,5 +24,4 @@ public interface IHawkModelResource extends IHawkResource {
 
 	int getSignature(IHawkObject o);
 
-	void dispose();
 }

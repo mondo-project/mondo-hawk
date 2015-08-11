@@ -29,6 +29,9 @@ public class BPMNModelResource implements IHawkModelResource {
 
 	@Override
 	public void unload() {
+		res.unload();
+		res.getResourceSet().getResources().remove(res);
+
 		res = null;
 		allContents = null;
 	}
@@ -109,12 +112,6 @@ public class BPMNModelResource implements IHawkModelResource {
 	@Override
 	public int getSignature(IHawkObject o) {
 		return o.hashCode();
-	}
-
-	@Override
-	public void dispose() {
-res.unload();
-res.getResourceSet().getResources().remove(res);
 	}
 
 }

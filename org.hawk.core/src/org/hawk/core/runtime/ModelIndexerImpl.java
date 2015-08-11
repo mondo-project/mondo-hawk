@@ -292,7 +292,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 						
 						for(IHawkModelResource r:fileToResourceMap.values()){
 							if(r!=null)
-								r.dispose();							
+								r.unload();
 						}
 						
 						// FIXME manage changes (propagate to mondix / derived
