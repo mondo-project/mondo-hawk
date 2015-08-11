@@ -1,18 +1,26 @@
 package org.hawk.modelio;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.uml2.uml.Element;
 import org.eclipse.uml2.uml.Model;
-import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.modelio.gproject.data.project.DefinitionScope;
@@ -40,17 +48,20 @@ public class ModelioModelResource implements IHawkModelResource {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioModelResource.class);
 
-	private File modelioProj;
-	private final IModelResourceFactory parser;
+	private final File modelioZipFile;
+	private final Path modulesPath;
+	private final String factoryClassName;
+	private Model model;
 
 	@Override
 	public void unload() {
-		modelioProj = null;
+		model = null;
 	}
 
-	public ModelioModelResource(File f, IModelResourceFactory p) {
-		parser = p;
-		modelioProj = f;
+	public ModelioModelResource(File f, Path modulesPath, String factoryClassName) {
+		this.modulesPath = modulesPath;
+		this.modelioZipFile = f;
+		this.factoryClassName = factoryClassName;
 	}
 
 	@Override
@@ -61,7 +72,7 @@ public class ModelioModelResource implements IHawkModelResource {
 	@Override
 	public Set<IHawkObject> getAllContentsSet() {
 		try {
-			final Model modelioElements = getModel(modelioProj.getCanonicalPath());
+			final Model modelioElements = getModel();
 			Set<IHawkObject> allElements = new HashSet<IHawkObject>();
 
 			EList<Element> all = modelioElements.allOwnedElements();
@@ -75,78 +86,146 @@ public class ModelioModelResource implements IHawkModelResource {
 		}
 	}
 
-	private Model getModel(String path) {
-		// Start by loading the Modelio Metamodel
-		MetamodelLoader.Load();
+	private Model getModel() throws IOException {
+		if (model != null) {
+			return model;
+		}
 
-		// Load the description of a given project
-		GProject gp = null;
-		try {
-			final String modulesPath = System.getProperty(ModelioModelFactory.MODULES_PATH_PROPERTY);
-			if (modulesPath == null) {
-				LOGGER.error(ModelioModelFactory.MODULES_PATH_PROPERTY
-					+ " has not been set to the path to the Modelio modules directory: cannot parse {}",
-					path);
-				return null;
+		try (final TemporaryUnzippedFile unzipped = new TemporaryUnzippedFile(modelioZipFile, "mondo-modelio")) {
+			final Path tmpDirPath = unzipped.getTemporaryDirectory();
+			final Path descriptorPath = tmpDirPath.resolve("project.conf");
+			try (final ModelioProject p = new ModelioProject(descriptorPath, modulesPath)) {
+				final Package mainPackage = p.getMainPackage();
+				model = p.exportIntoXMI(mainPackage);
+				return model;
 			}
-			final Path fms = Paths.get(modulesPath);
+		}
+	}
 
-			final Path p = modelioProj.toPath();
-			LOGGER.info("Loading {}", p);
-			ProjectDescriptor pd = new ProjectDescriptorReader().read(p, DefinitionScope.LOCAL);
+	private static class ModelioProject implements Closeable {
 
-			gp = (GProject) GProjectFactory.openProject(pd, new NoneAuthData(),
-					new FileModuleStore(fms), null, new NullProgress());
+		private final ProjectDescriptor descriptor;
+		private final GProject project;
 
-			// Navigate through the modelio model
-			for (IProjectFragment ipf : gp.getOwnFragments()) {
-				if (ipf.getType().equals(FragmentType.EXML)) {
+		public ModelioProject(Path resolve, Path modulesPath) throws IOException {
+			MetamodelLoader.Load();
+			this.descriptor = new ProjectDescriptorReader().read(resolve, DefinitionScope.LOCAL);
+			this.project = (GProject) GProjectFactory.openProject(this.descriptor, new NoneAuthData(),
+					new FileModuleStore(modulesPath), null, new NullProgress());
+		}
 
-					ExmlFragment ef = (ExmlFragment) ipf;
+		public Model exportIntoXMI(Package mainPackage) {
+			GenerationProperties genProp = GenerationProperties.getInstance();
+			genProp.initialize(new MModelServices(project));
+			genProp.setTimeDisplayerActivated(false);
+			genProp.setSelectedPackage(mainPackage);
 
-					Iterator<MObject> iterator = ef.doGetRoots().iterator();
-					Project o = (Project) iterator.next();
+			ExportServices exportService = new ExportServices();
+			return exportService.createEcoreModel(mainPackage, null);
+		}
 
-					// Get the Model package of the first fragment
-					Package entryPoint = o.getModel();
+		public Package getMainPackage() {
+			Iterator<MObject> iterator = getExmlFragment().doGetRoots().iterator();
+			Project o = (Project) iterator.next();
+			return o.getModel();
+		}
 
-					// XMI Export
+		public ExmlFragment getExmlFragment() {
+			return (ExmlFragment)getFragment(FragmentType.EXML);
+		}
 
-					// Initiate the generation properties
-					GenerationProperties genProp = GenerationProperties.getInstance();
-					genProp.initialize(new MModelServices(gp));
-					genProp.setTimeDisplayerActivated(false);
-					genProp.setSelectedPackage(entryPoint);
-
-					// XMI Export
-					ExportServices exportService = new ExportServices();
-					return exportService.createEcoreModel(entryPoint, null);
+		public IProjectFragment getFragment(FragmentType type) {
+			for (IProjectFragment fragments : project.getOwnFragments()) {
+				if (fragments.getType().equals(type)) {
+					return fragments;
 				}
 			}
-		} catch (IOException e1) {
-			LOGGER.error(e1.getMessage(), e1);
-		} finally {
-			if (gp != null) {
-				gp.close();
+			return null;
+		}
+
+		@Override
+		public void close() throws IOException {
+			project.close();
+		}
+		
+	}
+
+	private static class TemporaryUnzippedFile implements Closeable {
+		private Path tmpDir;
+
+		public TemporaryUnzippedFile(File f, String tempPrefix) throws IOException {
+			this.tmpDir = Files.createTempDirectory(tempPrefix);
+			unpack(f);
+		}
+
+		public Path getTemporaryDirectory() {
+			return tmpDir;
+		}
+
+		@Override
+		public void close() throws IOException {
+			if (tmpDir != null) {
+				recursiveDelete();
 			}
 		}
 
-		return null;
+		private void unpack(File zipFile) throws IOException, ZipException {
+			try (ZipFile openedZip = new ZipFile(zipFile)) {
+				final Enumeration<? extends ZipEntry> entries = openedZip.entries();
+				while (entries.hasMoreElements()) {
+					final ZipEntry entry = entries.nextElement();
+					try (final InputStream entryIS = openedZip.getInputStream(entry)) {
+						final Path target = tmpDir.resolve(entry.getName());
+						if (entry.isDirectory()) {
+							Files.createDirectories(target);
+						} else {
+							Files.createDirectories(target.getParent());
+							Files.copy(entryIS, target);
+						}
+					}
+				}
+			}
+		}
+
+		private void recursiveDelete() {
+			// based on http://stackoverflow.com/questions/779519/delete-files-recursively-in-java/8685959#8685959
+			try {
+				Files.walkFileTree(tmpDir, new SimpleFileVisitor<Path>() {
+					@Override
+					public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+						Files.delete(file);
+						return FileVisitResult.CONTINUE;
+					}
+
+					@Override
+					public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+						Files.delete(file);
+						return FileVisitResult.CONTINUE;
+					}
+
+					@Override
+					public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+						if (exc == null) {
+							Files.delete(dir);
+							return FileVisitResult.CONTINUE;
+						} else {
+							throw exc;
+						}
+					}
+				});
+			} catch (IOException e) {
+				LOGGER.error("Could not delete directory " + tmpDir, e);
+			}
+		}
 	}
 
 	@Override
 	public String getType() {
-		return parser.getType();
+		return factoryClassName;
 	}
 
 	@Override
 	public int getSignature(IHawkObject o) {
 		return o.hashCode();
-	}
-
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-		
 	}
 }
