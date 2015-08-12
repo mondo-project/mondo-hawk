@@ -356,21 +356,19 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 		RelationshipType type = DynamicRelationshipType.withName(t);
 
+		final long startId = (long) start.getId();
+		final long endId = (long) end.getId();
 		if (graph != null) {
-
-			Relationship r = graph.getNodeById((long) start.getId())
-					.createRelationshipTo(
-							graph.getNodeById((long) end.getId()), type);
-			for (String s : props.keySet())
+			final Node startNode = graph.getNodeById(startId);
+			final Node endNode = graph.getNodeById(endId);
+			Relationship r = startNode.createRelationshipTo(endNode, type);
+			for (String s : props.keySet()) {
 				r.setProperty(s, props.get(s));
+			}
 
 			return new Neo4JEdge(r, this);
-
 		} else {
-
-			long r = batch.createRelationship((long) start.getId(),
-					(long) end.getId(), type, props);
-
+			final long r = batch.createRelationship(startId, endId, type, props);
 			return new Neo4JEdge(batch.getRelationshipById(r), this);
 		}
 

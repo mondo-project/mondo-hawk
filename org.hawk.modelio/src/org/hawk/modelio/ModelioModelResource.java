@@ -72,10 +72,11 @@ public class ModelioModelResource implements IHawkModelResource {
 	@Override
 	public Set<IHawkObject> getAllContentsSet() {
 		try {
-			final Model modelioElements = getModel();
+			final Model model = getModel();
 			Set<IHawkObject> allElements = new HashSet<IHawkObject>();
+			allElements.add(new ModelioObject(model));
 
-			EList<Element> all = modelioElements.allOwnedElements();
+			EList<Element> all = model.allOwnedElements();
 			for (Element e : all) {
 				allElements.add(new ModelioObject(e));
 			}
