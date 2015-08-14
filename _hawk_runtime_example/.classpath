@@ -13,5 +13,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.hawk.modelio"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.hawk.ui.emc.dt2"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.hawk.ui2"/>
+	<classpathentry kind="src" path="/org.hawk.bpmn"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -19,6 +19,8 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import org.hawk.bpmn.metamodel.BPMNMetaModelResourceFactory;
+import org.hawk.bpmn.model.BPMNModelResourceFactory;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphDatabase;
@@ -36,7 +38,7 @@ import org.hawk.neo4j_v2.Neo4JDatabase;
 public class Runtime_example {
 
 	private static IQueryEngine q;
-	private static IModelIndexer i;
+	private static IModelIndexer hawk;
 
 	private static File parent = new File("runtime_data");
 
@@ -67,18 +69,20 @@ public class Runtime_example {
 	public static void main(String[] args) throws Exception {
 
 		// create an empty hawk model indexer
-		i = new ModelIndexerImpl("hawk1", parent, new DefaultConsole());
+		hawk = new ModelIndexerImpl("hawk1", parent, new DefaultConsole());
 
 		// add a metamodel factory
-		i.addMetaModelResourceFactory(new EMFMetaModelResourceFactory());
+		hawk.addMetaModelResourceFactory(new EMFMetaModelResourceFactory());
+		hawk.addMetaModelResourceFactory(new BPMNMetaModelResourceFactory());
 
 		// add a model factory
-		i.addModelResourceFactory(new EMFModelResourceFactory());
+		hawk.addModelResourceFactory(new EMFModelResourceFactory());
+		hawk.addModelResourceFactory(new BPMNModelResourceFactory());
 
 		IGraphDatabase db = (new Neo4JDatabase());
 		// create the model index with relevant database
-		db.run(i.getParentFolder(), i.getConsole());
-		i.setDB(db,true);
+		db.run(hawk.getParentFolder(), hawk.getConsole());
+		hawk.setDB(db, true);
 
 		// set path of vcs to monitor
 
@@ -119,32 +123,22 @@ public class Runtime_example {
 			pw = password();
 
 		if (pw != null) {
-			vcs.run(vcsloc, "kb634", pw, i.getConsole());
+			vcs.run(vcsloc, "kb634", pw, hawk.getConsole());
 		} else
 			System.exit(1);
 		pw = null;
-		i.addVCSManager(vcs,true);
 
 		// add a metamodel updater
-		i.setMetaModelUpdater(new GraphMetaModelUpdater());
+		hawk.setMetaModelUpdater(new GraphMetaModelUpdater());
 
-		// add one or more metamodel files
-		File metamodel = new File(
-				"../org.hawk.emf/src/org/hawk/emf/metamodel/examples/single/JDTAST.ecore");
-		// register them
-		i.registerMetamodel(metamodel);
-		// i.removeMetamodel(metamodel);
 
-		//
-		addDerivedandIndexedAttributes();
-		//
 
 		// add a (default) model updater
-		i.addModelUpdater(new GraphModelUpdater());
+		hawk.addModelUpdater(new GraphModelUpdater());
 
 		// add a query language
 		q = new EOLQueryEngine();
-		i.addQueryEngine(q);
+		hawk.addQueryEngine(q);
 
 		// initialise the server for real-time updates to changes -- this has to
 		// be done after initialising all the relevant plugins you want online
@@ -156,12 +150,24 @@ public class Runtime_example {
 		init[3] = 'i';
 		init[4] = 'n';
 
-		i.setAdminPassword(init);
-		i.init();
+		hawk.setAdminPassword(init);
+		hawk.init();
 
 		// add console interaction if needed
-		Thread t = consoleInteraction(i);
+		Thread t = consoleInteraction(hawk);
 		t.start();
+
+		// add one or more metamodel files
+		File metamodel = new File(
+				"../org.hawk.emf/src/org/hawk/emf/metamodel/examples/single/JDTAST.ecore");
+		// register them
+		hawk.registerMetamodel(metamodel);
+		// i.removeMetamodel(metamodel);
+		
+		//hawk.addVCSManager(vcs, true);
+		//
+		//addDerivedandIndexedAttributes();
+		//
 
 		// terminate hawk
 		// h.shutdown();
@@ -170,17 +176,15 @@ public class Runtime_example {
 
 	private static void addDerivedandIndexedAttributes() throws Exception {
 
-		i.addDerivedAttribute("org.amma.dsl.jdt.dom", "MethodDeclaration",
-				"isPublic", "Boolean", false, true, true,
-				queryLangID,
+		hawk.addDerivedAttribute("org.amma.dsl.jdt.dom", "MethodDeclaration",
+				"isPublic", "Boolean", false, true, true, queryLangID,
 				"self.modifiers.exists(mod:Modifier|mod.public==true)");
 
-		i.addDerivedAttribute("org.amma.dsl.jdt.dom", "MethodDeclaration",
-				"isStatic", "Boolean", false, true, true,
-				queryLangID,
+		hawk.addDerivedAttribute("org.amma.dsl.jdt.dom", "MethodDeclaration",
+				"isStatic", "Boolean", false, true, true, queryLangID,
 				"self.modifiers.exists(mod:Modifier|mod.static==true)");
 
-		i.addDerivedAttribute(
+		hawk.addDerivedAttribute(
 				"org.amma.dsl.jdt.dom",
 				"MethodDeclaration",
 				"isSameReturnType",
@@ -231,28 +235,27 @@ public class Runtime_example {
 						} else if (s.equalsIgnoreCase("cq")) {
 							Map<String, String> map = new HashMap<String, String>();
 							map.put(EOLQueryEngine.PROPERTY_FILECONTEXT, "*");
-							q.contextfullQuery(i.getGraph(),
+							q.contextfullQuery(hawk.getGraph(),
 									"TypeDeclaration.all.size().println();",
 									map);
 						} else if (s.equalsIgnoreCase("cqs")) {
 							Map<String, String> map = new HashMap<String, String>();
 							map.put(EOLQueryEngine.PROPERTY_FILECONTEXT, "*");
-							q.contextfullQuery(i.getGraph(), query, map);
-							q.contextfullQuery(i.getGraph(), query2, map);
-							q.contextfullQuery(i.getGraph(), query3, map);
+							q.contextfullQuery(hawk.getGraph(), query, map);
+							q.contextfullQuery(hawk.getGraph(), query2, map);
+							q.contextfullQuery(hawk.getGraph(), query3, map);
 
 						} else if (s.equalsIgnoreCase("tf")) {
 
-							i.addDerivedAttribute("org.amma.dsl.jdt.dom",
+							hawk.addDerivedAttribute("org.amma.dsl.jdt.dom",
 									"MethodDeclaration", "isSameReturnType",
-									"Boolean", false, true, true,
-									queryLangID,
+									"Boolean", false, true, true, queryLangID,
 									// always false
 									"self.returnType.isTypeOf(MethodDeclaration)");
 
 						} else if (s.equalsIgnoreCase("tt")) {
 
-							i.addDerivedAttribute(
+							hawk.addDerivedAttribute(
 									"org.amma.dsl.jdt.dom",
 									"MethodDeclaration",
 									"isSameReturnType",

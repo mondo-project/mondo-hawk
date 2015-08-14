@@ -13,12 +13,17 @@ package org.hawk.bpmn.metamodel;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 
+import org.eclipse.bpmn2.Activity;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EPackage.Registry;
+import org.eclipse.emf.ecore.impl.EcorePackageImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -173,31 +178,49 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 		HashSet<IHawkMetaModelResource> set = new HashSet<>();
 
-		Registry globalRegistry = EPackage.Registry.INSTANCE;
+		LinkedList<String> missingPackages = checkRegistry();
 
-		LinkedList<String> missingPackages = new LinkedList<>();
+		// if not running in eclipse
+		if (missingPackages.size() > 0) {
 
-		if (!globalRegistry
-				.containsKey("http://www.eclipse.org/emf/2003/XMLType"))
-			missingPackages.add("http://www.eclipse.org/emf/2003/XMLType");
-		if (!globalRegistry
-				.containsKey("http://www.omg.org/spec/BPMN/20100524/MODEL-XMI"))
-			missingPackages
-					.add("http://www.omg.org/spec/BPMN/20100524/MODEL-XMI");
-		if (!globalRegistry
-				.containsKey("http://www.omg.org/spec/DD/20100524/DC-XMI"))
-			missingPackages.add("http://www.omg.org/spec/DD/20100524/DC-XMI");
-		if (!globalRegistry
-				.containsKey("http://www.eclipse.org/emf/2002/Ecore"))
-			missingPackages.add("http://www.eclipse.org/emf/2002/Ecore");
-		if (!globalRegistry
-				.containsKey("http://www.omg.org/spec/BPMN/20100524/DI-XMI"))
-			missingPackages.add("http://www.omg.org/spec/BPMN/20100524/DI-XMI");
-		if (!globalRegistry
-				.containsKey("http://www.omg.org/spec/DD/20100524/DI-XMI"))
-			missingPackages.add("http://www.omg.org/spec/DD/20100524/DI-XMI");
+			List<String> paths = new LinkedList<>();
+
+			ClassLoader emf = EPackage.class.getClassLoader();
+			try {
+				paths.add(emf.getResource("model/Ecore.ecore").toURI()
+						.toString());
+				paths.add(emf.getResource("model/XMLType.ecore").toURI()
+						.toString());
+
+				ClassLoader bpmn = Activity.class.getClassLoader();
+				paths.add(bpmn.getResource("model/BPMN20.ecore").toURI()
+						.toString());
+				paths.add(bpmn.getResource("model/BPMNDI.ecore").toURI()
+						.toString());
+				paths.add(bpmn.getResource("model/DC.ecore").toURI()
+						.toString());
+				paths.add(bpmn.getResource("model/DI.ecore").toURI()
+						.toString());
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+
+			EPackage e = EcorePackageImpl.eINSTANCE;
+			RegisterMeta.registerPackages(e);
+			
+			for (String path : paths)
+				for (EObject o : resourceSet.getResource(
+						URI.createURI(path), true).getContents())
+					if (o instanceof EPackage)
+						RegisterMeta.registerPackages((EPackage) o);
+
+			missingPackages = checkRegistry();
+
+		}
 
 		if (missingPackages.size() == 0) {
+
+			Registry globalRegistry = EPackage.Registry.INSTANCE;
 
 			set.add(new BPMNMetaModelResource(globalRegistry.getEPackage(
 					"http://www.eclipse.org/emf/2003/XMLType").eResource(),
@@ -233,6 +256,35 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 		return set;
 
+	}
+
+	private LinkedList<String> checkRegistry() {
+
+		Registry globalRegistry = EPackage.Registry.INSTANCE;
+
+		LinkedList<String> missingPackages = new LinkedList<>();
+
+		if (!globalRegistry
+				.containsKey("http://www.eclipse.org/emf/2003/XMLType"))
+			missingPackages.add("http://www.eclipse.org/emf/2003/XMLType");
+		if (!globalRegistry
+				.containsKey("http://www.omg.org/spec/BPMN/20100524/MODEL-XMI"))
+			missingPackages
+					.add("http://www.omg.org/spec/BPMN/20100524/MODEL-XMI");
+		if (!globalRegistry
+				.containsKey("http://www.omg.org/spec/DD/20100524/DC-XMI"))
+			missingPackages.add("http://www.omg.org/spec/DD/20100524/DC-XMI");
+		if (!globalRegistry
+				.containsKey("http://www.eclipse.org/emf/2002/Ecore"))
+			missingPackages.add("http://www.eclipse.org/emf/2002/Ecore");
+		if (!globalRegistry
+				.containsKey("http://www.omg.org/spec/BPMN/20100524/DI-XMI"))
+			missingPackages.add("http://www.omg.org/spec/BPMN/20100524/DI-XMI");
+		if (!globalRegistry
+				.containsKey("http://www.omg.org/spec/DD/20100524/DI-XMI"))
+			missingPackages.add("http://www.omg.org/spec/DD/20100524/DI-XMI");
+
+		return missingPackages;
 	}
 
 }

@@ -16,6 +16,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 
 public class RegisterMeta {
 
@@ -41,10 +42,12 @@ public class RegisterMeta {
 	 * @param root
 	 */
 	public static int registerPackages(EPackage root) {
-		if (!root.getNsURI().equals(EcorePackage.eNS_URI)) {
+		if (!root.getNsURI().equals(EcorePackage.eNS_URI)
+				&& !root.getNsURI().equals(XMLTypePackage.eNS_URI)) {
 			if (EPackage.Registry.INSTANCE.put(root.getNsURI(), root) == null) {
 				System.err.println("registering package: " + root.getName()
-						+ "(" + root.getNsURI() + ") ["+root.eResource().getURI()+"]");
+						+ "(" + root.getNsURI() + ") ["
+						+ root.eResource().getURI() + "]");
 				registered++;
 			}
 			for (EPackage pkg : root.getESubpackages()) {
