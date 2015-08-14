@@ -225,10 +225,11 @@ public class GraphModelUpdater implements IModelUpdater {
 						try {
 							IGraphIterable<IGraphNode> ret = filedictionary.get("id", repositoryURL + FILEINDEX_REPO_SEPARATOR + r.getPath());
 
+							if(ret.iterator().hasNext()){
 							IGraphNode n = ret.getSingle();
-
 							rev = (String) n.getProperty("revision");
-
+							}
+							
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
