@@ -27,7 +27,7 @@ import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
 import org.hawk.graph.internal.updater.GraphModelUpdater;
 import org.hawk.ifc.IFCModelFactory;
 import org.hawk.localfolder.LocalFolder;
-import org.hawk.modelio.ModelioModelFactory;
+import org.hawk.modelio.ModelioModelResourceFactory;
 import org.hawk.modelio.mm.ModelioMetaModelResourceFactory;
 import org.hawk.neo4j_v2.Neo4JDatabase;
 
@@ -62,7 +62,7 @@ public class Modelio_Titan_Runtime_example {
 		// model
 		i.addModelResourceFactory(new IFCModelFactory());
 		// model
-		i.addModelResourceFactory(new ModelioModelFactory());
+		i.addModelResourceFactory(new ModelioModelResourceFactory());
 
 		IGraphDatabase db = (new Neo4JDatabase());
 		// create the indexer with relevant database

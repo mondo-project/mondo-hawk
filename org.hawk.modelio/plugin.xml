@@ -4,7 +4,7 @@
    <extension
          point="org.hawk.core.ModelExtensionPoint">
        <ModelP
-             ModelParser="org.hawk.modelio.ModelioModelFactory">
+             ModelParser="org.hawk.modelio.ModelioModelResourceFactory">
       </ModelP>
    </extension>
    <extension

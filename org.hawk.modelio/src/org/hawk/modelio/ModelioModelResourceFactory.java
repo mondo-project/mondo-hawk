@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2011-2015 The University of York.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ * 	   Seyyed Shah - initial API and implementation
+ *     Konstantinos Barmpis - provision of original EMF factory this (indirectly) extends
+ *     Antonio Garcia Dominguez - update to use .zip archives of the projects
+ ******************************************************************************/
 package org.hawk.modelio;
 
 import java.io.File;
@@ -16,10 +28,10 @@ import org.modelio.metamodel.data.MetamodelLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ModelioModelFactory implements IModelResourceFactory {
+public class ModelioModelResourceFactory implements IModelResourceFactory {
 
 	private static final String MODULES_PATH_PROPERTY = "org.hawk.modelio.modules.path";
-	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioModelFactory.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioModelResourceFactory.class);
 
 	@Override
 	public String getType() {
