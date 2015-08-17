@@ -28,10 +28,11 @@ import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
-import org.hawk.epsilon.emc.COptimisableCollection;
 import org.hawk.epsilon.emc.GraphNodeWrapper;
+import org.hawk.epsilon.emc.OptimisableCollection;
 
-public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine implements IModel{
+public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine
+		implements IModel {
 
 	Set<IGraphNode> files = null;
 
@@ -66,7 +67,7 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine implemen
 				IGraphNodeIndex fileIndex = graph.getFileIndex();
 
 				String repoURI = context.get(PROPERTY_REPOSITORYCONTEXT);
-				
+
 				for (String s : interestingFilesArray) {
 					for (IGraphNode n : fileIndex.query(repoURI, s)) {
 						interestingFileNodes.add(n);
@@ -92,7 +93,8 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine implemen
 			// enableCache = ec == null ? true : ec.equalsIgnoreCase("true");
 
 			// limit to declared packages if applicable
-			String pa = context.get(QueryAwareEOLQueryEngine.PROPERTY_METAMODELS);
+			String pa = context
+					.get(QueryAwareEOLQueryEngine.PROPERTY_METAMODELS);
 			if (pa != null) {
 				String[] eps = ((String) pa).split(",");
 
@@ -265,10 +267,8 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine implemen
 
 				// HashSet<Object> nodes = new HashSet<>();
 
-				COptimisableCollection nodes = new COptimisableCollection(
-						this,
-						new GraphNodeWrapper(typeNode.getId().toString(), this),
-						files);
+				OptimisableCollection nodes = new OptimisableCollection(this,
+						new GraphNodeWrapper(typeNode.getId().toString(), this));
 
 				if (typeNode != null) {
 

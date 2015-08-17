@@ -61,65 +61,70 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 
 		System.err.println(sFilePatterns);
 		System.err.println(sRepoPatterns);
-		
-		//if (sFilePatterns != null) {
-			final String[] filePatterns = (sFilePatterns != null&&sFilePatterns.trim().length()!=0)?sFilePatterns.split(","):null;
-			final String[] repoPatterns = (sRepoPatterns != null&&sRepoPatterns.trim().length()!=0)?sRepoPatterns.split(","):null;
-			try (IGraphTransaction tx = graph.beginTransaction()) {
-				this.files = new HashSet<>();
-				
-				List<String> fplist = (filePatterns!=null)?Arrays.asList(filePatterns):null;
-				List<String> rplist = (repoPatterns!=null)?Arrays.asList(repoPatterns):null;
-								
-				final Set<FileNode> fileNodes = gw.getFileNodes(rplist, 
-						fplist);
-				for (FileNode fn : fileNodes) {
-					this.files.add(fn.getNode());
+
+		// if (sFilePatterns != null) {
+		final String[] filePatterns = (sFilePatterns != null && sFilePatterns
+				.trim().length() != 0) ? sFilePatterns.split(",") : null;
+		final String[] repoPatterns = (sRepoPatterns != null && sRepoPatterns
+				.trim().length() != 0) ? sRepoPatterns.split(",") : null;
+		try (IGraphTransaction tx = graph.beginTransaction()) {
+			this.files = new HashSet<>();
+
+			List<String> fplist = (filePatterns != null) ? Arrays
+					.asList(filePatterns) : null;
+			List<String> rplist = (repoPatterns != null) ? Arrays
+					.asList(repoPatterns) : null;
+
+			final Set<FileNode> fileNodes = gw.getFileNodes(rplist, fplist);
+			for (FileNode fn : fileNodes) {
+				this.files.add(fn.getNode());
+			}
+
+			System.out.println("running CEOLQueryEngine with files: "
+					+ fileNodes);
+		} catch (Exception e) {
+			System.err
+					.println("internal error trying to retreive file nodes for contextfullQuery");
+			e.printStackTrace();
+		}
+
+		if (propertygetter == null)
+			propertygetter = new GraphPropertyGetter(graph, this);
+
+		name = context.get(EOLQueryEngine.PROPERTY_NAME);
+		if (name == null)
+			name = "Model";
+
+		// defaults to true
+		// String ec = context.get(EOLQueryEngine.PROPERTY_ENABLE_CASHING);
+		// enableCache = ec == null ? true : ec.equalsIgnoreCase("true");
+
+		// limit to declared packages if applicable
+		String pa = context.get(EOLQueryEngine.PROPERTY_METAMODELS);
+		if (pa != null) {
+			String[] eps = ((String) pa).split(",");
+
+			if (!(eps.length == 1 && eps[0].equals("[]"))) {
+
+				epackages = new HashSet<String>();
+
+				for (String s : eps) {
+					// System.err.println(s);
+					epackages.add(s.trim().replaceAll("\\[", "")
+							.replaceAll("]", "").trim());
 				}
-
-				System.out.println("running CEOLQueryEngine with files: " + fileNodes);
-			} catch (Exception e) {
-				System.err.println("internal error trying to retreive file nodes for contextfullQuery");
-				e.printStackTrace();
 			}
+		}
 
-			if (propertygetter == null)
-				propertygetter = new GraphPropertyGetter(graph, this);
+		try (IGraphTransaction tx = graph.beginTransaction()) {
 
-			name = context.get(EOLQueryEngine.PROPERTY_NAME);
-			if (name == null)
-				name = "Model";
+			epackagedictionary = graph.getMetamodelIndex();
 
-			// defaults to true
-			// String ec = context.get(EOLQueryEngine.PROPERTY_ENABLE_CASHING);
-			// enableCache = ec == null ? true : ec.equalsIgnoreCase("true");
+			tx.success();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-			// limit to declared packages if applicable
-			String pa = context.get(EOLQueryEngine.PROPERTY_METAMODELS);
-			if (pa != null) {
-				String[] eps = ((String) pa).split(",");
-
-				if (!(eps.length == 1 && eps[0].equals("[]"))) {
-
-					epackages = new HashSet<String>();
-
-					for (String s : eps) {
-						// System.err.println(s);
-						epackages.add(s.trim().replaceAll("\\[", "")
-								.replaceAll("]", "").trim());
-					}
-				}
-			}
-
-			try (IGraphTransaction tx = graph.beginTransaction()) {
-
-				epackagedictionary = graph.getMetamodelIndex();
-
-				tx.success();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		
 	}
 
 	/**
@@ -129,11 +134,12 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 	@Override
 	public Collection<?> allContents() {
 		final Set<GraphNodeWrapper> allContents = new HashSet<GraphNodeWrapper>();
-		try(IGraphTransaction tx = graph.beginTransaction()) {
+		try (IGraphTransaction tx = graph.beginTransaction()) {
 			for (IGraphNode rawFileNode : files) {
 				final FileNode f = new FileNode(rawFileNode);
 				for (ModelElementNode me : f.getModelElements()) {
-					GraphNodeWrapper wrapper = new GraphNodeWrapper(me.getNode().getId().toString(), this);
+					GraphNodeWrapper wrapper = new GraphNodeWrapper(me
+							.getNode().getId().toString(), this);
 					allContents.add(wrapper);
 				}
 			}
@@ -251,10 +257,8 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 					}
 				}
 
-				COptimisableCollection nodes = new COptimisableCollection(
-						this,
-						new GraphNodeWrapper(typeNode.getId().toString(), this),
-						files);
+				OptimisableCollection nodes = new OptimisableCollection(this,
+						new GraphNodeWrapper(typeNode.getId().toString(), this));
 
 				if (typeNode != null) {
 
