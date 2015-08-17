@@ -26,7 +26,6 @@ public class COptimisableCollectionSelectOperation extends
 		OptimisableCollectionSelectOperation {
 
 	Set<IGraphNode> files;
-	IGraphDatabase graph;
 
 	public COptimisableCollectionSelectOperation(IGraphDatabase graph,
 			Set<IGraphNode> files) {
@@ -45,6 +44,19 @@ public class COptimisableCollectionSelectOperation extends
 				.getOwningModel();
 		this.context = context;
 		this.returnOnFirstMatch = returnOnFirstMatch;
+		this.iterator = iterator;
+		graph = model.getBackend();
+
+		try (IGraphTransaction ignored = graph.beginTransaction()) {
+			metaclass = graph.getNodeById(((OptimisableCollection) target).type
+					.getId());
+			ignored.success();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new EolRuntimeException(
+					"OptimisableCollectionSelectOperation: parseAST(iterator, ast) failed:",
+					ast);
+		}
 
 		// Object ret =
 		try {

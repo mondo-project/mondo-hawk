@@ -144,15 +144,15 @@ public class HQueryDialog extends Dialog {
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.minimumWidth = 250;
 		contextRepo.setLayoutData(gridData);
-		
+
 		l = new Label(container, SWT.READ_ONLY);
 		l.setText(" Context Files (comma separated (partial)");
 
 		l = new Label(container, SWT.READ_ONLY);
-		
+
 		l = new Label(container, SWT.READ_ONLY);
 		l.setText(" matches using * as wildcard):");
-		
+
 		final StyledText contextFiles = new StyledText(container, SWT.NONE);
 		gridData = new GridData();
 		gridData.grabExcessHorizontalSpace = true;
@@ -185,8 +185,9 @@ public class HQueryDialog extends Dialog {
 
 							String file1Text = contextRepo.getText();
 							String fileText = contextFiles.getText();
-														
-							if (file1Text.trim().equals("")&&fileText.trim().equals(""))
+
+							if (file1Text.trim().equals("")
+									&& fileText.trim().equals(""))
 								resultField
 										.setText(index.query(
 												new File(queryField.getText()
@@ -194,16 +195,18 @@ public class HQueryDialog extends Dialog {
 												.toString());
 							else {
 								Map<String, String> map = new HashMap<>();
-								
+
 								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_FILECONTEXT,
 										fileText);
 								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_REPOSITORYCONTEXT,
 										file1Text);
-								
-								resultField.setText(index.contextFullQuery(
-										new File(queryField.getText()
-												.substring(12)), ql, map)
-										.toString());
+								Object r = index.contextFullQuery(new File(
+										queryField.getText().substring(12)),
+										ql, map);
+								String ret = "<null>";
+								if (r != null)
+									ret = r.toString();
+								resultField.setText(ret);
 							}
 						}
 
@@ -211,8 +214,9 @@ public class HQueryDialog extends Dialog {
 
 							String fileText = contextFiles.getText();
 							String file1Text = contextRepo.getText();
-							
-							if (file1Text.trim().equals("")&&fileText.trim().equals(""))
+
+							if (file1Text.trim().equals("")
+									&& fileText.trim().equals(""))
 								resultField.setText(index.query(
 										queryField.getText(), ql).toString());
 							else {
@@ -221,9 +225,12 @@ public class HQueryDialog extends Dialog {
 										fileText);
 								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_REPOSITORYCONTEXT,
 										file1Text);
-								resultField.setText(index.contextFullQuery(
-										queryField.getText(), ql, map)
-										.toString());
+								Object r = index.contextFullQuery(
+										queryField.getText(), ql, map);
+								String ret = "<null>";
+								if (r != null)
+									ret = r.toString();
+								resultField.setText(ret);
 							}
 
 						}

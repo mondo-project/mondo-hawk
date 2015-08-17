@@ -115,10 +115,12 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 		} else if (isOptimisable(ast)) {
 			return optimisedExecution(target, ast);
 		} else {
-			// System.err.println("giving to super: "+ast.toStringTree());
-			return (Collection<Object>) super.execute(target, iterator,
-					(Expression) ast, context, returnOnFirstMatch);
-			// System.err.println("super returns: "+rett.getClass());
+			//System.err.println("giving to super: "+ast.toStringTree());
+			Object ret = super.execute(target, iterator, (Expression) ast,
+					context, returnOnFirstMatch);
+			//System.err.println("super returns: "+ret.getClass());
+			return (Collection<Object>) ret;
+			
 		}
 
 	}
