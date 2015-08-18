@@ -30,6 +30,9 @@
    <feature url="features/org.hawk.ui.feature_1.0.0.qualifier.jar" id="org.hawk.ui.feature" version="1.0.0.qualifier">
       <category name="hawk.clients"/>
    </feature>
+   <feature url="features/org.hawk.bpmn.feature_1.0.0.qualifier.jar" id="org.hawk.bpmn.feature" version="1.0.0.qualifier">
+      <category name="hawk.drivers"/>
+   </feature>
    <category-def name="hawk.core" label="Hawk Core"/>
    <category-def name="hawk.connectors" label="Hawk Connectors"/>
    <category-def name="hawk.backends" label="Hawk Backends"/>
