@@ -268,6 +268,14 @@ public class HManager {
 		return getConfigurationElementsFor("org.hawk.core.HawkFactoryExtensionPoint");
 	}
 
+	public List<String> getHawkFactoryIDs() {
+		final List<String> ids = new ArrayList<>();
+		for (IConfigurationElement elem : getHawkFactories()) {
+			ids.add(elem.getAttribute("id"));
+		}
+		return ids;
+	}
+
 	public IHawkFactory createHawkFactory(String factoryID) throws CoreException {
 		for (IConfigurationElement elem : getHawkFactories()) {
 			if (factoryID.equals(elem.getAttribute("id"))) {

@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.hawk.core.IAbstractConsole;
@@ -57,36 +56,35 @@ public class HModel {
 
 	/**
 	 * Creates a new Hawk instance in a local folder, and saves its metadata into the {@link HManager}.
-	 * TODO refactor into a separate factory concept?
 	 */
-	public static HModel create(String name, File folder, String dbType, List<String> plugins, HManager manager, char[] apw) throws Exception {
-		HawkConfig hc = new HawkConfig();
-		hc.setName(name);
-		hc.setLoc(folder.getCanonicalPath());
-		hc.setHawkFactory(LocalHawkFactory.ID);
+	public static HModel create(String factoryId, String name, String location, String dbType, List<String> plugins, HManager manager, char[] apw) throws Exception {
+		if (factoryId == null) {
+			factoryId = LocalHawkFactory.ID;
+		}
+		final IHawkFactory hawkFactory = manager.createHawkFactory(factoryId);
 
-		HModel hm = new HModel(manager, hc, true);
+		HModel hm = new HModel(manager, hawkFactory, name, location, true);
 		if (dbType != null) {
 			hm.hawk.setDbtype(dbType);
 		}
 
 		// TODO use plugins list to enable only these plugins
-
 		IGraphDatabase db = null;
 		final IAbstractConsole console = getConsole();
 		try {
 			// create the indexer with relevant database
 			console.println("Creating Hawk indexer...");
-			loadExecutableExtensions(manager, hm.hawk, console);
 
-			console.println("setting up hawk's back-end store:");
-			db = manager.createGraph(hm.hawk);
-			db.run(folder, console);
-			hm.hawk.getModelIndexer().setDB(db, true);
+			if (hawkFactory.instancesUseLocalGraph()) {
+				console.println("Setting up hawk's back-end store:");
+				db = manager.createGraph(hm.hawk);
+				db.run(new File(location), console);
+				hm.hawk.getModelIndexer().setDB(db, true);
+			}
 
 			// hard coded metamodel updater?
 			IMetaModelUpdater metaModelUpdater = manager.getMetaModelUpdater();
-			console.println("setting up hawk's metamodel updater:\n" + metaModelUpdater.getName());
+			console.println("Setting up hawk's metamodel updater:\n" + metaModelUpdater.getName());
 			hm.hawk.getModelIndexer().setMetaModelUpdater(metaModelUpdater);
 			hm.hawk.getModelIndexer().setAdminPassword(apw);
 			hm.hawk.getModelIndexer().init();
@@ -95,7 +93,6 @@ public class HModel {
 			manager.saveHawkToMetadata(hm);
 			console.println("Created Hawk indexer!");
 			return hm;
-
 		} catch (Exception e) {
 			console.printerrln(
 					"Adding of indexer aborted, please try again.\n"
@@ -114,36 +111,13 @@ public class HModel {
 	}
 
 	/**
-	 * Creates a new {@link HModel} straight from a {@link HawkConfig} and saves it into
-	 * the {@link HManager}'s metadata, with no other setup. Useful for remote Hawk instances.
-	 */
-	public static HModel create(HawkConfig s, HManager manager, boolean isRunning) throws Exception {
-		HModel hm = new HModel(manager, s, isRunning);
-		final IAbstractConsole console = getConsole();
-
-		try {
-			// create the indexer with relevant database
-			console.println("Creating Hawk indexer from custom configuration...");
-			manager.addHawk(hm);
-			manager.saveHawkToMetadata(hm);
-			console.println("Created Hawk indexer!");
-		} catch (Exception ex) {
-			console.printerrln("Adding of indexer aborted, please try again.");
-			console.printerrln(ex);
-		}
-
-		return hm;
-	}
-
-	/**
 	 * Loads a previously existing Hawk instance from its {@link HawkConfig}.
 	 */
-	public static HModel load(HawkConfig s, HManager manager) throws Exception {
-		HModel hm = new HModel(manager, s, false);
+	public static HModel load(HawkConfig config, HManager manager) throws Exception {
+		final IHawkFactory hawkFactory = manager.createHawkFactory(config.getHawkFactory());
+		HModel hm = new HModel(manager, hawkFactory, config.getName(), config.getLoc(), false);
 
 		try {
-			loadExecutableExtensions(manager, hm.hawk, getConsole());
-
 			// hard coded metamodel updater?
 			IMetaModelUpdater metaModelUpdater = manager.getMetaModelUpdater();
 			hm.hawk.getModelIndexer().setMetaModelUpdater(metaModelUpdater);
@@ -157,39 +131,6 @@ public class HModel {
 		return hm;
 	}
 
-	private static void loadExecutableExtensions(HManager manager, IHawk hawk, final IAbstractConsole console) throws CoreException {
-		// set up plugins
-		// first get all of type (static callto HawkOSGIConfigManager)
-		// check each one has the an ID that was selected
-		// create VCS
-		// call m.add
-		console.println("adding metamodel resource factories:");
-		for (IConfigurationElement mmparse : manager.getMmps()) {
-			IMetaModelResourceFactory f = (IMetaModelResourceFactory) mmparse
-					.createExecutableExtension("MetaModelParser");
-			hawk.getModelIndexer().addMetaModelResourceFactory(f);
-			console.println(f.getHumanReadableName());
-		}
-		console.println("adding model resource factories:");
-		for (IConfigurationElement mparse : manager.getMps()) {
-			IModelResourceFactory f = (IModelResourceFactory) mparse.createExecutableExtension("ModelParser");
-			hawk.getModelIndexer().addModelResourceFactory(f);
-			console.println(f.getHumanReadableName());
-		}
-		console.println("adding query engines:");
-		for (IConfigurationElement ql : manager.getLanguages()) {
-			IQueryEngine q = (IQueryEngine) ql.createExecutableExtension("query_language");
-			hawk.getModelIndexer().addQueryEngine(q);
-			console.println(q.getType());
-		}
-		console.println("adding model updaters:");
-		for (IConfigurationElement updater : manager.getUps()) {
-			IModelUpdater u = (IModelUpdater) updater.createExecutableExtension("ModelUpdater");
-			hawk.getModelIndexer().addModelUpdater(u);
-			console.println(u.getName());
-		}
-	}
-
 	private List<String> allowedPlugins = new ArrayList<String>();
 	private IHawk hawk;
 	private HManager manager;
@@ -198,14 +139,44 @@ public class HModel {
 	/**
 	 * Constructor for loading existing local Hawk instances and creating/loading custom {@link IHawk} implementations.
 	 */
-	public HModel(HManager manager, HawkConfig config, boolean isRunning) throws Exception {
-		final IHawkFactory hawkFactory = manager.createHawkFactory(config.getHawkFactory());
-		this.hawk = hawkFactory.create(config.getName(), config.getLoc(), getConsole());
-		if (hawkFactory.instancesAreExtensible()) {
-			loadExecutableExtensions(manager, this.hawk, getConsole());
-		}
+	public HModel(HManager manager, IHawkFactory hawkFactory, String name, String location, boolean isRunning) throws Exception {
+		this.hawk = hawkFactory.create(name, location, getConsole());
 		this.manager = manager;
 		this.running = isRunning;
+
+		if (hawkFactory.instancesAreExtensible()) {
+			final IAbstractConsole console = getConsole();
+			// set up plugins
+			// first get all of type (static callto HawkOSGIConfigManager)
+			// check each one has the an ID that was selected
+			// create VCS
+			// call m.add
+			console.println("adding metamodel resource factories:");
+			for (IConfigurationElement mmparse : manager.getMmps()) {
+				IMetaModelResourceFactory f = (IMetaModelResourceFactory) mmparse
+						.createExecutableExtension("MetaModelParser");
+				this.hawk.getModelIndexer().addMetaModelResourceFactory(f);
+				console.println(f.getHumanReadableName());
+			}
+			console.println("adding model resource factories:");
+			for (IConfigurationElement mparse : manager.getMps()) {
+				IModelResourceFactory f = (IModelResourceFactory) mparse.createExecutableExtension("ModelParser");
+				this.hawk.getModelIndexer().addModelResourceFactory(f);
+				console.println(f.getHumanReadableName());
+			}
+			console.println("adding query engines:");
+			for (IConfigurationElement ql : manager.getLanguages()) {
+				IQueryEngine q = (IQueryEngine) ql.createExecutableExtension("query_language");
+				this.hawk.getModelIndexer().addQueryEngine(q);
+				console.println(q.getType());
+			}
+			console.println("adding model updaters:");
+			for (IConfigurationElement updater : manager.getUps()) {
+				IModelUpdater u = (IModelUpdater) updater.createExecutableExtension("ModelUpdater");
+				this.hawk.getModelIndexer().addModelUpdater(u);
+				console.println(u.getName());
+			}
+		}
 	}
 
 	public void addDerivedAttribute(String metamodeluri, String typename, String attributename, String attributetype,

@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.hawk.ui2.wizard;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.List;
@@ -72,11 +71,12 @@ public class HWizard extends Wizard implements INewWizard {
 		final String dbType = page.getDBID();
 		final List<String> plugins = page.getPlugins();
 		final char[] apw = page.getApw();
+		final String factoryId = page.getFactoryID();
 
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
-					doFinish(name, folder, dbType, plugins, monitor, apw);
+					doFinish(name, folder, dbType, plugins, monitor, apw, factoryId);
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				} finally {
@@ -101,18 +101,17 @@ public class HWizard extends Wizard implements INewWizard {
 	 * The worker method.
 	 * 
 	 * @param dbType
+	 * @param factoryId 
 	 */
 
-	private void doFinish(String name, String folder, String dbType, List<String> plugins, IProgressMonitor monitor,
-			char[] apw) throws CoreException {
+	private void doFinish(String name, String location, String dbType, List<String> plugins, IProgressMonitor monitor,
+			char[] apw, String factoryId) throws CoreException {
 
 		// set up a new Hawk with the selected plugins
 
 		try {
-			// create a new hawk index at containerName folder with name
-			// fileName
-			HModel.create(name, new File(folder), dbType, plugins, HUIManager.getInstance(), apw);
-
+			// create a new hawk index at containerName folder with name fileName
+			HModel.create(factoryId, name, location, dbType, plugins, HUIManager.getInstance(), apw);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -158,7 +157,7 @@ public class HWizard extends Wizard implements INewWizard {
 			if (hc != null)
 				locs.addAll(hc.getConfigs());
 
-			locs.add(new HawkConfig(name, folder));
+			locs.add(new HawkConfig(name, location));
 
 			xml = stream.toXML(new HawksConfig(locs));
 

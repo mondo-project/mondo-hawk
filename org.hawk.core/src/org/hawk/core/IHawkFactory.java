@@ -26,7 +26,14 @@ public interface IHawkFactory {
 
 	/**
 	 * Indicates whether the created instance should be customized with the
-	 * extension points in the local installation.
+	 * contents of the extension points in the local installation (
+	 * <code>true</code>) or not ( <code>false</code>).
 	 */
 	boolean instancesAreExtensible();
+
+	/**
+	 * Indicates whether instances require creating a local graph (
+	 * <code>true</code>), or not (<code>false</code>).
+	 */
+	boolean instancesUseLocalGraph();
 }

@@ -61,6 +61,8 @@ public class HWizardPage extends WizardPage {
 
 	private HUIManager hminstance;
 
+	private Combo factoryIdText;
+
 	/**
 	 * Constructor for .
 	 * 
@@ -133,34 +135,6 @@ public class HWizardPage extends WizardPage {
 			}
 		});
 
-		// ModifyListener ml = new ModifyListener() {
-		//
-		// public void modifyText(ModifyEvent e) {
-		//
-		// try {
-		// String[] nm = folderText.getText().split(
-		// File.separator.equals("\\") ? "\\\\"
-		// : File.separator);
-		// if (!nm[nm.length - 1].equals(getIndexerName())) {
-		// // String temp = "";
-		// // for (int i = 0; i < nm.length - 1; i++) {
-		// // temp += nm[i] + File.separator;
-		// // }
-		// // temp = temp.substring(0, temp.length() - 1);
-		// // folderText.setText(temp);
-		// indexerNameText.setText(nm[nm.length - 1]);
-		//
-		// }
-		// } catch (Exception e2) {
-		// System.err.println(getIndexerName());
-		// System.err.println(folderText.getText());
-		// e2.printStackTrace();
-		// }
-		//
-		// dialogChanged();
-		// }
-		// };
-
 		Button button = new Button(container, SWT.PUSH);
 		button.setText("Browse...");
 		button.addSelectionListener(new SelectionAdapter() {
@@ -216,6 +190,20 @@ public class HWizardPage extends WizardPage {
 		for (String db : hminstance.getIndexTypes())
 			dbidText.add(db);
 		dbidText.select(0);
+
+		label = new Label(container, SWT.NULL);
+		label.setText("");
+
+		label = new Label(container, SWT.NULL);
+		label.setText("Instance type:");
+
+		factoryIdText = new Combo(container, SWT.READ_ONLY);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		factoryIdText.setLayoutData(gd);
+		for (String fid : hminstance.getHawkFactoryIDs()) {
+			factoryIdText.add(fid);
+		}
+		factoryIdText.select(0);
 
 		Button startButton = new Button(container, SWT.CHECK);
 		startButton.setText("Start with Workspace");
@@ -379,7 +367,10 @@ public class HWizardPage extends WizardPage {
 	}
 
 	public char[] getApw() {
-
 		return apwText.getText().toCharArray();
+	}
+
+	public String getFactoryID() {
+		return factoryIdText.getText();
 	}
 }

@@ -33,4 +33,9 @@ public class LocalHawkFactory implements IHawkFactory {
 		return true;
 	}
 
+	@Override
+	public boolean instancesUseLocalGraph() {
+		return true;
+	}
+
 }
