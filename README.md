@@ -51,20 +51,20 @@ These instructions are from a clean download of an Eclipse Luna Modelling distri
     * core.ui
     * core.utils
     * jdbm (you'll need to create its "src" source folder)
-    * RCPTARGET/ktable
     * lib
     * log
     * mda.infra
     * metamodel.emfapi
     * metamodel.implementation
     * model.search.engine
+    * practicalxml (you'll need to create its "src" source folder)
+    * RCPTARGET/ktable
     * RCPTARGET/nebula
     * RCPTARGET/nebula-incubator
     * RCPTARGET/nebula-nattable
-    * practicalxml (you'll need to create its "src" source folder)
+    * RCPTARGET/uml2_3.2
     * script.engine
     * ui
-    * RCPTARGET/uml2_3.2
     * vaudit
     * xmi (edit its `META-INF/MANIFEST.MF` file, removing its dependency on `org.modelio.model.browser` and exporting the `org.modelio.xmi.generation` package)
 4. Open the `org.hawk.targetplatform/org.hawk.targetplatform.target` file, wait for the target definition to be resolved and click on `Set as Target Platform`.
