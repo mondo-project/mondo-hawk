@@ -73,6 +73,10 @@ public class ModelioModelResource implements IHawkModelResource {
 	}
 
 	public ModelioModelResource(File f, Path modulesPath, String factoryClassName) {
+		if (modulesPath == null) {
+			throw new NullPointerException("The path to the modules directory has not been set");
+		}
+
 		this.modulesPath = modulesPath;
 		this.modelioZipFile = f;
 		this.factoryClassName = factoryClassName;

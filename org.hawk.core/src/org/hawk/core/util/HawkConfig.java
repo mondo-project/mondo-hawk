@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.hawk.core.util;
 
+import org.hawk.core.runtime.LocalHawkFactory;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("hawkConfig")
@@ -20,6 +22,9 @@ public class HawkConfig {
 
 	@XStreamAlias("hawkLoc")
 	protected String loc;
+
+	@XStreamAlias("hawkFactory")
+	protected String hawkFactory = LocalHawkFactory.ID;
 
 	public HawkConfig() {
 	}
@@ -45,9 +50,16 @@ public class HawkConfig {
 		this.loc = loc;
 	}
 
+	public String getHawkFactory() {
+		return hawkFactory;
+	}
+
+	public void setHawkFactory(String id) {
+		this.hawkFactory = id;
+	}
+
 	@Override
 	public boolean equals(Object o) {
-
 		if (!(o instanceof HawkConfig))
 			return false;
 		else {

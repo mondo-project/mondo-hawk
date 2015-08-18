@@ -8,5 +8,14 @@
    <extension-point id="org.hawk.core.BackEndExtensionPoint" name="BackEndExtensionPoint" schema="schema/org.hawk.core.BackEndExtensionPoint.exsd"/>
    <extension-point id="org.hawk.core.MetaModelExtensionPoint" name="MetaModelExtensionPoint" schema="schema/org.hawk.core.MetaModelExtensionPoint.exsd"/>
    <extension-point id="org.hawk.core.MetaModelUpdaterExtensionPoint" name="MetaModelUpdaterExtensionPoint" schema="schema/org.hawk.core.MetaModelUpdaterExtensionPoint.exsd"/>
+   <extension-point id="org.hawk.core.HawkFactoryExtensionPoint" name="HawkFactoryExtensionPoint" schema="schema/org.hawk.core.HawkFactoryExtensionPoint.exsd"/>
+   <extension
+         point="org.hawk.core.HawkFactoryExtensionPoint">
+      <hawkFactory
+            class="org.hawk.core.runtime.LocalHawkFactory"
+            id="org.hawk.core.hawkFactory.local"
+            name="Local Instance">
+      </hawkFactory>
+   </extension>
 
 </plugin>

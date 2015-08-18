@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.hawk.core.IHawk;
+import org.hawk.core.IHawkFactory;
 import org.hawk.core.IMetaModelUpdater;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphDatabase;
@@ -91,6 +92,7 @@ public class HManager {
 			createExecutableExtensions("MetaModelParser", getMmps());
 			createExecutableExtensions("ModelParser", getMps());
 			createExecutableExtensions("ModelUpdater", getUps());
+			createExecutableExtensions("class", getHawkFactories());
 			getLanguages();
 
 			/*
@@ -262,6 +264,19 @@ public class HManager {
 		return getAttributeFor("VCSManager", getVCS());
 	}
 
+	public List<IConfigurationElement> getHawkFactories() {
+		return getConfigurationElementsFor("org.hawk.core.HawkFactoryExtensionPoint");
+	}
+
+	public IHawkFactory createHawkFactory(String factoryID) throws CoreException {
+		for (IConfigurationElement elem : getHawkFactories()) {
+			if (factoryID.equals(elem.getAttribute("id"))) {
+				return (IHawkFactory) elem.createExecutableExtension("class");
+			}
+		}
+		return null;
+	}
+
 	public boolean stopAllRunningInstances() {
 		System.out.println("shutting down hawk:");
 		for (HModel hm : all) {
@@ -293,7 +308,7 @@ public class HManager {
 			}
 
 			for (HawkConfig s : hawks) {
-				addHawk(HModel.createFromFolder(s, this));
+				addHawk(HModel.load(s, this));
 			}
 
 		} catch (Exception e) {
