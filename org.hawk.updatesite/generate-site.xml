@@ -28,7 +28,7 @@
 		<zip
 			basedir="${basedir}"
 			zipfile="hawk-updatesite-${DSTAMP}.zip"
-			includes="features,plugins,*.jar"
+			includes="features/*.jar,plugins/*.jar,*.jar"
 			update="false"/>
 
 		<eclipse.refreshLocal
