@@ -8,6 +8,7 @@
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
  *     Ossmeter team (https://opensourceprojects.eu/p/ossmeter) - SVN delta computation algorithm
+ *     Antonio Garcia-Dominguez - do not blacklist .zip files, allow any valid URL, minor clean up
  ******************************************************************************/
 package org.hawk.svn;
 
@@ -16,8 +17,10 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -41,6 +44,15 @@ public class SvnManager extends AbstractVcsManager {
 	private IAbstractConsole console;
 
 	private boolean isActive = false;
+
+	/*
+	 * TODO we can't blacklist .zip as we need support for
+	 * zipped Modelio projects - should we use a different
+	 * extension (".mzip", perhaps?),or a whitelist
+	 * (".modelio.zip"?)?
+	 */
+	private static final Set<String> EXTENSION_BLACKLIST
+		= new HashSet<>(Arrays.asList(".png", ".jpg", ".bmp", ".jar", ".gz", ".tar"));
 
 	private static String password() {
 		final JFrame parent = new JFrame();
@@ -86,7 +98,6 @@ public class SvnManager extends AbstractVcsManager {
 			throws Exception {
 
 		try {
-
 			console = c;
 
 			r = new SvnRepository(vcsloc);
@@ -95,19 +106,12 @@ public class SvnManager extends AbstractVcsManager {
 			pw = null;
 
 			SvnManager m = new SvnManager();
-
 			m.getFirstRevision(r);
 
 			isActive = true;
-			//
-			// VcsRepositoryDelta d = m.getDelta(r, revision);
-			//
-			// for (VcsCommitItem i : d.getCompactedCommitItems())
-			// System.err.println(i.toString());
-
 		} catch (Exception e) {
-			System.err.println("exception in svnmanager run():");
-			e.printStackTrace();
+			console.printerrln("exception in svnmanager run():");
+			console.printerrln(e);
 		}
 
 	}
@@ -129,29 +133,17 @@ public class SvnManager extends AbstractVcsManager {
 		VcsRepositoryDelta delta = new VcsRepositoryDelta();
 		delta.setRepository(repository);
 
-		String userProviderURL = _svnRepository.getUrl();
-		// System.err.println(_svnRepository.getUrl());
-		String rootURL = svnRepository.getRepositoryRoot(false)
-				.toDecodedString();
-		// System.err.println(rootURL);
-
-		String overLappedURL = makeRelative(rootURL, userProviderURL);
-		// if (!overLappedURL.startsWith("/")) {
-		// overLappedURL = "/" + overLappedURL;
-		// }
-		// System.err.println(overLappedURL);
+		final String userProviderURL = _svnRepository.getUrl();
+		final String rootURL = svnRepository.getRepositoryRoot(false).toDecodedString();
+		final String overLappedURL = makeRelative(rootURL, userProviderURL);
 
 		if (!startRevision.equals(endRevision)) {
 			Collection<?> c = svnRepository.log(new String[] { "" }, null,
 					Long.valueOf(startRevision), Long.valueOf(endRevision),
 					true, true);
 
-			// System.err.println(c);
-
 			for (Object o : c) {
-
 				SVNLogEntry svnLogEntry = (SVNLogEntry) o;
-
 				VcsCommit commit = new VcsCommit();
 
 				commit.setAuthor(svnLogEntry.getAuthor());
@@ -161,58 +153,48 @@ public class SvnManager extends AbstractVcsManager {
 				commit.setJavaDate(svnLogEntry.getDate());
 				delta.getCommits().add(commit);
 
-				Map<String, SVNLogEntryPath> changedPaths = svnLogEntry
-						.getChangedPaths();
-				for (String path : changedPaths.keySet()) {
+				Map<String, SVNLogEntryPath> changedPaths = svnLogEntry.getChangedPaths();
+				for (final String path : changedPaths.keySet()) {
 					SVNLogEntryPath svnLogEntryPath = changedPaths.get(path);
 
-					// String[] exts =
-					// {".cxx",".h",".hxx",".cpp",".cpp",".html"};
-
-					// System.err.println(path);
-					// if (svnLogEntryPath.getKind() == SVNNodeKind.FILE) {
-					String[] blacklist = { ".png", ".jpg", ".bmp", ".zip",
-							".jar", ".gz", ".tar" };
-
-					if (path.lastIndexOf(".") <= 0)
+					final int lastDotIndex = path.lastIndexOf(".");
+					if (lastDotIndex <= 0) {
+						// No extension or file starts by "." (hidden files in Unix systems): skip
 						continue;
-					String ext = path.substring(path.lastIndexOf("."),
-							path.length());
-					// System.err.println(ext + " in " + blacklist + " == " +
-					// !Arrays.asList(blacklist).contains(ext));
-					if (!Arrays.asList(blacklist).contains(ext)) {
+					}
+					final String ext = path.substring(lastDotIndex, path.length());
+					if (EXTENSION_BLACKLIST.contains(ext)) {
+						// Blacklisted extension: skip
+						continue;
+					}
 
-						if (path.contains(overLappedURL)) {
+					if (path.contains(overLappedURL)) {
+						VcsCommitItem commitItem = new VcsCommitItem();
+						commit.getItems().add(commitItem);
+						commitItem.setCommit(commit);
 
-							VcsCommitItem commitItem = new VcsCommitItem();
-							commit.getItems().add(commitItem);
-							commitItem.setCommit(commit);
+						// XXX KOSTAS - removed starting / for Hawk + entire
+						// relative making.
+						// String relativePath = makeRelative(overLappedURL,
+						// path);
+						// if (!relativePath.startsWith("/")) {
+						// relativePath = "/" + relativePath;
+						// }
+						// commitItem.setPath(relativePath);
+						commitItem.setPath(path);
 
-							// XXX KOSTAS - removed starting / for Hawk + entire
-							// relative making.
-							// String relativePath = makeRelative(overLappedURL,
-							// path);
-							// if (!relativePath.startsWith("/")) {
-							// relativePath = "/" + relativePath;
-							// }
-							// commitItem.setPath(relativePath);
-							commitItem.setPath(path);
-
-							if (svnLogEntryPath.getType() == 'A') {
-								commitItem.setChangeType(VcsChangeType.ADDED);
-							} else if (svnLogEntryPath.getType() == 'M') {
-								commitItem.setChangeType(VcsChangeType.UPDATED);
-							} else if (svnLogEntryPath.getType() == 'D') {
-								commitItem.setChangeType(VcsChangeType.DELETED);
-							} else if (svnLogEntryPath.getType() == 'R') {
-								commitItem
-										.setChangeType(VcsChangeType.REPLACED);
-							} else {
-								System.err
-										.println("Found unrecognised svn log entry type: "
-												+ svnLogEntryPath.getType());
-								commitItem.setChangeType(VcsChangeType.UNKNOWN);
-							}
+						if (svnLogEntryPath.getType() == 'A') {
+							commitItem.setChangeType(VcsChangeType.ADDED);
+						} else if (svnLogEntryPath.getType() == 'M') {
+							commitItem.setChangeType(VcsChangeType.UPDATED);
+						} else if (svnLogEntryPath.getType() == 'D') {
+							commitItem.setChangeType(VcsChangeType.DELETED);
+						} else if (svnLogEntryPath.getType() == 'R') {
+							commitItem.setChangeType(VcsChangeType.REPLACED);
+						} else {
+							console.printerrln("Found unrecognised svn log entry type: "
+									+ svnLogEntryPath.getType());
+							commitItem.setChangeType(VcsChangeType.UNKNOWN);
 						}
 					}
 				}
@@ -220,47 +202,15 @@ public class SvnManager extends AbstractVcsManager {
 		}
 
 		for (VcsCommitItem c : delta.getCompactedCommitItems()) {
-			System.out.println(c.getPath());
+			console.println(c.getPath());
 		}
 
 		return delta;
 	}
 
-	// @Override
-	// public String getContents(VcsCommitItem item) throws Exception {
-	//
-	// SVNRepository repository = getSVNRepository((SvnRepository) item
-	// .getCommit().getDelta().getRepository());
-	//
-	// SVNProperties fileProperties = new SVNProperties();
-	// ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	//
-	// repository.getFile(item.getPath(),
-	// Long.valueOf(item.getCommit().getRevision()), fileProperties,
-	// baos);
-	//
-	// // Store mimetype?
-	// // Think about adding a notion of a filter
-	// // String mimeType =
-	// // fileProperties.getStringValue(SVNProperty.MIME_TYPE);
-	//
-	// // System.err.println("File being read from SVN: " + item.getPath());
-	//
-	// StringBuffer sb = new StringBuffer();
-	// BufferedReader reader = new BufferedReader(new InputStreamReader(
-	// new ByteArrayInputStream(baos.toByteArray())));
-	// String line;
-	// while ((line = reader.readLine()) != null) {
-	// // Think about a platform-wide new line character
-	// sb.append(line + "\r\n");
-	// }
-	// return sb.toString();
-	// }
-
 	@Override
 	public String getCurrentRevision(VcsRepository repository) throws Exception {
-		return getSVNRepository((SvnRepository) repository).getLatestRevision()
-				+ "";
+		return getSVNRepository((SvnRepository) repository).getLatestRevision()	+ "";
 	}
 
 	/**
@@ -277,67 +227,6 @@ public class SvnManager extends AbstractVcsManager {
 		}
 		return null;
 	}
-
-	// @Override
-	// public int compareVersions(VcsRepository repository, String versionOne,
-	// String versionTwo) throws Exception {
-	// return (Long.valueOf(versionOne).compareTo(Long.valueOf(versionTwo)));
-	// }
-
-	// /**
-	// * Is there a more efficient implementation? (simple cache?)
-	// */
-	// @Override
-	// public String[] getRevisionsForDate(VcsRepository repository, Date date)
-	// throws Exception {
-	// String[] revs = new String[2];
-	//
-	// SvnRepository _svnRepository = (SvnRepository) repository;
-	// SVNRepository svnRepository = getSVNRepository(_svnRepository);
-	//
-	// Collection<?> c = svnRepository.log(new String[] { "" }, null, 0,
-	// Long.valueOf(getCurrentRevision(repository)), true, true);
-	// boolean foundStart = false;
-	// SVNLogEntry svnLogEntry;
-	//
-	// for (Object o : c) {
-	// svnLogEntry = (SVNLogEntry) o;
-	// int dateComparison = date.compareTo(svnLogEntry.getDate());
-	//
-	// if (!foundStart && dateComparison == 0) {
-	// revs[0] = String.valueOf(svnLogEntry.getRevision());
-	// revs[1] = String.valueOf(svnLogEntry.getRevision());
-	// foundStart = true;
-	// } else if (foundStart && dateComparison == 0) {
-	// revs[1] = String.valueOf(svnLogEntry.getRevision());
-	// } else if (dateComparison < 0) { // Future
-	// break;
-	// }
-	// }
-	// System.out.println("SVN revisions: " + revs[0] + ", " + revs[1]);
-	// return revs;
-	// }
-	//
-	// /**
-	// */
-	// @Override
-	// public Date getDateForRevision(VcsRepository repository, String revision)
-	// throws Exception {
-	// SvnRepository _svnRepository = (SvnRepository) repository;
-	// SVNRepository svnRepository = getSVNRepository(_svnRepository);
-	//
-	// Collection<?> c = svnRepository.log(new String[] { "" }, null, 0,
-	// Long.valueOf(getCurrentRevision(repository)), true, true);
-	// SVNLogEntry svnLogEntry;
-	//
-	// for (Object o : c) {
-	// svnLogEntry = (SVNLogEntry) o;
-	// if (svnLogEntry.getRevision() == Long.valueOf(revision)) {
-	// return new Date(svnLogEntry.getDate());
-	// }
-	// }
-	// return null;
-	// }
 
 	private String makeRelative(String base, String extension) {
 		StringBuilder result = new StringBuilder();
@@ -357,7 +246,6 @@ public class SvnManager extends AbstractVcsManager {
 		SVNRepository svnRepository = getSVNRepository((SvnRepository) r);
 
 		try {
-
 			OutputStream o = new FileOutputStream(temp);
 
 			svnRepository.getFile(path, SVNRevision.HEAD.getNumber(),
@@ -365,9 +253,8 @@ public class SvnManager extends AbstractVcsManager {
 
 			o.flush();
 			o.close();
-
 		} catch (Exception e) {
-			e.printStackTrace();
+			console.printerrln(e);
 		}
 
 	}
@@ -379,10 +266,8 @@ public class SvnManager extends AbstractVcsManager {
 
 	@Override
 	public void shutdown() {
-
 		r = null;
 		console = null;
-
 	}
 
 	@Override

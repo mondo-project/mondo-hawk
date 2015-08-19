@@ -12,6 +12,8 @@
 package org.hawk.ui2.dialog;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.dialogs.Dialog;
@@ -945,11 +947,12 @@ public class HConfigDialog extends Dialog {
 	}
 
 	private boolean validSVNLoc() {
-		String loc = location.getText().toLowerCase();
-		if (loc.startsWith("http://") || loc.startsWith("https://") || loc.startsWith("svn://"))
+		try {
+			new URL(location.getText());
 			return true;
-		else
+		} catch (MalformedURLException e) {
 			return false;
+		}
 	}
 
 	private boolean validateFolder() {
