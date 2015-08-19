@@ -11,9 +11,11 @@
  ******************************************************************************/
 package org.hawk.ui2.wizard;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,6 +29,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+import org.hawk.core.IHawkFactory;
 import org.hawk.core.util.HawkConfig;
 import org.hawk.core.util.HawksConfig;
 import org.hawk.osgiserver.HModel;
@@ -66,25 +69,27 @@ public class HWizard extends Wizard implements INewWizard {
 	 * will create an operation and run it using wizard as execution context.
 	 */
 	public boolean performFinish() {
-		final String name = page.getHawkName();
-		final String folder = page.getContainerName();
-		final String dbType = page.getDBID();
-		final List<String> plugins = page.getPlugins();
-		final char[] apw = page.getApw();
-		final String factoryId = page.getFactoryID();
-
-		IRunnableWithProgress op = new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException {
-				try {
-					doFinish(name, folder, dbType, plugins, monitor, apw, factoryId);
-				} catch (CoreException e) {
-					throw new InvocationTargetException(e);
-				} finally {
-					monitor.done();
-				}
-			}
-		};
 		try {
+			final String name = page.getHawkName();
+			final String folder = page.getContainerName();
+			final String dbType = page.getDBID();
+			final List<String> plugins = page.getPlugins();
+			final char[] apw = page.getApw();
+			final String location = page.getLocation();
+			final IHawkFactory factory = page.getFactory();
+
+			IRunnableWithProgress op = new IRunnableWithProgress() {
+				public void run(IProgressMonitor monitor) throws InvocationTargetException {
+					try {
+						doFinish(name, new File(folder), location, dbType, plugins, monitor, apw, factory);
+					} catch (CoreException e) {
+						throw new InvocationTargetException(e);
+					} finally {
+						monitor.done();
+					}
+				}
+			};
+
 			getContainer().run(true, false, op);
 		} catch (InterruptedException e) {
 			return false;
@@ -92,6 +97,9 @@ public class HWizard extends Wizard implements INewWizard {
 			e.printStackTrace();
 			Throwable realException = e.getTargetException();
 			MessageDialog.openError(getShell(), "Error", realException.getMessage());
+			return false;
+		} catch (CoreException e) {
+			e.printStackTrace();
 			return false;
 		}
 		return true;
@@ -104,14 +112,14 @@ public class HWizard extends Wizard implements INewWizard {
 	 * @param factoryId 
 	 */
 
-	private void doFinish(String name, String location, String dbType, List<String> plugins, IProgressMonitor monitor,
-			char[] apw, String factoryId) throws CoreException {
+	private void doFinish(String name, File storageFolder, String location, String dbType, List<String> plugins, IProgressMonitor monitor,
+			char[] apw, IHawkFactory factory) throws CoreException {
 
 		// set up a new Hawk with the selected plugins
 
 		try {
 			// create a new hawk index at containerName folder with name fileName
-			HModel.create(factoryId, name, location, dbType, plugins, HUIManager.getInstance(), apw);
+			HModel.create(factory, name, storageFolder, location, dbType, plugins, HUIManager.getInstance(), apw);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -152,17 +160,17 @@ public class HWizard extends Wizard implements INewWizard {
 				hc = (HawksConfig) stream.fromXML(xml);
 			}
 
-			HashSet<HawkConfig> locs = new HashSet<HawkConfig>();
-
-			if (hc != null)
+			Set<HawkConfig> locs = new HashSet<HawkConfig>();
+			if (hc != null) {
 				locs.addAll(hc.getConfigs());
+			}
 
-			locs.add(new HawkConfig(name, location));
+			locs.add(new HawkConfig(
+				name, storageFolder.getCanonicalPath(),
+				location, factory.getClass().getName()));
 
 			xml = stream.toXML(new HawksConfig(locs));
-
 			preferences.put("config", xml);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			preferences.remove("config");

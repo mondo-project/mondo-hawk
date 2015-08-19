@@ -8,16 +8,21 @@
  * Contributors:
  *     Seyyed Shah - initial API and implementation
  *     Konstantinos Barmpis - updates and maintenance
+ *     Antonio Garcia-Dominguez - add location/factory ID fields
  ******************************************************************************/
 package org.hawk.ui2.wizard;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardPage;
@@ -39,35 +44,40 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.hawk.core.IHawkFactory;
 import org.hawk.ui2.util.HUIManager;
 
-/**
- * 
- */
-
 public class HWizardPage extends WizardPage {
+
+	private static final Pattern PATTERN = Pattern.compile("[^A-Za-z0-9_]");
+
+	private final class DialogChangeSelectionListener extends SelectionAdapter {
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			dialogChanged();
+		}
+	}
+
+	private final class DialogChangeModifyListener implements ModifyListener {
+		@Override
+		public void modifyText(ModifyEvent e) {
+			dialogChanged();
+		}
+	}
 
 	private static final String hawkConnectWarning = "Index storage folder must be empty -- Hawk will try to connect to an existing Hawk in this location";
 
 	private Text nameText;
-
 	private Text folderText;
-
 	private Combo dbidText;
-
 	private Table pluginTable;
-
 	private Text apwText;
+	private Combo factoryIdText;
+	private Text locationText;
 
 	private HUIManager hminstance;
+	private Set<String> factoriesWithLocation, factoriesWithGraph;
 
-	private Combo factoryIdText;
-
-	/**
-	 * Constructor for .
-	 * 
-	 * @param pageName
-	 */
 	public HWizardPage(ISelection selection) {
 		super("wizardPage");
 		setTitle("New Hawk Instance");
@@ -95,12 +105,7 @@ public class HWizardPage extends WizardPage {
 		apwText = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.PASSWORD);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		apwText.setLayoutData(gd);
-		apwText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				dialogChanged();
-			}
-		});
+		apwText.addModifyListener(new DialogChangeModifyListener());
 
 		label = new Label(container, SWT.NULL);
 		label.setText("");
@@ -111,12 +116,7 @@ public class HWizardPage extends WizardPage {
 		nameText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		nameText.setLayoutData(gd);
-		nameText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				dialogChanged();
-			}
-		});
+		nameText.addModifyListener(new DialogChangeModifyListener());
 
 		label = new Label(container, SWT.NULL);
 		label.setText("");
@@ -128,12 +128,7 @@ public class HWizardPage extends WizardPage {
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		folderText.setLayoutData(gd);
 		// folderText.setEditable(false);
-		folderText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				dialogChanged();
-			}
-		});
+		folderText.addModifyListener(new DialogChangeModifyListener());
 
 		Button button = new Button(container, SWT.PUSH);
 		button.setText("Browse...");
@@ -142,14 +137,25 @@ public class HWizardPage extends WizardPage {
 				handleBrowse();
 			}
 		});
-		label = new Label(container, SWT.NULL);
 
+		label = new Label(container, SWT.NULL);
+		label.setText("Remote location:");
+
+		locationText = new Text(container, SWT.BORDER | SWT.SINGLE);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		locationText.setLayoutData(gd);
+		// folderText.setEditable(false);
+		locationText.addModifyListener(new DialogChangeModifyListener());
+
+		label = new Label(container, SWT.NULL);
+		label.setText("");
+
+		label = new Label(container, SWT.NULL);
 		gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		label.setLayoutData(gd);
 		label.setText("&Enabled plugins:");
 
-		pluginTable = new Table(container, SWT.BORDER | SWT.V_SCROLL
-				| SWT.H_SCROLL);
+		pluginTable = new Table(container, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		pluginTable.setLayoutData(gd);
@@ -198,22 +204,26 @@ public class HWizardPage extends WizardPage {
 		label.setText("Instance type:");
 
 		factoryIdText = new Combo(container, SWT.READ_ONLY);
+		factoriesWithLocation = new HashSet<>();
+		factoriesWithGraph = new HashSet<>();
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		factoryIdText.setLayoutData(gd);
-		for (String fid : hminstance.getHawkFactoryIDs()) {
-			factoryIdText.add(fid);
+		for (Map.Entry<String, IHawkFactory> factory : hminstance.getHawkFactoryInstances().entrySet()) {
+			factoryIdText.add(factory.getKey());
+			if (factory.getValue().instancesUseLocation()) {
+				factoriesWithLocation.add(factory.getKey());
+			}
+			if (factory.getValue().instancesCreateGraph()) {
+				factoriesWithGraph.add(factory.getKey());
+			}
 		}
 		factoryIdText.select(0);
+		factoryIdText.addSelectionListener(new DialogChangeSelectionListener());
 
 		Button startButton = new Button(container, SWT.CHECK);
 		startButton.setText("Start with Workspace");
 		startButton.setVisible(false);
-		startButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				dialogChanged();
-			}
-		});
+		startButton.addSelectionListener(new DialogChangeSelectionListener());
 
 		label = new Label(container, SWT.NULL);
 		label.setText("");
@@ -224,15 +234,9 @@ public class HWizardPage extends WizardPage {
 		Button deleteButton = new Button(container, SWT.CHECK);
 		deleteButton.setText("Delete existing indexes");
 		deleteButton.setVisible(false);
-		deleteButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				dialogChanged();
-			}
-		});
+		deleteButton.addSelectionListener(new DialogChangeSelectionListener());
 
 		initialize();
-
 		dialogChanged();
 		setControl(container);
 	}
@@ -266,7 +270,6 @@ public class HWizardPage extends WizardPage {
 	 * Uses the standard container selection dialog to choose the new value for
 	 * the container field.
 	 */
-
 	private void handleBrowse() {
 		DirectoryDialog dd = new DirectoryDialog(getShell(), SWT.OPEN);
 
@@ -286,8 +289,9 @@ public class HWizardPage extends WizardPage {
 	 * Ensures that both text fields are set.
 	 */
 	private void dialogChanged() {
-
-		final Pattern PATTERN = Pattern.compile("[^A-Za-z0-9_]");
+		final String factoryID = getFactoryID();
+		locationText.setEnabled(factoriesWithLocation.contains(factoryID));
+		dbidText.setEnabled(factoriesWithGraph.contains(factoryID));
 
 		// empty adminpw
 		if (getApw().length == 0) {
@@ -372,5 +376,13 @@ public class HWizardPage extends WizardPage {
 
 	public String getFactoryID() {
 		return factoryIdText.getText();
+	}
+
+	public IHawkFactory getFactory() throws CoreException {
+		return hminstance.createHawkFactory(getFactoryID());
+	}
+
+	public String getLocation() {
+		return locationText.getText();
 	}
 }

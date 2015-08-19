@@ -24,8 +24,8 @@ public class LocalHawkFactory implements IHawkFactory {
 	public final static String ID = "org.hawk.core.hawkFactory.local";
 
 	@Override
-	public IHawk create(String name, String location, IAbstractConsole console) throws Exception {
-		return new LocalHawk(name, new File(location), console);
+	public IHawk create(String name, File localStorageFolder, String location, IAbstractConsole console) throws Exception {
+		return new LocalHawk(name, localStorageFolder, console);
 	}
 
 	@Override
@@ -34,8 +34,13 @@ public class LocalHawkFactory implements IHawkFactory {
 	}
 
 	@Override
-	public boolean instancesUseLocalGraph() {
+	public boolean instancesCreateGraph() {
 		return true;
+	}
+
+	@Override
+	public boolean instancesUseLocation() {
+		return false;
 	}
 
 }

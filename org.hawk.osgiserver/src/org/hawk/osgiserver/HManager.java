@@ -14,13 +14,16 @@ package org.hawk.osgiserver;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -144,12 +147,11 @@ public class HManager {
 				//o.stop();
 				o.delete();
 			} else {
-				o.removeHawkFromMetadata(new HawkConfig(o.getName(), o
-						.getFolder()));
+				o.removeHawkFromMetadata(o.getHawkConfig());
 			}
 			all.remove(o);
 		} else {
-			o.removeHawkFromMetadata(new HawkConfig(o.getName(), o.getFolder()));
+			o.removeHawkFromMetadata(o.getHawkConfig());
 		}
 	}
 
@@ -268,17 +270,22 @@ public class HManager {
 		return getConfigurationElementsFor("org.hawk.core.HawkFactoryExtensionPoint");
 	}
 
-	public List<String> getHawkFactoryIDs() {
-		final List<String> ids = new ArrayList<>();
+	public Map<String, IHawkFactory> getHawkFactoryInstances() {
+		final Map<String, IHawkFactory> ids = new HashMap<>();
 		for (IConfigurationElement elem : getHawkFactories()) {
-			ids.add(elem.getAttribute("id"));
+			try {
+				ids.put(elem.getAttribute("class"), (IHawkFactory) elem.createExecutableExtension("class"));
+			} catch (InvalidRegistryObjectException | CoreException e) {
+				// print error and skip this element
+				e.printStackTrace();
+			}
 		}
 		return ids;
 	}
 
-	public IHawkFactory createHawkFactory(String factoryID) throws CoreException {
+	public IHawkFactory createHawkFactory(String factoryClass) throws CoreException {
 		for (IConfigurationElement elem : getHawkFactories()) {
-			if (factoryID.equals(elem.getAttribute("id"))) {
+			if (factoryClass.equals(elem.getAttribute("class"))) {
 				return (IHawkFactory) elem.createExecutableExtension("class");
 			}
 		}
@@ -346,7 +353,7 @@ public class HManager {
 				locs.addAll(hc.getConfigs());
 			}
 
-			locs.add(new HawkConfig(e.getName(), e.getFolder()));
+			locs.add(e.getHawkConfig());
 			final String xml = stream.toXML(new HawksConfig(locs));
 			preferences.put("config", xml);
 		} catch (Exception ex) {

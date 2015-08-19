@@ -24,13 +24,9 @@ public class LocalHawk implements IHawk {
 
 	private String dbtype;
 
-	public LocalHawk(String name, File loc, IAbstractConsole c)
-			throws Exception {
-
-		location = loc;
-
+	public LocalHawk(String name, File storageFolder, IAbstractConsole c) throws Exception {
+		location = storageFolder;
 		indexer = new ModelIndexerImpl(name, location, c);
-
 	}
 
 	@Override

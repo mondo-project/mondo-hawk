@@ -21,7 +21,10 @@ public class HawkConfig {
 	protected String name;
 
 	@XStreamAlias("hawkLoc")
-	protected String loc;
+	protected String storageFolder;
+
+	@XStreamAlias("hawkRemoteLocation")
+	protected String location;
 
 	@XStreamAlias("hawkFactory")
 	protected String hawkFactory = LocalHawkFactory.ID;
@@ -29,9 +32,11 @@ public class HawkConfig {
 	public HawkConfig() {
 	}
 
-	public HawkConfig(String n, String l) {
-		name = n;
-		loc = l;
+	public HawkConfig(String name, String storage, String location, String factory) {
+		this.name = name;
+		this.storageFolder = storage;
+		this.location = location;
+		this.hawkFactory = factory;
 	}
 
 	public String getName() {
@@ -42,12 +47,12 @@ public class HawkConfig {
 		this.name = name;
 	}
 
-	public String getLoc() {
-		return loc;
+	public String getStorageFolder() {
+		return storageFolder;
 	}
 
-	public void setLoc(String loc) {
-		this.loc = loc;
+	public void setStorageFolder(String storageFolder) {
+		this.storageFolder = storageFolder;
 	}
 
 	public String getHawkFactory() {
@@ -58,12 +63,20 @@ public class HawkConfig {
 		this.hawkFactory = id;
 	}
 
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof HawkConfig))
 			return false;
 		else {
-			boolean ret = ((HawkConfig) o).getLoc().equals(this.getLoc());
+			boolean ret = ((HawkConfig) o).getStorageFolder().equals(this.getStorageFolder());
 			// System.err.println("equals: " + ((HawkConfig) o).getLoc() + " : "
 			// + this.getLoc() + " : " + ret);
 			return ret;
@@ -73,7 +86,7 @@ public class HawkConfig {
 	@Override
 	public int hashCode() {
 		// System.err.println("hashcode");
-		return getLoc().hashCode();
+		return getStorageFolder().hashCode();
 	}
 
 }

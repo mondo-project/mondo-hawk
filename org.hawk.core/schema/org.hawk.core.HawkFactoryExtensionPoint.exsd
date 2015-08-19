@@ -59,13 +59,6 @@
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="id" type="string" use="required">
-            <annotation>
-               <documentation>
-                  Unique identifier for the factory.
-               </documentation>
-            </annotation>
-         </attribute>
          <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>

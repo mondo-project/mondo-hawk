@@ -7,7 +7,8 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
- *     Antonio Garcia-Dominguez - use explicit HManager instances
+ *     Antonio Garcia-Dominguez - use explicit HManager instances, add support for
+ *                                remote locations
  ******************************************************************************/
 package org.hawk.osgiserver;
 
@@ -31,7 +32,6 @@ import org.hawk.core.IModelUpdater;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
-import org.hawk.core.runtime.LocalHawkFactory;
 import org.hawk.core.util.HawkConfig;
 import org.hawk.core.util.HawkProperties;
 import org.hawk.core.util.HawksConfig;
@@ -57,13 +57,8 @@ public class HModel {
 	/**
 	 * Creates a new Hawk instance in a local folder, and saves its metadata into the {@link HManager}.
 	 */
-	public static HModel create(String factoryId, String name, String location, String dbType, List<String> plugins, HManager manager, char[] apw) throws Exception {
-		if (factoryId == null) {
-			factoryId = LocalHawkFactory.ID;
-		}
-		final IHawkFactory hawkFactory = manager.createHawkFactory(factoryId);
-
-		HModel hm = new HModel(manager, hawkFactory, name, location, true);
+	public static HModel create(IHawkFactory hawkFactory, String name, File storageFolder, String location, String dbType, List<String> plugins, HManager manager, char[] apw) throws Exception {
+		HModel hm = new HModel(manager, hawkFactory, name, storageFolder, location, true);
 		if (dbType != null) {
 			hm.hawk.setDbtype(dbType);
 		}
@@ -75,10 +70,10 @@ public class HModel {
 			// create the indexer with relevant database
 			console.println("Creating Hawk indexer...");
 
-			if (hawkFactory.instancesUseLocalGraph()) {
+			if (hawkFactory.instancesCreateGraph()) {
 				console.println("Setting up hawk's back-end store:");
 				db = manager.createGraph(hm.hawk);
-				db.run(new File(location), console);
+				db.run(storageFolder, console);
 				hm.hawk.getModelIndexer().setDB(db, true);
 			}
 
@@ -115,7 +110,9 @@ public class HModel {
 	 */
 	public static HModel load(HawkConfig config, HManager manager) throws Exception {
 		final IHawkFactory hawkFactory = manager.createHawkFactory(config.getHawkFactory());
-		HModel hm = new HModel(manager, hawkFactory, config.getName(), config.getLoc(), false);
+		HModel hm = new HModel(manager, hawkFactory,
+				config.getName(), new File(config.getStorageFolder()), config.getLocation(),
+				false);
 
 		try {
 			// hard coded metamodel updater?
@@ -132,17 +129,21 @@ public class HModel {
 	}
 
 	private List<String> allowedPlugins = new ArrayList<String>();
-	private IHawk hawk;
-	private HManager manager;
+	private final IHawk hawk;
+	private final IHawkFactory hawkFactory;
+	private final HManager manager;
 	private boolean running;
+	private final String hawkLocation;
 
 	/**
 	 * Constructor for loading existing local Hawk instances and creating/loading custom {@link IHawk} implementations.
 	 */
-	public HModel(HManager manager, IHawkFactory hawkFactory, String name, String location, boolean isRunning) throws Exception {
-		this.hawk = hawkFactory.create(name, location, getConsole());
+	public HModel(HManager manager, IHawkFactory hawkFactory, String name, File storageFolder, String location, boolean isRunning) throws Exception {
+		this.hawkFactory = hawkFactory;
+		this.hawk = hawkFactory.create(name, storageFolder, location, getConsole());
 		this.manager = manager;
 		this.running = isRunning;
+		this.hawkLocation = location;
 
 		if (hawkFactory.instancesAreExtensible()) {
 			final IAbstractConsole console = getConsole();
@@ -245,7 +246,7 @@ public class HModel {
 
 	public void delete() throws BackingStoreException {
 
-		removeHawkFromMetadata(new HawkConfig(getName(), getFolder()));
+		removeHawkFromMetadata(getHawkConfig());
 
 		File f = hawk.getModelIndexer().getParentFolder();
 		while (this.isRunning()) {
@@ -261,6 +262,13 @@ public class HModel {
 		if (f.exists())
 			System.err.println("hawk removed from ui but persistence remains at: " + f);
 
+	}
+
+	/**
+	 * Returns a {@link HawkConfig} from which this instance can be reloaded.
+	 */
+	public HawkConfig getHawkConfig() {
+		return new HawkConfig(getName(), getFolder(), hawkLocation, hawkFactory.getClass().getName());
 	}
 
 	public boolean exists() {
@@ -379,10 +387,12 @@ public class HModel {
 			hawk.getModelIndexer().setAdminPassword(apw);
 			loadIndexerMetadata();
 
-			// create the indexer with relevant database
-			IGraphDatabase db = manager.createGraph(hawk);
-			db.run(new File(this.getFolder()), getConsole());
-			hawk.getModelIndexer().setDB(db, false);
+			if (hawkFactory.instancesCreateGraph()) {
+				// create the indexer with relevant database
+				IGraphDatabase db = manager.createGraph(hawk);
+				db.run(new File(this.getFolder()), getConsole());
+				hawk.getModelIndexer().setDB(db, false);
+			}
 
 			hawk.getModelIndexer().init();
 

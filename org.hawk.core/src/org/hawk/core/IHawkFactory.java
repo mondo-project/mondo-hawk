@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.hawk.core;
 
+import java.io.File;
+
 
 /**
  * Interface for a factory of {@link IHawk} objects. Useful for having plugins
@@ -20,9 +22,21 @@ public interface IHawkFactory {
 
 	/**
 	 * Creates a new instance of the desired implementation.
+	 *
+	 * @param name
+	 *            Name of the Hawk instance to be created.
+	 * @param storageFolder
+	 *            Local storage folder for the Hawk instance.
+	 * @param location
+	 *            Additional location on top of the storage folder (e.g. a
+	 *            Thrift API URL or the URL to a remote graph). This is only
+	 *            necessary if {@link #instancesUseLocation()} returns
+	 *            <code>true</code>.
+	 * @param console
+	 *            {@link IAbstractConsole} implementation used to print
+	 *            messages.
 	 */
-	IHawk create(String name, String location, IAbstractConsole console) throws Exception;
-
+	IHawk create(String name, File storageFolder, String location, IAbstractConsole console) throws Exception;
 
 	/**
 	 * Indicates whether the created instance should be customized with the
@@ -32,8 +46,14 @@ public interface IHawkFactory {
 	boolean instancesAreExtensible();
 
 	/**
-	 * Indicates whether instances require creating a local graph (
+	 * Indicates whether instances require creating the graph (
 	 * <code>true</code>), or not (<code>false</code>).
 	 */
-	boolean instancesUseLocalGraph();
+	boolean instancesCreateGraph();
+
+	/**
+	 * Indicates whether instances take a location in addition to the local
+	 * storage folder (<code>true</code>) or not (<code>false</code>).
+	 */
+	boolean instancesUseLocation();
 }
