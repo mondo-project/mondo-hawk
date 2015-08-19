@@ -27,7 +27,8 @@ public interface IModelIndexer {
 	 * When called, attempts to synchronise the index with any changes to any
 	 * vcs connected to it
 	 * 
-	 * @return
+	 * @return <code>true</code> if all repositories were synchronized,
+	 *         <code>false</code> otherwise.
 	 * @throws Exception
 	 */
 	boolean synchronise() throws Exception;
@@ -155,8 +156,10 @@ public interface IModelIndexer {
 	void addIndexedAttribute(String metamodeluri, String typename,
 			String attributename);
 
+	// TODO why do we keep this? shouldn't it be enough with getKnownQueryLanguages?
 	Object query(File query, String queryLangID) throws Exception;
 
+	// TODO why do we keep this? shouldn't it be enough with getKnownQueryLanguages?
 	Object query(String query, String queryLangID) throws Exception;
 
 	Collection<String> getDerivedAttributes();
