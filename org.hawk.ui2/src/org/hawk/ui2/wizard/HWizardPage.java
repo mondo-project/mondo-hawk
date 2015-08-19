@@ -81,7 +81,7 @@ public class HWizardPage extends WizardPage {
 	public HWizardPage(ISelection selection) {
 		super("wizardPage");
 		setTitle("New Hawk Instance");
-		setDescription("This wizard creates a new Hawk Instance to index models repositories.");
+		setDescription("This wizard creates a new Hawk Instance to index model repositories.");
 	}
 
 	/**
