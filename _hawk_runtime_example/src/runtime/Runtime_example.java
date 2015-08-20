@@ -203,9 +203,12 @@ public class Runtime_example {
 		return new Thread() {
 			@Override
 			public void run() {
+				final IGraphDatabase graph = i2.getGraph();
+
 				while (true) {
 					BufferedReader r = new BufferedReader(
 							new InputStreamReader(System.in));
+
 					try {
 						String s = r.readLine();
 						if (s.equalsIgnoreCase("quit")
@@ -216,34 +219,30 @@ public class Runtime_example {
 						} else if (s.equalsIgnoreCase("adi")) {
 							addDerivedandIndexedAttributes();
 						} else if (s.equalsIgnoreCase("qq")) {
-							i2.query(testquery, queryLangID);
+							q.contextlessQuery(graph, query);
 						} else if (s.equalsIgnoreCase("query")
 								|| s.equalsIgnoreCase("q")) {
-							i2.query(query, queryLangID);
-							i2.query(query2, queryLangID);
-							i2.query(query3, queryLangID);
-							// q.contextlessQuery(i.getGraph(), query);
-							// q.contextlessQuery(i.getGraph(), query2);
-							// q.contextlessQuery(i.getGraph(), query3);
+							q.contextlessQuery(graph, query);
+							q.contextlessQuery(graph, query2);
+							q.contextlessQuery(graph, query3);
 						} else if (s.equalsIgnoreCase("q1")) {
-							i2.query(query, queryLangID);
+							q.contextlessQuery(graph, query);
 						} else if (s.equalsIgnoreCase("q2")) {
-							i2.query(query2, queryLangID);
+							q.contextlessQuery(graph, query2);
 						} else if (s.equalsIgnoreCase("q3")) {
-							// q.contextlessQuery(i.getGraph(), query3);
-							i2.query(query3, queryLangID);
+							q.contextlessQuery(graph, query3);
 						} else if (s.equalsIgnoreCase("cq")) {
 							Map<String, String> map = new HashMap<String, String>();
 							map.put(EOLQueryEngine.PROPERTY_FILECONTEXT, "*");
-							q.contextfullQuery(hawk.getGraph(),
+							q.contextfullQuery(graph,
 									"TypeDeclaration.all.size().println();",
 									map);
 						} else if (s.equalsIgnoreCase("cqs")) {
 							Map<String, String> map = new HashMap<String, String>();
 							map.put(EOLQueryEngine.PROPERTY_FILECONTEXT, "*");
-							q.contextfullQuery(hawk.getGraph(), query, map);
-							q.contextfullQuery(hawk.getGraph(), query2, map);
-							q.contextfullQuery(hawk.getGraph(), query3, map);
+							q.contextfullQuery(graph, query, map);
+							q.contextfullQuery(graph, query2, map);
+							q.contextfullQuery(graph, query3, map);
 
 						} else if (s.equalsIgnoreCase("tf")) {
 

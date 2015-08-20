@@ -20,8 +20,8 @@ public class IFCModelFactory implements IModelResourceFactory {
 	public IFCModelFactory() {
 		modelExtensions = new HashSet<String>();
 
-		modelExtensions.add("ifc");
-		modelExtensions.add("ifcxml");
+		modelExtensions.add(".ifc");
+		modelExtensions.add(".ifcxml");
 
 	}
 

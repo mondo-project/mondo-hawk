@@ -49,12 +49,9 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 		metamodelExtensions = new HashSet<String>();
 		modelExtensions = new HashSet<String>();
 
-		metamodelExtensions.add("ecore");
-		metamodelExtensions.add("ECORE");
-		modelExtensions.add("xmi");
-		modelExtensions.add("XMI");
-		modelExtensions.add("model");
-		modelExtensions.add("MODEL");
+		metamodelExtensions.add(".ecore");
+		modelExtensions.add(".xmi");
+		modelExtensions.add(".model");
 
 		if (resourceSet == null) {
 			resourceSet = new ResourceSetImpl();
