@@ -109,8 +109,12 @@ public class HManager {
 		}
 	}
 
-	public void addHawk(HModel e) {
-		all.add(e);
+	public boolean addHawk(HModel e) {
+		if (e != null) {
+			all.add(e);
+			return true;
+		} else
+			return false;
 	}
 
 	public IGraphDatabase createGraph(IHawk hawk) throws Exception {
@@ -144,7 +148,7 @@ public class HManager {
 	public void delete(HModel o, boolean exists) throws BackingStoreException {
 		if (all.contains(o)) {
 			if (exists) {
-				//o.stop();
+				// o.stop();
 				o.delete();
 			} else {
 				o.removeHawkFromMetadata(o.getHawkConfig());
@@ -274,7 +278,8 @@ public class HManager {
 		final Map<String, IHawkFactory> ids = new HashMap<>();
 		for (IConfigurationElement elem : getHawkFactories()) {
 			try {
-				ids.put(elem.getAttribute("class"), (IHawkFactory) elem.createExecutableExtension("class"));
+				ids.put(elem.getAttribute("class"),
+						(IHawkFactory) elem.createExecutableExtension("class"));
 			} catch (InvalidRegistryObjectException | CoreException e) {
 				// print error and skip this element
 				e.printStackTrace();
@@ -283,7 +288,8 @@ public class HManager {
 		return ids;
 	}
 
-	public IHawkFactory createHawkFactory(String factoryClass) throws CoreException {
+	public IHawkFactory createHawkFactory(String factoryClass)
+			throws CoreException {
 		for (IConfigurationElement elem : getHawkFactories()) {
 			if (factoryClass.equals(elem.getAttribute("class"))) {
 				return (IHawkFactory) elem.createExecutableExtension("class");
@@ -322,15 +328,29 @@ public class HManager {
 					hawks.add(s);
 			}
 
+			boolean success = true;
+
 			for (HawkConfig s : hawks) {
-				addHawk(HModel.load(s, this));
+				success = success && addHawk(HModel.load(s, this));
 			}
+
+			if (!success){
+				preferences.remove("config");
+				preferences.flush();
+				}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			preferences.remove("config");
+			try {
+				preferences.flush();
+			} catch (BackingStoreException e1) {
+				e1.printStackTrace();
+			}
 		}
+		
 		firstRun = false;
+
 	}
 
 	public void saveHawkToMetadata(HModel e) throws BackingStoreException {

@@ -35,6 +35,7 @@ import org.hawk.core.util.HawksConfig;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.util.HUIManager;
 import org.hawk.ui2.view.HView;
+import org.osgi.service.prefs.BackingStoreException;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -171,9 +172,15 @@ public class HWizard extends Wizard implements INewWizard {
 
 			xml = stream.toXML(new HawksConfig(locs));
 			preferences.put("config", xml);
+			preferences.flush();
 		} catch (Exception e) {
 			e.printStackTrace();
 			preferences.remove("config");
+			try {
+				preferences.flush();
+			} catch (BackingStoreException e1) {
+				e1.printStackTrace();
+			}
 		}
 
 		monitor.worked(1);
