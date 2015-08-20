@@ -131,8 +131,6 @@ public class Runtime_example {
 		// add a metamodel updater
 		hawk.setMetaModelUpdater(new GraphMetaModelUpdater());
 
-
-
 		// add a (default) model updater
 		hawk.addModelUpdater(new GraphModelUpdater());
 
@@ -163,10 +161,10 @@ public class Runtime_example {
 		// register them
 		hawk.registerMetamodel(metamodel);
 		// i.removeMetamodel(metamodel);
-		
-		//hawk.addVCSManager(vcs, true);
+
+		// hawk.addVCSManager(vcs, true);
 		//
-		//addDerivedandIndexedAttributes();
+		// addDerivedandIndexedAttributes();
 		//
 
 		// terminate hawk
@@ -219,7 +217,7 @@ public class Runtime_example {
 						} else if (s.equalsIgnoreCase("adi")) {
 							addDerivedandIndexedAttributes();
 						} else if (s.equalsIgnoreCase("qq")) {
-							q.contextlessQuery(graph, query);
+							q.contextlessQuery(graph, testquery);
 						} else if (s.equalsIgnoreCase("query")
 								|| s.equalsIgnoreCase("q")) {
 							q.contextlessQuery(graph, query);
