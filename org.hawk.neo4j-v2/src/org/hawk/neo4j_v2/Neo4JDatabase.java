@@ -48,14 +48,6 @@ import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
 
 public class Neo4JDatabase implements IGraphDatabase {
 
-	/**
-	 * This plugin's own copy of the FILEINDEX_REPO_SEPARATOR constant from the
-	 * GraphModelBatchInjector.
-	 *
-	 * TODO: refactor {@link #compareWithLocalFiles(Set)} out of this class so
-	 * this constant isn't need here anymore.
-	 */
-	private static final String FILEINDEX_REPO_SEPARATOR = "___";
 	private String loc;
 	private String tempdir;
 
@@ -68,14 +60,14 @@ public class Neo4JDatabase implements IGraphDatabase {
 	private IGraphNodeIndex fileindex;
 	private IGraphNodeIndex metamodelindex;
 
-	private IAbstractConsole console;
+	//private IAbstractConsole console;
 
 	public Neo4JDatabase() {
 	}
 
 	public void run(File location, IAbstractConsole c) {
 
-		console = c;
+		//console = c;
 
 		if (location == null) {
 			File runtimeDir = new File("runtime_data");

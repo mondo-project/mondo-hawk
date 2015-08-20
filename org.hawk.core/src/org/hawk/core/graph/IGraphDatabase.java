@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hawk.core.IAbstractConsole;
-import org.hawk.core.VcsCommitItem;
 
 public interface IGraphDatabase {
 

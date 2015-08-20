@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.util.HashSet;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -205,24 +204,24 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 		return set;
 	}
 
-	private boolean notDefaultPackage(String e) {
-		// System.err.println(">" + e);
-
-		// new eclipse populates the registry with MANY random metamodels so no
-		// way to pre-populate this in emf without ignoring www.eclipse
-
-		// http://www.eclipse.org/emf/2003/XMLType,
-		// http://www.eclipse.org/emf/2002/Ecore,
-		// http://www.w3.org/XML/1998/namespace
-
-		// if (e.contains("www.eclipse.org/emf/") && e.contains("XMLType")
-		// || e.contains("www.eclipse.org/emf/") && e.contains("Ecore")
-		// || e.contains("www.w3.org/XML") && e.contains("namespace"))
-		if (e.contains("http://www.eclipse.org/")
-				|| e.contains("http:///org/eclipse/")
-				|| e.contains("www.w3.org/XML") && e.contains("namespace"))
-			return false;
-		else
-			return true;
-	}
+	// private boolean notDefaultPackage(String e) {
+	// // System.err.println(">" + e);
+	//
+	// // new eclipse populates the registry with MANY random metamodels so no
+	// // way to pre-populate this in emf without ignoring www.eclipse
+	//
+	// // http://www.eclipse.org/emf/2003/XMLType,
+	// // http://www.eclipse.org/emf/2002/Ecore,
+	// // http://www.w3.org/XML/1998/namespace
+	//
+	// // if (e.contains("www.eclipse.org/emf/") && e.contains("XMLType")
+	// // || e.contains("www.eclipse.org/emf/") && e.contains("Ecore")
+	// // || e.contains("www.w3.org/XML") && e.contains("namespace"))
+	// if (e.contains("http://www.eclipse.org/")
+	// || e.contains("http:///org/eclipse/")
+	// || e.contains("www.w3.org/XML") && e.contains("namespace"))
+	// return false;
+	// else
+	// return true;
+	// }
 }

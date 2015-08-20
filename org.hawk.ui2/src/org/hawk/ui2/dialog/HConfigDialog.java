@@ -18,7 +18,6 @@ import java.net.URL;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -975,9 +974,9 @@ public class HConfigDialog extends Dialog {
 	private Button add;
 	private List locList;
 
-	private void showMessage(String message) {
-		MessageDialog.openInformation(getShell(), "Hawk", message);
-	}
+//	private void showMessage(String message) {
+//		MessageDialog.openInformation(getShell(), "Hawk", message);
+//	}
 
 	private boolean authRequired() {
 		if (combo.getSelectionIndex() < 0)
