@@ -29,7 +29,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.hawk.bpmn.EMFpackage;
+import org.hawk.bpmn.BPMNPackage;
 import org.hawk.bpmn.model.util.RegisterMeta;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkMetaModelResource;
@@ -112,7 +112,7 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 		Resource r = resourceSet.createResource(URI.createURI(s));
 
-		r.getContents().add(((EMFpackage) p).getEObject());
+		r.getContents().add(((BPMNPackage) p).getEObject());
 
 		return new BPMNMetaModelResource(r, this);
 

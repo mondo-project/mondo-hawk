@@ -14,7 +14,7 @@ import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.hawk.core.model.*;
 
-public class EMFDataType extends EMFobject implements IHawkDataType {
+public class EMFDataType extends EMFObject implements IHawkDataType {
 
 	private EDataType edatatype;
 

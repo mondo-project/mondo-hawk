@@ -24,7 +24,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkPackage;
-import org.hawk.emf.EMFpackage;
+import org.hawk.emf.EMFPackage;
 import org.hawk.emf.model.util.RegisterMeta;
 
 public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
@@ -104,7 +104,7 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 		Resource r = resourceSet.createResource(URI.createURI(s));
 
-		r.getContents().add(((EMFpackage) p).getEObject());
+		r.getContents().add(((EMFPackage) p).getEObject());
 
 		return new EMFMetaModelResource(r, this);
 

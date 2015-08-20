@@ -19,7 +19,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.*;
-import org.hawk.emf.EMFobject;
+import org.hawk.emf.EMFObject;
 
 public class EMFModelResource implements IHawkModelResource {
 
@@ -68,7 +68,7 @@ public class EMFModelResource implements IHawkModelResource {
 			while (it.hasNext()) {
 				EObject next = it.next();
 				if (!next.eIsProxy()) {
-					allContents.add(new EMFobject(next));
+					allContents.add(new EMFObject(next));
 				} else {
 					// ignore it as it will resolve later - FIXED!
 					// System.err
@@ -92,7 +92,7 @@ public class EMFModelResource implements IHawkModelResource {
 			while (it.hasNext()) {
 				EObject next = it.next();
 				if (!next.eIsProxy()) {
-					allContents.add(new EMFobject(next));
+					allContents.add(new EMFObject(next));
 				} else {
 					// ignore it as it will resolve later - FIXED!
 					// System.err

@@ -14,7 +14,7 @@ import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.hawk.core.model.*;
 
-public class EMFDataType extends EMFobject implements IHawkDataType {
+public class BPMNDataType extends BPMNObject implements IHawkDataType {
 
 	private EDataType edatatype;
 
@@ -22,7 +22,7 @@ public class EMFDataType extends EMFobject implements IHawkDataType {
 
 	// private static HashMap<EClass, Collection<EClass>> eAllSubTypes;
 
-	public EMFDataType(EDataType eDataType) {
+	public BPMNDataType(EDataType eDataType) {
 
 		super(eDataType);
 		edatatype = ((EDataType) eDataType);

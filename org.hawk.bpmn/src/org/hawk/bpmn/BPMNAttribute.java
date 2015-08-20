@@ -8,7 +8,7 @@
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
  ******************************************************************************/
-package org.hawk.emf;
+package org.hawk.bpmn;
 
 import java.util.HashSet;
 
@@ -19,11 +19,11 @@ import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EDataType;
 import org.hawk.core.model.*;
 
-public class EMFattribute extends EMFobject implements IHawkAttribute {
+public class BPMNAttribute extends BPMNObject implements IHawkAttribute {
 
 	private EAttribute emfattribute;
 
-	public EMFattribute(EAttribute att) {
+	public BPMNAttribute(EAttribute att) {
 		super(att);
 		emfattribute = att;
 	}
@@ -46,7 +46,7 @@ public class EMFattribute extends EMFobject implements IHawkAttribute {
 
 		for (EAnnotation e : emfattribute.getEAnnotations()) {
 
-			IHawkAnnotation a = new EMFAnnotation(e);
+			IHawkAnnotation a = new BPMNAnnotation(e);
 
 			ann.add(a);
 
@@ -81,9 +81,9 @@ public class EMFattribute extends EMFobject implements IHawkAttribute {
 	public IHawkClassifier getType() {
 		EClassifier type = emfattribute.getEType();
 		if (type instanceof EClass)
-			return new EMFclass((EClass) emfattribute.getEType());
+			return new BPMNClass((EClass) emfattribute.getEType());
 		else if (type instanceof EDataType)
-			return new EMFDataType((EDataType) emfattribute.getEType());
+			return new BPMNDataType((EDataType) emfattribute.getEType());
 		else {
 			// System.err.println("attr: "+emfattribute.getEType());
 			return null;

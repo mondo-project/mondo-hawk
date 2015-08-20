@@ -24,11 +24,11 @@ import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
 
-public class EMFobject implements IHawkObject {
+public class BPMNObject implements IHawkObject {
 
 	protected EObject eob;
 
-	public EMFobject(EObject o) {
+	public BPMNObject(EObject o) {
 
 		eob = o;
 
@@ -92,7 +92,7 @@ public class EMFobject implements IHawkObject {
 	@Override
 	public IHawkClassifier getType() {
 
-		return new EMFclass(eob.eClass());
+		return new BPMNClass(eob.eClass());
 	}
 
 	@Override
@@ -120,10 +120,10 @@ public class EMFobject implements IHawkObject {
 			// ordered ref retainment
 			ret = new LinkedList<EObject>();
 			for (EObject e : ((Iterable<EObject>) source)) {
-				((LinkedList<EMFobject>) ret).add(new EMFobject(e));
+				((LinkedList<BPMNObject>) ret).add(new BPMNObject(e));
 			}
 		} else
-			ret = new EMFobject((EObject) source);
+			ret = new BPMNObject((EObject) source);
 
 		return ret;
 
@@ -131,8 +131,8 @@ public class EMFobject implements IHawkObject {
 
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof EMFobject)
-			return eob.equals(((EMFobject) o).getEObject());
+		if (o instanceof BPMNObject)
+			return eob.equals(((BPMNObject) o).getEObject());
 		else
 			return false;
 	}

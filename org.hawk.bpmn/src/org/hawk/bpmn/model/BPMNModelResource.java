@@ -17,7 +17,7 @@ import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.hawk.bpmn.EMFobject;
+import org.hawk.bpmn.BPMNObject;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.*;
 
@@ -68,7 +68,7 @@ public class BPMNModelResource implements IHawkModelResource {
 			while (it.hasNext()) {
 				EObject next = it.next();
 				if (!next.eIsProxy()) {
-					allContents.add(new EMFobject(next));
+					allContents.add(new BPMNObject(next));
 				} else {
 					// ignore it as it will resolve later - FIXED!
 					// System.err
@@ -92,7 +92,7 @@ public class BPMNModelResource implements IHawkModelResource {
 			while (it.hasNext()) {
 				EObject next = it.next();
 				if (!next.eIsProxy()) {
-					allContents.add(new EMFobject(next));
+					allContents.add(new BPMNObject(next));
 				} else {
 					// ignore it as it will resolve later - FIXED!
 					// System.err

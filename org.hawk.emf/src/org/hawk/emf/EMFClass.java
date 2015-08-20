@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.hawk.core.model.*;
 
-public class EMFclass extends EMFobject implements IHawkClass {
+public class EMFClass extends EMFObject implements IHawkClass {
 
 	private EClass eclass;
 
@@ -28,7 +28,7 @@ public class EMFclass extends EMFobject implements IHawkClass {
 
 	// private static HashMap<EClass, Collection<EClass>> eAllSubTypes;
 
-	public EMFclass(EClass o) {
+	public EMFClass(EClass o) {
 
 		super(o);
 		eclass = ((EClass) o);
@@ -62,7 +62,7 @@ public class EMFclass extends EMFobject implements IHawkClass {
 		HashSet<IHawkAttribute> atts = new HashSet<IHawkAttribute>();
 
 		for (EAttribute att : eclass.getEAllAttributes())
-			atts.add(new EMFattribute(att));
+			atts.add(new EMFAttribute(att));
 
 		return atts;
 	}
@@ -74,7 +74,7 @@ public class EMFclass extends EMFobject implements IHawkClass {
 
 		for (EClass e : eclass.getESuperTypes()) {
 
-			c.add(new EMFclass(e));
+			c.add(new EMFClass(e));
 
 		}
 
@@ -89,7 +89,7 @@ public class EMFclass extends EMFobject implements IHawkClass {
 
 		for (EReference e : eclass.getEAllReferences()) {
 
-			c.add(new EMFreference(e));
+			c.add(new EMFReference(e));
 
 		}
 
@@ -113,9 +113,9 @@ public class EMFclass extends EMFobject implements IHawkClass {
 		EStructuralFeature esf = eclass.getEStructuralFeature(name);
 
 		if (esf instanceof EAttribute)
-			return new EMFattribute((EAttribute) esf);
+			return new EMFAttribute((EAttribute) esf);
 		else if (esf instanceof EReference)
-			return new EMFreference((EReference) esf);
+			return new EMFReference((EReference) esf);
 		else {
 			System.err.println("getEStructuralFeature( " + name
 					+ " ) is not an attribute or a reference, debug:");

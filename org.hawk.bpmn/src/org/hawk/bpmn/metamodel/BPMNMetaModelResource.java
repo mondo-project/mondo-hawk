@@ -20,8 +20,8 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.hawk.bpmn.EMFclass;
-import org.hawk.bpmn.EMFpackage;
+import org.hawk.bpmn.BPMNClass;
+import org.hawk.bpmn.BPMNPackage;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkObject;
@@ -66,9 +66,9 @@ public class BPMNMetaModelResource implements IHawkMetaModelResource {
 		while (it.hasNext()) {
 			Object o = it.next();
 			if (o instanceof EClass)
-				ret.add(new EMFclass((EClass) o));
+				ret.add(new BPMNClass((EClass) o));
 			else if (o instanceof EPackage)
-				ret.add(new EMFpackage((EPackage) o, this));
+				ret.add(new BPMNPackage((EPackage) o, this));
 		}
 		return ret;
 

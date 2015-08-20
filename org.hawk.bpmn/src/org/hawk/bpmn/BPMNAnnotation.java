@@ -17,11 +17,11 @@ import org.hawk.core.model.IHawkAnnotation;
 
 
 
-public class EMFAnnotation implements IHawkAnnotation {
+public class BPMNAnnotation implements IHawkAnnotation {
 
 	EAnnotation ann;
 
-	public EMFAnnotation(EAnnotation a) {
+	public BPMNAnnotation(EAnnotation a) {
 
 		ann = a;
 

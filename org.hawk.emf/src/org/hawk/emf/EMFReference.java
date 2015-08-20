@@ -17,11 +17,11 @@ import org.eclipse.emf.ecore.EReference;
 import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkReference;
 
-public class EMFreference extends EMFobject implements IHawkReference {
+public class EMFReference extends EMFObject implements IHawkReference {
 
 	EReference r;
 
-	public EMFreference(EReference re) {
+	public EMFReference(EReference re) {
 		super(re);
 		r = re;
 
@@ -85,7 +85,7 @@ public class EMFreference extends EMFobject implements IHawkReference {
 	public IHawkClassifier getType() {
 		EClassifier type = r.getEType();
 		if (type instanceof EClass)
-			return new EMFclass((EClass) r.getEType());
+			return new EMFClass((EClass) r.getEType());
 		else if (type instanceof EDataType)
 			return new EMFDataType((EDataType) r.getEType());
 		else {

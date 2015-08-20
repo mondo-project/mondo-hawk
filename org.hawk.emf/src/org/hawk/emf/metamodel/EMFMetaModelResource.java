@@ -23,8 +23,8 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkObject;
-import org.hawk.emf.EMFclass;
-import org.hawk.emf.EMFpackage;
+import org.hawk.emf.EMFClass;
+import org.hawk.emf.EMFPackage;
 
 public class EMFMetaModelResource implements IHawkMetaModelResource {
 
@@ -66,9 +66,9 @@ public class EMFMetaModelResource implements IHawkMetaModelResource {
 		while (it.hasNext()) {
 			Object o = it.next();
 			if (o instanceof EClass)
-				ret.add(new EMFclass((EClass) o));
+				ret.add(new EMFClass((EClass) o));
 			else if (o instanceof EPackage)
-				ret.add(new EMFpackage((EPackage) o, this));
+				ret.add(new EMFPackage((EPackage) o, this));
 		}
 		return ret;
 

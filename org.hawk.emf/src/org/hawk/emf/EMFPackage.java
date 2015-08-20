@@ -8,7 +8,7 @@
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
  ******************************************************************************/
-package org.hawk.bpmn;
+package org.hawk.emf;
 
 import java.util.HashSet;
 
@@ -18,12 +18,12 @@ import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EPackage;
 import org.hawk.core.model.*;
 
-public class EMFpackage extends EMFobject implements IHawkPackage {
+public class EMFPackage extends EMFObject implements IHawkPackage {
 
 	private EPackage ep;
 	private IHawkMetaModelResource r;
 
-	public EMFpackage(EPackage e, IHawkMetaModelResource res) {
+	public EMFPackage(EPackage e, IHawkMetaModelResource res) {
 
 		super(e);
 		ep = e;
@@ -41,7 +41,7 @@ public class EMFpackage extends EMFobject implements IHawkPackage {
 	public IHawkClass getClassifier(String string) {
 		EClassifier e = ep.getEClassifier(string);
 		if (e instanceof EClass)
-			return new EMFclass(((EClass) e));
+			return new EMFClass(((EClass) e));
 		else {
 			System.err
 					.println("attempt to call getEClassifier(String string) on a non-eclass, debug");
@@ -61,7 +61,7 @@ public class EMFpackage extends EMFobject implements IHawkPackage {
 
 		for (EClassifier e : ep.getEClassifiers()) {
 			if (e instanceof EClass)
-				ret.add(new EMFclass(((EClass) e)));
+				ret.add(new EMFClass(((EClass) e)));
 			else if (e instanceof EDataType)
 				ret.add(new EMFDataType((EDataType) e));
 		}
