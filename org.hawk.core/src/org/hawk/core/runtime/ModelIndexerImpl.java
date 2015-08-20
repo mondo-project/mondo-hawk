@@ -10,10 +10,8 @@
  ******************************************************************************/
 package org.hawk.core.runtime;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -239,22 +237,14 @@ public class ModelIndexerImpl implements IModelIndexer {
 							for (VcsCommitItem f : currreposchangeditems) {
 
 								if(fileToResourceMap.get(f)!=null)continue;
-								
-								String[] split = f.getPath().split("\\.");
-								String extension = split[split.length - 1];
 
-								// ModelParser parser =
-								// getParserWithMetamodelExtension(extension);
-
-								File file = new File(graph.getTempDir() + "/"
-										+ f.getPath());
+								File file = new File(graph.getTempDir() + "/" + f.getPath());
 
 								if (!file.exists()) {
 									console.printerrln("warning, cannot find file: "
 											+ file + ", ignoring changes");
 								} else {
-									IHawkModelResource r = getModelParserWithModelExtension(
-											extension).parse(file);
+									IHawkModelResource r = getModelParserFromFilename(file.getName().toLowerCase()).parse(file);
 									fileToResourceMap.put(f, r);
 								}
 
@@ -752,15 +742,17 @@ public class ModelIndexerImpl implements IModelIndexer {
 		return null;
 	}
 
-	public IModelResourceFactory getModelParserWithModelExtension(
-			String extension) {
-		if (extension == null)
+	public IModelResourceFactory getModelParserFromFilename(String name) {
+		if (name == null)
 			console.printerrln("null extension given to getParserWithModelExtension(extension), returning null");
 		else
 			for (String p : modelparsers.keySet()) {
 				IModelResourceFactory parser = modelparsers.get(p);
-				if (parser.getModelExtensions().contains(extension))
-					return parser;
+				for (String ext : parser.getModelExtensions()) {
+					if (name.endsWith(ext)) {
+						return parser;
+					}
+				}
 			}
 		return null;
 	}
@@ -1050,33 +1042,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 			for (IModelUpdater u : getUpdaters())
 				u.updateIndexedAttribute(metamodeluri, typename, attributename);
 
-	}
-
-	@Override
-	public Object query(File query, String queryLangID) throws Exception {
-		String code = "";
-		try {
-			BufferedReader r = new BufferedReader(new FileReader(query));
-			String line;
-			while ((line = r.readLine()) != null)
-				code = code + "\r\n" + line;
-			r.close();
-		} catch (Exception e) {
-			System.err.println("error reading query file:");
-			e.printStackTrace();
-		}
-		return query(code, queryLangID);
-	}
-
-	@Override
-	public Object query(String query, String queryLangID) throws Exception {
-
-		IQueryEngine q = knownQueryLanguages.get(queryLangID);
-
-		if (q == null)
-			throw new Exception("Unknown query engine: " + queryLangID);
-
-		return q.contextlessQuery(graph, query);
 	}
 
 	@Override

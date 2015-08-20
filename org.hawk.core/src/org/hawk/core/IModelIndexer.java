@@ -156,12 +156,6 @@ public interface IModelIndexer {
 	void addIndexedAttribute(String metamodeluri, String typename,
 			String attributename);
 
-	// TODO why do we keep this? shouldn't it be enough with getKnownQueryLanguages?
-	Object query(File query, String queryLangID) throws Exception;
-
-	// TODO why do we keep this? shouldn't it be enough with getKnownQueryLanguages?
-	Object query(String query, String queryLangID) throws Exception;
-
 	Collection<String> getDerivedAttributes();
 
 	/**

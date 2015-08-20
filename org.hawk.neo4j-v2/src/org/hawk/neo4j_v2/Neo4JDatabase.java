@@ -453,7 +453,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 	}
 
 	@Override
-	public void logFull() throws Exception {
+	public File logFull() throws Exception {
 
 		File logFolder = new File(Activator.getInstance().getStateLocation()
 				.toString()
@@ -503,6 +503,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 		w.flush();
 		w.close();
 
+		return logFolder;
 	}
 
 	@Override

@@ -78,13 +78,8 @@ public interface IGraphDatabase {
 	 * <p>
 	 * Prints the contents of the graph to a file.
 	 * </p>
-	 *
-	 * <p>
-	 * TODO shouldn't we return the directory that we have created at least, to
-	 * provide some feedback?
-	 * </p>
 	 */
-	void logFull() throws Exception;
+	File logFull() throws Exception;
 
 	String currentMode();
 

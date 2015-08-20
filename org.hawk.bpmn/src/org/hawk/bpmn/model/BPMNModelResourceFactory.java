@@ -50,10 +50,8 @@ public class BPMNModelResourceFactory implements IModelResourceFactory {
 		metamodelExtensions = new HashSet<String>();
 		modelExtensions = new HashSet<String>();
 
-		// metamodelExtensions.add("ecore");
-		// metamodelExtensions.add("ECORE");
-		modelExtensions.add("bpmn2");
-		modelExtensions.add("BPMN2");
+		modelExtensions.add(".bpmn");
+		modelExtensions.add(".bpmn2");
 
 		if (resourceSet == null) {
 			resourceSet = new ResourceSetImpl();

@@ -50,7 +50,7 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 
 	@Override
 	public Set<String> getModelExtensions() {
-		return new HashSet<String>(Arrays.asList("zip"));
+		return new HashSet<String>(Arrays.asList(".modelio.zip"));
 	}
 
 	@Override
