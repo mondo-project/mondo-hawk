@@ -159,13 +159,13 @@ public class ModelIndexerImpl implements IModelIndexer {
 						HashSet<VcsCommitItem> interestingfiles = new HashSet<VcsCommitItem>();
 
 						for (VcsCommitItem r : files) {
-							String[] split = r.getPath().split("\\.");
-							String extension = split[split.length - 1];
 							for (String p : getKnownModelParserTypes()) {
 								IModelResourceFactory parser = getModelParser(p);
-								if (parser.getModelExtensions().contains(
-										extension))
-									interestingfiles.add(r);
+								for (String ext : parser.getModelExtensions()) {
+									if (r.getPath().toLowerCase().endsWith(ext)) {
+										interestingfiles.add(r);
+									}
+								}
 							}
 						}
 
