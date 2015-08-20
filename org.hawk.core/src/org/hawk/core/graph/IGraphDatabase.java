@@ -60,7 +60,7 @@ public interface IGraphDatabase {
 
 	IGraphNode getNodeById(Object id);
 
-	Map<?, ?> getConfig();
+//	/Map<?, ?> getConfig();
 
 	boolean nodeIndexExists(String name);
 

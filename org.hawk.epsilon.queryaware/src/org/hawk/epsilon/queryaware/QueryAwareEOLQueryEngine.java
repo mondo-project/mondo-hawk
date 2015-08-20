@@ -1169,12 +1169,12 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 
 	}
 
-	public void dumpDatabaseConfig() {
-
-		for (Object c : graph.getConfig().keySet())
-			System.out.println(c + " = " + graph.getConfig().get(c));
-
-	}
+//	public void dumpDatabaseConfig() {
+//
+//		for (Object c : graph.getConfig().keySet())
+//			System.out.println(c + " = " + graph.getConfig().get(c));
+//
+//	}
 
 	@Override
 	public Object contextlessQuery(IGraphDatabase g, String query) {

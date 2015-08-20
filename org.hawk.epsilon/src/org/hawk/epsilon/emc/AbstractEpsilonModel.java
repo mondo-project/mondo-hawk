@@ -203,7 +203,6 @@ public abstract class AbstractEpsilonModel extends Model {
 	public final static String databaseLocation = "DATABASE_LOCATION";
 	public final static String enableCaching = "ENABLE_CACHING";
 	public final static String dumpModelConfig = "DUMP_MODEL_CONFIG_ON_EXIT";
-	public final static String dumpMinimalDatabaseConfig = "DUMP_DATABASE_CONFIG_ON_EXIT";
 	public final static String dumpDatabaseConfig = "DUMP_FULL_DATABASE_CONFIG_ON_EXIT";
 
 	@Override
@@ -220,22 +219,17 @@ public abstract class AbstractEpsilonModel extends Model {
 
 	@Override
 	public void dispose() {
-		String dump1 = (String) config.get(dumpMinimalDatabaseConfig);
+		String dump1 = (String) config.get(dumpDatabaseConfig);
 		String dump2 = (String) config.get(dumpModelConfig);
-		String dump3 = (String) config.get(dumpDatabaseConfig);
 		if (dump1 != null && dump1.equalsIgnoreCase("true") || dump2 != null
-				&& dump2.equalsIgnoreCase("true") || dump3 != null
-				&& dump3.equalsIgnoreCase("true"))
+				&& dump2.equalsIgnoreCase("true"))
 			System.out.println("\n--dumping configuration--");
 		if (dump1 != null && dump1.equalsIgnoreCase("true"))
-			dumpMinimalDatabaseConfig();
+			dumpDatabaseConfig();
 		if (dump2 != null && dump2.equalsIgnoreCase("true"))
 			dumpModelConfig();
-		if (dump3 != null && dump3.equalsIgnoreCase("true"))
-			dumpDatabaseConfig();
 		if (dump1 != null && dump1.equalsIgnoreCase("true") || dump2 != null
-				&& dump2.equalsIgnoreCase("true") || dump3 != null
-				&& dump3.equalsIgnoreCase("true"))
+				&& dump2.equalsIgnoreCase("true"))
 			System.out.println("----------\n");
 		super.dispose();
 		// System.err.println(types);
@@ -329,8 +323,6 @@ public abstract class AbstractEpsilonModel extends Model {
 			System.out.println(c + " = " + config.get(c));
 
 	}
-
-	abstract public void dumpMinimalDatabaseConfig();
 
 	abstract public void dumpDatabaseConfig();
 

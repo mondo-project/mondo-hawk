@@ -1139,17 +1139,10 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		return graph;
 	}
 
-	public void dumpMinimalDatabaseConfig() {
+	public void dumpDatabaseConfig() {
 
 		for (Object c : config.keySet())
 			System.out.println(">" + c + " = " + config.get(c));
-
-	}
-
-	public void dumpDatabaseConfig() {
-
-		for (Object c : graph.getConfig().keySet())
-			System.out.println(c + " = " + graph.getConfig().get(c));
 
 	}
 

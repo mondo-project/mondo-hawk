@@ -41,7 +41,6 @@ import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.index.IndexManager;
 import org.neo4j.index.lucene.unsafe.batchinsert.LuceneBatchInserterIndexProvider;
-import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.tooling.GlobalGraphOperations;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
@@ -421,11 +420,11 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 	}
 
-	@Override
-	public Map<?, ?> getConfig() {
-
-		return ((EmbeddedGraphDatabase) graph).getConfig().getParams();
-	}
+//	@Override
+//	public Map<?, ?> getConfig() {
+//
+//		return ((EmbeddedGraphDatabase) graph).getConfig().getParams();
+//	}
 
 	@Override
 	public String getType() {
