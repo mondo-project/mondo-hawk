@@ -54,13 +54,12 @@ public interface IHawkFactory {
 	IHawk create(String name, File storageFolder, String location, IAbstractConsole console) throws Exception;
 
 	/**
-	 * Returns a map from the names of all the {@link IHawk} instances that
-	 * already exist at a particular location to whether they are running (
-	 * <code>true</code>) or not (<code>false</code>). The location should be
+	 * Returns information from all the {@link IHawk} instances that
+	 * already exist at a particular location. The location should be
 	 * disregarded for implementations that return <code>false</code> in
 	 * {@link #instancesUseLocation()}.
 	 */
-	InstanceInfo[] listInstances(String location);
+	InstanceInfo[] listInstances(String location) throws Exception;
 
 	/**
 	 * Indicates whether the created instance should be customized with the

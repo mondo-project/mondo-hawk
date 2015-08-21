@@ -241,7 +241,12 @@ public class HImportDialog extends Dialog {
 		txtLocation.setEnabled(instancesUseLocation);
 		btnFetch.setEnabled(instancesUseLocation);
 
-		tblvInstances.setInput(factory.listInstances(getLocation()));
+		try {
+			tblvInstances.setInput(null);
+			tblvInstances.setInput(factory.listInstances(getLocation()));
+		} catch (Exception e) {
+			Activator.logError(e.getMessage(), e);
+		}
 	}
 
 	private void doImport() {
