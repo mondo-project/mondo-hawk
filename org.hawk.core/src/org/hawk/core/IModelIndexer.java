@@ -106,6 +106,12 @@ public interface IModelIndexer {
 	 */
 	void init() throws Exception;
 
+	/**
+	 * Returns <code>true</code> if this indexer is running, <code>false</code>
+	 * otherwise.
+	 */
+	boolean isRunning();
+
 	// /**
 	// * NOTE: do not call this method before setting all the required factories
 	// * and parsers you wish to use in this hawk!
@@ -182,5 +188,6 @@ public interface IModelIndexer {
 	void setAdminPassword(char[] pw);
 
 	String decrypt(String pw) throws GeneralSecurityException, IOException;
+
 
 }

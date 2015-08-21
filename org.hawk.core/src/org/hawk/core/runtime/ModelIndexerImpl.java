@@ -91,7 +91,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	private final boolean runSchedule = true;
 
-	private HashSet<IGraphChangeDescriptor> metamodelchanges = new HashSet<>();
+	private Set<IGraphChangeDescriptor> metamodelchanges = new HashSet<>();
+	private boolean running = false;
 
 	/**
 	 * 
@@ -386,6 +387,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 			graph.shutdown(delete);
 		graph = null;
 
+		running = false;
 	}
 
 	// @Override
@@ -912,6 +914,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 			countdownTimer.scheduleAtFixedRate(task2, 2000, 1000);
 		}
+
+		running = true;
 	}
 
 	private void runUpdateTask() {
@@ -1153,6 +1157,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 	public String decrypt(String pw) throws GeneralSecurityException,
 			IOException {
 		return SecurityManager.decrypt(pw, adminPw);
+	}
+
+	@Override
+	public boolean isRunning() {
+		return running;
 	}
 
 }

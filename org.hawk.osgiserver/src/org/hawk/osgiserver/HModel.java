@@ -62,8 +62,7 @@ public class HModel {
 			File storageFolder, String location, String dbType,
 			List<String> plugins, HManager manager, char[] apw)
 			throws Exception {
-		HModel hm = new HModel(manager, hawkFactory, name, storageFolder,
-				location, true);
+		HModel hm = new HModel(manager, hawkFactory, name, storageFolder, location);
 		if (dbType != null) {
 			hm.hawk.setDbtype(dbType);
 		}
@@ -113,8 +112,7 @@ public class HModel {
 	/**
 	 * Loads a previously existing Hawk instance from its {@link HawkConfig}.
 	 */
-	public static HModel load(HawkConfig config, HManager manager)
-			throws Exception {
+	public static HModel load(HawkConfig config, HManager manager) throws Exception {
 
 		try {
 
@@ -122,8 +120,7 @@ public class HModel {
 					.getHawkFactory());
 
 			HModel hm = new HModel(manager, hawkFactory, config.getName(),
-					new File(config.getStorageFolder()), config.getLocation(),
-					false);
+					new File(config.getStorageFolder()), config.getLocation());
 
 			// hard coded metamodel updater?
 			IMetaModelUpdater metaModelUpdater = manager.getMetaModelUpdater();
@@ -145,20 +142,17 @@ public class HModel {
 	private final IHawk hawk;
 	private final IHawkFactory hawkFactory;
 	private final HManager manager;
-	private boolean running;
 	private final String hawkLocation;
 
 	/**
 	 * Constructor for loading existing local Hawk instances and
 	 * creating/loading custom {@link IHawk} implementations.
 	 */
-	public HModel(HManager manager, IHawkFactory hawkFactory, String name,
-			File storageFolder, String location, boolean isRunning)
+	public HModel(HManager manager, IHawkFactory hawkFactory, String name, File storageFolder, String location)
 			throws Exception {
 		this.hawkFactory = hawkFactory;
 		this.hawk = hawkFactory.create(name, storageFolder, location, getConsole());
 		this.manager = manager;
-		this.running = isRunning;
 		this.hawkLocation = location;
 
 		if (hawkFactory.instancesAreExtensible()) {
@@ -284,7 +278,6 @@ public class HModel {
 			try {
 				// XXX shutting down hawk does not delete the storage.
 				hawk.getModelIndexer().shutdown(false);
-				running = false;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -367,7 +360,7 @@ public class HModel {
 	}
 
 	public boolean isRunning() {
-		return running;
+		return hawk.getModelIndexer().isRunning();
 	}
 
 	/**
@@ -434,19 +427,16 @@ public class HModel {
 			}
 
 			hawk.getModelIndexer().init();
-
-			running = true;
 		} catch (Exception e) {
 			getConsole().printerrln(e);
 		}
 
-		return running;
+		return hawk.getModelIndexer().isRunning();
 	}
 
 	public void stop() {
 		try {
 			hawk.getModelIndexer().shutdown(false);
-			running = false;
 		} catch (Exception e) {
 			getConsole().printerrln(e);
 		}
