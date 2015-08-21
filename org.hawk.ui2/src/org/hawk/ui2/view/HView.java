@@ -389,7 +389,8 @@ public class HView extends ViewPart {
 
 		importRepos = new Action() {
 			public void run() {
-				new HImportDialog(shell).open();
+				final HImportDialog dialog = new HImportDialog(shell);
+				dialog.open();
 			}
 
 		};
@@ -425,4 +426,16 @@ public class HView extends ViewPart {
 		viewer.refresh();
 	}
 
+	public static void updateAsync(Shell shell) {
+		shell.getDisplay().asyncExec(new Runnable() {
+			public void run() {
+				try {
+					HView view = (HView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(HView.ID);
+					view.update();
+				} catch (Exception e) {
+					Activator.logError(e.getMessage(), e);
+				}
+			}
+		});
+	}
 }

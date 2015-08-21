@@ -11,11 +11,14 @@
  ******************************************************************************/
 package org.hawk.ui2;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.util.EclipseLogConsole;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -78,5 +81,13 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
+	}
+
+	/**
+	 * Logs an exception to the Error view.
+	 */
+	public static void logError(String msg, Throwable t) {
+		final String bundleName = FrameworkUtil.getBundle(Activator.class).getSymbolicName();
+		getDefault().getLog().log(new Status(IStatus.ERROR, bundleName, msg, t));
 	}
 }

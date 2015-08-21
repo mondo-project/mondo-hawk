@@ -184,10 +184,7 @@ public class HManager {
 
 	/**
 	 * Returns the {@link HModel} instance with the specified name among the
-	 * existing Hawk instances.
-	 * 
-	 * @throws NoSuchElementException
-	 *             There are no instances with the specified name.
+	 * existing Hawk instances, or <code>null</code> if no such instance exists.
 	 */
 	public HModel getHawkByName(String name) {
 		for (HModel m : getHawks()) {
@@ -195,7 +192,7 @@ public class HManager {
 				return m;
 			}
 		}
-		throw new NoSuchElementException();
+		return null;
 	}
 
 	public Collection<String> getIndexerNames() {

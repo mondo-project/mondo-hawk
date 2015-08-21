@@ -11,7 +11,6 @@
 package org.hawk.core;
 
 import java.io.File;
-import java.util.Map;
 
 
 /**
@@ -20,6 +19,21 @@ import java.util.Map;
  * their own dependencies).
  */
 public interface IHawkFactory {
+
+	/**
+	 * Basic information about existing instances. This should only have
+	 * the minimum information to be able to recreate an instance.
+	 */
+	public final static class InstanceInfo {
+		public final String name, dbType;
+		public final boolean running;
+
+		public InstanceInfo(String name, String dbType, boolean running) {
+			this.name = name;
+			this.dbType = dbType;
+			this.running = running;
+		}
+	}
 
 	/**
 	 * Creates a new instance of the desired implementation.
@@ -46,7 +60,7 @@ public interface IHawkFactory {
 	 * disregarded for implementations that return <code>false</code> in
 	 * {@link #instancesUseLocation()}.
 	 */
-	Map<String, Boolean> listInstances(String location);
+	InstanceInfo[] listInstances(String location);
 
 	/**
 	 * Indicates whether the created instance should be customized with the

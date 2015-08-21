@@ -11,22 +11,22 @@
 package org.hawk.ui2.dialog;
 
 
+import java.io.File;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -42,25 +42,44 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.hawk.core.IHawkFactory;
+import org.hawk.core.util.HawkConfig;
+import org.hawk.osgiserver.HModel;
+import org.hawk.ui2.Activator;
 import org.hawk.ui2.util.HUIManager;
+import org.hawk.ui2.view.HView;
 
 public class HImportDialog extends Dialog {
 
-	private static final class MapContentProvider implements
-			IStructuredContentProvider {
+	private static final class RemoveExistingHawksFilter extends ViewerFilter {
 		@Override
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			// do nothing
-		}
+		public boolean select(Viewer viewer, Object parentElement, Object element) {
+			final IHawkFactory.InstanceInfo entry = (IHawkFactory.InstanceInfo)element;
+			final HUIManager manager = HUIManager.getInstance();
 
-		@Override
-		public void dispose() {
-			// do nothing
-		}
+			final File base = ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile();
+			final File expectedFolder = new File(base, entry.name);
 
+			for (HModel m : manager.getHawks()) {
+				if (m.getName().equals(entry.name)) {
+					// There's already a Hawk index with that name: do not include it
+					return false;
+				}
+				else if (new File(m.getFolder()).equals(expectedFolder)) {
+					// There's already a Hawk index in the folder we'd use for the import: do not include it
+					return false;
+				}
+			}
+
+			return true;
+		}
+	}
+
+	private static final class RemoveHawksWithUnknownDBTypeFilter extends ViewerFilter {
 		@Override
-		public Object[] getElements(Object inputElement) {
-			return ((Map<?, ?>)inputElement).entrySet().toArray();
+		public boolean select(Viewer viewer, Object parentElement, Object element) {
+			final IHawkFactory.InstanceInfo entry = (IHawkFactory.InstanceInfo)element;
+			final HUIManager manager = HUIManager.getInstance();
+			return entry.dbType == null || manager.getIndexTypes().contains(entry.dbType);
 		}
 	}
 
@@ -86,23 +105,13 @@ public class HImportDialog extends Dialog {
 		this.factories = factories.toArray(new IHawkFactory[0]);
 	}
 
-	public IHawkFactory getSelectedFactory() {
+	private IHawkFactory getSelectedFactory() {
 		final IStructuredSelection sel = (IStructuredSelection) cmbvInstanceType.getSelection();
 		return (IHawkFactory) sel.getFirstElement();
 	}
 
-	public String getLocation() {
+	private String getLocation() {
 		return txtLocation.getText();
-	}
-
-	@SuppressWarnings("unchecked")
-	public Set<String> getSelectedNames() {
-		final Set<String> names = new HashSet<>();
-		for (Object o : tblvInstances.getCheckedElements()) {
-			final Map.Entry<String, Boolean> entry = (Map.Entry<String, Boolean>)o;
-			names.add(entry.getKey());
-		}
-		return names;
 	}
 
 	protected Control createDialogArea(Composite parent) {
@@ -166,15 +175,18 @@ public class HImportDialog extends Dialog {
 
 		tblvInstances = new CheckboxTableViewer(tblInstances);
 		tblvInstances.setLabelProvider(new LabelProvider() {
-			@SuppressWarnings("unchecked")
 			@Override
 			public String getText(Object element) {
-				final Map.Entry<String, Boolean> entry = (Map.Entry<String, Boolean>)element;
-				return entry.getKey() + (entry.getValue() ? " (running)" : "");
+				final IHawkFactory.InstanceInfo entry = (IHawkFactory.InstanceInfo)element;
+				return entry.name + (entry.running ? " (running)" : "");
 			}
 		});
-		tblvInstances.setContentProvider(new MapContentProvider());
-		// TODO provide some filter for instances we already have
+		tblvInstances.setSorter(new ViewerSorter());
+		tblvInstances.setFilters(new ViewerFilter[] {
+				new RemoveExistingHawksFilter(),
+				new RemoveHawksWithUnknownDBTypeFilter()
+		});
+		tblvInstances.setContentProvider(new ArrayContentProvider());
 
 		// "Select all" and "Deselect all" ////////////////////////////////////
 
@@ -215,6 +227,13 @@ public class HImportDialog extends Dialog {
 		return btn;
 	}
 
+	@Override
+	protected void okPressed() {
+		setReturnCode(OK);
+		doImport();
+		close();
+	}
+
 	private void dialogChanged() {
 		final IHawkFactory factory = getSelectedFactory();
 
@@ -222,6 +241,29 @@ public class HImportDialog extends Dialog {
 		txtLocation.setEnabled(instancesUseLocation);
 		btnFetch.setEnabled(instancesUseLocation);
 
-		tblvInstances.setInput(factory.listInstances(txtLocation.getText()));
+		tblvInstances.setInput(factory.listInstances(getLocation()));
+	}
+
+	private void doImport() {
+		IHawkFactory factory = getSelectedFactory();
+		final String location = getLocation();
+
+		final File base = ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile();
+		for (Object o : tblvInstances.getCheckedElements()) {
+			final IHawkFactory.InstanceInfo instance = (IHawkFactory.InstanceInfo)o;
+			File storage = new File(base, instance.name);
+			try {
+				HawkConfig hc = new HawkConfig(instance.name, storage.getCanonicalPath(), location, factory.getClass().getName());
+
+				final HUIManager manager = HUIManager.getInstance();
+				final HModel hm = HModel.load(hc, manager);
+				manager.addHawk(hm);
+				manager.saveHawkToMetadata(hm);
+
+				HView.updateAsync(getShell());
+			} catch (Exception e) {
+				Activator.logError(e.getMessage(), e);
+			}
+		}
 	}
 }

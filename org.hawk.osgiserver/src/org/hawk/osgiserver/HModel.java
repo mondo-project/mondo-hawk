@@ -44,7 +44,7 @@ public class HModel {
 
 	private static IAbstractConsole CONSOLE = new SLF4JConsole();
 
-	private static IAbstractConsole getConsole() {
+	public static IAbstractConsole getConsole() {
 		if (CONSOLE == null)
 			CONSOLE = new SLF4JConsole();
 		return CONSOLE;
@@ -156,8 +156,7 @@ public class HModel {
 			File storageFolder, String location, boolean isRunning)
 			throws Exception {
 		this.hawkFactory = hawkFactory;
-		this.hawk = hawkFactory.create(name, storageFolder, location,
-				getConsole());
+		this.hawk = hawkFactory.create(name, storageFolder, location, getConsole());
 		this.manager = manager;
 		this.running = isRunning;
 		this.hawkLocation = location;
