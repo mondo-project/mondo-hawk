@@ -11,6 +11,8 @@
 package org.hawk.core.runtime;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.Map;
 
 import org.hawk.core.IAbstractConsole;
 import org.hawk.core.IHawk;
@@ -41,6 +43,12 @@ public class LocalHawkFactory implements IHawkFactory {
 	@Override
 	public boolean instancesUseLocation() {
 		return false;
+	}
+
+	@Override
+	public Map<String, Boolean> listInstances(String location) {
+		// TODO Auto-generated method stub
+		return Collections.emptyMap();
 	}
 
 }

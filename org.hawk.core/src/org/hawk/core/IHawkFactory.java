@@ -11,6 +11,7 @@
 package org.hawk.core;
 
 import java.io.File;
+import java.util.Map;
 
 
 /**
@@ -37,6 +38,15 @@ public interface IHawkFactory {
 	 *            messages.
 	 */
 	IHawk create(String name, File storageFolder, String location, IAbstractConsole console) throws Exception;
+
+	/**
+	 * Returns a map from the names of all the {@link IHawk} instances that
+	 * already exist at a particular location to whether they are running (
+	 * <code>true</code>) or not (<code>false</code>). The location should be
+	 * disregarded for implementations that return <code>false</code> in
+	 * {@link #instancesUseLocation()}.
+	 */
+	Map<String, Boolean> listInstances(String location);
 
 	/**
 	 * Indicates whether the created instance should be customized with the

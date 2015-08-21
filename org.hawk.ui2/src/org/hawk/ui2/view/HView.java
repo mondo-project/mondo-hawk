@@ -44,6 +44,7 @@ import org.eclipse.ui.wizards.IWizardDescriptor;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.Activator;
 import org.hawk.ui2.dialog.HConfigDialog;
+import org.hawk.ui2.dialog.HImportDialog;
 import org.hawk.ui2.dialog.HQueryDialog;
 import org.hawk.ui2.util.HUIManager;
 import org.hawk.ui2.util.PasswordDialog;
@@ -79,6 +80,7 @@ public class HView extends ViewPart {
 	private Action delete;
 	private Action add;
 	private Action config;
+	private Action importRepos;
 
 	// private Action doubleClickAction;
 
@@ -222,6 +224,7 @@ public class HView extends ViewPart {
 		manager.add(stop);
 		manager.add(delete);
 		manager.add(add);
+		manager.add(importRepos);
 		manager.add(config);
 	}
 
@@ -231,6 +234,7 @@ public class HView extends ViewPart {
 		manager.add(stop);
 		manager.add(delete);
 		manager.add(add);
+		manager.add(importRepos);
 		manager.add(config);
 	}
 
@@ -240,6 +244,7 @@ public class HView extends ViewPart {
 		manager.add(stop);
 		manager.add(delete);
 		manager.add(add);
+		manager.add(importRepos);
 		manager.add(config);
 	}
 
@@ -381,6 +386,18 @@ public class HView extends ViewPart {
 						"icons/configure.gif"), null)));
 
 		initButtons();
+
+		importRepos = new Action() {
+			public void run() {
+				new HImportDialog(shell).open();
+			}
+
+		};
+		importRepos.setText("Import");
+		importRepos.setToolTipText("Import existing repositories");
+		importRepos.setImageDescriptor(ImageDescriptor.createFromURL(FileLocator
+				.find(FrameworkUtil.getBundle(this.getClass()), new Path(
+						"icons/addrepo_rep.gif"), null)));
 	}
 
 	private void hookDoubleClickAction() {
