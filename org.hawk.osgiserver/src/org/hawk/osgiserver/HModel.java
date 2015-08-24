@@ -340,21 +340,16 @@ public class HModel {
 		return hawk.getModelIndexer().getKnownQueryLanguages().keySet();
 	}
 
-	public Collection<String> getLocalLocations() {
+	public Collection<String> getLocations() {
 		List<String> locations = new ArrayList<String>();
-		for (IVcsManager o : hawk.getModelIndexer().getRunningVCSManagers()) {
-			if (o.getType().contains("localfolder"))
-				locations.add(o.getLocation());
+		for (IVcsManager o : getRunningVCSManagers()) {
+			locations.add(o.getLocation());
 		}
 		return locations;
 	}
 
-	public Collection<String> getLocations() {
-		List<String> locations = new ArrayList<String>();
-		for (IVcsManager o : hawk.getModelIndexer().getRunningVCSManagers()) {
-			locations.add(o.getLocation());
-		}
-		return locations;
+	public Collection<IVcsManager> getRunningVCSManagers() {
+		return hawk.getModelIndexer().getRunningVCSManagers();
 	}
 
 	public String getName() {

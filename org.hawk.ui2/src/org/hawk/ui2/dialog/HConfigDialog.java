@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -172,7 +173,7 @@ public class HConfigDialog extends Dialog {
 	private Button btnVCSBrowse;
 	private Text   txtVCSLocation;
 	private Button btnVCSAddUpdate;
-	private List   lstVCSLocations;
+	private ListViewer lstVCSLocations;
 
 	public HConfigDialog(Shell parentShell, HModel in) {
 		super(parentShell);
@@ -835,10 +836,7 @@ public class HConfigDialog extends Dialog {
 	}
 
 	private void updateLocationList() {
-		lstVCSLocations.removeAll();
-		for (String loc : hawkModel.getLocations()) {
-			lstVCSLocations.add(loc);
-		}
+		lstVCSLocations.setInput(hawkModel.getRunningVCSManagers().toArray());
 	}
 
 	private void updateMetamodelList() {
@@ -890,15 +888,20 @@ public class HConfigDialog extends Dialog {
 		gridLayout.numColumns = 5;
 		composite.setLayout(gridLayout);
 
-		lstVCSLocations = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+		lstVCSLocations = new ListViewer(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
 		GridData gridDataQ = new GridData();
 		gridDataQ.grabExcessHorizontalSpace = true;
 		gridDataQ.horizontalAlignment = GridData.FILL_BOTH;
-		gridDataQ.heightHint = 300;
-		gridDataQ.widthHint = 600;
 		gridDataQ.horizontalSpan = 5;
-		lstVCSLocations.setLayoutData(gridDataQ);
-		updateLocationList();
+		lstVCSLocations.setLabelProvider(new LabelProvider(){
+			@Override
+			public String getText(Object element) {
+				return ((IVcsManager)element).getLocation();
+			}
+		});
+		lstVCSLocations.setContentProvider(new ArrayContentProvider());
+		lstVCSLocations.setInput(hawkModel.getRunningVCSManagers().toArray());
+		lstVCSLocations.getList().setLayoutData(gridDataQ);
 
 		// combo (VCS types)
 		cmbVCSType = new ComboViewer(composite, SWT.READ_ONLY);
