@@ -8,6 +8,7 @@
  * Contributors:
  *     Seyyed Shah - initial API and implementation
  *     Konstantinos Barmpis - updates and maintenance
+ *     Antonio Garcia-Dominguez - updates and maintenance
  ******************************************************************************/
 package org.hawk.ui2.dialog;
 
@@ -51,7 +52,7 @@ import org.hawk.ui2.view.HView;
 public class HConfigDialog extends Dialog {
 
 	private HModel index;
-	private List mmList;
+	private List metamodelList;
 	private List daList;
 	private List iaList;
 	private List iList;
@@ -73,15 +74,14 @@ public class HConfigDialog extends Dialog {
 	}
 
 	protected Button createButton(Composite parent, int id, String label, boolean defaultButton) {
-		if (id == IDialogConstants.CANCEL_ID)
+		if (id == IDialogConstants.CANCEL_ID) {
 			return null;
+		}
 		return super.createButton(parent, id, label, defaultButton);
 	}
 
 	protected Control createDialogArea(Composite parent) {
-
 		try {
-
 			setDefaultImage(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(HView.ID)
 					.getTitleImage());
 
@@ -93,29 +93,29 @@ public class HConfigDialog extends Dialog {
 
 		TabItem metamodelTab = new TabItem(tabFolder, SWT.NULL);
 		metamodelTab.setText("Metamodels");
-		metamodelTab.setControl(mmTab(tabFolder));
+		metamodelTab.setControl(metamodelsTab(tabFolder));
 
 		TabItem vcsTab = new TabItem(tabFolder, SWT.NULL);
 		vcsTab.setText("Indexed Locations");
 		vcsTab.setControl(vcsTab(tabFolder));
 
-		TabItem dTab = new TabItem(tabFolder, SWT.NULL);
-		dTab.setText("Derived Attributes");
-		dTab.setControl(dTab(tabFolder));
+		TabItem derivedAttributeTab = new TabItem(tabFolder, SWT.NULL);
+		derivedAttributeTab.setText("Derived Attributes");
+		derivedAttributeTab.setControl(derivedAttributeTab(tabFolder));
 
-		TabItem iTab = new TabItem(tabFolder, SWT.NULL);
-		iTab.setText("Indexed Attributes");
-		iTab.setControl(iTab(tabFolder));
+		TabItem indexedAttributeTab = new TabItem(tabFolder, SWT.NULL);
+		indexedAttributeTab.setText("Indexed Attributes");
+		indexedAttributeTab.setControl(indexedAttributeTab(tabFolder));
 
-		TabItem aTab = new TabItem(tabFolder, SWT.NULL);
-		aTab.setText("All indexes");
-		aTab.setControl(aTab(tabFolder));
+		TabItem allIndexesTab = new TabItem(tabFolder, SWT.NULL);
+		allIndexesTab.setText("All indexes");
+		allIndexesTab.setControl(allIndexesTab(tabFolder));
 
 		tabFolder.pack();
 		return tabFolder;
 	}
 
-	private Composite dTab(TabFolder parent) {
+	private Composite derivedAttributeTab(TabFolder parent) {
 		final Composite composite = new Composite(parent, SWT.BORDER);
 		final GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 2;
@@ -131,7 +131,7 @@ public class HConfigDialog extends Dialog {
 
 		daList.setLayoutData(gridDataQ);
 
-		updateDAList();
+		updateDerivedAttributeList();
 
 		Button remove = new Button(composite, SWT.PUSH);
 		remove.setText("Remove");
@@ -146,14 +146,14 @@ public class HConfigDialog extends Dialog {
 		b.setText("Add...");
 		b.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				dAdd();
+				derivedAttributeAdd();
 			}
 		});
 
 		return composite;
 	}
 
-	private Composite iTab(TabFolder parent) {
+	private Composite indexedAttributeTab(TabFolder parent) {
 		final Composite composite = new Composite(parent, SWT.BORDER);
 		final GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 2;
@@ -169,7 +169,7 @@ public class HConfigDialog extends Dialog {
 
 		iaList.setLayoutData(gridDataQ);
 
-		updateIAList();
+		updateIndexedAttributeList();
 
 		Button remove = new Button(composite, SWT.PUSH);
 		remove.setText("Remove");
@@ -184,14 +184,14 @@ public class HConfigDialog extends Dialog {
 		b.setText("Add...");
 		b.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				iAdd();
+				indexedAttributeAdd();
 			}
 		});
 
 		return composite;
 	}
 
-	private Composite aTab(TabFolder parent) {
+	private Composite allIndexesTab(TabFolder parent) {
 		final Composite composite = new Composite(parent, SWT.BORDER);
 		final GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 1;
@@ -207,13 +207,13 @@ public class HConfigDialog extends Dialog {
 
 		iList.setLayoutData(gridDataQ);
 
-		updateIList();
+		updateAllIndexesList();
 
 		Button b = new Button(composite, SWT.NONE);
 		b.setText("Refresh");
 		b.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				updateIList();
+				updateAllIndexesList();
 			}
 		});
 
@@ -221,7 +221,7 @@ public class HConfigDialog extends Dialog {
 
 	}
 
-	private void iAdd() {
+	private void indexedAttributeAdd() {
 
 		Dialog d = new Dialog(this) {
 
@@ -278,12 +278,6 @@ public class HConfigDialog extends Dialog {
 							ok.setEnabled(false);
 					}
 				});
-
-				// Button b = new Button(composite, SWT.NONE);
-				// data = new GridData(SWT.BEGINNING, SWT.BEGINNING, false,
-				// false);
-				// b.setLayoutData(data);
-				// b.setText("Suggested Types");
 
 				l = new Label(parent, SWT.NONE);
 				l.setText("");
@@ -349,11 +343,11 @@ public class HConfigDialog extends Dialog {
 
 		d.setBlockOnOpen(true);
 		if (d.open() == Window.OK)
-			updateIAList();
+			updateIndexedAttributeList();
 
 	}
 
-	private void dAdd() {
+	private void derivedAttributeAdd() {
 
 		Dialog d = new Dialog(this) {
 
@@ -399,13 +393,7 @@ public class HConfigDialog extends Dialog {
 
 				GridLayout la = new GridLayout();
 				la.numColumns = 2;
-
 				composite.setLayout(la);
-
-				// Label label = new Label(composite, SWT.NONE);
-				// Display display = getShell().getDisplay();
-				// label.setForeground(new Color(display, 255, 0, 0));
-				// label.setText("");
 
 				Label l = new Label(composite, SWT.NONE);
 				l.setText(" Metamodel URI: ");
@@ -422,12 +410,6 @@ public class HConfigDialog extends Dialog {
 				data.minimumWidth = 200;
 				t.setLayoutData(data);
 				t.setText(type);
-
-				// Button b = new Button(composite, SWT.NONE);
-				// data = new GridData(SWT.BEGINNING, SWT.BEGINNING, false,
-				// false);
-				// b.setLayoutData(data);
-				// b.setText("Suggested Types");
 
 				l = new Label(composite, SWT.NONE);
 				l.setText(" Attribute Name: ");
@@ -659,13 +641,6 @@ public class HConfigDialog extends Dialog {
 				ok.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						if (check()) {
-
-							// System.err.println(">");
-							// System.err.println(uri);
-							// System.err.println(type);
-							// System.err.println(name);
-							// System.err.println("<");
-
 							try {
 								index.addDerivedAttribute(uri, type, name, atttype, isMany, isOrdered, isUnique,
 										derivationlanguage, derivationlogic);
@@ -684,18 +659,18 @@ public class HConfigDialog extends Dialog {
 
 		d.setBlockOnOpen(true);
 		if (d.open() == Window.OK)
-			updateDAList();
+			updateDerivedAttributeList();
 
 	}
 
-	private Composite mmTab(TabFolder parent) {
+	private Composite metamodelsTab(TabFolder parent) {
 
 		final Composite composite = new Composite(parent, SWT.BORDER);
 		final GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 2;
 		composite.setLayout(gridLayout);
 
-		mmList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+		metamodelList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
 		GridData gridDataQ = new GridData();
 		gridDataQ.grabExcessHorizontalSpace = true;
 		gridDataQ.horizontalAlignment = GridData.FILL_BOTH;
@@ -703,9 +678,9 @@ public class HConfigDialog extends Dialog {
 		gridDataQ.widthHint = 600;
 		gridDataQ.horizontalSpan = 2;
 
-		mmList.setLayoutData(gridDataQ);
+		metamodelList.setLayoutData(gridDataQ);
 
-		updateMMList();
+		updateMetamodelList();
 
 		Button remove = new Button(composite, SWT.PUSH);
 		remove.setText("Remove");
@@ -720,14 +695,14 @@ public class HConfigDialog extends Dialog {
 		browse.setText("Add...");
 		browse.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				mmBrowse();
+				metamodelBrowse();
 			}
 		});
 
 		return composite;
 	}
 
-	private void mmBrowse() {
+	private void metamodelBrowse() {
 		FileDialog fd = new FileDialog(getShell(), SWT.MULTI);
 
 		fd.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile().toString());
@@ -740,9 +715,6 @@ public class HConfigDialog extends Dialog {
 
 			String[] metaModels = fd.getFileNames();
 			File[] metaModelFiles = new File[metaModels.length];
-
-			// System.err.println(fd.getFilterPath());
-			// System.err.println(Arrays.toString(metaModels));
 
 			boolean error = false;
 
@@ -757,27 +729,27 @@ public class HConfigDialog extends Dialog {
 
 			if (!error) {
 				index.registerMeta(metaModelFiles);
-				updateMMList();
+				updateMetamodelList();
 			}
 		}
 
 	}
 
-	private void updateMMList() {
-		mmList.removeAll();
+	private void updateMetamodelList() {
+		metamodelList.removeAll();
 		for (String mm : index.getRegisteredMetamodels()) {
-			mmList.add(mm);
+			metamodelList.add(mm);
 		}
 	}
 
-	private void updateLocList() {
+	private void updateLocationList() {
 		locList.removeAll();
 		for (String loc : index.getLocations()) {
 			locList.add(loc);
 		}
 	}
 
-	private void updateDAList() {
+	private void updateDerivedAttributeList() {
 		daList.removeAll();
 		for (String da : index.getDerivedAttributes()) {
 			daList.add(da);
@@ -787,7 +759,7 @@ public class HConfigDialog extends Dialog {
 		daList.setItems(items);
 	}
 
-	private void updateIAList() {
+	private void updateIndexedAttributeList() {
 		iaList.removeAll();
 		for (String ia : index.getIndexedAttributes()) {
 			iaList.add(ia);
@@ -797,7 +769,7 @@ public class HConfigDialog extends Dialog {
 		iaList.setItems(items);
 	}
 
-	private void updateIList() {
+	private void updateAllIndexesList() {
 		iList.removeAll();
 		for (String i : index.getIndexes()) {
 			iList.add(i);
@@ -823,7 +795,7 @@ public class HConfigDialog extends Dialog {
 		gridDataQ.widthHint = 600;
 		gridDataQ.horizontalSpan = 5;
 		locList.setLayoutData(gridDataQ);
-		updateLocList();
+		updateLocationList();
 
 		// combo (VCS types)
 		combo = new Combo(composite, SWT.READ_ONLY);
@@ -874,7 +846,7 @@ public class HConfigDialog extends Dialog {
 				// String[0]));
 				setAuthBrowseButton();
 				setAddButton();
-				updateLocList();
+				updateLocationList();
 			}
 		});
 
@@ -973,10 +945,6 @@ public class HConfigDialog extends Dialog {
 	private Text location;
 	private Button add;
 	private List locList;
-
-//	private void showMessage(String message) {
-//		MessageDialog.openInformation(getShell(), "Hawk", message);
-//	}
 
 	private boolean authRequired() {
 		if (combo.getSelectionIndex() < 0)
