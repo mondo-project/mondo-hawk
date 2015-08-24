@@ -60,7 +60,7 @@ public interface IGraphDatabase {
 
 	IGraphNode getNodeById(Object id);
 
-//	/Map<?, ?> getConfig();
+	// /Map<?, ?> getConfig();
 
 	boolean nodeIndexExists(String name);
 
@@ -72,7 +72,7 @@ public interface IGraphDatabase {
 
 	String getTempDir();
 
-	//Set<VcsCommitItem> compareWithLocalFiles(Set<VcsCommitItem> reposItems);
+	// Set<VcsCommitItem> compareWithLocalFiles(Set<VcsCommitItem> reposItems);
 
 	/**
 	 * <p>
@@ -81,6 +81,14 @@ public interface IGraphDatabase {
 	 */
 	File logFull() throws Exception;
 
+	public static final String transactional = "TRANSACTIONAL";
+	public static final String nonTransactional = "NONTRANSACTIONAL";
+
+	/**
+	 * 
+	 * @return one of the two static strings defined here, either stating it is
+	 *         currently in transactional mode, or a non-transactional one
+	 */
 	String currentMode();
 
 	Set<String> getNodeIndexNames();

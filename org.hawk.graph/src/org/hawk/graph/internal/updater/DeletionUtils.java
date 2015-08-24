@@ -26,7 +26,9 @@ public class DeletionUtils {
 
 	public DeletionUtils(IGraphDatabase graph) {
 		this.graph = graph;
-		if (graph.currentMode().equals("TRANSACTIONAL_MODE"))
+		if (graph.currentMode().equals(
+		// "TRANSACTIONAL_MODE"
+				IGraphDatabase.transactional))
 			try (IGraphTransaction t = graph.beginTransaction()) {
 				filedictionary = graph.getFileIndex();
 				proxydictionary = graph.getOrCreateNodeIndex("proxydictionary");
@@ -49,14 +51,19 @@ public class DeletionUtils {
 
 	}
 
-	protected void deleteAll(String repository, String filepath) throws Exception {
+	protected void deleteAll(String repository, String filepath)
+			throws Exception {
 
 		long start = System.currentTimeMillis();
 
 		try (IGraphTransaction transaction = graph.beginTransaction()) {
 
-			IGraphNode file = graph.getFileIndex().get("id",
-					repository + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + filepath).iterator().next();
+			IGraphNode file = graph
+					.getFileIndex()
+					.get("id",
+							repository
+									+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+									+ filepath).iterator().next();
 
 			System.out.println("deleting nodes from file: "
 					+ file.getProperty("id"));
@@ -135,7 +142,8 @@ public class DeletionUtils {
 		}
 	}
 
-	protected void makeProxyRefs(IGraphNode modelElement, String repositoryURL, IGraphNode fileNode) {
+	protected void makeProxyRefs(IGraphNode modelElement, String repositoryURL,
+			IGraphNode fileNode) {
 
 		// handle any incoming references (after dereference, aka other file
 		// ones)
@@ -160,8 +168,10 @@ public class DeletionUtils {
 				// .getNewRelationshipType("file"))
 				// .iterator().next().getEndNode().getProperty("id"));
 
-				String relativeFileURI = repositoryURL + "$" + new DeletionUtils(graph)
-						.getRelativeURI(fileID.toString());
+				String relativeFileURI = repositoryURL
+						+ "$"
+						+ new DeletionUtils(graph).getRelativeURI(fileID
+								.toString());
 
 				String relativeElementURI = relativeFileURI + "#"
 						+ modelElement.getProperty("id").toString();
@@ -179,7 +189,8 @@ public class DeletionUtils {
 						proxies);
 
 				proxydictionary = graph.getOrCreateNodeIndex("proxydictionary");
-				proxydictionary.add(referencingNode, "_proxyRef", relativeFileURI);
+				proxydictionary.add(referencingNode, "_proxyRef",
+						relativeFileURI);
 
 				rel.delete();
 
