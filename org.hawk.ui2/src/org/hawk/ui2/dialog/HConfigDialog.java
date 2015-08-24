@@ -22,6 +22,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -54,6 +55,13 @@ import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.view.HView;
 
 public class HConfigDialog extends Dialog {
+
+	private static final class ClassNameLabelProvider extends LabelProvider {
+		@Override
+		public String getText(Object element) {
+			return element.getClass().getName();
+		}
+	}
 
 	public class UsernamePasswordDialog extends Dialog {
 		private static final int RESET_ID = IDialogConstants.NO_TO_ALL_ID + 1;
@@ -160,7 +168,8 @@ public class HConfigDialog extends Dialog {
 	};
 
 	private ComboViewer cmbVCSType;
-	private Button btnVCSAuthBrowse;
+	private Button btnVCSAuth;
+	private Button btnVCSBrowse;
 	private Text   txtVCSLocation;
 	private Button btnVCSAddUpdate;
 	private List   lstVCSLocations;
@@ -849,19 +858,13 @@ public class HConfigDialog extends Dialog {
 				|| vcsManager.isURLLocationAccepted() && isLocationValidURL();
 	}
 
-	private void updateVCSAuthBrowseButton() {
-		if (btnVCSAuthBrowse != null) {
-			if (isAuthSupported() && !btnVCSAuthBrowse.getText().equals("Authenticate...")) {
-				btnVCSAuthBrowse.removeListener(SWT.Selection, browseFolder);
-				btnVCSAuthBrowse.addListener(SWT.Selection, authenticate);
-				btnVCSAuthBrowse.setText("Authenticate...");
-			}
-			if (!isAuthSupported() && !btnVCSAuthBrowse.getText().equals("Browse...")) {
-				btnVCSAuthBrowse.removeListener(SWT.Selection, authenticate);
-				btnVCSAuthBrowse.addListener(SWT.Selection, browseFolder);
-				btnVCSAuthBrowse.setText("Browse...");
-			}
-			btnVCSAuthBrowse.setEnabled(isLocationValid());
+	private void updateVCSAuthBrowseButtons() {
+		if (btnVCSAuth != null) {
+			btnVCSAuth.setEnabled(isAuthSupported() && isLocationValid());
+		}
+		if (btnVCSBrowse != null) {
+			final IVcsManager vcsManager = getSelectedVCSManager();
+			btnVCSBrowse.setEnabled(vcsManager != null && vcsManager.isPathLocationAccepted());
 		}
 	}
 
@@ -899,6 +902,7 @@ public class HConfigDialog extends Dialog {
 
 		// combo (VCS types)
 		cmbVCSType = new ComboViewer(composite, SWT.READ_ONLY);
+		cmbVCSType.setLabelProvider(new ClassNameLabelProvider());
 		cmbVCSType.setContentProvider(new ArrayContentProvider());
 		cmbVCSType.setInput(hawkModel.getVCSInstances().toArray());
 		// ask HModel for a list of supported VCS types
@@ -911,7 +915,7 @@ public class HConfigDialog extends Dialog {
 		cmbVCSType.getCombo().addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				txtVCSLocation.setText("");
-				updateVCSAuthBrowseButton();
+				updateVCSAuthBrowseButtons();
 			}
 		});
 
@@ -923,19 +927,28 @@ public class HConfigDialog extends Dialog {
 		txtVCSLocation.setLayoutData(gridDataR);
 		txtVCSLocation.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				updateVCSAuthBrowseButton();
+				updateVCSAuthBrowseButtons();
 				updateVCSAddUpdateButton();
 			}
 		});
 
-		btnVCSAuthBrowse = new Button(composite, SWT.PUSH);
+		btnVCSAuth = new Button(composite, SWT.PUSH);
 		GridData gridDataA = new GridData();
 		gridDataA.widthHint = 105;
-		btnVCSAuthBrowse.setLayoutData(gridDataA);
+		btnVCSAuth.setLayoutData(gridDataA);
+		btnVCSAuth.setText("Auth...");
+		btnVCSAuth.addListener(SWT.Selection, authenticate);
+		btnVCSAuth.setEnabled(false);
 
-		updateVCSAuthBrowseButton();
-		// just until the first event
-		btnVCSAuthBrowse.setEnabled(false);
+		btnVCSBrowse = new Button(composite, SWT.PUSH);
+		GridData gridDataB = new GridData();
+		gridDataB.widthHint = 105;
+		btnVCSBrowse.setLayoutData(gridDataB);
+		btnVCSBrowse.setText("Browse...");
+		btnVCSBrowse.addListener(SWT.Selection, browseFolder);
+		btnVCSBrowse.setEnabled(false);
+
+		updateVCSAuthBrowseButtons();
 
 		btnVCSAddUpdate = new Button(composite, SWT.PUSH);
 		btnVCSAddUpdate.setText("Add");
@@ -948,7 +961,7 @@ public class HConfigDialog extends Dialog {
 					user = pass = "";
 
 					txtVCSLocation.setText("");
-					updateVCSAuthBrowseButton();
+					updateVCSAuthBrowseButtons();
 					updateVCSAddUpdateButton();
 					updateLocationList();
 				}
