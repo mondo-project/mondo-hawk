@@ -43,10 +43,12 @@ public interface IVcsManager {
 	public abstract String getLocation();
 
 	// kostas
-	public String getUn();
+	public String getUsername();
+	public void setUsername(String username);
 
 	// kostas
-	public String getPw();
+	public String getPassword();
+	public void setPassword(String password);
 
 	// kostas
 	public abstract String getType();

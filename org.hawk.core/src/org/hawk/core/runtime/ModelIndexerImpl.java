@@ -816,8 +816,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 			String[] meta = new String[4];
 			meta[0] = s.getLocation();
 			meta[1] = s.getType();
-			meta[2] = SecurityManager.encrypt(s.getUn(), adminPw);
-			meta[3] = SecurityManager.encrypt(s.getPw(), adminPw);
+			meta[2] = SecurityManager.encrypt(s.getUsername(), adminPw);
+			meta[3] = SecurityManager.encrypt(s.getPassword(), adminPw);
 			System.out.println("adding: " + meta[0] + ":" + meta[1]);
 			set.add(meta);
 		}

@@ -121,13 +121,23 @@ public class LocalFolder implements IVcsManager {
 	}
 
 	@Override
-	public String getUn() {
+	public String getUsername() {
 		return "na";
 	}
 
 	@Override
-	public String getPw() {
+	public void setUsername(String username) {
+		// ignore
+	}
+
+	@Override
+	public String getPassword() {
 		return "na";
+	}
+
+	@Override
+	public void setPassword(String password) {
+		// ignore
 	}
 
 	@Override

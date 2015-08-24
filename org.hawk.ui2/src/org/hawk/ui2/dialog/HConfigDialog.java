@@ -8,19 +8,16 @@
  * Contributors:
  *     Seyyed Shah - initial API and implementation
  *     Konstantinos Barmpis - updates and maintenance
- *     Antonio Garcia-Dominguez - updates and maintenance
+ *     Antonio Garcia-Dominguez - updates and maintenance, edit credentials
  ******************************************************************************/
 package org.hawk.ui2.dialog;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
@@ -39,13 +36,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -57,78 +51,10 @@ import org.hawk.ui2.view.HView;
 
 public class HConfigDialog extends Dialog {
 
-	private static final class ClassNameLabelProvider extends LabelProvider {
+	static final class ClassNameLabelProvider extends LabelProvider {
 		@Override
 		public String getText(Object element) {
 			return element.getClass().getName();
-		}
-	}
-
-	public class UsernamePasswordDialog extends Dialog {
-		private static final int RESET_ID = IDialogConstants.NO_TO_ALL_ID + 1;
-
-		private Text usernameField;
-		private Text passwordField;
-
-		private String password;
-		private String user;
-
-		public UsernamePasswordDialog(Shell parentShell) {
-			super(parentShell);
-		}
-
-		public String getPassword() {
-			return this.password;
-		}
-
-		public String getUsername() {
-			return this.user;
-		}
-
-		protected void buttonPressed(int buttonId) {
-			if (buttonId == RESET_ID) {
-				usernameField.setText("");
-				passwordField.setText("");
-			} else {
-				super.buttonPressed(buttonId);
-			}
-		}
-
-		protected void createButtonsForButtonBar(Composite parent) {
-			super.createButtonsForButtonBar(parent);
-			createButton(parent, RESET_ID, "Reset All", false);
-		}
-
-		protected Control createDialogArea(Composite parent) {
-			Composite comp = (Composite) super.createDialogArea(parent);
-
-			GridLayout layout = (GridLayout) comp.getLayout();
-			layout.numColumns = 2;
-
-			Label usernameLabel = new Label(comp, SWT.RIGHT);
-			usernameLabel.setText("Username: ");
-
-			usernameField = new Text(comp, SWT.SINGLE);
-			GridData data = new GridData(GridData.FILL_HORIZONTAL);
-			usernameField.setLayoutData(data);
-
-			Label passwordLabel = new Label(comp, SWT.RIGHT);
-			passwordLabel.setText("Password: ");
-
-			passwordField = new Text(comp, SWT.SINGLE | SWT.PASSWORD);
-			data = new GridData(GridData.FILL_HORIZONTAL);
-			passwordField.setLayoutData(data);
-
-			return comp;
-		}
-
-		protected void okPressed() {
-			// Copy data from SWT widgets into fields on button press.
-			// Reading data from the widgets later will cause an SWT
-			// widget diposed exception.
-			user = usernameField.getText();
-			password = passwordField.getText();
-			super.okPressed();
 		}
 	}
 
@@ -138,41 +64,6 @@ public class HConfigDialog extends Dialog {
 	private List indexedAttributeList;
 	private List indexList;
 
-	private Listener browseFolder = new Listener() {
-		public void handleEvent(Event e) {
-			DirectoryDialog dd = new DirectoryDialog(getShell(), SWT.OPEN);
-
-			dd.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile().toString());
-			dd.setMessage("Select a folder to add to the indexer");
-			dd.setText("Select a directory");
-			String result = dd.open();
-
-			if (result != null) {
-				txtVCSLocation.setText(result);
-			}
-			updateVCSAddUpdateButton();
-		}
-	};
-
-	private String user = "";
-	private String pass = "";
-
-	private Listener authenticate = new Listener() {
-		public void handleEvent(Event e) {
-			UsernamePasswordDialog upd = new UsernamePasswordDialog(getShell());
-			if (upd.open() == Window.OK) {
-				user = upd.getUsername();
-				pass = upd.getPassword();
-			}
-			updateVCSAddUpdateButton();
-		}
-	};
-
-	private ComboViewer cmbVCSType;
-	private Button btnVCSAuth;
-	private Button btnVCSBrowse;
-	private Text   txtVCSLocation;
-	private Button btnVCSAddUpdate;
 	private ListViewer lstVCSLocations;
 
 	public HConfigDialog(Shell parentShell, HModel in) {
@@ -188,7 +79,7 @@ public class HConfigDialog extends Dialog {
 		gridLayout.numColumns = 1;
 		composite.setLayout(gridLayout);
 
-		indexList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+		indexList = new List(composite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		GridData gridDataQ = new GridData();
 		gridDataQ.grabExcessHorizontalSpace = true;
 		gridDataQ.horizontalAlignment = GridData.FILL_BOTH;
@@ -212,15 +103,6 @@ public class HConfigDialog extends Dialog {
 
 	}
 
-	private boolean isAuthSupported() {
-		final IVcsManager vcsManager = getSelectedVCSManager();
-		return vcsManager != null && vcsManager.isAuthSupported();
-	}
-
-	private IVcsManager getSelectedVCSManager() {
-		final IStructuredSelection selection = (IStructuredSelection)cmbVCSType.getSelection();
-		return (IVcsManager)selection.getFirstElement();
-	}
 
 	private void derivedAttributeAdd() {
 
@@ -835,10 +717,6 @@ public class HConfigDialog extends Dialog {
 		indexedAttributeList.setItems(items);
 	}
 
-	private void updateLocationList() {
-		lstVCSLocations.setInput(hawkModel.getRunningVCSManagers().toArray());
-	}
-
 	private void updateMetamodelList() {
 		metamodelList.removeAll();
 		for (String mm : hawkModel.getRegisteredMetamodels()) {
@@ -846,53 +724,13 @@ public class HConfigDialog extends Dialog {
 		}
 	}
 
-	private void updateVCSAddUpdateButton() {
-		btnVCSAddUpdate.setEnabled(isLocationValid());
-	}
-
-	private boolean isLocationValid() {
-		IVcsManager vcsManager = getSelectedVCSManager();
-		return vcsManager.isPathLocationAccepted() && isLocationValidPath()
-				|| vcsManager.isURLLocationAccepted() && isLocationValidURL();
-	}
-
-	private void updateVCSAuthBrowseButtons() {
-		if (btnVCSAuth != null) {
-			btnVCSAuth.setEnabled(isAuthSupported() && isLocationValid());
-		}
-		if (btnVCSBrowse != null) {
-			final IVcsManager vcsManager = getSelectedVCSManager();
-			btnVCSBrowse.setEnabled(vcsManager != null && vcsManager.isPathLocationAccepted());
-		}
-	}
-
-	private boolean isLocationValidPath() {
-		File dir = new File(txtVCSLocation.getText());
-		if (!isAuthSupported() && dir.exists() && dir.isDirectory() && dir.canRead())
-			return true;
-		return false;
-	}
-
-	private boolean isLocationValidURL() {
-		try {
-			new URL(txtVCSLocation.getText());
-			return true;
-		} catch (MalformedURLException e) {
-			return false;
-		}
-	}
-
 	private Composite vcsTab(TabFolder parent) {
 		final Composite composite = new Composite(parent, SWT.BORDER);
-		final GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 5;
-		composite.setLayout(gridLayout);
+		final GridLayout layout = new GridLayout();
+		layout.numColumns = 3;
+		composite.setLayout(layout);
 
-		lstVCSLocations = new ListViewer(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
-		GridData gridDataQ = new GridData();
-		gridDataQ.grabExcessHorizontalSpace = true;
-		gridDataQ.horizontalAlignment = GridData.FILL_BOTH;
-		gridDataQ.horizontalSpan = 5;
+		lstVCSLocations = new ListViewer(composite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		lstVCSLocations.setLabelProvider(new LabelProvider(){
 			@Override
 			public String getText(Object element) {
@@ -901,80 +739,49 @@ public class HConfigDialog extends Dialog {
 		});
 		lstVCSLocations.setContentProvider(new ArrayContentProvider());
 		lstVCSLocations.setInput(hawkModel.getRunningVCSManagers().toArray());
-		lstVCSLocations.getList().setLayoutData(gridDataQ);
+		final GridData lstVCSLocationsLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		lstVCSLocationsLayoutData.horizontalSpan = 3;
+		lstVCSLocations.getList().setLayoutData(lstVCSLocationsLayoutData);
 
-		// combo (VCS types)
-		cmbVCSType = new ComboViewer(composite, SWT.READ_ONLY);
-		cmbVCSType.setLabelProvider(new ClassNameLabelProvider());
-		cmbVCSType.setContentProvider(new ArrayContentProvider());
-		cmbVCSType.setInput(hawkModel.getVCSInstances().toArray());
-		// ask HModel for a list of supported VCS types
-		GridData gridDataC = new GridData();
-		gridDataC.grabExcessHorizontalSpace = false;
-		gridDataC.widthHint = 200;
-		gridDataC.minimumWidth = 200;
-		gridDataC.horizontalAlignment = GridData.FILL_BOTH;
-		cmbVCSType.getCombo().setLayoutData(gridDataC);
-		cmbVCSType.getCombo().addSelectionListener(new SelectionAdapter() {
+		final Button btnAdd = new Button(composite, SWT.NONE);
+		btnAdd.setText("Add...");
+		btnAdd.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
-				txtVCSLocation.setText("");
-				updateVCSAuthBrowseButtons();
+				new HVCSDialog(getShell(), hawkModel, null).open();
+				lstVCSLocations.setInput(hawkModel.getRunningVCSManagers().toArray());
 			}
 		});
 
-		txtVCSLocation = new Text(composite, SWT.BORDER);
-		GridData gridDataR = new GridData();
-		gridDataR.widthHint = 250;
-		gridDataR.grabExcessHorizontalSpace = true;
-		gridDataR.horizontalAlignment = GridData.FILL_BOTH;
-		txtVCSLocation.setLayoutData(gridDataR);
-		txtVCSLocation.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				updateVCSAuthBrowseButtons();
-				updateVCSAddUpdateButton();
-			}
-		});
-
-		btnVCSAuth = new Button(composite, SWT.PUSH);
-		GridData gridDataA = new GridData();
-		gridDataA.widthHint = 105;
-		btnVCSAuth.setLayoutData(gridDataA);
-		btnVCSAuth.setText("Auth...");
-		btnVCSAuth.addListener(SWT.Selection, authenticate);
-		btnVCSAuth.setEnabled(false);
-
-		btnVCSBrowse = new Button(composite, SWT.PUSH);
-		GridData gridDataB = new GridData();
-		gridDataB.widthHint = 105;
-		btnVCSBrowse.setLayoutData(gridDataB);
-		btnVCSBrowse.setText("Browse...");
-		btnVCSBrowse.addListener(SWT.Selection, browseFolder);
-		btnVCSBrowse.setEnabled(false);
-
-		updateVCSAuthBrowseButtons();
-
-		btnVCSAddUpdate = new Button(composite, SWT.PUSH);
-		btnVCSAddUpdate.setText("Add");
-		btnVCSAddUpdate.addSelectionListener(new SelectionAdapter() {
+		final Button btnEdit = new Button(composite, SWT.NONE);
+		btnEdit.setText("Edit...");
+		btnEdit.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
-				final Object selectedVCS = ((IStructuredSelection)cmbVCSType.getSelection()).getFirstElement();
-				if (selectedVCS != null) {
-					final String selectedVCSName = selectedVCS.getClass().getName();
-					hawkModel.addVCS(txtVCSLocation.getText(), selectedVCSName, user, pass);
-					user = pass = "";
-
-					txtVCSLocation.setText("");
-					updateVCSAuthBrowseButtons();
-					updateVCSAddUpdateButton();
-					updateLocationList();
-				}
+				new HVCSDialog(getShell(), hawkModel, getSelectedExistingVCSManager()).open();
+				lstVCSLocations.refresh();
 			}
 		});
+		btnEdit.setEnabled(false);
 
-		btnVCSAddUpdate.setEnabled(false);
+		lstVCSLocations.getList().addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				btnEdit.setEnabled(getSelectedExistingVCSManager() != null);
+			}
+		});
 
 		return composite;
 	}
+
+	protected IVcsManager getSelectedExistingVCSManager() {
+		final IStructuredSelection sel = (IStructuredSelection)lstVCSLocations.getSelection();
+		if (sel.isEmpty()) {
+			return null;
+		}
+		return (IVcsManager)sel.getFirstElement();
+	}
+
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText("Configure Indexer: " + hawkModel.getName());
