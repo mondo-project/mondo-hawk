@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.hawk.core.IHawk;
 import org.hawk.core.IHawkFactory;
 import org.hawk.core.IMetaModelUpdater;
+import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.util.HawkConfig;
@@ -295,13 +296,13 @@ public class HManager {
 		return null;
 	}
 
-	public boolean stopAllRunningInstances() {
+	public boolean stopAllRunningInstances(ShutdownRequestType reqType) {
 		System.out.println("shutting down hawk:");
 		for (HModel hm : all) {
 			if (hm.isRunning()) {
 				System.out.println("stopping: " + hm.getName() + " : "
 						+ hm.getFolder());
-				hm.stop();
+				hm.stop(reqType);
 			}
 		}
 		return true;

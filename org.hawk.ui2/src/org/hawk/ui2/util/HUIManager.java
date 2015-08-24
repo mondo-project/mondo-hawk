@@ -15,6 +15,8 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
+import org.eclipse.ui.PlatformUI;
+import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.osgiserver.HManager;
 import org.hawk.osgiserver.HModel;
 
@@ -24,8 +26,10 @@ public class HUIManager extends HManager implements IStructuredContentProvider,
 	private static HUIManager inst;
 	
 	public static HUIManager getInstance() {
-		if (inst == null)
+		if (inst == null) {
 			inst = new HUIManager();
+			PlatformUI.getWorkbench().addWorkbenchListener(inst);
+		}
 		return inst;
 	}
 
@@ -43,23 +47,14 @@ public class HUIManager extends HManager implements IStructuredContentProvider,
 
 	@Override
 	public boolean preShutdown(IWorkbench workbench, boolean forced) {
-		System.out.println("shutting down hawk:");
-		for (HModel hm : all) {
-			if (hm.isRunning()) {
-				System.out.println("stopping: " + hm.getName() + " : "
-						+ hm.getFolder());
-				hm.stop();
-			}
-		}
+		System.out.println("(PRE SHUTDOWN) Shutting down Hawk");
+		HUIManager.getInstance().stopAllRunningInstances(ShutdownRequestType.ONLY_LOCAL);
 		return true;
 	}
 
 	@Override
 	public void postShutdown(IWorkbench workbench) {
-		System.out.println("(POST SHUTDOWN) hawk terminated");
-		for (HModel hm : all)
-			if (hm.isRunning())
-				hm.stop();
+		System.out.println("(POST SHUTDOWN) Hawk shut down");
 	}
 
 }

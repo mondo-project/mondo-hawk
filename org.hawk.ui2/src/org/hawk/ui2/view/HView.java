@@ -41,6 +41,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.wizards.IWizardDescriptor;
+import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.Activator;
 import org.hawk.ui2.dialog.HConfigDialog;
@@ -308,7 +309,7 @@ public class HView extends ViewPart {
 				IStructuredSelection selected = (IStructuredSelection) viewer
 						.getSelection();
 				if (selected.size() == 1) {
-					((HModel) selected.getFirstElement()).stop();
+					((HModel) selected.getFirstElement()).stop(ShutdownRequestType.ALWAYS);
 					viewer.refresh();
 					start.setEnabled(true);
 					stop.setEnabled(false);
