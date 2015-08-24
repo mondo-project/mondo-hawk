@@ -23,6 +23,19 @@ import org.hawk.core.query.IQueryEngine;
 
 public interface IModelIndexer {
 
+	enum ShutdownRequestType {
+		/**
+		 * Request came straight from the user and must be honored no matter
+		 * what.
+		 */
+		ALWAYS,
+		/**
+		 * Request came from an automated process and may be ignored in some
+		 * cases (e.g. remote instances).
+		 */
+		ONLY_LOCAL;
+	}
+
 	/**
 	 * When called, attempts to synchronise the index with any changes to any
 	 * vcs connected to it
@@ -41,13 +54,14 @@ public interface IModelIndexer {
 	// void shutdown() throws Exception;
 
 	/**
-	 * shuts down, persisting metadata (used in default ui plugin to load) also
-	 * has the option to delete the back-end (boolean delete = true) for quicker
-	 * testing
-	 * 
-	 * @throws Exception
+	 * Shuts down, persisting metadata.
 	 */
-	void shutdown(boolean delete) throws Exception;
+	void shutdown(ShutdownRequestType requestType) throws Exception;
+
+	/**
+	 * Shuts down and deletes the backend.
+	 */
+	void delete() throws Exception;
 
 	/**
 	 * 

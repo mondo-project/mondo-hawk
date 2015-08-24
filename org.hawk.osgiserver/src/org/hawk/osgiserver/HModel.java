@@ -27,6 +27,7 @@ import org.hawk.core.IHawk;
 import org.hawk.core.IHawkFactory;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.IMetaModelUpdater;
+import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.IModelUpdater;
 import org.hawk.core.IVcsManager;
@@ -99,7 +100,7 @@ public class HModel {
 			console.printerrln(e);
 
 			try {
-				db.shutdown(true);
+				db.delete();
 			} catch (Exception e2) {
 				throw e2;
 			}
@@ -276,8 +277,8 @@ public class HModel {
 		File f = hawk.getModelIndexer().getParentFolder();
 		while (this.isRunning()) {
 			try {
-				// XXX shutting down hawk does not delete the storage.
-				hawk.getModelIndexer().shutdown(false);
+				// XXX removing an HModel does not delete the storage and does not stop remote instances.
+				hawk.getModelIndexer().shutdown(ShutdownRequestType.ONLY_LOCAL);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -434,9 +435,9 @@ public class HModel {
 		return hawk.getModelIndexer().isRunning();
 	}
 
-	public void stop() {
+	public void stop(ShutdownRequestType requestType) {
 		try {
-			hawk.getModelIndexer().shutdown(false);
+			hawk.getModelIndexer().shutdown(requestType);
 		} catch (Exception e) {
 			getConsole().printerrln(e);
 		}

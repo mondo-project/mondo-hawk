@@ -366,8 +366,28 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public void shutdown(boolean delete) throws Exception {
+	public void shutdown(ShutdownRequestType type) throws Exception {
+		// The type is ignored for local instances of Hawk: they
+		// must always be safely shut down, to preserve consistency.
+		preShutdown();
 
+		if (graph != null) {
+			graph.shutdown();
+		}
+		graph = null;
+	}
+
+	@Override
+	public void delete() throws Exception {
+		preShutdown();
+
+		if (graph != null) {
+			graph.delete();
+		}
+		graph = null;
+	}
+
+	private void preShutdown() {
 		try {
 			saveIndexer();
 		} catch (Exception e) {
@@ -382,11 +402,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 		for (IVcsManager monitor : monitors)
 			monitor.shutdown();
 		monitors = new ArrayList<>();
-
-		if (graph != null)
-			graph.shutdown(delete);
-		graph = null;
-
 		running = false;
 	}
 

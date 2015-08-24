@@ -26,7 +26,9 @@ public interface IGraphDatabase {
 
 	void run(File parentfolder, IAbstractConsole c);
 
-	void shutdown(boolean b) throws Exception;
+	void shutdown() throws Exception;
+
+	void delete() throws Exception;
 
 	// can be used to get any index not exposed here or created by developers.
 	IGraphNodeIndex getOrCreateNodeIndex(String name);

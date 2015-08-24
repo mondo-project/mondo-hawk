@@ -154,33 +154,24 @@ public class Neo4JDatabase implements IGraphDatabase {
 	}
 
 	@Override
-	public void shutdown(boolean delete) throws Exception {
-
-		// if (delete)
-		// unregisterPackages();
-
+	public void shutdown() throws Exception {
 		try {
 			exitBatchMode();
 			graph.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		if (delete) {
-			System.gc();
-			delete();
 		}
-	}
 
+	@Override
 	public void delete() throws Exception {
+		// unregisterPackages();
+		final boolean deleted = FileOperations.deleteFiles(new File(getPath()), true);
+		System.err.println("deleted store(" + databaseName + "): " + deleted);
 
-		// System.err.println(getPath());
-		// System.err.println(new File(getPath()).exists());
-
-		// System.err.println(
-		System.err.println("deleted store(" + databaseName + "): "
-				+ FileOperations.deleteFiles(new File(getPath()), true));
-
+		shutdown();
+		System.gc();
+		delete();
 	}
 
 	// private void unregisterPackages() throws Exception {
