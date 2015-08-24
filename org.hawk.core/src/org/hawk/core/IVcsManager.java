@@ -60,4 +60,24 @@ public interface IVcsManager {
 	// kostas
 	public List<VcsCommitItem> getDelta(String string) throws Exception;
 
+	/**
+	 * Returns <code>true</code> if the implementation supports authentication.
+	 */
+	public boolean isAuthSupported();
+
+	/**
+	 * Returns <code>true</code> if the implementation accepts filesystem paths
+	 * as locations. It should be OK for an implementation to return
+	 * <code>true</code> for this and {@link #isURLLocationAccepted()} at the
+	 * same time.
+	 */
+	public boolean isPathLocationAccepted();
+
+	/**
+	 * Returns <code>true</code> if the implementation accepts URL-based paths
+	 * as locations. It should be OK for an implementation to return
+	 * <code>true</code> for this and {@link #isPathLocationAccepted()} at the
+	 * same time.
+	 */
+	public boolean isURLLocationAccepted();
 }

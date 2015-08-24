@@ -225,4 +225,19 @@ public class LocalFolder implements IVcsManager {
 		return getDelta(repository, string).getCompactedCommitItems();
 	}
 
+	@Override
+	public boolean isAuthSupported() {
+		return false;
+	}
+
+	@Override
+	public boolean isPathLocationAccepted() {
+		return true;
+	}
+
+	@Override
+	public boolean isURLLocationAccepted() {
+		return false;
+	}
+
 }

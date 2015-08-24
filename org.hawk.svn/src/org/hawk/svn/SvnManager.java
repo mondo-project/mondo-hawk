@@ -307,4 +307,19 @@ public class SvnManager extends AbstractVcsManager {
 		else
 			return getDelta(r, string).getCompactedCommitItems();
 	}
+
+	@Override
+	public boolean isAuthSupported() {
+		return true;
+	}
+
+	@Override
+	public boolean isPathLocationAccepted() {
+		return false;
+	}
+
+	@Override
+	public boolean isURLLocationAccepted() {
+		return true;
+	}
 }

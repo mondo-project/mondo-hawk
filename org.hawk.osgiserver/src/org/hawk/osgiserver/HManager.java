@@ -43,6 +43,12 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class HManager {
 
+	private static final String MUPDATER_CLASS_ATTRIBUTE = "ModelUpdater";
+	private static final String MPARSER_CLASS_ATTRIBUTE = "ModelParser";
+	private static final String MMPARSER_CLASS_ATTRIBUTE = "MetaModelParser";
+	private static final String VCSMANAGER_CLASS_ATTRIBUTE = "VCSManager";
+	private static final String HAWKFACTORY_CLASS_ATTRIBUTE = "class";
+
 	private static HManager inst;
 
 	public static HManager getInstance() {
@@ -92,11 +98,11 @@ public class HManager {
 	public HManager() {
 		try {
 			getBackends();
-			getVCS();
-			createExecutableExtensions("MetaModelParser", getMmps());
-			createExecutableExtensions("ModelParser", getMps());
-			createExecutableExtensions("ModelUpdater", getUps());
-			createExecutableExtensions("class", getHawkFactories());
+			createExecutableExtensions(VCSMANAGER_CLASS_ATTRIBUTE, getVCS());
+			createExecutableExtensions(MMPARSER_CLASS_ATTRIBUTE, getMmps());
+			createExecutableExtensions(MPARSER_CLASS_ATTRIBUTE, getMps());
+			createExecutableExtensions(MUPDATER_CLASS_ATTRIBUTE, getUps());
+			createExecutableExtensions(HAWKFACTORY_CLASS_ATTRIBUTE, getHawkFactories());
 			getLanguages();
 
 			/*
@@ -138,8 +144,8 @@ public class HManager {
 	 */
 	public IVcsManager createVCSManager(String s) throws CoreException {
 		for (IConfigurationElement i : getVCS()) {
-			if (i.getAttribute("VCSManager").equals(s)) {
-				return (IVcsManager) i.createExecutableExtension("VCSManager");
+			if (i.getAttribute(VCSMANAGER_CLASS_ATTRIBUTE).equals(s)) {
+				return (IVcsManager) i.createExecutableExtension(VCSMANAGER_CLASS_ATTRIBUTE);
 			}
 		}
 		throw new NoSuchElementException(
@@ -213,7 +219,7 @@ public class HManager {
 	}
 
 	public Set<String> getMetaModelTypes() {
-		return getAttributeFor("MetaModelParser", getMmps());
+		return getAttributeFor(MMPARSER_CLASS_ATTRIBUTE, getMmps());
 	}
 
 	public IMetaModelUpdater getMetaModelUpdater() throws CoreException {
@@ -245,7 +251,7 @@ public class HManager {
 	}
 
 	public Set<String> getModelTypes() {
-		return getAttributeFor("ModelParser", getMps());
+		return getAttributeFor(MPARSER_CLASS_ATTRIBUTE, getMps());
 	}
 
 	public List<IConfigurationElement> getMps() {
@@ -253,7 +259,7 @@ public class HManager {
 	}
 
 	public Set<String> getUpdaterTypes() {
-		return getAttributeFor("ModelUpdater", getUps());
+		return getAttributeFor(MUPDATER_CLASS_ATTRIBUTE, getUps());
 	}
 
 	public List<IConfigurationElement> getUps() {
@@ -265,7 +271,20 @@ public class HManager {
 	}
 
 	public Set<String> getVCSTypes() {
-		return getAttributeFor("VCSManager", getVCS());
+		return getAttributeFor(VCSMANAGER_CLASS_ATTRIBUTE, getVCS());
+	}
+
+	public List<IVcsManager> getVCSInstances() {
+		final List<IVcsManager> instances = new ArrayList<>();
+		for (IConfigurationElement elem : getVCS()) {
+			try {
+				instances.add((IVcsManager) elem.createExecutableExtension(VCSMANAGER_CLASS_ATTRIBUTE));
+			} catch (CoreException e) {
+				// log exception and skip this element
+				e.printStackTrace();
+			}
+		}
+		return instances;
 	}
 
 	public List<IConfigurationElement> getHawkFactories() {
@@ -276,8 +295,8 @@ public class HManager {
 		final Map<String, IHawkFactory> ids = new HashMap<>();
 		for (IConfigurationElement elem : getHawkFactories()) {
 			try {
-				ids.put(elem.getAttribute("class"),
-						(IHawkFactory) elem.createExecutableExtension("class"));
+				ids.put(elem.getAttribute(HAWKFACTORY_CLASS_ATTRIBUTE),
+						(IHawkFactory) elem.createExecutableExtension(HAWKFACTORY_CLASS_ATTRIBUTE));
 			} catch (InvalidRegistryObjectException | CoreException e) {
 				// print error and skip this element
 				e.printStackTrace();
@@ -289,8 +308,8 @@ public class HManager {
 	public IHawkFactory createHawkFactory(String factoryClass)
 			throws CoreException {
 		for (IConfigurationElement elem : getHawkFactories()) {
-			if (factoryClass.equals(elem.getAttribute("class"))) {
-				return (IHawkFactory) elem.createExecutableExtension("class");
+			if (factoryClass.equals(elem.getAttribute(HAWKFACTORY_CLASS_ATTRIBUTE))) {
+				return (IHawkFactory) elem.createExecutableExtension(HAWKFACTORY_CLASS_ATTRIBUTE);
 			}
 		}
 		return null;

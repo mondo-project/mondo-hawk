@@ -19,6 +19,9 @@ import java.net.URL;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -46,6 +49,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
+import org.hawk.core.IVcsManager;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.view.HView;
 
@@ -141,15 +145,13 @@ public class HConfigDialog extends Dialog {
 		}
 	};
 
-	private boolean userPassOK = false;
 	private String user = "";
 	private String pass = "";
 
 	private Listener authenticate = new Listener() {
 		public void handleEvent(Event e) {
 			UsernamePasswordDialog upd = new UsernamePasswordDialog(getShell());
-			userPassOK = (upd.open() == Window.OK);
-			if (userPassOK) {
+			if (upd.open() == Window.OK) {
 				user = upd.getUsername();
 				pass = upd.getPassword();
 			}
@@ -157,7 +159,7 @@ public class HConfigDialog extends Dialog {
 		}
 	};
 
-	private Combo  cmbVCSType;
+	private ComboViewer cmbVCSType;
 	private Button btnVCSAuthBrowse;
 	private Text   txtVCSLocation;
 	private Button btnVCSAddUpdate;
@@ -200,11 +202,14 @@ public class HConfigDialog extends Dialog {
 
 	}
 
-	private boolean authRequired() {
-		if (cmbVCSType.getSelectionIndex() < 0)
-			return false;
-		String selection = cmbVCSType.getItem(cmbVCSType.getSelectionIndex());
-		return selection.toLowerCase().contains("svn") || selection.toLowerCase().contains("git");
+	private boolean isAuthSupported() {
+		final IVcsManager vcsManager = getSelectedVCSManager();
+		return vcsManager != null && vcsManager.isAuthSupported();
+	}
+
+	private IVcsManager getSelectedVCSManager() {
+		final IStructuredSelection selection = (IStructuredSelection)cmbVCSType.getSelection();
+		return (IVcsManager)selection.getFirstElement();
 	}
 
 	private void derivedAttributeAdd() {
@@ -579,13 +584,6 @@ public class HConfigDialog extends Dialog {
 				ok.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						if (!uri.equals("") && !type.equals("") && !name.equals("")) {
-
-							// System.err.println(">");
-							// System.err.println(uri);
-							// System.err.println(type);
-							// System.err.println(name);
-							// System.err.println("<");
-
 							try {
 								hawkModel.addIndexedAttribute(uri, type, name);
 							} catch (Exception e1) {
@@ -842,49 +840,39 @@ public class HConfigDialog extends Dialog {
 	}
 
 	private void updateVCSAddUpdateButton() {
-		if (validateSVN())
-			btnVCSAddUpdate.setEnabled(true);
-		else if (validateFolder())
-			btnVCSAddUpdate.setEnabled(true);
-		else
-			btnVCSAddUpdate.setEnabled(false);
+		btnVCSAddUpdate.setEnabled(isLocationValid());
+	}
+
+	private boolean isLocationValid() {
+		IVcsManager vcsManager = getSelectedVCSManager();
+		return vcsManager.isPathLocationAccepted() && isLocationValidPath()
+				|| vcsManager.isURLLocationAccepted() && isLocationValidURL();
 	}
 
 	private void updateVCSAuthBrowseButton() {
 		if (btnVCSAuthBrowse != null) {
-			if (authRequired() && !btnVCSAuthBrowse.getText().equals("Authenticate...")) {
+			if (isAuthSupported() && !btnVCSAuthBrowse.getText().equals("Authenticate...")) {
 				btnVCSAuthBrowse.removeListener(SWT.Selection, browseFolder);
 				btnVCSAuthBrowse.addListener(SWT.Selection, authenticate);
 				btnVCSAuthBrowse.setText("Authenticate...");
 			}
-			if (!authRequired() && !btnVCSAuthBrowse.getText().equals("Browse...")) {
+			if (!isAuthSupported() && !btnVCSAuthBrowse.getText().equals("Browse...")) {
 				btnVCSAuthBrowse.removeListener(SWT.Selection, authenticate);
 				btnVCSAuthBrowse.addListener(SWT.Selection, browseFolder);
 				btnVCSAuthBrowse.setText("Browse...");
 			}
-			if (authRequired() && !validSVNLoc())
-				btnVCSAuthBrowse.setEnabled(false);
-			else
-				btnVCSAuthBrowse.setEnabled(true);
+			btnVCSAuthBrowse.setEnabled(isLocationValid());
 		}
 	}
 
-	private boolean validateFolder() {
+	private boolean isLocationValidPath() {
 		File dir = new File(txtVCSLocation.getText());
-		if (!authRequired() && dir.exists() && dir.isDirectory() && dir.canRead())
+		if (!isAuthSupported() && dir.exists() && dir.isDirectory() && dir.canRead())
 			return true;
 		return false;
 	}
 
-	private boolean validateSVN() {
-		if (authRequired() && userPassOK && !user.equals("") && !pass.equals("")) {
-			// could do an SVN connect test
-			return validSVNLoc();
-		}
-		return false;
-	}
-
-	private boolean validSVNLoc() {
+	private boolean isLocationValidURL() {
 		try {
 			new URL(txtVCSLocation.getText());
 			return true;
@@ -910,16 +898,17 @@ public class HConfigDialog extends Dialog {
 		updateLocationList();
 
 		// combo (VCS types)
-		cmbVCSType = new Combo(composite, SWT.READ_ONLY);
+		cmbVCSType = new ComboViewer(composite, SWT.READ_ONLY);
+		cmbVCSType.setContentProvider(new ArrayContentProvider());
+		cmbVCSType.setInput(hawkModel.getVCSInstances().toArray());
 		// ask HModel for a list of supported VCS types
-		cmbVCSType.setItems(hawkModel.getVCSTypeNames().toArray(new String[0]));
 		GridData gridDataC = new GridData();
 		gridDataC.grabExcessHorizontalSpace = false;
 		gridDataC.widthHint = 200;
 		gridDataC.minimumWidth = 200;
 		gridDataC.horizontalAlignment = GridData.FILL_BOTH;
-		cmbVCSType.setLayoutData(gridDataC);
-		cmbVCSType.addSelectionListener(new SelectionAdapter() {
+		cmbVCSType.getCombo().setLayoutData(gridDataC);
+		cmbVCSType.getCombo().addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				txtVCSLocation.setText("");
 				updateVCSAuthBrowseButton();
@@ -952,13 +941,17 @@ public class HConfigDialog extends Dialog {
 		btnVCSAddUpdate.setText("Add");
 		btnVCSAddUpdate.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				hawkModel.addVCS(txtVCSLocation.getText(), cmbVCSType.getText(), user, pass);
-				txtVCSLocation.setText("");
-				// combo.setItems (index.getVCSTypeNames().toArray(new
-				// String[0]));
-				updateVCSAuthBrowseButton();
-				updateVCSAddUpdateButton();
-				updateLocationList();
+				final Object selectedVCS = ((IStructuredSelection)cmbVCSType.getSelection()).getFirstElement();
+				if (selectedVCS != null) {
+					final String selectedVCSName = selectedVCS.getClass().getName();
+					hawkModel.addVCS(txtVCSLocation.getText(), selectedVCSName, user, pass);
+					user = pass = "";
+
+					txtVCSLocation.setText("");
+					updateVCSAuthBrowseButton();
+					updateVCSAddUpdateButton();
+					updateLocationList();
+				}
 			}
 		});
 

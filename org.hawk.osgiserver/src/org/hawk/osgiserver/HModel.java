@@ -365,8 +365,8 @@ public class HModel {
 		return new ArrayList<String>(hawk.getModelIndexer().getKnownMMUris());
 	}
 
-	public Collection<String> getVCSTypeNames() {
-		return manager.getVCSTypes();
+	public List<IVcsManager> getVCSInstances() {
+		return manager.getVCSInstances();
 	}
 
 	public boolean isRunning() {
