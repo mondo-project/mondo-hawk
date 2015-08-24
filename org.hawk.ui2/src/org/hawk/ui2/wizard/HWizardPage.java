@@ -97,10 +97,21 @@ public class HWizardPage extends WizardPage {
 		layout.verticalSpacing = 9;
 		container.setLayout(layout);
 
-		Label label = new Label(container, SWT.NULL);
-		label.setText("&Admin Password:");
+		GridData gd;
 
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		Label label = new Label(container, SWT.NULL);
+		label.setText("&Name:");
+
+		nameText = new Text(container, SWT.BORDER | SWT.SINGLE);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		nameText.setLayoutData(gd);
+		nameText.addModifyListener(new DialogChangeModifyListener());
+
+		label = new Label(container, SWT.NULL);
+		label.setText("");
+
+		label = new Label(container, SWT.NULL);
+		label.setText("&Admin Password:");
 
 		apwText = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.PASSWORD);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -111,12 +122,24 @@ public class HWizardPage extends WizardPage {
 		label.setText("");
 
 		label = new Label(container, SWT.NULL);
-		label.setText("&Name:");
+		label.setText("Instance type:");
 
-		nameText = new Text(container, SWT.BORDER | SWT.SINGLE);
+		factoryIdText = new Combo(container, SWT.READ_ONLY);
+		factoriesWithLocation = new HashSet<>();
+		factoriesWithGraph = new HashSet<>();
 		gd = new GridData(GridData.FILL_HORIZONTAL);
-		nameText.setLayoutData(gd);
-		nameText.addModifyListener(new DialogChangeModifyListener());
+		factoryIdText.setLayoutData(gd);
+		for (Map.Entry<String, IHawkFactory> factory : hminstance.getHawkFactoryInstances().entrySet()) {
+			factoryIdText.add(factory.getKey());
+			if (factory.getValue().instancesUseLocation()) {
+				factoriesWithLocation.add(factory.getKey());
+			}
+			if (factory.getValue().instancesCreateGraph()) {
+				factoriesWithGraph.add(factory.getKey());
+			}
+		}
+		factoryIdText.select(0);
+		factoryIdText.addSelectionListener(new DialogChangeSelectionListener());
 
 		label = new Label(container, SWT.NULL);
 		label.setText("");
@@ -196,29 +219,6 @@ public class HWizardPage extends WizardPage {
 		for (String db : hminstance.getIndexTypes())
 			dbidText.add(db);
 		dbidText.select(0);
-
-		label = new Label(container, SWT.NULL);
-		label.setText("");
-
-		label = new Label(container, SWT.NULL);
-		label.setText("Instance type:");
-
-		factoryIdText = new Combo(container, SWT.READ_ONLY);
-		factoriesWithLocation = new HashSet<>();
-		factoriesWithGraph = new HashSet<>();
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		factoryIdText.setLayoutData(gd);
-		for (Map.Entry<String, IHawkFactory> factory : hminstance.getHawkFactoryInstances().entrySet()) {
-			factoryIdText.add(factory.getKey());
-			if (factory.getValue().instancesUseLocation()) {
-				factoriesWithLocation.add(factory.getKey());
-			}
-			if (factory.getValue().instancesCreateGraph()) {
-				factoriesWithGraph.add(factory.getKey());
-			}
-		}
-		factoryIdText.select(0);
-		factoryIdText.addSelectionListener(new DialogChangeSelectionListener());
 
 		Button startButton = new Button(container, SWT.CHECK);
 		startButton.setText("Start with Workspace");
