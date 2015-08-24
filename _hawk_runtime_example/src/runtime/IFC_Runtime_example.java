@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.InputStreamReader;
 
 import org.hawk.core.IModelIndexer;
+import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
@@ -116,7 +117,7 @@ public class IFC_Runtime_example {
 						if (s.equalsIgnoreCase("quit")
 								|| s.equalsIgnoreCase("exit")
 								|| s.equalsIgnoreCase("e")) {
-							i2.shutdown(false);
+							i2.shutdown(ShutdownRequestType.ONLY_LOCAL);
 							System.exit(0);
 						}
 						if (s.equalsIgnoreCase("query")
