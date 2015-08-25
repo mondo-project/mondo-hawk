@@ -820,103 +820,33 @@ public class GraphModelBatchInjector {
 
 		IGraphNode source = null;
 		IGraphNode destination = null;
-		int error = 0;
-		// System.err.println(o);
-		try {
 
-			source = hash.get(from);
+		source = hash.get(from);
+		destination = hash.get(to);
 
-		} catch (Exception e) {
-			error = 1;
-		}
+		if (source == null || destination == null) {
+			System.err.println("hash error, not found from (class: "
+					+ (from).getType().getName() + ") and to (class: "
+					+ ((IHawkObject) to).getType().getName()
+					+ ") on reference: " + edgelabel + " source = " + source
+					+ " destination = " + destination);
 
-		try {
-
-			destination = hash.get(to);
-
-		} catch (Exception e) {
-			if (error == 0)
-				error = 2;
-			else
-				error = 3;
-		}
-
-		if (error == 0) {
-
-			if (source == null || destination == null) {
-				System.err.println("hash error 4, not found from (class: "
-						+ (from).getType().getName() + ") and to (class: "
-						+ ((IHawkObject) to).getType().getName()
-						+ ") on reference: " + edgelabel + " source = "
-						+ source + " destination = " + destination);
-
-			} else {
-
-				HashMap<String, Object> props = new HashMap<String, Object>();
-
-				if (isContainment)
-					props.put("isContainment", "true");
-				if (isContainer)
-					props.put("isContainer", "true");
-
-				createReference(edgelabel, source, destination, props, true);
-
-				// new
-				// util.ManualReferenceLinking().manualReferenceLinking(graph,
-				// edge, source, destination);
-				// System.err.println(source+"\n>>>>>>>\n"+edge+"\n>>>>>>\n"+destination);
-				// System.err.println(graph.getOutEdges((ODocument)graph.load(source)).size());
-				// System.err.println(graph.getInEdges((ODocument)graph.load(source)).size());
-				// System.err.println("--------------");
-				// System.err.println(graph.getOutEdges((ODocument)graph.load(destination)).size());
-				// System.err.println(graph.getInEdges((ODocument)graph.load(destination)).size());
-				// System.err.println("-------------------------------");
-				// System.err.println(edge);
-
-				objectCount[0]++;
-			}
+			//FIXME urgent add proxy if target is not found to handle emf limitation of auto resolve 
+			
 		} else {
 
-			// XXX IMPORTANT NOTE: that for a list of references (auto
-			// resolved, nothing
-			// to stop it...) if the xmi is not in the changed list, it will
-			// crash (as ecore wont be able to resolve the elist of references
-			// to return it - ask dimitri)
+			HashMap<String, Object> props = new HashMap<String, Object>();
 
-			if (error == 3) {
-				System.err.println("hash error 3, not found from (class: "
-						+ (from).getType().getName() + ") and to (class: "
-						+ ((IHawkObject) to).getType().getName()
-						+ ") on reference: " + edgelabel);
-			} else if (error == 1) {
-				System.err.println("hash error 1, not found from (class: "
-						+ from.getType().getName() + ") on reference: "
-						+ edgelabel);
-			} else if (error == 2) {
-				// System.err.println("hash error 2, not found to (class: "
-				// + ((EObject) to).eClass().getName()
-				// + ") on reference: " + edgelabel
-				// + " [from instance of class: "
-				// + from.eClass().getName() + "]");
-				System.err
-						.println("adding proxy [multi-valued] reference ("
-								+ edgelabel
-								+ " | "
-								+ to.proxyURI()
-								+ ")... "
-								+ (addProxyRef(from, ((IHawkObject) to),
-										edgelabel) ? "done" : "failed"));
-			}
+			if (isContainment)
+				props.put("isContainment", "true");
+			if (isContainer)
+				props.put("isContainer", "true");
 
+			createReference(edgelabel, source, destination, props, true);
+
+			objectCount[0]++;
 		}
-		// catch (Throwable ee) {
-		// // ee.printStackTrace();
-		// System.err.println(source + " - " + edgelabel + " - " + destination
-		// + " (hash exception (not found))");
-		// // System.err.println(((EObject) to).eIsProxy());
-		// }
 
-		// System.err.print(edgelabel+".");
 	}
 
 	private void createReference(final String edgelabel, IGraphNode source,

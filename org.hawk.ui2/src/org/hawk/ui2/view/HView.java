@@ -290,7 +290,7 @@ public class HView extends ViewPart {
 							config.setEnabled(true);
 						} else {
 							viewer.refresh();
-							// FIXME handle start
+							// XXX (still relevant?) handle start
 							// HModel hm = (HModel) selected.getFirstElement();
 							// HManager.delete(hm, hm.exists());
 						}
