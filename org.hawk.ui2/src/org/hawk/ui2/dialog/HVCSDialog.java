@@ -262,8 +262,7 @@ final class HVCSDialog extends TitleAreaDialog {
 		if (managerToEdit == null) {
 			hawkModel.addVCS(location, vcsType, user, pass);
 		} else {
-			managerToEdit.setUsername(user);
-			managerToEdit.setPassword(pass);
+			managerToEdit.setCredentials(user, pass);
 		}
 		super.okPressed();
 	}

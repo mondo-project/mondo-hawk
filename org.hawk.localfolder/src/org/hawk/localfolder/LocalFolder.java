@@ -119,17 +119,12 @@ public class LocalFolder implements IVcsManager {
 	}
 
 	@Override
-	public void setUsername(String username) {
-		// ignore
-	}
-
-	@Override
 	public String getPassword() {
 		return "na";
 	}
 
 	@Override
-	public void setPassword(String password) {
+	public void setCredentials(String username, String password) {
 		// ignore
 	}
 

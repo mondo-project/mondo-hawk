@@ -44,11 +44,14 @@ public interface IVcsManager {
 
 	// kostas
 	public String getUsername();
-	public void setUsername(String username);
-
 	// kostas
 	public String getPassword();
-	public void setPassword(String password);
+
+	/**
+	 * Changes the username and password in one go. Both must be passed at the
+	 * same time to be able to support remote instances.
+	 */
+	public void setCredentials(String username, String password);
 
 	// kostas
 	public abstract String getType();

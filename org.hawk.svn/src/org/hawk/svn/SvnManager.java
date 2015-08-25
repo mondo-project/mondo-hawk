@@ -281,17 +281,13 @@ public class SvnManager extends AbstractVcsManager {
 	}
 
 	@Override
-	public void setUsername(String username) {
-		r.setUsername(username);
-	}
-
-	@Override
 	public String getPassword() {
 		return r.getPassword();
 	}
 
 	@Override
-	public void setPassword(String password) {
+	public void setCredentials(String username, String password) {
+		r.setUsername(username);
 		r.setPassword(password);
 	}
 
