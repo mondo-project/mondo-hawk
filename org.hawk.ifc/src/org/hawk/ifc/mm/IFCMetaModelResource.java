@@ -35,26 +35,11 @@ public class IFCMetaModelResource implements IHawkMetaModelResource {
 	@Override
 	public void unload() {
 		res = null;
-
 	}
 
-	// @Override
-	// public Resource getEMFResource() {
-	// return res;
-	//
-	// }
-	//
-	// @Override
-	// public ResourceSet getEMFResourceSet() {
-	// return set;
-	//
-	// }
-
 	public IFCMetaModelResource(Resource r, IMetaModelResourceFactory pa) {
-
 		res = r;
 		p = pa;
-
 	}
 
 	@Override
@@ -87,9 +72,7 @@ public class IFCMetaModelResource implements IHawkMetaModelResource {
 
 	@Override
 	public String toString() {
-
 		return res.getURI().toString();
-
 	}
 
 }

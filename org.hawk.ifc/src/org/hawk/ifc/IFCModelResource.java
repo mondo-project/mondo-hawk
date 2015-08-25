@@ -1,6 +1,7 @@
 package org.hawk.ifc;
 
 import java.io.File;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -49,12 +50,12 @@ public class IFCModelResource implements IHawkModelResource {
 			d = new IfcXmlDeserializer();
 		}
 		
-		File schema = new File("../uk.ac.york.cs.mde.hawk.ifc/schema/IFC2X3_TC1.exp");
-		//FIXME: check it works in eclipse app
-		if (schema.canRead() && schema.isFile())		
-			d.init(SchemaLoader.loadSchema(schema));
-		else
+		URL schemaURL = IFCModelResource.class.getClassLoader().getResource("/org/hawk/ifc/schema/IFC2X3_TC1.exp");
+		if (schemaURL != null) {		
+			d.init(SchemaLoader.loadSchema(schemaURL));
+		} else {
 			System.err.println("IFC schema file IFC2X3_TC1.exp cannot be read");
+		}
 
 		
 		try {
