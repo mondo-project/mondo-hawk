@@ -23,7 +23,7 @@ public interface IGraphNodeIndex {
 
 	IGraphIterable<IGraphNode> query(String key, double from, double to,
 			boolean fromInclusive, boolean toInclusive);
-	
+
 	IGraphIterable<IGraphNode> get(String key, Object valueExpr);
 
 	void add(IGraphNode n, Map<String, Object> derived);
@@ -31,6 +31,8 @@ public interface IGraphNodeIndex {
 	void add(IGraphNode n, String s, Object derived);
 
 	void remove(IGraphNode n);
+
+	void remove(String key, String value, IGraphNode n);
 
 	void flush();
 

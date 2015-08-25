@@ -49,8 +49,8 @@ public class GraphModelBatchInjector {
 	private int unset;
 
 	private String repoURL;
-	private String tempFolderURI; 
-	
+	private String tempFolderURI;
+
 	private static enum ParseOptions {
 		MODELELEMENTS, MODELREFERENCES
 	};
@@ -901,6 +901,8 @@ public class GraphModelBatchInjector {
 				System.err
 						.println("adding proxy [multi-valued] reference ("
 								+ edgelabel
+								+ " | "
+								+ to.proxyURI()
 								+ ")... "
 								+ (addProxyRef(from, ((IHawkObject) to),
 										edgelabel) ? "done" : "failed"));
@@ -981,6 +983,9 @@ public class GraphModelBatchInjector {
 								System.err
 										.println("adding proxy [iterable] reference ("
 												+ edgelabel
+												+ " | "
+												+ ((IHawkObject) destinationEObject)
+														.proxyURI()
 												+ ")... "
 												+ (addProxyRef(
 														node,
@@ -1014,6 +1019,9 @@ public class GraphModelBatchInjector {
 						} else {
 							System.err.println("adding proxy reference ("
 									+ edgelabel
+									+ " | "
+									+ ((IHawkObject) destinationObject)
+											.proxyURI()
 									+ ")... "
 									+ (addProxyRef(node,
 											((IHawkObject) destinationObject),
@@ -1068,6 +1076,9 @@ public class GraphModelBatchInjector {
 							System.err
 									.println("adding proxy [iterable] reference ("
 											+ edgelabel
+											+ " | "
+											+ ((IHawkObject) destinationHawkObject)
+													.proxyURI()
 											+ ")... "
 											+ (addProxyRef(eObject,
 													destinationHawkObject,
@@ -1084,6 +1095,9 @@ public class GraphModelBatchInjector {
 					} else {
 						System.err.println("adding proxy reference ("
 								+ edgelabel
+								+ " | "
+								+ ((IHawkObject) destinationHawkObject)
+										.proxyURI()
 								+ ")... "
 								+ (addProxyRef(eObject, destinationHawkObject,
 										edgelabel) ? "done" : "failed"));
