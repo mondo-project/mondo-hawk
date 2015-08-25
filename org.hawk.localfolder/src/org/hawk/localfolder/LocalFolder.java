@@ -30,13 +30,8 @@ import org.hawk.core.util.FileOperations;
 public class LocalFolder implements IVcsManager {
 
 	private IAbstractConsole console;
-
-	private String type;
-	private String hrn;
 	private Path rootLocation;
-
 	private Set<File> previousFiles = new HashSet<>();
-
 	private LocalFolderRepository repository;
 
 	private static int version = 0;
@@ -47,8 +42,6 @@ public class LocalFolder implements IVcsManager {
 
 	@Override
 	public void run(String vcsloc, String un, String pw, IAbstractConsole c) throws Exception {
-		type = "org.hawk.localfolder.LocalFolder";
-		hrn = "Local Folder Monitor";
 		console = c;
 		Path path = Paths.get(vcsloc);
 		rootLocation = path.toRealPath();
@@ -112,12 +105,12 @@ public class LocalFolder implements IVcsManager {
 
 	@Override
 	public String getType() {
-		return type;
+		return getClass().getName();
 	}
 
 	@Override
 	public String getHumanReadableName() {
-		return hrn;
+		return "Local Folder Monitor";
 	}
 
 	@Override

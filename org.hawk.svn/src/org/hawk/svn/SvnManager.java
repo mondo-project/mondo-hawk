@@ -297,7 +297,7 @@ public class SvnManager extends AbstractVcsManager {
 
 	@Override
 	public String getType() {
-		return "org.hawk.svn.SvnManager";
+		return getClass().getName();
 	}
 
 	@Override

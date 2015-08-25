@@ -102,10 +102,12 @@ final class HVCSDialog extends TitleAreaDialog {
 		cmbVCSTypeLayoutData.horizontalSpan = 2;
 		cmbVCSType.getCombo().setLayoutData(cmbVCSTypeLayoutData);
 		if (managerToEdit != null) {
+			final String managerType = managerToEdit.getType();
+
 			int i = 0;
 			for (IVcsManager kind : availableVCS) {
-				// TODO: use getType to support editing remote repositories
-				if (kind.getClass() == managerToEdit.getClass()) {
+				final String availableType = kind.getType();
+				if (availableType.equals(managerType)) {
 					cmbVCSType.getCombo().select(i);
 					break;
 				}
