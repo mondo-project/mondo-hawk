@@ -103,18 +103,21 @@ public class DeletionUtils {
 
 	}
 
-	protected String getRelativeURI(String uri) {
-		// TODO volatile syntax: need to change if all files not in temp
-		// directory -- find alternative? -- or stick to pre-set structure
+	protected String makeRelative(String base, String extension) {
 
-		int sub = uri.toString().indexOf("/temp/");
-
-		return uri.substring((sub > -1) ? sub + 6 : 0);
-		// return uri;
+		//System.err.println(base);
+		//System.err.println(extension);
+		
+		if(!extension.startsWith(base)) return extension;
+		
+		String ret = extension.substring(base.length());
+		
+		return ret;
+		
 	}
 
-	protected String[] add(String[] proxies, String relativeURI,
-			String edgelabel) {
+	protected String[] addToElementProxies(String[] proxies,
+			String fullPathURI, String edgelabel) {
 
 		if (proxies != null) {
 
@@ -127,7 +130,7 @@ public class DeletionUtils {
 
 			}
 
-			ret[proxies.length] = relativeURI;
+			ret[proxies.length] = fullPathURI;
 			ret[proxies.length + 1] = edgelabel;
 
 			proxies = null;
@@ -136,29 +139,30 @@ public class DeletionUtils {
 
 		} else {
 			String[] ret = new String[2];
-			ret[0] = relativeURI;
+			ret[0] = fullPathURI;
 			ret[1] = edgelabel;
 			return ret;
 		}
 	}
 
-	protected void makeProxyRefs(IGraphNode modelElement, String repositoryURL,
-			IGraphNode fileNode) {
+	protected void makeProxyRefs(IGraphNode referencedModelElement,
+			String repositoryURL, IGraphNode referencedElementFileNode) {
 
 		// handle any incoming references (after dereference, aka other file
 		// ones)
 		// FIXMEdone 5-11-13 check changes work
-		for (IGraphEdge rel : modelElement.getIncoming()) {
+		for (IGraphEdge rel : referencedModelElement.getIncoming()) {
 
 			IGraphNode referencingNode = rel.getStartNode();
-			String referencingNodeFileID = (String) referencingNode
+			String referencingNodeFileID = referencingNode
 					.getOutgoingWithType("file").iterator().next().getEndNode()
+					.getProperty("id").toString();
+			String referencedElementFileID = (String) referencedElementFileNode
 					.getProperty("id");
-			String fileID = (String) fileNode.getProperty("id");
 
 			// System.out.println(referencingNodeFileID+" ::: "+fileID);
 
-			if (!referencingNodeFileID.equals(fileID)) {
+			if (!referencingNodeFileID.equals(referencedElementFileID)) {
 
 				// System.err.println("relationship is one to an object in file: "
 				// + rel.getStartNode()
@@ -168,29 +172,26 @@ public class DeletionUtils {
 				// .getNewRelationshipType("file"))
 				// .iterator().next().getEndNode().getProperty("id"));
 
-				String relativeFileURI = repositoryURL
-						+ "$"
-						+ new DeletionUtils(graph).getRelativeURI(fileID
-								.toString());
+				String fullReferencedElementPathFileURI = repositoryURL
+						+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+						+ referencedElementFileID;
 
-				String relativeElementURI = relativeFileURI + "#"
-						+ modelElement.getProperty("id").toString();
+				String fullReferencedElementPathElementURI = fullReferencedElementPathFileURI
+						+ "#"
+						+ referencedModelElement.getProperty("id").toString();
 
-				Object proxies = null;
+				Object proxies = referencingNode.getProperty("_proxyRef:"
+						+ fullReferencedElementPathFileURI);
 
-				if (referencingNode.getProperty("_proxyRef:" + relativeFileURI) != null) {
-					proxies = referencingNode.getProperty("_proxyRef:"
-							+ relativeFileURI);
-				}
-				proxies = new DeletionUtils(graph).add((String[]) proxies,
-						relativeElementURI, rel.getType().toString());
+				proxies = addToElementProxies((String[]) proxies,
+						fullReferencedElementPathElementURI, rel.getType());
 
-				referencingNode.setProperty("_proxyRef:" + relativeFileURI,
-						proxies);
+				referencingNode.setProperty("_proxyRef:"
+						+ fullReferencedElementPathFileURI, proxies);
 
 				proxydictionary = graph.getOrCreateNodeIndex("proxydictionary");
 				proxydictionary.add(referencingNode, "_proxyRef",
-						relativeFileURI);
+						fullReferencedElementPathFileURI);
 
 				rel.delete();
 

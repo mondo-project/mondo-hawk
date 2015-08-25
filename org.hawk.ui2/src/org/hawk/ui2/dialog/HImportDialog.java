@@ -243,7 +243,7 @@ public class HImportDialog extends Dialog {
 
 		try {
 			tblvInstances.setInput(null);
-			if (!"".equals(getLocation())) {
+			if (!factory.instancesUseLocation() || !"".equals(getLocation())) {
 				tblvInstances.setInput(factory.listInstances(getLocation()));
 			}
 		} catch (Exception e) {

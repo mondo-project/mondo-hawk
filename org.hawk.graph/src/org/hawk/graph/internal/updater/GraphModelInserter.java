@@ -55,12 +55,16 @@ public class GraphModelInserter {
 	@SuppressWarnings("unused")
 	private int unset = 0; // number of unset references (used for logging)
 
+	private String repoURL;
+	private String tempFolderURI; 
+	
 	private IHawkModelResource resource;
 	private Map<String, IHawkObject> delta = new HashMap<>();
 	private Map<String, IHawkObject> added = new HashMap<>();
 	private Map<String, IHawkObject> unchanged = new HashMap<>();
 
 	private IModelIndexer indexer;
+	private IGraphDatabase graph;
 	private GraphModelBatchInjector inj;
 	private VcsCommitItem s;
 
@@ -68,6 +72,8 @@ public class GraphModelInserter {
 
 	public GraphModelInserter(IModelIndexer hawk) {
 		indexer = hawk;
+		graph = indexer.getGraph();
+		tempFolderURI = new File(graph.getTempDir()).toURI().toString();	
 	}
 
 	public LinkedList<IGraphChange> run(IHawkModelResource res, VcsCommitItem s) {
@@ -78,7 +84,7 @@ public class GraphModelInserter {
 		LinkedList<IGraphChange> ret = null;
 
 		// indexer = i;
-		inj = new GraphModelBatchInjector(indexer.getGraph());
+		inj = new GraphModelBatchInjector(graph);
 
 		try {
 
@@ -133,16 +139,19 @@ public class GraphModelInserter {
 	private LinkedList<IGraphChange> transactionalUpdate() throws Exception {
 		LinkedList<IGraphChange> ret = new LinkedList<>();
 
-		IGraphDatabase graph = indexer.getGraph();
-
 		graph.exitBatchMode();
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
 
-			final String repositoryURL = s.getCommit().getDelta()
+			repoURL = s.getCommit().getDelta()
 					.getRepository().getUrl();
-			IGraphNode fileNode = indexer.getGraph().getFileIndex()
-					.get("id", repositoryURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + s.getPath()).iterator().next();
+			IGraphNode fileNode = indexer
+					.getGraph()
+					.getFileIndex()
+					.get("id",
+							repoURL
+									+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+									+ s.getPath()).iterator().next();
 
 			// add new nodes
 			HashMap<IGraphNode, IHawkObject> addedNodes = new HashMap<>();
@@ -257,7 +266,7 @@ public class GraphModelInserter {
 					}
 					//
 
-					remove(node, repositoryURL, fileNode);
+					remove(node, repoURL, fileNode);
 					// new DeletionUtils(graph).delete(node);
 
 				}
@@ -380,49 +389,70 @@ public class GraphModelInserter {
 		return ret;
 	}
 
-	private boolean addProxyRef(IGraphNode from, IHawkObject destinationObject,
+	private boolean addProxyRef(IGraphNode node, IHawkObject destinationObject,
 			String edgelabel) {
 
 		try {
-
-			IGraphNodeIndex proxydictionary = indexer.getGraph()
-					.getOrCreateNodeIndex("proxydictionary");
 			// proxydictionary.add(graph.getNodeById(hash.get((from))),
 			// edgelabel,
 			// ((EObject)destinationObject).eIsProxy());
 
 			String uri = destinationObject.getUri();
 
+			String destinationObjectRelativePathURI =
+			// new DeletionUtils(graph).getRelativeURI(
+			uri
+			// .toString())
+			;
+
+			if (!destinationObject.URIIsRelative()) {
+
+				destinationObjectRelativePathURI = new DeletionUtils(graph)
+						.makeRelative(tempFolderURI,
+								destinationObjectRelativePathURI);
+
+			}
 			// System.err.println(uri.toString().substring(uri.toString().indexOf(".metadata/.plugins/com.google.code.hawk.neo4j/temp/m/")+53));
 			// System.err.println(uri.);
 
-			String relativeURI = new DeletionUtils(indexer.getGraph())
-					.getRelativeURI(uri.toString());
-			String relativeFileURI = relativeURI;
-			try {
-				relativeFileURI = relativeURI.substring(0,
-						relativeURI.indexOf("#/"));
-			} catch (Exception e) {
-				//
-			}
+			String destinationObjectRelativeFileURI = destinationObjectRelativePathURI;
 
-			IGraphNode withProxy = from;
+			int indexOfFragmentStart = destinationObjectRelativePathURI
+					.indexOf("#/");
+
+			destinationObjectRelativeFileURI = destinationObjectRelativePathURI
+					.substring(
+							0,
+							indexOfFragmentStart == -1 ? destinationObjectRelativePathURI
+									.indexOf("#") : indexOfFragmentStart);
+
+			String destinationObjectFullPathURI = repoURL
+					+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+					+ destinationObjectRelativePathURI;
+
+			String destinationObjectFullFileURI = repoURL
+					+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+					+ destinationObjectRelativeFileURI;
+
 			Object proxies = null;
 			// if (withProxy.hasProperty("_proxyRef:" + relativeFileURI)) {
-			// proxies = withProxy.getProperty("_proxyRef:" + relativeFileURI);
+			// proxies = withProxy.getProperty("_proxyRef:" +
+			// relativeFileURI);
 			// }
 			// System.err.println(">>>>>>>"+relativeFileURI);
 
-			proxies = withProxy.getProperty("_proxyRef:" + relativeFileURI);
-			proxies = new DeletionUtils(indexer.getGraph()).add(
-					(String[]) proxies, relativeURI, edgelabel);
+			proxies = node.getProperty("_proxyRef:" + destinationObjectFullFileURI);
+			proxies = new DeletionUtils(graph)
+					.addToElementProxies((String[]) proxies,
+							destinationObjectFullPathURI, edgelabel);
 
-			withProxy.setProperty("_proxyRef:" + relativeFileURI, proxies);
+			node.setProperty("_proxyRef:" + destinationObjectFullFileURI, proxies);
 
 			HashMap<String, Object> m = new HashMap<>();
-			m.put("_proxyRef", relativeFileURI);
+			m.put("_proxyRef", destinationObjectFullFileURI);
 
-			proxydictionary.add(withProxy, m);
+			IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex("proxydictionary");
+			proxyDictionary.add(node, m);
 
 		} catch (Exception e) {
 			System.err.println("proxydictionary error:");
@@ -593,7 +623,7 @@ public class GraphModelInserter {
 		for (IHawkAttribute a : indexedattributes) {
 
 			// FIXME update property index on changes not just insert them
-			IGraphNodeIndex i = indexer.getGraph().getOrCreateNodeIndex(
+			IGraphNodeIndex i = graph.getOrCreateNodeIndex(
 					eObject.getType().getPackageNSURI() + "##"
 							+ eObject.getType().getName() + "##" + a.getName());
 
@@ -654,7 +684,7 @@ public class GraphModelInserter {
 
 		}
 
-		final IGraphNodeIndex rootDictionary = indexer.getGraph()
+		final IGraphNodeIndex rootDictionary = graph
 				.getOrCreateNodeIndex(GraphModelBatchInjector.ROOT_DICT_NAME);
 		if (eObject.isRoot()) {
 			rootDictionary.add(node,
@@ -669,8 +699,6 @@ public class GraphModelInserter {
 		System.err.println("batch update called");
 
 		LinkedList<IGraphChange> ret = new LinkedList<>();
-
-		IGraphDatabase graph = indexer.getGraph();
 
 		graph.exitBatchMode();
 
@@ -697,21 +725,27 @@ public class GraphModelInserter {
 
 		System.err.println("calculateModelDeltaSize() called:");
 
-		IGraphDatabase graph = indexer.getGraph();
-
 		try (IGraphTransaction t = graph.beginTransaction()) {
 
 			final String repositoryURL = s.getCommit().getDelta()
 					.getRepository().getUrl();
-			boolean modelfilealreadypresent = graph.getFileIndex()
-					.get("id", repositoryURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + s.getPath()).iterator().hasNext();
+			boolean modelfilealreadypresent = graph
+					.getFileIndex()
+					.get("id",
+							repositoryURL
+									+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+									+ s.getPath()).iterator().hasNext();
 
 			if (modelfilealreadypresent) {
 				int delta = 0;
 				HashMap<String, Integer> hashCodes = new HashMap<>();
 
-				for (IGraphEdge e : graph.getFileIndex()
-						.get("id", repositoryURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + s.getPath()).getSingle()
+				for (IGraphEdge e : graph
+						.getFileIndex()
+						.get("id",
+								repositoryURL
+										+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+										+ s.getPath()).getSingle()
 						.getIncomingWithType("file")) {
 					IGraphNode n = e.getStartNode();
 
@@ -772,7 +806,7 @@ public class GraphModelInserter {
 
 		if (resource != null) {
 			GraphModelBatchInjector batch = new GraphModelBatchInjector(
-					indexer.getGraph(), s, resource);
+					graph, s, resource);
 			unset = batch.getUnset();
 			ret.addAll(batch.getChanges());
 			batch.clearChanges();
@@ -809,7 +843,7 @@ public class GraphModelInserter {
 	private void remove(IGraphNode modelElement, String repositoryURL,
 			IGraphNode fileNode) {
 
-		DeletionUtils del = new DeletionUtils(indexer.getGraph());
+		DeletionUtils del = new DeletionUtils(graph);
 
 		del.dereference(modelElement);
 
@@ -881,8 +915,6 @@ public class GraphModelInserter {
 	public static int resolveProxies(IGraphDatabase graph,
 			IGraphChangeDescriptor ret) throws Exception {
 
-		//FIXME _update proxy handling to use the new file index structure
-		
 		long start = System.currentTimeMillis();
 
 		int proxiesLeft = -1;
@@ -893,25 +925,23 @@ public class GraphModelInserter {
 			// operations on the graph
 			// ...
 
-			IGraphNodeIndex proxydictionary = graph
+			IGraphNodeIndex proxyDictionary = graph
 					.getOrCreateNodeIndex("proxydictionary");
 
-			IGraphIterable<IGraphNode> resolvedProxies = proxydictionary.query(
-					"_proxyRef", "*");
+			IGraphIterable<IGraphNode> proxiesToBeResolved = proxyDictionary
+					.query("_proxyRef", "*");
 
-			if (resolvedProxies != null && resolvedProxies.size() > 0) {
+			if (proxiesToBeResolved != null && proxiesToBeResolved.size() > 0) {
 
-				for (IGraphNode n : resolvedProxies) {
+				for (IGraphNode n : proxiesToBeResolved) {
 
-					Map<String[], String> allProxies = new HashMap<>();
-					for (String s : n.getPropertyKeys()) {
+					Set<String[]> allProxies = new HashSet<>();
+					for (String propertyKey : n.getPropertyKeys()) {
 
-						if (s.contains("_proxyRef:")) {
-							final String repoURL = s.replaceFirst("_proxyRef:",
-									"").split("[$]", 1)[0];
+						if (propertyKey.startsWith("_proxyRef:")) {
 							final String[] propertyValue = (String[]) n
-									.getProperty(s);
-							allProxies.put(propertyValue, repoURL);
+									.getProperty(propertyKey);
+							allProxies.add(propertyValue);
 						}
 
 					}
@@ -922,19 +952,25 @@ public class GraphModelInserter {
 					// }
 					// System.err.println("--------");
 
-					for (Map.Entry<String[], String> entries : allProxies
-							.entrySet()) {
-						final String[] proxies = entries.getKey();
-						final String repoURL = entries.getValue();
+					for (String[] proxies : allProxies) {
 
 						// System.out
 						// .println(new
 						// com.google.code.hawk.neo4j.emc.toString()
 						// .tostring(proxies));
 
-						int sub = proxies[0].indexOf("#/");
-						String fileName = proxies[0].substring(0,
-								sub == -1 ? proxies[0].indexOf("#") : sub);
+						int indexOfFragmentStart = proxies[0].indexOf("#/");
+
+						String fullPathURI = proxies[0].substring(
+								0,
+								indexOfFragmentStart == -1 ? proxies[0]
+										.indexOf("#") : indexOfFragmentStart);
+
+						String[] split = fullPathURI.split(GraphModelUpdater.FILEINDEX_REPO_SEPARATOR, 2); 
+						
+						String repoURL = split[0];
+
+						String filePath = split[1];
 
 						for (int i = 0; i < proxies.length; i = i + 2) {
 
@@ -943,7 +979,7 @@ public class GraphModelInserter {
 							// System.err.println(Arrays.toString(proxies));
 
 							Iterable<IGraphEdge> rels = allNodesWithFile(graph,
-									repoURL, fileName);
+									repoURL, filePath);
 							if (rels != null) {
 								HashSet<IGraphNode> nodes = new HashSet<IGraphNode>();
 								for (IGraphEdge r : rels)
@@ -951,7 +987,7 @@ public class GraphModelInserter {
 
 								for (IGraphNode no : nodes) {
 
-									String nodeURI = fileName + "#"
+									String nodeURI = fullPathURI + "#"
 											+ no.getProperty("id").toString();
 
 									// System.out.println(nodeURI);
@@ -992,15 +1028,15 @@ public class GraphModelInserter {
 							}
 						}
 
-						n.removeProperty("_proxyRef:" + fileName);
-						proxydictionary.remove(n);
+						n.removeProperty("_proxyRef:" + fullPathURI);
+						proxyDictionary.remove(n);
 
 					}
 				}
 
 			}
 
-			proxiesLeft = proxydictionary.query("_proxyRef", "*").size();
+			proxiesLeft = proxyDictionary.query("_proxyRef", "*").size();
 
 			System.out.println(proxiesLeft
 					+ " - sets of proxy references left in the store");
@@ -1136,8 +1172,6 @@ public class GraphModelInserter {
 
 		HashSet<IGraphNode> nodesToBeUpdated = new HashSet<>();
 
-		IGraphDatabase graph = indexer.getGraph();
-
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			// operations on the graph
 			// ...
@@ -1255,10 +1289,12 @@ public class GraphModelInserter {
 
 		IGraphNodeIndex filedictionary = graph.getFileIndex();
 
-		Path path = Paths.get(file);
-		String relative = path.getFileName().toString();
-		IGraphNode fileNode = filedictionary.get("id", repositoryURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + relative)
-				.getSingle();
+		//Path path = Paths.get(file);
+		//String relative = path.getFileName().toString();
+		IGraphNode fileNode = filedictionary.get(
+				"id",
+				repositoryURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+						+ file).getSingle();
 
 		if (fileNode != null)
 			return fileNode.getIncomingWithType("file");
@@ -1271,8 +1307,6 @@ public class GraphModelInserter {
 			String attributename, String attributetype, boolean isMany,
 			boolean isOrdered, boolean isUnique, String derivationlanguage,
 			String derivationlogic) {
-
-		IGraphDatabase graph = indexer.getGraph();
 
 		HashSet<IGraphNode> derivedPropertyNodes = new HashSet<>();
 
@@ -1384,8 +1418,6 @@ public class GraphModelInserter {
 
 	public void updateIndexedAttribute(String metamodeluri, String typename,
 			String attributename) {
-
-		IGraphDatabase graph = indexer.getGraph();
 
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			// operations on the graph

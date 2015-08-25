@@ -16,6 +16,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkClassifier;
@@ -53,7 +54,7 @@ public class BPMNObject implements IHawkObject {
 	public String proxyURI() {
 		return ((InternalEObject) eob).eProxyURI().toString();
 	}
-	
+
 	@Override
 	public String getUri() {
 		String uri = org.eclipse.emf.ecore.util.EcoreUtil.getURI(eob)
@@ -239,6 +240,13 @@ public class BPMNObject implements IHawkObject {
 	@Override
 	public boolean isRoot() {
 		return eob.eContainer() == null;
+	}
+
+	@Override
+	public boolean URIIsRelative() {
+
+		return EcoreUtil.getURI(eob).isRelative();
+
 	}
 
 	// @Override

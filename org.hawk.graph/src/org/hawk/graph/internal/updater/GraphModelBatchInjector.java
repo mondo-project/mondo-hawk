@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.hawk.graph.internal.updater;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,6 +48,9 @@ public class GraphModelBatchInjector {
 	private int[] objectCount = { 0, 0, 0, 0 };
 	private int unset;
 
+	private String repoURL;
+	private String tempFolderURI; 
+	
 	private static enum ParseOptions {
 		MODELELEMENTS, MODELREFERENCES
 	};
@@ -58,15 +62,16 @@ public class GraphModelBatchInjector {
 	 */
 	private Hashtable<IHawkObject, IGraphNode> hash;
 
-	IGraphNodeIndex epackageDictionary, fileDictionary, proxyDictionary, rootDictionary;
+	IGraphNodeIndex epackageDictionary, fileDictionary, proxyDictionary,
+			rootDictionary;
 
 	long startTime;
-	String tempDir;
 
 	LinkedList<IGraphChange> changes = new LinkedList<>();
 
 	public GraphModelBatchInjector(IGraphDatabase g) {
 		graph = g;
+		tempFolderURI = new File(g.getTempDir()).toURI().toString();
 	}
 
 	public GraphModelBatchInjector(IGraphDatabase g, VcsCommitItem s,
@@ -76,7 +81,8 @@ public class GraphModelBatchInjector {
 
 		// indexer = m;
 		// resource = r;
-		this.graph = g;
+		graph = g;
+		tempFolderURI = new File(g.getTempDir()).toURI().toString();
 
 		// databaseloc = graph.getPath();
 
@@ -98,12 +104,14 @@ public class GraphModelBatchInjector {
 
 		boolean isNew = false;
 
-		final String repositoryURL = s.getCommit().getDelta().getRepository().getUrl();
+		repoURL = s.getCommit().getDelta().getRepository().getUrl();
 		IGraphNode fileNode = null;
 		long filerevision = 0L;
 		try {
 			fileNode = ((IGraphIterable<IGraphNode>) fileDictionary.get(
-					"id", repositoryURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + s.getPath())).getSingle();
+					"id",
+					repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+							+ s.getPath())).getSingle();
 			if (fileNode != null)
 				filerevision = (Long) fileNode.getProperty("revision");
 		} catch (Exception e) {
@@ -127,7 +135,9 @@ public class GraphModelBatchInjector {
 				fileNode = graph.createNode(map, "file");
 
 				Map<String, Object> map2 = new HashMap<>();
-				map2.put("id", repositoryURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + s.getPath());
+				map2.put("id",
+						repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+								+ s.getPath());
 				fileDictionary.add(fileNode, map2);
 
 				// propagate changes to listeners
@@ -191,7 +201,7 @@ public class GraphModelBatchInjector {
 								+ s.getPath()
 								+ "\nReverting all changes on that file.");
 
-				new DeletionUtils(graph).deleteAll(repositoryURL, s.getPath());
+				new DeletionUtils(graph).deleteAll(repoURL, s.getPath());
 
 			}
 		}
@@ -232,7 +242,8 @@ public class GraphModelBatchInjector {
 		long init = System.nanoTime();
 
 		for (IHawkObject child : children) {
-			if (child.isProxy()) continue;
+			if (child.isProxy())
+				continue;
 
 			boolean ref = true;
 			boolean clas = true;
@@ -654,6 +665,7 @@ public class GraphModelBatchInjector {
 
 	private Hashtable<IHawkClass, IGraphNode> hashedeclasses = new Hashtable<>();
 	private Hashtable<IGraphNode, Hashtable<String, Object>> hashedeclassproperties = new Hashtable<>();
+
 	/**
 	 * 
 	 * @param eClass
@@ -753,7 +765,8 @@ public class GraphModelBatchInjector {
 	 * @return
 	 * @throws Exception
 	 */
-	protected IGraphNode addEObject(IGraphNode originatingFile, IHawkObject eObject) throws Exception {
+	protected IGraphNode addEObject(IGraphNode originatingFile,
+			IHawkObject eObject) throws Exception {
 
 		epackageDictionary = graph.getMetamodelIndex();
 		fileDictionary = graph.getFileIndex();
@@ -768,21 +781,25 @@ public class GraphModelBatchInjector {
 
 		createReference("typeOf", node, eClass, Collections.emptyMap(), true);
 		if (originatingFile != null) {
-			createReference("file", node, originatingFile, Collections.emptyMap(), true);
+			createReference("file", node, originatingFile,
+					Collections.emptyMap(), true);
 		}
 		objectCount[1]++;
 
 		// use metamodel to infer all supertypes for fast search and log em
-		for (IHawkClass superType : ((IHawkClass) eObject.getType()).getSuperTypes()) {
+		for (IHawkClass superType : ((IHawkClass) eObject.getType())
+				.getSuperTypes()) {
 			eClass = getEClassNode(superType);
-			createReference("kindOf", node, eClass, Collections.emptyMap(), true);
+			createReference("kindOf", node, eClass, Collections.emptyMap(),
+					true);
 			objectCount[2]++;
 		}
 
 		objectCount[0]++;
 
 		if (eObject.isRoot()) {
-			rootDictionary.add(node, ROOT_DICT_FILE_KEY, originatingFile.getId().toString());
+			rootDictionary.add(node, ROOT_DICT_FILE_KEY, originatingFile
+					.getId().toString());
 		}
 
 		return node;
@@ -798,7 +815,8 @@ public class GraphModelBatchInjector {
 	 * @throws Exception
 	 */
 	private void addEdge(IHawkObject from, IHawkObject to,
-			final String edgelabel, boolean isContainment, boolean isContainer) throws Exception {
+			final String edgelabel, boolean isContainment, boolean isContainer)
+			throws Exception {
 
 		IGraphNode source = null;
 		IGraphNode destination = null;
@@ -899,12 +917,14 @@ public class GraphModelBatchInjector {
 		// System.err.print(edgelabel+".");
 	}
 
-	private void createReference(final String edgelabel, IGraphNode source, IGraphNode destination, Map<String, Object> props, boolean isTransient) {
+	private void createReference(final String edgelabel, IGraphNode source,
+			IGraphNode destination, Map<String, Object> props,
+			boolean isTransient) {
 		graph.createRelationship(source, destination, edgelabel, props);
 
-		changes.add(new GraphChangeImpl(true, IGraphChange.REFERENCE,
-				source.getId() + "::" + edgelabel,
-				destination.getId() + "", isTransient));
+		changes.add(new GraphChangeImpl(true, IGraphChange.REFERENCE, source
+				.getId() + "::" + edgelabel, destination.getId() + "",
+				isTransient));
 	}
 
 	/**
@@ -924,7 +944,8 @@ public class GraphModelBatchInjector {
 
 		Set<IGraphChange> ret = new HashSet<>();
 		try {
-			for (final IHawkReference eReference : ((IHawkClass) object.getType()).getAllReferences()) {
+			for (final IHawkReference eReference : ((IHawkClass) object
+					.getType()).getAllReferences()) {
 
 				if (object.isSet(eReference)) {
 
@@ -954,7 +975,8 @@ public class GraphModelBatchInjector {
 									props.put("isContainer", "true");
 								}
 
-								createReference(edgelabel, node, dest, props, false);
+								createReference(edgelabel, node, dest, props,
+										false);
 							} else {
 								System.err
 										.println("adding proxy [iterable] reference ("
@@ -1025,7 +1047,8 @@ public class GraphModelBatchInjector {
 
 		boolean atLeastOneSetReference = false;
 
-		for (final IHawkReference eReference : ((IHawkClass) eObject.getType()).getAllReferences()) {
+		for (final IHawkReference eReference : ((IHawkClass) eObject.getType())
+				.getAllReferences()) {
 			if (eObject.isSet(eReference)) {
 				atLeastOneSetReference = true;
 
@@ -1038,34 +1061,36 @@ public class GraphModelBatchInjector {
 					for (Object destinationEObject : ((Iterable<?>) destinationObject)) {
 						final IHawkObject destinationHawkObject = (IHawkObject) destinationEObject;
 						if (!destinationHawkObject.isProxy()) {
-							addEdge(eObject, destinationHawkObject, edgelabel, eReference.isContainment(), eReference.isContainer());
+							addEdge(eObject, destinationHawkObject, edgelabel,
+									eReference.isContainment(),
+									eReference.isContainer());
 						} else {
 							System.err
 									.println("adding proxy [iterable] reference ("
 											+ edgelabel
 											+ ")... "
-											+ (addProxyRef(
-													eObject,
+											+ (addProxyRef(eObject,
 													destinationHawkObject,
 													edgelabel) ? "done"
 													: "failed"));
 						}
 					}
-				} else /* if destination is not iterable */ {
+				} else /* if destination is not iterable */{
 					final IHawkObject destinationHawkObject = (IHawkObject) destinationObject;
 					if (!destinationHawkObject.isProxy()) {
-						addEdge(eObject, destinationHawkObject, edgelabel, eReference.isContainment(), eReference.isContainer());
+						addEdge(eObject, destinationHawkObject, edgelabel,
+								eReference.isContainment(),
+								eReference.isContainer());
 					} else {
 						System.err.println("adding proxy reference ("
 								+ edgelabel
 								+ ")... "
-								+ (addProxyRef(eObject,
-										destinationHawkObject,
+								+ (addProxyRef(eObject, destinationHawkObject,
 										edgelabel) ? "done" : "failed"));
 					}
 				}
 
-			} else /* if reference is not set */ {
+			} else /* if reference is not set */{
 				objectCount[3]++;
 			}
 		}
@@ -1089,33 +1114,59 @@ public class GraphModelBatchInjector {
 
 			String uri = destinationObject.getUri();
 
+			String destinationObjectRelativePathURI =
+			// new DeletionUtils(graph).getRelativeURI(
+			uri
+			// .toString())
+			;
+
+			if (!destinationObject.URIIsRelative()) {
+
+				destinationObjectRelativePathURI = new DeletionUtils(graph)
+						.makeRelative(tempFolderURI,
+								destinationObjectRelativePathURI);
+
+			}
 			// System.err.println(uri.toString().substring(uri.toString().indexOf(".metadata/.plugins/com.google.code.hawk.neo4j/temp/m/")+53));
 			// System.err.println(uri.);
 
-			String relativeURI = new DeletionUtils(graph).getRelativeURI(uri
-					.toString());
-			String relativeFileURI = relativeURI;
-			try {
-				relativeFileURI = relativeURI.substring(0,
-						relativeURI.indexOf("#/"));
-			} catch (Exception e) {
-				//
-			}
+			String destinationObjectRelativeFileURI = destinationObjectRelativePathURI;
+
+			int indexOfFragmentStart = destinationObjectRelativePathURI
+					.indexOf("#/");
+
+			destinationObjectRelativeFileURI = destinationObjectRelativePathURI
+					.substring(
+							0,
+							indexOfFragmentStart == -1 ? destinationObjectRelativePathURI
+									.indexOf("#") : indexOfFragmentStart);
+
+			String destinationObjectFullPathURI = repoURL
+					+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+					+ destinationObjectRelativePathURI;
+
+			String destinationObjectFullFileURI = repoURL
+					+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+					+ destinationObjectRelativeFileURI;
 
 			Object proxies = null;
 			// if (withProxy.hasProperty("_proxyRef:" + relativeFileURI)) {
-			// proxies = withProxy.getProperty("_proxyRef:" + relativeFileURI);
+			// proxies = withProxy.getProperty("_proxyRef:" +
+			// relativeFileURI);
 			// }
 			// System.err.println(">>>>>>>"+relativeFileURI);
 
-			proxies = node.getProperty("_proxyRef:" + relativeFileURI);
-			proxies = new DeletionUtils(graph).add((String[]) proxies,
-					relativeURI, edgelabel);
+			proxies = node.getProperty("_proxyRef:"
+					+ destinationObjectFullFileURI);
+			proxies = new DeletionUtils(graph)
+					.addToElementProxies((String[]) proxies,
+							destinationObjectFullPathURI, edgelabel);
 
-			node.setProperty("_proxyRef:" + relativeFileURI, proxies);
+			node.setProperty("_proxyRef:" + destinationObjectFullFileURI,
+					proxies);
 
 			HashMap<String, Object> m = new HashMap<>();
-			m.put("_proxyRef", relativeFileURI);
+			m.put("_proxyRef", destinationObjectFullFileURI);
 
 			proxyDictionary.add(node, m);
 

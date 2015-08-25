@@ -27,6 +27,10 @@ public interface IHawkObject {
 	// full uri of element
 	String getUri();
 
+	// returns whether the uri of this element is relative or absolute (TODO
+	// cross-file references of absolute URIs are not supported)
+	boolean URIIsRelative();
+
 	// uri of the element itself without its containers
 	String getUriFragment();
 

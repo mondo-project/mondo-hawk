@@ -15,7 +15,7 @@ import java.util.HashSet;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
-
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.hawk.core.model.*;
 
 public class ModelioObject implements IHawkObject {
@@ -139,4 +139,11 @@ public class ModelioObject implements IHawkObject {
 		return eob.eContainer() == null;
 	}
 
+	@Override
+	public boolean URIIsRelative() {
+
+		return EcoreUtil.getURI(eob).isRelative();
+
+	}
+	
 }
