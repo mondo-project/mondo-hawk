@@ -4,59 +4,41 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
-
-
+import java.util.Set;
 
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
 
 public class IFCModelFactory implements IModelResourceFactory {
 
-	String type = "uk.ac.york.cs.mde.hawk.ifc.model.IFCModelFactory";
-	String metamodeltype = "com.googlecode.hawk.emf.metamodel.EMFMetaModelParser";
-	HashSet<String> modelExtensions;
+	private final String metamodeltype = "com.googlecode.hawk.emf.metamodel.EMFMetaModelParser";
+	private Set<String> modelExtensions;
 
 	public IFCModelFactory() {
-		modelExtensions = new HashSet<String>();
-
-		modelExtensions.add(".ifc");
-		modelExtensions.add(".ifcxml");
-
-	}
-
-	public void init(String t, String t2) {
-		type = t;
-		metamodeltype = t2;
+		modelExtensions = new HashSet<String>(Arrays.asList(".ifc", ".ifcxml"));
 	}
 
 	@Override
 	public String getType() {
-		return this.getClass().getCanonicalName();
+		return getClass().getCanonicalName();
 	}
 
 	@Override
 	public IHawkModelResource parse(File f) {
-
 		return new IFCModelResource(f, this);
-
 		// FIXME possibly keep metadata about failure to aid users
-
 	}
-
-
 
 	@Override
 	public void shutdown() {
-		type = null;
 		modelExtensions = null;
 	}
 
 	@Override
-	public HashSet<String> getModelExtensions() {
-
+	public Set<String> getModelExtensions() {
 		return modelExtensions;
-
 	}
 
 	@Override
