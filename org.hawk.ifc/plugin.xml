@@ -7,6 +7,12 @@
             ModelParser="org.hawk.ifc.IFCModelFactory">
       </ModelP>
    </extension>
+   <extension
+         point="org.hawk.core.MetaModelExtensionPoint">
+      <MetaModelP
+            MetaModelParser="org.hawk.ifc.mm.IFCMetaModelResourceFactory">
+      </MetaModelP>
+   </extension>
 
 
 </plugin>

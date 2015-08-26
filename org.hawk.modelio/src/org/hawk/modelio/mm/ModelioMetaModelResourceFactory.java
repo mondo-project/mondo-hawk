@@ -19,8 +19,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -137,10 +135,6 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 	@Override
 	public Set<IHawkMetaModelResource> getStaticMetamodels() {
 		Set<IHawkMetaModelResource> set = new HashSet<>();
-
-		Registry globalRegistry = EPackage.Registry.INSTANCE;
-		HashSet<String> keys = new HashSet<>();
-		keys.addAll(globalRegistry.keySet());
 
 		Resource rEcore = EcorePackage.eINSTANCE.eResource();
 		Resource rUML = UMLPackage.eINSTANCE.eResource();

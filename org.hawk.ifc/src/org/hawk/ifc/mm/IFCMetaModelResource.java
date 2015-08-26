@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EClass;
@@ -28,9 +29,8 @@ import org.hawk.ifc.IFCPackage;
 
 public class IFCMetaModelResource implements IHawkMetaModelResource {
 
-	Resource res;
-	IMetaModelResourceFactory p;
-	HashSet<IHawkObject> contents = new HashSet<>();
+	private Resource res;
+	private IMetaModelResourceFactory p;
 
 	@Override
 	public void unload() {
@@ -43,7 +43,7 @@ public class IFCMetaModelResource implements IHawkMetaModelResource {
 	}
 
 	@Override
-	public HashSet<IHawkObject> getAllContents() {
+	public Set<IHawkObject> getAllContents() {
 
 		TreeIterator<EObject> it = res.getAllContents();
 		HashSet<IHawkObject> ret = new HashSet<IHawkObject>();

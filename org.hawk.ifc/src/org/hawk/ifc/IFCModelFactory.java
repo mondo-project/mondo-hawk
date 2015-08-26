@@ -1,24 +1,48 @@
+/*******************************************************************************
+ * Copyright (c) 2011-2015 The University of York.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - updates and maintenance
+ ******************************************************************************/
 package org.hawk.ifc;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.xml.stream.EventFilter;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.XMLEvent;
 
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
 
 public class IFCModelFactory implements IModelResourceFactory {
 
-	private final String metamodeltype = "com.googlecode.hawk.emf.metamodel.EMFMetaModelParser";
-	private Set<String> modelExtensions;
-
-	public IFCModelFactory() {
-		modelExtensions = new HashSet<String>(Arrays.asList(".ifc", ".ifcxml"));
+	static enum IFCModelType {
+		IFC2X3_STEP,
+		IFC2X3_XML,
+		IFC4_STEP,
+		IFC4_XML,
+		UNKNOWN
 	}
+
+	private final String metamodeltype = "com.googlecode.hawk.emf.metamodel.EMFMetaModelParser";
+	private static final Set<String> EXTENSIONS = new HashSet<String>(Arrays.asList(".ifc", ".ifcxml")); 
 
 	@Override
 	public String getType() {
@@ -28,62 +52,90 @@ public class IFCModelFactory implements IModelResourceFactory {
 	@Override
 	public IHawkModelResource parse(File f) {
 		return new IFCModelResource(f, this);
-		// FIXME possibly keep metadata about failure to aid users
 	}
 
 	@Override
 	public void shutdown() {
-		modelExtensions = null;
+		// nothing to do
 	}
 
 	@Override
 	public Set<String> getModelExtensions() {
-		return modelExtensions;
+		return EXTENSIONS;
 	}
 
 	@Override
 	public boolean canParse(File f) {
-		boolean parseable = false;
-		
-		String[] split = f.getPath().split("\\.");
-		String ext = split[split.length - 1];
-		if(getModelExtensions().contains(ext.toLowerCase())){
-			FileReader namereader;
-			try {
-				namereader = new FileReader(f);
-				BufferedReader in = new BufferedReader(namereader);
-				String s = in.readLine();
-				//IFC part 12 TXT
-				if(s.toLowerCase().contains("iso-10303-21")){
-					parseable=true;
-					
-					//FIXME: test this code
-					for (int i=0;i<3;i++)
-						in.readLine();
-					//line #5 == FILE_SCHEMA(('IFC2X3'));
-					s = in.readLine();
-					if(s.toLowerCase().equalsIgnoreCase("FILE_SCHEMA(('IFC2X3'));")){
-						parseable=true;						
-					}
-				} else{
-					s = in.readLine();
-					//IFC part 28 xml 
-					if(s.toLowerCase().contains("urn:iso.org:standard:10303:part(28)"))
-						parseable=true;
-				}
-				in.close();
-				namereader.close();
-			} catch (IOException e) {
-				System.err.println("file can not be read to check parseability");
-			} 
-			
-		}
-
-		return parseable;
-
+		return getIFCModelType(f) != IFCModelType.UNKNOWN;
 	}
 
-	
+	IFCModelType getIFCModelType(File f) {
+		// Try first with the STEP-based formats
+		try (final BufferedReader reader = new BufferedReader(new FileReader(f))) {
+			// Read the first line to check if this is in STEP format
+			String line = reader.readLine().trim();
+			if ("ISO-10303-21;".equals(line)) {
+				// This is in STEP format: now look for a FILE_SCHEMA line
+				line = reader.readLine();
+				while (line != null && !line.contains("ENDSEC;")) {
+					if (line.startsWith("FILE_SCHEMA")) {
+						if (line.contains("IFC2X3")) {
+							return IFCModelType.IFC2X3_STEP;
+						}
+						else if (line.contains("IFC4")) {
+							return IFCModelType.IFC4_STEP;
+						}
+						else {
+							return IFCModelType.UNKNOWN;
+						}
+					}
+					line = reader.readLine();
+				}
+			}
+		} catch (IOException e) {
+			// We couldn't read the file at all - log the error and report it as unknown
+			e.printStackTrace();
+			return IFCModelType.UNKNOWN;
+		}
+
+		// Try the XML-based formats now (use StAX to avoid using up too much memory)
+		try (final Reader fReader = new FileReader(f)) {
+			final XMLInputFactory factory = XMLInputFactory.newInstance();
+			final XMLEventReader rawXmlReader = factory.createXMLEventReader(fReader);
+			final XMLEventReader xmlReader = factory.createFilteredReader(rawXmlReader, new EventFilter() {
+				@Override
+				public boolean accept(XMLEvent event) {
+					if (event.isStartElement()) {
+						final StartElement e = event.asStartElement();
+						final String localPart = e.getName().getLocalPart();
+						return "ifcXML".equals(localPart) || "iso_10303_28".equals(localPart) || "uos".equals(localPart);
+					}
+					return false;
+				}
+			});
+
+			XMLEvent mainTagEvent = xmlReader.nextTag();
+			if (mainTagEvent != null) {
+				final String mainTagLocalPart = mainTagEvent.asStartElement().getName().getLocalPart();
+				if ("iso_10303_28".equals(mainTagLocalPart)) {
+					// This is an IFC2x3 XML document: look for the <uos> element now
+					XMLEvent uosEvent = xmlReader.nextTag();
+					if (uosEvent != null && uosEvent.asStartElement().getName().getNamespaceURI().contains("IFC2x3")) {
+						return IFCModelType.IFC2X3_XML;
+					}
+				}
+				else if ("ifcXML".equals(mainTagLocalPart)) {
+					return IFCModelType.IFC4_XML;
+				}
+			}
+		} catch (XMLStreamException | FactoryConfigurationError | IOException e) {
+			// We couldn't parse this as XML either
+			e.printStackTrace();
+		}
+
+		return IFCModelType.UNKNOWN;
+	}
+
 	public String getMetaModelType() {
 		return metamodeltype;
 	}

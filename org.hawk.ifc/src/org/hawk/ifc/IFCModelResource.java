@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2011-2015 The University of York.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - updates and maintenance
+ ******************************************************************************/
 package org.hawk.ifc;
 
 import java.io.File;
@@ -16,7 +27,9 @@ import org.bimserver.emf.MetaDataManager;
 import org.bimserver.emf.PackageMetaData;
 import org.bimserver.emf.Schema;
 import org.bimserver.ifc.step.deserializer.Ifc2x3tc1StepDeserializer;
+import org.bimserver.ifc.step.deserializer.Ifc4StepDeserializer;
 import org.bimserver.ifc.xml.deserializer.Ifc2x3tc1XmlDeserializer;
+import org.bimserver.ifc.xml.deserializer.Ifc4XmlDeserializer;
 import org.bimserver.models.ifc2x3tc1.Ifc2x3tc1Package;
 import org.bimserver.plugins.Plugin;
 import org.bimserver.plugins.PluginDescriptor;
@@ -24,13 +37,14 @@ import org.bimserver.plugins.PluginImplementation;
 import org.bimserver.plugins.PluginManager;
 import org.bimserver.plugins.PluginSourceType;
 import org.bimserver.plugins.deserializers.Deserializer;
-import org.hawk.core.IModelResourceFactory;
+import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.ecore.EObject;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
 
 public class IFCModelResource implements IHawkModelResource {
 
-	private IModelResourceFactory parser;
+	private IFCModelFactory factory;
 	private File ifc;
 
 	@Override
@@ -38,8 +52,8 @@ public class IFCModelResource implements IHawkModelResource {
 		ifc = null;
 	}
 	
-	public IFCModelResource(File f, IModelResourceFactory p) {
-		parser = p;
+	public IFCModelResource(File f, IFCModelFactory p) {
+		factory = p;
 		ifc = f;
 	}
 
@@ -56,9 +70,12 @@ public class IFCModelResource implements IHawkModelResource {
 		try {
 			Deserializer d = createDeserializer();
 			IfcModelInterface s = d.read(ifc);
-			Iterator<IdEObject> it = s.getValues().iterator();
-			while (it.hasNext()) {
-				allElements.add(new IFCObject(it.next()));
+			for (IdEObject eo : s.getValues()) {
+				allElements.add(new IFCObject(eo));
+				for (final TreeIterator<EObject> it = eo.eAllContents(); it.hasNext(); ) {
+					final EObject eo2 = it.next();
+					allElements.add(new IFCObject(eo2));
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -67,13 +84,20 @@ public class IFCModelResource implements IHawkModelResource {
 		return allElements;
 	}
 
-	@SuppressWarnings("unchecked")
 	private Deserializer createDeserializer() throws Exception {
 		Deserializer d;
-		if (ifc.getPath().toLowerCase().endsWith(".xml")) {
-			d = new Ifc2x3tc1XmlDeserializer();
-		} else {
-			d = new Ifc2x3tc1StepDeserializer(Schema.IFC2X3TC1);
+
+		switch (factory.getIFCModelType(ifc)) {
+		case IFC2X3_STEP:
+			d = new Ifc2x3tc1StepDeserializer(Schema.IFC2X3TC1); break;
+		case IFC2X3_XML:
+			d = new Ifc2x3tc1XmlDeserializer(); break;
+		case IFC4_STEP:
+			d = new Ifc4StepDeserializer(Schema.IFC4); break;
+		case IFC4_XML:
+			d = new Ifc4XmlDeserializer(); break;
+		default:
+			throw new IllegalArgumentException("Unknown IFC model type");
 		}
 
 		PluginManager bimPluginManager = createPluginManager();
@@ -104,7 +128,7 @@ public class IFCModelResource implements IHawkModelResource {
 
 	@Override
 	public String getType() {
-		return parser.getType();
+		return factory.getType();
 	}
 
 	@Override

@@ -620,7 +620,9 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 				if (arg0.contains("::")) {
 
-					String ep = arg0.substring(0, arg0.indexOf("::"));
+					final String[] parts = arg0.split("::", 2);
+					final String ep = parts[0];
+					final String ec = parts[1];
 
 					IGraphNode pack = null;
 
@@ -630,23 +632,17 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 						pack = epackagedictionary.get("id", ep).getSingle();
 
-						for (IGraphEdge r : pack
-								.getIncomingWithType("epackage")) {
-
-							IGraphNode othernode = r.getStartNode();
-							if (othernode.getProperty("id").equals(
-									arg0.substring(arg0.indexOf("::") + 2))) {
-
+						for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
+							final IGraphNode otherNode = r.getStartNode();
+							final Object otherEClass = otherNode.getProperty("id");
+							if (otherEClass.equals(ec)) {
 								found = true;
 								break;
-
 							}
-
 						}
 						tx.success();
 						tx.close();
 					}
-					found = false;
 				} else {
 					if (epackages == null) {
 

@@ -407,7 +407,6 @@ public class GraphModelBatchInjector {
 		IGraphNode node = null;
 
 		try {
-
 			// useUUIDs()
 			// assignIDsWhileLoading()
 			// TODO set these values to true to aid loading non-id models - test
@@ -417,47 +416,39 @@ public class GraphModelBatchInjector {
 			m.put("id", eObjectId);
 			m.put("hashCode", eObject.hashCode());
 
-			LinkedList<IHawkAttribute> normalattributes = new LinkedList<IHawkAttribute>();
-			LinkedList<IHawkAttribute> indexedattributes = new LinkedList<IHawkAttribute>();
-			// LinkedList<IHawkAttribute> derivedattributes = new
-			// LinkedList<IHawkAttribute>();
+			final List<IHawkAttribute> normalattributes = new LinkedList<IHawkAttribute>();
+			final List<IHawkAttribute> indexedattributes = new LinkedList<IHawkAttribute>();
 
-			for (final IHawkAttribute eAttribute : ((IHawkClass) eObject
-					.getType()).getAllAttributes()) {
-
+			for (final IHawkAttribute eAttribute : ((IHawkClass) eObject.getType()).getAllAttributes()) {
 				if (eObject.isSet(eAttribute)) {
 
-					if (((String[]) typenode.getProperty(eAttribute.getName()))[5]
-							.equals("t"))
+					final String[] attributeProperties = (String[])typenode.getProperty(eAttribute.getName());
+					final boolean isIndexed = attributeProperties[5].equals("t");
+					if (isIndexed) {
 						indexedattributes.add(eAttribute);
+					}
 
 					normalattributes.add(eAttribute);
 
 				} else
-				// depracatedTODO currently unset items are not included to may
-				// crash eol etc
+				// deprecatedTODO currently unset items are not included to may crash eol etc
 				{
 					// node.setProperty(eAttribute.getName(), "UNSET");
 				}
 			}
 
 			for (IHawkAttribute a : normalattributes) {
-
-				String type = GraphUtil.toJavaType(a.getType().getName());
+				final Object value = eObject.get(a);
 
 				if (!a.isMany()) {
-
-					if (type.equals("String") || type.equals("Boolean")
-							|| type.equals("Integer") || type.equals("Real"))
-						m.put(a.getName(), eObject.get(a));
-
-					else
-						m.put(a.getName(), eObject.get(a).toString());
-
+					final Class<?> valueClass = value.getClass();
+					if (isPrimitiveOrWrapperType(valueClass)) {
+						m.put(a.getName(), value);
+					} else {
+						m.put(a.getName(), value.toString());
+					}
 				}
-
 				else {
-
 					Collection<Object> collection = null;
 
 					if (a.isOrdered() && a.isUnique())
@@ -469,39 +460,41 @@ public class GraphModelBatchInjector {
 					else
 						collection = new LinkedList<Object>();
 
-					for (Object o : (Collection<?>) eObject.get(a)) {
-
-						if (type.equals("String") || type.equals("Boolean")
-								|| type.equals("Integer")
-								|| type.equals("Real"))
-							collection.add(o);
-
-						else
-							collection.add(o.toString());
-
+					final Collection<?> srcCollection = (Collection<?>) value;
+					Class<?> elemClass = null;
+					boolean primitiveOrWrapperClass = false;
+					if (!srcCollection.isEmpty()) {
+						final Object first = srcCollection.iterator().next();
+						elemClass = first.getClass();
+						primitiveOrWrapperClass = isPrimitiveOrWrapperType(elemClass);
+						if (primitiveOrWrapperClass) {
+							for (Object o : srcCollection) {
+								collection.add(o);
+							}
+						} else {
+							for (Object o : srcCollection) {
+								collection.add(o.toString());
+							}
+						}
 					}
 
 					Object r = null;
-
-					if (type.equals("Integer")) {
-						r = Array.newInstance(Integer.class, 1);
-					} else if (type.equals("Real")) {
-						r = Array.newInstance(Double.class, 1);
-					} else if (type.equals("Boolean")) {
-						r = Array.newInstance(Boolean.class, 1);
+					if (primitiveOrWrapperClass && elemClass != null) {
+						r = Array.newInstance(elemClass, 1);
 					} else {
 						r = Array.newInstance(String.class, 1);
 					}
-
 					Object ret = collection.toArray((Object[]) r);
 
 					m.put(a.getName(), ret);
-
 				}
-
 			}
 
-			node = graph.createNode(m, "eobject");
+			try {
+				node = graph.createNode(m, "eobject");
+			} catch (IllegalArgumentException ex) {
+				System.err.println("here be dragons!");
+			}
 
 			// propagate changes to listeners
 			changes.add(new GraphChangeImpl(true, GraphChangeImpl.INSTANCE,
@@ -651,6 +644,26 @@ public class GraphModelBatchInjector {
 		return node;
 	}
 
+	private boolean isPrimitiveOrWrapperType(final Class<?> valueClass) {
+		return String.class.isAssignableFrom(valueClass)
+				|| Boolean.class.isAssignableFrom(valueClass)
+				|| Character.class.isAssignableFrom(valueClass)
+				|| Byte.class.isAssignableFrom(valueClass)
+				|| Short.class.isAssignableFrom(valueClass)
+				|| Integer.class.isAssignableFrom(valueClass)
+				|| Long.class.isAssignableFrom(valueClass)
+				|| Float.class.isAssignableFrom(valueClass)
+				|| Double.class.isAssignableFrom(valueClass)
+				|| boolean.class.isAssignableFrom(valueClass)
+				|| char.class.isAssignableFrom(valueClass)
+				|| byte.class.isAssignableFrom(valueClass)
+				|| short.class.isAssignableFrom(valueClass)
+				|| int.class.isAssignableFrom(valueClass)
+				|| long.class.isAssignableFrom(valueClass)
+				|| float.class.isAssignableFrom(valueClass)
+				|| double.class.isAssignableFrom(valueClass);
+	}
+
 	protected void addToProxyAttributes(IGraphNode node) {
 
 		IGraphNodeIndex derivedProxyDictionary = graph
@@ -776,31 +789,35 @@ public class GraphModelBatchInjector {
 		IGraphNode eClass = getEClassNode(eObject.getType());
 		IGraphNode node = createEObjectNode(eObject, eClass);
 
-		if (hash != null)
+		if (node == null) {
+			System.err.println(String.format("The node for (%s) is null", eObject));
+		} else if (hash != null) {
 			hash.put(eObject, node);
 
-		createReference("typeOf", node, eClass, Collections.emptyMap(), true);
-		if (originatingFile != null) {
-			createReference("file", node, originatingFile,
-					Collections.emptyMap(), true);
-		}
-		objectCount[1]++;
+			createReference("typeOf", node, eClass, Collections.emptyMap(), true);
+			if (originatingFile != null) {
+				createReference("file", node, originatingFile,
+						Collections.emptyMap(), true);
+			}
+			objectCount[1]++;
 
-		// use metamodel to infer all supertypes for fast search and log em
-		for (IHawkClass superType : ((IHawkClass) eObject.getType())
-				.getSuperTypes()) {
-			eClass = getEClassNode(superType);
-			createReference("kindOf", node, eClass, Collections.emptyMap(),
-					true);
-			objectCount[2]++;
+			// use metamodel to infer all supertypes for fast search and log em
+			for (IHawkClass superType : ((IHawkClass) eObject.getType())
+					.getSuperTypes()) {
+				eClass = getEClassNode(superType);
+				createReference("kindOf", node, eClass, Collections.emptyMap(),
+						true);
+				objectCount[2]++;
+			}
+
+			objectCount[0]++;
+
+			if (eObject.isRoot()) {
+				rootDictionary.add(node, ROOT_DICT_FILE_KEY, originatingFile
+						.getId().toString());
+			}
 		}
 
-		objectCount[0]++;
-
-		if (eObject.isRoot()) {
-			rootDictionary.add(node, ROOT_DICT_FILE_KEY, originatingFile
-					.getId().toString());
-		}
 
 		return node;
 	}
