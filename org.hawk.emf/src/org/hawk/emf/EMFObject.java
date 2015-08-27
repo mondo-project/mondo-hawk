@@ -15,7 +15,6 @@ import java.util.LinkedList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
@@ -41,20 +40,10 @@ public class EMFObject implements IHawkObject {
 	public boolean isProxy() {
 		return eob.eIsProxy();
 	}
-
-	@Override
-	public String proxyURIFragment() {
-		return ((InternalEObject) eob).eProxyURI().fragment();
-	}
-
-	@Override
-	public String proxyURI() {
-		return ((InternalEObject) eob).eProxyURI().toString();
-	}
 	
 	@Override
 	public String getUri() {
-		String uri = org.eclipse.emf.ecore.util.EcoreUtil.getURI(eob)
+		String uri = EcoreUtil.getURI(eob)
 				.toString();
 		if (uri == null || uri == "" || uri == "/" || uri == "//")
 			System.err.println("URI error on: " + eob);
@@ -66,11 +55,11 @@ public class EMFObject implements IHawkObject {
 	public String getUriFragment() {
 		URI uri = null;
 		try {
-			uri = org.eclipse.emf.ecore.util.EcoreUtil.getURI(eob);
+			uri = EcoreUtil.getURI(eob);
 			String frag = uri.fragment();
 			if (frag == null || frag == "" || frag == "/")
 				System.err.println("fragment error on: "
-						+ org.eclipse.emf.ecore.util.EcoreUtil.getURI(eob)
+						+ EcoreUtil.getURI(eob)
 								.toString() + " fragment: '" + frag
 						+ "' on eobject: " + eob + " (isproxy:" + isProxy()
 						+ ")");

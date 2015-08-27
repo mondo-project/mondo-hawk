@@ -561,11 +561,11 @@ public class GraphMetaModelResourceInjector {
 			String uri = null;
 
 			if (e.isProxy())
-				uri = e.proxyURI()
+				uri = e.getUri()
 				// ((InternalEObject) e)
 				// .eProxyURI()
 				// .toString()
-						.substring(0, e.proxyURI()
+						.substring(0, e.getUri()
 						// ((InternalEObject) e).eProxyURI().toString()
 								.indexOf("#"));
 
@@ -577,7 +577,7 @@ public class GraphMetaModelResourceInjector {
 						.println("EClass "
 								+ eClass.getName()
 								+ "has supertype "
-								+ (e.getName() == null ? e.proxyURI() : e
+								+ (e.getName() == null ? e.getUri() : e
 										.getName())
 								+ " which is in a package not registered yet, reverting all changes to this package registration, please register package with uri: "
 								+ uri + " first");
@@ -620,13 +620,13 @@ public class GraphMetaModelResourceInjector {
 
 			if (e.isProxy())
 
-				uri = e.proxyURI()
+				uri = e.getUri()
 				// ((InternalEObject) e)
 				// .eProxyURI()
 				// .toString()
 						.substring(0,
 						// ((InternalEObject) e).eProxyURI().toString()
-								e.proxyURI().indexOf("#"));
+								e.getUri().indexOf("#"));
 
 			else
 
@@ -643,7 +643,7 @@ public class GraphMetaModelResourceInjector {
 								+ e.getName()
 								+ " has type "
 								+ (e.getType().getName() == null ? e.getType()
-										.proxyURI() : e.getType().getName())
+										.getUri() : e.getType().getName())
 								+ " which is in a package not registered yet, reverting all changes to this package registration, please register package with uri: "
 								+ uri + " first");
 				return false;
@@ -712,11 +712,11 @@ public class GraphMetaModelResourceInjector {
 			String uri = null;
 
 			if (r.isProxy())
-				uri = r.proxyURIFragment()
+				uri = r.getUriFragment()
 				// ((InternalEObject) r)
 				// .eProxyURI()
 				// .toString()
-						.substring(0, r.proxyURIFragment()
+						.substring(0, r.getUriFragment()
 						// ((InternalEObject) r).eProxyURI().toString()
 								.indexOf("#"));
 
@@ -729,7 +729,7 @@ public class GraphMetaModelResourceInjector {
 								+ r.getName()
 								+ " has type "
 								+ (r.getType().getName() == null ? r.getType()
-										.proxyURI() : r.getType().getName())
+										.getUri() : r.getType().getName())
 								+ " which is in a package not registered yet, reverting all changes to this package registration, please register package with uri: "
 								+ uri + " first");
 				return false;

@@ -419,11 +419,14 @@ public class GraphModelBatchInjector {
 			final List<IHawkAttribute> normalattributes = new LinkedList<IHawkAttribute>();
 			final List<IHawkAttribute> indexedattributes = new LinkedList<IHawkAttribute>();
 
-			for (final IHawkAttribute eAttribute : ((IHawkClass) eObject.getType()).getAllAttributes()) {
+			for (final IHawkAttribute eAttribute : ((IHawkClass) eObject
+					.getType()).getAllAttributes()) {
 				if (eObject.isSet(eAttribute)) {
 
-					final String[] attributeProperties = (String[])typenode.getProperty(eAttribute.getName());
-					final boolean isIndexed = attributeProperties[5].equals("t");
+					final String[] attributeProperties = (String[]) typenode
+							.getProperty(eAttribute.getName());
+					final boolean isIndexed = attributeProperties[5]
+							.equals("t");
 					if (isIndexed) {
 						indexedattributes.add(eAttribute);
 					}
@@ -431,7 +434,8 @@ public class GraphModelBatchInjector {
 					normalattributes.add(eAttribute);
 
 				} else
-				// deprecatedTODO currently unset items are not included to may crash eol etc
+				// deprecatedTODO currently unset items are not included to may
+				// crash eol etc
 				{
 					// node.setProperty(eAttribute.getName(), "UNSET");
 				}
@@ -447,8 +451,7 @@ public class GraphModelBatchInjector {
 					} else {
 						m.put(a.getName(), value.toString());
 					}
-				}
-				else {
+				} else {
 					Collection<Object> collection = null;
 
 					if (a.isOrdered() && a.isUnique())
@@ -790,11 +793,13 @@ public class GraphModelBatchInjector {
 		IGraphNode node = createEObjectNode(eObject, eClass);
 
 		if (node == null) {
-			System.err.println(String.format("The node for (%s) is null", eObject));
+			System.err.println(String.format("The node for (%s) is null",
+					eObject));
 		} else if (hash != null) {
 			hash.put(eObject, node);
 
-			createReference("typeOf", node, eClass, Collections.emptyMap(), true);
+			createReference("typeOf", node, eClass, Collections.emptyMap(),
+					true);
 			if (originatingFile != null) {
 				createReference("file", node, originatingFile,
 						Collections.emptyMap(), true);
@@ -818,7 +823,6 @@ public class GraphModelBatchInjector {
 			}
 		}
 
-
 		return node;
 	}
 
@@ -841,15 +845,34 @@ public class GraphModelBatchInjector {
 		source = hash.get(from);
 		destination = hash.get(to);
 
-		if (source == null || destination == null) {
-			System.err.println("hash error, not found from (class: "
+		if (source == null && destination == null) {
+
+			System.err.println("hash error 1, not found from (class: "
 					+ (from).getType().getName() + ") and to (class: "
 					+ ((IHawkObject) to).getType().getName()
 					+ ") on reference: " + edgelabel + " source = " + source
 					+ " destination = " + destination);
 
-			//FIXME urgent add proxy if target is not found to handle emf limitation of auto resolve 
-			
+		}
+
+		else if (source == null) {
+
+			System.err.println("hash error 2, not found from (class: "
+					+ (from).getType().getName() + ") and to (class: "
+					+ ((IHawkObject) to).getType().getName()
+					+ ") on reference: " + edgelabel + " source = " + source
+					+ " destination = " + destination);
+
+		} else if (destination == null) {
+
+			// the modelling technology managed to resolve a cross-file proxy
+			// early (before it was inserted into hawk -- handle it like any
+			// other proxy)
+
+			System.err.println("adding proxy (early resolution) reference ("
+					+ edgelabel + " | " + to.getUri() + ")... "
+					+ (addProxyRef(from, to, edgelabel) ? "done" : "failed"));
+
 		} else {
 
 			HashMap<String, Object> props = new HashMap<String, Object>();
@@ -932,7 +955,7 @@ public class GraphModelBatchInjector {
 												+ edgelabel
 												+ " | "
 												+ ((IHawkObject) destinationEObject)
-														.proxyURI()
+														.getUri()
 												+ ")... "
 												+ (addProxyRef(
 														node,
@@ -968,7 +991,7 @@ public class GraphModelBatchInjector {
 									+ edgelabel
 									+ " | "
 									+ ((IHawkObject) destinationObject)
-											.proxyURI()
+											.getUri()
 									+ ")... "
 									+ (addProxyRef(node,
 											((IHawkObject) destinationObject),
@@ -1025,7 +1048,7 @@ public class GraphModelBatchInjector {
 											+ edgelabel
 											+ " | "
 											+ ((IHawkObject) destinationHawkObject)
-													.proxyURI()
+													.getUri()
 											+ ")... "
 											+ (addProxyRef(eObject,
 													destinationHawkObject,
@@ -1044,7 +1067,7 @@ public class GraphModelBatchInjector {
 								+ edgelabel
 								+ " | "
 								+ ((IHawkObject) destinationHawkObject)
-										.proxyURI()
+										.getUri()
 								+ ")... "
 								+ (addProxyRef(eObject, destinationHawkObject,
 										edgelabel) ? "done" : "failed"));
