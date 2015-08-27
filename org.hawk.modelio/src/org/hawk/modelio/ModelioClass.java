@@ -17,7 +17,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-
 import org.hawk.core.model.*;
 
 public class ModelioClass extends ModelioObject implements IHawkClass {
@@ -50,7 +49,22 @@ public class ModelioClass extends ModelioObject implements IHawkClass {
 
 		String it = eclass.getInstanceClassName();
 
-		return it == null ? "NULL_INSTANCE_TYPE" : it;
+		it = it == null ? "NULL_INSTANCE_TYPE" : it;
+
+		switch (it) {
+		case "long":
+			return Long.class.getName();
+		case "int":
+			return Integer.class.getName();
+		case "float":
+			return Float.class.getName();
+		case "double":
+			return Double.class.getName();
+		case "boolean":
+			return Boolean.class.getName();
+		}
+
+		return it;
 	}
 
 	@Override

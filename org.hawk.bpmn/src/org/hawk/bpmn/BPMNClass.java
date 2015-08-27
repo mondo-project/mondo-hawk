@@ -52,7 +52,22 @@ public class BPMNClass extends BPMNObject implements IHawkClass {
 
 		String it = eclass.getInstanceClassName();
 
-		return it == null ? "NULL_INSTANCE_TYPE" : it;
+		it = it == null ? "NULL_INSTANCE_TYPE" : it;
+
+		switch (it) {
+		case "long":
+			return Long.class.getName();
+		case "int":
+			return Integer.class.getName();
+		case "float":
+			return Float.class.getName();
+		case "double":
+			return Double.class.getName();
+		case "boolean":
+			return Boolean.class.getName();
+		}
+
+		return it;
 	}
 
 	@Override

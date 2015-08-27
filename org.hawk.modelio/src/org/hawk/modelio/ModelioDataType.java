@@ -12,7 +12,6 @@ package org.hawk.modelio;
 
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
-
 import org.hawk.core.model.*;
 
 public class ModelioDataType extends ModelioObject implements IHawkDataType {
@@ -45,7 +44,22 @@ public class ModelioDataType extends ModelioObject implements IHawkDataType {
 
 		String it = edatatype.getInstanceClassName();
 
-		return it == null ? "NULL_INSTANCE_TYPE" : it;
+		it = it == null ? "NULL_INSTANCE_TYPE" : it;
+		
+		switch (it) {
+		case "long":
+			return Long.class.getName();
+		case "int":
+			return Integer.class.getName();
+		case "float":
+			return Float.class.getName();
+		case "double":
+			return Double.class.getName();
+		case "boolean":
+			return Boolean.class.getName();
+		}
+
+		return it;
 	}
 
 	@Override
