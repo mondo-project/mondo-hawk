@@ -14,6 +14,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -59,14 +60,14 @@ public class Neo4JDatabase implements IGraphDatabase {
 	private IGraphNodeIndex fileindex;
 	private IGraphNodeIndex metamodelindex;
 
-	//private IAbstractConsole console;
+	// private IAbstractConsole console;
 
 	public Neo4JDatabase() {
 	}
 
 	public void run(File location, IAbstractConsole c) {
 
-		//console = c;
+		// console = c;
 
 		if (location == null) {
 			File runtimeDir = new File("runtime_data");
@@ -161,12 +162,13 @@ public class Neo4JDatabase implements IGraphDatabase {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		}
+	}
 
 	@Override
 	public void delete() throws Exception {
 		// unregisterPackages();
-		final boolean deleted = FileOperations.deleteFiles(new File(getPath()), true);
+		final boolean deleted = FileOperations.deleteFiles(new File(getPath()),
+				true);
 		System.err.println("deleted store(" + databaseName + "): " + deleted);
 
 		shutdown();
@@ -197,7 +199,17 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 	@Override
 	public Set<String> getNodeIndexNames() {
-		return new HashSet<String>(Arrays.asList(indexer.nodeIndexNames()));
+
+		Set<String> ret = new HashSet<>();
+
+		for (String s : indexer.nodeIndexNames()) {
+			for (Map.Entry<String, String> entry : FILEPATHENCODING.entrySet())
+				s = s.replace(entry.getValue(), entry.getKey());
+			ret.add(s);
+		}
+
+		return ret;
+
 	}
 
 	@Override
@@ -206,9 +218,34 @@ public class Neo4JDatabase implements IGraphDatabase {
 				.relationshipIndexNames()));
 	}
 
+	private final static Map<String, String> FILEPATHENCODING = new HashMap<String, String>();
+
+	static {
+		FILEPATHENCODING.put("\\", "$hslash&");
+		FILEPATHENCODING.put("/", "$hfslash&");
+		FILEPATHENCODING.put(":", "$hcolon&");
+		FILEPATHENCODING.put("*", "$hstar&");
+		FILEPATHENCODING.put("?", "$hqmark&");
+		FILEPATHENCODING.put("\"", "$hquote&");
+		FILEPATHENCODING.put("<", "$hless&");
+		FILEPATHENCODING.put(">", "$hmore&");
+		FILEPATHENCODING.put("|", "$hor&");
+	}
+
 	@Override
 	public IGraphNodeIndex getOrCreateNodeIndex(String name) {
+
+		name = encodeIndexName(name);
+
 		return new Neo4JNodeIndex(name, this);
+
+	}
+
+	private String encodeIndexName(String name) {
+		for (Map.Entry<String, String> entry : FILEPATHENCODING.entrySet()) {
+			name = name.replace(entry.getKey(), entry.getValue());
+		}
+		return name;
 	}
 
 	@Override
@@ -218,7 +255,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 		if (graph != null) {
 
-			found = indexer.existsForNodes(name);
+			found = indexer.existsForNodes(encodeIndexName(name));
 
 		} else {
 
@@ -350,7 +387,8 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 			return new Neo4JEdge(r, this);
 		} else {
-			final long r = batch.createRelationship(startId, endId, type, props);
+			final long r = batch
+					.createRelationship(startId, endId, type, props);
 			return new Neo4JEdge(batch.getRelationshipById(r), this);
 		}
 
@@ -411,11 +449,11 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 	}
 
-//	@Override
-//	public Map<?, ?> getConfig() {
-//
-//		return ((EmbeddedGraphDatabase) graph).getConfig().getParams();
-//	}
+	// @Override
+	// public Map<?, ?> getConfig() {
+	//
+	// return ((EmbeddedGraphDatabase) graph).getConfig().getParams();
+	// }
 
 	@Override
 	public String getType() {

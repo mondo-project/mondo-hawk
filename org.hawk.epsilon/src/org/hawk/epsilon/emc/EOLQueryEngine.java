@@ -632,9 +632,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 						pack = epackagedictionary.get("id", ep).getSingle();
 
-						for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
+						for (IGraphEdge r : pack
+								.getIncomingWithType("epackage")) {
 							final IGraphNode otherNode = r.getStartNode();
-							final Object otherEClass = otherNode.getProperty("id");
+							final Object otherEClass = otherNode
+									.getProperty("id");
 							if (otherEClass.equals(ec)) {
 								found = true;
 								break;

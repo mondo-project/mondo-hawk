@@ -115,12 +115,12 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 		} else if (isOptimisable(ast)) {
 			return optimisedExecution(target, ast);
 		} else {
-			//System.err.println("giving to super: "+ast.toStringTree());
+			// System.err.println("giving to super: "+ast.toStringTree());
 			Object ret = super.execute(target, iterator, (Expression) ast,
 					context, returnOnFirstMatch);
-			//System.err.println("super returns: "+ret.getClass());
+			// System.err.println("super returns: "+ret.getClass());
 			return (Collection<Object>) ret;
-			
+
 		}
 
 	}
@@ -321,8 +321,14 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 
 		if (sibling.getType() == EolParser.BOOLEAN)
 			attributevalue = sibling.getText().equals("true") ? true : false;
-		else if (sibling.getType() == EolParser.INT)
-			attributevalue = Integer.parseInt(sibling.getText());
+		else if (sibling.getType() == EolParser.INT) {
+			try {
+				attributevalue = Integer.parseInt(sibling.getText());
+			} catch (Exception e) {
+				attributevalue = Long.parseLong(sibling.getText().substring(0,
+						sibling.getText().length() - 1));
+			}
+		}
 		// XXX epsilon uses float but real can be float or double
 		else if (sibling.getType() == EolParser.FLOAT)
 			attributevalue = Double.parseDouble(sibling.getText());
@@ -339,7 +345,8 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 			System.err.println("indexed ast found: "
 					+ ast.getFirstChild().getFirstChild().getText()
 					+ ast.getFirstChild().getText() + attributename
-					+ ast.getText() + attributevalue);
+					+ ast.getText() + attributevalue + " (type:"
+					+ attributevalue.getClass() + ")");
 
 			HashSet<Object> filter = new HashSet<Object>();
 			// use index to query
@@ -354,6 +361,10 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 					if (attributevalue instanceof Integer)
 						hits = index.query(attributename, (int) attributevalue,
 								(int) attributevalue, true, true);
+					else if (attributevalue instanceof Long)
+						hits = index.query(attributename,
+								(long) attributevalue, (long) attributevalue,
+								true, true);
 					else if (attributevalue instanceof Double)
 						hits = index.query(attributename,
 								(double) attributevalue,
@@ -364,6 +375,10 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 					if (attributevalue instanceof Integer)
 						hits = index.query(attributename, (int) attributevalue,
 								Integer.MAX_VALUE, false, true);
+					else if (attributevalue instanceof Long)
+						hits = index.query(attributename,
+								(long) attributevalue, Long.MAX_VALUE, false,
+								true);
 					else if (attributevalue instanceof Double)
 						hits = index.query(attributename,
 								(double) attributevalue, Double.MAX_VALUE,
@@ -376,6 +391,10 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 					if (attributevalue instanceof Integer)
 						hits = index.query(attributename, (int) attributevalue,
 								Integer.MAX_VALUE, true, true);
+					else if (attributevalue instanceof Long)
+						hits = index.query(attributename,
+								(long) attributevalue, Long.MAX_VALUE, true,
+								true);
 					else if (attributevalue instanceof Double)
 						hits = index.query(attributename,
 								(double) attributevalue, Double.MAX_VALUE,
@@ -388,6 +407,9 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 					if (attributevalue instanceof Integer)
 						hits = index.query(attributename, Integer.MIN_VALUE,
 								(int) attributevalue, true, false);
+					else if (attributevalue instanceof Long)
+						hits = index.query(attributename, Long.MIN_VALUE,
+								(long) attributevalue, true, false);
 					else if (attributevalue instanceof Double)
 						hits = index.query(attributename, Double.MIN_VALUE,
 								(double) attributevalue, true, false);
@@ -399,6 +421,9 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 					if (attributevalue instanceof Integer)
 						hits = index.query(attributename, Integer.MIN_VALUE,
 								(int) attributevalue, true, true);
+					else if (attributevalue instanceof Long)
+						hits = index.query(attributename, Long.MIN_VALUE,
+								(long) attributevalue, true, true);
 					else if (attributevalue instanceof Double)
 						hits = index.query(attributename, Double.MIN_VALUE,
 								(double) attributevalue, true, true);

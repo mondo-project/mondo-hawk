@@ -1500,6 +1500,7 @@ public class GraphModelInserter {
 						.isPrimitiveOrWrapperType(c);
 			} catch (Exception e) {
 				//
+				e.printStackTrace();
 			}
 
 			HashSet<IGraphNode> nodes = new HashSet<>();

@@ -1106,9 +1106,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 				String s = it.next();
 				String[] split = s.split("##");
 				final String mmURI = split[0];
-
+				
 				IGraphNode epackagenode = graph.getMetamodelIndex()
 						.get("id", mmURI).iterator().next();
+							
 				IGraphNode typenode = null;
 				for (IGraphEdge e : epackagenode
 						.getIncomingWithType("epackage")) {
