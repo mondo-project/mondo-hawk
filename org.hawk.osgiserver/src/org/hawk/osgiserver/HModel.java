@@ -280,7 +280,6 @@ public class HModel {
 	}
 
 	public void delete() throws BackingStoreException {
-
 		removeHawkFromMetadata(getHawkConfig());
 
 		File f = hawk.getModelIndexer().getParentFolder();
@@ -293,11 +292,9 @@ public class HModel {
 			}
 		}
 
-		if (f.exists())
-			System.err
-					.println("hawk removed from ui but persistence remains at: "
-							+ f);
-
+		if (f.exists()) {
+			System.err.println("hawk removed from ui but persistence remains at: " + f);
+		}
 	}
 
 	/**

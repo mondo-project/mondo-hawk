@@ -11,6 +11,14 @@
  ******************************************************************************/
 package org.hawk.ui2.view;
 
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Iterator;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -20,6 +28,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -33,6 +42,8 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
@@ -153,6 +164,7 @@ public class HView extends ViewPart {
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
+		hookPermanentDeleteAction();
 		contributeToActionBars();
 		viewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(final SelectionChangedEvent event) {
@@ -179,6 +191,31 @@ public class HView extends ViewPart {
 
 			}
 
+		});
+	}
+
+	private void hookPermanentDeleteAction() {
+		viewer.getTable().addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (viewer.getSelection().isEmpty()) return;
+
+				if (e.character == SWT.DEL && (e.stateMask & SWT.SHIFT) > 0) {
+					if (MessageDialog.openConfirm(shell, "Are you sure?", "Do you want to permanently delete these instances (including storage)?")) {
+						final IStructuredSelection selected = (IStructuredSelection) viewer.getSelection();
+						for (Iterator<?> it = selected.iterator(); it.hasNext(); ) {
+							final HModel hawkModel = (HModel) it.next();
+							try {
+								hm.delete(hawkModel, hawkModel.exists());
+								removeRecursive(Paths.get(hawkModel.getFolder()));
+							} catch (BackingStoreException | IOException ex) {
+								ex.printStackTrace();
+							}
+						}
+						viewer.refresh();
+					}
+				}
+			}
 		});
 	}
 
@@ -438,5 +475,44 @@ public class HView extends ViewPart {
 				}
 			}
 		});
+	}
+
+	private static void removeRecursive(java.nio.file.Path path) throws IOException
+	{
+	    Files.walkFileTree(path, new SimpleFileVisitor<java.nio.file.Path>()
+	    {
+	        @Override
+	        public FileVisitResult visitFile(java.nio.file.Path file, BasicFileAttributes attrs)
+	                throws IOException
+	        {
+	            Files.delete(file);
+	            return FileVisitResult.CONTINUE;
+	        }
+
+	        @Override
+	        public FileVisitResult visitFileFailed(java.nio.file.Path file, IOException exc) throws IOException
+	        {
+	            // try to delete the file anyway, even if its attributes
+	            // could not be read, since delete-only access is
+	            // theoretically possible
+	            Files.delete(file);
+	            return FileVisitResult.CONTINUE;
+	        }
+
+	        @Override
+	        public FileVisitResult postVisitDirectory(java.nio.file.Path dir, IOException exc) throws IOException
+	        {
+	            if (exc == null)
+	            {
+	                Files.delete(dir);
+	                return FileVisitResult.CONTINUE;
+	            }
+	            else
+	            {
+	                // directory iteration failed; propagate exception
+	                throw exc;
+	            }
+	        }
+	    });
 	}
 }

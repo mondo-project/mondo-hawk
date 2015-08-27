@@ -155,7 +155,6 @@ public class HManager {
 	public void delete(HModel o, boolean exists) throws BackingStoreException {
 		if (all.contains(o)) {
 			if (exists) {
-				// o.stop();
 				o.delete();
 			} else {
 				o.removeHawkFromMetadata(o.getHawkConfig());
