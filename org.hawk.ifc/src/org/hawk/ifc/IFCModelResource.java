@@ -88,8 +88,10 @@ public class IFCModelResource implements IHawkModelResource {
 		Deserializer d;
 
 		switch (factory.getIFCModelType(ifc)) {
+		case IFC2X2_STEP:
 		case IFC2X3_STEP:
 			d = new Ifc2x3tc1StepDeserializer(Schema.IFC2X3TC1); break;
+		case IFC2X2_XML:
 		case IFC2X3_XML:
 			d = new Ifc2x3tc1XmlDeserializer(); break;
 		case IFC4_STEP:

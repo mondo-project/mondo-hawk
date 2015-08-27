@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.EventFilter;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLEventReader;
@@ -34,6 +35,8 @@ import org.hawk.core.model.IHawkModelResource;
 public class IFCModelFactory implements IModelResourceFactory {
 
 	static enum IFCModelType {
+		IFC2X2_STEP,
+		IFC2X2_XML,
 		IFC2X3_STEP,
 		IFC2X3_XML,
 		IFC4_STEP,
@@ -42,7 +45,7 @@ public class IFCModelFactory implements IModelResourceFactory {
 	}
 
 	private final String metamodeltype = "com.googlecode.hawk.emf.metamodel.EMFMetaModelParser";
-	private static final Set<String> EXTENSIONS = new HashSet<String>(Arrays.asList(".ifc", ".ifcxml")); 
+	private static final Set<String> EXTENSIONS = new HashSet<String>(Arrays.asList(".ifc", ".ifcxml", ".ifc.txt", ".ifcxml.txt"));
 
 	@Override
 	public String getType() {
@@ -66,7 +69,17 @@ public class IFCModelFactory implements IModelResourceFactory {
 
 	@Override
 	public boolean canParse(File f) {
-		return getIFCModelType(f) != IFCModelType.UNKNOWN;
+		final IFCModelType type = getIFCModelType(f);
+		switch (type) {
+		case IFC2X3_STEP:
+		case IFC2X3_XML:
+		case IFC4_STEP:
+		case IFC4_XML:
+			// BIMserver 1.4.0 cannot parse IFC2x2
+			return true;
+		default:
+			return false;
+		}
 	}
 
 	IFCModelType getIFCModelType(File f) {
@@ -81,6 +94,9 @@ public class IFCModelFactory implements IModelResourceFactory {
 					if (line.startsWith("FILE_SCHEMA")) {
 						if (line.contains("IFC2X3")) {
 							return IFCModelType.IFC2X3_STEP;
+						}
+						else if (line.contains("IFC2X2")) {
+							return IFCModelType.IFC2X2_STEP;
 						}
 						else if (line.contains("IFC4")) {
 							return IFCModelType.IFC4_STEP;
@@ -120,8 +136,13 @@ public class IFCModelFactory implements IModelResourceFactory {
 				if ("iso_10303_28".equals(mainTagLocalPart)) {
 					// This is an IFC2x3 XML document: look for the <uos> element now
 					XMLEvent uosEvent = xmlReader.nextTag();
-					if (uosEvent != null && uosEvent.asStartElement().getName().getNamespaceURI().contains("IFC2x3")) {
-						return IFCModelType.IFC2X3_XML;
+					if (uosEvent != null) {
+						final String configurationValue = uosEvent.asStartElement().getAttributeByName(new QName(null, "configuration")).getValue();
+						if (configurationValue.contains("ifc2x3")) {
+							return IFCModelType.IFC2X3_XML;
+						} else if (configurationValue.contains("ifc2x2")) {
+							return IFCModelType.IFC2X2_XML;
+						}
 					}
 				}
 				else if ("ifcXML".equals(mainTagLocalPart)) {
@@ -142,8 +163,6 @@ public class IFCModelFactory implements IModelResourceFactory {
 
 	@Override
 	public String getHumanReadableName() {
-		return "BIM IFC 2x3 Parser for Hawk";
+		return "BIM IFC Parser for Hawk";
 	}
-
-
 }
