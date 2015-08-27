@@ -44,14 +44,16 @@ public class RegisterMeta {
 	public static int registerPackages(EPackage root) {
 		if (!root.getNsURI().equals(EcorePackage.eNS_URI)
 				&& !root.getNsURI().equals(XMLTypePackage.eNS_URI)) {
-			if (EPackage.Registry.INSTANCE.put(root.getNsURI(), root) == null) {
-				System.err.println("registering package: " + root.getName()
-						+ "(" + root.getNsURI() + ") ["
-						+ root.eResource().getURI() + "]");
-				registered++;
-			}
-			for (EPackage pkg : root.getESubpackages()) {
-				registerPackages(pkg);
+			if (EPackage.Registry.INSTANCE.get(root.getNsURI()) == null) {
+				if (EPackage.Registry.INSTANCE.put(root.getNsURI(), root) == null) {
+					System.err.println("registering package: " + root.getName()
+							+ "(" + root.getNsURI() + ") ["
+							+ root.eResource().getURI() + "]");
+					registered++;
+				}
+				for (EPackage pkg : root.getESubpackages()) {
+					registerPackages(pkg);
+				}
 			}
 		}
 		return registered;

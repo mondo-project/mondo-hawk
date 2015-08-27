@@ -975,6 +975,9 @@ public class GraphModelInserter {
 
 						String filePath = split[1];
 
+						//System.err.println(">"+repoURL);
+						//System.err.println(">>"+filePath);
+						
 						Iterable<IGraphEdge> rels = allNodesWithFile(graph,
 								repoURL, filePath);
 						
@@ -985,6 +988,8 @@ public class GraphModelInserter {
 
 							for (int i = 0; i < proxies.length; i = i + 2) {
 
+								//System.err.println("i="+i);
+								
 								boolean found = false;
 
 								// System.err.println(Arrays.toString(proxies));
@@ -994,6 +999,9 @@ public class GraphModelInserter {
 									String nodeURI = fullPathURI + "#"
 											+ no.getProperty("id").toString();
 
+									//System.err.println(">>>"+nodeURI);
+									//System.err.println(">>>>"+proxies[i]);
+									
 									// System.out.println(nodeURI);
 
 									if (nodeURI.equals(proxies[i])) {
