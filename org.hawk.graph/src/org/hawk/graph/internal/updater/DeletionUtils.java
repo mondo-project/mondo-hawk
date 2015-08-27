@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.hawk.graph.internal.updater;
 
+import java.util.Arrays;
 import java.util.HashSet;
 
 import org.hawk.core.graph.IGraphDatabase;
@@ -105,19 +106,24 @@ public class DeletionUtils {
 
 	protected String makeRelative(String base, String extension) {
 
-		//System.err.println(base);
-		//System.err.println(extension);
-		
-		if(!extension.startsWith(base)) return extension;
-		
+		// System.err.println(base);
+		// System.err.println(extension);
+
+		if (!extension.startsWith(base))
+			return extension;
+
 		String ret = extension.substring(base.length());
-		
+
 		return ret;
-		
+
 	}
 
 	protected String[] addToElementProxies(String[] proxies,
 			String fullPathURI, String edgelabel) {
+
+		System.err.println("addtoelementproxies: " + Arrays.toString(proxies));
+		System.err.println("fullpathuri " + fullPathURI);
+		System.err.println("edgelabel " + edgelabel);
 
 		if (proxies != null) {
 
@@ -135,12 +141,17 @@ public class DeletionUtils {
 
 			proxies = null;
 
+			System.err.println("ret " + Arrays.toString(ret));
+
 			return ret;
 
 		} else {
 			String[] ret = new String[2];
 			ret[0] = fullPathURI;
 			ret[1] = edgelabel;
+
+			System.err.println("ret (null proxies)" + Arrays.toString(ret));
+
 			return ret;
 		}
 	}

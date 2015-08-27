@@ -1116,14 +1116,8 @@ public class GraphModelBatchInjector {
 
 			String destinationObjectRelativeFileURI = destinationObjectRelativePathURI;
 
-			int indexOfFragmentStart = destinationObjectRelativePathURI
-					.indexOf("#/");
-
 			destinationObjectRelativeFileURI = destinationObjectRelativePathURI
-					.substring(
-							0,
-							indexOfFragmentStart == -1 ? destinationObjectRelativePathURI
-									.indexOf("#") : indexOfFragmentStart);
+					.substring(0, destinationObjectRelativePathURI.indexOf("#"));
 
 			String destinationObjectFullPathURI = repoURL
 					+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR

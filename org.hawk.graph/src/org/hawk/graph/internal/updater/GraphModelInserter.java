@@ -414,14 +414,8 @@ public class GraphModelInserter {
 
 			String destinationObjectRelativeFileURI = destinationObjectRelativePathURI;
 
-			int indexOfFragmentStart = destinationObjectRelativePathURI
-					.indexOf("#/");
-
 			destinationObjectRelativeFileURI = destinationObjectRelativePathURI
-					.substring(
-							0,
-							indexOfFragmentStart == -1 ? destinationObjectRelativePathURI
-									.indexOf("#") : indexOfFragmentStart);
+					.substring(destinationObjectRelativePathURI.indexOf("#"));
 
 			String destinationObjectFullPathURI = repoURL
 					+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
@@ -961,12 +955,8 @@ public class GraphModelInserter {
 						// com.google.code.hawk.neo4j.emc.toString()
 						// .tostring(proxies));
 
-						int indexOfFragmentStart = proxies[0].indexOf("#/");
-
-						String fullPathURI = proxies[0].substring(
-								0,
-								indexOfFragmentStart == -1 ? proxies[0]
-										.indexOf("#") : indexOfFragmentStart);
+						String fullPathURI = proxies[0].substring(0,
+								proxies[0].indexOf("#"));
 
 						String[] split = fullPathURI.split(
 								GraphModelUpdater.FILEINDEX_REPO_SEPARATOR, 2);
@@ -975,90 +965,98 @@ public class GraphModelInserter {
 
 						String filePath = split[1];
 
-						//System.err.println(">"+repoURL);
-						//System.err.println(">>"+filePath);
-						
+						System.err.println(">" + repoURL);
+						System.err.println(">>" + filePath);
+
 						Iterable<IGraphEdge> rels = allNodesWithFile(graph,
 								repoURL, filePath);
-						
+
 						if (rels != null) {
 							HashSet<IGraphNode> nodes = new HashSet<IGraphNode>();
 							for (IGraphEdge r : rels)
 								nodes.add(r.getStartNode());
 
-							for (int i = 0; i < proxies.length; i = i + 2) {
+							if (nodes.size() != 0) {
 
-								//System.err.println("i="+i);
-								
-								boolean found = false;
+								for (int i = 0; i < proxies.length; i = i + 2) {
 
-								// System.err.println(Arrays.toString(proxies));
+									System.err.println("i=" + i);
 
-								for (IGraphNode no : nodes) {
+									boolean found = false;
 
-									String nodeURI = fullPathURI + "#"
-											+ no.getProperty("id").toString();
+									// System.err.println(Arrays.toString(proxies));
 
-									//System.err.println(">>>"+nodeURI);
-									//System.err.println(">>>>"+proxies[i]);
-									
-									// System.out.println(nodeURI);
+									for (IGraphNode no : nodes) {
 
-									if (nodeURI.equals(proxies[i])) {
+										String nodeURI = fullPathURI
+												+ "#"
+												+ no.getProperty("id")
+														.toString();
 
-										boolean change = new GraphModelBatchInjector(
-												graph).resolveProxyRef(n, no,
-												proxies[i + 1]);
+										System.err.println(">>>" + nodeURI);
+										System.err.println(">>>>" + proxies[i]);
 
-										if (!change)
-											System.err
-													.println("resolving proxy ref returned false, edge already existed: "
-															+ n.getId()
-															+ " - "
-															+ proxies[i + 1]
-															+ " -> "
-															+ no.getId());
+										// System.out.println(nodeURI);
 
-										// track change resolved proxy ref
-										ret.addChanges(new GraphChangeImpl(
-												true, IGraphChange.REFERENCE, n
-														.getId()
-														+ "::"
-														+ proxies[i + 1], no
-														.getId() + "", false));
+										if (nodeURI.equals(proxies[i])) {
 
-										found = true;
+											boolean change = new GraphModelBatchInjector(
+													graph).resolveProxyRef(n,
+													no, proxies[i + 1]);
 
-										break;
+											if (!change)
+												System.err
+														.println("resolving proxy ref returned false, edge already existed: "
+																+ n.getId()
+																+ " - "
+																+ proxies[i + 1]
+																+ " -> "
+																+ no.getId());
+
+											// track change resolved proxy ref
+											ret.addChanges(new GraphChangeImpl(
+													true,
+													IGraphChange.REFERENCE, n
+															.getId()
+															+ "::"
+															+ proxies[i + 1],
+													no.getId() + "", false));
+
+											found = true;
+
+											break;
+
+										}
 
 									}
 
+									if (!found)
+										System.err
+												.println("[GraphModelInserter | resolveProxies] Warning: proxy unresolved: "
+														+ proxies[i + 1]
+														+ " "
+														+ proxies[i]);
+
+									// throw new Exception("not found: " +
+									// proxies[i]);
+
 								}
 
-								if (!found)
-									System.err
-											.println("[GraphModelInserter | resolveProxies] Warning: proxy unresolved: "
-													+ proxies[i + 1]
-													+ " "
-													+ proxies[i]);
+								n.removeProperty("_proxyRef:" + fullPathURI);
+								proxyDictionary.remove("_proxyRef",
+										fullPathURI, n);
 
-								// throw new Exception("not found: " +
-								// proxies[i]);
-
-							}
-
-							n.removeProperty("_proxyRef:" + fullPathURI);
-							proxyDictionary.remove("_proxyRef", fullPathURI, n);
-
-						} else
-							System.err
-									.println("[GraphModelInserter | resolveProxies] Warning: no nodes were found for file: "
-											+ filePath
-											+ " originating in repository "
-											+ repoURL
-											+ " "
-											+ proxies.length
-											/ 2 + " proxies cannot be resolved");
+							} else
+								System.err
+										.println("[GraphModelInserter | resolveProxies] Warning: no nodes were found for file: "
+												+ filePath
+												+ " originating in repository "
+												+ repoURL
+												+ " "
+												+ proxies.length
+												/ 2
+												+ " proxies cannot be resolved");
+						}
 					}
 				}
 
