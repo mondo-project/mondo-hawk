@@ -47,6 +47,14 @@ public class IFCClass extends IFCObject implements IHawkClass {
 	}
 
 	@Override
+	public String getInstanceType() {
+
+		String it = eclass.getInstanceClassName();
+
+		return it == null ? "NULL_INSTANCE_TYPE" : it;
+	}
+	
+	@Override
 	public String getPackageNSURI() {
 		return eclass.getEPackage().getNsURI();
 	}

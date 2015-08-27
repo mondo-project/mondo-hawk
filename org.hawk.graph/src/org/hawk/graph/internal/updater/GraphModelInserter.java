@@ -490,34 +490,38 @@ public class GraphModelInserter {
 
 			Object oldproperty = node.getProperty(a.getName());
 
-			String type = GraphUtil.toJavaType(a.getType().getName());
+			Object newproperty = eObject.get(a);
 
 			if (!a.isMany()) {
 
-				if (type.equals("String") || type.equals("Boolean")
-						|| type.equals("Integer") || type.equals("Real")) {
-					if (!eObject.get(a).equals(oldproperty)) {
+				if (new GraphUtil().isPrimitiveOrWrapperType(newproperty
+						.getClass())) {
+					if (!newproperty.equals(oldproperty)) {
 						// track changed property (primitive)
 						changes.add(new GraphChangeImpl(false,
 								IGraphChange.PROPERTY, node.getId() + "::"
 										+ a.getName(), oldproperty, false));
 						changes.add(new GraphChangeImpl(true,
 								IGraphChange.PROPERTY, node.getId() + "::"
-										+ a.getName(), eObject.get(a), false));
+										+ a.getName(), newproperty, false));
+						//
+						node.setProperty(a.getName(), newproperty);
 					}
-					node.setProperty(a.getName(), eObject.get(a));
+
 				} else {
-					if (!eObject.get(a).toString().equals(oldproperty)) {
+					if (!newproperty.toString().equals(oldproperty)) {
 						// track changed property (non-primitive)
 						changes.add(new GraphChangeImpl(false,
 								IGraphChange.PROPERTY, node.getId() + "::"
 										+ a.getName(), oldproperty, false));
 						changes.add(new GraphChangeImpl(true,
 								IGraphChange.PROPERTY, node.getId() + "::"
-										+ a.getName(), eObject.get(a)
-										.toString(), false));
+										+ a.getName(), newproperty.toString(),
+								false));
+						//
+						node.setProperty(a.getName(), newproperty.toString());
 					}
-					node.setProperty(a.getName(), eObject.get(a).toString());
+
 				}
 
 			}
@@ -535,29 +539,31 @@ public class GraphModelInserter {
 				else
 					collection = new LinkedList<Object>();
 
-				for (Object o : (Collection<?>) eObject.get(a)) {
-
-					if (type.equals("String") || type.equals("Boolean")
-							|| type.equals("Integer") || type.equals("Real"))
-						collection.add(o);
-
-					else
-						collection.add(o.toString());
-
+				final Collection<?> srcCollection = (Collection<?>) newproperty;
+				Class<?> elemClass = null;
+				boolean primitiveOrWrapperClass = false;
+				if (!srcCollection.isEmpty()) {
+					final Object first = srcCollection.iterator().next();
+					elemClass = first.getClass();
+					primitiveOrWrapperClass = new GraphUtil()
+							.isPrimitiveOrWrapperType(elemClass);
+					if (primitiveOrWrapperClass) {
+						for (Object o : srcCollection) {
+							collection.add(o);
+						}
+					} else {
+						for (Object o : srcCollection) {
+							collection.add(o.toString());
+						}
+					}
 				}
 
 				Object r = null;
-
-				if (type.equals("Integer")) {
-					r = Array.newInstance(Integer.class, 1);
-				} else if (type.equals("Real")) {
-					r = Array.newInstance(Double.class, 1);
-				} else if (type.equals("Boolean")) {
-					r = Array.newInstance(Boolean.class, 1);
+				if (primitiveOrWrapperClass && elemClass != null) {
+					r = Array.newInstance(elemClass, 1);
 				} else {
 					r = Array.newInstance(String.class, 1);
 				}
-
 				Object ret = collection.toArray((Object[]) r);
 
 				if (!ret.equals(oldproperty)) {
@@ -568,10 +574,9 @@ public class GraphModelInserter {
 					changes.add(new GraphChangeImpl(true,
 							IGraphChange.PROPERTY, node.getId() + "::"
 									+ a.getName(), ret, false));
+					//
+					node.setProperty(a.getName(), ret);
 				}
-
-				node.setProperty(a.getName(), ret);
-
 			}
 
 		}
@@ -623,16 +628,15 @@ public class GraphModelInserter {
 					+ eObject.getType().getName()
 					+ "##" + a.getName());
 
-			String type = GraphUtil.toJavaType(a.getType().getName());
+			Object v = eObject.get(a);
 
 			if (!a.isMany()) {
 
-				if (type.equals("String") || type.equals("Boolean")
-						|| type.equals("Integer") || type.equals("Real"))
-					i.add(node, a.getName(), eObject.get(a));
+				if (new GraphUtil().isPrimitiveOrWrapperType(v.getClass()))
+					i.add(node, a.getName(), v);
 
 				else
-					i.add(node, a.getName(), eObject.get(a).toString());
+					i.add(node, a.getName(), v.toString());
 
 			}
 
@@ -649,29 +653,31 @@ public class GraphModelInserter {
 				else
 					collection = new LinkedList<Object>();
 
-				for (Object o : (Collection<?>) eObject.get(a)) {
-
-					if (type.equals("String") || type.equals("Boolean")
-							|| type.equals("Integer") || type.equals("Real"))
-						collection.add(o);
-
-					else
-						collection.add(o.toString());
-
+				final Collection<?> srcCollection = (Collection<?>) v;
+				Class<?> elemClass = null;
+				boolean primitiveOrWrapperClass = false;
+				if (!srcCollection.isEmpty()) {
+					final Object first = srcCollection.iterator().next();
+					elemClass = first.getClass();
+					primitiveOrWrapperClass = new GraphUtil()
+							.isPrimitiveOrWrapperType(elemClass);
+					if (primitiveOrWrapperClass) {
+						for (Object o : srcCollection) {
+							collection.add(o);
+						}
+					} else {
+						for (Object o : srcCollection) {
+							collection.add(o.toString());
+						}
+					}
 				}
 
 				Object r = null;
-
-				if (type.equals("Integer")) {
-					r = Array.newInstance(Integer.class, 1);
-				} else if (type.equals("Real")) {
-					r = Array.newInstance(Double.class, 1);
-				} else if (type.equals("Boolean")) {
-					r = Array.newInstance(Boolean.class, 1);
+				if (primitiveOrWrapperClass && elemClass != null) {
+					r = Array.newInstance(elemClass, 1);
 				} else {
 					r = Array.newInstance(String.class, 1);
 				}
-
 				Object ret = collection.toArray((Object[]) r);
 
 				i.add(node, a.getName(), ret);
@@ -965,8 +971,8 @@ public class GraphModelInserter {
 
 						String filePath = split[1];
 
-						System.err.println(">" + repoURL);
-						System.err.println(">>" + filePath);
+						// System.err.println(">" + repoURL);
+						// System.err.println(">>" + filePath);
 
 						Iterable<IGraphEdge> rels = allNodesWithFile(graph,
 								repoURL, filePath);
@@ -980,7 +986,7 @@ public class GraphModelInserter {
 
 								for (int i = 0; i < proxies.length; i = i + 2) {
 
-									System.err.println("i=" + i);
+									// System.err.println("i=" + i);
 
 									boolean found = false;
 
@@ -993,8 +999,9 @@ public class GraphModelInserter {
 												+ no.getProperty("id")
 														.toString();
 
-										System.err.println(">>>" + nodeURI);
-										System.err.println(">>>>" + proxies[i]);
+										// System.err.println(">>>" + nodeURI);
+										// System.err.println(">>>>" +
+										// proxies[i]);
 
 										// System.out.println(nodeURI);
 
@@ -1484,7 +1491,16 @@ public class GraphModelInserter {
 			// a isMany isOrdered isUnique attrType isIndexed
 			String[] metadata = (String[]) typeNode.getProperty(attributename);
 
-			String type = GraphUtil.toJavaType(metadata[4]);
+			boolean isPrimitiveOrWrapperType = false;
+			Class<?> c = String.class;
+
+			try {
+				c = Class.forName(metadata[4]);
+				isPrimitiveOrWrapperType = new GraphUtil()
+						.isPrimitiveOrWrapperType(c);
+			} catch (Exception e) {
+				//
+			}
 
 			HashSet<IGraphNode> nodes = new HashSet<>();
 			for (IGraphEdge e : typeNode.getIncomingWithType("typeOf")) {
@@ -1500,8 +1516,7 @@ public class GraphModelInserter {
 
 				if (!(metadata[1] == "t")) {
 
-					if (type.equals("String") || type.equals("Boolean")
-							|| type.equals("Integer") || type.equals("Real"))
+					if (isPrimitiveOrWrapperType)
 						m.put(attributename, node.getProperty(attributename));
 
 					else
@@ -1526,9 +1541,7 @@ public class GraphModelInserter {
 					for (Object o : (Collection<?>) node
 							.getProperty(attributename)) {
 
-						if (type.equals("String") || type.equals("Boolean")
-								|| type.equals("Integer")
-								|| type.equals("Real"))
+						if (isPrimitiveOrWrapperType)
 							collection.add(o);
 
 						else
@@ -1536,17 +1549,7 @@ public class GraphModelInserter {
 
 					}
 
-					Object r = null;
-
-					if (type.equals("Integer")) {
-						r = Array.newInstance(Integer.class, 1);
-					} else if (type.equals("Real")) {
-						r = Array.newInstance(Double.class, 1);
-					} else if (type.equals("Boolean")) {
-						r = Array.newInstance(Boolean.class, 1);
-					} else {
-						r = Array.newInstance(String.class, 1);
-					}
+					Object r = Array.newInstance(c, 1);
 
 					Object ret = collection.toArray((Object[]) r);
 

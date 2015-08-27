@@ -15,6 +15,8 @@ public interface IHawkClassifier extends IHawkObject {
 
 	String getName();
 
+	String getInstanceType();
+	
 	String getPackageNSURI();
 
 }

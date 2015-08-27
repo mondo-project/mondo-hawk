@@ -48,6 +48,14 @@ public class BPMNClass extends BPMNObject implements IHawkClass {
 	}
 
 	@Override
+	public String getInstanceType() {
+
+		String it = eclass.getInstanceClassName();
+
+		return it == null ? "NULL_INSTANCE_TYPE" : it;
+	}
+
+	@Override
 	public String getPackageNSURI() {
 
 		EPackage ep = eclass.getEPackage();

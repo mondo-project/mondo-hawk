@@ -121,9 +121,10 @@ public class DeletionUtils {
 	protected String[] addToElementProxies(String[] proxies,
 			String fullPathURI, String edgelabel) {
 
-		System.err.println("addtoelementproxies: " + Arrays.toString(proxies));
-		System.err.println("fullpathuri " + fullPathURI);
-		System.err.println("edgelabel " + edgelabel);
+		// System.err.println("addtoelementproxies: " +
+		// Arrays.toString(proxies));
+		// System.err.println("fullpathuri " + fullPathURI);
+		// System.err.println("edgelabel " + edgelabel);
 
 		if (proxies != null) {
 
@@ -150,7 +151,7 @@ public class DeletionUtils {
 			ret[0] = fullPathURI;
 			ret[1] = edgelabel;
 
-			System.err.println("ret (null proxies)" + Arrays.toString(ret));
+			// System.err.println("ret (null proxies)" + Arrays.toString(ret));
 
 			return ret;
 		}

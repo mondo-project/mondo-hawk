@@ -42,6 +42,14 @@ public class IFCDataType extends IFCObject implements IHawkDataType {
 	}
 
 	@Override
+	public String getInstanceType() {
+
+		String it = edatatype.getInstanceClassName();
+
+		return it == null ? "NULL_INSTANCE_TYPE" : it;
+	}
+
+	@Override
 	public String getPackageNSURI() {
 		return edatatype.getEPackage().getNsURI();
 	}

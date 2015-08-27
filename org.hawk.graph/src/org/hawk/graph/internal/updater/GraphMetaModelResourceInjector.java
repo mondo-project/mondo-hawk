@@ -686,7 +686,7 @@ public class GraphMetaModelResourceInjector {
 			if (e.getType() != null) {
 				if (e.getType().getName() != null) {
 					// System.err.println(e.getType().getName());
-					metadata[4] = e.getType().getName();
+					metadata[4] = e.getType().getInstanceType();
 				} else {
 					System.err
 							.println("warning: unknown (null) type NAME found in metamodel parsing into db for attribute: "
@@ -773,7 +773,7 @@ public class GraphMetaModelResourceInjector {
 			if (r.getType() != null) {
 				if (r.getType().getName() != null) {
 					// System.err.println(e.getType().getName());
-					metadata[4] = r.getType().getName();
+					metadata[4] = r.getType().getInstanceType();
 				} else {
 					System.err
 							.println("warning: unknown (null) type NAME found in metamodel parsing into db for attribute: "

@@ -17,32 +17,37 @@ public class GraphUtil {
 	// made static to avoid repeated error messages about unknown types
 	private static HashSet<String> unknownTypes = new HashSet<>();
 
-	public static String toJavaType(String type) {
+	public boolean isPrimitiveOrWrapperType(final Class<?> valueClass) {
 
-		// TODO complete set of known types -- possibly delegate to factories to
-		// expose them?
+		boolean ret = String.class.isAssignableFrom(valueClass)
+				|| Boolean.class.isAssignableFrom(valueClass)
+				|| Character.class.isAssignableFrom(valueClass)
+				|| Byte.class.isAssignableFrom(valueClass)
+				|| Short.class.isAssignableFrom(valueClass)
+				|| Integer.class.isAssignableFrom(valueClass)
+				|| Long.class.isAssignableFrom(valueClass)
+				|| Float.class.isAssignableFrom(valueClass)
+				|| Double.class.isAssignableFrom(valueClass)
+				|| boolean.class.isAssignableFrom(valueClass)
+				|| char.class.isAssignableFrom(valueClass)
+				|| byte.class.isAssignableFrom(valueClass)
+				|| short.class.isAssignableFrom(valueClass)
+				|| int.class.isAssignableFrom(valueClass)
+				|| long.class.isAssignableFrom(valueClass)
+				|| float.class.isAssignableFrom(valueClass)
+				|| double.class.isAssignableFrom(valueClass);
 
-		if (type.contains("Int") || type.contains("int")
-				|| type.contains("Long") || type.contains("long"))
-			return "Integer";
-		if (type.contains("Bool") || type.contains("bool"))
-			return "Boolean";
-		if (type.contains("Double") || type.contains("Real")
-				|| type.contains("Float") || type.contains("double")
-				|| type.contains("real") || type.contains("float"))
-			return "Real";
-		if (type.contains("String") || type.contains("string"))
-			return "String";
-
-		if (!unknownTypes.contains(type)) {
-			System.err
-					.println("warning, unknown type found, casting to String: "
-							+ type);
-			unknownTypes.add(type);
+		if (!ret) {
+			String type = valueClass.getName();
+			if (!unknownTypes.contains(type)) {
+				System.err
+						.println("warning, unknown type found, casting to String: "
+								+ type);
+				unknownTypes.add(type);
+			}
 		}
 
-		return type;
-
+		return ret;
 	}
 
 }

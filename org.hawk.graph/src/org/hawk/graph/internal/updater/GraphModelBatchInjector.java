@@ -446,7 +446,7 @@ public class GraphModelBatchInjector {
 
 				if (!a.isMany()) {
 					final Class<?> valueClass = value.getClass();
-					if (isPrimitiveOrWrapperType(valueClass)) {
+					if (new GraphUtil().isPrimitiveOrWrapperType(valueClass)) {
 						m.put(a.getName(), value);
 					} else {
 						m.put(a.getName(), value.toString());
@@ -469,7 +469,8 @@ public class GraphModelBatchInjector {
 					if (!srcCollection.isEmpty()) {
 						final Object first = srcCollection.iterator().next();
 						elemClass = first.getClass();
-						primitiveOrWrapperClass = isPrimitiveOrWrapperType(elemClass);
+						primitiveOrWrapperClass = new GraphUtil()
+								.isPrimitiveOrWrapperType(elemClass);
 						if (primitiveOrWrapperClass) {
 							for (Object o : srcCollection) {
 								collection.add(o);
@@ -575,16 +576,15 @@ public class GraphModelBatchInjector {
 				// graph.setNodeProperty(node,"value",
 				// eObject.eGet(a).toString());
 
-				String type = GraphUtil.toJavaType(a.getType().getName());
+				final Object v = eObject.get(a);
 
 				if (!a.isMany()) {
 
-					if (type.equals("String") || type.equals("Boolean")
-							|| type.equals("Integer") || type.equals("Real"))
-						m.put(a.getName(), eObject.get(a));
+					if (new GraphUtil().isPrimitiveOrWrapperType(v.getClass()))
+						m.put(a.getName(), v);
 
 					else
-						m.put(a.getName(), eObject.get(a).toString());
+						m.put(a.getName(), v.toString());
 
 				}
 
@@ -601,30 +601,31 @@ public class GraphModelBatchInjector {
 					else
 						collection = new LinkedList<Object>();
 
-					for (Object o : (Collection<?>) eObject.get(a)) {
-
-						if (type.equals("String") || type.equals("Boolean")
-								|| type.equals("Integer")
-								|| type.equals("Real"))
-							collection.add(o);
-
-						else
-							collection.add(o.toString());
-
+					final Collection<?> srcCollection = (Collection<?>) v;
+					Class<?> elemClass = null;
+					boolean primitiveOrWrapperClass = false;
+					if (!srcCollection.isEmpty()) {
+						final Object first = srcCollection.iterator().next();
+						elemClass = first.getClass();
+						primitiveOrWrapperClass = new GraphUtil()
+								.isPrimitiveOrWrapperType(elemClass);
+						if (primitiveOrWrapperClass) {
+							for (Object o : srcCollection) {
+								collection.add(o);
+							}
+						} else {
+							for (Object o : srcCollection) {
+								collection.add(o.toString());
+							}
+						}
 					}
 
 					Object r = null;
-
-					if (type.equals("Integer")) {
-						r = Array.newInstance(Integer.class, 1);
-					} else if (type.equals("Real")) {
-						r = Array.newInstance(Double.class, 1);
-					} else if (type.equals("Boolean")) {
-						r = Array.newInstance(Boolean.class, 1);
+					if (primitiveOrWrapperClass && elemClass != null) {
+						r = Array.newInstance(elemClass, 1);
 					} else {
 						r = Array.newInstance(String.class, 1);
 					}
-
 					Object ret = collection.toArray((Object[]) r);
 
 					m.put(a.getName(), ret);
@@ -645,26 +646,6 @@ public class GraphModelBatchInjector {
 		// dictionary.add(node, "id", eObjectId);
 
 		return node;
-	}
-
-	private boolean isPrimitiveOrWrapperType(final Class<?> valueClass) {
-		return String.class.isAssignableFrom(valueClass)
-				|| Boolean.class.isAssignableFrom(valueClass)
-				|| Character.class.isAssignableFrom(valueClass)
-				|| Byte.class.isAssignableFrom(valueClass)
-				|| Short.class.isAssignableFrom(valueClass)
-				|| Integer.class.isAssignableFrom(valueClass)
-				|| Long.class.isAssignableFrom(valueClass)
-				|| Float.class.isAssignableFrom(valueClass)
-				|| Double.class.isAssignableFrom(valueClass)
-				|| boolean.class.isAssignableFrom(valueClass)
-				|| char.class.isAssignableFrom(valueClass)
-				|| byte.class.isAssignableFrom(valueClass)
-				|| short.class.isAssignableFrom(valueClass)
-				|| int.class.isAssignableFrom(valueClass)
-				|| long.class.isAssignableFrom(valueClass)
-				|| float.class.isAssignableFrom(valueClass)
-				|| double.class.isAssignableFrom(valueClass);
 	}
 
 	protected void addToProxyAttributes(IGraphNode node) {
