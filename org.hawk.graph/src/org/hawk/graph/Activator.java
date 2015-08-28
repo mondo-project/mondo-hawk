@@ -10,7 +10,13 @@
  ******************************************************************************/
 package org.hawk.graph;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
+import org.hawk.graph.internal.updater.GraphModelUpdater;
+import org.hawk.graph.listener.CompositeGraphChangeListener;
+import org.hawk.graph.listener.IGraphChangeListener;
 import org.osgi.framework.BundleContext;
 
 public class Activator extends Plugin {
@@ -34,6 +40,17 @@ public class Activator extends Plugin {
 		super.start(bundleContext);
 		Activator.context = bundleContext;
 		Activator.instance = this;
+
+		if (Platform.isRunning()) {
+			final CompositeGraphChangeListener listeners = new CompositeGraphChangeListener();
+			IConfigurationElement[] elems = Platform.getExtensionRegistry()
+					.getConfigurationElementsFor("org.hawk.graph.graphChangeListener");
+			for (IConfigurationElement elem : elems) {
+				listeners.add((IGraphChangeListener)elem.createExecutableExtension("class"));
+			}
+			GraphModelUpdater.setListener(listeners);
+			GraphMetaModelUpdater.setListener(listeners);
+		}
 	}
 
 	/*
@@ -43,7 +60,6 @@ public class Activator extends Plugin {
 	 * org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
-		//System.out.println("I AM STOPPED");
 		super.stop(bundleContext);
 		Activator.context = null;
 		Activator.instance = null;
@@ -52,7 +68,6 @@ public class Activator extends Plugin {
 	public static Plugin getInstance() {
 		//System.out.println("getIntance() : " + (instance == null));
 		return instance;
-
 	}
 
 }

@@ -9,4 +9,5 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: University of York
-Export-Package: org.hawk.graph
+Export-Package: org.hawk.graph,
+ org.hawk.graph.listener

@@ -70,6 +70,7 @@ public class GraphMetaModelResourceInjector {
 	public void removeMetamodels(Set<IHawkMetaModelResource> set) {
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
+			listener.changeStart();
 			epackagedictionary = graph.getMetamodelIndex();
 			Set<IGraphNode> epns = new HashSet<>();
 
@@ -121,8 +122,10 @@ public class GraphMetaModelResourceInjector {
 			removeAll(epns);
 
 			t.success();
+			listener.changeSuccess();
 
 		} catch (Exception e1) {
+			listener.changeFailure();
 			System.err
 					.println("error in removing metamodels (ALL removal changes reverted):");
 			e1.printStackTrace();
@@ -255,7 +258,7 @@ public class GraphMetaModelResourceInjector {
 		// children.addAll(0, child.eContents());
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
-
+			listener.changeStart();
 			epackagedictionary = graph.getMetamodelIndex();
 
 			for (IHawkMetaModelResource metamodelResource : metamodels) {
@@ -283,7 +286,10 @@ public class GraphMetaModelResourceInjector {
 			}
 
 			t.success();
-
+			listener.changeSuccess();
+		} catch (Throwable ex) {
+			listener.changeFailure();
+			throw ex;
 		}
 
 		Iterator<IHawkPackage> it = addedepackages.iterator();
@@ -292,18 +298,18 @@ public class GraphMetaModelResourceInjector {
 			IHawkPackage epackage = it.next();
 
 			try (IGraphTransaction t = graph.beginTransaction()) {
-				listener.indexerStart();
+				listener.changeStart();
 				final boolean success = addEClasses(epackage);
 
 				if (success) {
 					t.success();
 					t.close();
-					listener.indexerSuccess();
+					listener.changeSuccess();
 				} else {
 					it.remove();
 					t.failure();
 					t.close();
-					listener.indexerFailure();
+					listener.changeFailure();
 					try (IGraphTransaction t2 = graph.beginTransaction()) {
 						IGraphNode ePackageNode = epackagedictionary
 								.get("id", epackage.getNsURI()).iterator()
@@ -322,7 +328,7 @@ public class GraphMetaModelResourceInjector {
 			} catch (Exception e) {
 				System.err.println("e2");
 				e.printStackTrace();
-				listener.indexerFailure();
+				listener.changeFailure();
 			}
 
 		}
@@ -482,7 +488,7 @@ public class GraphMetaModelResourceInjector {
 		IGraphNode node = graph.createNode(new HashMap<String, Object>(),
 				"eclass");
 
-		listener.typeAddition(eClass, node);
+		listener.classAddition(eClass, node);
 
 		// hash.put(eClass, node);
 
@@ -786,12 +792,12 @@ public class GraphMetaModelResourceInjector {
 			String typename, String attributename, boolean isMany,
 			boolean isOrdered, boolean isUnique, String attributetype,
 			String derivationlanguage, String derivationlogic,
-			IGraphDatabase graph) {
+			IGraphDatabase graph, IGraphChangeListener listener) {
 
 		boolean requiresPropagationToInstances = false;
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
-
+			listener.changeStart();
 			IGraphIterable<IGraphNode> ep = graph.getMetamodelIndex().get("id",
 					metamodeluri);
 
@@ -855,11 +861,12 @@ public class GraphMetaModelResourceInjector {
 				}
 			}
 			t.success();
-
+			listener.changeSuccess();
 		} catch (Exception e1) {
 			System.err
 					.println("error in adding a derived attribute to the metamodel");
 			e1.printStackTrace();
+			listener.changeFailure();
 		}
 
 		return requiresPropagationToInstances;
@@ -873,15 +880,16 @@ public class GraphMetaModelResourceInjector {
 	 * @param typename
 	 * @param attributename
 	 * @param graph
+	 * @param listener2 
 	 * @return
 	 */
 	public static boolean addIndexedAttribute(String metamodeluri,
-			String typename, String attributename, IGraphDatabase graph) {
+			String typename, String attributename, IGraphDatabase graph, IGraphChangeListener listener) {
 
 		boolean requiresPropagationToInstances = false;
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
-
+			listener.changeStart();
 			IGraphNode packagenode = graph.getMetamodelIndex()
 					.get("id", metamodeluri).getSingle();
 
@@ -958,9 +966,11 @@ public class GraphMetaModelResourceInjector {
 				}
 			}
 			t.success();
+			listener.changeSuccess();
 		} catch (Exception e) {
 			System.err.println("error in adding an indexed attribute:");
 			e.printStackTrace();
+			listener.changeFailure();
 		}
 
 		return requiresPropagationToInstances;

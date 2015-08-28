@@ -21,8 +21,7 @@ import org.hawk.graph.listener.IGraphChangeListener;
 
 public class GraphMetaModelUpdater implements IMetaModelUpdater {
 
-	// TODO: provide some way to change/specify this through extension points?
-	private IGraphChangeListener listener = new CompositeGraphChangeListener();
+	private static IGraphChangeListener listener = new CompositeGraphChangeListener();
 
 	@Override
 	public IGraphChangeDescriptor insertMetamodels(Set<IHawkMetaModelResource> set, IModelIndexer indexer) {
@@ -61,7 +60,7 @@ public class GraphMetaModelUpdater implements IMetaModelUpdater {
 		return GraphMetaModelResourceInjector.addDerivedAttribute(metamodeluri,
 				typename, attributename, isMany, isOrdered, isUnique,
 				attributetype, derivationlanguage, derivationlogic,
-				indexer.getGraph());
+				indexer.getGraph(), listener);
 	}
 
 	@Override
@@ -74,13 +73,21 @@ public class GraphMetaModelUpdater implements IMetaModelUpdater {
 			String attributename, IModelIndexer indexer) {
 
 		return GraphMetaModelResourceInjector.addIndexedAttribute(metamodeluri,
-				typename, attributename, indexer.getGraph());
+				typename, attributename, indexer.getGraph(), listener);
 
 	}
 
 	@Override
 	public String getName() {
 		return "Default Hawk GraphMetaModelUpdater (v1.0)";
+	}
+
+	public static IGraphChangeListener getListener() {
+		return listener;
+	}
+
+	public static void setListener(IGraphChangeListener listener) {
+		GraphMetaModelUpdater.listener = listener;
 	}
 
 }

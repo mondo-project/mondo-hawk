@@ -27,23 +27,23 @@ public class CompositeGraphChangeListener extends HashSet<IGraphChangeListener> 
 	private static final long serialVersionUID = 639097671453202757L;
 
 	@Override
-	public void indexerStart() {
+	public void changeStart() {
 		for (IGraphChangeListener l : this) {
-			l.indexerStart();
+			l.changeStart();
 		}
 	}
 
 	@Override
-	public void indexerSuccess() {
+	public void changeSuccess() {
 		for (IGraphChangeListener l : this) {
-			l.indexerSuccess();
+			l.changeSuccess();
 		}
 	}
 
 	@Override
-	public void indexerFailure() {
+	public void changeFailure() {
 		for (IGraphChangeListener l : this) {
-			l.indexerFailure();
+			l.changeFailure();
 		}
 	}
 
@@ -62,9 +62,9 @@ public class CompositeGraphChangeListener extends HashSet<IGraphChangeListener> 
 	}
 
 	@Override
-	public void typeAddition(IHawkClass cls, IGraphNode clsNode) {
+	public void classAddition(IHawkClass cls, IGraphNode clsNode) {
 		for (IGraphChangeListener l : this) {
-			l.typeAddition(cls, clsNode);
+			l.classAddition(cls, clsNode);
 		}
 	}
 

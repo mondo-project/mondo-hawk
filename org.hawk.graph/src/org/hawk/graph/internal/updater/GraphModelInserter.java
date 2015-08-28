@@ -134,7 +134,7 @@ public class GraphModelInserter {
 		graph.exitBatchMode();
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
-			listener.indexerStart();
+			listener.changeStart();
 
 			repoURL = s.getCommit().getDelta().getRepository().getUrl();
 			IGraphNode fileNode = indexer
@@ -335,9 +335,11 @@ public class GraphModelInserter {
 
 			fileNode.setProperty("revision", s.getCommit().getRevision());
 			t.success();
+			listener.changeSuccess();
 		} catch (Exception e) {
 			System.err.println("exception in transactionalUpdate()");
 			e.printStackTrace();
+			listener.changeFailure();
 		}
 
 	}
@@ -624,13 +626,20 @@ public class GraphModelInserter {
 	private void batchUpdate() throws Exception {
 		System.err.println("batch update called");
 
-		graph.exitBatchMode();
-		final String repositoryURL = s.getCommit().getDelta().getRepository().getUrl();
-		new DeletionUtils(graph).deleteAll(repositoryURL, s.getPath());
+		listener.changeStart();
+		try {
+			graph.exitBatchMode();
+			final String repositoryURL = s.getCommit().getDelta().getRepository().getUrl();
+			new DeletionUtils(graph).deleteAll(repositoryURL, s.getPath());
 
-		graph.enterBatchMode();
-		new GraphModelBatchInjector(graph, s, resource, listener);
-		graph.exitBatchMode();
+			graph.enterBatchMode();
+			new GraphModelBatchInjector(graph, s, resource, listener);
+			graph.exitBatchMode();
+
+			listener.changeSuccess();
+		} catch (Exception ex) {
+			listener.changeFailure();
+		}
 	}
 
 	private int calculateModelDeltaSize() throws Exception {
@@ -804,6 +813,8 @@ public class GraphModelInserter {
 		graph.exitBatchMode();
 
 		try (IGraphTransaction tx = graph.beginTransaction()) {
+			listener.changeStart();
+
 			// operations on the graph
 			// ...
 
@@ -904,6 +915,10 @@ public class GraphModelInserter {
 
 			tx.success();
 			tx.close();
+			listener.changeSuccess();
+		} catch (Throwable ex) {
+			listener.changeFailure();
+			throw ex;
 		}
 
 		try (IGraphTransaction tx = graph.beginTransaction()) {
@@ -969,6 +984,8 @@ public class GraphModelInserter {
 			// dump access to lucene and add hooks on updates
 
 			try (IGraphTransaction tx = graph.beginTransaction()) {
+				listener.changeStart();
+
 				// operations on the graph
 				// ...
 
@@ -1018,6 +1035,10 @@ public class GraphModelInserter {
 						+ " nodes)");
 
 				tx.success();
+				listener.changeSuccess();
+			} catch (Throwable ex) {
+				listener.changeFailure();
+				throw ex;
 			}
 
 			accessListener.resetAccesses();
@@ -1046,6 +1067,7 @@ public class GraphModelInserter {
 		HashSet<IGraphNode> nodesToBeUpdated = new HashSet<>();
 
 		try (IGraphTransaction tx = graph.beginTransaction()) {
+			listener.changeStart();
 			// operations on the graph
 			// ...
 
@@ -1151,8 +1173,9 @@ public class GraphModelInserter {
 			}
 
 			tx.success();
-
+			listener.changeSuccess();
 		} catch (Exception e) {
+			listener.changeFailure();
 			throw e;
 		}
 	}

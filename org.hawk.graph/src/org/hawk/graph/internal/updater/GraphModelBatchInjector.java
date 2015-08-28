@@ -71,148 +71,135 @@ public class GraphModelBatchInjector {
 	private final IGraphChangeListener listener;
 	private final VcsCommitItem commitItem;
 
-	public GraphModelBatchInjector(IGraphDatabase g, VcsCommitItem s, IGraphChangeListener listener) {
-		graph = g;
-		tempFolderURI = new File(g.getTempDir()).toURI().toString();
-		this.listener = listener;
+	public GraphModelBatchInjector(IGraphDatabase g, VcsCommitItem s,
+			IGraphChangeListener listener) {
+		this.graph = g;
 		this.commitItem = s;
+		this.listener = listener;
+		this.tempFolderURI = new File(g.getTempDir()).toURI().toString();
 	}
 
-	public GraphModelBatchInjector(IGraphDatabase g, VcsCommitItem s, IHawkModelResource r, IGraphChangeListener listener) throws Exception {
-		this.listener = listener;
+	public GraphModelBatchInjector(IGraphDatabase g, VcsCommitItem s,
+			IHawkModelResource r, IGraphChangeListener listener)
+			throws Exception {
+		this.graph = g;
 		this.commitItem = s;
-
-		// System.err.println("resource: "+r);
-
-		// indexer = m;
-		// resource = r;
-		graph = g;
-		tempFolderURI = new File(g.getTempDir()).toURI().toString();
-
-		// databaseloc = graph.getPath();
+		this.listener = listener;
+		this.tempFolderURI = new File(g.getTempDir()).toURI().toString();
 
 		startTime = System.nanoTime();
-
-		// System.err.println(graph);
-
 		hash = new Hashtable<IHawkObject, IGraphNode>(8192);
-
 		graph.enterBatchMode();
 
-		// dictionary = index.forNodes("dictionary", MapUtil.stringMap(
-		// IndexManager.PROVIDER, "lucene", "type", "exact"));
-
-		epackageDictionary = graph.getMetamodelIndex();
-		fileDictionary = graph.getFileIndex();
-		proxyDictionary = graph.getOrCreateNodeIndex("proxydictionary");
-		rootDictionary = graph.getOrCreateNodeIndex(ROOT_DICT_NAME);
-
-		boolean isNew = false;
-
-		repoURL = s.getCommit().getDelta().getRepository().getUrl();
-		IGraphNode fileNode = null;
-		long filerevision = 0L;
 		try {
-			fileNode = ((IGraphIterable<IGraphNode>) fileDictionary.get(
-					"id",
-					repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
-							+ s.getPath())).getSingle();
-			if (fileNode != null)
-				filerevision = (Long) fileNode.getProperty("revision");
-		} catch (Exception e) {
-		}
-		if (filerevision == 0L)
-			isNew = true;
-		// else if (filerevision != s.getRevision())
-		// ischanged = true;
+			listener.changeStart();
 
-		// if(ischanged)deleteAllForUpdate(fileNode, s.getRevision());
+			epackageDictionary = graph.getMetamodelIndex();
+			fileDictionary = graph.getFileIndex();
+			proxyDictionary = graph.getOrCreateNodeIndex("proxydictionary");
+			rootDictionary = graph.getOrCreateNodeIndex(ROOT_DICT_NAME);
 
-		if (isNew) {
-			// add file
-			if (fileNode == null) {
+			boolean isNew = false;
 
-				Map<String, Object> map = new HashMap<>();
-				map.put("id", s.getPath());
-				map.put("revision", s.getCommit().getRevision());
-
-				// System.err.println("creating file node: "+s.getPath());
-				fileNode = graph.createNode(map, "file");
-
-				Map<String, Object> map2 = new HashMap<>();
-				map2.put("id",
-						repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
-								+ s.getPath());
-				fileDictionary.add(fileNode, map2);
-
-				// propagate changes to listeners
-				listener.fileAddition(s, fileNode);
-			}
-
+			repoURL = s.getCommit().getDelta().getRepository().getUrl();
+			IGraphNode fileNode = null;
+			long filerevision = 0L;
 			try {
-
-				// XXX NOTE THIS SPECIFICALLY DOES NOT RESOLVE PROXIES -
-				// REMEMBER IT !
-
-				// add model elements
-
-				// Iterator<HawkObject> children = res.getAllContents();
-
-				// Iterator<HawkObject> resc = res.getAllContents();
-
-				Set<IHawkObject> children = r.getAllContentsSet();
-
-				startTime = System.nanoTime();
-
-				// System.out.println(r);
-				System.out.println("File: " + s.getPath());
-				System.out.print("ADDING: ");
-				int[] addedElements = parseResource(fileNode,
-						ParseOptions.MODELELEMENTS, children);
-				System.out
-						.println(addedElements[0] + "\nNODES AND "
-								+ addedElements[1] + " + " + addedElements[2]
-								+ " M->MM REFERENCES! (took ~"
-								+ (System.nanoTime() - startTime) / 1000000000
-								+ "sec)");
-
-				startTime = System.nanoTime();
-
-				// children = res.getAllContents();
-
-				// add references
-				System.out.println("File: " + s.getPath());
-				System.out.print("ADDING: ");
-				addedElements = parseResource(fileNode,
-						ParseOptions.MODELREFERENCES, children);
-				setUnset(getUnset() + addedElements[3]);
-				System.out
-						.println(addedElements[0] + "\nREFERENCES! (took ~"
-								+ (System.nanoTime() - startTime) / 1000000000
-								+ "sec)");
-
-				System.out
-						.println(((IGraphIterable<IGraphNode>) proxyDictionary
-								.query("_proxyRef", "*")).size()
-								+ " - sets of proxy references left in the store");
-
+				fileNode = ((IGraphIterable<IGraphNode>) fileDictionary.get(
+						"id", repoURL
+								+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+								+ s.getPath())).getSingle();
+				if (fileNode != null)
+					filerevision = (Long) fileNode.getProperty("revision");
 			} catch (Exception e) {
-				e.printStackTrace();
-				System.err
-						.println("ParseMResource Exception on file: "
-								// +
-								// graph.getNodeProperties(fileNode).get("id").toString()
-								+ s.getPath()
-								+ "\nReverting all changes on that file.");
-
-				new DeletionUtils(graph).deleteAll(repoURL, s.getPath());
-
 			}
+			if (filerevision == 0L)
+				isNew = true;
+
+			if (isNew) {
+				// add file
+				if (fileNode == null) {
+					fileNode = addFileNode(s, listener);
+				}
+
+				try {
+					// XXX NOTE THIS SPECIFICALLY DOES NOT RESOLVE PROXIES - REMEMBER IT !
+
+					// add model elements
+					Set<IHawkObject> children = r.getAllContentsSet();
+
+					startTime = System.nanoTime();
+
+					System.out.println("File: " + s.getPath());
+					System.out.print("ADDING: ");
+					int[] addedElements = parseResource(fileNode,
+							ParseOptions.MODELELEMENTS, children);
+					System.out.println(addedElements[0] + "\nNODES AND "
+							+ addedElements[1] + " + " + addedElements[2]
+							+ " M->MM REFERENCES! (took ~"
+							+ (System.nanoTime() - startTime) / 1000000000
+							+ "sec)");
+
+					startTime = System.nanoTime();
+
+					// add references
+					System.out.println("File: " + s.getPath());
+					System.out.print("ADDING: ");
+					addedElements = parseResource(fileNode,
+							ParseOptions.MODELREFERENCES, children);
+					setUnset(getUnset() + addedElements[3]);
+					System.out.println(addedElements[0]
+							+ "\nREFERENCES! (took ~"
+							+ (System.nanoTime() - startTime) / 1000000000
+							+ "sec)");
+
+					System.out
+							.println(((IGraphIterable<IGraphNode>) proxyDictionary
+									.query("_proxyRef", "*")).size()
+									+ " - sets of proxy references left in the store");
+					listener.changeSuccess();
+
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.err.println("ParseMResource Exception on file: "
+							+ s.getPath()
+							+ "\nReverting all changes on that file.");
+
+					new DeletionUtils(graph).deleteAll(repoURL, s.getPath());
+					listener.changeFailure();
+				}
+			}
+			else /* if not new */ {
+				listener.changeSuccess();
+			}
+		} catch (Exception ex) {
+			listener.changeFailure();
+		} finally {
+			graph.exitBatchMode();
 		}
+	}
 
-		// graph.shutdown();
-		graph.exitBatchMode();
+	private IGraphNode addFileNode(VcsCommitItem s,
+			IGraphChangeListener listener) {
+		IGraphNode fileNode;
+		Map<String, Object> map = new HashMap<>();
+		map.put("id", s.getPath());
+		map.put("revision", s.getCommit().getRevision());
 
+		// System.err.println("creating file node: "+s.getPath());
+		fileNode = graph.createNode(map, "file");
+
+		Map<String, Object> map2 = new HashMap<>();
+		map2.put(
+				"id",
+				repoURL
+						+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+						+ s.getPath());
+		fileDictionary.add(fileNode, map2);
+
+		// propagate changes to listeners
+		listener.fileAddition(s, fileNode);
+		return fileNode;
 	}
 
 	/**
@@ -367,15 +354,6 @@ public class GraphModelBatchInjector {
 	}
 
 	/**
-	 * 
-	 * @param eClass
-	 * @return the URI ID of an eClass
-	 */
-	public String getEObjectId(IHawkClass eClass) {
-		return eClass.getUri() + "/" + eClass.getName();
-	}
-
-	/**
 	 * Creates a node in the graph database with the given eObject's attributes
 	 * in it. Also indexes it in the 'dictionary' index.
 	 * 
@@ -383,7 +361,8 @@ public class GraphModelBatchInjector {
 	 * @return the Node
 	 * @throws Exception
 	 */
-	private IGraphNode createEObjectNode(IGraphNode originatingFile, IHawkObject eObject, IGraphNode typenode) throws Exception {
+	private IGraphNode createEObjectNode(IGraphNode originatingFile,
+			IHawkObject eObject, IGraphNode typenode) throws Exception {
 		IGraphNode node = null;
 
 		try {
@@ -484,12 +463,14 @@ public class GraphModelBatchInjector {
 			listener.modelElementAddition(commitItem, eObject, node);
 			for (String s : m.keySet()) {
 				Object value = m.get(s);
-				listener.modelElementAttributeUpdate(commitItem, eObject, s, null, value, node);
+				listener.modelElementAttributeUpdate(commitItem, eObject, s,
+						null, value, node);
 			}
 
 			// add derived attrs
 			Set<String> attributekeys;
-			Hashtable<String, Object> hashed = hashedeclassproperties.get(typenode);
+			Hashtable<String, Object> hashed = hashedeclassproperties
+					.get(typenode);
 			if (hashed == null) {
 				attributekeys = typenode.getPropertyKeys();
 				System.err

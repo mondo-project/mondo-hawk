@@ -37,7 +37,7 @@ public class GraphModelUpdater implements IModelUpdater {
 	public static final String FILEINDEX_REPO_SEPARATOR = "////";
 	public static final boolean caresAboutResources = true;
 
-	private IGraphChangeListener listener = new CompositeGraphChangeListener();
+	private static IGraphChangeListener listener = new CompositeGraphChangeListener();
 
 	public GraphModelUpdater() {
 	}
@@ -54,27 +54,7 @@ public class GraphModelUpdater implements IModelUpdater {
 
 		long start = System.currentTimeMillis();
 
-		// for (VCSFileRevision s : currreposchangeditems) {
-		// try {
-		// // if (s.getPath().endsWith(".ecore")) {
-		// String[] path = s.getPath().replaceAll("\\\\", "/").split("/");
-		// String[] file = path[path.length - 1].split("\\.");
-		// String extension = file[file.length - 1];
-		// if (parser.getMetamodelExtensions().contains(extension)) {
-		// new Neo4JMonitorMMInsertBatch().run(this, s, parser);
-		// } else if (!parser.getModelExtensions().contains(extension))
-		// syserr("Warning: updatestore given a file with an unparsable extension ("
-		// + s.getPath()
-		// + "), it is ignored (should have been caught before this warning)");
-		// } catch (Exception e) {
-		// }
-		// }
-		// FIXMEd do we want to then remove all models in database not found
-		// here?
-		// new Neo4JMonitorMInsert().retainAll(graph, currrepositems);
-
 		IGraphChangeDescriptor ret = new GraphChangeDescriptorImpl("Default Hawk GraphModelUpdater");
-
 		for (VcsCommitItem f : r.keySet()) {
 			try {
 				new GraphModelInserter(indexer, listener).run(r.get(f), f);
@@ -224,11 +204,11 @@ public class GraphModelUpdater implements IModelUpdater {
 		return changed;
 	}
 
-	public IGraphChangeListener getListener() {
+	public static IGraphChangeListener getListener() {
 		return listener;
 	}
 
-	public void setListener(IGraphChangeListener listener) {
-		this.listener = listener;
+	public static void setListener(IGraphChangeListener listener) {
+		GraphModelUpdater.listener = listener;
 	}
 }

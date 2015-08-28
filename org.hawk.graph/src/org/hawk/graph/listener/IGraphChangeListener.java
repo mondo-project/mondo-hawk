@@ -23,19 +23,19 @@ import org.hawk.core.model.IHawkPackage;
  */
 public interface IGraphChangeListener {
 
-	void indexerStart();
-	void indexerSuccess();
-	void indexerFailure();
+	void changeStart();
+	void changeSuccess();
+	void changeFailure();
 
 	void metamodelAddition(IHawkPackage pkg, IGraphNode pkgNode);
-	void typeAddition(IHawkClass cls, IGraphNode clsNode);
+	void classAddition(IHawkClass cls, IGraphNode clsNode);
 	void fileAddition(VcsCommitItem s, IGraphNode fileNode);
 
 	void modelElementAddition(VcsCommitItem s, IHawkObject element, IGraphNode elementNode);
 	void modelElementRemoval(VcsCommitItem s, IGraphNode elementNode);
 
 	void modelElementAttributeUpdate(VcsCommitItem s, IHawkObject eObject, String attrName, Object oldValue, Object newValue, IGraphNode elementNode);
-	void modelElementAttributeRemoval(VcsCommitItem s, IHawkObject eObject, String key, IGraphNode node);
+	void modelElementAttributeRemoval(VcsCommitItem s, IHawkObject eObject, String attrName, IGraphNode node);
 
 	void referenceAddition(VcsCommitItem s, IGraphNode source, IGraphNode destination, String edgelabel);
 	void referenceRemoval(VcsCommitItem s, IGraphNode source, IGraphNode destination);
