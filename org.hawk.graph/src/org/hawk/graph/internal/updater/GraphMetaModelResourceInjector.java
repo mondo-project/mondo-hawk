@@ -15,12 +15,9 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hawk.core.graph.IGraphChange;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphIterable;
@@ -35,6 +32,7 @@ import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.core.model.IHawkReference;
+import org.hawk.graph.listener.IGraphChangeListener;
 
 public class GraphMetaModelResourceInjector {
 
@@ -42,65 +40,40 @@ public class GraphMetaModelResourceInjector {
 	// (element,((ofType)M->MM)reference,((ofKind)M->MM)reference,(unset(M->M))reference)
 	private int objectCount = 0;
 	private int unset;
-	// private long resourcememory;
-
-	// private HashSet<Resource> metamodelResources;
 
 	private IGraphDatabase graph;
-	IGraphNodeIndex epackagedictionary;
-	IGraphNodeIndex filedictionary;
+	private IGraphNodeIndex epackagedictionary;
 
-	LinkedList<IGraphChange> changes = new LinkedList<>();
-	LinkedList<IGraphChange> tempchanges = new LinkedList<>();
+	private final long startTime = System.nanoTime();
+	private final HashSet<IHawkPackage> addedepackages = new HashSet<>();
+	private final IGraphChangeListener listener;
 
-	long startTime;
-	private HashSet<IHawkPackage> addedepackages = new HashSet<>();
-
-	public GraphMetaModelResourceInjector(IGraphDatabase database,
-			Set<IHawkMetaModelResource> set) {
-
-		// resourcememory = Runtime.getRuntime().totalMemory() -
-		// Runtime.getRuntime().freeMemory();
-
-		startTime = System.nanoTime();
-
-		graph = database;
-
-		// hash = new Hashtable<EObject, Long>(8192);
-
-		// dictionary = index.forNodes("dictionary", MapUtil.stringMap(
-		// IndexManager.PROVIDER, "lucene", "type", "exact"));
+	public GraphMetaModelResourceInjector(IGraphDatabase database, Set<IHawkMetaModelResource> set, IGraphChangeListener listener) {
+		this.graph = database;
+		this.listener = listener; 
 
 		try {
-
 			System.out.println("ADDING METAMODELS: ");
 			System.out.print("ADDING: ");
 			System.out.println(parseResource(set) + " METAMODEL NODES! (took ~"
 					+ (System.nanoTime() - startTime) / 1000000000 + "sec)");
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		// graph.shutdown();
-
 	}
 
-	public GraphMetaModelResourceInjector(IGraphDatabase database) {
-		graph = database;
+	public GraphMetaModelResourceInjector(IGraphDatabase database, IGraphChangeListener listener) {
+		this.graph = database;
+		this.listener = listener;
 	}
 
 	public void removeMetamodels(Set<IHawkMetaModelResource> set) {
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
-
 			epackagedictionary = graph.getMetamodelIndex();
-			filedictionary = graph.getFileIndex();
-
 			Set<IGraphNode> epns = new HashSet<>();
 
 			for (IHawkMetaModelResource metamodelResource : set) {
-
 				// if (resourceset == null)
 				// resourceset = metamodelResource.getResourceSet();
 
@@ -158,7 +131,6 @@ public class GraphMetaModelResourceInjector {
 	}
 
 	private void removeAll(Set<IGraphNode> epns) throws Exception {
-
 		DeletionUtils del = new DeletionUtils(graph);
 
 		for (IGraphNode epn : epns)
@@ -171,7 +143,6 @@ public class GraphMetaModelResourceInjector {
 				IGraphNode depmm = rel.getStartNode();
 				del.delete(rel);
 				epns.add(depmm);
-
 			}
 
 		Set<IGraphNode> files = new HashSet<>();
@@ -286,7 +257,6 @@ public class GraphMetaModelResourceInjector {
 		try (IGraphTransaction t = graph.beginTransaction()) {
 
 			epackagedictionary = graph.getMetamodelIndex();
-			filedictionary = graph.getFileIndex();
 
 			for (IHawkMetaModelResource metamodelResource : metamodels) {
 
@@ -322,46 +292,19 @@ public class GraphMetaModelResourceInjector {
 			IHawkPackage epackage = it.next();
 
 			try (IGraphTransaction t = graph.beginTransaction()) {
-
-				// TreeIterator<EObject> children =
-				// metamodelResource.getAllContents();
-
-				boolean success = true;
-
-				// while (children.hasNext()) {
-
-				// EObject child = children.next();
-
-				// add the element
-				// if (!
-				// if (child instanceof EPackage)success =
-				// addEClasses((EPackage) child);
-				success = addEClasses(epackage);
-				// )
-				// break;
-
-				// }
+				listener.indexerStart();
+				final boolean success = addEClasses(epackage);
 
 				if (success) {
 					t.success();
 					t.close();
-					changes.addAll(tempchanges);
-					tempchanges.clear();
+					listener.indexerSuccess();
 				} else {
 					it.remove();
-					tempchanges.clear();
 					t.failure();
 					t.close();
+					listener.indexerFailure();
 					try (IGraphTransaction t2 = graph.beginTransaction()) {
-
-						// System.err.println(">>>>>>>>>");
-						// IGraphIterable<IGraphNode> mmnodes =
-						// epackagedictionary
-						// .query("*", "*");
-						// for (IGraphNode n : mmnodes)
-						// System.err.println(n.getProperty("id").toString());
-						// System.err.println("<<<<<<<<<<");
-
 						IGraphNode ePackageNode = epackagedictionary
 								.get("id", epackage.getNsURI()).iterator()
 								.next();
@@ -379,6 +322,7 @@ public class GraphMetaModelResourceInjector {
 			} catch (Exception e) {
 				System.err.println("e2");
 				e.printStackTrace();
+				listener.indexerFailure();
 			}
 
 		}
@@ -488,19 +432,14 @@ public class GraphMetaModelResourceInjector {
 			IGraphNode epackagenode = graph.createNode(
 					new HashMap<String, Object>(), "epackage");
 
-			tempchanges.add(new GraphChangeImpl(true, IGraphChange.METAMODEL,
-					epackagenode.getId().toString(), null, true));
+			listener.metamodelAddition(ePackage, epackagenode);
 
 			for (String s : map4.keySet()) {
 				epackagenode.setProperty(s, map4.get(s));
 			}
 
 			epackagedictionary.add(epackagenode, "id", uri);
-
 			addedepackages.add(ePackage);
-			// System.err.println("added epackage: "+((ENamedElement)
-			// eClass).getName());
-
 		} else {
 			System.err
 					.println("metamodel: "
@@ -543,8 +482,7 @@ public class GraphMetaModelResourceInjector {
 		IGraphNode node = graph.createNode(new HashMap<String, Object>(),
 				"eclass");
 
-		tempchanges.add(new GraphChangeImpl(true, IGraphChange.TYPE, node
-				.getId().toString(), null, true));
+		listener.typeAddition(eClass, node);
 
 		// hash.put(eClass, node);
 
@@ -1027,14 +965,6 @@ public class GraphMetaModelResourceInjector {
 
 		return requiresPropagationToInstances;
 
-	}
-
-	public List<IGraphChange> getChanges() {
-		return changes;
-	}
-
-	public void clearChanges() {
-		changes.clear();
 	}
 
 }

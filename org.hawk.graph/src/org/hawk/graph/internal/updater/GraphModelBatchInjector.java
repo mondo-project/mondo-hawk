@@ -38,6 +38,7 @@ import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.graph.internal.util.GraphUtil;
+import org.hawk.graph.listener.IGraphChangeListener;
 
 public class GraphModelBatchInjector {
 
@@ -67,15 +68,19 @@ public class GraphModelBatchInjector {
 
 	long startTime;
 
-	LinkedList<IGraphChange> changes = new LinkedList<>();
+	private final IGraphChangeListener listener;
+	private final VcsCommitItem commitItem;
 
-	public GraphModelBatchInjector(IGraphDatabase g) {
+	public GraphModelBatchInjector(IGraphDatabase g, VcsCommitItem s, IGraphChangeListener listener) {
 		graph = g;
 		tempFolderURI = new File(g.getTempDir()).toURI().toString();
+		this.listener = listener;
+		this.commitItem = s;
 	}
 
-	public GraphModelBatchInjector(IGraphDatabase g, VcsCommitItem s,
-			IHawkModelResource r) throws Exception {
+	public GraphModelBatchInjector(IGraphDatabase g, VcsCommitItem s, IHawkModelResource r, IGraphChangeListener listener) throws Exception {
+		this.listener = listener;
+		this.commitItem = s;
 
 		// System.err.println("resource: "+r);
 
@@ -141,8 +146,7 @@ public class GraphModelBatchInjector {
 				fileDictionary.add(fileNode, map2);
 
 				// propagate changes to listeners
-				changes.add(new GraphChangeImpl(true, GraphChangeImpl.FILE,
-						fileNode.getId().toString(), null, true));
+				listener.fileAddition(s, fileNode);
 			}
 
 			try {
@@ -379,31 +383,7 @@ public class GraphModelBatchInjector {
 	 * @return the Node
 	 * @throws Exception
 	 */
-	private IGraphNode createEObjectNode(IHawkObject eObject,
-			IGraphNode typenode) throws Exception {
-
-		// if(eObject.eIsProxy()){System.err.println("PROXY OBJECT FOUND !");
-		// System.err.println(eObject.geturi());
-		// System.err.println(eObject.geturifragment());
-		// oldSystemdotexit(1);
-		// }
-
-		// if (eObject.eClass().getName().equals("TypeDeclaration")) {
-		// System.err.println(">>>>>>>>CREATING TYPE DECLARATION");
-		// System.err.println("URI: " + eObject.geturi());
-		// System.err.println("URIF: " + eObject.geturifragment());
-		// }
-
-		// if (eObject.geturi().length() < 2) {
-		// System.err.println(">>>>>>>URI SHORT: " + eObject.geturi());
-		// System.err.println("CLASS NAME: " + eObject.eClass().getName());
-		// }
-		// if (eObject.geturifragment().length() < 2) {
-		// System.err.println(">>>>>>>>>>>>>>>URI FRAGMENT SHORT: "
-		// + eObject.geturi());
-		// System.err.println("CLASS NAME: " + eObject.eClass().getName());
-		// }
-
+	private IGraphNode createEObjectNode(IGraphNode originatingFile, IHawkObject eObject, IGraphNode typenode) throws Exception {
 		IGraphNode node = null;
 
 		try {
@@ -501,19 +481,15 @@ public class GraphModelBatchInjector {
 			}
 
 			// propagate changes to listeners
-			changes.add(new GraphChangeImpl(true, GraphChangeImpl.INSTANCE,
-					node.getId().toString(), null, true));
-
+			listener.modelElementAddition(commitItem, eObject, node);
 			for (String s : m.keySet()) {
 				Object value = m.get(s);
-				changes.add(new GraphChangeImpl(true, GraphChangeImpl.PROPERTY,
-						node.getId().toString() + "::" + s, value, true));
+				listener.modelElementAttributeUpdate(commitItem, eObject, s, null, value, node);
 			}
 
 			// add derived attrs
 			Set<String> attributekeys;
-			Hashtable<String, Object> hashed = hashedeclassproperties
-					.get(typenode);
+			Hashtable<String, Object> hashed = hashedeclassproperties.get(typenode);
 			if (hashed == null) {
 				attributekeys = typenode.getPropertyKeys();
 				System.err
@@ -771,7 +747,7 @@ public class GraphModelBatchInjector {
 		rootDictionary = graph.getOrCreateNodeIndex(ROOT_DICT_NAME);
 
 		IGraphNode eClass = getEClassNode(eObject.getType());
-		IGraphNode node = createEObjectNode(eObject, eClass);
+		IGraphNode node = createEObjectNode(originatingFile, eObject, eClass);
 
 		if (node == null) {
 			System.err.println(String.format("The node for (%s) is null",
@@ -782,8 +758,7 @@ public class GraphModelBatchInjector {
 			createReference("typeOf", node, eClass, Collections.emptyMap(),
 					true);
 			if (originatingFile != null) {
-				createReference("file", node, originatingFile,
-						Collections.emptyMap(), true);
+				createReference("file", node, originatingFile, Collections.emptyMap(), true);
 			}
 			objectCount[1]++;
 
@@ -791,8 +766,7 @@ public class GraphModelBatchInjector {
 			for (IHawkClass superType : ((IHawkClass) eObject.getType())
 					.getSuperTypes()) {
 				eClass = getEClassNode(superType);
-				createReference("kindOf", node, eClass, Collections.emptyMap(),
-						true);
+				createReference("kindOf", node, eClass, Collections.emptyMap(), true);
 				objectCount[2]++;
 			}
 
@@ -870,14 +844,9 @@ public class GraphModelBatchInjector {
 
 	}
 
-	private void createReference(final String edgelabel, IGraphNode source,
-			IGraphNode destination, Map<String, Object> props,
-			boolean isTransient) {
+	private void createReference(final String edgelabel, IGraphNode source, IGraphNode destination, Map<String, Object> props, boolean isTransient) {
 		graph.createRelationship(source, destination, edgelabel, props);
-
-		changes.add(new GraphChangeImpl(true, IGraphChange.REFERENCE, source
-				.getId() + "::" + edgelabel, destination.getId() + "",
-				isTransient));
+		listener.referenceAddition(commitItem, source, destination, edgelabel);
 	}
 
 	/**
@@ -891,7 +860,7 @@ public class GraphModelBatchInjector {
 	 * @return
 	 * @throws Exception
 	 */
-	protected Set<IGraphChange> addEReferences(IGraphNode node,
+	protected Set<IGraphChange> addEReferences(IGraphNode fileNode, IGraphNode node,
 			IHawkObject object, Map<String, IGraphNode> addedNodesHash,
 			Map<String, IGraphNode> nodes) throws Exception {
 
@@ -928,8 +897,7 @@ public class GraphModelBatchInjector {
 									props.put("isContainer", "true");
 								}
 
-								createReference(edgelabel, node, dest, props,
-										false);
+								createReference(edgelabel, node, dest, props, false);
 							} else {
 								System.err
 										.println("adding proxy [iterable] reference ("
@@ -1137,8 +1105,7 @@ public class GraphModelBatchInjector {
 		return true;
 	}
 
-	protected boolean resolveProxyRef(IGraphNode n, IGraphNode graphNode,
-			String edgelabel) {
+	protected boolean resolveProxyRef(IGraphNode n, IGraphNode graphNode, String edgelabel) {
 
 		boolean found = false;
 
@@ -1151,8 +1118,7 @@ public class GraphModelBatchInjector {
 		if (found)
 			return false;
 		else {
-			graph.createRelationship(n, graphNode, edgelabel,
-					new HashMap<String, Object>());
+			graph.createRelationship(n, graphNode, edgelabel, new HashMap<String, Object>());
 			return true;
 		}
 	}
@@ -1163,15 +1129,6 @@ public class GraphModelBatchInjector {
 
 	private void setUnset(int unset) {
 		this.unset = unset;
-	}
-
-	public List<IGraphChange> getChanges() {
-		return changes;
-	}
-
-	public void clearChanges() {
-		changes.clear();
-
 	}
 
 }

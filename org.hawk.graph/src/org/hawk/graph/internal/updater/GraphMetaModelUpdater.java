@@ -16,37 +16,31 @@ import org.hawk.core.IMetaModelUpdater;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphChangeDescriptor;
 import org.hawk.core.model.IHawkMetaModelResource;
+import org.hawk.graph.listener.CompositeGraphChangeListener;
+import org.hawk.graph.listener.IGraphChangeListener;
 
 public class GraphMetaModelUpdater implements IMetaModelUpdater {
 
-	// private IAbstractConsole console;
+	// TODO: provide some way to change/specify this through extension points?
+	private IGraphChangeListener listener = new CompositeGraphChangeListener();
 
 	@Override
-	public IGraphChangeDescriptor insertMetamodels(
-			Set<IHawkMetaModelResource> set, IModelIndexer indexer) {
+	public IGraphChangeDescriptor insertMetamodels(Set<IHawkMetaModelResource> set, IModelIndexer indexer) {
+		// TODO: do we really need IGraphChangeDescriptors now?
+		new GraphMetaModelResourceInjector(indexer.getGraph(), set, listener);
 
-		//
-		GraphMetaModelResourceInjector ret = new GraphMetaModelResourceInjector(
-				indexer.getGraph(), set);
-
-		GraphChangeDescriptorImpl desc = new GraphChangeDescriptorImpl(
-				"Default Hawk GraphMetaModelUpdater");
+		GraphChangeDescriptorImpl desc = new GraphChangeDescriptorImpl("Default Hawk GraphMetaModelUpdater");
 		desc.setErrorState(false);
 		desc.setUnresolvedDerivedProperties(-1);
 		desc.setUnresolvedReferences(-1);
-		desc.addChanges(ret.getChanges());
-		ret.clearChanges();
 
 		return desc;
-
 	}
 
 	@Override
-	public IGraphChangeDescriptor removeMetamodels(
-			Set<IHawkMetaModelResource> set, IModelIndexer indexer) {
-		//
-		GraphMetaModelResourceInjector ret = new GraphMetaModelResourceInjector(
-				indexer.getGraph());
+	public IGraphChangeDescriptor removeMetamodels(Set<IHawkMetaModelResource> set, IModelIndexer indexer) {
+		// TODO: do we really need IGraphChangeDescriptors now?
+		GraphMetaModelResourceInjector ret = new GraphMetaModelResourceInjector(indexer.getGraph(), listener);
 		ret.removeMetamodels(set);
 
 		GraphChangeDescriptorImpl desc = new GraphChangeDescriptorImpl(
@@ -54,11 +48,8 @@ public class GraphMetaModelUpdater implements IMetaModelUpdater {
 		desc.setErrorState(false);
 		desc.setUnresolvedDerivedProperties(-1);
 		desc.setUnresolvedReferences(-1);
-		desc.addChanges(ret.getChanges());
-		ret.clearChanges();
 
 		return desc;
-
 	}
 
 	@Override
@@ -71,14 +62,11 @@ public class GraphMetaModelUpdater implements IMetaModelUpdater {
 				typename, attributename, isMany, isOrdered, isUnique,
 				attributetype, derivationlanguage, derivationlogic,
 				indexer.getGraph());
-
 	}
 
 	@Override
-	public void run(// IAbstractConsole console
-	) {
+	public void run() {
 		// this.console = console;
-
 	}
 
 	@Override

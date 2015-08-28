@@ -11,7 +11,6 @@
 package org.hawk.graph.internal.updater;
 
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,7 +18,6 @@ import org.hawk.core.IAbstractConsole;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IModelUpdater;
 import org.hawk.core.VcsCommitItem;
-import org.hawk.core.graph.IGraphChange;
 import org.hawk.core.graph.IGraphChangeDescriptor;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphIterable;
@@ -27,6 +25,8 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.model.IHawkModelResource;
+import org.hawk.graph.listener.CompositeGraphChangeListener;
+import org.hawk.graph.listener.IGraphChangeListener;
 
 public class GraphModelUpdater implements IModelUpdater {
 
@@ -35,21 +35,17 @@ public class GraphModelUpdater implements IModelUpdater {
 
 	private boolean isActive = false;
 	public static final String FILEINDEX_REPO_SEPARATOR = "////";
-
-	// private GraphDatabase graph;
-
 	public static final boolean caresAboutResources = true;
+
+	private IGraphChangeListener listener = new CompositeGraphChangeListener();
 
 	public GraphModelUpdater() {
 	}
 
 	@Override
 	public void run(IAbstractConsole c, IModelIndexer hawk) throws Exception {
-
 		this.indexer = hawk;
-		// graph = indexer.getGraph();
-		console = c;
-
+		this.console = c;
 	}
 
 	@Override
@@ -77,18 +73,15 @@ public class GraphModelUpdater implements IModelUpdater {
 		// here?
 		// new Neo4JMonitorMInsert().retainAll(graph, currrepositems);
 
-		IGraphChangeDescriptor ret = new GraphChangeDescriptorImpl(
-				"Default Hawk GraphModelUpdater");
+		IGraphChangeDescriptor ret = new GraphChangeDescriptorImpl("Default Hawk GraphModelUpdater");
 
 		for (VcsCommitItem f : r.keySet()) {
-			// System.err.println(s);
-			LinkedList<IGraphChange> t = new GraphModelInserter(indexer).run(
-					r.get(f), f);
-			if (t == null) {
+			try {
+				new GraphModelInserter(indexer, listener).run(r.get(f), f);
+			} catch (Exception ex) {
+				ex.printStackTrace();
 				ret.setErrorState(true);
-			} else
-				ret.addChanges(t);
-
+			}
 		}
 
 		// System.err.println("change: " + change)
@@ -102,7 +95,7 @@ public class GraphModelUpdater implements IModelUpdater {
 		// if (error) {
 		console.println("attempting to resolve any leftover cross-file references...");
 		try {
-			GraphModelInserter.resolveProxies(indexer.getGraph(), ret);
+			new GraphModelInserter(indexer, listener).resolveProxies(indexer.getGraph(), ret);
 		} catch (Exception e) {
 			console.printerrln("Exception in updateStore - resolving proxies, returning 0:");
 			console.printerrln(e);
@@ -110,7 +103,7 @@ public class GraphModelUpdater implements IModelUpdater {
 
 		console.println("attempting to resolve any derived proxies...");
 		try {
-			ret.setUnresolvedDerivedProperties((new GraphModelInserter(indexer)
+			ret.setUnresolvedDerivedProperties((new GraphModelInserter(indexer, listener)
 					.resolveDerivedAttributeProxies(indexer.getGraph(),
 							indexer, "org.hawk.epsilon.emc.EOLQueryEngine")));
 		} catch (Exception e) {
@@ -120,7 +113,7 @@ public class GraphModelUpdater implements IModelUpdater {
 
 		console.println("attempting to update any relevant derived attributes...");
 		try {
-			new GraphModelInserter(indexer).updateDerivedAttributes(ret,
+			new GraphModelInserter(indexer, listener).updateDerivedAttributes(ret,
 					"org.hawk.epsilon.emc.EOLQueryEngine");
 		} catch (Exception e) {
 			console.printerrln("Exception in updateStore - UPDATING DERIVED attributes");
@@ -135,31 +128,9 @@ public class GraphModelUpdater implements IModelUpdater {
 		return isActive;
 	}
 
-	// @Override
-	// public void runGrabatsBasic() {
-	// try {
-	// basicQueries.run(graph, console);
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// }
-
-	// @Override
-	// public void runGrabatsAdvanced() {
-	// try {
-	// // sysout((console==null)+"");
-	// // sysout(console+"");
-	// advancedQueries.run(graph, console, parser);
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// }
-
 	@Override
 	public void shutdown() {
-
 		//
-
 	}
 
 	@Override
@@ -177,7 +148,7 @@ public class GraphModelUpdater implements IModelUpdater {
 			String attributename, String attributetype, boolean isMany,
 			boolean isOrdered, boolean isUnique, String derivationlanguage,
 			String derivationlogic) {
-		new GraphModelInserter(indexer).updateDerivedAttribute(metamodeluri,
+		new GraphModelInserter(indexer, listener).updateDerivedAttribute(metamodeluri,
 				typename, attributename, attributetype, isMany, isOrdered,
 				isUnique, derivationlanguage, derivationlogic);
 	}
@@ -185,7 +156,7 @@ public class GraphModelUpdater implements IModelUpdater {
 	@Override
 	public void updateIndexedAttribute(String metamodeluri, String typename,
 			String attributename) {
-		new GraphModelInserter(indexer).updateIndexedAttribute(metamodeluri,
+		new GraphModelInserter(indexer, listener).updateIndexedAttribute(metamodeluri,
 				typename, attributename);
 	}
 
@@ -253,4 +224,11 @@ public class GraphModelUpdater implements IModelUpdater {
 		return changed;
 	}
 
+	public IGraphChangeListener getListener() {
+		return listener;
+	}
+
+	public void setListener(IGraphChangeListener listener) {
+		this.listener = listener;
+	}
 }
