@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="org.hawk.graph.graphChangeListener" name="graphChangeListener" schema="schema/org.hawk.graph.graphChangeListener.exsd"/>
    <extension
          point="org.hawk.core.ModelUpdaterExtensionPoint">
                 <model

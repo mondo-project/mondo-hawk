@@ -31,6 +31,7 @@ import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.IModelUpdater;
 import org.hawk.core.IVcsManager;
+import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.util.HawkConfig;
@@ -190,6 +191,12 @@ public class HModel {
 						.createExecutableExtension("ModelUpdater");
 				this.hawk.getModelIndexer().addModelUpdater(u);
 				console.println(u.getName());
+			}
+			console.println("adding graph change listeners:");
+			for (IConfigurationElement listener : manager.getGraphChangeListeners()) {
+				IGraphChangeListener l = (IGraphChangeListener)listener.createExecutableExtension("class");
+				this.hawk.getModelIndexer().addGraphChangeListener(l);
+				console.println(l.getName());
 			}
 		}
 	}

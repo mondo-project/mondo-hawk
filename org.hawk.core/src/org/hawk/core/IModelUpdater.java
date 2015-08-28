@@ -13,7 +13,6 @@ package org.hawk.core;
 import java.util.Map;
 import java.util.Set;
 
-import org.hawk.core.graph.IGraphChangeDescriptor;
 import org.hawk.core.model.IHawkModelResource;
 
 /**
@@ -31,8 +30,7 @@ public interface IModelUpdater {
 	 * @param VcsCommitItemtoResourceMap
 	 * @return
 	 */
-	public abstract IGraphChangeDescriptor updateStore(
-			Map<VcsCommitItem, IHawkModelResource> VcsCommitItemtoResourceMap);
+	public abstract void updateStore(Map<VcsCommitItem, IHawkModelResource> VcsCommitItemtoResourceMap);
 
 	void run(IAbstractConsole console, IModelIndexer modelIndexer)
 			throws Exception;

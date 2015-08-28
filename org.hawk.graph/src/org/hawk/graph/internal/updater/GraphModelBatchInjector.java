@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphChange;
+import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphIterable;
@@ -38,7 +39,6 @@ import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.graph.internal.util.GraphUtil;
-import org.hawk.graph.listener.IGraphChangeListener;
 
 public class GraphModelBatchInjector {
 
@@ -460,11 +460,11 @@ public class GraphModelBatchInjector {
 			}
 
 			// propagate changes to listeners
-			listener.modelElementAddition(commitItem, eObject, node);
+			listener.modelElementAddition(commitItem, eObject, node, true);
 			for (String s : m.keySet()) {
 				Object value = m.get(s);
 				listener.modelElementAttributeUpdate(commitItem, eObject, s,
-						null, value, node);
+						null, value, node, true);
 			}
 
 			// add derived attrs
@@ -827,7 +827,7 @@ public class GraphModelBatchInjector {
 
 	private void createReference(final String edgelabel, IGraphNode source, IGraphNode destination, Map<String, Object> props, boolean isTransient) {
 		graph.createRelationship(source, destination, edgelabel, props);
-		listener.referenceAddition(commitItem, source, destination, edgelabel);
+		listener.referenceAddition(commitItem, source, destination, edgelabel, isTransient);
 	}
 
 	/**

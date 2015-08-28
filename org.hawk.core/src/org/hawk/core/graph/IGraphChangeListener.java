@@ -8,10 +8,9 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.graph.listener;
+package org.hawk.core.graph;
 
 import org.hawk.core.VcsCommitItem;
-import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
@@ -23,21 +22,27 @@ import org.hawk.core.model.IHawkPackage;
  */
 public interface IGraphChangeListener {
 
+	String getName();
+
 	void changeStart();
 	void changeSuccess();
 	void changeFailure();
 
 	void metamodelAddition(IHawkPackage pkg, IGraphNode pkgNode);
 	void classAddition(IHawkClass cls, IGraphNode clsNode);
+
 	void fileAddition(VcsCommitItem s, IGraphNode fileNode);
 
-	void modelElementAddition(VcsCommitItem s, IHawkObject element, IGraphNode elementNode);
-	void modelElementRemoval(VcsCommitItem s, IGraphNode elementNode);
+	// TODO: need to add calls to this method
+	void fileRemoval(VcsCommitItem s, IGraphNode fileNode);
 
-	void modelElementAttributeUpdate(VcsCommitItem s, IHawkObject eObject, String attrName, Object oldValue, Object newValue, IGraphNode elementNode);
-	void modelElementAttributeRemoval(VcsCommitItem s, IHawkObject eObject, String attrName, IGraphNode node);
+	void modelElementAddition(VcsCommitItem s, IHawkObject element, IGraphNode elementNode, boolean isTransient);
+	void modelElementRemoval(VcsCommitItem s, IGraphNode elementNode, boolean isTransient);
 
-	void referenceAddition(VcsCommitItem s, IGraphNode source, IGraphNode destination, String edgelabel);
-	void referenceRemoval(VcsCommitItem s, IGraphNode source, IGraphNode destination);
+	void modelElementAttributeUpdate(VcsCommitItem s, IHawkObject eObject, String attrName, Object oldValue, Object newValue, IGraphNode elementNode, boolean isTransient);
+	void modelElementAttributeRemoval(VcsCommitItem s, IHawkObject eObject, String attrName, IGraphNode node, boolean isTransient);
+
+	void referenceAddition(VcsCommitItem s, IGraphNode source, IGraphNode destination, String edgelabel, boolean isTransient);
+	void referenceRemoval(VcsCommitItem s, IGraphNode source, IGraphNode destination, String edgelabel, boolean isTransient);
 
 }

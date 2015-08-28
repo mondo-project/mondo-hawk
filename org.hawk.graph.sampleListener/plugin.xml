@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.hawk.graph.graphChangeListener">
+         point="org.hawk.core.GraphChangeListenerExtensionPoint">
       <graphChangeListener
             class="org.hawk.graph.sampleListener.ExampleListener">
       </graphChangeListener>

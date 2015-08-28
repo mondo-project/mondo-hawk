@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.hawk.graph" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.hawk.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.hawk.graph" id="org.hawk.graph.graphChangeListener" name="graphChangeListener"/>
+         <meta.schema plugin="org.hawk.core" id="org.hawk.core.GraphChangeListenerExtensionPoint" name="GraphChangeListenerExtensionPoint"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -49,13 +49,13 @@
 
    <element name="graphChangeListener">
       <complexType>
-         <attribute name="class" type="string">
+         <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.hawk.graph.listener.IGraphChangeListener"/>
+                  <meta.attribute kind="java" basedOn=":org.hawk.core.graph.IGraphChangeListener"/>
                </appinfo>
             </annotation>
          </attribute>

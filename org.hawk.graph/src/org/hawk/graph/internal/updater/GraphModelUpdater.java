@@ -18,15 +18,12 @@ import org.hawk.core.IAbstractConsole;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IModelUpdater;
 import org.hawk.core.VcsCommitItem;
-import org.hawk.core.graph.IGraphChangeDescriptor;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.model.IHawkModelResource;
-import org.hawk.graph.listener.CompositeGraphChangeListener;
-import org.hawk.graph.listener.IGraphChangeListener;
 
 public class GraphModelUpdater implements IModelUpdater {
 
@@ -36,8 +33,6 @@ public class GraphModelUpdater implements IModelUpdater {
 	private boolean isActive = false;
 	public static final String FILEINDEX_REPO_SEPARATOR = "////";
 	public static final boolean caresAboutResources = true;
-
-	private static IGraphChangeListener listener = new CompositeGraphChangeListener();
 
 	public GraphModelUpdater() {
 	}
@@ -49,59 +44,65 @@ public class GraphModelUpdater implements IModelUpdater {
 	}
 
 	@Override
-	public IGraphChangeDescriptor updateStore(
-			Map<VcsCommitItem, IHawkModelResource> r) {
+	public void updateStore(Map<VcsCommitItem, IHawkModelResource> r) {
+		final long start = System.currentTimeMillis();
 
-		long start = System.currentTimeMillis();
+		/*
+		 * We register this listener only for this particular updater and during this
+		 * method call. It is used to collect information about which nodes should have
+		 * their derived attributes updated, rather than collecting all changes and
+		 * working from there (which can use a lot more memory). Ideally, if we do not
+		 * have any derived attributes, this shouldn't require any more memory, and the
+		 * CPU cost should be the same.
+		 */
+		final IGraphDatabase g = indexer.getGraph();
+		final DirtyDerivedAttributesListener l = new DirtyDerivedAttributesListener(g);
+		indexer.addGraphChangeListener(l);
 
-		IGraphChangeDescriptor ret = new GraphChangeDescriptorImpl("Default Hawk GraphModelUpdater");
-		for (VcsCommitItem f : r.keySet()) {
-			try {
-				new GraphModelInserter(indexer, listener).run(r.get(f), f);
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				ret.setErrorState(true);
+		try {
+			for (VcsCommitItem f : r.keySet()) {
+				try {
+					new GraphModelInserter(indexer).run(r.get(f), f);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 			}
+
+			long end = System.currentTimeMillis();
+			console.println((end - start) / 1000 + "s" + (end - start) % 1000
+					+ "ms [pure insertion]");
+
+			console.println("attempting to resolve any leftover cross-file references...");
+			try {
+				new GraphModelInserter(indexer).resolveProxies(indexer
+						.getGraph());
+			} catch (Exception e) {
+				console.printerrln("Exception in updateStore - resolving proxies, returning 0:");
+				console.printerrln(e);
+			}
+
+			console.println("attempting to resolve any derived proxies...");
+			try {
+				new GraphModelInserter(indexer).resolveDerivedAttributeProxies(
+						indexer.getGraph(), indexer,
+						"org.hawk.epsilon.emc.EOLQueryEngine");
+			} catch (Exception e) {
+				console.printerrln("Exception in updateStore - resolving DERIVED proxies, returning 0:");
+				console.printerrln(e);
+			}
+
+			console.println("attempting to update any relevant derived attributes...");
+			try {
+				final Set<IGraphNode> toBeUpdated = l.getNodesToBeUpdated();
+				new GraphModelInserter(indexer).updateDerivedAttributes(
+						"org.hawk.epsilon.emc.EOLQueryEngine", toBeUpdated);
+			} catch (Exception e) {
+				console.printerrln("Exception in updateStore - UPDATING DERIVED attributes");
+				console.printerrln(e);
+			}
+		} finally {
+			indexer.removeGraphChangeListener(l);
 		}
-
-		// System.err.println("change: " + change)
-
-		long end = System.currentTimeMillis();
-		console.println((end - start) / 1000 + "s" + (end - start) % 1000
-				+ "ms [pure insertion]");
-
-		// System.err.println("ret[0]: " + ret[0]);
-
-		// if (error) {
-		console.println("attempting to resolve any leftover cross-file references...");
-		try {
-			new GraphModelInserter(indexer, listener).resolveProxies(indexer.getGraph(), ret);
-		} catch (Exception e) {
-			console.printerrln("Exception in updateStore - resolving proxies, returning 0:");
-			console.printerrln(e);
-		}
-
-		console.println("attempting to resolve any derived proxies...");
-		try {
-			ret.setUnresolvedDerivedProperties((new GraphModelInserter(indexer, listener)
-					.resolveDerivedAttributeProxies(indexer.getGraph(),
-							indexer, "org.hawk.epsilon.emc.EOLQueryEngine")));
-		} catch (Exception e) {
-			console.printerrln("Exception in updateStore - resolving DERIVED proxies, returning 0:");
-			console.printerrln(e);
-		}
-
-		console.println("attempting to update any relevant derived attributes...");
-		try {
-			new GraphModelInserter(indexer, listener).updateDerivedAttributes(ret,
-					"org.hawk.epsilon.emc.EOLQueryEngine");
-		} catch (Exception e) {
-			console.printerrln("Exception in updateStore - UPDATING DERIVED attributes");
-			console.printerrln(e);
-		}
-
-		return ret;
-
 	}
 
 	public boolean isActive() {
@@ -128,7 +129,7 @@ public class GraphModelUpdater implements IModelUpdater {
 			String attributename, String attributetype, boolean isMany,
 			boolean isOrdered, boolean isUnique, String derivationlanguage,
 			String derivationlogic) {
-		new GraphModelInserter(indexer, listener).updateDerivedAttribute(metamodeluri,
+		new GraphModelInserter(indexer).updateDerivedAttribute(metamodeluri,
 				typename, attributename, attributetype, isMany, isOrdered,
 				isUnique, derivationlanguage, derivationlogic);
 	}
@@ -136,7 +137,7 @@ public class GraphModelUpdater implements IModelUpdater {
 	@Override
 	public void updateIndexedAttribute(String metamodeluri, String typename,
 			String attributename) {
-		new GraphModelInserter(indexer, listener).updateIndexedAttribute(metamodeluri,
+		new GraphModelInserter(indexer).updateIndexedAttribute(metamodeluri,
 				typename, attributename);
 	}
 
@@ -146,18 +147,20 @@ public class GraphModelUpdater implements IModelUpdater {
 	}
 
 	@Override
-	public Set<VcsCommitItem> compareWithLocalFiles(Set<VcsCommitItem> reposItems) {
+	public Set<VcsCommitItem> compareWithLocalFiles(
+			Set<VcsCommitItem> reposItems) {
 		if (reposItems.isEmpty()) {
 			return reposItems;
 		}
 
 		final VcsCommitItem firstItem = reposItems.iterator().next();
-		final String repositoryURL = firstItem.getCommit().getDelta().getRepository().getUrl();
+		final String repositoryURL = firstItem.getCommit().getDelta()
+				.getRepository().getUrl();
 		final Set<VcsCommitItem> changed = new HashSet<VcsCommitItem>();
 		changed.addAll(reposItems);
 
 		IGraphDatabase graph = indexer.getGraph();
-		
+
 		if (graph != null) {
 
 			try (IGraphTransaction tx = graph.beginTransaction()) {
@@ -168,19 +171,30 @@ public class GraphModelUpdater implements IModelUpdater {
 
 				filedictionary = graph.getFileIndex();
 
-				// TODO: this class shouldn't have to know how we've set up the file index.
-				// Also, why is the Neo4j backend implementing this bit of functionality?
-				if (filedictionary != null && filedictionary.query("id", repositoryURL + FILEINDEX_REPO_SEPARATOR + "*").iterator().hasNext()) {
+				// TODO: this class shouldn't have to know how we've set up the
+				// file index.
+				// Also, why is the Neo4j backend implementing this bit of
+				// functionality?
+				if (filedictionary != null
+						&& filedictionary
+								.query("id",
+										repositoryURL
+												+ FILEINDEX_REPO_SEPARATOR
+												+ "*").iterator().hasNext()) {
 					for (VcsCommitItem r : reposItems) {
 						String rev = "-2";
 						try {
-							IGraphIterable<IGraphNode> ret = filedictionary.get("id", repositoryURL + FILEINDEX_REPO_SEPARATOR + r.getPath());
+							IGraphIterable<IGraphNode> ret = filedictionary
+									.get("id",
+											repositoryURL
+													+ FILEINDEX_REPO_SEPARATOR
+													+ r.getPath());
 
-							if(ret.iterator().hasNext()){
-							IGraphNode n = ret.getSingle();
-							rev = (String) n.getProperty("revision");
+							if (ret.iterator().hasNext()) {
+								IGraphNode n = ret.getSingle();
+								rev = (String) n.getProperty("revision");
 							}
-							
+
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -202,13 +216,5 @@ public class GraphModelUpdater implements IModelUpdater {
 		}
 
 		return changed;
-	}
-
-	public static IGraphChangeListener getListener() {
-		return listener;
-	}
-
-	public static void setListener(IGraphChangeListener listener) {
-		GraphModelUpdater.listener = listener;
 	}
 }

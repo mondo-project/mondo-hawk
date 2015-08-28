@@ -12,12 +12,11 @@ package org.hawk.core;
 
 import java.util.Set;
 
-import org.hawk.core.graph.IGraphChangeDescriptor;
 import org.hawk.core.model.IHawkMetaModelResource;
 
 public interface IMetaModelUpdater {
 
-	public abstract IGraphChangeDescriptor insertMetamodels(
+	public abstract void insertMetamodels(
 			Set<IHawkMetaModelResource> set, IModelIndexer indexer);
 
 	public abstract void run(// IAbstractConsole console
@@ -31,7 +30,7 @@ public interface IMetaModelUpdater {
 	boolean addIndexedAttribute(String metamodeluri, String typename,
 			String attributename, IModelIndexer indexer);
 
-	public abstract IGraphChangeDescriptor removeMetamodels(
+	public abstract void removeMetamodels(
 			Set<IHawkMetaModelResource> set, IModelIndexer indexer);
 
 	public abstract String getName();

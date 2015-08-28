@@ -1,10 +1,10 @@
 package org.hawk.graph.sampleListener;
 import org.hawk.core.VcsCommitItem;
+import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
-import org.hawk.graph.listener.IGraphChangeListener;
 
 public class ExampleListener implements IGraphChangeListener {
 
@@ -42,8 +42,14 @@ public class ExampleListener implements IGraphChangeListener {
 	}
 
 	@Override
+	public void fileRemoval(VcsCommitItem s, IGraphNode fileNode) {
+		System.out.println(String.format("rev %s: file %s removed as node %s", s
+				.getCommit().getRevision(), s.getPath(), fileNode.getId()));
+	}
+
+	@Override
 	public void modelElementAddition(VcsCommitItem s, IHawkObject element,
-			IGraphNode elementNode) {
+			IGraphNode elementNode, boolean isTransient) {
 		System.out.println(String.format(
 				"rev %s: instance of %s in %s added as node %s", s.getCommit()
 						.getRevision(), element.getType().getName(), s
@@ -51,7 +57,7 @@ public class ExampleListener implements IGraphChangeListener {
 	}
 
 	@Override
-	public void modelElementRemoval(VcsCommitItem s, IGraphNode elementNode) {
+	public void modelElementRemoval(VcsCommitItem s, IGraphNode elementNode, boolean isTransient) {
 		System.out.println(String.format(
 				"rev %s: model element in node %s removed", s.getCommit()
 						.getRevision(), elementNode.getId()));
@@ -60,7 +66,7 @@ public class ExampleListener implements IGraphChangeListener {
 	@Override
 	public void modelElementAttributeUpdate(VcsCommitItem s,
 			IHawkObject eObject, String attrName, Object oldValue,
-			Object newValue, IGraphNode elementNode) {
+			Object newValue, IGraphNode elementNode, boolean isTransient) {
 //		System.out.println(String.format(
 //				"rev %s: attribute %s in node %s changed from '%s' to '%s'", s
 //						.getCommit().getRevision(), attrName, elementNode
@@ -69,7 +75,7 @@ public class ExampleListener implements IGraphChangeListener {
 
 	@Override
 	public void modelElementAttributeRemoval(VcsCommitItem s,
-			IHawkObject eObject, String attrName, IGraphNode node) {
+			IHawkObject eObject, String attrName, IGraphNode node, boolean isTransient) {
 //		System.out.println(String.format(
 //				"rev %s: attribute %s in node %s unset", s.getCommit()
 //						.getRevision(), attrName, node.getId()));
@@ -77,7 +83,7 @@ public class ExampleListener implements IGraphChangeListener {
 
 	@Override
 	public void referenceAddition(VcsCommitItem s, IGraphNode source,
-			IGraphNode destination, String edgelabel) {
+			IGraphNode destination, String edgelabel, boolean isTransient) {
 //		System.out.println(String.format(
 //				"rev %s: reference '%s' from node %s to %s added",
 //				s.getCommit().getRevision(), edgelabel,
@@ -86,11 +92,16 @@ public class ExampleListener implements IGraphChangeListener {
 
 	@Override
 	public void referenceRemoval(VcsCommitItem s, IGraphNode source,
-			IGraphNode destination) {
+			IGraphNode destination, String edgelabel, boolean isTransient) {
 //		System.out.println(String.format(
-//				"rev %s: reference from node %s to %s removed",
-//				s.getCommit().getRevision(),
+//				"rev %s: reference '%s' from node %s to %s removed",
+//				s.getCommit().getRevision(), edgelabel,
 //				source.getId(), destination.getId()));
+	}
+
+	@Override
+	public String getName() {
+		return "ExampleListener";
 	}
 
 }

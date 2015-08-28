@@ -18,13 +18,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
-import org.hawk.core.graph.IGraphChange;
-import org.hawk.core.graph.IGraphChangeDescriptor;
+import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphIterable;
@@ -40,7 +40,6 @@ import org.hawk.core.query.IAccess;
 import org.hawk.core.query.IAccessListener;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.graph.internal.util.GraphUtil;
-import org.hawk.graph.listener.IGraphChangeListener;
 
 /**
  * creates a database with the input xmi file (in args[0]) or reads it if the
@@ -68,13 +67,11 @@ public class GraphModelInserter {
 	private VcsCommitItem s;
 
 	private Map<String, IGraphNode> nodes = new HashMap<>();
-	private final IGraphChangeListener listener;
 
-	public GraphModelInserter(IModelIndexer hawk, IGraphChangeListener listener) {
+	public GraphModelInserter(IModelIndexer hawk) {
 		indexer = hawk;
 		graph = indexer.getGraph();
 		tempFolderURI = new File(graph.getTempDir()).toURI().toString();
-		this.listener = listener;
 	}
 
 	public boolean run(IHawkModelResource res, VcsCommitItem s) throws Exception {
@@ -82,7 +79,7 @@ public class GraphModelInserter {
 		this.s = s;
 
 		// indexer = i;
-		inj = new GraphModelBatchInjector(graph, this.s, listener);
+		inj = new GraphModelBatchInjector(graph, this.s, indexer.getCompositeGraphChangeListener());
 
 		try {
 			// f = new File(dir + "/" + s.getPath());
@@ -133,6 +130,7 @@ public class GraphModelInserter {
 	private void transactionalUpdate() throws Exception {
 		graph.exitBatchMode();
 
+		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
 		try (IGraphTransaction t = graph.beginTransaction()) {
 			listener.changeStart();
 
@@ -156,18 +154,18 @@ public class GraphModelInserter {
 				addedNodesHash.put(node.getProperty("id").toString(), node);
 
 				// track change new node
-				listener.modelElementAddition(s, object, node);
+				listener.modelElementAddition(s, object, node, false);
 				for (String key : node.getPropertyKeys()) {
-					listener.modelElementAttributeUpdate(s, object, key, null, node.getProperty(key), node);
+					listener.modelElementAttributeUpdate(s, object, key, null, node.getProperty(key), node, false);
 				}
 				for (IGraphEdge e : node.getOutgoingWithType("typeOf")) {
-					listener.referenceAddition(s, node, e.getEndNode(), "typeOf");
+					listener.referenceAddition(s, node, e.getEndNode(), "typeOf", false);
 				}
 				for (IGraphEdge e : node.getOutgoingWithType("kindOf")) {
-					listener.referenceAddition(s, node, e.getEndNode(), "kindOf");
+					listener.referenceAddition(s, node, e.getEndNode(), "kindOf", false);
 				}
 				for (IGraphEdge e : node.getOutgoingWithType("file")) {
-					listener.referenceAddition(s, node, e.getEndNode(), "file");
+					listener.referenceAddition(s, node, e.getEndNode(), "file", false);
 				}
 			}
 
@@ -223,13 +221,13 @@ public class GraphModelInserter {
 					//
 
 					// track change deleted node
-					listener.modelElementRemoval(this.s, node);
+					listener.modelElementRemoval(this.s, node, false);
 					for (String key : node.getPropertyKeys()) {
-						listener.modelElementAttributeRemoval(this.s, null, key, node);
+						listener.modelElementAttributeRemoval(this.s, null, key, node, false);
 					}
 					for (IGraphEdge e : node.getOutgoing()) {
 						if (e.getProperty("isDerived") == null) {
-							listener.referenceRemoval(this.s, node, e.getEndNode());
+							listener.referenceRemoval(this.s, node, e.getEndNode(), e.getType(), false);
 						}
 					}
 
@@ -292,7 +290,7 @@ public class GraphModelInserter {
 								e.delete();
 
 								// track change deleted reference
-								listener.referenceRemoval(this.s, node, e.getEndNode());
+								listener.referenceRemoval(this.s, node, e.getEndNode(), e.getType(), false);
 							}
 						}
 
@@ -310,7 +308,7 @@ public class GraphModelInserter {
 								}
 
 								// track change new reference
-								listener.referenceAddition(this.s, node, dest, refname);
+								listener.referenceAddition(this.s, node, dest, refname, false);
 							} else {
 								// proxy reference, handled above
 							}
@@ -325,7 +323,7 @@ public class GraphModelInserter {
 						// track change deleted references
 						for (IGraphEdge e : graphtargets) {
 							e.delete();
-							listener.referenceRemoval(this.s, node, e.getEndNode());
+							listener.referenceRemoval(this.s, node, e.getEndNode(), e.getType(), false);
 						}
 					}
 
@@ -414,16 +412,12 @@ public class GraphModelInserter {
 		return true;
 	}
 
-	private void updateNodeProperties(IGraphNode fileNode, IGraphNode node,
-			IHawkObject eObject) {
+	private void updateNodeProperties(IGraphNode fileNode, IGraphNode node, IHawkObject eObject) {
 
-		LinkedList<IHawkAttribute> normalattributes = new LinkedList<IHawkAttribute>();
-		LinkedList<IHawkAttribute> indexedattributes = new LinkedList<IHawkAttribute>();
-		// LinkedList<IHawkAttribute> derivedattributes = new
-		// LinkedList<IHawkAttribute>();
-
-		IGraphNode typenode = node.getOutgoingWithType("typeOf").iterator()
-				.next().getEndNode();
+		List<IHawkAttribute> normalattributes = new LinkedList<IHawkAttribute>();
+		List<IHawkAttribute> indexedattributes = new LinkedList<IHawkAttribute>();
+		IGraphNode typenode = node.getOutgoingWithType("typeOf").iterator().next().getEndNode();
+		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
 
 		for (final IHawkAttribute eAttribute : ((IHawkClass) eObject.getType())
 				.getAllAttributes()) {
@@ -456,7 +450,7 @@ public class GraphModelInserter {
 
 				if (!newValue.equals(oldproperty)) {
 					// track changed property (primitive)
-					listener.modelElementAttributeUpdate(this.s, eObject, a.getName(), oldproperty, newproperty, node);
+					listener.modelElementAttributeUpdate(this.s, eObject, a.getName(), oldproperty, newproperty, node, false);
 					node.setProperty(a.getName(), newproperty);
 				}
 			}
@@ -500,7 +494,7 @@ public class GraphModelInserter {
 				Object ret = collection.toArray((Object[]) r);
 
 				if (!ret.equals(oldproperty)) {
-					listener.modelElementAttributeUpdate(this.s, eObject, a.getName(), oldproperty, ret, node);
+					listener.modelElementAttributeUpdate(this.s, eObject, a.getName(), oldproperty, ret, node, false);
 					node.setProperty(a.getName(), ret);
 				}
 			}
@@ -626,6 +620,7 @@ public class GraphModelInserter {
 	private void batchUpdate() throws Exception {
 		System.err.println("batch update called");
 
+		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
 		listener.changeStart();
 		try {
 			graph.exitBatchMode();
@@ -723,7 +718,7 @@ public class GraphModelInserter {
 	 */
 	private void addNodes() throws Exception {
 		if (resource != null) {
-			GraphModelBatchInjector batch = new GraphModelBatchInjector(graph, s, resource, listener);
+			GraphModelBatchInjector batch = new GraphModelBatchInjector(graph, s, resource, indexer.getCompositeGraphChangeListener());
 			unset = batch.getUnset();
 		} else {
 			System.err
@@ -804,14 +799,12 @@ public class GraphModelInserter {
 		}
 	}
 
-	public int resolveProxies(IGraphDatabase graph, IGraphChangeDescriptor ret) throws Exception {
-
-		long start = System.currentTimeMillis();
-
+	public int resolveProxies(IGraphDatabase graph) throws Exception {
+		final long start = System.currentTimeMillis();
 		int proxiesLeft = -1;
-
 		graph.exitBatchMode();
 
+		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			listener.changeStart();
 
@@ -877,7 +870,7 @@ public class GraphModelInserter {
 																+ " -> "
 																+ no.getId());
 											} else {
-												listener.referenceAddition(this.s, n, no, proxies[i+1]);
+												listener.referenceAddition(this.s, n, no, proxies[i+1], false);
 											}
 
 											found = true;
@@ -967,66 +960,37 @@ public class GraphModelInserter {
 		}
 
 		if (size > 0) {
-
-			// GraphEpsilonModel model = new GraphEpsilonModel();
-			// model.hawkContainer = this;
-			// System.err.println(indexer.getKnownQueryLanguages());
-			// System.err.println(type);
-
 			IQueryEngine q = indexer.getKnownQueryLanguages().get(type);
-			//
-			// System.err.println(indexer.getKnownQueryLanguages());
-			// System.err.println(type);
-			//
 			IAccessListener accessListener = q.calculateDerivedAttributes(
 					graph, allUnresolved);
 
 			// dump access to lucene and add hooks on updates
 
+			final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
 			try (IGraphTransaction tx = graph.beginTransaction()) {
 				listener.changeStart();
 
 				// operations on the graph
 				// ...
-
 				IGraphNodeIndex derivedAccessDictionary = graph
 						.getOrCreateNodeIndex("derivedaccessdictionary");
 
 				// reset accesses of nodes updated
 				// ...
-
 				for (IAccess a : accessListener.getAccesses()) {
-
 					IGraphNode sourceNode = graph.getNodeById(a
 							.getSourceObjectID());
 
 					if (sourceNode != null)
 						derivedAccessDictionary.remove(sourceNode);
-
 				}
 
 				for (IAccess a : accessListener.getAccesses()) {
-
-					IGraphNode sourceNode = graph.getNodeById(a
-							.getSourceObjectID());
+					IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
 
 					if (sourceNode != null)
 						derivedAccessDictionary.add(sourceNode,
 								a.getAccessObjectID(), a.getProperty());
-
-					// System.out.println(sourceNode.getId()
-					// + "("
-					// + sourceNode.getIncoming().iterator().next()
-					// .getStartNode()
-					// .getOutgoingWithType("typeOf").iterator()
-					// .next().getEndNode().getProperty("id")
-					// + ") :: "
-					// + a.getAccessObjectID()
-					// + "("
-					// + graph.getNodeById(a.getAccessObjectID())
-					// .getOutgoingWithType("typeOf").iterator()
-					// .next().getEndNode().getProperty("id")
-					// + ") :: " + a.getProperty());
 				}
 
 				System.err.println("accesses: "
@@ -1042,7 +1006,6 @@ public class GraphModelInserter {
 			}
 
 			accessListener.resetAccesses();
-
 		}
 
 		try (IGraphTransaction tx = graph.beginTransaction()) {
@@ -1061,109 +1024,28 @@ public class GraphModelInserter {
 		return derivedLeft;
 	}
 
-	public void updateDerivedAttributes(IGraphChangeDescriptor ret, String type)
-			throws Exception {
-
-		HashSet<IGraphNode> nodesToBeUpdated = new HashSet<>();
-
+	public void updateDerivedAttributes(String type, Set<IGraphNode> nodesToBeUpdated) throws Exception {
+		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			listener.changeStart();
 			// operations on the graph
 			// ...
 
-			IGraphNodeIndex derivedAccessDictionary = graph
-					.getOrCreateNodeIndex("derivedaccessdictionary");
-
-			for (IGraphChange c : ret.getChanges()) {
-
-				if (!c.isTransient()) {
-
-					// c.getElementType();
-					// c.getIdentifier();
-
-					if (c.getElementType().equals(IGraphChange.FILE)
-							|| c.getElementType().equals(IGraphChange.INSTANCE)) {
-
-						for (IGraphNode node : derivedAccessDictionary.query(
-								c.getIdentifier(), "*")) {
-
-							String derivedPropertyName = node.getIncoming()
-									.iterator().next().getType();
-
-							if (node.getPropertyKeys().contains(
-									derivedPropertyName)) {
-
-								node.setProperty(derivedPropertyName, "_NYD##"
-										+ node.getProperty("derivationlogic"));
-
-								nodesToBeUpdated.add(node);
-
-							} else
-								throw new Exception(
-										"Exception in updateDerivedAttributes() -- derived attribute node did not contain property: "
-												+ derivedPropertyName);
-						}
-
-					} else if (c.getElementType().equals(IGraphChange.PROPERTY)
-							|| c.getElementType()
-									.equals(IGraphChange.REFERENCE)) {
-
-						String[] split = c.getIdentifier().split("::");
-						String id = split[0];
-						String prop = split[1];
-
-						for (IGraphNode node : derivedAccessDictionary.query(
-								id, prop)) {
-
-							String derivedPropertyName = node.getIncoming()
-									.iterator().next().getType();
-
-							if (node.getPropertyKeys().contains(
-									derivedPropertyName)) {
-
-								node.setProperty(derivedPropertyName, "_NYD##"
-										+ node.getProperty("derivationlogic"));
-
-								nodesToBeUpdated.add(node);
-
-							} else
-								throw new Exception(
-										"Exception in updateDerivedAttributes() -- derived attribute node did not contain property: "
-												+ derivedPropertyName);
-						}
-
-					} else if (c.getElementType()
-							.equals(IGraphChange.METAMODEL)
-							|| c.getElementType().equals(IGraphChange.TYPE)) {
-
-						// metamodel change do nothing
-
-					} else
-						throw new Exception(
-								"Exception in updateDerivedAttributes() -- change of type: "
-										+ c.getElementType());
-
-				}
-			}
+			IGraphNodeIndex derivedAccessDictionary
+				= graph.getOrCreateNodeIndex("derivedaccessdictionary");
 
 			IQueryEngine q = indexer.getKnownQueryLanguages().get(type);
-			//
-			//
-			IAccessListener accessListener = q.calculateDerivedAttributes(
-					graph, nodesToBeUpdated);
+			IAccessListener accessListener = q.calculateDerivedAttributes(graph, nodesToBeUpdated);
 
 			for (IAccess a : accessListener.getAccesses()) {
-
 				IGraphNode sourceNode = graph
 						.getNodeById(a.getSourceObjectID());
 
 				if (sourceNode != null)
 					derivedAccessDictionary.remove(sourceNode);
-
 			}
 
 			for (IAccess a : accessListener.getAccesses()) {
-
 				IGraphNode sourceNode = graph
 						.getNodeById(a.getSourceObjectID());
 
@@ -1426,5 +1308,3 @@ public class GraphModelInserter {
 		}
 	}
 }
-
-// end

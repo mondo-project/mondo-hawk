@@ -38,7 +38,7 @@ import org.hawk.core.IModelUpdater;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommitItem;
-import org.hawk.core.graph.IGraphChangeDescriptor;
+import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
@@ -91,8 +91,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	private final boolean runSchedule = true;
 
-	private Set<IGraphChangeDescriptor> metamodelchanges = new HashSet<>();
 	private boolean running = false;
+	private final CompositeGraphChangeListener listener = new CompositeGraphChangeListener();
 
 	/**
 	 * 
@@ -188,8 +188,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 							}
 						}
 						
-						LinkedList<IGraphChangeDescriptor> changes = new LinkedList<>();
-						
 						HashMap<VcsCommitItem, IHawkModelResource> fileToResourceMap = new HashMap<>();
 						
 						for(IModelUpdater u : getUpdaters()){
@@ -265,14 +263,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 							e.printStackTrace();
 						}
 
-						if (metamodelchanges.size() > 0) {
-							changes.addAll(metamodelchanges);
-							metamodelchanges.clear();
-						}
-
 							try {
 								if (currreposchangeditems.size() > 0)
-									changes.add(u.updateStore(fileToResourceMap));
+									u.updateStore(fileToResourceMap);
 							} catch (Exception e) {
 								console.printerrln("updater: " + u
 										+ "failed to update store");
@@ -328,17 +321,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 						boolean success = true;
 
-						for (IGraphChangeDescriptor change : changes) {
-							success = success && !change.getErrorState();
-							if (change.getUnresolvedReferences() > 0
-									|| change.getUnresolvedDerivedProperties() > 0) {
-								console.printerrln("update left: "
-										+ change.getUnresolvedReferences()
-										+ " unresolved references and "
-										+ change.getUnresolvedDerivedProperties()
-										+ " unresolved DERIVED properties, please ensure your new models are consistent");
-							}
-						}
 						// delete temporary files
 						if (!FileOperations.deleteFiles(
 								new File(monitorTempDir), true))
@@ -614,11 +596,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 					previousParserType = parserType;
 				}
 			}
-
 		}
 
-		metamodelchanges.add(metamodelupdater.removeMetamodels(set, this));
-
+		metamodelupdater.removeMetamodels(set, this);
 	}
 
 	@Override
@@ -704,9 +684,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 					}
 				}
 
-				metamodelchanges.add(metamodelupdater.insertMetamodels(set,
-						this));
-
+				metamodelupdater.insertMetamodels(set, this);
 			}
 		}
 	}
@@ -897,10 +875,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 		for (String factoryNames : metamodelparsers.keySet()) {
 			IMetaModelResourceFactory f = metamodelparsers.get(factoryNames);
 			System.out.println(f.getType());
-
-			metamodelchanges.add(metamodelupdater.insertMetamodels(
-					f.getStaticMetamodels(), this));
-
+			metamodelupdater.insertMetamodels(f.getStaticMetamodels(), this);
 		}
 		System.out.println("inserting static metamodels complete");
 
@@ -1178,6 +1153,21 @@ public class ModelIndexerImpl implements IModelIndexer {
 	@Override
 	public boolean isRunning() {
 		return running;
+	}
+
+	@Override
+	public boolean addGraphChangeListener(IGraphChangeListener changeListener) {
+		return listener.add(changeListener);
+	}
+
+	@Override
+	public boolean removeGraphChangeListener(IGraphChangeListener changeListener) {
+		return listener.remove(changeListener);
+	}
+
+	@Override
+	public IGraphChangeListener getCompositeGraphChangeListener() {
+		return listener;
 	}
 
 }

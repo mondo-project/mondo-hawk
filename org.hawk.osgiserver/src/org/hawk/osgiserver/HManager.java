@@ -290,6 +290,10 @@ public class HManager {
 		return getConfigurationElementsFor("org.hawk.core.HawkFactoryExtensionPoint");
 	}
 
+	public List<IConfigurationElement> getGraphChangeListeners() {
+		return getConfigurationElementsFor("org.hawk.core.GraphChangeListenerExtensionPoint");
+	}
+
 	public Map<String, IHawkFactory> getHawkFactoryInstances() {
 		final Map<String, IHawkFactory> ids = new HashMap<>();
 		for (IConfigurationElement elem : getHawkFactories()) {

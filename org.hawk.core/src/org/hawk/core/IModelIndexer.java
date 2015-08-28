@@ -18,8 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
+import org.hawk.core.runtime.CompositeGraphChangeListener;
 
 public interface IModelIndexer {
 
@@ -103,6 +105,10 @@ public interface IModelIndexer {
 	void addMetaModelResourceFactory(IMetaModelResourceFactory metaModelParser);
 
 	void addModelResourceFactory(IModelResourceFactory modelParser);
+
+	boolean addGraphChangeListener(IGraphChangeListener changeListener);
+	boolean removeGraphChangeListener(IGraphChangeListener changeListener);
+	IGraphChangeListener getCompositeGraphChangeListener();
 
 	void setDB(IGraphDatabase db, boolean persist);
 
