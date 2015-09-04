@@ -75,3 +75,10 @@ These instructions are from a clean download of an Eclipse Luna Modelling distri
 9. To build the update site, run first `org.hawk.updatesite/Build Site.launch`, wait for the "PDE Export" background job to complete, refresh `org.hawk.updatesite` and then run `Publish Site.launch`. A zip file named `hawk-updatesite-YYYYMMDD.zip` will be generated in the same directory.
 
 After all these steps, you should have a working version of Hawk with all optional dependencies and no errors.
+
+Acknowledgments
+---------------
+
+![YourKit logo](yklogo.png)
+
+YourKit supports open source projects with its full-featured Java Profiler. YourKit, LLC is the creator of [YourKit Java Profiler](https://www.yourkit.com/java/profiler/index.jsp) and [YourKit .NET Profiler](https://www.yourkit.com/.net/profiler/index.jsp), innovative and intelligent tools for profiling Java and .NET applications.
