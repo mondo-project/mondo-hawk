@@ -198,28 +198,30 @@ public class ModelIndexerImpl implements IModelIndexer {
 						// create temp files with changed repos files
 						for (VcsCommitItem s : currreposchangeditems) {
 
-							console.println("-->" + s.getPath()
+							String commitPath = s.getPath();
+							
+							console.println("-->" + commitPath
 									+ " HAS CHANGED (" + s.getChangeType()
 									+ "), PROPAGATING CHANGES");
 
-							String[] a = s.getPath().split("/");
+							String[] commitPathSplit = commitPath.split("/");
 
-							if (a.length > 1) {
+							if (commitPathSplit.length > 1) {
 								String path = monitorTempDir;
-								for (int ii = 0; ii < a.length - 1; ii++) {
+								for (int ii = 0; ii < commitPathSplit.length - 1; ii++) {
 
-									File dir = new File(path + "/" + a[ii]);
+									File dir = new File(path + "/" + commitPathSplit[ii]);
 									dir.mkdir();
-									path = path + "/" + a[ii];
+									path = path + "/" + commitPathSplit[ii];
 
 								}
-								temp = new File(path + "/" + a[a.length - 1]);
+								temp = new File(path + "/" + commitPathSplit[commitPathSplit.length - 1]);
 							} else
 								temp = new File(monitorTempDir	+ "/"
-										+ s.getPath());
+										+ commitPath);
 
 							if(!temp.exists())							
-							m.importFiles(s.getPath(), temp);
+							m.importFiles(commitPath, temp);
 
 						}
 						// sysout.println(currrepositems);

@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.hawk.graph.internal.updater;
 
-import java.util.Arrays;
 import java.util.HashSet;
 
 import org.hawk.core.graph.IGraphDatabase;
@@ -142,7 +141,7 @@ public class DeletionUtils {
 
 			proxies = null;
 
-			System.err.println("ret " + Arrays.toString(ret));
+			//System.err.println("ret " + Arrays.toString(ret));
 
 			return ret;
 

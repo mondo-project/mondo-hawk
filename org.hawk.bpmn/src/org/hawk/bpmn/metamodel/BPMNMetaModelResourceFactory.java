@@ -197,20 +197,18 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 						.toString());
 				paths.add(bpmn.getResource("model/BPMNDI.ecore").toURI()
 						.toString());
-				paths.add(bpmn.getResource("model/DC.ecore").toURI()
-						.toString());
-				paths.add(bpmn.getResource("model/DI.ecore").toURI()
-						.toString());
+				paths.add(bpmn.getResource("model/DC.ecore").toURI().toString());
+				paths.add(bpmn.getResource("model/DI.ecore").toURI().toString());
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
 
 			EPackage e = EcorePackageImpl.eINSTANCE;
 			RegisterMeta.registerPackages(e);
-			
+
 			for (String path : paths)
-				for (EObject o : resourceSet.getResource(
-						URI.createURI(path), true).getContents())
+				for (EObject o : resourceSet.getResource(URI.createURI(path),
+						true).getContents())
 					if (o instanceof EPackage)
 						RegisterMeta.registerPackages((EPackage) o);
 

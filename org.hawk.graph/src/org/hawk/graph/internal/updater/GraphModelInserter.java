@@ -74,12 +74,18 @@ public class GraphModelInserter {
 		tempFolderURI = new File(graph.getTempDir()).toURI().toString();
 	}
 
-	public boolean run(IHawkModelResource res, VcsCommitItem s) throws Exception {
+	public boolean run(IHawkModelResource res, VcsCommitItem s)
+			throws Exception {
+
+		if (res == null)
+			return false;
+
 		resource = res;
 		this.s = s;
 
 		// indexer = i;
-		inj = new GraphModelBatchInjector(graph, this.s, indexer.getCompositeGraphChangeListener());
+		inj = new GraphModelBatchInjector(graph, this.s,
+				indexer.getCompositeGraphChangeListener());
 
 		try {
 			// f = new File(dir + "/" + s.getPath());
@@ -130,7 +136,8 @@ public class GraphModelInserter {
 	private void transactionalUpdate() throws Exception {
 		graph.exitBatchMode();
 
-		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
+		final IGraphChangeListener listener = indexer
+				.getCompositeGraphChangeListener();
 		try (IGraphTransaction t = graph.beginTransaction()) {
 			listener.changeStart();
 
@@ -156,22 +163,27 @@ public class GraphModelInserter {
 				// track change new node
 				listener.modelElementAddition(s, object, node, false);
 				for (String key : node.getPropertyKeys()) {
-					listener.modelElementAttributeUpdate(s, object, key, null, node.getProperty(key), node, false);
+					listener.modelElementAttributeUpdate(s, object, key, null,
+							node.getProperty(key), node, false);
 				}
 				for (IGraphEdge e : node.getOutgoingWithType("typeOf")) {
-					listener.referenceAddition(s, node, e.getEndNode(), "typeOf", false);
+					listener.referenceAddition(s, node, e.getEndNode(),
+							"typeOf", false);
 				}
 				for (IGraphEdge e : node.getOutgoingWithType("kindOf")) {
-					listener.referenceAddition(s, node, e.getEndNode(), "kindOf", false);
+					listener.referenceAddition(s, node, e.getEndNode(),
+							"kindOf", false);
 				}
 				for (IGraphEdge e : node.getOutgoingWithType("file")) {
-					listener.referenceAddition(s, node, e.getEndNode(), "file", false);
+					listener.referenceAddition(s, node, e.getEndNode(), "file",
+							false);
 				}
 			}
 
 			// references of added object and tracking of changes
 			for (IGraphNode node : addedNodes.keySet()) {
-				inj.addEReferences(fileNode, node, addedNodes.get(node), addedNodesHash, nodes);
+				inj.addEReferences(fileNode, node, addedNodes.get(node),
+						addedNodesHash, nodes);
 			}
 
 			// delete obsolete nodes and change attributes
@@ -223,11 +235,13 @@ public class GraphModelInserter {
 					// track change deleted node
 					listener.modelElementRemoval(this.s, node, false);
 					for (String key : node.getPropertyKeys()) {
-						listener.modelElementAttributeRemoval(this.s, null, key, node, false);
+						listener.modelElementAttributeRemoval(this.s, null,
+								key, node, false);
 					}
 					for (IGraphEdge e : node.getOutgoing()) {
 						if (e.getProperty("isDerived") == null) {
-							listener.referenceRemoval(this.s, node, e.getEndNode(), e.getType(), false);
+							listener.referenceRemoval(this.s, node,
+									e.getEndNode(), e.getType(), false);
 						}
 					}
 
@@ -290,7 +304,8 @@ public class GraphModelInserter {
 								e.delete();
 
 								// track change deleted reference
-								listener.referenceRemoval(this.s, node, e.getEndNode(), e.getType(), false);
+								listener.referenceRemoval(this.s, node,
+										e.getEndNode(), e.getType(), false);
 							}
 						}
 
@@ -299,7 +314,8 @@ public class GraphModelInserter {
 							IGraphNode dest = nodes.get(s);
 							if (dest != null) {
 								// add new reference
-								IGraphEdge e = graph.createRelationship(node, dest, refname);
+								IGraphEdge e = graph.createRelationship(node,
+										dest, refname);
 								if (isContainment) {
 									e.setProperty("isContainment", "true");
 								}
@@ -308,7 +324,8 @@ public class GraphModelInserter {
 								}
 
 								// track change new reference
-								listener.referenceAddition(this.s, node, dest, refname, false);
+								listener.referenceAddition(this.s, node, dest,
+										refname, false);
 							} else {
 								// proxy reference, handled above
 							}
@@ -323,7 +340,8 @@ public class GraphModelInserter {
 						// track change deleted references
 						for (IGraphEdge e : graphtargets) {
 							e.delete();
-							listener.referenceRemoval(this.s, node, e.getEndNode(), e.getType(), false);
+							listener.referenceRemoval(this.s, node,
+									e.getEndNode(), e.getType(), false);
 						}
 					}
 
@@ -412,12 +430,15 @@ public class GraphModelInserter {
 		return true;
 	}
 
-	private void updateNodeProperties(IGraphNode fileNode, IGraphNode node, IHawkObject eObject) {
+	private void updateNodeProperties(IGraphNode fileNode, IGraphNode node,
+			IHawkObject eObject) {
 
 		List<IHawkAttribute> normalattributes = new LinkedList<IHawkAttribute>();
 		List<IHawkAttribute> indexedattributes = new LinkedList<IHawkAttribute>();
-		IGraphNode typenode = node.getOutgoingWithType("typeOf").iterator().next().getEndNode();
-		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
+		IGraphNode typenode = node.getOutgoingWithType("typeOf").iterator()
+				.next().getEndNode();
+		final IGraphChangeListener listener = indexer
+				.getCompositeGraphChangeListener();
 
 		for (final IHawkAttribute eAttribute : ((IHawkClass) eObject.getType())
 				.getAllAttributes()) {
@@ -444,17 +465,18 @@ public class GraphModelInserter {
 
 			if (!a.isMany()) {
 				Object newValue = newproperty;
-				if (!new GraphUtil().isPrimitiveOrWrapperType(newproperty.getClass())) {
+				if (!new GraphUtil().isPrimitiveOrWrapperType(newproperty
+						.getClass())) {
 					newValue = newValue.toString();
 				}
 
 				if (!newValue.equals(oldproperty)) {
 					// track changed property (primitive)
-					listener.modelElementAttributeUpdate(this.s, eObject, a.getName(), oldproperty, newproperty, node, false);
+					listener.modelElementAttributeUpdate(this.s, eObject,
+							a.getName(), oldproperty, newproperty, node, false);
 					node.setProperty(a.getName(), newproperty);
 				}
-			}
-			else {
+			} else {
 				Collection<Object> collection = null;
 
 				if (a.isOrdered() && a.isUnique())
@@ -494,7 +516,8 @@ public class GraphModelInserter {
 				Object ret = collection.toArray((Object[]) r);
 
 				if (!ret.equals(oldproperty)) {
-					listener.modelElementAttributeUpdate(this.s, eObject, a.getName(), oldproperty, ret, node, false);
+					listener.modelElementAttributeUpdate(this.s, eObject,
+							a.getName(), oldproperty, ret, node, false);
 					node.setProperty(a.getName(), ret);
 				}
 			}
@@ -620,11 +643,13 @@ public class GraphModelInserter {
 	private void batchUpdate() throws Exception {
 		System.err.println("batch update called");
 
-		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
+		final IGraphChangeListener listener = indexer
+				.getCompositeGraphChangeListener();
 		listener.changeStart();
 		try {
 			graph.exitBatchMode();
-			final String repositoryURL = s.getCommit().getDelta().getRepository().getUrl();
+			final String repositoryURL = s.getCommit().getDelta()
+					.getRepository().getUrl();
 			new DeletionUtils(graph).deleteAll(repositoryURL, s.getPath());
 
 			graph.enterBatchMode();
@@ -718,11 +743,12 @@ public class GraphModelInserter {
 	 */
 	private void addNodes() throws Exception {
 		if (resource != null) {
-			GraphModelBatchInjector batch = new GraphModelBatchInjector(graph, s, resource, indexer.getCompositeGraphChangeListener());
+			GraphModelBatchInjector batch = new GraphModelBatchInjector(graph,
+					s, resource, indexer.getCompositeGraphChangeListener());
 			unset = batch.getUnset();
 		} else {
 			System.err
-				.println("model insertion aborted, see above error (maybe you need to register the metamodel?)");
+					.println("model insertion aborted, see above error (maybe you need to register the metamodel?)");
 		}
 
 		try {
@@ -732,7 +758,8 @@ public class GraphModelInserter {
 		}
 	}
 
-	private void remove(IGraphNode modelElement, String repositoryURL, IGraphNode fileNode) {
+	private void remove(IGraphNode modelElement, String repositoryURL,
+			IGraphNode fileNode) {
 		DeletionUtils del = new DeletionUtils(graph);
 		del.dereference(modelElement);
 		del.makeProxyRefs(modelElement, repositoryURL, fileNode);
@@ -804,7 +831,8 @@ public class GraphModelInserter {
 		int proxiesLeft = -1;
 		graph.exitBatchMode();
 
-		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
+		final IGraphChangeListener listener = indexer
+				.getCompositeGraphChangeListener();
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			listener.changeStart();
 
@@ -834,11 +862,13 @@ public class GraphModelInserter {
 						String fullPathURI = proxies[0].substring(0,
 								proxies[0].indexOf("#"));
 
-						final String[] split = fullPathURI.split(GraphModelUpdater.FILEINDEX_REPO_SEPARATOR, 2);
+						final String[] split = fullPathURI.split(
+								GraphModelUpdater.FILEINDEX_REPO_SEPARATOR, 2);
 						final String repoURL = split[0];
 						final String filePath = split[1];
 
-						final IGraphNode fileNode = getFileNode(graph, repoURL, filePath);
+						final IGraphNode fileNode = getFileNode(graph, repoURL,
+								filePath);
 						Iterable<IGraphEdge> rels = allNodesWithFile(fileNode);
 
 						if (rels != null) {
@@ -859,7 +889,10 @@ public class GraphModelInserter {
 
 										if (nodeURI.equals(proxies[i])) {
 
-											boolean change = new GraphModelBatchInjector(graph, null, listener).resolveProxyRef(n, no, proxies[i + 1]);
+											boolean change = new GraphModelBatchInjector(
+													graph, null, listener)
+													.resolveProxyRef(n, no,
+															proxies[i + 1]);
 
 											if (!change) {
 												System.err
@@ -870,7 +903,9 @@ public class GraphModelInserter {
 																+ " -> "
 																+ no.getId());
 											} else {
-												listener.referenceAddition(this.s, n, no, proxies[i+1], false);
+												listener.referenceAddition(
+														this.s, n, no,
+														proxies[i + 1], false);
 											}
 
 											found = true;
@@ -966,7 +1001,8 @@ public class GraphModelInserter {
 
 			// dump access to lucene and add hooks on updates
 
-			final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
+			final IGraphChangeListener listener = indexer
+					.getCompositeGraphChangeListener();
 			try (IGraphTransaction tx = graph.beginTransaction()) {
 				listener.changeStart();
 
@@ -986,7 +1022,8 @@ public class GraphModelInserter {
 				}
 
 				for (IAccess a : accessListener.getAccesses()) {
-					IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
+					IGraphNode sourceNode = graph.getNodeById(a
+							.getSourceObjectID());
 
 					if (sourceNode != null)
 						derivedAccessDictionary.add(sourceNode,
@@ -1024,18 +1061,21 @@ public class GraphModelInserter {
 		return derivedLeft;
 	}
 
-	public void updateDerivedAttributes(String type, Set<IGraphNode> nodesToBeUpdated) throws Exception {
-		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
+	public void updateDerivedAttributes(String type,
+			Set<IGraphNode> nodesToBeUpdated) throws Exception {
+		final IGraphChangeListener listener = indexer
+				.getCompositeGraphChangeListener();
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			listener.changeStart();
 			// operations on the graph
 			// ...
 
-			IGraphNodeIndex derivedAccessDictionary
-				= graph.getOrCreateNodeIndex("derivedaccessdictionary");
+			IGraphNodeIndex derivedAccessDictionary = graph
+					.getOrCreateNodeIndex("derivedaccessdictionary");
 
 			IQueryEngine q = indexer.getKnownQueryLanguages().get(type);
-			IAccessListener accessListener = q.calculateDerivedAttributes(graph, nodesToBeUpdated);
+			IAccessListener accessListener = q.calculateDerivedAttributes(
+					graph, nodesToBeUpdated);
 
 			for (IAccess a : accessListener.getAccesses()) {
 				IGraphNode sourceNode = graph
@@ -1062,7 +1102,8 @@ public class GraphModelInserter {
 		}
 	}
 
-	private static Iterable<IGraphEdge> allNodesWithFile(final IGraphNode fileNode) {
+	private static Iterable<IGraphEdge> allNodesWithFile(
+			final IGraphNode fileNode) {
 		if (fileNode != null)
 			return fileNode.getIncomingWithType("file");
 		else

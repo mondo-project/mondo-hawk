@@ -123,7 +123,8 @@ public class GraphModelBatchInjector {
 				}
 
 				try {
-					// XXX NOTE THIS SPECIFICALLY DOES NOT RESOLVE PROXIES - REMEMBER IT !
+					// XXX NOTE THIS SPECIFICALLY DOES NOT RESOLVE PROXIES -
+					// REMEMBER IT !
 
 					// add model elements
 					Set<IHawkObject> children = r.getAllContentsSet();
@@ -168,8 +169,7 @@ public class GraphModelBatchInjector {
 					new DeletionUtils(graph).deleteAll(repoURL, s.getPath());
 					listener.changeFailure();
 				}
-			}
-			else /* if not new */ {
+			} else /* if not new */{
 				listener.changeSuccess();
 			}
 		} catch (Exception ex) {
@@ -192,8 +192,7 @@ public class GraphModelBatchInjector {
 		Map<String, Object> map2 = new HashMap<>();
 		map2.put(
 				"id",
-				repoURL
-						+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+				repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
 						+ s.getPath());
 		fileDictionary.add(fileNode, map2);
 
@@ -739,7 +738,8 @@ public class GraphModelBatchInjector {
 			createReference("typeOf", node, eClass, Collections.emptyMap(),
 					true);
 			if (originatingFile != null) {
-				createReference("file", node, originatingFile, Collections.emptyMap(), true);
+				createReference("file", node, originatingFile,
+						Collections.emptyMap(), true);
 			}
 			objectCount[1]++;
 
@@ -747,7 +747,8 @@ public class GraphModelBatchInjector {
 			for (IHawkClass superType : ((IHawkClass) eObject.getType())
 					.getSuperTypes()) {
 				eClass = getEClassNode(superType);
-				createReference("kindOf", node, eClass, Collections.emptyMap(), true);
+				createReference("kindOf", node, eClass, Collections.emptyMap(),
+						true);
 				objectCount[2]++;
 			}
 
@@ -805,9 +806,12 @@ public class GraphModelBatchInjector {
 			// early (before it was inserted into hawk -- handle it like any
 			// other proxy)
 
-			System.err.println("adding proxy (early resolution) reference ("
-					+ edgelabel + " | " + to.getUri() + ")... "
-					+ (addProxyRef(from, to, edgelabel) ? "done" : "failed"));
+			// System.err.println("adding proxy (early resolution) reference ("
+			// + edgelabel + " | " + to.getUri() + ")... "
+			// + (
+			addProxyRef(from, to, edgelabel)
+			// ? "done" : "failed"))
+			;
 
 		} else {
 
@@ -825,9 +829,12 @@ public class GraphModelBatchInjector {
 
 	}
 
-	private void createReference(final String edgelabel, IGraphNode source, IGraphNode destination, Map<String, Object> props, boolean isTransient) {
+	private void createReference(final String edgelabel, IGraphNode source,
+			IGraphNode destination, Map<String, Object> props,
+			boolean isTransient) {
 		graph.createRelationship(source, destination, edgelabel, props);
-		listener.referenceAddition(commitItem, source, destination, edgelabel, isTransient);
+		listener.referenceAddition(commitItem, source, destination, edgelabel,
+				isTransient);
 	}
 
 	/**
@@ -841,8 +848,9 @@ public class GraphModelBatchInjector {
 	 * @return
 	 * @throws Exception
 	 */
-	protected Set<IGraphChange> addEReferences(IGraphNode fileNode, IGraphNode node,
-			IHawkObject object, Map<String, IGraphNode> addedNodesHash,
+	protected Set<IGraphChange> addEReferences(IGraphNode fileNode,
+			IGraphNode node, IHawkObject object,
+			Map<String, IGraphNode> addedNodesHash,
 			Map<String, IGraphNode> nodes) throws Exception {
 
 		Set<IGraphChange> ret = new HashSet<>();
@@ -878,7 +886,8 @@ public class GraphModelBatchInjector {
 									props.put("isContainer", "true");
 								}
 
-								createReference(edgelabel, node, dest, props, false);
+								createReference(edgelabel, node, dest, props,
+										false);
 							} else {
 								System.err
 										.println("adding proxy [iterable] reference ("
@@ -917,15 +926,16 @@ public class GraphModelBatchInjector {
 
 							createReference(edgelabel, node, dest, props, false);
 						} else {
-							System.err.println("adding proxy reference ("
-									+ edgelabel
-									+ " | "
-									+ ((IHawkObject) destinationObject)
-											.getUri()
-									+ ")... "
-									+ (addProxyRef(node,
-											((IHawkObject) destinationObject),
-											edgelabel) ? "done" : "failed"));
+							// System.err.println("adding proxy reference ("
+							// + edgelabel + " | "
+							// + ((IHawkObject) destinationObject) .getUri() +
+							// ")... "
+							// + (
+							addProxyRef(node,
+									((IHawkObject) destinationObject),
+									edgelabel)
+							// ? "done" : "failed"))
+							;
 						}
 					}
 
@@ -993,14 +1003,14 @@ public class GraphModelBatchInjector {
 								eReference.isContainment(),
 								eReference.isContainer());
 					} else {
-						System.err.println("adding proxy reference ("
-								+ edgelabel
-								+ " | "
-								+ ((IHawkObject) destinationHawkObject)
-										.getUri()
-								+ ")... "
-								+ (addProxyRef(eObject, destinationHawkObject,
-										edgelabel) ? "done" : "failed"));
+						// System.err.println("adding proxy reference ("
+						// + edgelabel + " | "
+						// + ((IHawkObject) destinationHawkObject)
+						// .getUri() + ")... "
+						// + (
+						addProxyRef(eObject, destinationHawkObject, edgelabel)
+						// ? "done" : "failed"))
+						;
 					}
 				}
 
@@ -1086,7 +1096,8 @@ public class GraphModelBatchInjector {
 		return true;
 	}
 
-	protected boolean resolveProxyRef(IGraphNode n, IGraphNode graphNode, String edgelabel) {
+	protected boolean resolveProxyRef(IGraphNode n, IGraphNode graphNode,
+			String edgelabel) {
 
 		boolean found = false;
 
@@ -1099,7 +1110,8 @@ public class GraphModelBatchInjector {
 		if (found)
 			return false;
 		else {
-			graph.createRelationship(n, graphNode, edgelabel, new HashMap<String, Object>());
+			graph.createRelationship(n, graphNode, edgelabel,
+					new HashMap<String, Object>());
 			return true;
 		}
 	}

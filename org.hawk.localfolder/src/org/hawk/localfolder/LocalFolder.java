@@ -12,6 +12,7 @@
 package org.hawk.localfolder;
 
 import java.io.File;
+import java.net.URLDecoder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
@@ -41,11 +42,15 @@ public class LocalFolder implements IVcsManager {
 	}
 
 	@Override
-	public void run(String vcsloc, String un, String pw, IAbstractConsole c) throws Exception {
+	public void run(String vcsloc, String un, String pw, IAbstractConsole c)
+			throws Exception {
 		console = c;
 		Path path = Paths.get(vcsloc);
 		rootLocation = path.toRealPath();
-		repository = new LocalFolderRepository(rootLocation.toUri().toString());
+		repository = new LocalFolderRepository(URLDecoder.decode(rootLocation
+				.toUri().toString().replace("+", "%2B"), "UTF-8")
+		// rootLocation.toUri().toString()
+		);
 	}
 
 	@Override
@@ -162,11 +167,12 @@ public class LocalFolder implements IVcsManager {
 
 			VcsCommitItem c = new VcsCommitItem();
 			c.setChangeType(VcsChangeType.DELETED);
-			c.setCommit(commit);		
-			
-			c.setPath(makeRelative(repository.getUrl(), f.toPath().toUri().toString()));
-			
-			//c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
+			c.setCommit(commit);
+
+			c.setPath(makeRelative(repository.getUrl(), URLDecoder.decode(f
+					.toPath().toUri().toString().replace("+", "%2B"), "UTF-8")));
+
+			// c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 			commit.getItems().add(c);
 		}
 
@@ -187,10 +193,13 @@ public class LocalFolder implements IVcsManager {
 				VcsCommitItem c = new VcsCommitItem();
 				c.setChangeType(VcsChangeType.UPDATED);
 				c.setCommit(commit);
-				
-				c.setPath(makeRelative(repository.getUrl(), f.toPath().toUri().toString()));
-							
-				//c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
+
+				c.setPath(makeRelative(
+						repository.getUrl(),
+						URLDecoder.decode(f.toPath().toUri().toString()
+								.replace("+", "%2B"), "UTF-8")));
+
+				// c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 				commit.getItems().add(c);
 			}
 
@@ -199,14 +208,18 @@ public class LocalFolder implements IVcsManager {
 
 	private String makeRelative(String base, String extension) {
 
-		if(!extension.startsWith(base)) return extension;
-		
+		// System.err.println(">>"+base);
+		// System.err.println("<>"+extension);
+
+		if (!extension.startsWith(base))
+			return extension;
+
 		String ret = extension.substring(base.length());
-		
+
 		return ret;
-		
+
 	}
-	
+
 	private void addAllFiles(File dir, Set<File> ret) {
 		File[] files = dir.listFiles();
 		for (File file : files) {

@@ -48,21 +48,25 @@ public class GraphModelUpdater implements IModelUpdater {
 		final long start = System.currentTimeMillis();
 
 		/*
-		 * We register this listener only for this particular updater and during this
-		 * method call. It is used to collect information about which nodes should have
-		 * their derived attributes updated, rather than collecting all changes and
-		 * working from there (which can use a lot more memory). Ideally, if we do not
-		 * have any derived attributes, this shouldn't require any more memory, and the
-		 * CPU cost should be the same.
+		 * We register this listener only for this particular updater and during
+		 * this method call. It is used to collect information about which nodes
+		 * should have their derived attributes updated, rather than collecting
+		 * all changes and working from there (which can use a lot more memory).
+		 * Ideally, if we do not have any derived attributes, this shouldn't
+		 * require any more memory, and the CPU cost should be the same.
 		 */
 		final IGraphDatabase g = indexer.getGraph();
-		final DirtyDerivedAttributesListener l = new DirtyDerivedAttributesListener(g);
+		final DirtyDerivedAttributesListener l = new DirtyDerivedAttributesListener(
+				g);
 		indexer.addGraphChangeListener(l);
 
 		try {
 			for (VcsCommitItem f : r.keySet()) {
 				try {
-					new GraphModelInserter(indexer).run(r.get(f), f);
+					IHawkModelResource res = r.get(f);
+					if (!new GraphModelInserter(indexer).run(res, f))
+						console.printerrln("warning: failed to update item: "
+								+ f + "\nmodel resource: " + res);
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
