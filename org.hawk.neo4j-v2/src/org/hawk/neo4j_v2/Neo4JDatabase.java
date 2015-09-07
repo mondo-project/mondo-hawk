@@ -167,13 +167,13 @@ public class Neo4JDatabase implements IGraphDatabase {
 	@Override
 	public void delete() throws Exception {
 		// unregisterPackages();
-		final boolean deleted = FileOperations.deleteFiles(new File(getPath()),
-				true);
-		System.err.println("deleted store(" + databaseName + "): " + deleted);
-
 		shutdown();
 		System.gc();
-		delete();
+
+		final boolean deleted = FileOperations.deleteFiles(
+				new File(getPath()).getParentFile(), true);
+		System.err.println("deleted store(" + databaseName + "): " + deleted);
+
 	}
 
 	// private void unregisterPackages() throws Exception {
