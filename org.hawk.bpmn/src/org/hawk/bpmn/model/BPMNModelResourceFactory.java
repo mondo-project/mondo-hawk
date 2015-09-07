@@ -13,6 +13,7 @@ package org.hawk.bpmn.model;
 import java.io.File;
 import java.util.HashSet;
 
+import org.eclipse.bpmn2.util.Bpmn2ResourceFactoryImpl;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
@@ -57,6 +58,8 @@ public class BPMNModelResourceFactory implements IModelResourceFactory {
 			resourceSet = new ResourceSetImpl();
 			resourceSet.getPackageRegistry().put(EcorePackage.eNS_URI,
 					EcorePackage.eINSTANCE);
+			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
+				.put("bpmn", new Bpmn2ResourceFactoryImpl());
 		}
 	}
 

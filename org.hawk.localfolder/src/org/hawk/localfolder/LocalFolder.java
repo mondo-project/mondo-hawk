@@ -222,6 +222,11 @@ public class LocalFolder implements IVcsManager {
 
 	private void addAllFiles(File dir, Set<File> ret) {
 		File[] files = dir.listFiles();
+		if (files == null) {
+			// couldn't list files in that directory
+			console.printerrln("Could not list the entries of " + dir);
+			return;
+		}
 		for (File file : files) {
 			if (!file.isDirectory()) {
 				ret.add(file);
