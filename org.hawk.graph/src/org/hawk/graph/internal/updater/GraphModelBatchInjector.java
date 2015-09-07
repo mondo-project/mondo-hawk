@@ -61,7 +61,7 @@ public class GraphModelBatchInjector {
 	/*
 	 * temporary link between resource uri and graph node for model elements
 	 */
-	private Hashtable<IHawkObject, IGraphNode> hash;
+	private final Map<IHawkObject, IGraphNode> hash = new HashMap<IHawkObject, IGraphNode>(8192);
 
 	IGraphNodeIndex epackageDictionary, fileDictionary, proxyDictionary,
 			rootDictionary;
@@ -88,7 +88,6 @@ public class GraphModelBatchInjector {
 		this.tempFolderURI = new File(g.getTempDir()).toURI().toString();
 
 		startTime = System.nanoTime();
-		hash = new Hashtable<IHawkObject, IGraphNode>(8192);
 		graph.enterBatchMode();
 
 		try {
@@ -732,7 +731,7 @@ public class GraphModelBatchInjector {
 		if (node == null) {
 			System.err.println(String.format("The node for (%s) is null",
 					eObject));
-		} else if (hash != null) {
+		} else {
 			hash.put(eObject, node);
 
 			createReference("typeOf", node, eClass, Collections.emptyMap(),

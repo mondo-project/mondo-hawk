@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -69,10 +70,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 	private ArrayList<String> currLocalTopRevisions = new ArrayList<>();
 	private ArrayList<String> currReposTopRevisions = new ArrayList<>();
 
-	private HashMap<String, IModelResourceFactory> modelparsers = new HashMap<>();
-	private HashMap<String, IMetaModelResourceFactory> metamodelparsers = new HashMap<>();
-	private HashMap<String, IQueryEngine> knownQueryLanguages = new HashMap<>();
-	private LinkedList<IModelUpdater> updaters = new LinkedList<>();
+	private Map<String, IModelResourceFactory> modelparsers = new HashMap<>();
+	private Map<String, IMetaModelResourceFactory> metamodelparsers = new HashMap<>();
+	private Map<String, IQueryEngine> knownQueryLanguages = new HashMap<>();
+	private List<IModelUpdater> updaters = new LinkedList<>();
 
 	private IAbstractConsole console;
 
@@ -345,7 +346,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 		return allSync;
 	}
 
-	private LinkedList<IModelUpdater> getUpdaters() {
+	private List<IModelUpdater> getUpdaters() {
 		return updaters;
 	}
 
@@ -754,7 +755,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 		return null;
 	}
 
-	public HashMap<String, IQueryEngine> getKnownQueryLanguages() {
+	public Map<String, IQueryEngine> getKnownQueryLanguages() {
 		return knownQueryLanguages;
 	}
 

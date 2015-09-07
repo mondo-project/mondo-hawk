@@ -13,6 +13,7 @@ package org.hawk.epsilon.emc;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.execute.introspection.AbstractPropertyGetter;
@@ -20,22 +21,38 @@ import org.eclipse.epsilon.eol.types.EolBag;
 import org.eclipse.epsilon.eol.types.EolOrderedSet;
 import org.eclipse.epsilon.eol.types.EolSequence;
 import org.eclipse.epsilon.eol.types.EolSet;
-import org.hawk.core.graph.*;
+import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphEdge;
+import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.IGraphTransaction;
 
 public class GraphPropertyGetter extends AbstractPropertyGetter {
+
+	private static final int IDX_FLAG_MANY = 1;
+	private static final int IDX_FLAG_ORDERED = 2;
+	private static final int IDX_FLAG_UNIQUE = 3;
+
+	private static enum PropertyType {
+		ATTRIBUTE, DERIVED, REFERENCE, INVALID;
+		static PropertyType fromCharacter(String s) {
+			switch (s) {
+			case "d": return DERIVED;
+			case "r": return REFERENCE;
+			case "a": return ATTRIBUTE;
+			default: return INVALID;
+			}
+		}
+	}
 
 	private boolean broadcastAccess = false;
 
 	protected IGraphDatabase graph;
 	protected EOLQueryEngine m;
-
-	// private HawkClass featureStartingNodeClass = null;
 	private IGraphNode featureStartingNodeClassNode = null;
 
 	private static AccessListener accessListener = new AccessListener();
 
 	public GraphPropertyGetter(IGraphDatabase graph2, EOLQueryEngine m) {
-		// System.err.println("hi: "+broadcastAccess);
 		graph = graph2;
 		this.m = m;
 	}
@@ -294,132 +311,77 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		return accessListener;
 	}
 
+	public IGraphDatabase getGraph() {
+		return graph;
+	}
+
 	public boolean getBroadcastStatus() {
 		return broadcastAccess;
 	}
 
 	private boolean canHaveDerivedAttr(IGraphNode node, String property) {
-
-		featureStartingNodeClassNode = node.getOutgoingWithType("typeOf")
-				.iterator().next().getEndNode();
-
-		if (featureStartingNodeClassNode.getProperty(property) != null) {
-			String value = ((String[]) featureStartingNodeClassNode
-					.getProperty(property))[0];
-			if (value.equals("d"))
-				return true;
-			else if (value.equals("r") || value.equals("a"))
-				return false;
-		}
-
-		System.err.println("derived property: " + property
-				+ " not found in metamodel for type: "
-				+ featureStartingNodeClassNode.getProperty("id"));
-
-		return false;
-
+		return canHavePropertyWithType(node, property, PropertyType.DERIVED);
 	}
 
 	private boolean canHaveAttr(IGraphNode node, String property) {
-
-		featureStartingNodeClassNode = node.getOutgoingWithType("typeOf")
-				.iterator().next().getEndNode();
-
-		if (featureStartingNodeClassNode.getProperty(property) != null) {
-			String value = ((String[]) featureStartingNodeClassNode
-					.getProperty(property))[0];
-			if (value.equals("a"))
-				return true;
-			else if (value.equals("r") || value.equals("d"))
-				return false;
-		}
-
-		System.err.println("property: " + property
-				+ " not found in metamodel for type: "
-				+ featureStartingNodeClassNode.getProperty("id"));
-
-		return false;
-
-		// featureStartingNodeClass = new
-		// MetamodelUtils().getTypeOfFromNode(node, m.parser);
-
-		// return featureStartingNodeClass != null &&
-		// featureStartingNodeClass.getEStructuralFeature(property) != null &&
-		// featureStartingNodeClass.getEStructuralFeature(property) instanceof
-		// HawkAttribute;
-
+		return canHavePropertyWithType(node, property, PropertyType.ATTRIBUTE);
 	}
 
 	private boolean canHaveRef(IGraphNode node, String property) {
-
-		featureStartingNodeClassNode = node.getOutgoingWithType("typeOf")
-				.iterator().next().getEndNode();
-
-		if (featureStartingNodeClassNode.getProperty(property) != null) {
-			String value = ((String[]) featureStartingNodeClassNode
-					.getProperty(property))[0];
-			if (value.equals("r"))
-				return true;
-			else if (value.equals("a") || value.equals("d"))
-				return false;
-		}
-
-		System.err.println("reference: " + property
-				+ " not found in metamodel for type: "
-				+ featureStartingNodeClassNode.getProperty("id"));
-		// System.out.println(o != null && o.getEStructuralFeature(property) !=
-		// null
-		// && o.getEStructuralFeature(property) instanceof EReference);
-		return false;
-
-		// featureStartingNodeClass = new
-		// MetamodelUtils().getTypeOfFromNode(node, m.parser);
-
-		// return featureStartingNodeClass != null &&
-		// featureStartingNodeClass.getEStructuralFeature(property) != null &&
-		// featureStartingNodeClass.getEStructuralFeature(property) instanceof
-		// HawkReference;
-
+		return canHavePropertyWithType(node, property, PropertyType.REFERENCE);
 	}
 
 	private boolean isMany(String ref) {
-		if (featureStartingNodeClassNode.getProperty(ref) != null) {
+		return isTypeFlagActive(ref, IDX_FLAG_MANY);
+	}
+
+	private boolean isOrdered(String ref) {
+		return isTypeFlagActive(ref, IDX_FLAG_ORDERED);
+	}
+
+	private boolean isUnique(String ref) {
+		return isTypeFlagActive(ref, IDX_FLAG_UNIQUE);
+	}
+
+	private boolean canHavePropertyWithType(IGraphNode node, String property, PropertyType expected) {
+		final Iterator<IGraphEdge> itTypeOf = node.getOutgoingWithType("typeOf").iterator();
+
+		if (itTypeOf.hasNext()) {
+			featureStartingNodeClassNode = itTypeOf.next().getEndNode();
+			final String value = ((String[]) featureStartingNodeClassNode.getProperty(property))[0];
+			final PropertyType actual = PropertyType.fromCharacter(value);
+			if (actual == expected) {
+				return true;
+			} else if (actual != PropertyType.INVALID) {
+				return false;
+			} else {
+				System.err.println("property: " + property
+					+ " not found in metamodel for type: "
+					+ featureStartingNodeClassNode.getProperty("id"));
+			}
+		}
+		else {
+			System.err.println("type not found for node " + node);
+		}
+
+		return false;
+	}
+
+	private boolean isTypeFlagActive(String reference, final int index) {
+		if (featureStartingNodeClassNode == null) {
+			System.err.println("type not found previously for " + reference);
+			return false;
+		}
+		if (featureStartingNodeClassNode.getProperty(reference) != null) {
 			// System.err.println(referenceStartingNodeClassNode.getProperty(ref).toString());
-			return ((String[]) featureStartingNodeClassNode.getProperty(ref))[1]
+			return ((String[]) featureStartingNodeClassNode.getProperty(reference))[index]
 					.equals("t");
 		}
-		System.err.println("reference: " + ref
+		System.err.println("reference: " + reference
 				+ " not found in metamodel (isMany) for type: "
 				+ featureStartingNodeClassNode.getProperty("id"));
 
 		return false;
-		// return featureStartingNodeClass.getEStructuralFeature(ref).isMany();
-	}
-
-	private boolean isOrdered(String ref) {
-		if (featureStartingNodeClassNode.getProperty(ref) != null)
-			return ((String[]) featureStartingNodeClassNode.getProperty(ref))[2]
-					.equals("t");
-		System.err.println("reference: " + ref
-				+ " not found in metamodel (isOrdered) for type: "
-				+ featureStartingNodeClassNode.getProperty("id"));
-
-		return false;
-		// return ((HawkStructuralFeature) featureStartingNodeClass
-		// .getEStructuralFeature(ref)).isOrdered();
-	}
-
-	private boolean isUnique(String ref) {
-		if (featureStartingNodeClassNode.getProperty(ref) != null)
-			return ((String[]) featureStartingNodeClassNode.getProperty(ref))[3]
-					.equals("t");
-		System.err.println("reference: " + ref
-				+ " not found in metamodel (isUnique) for type: "
-				+ featureStartingNodeClassNode.getProperty("id"));
-
-		return false;
-		// return
-		// featureStartingNodeClass.getEStructuralFeature(ref).isUnique();
 	}
 
 	public String debug(IGraphDatabase graph, GraphNodeWrapper object) {

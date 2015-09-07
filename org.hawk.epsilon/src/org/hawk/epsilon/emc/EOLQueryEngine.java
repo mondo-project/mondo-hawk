@@ -64,11 +64,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 	protected IGraphNodeIndex epackagedictionary;
 	protected Set<String> epackages = null;
 	protected static IAbstractConsole console;
-	// protected OptimisableCollectionOperationContributor operationContributor
-	// = new OptimisableCollectionOperationContributor();
 
-	// public ModelIndexer hawkContainer;
-	protected IPropertyGetter propertygetter;
+	protected GraphPropertyGetter propertygetter;
 
 	public static long time = 0L; // total time taken in specific methods for
 									// debugging
@@ -766,8 +763,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		)
 			graph = g;
 
-		// if (propertygetter == null)
-		propertygetter = new GraphPropertyGetter(graph, this);
+		if (propertygetter == null || propertygetter.getGraph() != graph) 
+			propertygetter = new GraphPropertyGetter(graph, this);
 
 		backendURI = (String) config.get("DATABASE_LOCATION");
 		// if (backendURI != null && graph == null) {

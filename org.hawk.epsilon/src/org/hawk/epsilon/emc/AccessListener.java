@@ -24,8 +24,6 @@ public class AccessListener implements IAccessListener {
 
 	public void accessed(String accessObject, String property) {
 		accesses.add(new Access(sourceObject, accessObject, property));
-		// System.err.println("access:" + query + "\non:" + sourceObject);
-		// System.err.println(accessObject + " -- " + property);
 	}
 
 	public void setSourceObject(String s) {
