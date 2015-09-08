@@ -58,9 +58,6 @@ public class GraphModelBatchInjector {
 
 	private IGraphDatabase graph;
 
-	/*
-	 * temporary link between resource uri and graph node for model elements
-	 */
 	private final Map<IHawkObject, IGraphNode> hash = new HashMap<IHawkObject, IGraphNode>(8192);
 
 	IGraphNodeIndex epackageDictionary, fileDictionary, proxyDictionary,

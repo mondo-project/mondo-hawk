@@ -27,9 +27,7 @@ public class IFCObject implements IHawkObject {
 	protected EObject eob;
 
 	public IFCObject(EObject o) {
-
 		eob = o;
-
 	}
 
 	public EObject getEObject() {

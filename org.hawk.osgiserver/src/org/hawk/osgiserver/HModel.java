@@ -248,6 +248,22 @@ public class HModel {
 	}
 
 	/**
+	 * Registers a new graph change listener into the model indexer, if it wasn't
+	 * already registered. Otherwise, it does nothing.
+	 */
+	public boolean addGraphChangeListener(IGraphChangeListener changeListener) {
+		return hawk.getModelIndexer().addGraphChangeListener(changeListener);
+	}
+
+	/**
+	 * Removes a new graph change listener from the model indexer, if it was already
+	 * registered. Otherwise, it does nothing.
+	 */
+	public boolean removeGraphChangeListener(IGraphChangeListener changeListener) {
+		return hawk.getModelIndexer().removeGraphChangeListener(changeListener);
+	}
+
+	/**
 	 * Performs a context-aware query and returns its result. The result must be
 	 * a Double, a String, an Integer, a ModelElement, the null reference or an
 	 * Iterable of these things.
