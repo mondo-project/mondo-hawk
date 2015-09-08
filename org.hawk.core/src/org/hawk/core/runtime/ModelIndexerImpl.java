@@ -188,83 +188,94 @@ public class ModelIndexerImpl implements IModelIndexer {
 								interestingfiles.remove(c);
 							}
 						}
-						
+
 						HashMap<VcsCommitItem, IHawkModelResource> fileToResourceMap = new HashMap<>();
-						
-						for(IModelUpdater u : getUpdaters()){
-						
-							Set<VcsCommitItem> 	currreposchangeditems = u
-								.compareWithLocalFiles(interestingfiles);
 
-						// create temp files with changed repos files
-						for (VcsCommitItem s : currreposchangeditems) {
+						for (IModelUpdater u : getUpdaters()) {
 
-							String commitPath = s.getPath();
-							
-							console.println("-->" + commitPath
-									+ " HAS CHANGED (" + s.getChangeType()
-									+ "), PROPAGATING CHANGES");
+							Set<VcsCommitItem> currreposchangeditems = u
+									.compareWithLocalFiles(interestingfiles);
 
-							String[] commitPathSplit = commitPath.split("/");
+							// create temp files with changed repos files
+							for (VcsCommitItem s : currreposchangeditems) {
 
-							if (commitPathSplit.length > 1) {
-								String path = monitorTempDir;
-								for (int ii = 0; ii < commitPathSplit.length - 1; ii++) {
+								String commitPath = s.getPath();
 
-									File dir = new File(path + "/" + commitPathSplit[ii]);
-									dir.mkdir();
-									path = path + "/" + commitPathSplit[ii];
+								console.println("-->" + commitPath
+										+ " HAS CHANGED (" + s.getChangeType()
+										+ "), PROPAGATING CHANGES");
 
-								}
-								temp = new File(path + "/" + commitPathSplit[commitPathSplit.length - 1]);
-							} else
-								temp = new File(monitorTempDir	+ "/"
-										+ commitPath);
+								String[] commitPathSplit = commitPath
+										.split("/");
 
-							if(!temp.exists())							
-							m.importFiles(commitPath, temp);
+								if (commitPathSplit.length > 1) {
+									String path = monitorTempDir;
+									for (int ii = 0; ii < commitPathSplit.length - 1; ii++) {
 
-						}
-						// sysout.println(currrepositems);
+										File dir = new File(path + "/"
+												+ commitPathSplit[ii]);
+										dir.mkdir();
+										path = path + "/" + commitPathSplit[ii];
 
-						// int[] upd = { 0, 0, 0 };
+									}
+									temp = new File(
+											path
+													+ "/"
+													+ commitPathSplit[commitPathSplit.length - 1]);
+								} else
+									temp = new File(monitorTempDir + "/"
+											+ commitPath);
 
-						// changedfiles / resourcessd
-
-						for (VcsCommitItem f : currreposchangeditems)
-							fileToResourceMap.put(f, null);
-
-						if (u.caresAboutResources()) {
-
-							for (VcsCommitItem f : currreposchangeditems) {
-
-								if(fileToResourceMap.get(f)!=null)continue;
-
-								File file = new File(graph.getTempDir() + "/" + f.getPath());
-
-								if (!file.exists()) {
-									console.printerrln("warning, cannot find file: "
-											+ file + ", ignoring changes");
-								} else {
-									IHawkModelResource r = getModelParserFromFilename(file.getName().toLowerCase()).parse(file);
-									fileToResourceMap.put(f, r);
-								}
+								if (!temp.exists())
+									m.importFiles(commitPath, temp);
 
 							}
-						}
+							// sysout.println(currrepositems);
 
-						// FIXMEdone delete all removed files
-						graph.exitBatchMode();
+							// int[] upd = { 0, 0, 0 };
 
-						try {
-							for (VcsCommitItem c : deleteditems) {
-									u.deleteAll(c.getCommit().getDelta().getRepository().getUrl(), c.getPath());								
+							// changedfiles / resourcessd
+
+							for (VcsCommitItem f : currreposchangeditems)
+								fileToResourceMap.put(f, null);
+
+							if (u.caresAboutResources()) {
+
+								for (VcsCommitItem f : currreposchangeditems) {
+
+									if (fileToResourceMap.get(f) != null)
+										continue;
+
+									File file = new File(graph.getTempDir()
+											+ "/" + f.getPath());
+
+									if (!file.exists()) {
+										console.printerrln("warning, cannot find file: "
+												+ file + ", ignoring changes");
+									} else {
+										IHawkModelResource r = getModelParserFromFilename(
+												file.getName().toLowerCase())
+												.parse(file);
+										fileToResourceMap.put(f, r);
+									}
+
+								}
 							}
-						} catch (Exception e) {
-							System.err
-									.println("error in deleting removed files from store:");
-							e.printStackTrace();
-						}
+
+							// FIXMEdone delete all removed files
+							graph.exitBatchMode();
+
+							try {
+								for (VcsCommitItem c : deleteditems) {
+									u.deleteAll(c.getCommit().getDelta()
+											.getRepository().getUrl(),
+											c.getPath());
+								}
+							} catch (Exception e) {
+								System.err
+										.println("error in deleting removed files from store:");
+								e.printStackTrace();
+							}
 
 							try {
 								if (currreposchangeditems.size() > 0)
@@ -276,12 +287,13 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 							}
 						}
-						
-						for(IHawkModelResource r:fileToResourceMap.values()){
-							if(r!=null)
+
+						for (IHawkModelResource r : fileToResourceMap.values()) {
+							if (r != null) {
 								r.unload();
+							}
 						}
-						
+
 						// FIXME manage changes (propagate to mondix / derived
 						// updaters etc)
 
@@ -568,10 +580,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		for (File f : metamodel) {
 
-			String[] split = f.getPath().split("\\.");
-			String extension = split[split.length - 1];
-
-			parser = getMetaModelParserWithMetamodelExtension(extension);
+			parser = getMetaModelParserFromFilename(f.getPath());
 
 			if (parser == null) {
 				console.printerrln("metamodel de-regstration failed, no relevant factory found");
@@ -657,10 +666,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 			for (File mm : metamodel) {
 
-				String[] split = mm.getPath().split("\\.");
-				String extension = split[split.length - 1];
-
-				parser = getMetaModelParserWithMetamodelExtension(extension);
+				parser = getMetaModelParserFromFilename(mm.getPath());
 
 				if (parser == null) {
 					console.printerrln("metamodel regstration failed, no relevant factory found");
@@ -727,22 +733,24 @@ public class ModelIndexerImpl implements IModelIndexer {
 		return null;
 	}
 
-	public IMetaModelResourceFactory getMetaModelParserWithMetamodelExtension(
-			String extension) {
-		if (extension == null)
-			console.printerrln("null extension given to getMetaModelParserWithMetamodelExtension(extension), returning null");
+	public IMetaModelResourceFactory getMetaModelParserFromFilename(String name) {
+		if (name == null)
+			console.printerrln("null extension given to getMetaModelParserFromFilename(extension), returning null");
 		else
 			for (String p : metamodelparsers.keySet()) {
 				IMetaModelResourceFactory parser = metamodelparsers.get(p);
-				if (parser.getMetaModelExtensions().contains(extension))
-					return parser;
+				for (String ext : parser.getMetaModelExtensions()) {
+					if (name.endsWith(ext)) {
+						return parser;
+					}
+				}
 			}
 		return null;
 	}
 
 	public IModelResourceFactory getModelParserFromFilename(String name) {
 		if (name == null)
-			console.printerrln("null extension given to getParserWithModelExtension(extension), returning null");
+			console.printerrln("null extension given to getModelParserFromFilename(extension), returning null");
 		else
 			for (String p : modelparsers.keySet()) {
 				IModelResourceFactory parser = modelparsers.get(p);
@@ -813,14 +821,15 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public void addVCSManager(IVcsManager vcs,boolean persist) {
+	public void addVCSManager(IVcsManager vcs, boolean persist) {
 
 		monitors.add(vcs);
 		currLocalTopRevisions.add("-3");
 		currReposTopRevisions.add("-4");
 
 		try {
-			if(persist)saveIndexer();
+			if (persist)
+				saveIndexer();
 		} catch (Exception e) {
 			System.err.println("addVCSManager tried to saveIndexer but failed");
 			e.printStackTrace();
@@ -828,10 +837,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public void setDB(IGraphDatabase db,boolean persist) {
+	public void setDB(IGraphDatabase db, boolean persist) {
 		graph = db;
 		try {
-			if(persist)saveIndexer();
+			if (persist)
+				saveIndexer();
 		} catch (Exception e) {
 			System.err.println("setDB tried to saveIndexer but failed");
 			e.printStackTrace();
@@ -1084,10 +1094,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 				String s = it.next();
 				String[] split = s.split("##");
 				final String mmURI = split[0];
-				
+
 				IGraphNode epackagenode = graph.getMetamodelIndex()
 						.get("id", mmURI).iterator().next();
-							
+
 				IGraphNode typenode = null;
 				for (IGraphEdge e : epackagenode
 						.getIncomingWithType("epackage")) {
