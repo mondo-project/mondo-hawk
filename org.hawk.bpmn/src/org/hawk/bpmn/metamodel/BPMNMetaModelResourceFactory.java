@@ -14,9 +14,11 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.emf.common.util.URI;
@@ -39,22 +41,10 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 	String type = "org.hawk.emf.metamodel.BPMNMetaModelParser";
 	String hrn = "BPMN Metamodel Resource Factory";
-	// GraphDatabase graph;
 
-	HashSet<String> metamodelExtensions;
-	HashSet<String> modelExtensions;
 	ResourceSet resourceSet = null;
 
 	public BPMNMetaModelResourceFactory() {
-
-		metamodelExtensions = new HashSet<String>();
-		modelExtensions = new HashSet<String>();
-
-		// metamodelExtensions.add("ecore");
-		// metamodelExtensions.add("ECORE");
-		modelExtensions.add("bpmn2");
-		modelExtensions.add("BPMN2");
-
 		if (resourceSet == null) {
 			resourceSet = new ResourceSetImpl();
 			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
@@ -77,8 +67,6 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 	@Override
 	public void shutdown() {
 		type = null;
-		metamodelExtensions = null;
-		modelExtensions = null;
 		resourceSet = null;
 	}
 
@@ -101,9 +89,8 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 	}
 
 	@Override
-	public HashSet<String> getMetaModelExtensions() {
-
-		return metamodelExtensions;
+	public Set<String> getMetaModelExtensions() {
+		return Collections.emptySet();
 	}
 
 	@Override

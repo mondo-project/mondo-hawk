@@ -12,6 +12,7 @@ package org.hawk.emf.model;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -41,9 +42,8 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 
 	// String metamodeltype =
 	// "org.hawk.emf.metamodel.EMFMetaModelParser";
-	HashSet<String> metamodelExtensions;
-	HashSet<String> modelExtensions;
-	ResourceSet resourceSet = null;
+	Set<String> metamodelExtensions;
+	Set<String> modelExtensions;
 
 	public EMFModelResourceFactory() {
 		metamodelExtensions = new HashSet<String>();
@@ -52,14 +52,6 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 		metamodelExtensions.add(".ecore");
 		modelExtensions.add(".xmi");
 		modelExtensions.add(".model");
-
-		if (resourceSet == null) {
-			resourceSet = new ResourceSetImpl();
-			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-					.put("ecore", new EcoreResourceFactoryImpl());
-			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-					.put("*", new XMIResourceFactoryImpl());
-		}
 	}
 
 	@Override
@@ -72,33 +64,6 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 		return hrn;
 	}
 
-	// @Override
-	// public int registerMeta(File f) {
-	//
-	// int count = 0;
-	//
-	// // if (f.getName().endsWith(".ecore")) {
-	// String[] path = f.getPath().replaceAll("\\\\", "/").split("/");
-	// String[] file = path[path.length - 1].split("\\.");
-	// String extension = file[file.length - 1];
-	// if (getMetamodelExtensions().contains(extension)) {
-	//
-	// Resource metamodelResource = modelResourceSet.getResource(
-	// URI.createFileURI(f.getAbsolutePath()), true);
-	//
-	// for (EObject oo : metamodelResource.getContents()) {
-	// // for (EObject o : oo.eContents()) {//not adding
-	// // packages ... solve!
-	// if (oo instanceof EPackage)
-	// count += new RegisterMeta().registerPackages((EPackage) oo);
-	// // }
-	// }
-	// metamodelResource = null;
-	//
-	// }
-	// return count;
-	// }
-
 	@Override
 	public IHawkModelResource parse(File f) {
 
@@ -107,6 +72,11 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 		Resource r = null;
 
 		try {
+			ResourceSet resourceSet = new ResourceSetImpl();
+			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
+					.put("ecore", new EcoreResourceFactoryImpl());
+			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
+					.put("*", new XMIResourceFactoryImpl());
 
 			r = resourceSet.createResource(URI.createFileURI(f
 					.getAbsolutePath()));
@@ -184,14 +154,11 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 		type = null;
 		metamodelExtensions = null;
 		modelExtensions = null;
-		resourceSet = null;
 	}
 
 	@Override
-	public HashSet<String> getModelExtensions() {
-
+	public Set<String> getModelExtensions() {
 		return modelExtensions;
-
 	}
 
 	@Override
