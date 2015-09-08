@@ -12,11 +12,10 @@ package org.hawk.bpmn.model;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.bpmn2.util.Bpmn2ResourceFactoryImpl;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -40,27 +39,12 @@ public class BPMNModelResourceFactory implements IModelResourceFactory {
 	String type = "org.hawk.emf.metamodel.BPMNModelParser";
 	String hrn = "BPMN Model Resource Factory";
 
-	// String metamodeltype =
-	// "org.hawk.emf.metamodel.EMFMetaModelParser";
-	HashSet<String> metamodelExtensions;
-	HashSet<String> modelExtensions;
-
-	ResourceSet resourceSet = null;
+	Set<String> modelExtensions;
 
 	public BPMNModelResourceFactory() {
-		metamodelExtensions = new HashSet<String>();
 		modelExtensions = new HashSet<String>();
-
 		modelExtensions.add(".bpmn");
 		modelExtensions.add(".bpmn2");
-
-		if (resourceSet == null) {
-			resourceSet = new ResourceSetImpl();
-			resourceSet.getPackageRegistry().put(EcorePackage.eNS_URI,
-					EcorePackage.eINSTANCE);
-			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-				.put("bpmn", new Bpmn2ResourceFactoryImpl());
-		}
 	}
 
 	@Override
@@ -81,16 +65,17 @@ public class BPMNModelResourceFactory implements IModelResourceFactory {
 
 		try {
 
-			if (EPackage.Registry.INSTANCE.getEPackage(EcorePackage.eNS_URI) == null) {
-				EPackage.Registry.INSTANCE.put(EcorePackage.eNS_URI,
-						EcorePackage.eINSTANCE);
-			}
-
 			// determinePackagesFrom(resourceSet);
 
 			// Note that AbstractEmfModel#getPackageRegistry() is not usable
 			// yet, as
 			// modelImpl is not set
+
+			ResourceSet resourceSet = new ResourceSetImpl();
+			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
+					.put("bpmn", new Bpmn2ResourceFactoryImpl());
+			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
+					.put("bpmn2", new Bpmn2ResourceFactoryImpl());
 
 			r = resourceSet.createResource(URI.createFileURI(f.getPath()));
 			r.load(null);
@@ -105,7 +90,7 @@ public class BPMNModelResourceFactory implements IModelResourceFactory {
 		} catch (Exception e) {
 			System.err.print("error in parse(File f): ");
 			System.err.println(e.getCause());
-			e.printStackTrace();
+			// e.printStackTrace();
 			ret = null;
 		}
 
@@ -115,37 +100,12 @@ public class BPMNModelResourceFactory implements IModelResourceFactory {
 
 	}
 
-	// @Override
-	// public String printregistry() {
-	// return EPackage.Registry.INSTANCE.keySet().toString();
-	// }
-
-	// @Override
-	// public List<String> getepackageuris() {
-	//
-	// List<String> l = new LinkedList<String>();
-	//
-	// for (Object pp : EPackage.Registry.INSTANCE.keySet().toArray()) {
-	// String p = pp.toString();
-	// if (!p.contains("Ecore") && !p.contains("XMLType")) {
-	// EPackage ep = EPackage.Registry.INSTANCE.getEPackage(p);
-	// l.add(ep.getNsURI());
-	// }
-	// }
-	// return l;
-	//
-	// }
-
 	@Override
 	public void shutdown() {
-		type = null;
-		metamodelExtensions = null;
-		modelExtensions = null;
-		// resourceSet = null;
 	}
 
 	@Override
-	public HashSet<String> getModelExtensions() {
+	public Set<String> getModelExtensions() {
 
 		return modelExtensions;
 

@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.Activity;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.impl.EcorePackageImpl;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -42,16 +43,20 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 	String type = "org.hawk.emf.metamodel.BPMNMetaModelParser";
 	String hrn = "BPMN Metamodel Resource Factory";
 
-	ResourceSet resourceSet = null;
+	ResourceSet resourceSet;
 
 	public BPMNMetaModelResourceFactory() {
-		if (resourceSet == null) {
-			resourceSet = new ResourceSetImpl();
-			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-					.put("ecore", new EcoreResourceFactoryImpl());
-			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-					.put("*", new XMIResourceFactoryImpl());
+		if (EPackage.Registry.INSTANCE.getEPackage(EcorePackage.eNS_URI) == null) {
+			EPackage.Registry.INSTANCE.put(EcorePackage.eNS_URI,
+					EcorePackage.eINSTANCE);
 		}
+
+		resourceSet = new ResourceSetImpl();
+		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
+				.put("ecore", new EcoreResourceFactoryImpl());
+		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
+				.put("*", new XMIResourceFactoryImpl());
+
 	}
 
 	@Override
@@ -66,8 +71,6 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 	@Override
 	public void shutdown() {
-		type = null;
-		resourceSet = null;
 	}
 
 	@Override

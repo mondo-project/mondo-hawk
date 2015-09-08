@@ -15,10 +15,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
@@ -40,16 +41,11 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 	String type = "org.hawk.emf.metamodel.EMFModelParser";
 	String hrn = "EMF Model Resource Factory";
 
-	// String metamodeltype =
-	// "org.hawk.emf.metamodel.EMFMetaModelParser";
-	Set<String> metamodelExtensions;
 	Set<String> modelExtensions;
 
 	public EMFModelResourceFactory() {
-		metamodelExtensions = new HashSet<String>();
-		modelExtensions = new HashSet<String>();
 
-		metamodelExtensions.add(".ecore");
+		modelExtensions = new HashSet<String>();
 		modelExtensions.add(".xmi");
 		modelExtensions.add(".model");
 	}
@@ -72,44 +68,16 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 		Resource r = null;
 
 		try {
+
 			ResourceSet resourceSet = new ResourceSetImpl();
+
 			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-					.put("ecore", new EcoreResourceFactoryImpl());
+					.put("xmi", new XMIResourceFactoryImpl());
 			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-					.put("*", new XMIResourceFactoryImpl());
+					.put("model", new XMIResourceFactoryImpl());
 
 			r = resourceSet.createResource(URI.createFileURI(f
 					.getAbsolutePath()));
-
-			// String o = XMIResource.OPTION_DEFER_IDREF_RESOLUTION;
-
-			/*
-			 * System.err.println(">" + resourceSet.getPackageRegistry()
-			 * .getEPackage("org.amma.dsl.jdt.core")
-			 * .getEClassifier("IPackageFragment")); System.err.println(">>" +
-			 * EPackage.Registry.INSTANCE.getEPackage(
-			 * "org.amma.dsl.jdt.core").getEClassifier( "IPackageFragment"));
-			 * 
-			 * //for (Object v :
-			 * EPackage.Registry.INSTANCE.values())System.err.println
-			 * (((EPackage) v).getEClassifiers());
-			 * 
-			 * for (String s : resourceSet.getPackageRegistry().keySet())
-			 * System.err.println(">>>" +
-			 * resourceSet.getPackageRegistry().getEPackage(s) .getNsURI() +
-			 * " : " + resourceSet.getPackageRegistry().getEPackage(s)
-			 * .getEClassifier("IPackageFragment"));
-			 * 
-			 * System.err.println(resourceSet.getPackageRegistry().size());
-			 * 
-			 * for (String s : EPackage.Registry.INSTANCE.keySet())
-			 * System.err.println(">>>>" +
-			 * EPackage.Registry.INSTANCE.getEPackage(s).getNsURI() + " : " +
-			 * EPackage.Registry.INSTANCE.getEPackage(s)
-			 * .getEClassifier("IPackageFragment"));
-			 * 
-			 * System.err.println(EPackage.Registry.INSTANCE.size());
-			 */
 
 			r.load(null);
 
@@ -128,32 +96,8 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 
 	}
 
-	// @Override
-	// public String printregistry() {
-	// return EPackage.Registry.INSTANCE.keySet().toString();
-	// }
-
-	// @Override
-	// public List<String> getepackageuris() {
-	//
-	// List<String> l = new LinkedList<String>();
-	//
-	// for (Object pp : EPackage.Registry.INSTANCE.keySet().toArray()) {
-	// String p = pp.toString();
-	// if (!p.contains("Ecore") && !p.contains("XMLType")) {
-	// EPackage ep = EPackage.Registry.INSTANCE.getEPackage(p);
-	// l.add(ep.getNsURI());
-	// }
-	// }
-	// return l;
-	//
-	// }
-
 	@Override
 	public void shutdown() {
-		type = null;
-		metamodelExtensions = null;
-		modelExtensions = null;
 	}
 
 	@Override

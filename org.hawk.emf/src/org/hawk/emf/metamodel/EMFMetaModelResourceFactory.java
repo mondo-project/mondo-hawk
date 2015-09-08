@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.util.HashSet;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -31,29 +33,27 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 	String type = "org.hawk.emf.metamodel.EMFMetaModelParser";
 	String hrn = "EMF Metamodel Resource Factory";
-	// GraphDatabase graph;
 
 	HashSet<String> metamodelExtensions;
-	HashSet<String> modelExtensions;
-	ResourceSet resourceSet = null;
+
+	ResourceSet resourceSet;
 
 	public EMFMetaModelResourceFactory() {
-
 		metamodelExtensions = new HashSet<String>();
-		modelExtensions = new HashSet<String>();
+		metamodelExtensions.add(".ecore");
 
-		metamodelExtensions.add("ecore");
-		metamodelExtensions.add("ECORE");
-		modelExtensions.add("xmi");
-		modelExtensions.add("XMI");
-
-		if (resourceSet == null) {
-			resourceSet = new ResourceSetImpl();
-			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-					.put("ecore", new EcoreResourceFactoryImpl());
-			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-					.put("*", new XMIResourceFactoryImpl());
+		if (EPackage.Registry.INSTANCE.getEPackage(EcorePackage.eNS_URI) == null) {
+			EPackage.Registry.INSTANCE.put(EcorePackage.eNS_URI,
+					EcorePackage.eINSTANCE);
 		}
+
+		resourceSet = new ResourceSetImpl();
+
+		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
+				.put("ecore", new EcoreResourceFactoryImpl());
+		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
+				.put("*", new XMIResourceFactoryImpl());
+
 	}
 
 	@Override
@@ -68,10 +68,6 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 	@Override
 	public void shutdown() {
-		type = null;
-		metamodelExtensions = null;
-		modelExtensions = null;
-		resourceSet = null;
 	}
 
 	@Override
@@ -147,7 +143,7 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 		if (found)
 			try {
 				rem.delete(null);
-				//EPackage.Registry.INSTANCE.remove(property);
+				// EPackage.Registry.INSTANCE.remove(property);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

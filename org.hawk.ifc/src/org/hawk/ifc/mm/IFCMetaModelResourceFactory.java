@@ -22,6 +22,7 @@ import org.bimserver.models.geometry.GeometryPackage;
 import org.bimserver.models.ifc2x3tc1.Ifc2x3tc1Package;
 import org.bimserver.models.ifc4.Ifc4Package;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -61,8 +62,8 @@ public class IFCMetaModelResourceFactory implements IMetaModelResourceFactory {
 	public IHawkMetaModelResource parse(File f) throws Exception {
 		IFCMetaModelResource ret;
 
-		Resource r = resourceSet.createResource(
-			URI.createFileURI(f.getAbsolutePath()));
+		Resource r = resourceSet.createResource(URI.createFileURI(f
+				.getAbsolutePath()));
 		r.load(null);
 
 		RegisterMeta.registerPackages(r);
@@ -76,19 +77,22 @@ public class IFCMetaModelResourceFactory implements IMetaModelResourceFactory {
 	}
 
 	@Override
-	public IHawkMetaModelResource createMetamodelWithSinglePackage(String s, IHawkPackage p) {
+	public IHawkMetaModelResource createMetamodelWithSinglePackage(String s,
+			IHawkPackage p) {
 		Resource r = resourceSet.createResource(URI.createURI(s));
 		r.getContents().add(((IFCPackage) p).getEObject());
 		return new IFCMetaModelResource(r, this);
 	}
 
 	@Override
-	public IHawkMetaModelResource parseFromString(String name, String contents) throws Exception {
+	public IHawkMetaModelResource parseFromString(String name, String contents)
+			throws Exception {
 		if (name == null || contents == null) {
 			return null;
 		}
 
-		try (final InputStream input = new ByteArrayInputStream(contents.getBytes("UTF-8"))) {
+		try (final InputStream input = new ByteArrayInputStream(
+				contents.getBytes("UTF-8"))) {
 			final Resource r = resourceSet.createResource(URI.createURI(name));
 			r.load(input, null);
 			RegisterMeta.registerPackages(r);
@@ -121,10 +125,21 @@ public class IFCMetaModelResourceFactory implements IMetaModelResourceFactory {
 	@Override
 	public Set<IHawkMetaModelResource> getStaticMetamodels() {
 		final Set<IHawkMetaModelResource> set = new LinkedHashSet<>();
-		set.add(new IFCMetaModelResource(EcorePackage.eINSTANCE.eResource(), this));
-		set.add(new IFCMetaModelResource(GeometryPackage.eINSTANCE.eResource(), this));
-		set.add(new IFCMetaModelResource(Ifc2x3tc1Package.eINSTANCE.eResource(), this));
-		set.add(new IFCMetaModelResource(Ifc4Package.eINSTANCE.eResource(), this));
+		if (!EPackage.Registry.INSTANCE
+				.containsKey("http://www.eclipse.org/emf/2002/Ecore"))
+			set.add(new IFCMetaModelResource(
+					EcorePackage.eINSTANCE.eResource(), this));
+		if (!EPackage.Registry.INSTANCE.containsKey("geometry"))
+			set.add(new IFCMetaModelResource(GeometryPackage.eINSTANCE
+					.eResource(), this));
+		if (!EPackage.Registry.INSTANCE
+				.containsKey("http://buildingsmart.ifc2x3tc1.ecore"))
+			set.add(new IFCMetaModelResource(Ifc2x3tc1Package.eINSTANCE
+					.eResource(), this));
+		if (!EPackage.Registry.INSTANCE
+				.containsKey("http://buildingsmart.ifc4.ecore"))
+			set.add(new IFCMetaModelResource(Ifc4Package.eINSTANCE.eResource(),
+					this));
 		return set;
 	}
 
