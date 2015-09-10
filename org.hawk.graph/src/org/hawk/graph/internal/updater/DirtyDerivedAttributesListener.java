@@ -48,6 +48,16 @@ public class DirtyDerivedAttributesListener implements IGraphChangeListener {
 	}
 
 	@Override
+	public void synchroniseStart() {
+		// nothing to do
+	}
+
+	@Override
+	public void synchroniseEnd() {
+		// nothing to do
+	}
+
+	@Override
 	public void changeStart() {
 		// nothing to do
 	}

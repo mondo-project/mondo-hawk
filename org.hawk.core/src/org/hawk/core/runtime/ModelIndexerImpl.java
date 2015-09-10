@@ -115,247 +115,267 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	@Override
 	public boolean synchronise() throws Exception {
+		listener.synchroniseStart();
 
-		// System.err.println(currLocalTopRevisions);
-		// System.err.println(currReposTopRevisions);
+		try {
+			// System.err.println(currLocalTopRevisions);
+			// System.err.println(currReposTopRevisions);
 
-		boolean allSync = true;
+			boolean allSync = true;
 
-		if (monitors.size() > 0) {
+			if (monitors.size() > 0) {
 
-			for (int i = 0; i < monitors.size(); i++) {
+				for (int i = 0; i < monitors.size(); i++) {
 
-				IVcsManager m = monitors.get(i);
+					IVcsManager m = monitors.get(i);
 
-				if (m.isActive()) {
+					if (m.isActive()) {
 
-					try {
-						currReposTopRevisions.set(i, m.getCurrentRevision());
-					} catch (Exception e1) {
-						// if (e1.getMessage().contains("Authentication"))
-						// {syserr(Eclipse_VCS_NoSQL_UI_view.indexers.remove(this)+"");
-						// syserr("Incorrect authentication to version control, removing this indexer, please add it again with the correct credentials");}
-						// else
-						e1.printStackTrace();
+						try {
+							currReposTopRevisions
+									.set(i, m.getCurrentRevision());
+						} catch (Exception e1) {
+							// if (e1.getMessage().contains("Authentication"))
+							// {syserr(Eclipse_VCS_NoSQL_UI_view.indexers.remove(this)+"");
+							// syserr("Incorrect authentication to version control, removing this indexer, please add it again with the correct credentials");}
+							// else
+							e1.printStackTrace();
+							allSync = false;
+						}
+
+						if (!currReposTopRevisions.get(i).equals(
+								currLocalTopRevisions.get(i))) {
+
+							String monitorTempDir = graph.getTempDir();
+
+							File temp = new File(
+							// context.getBundle().getLocation()
+									monitorTempDir);
+							temp.mkdir();
+
+							Set<VcsCommitItem> deleteditems = new HashSet<VcsCommitItem>();
+
+							// limit to "interesting" files
+							List<VcsCommitItem> files = m
+									.getDelta(currLocalTopRevisions.get(i));
+
+							// System.err.println(files);
+
+							HashSet<VcsCommitItem> interestingfiles = new HashSet<VcsCommitItem>();
+
+							for (VcsCommitItem r : files) {
+								for (String p : getKnownModelParserTypes()) {
+									IModelResourceFactory parser = getModelParser(p);
+									for (String ext : parser
+											.getModelExtensions()) {
+										if (r.getPath().toLowerCase()
+												.endsWith(ext)) {
+											interestingfiles.add(r);
+										}
+									}
+								}
+							}
+
+							Iterator<VcsCommitItem> it = interestingfiles
+									.iterator();
+
+							if (it.hasNext()) {
+
+								VcsCommitItem c = it.next();
+
+								if (c.getChangeType().equals(
+										VcsChangeType.DELETED)) {
+
+									console.println("-->" + c.getPath()
+											+ " HAS CHANGED ("
+											+ c.getChangeType()
+											+ "), PROPAGATING CHANGES");
+
+									deleteditems.add(c);
+									interestingfiles.remove(c);
+								}
+							}
+
+							HashMap<VcsCommitItem, IHawkModelResource> fileToResourceMap = new HashMap<>();
+
+							for (IModelUpdater u : getUpdaters()) {
+
+								Set<VcsCommitItem> currreposchangeditems = u
+										.compareWithLocalFiles(interestingfiles);
+
+								// create temp files with changed repos files
+								for (VcsCommitItem s : currreposchangeditems) {
+
+									String commitPath = s.getPath();
+
+									console.println("-->" + commitPath
+											+ " HAS CHANGED ("
+											+ s.getChangeType()
+											+ "), PROPAGATING CHANGES");
+
+									String[] commitPathSplit = commitPath
+											.split("/");
+
+									if (commitPathSplit.length > 1) {
+										String path = monitorTempDir;
+										for (int ii = 0; ii < commitPathSplit.length - 1; ii++) {
+
+											File dir = new File(path + "/"
+													+ commitPathSplit[ii]);
+											dir.mkdir();
+											path = path + "/"
+													+ commitPathSplit[ii];
+
+										}
+										temp = new File(
+												path
+														+ "/"
+														+ commitPathSplit[commitPathSplit.length - 1]);
+									} else
+										temp = new File(monitorTempDir + "/"
+												+ commitPath);
+
+									if (!temp.exists())
+										m.importFiles(commitPath, temp);
+
+								}
+								// sysout.println(currrepositems);
+
+								// int[] upd = { 0, 0, 0 };
+
+								// changedfiles / resourcessd
+
+								for (VcsCommitItem f : currreposchangeditems)
+									fileToResourceMap.put(f, null);
+
+								if (u.caresAboutResources()) {
+
+									for (VcsCommitItem f : currreposchangeditems) {
+
+										if (fileToResourceMap.get(f) != null)
+											continue;
+
+										File file = new File(graph.getTempDir()
+												+ "/" + f.getPath());
+
+										if (!file.exists()) {
+											console.printerrln("warning, cannot find file: "
+													+ file
+													+ ", ignoring changes");
+										} else {
+											IHawkModelResource r = getModelParserFromFilename(
+													file.getName()
+															.toLowerCase())
+													.parse(file);
+											fileToResourceMap.put(f, r);
+										}
+
+									}
+								}
+
+								// FIXMEdone delete all removed files
+								graph.exitBatchMode();
+
+								try {
+									for (VcsCommitItem c : deleteditems) {
+										u.deleteAll(c.getCommit().getDelta()
+												.getRepository().getUrl(),
+												c.getPath());
+									}
+								} catch (Exception e) {
+									System.err
+											.println("error in deleting removed files from store:");
+									e.printStackTrace();
+								}
+
+								try {
+									if (currreposchangeditems.size() > 0)
+										u.updateStore(fileToResourceMap);
+								} catch (Exception e) {
+									console.printerrln("updater: " + u
+											+ "failed to update store");
+									console.printerrln(e);
+
+								}
+							}
+
+							for (IHawkModelResource r : fileToResourceMap
+									.values()) {
+								if (r != null) {
+									r.unload();
+								}
+							}
+
+							// FIXME manage changes (propagate to mondix /
+							// derived
+							// updaters etc)
+
+							// changes.dosomething -- currently logs all changes
+							// to
+							// files for debugging
+
+							// temp = new File(monitorTempDir);
+							// File log = new File(temp.getParent() +
+							// "/log.txt");
+							// int count = 0;
+							// while (log.exists()) {
+							// count++;
+							// log = new File(temp.getParent() + "/log" + count
+							// + ".txt");
+							// }
+							//
+							// PrintWriter w = new PrintWriter(new
+							// FileWriter(log,
+							// true));
+							//
+							// for (IGraphChangeDescriptor change : changes) {
+							//
+							// w.println("---------" + change.getName()
+							// + "---------");
+							//
+							// for (IGraphChange c : change.getChanges()) {
+							//
+							// w.println(c.toString());
+							//
+							// }
+							//
+							// w.println("---------" + "---------" +
+							// "---------");
+							//
+							// }
+							//
+							// w.flush();
+							// w.close();
+
+							//
+
+							//
+
+							boolean success = true;
+
+							// delete temporary files
+							if (!FileOperations.deleteFiles(new File(
+									monitorTempDir), true))
+								console.printerrln("error in deleting temporary local vcs files");
+
+							if (success)
+								currLocalTopRevisions.set(i,
+										currReposTopRevisions.get(i));
+							else
+								allSync = false;
+
+						}
+
+					} else {
+						console.printerrln("Warning, monitor is inactive, synchronisation failed!");
 						allSync = false;
 					}
-
-					if (!currReposTopRevisions.get(i).equals(
-							currLocalTopRevisions.get(i))) {
-
-						String monitorTempDir = graph.getTempDir();
-
-						File temp = new File(
-						// context.getBundle().getLocation()
-								monitorTempDir);
-						temp.mkdir();
-
-						Set<VcsCommitItem> deleteditems = new HashSet<VcsCommitItem>();
-
-						// limit to "interesting" files
-						List<VcsCommitItem> files = m
-								.getDelta(currLocalTopRevisions.get(i));
-
-						// System.err.println(files);
-
-						HashSet<VcsCommitItem> interestingfiles = new HashSet<VcsCommitItem>();
-
-						for (VcsCommitItem r : files) {
-							for (String p : getKnownModelParserTypes()) {
-								IModelResourceFactory parser = getModelParser(p);
-								for (String ext : parser.getModelExtensions()) {
-									if (r.getPath().toLowerCase().endsWith(ext)) {
-										interestingfiles.add(r);
-									}
-								}
-							}
-						}
-
-						Iterator<VcsCommitItem> it = interestingfiles
-								.iterator();
-
-						if (it.hasNext()) {
-
-							VcsCommitItem c = it.next();
-
-							if (c.getChangeType().equals(VcsChangeType.DELETED)) {
-
-								console.println("-->" + c.getPath()
-										+ " HAS CHANGED (" + c.getChangeType()
-										+ "), PROPAGATING CHANGES");
-
-								deleteditems.add(c);
-								interestingfiles.remove(c);
-							}
-						}
-
-						HashMap<VcsCommitItem, IHawkModelResource> fileToResourceMap = new HashMap<>();
-
-						for (IModelUpdater u : getUpdaters()) {
-
-							Set<VcsCommitItem> currreposchangeditems = u
-									.compareWithLocalFiles(interestingfiles);
-
-							// create temp files with changed repos files
-							for (VcsCommitItem s : currreposchangeditems) {
-
-								String commitPath = s.getPath();
-
-								console.println("-->" + commitPath
-										+ " HAS CHANGED (" + s.getChangeType()
-										+ "), PROPAGATING CHANGES");
-
-								String[] commitPathSplit = commitPath
-										.split("/");
-
-								if (commitPathSplit.length > 1) {
-									String path = monitorTempDir;
-									for (int ii = 0; ii < commitPathSplit.length - 1; ii++) {
-
-										File dir = new File(path + "/"
-												+ commitPathSplit[ii]);
-										dir.mkdir();
-										path = path + "/" + commitPathSplit[ii];
-
-									}
-									temp = new File(
-											path
-													+ "/"
-													+ commitPathSplit[commitPathSplit.length - 1]);
-								} else
-									temp = new File(monitorTempDir + "/"
-											+ commitPath);
-
-								if (!temp.exists())
-									m.importFiles(commitPath, temp);
-
-							}
-							// sysout.println(currrepositems);
-
-							// int[] upd = { 0, 0, 0 };
-
-							// changedfiles / resourcessd
-
-							for (VcsCommitItem f : currreposchangeditems)
-								fileToResourceMap.put(f, null);
-
-							if (u.caresAboutResources()) {
-
-								for (VcsCommitItem f : currreposchangeditems) {
-
-									if (fileToResourceMap.get(f) != null)
-										continue;
-
-									File file = new File(graph.getTempDir()
-											+ "/" + f.getPath());
-
-									if (!file.exists()) {
-										console.printerrln("warning, cannot find file: "
-												+ file + ", ignoring changes");
-									} else {
-										IHawkModelResource r = getModelParserFromFilename(
-												file.getName().toLowerCase())
-												.parse(file);
-										fileToResourceMap.put(f, r);
-									}
-
-								}
-							}
-
-							// FIXMEdone delete all removed files
-							graph.exitBatchMode();
-
-							try {
-								for (VcsCommitItem c : deleteditems) {
-									u.deleteAll(c.getCommit().getDelta()
-											.getRepository().getUrl(),
-											c.getPath());
-								}
-							} catch (Exception e) {
-								System.err
-										.println("error in deleting removed files from store:");
-								e.printStackTrace();
-							}
-
-							try {
-								if (currreposchangeditems.size() > 0)
-									u.updateStore(fileToResourceMap);
-							} catch (Exception e) {
-								console.printerrln("updater: " + u
-										+ "failed to update store");
-								console.printerrln(e);
-
-							}
-						}
-
-						for (IHawkModelResource r : fileToResourceMap.values()) {
-							if (r != null) {
-								r.unload();
-							}
-						}
-
-						// FIXME manage changes (propagate to mondix / derived
-						// updaters etc)
-
-						// changes.dosomething -- currently logs all changes to
-						// files for debugging
-
-						// temp = new File(monitorTempDir);
-						// File log = new File(temp.getParent() + "/log.txt");
-						// int count = 0;
-						// while (log.exists()) {
-						// count++;
-						// log = new File(temp.getParent() + "/log" + count
-						// + ".txt");
-						// }
-						//
-						// PrintWriter w = new PrintWriter(new FileWriter(log,
-						// true));
-						//
-						// for (IGraphChangeDescriptor change : changes) {
-						//
-						// w.println("---------" + change.getName()
-						// + "---------");
-						//
-						// for (IGraphChange c : change.getChanges()) {
-						//
-						// w.println(c.toString());
-						//
-						// }
-						//
-						// w.println("---------" + "---------" + "---------");
-						//
-						// }
-						//
-						// w.flush();
-						// w.close();
-
-						//
-
-						//
-
-						boolean success = true;
-
-						// delete temporary files
-						if (!FileOperations.deleteFiles(
-								new File(monitorTempDir), true))
-							console.printerrln("error in deleting temporary local vcs files");
-
-						if (success)
-							currLocalTopRevisions.set(i,
-									currReposTopRevisions.get(i));
-						else
-							allSync = false;
-
-					}
-
-				} else {
-					console.printerrln("Warning, monitor is inactive, synchronisation failed!");
-					allSync = false;
 				}
 			}
+			return allSync;
+		} finally {
+			listener.synchroniseEnd();
 		}
-		return allSync;
 	}
 
 	private List<IModelUpdater> getUpdaters() {

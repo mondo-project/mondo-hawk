@@ -28,6 +28,20 @@ public class CompositeGraphChangeListener extends HashSet<IGraphChangeListener> 
 	private static final long serialVersionUID = 639097671453202757L;
 
 	@Override
+	public void synchroniseStart() {
+		for (IGraphChangeListener l : this) {
+			l.synchroniseStart();
+		}
+	}
+
+	@Override
+	public void synchroniseEnd() {
+		for (IGraphChangeListener l : this) {
+			l.synchroniseEnd();
+		}
+	}
+
+	@Override
 	public void changeStart() {
 		for (IGraphChangeListener l : this) {
 			l.changeStart();
