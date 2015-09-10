@@ -101,7 +101,9 @@ public class HModel {
 			console.printerrln(e);
 
 			try {
-				db.delete();
+				if (db != null) {
+					db.delete();
+				}
 			} catch (Exception e2) {
 				throw e2;
 			}
