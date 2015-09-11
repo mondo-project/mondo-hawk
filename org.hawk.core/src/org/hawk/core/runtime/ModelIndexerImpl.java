@@ -64,11 +64,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	private String name;
 
-	private ArrayList<IVcsManager> monitors = new ArrayList<>();
+	private List<IVcsManager> monitors = new ArrayList<>();
 	private IGraphDatabase graph = null;
 	private IMetaModelUpdater metamodelupdater = null;
-	private ArrayList<String> currLocalTopRevisions = new ArrayList<>();
-	private ArrayList<String> currReposTopRevisions = new ArrayList<>();
+	private List<String> currLocalTopRevisions = new ArrayList<>();
+	private List<String> currReposTopRevisions = new ArrayList<>();
 
 	private Map<String, IModelResourceFactory> modelparsers = new HashMap<>();
 	private Map<String, IMetaModelResourceFactory> metamodelparsers = new HashMap<>();
