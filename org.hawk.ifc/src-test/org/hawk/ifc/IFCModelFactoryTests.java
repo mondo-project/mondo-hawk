@@ -24,7 +24,7 @@ public class IFCModelFactoryTests {
 	 * Path to the directory with all the unzipped example files sent by Bruno
 	 * through WeTransfer on 2015-08-27 (ask Antonio)
 	 */
-	private static final Path BRUNO_WETRANSFER_FOLDER = Paths.get("/tmp");
+	private static final Path BRUNO_WETRANSFER_FOLDER = Paths.get("/tmp/wetransfer");
 	private static final Path SAMPLES_FOLDER = Paths.get("samples");
 
 	@Parameterized.Parameter(0)
@@ -47,9 +47,11 @@ public class IFCModelFactoryTests {
 		data.addAll(
 			Arrays.asList(new Object[][]{
 				{SAMPLES_FOLDER.resolve("Paolo_.ifc"), IFCModelType.IFC2X3_STEP},
+				{SAMPLES_FOLDER.resolve("Paolo_.ifczip"), IFCModelType.IFC2X3_STEP},
 				{SAMPLES_FOLDER.resolve("DDS-DuplexHouse_Sanitary_V1.0.ifc"), IFCModelType.IFC2X3_STEP},
 				{SAMPLES_FOLDER.resolve("WallOnly.ifc"), IFCModelType.IFC2X3_STEP},
 				{SAMPLES_FOLDER.resolve("WallOnlyAddedSpace.ifc"), IFCModelType.IFC2X3_STEP},
+				{SAMPLES_FOLDER.resolve("WallOnlyAddedSpace.ifc.zip"), IFCModelType.IFC2X3_STEP},
 			}));
 
 		if (BRUNO_WETRANSFER_FOLDER.toFile().exists()) {
