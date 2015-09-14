@@ -162,145 +162,135 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine
 
 		try {
 
-			if (hasType(arg0)) {
+			IGraphNode typeNode = null;
 
-				IGraphNode typeNode = null;
+			if (arg0.contains("::")) {
 
-				if (arg0.contains("::")) {
+				String ep = arg0.substring(0, arg0.indexOf("::"));
 
-					String ep = arg0.substring(0, arg0.indexOf("::"));
+				IGraphNode pack = null;
 
-					IGraphNode pack = null;
+				try (IGraphTransaction tx = graph.beginTransaction()) {
+					// operations on the graph
+					// ...
+
+					pack = epackagedictionary.get("id", ep).getSingle();
+
+					tx.success();
+					tx.close();
+				}
+
+				for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
+
+					IGraphNode othernode = r.getStartNode();
+					if (othernode.getProperty("id").equals(
+							arg0.substring(arg0.indexOf("::") + 2))) {
+						typeNode = othernode;
+						break;
+					}
+
+				}
+
+			} else {
+
+				if (epackages == null) {
 
 					try (IGraphTransaction tx = graph.beginTransaction()) {
 						// operations on the graph
 						// ...
 
-						pack = epackagedictionary.get("id", ep).getSingle();
+						Iterator<IGraphNode> packs = epackagedictionary.query(
+								"id", "*").iterator();
+						LinkedList<IGraphNode> possibletypenodes = new LinkedList<IGraphNode>();
+
+						while (packs.hasNext()) {
+
+							IGraphNode pack = packs.next();
+							for (IGraphEdge n : pack
+									.getIncomingWithType("epackage")) {
+
+								IGraphNode othernode = n.getStartNode();
+								if (othernode.getProperty("id").equals(arg0)) {
+
+									possibletypenodes.add(othernode);
+
+								}
+							}
+						}
+
+						if (possibletypenodes.size() == 1)
+							typeNode = possibletypenodes.getFirst();
+						else
+							throw new EolModelElementTypeNotFoundException(
+									this.getName(), possibletypenodes.size()
+											+ " CLASSES FOUND FOR: " + arg0);
 
 						tx.success();
 						tx.close();
 					}
 
-					for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
-
-						IGraphNode othernode = r.getStartNode();
-						if (othernode.getProperty("id").equals(
-								arg0.substring(arg0.indexOf("::") + 2))) {
-							typeNode = othernode;
-							break;
-						}
-
-					}
-
 				} else {
 
-					if (epackages == null) {
+					for (String p : epackages) {
 
 						try (IGraphTransaction tx = graph.beginTransaction()) {
 							// operations on the graph
 							// ...
 
-							Iterator<IGraphNode> packs = epackagedictionary
-									.query("id", "*").iterator();
-							LinkedList<IGraphNode> possibletypenodes = new LinkedList<IGraphNode>();
+							IGraphNode pack = epackagedictionary.get("id", p)
+									.getSingle();
+							for (IGraphEdge n : pack
+									.getIncomingWithType("epackage")) {
 
-							while (packs.hasNext()) {
+								IGraphNode othernode = n.getStartNode();
+								if (othernode.getProperty("id").equals(arg0)) {
 
-								IGraphNode pack = packs.next();
-								for (IGraphEdge n : pack
-										.getIncomingWithType("epackage")) {
+									typeNode = othernode;
+									break;
 
-									IGraphNode othernode = n.getStartNode();
-									if (othernode.getProperty("id")
-											.equals(arg0)) {
-
-										possibletypenodes.add(othernode);
-
-									}
 								}
 							}
-
-							if (possibletypenodes.size() == 1)
-								typeNode = possibletypenodes.getFirst();
-							else
-								throw new EolModelElementTypeNotFoundException(
-										this.getName(),
-										possibletypenodes.size()
-												+ " CLASSES FOUND FOR: " + arg0);
 
 							tx.success();
 							tx.close();
 						}
-
-					} else {
-
-						for (String p : epackages) {
-
-							try (IGraphTransaction tx = graph
-									.beginTransaction()) {
-								// operations on the graph
-								// ...
-
-								IGraphNode pack = epackagedictionary.get("id",
-										p).getSingle();
-								for (IGraphEdge n : pack
-										.getIncomingWithType("epackage")) {
-
-									IGraphNode othernode = n.getStartNode();
-									if (othernode.getProperty("id")
-											.equals(arg0)) {
-
-										typeNode = othernode;
-										break;
-
-									}
-								}
-
-								tx.success();
-								tx.close();
-							}
-						}
-
 					}
+
 				}
+			}
 
-				// HashSet<Object> nodes = new HashSet<>();
+			// HashSet<Object> nodes = new HashSet<>();
 
-				OptimisableCollection nodes = new OptimisableCollection(this,
-						new GraphNodeWrapper(typeNode.getId().toString(), this));
+			OptimisableCollection nodes = new OptimisableCollection(this,
+					new GraphNodeWrapper(typeNode.getId().toString(), this));
 
-				if (typeNode != null) {
+			if (typeNode != null) {
 
-					try (IGraphTransaction tx = graph.beginTransaction()) {
-						// operations on the graph
-						// ...
+				try (IGraphTransaction tx = graph.beginTransaction()) {
+					// operations on the graph
+					// ...
 
-						for (IGraphEdge n : typeNode
-								.getIncomingWithType(typeorkind)) {
+					for (IGraphEdge n : typeNode
+							.getIncomingWithType(typeorkind)) {
 
-							IGraphNode node = n.getStartNode();
+						IGraphNode node = n.getStartNode();
 
-							// System.err.println(Arrays.toString(files.toArray()));
-							// System.err.println(files.iterator().next().getGraph());
-							// System.err.println(node.getOutgoingWithType("file").iterator().next().getEndNode().getGraph());
+						// System.err.println(Arrays.toString(files.toArray()));
+						// System.err.println(files.iterator().next().getGraph());
+						// System.err.println(node.getOutgoingWithType("file").iterator().next().getEndNode().getGraph());
 
-							if (files.contains(node.getOutgoingWithType("file")
-									.iterator().next().getEndNode())) {
-								nodes.add(new GraphNodeWrapper(node.getId()
-										.toString(), this));
-							}
+						if (files.contains(node.getOutgoingWithType("file")
+								.iterator().next().getEndNode())) {
+							nodes.add(new GraphNodeWrapper(node.getId()
+									.toString(), this));
 						}
-						tx.success();
-						tx.close();
 					}
+					tx.success();
+					tx.close();
 				}
+			}
 
-				return nodes;
-
-			} else
-				throw new EolModelElementTypeNotFoundException(this.getName(),
-						arg0);
+			return nodes;
 
 		} catch (Exception e) {
 			e.printStackTrace();

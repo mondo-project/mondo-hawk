@@ -187,13 +187,14 @@ public class HQueryDialog extends Dialog {
 							String fileText = contextFiles.getText();
 
 							if (file1Text.trim().equals("")
-									&& fileText.trim().equals(""))
-								resultField
-										.setText(index.query(
-												new File(queryField.getText()
-														.substring(12)), ql)
-												.toString());
-							else {
+									&& fileText.trim().equals("")) {
+								Object r = index.query(new File(queryField
+										.getText().substring(12)), ql);
+								String ret = "<null>";
+								if (r != null)
+									ret = r.toString();
+								resultField.setText(ret);
+							} else {
 								Map<String, String> map = new HashMap<>();
 
 								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_FILECONTEXT,
@@ -216,10 +217,12 @@ public class HQueryDialog extends Dialog {
 							String file1Text = contextRepo.getText();
 
 							if (file1Text.trim().equals("")
-									&& fileText.trim().equals(""))
-								resultField.setText(index.query(
-										queryField.getText(), ql).toString());
-							else {
+									&& fileText.trim().equals("")) {
+								Object ret = index.query(queryField.getText(),
+										ql);
+								resultField.setText(ret != null ? ret
+										.toString() : "<null>");
+							} else {
 								Map<String, String> map = new HashMap<>();
 								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_FILECONTEXT,
 										fileText);

@@ -328,176 +328,164 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 
 		try {
 
-			if (hasType(arg0)) {
+			// cashing
+			// if (enableCache) {
+			//
+			// OptimisableCollection ret = typeorkind.equals("typeOf") ?
+			// typeContents
+			// .get(arg0) : superTypeContents.get(arg0);
+			//
+			// if (ret != null) {
+			// // System.err.println("using cashed collection of all: "
+			// // +
+			// // typeorkind + " : " + arg0);
+			// broadcastAllOfXAccess(ret);
+			// return ret;
+			// }
+			//
+			// }
 
-				// cashing
-				// if (enableCache) {
-				//
-				// OptimisableCollection ret = typeorkind.equals("typeOf") ?
-				// typeContents
-				// .get(arg0) : superTypeContents.get(arg0);
-				//
-				// if (ret != null) {
-				// // System.err.println("using cashed collection of all: "
-				// // +
-				// // typeorkind + " : " + arg0);
-				// broadcastAllOfXAccess(ret);
-				// return ret;
-				// }
-				//
-				// }
+			IGraphNode typeNode = null;
 
-				IGraphNode typeNode = null;
+			if (arg0.contains("::")) {
 
-				if (arg0.contains("::")) {
+				String ep = arg0.substring(0, arg0.indexOf("::"));
 
-					String ep = arg0.substring(0, arg0.indexOf("::"));
+				IGraphNode pack = null;
 
-					IGraphNode pack = null;
+				try (IGraphTransaction tx = graph.beginTransaction()) {
+					// operations on the graph
+					// ...
+
+					pack = epackagedictionary.get("id", ep).getSingle();
+
+					tx.success();
+					tx.close();
+				}
+
+				for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
+
+					IGraphNode othernode = r.getStartNode();
+					if (othernode.getProperty("id").equals(
+							arg0.substring(arg0.indexOf("::") + 2))) {
+						typeNode = othernode;
+						break;
+					}
+
+				}
+
+			} else {
+
+				if (epackages == null) {
 
 					try (IGraphTransaction tx = graph.beginTransaction()) {
 						// operations on the graph
 						// ...
 
-						pack = epackagedictionary.get("id", ep).getSingle();
+						Iterator<IGraphNode> packs = epackagedictionary.query(
+								"id", "*").iterator();
+						LinkedList<IGraphNode> possibletypenodes = new LinkedList<IGraphNode>();
+
+						while (packs.hasNext()) {
+
+							IGraphNode pack = packs.next();
+							for (IGraphEdge n : pack
+									.getIncomingWithType("epackage")) {
+
+								IGraphNode othernode = n.getStartNode();
+								if (othernode.getProperty("id").equals(arg0)) {
+
+									possibletypenodes.add(othernode);
+
+								}
+							}
+						}
+
+						if (possibletypenodes.size() == 1)
+							typeNode = possibletypenodes.getFirst();
+						else
+							throw new EolModelElementTypeNotFoundException(
+									this.getName(), possibletypenodes.size()
+											+ " CLASSES FOUND FOR: " + arg0);
 
 						tx.success();
 						tx.close();
 					}
 
-					for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
-
-						IGraphNode othernode = r.getStartNode();
-						if (othernode.getProperty("id").equals(
-								arg0.substring(arg0.indexOf("::") + 2))) {
-							typeNode = othernode;
-							break;
-						}
-
-					}
-
 				} else {
 
-					if (epackages == null) {
+					for (String p : epackages) {
 
 						try (IGraphTransaction tx = graph.beginTransaction()) {
 							// operations on the graph
 							// ...
 
-							Iterator<IGraphNode> packs = epackagedictionary
-									.query("id", "*").iterator();
-							LinkedList<IGraphNode> possibletypenodes = new LinkedList<IGraphNode>();
+							IGraphNode pack = epackagedictionary.get("id", p)
+									.getSingle();
+							for (IGraphEdge n : pack
+									.getIncomingWithType("epackage")) {
 
-							while (packs.hasNext()) {
+								IGraphNode othernode = n.getStartNode();
+								if (othernode.getProperty("id").equals(arg0)) {
 
-								IGraphNode pack = packs.next();
-								for (IGraphEdge n : pack
-										.getIncomingWithType("epackage")) {
+									typeNode = othernode;
+									break;
 
-									IGraphNode othernode = n.getStartNode();
-									if (othernode.getProperty("id")
-											.equals(arg0)) {
-
-										possibletypenodes.add(othernode);
-
-									}
 								}
 							}
-
-							if (possibletypenodes.size() == 1)
-								typeNode = possibletypenodes.getFirst();
-							else
-								throw new EolModelElementTypeNotFoundException(
-										this.getName(),
-										possibletypenodes.size()
-												+ " CLASSES FOUND FOR: " + arg0);
 
 							tx.success();
 							tx.close();
 						}
-
-					} else {
-
-						for (String p : epackages) {
-
-							try (IGraphTransaction tx = graph
-									.beginTransaction()) {
-								// operations on the graph
-								// ...
-
-								IGraphNode pack = epackagedictionary.get("id",
-										p).getSingle();
-								for (IGraphEdge n : pack
-										.getIncomingWithType("epackage")) {
-
-									IGraphNode othernode = n.getStartNode();
-									if (othernode.getProperty("id")
-											.equals(arg0)) {
-
-										typeNode = othernode;
-										break;
-
-									}
-								}
-
-								tx.success();
-								tx.close();
-							}
-						}
-
 					}
+
 				}
+			}
 
-				// HashSet<Object> nodes = new HashSet<>();
+			// HashSet<Object> nodes = new HashSet<>();
 
-				OptimisableCollection nodes = new OptimisableCollection(this,
-						new GraphNodeWrapper(typeNode.getId().toString(), this));
+			OptimisableCollection nodes = new OptimisableCollection(this,
+					new GraphNodeWrapper(typeNode.getId().toString(), this));
 
-				if (typeNode != null) {
+			if (typeNode != null) {
 
-					try (IGraphTransaction tx = graph.beginTransaction()) {
-						// operations on the graph
-						// ...
+				try (IGraphTransaction tx = graph.beginTransaction()) {
+					// operations on the graph
+					// ...
 
-						for (IGraphEdge n : typeNode
-								.getIncomingWithType(typeorkind)) {
-							IGraphNode node = n.getStartNode();
-							nodes.add(new QueryAwareGraphNodeWrapper(node
-									.getId().toString(), this,
-									new QueryAnalysis()
-											.computeAttributesToBeCached(
-													effectiveTypes, node),
-									new QueryAnalysis()
-											.computeReferencesToBeCached(
-													effectiveTypes, node)));
-						}
-						tx.success();
-						tx.close();
+					for (IGraphEdge n : typeNode
+							.getIncomingWithType(typeorkind)) {
+						IGraphNode node = n.getStartNode();
+						nodes.add(new QueryAwareGraphNodeWrapper(node.getId()
+								.toString(), this, new QueryAnalysis()
+								.computeAttributesToBeCached(effectiveTypes,
+										node), new QueryAnalysis()
+								.computeReferencesToBeCached(effectiveTypes,
+										node)));
 					}
+					tx.success();
+					tx.close();
 				}
+			}
 
-				// System.out.println(nodes);
+			// System.out.println(nodes);
 
-				// for(NeoIdWrapper n:nodes){System.out.println(new
-				// IsOf().isOfClass(graph.getNodeById(n.getId())));}
+			// for(NeoIdWrapper n:nodes){System.out.println(new
+			// IsOf().isOfClass(graph.getNodeById(n.getId())));}
 
-				// if (enableCache) {
-				//
-				// if (typeorkind.equals("typeOf")
-				// && !typeContents.containsKey(arg0))
-				// typeContents.put(arg0, nodes);
-				// else if (typeorkind.equals("kind")
-				// && !superTypeContents.containsKey(arg0))
-				// superTypeContents.put(arg0, nodes);
-				//
-				// }
+			// if (enableCache) {
+			//
+			// if (typeorkind.equals("typeOf")
+			// && !typeContents.containsKey(arg0))
+			// typeContents.put(arg0, nodes);
+			// else if (typeorkind.equals("kind")
+			// && !superTypeContents.containsKey(arg0))
+			// superTypeContents.put(arg0, nodes);
+			//
+			// }
 
-				broadcastAllOfXAccess(nodes);
-				return nodes;
-
-			} else
-				throw new EolModelElementTypeNotFoundException(this.getName(),
-						arg0);
+			broadcastAllOfXAccess(nodes);
+			return nodes;
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -996,54 +984,46 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 		if (!(instance instanceof GraphNodeWrapper))
 			return false;
 
-		// needed?
-		if (hasType(metaClass)) {
+		String id = null;
 
-			String id = null;
+		try (IGraphTransaction tx = graph.beginTransaction()) {
+			// operations on the graph
+			// ...
 
-			try (IGraphTransaction tx = graph.beginTransaction()) {
-				// operations on the graph
-				// ...
+			// System.err.println(instance);
 
-				// System.err.println(instance);
+			IGraphNode objectNode = graph
+					.getNodeById(((GraphNodeWrapper) instance).getId());
 
-				IGraphNode objectNode = graph
-						.getNodeById(((GraphNodeWrapper) instance).getId());
+			IGraphNode typeNode = null;
 
-				IGraphNode typeNode = null;
-
-				// String[] splitId = null;
-				try {
-					typeNode = objectNode.getOutgoingWithType(typeorkind)
-							.iterator().next().getEndNode();
-					id = typeNode.getProperty("id").toString();
-				} catch (Exception e) {
-					// dont have a type - only if you are iterating all the
-					// nodes
-					// even the metanodes
-					// System.err.println("warning: metaclass node asked for its type, ignored");
-					// e.printStackTrace();
-				}
-				tx.success();
-				tx.close();
+			// String[] splitId = null;
+			try {
+				typeNode = objectNode.getOutgoingWithType(typeorkind)
+						.iterator().next().getEndNode();
+				id = typeNode.getProperty("id").toString();
 			} catch (Exception e) {
-				e.printStackTrace();
+				// dont have a type - only if you are iterating all the
+				// nodes
+				// even the metanodes
+				// System.err.println("warning: metaclass node asked for its type, ignored");
+				// e.printStackTrace();
 			}
-			if (id != null) {
+			tx.success();
+			tx.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (id != null) {
 
-				return metaClass.equals(id)
-						|| metaClass
-								.equals(id.substring(id.lastIndexOf("/") + 1));
-			} else {
+			return metaClass.equals(id)
+					|| metaClass.equals(id.substring(id.lastIndexOf("/") + 1));
+		} else {
 
-				return false;
-			}
-			// doesn't exist in database
-			// tx.success();tx.close();
-
-		} else
-			throw new EolModelElementTypeNotFoundException(this.getName(),
-					metaClass);
+			return false;
+		}
+		// doesn't exist in database
+		// tx.success();tx.close();
 
 	}
 
@@ -1169,12 +1149,12 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 
 	}
 
-//	public void dumpDatabaseConfig() {
-//
-//		for (Object c : graph.getConfig().keySet())
-//			System.out.println(c + " = " + graph.getConfig().get(c));
-//
-//	}
+	// public void dumpDatabaseConfig() {
+	//
+	// for (Object c : graph.getConfig().keySet())
+	// System.out.println(c + " = " + graph.getConfig().get(c));
+	//
+	// }
 
 	@Override
 	public Object contextlessQuery(IGraphDatabase g, String query) {
@@ -1289,8 +1269,8 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 
 				//
 
-				System.out.println("(queryaware) Graph path: " + graph.getPath()
-						+ "\n----------");
+				System.out.println("(queryaware) Graph path: "
+						+ graph.getPath() + "\n----------");
 
 				CQueryAwareEOLQueryEngine q = new CQueryAwareEOLQueryEngine();
 

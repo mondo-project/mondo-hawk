@@ -315,42 +315,36 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 		try {
 
-			if (hasType(arg0)) {
+			// cashing
+			// if (enableCache) {
+			//
+			// OptimisableCollection ret = typeorkind.equals("typeOf") ?
+			// typeContents
+			// .get(arg0) : superTypeContents.get(arg0);
+			//
+			// if (ret != null) {
+			// // System.err.println("using cashed collection of all: "
+			// // +
+			// // typeorkind + " : " + arg0);
+			// broadcastAllOfXAccess(ret);
+			// return ret;
+			// }
+			//
+			// }
 
-				// cashing
-				// if (enableCache) {
-				//
-				// OptimisableCollection ret = typeorkind.equals("typeOf") ?
-				// typeContents
-				// .get(arg0) : superTypeContents.get(arg0);
-				//
-				// if (ret != null) {
-				// // System.err.println("using cashed collection of all: "
-				// // +
-				// // typeorkind + " : " + arg0);
-				// broadcastAllOfXAccess(ret);
-				// return ret;
-				// }
-				//
-				// }
+			IGraphNode typeNode = null;
 
-				IGraphNode typeNode = null;
+			if (arg0.contains("::")) {
 
-				if (arg0.contains("::")) {
+				String ep = arg0.substring(0, arg0.indexOf("::"));
 
-					String ep = arg0.substring(0, arg0.indexOf("::"));
+				IGraphNode pack = null;
 
-					IGraphNode pack = null;
+				try (IGraphTransaction tx = graph.beginTransaction()) {
+					// operations on the graph
+					// ...
 
-					try (IGraphTransaction tx = graph.beginTransaction()) {
-						// operations on the graph
-						// ...
-
-						pack = epackagedictionary.get("id", ep).getSingle();
-
-						tx.success();
-						tx.close();
-					}
+					pack = epackagedictionary.get("id", ep).getSingle();
 
 					for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
 
@@ -363,122 +357,121 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 					}
 
-				} else {
-
-					if (epackages == null) {
-
-						try (IGraphTransaction tx = graph.beginTransaction()) {
-							// operations on the graph
-							// ...
-
-							Iterator<IGraphNode> packs = epackagedictionary
-									.query("id", "*").iterator();
-							LinkedList<IGraphNode> possibletypenodes = new LinkedList<IGraphNode>();
-
-							while (packs.hasNext()) {
-
-								IGraphNode pack = packs.next();
-								for (IGraphEdge n : pack
-										.getIncomingWithType("epackage")) {
-
-									IGraphNode othernode = n.getStartNode();
-									if (othernode.getProperty("id")
-											.equals(arg0)) {
-
-										possibletypenodes.add(othernode);
-
-									}
-								}
-							}
-
-							if (possibletypenodes.size() == 1)
-								typeNode = possibletypenodes.getFirst();
-							else
-								throw new EolModelElementTypeNotFoundException(
-										this.getName(),
-										possibletypenodes.size()
-												+ " CLASSES FOUND FOR: " + arg0);
-
-							tx.success();
-							tx.close();
-						}
-
-					} else {
-
-						for (String p : epackages) {
-
-							try (IGraphTransaction tx = graph
-									.beginTransaction()) {
-								// operations on the graph
-								// ...
-
-								IGraphNode pack = epackagedictionary.get("id",
-										p).getSingle();
-								for (IGraphEdge n : pack
-										.getIncomingWithType("epackage")) {
-
-									IGraphNode othernode = n.getStartNode();
-									if (othernode.getProperty("id")
-											.equals(arg0)) {
-
-										typeNode = othernode;
-										break;
-
-									}
-								}
-
-								tx.success();
-								tx.close();
-							}
-						}
-
-					}
+					tx.success();
+					tx.close();
+				} catch (Exception e) {
+					throw new EolModelElementTypeNotFoundException(
+							this.getName(), arg0);
 				}
 
-				// HashSet<Object> nodes = new HashSet<>();
+			} else {
 
-				OptimisableCollection nodes = new OptimisableCollection(this,
-						new GraphNodeWrapper(typeNode.getId().toString(), this));
-
-				if (typeNode != null) {
+				if (epackages == null) {
 
 					try (IGraphTransaction tx = graph.beginTransaction()) {
 						// operations on the graph
 						// ...
 
-						for (IGraphEdge n : typeNode
-								.getIncomingWithType(typeorkind)) {
+						Iterator<IGraphNode> packs = epackagedictionary.query(
+								"id", "*").iterator();
+						LinkedList<IGraphNode> possibletypenodes = new LinkedList<IGraphNode>();
 
-							nodes.add(new GraphNodeWrapper(n.getStartNode()
-									.getId().toString(), this));
+						while (packs.hasNext()) {
+
+							IGraphNode pack = packs.next();
+							for (IGraphEdge n : pack
+									.getIncomingWithType("epackage")) {
+
+								IGraphNode othernode = n.getStartNode();
+								if (othernode.getProperty("id").equals(arg0)) {
+
+									possibletypenodes.add(othernode);
+
+								}
+							}
 						}
+
+						if (possibletypenodes.size() == 1)
+							typeNode = possibletypenodes.getFirst();
+						else
+							throw new EolModelElementTypeNotFoundException(
+									this.getName(), possibletypenodes.size()
+											+ " CLASSES FOUND FOR: " + arg0);
+
 						tx.success();
 						tx.close();
 					}
+
+				} else {
+
+					for (String p : epackages) {
+
+						try (IGraphTransaction tx = graph.beginTransaction()) {
+							// operations on the graph
+							// ...
+
+							IGraphNode pack = epackagedictionary.get("id", p)
+									.getSingle();
+							for (IGraphEdge n : pack
+									.getIncomingWithType("epackage")) {
+
+								IGraphNode othernode = n.getStartNode();
+								if (othernode.getProperty("id").equals(arg0)) {
+
+									typeNode = othernode;
+									break;
+
+								}
+							}
+
+							tx.success();
+							tx.close();
+						}
+					}
+
 				}
+			}
 
-				// System.out.println(nodes);
+			// HashSet<Object> nodes = new HashSet<>();
 
-				// for(NeoIdWrapper n:nodes){System.out.println(new
-				// IsOf().isOfClass(graph.getNodeById(n.getId())));}
+			OptimisableCollection nodes = new OptimisableCollection(this,
+					new GraphNodeWrapper(typeNode.getId().toString(), this));
 
-				// if (enableCache) {
-				//
-				// if (typeorkind.equals("typeOf")
-				// && !typeContents.containsKey(arg0))
-				// typeContents.put(arg0, nodes);
-				// else if (typeorkind.equals("kind")
-				// && !superTypeContents.containsKey(arg0))
-				// superTypeContents.put(arg0, nodes);
-				//
-				// }
+			if (typeNode != null) {
 
-				broadcastAllOfXAccess(nodes);
-				return nodes;
+				try (IGraphTransaction tx = graph.beginTransaction()) {
+					// operations on the graph
+					// ...
 
-			} else
-				throw new EolModelElementTypeNotFoundException(this.getName(),
-						arg0);
+					for (IGraphEdge n : typeNode
+							.getIncomingWithType(typeorkind)) {
+
+						nodes.add(new GraphNodeWrapper(n.getStartNode().getId()
+								.toString(), this));
+					}
+					tx.success();
+					tx.close();
+				}
+			}
+
+			// System.out.println(nodes);
+
+			// for(NeoIdWrapper n:nodes){System.out.println(new
+			// IsOf().isOfClass(graph.getNodeById(n.getId())));}
+
+			// if (enableCache) {
+			//
+			// if (typeorkind.equals("typeOf")
+			// && !typeContents.containsKey(arg0))
+			// typeContents.put(arg0, nodes);
+			// else if (typeorkind.equals("kind")
+			// && !superTypeContents.containsKey(arg0))
+			// superTypeContents.put(arg0, nodes);
+			//
+			// }
+
+			broadcastAllOfXAccess(nodes);
+			return nodes;
 
 		} catch (Exception e) {
 			throw new EolModelElementTypeNotFoundException(this.getName(), arg0);
@@ -641,7 +634,10 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 						}
 						tx.success();
 						tx.close();
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
+
 				} else {
 					if (epackages == null) {
 
@@ -681,6 +677,17 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 											+ possibletypenodes.size()
 											+ " CLASSES FOUND FOR " + arg0
 											+ ", RETURNING FALSE");
+							LinkedList<String> ret = new LinkedList<>();
+							try (IGraphTransaction tx = graph
+									.beginTransaction()) {
+								for (IGraphNode n : possibletypenodes)
+									ret.add(n.getOutgoingWithType("epackage")
+											.iterator().next().getEndNode()
+											.getProperty("id").toString()
+											+ "::"
+											+ n.getProperty("id").toString());
+							}
+							System.err.println("types found:" + ret);
 							return false;
 						}
 
@@ -763,7 +770,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		)
 			graph = g;
 
-		if (propertygetter == null || propertygetter.getGraph() != graph) 
+		if (propertygetter == null || propertygetter.getGraph() != graph)
 			propertygetter = new GraphPropertyGetter(graph, this);
 
 		backendURI = (String) config.get("DATABASE_LOCATION");
@@ -968,54 +975,46 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		if (!(instance instanceof GraphNodeWrapper))
 			return false;
 
-		// needed?
-		if (hasType(metaClass)) {
+		String id = null;
 
-			String id = null;
+		try (IGraphTransaction tx = graph.beginTransaction()) {
+			// operations on the graph
+			// ...
 
-			try (IGraphTransaction tx = graph.beginTransaction()) {
-				// operations on the graph
-				// ...
+			// System.err.println(instance);
 
-				// System.err.println(instance);
+			IGraphNode objectNode = graph
+					.getNodeById(((GraphNodeWrapper) instance).getId());
 
-				IGraphNode objectNode = graph
-						.getNodeById(((GraphNodeWrapper) instance).getId());
+			IGraphNode typeNode = null;
 
-				IGraphNode typeNode = null;
-
-				// String[] splitId = null;
-				try {
-					typeNode = objectNode.getOutgoingWithType(typeorkind)
-							.iterator().next().getEndNode();
-					id = typeNode.getProperty("id").toString();
-				} catch (Exception e) {
-					// dont have a type - only if you are iterating all the
-					// nodes
-					// even the metanodes
-					// System.err.println("warning: metaclass node asked for its type, ignored");
-					// e.printStackTrace();
-				}
-				tx.success();
-				tx.close();
+			// String[] splitId = null;
+			try {
+				typeNode = objectNode.getOutgoingWithType(typeorkind)
+						.iterator().next().getEndNode();
+				id = typeNode.getProperty("id").toString();
 			} catch (Exception e) {
-				e.printStackTrace();
+				// dont have a type - only if you are iterating all the
+				// nodes
+				// even the metanodes
+				// System.err.println("warning: metaclass node asked for its type, ignored");
+				// e.printStackTrace();
 			}
-			if (id != null) {
+			tx.success();
+			tx.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (id != null) {
 
-				return metaClass.equals(id)
-						|| metaClass
-								.equals(id.substring(id.lastIndexOf("/") + 1));
-			} else {
+			return metaClass.equals(id)
+					|| metaClass.equals(id.substring(id.lastIndexOf("/") + 1));
+		} else {
 
-				return false;
-			}
-			// doesn't exist in database
-			// tx.success();tx.close();
-
-		} else
-			throw new EolModelElementTypeNotFoundException(this.getName(),
-					metaClass);
+			return false;
+		}
+		// doesn't exist in database
+		// tx.success();tx.close();
 
 	}
 
