@@ -475,8 +475,8 @@ public class GraphModelInserter {
 				if (!newValue.equals(oldproperty)) {
 					// track changed property (primitive)
 					listener.modelElementAttributeUpdate(this.s, eObject,
-							a.getName(), oldproperty, newproperty, node, false);
-					node.setProperty(a.getName(), newproperty);
+							a.getName(), oldproperty, newValue, node, false);
+					node.setProperty(a.getName(), newValue);
 				}
 			} else {
 				Collection<Object> collection = null;
