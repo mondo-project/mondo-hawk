@@ -168,19 +168,19 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 
 					pack = epackagedictionary.get("id", ep).getSingle();
 
-					tx.success();
-					tx.close();
-				}
+					for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
 
-				for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
+						IGraphNode othernode = r.getStartNode();
+						if (othernode.getProperty("id").equals(
+								arg0.substring(arg0.indexOf("::") + 2))) {
+							typeNode = othernode;
+							break;
+						}
 
-					IGraphNode othernode = r.getStartNode();
-					if (othernode.getProperty("id").equals(
-							arg0.substring(arg0.indexOf("::") + 2))) {
-						typeNode = othernode;
-						break;
 					}
 
+					tx.success();
+					tx.close();
 				}
 
 			} else {
