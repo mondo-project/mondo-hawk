@@ -21,13 +21,12 @@ import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.runtime.ModelIndexerImpl;
 import org.hawk.core.util.DefaultConsole;
-import org.hawk.emf.model.EMFModelResourceFactory;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
 import org.hawk.graph.internal.updater.GraphModelUpdater;
 import org.hawk.ifc.IFCModelFactory;
+import org.hawk.ifc.mm.IFCMetaModelResourceFactory;
 import org.hawk.localfolder.LocalFolder;
-import org.hawk.modelio.mm.ModelioMetaModelResourceFactory;
 import org.hawk.neo4j_v2.Neo4JDatabase;
 
 public class IFC_Runtime_example {
@@ -51,10 +50,7 @@ public class IFC_Runtime_example {
 		i = new ModelIndexerImpl("hawk1", parent, new DefaultConsole());
 
 		// metamodel
-		i.addMetaModelResourceFactory(new ModelioMetaModelResourceFactory());
-
-		// model
-		i.addModelResourceFactory(new EMFModelResourceFactory());
+		i.addMetaModelResourceFactory(new IFCMetaModelResourceFactory());
 		// model
 		i.addModelResourceFactory(new IFCModelFactory());
 
@@ -64,7 +60,7 @@ public class IFC_Runtime_example {
 		i.setDB(db,true);
 
 		// set path of vcs
-		String vcsloc = "C:/Users/kb/Desktop/workspace-luna/uk.ac.york.cs.mde.hawk.ifc/samples";
+		String vcsloc = "../org.hawk.ifc/samples";
 
 		// add vcs monitors
 		IVcsManager vcs = new LocalFolder();
@@ -73,18 +69,6 @@ public class IFC_Runtime_example {
 
 		// metamodel updater
 		i.setMetaModelUpdater(new GraphMetaModelUpdater());
-
-		// add one or more metamodel files
-		File metamodel = new File(
-				"C:/Users/kb/Desktop/workspace-luna/uk.ac.york.cs.mde.hawk.ifc/models/Ecore.ecore");
-		// register them
-		i.registerMetamodel(metamodel);
-
-		// add one or more metamodel files
-		metamodel = new File(
-				"C:/Users/kb/Desktop/workspace-luna/uk.ac.york.cs.mde.hawk.ifc/models/ifc2x3tc1.ecore");
-		// register them
-		i.registerMetamodel(metamodel);
 
 		// model updater
 		i.addModelUpdater(new GraphModelUpdater());
@@ -124,7 +108,10 @@ public class IFC_Runtime_example {
 								|| s.equalsIgnoreCase("q")) {
 							q.contextlessQuery(i.getGraph(), query);
 						}
-
+						if (s.equalsIgnoreCase("nuke")) {
+							i2.delete();
+							System.exit(0);
+						}
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
