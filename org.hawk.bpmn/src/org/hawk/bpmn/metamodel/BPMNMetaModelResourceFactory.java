@@ -13,25 +13,27 @@ package org.hawk.bpmn.metamodel;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
-import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.di.impl.BpmnDiFactoryImpl;
+import org.eclipse.bpmn2.impl.Bpmn2FactoryImpl;
+import org.eclipse.bpmn2.util.Bpmn2ResourceFactoryImpl;
+import org.eclipse.dd.dc.impl.DcFactoryImpl;
+import org.eclipse.dd.di.impl.DiFactoryImpl;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.EPackage.Registry;
+import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EcorePackageImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.eclipse.emf.ecore.xml.type.impl.XMLTypePackageImpl;
 import org.hawk.bpmn.BPMNPackage;
 import org.hawk.bpmn.model.util.RegisterMeta;
 import org.hawk.core.IMetaModelResourceFactory;
@@ -170,37 +172,47 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 		LinkedList<String> missingPackages = checkRegistry();
 
+		Registry globalRegistry = EPackage.Registry.INSTANCE;
+
 		// if not running in eclipse
 		if (missingPackages.size() > 0) {
 
-			List<String> paths = new LinkedList<>();
-
-			ClassLoader emf = EPackage.class.getClassLoader();
-			try {
-				paths.add(emf.getResource("model/Ecore.ecore").toURI()
-						.toString());
-				paths.add(emf.getResource("model/XMLType.ecore").toURI()
-						.toString());
-
-				ClassLoader bpmn = Activity.class.getClassLoader();
-				paths.add(bpmn.getResource("model/BPMN20.ecore").toURI()
-						.toString());
-				paths.add(bpmn.getResource("model/BPMNDI.ecore").toURI()
-						.toString());
-				paths.add(bpmn.getResource("model/DC.ecore").toURI().toString());
-				paths.add(bpmn.getResource("model/DI.ecore").toURI().toString());
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
-			}
+			// System.err.println("missing packages detected, adding them now...");
 
 			EPackage e = EcorePackageImpl.eINSTANCE;
 			RegisterMeta.registerPackages(e);
+			EPackage e2 = XMLTypePackageImpl.eINSTANCE;
+			RegisterMeta.registerPackages(e2);
 
-			for (String path : paths)
-				for (EObject o : resourceSet.getResource(URI.createURI(path),
-						true).getContents())
-					if (o instanceof EPackage)
-						RegisterMeta.registerPackages((EPackage) o);
+			if (!globalRegistry
+					.containsKey("http://www.omg.org/spec/BPMN/20100524/MODEL-XMI"))
+				globalRegistry.put(
+						"http://www.omg.org/spec/BPMN/20100524/MODEL-XMI",
+						new Bpmn2ResourceFactoryImpl());
+
+			if (!globalRegistry
+					.containsKey("http://www.omg.org/spec/BPMN/20100524/MODEL"))
+				globalRegistry.put(
+						"http://www.omg.org/spec/BPMN/20100524/MODEL",
+						new Bpmn2FactoryImpl());
+
+			if (!globalRegistry
+					.containsKey("http://www.omg.org/spec/BPMN/20100524/DI-XMI"))
+				globalRegistry.put(
+						"http://www.omg.org/spec/BPMN/20100524/DI-XMI",
+						new BpmnDiFactoryImpl());
+
+			if (!globalRegistry
+					.containsKey("http://www.omg.org/spec/DD/20100524/DI-XMI"))
+				globalRegistry.put(
+						"http://www.omg.org/spec/DD/20100524/DI-XMI",
+						new DiFactoryImpl());
+
+			if (!globalRegistry
+					.containsKey("http://www.omg.org/spec/DD/20100524/DC-XMI"))
+				globalRegistry.put(
+						"http://www.omg.org/spec/DD/20100524/DC-XMI",
+						new DcFactoryImpl());
 
 			missingPackages = checkRegistry();
 
@@ -208,10 +220,12 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 		if (missingPackages.size() == 0) {
 
-			Registry globalRegistry = EPackage.Registry.INSTANCE;
-
 			set.add(new BPMNMetaModelResource(globalRegistry.getEPackage(
 					"http://www.eclipse.org/emf/2003/XMLType").eResource(),
+					this));
+
+			set.add(new BPMNMetaModelResource(globalRegistry.getEPackage(
+					"http://www.omg.org/spec/BPMN/20100524/MODEL").eResource(),
 					this));
 
 			set.add(new BPMNMetaModelResource(globalRegistry.getEPackage(
@@ -255,6 +269,9 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 		if (!globalRegistry
 				.containsKey("http://www.eclipse.org/emf/2003/XMLType"))
 			missingPackages.add("http://www.eclipse.org/emf/2003/XMLType");
+		if (!globalRegistry
+				.containsKey("http://www.omg.org/spec/BPMN/20100524/MODEL"))
+			missingPackages.add("http://www.omg.org/spec/BPMN/20100524/MODEL");
 		if (!globalRegistry
 				.containsKey("http://www.omg.org/spec/BPMN/20100524/MODEL-XMI"))
 			missingPackages
