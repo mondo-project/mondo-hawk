@@ -18,10 +18,15 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+import org.eclipse.bpmn2.Bpmn2Factory;
+import org.eclipse.bpmn2.Bpmn2Package;
+import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.di.impl.BpmnDiFactoryImpl;
 import org.eclipse.bpmn2.impl.Bpmn2FactoryImpl;
 import org.eclipse.bpmn2.util.Bpmn2ResourceFactoryImpl;
+import org.eclipse.dd.dc.DcPackage;
 import org.eclipse.dd.dc.impl.DcFactoryImpl;
+import org.eclipse.dd.di.DiPackage;
 import org.eclipse.dd.di.impl.DiFactoryImpl;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
@@ -179,43 +184,14 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 			// System.err.println("missing packages detected, adding them now...");
 
-			EPackage e = EcorePackageImpl.eINSTANCE;
-			RegisterMeta.registerPackages(e);
-			EPackage e2 = XMLTypePackageImpl.eINSTANCE;
-			RegisterMeta.registerPackages(e2);
-
-			if (!globalRegistry
-					.containsKey("http://www.omg.org/spec/BPMN/20100524/MODEL-XMI"))
-				globalRegistry.put(
-						"http://www.omg.org/spec/BPMN/20100524/MODEL-XMI",
-						new Bpmn2ResourceFactoryImpl());
-
-			if (!globalRegistry
-					.containsKey("http://www.omg.org/spec/BPMN/20100524/MODEL"))
-				globalRegistry.put(
-						"http://www.omg.org/spec/BPMN/20100524/MODEL",
-						new Bpmn2FactoryImpl());
-
-			if (!globalRegistry
-					.containsKey("http://www.omg.org/spec/BPMN/20100524/DI-XMI"))
-				globalRegistry.put(
-						"http://www.omg.org/spec/BPMN/20100524/DI-XMI",
-						new BpmnDiFactoryImpl());
-
-			if (!globalRegistry
-					.containsKey("http://www.omg.org/spec/DD/20100524/DI-XMI"))
-				globalRegistry.put(
-						"http://www.omg.org/spec/DD/20100524/DI-XMI",
-						new DiFactoryImpl());
-
-			if (!globalRegistry
-					.containsKey("http://www.omg.org/spec/DD/20100524/DC-XMI"))
-				globalRegistry.put(
-						"http://www.omg.org/spec/DD/20100524/DC-XMI",
-						new DcFactoryImpl());
+			RegisterMeta.registerPackages(EcorePackageImpl.eINSTANCE);
+			RegisterMeta.registerPackages(XMLTypePackageImpl.eINSTANCE);
+			RegisterMeta.registerPackages(Bpmn2Package.eINSTANCE);
+			RegisterMeta.registerPackages(BpmnDiPackage.eINSTANCE);
+			RegisterMeta.registerPackages(DiPackage.eINSTANCE);
+			RegisterMeta.registerPackages(DcPackage.eINSTANCE);
 
 			missingPackages = checkRegistry();
-
 		}
 
 		if (missingPackages.size() == 0) {
