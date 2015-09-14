@@ -23,6 +23,7 @@ import org.bimserver.models.ifc2x3tc1.Ifc2x3tc1Package;
 import org.bimserver.models.ifc4.Ifc4Package;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -125,21 +126,10 @@ public class IFCMetaModelResourceFactory implements IMetaModelResourceFactory {
 	@Override
 	public Set<IHawkMetaModelResource> getStaticMetamodels() {
 		final Set<IHawkMetaModelResource> set = new LinkedHashSet<>();
-		if (!EPackage.Registry.INSTANCE
-				.containsKey("http://www.eclipse.org/emf/2002/Ecore"))
-			set.add(new IFCMetaModelResource(
-					EcorePackage.eINSTANCE.eResource(), this));
-		if (!EPackage.Registry.INSTANCE.containsKey("geometry"))
-			set.add(new IFCMetaModelResource(GeometryPackage.eINSTANCE
-					.eResource(), this));
-		if (!EPackage.Registry.INSTANCE
-				.containsKey("http://buildingsmart.ifc2x3tc1.ecore"))
-			set.add(new IFCMetaModelResource(Ifc2x3tc1Package.eINSTANCE
-					.eResource(), this));
-		if (!EPackage.Registry.INSTANCE
-				.containsKey("http://buildingsmart.ifc4.ecore"))
-			set.add(new IFCMetaModelResource(Ifc4Package.eINSTANCE.eResource(),
-					this));
+		set.add(new IFCMetaModelResource(EcorePackage.eINSTANCE.eResource(), this));
+		set.add(new IFCMetaModelResource(GeometryPackage.eINSTANCE.eResource(), this));
+		set.add(new IFCMetaModelResource(Ifc2x3tc1Package.eINSTANCE.eResource(), this));
+		set.add(new IFCMetaModelResource(Ifc4Package.eINSTANCE.eResource(), this));
 		return set;
 	}
 

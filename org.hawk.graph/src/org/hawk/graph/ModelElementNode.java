@@ -78,7 +78,30 @@ public class ModelElementNode {
 		final Object rawValue = node.getProperty(slot.getPropertyName());
 		if (slot.isAttribute() && rawValue != null && slot.isMany()) {
 			final Collection<Object> collection = slot.getCollection();
-			collection.addAll(Arrays.asList((Object[]) rawValue));
+			final Class<?> componentType = rawValue.getClass().getComponentType();
+			if (!componentType.isPrimitive()) {
+				// non-primitive arrays can be cast to Object[]
+				collection.addAll(Arrays.asList((Object[]) rawValue));
+			} else if (componentType == double.class) {
+				// primitive arrays need to be explicitly cast, and then we have to box the values
+				for (double v : (double[])rawValue) collection.add(v);
+			} else if (componentType == float.class) {
+				for (float v : (float[])rawValue) collection.add(v);
+			} else if (componentType == long.class) {
+				for (long v : (long[])rawValue) collection.add(v);
+			} else if (componentType == int.class) {
+				for (int v : (int[])rawValue) collection.add(v);
+			} else if (componentType == short.class) {
+				for (int v : (short[])rawValue) collection.add(v);
+			} else if (componentType == byte.class) {
+				for (byte v : (byte[])rawValue) collection.add(v);
+			} else if (componentType == char.class) {
+				for (char v : (char[])rawValue) collection.add(v);
+			} else if (componentType == byte.class) {
+				for (byte v : (byte[])rawValue) collection.add(v);
+			} else if (componentType == boolean.class) {
+				for (boolean v : (boolean[])rawValue) collection.add(v);
+			}
 			return collection;
 		} else if (slot.isReference()) {
 			final Collection<Object> referencedIds;

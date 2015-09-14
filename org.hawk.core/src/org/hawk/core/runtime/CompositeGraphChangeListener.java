@@ -20,12 +20,30 @@ import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
 
 /**
- * Allows treating a set of {@link IGraphChangeListener}s as a single one. By itself,
- * this change listener doesn't do anything, so it can be used as a "null" listener
- * if left empty.
+ * Allows treating a set of {@link IGraphChangeListener}s as a single one. By
+ * itself, this change listener doesn't do anything, so it can be used as a
+ * "null" listener if left empty.
+ *
+ * Since this is a HashSet, if we want to avoid having "duplicate" listeners,
+ * the easiest way is to have the {@link IGraphChangeListener} implementations
+ * define hashCode and equals appropriately.
  */
 public class CompositeGraphChangeListener extends HashSet<IGraphChangeListener> implements IGraphChangeListener {
 	private static final long serialVersionUID = 639097671453202757L;
+
+	@Override
+	public void synchroniseStart() {
+		for (IGraphChangeListener l : this) {
+			l.synchroniseStart();
+		}
+	}
+
+	@Override
+	public void synchroniseEnd() {
+		for (IGraphChangeListener l : this) {
+			l.synchroniseEnd();
+		}
+	}
 
 	@Override
 	public void changeStart() {

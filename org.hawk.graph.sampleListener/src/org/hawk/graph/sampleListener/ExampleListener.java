@@ -9,6 +9,16 @@ import org.hawk.core.model.IHawkPackage;
 public class ExampleListener implements IGraphChangeListener {
 
 	@Override
+	public void synchroniseStart() {
+		System.out.println("synchronize started");
+	}
+
+	@Override
+	public void synchroniseEnd() {
+		System.out.println("synchronize ended");
+	}
+
+	@Override
 	public void changeStart() {
 		System.out.println("change started");
 	}

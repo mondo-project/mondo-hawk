@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.hawk.ifc;
 
+import org.bimserver.models.geometry.GeometryPackage;
+import org.bimserver.models.ifc2x3tc1.Ifc2x3tc1Package;
+import org.bimserver.models.ifc4.Ifc4Package;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
@@ -35,6 +38,13 @@ public class Activator extends Plugin {
 		super.start(bundleContext);
 		Activator.context = bundleContext;
 		Activator.instance = this;
+
+		// Make sure the IFC metamodels are registered - they're not bundled as
+		// the usual Eclipse plugins with the generated_package extension, so we'll
+		// have to imitate that with this activator.
+		GeometryPackage.eINSTANCE.eResource();
+		Ifc2x3tc1Package.eINSTANCE.eResource();
+		Ifc4Package.eINSTANCE.eResource();
 	}
 
 	/*

@@ -24,6 +24,9 @@ public interface IGraphChangeListener {
 
 	String getName();
 
+	void synchroniseStart();
+	void synchroniseEnd();
+
 	void changeStart();
 	void changeSuccess();
 	void changeFailure();

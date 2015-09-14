@@ -21,7 +21,6 @@ import java.util.Set;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
-import org.hawk.core.runtime.CompositeGraphChangeListener;
 
 public interface IModelIndexer {
 

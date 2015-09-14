@@ -445,9 +445,11 @@ public class GraphModelInserter {
 
 			if (eObject.isSet(eAttribute)) {
 
-				if (((String[]) typenode.getProperty(eAttribute.getName()))[5]
-						.equals("t"))
+				final String attrName = eAttribute.getName();
+				final String[] propValue = (String[])typenode.getProperty(attrName);
+				if (propValue != null && propValue[5].equals("t")) {
 					indexedattributes.add(eAttribute);
+				}
 
 				normalattributes.add(eAttribute);
 
