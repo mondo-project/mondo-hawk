@@ -899,9 +899,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 			throw new Exception(
 					"Please set the admin password using setAdminPassword(...) before calling init");
 
-		// register all metamodels in graph to their factories
-		registerMetamodelFiles();
-
 		// register all static metamodels to graph
 		System.out
 				.println("inserting static metamodels of registered metamodel factories to graph:");
@@ -911,6 +908,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 			metamodelupdater.insertMetamodels(f.getStaticMetamodels(), this);
 		}
 		System.out.println("inserting static metamodels complete");
+
+		// register all metamodels in graph to their factories
+		registerMetamodelFiles();
 
 		// begin scheduled updates from vcs
 		if (runSchedule) {
