@@ -29,7 +29,7 @@ import org.hawk.ifc.IFCPackage;
 
 public class IFCMetaModelResource implements IHawkMetaModelResource {
 
-	private Resource res;
+	Resource res;
 	private IMetaModelResourceFactory p;
 
 	@Override

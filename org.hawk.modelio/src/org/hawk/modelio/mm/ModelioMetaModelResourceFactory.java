@@ -11,6 +11,7 @@
 package org.hawk.modelio.mm;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -77,18 +79,6 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 	}
 
 	@Override
-	public IHawkMetaModelResource createMetamodelWithSinglePackage(String s,
-			IHawkPackage p) {
-
-		Resource r = resourceSet.createResource(URI.createURI(s));
-
-		r.getContents().add(((ModelioPackage) p).getEObject());
-
-		return new ModelioMetaModelResource(r, this);
-
-	}
-
-	@Override
 	public IHawkMetaModelResource parseFromString(String name, String contents) throws Exception {
 
 		if (name != null && contents != null) {
@@ -100,6 +90,30 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 			return new ModelioMetaModelResource(r, this);
 		} else
 			return null;
+	}
+
+	@Override
+	public String dumpPackageToString(IHawkPackage pkg) throws Exception {
+		final ModelioPackage ePackage = (ModelioPackage) pkg;
+		final ModelioMetaModelResource eResource = (ModelioMetaModelResource)ePackage.getResource();
+
+		final Resource oldResource = eResource.res;
+		final Resource newResource = resourceSet.createResource(URI.createURI("resource_from_epackage_" + ePackage.getNsURI()));
+		final EObject eob = ePackage.getEObject();
+		newResource.getContents().add(eob);
+
+		final ByteArrayOutputStream bOS = new ByteArrayOutputStream();
+		try {
+			newResource.save(bOS, null);
+			final String contents = new String(bOS.toByteArray());
+			return contents;
+		} finally {
+			/*
+			 * Move back the EPackage into its original resource, to avoid
+			 * inconsistencies across restarts.
+			 */
+			oldResource.getContents().add(eob);
+		}
 	}
 
 	@Override

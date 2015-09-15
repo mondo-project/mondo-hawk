@@ -11,11 +11,13 @@
 package org.hawk.emf.metamodel;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.HashSet;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -95,15 +97,27 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 	}
 
 	@Override
-	public IHawkMetaModelResource createMetamodelWithSinglePackage(String s,
-			IHawkPackage p) {
+	public String dumpPackageToString(IHawkPackage pkg) throws Exception {
+		final EMFPackage ePackage = (EMFPackage) pkg;
+		final EMFMetaModelResource eResource = (EMFMetaModelResource)ePackage.getResource();
 
-		Resource r = resourceSet.createResource(URI.createURI(s));
+		final Resource oldResource = eResource.res;
+		final Resource newResource = resourceSet.createResource(URI.createURI("resource_from_epackage_" + ePackage.getNsURI()));
+		final EObject eob = ePackage.getEObject();
+		newResource.getContents().add(eob);
 
-		r.getContents().add(((EMFPackage) p).getEObject());
-
-		return new EMFMetaModelResource(r, this);
-
+		final ByteArrayOutputStream bOS = new ByteArrayOutputStream();
+		try {
+			newResource.save(bOS, null);
+			final String contents = new String(bOS.toByteArray());
+			return contents;
+		} finally {
+			/*
+			 * Move back the EPackage into its original resource, to avoid
+			 * inconsistencies across restarts.
+			 */
+			oldResource.getContents().add(eob);
+		}
 	}
 
 	@Override

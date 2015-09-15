@@ -29,7 +29,7 @@ import org.hawk.modelio.ModelioPackage;
 
 public class ModelioMetaModelResource implements IHawkMetaModelResource {
 
-	private Resource res;
+	Resource res;
 	private IMetaModelResourceFactory p;
 
 	@Override

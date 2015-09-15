@@ -24,16 +24,13 @@ public class EMFPackage extends EMFObject implements IHawkPackage {
 	private IHawkMetaModelResource r;
 
 	public EMFPackage(EPackage e, IHawkMetaModelResource res) {
-
 		super(e);
 		ep = e;
 		r = res;
-
 	}
 
 	@Override
 	public String getName() {
-
 		return ep.getName();
 	}
 

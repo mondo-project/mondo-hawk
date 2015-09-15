@@ -35,15 +35,14 @@ public interface IMetaModelResourceFactory {
 
 	Collection<String> getMetaModelExtensions();
 
-	// creates a metamodel resource with name s, from package p
-	IHawkMetaModelResource createMetamodelWithSinglePackage(String s,
-			IHawkPackage p);
-
 	// adds a new metamodel resource to hawk, given a string representation
 	IHawkMetaModelResource parseFromString(String name, String contents)
 			throws Exception;
 
 	// removes a metamodel from this factory's static metamodels
 	void removeMetamodel(String property);
+
+	// saves a package into string format, so it can be loaded by parseFromString
+	String dumpPackageToString(IHawkPackage ePackage) throws Exception;
 
 }

@@ -11,7 +11,6 @@
 package org.hawk.graph.internal.updater;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -346,46 +345,12 @@ public class GraphMetaModelResourceInjector {
 				// .getProperty("id").toString());
 
 				// add resource to package
-				IHawkMetaModelResource res = ePackage
+				final String s = ePackage
 						.getResource()
 						.getMetaModelResourceFactory()
-						.createMetamodelWithSinglePackage(
-								"resource_from_epackage_" + ePackage.getNsURI(),
-								ePackage);
-				// System.err.println(ePackage.getNsURI());
-				map.put(epackagenode, res);
-
-			}
-
-			for (IGraphNode epackagenode : map.keySet()) {
-
-				OutputStream output = new OutputStream() {
-					private StringBuilder string = new StringBuilder();
-
-					@Override
-					public void write(int b) throws IOException {
-						this.string.append((char) b);
-					}
-
-					@Override
-					public String toString() {
-						return this.string.toString();
-					}
-				};
-
-				IHawkMetaModelResource res = map.get(epackagenode);
-
-				res.save(output, new HashMap<>());
-
-				//
-				String s = output.toString();
-				//
-
-				// System.out.println(s);
+						.dumpPackageToString(ePackage);
 
 				epackagenode.setProperty("resource", s);
-				output.close();
-				res = null;
 
 			}
 

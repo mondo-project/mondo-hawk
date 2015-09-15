@@ -87,9 +87,7 @@ public class EMFMetaModelResource implements IHawkMetaModelResource {
 
 	@Override
 	public String toString() {
-
 		return res.getURI().toString();
-
 	}
 
 }

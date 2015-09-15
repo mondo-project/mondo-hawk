@@ -11,6 +11,7 @@
 package org.hawk.bpmn.metamodel;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collections;
@@ -23,6 +24,7 @@ import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.dd.dc.DcPackage;
 import org.eclipse.dd.di.DiPackage;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.EcorePackage;
@@ -98,18 +100,6 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 	}
 
 	@Override
-	public IHawkMetaModelResource createMetamodelWithSinglePackage(String s,
-			IHawkPackage p) {
-
-		Resource r = resourceSet.createResource(URI.createURI(s));
-
-		r.getContents().add(((BPMNPackage) p).getEObject());
-
-		return new BPMNMetaModelResource(r, this);
-
-	}
-
-	@Override
 	public IHawkMetaModelResource parseFromString(String name, String contents)
 			throws Exception {
 
@@ -128,6 +118,30 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 			return new BPMNMetaModelResource(r, this);
 		} else
 			return null;
+	}
+
+	@Override
+	public String dumpPackageToString(IHawkPackage pkg) throws Exception {
+		final BPMNPackage ePackage = (BPMNPackage) pkg;
+		final BPMNMetaModelResource eResource = (BPMNMetaModelResource)ePackage.getResource();
+
+		final Resource oldResource = eResource.res;
+		final Resource newResource = resourceSet.createResource(URI.createURI("resource_from_epackage_" + ePackage.getNsURI()));
+		final EObject eob = ePackage.getEObject();
+		newResource.getContents().add(eob);
+
+		final ByteArrayOutputStream bOS = new ByteArrayOutputStream();
+		try {
+			newResource.save(bOS, null);
+			final String contents = new String(bOS.toByteArray());
+			return contents;
+		} finally {
+			/*
+			 * Move back the EPackage into its original resource, to avoid
+			 * inconsistencies across restarts.
+			 */
+			oldResource.getContents().add(eob);
+		}
 	}
 
 	@Override
@@ -261,5 +275,4 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 		return missingPackages;
 	}
-
 }
