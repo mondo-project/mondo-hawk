@@ -37,7 +37,7 @@ public interface IModelUpdater {
 
 	public abstract void shutdown();
 
-	public void deleteAll(String repository, String filepath) throws Exception;
+	public void deleteAll(VcsCommitItem c) throws Exception;
 
 	public void updateDerivedAttribute(String metamodeluri, String typename,
 			String attributename, String attributetype, boolean isMany,

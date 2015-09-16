@@ -650,9 +650,7 @@ public class GraphModelInserter {
 		listener.changeStart();
 		try {
 			graph.exitBatchMode();
-			final String repositoryURL = s.getCommit().getDelta()
-					.getRepository().getUrl();
-			new DeletionUtils(graph).deleteAll(repositoryURL, s.getPath());
+			new DeletionUtils(graph).deleteAll(s, listener);
 
 			graph.enterBatchMode();
 			new GraphModelBatchInjector(graph, s, resource, listener);

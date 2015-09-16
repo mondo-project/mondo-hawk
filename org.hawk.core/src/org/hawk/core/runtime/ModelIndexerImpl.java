@@ -176,11 +176,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 								}
 							}
 
-							Iterator<VcsCommitItem> it = interestingfiles
-									.iterator();
+							Iterator<VcsCommitItem> it = interestingfiles.iterator();
 
-							if (it.hasNext()) {
-
+							while (it.hasNext()) {
 								VcsCommitItem c = it.next();
 
 								if (c.getChangeType().equals(
@@ -192,7 +190,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 											+ "), PROPAGATING CHANGES");
 
 									deleteditems.add(c);
-									interestingfiles.remove(c);
+									it.remove();
 								}
 							}
 
@@ -277,15 +275,17 @@ public class ModelIndexerImpl implements IModelIndexer {
 								graph.exitBatchMode();
 
 								try {
+									listener.changeStart();
 									for (VcsCommitItem c : deleteditems) {
-										u.deleteAll(c.getCommit().getDelta()
-												.getRepository().getUrl(),
-												c.getPath());
+										u.deleteAll(c);
 									}
 								} catch (Exception e) {
 									System.err
 											.println("error in deleting removed files from store:");
 									e.printStackTrace();
+									listener.changeFailure();
+								} finally {
+									listener.changeSuccess();
 								}
 
 								try {

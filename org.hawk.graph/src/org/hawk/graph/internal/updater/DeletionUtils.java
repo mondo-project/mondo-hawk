@@ -12,6 +12,8 @@ package org.hawk.graph.internal.updater;
 
 import java.util.HashSet;
 
+import org.hawk.core.VcsCommitItem;
+import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
@@ -51,12 +53,14 @@ public class DeletionUtils {
 
 	}
 
-	protected void deleteAll(String repository, String filepath)
+	protected void deleteAll(VcsCommitItem s, IGraphChangeListener changeListener)
 			throws Exception {
 
 		long start = System.currentTimeMillis();
 
 		try (IGraphTransaction transaction = graph.beginTransaction()) {
+			final String repository = s.getCommit().getDelta().getRepository().getUrl();
+			final String filepath = s.getPath();
 
 			IGraphNode file = graph
 					.getFileIndex()
@@ -85,6 +89,7 @@ public class DeletionUtils {
 
 			for (IGraphNode node : modelElements) {
 				delete(node);
+				changeListener.modelElementRemoval(s, node, false);
 			}
 
 			modelElements = null;
@@ -93,6 +98,7 @@ public class DeletionUtils {
 
 			filedictionary.remove(file);
 			delete(file);
+			changeListener.fileRemoval(s, file);
 
 			transaction.success();
 		}
