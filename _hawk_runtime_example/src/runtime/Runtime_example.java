@@ -98,7 +98,7 @@ public class Runtime_example {
 		// String vcsloc =
 		// "../org.hawk.emf/src/org/hawk/emf/model/examples/single/0";
 
-		String vcsloc = "../_hawk_runtime_example/runtime_data/model/0";
+		String vcsloc = "C:/Users/kb/git/automated_repos/bpmn-miwg_bpmn-miwg-test-suite";
 
 		//
 
@@ -125,6 +125,7 @@ public class Runtime_example {
 
 		if (pw != null) {
 			vcs.run(vcsloc, "kb634", pw, hawk.getConsole());
+			hawk.addVCSManager(vcs, true);
 		} else
 			System.exit(1);
 		pw = null;
@@ -157,10 +158,10 @@ public class Runtime_example {
 		t.start();
 
 		// add one or more metamodel files
-		File metamodel = new File(
-				"../org.hawk.emf/src/org/hawk/emf/metamodel/examples/single/JDTAST.ecore");
+		// File metamodel = new
+		// File("../org.hawk.emf/src/org/hawk/emf/metamodel/examples/single/JDTAST.ecore");
 		// register them
-		hawk.registerMetamodel(metamodel);
+		// hawk.registerMetamodel(metamodel);
 		// i.removeMetamodel(metamodel);
 
 		// hawk.addVCSManager(vcs, true);

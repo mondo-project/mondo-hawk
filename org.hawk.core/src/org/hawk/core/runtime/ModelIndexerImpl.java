@@ -121,6 +121,12 @@ public class ModelIndexerImpl implements IModelIndexer {
 			// System.err.println(currLocalTopRevisions);
 			// System.err.println(currReposTopRevisions);
 
+		// debug info dump...
+		File dump = new File("C:/Users/kb/Desktop/hawk-sync-dump.txt");
+		BufferedWriter w = new BufferedWriter(new FileWriter(dump, true));
+		w.append("...sync started...\r\n");
+		long start = System.currentTimeMillis();
+
 			boolean allSync = true;
 
 			if (monitors.size() > 0) {
@@ -202,6 +208,12 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 								Set<VcsCommitItem> currreposchangeditems = u
 										.compareWithLocalFiles(interestingfiles);
+
+							w.append("deleted items " + deleteditems.size()
+									+ " interesting items "
+									+ interestingfiles.size()
+									+ " currreposchangeditems "
+									+ currreposchangeditems.size() + "\r\n");
 
 								// create temp files with changed repos files
 								for (VcsCommitItem s : currreposchangeditems) {
@@ -299,15 +311,20 @@ public class ModelIndexerImpl implements IModelIndexer {
 								}
 							}
 
-							for (IHawkModelResource r : fileToResourceMap
-									.values()) {
+						w.append("resources " + fileToResourceMap.size()
+								+ " loaded ");
+						int count = 0;
+
+						for (IHawkModelResource r : fileToResourceMap.values()) {
 								if (r != null) {
 									r.unload();
+								count++;
 								}
 							}
 
-							// FIXME manage changes (propagate to mondix /
-							// derived
+						w.append(count + "\r\n");
+
+						// FIXME manage changes (propagate to mondix / derived
 							// updaters etc)
 
 							// changes.dosomething -- currently logs all changes
@@ -372,6 +389,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 					}
 				}
 			}
+
+		w.append("...sync ended...(~" + (System.currentTimeMillis() - start)
+				/ 1000 + "s)\r\n");
+		w.flush();
+		w.close();
 			return allSync;
 		} finally {
 			listener.synchroniseEnd();
