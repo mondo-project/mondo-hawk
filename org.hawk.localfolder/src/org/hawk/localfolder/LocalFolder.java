@@ -37,6 +37,9 @@ public class LocalFolder implements IVcsManager {
 
 	private static int version = 0;
 
+	// Unix timestamp of the last time we checked for changes
+	private long lastChecked = 0;
+
 	public LocalFolder() {
 
 	}
@@ -181,6 +184,9 @@ public class LocalFolder implements IVcsManager {
 		if (files != null && files.size() > 0)
 			for (File f : files) {
 				previousFiles.add(f);
+				if (f.lastModified() <= lastChecked) {
+					continue;
+				}
 
 				VcsCommit commit = new VcsCommit();
 				commit.setAuthor("i am a local folder driver - no authors recorded");
@@ -203,6 +209,7 @@ public class LocalFolder implements IVcsManager {
 				commit.getItems().add(c);
 			}
 
+		lastChecked = System.currentTimeMillis();
 		return delta;
 	}
 

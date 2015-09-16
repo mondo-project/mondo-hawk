@@ -162,7 +162,7 @@ public class GraphModelBatchInjector {
 							+ s.getPath()
 							+ "\nReverting all changes on that file.");
 
-					new DeletionUtils(graph).deleteAll(repoURL, s.getPath());
+					new DeletionUtils(graph).deleteAll(s, listener);
 					listener.changeFailure();
 				}
 			} else /* if not new */{
@@ -455,11 +455,11 @@ public class GraphModelBatchInjector {
 			}
 
 			// propagate changes to listeners
-			listener.modelElementAddition(commitItem, eObject, node, true);
+			listener.modelElementAddition(commitItem, eObject, node, false);
 			for (String s : m.keySet()) {
 				Object value = m.get(s);
 				listener.modelElementAttributeUpdate(commitItem, eObject, s,
-						null, value, node, true);
+						null, value, node, false);
 			}
 
 			// add derived attrs
@@ -818,7 +818,7 @@ public class GraphModelBatchInjector {
 			if (isContainer)
 				props.put("isContainer", "true");
 
-			createReference(edgelabel, source, destination, props, true);
+			createReference(edgelabel, source, destination, props, false);
 
 			objectCount[0]++;
 		}

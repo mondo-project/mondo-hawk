@@ -56,8 +56,7 @@ public class GraphModelUpdater implements IModelUpdater {
 		 * require any more memory, and the CPU cost should be the same.
 		 */
 		final IGraphDatabase g = indexer.getGraph();
-		final DirtyDerivedAttributesListener l = new DirtyDerivedAttributesListener(
-				g);
+		final DirtyDerivedAttributesListener l = new DirtyDerivedAttributesListener(g);
 		indexer.addGraphChangeListener(l);
 
 		try {
@@ -124,8 +123,8 @@ public class GraphModelUpdater implements IModelUpdater {
 	}
 
 	@Override
-	public void deleteAll(String repository, String filepath) throws Exception {
-		new DeletionUtils(indexer.getGraph()).deleteAll(repository, filepath);
+	public void deleteAll(VcsCommitItem c) throws Exception {
+		new DeletionUtils(indexer.getGraph()).deleteAll(c, indexer.getCompositeGraphChangeListener());
 	}
 
 	@Override
