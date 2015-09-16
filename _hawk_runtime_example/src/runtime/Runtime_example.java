@@ -33,6 +33,7 @@ import org.hawk.emf.model.EMFModelResourceFactory;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
 import org.hawk.graph.internal.updater.GraphModelUpdater;
+import org.hawk.graph.sampleListener.ExampleListener;
 import org.hawk.localfolder.LocalFolder;
 import org.hawk.neo4j_v2.Neo4JDatabase;
 
@@ -139,6 +140,9 @@ public class Runtime_example {
 		// add a query language
 		q = new EOLQueryEngine();
 		hawk.addQueryEngine(q);
+
+		// subscribe to notifications
+		hawk.addGraphChangeListener(new ExampleListener());
 
 		// initialise the server for real-time updates to changes -- this has to
 		// be done after initialising all the relevant plugins you want online
@@ -265,6 +269,9 @@ public class Runtime_example {
 									queryLangID,
 									"self.returnType.isTypeOf(SimpleType) and self.revRefNav_bodyDeclarations.isTypeOf(TypeDeclaration) and self.returnType.name.fullyQualifiedName == self.revRefNav_bodyDeclarations.name.fullyQualifiedName");
 
+						} else if (s.startsWith("q ")) {
+							s = s.substring(2);
+							q.contextlessQuery(graph, s);
 						}
 
 					} catch (Exception e) {
