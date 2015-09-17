@@ -13,6 +13,8 @@ package org.hawk.localfolder;
 
 import java.io.File;
 import java.net.URLDecoder;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
@@ -37,8 +39,8 @@ public class LocalFolder implements IVcsManager {
 
 	private static int version = 0;
 
-	// Unix timestamp of the last time we checked for changes
-	private long lastChecked = 0;
+	// Maximum 'last modified' time observed within the folder since the last time we checked
+	private long lastModifiedRepository = 0;
 
 	public LocalFolder() {
 
@@ -181,12 +183,15 @@ public class LocalFolder implements IVcsManager {
 
 		previousFiles.clear();
 
-		if (files != null && files.size() > 0)
+		if (files != null && files.size() > 0) {
+			long newLastModifiedRepository = lastModifiedRepository;
 			for (File f : files) {
 				previousFiles.add(f);
-				if (f.lastModified() <= lastChecked) {
+				final long lastModified = Files.getLastModifiedTime(f.toPath()).toMillis();
+				if (lastModifiedRepository > lastModified) {
 					continue;
 				}
+				newLastModifiedRepository = Math.max(newLastModifiedRepository, lastModified);
 
 				VcsCommit commit = new VcsCommit();
 				commit.setAuthor("i am a local folder driver - no authors recorded");
@@ -208,8 +213,9 @@ public class LocalFolder implements IVcsManager {
 				// c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 				commit.getItems().add(c);
 			}
+			lastModifiedRepository = newLastModifiedRepository;
+		}
 
-		lastChecked = System.currentTimeMillis();
 		return delta;
 	}
 
