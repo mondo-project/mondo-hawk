@@ -49,7 +49,7 @@ These instructions are from a clean download of an Eclipse Luna Modelling distri
     * core.session
     * core.estore.exml
     * core.ui
-    * core.utils
+    * core.utils (edit its `META-INF/MANIFEST.MF` file so it only exports its own packages)
     * jdbm (you'll need to create its "src" source folder)
     * lib
     * log
