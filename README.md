@@ -7,10 +7,11 @@ Dependencies
 ------------
 
 * [Eclipse Luna Modeling Tools distribution](https://eclipse.org/downloads/index-developer.php)
-* [Epsilon (interim update site)](http://download.eclipse.org/epsilon/interim/) (need: Epsilon Core / Epsilon Core Development Tools)
-* [Neo4J(v2) (due to incompatible licences)](http://neo4j.com/download/other-releases/)
+* [Epsilon (interim update site)](http://download.eclipse.org/epsilon/interim/) (need: Epsilon Core / Epsilon Core Development Tools / Epsilon EMF Development Tools)
+* [Neo4J(v2) (due to incompatible licenses)](http://neo4j.com/download/other-releases/)
 * (optional) [SVNKit update site](http://eclipse.svnkit.com/1.8.x)
-* (optional) [Modelio source code](https://opensourceprojects.eu/svn/p/mondo/code/trunk/modelio), download the latest version and import the (existing) projects into Eclipse.
+* (optional) [Modelio source code](https://opensourceprojects.eu/svn/p/mondo/code/trunk/modelio).
+* (optional) [BIMserver 1.4.0 (also due to imcompatible licenses)](http://bimserver.org/)
 
 Screencasts
 -----------
@@ -71,8 +72,9 @@ These instructions are from a clean download of an Eclipse Luna Modelling distri
 5. Close the `_hawk_runtime_example` project (it is an example project running Hawk in standalone mode) if you do not need it.
 6. Close the experimental `org.hawk.epsilon.queryaware` project if you do not need it. If you do, you'll need to import the `StaticAnalysis` projects within [epsilonlabs](https://github.com/epsilonlabs/epsilonlabs) and the [effectivemetamodel](https://github.com/wrwei/org.eclipse.epsilon.labs.effectivemetamodel) project.
 7. Download Neo4J 2.0.1 (see above link, or try these quick links: [Linux/Mac](http://info.neotechnology.com/download-thanks.html?edition=community&release=2.0.1&flavour=unix), [Windows 64 bits](http://info.neotechnology.com/download-thanks.html?edition=community&release=2.0.1&architecture=x64), [Windows 32 bits](http://info.neotechnology.com/download-thanks.html?edition=community&release=2.0.1&architecture=x32)), unpack the ZIP file and place all the `.jar` files in `lib` into `org.hawk.neo4j-v2.dependencies/2.0.1`. The libraries should appear within `Referenced Libraries`, and they should be marked to be reexported (Project menu > Properties > Java Build Path > Order and Export).
-8. Force a full rebuild with `Project > Clean... > Clean all projects` if you still have errors.
-9. To build the update site, run first `org.hawk.updatesite/Build Site.launch`, wait for the "PDE Export" background job to complete, refresh `org.hawk.updatesite` and then run `Publish Site.launch`. A zip file named `hawk-updatesite-YYYYMMDD.zip` will be generated in the same directory.
+8. Download the dependencies mentioned in `org.hawk.ifc/lib/README.txt`.
+9. Force a full rebuild with `Project > Clean... > Clean all projects` if you still have errors.
+10. To build the update site, run first `org.hawk.updatesite/Build Site.launch`, wait for the "PDE Export" background job to complete, refresh `org.hawk.updatesite` and then run `Publish Site.launch`. A zip file named `hawk-updatesite-YYYYMMDD.zip` will be generated in the same directory.
 
 After all these steps, you should have a working version of Hawk with all optional dependencies and no errors.
 
