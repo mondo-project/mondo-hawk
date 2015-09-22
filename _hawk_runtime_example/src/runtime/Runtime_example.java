@@ -22,14 +22,13 @@ import javax.swing.JOptionPane;
 import org.hawk.bpmn.metamodel.BPMNMetaModelResourceFactory;
 import org.hawk.bpmn.model.BPMNModelResourceFactory;
 import org.hawk.core.IModelIndexer;
-import org.hawk.core.IVcsManager;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
+import org.hawk.core.IVcsManager;
+import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.runtime.ModelIndexerImpl;
 import org.hawk.core.util.DefaultConsole;
-import org.hawk.emf.metamodel.EMFMetaModelResourceFactory;
-import org.hawk.emf.model.EMFModelResourceFactory;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
 import org.hawk.graph.internal.updater.GraphModelUpdater;
@@ -55,6 +54,7 @@ public class Runtime_example {
 			"../org.hawk.epsilon/src/org/hawk/epsilon/query/Grabats_Query_Derived_INDEXED.eol");
 
 	static String pw = null;
+	private static IGraphChangeListener listener;
 
 	public static String password() {
 		final JFrame parent = new JFrame();
@@ -73,11 +73,11 @@ public class Runtime_example {
 		hawk = new ModelIndexerImpl("hawk1", parent, new DefaultConsole());
 
 		// add a metamodel factory
-		hawk.addMetaModelResourceFactory(new EMFMetaModelResourceFactory());
+		// hawk.addMetaModelResourceFactory(new EMFMetaModelResourceFactory());
 		hawk.addMetaModelResourceFactory(new BPMNMetaModelResourceFactory());
 
 		// add a model factory
-		hawk.addModelResourceFactory(new EMFModelResourceFactory());
+		// hawk.addModelResourceFactory(new EMFModelResourceFactory());
 		hawk.addModelResourceFactory(new BPMNModelResourceFactory());
 
 		IGraphDatabase db = (new Neo4JDatabase());
@@ -98,7 +98,7 @@ public class Runtime_example {
 		// String vcsloc =
 		// "../org.hawk.emf/src/org/hawk/emf/model/examples/single/0";
 
-		String vcsloc = "../_hawk_runtime_example/runtime_data/model/0";
+		String vcsloc = "C:\\Users\\kb634\\Desktop\\workspace-ts-presentation\\_hawk_evaluation_simulation\\model\\bpmn-miwg-test-suite";
 
 		//
 
@@ -129,6 +129,8 @@ public class Runtime_example {
 			System.exit(1);
 		pw = null;
 
+		hawk.addVCSManager(vcs, true);
+
 		// add a metamodel updater
 		hawk.setMetaModelUpdater(new GraphMetaModelUpdater());
 
@@ -138,6 +140,8 @@ public class Runtime_example {
 		// add a query language
 		q = new EOLQueryEngine();
 		hawk.addQueryEngine(q);
+
+		hawk.addGraphChangeListener(listener);
 
 		// initialise the server for real-time updates to changes -- this has to
 		// be done after initialising all the relevant plugins you want online
@@ -156,11 +160,6 @@ public class Runtime_example {
 		Thread t = consoleInteraction(hawk);
 		t.start();
 
-		// add one or more metamodel files
-		File metamodel = new File(
-				"../org.hawk.emf/src/org/hawk/emf/metamodel/examples/single/JDTAST.ecore");
-		// register them
-		hawk.registerMetamodel(metamodel);
 		// i.removeMetamodel(metamodel);
 
 		// hawk.addVCSManager(vcs, true);
@@ -272,5 +271,10 @@ public class Runtime_example {
 				}
 			};
 		};
+	}
+
+	public static void run(IGraphChangeListener l) throws Exception {
+		listener = l;
+		main(null);
 	}
 }
