@@ -267,9 +267,9 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 
 						// System.err.println(Arrays.toString(files.toArray()));
 						// System.err.println(files.iterator().next().getGraph());
-						// System.err.println(node.getOutgoingWithType("file").iterator().next().getEndNode().getGraph());
+						// System.err.println(node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE).iterator().next().getEndNode().getGraph());
 
-						if (files.contains(node.getOutgoingWithType("file")
+						if (files.contains(node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)
 								.iterator().next().getEndNode())) {
 							nodes.add(new GraphNodeWrapper(node.getId()
 									.toString(), this));

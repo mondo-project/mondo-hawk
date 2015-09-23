@@ -19,6 +19,7 @@ import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.graph.ModelElementNode;
 
 public class DeletionUtils {
 
@@ -74,7 +75,7 @@ public class DeletionUtils {
 
 			HashSet<IGraphNode> modelElements = new HashSet<IGraphNode>();
 
-			for (IGraphEdge rel : file.getIncomingWithType("file")) {
+			for (IGraphEdge rel : file.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 				modelElements.add(rel.getStartNode());
 				rel.delete();
 			}
@@ -172,7 +173,7 @@ public class DeletionUtils {
 
 			IGraphNode referencingNode = rel.getStartNode();
 			String referencingNodeFileID = referencingNode
-					.getOutgoingWithType("file").iterator().next().getEndNode()
+					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE).iterator().next().getEndNode()
 					.getProperty("id").toString();
 			String referencedElementFileID = (String) referencedElementFileNode
 					.getProperty("id");
@@ -186,7 +187,7 @@ public class DeletionUtils {
 				// .getRelationships(
 				// Direction.OUTGOING,
 				// new RelationshipUtil()
-				// .getNewRelationshipType("file"))
+				// .getNewRelationshipType(ModelElementNode.EDGE_LABEL_FILE))
 				// .iterator().next().getEndNode().getProperty("id"));
 
 				String fullReferencedElementPathFileURI = repositoryURL

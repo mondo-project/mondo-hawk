@@ -12,8 +12,14 @@ package org.hawk.epsilon.emc;
 
 import java.util.Iterator;
 
-import org.hawk.core.graph.*;
-import org.hawk.core.model.*;
+import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphEdge;
+import org.hawk.core.graph.IGraphIterable;
+import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.IGraphNodeIndex;
+import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.core.model.IHawkClass;
+import org.hawk.graph.ModelElementNode;
 
 public class MetamodelUtils {
 
@@ -33,7 +39,7 @@ public class MetamodelUtils {
 	//
 	// @Override
 	// public String name() {
-	// return "kindOf";
+	// return ModelElementNode.EDGE_LABEL_OFKIND;
 	// }
 	// }).iterator();
 	//
@@ -52,7 +58,7 @@ public class MetamodelUtils {
 	// public boolean isOfType(Node node, String type) {
 	//
 	// return node.getRelationships(Direction.OUTGOING,
-	// new RelationshipUtil().getNewRelationshipType("typeOf"))
+	// new RelationshipUtil().getNewRelationshipType(ModelElementNode.EDGE_LABEL_OFTYPE))
 	// .iterator().next().getEndNode().getProperty("id").toString().equals(type);
 	//
 	// }
@@ -70,7 +76,7 @@ public class MetamodelUtils {
 			// operations on the graph
 			// ...
 
-			Iterator<IGraphEdge> it = node.getOutgoingWithType("typeOf")
+			Iterator<IGraphEdge> it = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
 					.iterator();
 
 			while (it.hasNext()) {
@@ -112,7 +118,7 @@ public class MetamodelUtils {
 
 			try {
 
-				ret = node.getOutgoingWithType("typeOf").iterator().next()
+				ret = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().next()
 						.getEndNode().getProperty("id").toString();
 
 			} catch (Exception e) {
@@ -183,7 +189,7 @@ public class MetamodelUtils {
 	// new RelationshipType() {
 	// @Override
 	// public String name() {
-	// return "typeOf";
+	// return ModelElementNode.EDGE_LABEL_OFTYPE;
 	// }
 	// }).iterator().next().getEndNode();
 	//

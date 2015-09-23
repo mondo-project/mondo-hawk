@@ -139,7 +139,7 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine
 
 			// file based!
 			for (IGraphNode filenode : files) {
-				for (IGraphEdge edge : filenode.getIncomingWithType("file")) {
+				for (IGraphEdge edge : filenode.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 					GraphNodeWrapper wrapper = new GraphNodeWrapper(edge
 							.getStartNode().getId().toString(), this);
 					allContents.add(wrapper);
@@ -277,9 +277,9 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine
 
 						// System.err.println(Arrays.toString(files.toArray()));
 						// System.err.println(files.iterator().next().getGraph());
-						// System.err.println(node.getOutgoingWithType("file").iterator().next().getEndNode().getGraph());
+						// System.err.println(node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE).iterator().next().getEndNode().getGraph());
 
-						if (files.contains(node.getOutgoingWithType("file")
+						if (files.contains(node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)
 								.iterator().next().getEndNode())) {
 							nodes.add(new GraphNodeWrapper(node.getId()
 									.toString(), this));

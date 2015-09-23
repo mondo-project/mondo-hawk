@@ -32,6 +32,7 @@ import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.core.model.IHawkReference;
+import org.hawk.graph.ModelElementNode;
 
 public class GraphMetaModelResourceInjector {
 
@@ -187,14 +188,14 @@ public class GraphMetaModelResourceInjector {
 
 			for (IGraphNode metamodelelement : metaModelElements) {
 				for (IGraphEdge rel : metamodelelement
-						.getIncomingWithType("typeOf")) {
+						.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)) {
 					modelElements.add(rel.getStartNode());
 					del.delete(rel);
 				}
 			}
 			for (IGraphNode metamodelelement : metaModelElements) {
 				for (IGraphEdge rel : metamodelelement
-						.getIncomingWithType("kindOf")) {
+						.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFKIND)) {
 					modelElements.add(rel.getStartNode());
 					del.delete(rel);
 				}
@@ -206,7 +207,7 @@ public class GraphMetaModelResourceInjector {
 			//
 			for (IGraphNode modelElement : modelElements) {
 				Iterator<IGraphEdge> it = modelElement.getOutgoingWithType(
-						"file").iterator();
+						ModelElementNode.EDGE_LABEL_FILE).iterator();
 				if (it.hasNext()) {
 					IGraphEdge e = it.next();
 					fileNodes.add(e.getEndNode());
@@ -797,8 +798,8 @@ public class GraphMetaModelResourceInjector {
 				// the
 				// derived attribute is new or existed already and is being
 				// updated)
-				if (typenode.getIncomingWithType("typeOf").iterator().hasNext()
-						|| typenode.getIncomingWithType("kindOf").iterator()
+				if (typenode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().hasNext()
+						|| typenode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFKIND).iterator()
 								.hasNext())
 					requiresPropagationToInstances = true;
 
@@ -904,9 +905,9 @@ public class GraphMetaModelResourceInjector {
 									+ " is a reference not an attribute, aborting operation: addIndexedAttribute");
 				} else {
 
-					if (typenode.getIncomingWithType("typeOf").iterator()
+					if (typenode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator()
 							.hasNext()
-							|| typenode.getIncomingWithType("kindOf")
+							|| typenode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFKIND)
 									.iterator().hasNext())
 						requiresPropagationToInstances = true;
 

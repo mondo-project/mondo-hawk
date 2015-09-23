@@ -348,7 +348,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 	private boolean canHaveDerivedAttr(IGraphNode node, String property) {
 
-		featureStartingNodeClassNode = node.getOutgoingWithType("typeOf")
+		featureStartingNodeClassNode = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
 				.iterator().next().getEndNode();
 
 		if (featureStartingNodeClassNode.getProperty(property) != null) {
@@ -370,7 +370,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 	private boolean canHaveAttr(IGraphNode node, String property) {
 
-		featureStartingNodeClassNode = node.getOutgoingWithType("typeOf")
+		featureStartingNodeClassNode = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
 				.iterator().next().getEndNode();
 
 		if (featureStartingNodeClassNode.getProperty(property) != null) {
@@ -400,7 +400,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 	private boolean canHaveRef(IGraphNode node, String property) {
 
-		featureStartingNodeClassNode = node.getOutgoingWithType("typeOf")
+		featureStartingNodeClassNode = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
 				.iterator().next().getEndNode();
 
 		if (featureStartingNodeClassNode.getProperty(property) != null) {

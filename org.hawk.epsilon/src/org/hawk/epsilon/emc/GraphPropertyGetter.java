@@ -25,6 +25,7 @@ import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.graph.ModelElementNode;
 
 public class GraphPropertyGetter extends AbstractPropertyGetter {
 
@@ -344,7 +345,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 	}
 
 	private boolean canHavePropertyWithType(IGraphNode node, String property, PropertyType expected) {
-		final Iterator<IGraphEdge> itTypeOf = node.getOutgoingWithType("typeOf").iterator();
+		final Iterator<IGraphEdge> itTypeOf = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator();
 
 		if (itTypeOf.hasNext()) {
 			featureStartingNodeClassNode = itTypeOf.next().getEndNode();

@@ -79,7 +79,7 @@ public class QueryAnalysis {
 
 	private EffectiveType getEffectiveType(
 			Map<String, EffectiveType> effectiveTypes, IGraphNode node) {
-		IGraphNode typeNode = node.getOutgoingWithType("typeOf").iterator()
+		IGraphNode typeNode = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator()
 				.next().getEndNode();
 		String typeName = (String) typeNode.getProperty("id");
 		IGraphNode packageNode = typeNode.getOutgoingWithType("epackage")

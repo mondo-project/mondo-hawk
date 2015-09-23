@@ -22,6 +22,7 @@ import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementT
 import org.eclipse.epsilon.eol.execute.introspection.IPropertyGetter;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertySetter;
 import org.eclipse.epsilon.eol.models.Model;
+import org.hawk.graph.ModelElementNode;
 
 public abstract class AbstractEpsilonModel extends Model {
 
@@ -65,25 +66,17 @@ public abstract class AbstractEpsilonModel extends Model {
 	public Collection<Object> getAllOfKind(String arg0)
 			throws EolModelElementTypeNotFoundException {
 
-		Collection<Object> ofType = (Collection<Object>) getAllOf(arg0,
-				"typeOf");
-		Collection<Object> ofKind = (Collection<Object>) getAllOf(arg0,
-				"kindOf");
-
-		// if(!ofType.type.equals(ofKind.type))System.err.println("allofkind called but the type and the kind wrappers are different! "+ofType.type+" : "+ofKind.type);
-
+		Collection<Object> ofType = (Collection<Object>) getAllOf(arg0, ModelElementNode.EDGE_LABEL_OFTYPE);
+		Collection<Object> ofKind = (Collection<Object>) getAllOf(arg0, ModelElementNode.EDGE_LABEL_OFKIND);
 		ofKind.addAll(ofType);
 
 		return ofKind;
-
 	}
 
 	@Override
 	public Collection<Object> getAllOfType(String arg0)
 			throws EolModelElementTypeNotFoundException {
-
-		return getAllOf(arg0, "typeOf");
-
+		return getAllOf(arg0, ModelElementNode.EDGE_LABEL_OFTYPE);
 	}
 
 	@Override
@@ -270,8 +263,8 @@ public abstract class AbstractEpsilonModel extends Model {
 	public boolean isOfKind(Object instance, String metaClass)
 			throws EolModelElementTypeNotFoundException {
 
-		return isOf(instance, metaClass, "kindOf")
-				|| isOf(instance, metaClass, "typeOf");
+		return isOf(instance, metaClass, ModelElementNode.EDGE_LABEL_OFKIND)
+				|| isOf(instance, metaClass, ModelElementNode.EDGE_LABEL_OFTYPE);
 
 	}
 
@@ -279,7 +272,7 @@ public abstract class AbstractEpsilonModel extends Model {
 	public boolean isOfType(Object instance, String metaClass)
 			throws EolModelElementTypeNotFoundException {
 
-		return isOf(instance, metaClass, "typeOf");
+		return isOf(instance, metaClass, ModelElementNode.EDGE_LABEL_OFTYPE);
 
 	}
 

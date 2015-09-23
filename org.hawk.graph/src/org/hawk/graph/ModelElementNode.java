@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.hawk.core.graph.IGraphEdge;
@@ -25,6 +26,21 @@ import org.hawk.core.graph.IGraphNode;
  * updater.
  */
 public class ModelElementNode {
+
+	/** Label for the transient edge from the model element node to its file. */
+	public static final String EDGE_LABEL_FILE = "file";
+
+	/** Label for the transient edge from the model element node to its type and all its supertypes. */
+	public static final String EDGE_LABEL_OFKIND = "ofKind";
+
+	/** Label for the transient edge from the node to its immediate type. */
+	public static final String EDGE_LABEL_OFTYPE = "ofType";
+
+	/** Labels for all the transient edges from a model element node. */
+	public static final List<String> TRANSIENT_EDGE_LABELS = Arrays.asList(
+		EDGE_LABEL_FILE, EDGE_LABEL_OFKIND, EDGE_LABEL_OFTYPE
+	);
+
 	private final IGraphNode node;
 
 	// never access this field directly: always call getTypeNode(),
@@ -41,7 +57,7 @@ public class ModelElementNode {
 	public TypeNode getTypeNode() {
 		if (typeNode == null) {
 			final IGraphNode rawTypeNode = node
-					.getOutgoingWithType("typeOf").iterator().next()
+					.getOutgoingWithType(EDGE_LABEL_OFTYPE).iterator().next()
 					.getEndNode();
 			typeNode = new TypeNode(rawTypeNode);
 		}

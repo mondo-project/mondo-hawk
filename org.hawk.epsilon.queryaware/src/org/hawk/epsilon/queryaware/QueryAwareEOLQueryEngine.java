@@ -269,7 +269,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 		// node.createRelationshipTo(cl, new RelationshipType() {
 		// @Override
 		// public String name() {
-		// return "typeOf";
+		// return ModelElementNode.EDGE_LABEL_OFTYPE;
 		// }
 		// });
 		// tx.success();
@@ -331,7 +331,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 			// cashing
 			// if (enableCache) {
 			//
-			// OptimisableCollection ret = typeorkind.equals("typeOf") ?
+			// OptimisableCollection ret = typeorkind.equals(ModelElementNode.EDGE_LABEL_OFTYPE) ?
 			// typeContents
 			// .get(arg0) : superTypeContents.get(arg0);
 			//
@@ -475,7 +475,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 
 			// if (enableCache) {
 			//
-			// if (typeorkind.equals("typeOf")
+			// if (typeorkind.equals(ModelElementNode.EDGE_LABEL_OFTYPE)
 			// && !typeContents.containsKey(arg0))
 			// typeContents.put(arg0, nodes);
 			// else if (typeorkind.equals("kind")
@@ -592,7 +592,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 			// returns the typeOf relationship of arg0 as a node id wrapper
 			// do we want the e-class instead?
 
-			typeNode = objectNode.getOutgoingWithType("typeOf").iterator()
+			typeNode = objectNode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator()
 					.next().getEndNode();
 
 			tx.success();
@@ -1451,7 +1451,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 						IGraphNodeIndex derivedFeature = graph
 								.getOrCreateNodeIndex(
 
-								elementnode.getOutgoingWithType("typeOf")
+								elementnode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
 										.iterator().next().getEndNode()
 										.getOutgoingWithType("epackage")
 										.iterator().next().getEndNode()
@@ -1461,7 +1461,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 										+ "##"
 										// -
 										+ elementnode
-												.getOutgoingWithType("typeOf")
+												.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
 												.iterator().next().getEndNode()
 												.getProperty("id").toString()
 										//
@@ -1476,7 +1476,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 						// n.getRelationships(
 						// Direction.OUTGOING,
 						// RelationshipUtil
-						// .getNewRelationshipType("typeOf"))
+						// .getNewRelationshipType(ModelElementNode.EDGE_LABEL_OFTYPE))
 						// .iterator()
 						// .next()
 						// .getEndNode()

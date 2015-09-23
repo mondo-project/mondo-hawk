@@ -38,6 +38,7 @@ import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
+import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.internal.util.GraphUtil;
 
 public class GraphModelBatchInjector {
@@ -731,10 +732,10 @@ public class GraphModelBatchInjector {
 		} else {
 			hash.put(eObject, node);
 
-			createReference("typeOf", node, eClass, Collections.emptyMap(),
+			createReference(ModelElementNode.EDGE_LABEL_OFTYPE, node, eClass, Collections.emptyMap(),
 					true);
 			if (originatingFile != null) {
-				createReference("file", node, originatingFile,
+				createReference(ModelElementNode.EDGE_LABEL_FILE, node, originatingFile,
 						Collections.emptyMap(), true);
 			}
 			objectCount[1]++;
@@ -743,7 +744,7 @@ public class GraphModelBatchInjector {
 			for (IHawkClass superType : ((IHawkClass) eObject.getType())
 					.getSuperTypes()) {
 				eClass = getEClassNode(superType);
-				createReference("kindOf", node, eClass, Collections.emptyMap(),
+				createReference(ModelElementNode.EDGE_LABEL_OFKIND, node, eClass, Collections.emptyMap(),
 						true);
 				objectCount[2]++;
 			}

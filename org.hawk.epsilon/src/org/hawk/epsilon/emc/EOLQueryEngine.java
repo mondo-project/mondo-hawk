@@ -40,6 +40,7 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.query.IQueryEngine;
+import org.hawk.graph.ModelElementNode;
 
 public class EOLQueryEngine extends AbstractEpsilonModel implements
 		IQueryEngine
@@ -256,7 +257,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		// node.createRelationshipTo(cl, new RelationshipType() {
 		// @Override
 		// public String name() {
-		// return "typeOf";
+		// return ModelElementNode.EDGE_LABEL_OFTYPE;
 		// }
 		// });
 		// tx.success();
@@ -318,7 +319,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			// cashing
 			// if (enableCache) {
 			//
-			// OptimisableCollection ret = typeorkind.equals("typeOf") ?
+			// OptimisableCollection ret = typeorkind.equals(ModelElementNode.EDGE_LABEL_OFTYPE) ?
 			// typeContents
 			// .get(arg0) : superTypeContents.get(arg0);
 			//
@@ -461,7 +462,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 			// if (enableCache) {
 			//
-			// if (typeorkind.equals("typeOf")
+			// if (typeorkind.equals(ModelElementNode.EDGE_LABEL_OFTYPE)
 			// && !typeContents.containsKey(arg0))
 			// typeContents.put(arg0, nodes);
 			// else if (typeorkind.equals("kind")
@@ -571,7 +572,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			// returns the typeOf relationship of arg0 as a node id wrapper
 			// do we want the e-class instead?
 
-			typeNode = objectNode.getOutgoingWithType("typeOf").iterator()
+			typeNode = objectNode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator()
 					.next().getEndNode();
 
 			tx.success();
@@ -1431,7 +1432,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 						IGraphNodeIndex derivedFeature = graph
 								.getOrCreateNodeIndex(
 
-								elementnode.getOutgoingWithType("typeOf")
+								elementnode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
 										.iterator().next().getEndNode()
 										.getOutgoingWithType("epackage")
 										.iterator().next().getEndNode()
@@ -1441,7 +1442,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 										+ "##"
 										// -
 										+ elementnode
-												.getOutgoingWithType("typeOf")
+												.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
 												.iterator().next().getEndNode()
 												.getProperty("id").toString()
 										//
@@ -1456,7 +1457,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 						// n.getRelationships(
 						// Direction.OUTGOING,
 						// RelationshipUtil
-						// .getNewRelationshipType("typeOf"))
+						// .getNewRelationshipType(ModelElementNode.EDGE_LABEL_OFTYPE))
 						// .iterator()
 						// .next()
 						// .getEndNode()

@@ -43,7 +43,7 @@ public class FileNode {
 		return new Iterable<ModelElementNode>() {
 			@Override
 			public Iterator<ModelElementNode> iterator() {
-				final Iterable<IGraphEdge> incomingWithType = node.getIncomingWithType("file");
+				final Iterable<IGraphEdge> incomingWithType = node.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE);
 				final Iterator<IGraphEdge> it = incomingWithType.iterator();
 
 				return new Iterator<ModelElementNode>() {

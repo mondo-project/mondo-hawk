@@ -12,8 +12,14 @@ package org.hawk.graph.internal.updater;
 
 import java.util.Iterator;
 
-import org.hawk.core.graph.*;
-import org.hawk.core.model.*;
+import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphEdge;
+import org.hawk.core.graph.IGraphIterable;
+import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.IGraphNodeIndex;
+import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.core.model.IHawkClass;
+import org.hawk.graph.ModelElementNode;
 
 public class MetamodelUtils {
 
@@ -30,7 +36,7 @@ public class MetamodelUtils {
 			// operations on the graph
 			// ...
 
-			Iterator<IGraphEdge> it = node.getOutgoingWithType("typeOf")
+			Iterator<IGraphEdge> it = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
 					.iterator();
 
 			while (it.hasNext()) {
@@ -72,7 +78,7 @@ public class MetamodelUtils {
 
 			try {
 
-				ret = node.getOutgoingWithType("typeOf").iterator().next()
+				ret = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().next()
 						.getEndNode().getProperty("id").toString();
 
 			} catch (Exception e) {
