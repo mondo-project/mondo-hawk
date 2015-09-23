@@ -433,10 +433,10 @@ public class HView extends ViewPart {
 
 		};
 		importRepos.setText("Import");
-		importRepos.setToolTipText("Import existing repositories");
+		importRepos.setToolTipText("Import existing instances");
 		importRepos.setImageDescriptor(ImageDescriptor.createFromURL(FileLocator
 				.find(FrameworkUtil.getBundle(this.getClass()), new Path(
-						"icons/addrepo_rep.gif"), null)));
+						"icons/import_wiz.png"), null)));
 	}
 
 	private void hookDoubleClickAction() {
