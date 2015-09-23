@@ -77,15 +77,18 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	private IAbstractConsole console;
 
-	// limited for testing (usual cap: 512)
-	private int maxdelay = 1000 * 4;
+	// limited for testing (usual cap: 1000 * 512)
+	private static final int MAXDELAY = 1000 * 4;
+	// testing -- usually 1000
+	public static final int INITIALDELAY = 4000;
+
+	public int currentdelay = INITIALDELAY;
+	// public int leftoverdelay = 0;
 
 	private Timer updateTimer = null;
-	private Timer countdownTimer = null;
+	// private Timer countdownTimer = null;
 
 	public boolean permanentDelete = false;
-	public int currentdelay = 1000;
-	public int leftoverdelay = 0;
 
 	public char[] adminPw = null;
 	private File parentfolder = null;
@@ -121,11 +124,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 			// System.err.println(currLocalTopRevisions);
 			// System.err.println(currReposTopRevisions);
 
-		// debug info dump...
-		File dump = new File("C:/Users/kb/Desktop/hawk-sync-dump.txt");
-		BufferedWriter w = new BufferedWriter(new FileWriter(dump, true));
-		w.append("...sync started...\r\n");
-		long start = System.currentTimeMillis();
+			// debug info dump...
+			File dump = new File("C:/Users/kb/Desktop/hawk-sync-dump.txt");
+			BufferedWriter w = new BufferedWriter(new FileWriter(dump, true));
+			w.append("...sync started...\r\n");
+			long start = System.currentTimeMillis();
 
 			boolean allSync = true;
 
@@ -182,7 +185,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 								}
 							}
 
-							Iterator<VcsCommitItem> it = interestingfiles.iterator();
+							Iterator<VcsCommitItem> it = interestingfiles
+									.iterator();
 
 							while (it.hasNext()) {
 								VcsCommitItem c = it.next();
@@ -207,11 +211,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 								Set<VcsCommitItem> currreposchangeditems = u
 										.compareWithLocalFiles(interestingfiles);
 
-							w.append("deleted items " + deleteditems.size()
-									+ " interesting items "
-									+ interestingfiles.size()
-									+ " currreposchangeditems "
-									+ currreposchangeditems.size() + "\r\n");
+								w.append("deleted items " + deleteditems.size()
+										+ " interesting items "
+										+ interestingfiles.size()
+										+ " currreposchangeditems "
+										+ currreposchangeditems.size() + "\r\n");
 
 								// create temp files with changed repos files
 								for (VcsCommitItem s : currreposchangeditems) {
@@ -311,20 +315,22 @@ public class ModelIndexerImpl implements IModelIndexer {
 								}
 							}
 
-						w.append("resources " + fileToResourceMap.size()
-								+ " loaded ");
-						int count = 0;
+							w.append("resources " + fileToResourceMap.size()
+									+ " loaded ");
+							int count = 0;
 
-						for (IHawkModelResource r : fileToResourceMap.values()) {
+							for (IHawkModelResource r : fileToResourceMap
+									.values()) {
 								if (r != null) {
 									r.unload();
-								count++;
+									count++;
 								}
 							}
 
-						w.append(count + "\r\n");
+							w.append(count + "\r\n");
 
-						// FIXME manage changes (propagate to mondix / derived
+							// FIXME manage changes (propagate to mondix /
+							// derived
 							// updaters etc)
 
 							// changes.dosomething -- currently logs all changes
@@ -390,10 +396,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 				}
 			}
 
-		w.append("...sync ended...(~" + (System.currentTimeMillis() - start)
-				/ 1000 + "s)\r\n");
-		w.flush();
-		w.close();
+			w.append("...sync ended...(~"
+					+ (System.currentTimeMillis() - start) / 1000 + "s)\r\n");
+			w.flush();
+			w.close();
 			return allSync;
 		} finally {
 			listener.synchroniseEnd();
@@ -946,18 +952,18 @@ public class ModelIndexerImpl implements IModelIndexer {
 				}
 			}, 0);
 
-			countdownTimer = TimerManager.createNewTimer("t2", false);
-
-			TimerTask task2 = new TimerTask() {
-
-				@Override
-				public void run() {
-					leftoverdelay = leftoverdelay - 1000;
-					// updateTimers(true);
-				}
-			};
-
-			countdownTimer.scheduleAtFixedRate(task2, 2000, 1000);
+			// countdownTimer = TimerManager.createNewTimer("t2", false);
+			//
+			// TimerTask task2 = new TimerTask() {
+			//
+			// @Override
+			// public void run() {
+			// leftoverdelay = leftoverdelay - 1000;
+			// // updateTimers(true);
+			// }
+			// };
+			//
+			// countdownTimer.scheduleAtFixedRate(task2, 2000, 1000);
 		}
 
 		running = true;
@@ -1014,17 +1020,17 @@ public class ModelIndexerImpl implements IModelIndexer {
 			// t.stop();
 			int olddelay = currentdelay;
 			currentdelay = currentdelay * 2;
-			if (currentdelay > maxdelay)
-				currentdelay = maxdelay;
+			if (currentdelay > MAXDELAY)
+				currentdelay = MAXDELAY;
 			console.println("same revision, incrementing check timer: "
 					+ olddelay / 1000 + " -> " + currentdelay / 1000
-					+ " (max: " + maxdelay / 1000 + ")");
+					+ " (max: " + MAXDELAY / 1000 + ")");
 
 		} else {
 
 			// t.stop();
 			console.println("different revisions, reseting check timer and propagating changes!");
-			currentdelay = 1000;
+			currentdelay = INITIALDELAY;
 
 		}
 
@@ -1036,7 +1042,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 			}
 		}, currentdelay);
 		// updateTimers(false);
-		leftoverdelay = currentdelay;
+		// leftoverdelay = currentdelay;
 
 		long time = (System.currentTimeMillis() - start);
 		System.err.println("------------------ update task took: " + time
@@ -1051,8 +1057,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 	@Override
 	public void resetScheduler() {
 
-		currentdelay = 1000;
-		leftoverdelay = 1000;
+		currentdelay = INITIALDELAY;
+		// leftoverdelay = 1000;
 
 		updateTimer.cancel();
 		updateTimer = TimerManager.createNewTimer("t", true);

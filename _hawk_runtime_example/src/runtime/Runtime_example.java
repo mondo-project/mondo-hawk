@@ -273,8 +273,9 @@ public class Runtime_example {
 		};
 	}
 
-	public static void run(IGraphChangeListener l) throws Exception {
+	public static IModelIndexer run(IGraphChangeListener l) throws Exception {
 		listener = l;
 		main(null);
+		return hawk;
 	}
 }
