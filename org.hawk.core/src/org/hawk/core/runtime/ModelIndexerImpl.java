@@ -57,6 +57,10 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class ModelIndexerImpl implements IModelIndexer {
 
+	// temporary hack to facilitate evaluation -- validation of updates
+	public HashMap<VcsCommitItem, IHawkModelResource> fileToResourceMap;
+	public Set<VcsCommitItem> deleteditems;
+
 	public static final String ID = "org.hawk.core.ModelIndexer";
 
 	private static final boolean IS_DERIVED = true;
@@ -162,7 +166,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 									monitorTempDir);
 							temp.mkdir();
 
-							Set<VcsCommitItem> deleteditems = new HashSet<VcsCommitItem>();
+							deleteditems = new HashSet<VcsCommitItem>();
 
 							// limit to "interesting" files
 							List<VcsCommitItem> files = m
@@ -204,7 +208,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 								}
 							}
 
-							HashMap<VcsCommitItem, IHawkModelResource> fileToResourceMap = new HashMap<>();
+							fileToResourceMap = new HashMap<>();
 
 							for (IModelUpdater u : getUpdaters()) {
 
@@ -322,13 +326,15 @@ public class ModelIndexerImpl implements IModelIndexer {
 							for (IHawkModelResource r : fileToResourceMap
 									.values()) {
 								if (r != null) {
-									r.unload();
+									// FIXME note: not unloading resources for
+									// use in validation -- remove this!
+									// r.unload();
 									count++;
 								}
 							}
 
 							w.append(count + "\r\n");
-						
+
 							boolean success = true;
 
 							// delete temporary files
