@@ -98,7 +98,7 @@ public class Runtime_example {
 		// String vcsloc =
 		// "../org.hawk.emf/src/org/hawk/emf/model/examples/single/0";
 
-		String vcsloc = "..\\..\\_hawk_evaluation_simulation\\model\\bpmn-miwg-test-suite";
+		String vcsloc = "..\\_hawk_evaluation_simulation\\model\\bpmn-miwg_bpmn-miwg-test-suite";
 
 		//
 
