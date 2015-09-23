@@ -7,13 +7,12 @@
 	<classpathentry kind="src" path="/org.hawk.neo4j-v2"/>
 	<classpathentry kind="src" path="/org.hawk.emf"/>
 	<classpathentry kind="src" path="/org.hawk.epsilon"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="/org.hawk.svn"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.hawk.ifc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.hawk.modelio"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.hawk.ui.emc.dt2"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.hawk.ui2"/>
 	<classpathentry kind="src" path="/org.hawk.bpmn"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="src" path="/org.hawk.graph.sampleListener"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
