@@ -476,9 +476,6 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 
 	private boolean isOptimisable(AST ast) {
 
-		// TODO extend to numeric operations -- need to adapt neo4j lucene for
-		// all numbers
-
 		try {
 
 			return ast.getType() == EolParser.OPERATOR

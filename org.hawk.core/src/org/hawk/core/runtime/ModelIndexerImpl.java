@@ -328,52 +328,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 							}
 
 							w.append(count + "\r\n");
-
-							// FIXME manage changes (propagate to mondix /
-							// derived
-							// updaters etc)
-
-							// changes.dosomething -- currently logs all changes
-							// to
-							// files for debugging
-
-							// temp = new File(monitorTempDir);
-							// File log = new File(temp.getParent() +
-							// "/log.txt");
-							// int count = 0;
-							// while (log.exists()) {
-							// count++;
-							// log = new File(temp.getParent() + "/log" + count
-							// + ".txt");
-							// }
-							//
-							// PrintWriter w = new PrintWriter(new
-							// FileWriter(log,
-							// true));
-							//
-							// for (IGraphChangeDescriptor change : changes) {
-							//
-							// w.println("---------" + change.getName()
-							// + "---------");
-							//
-							// for (IGraphChange c : change.getChanges()) {
-							//
-							// w.println(c.toString());
-							//
-							// }
-							//
-							// w.println("---------" + "---------" +
-							// "---------");
-							//
-							// }
-							//
-							// w.flush();
-							// w.close();
-
-							//
-
-							//
-
+						
 							boolean success = true;
 
 							// delete temporary files
