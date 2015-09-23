@@ -98,7 +98,8 @@ public class Runtime_example {
 		// String vcsloc =
 		// "../org.hawk.emf/src/org/hawk/emf/model/examples/single/0";
 
-		String vcsloc = "..\\_hawk_evaluation_simulation\\model\\bpmn-miwg_bpmn-miwg-test-suite";
+		// String vcsloc =
+		// "..\\_hawk_evaluation_simulation\\model\\bpmn-miwg_bpmn-miwg-test-suite";
 
 		//
 
@@ -124,7 +125,7 @@ public class Runtime_example {
 			pw = password();
 
 		if (pw != null) {
-			vcs.run(vcsloc, "kb634", pw, hawk.getConsole());
+			vcs.run(args[0], "kb634", pw, hawk.getConsole());
 		} else
 			System.exit(1);
 		pw = null;
@@ -273,9 +274,10 @@ public class Runtime_example {
 		};
 	}
 
-	public static IModelIndexer run(IGraphChangeListener l) throws Exception {
+	public static IModelIndexer run(IGraphChangeListener l, String[] vcsloc)
+			throws Exception {
 		listener = l;
-		main(null);
+		main(vcsloc);
 		return hawk;
 	}
 }
