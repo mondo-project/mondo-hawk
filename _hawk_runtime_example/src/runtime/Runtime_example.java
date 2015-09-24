@@ -14,17 +14,19 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.hawk.bpmn.metamodel.BPMNMetaModelResourceFactory;
 import org.hawk.bpmn.model.BPMNModelResourceFactory;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.core.IVcsManager;
-import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.runtime.ModelIndexerImpl;
@@ -36,6 +38,9 @@ import org.hawk.localfolder.LocalFolder;
 import org.hawk.neo4j_v2.Neo4JDatabase;
 
 public class Runtime_example {
+
+	private static Git git;
+	private static LinkedHashMap<String, RevCommit> linkedHashMap;
 
 	private static IQueryEngine q;
 	private static IModelIndexer hawk;
@@ -54,7 +59,6 @@ public class Runtime_example {
 			"../org.hawk.epsilon/src/org/hawk/epsilon/query/Grabats_Query_Derived_INDEXED.eol");
 
 	static String pw = null;
-	private static IGraphChangeListener listener;
 
 	public static String password() {
 		final JFrame parent = new JFrame();
@@ -142,7 +146,8 @@ public class Runtime_example {
 		q = new EOLQueryEngine();
 		hawk.addQueryEngine(q);
 
-		hawk.addGraphChangeListener(listener);
+		hawk.addGraphChangeListener(new SyncChangeListener(git, linkedHashMap,
+				hawk));
 
 		// initialise the server for real-time updates to changes -- this has to
 		// be done after initialising all the relevant plugins you want online
@@ -274,9 +279,11 @@ public class Runtime_example {
 		};
 	}
 
-	public static IModelIndexer run(IGraphChangeListener l, String[] vcsloc)
+	public static IModelIndexer run(Git gitt,
+			LinkedHashMap<String, RevCommit> linkedHashMapp, String[] vcsloc)
 			throws Exception {
-		listener = l;
+		git = gitt;
+		linkedHashMap = linkedHashMapp;
 		main(vcsloc);
 		return hawk;
 	}
