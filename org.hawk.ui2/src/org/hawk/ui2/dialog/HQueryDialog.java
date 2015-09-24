@@ -40,6 +40,9 @@ import org.hawk.osgiserver.HModel;
 
 public class HQueryDialog extends Dialog {
 
+	private static final String QUERY_IS_FILE = "FILE QUERY: ";
+	private static final String QUERY_EDITED = "[query has been edited since last results]";
+
 	private StyledText queryField;
 	private StyledText resultField;
 
@@ -103,7 +106,7 @@ public class HQueryDialog extends Dialog {
 				String s = filequeryBrowse();
 				if (s != null) {
 					queryField.setEditable(false);
-					queryField.setText("FILE QUERY: " + s);
+					queryField.setText(QUERY_IS_FILE + s);
 				}
 			}
 		});
@@ -181,13 +184,12 @@ public class HQueryDialog extends Dialog {
 					ql = text.equals("") ? null : text;
 					if (ql != null) {
 
-						if (queryField.getText().startsWith("FILE QUERY: ")) {
+						final String sRepo = contextRepo.getText();
+						final String sFiles = contextFiles.getText();
 
-							String file1Text = contextRepo.getText();
-							String fileText = contextFiles.getText();
-
-							if (file1Text.trim().equals("")
-									&& fileText.trim().equals("")) {
+						if (queryField.getText().startsWith(QUERY_IS_FILE)) {
+							if (sRepo.trim().equals("")
+									&& sFiles.trim().equals("")) {
 								Object r = index.query(new File(queryField
 										.getText().substring(12)), ql);
 								String ret = "<null>";
@@ -198,9 +200,9 @@ public class HQueryDialog extends Dialog {
 								Map<String, String> map = new HashMap<>();
 
 								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_FILECONTEXT,
-										fileText);
+										sFiles);
 								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_REPOSITORYCONTEXT,
-										file1Text);
+										sRepo);
 								Object r = index.contextFullQuery(new File(
 										queryField.getText().substring(12)),
 										ql, map);
@@ -209,15 +211,9 @@ public class HQueryDialog extends Dialog {
 									ret = r.toString();
 								resultField.setText(ret);
 							}
-						}
-
-						else {
-
-							String fileText = contextFiles.getText();
-							String file1Text = contextRepo.getText();
-
-							if (file1Text.trim().equals("")
-									&& fileText.trim().equals("")) {
+						} else {
+							if (sRepo.trim().equals("")
+									&& sFiles.trim().equals("")) {
 								Object ret = index.query(queryField.getText(),
 										ql);
 								resultField.setText(ret != null ? ret
@@ -225,9 +221,9 @@ public class HQueryDialog extends Dialog {
 							} else {
 								Map<String, String> map = new HashMap<>();
 								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_FILECONTEXT,
-										fileText);
+										sFiles);
 								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_REPOSITORYCONTEXT,
-										file1Text);
+										sRepo);
 								Object r = index.contextFullQuery(
 										queryField.getText(), ql, map);
 								String ret = "<null>";
@@ -240,7 +236,9 @@ public class HQueryDialog extends Dialog {
 
 					}
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					final String error = "Error while running the query: " + ex.getMessage();
+					resultField.setText(error);
+					resultField.setStyleRange(createRedBoldRange(error.length()));
 				}
 			}
 		});
@@ -261,21 +259,12 @@ public class HQueryDialog extends Dialog {
 		queryField.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				String res = resultField.getText();
-				if (!res.startsWith("[query has been edited since last results]")) {
-					StyleRange styleRange = new StyleRange();
-					styleRange.start = 0;
-					styleRange.length = 42;
-					styleRange.fontStyle = SWT.BOLD;
-					Display display = getShell().getDisplay();
-					styleRange.foreground = new Color(display, 255, 0, 0);
-					resultField
-							.setText("[query has been edited since last results]\n"
-									+ res);
-					resultField.setStyleRange(styleRange);
+				if (!res.startsWith(QUERY_EDITED)) {
+					resultField.setText(QUERY_EDITED + "\n" + res);
+					resultField.setStyleRange(createRedBoldRange(QUERY_EDITED.length()));
 				}
-				// if queryField contains valid query
-				// resultField.setText(index.runEOL(queryField.getText()));
 			}
+
 		});
 
 		return container;
@@ -297,4 +286,13 @@ public class HQueryDialog extends Dialog {
 		newShell.setText("Query: " + index.getName());
 	}
 
+	private StyleRange createRedBoldRange(final int length) {
+		Display display = getShell().getDisplay();
+		StyleRange styleRange = new StyleRange();
+		styleRange.start = 0;
+		styleRange.length = length;
+		styleRange.fontStyle = SWT.BOLD;
+		styleRange.foreground = new Color(display, 255, 0, 0);
+		return styleRange;
+	}
 }
