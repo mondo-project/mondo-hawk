@@ -12,6 +12,7 @@ package org.hawk.graph.internal.updater;
 
 import java.util.HashSet;
 
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
@@ -71,7 +72,7 @@ public class DeletionUtils {
 									+ filepath).iterator().next();
 
 			System.out.println("deleting nodes from file: "
-					+ file.getProperty("id"));
+					+ file.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 			HashSet<IGraphNode> modelElements = new HashSet<IGraphNode>();
 
@@ -174,9 +175,9 @@ public class DeletionUtils {
 			IGraphNode referencingNode = rel.getStartNode();
 			String referencingNodeFileID = referencingNode
 					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE).iterator().next().getEndNode()
-					.getProperty("id").toString();
+					.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 			String referencedElementFileID = (String) referencedElementFileNode
-					.getProperty("id");
+					.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
 
 			// System.out.println(referencingNodeFileID+" ::: "+fileID);
 
@@ -188,7 +189,7 @@ public class DeletionUtils {
 				// Direction.OUTGOING,
 				// new RelationshipUtil()
 				// .getNewRelationshipType(ModelElementNode.EDGE_LABEL_FILE))
-				// .iterator().next().getEndNode().getProperty("id"));
+				// .iterator().next().getEndNode().getProperty(GraphWrapper.IDENTIFIER_PROPERTY));
 
 				String fullReferencedElementPathFileURI = repositoryURL
 						+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
@@ -196,7 +197,7 @@ public class DeletionUtils {
 
 				String fullReferencedElementPathElementURI = fullReferencedElementPathFileURI
 						+ "#"
-						+ referencedModelElement.getProperty("id").toString();
+						+ referencedModelElement.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 
 				Object proxies = referencingNode.getProperty("_proxyRef:"
 						+ fullReferencedElementPathFileURI);

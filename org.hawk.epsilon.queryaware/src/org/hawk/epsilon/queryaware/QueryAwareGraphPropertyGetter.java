@@ -362,7 +362,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 		System.err.println("derived property: " + property
 				+ " not found in metamodel for type: "
-				+ featureStartingNodeClassNode.getProperty("id"));
+				+ featureStartingNodeClassNode.getProperty(GraphWrapper.IDENTIFIER_PROPERTY));
 
 		return false;
 
@@ -384,7 +384,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 		System.err.println("property: " + property
 				+ " not found in metamodel for type: "
-				+ featureStartingNodeClassNode.getProperty("id"));
+				+ featureStartingNodeClassNode.getProperty(GraphWrapper.IDENTIFIER_PROPERTY));
 
 		return false;
 
@@ -414,7 +414,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 		System.err.println("reference: " + property
 				+ " not found in metamodel for type: "
-				+ featureStartingNodeClassNode.getProperty("id"));
+				+ featureStartingNodeClassNode.getProperty(GraphWrapper.IDENTIFIER_PROPERTY));
 		// System.out.println(o != null && o.getEStructuralFeature(property) !=
 		// null
 		// && o.getEStructuralFeature(property) instanceof EReference);
@@ -438,7 +438,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 		}
 		System.err.println("reference: " + ref
 				+ " not found in metamodel (isMany) for type: "
-				+ featureStartingNodeClassNode.getProperty("id"));
+				+ featureStartingNodeClassNode.getProperty(GraphWrapper.IDENTIFIER_PROPERTY));
 
 		return false;
 		// return featureStartingNodeClass.getEStructuralFeature(ref).isMany();
@@ -450,7 +450,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 					.equals("t");
 		System.err.println("reference: " + ref
 				+ " not found in metamodel (isOrdered) for type: "
-				+ featureStartingNodeClassNode.getProperty("id"));
+				+ featureStartingNodeClassNode.getProperty(GraphWrapper.IDENTIFIER_PROPERTY));
 
 		return false;
 		// return ((HawkStructuralFeature) featureStartingNodeClass
@@ -463,7 +463,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 					.equals("t");
 		System.err.println("reference: " + ref
 				+ " not found in metamodel (isUnique) for type: "
-				+ featureStartingNodeClassNode.getProperty("id"));
+				+ featureStartingNodeClassNode.getProperty(GraphWrapper.IDENTIFIER_PROPERTY));
 
 		return false;
 		// return

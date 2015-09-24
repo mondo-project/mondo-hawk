@@ -12,6 +12,7 @@ package org.hawk.graph;
 
 import java.util.Iterator;
 
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
@@ -32,7 +33,7 @@ public class FileNode {
 	}
 	
 	public String getFileName() {
-		return (String)node.getProperty("id");
+		return (String)node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
 	}
 
 	/**

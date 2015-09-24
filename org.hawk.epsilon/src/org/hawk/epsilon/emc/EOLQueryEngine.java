@@ -34,6 +34,7 @@ import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementT
 import org.eclipse.epsilon.eol.execute.introspection.IPropertyGetter;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertySetter;
 import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
@@ -254,7 +255,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		//
 		// node = graph.createNode();
 		//
-		// node.setProperty("id", "generated");
+		// node.setProperty(GraphWrapper.IDENTIFIER_PROPERTY, "generated");
 		//
 		// node.createRelationshipTo(cl, new RelationshipType() {
 		// @Override
@@ -353,7 +354,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 					for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
 
 						IGraphNode othernode = r.getStartNode();
-						if (othernode.getProperty("id").equals(
+						if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(
 								arg0.substring(arg0.indexOf("::") + 2))) {
 							typeNode = othernode;
 							break;
@@ -387,7 +388,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 									.getIncomingWithType("epackage")) {
 
 								IGraphNode othernode = n.getStartNode();
-								if (othernode.getProperty("id").equals(arg0)) {
+								if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(arg0)) {
 
 									possibletypenodes.add(othernode);
 
@@ -420,7 +421,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 									.getIncomingWithType("epackage")) {
 
 								IGraphNode othernode = n.getStartNode();
-								if (othernode.getProperty("id").equals(arg0)) {
+								if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(arg0)) {
 
 									typeNode = othernode;
 									break;
@@ -548,7 +549,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			IGraphNode typeNode = graph.getNodeById(((GraphNodeWrapper) type)
 					.getId());
 
-			ret = typeNode.getProperty("id").toString();
+			ret = typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 
 			tx.success();
 			tx.close();
@@ -631,7 +632,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 								.getIncomingWithType("epackage")) {
 							final IGraphNode otherNode = r.getStartNode();
 							final Object otherEClass = otherNode
-									.getProperty("id");
+									.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
 							if (otherEClass.equals(ec)) {
 								found = true;
 								break;
@@ -662,7 +663,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 										.getIncomingWithType("epackage")) {
 
 									IGraphNode othernode = n.getStartNode();
-									if (othernode.getProperty("id")
+									if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
 											.equals(arg0)) {
 
 										possibletypenodes.add(othernode);
@@ -688,9 +689,9 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 								for (IGraphNode n : possibletypenodes)
 									ret.add(n.getOutgoingWithType("epackage")
 											.iterator().next().getEndNode()
-											.getProperty("id").toString()
+											.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString()
 											+ "::"
-											+ n.getProperty("id").toString());
+											+ n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
 							}
 							System.err.println("types found:" + ret);
 							return false;
@@ -714,7 +715,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 										.getIncomingWithType("epackage")) {
 
 									IGraphNode othernode = n.getStartNode();
-									if (othernode.getProperty("id")
+									if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
 											.equals(arg0)) {
 										cachedTypes.add(arg0);
 
@@ -883,7 +884,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 					id = "";
 
 					try {
-						id = r.getEndNode().getProperty("id").toString();
+						id = r.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 					} catch (Exception e) {
 						id = "NO ID FOUND";
 					}
@@ -893,7 +894,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 						x = "<-";
 
 					refs += "[" + r.getType() + " " + x + " "
-							+ r.getEndNode().getProperty("id") + "" + "]";
+							+ r.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY) + "" + "]";
 
 				}
 
@@ -997,7 +998,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			try {
 				typeNode = objectNode.getOutgoingWithType(typeorkind)
 						.iterator().next().getEndNode();
-				id = typeNode.getProperty("id").toString();
+				id = typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 			} catch (Exception e) {
 				// dont have a type - only if you are iterating all the
 				// nodes
@@ -1437,7 +1438,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 										.iterator().next().getEndNode()
 										.getOutgoingWithType("epackage")
 										.iterator().next().getEndNode()
-										.getProperty("id").toString()
+										.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString()
 										//
 										// e.getEPackage().getNsURI()
 										+ "##"
@@ -1446,7 +1447,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 												.getOutgoingWithType(
 														ModelElementNode.EDGE_LABEL_OFTYPE)
 												.iterator().next().getEndNode()
-												.getProperty("id").toString()
+												.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString()
 										//
 										+ "##" + s);
 

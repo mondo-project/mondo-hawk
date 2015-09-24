@@ -183,7 +183,7 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine
 				for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
 
 					IGraphNode othernode = r.getStartNode();
-					if (othernode.getProperty("id").equals(
+					if (othernode.getProperty(GraphWrapper.IDENTIFIER_PROPERTY).equals(
 							arg0.substring(arg0.indexOf("::") + 2))) {
 						typeNode = othernode;
 						break;
@@ -210,7 +210,7 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine
 									.getIncomingWithType("epackage")) {
 
 								IGraphNode othernode = n.getStartNode();
-								if (othernode.getProperty("id").equals(arg0)) {
+								if (othernode.getProperty(GraphWrapper.IDENTIFIER_PROPERTY).equals(arg0)) {
 
 									possibletypenodes.add(othernode);
 
@@ -243,7 +243,7 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine
 									.getIncomingWithType("epackage")) {
 
 								IGraphNode othernode = n.getStartNode();
-								if (othernode.getProperty("id").equals(arg0)) {
+								if (othernode.getProperty(GraphWrapper.IDENTIFIER_PROPERTY).equals(arg0)) {
 
 									typeNode = othernode;
 									break;

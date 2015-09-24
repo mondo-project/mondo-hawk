@@ -12,6 +12,7 @@ package org.hawk.epsilon.emc;
 
 import java.util.Iterator;
 
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphIterable;
@@ -45,7 +46,7 @@ public class MetamodelUtils {
 	//
 	// while (it.hasNext()) {
 	// Node nn = it.next().getOtherNode(node);
-	// ar.add(nn.getProperty("id").toString());
+	// ar.add(nn.getProperty(GraphWrapper.IDENTIFIER_PROPERTY).toString());
 	// }
 	//
 	// for (String ss : ar)
@@ -59,7 +60,7 @@ public class MetamodelUtils {
 	//
 	// return node.getRelationships(Direction.OUTGOING,
 	// new RelationshipUtil().getNewRelationshipType(ModelElementNode.EDGE_LABEL_OFTYPE))
-	// .iterator().next().getEndNode().getProperty("id").toString().equals(type);
+	// .iterator().next().getEndNode().getProperty(GraphWrapper.IDENTIFIER_PROPERTY).toString().equals(type);
 	//
 	// }
 
@@ -82,10 +83,10 @@ public class MetamodelUtils {
 			while (it.hasNext()) {
 				IGraphNode nn = it.next().getEndNode();
 
-				// System.err.println(nn.getProperty("id").toString());
+				// System.err.println(nn.getProperty(GraphWrapper.IDENTIFIER_PROPERTY).toString());
 				// System.err.println(">"+type);
 
-				if (nn.getProperty("id").toString().equals(type)) {
+				if (nn.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString().equals(type)) {
 					found = true;
 				}
 			}
@@ -119,7 +120,7 @@ public class MetamodelUtils {
 			try {
 
 				ret = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().next()
-						.getEndNode().getProperty("id").toString();
+						.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 
 			} catch (Exception e) {
 				System.err.println("Exception in typeOfName(Node node)");
@@ -153,8 +154,8 @@ public class MetamodelUtils {
 	//
 	// o = p.getEPackageRegistryInstance()
 	// .getPackage(
-	// r2.getOtherNode(n).getProperty("id").toString())
-	// .getEClassifier(n.getProperty("id").toString());
+	// r2.getOtherNode(n).getProperty(GraphWrapper.IDENTIFIER_PROPERTY).toString())
+	// .getEClassifier(n.getProperty(GraphWrapper.IDENTIFIER_PROPERTY).toString());
 	// }
 	// tx.success();
 	// tx.close();
@@ -206,7 +207,7 @@ public class MetamodelUtils {
 	// return "epackage";
 	// }
 	// }).iterator().next().getEndNode()
-	// .getProperty("id").toString())
+	// .getProperty(GraphWrapper.IDENTIFIER_PROPERTY).toString())
 	// .getEClassifier(clas);
 	//
 	// //Neo4JEpsilonModel.time += System.currentTimeMillis() - curr;
@@ -216,7 +217,7 @@ public class MetamodelUtils {
 	// // System.out.println(r2);
 	// System.out.println(scn);
 	// System.out.println(clas);
-	// // System.out.println(r2.getOtherNode(scn).getProperty("id").toString());
+	// // System.out.println(r2.getOtherNode(scn).getProperty(GraphWrapper.IDENTIFIER_PROPERTY).toString());
 	// e.printStackTrace();
 	// }
 	//
@@ -254,7 +255,7 @@ public class MetamodelUtils {
 				for (IGraphEdge r : ep.getIncomingWithType("epackage")) {
 
 					cl = r.getStartNode();
-					if (cl.getProperty("id")
+					if (cl.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
 							.equals(metaClassName.substring(metaClassName
 									.indexOf("::") + 2))) {
 						ret = cl;
@@ -267,7 +268,7 @@ public class MetamodelUtils {
 					for (IGraphEdge r : epp.getIncomingWithType("epackage")) {
 
 						cl = r.getStartNode();
-						if (cl.getProperty("id").equals(metaClassName)) {
+						if (cl.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(metaClassName)) {
 							ret = cl;
 						}
 					}

@@ -73,7 +73,7 @@ public class QueryAwareGraphNodeWrapper extends GraphNodeWrapper {
 			IGraphNode n = containerModel.getBackend().getNodeById(id);
 
 			type = n.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().next()
-					.getEndNode().getProperty("id").toString();
+					.getEndNode().getProperty(GraphWrapper.IDENTIFIER_PROPERTY).toString();
 
 			// HawkClass e = new MetamodelUtils().getTypeOfFromNode(n,
 			// containerModel.parser);

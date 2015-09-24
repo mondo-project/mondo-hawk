@@ -20,11 +20,12 @@ import org.eclipse.epsilon.eol.execute.context.IEolContext;
 import org.eclipse.epsilon.eol.execute.context.Variable;
 import org.eclipse.epsilon.eol.execute.operations.declarative.SelectOperation;
 import org.eclipse.epsilon.eol.parse.EolParser;
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
-import org.hawk.core.graph.IGraphIterable;
 
 public class OptimisableCollectionSelectOperation extends SelectOperation {
 
@@ -504,8 +505,8 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 		try (IGraphTransaction ignored = graph.beginTransaction()) {
 
 			String indexname = metaclass.getOutgoingWithType("epackage")
-					.iterator().next().getEndNode().getProperty("id")
-					+ "##" + metaclass.getProperty("id") + "##" + attributename;
+					.iterator().next().getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+					+ "##" + metaclass.getProperty(IModelIndexer.IDENTIFIER_PROPERTY) + "##" + attributename;
 
 			// if (indexManager == null) indexManager = graph.index();
 

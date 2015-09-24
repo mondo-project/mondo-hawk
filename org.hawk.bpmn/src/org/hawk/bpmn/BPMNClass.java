@@ -18,7 +18,11 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.hawk.core.model.*;
+import org.hawk.core.IModelIndexer;
+import org.hawk.core.model.IHawkAttribute;
+import org.hawk.core.model.IHawkClass;
+import org.hawk.core.model.IHawkReference;
+import org.hawk.core.model.IHawkStructuralFeature;
 
 public class BPMNClass extends BPMNObject implements IHawkClass {
 
@@ -88,8 +92,8 @@ public class BPMNClass extends BPMNObject implements IHawkClass {
 
 		for (EAttribute att : eclass.getEAllAttributes()) {
 
-			// FIXME major -- attributes named "id" are ignored
-			if (att.getName().equals("id")) {
+			// FIXME major -- attributes named GraphWrapper.IDENTIFIER_PROPERTY are ignored
+			if (att.getName().equals(IModelIndexer.IDENTIFIER_PROPERTY)) {
 				if (!hasAtLeastOneIgnoredIDproperty) {
 					hasAtLeastOneIgnoredIDproperty = true;
 					System.err

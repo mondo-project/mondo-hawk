@@ -21,6 +21,7 @@ import org.eclipse.epsilon.eol.types.EolBag;
 import org.eclipse.epsilon.eol.types.EolOrderedSet;
 import org.eclipse.epsilon.eol.types.EolSequence;
 import org.eclipse.epsilon.eol.types.EolSet;
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
@@ -358,7 +359,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 			} else {
 				System.err.println("property: " + property
 					+ " not found in metamodel for type: "
-					+ featureStartingNodeClassNode.getProperty("id"));
+					+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 			}
 		}
 		else {
@@ -380,7 +381,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		}
 		System.err.println("reference: " + reference
 				+ " not found in metamodel (isMany) for type: "
-				+ featureStartingNodeClassNode.getProperty("id"));
+				+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 		return false;
 	}

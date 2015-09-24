@@ -81,10 +81,10 @@ public class QueryAnalysis {
 			Map<String, EffectiveType> effectiveTypes, IGraphNode node) {
 		IGraphNode typeNode = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator()
 				.next().getEndNode();
-		String typeName = (String) typeNode.getProperty("id");
+		String typeName = (String) typeNode.getProperty(GraphWrapper.IDENTIFIER_PROPERTY);
 		IGraphNode packageNode = typeNode.getOutgoingWithType("epackage")
 				.iterator().next().getEndNode();
-		String packageURI = (String) packageNode.getProperty("id");
+		String packageURI = (String) packageNode.getProperty(GraphWrapper.IDENTIFIER_PROPERTY);
 
 		EffectiveType et = effectiveTypes.get(packageURI + "#" + typeName);
 		return et;

@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
@@ -32,6 +33,7 @@ import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.core.model.IHawkReference;
+import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.ModelElementNode;
 
 public class GraphMetaModelResourceInjector {
@@ -139,8 +141,8 @@ public class GraphMetaModelResourceInjector {
 		for (IGraphNode epn : epns)
 			for (IGraphEdge rel : epn.getIncomingWithType("dependency")) {
 				System.err.println("dependency from: "
-						+ rel.getStartNode().getProperty("id") + " to: "
-						+ epn.getProperty("id"));
+						+ rel.getStartNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY) + " to: "
+						+ epn.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 				// delete all dependent metamodels and models
 				IGraphNode depmm = rel.getStartNode();
@@ -167,7 +169,7 @@ public class GraphMetaModelResourceInjector {
 		try (IGraphTransaction transaction = graph.beginTransaction()) {
 
 			System.out.println("deleting nodes from metamodel: "
-					+ epn.getProperty("id"));
+					+ epn.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 			HashSet<IGraphNode> metaModelElements = new HashSet<IGraphNode>();
 			HashSet<IGraphNode> modelElements = new HashSet<IGraphNode>();
@@ -337,13 +339,10 @@ public class GraphMetaModelResourceInjector {
 
 			HashMap<IGraphNode, IHawkMetaModelResource> map = new HashMap<>();
 
-			// for (Node epackagenode : epackagedictionary.query("id", "*")) {
 			for (IHawkPackage ePackage : addedepackages) {
 
 				IGraphNode epackagenode = ((IGraphIterable<IGraphNode>) epackagedictionary
 						.get("id", ePackage.getNsURI())).getSingle();
-				// EPackage ePackage = addedepackages.get(epackagenode
-				// .getProperty("id").toString());
 
 				// add resource to package
 				final String s = ePackage
@@ -397,7 +396,7 @@ public class GraphMetaModelResourceInjector {
 		if (epackagedictionary.get("id", uri).iterator().hasNext() == false) {
 
 			Map<String, Object> map4 = new HashMap<>();
-			map4.put("id", uri);
+			map4.put(IModelIndexer.IDENTIFIER_PROPERTY, uri);
 			map4.put("type", metamodelResource.getMetaModelResourceFactory()
 					.getType());
 
@@ -449,7 +448,7 @@ public class GraphMetaModelResourceInjector {
 		boolean success = true;
 
 		Map<String, Object> map = new HashMap<>();
-		map.put("id", id);
+		map.put(IModelIndexer.IDENTIFIER_PROPERTY, id);
 
 		IGraphNode node = graph.createNode(new HashMap<String, Object>(),
 				"eclass");
@@ -494,7 +493,7 @@ public class GraphMetaModelResourceInjector {
 				return false;
 			} else {
 
-				// dependancy to package
+				// dependency to package
 				if (!uri.equals(eClass.getPackageNSURI())) {
 
 					IGraphNode supertypeepackage = ((IGraphIterable<IGraphNode>) epackagedictionary
@@ -510,7 +509,7 @@ public class GraphMetaModelResourceInjector {
 							.hasNext()
 							|| !alreadythere) {
 
-						System.err.println("supertype dependancy from "
+						System.err.println("supertype dependency from "
 								+ eClass.getPackageNSURI() + " to " + uri);
 
 						graph.createRelationship(node2, supertypeepackage,
@@ -559,7 +558,7 @@ public class GraphMetaModelResourceInjector {
 				return false;
 			} else {
 
-				// dependancy to package
+				// dependency to package
 				if (!uri.equals(eClass.getPackageNSURI())) {
 
 					IGraphNode supertypeepackage = ((IGraphIterable<IGraphNode>) epackagedictionary
@@ -575,7 +574,7 @@ public class GraphMetaModelResourceInjector {
 							.hasNext()
 							|| !alreadythere) {
 
-						System.err.println("attribute dependancy from "
+						System.err.println("attribute dependency from "
 								+ eClass.getPackageNSURI() + " to " + uri);
 
 						graph.createRelationship(node2, supertypeepackage,
@@ -645,7 +644,7 @@ public class GraphMetaModelResourceInjector {
 				return false;
 			} else {
 
-				// dependancy to package
+				// dependency to package
 				if (!uri.equals(eClass.getPackageNSURI())) {
 
 					IGraphNode supertypeepackage = ((IGraphIterable<IGraphNode>) epackagedictionary
@@ -662,7 +661,7 @@ public class GraphMetaModelResourceInjector {
 							.hasNext()
 							|| !alreadythere) {
 
-						System.err.println("reference dependancy from "
+						System.err.println("reference dependency from "
 								+ eClass.getPackageNSURI() + " to " + uri);
 
 						graph.createRelationship(node2, supertypeepackage,
@@ -778,7 +777,7 @@ public class GraphMetaModelResourceInjector {
 			IGraphNode typenode = null;
 
 			for (IGraphEdge e : packagenode.getIncomingWithType("epackage")) {
-				if (e.getStartNode().getProperty("id").equals(typename)) {
+				if (e.getStartNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(typename)) {
 					typenode = e.getStartNode();
 					break;
 				}
@@ -862,7 +861,7 @@ public class GraphMetaModelResourceInjector {
 			IGraphNode typenode = null;
 
 			for (IGraphEdge e : packagenode.getIncomingWithType("epackage")) {
-				if (e.getStartNode().getProperty("id").equals(typename)) {
+				if (e.getStartNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(typename)) {
 					typenode = e.getStartNode();
 					break;
 				}

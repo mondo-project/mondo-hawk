@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
@@ -241,7 +242,7 @@ public class Neo4JNode implements IGraphNode {
 		return "Node:"
 				+ id
 				+ " :: type: "
-				+ (it.hasNext() ? it.next().getEndNode().getProperty("id")
+				+ (it.hasNext() ? it.next().getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
 						: "NONE(not model element)") + " :: properties:"
 				+ getProperties();
 	}

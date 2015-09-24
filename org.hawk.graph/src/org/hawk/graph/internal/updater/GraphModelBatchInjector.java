@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphChange;
 import org.hawk.core.graph.IGraphChangeListener;
@@ -179,19 +180,18 @@ public class GraphModelBatchInjector {
 	private IGraphNode addFileNode(VcsCommitItem s,
 			IGraphChangeListener listener) {
 		IGraphNode fileNode;
-		Map<String, Object> map = new HashMap<>();
-		map.put("id", s.getPath());
-		map.put("revision", s.getCommit().getRevision());
+		Map<String, Object> mapForFileNode = new HashMap<>();
+		mapForFileNode.put(IModelIndexer.IDENTIFIER_PROPERTY, s.getPath());
+		mapForFileNode.put("revision", s.getCommit().getRevision());
 
 		// System.err.println("creating file node: "+s.getPath());
-		fileNode = graph.createNode(map, "file");
+		fileNode = graph.createNode(mapForFileNode, "file");
 
-		Map<String, Object> map2 = new HashMap<>();
-		map2.put(
-				"id",
+		Map<String, Object> mapForDictionary = new HashMap<>();
+		mapForDictionary.put("id",
 				repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
 						+ s.getPath());
-		fileDictionary.add(fileNode, map2);
+		fileDictionary.add(fileNode, mapForDictionary);
 
 		// propagate changes to listeners
 		listener.fileAddition(s, fileNode);
@@ -368,7 +368,7 @@ public class GraphModelBatchInjector {
 
 			String eObjectId = getEObjectId(eObject);
 			HashMap<String, Object> m = new HashMap<>();
-			m.put("id", eObjectId);
+			m.put(IModelIndexer.IDENTIFIER_PROPERTY, eObjectId);
 			m.put("hashCode", eObject.hashCode());
 
 			final List<IHawkAttribute> normalattributes = new LinkedList<IHawkAttribute>();
@@ -596,8 +596,6 @@ public class GraphModelBatchInjector {
 			e.printStackTrace();
 		}
 
-		// dictionary.add(node, "id", eObjectId);
-
 		return node;
 	}
 
@@ -673,7 +671,7 @@ public class GraphModelBatchInjector {
 				IGraphNode othernode = r.getStartNode();
 
 				if (!othernode.equals(epackagenode)
-						&& othernode.getProperty("id").equals(eClass.getName())) {
+						&& othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(eClass.getName())) {
 					classnode = othernode;
 					break;
 				}
