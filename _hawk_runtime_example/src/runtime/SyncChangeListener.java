@@ -372,7 +372,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 
 	private boolean flattenedStringEquals(Object dbattr, Object attr) {
 
-		String newdbattr = dbattr.toString();
+		String newdbattr = dbattr == null ? "null" : dbattr.toString();
 		if (dbattr instanceof int[])
 			newdbattr = Arrays.toString((int[]) dbattr);
 		else if (dbattr instanceof long[])
@@ -384,7 +384,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 		else if (dbattr instanceof Object[])
 			newdbattr = Arrays.toString((Object[]) dbattr);
 
-		String newattr = attr.toString();
+		String newattr = attr == null ? "null" : attr.toString();
 		if (attr instanceof int[])
 			newattr = Arrays.toString((int[]) attr);
 		else if (attr instanceof long[])
