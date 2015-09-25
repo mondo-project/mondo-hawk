@@ -218,7 +218,8 @@ public class Runtime_example {
 						if (s.equalsIgnoreCase("quit")
 								|| s.equalsIgnoreCase("exit")
 								|| s.equalsIgnoreCase("e")) {
-							i2.shutdown(ShutdownRequestType.ONLY_LOCAL);
+							//i2.shutdown(ShutdownRequestType.ONLY_LOCAL);
+							i2.delete();
 							System.exit(0);
 						} else if (s.equalsIgnoreCase("adi")) {
 							addDerivedandIndexedAttributes();

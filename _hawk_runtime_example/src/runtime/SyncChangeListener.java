@@ -1,9 +1,12 @@
 package runtime;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.jgit.api.CheckoutCommand;
@@ -154,47 +157,71 @@ public class SyncChangeListener implements IGraphChangeListener {
 								for (IHawkReference ref : ((IHawkClass) eobject
 										.getType()).getAllReferences()) {
 									if (eobject.isSet(ref)) {
-										Object refval = eobject.get(ref, true);
+										Object refval = eobject.get(ref, false);
 										HashSet<String> vals = new HashSet<>();
 										if (refval instanceof Iterable<?>) {
 											for (Object val : ((Iterable<IHawkObject>) refval))
-												vals.add(((IHawkObject) val)
-														.getUriFragment());
+												if (!((IHawkObject) val)
+														.isProxy())
+													vals.add(((IHawkObject) val)
+															.getUriFragment());
 
 										} else {
-											vals.add(((IHawkObject) refval)
-													.getUriFragment());
+											if (!((IHawkObject) refval)
+													.isProxy())
+												vals.add(((IHawkObject) refval)
+														.getUriFragment());
 
 										}
-										referenceCache.put(ref.getName(), vals);
+										if (vals.size() > 0)
+											referenceCache.put(ref.getName(),
+													vals);
 									}
 								}
 
 								for (String propertykey : instance
 										.getPropertyKeys()) {
-									//
-									Object dbattr = instance
-											.getProperty(propertykey);
-									Object attr = attributeCache
-											.get(propertykey);
-
-									if (!dbattr.equals(attr)) {
-										System.err
-												.println("error in validating, attribute: "
-														+ propertykey
-														+ " has values:");
-										System.err.println("database:\t"
-												+ dbattr);
-										System.err.println("model:\t" + attr);
+									if (!propertykey.equals("hashCode")
+											&& !propertykey.equals("id")
+											&& !propertykey
+													.startsWith("_proxyRef")) {
 										//
-									} else
-										attributeCache.remove(propertykey);
+										Object dbattr = instance
+												.getProperty(propertykey);
+										Object attr = attributeCache
+												.get(propertykey);
+
+										if (!flattenedStringEquals(dbattr, attr)) {
+											allValid = false;
+											System.err
+													.println("error in validating, attribute: "
+															+ propertykey
+															+ " has values:");
+											System.err
+													.println("database:\t"
+															+ (dbattr instanceof Object[] ? (Arrays
+																	.asList((Object[]) dbattr))
+																	: dbattr)
+															+ " JAVATYPE: "
+															+ dbattr.getClass());
+											System.err
+													.println("model:\t\t"
+															+ (attr instanceof Object[] ? (Arrays
+																	.asList((Object[]) attr))
+																	: attr)
+															+ " JAVATYPE: "
+															+ attr.getClass());
+											//
+										} else
+											attributeCache.remove(propertykey);
+									}
 								}
 
 								if (attributeCache.size() > 0) {
 									System.err
 											.println("error in validating, the following attributes were not found in the graph node:");
 									System.err.println(attributeCache.keySet());
+									allValid = false;
 								}
 
 								HashMap<String, Set<String>> nodereferences = new HashMap<>();
@@ -227,27 +254,40 @@ public class SyncChangeListener implements IGraphChangeListener {
 									}
 								}
 								// compare model and graph reference maps
-								for (String modelRefName : referenceCache
-										.keySet()) {
+								Iterator<Entry<String, Set<String>>> rci = referenceCache
+										.entrySet().iterator();
+								while (rci.hasNext()) {
+									Entry<String, Set<String>> modelRef = rci
+											.next();
+									String modelRefName = modelRef.getKey();
+
 									if (!nodereferences
-											.containsKey(modelRefName))
+											.containsKey(modelRefName)) {
 										System.err
 												.println("error in validating: reference "
 														+ modelRefName
 														+ " had targets in the model but not in the graph: ");
-									else {
-										Set<String> noderefvalues = nodereferences
-												.get(modelRefName);
-										Set<String> modelrefvalues = referenceCache
-												.get(modelRefName);
+										allValid = false;
+									} else {
+										Set<String> noderefvalues = new HashSet<>();
+										noderefvalues.addAll(nodereferences
+												.get(modelRefName));
 
-										Set<String> noderefvaluesclone = nodereferences
-												.get(modelRefName);
+										Set<String> modelrefvalues = new HashSet<>();
+										modelrefvalues.addAll(nodereferences
+												.get(modelRefName));
+
+										Set<String> noderefvaluesclone = new HashSet<>();
+										noderefvaluesclone
+												.addAll(nodereferences
+														.get(modelRefName));
 										noderefvaluesclone
 												.removeAll(modelrefvalues);
 
-										Set<String> modelrefvaluesclone = referenceCache
-												.get(modelRefName);
+										Set<String> modelrefvaluesclone = new HashSet<>();
+										modelrefvaluesclone
+												.addAll(nodereferences
+														.get(modelRefName));
 										modelrefvaluesclone
 												.removeAll(noderefvalues);
 
@@ -259,6 +299,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 													.println(noderefvaluesclone);
 											System.err
 													.println("the above ids were found in the graph but not the model");
+											allValid = false;
 										}
 
 										if (modelrefvaluesclone.size() > 0) {
@@ -269,10 +310,11 @@ public class SyncChangeListener implements IGraphChangeListener {
 													.println(modelrefvaluesclone);
 											System.err
 													.println("the above ids were found in the model but not the graph");
+											allValid = false;
 										}
 
 										// nodereferences.remove(modelRefName);
-										referenceCache.remove(modelRefName);
+										rci.remove();
 									}
 								}
 
@@ -281,18 +323,19 @@ public class SyncChangeListener implements IGraphChangeListener {
 											.println("error in validating: references "
 													+ referenceCache.keySet()
 													+ " had targets in the graph but not in the model: ");
+									allValid = false;
 								}
 
 							}
-							// if there are model elements not found in nodes
-							if (eobjectCache.size() > 0) {
-								System.err
-										.println("error in validating: the following objects were not found in the graph:");
-								System.err.println(eobjectCache.keySet());
-								allValid = false;
-							}
-
 						}
+						// if there are model elements not found in nodes
+						if (eobjectCache.size() > 0) {
+							System.err
+									.println("error in validating: the following objects were not found in the graph:");
+							System.err.println(eobjectCache.keySet());
+							allValid = false;
+						}
+
 						//
 
 						t.success();
@@ -325,6 +368,36 @@ public class SyncChangeListener implements IGraphChangeListener {
 		if (totalGraphSize != totalResourceSizes)
 			allValid = false;
 		System.err.println("validated changes..." + allValid);
+	}
+
+	private boolean flattenedStringEquals(Object dbattr, Object attr) {
+
+		String newdbattr = dbattr.toString();
+		if (dbattr instanceof int[])
+			newdbattr = Arrays.toString((int[]) dbattr);
+		else if (dbattr instanceof long[])
+			newdbattr = Arrays.toString((long[]) dbattr);
+		else if (dbattr instanceof String[])
+			newdbattr = Arrays.toString((String[]) dbattr);
+		else if (dbattr instanceof boolean[])
+			newdbattr = Arrays.toString((boolean[]) dbattr);
+		else if (dbattr instanceof Object[])
+			newdbattr = Arrays.toString((Object[]) dbattr);
+
+		String newattr = attr.toString();
+		if (attr instanceof int[])
+			newattr = Arrays.toString((int[]) attr);
+		else if (attr instanceof long[])
+			newattr = Arrays.toString((long[]) attr);
+		else if (attr instanceof String[])
+			newattr = Arrays.toString((String[]) attr);
+		else if (attr instanceof boolean[])
+			newattr = Arrays.toString((boolean[]) attr);
+		else if (attr instanceof Object[])
+			newattr = Arrays.toString((Object[]) attr);
+
+		return newdbattr.equals(newattr);
+
 	}
 
 	@Override

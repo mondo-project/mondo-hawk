@@ -129,7 +129,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 			// System.err.println(currReposTopRevisions);
 
 			// debug info dump...
-			File dump = new File("C:/Users/kb/Desktop/hawk-sync-dump.txt");
+			File dump = new File("C:/Users/kb634/Desktop/hawk-sync-dump.txt");
 			BufferedWriter w = new BufferedWriter(new FileWriter(dump, true));
 			w.append("...sync started...\r\n");
 			long start = System.currentTimeMillis();
@@ -264,11 +264,19 @@ public class ModelIndexerImpl implements IModelIndexer {
 								// changedfiles / resourcessd
 
 								for (VcsCommitItem f : currreposchangeditems)
+									// debug eval check
+									// if
+									// (f.getPath().contains("A.2.0-roundtrip.bpmn"))
 									fileToResourceMap.put(f, null);
 
 								if (u.caresAboutResources()) {
 
 									for (VcsCommitItem f : currreposchangeditems) {
+
+										// debug eval check
+										// if
+										// (!fileToResourceMap.containsKey(f))
+										// continue;
 
 										if (fileToResourceMap.get(f) != null)
 											continue;
