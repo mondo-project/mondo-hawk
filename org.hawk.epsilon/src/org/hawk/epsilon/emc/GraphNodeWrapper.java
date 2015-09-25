@@ -12,10 +12,11 @@ package org.hawk.epsilon.emc;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.IGraphNodeReference;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.graph.ModelElementNode;
 
-public class GraphNodeWrapper {
+public class GraphNodeWrapper implements IGraphNodeReference {
 
 	// private IGraphDatabase container;
 	protected String id;
