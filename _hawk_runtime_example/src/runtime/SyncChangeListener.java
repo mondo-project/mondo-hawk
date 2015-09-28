@@ -153,7 +153,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 										attributeCache.put(a.getName(),
 												eobject.get(a));
 
-								HashMap<String, Set<String>> referenceCache = new HashMap<>();
+								HashMap<String, Set<String>> modelreferences = new HashMap<>();
 								for (IHawkReference ref : ((IHawkClass) eobject
 										.getType()).getAllReferences()) {
 									if (eobject.isSet(ref)) {
@@ -174,7 +174,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 
 										}
 										if (vals.size() > 0)
-											referenceCache.put(ref.getName(),
+											modelreferences.put(ref.getName(),
 													vals);
 									}
 								}
@@ -197,20 +197,26 @@ public class SyncChangeListener implements IGraphChangeListener {
 													.println("error in validating, attribute: "
 															+ propertykey
 															+ " has values:");
+											String cla1 = dbattr != null ? dbattr
+													.getClass().toString()
+													: "null attr";
 											System.err
 													.println("database:\t"
 															+ (dbattr instanceof Object[] ? (Arrays
 																	.asList((Object[]) dbattr))
 																	: dbattr)
 															+ " JAVATYPE: "
-															+ dbattr.getClass());
+															+ cla1);
+											String cla2 = attr != null ? attr
+													.getClass().toString()
+													: "null attr";
 											System.err
 													.println("model:\t\t"
 															+ (attr instanceof Object[] ? (Arrays
 																	.asList((Object[]) attr))
 																	: attr)
 															+ " JAVATYPE: "
-															+ attr.getClass());
+															+ cla2);
 											//
 										} else
 											attributeCache.remove(propertykey);
@@ -254,7 +260,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 									}
 								}
 								// compare model and graph reference maps
-								Iterator<Entry<String, Set<String>>> rci = referenceCache
+								Iterator<Entry<String, Set<String>>> rci = modelreferences
 										.entrySet().iterator();
 								while (rci.hasNext()) {
 									Entry<String, Set<String>> modelRef = rci
@@ -266,7 +272,8 @@ public class SyncChangeListener implements IGraphChangeListener {
 										System.err
 												.println("error in validating: reference "
 														+ modelRefName
-														+ " had targets in the model but not in the graph: ");
+														+ " had targets in the model but none in the graph: ");
+										System.err.println(modelRef.getValue());
 										allValid = false;
 									} else {
 										Set<String> noderefvalues = new HashSet<>();
@@ -274,7 +281,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 												.get(modelRefName));
 
 										Set<String> modelrefvalues = new HashSet<>();
-										modelrefvalues.addAll(nodereferences
+										modelrefvalues.addAll(modelreferences
 												.get(modelRefName));
 
 										Set<String> noderefvaluesclone = new HashSet<>();
@@ -286,7 +293,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 
 										Set<String> modelrefvaluesclone = new HashSet<>();
 										modelrefvaluesclone
-												.addAll(nodereferences
+												.addAll(modelreferences
 														.get(modelRefName));
 										modelrefvaluesclone
 												.removeAll(noderefvalues);
@@ -313,16 +320,17 @@ public class SyncChangeListener implements IGraphChangeListener {
 											allValid = false;
 										}
 
-										// nodereferences.remove(modelRefName);
-										rci.remove();
+										nodereferences.remove(modelRefName);
+										// rci.remove();
 									}
 								}
 
-								if (referenceCache.size() > 0) {
+								if (nodereferences.size() > 0) {
 									System.err
 											.println("error in validating: references "
-													+ referenceCache.keySet()
+													+ nodereferences.keySet()
 													+ " had targets in the graph but not in the model: ");
+									System.err.println(nodereferences);
 									allValid = false;
 								}
 
