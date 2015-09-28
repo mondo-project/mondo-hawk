@@ -13,7 +13,6 @@ package org.hawk.localfolder;
 
 import java.io.File;
 import java.net.URLDecoder;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,7 +49,8 @@ public class LocalFolder implements IVcsManager {
 	public void run(String vcsloc, String un, String pw, IAbstractConsole c)
 			throws Exception {
 		console = c;
-		Path path = Paths.get(vcsloc);
+
+		Path path = Paths.get(vcsloc.replaceFirst("^file://?", ""));
 		rootLocation = path.toRealPath();
 		repository = new LocalFolderRepository(URLDecoder.decode(rootLocation
 				.toUri().toString().replace("+", "%2B"), "UTF-8")
