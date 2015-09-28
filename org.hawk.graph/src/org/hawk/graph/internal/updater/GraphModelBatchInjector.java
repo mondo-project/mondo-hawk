@@ -39,6 +39,7 @@ import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
+import org.hawk.graph.FileNode;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.internal.util.GraphUtil;
 
@@ -183,6 +184,7 @@ public class GraphModelBatchInjector {
 		Map<String, Object> mapForFileNode = new HashMap<>();
 		mapForFileNode.put(IModelIndexer.IDENTIFIER_PROPERTY, s.getPath());
 		mapForFileNode.put("revision", s.getCommit().getRevision());
+		mapForFileNode.put(FileNode.PROP_REPOSITORY, repoURL);
 
 		// System.err.println("creating file node: "+s.getPath());
 		fileNode = graph.createNode(mapForFileNode, "file");

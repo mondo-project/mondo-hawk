@@ -24,6 +24,8 @@ import org.hawk.graph.internal.updater.GraphModelBatchInjector;
 public class FileNode {
 	private final IGraphNode node;
 
+	public static final String PROP_REPOSITORY = "repository";
+
 	public FileNode(IGraphNode node) {
 		this.node = node;
 	}
@@ -32,8 +34,12 @@ public class FileNode {
 		return node;
 	}
 	
-	public String getFileName() {
+	public String getFilePath() {
 		return (String)node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
+	}
+
+	public String getRepositoryURL() {
+		return (String)node.getProperty(PROP_REPOSITORY);
 	}
 
 	/**
@@ -101,7 +107,7 @@ public class FileNode {
 
 	@Override
 	public String toString() {
-		return "FileNode [node=" + node + ", fileName=" + getFileName() + "]";
+		return "FileNode [node=" + node + ", fileName=" + getFilePath() + "]";
 	}
 
 	@Override

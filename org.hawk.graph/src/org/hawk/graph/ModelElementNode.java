@@ -46,6 +46,7 @@ public class ModelElementNode {
 	// never access this field directly: always call getTypeNode(),
 	// as we use lazy initialization.
 	private TypeNode typeNode;
+	private FileNode fileNode;
 
 	public ModelElementNode(IGraphNode node) {
 		this.node = node;
@@ -56,12 +57,21 @@ public class ModelElementNode {
 	 */
 	public TypeNode getTypeNode() {
 		if (typeNode == null) {
-			final IGraphNode rawTypeNode = node
-					.getOutgoingWithType(EDGE_LABEL_OFTYPE).iterator().next()
-					.getEndNode();
+			final IGraphNode rawTypeNode = getFirstEndNode(EDGE_LABEL_OFTYPE);
 			typeNode = new TypeNode(rawTypeNode);
 		}
 		return typeNode;
+	}
+
+	/**
+	 * Returns the file node for this model element node.
+	 */
+	public FileNode getFileNode() {
+		if (fileNode == null) {
+			final IGraphNode rawFileNode = getFirstEndNode(EDGE_LABEL_FILE);
+			fileNode = new FileNode(rawFileNode);
+		}
+		return fileNode;
 	}
 
 	/**
@@ -184,6 +194,13 @@ public class ModelElementNode {
 
 	public boolean isContainer(String featureName) {
 		return outgoingEdgeWithTypeHasProperty(featureName, "isContainer");
+	}
+
+	protected IGraphNode getFirstEndNode(final String edgeLabel) {
+		final IGraphNode rawTypeNode = node
+				.getOutgoingWithType(edgeLabel).iterator().next()
+				.getEndNode();
+		return rawTypeNode;
 	}
 
 	private boolean outgoingEdgeWithTypeHasProperty(String featureName,

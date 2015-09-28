@@ -110,7 +110,7 @@ public class LocalFolder implements IVcsManager {
 
 	@Override
 	public String getLocation() {
-		return rootLocation.toString();
+		return repository.getUrl();
 	}
 
 	@Override
