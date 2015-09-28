@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="2.0.1/logback-classic-1.0.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/logback-core-1.0.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/slf4j-api-1.6.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="2.0.1/geronimo-jta_1.1_spec-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="2.0.1/lucene-core-3.6.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="2.0.1/neo4j-jmx-2.0.1.jar"/>
