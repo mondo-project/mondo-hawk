@@ -161,16 +161,16 @@ public class SyncChangeListener implements IGraphChangeListener {
 										HashSet<String> vals = new HashSet<>();
 										if (refval instanceof Iterable<?>) {
 											for (Object val : ((Iterable<IHawkObject>) refval))
-												if (!((IHawkObject) val)
-														.isProxy())
-													vals.add(((IHawkObject) val)
-															.getUriFragment());
+												// if (!((IHawkObject)
+												// val).isProxy())
+												vals.add(((IHawkObject) val)
+														.getUriFragment());
 
 										} else {
-											if (!((IHawkObject) refval)
-													.isProxy())
-												vals.add(((IHawkObject) refval)
-														.getUriFragment());
+											// if (!((IHawkObject)
+											// refval).isProxy())
+											vals.add(((IHawkObject) refval)
+													.getUriFragment());
 
 										}
 										if (vals.size() > 0)
@@ -269,12 +269,12 @@ public class SyncChangeListener implements IGraphChangeListener {
 
 									if (!nodereferences
 											.containsKey(modelRefName)) {
-										System.err
-												.println("error in validating: reference "
-														+ modelRefName
-														+ " had targets in the model but none in the graph: ");
-										System.err.println(modelRef.getValue());
-										allValid = false;
+										// no need for this?
+										// System.err.println("error in validating: reference "+
+										// modelRefName+
+										// " had targets in the model but none in the graph: ");
+										// System.err.println(modelRef.getValue());
+										// allValid = false;
 									} else {
 										Set<String> noderefvalues = new HashSet<>();
 										noderefvalues.addAll(nodereferences
@@ -297,6 +297,9 @@ public class SyncChangeListener implements IGraphChangeListener {
 														.get(modelRefName));
 										modelrefvaluesclone
 												.removeAll(noderefvalues);
+										modelrefvaluesclone = removeHawkProxies(
+												instance, modelRefName,
+												modelrefvaluesclone);
 
 										if (noderefvaluesclone.size() > 0) {
 											System.err
@@ -310,6 +313,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 										}
 
 										if (modelrefvaluesclone.size() > 0) {
+
 											System.err
 													.println("error in validating: reference "
 															+ modelRefName);
@@ -376,6 +380,37 @@ public class SyncChangeListener implements IGraphChangeListener {
 		if (totalGraphSize != totalResourceSizes)
 			allValid = false;
 		System.err.println("validated changes..." + allValid);
+	}
+
+	private Set<String> removeHawkProxies(IGraphNode instance,
+			String modelRefName, Set<String> modelrefvaluesclone) {
+
+		// String repoURL = "";
+		// String destinationObjectRelativePathURI = "";
+		//
+		// String destinationObjectRelativeFileURI =
+		// destinationObjectRelativePathURI
+		// .substring(0, destinationObjectRelativePathURI.indexOf("#"));
+		// String destinationObjectFullFileURI = repoURL
+		// + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+		// + destinationObjectRelativeFileURI;
+
+		for (String propertykey : instance.getPropertyKeys()) {
+			// temporary hack ignoring actual file path as it is not known --
+			// not fullproof as an object with the same id can be in another
+			// file and it will still be removed
+			if (propertykey.startsWith("_proxyRef:")) {
+
+				String[] proxies = (String[]) instance.getProperty(propertykey);
+
+				for (int i = 0; i < proxies.length; i = i + 2)
+					modelrefvaluesclone.remove(proxies[i].substring(proxies[i]
+							.indexOf("#") + 1));
+
+			}
+		}
+
+		return modelrefvaluesclone;
 	}
 
 	private boolean flattenedStringEquals(Object dbattr, Object attr) {
