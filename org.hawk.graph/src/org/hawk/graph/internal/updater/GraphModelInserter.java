@@ -161,7 +161,6 @@ public class GraphModelInserter {
 				addedNodes.put(node, object);
 				final String newID = node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 				addedNodesHash.put(newID, node);
-				nodes.put(newID, node);
 
 				// track change new node
 				for (final String transientLabelEdge : ModelElementNode.TRANSIENT_EDGE_LABELS) {
@@ -300,8 +299,11 @@ public class GraphModelInserter {
 						}
 
 						for (String s : targetids) {
-
 							IGraphNode dest = nodes.get(s);
+							if (dest == null) {
+								dest = addedNodesHash.get(s);
+							}
+
 							if (dest != null) {
 								// add new reference
 								IGraphEdge e = graph.createRelationship(node,
