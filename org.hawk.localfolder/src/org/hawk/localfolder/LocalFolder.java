@@ -12,6 +12,8 @@
 package org.hawk.localfolder;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -50,12 +52,17 @@ public class LocalFolder implements IVcsManager {
 			throws Exception {
 		console = c;
 
-		Path path = Paths.get(vcsloc.replaceFirst("^file://?", ""));
+		// Accept both regular paths and file:// URIs
+		Path path;
+		try {
+			path = Paths.get(new URI(vcsloc));
+		} catch (URISyntaxException ex) {
+			path = Paths.get(vcsloc);
+		}
+
 		rootLocation = path.toRealPath();
 		repository = new LocalFolderRepository(URLDecoder.decode(rootLocation
-				.toUri().toString().replace("+", "%2B"), "UTF-8")
-		// rootLocation.toUri().toString()
-		);
+				.toUri().toString().replace("+", "%2B"), "UTF-8"));
 	}
 
 	@Override
@@ -266,7 +273,7 @@ public class LocalFolder implements IVcsManager {
 
 	@Override
 	public boolean isURLLocationAccepted() {
-		return false;
+		return true;
 	}
 
 }

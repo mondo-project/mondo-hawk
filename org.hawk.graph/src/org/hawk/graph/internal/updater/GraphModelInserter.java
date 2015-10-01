@@ -159,7 +159,8 @@ public class GraphModelInserter {
 				IHawkObject object = added.get(o);
 				IGraphNode node = inj.addEObject(fileNode, object);
 				addedNodes.put(node, object);
-				addedNodesHash.put(node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString(), node);
+				final String newID = node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+				addedNodesHash.put(newID, node);
 
 				// track change new node
 				for (final String transientLabelEdge : ModelElementNode.TRANSIENT_EDGE_LABELS) {
@@ -205,7 +206,7 @@ public class GraphModelInserter {
 					// }
 
 					// node.setProperty(GraphWrapper.IDENTIFIER_PROPERTY, o.getUriFragment());
-					node.setProperty("hashCode", o.hashCode());
+					node.setProperty(ModelElementNode.PROPERTY_HASHCODE, o.hashCode());
 					updateNodeProperties(fileNode, node, o);
 					//
 					// for (String ss : node.getPropertyKeys()) {
@@ -225,7 +226,7 @@ public class GraphModelInserter {
 					listener.modelElementRemoval(this.s, node, false);
 					for (String key : node.getPropertyKeys()) {
 						listener.modelElementAttributeRemoval(this.s, null,
-								key, node, false);
+								key, node, ModelElementNode.TRANSIENT_ATTRIBUTES.contains(key));
 					}
 					for (IGraphEdge e : node.getOutgoing()) {
 						if (e.getProperty("isDerived") == null) {
@@ -285,10 +286,9 @@ public class GraphModelInserter {
 						for (IGraphEdge e : graphtargets) {
 							IGraphNode n = e.getEndNode();
 
-							if (targetids.contains(n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY))) {
-								// update changed list
-								targetids.remove(n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
-							} else {
+							final Object id = n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
+							final boolean targetIdPresent = targetids.remove(id);
+							if (!targetIdPresent) {
 								// delete removed reference
 								e.delete();
 
@@ -301,6 +301,7 @@ public class GraphModelInserter {
 						for (String s : targetids) {
 
 							IGraphNode dest = nodes.get(s);
+							if(dest==null)dest=addedNodesHash.get(s);
 							if (dest != null) {
 								// add new reference
 								IGraphEdge e = graph.createRelationship(node,
@@ -515,44 +516,6 @@ public class GraphModelInserter {
 
 		}
 
-		// deferred for later
-		// for (IHawkAttribute a : derivedattributes) {
-		//
-		// HashSet<IHawkAnnotation> ean = a.getAnnotations();
-		//
-		// for (IHawkAnnotation e : ean) {
-		//
-		// HashMap<String, String> map = e.getDetails();
-		//
-		// if (map != null && map.containsKey("EOLCode")) {
-		//
-		// node.setProperty(a.getName(), "_NYD##" + map.get("EOLCode"));
-		// inj.addToProxyAttributes(node);
-		//
-		// } else if (map != null && map.containsKey("String")) {
-		//
-		// // BatchInserterIndex i = index.nodeIndex(eObject
-		// // .eClass().getEPackageNSURI()
-		// // + "##"
-		// // + eObject.eClass().getName()
-		// // + "##"
-		// // + a.getName(), MapUtil
-		// // .stringMap(IndexManager.PROVIDER,
-		// // "lucene", "type", "exact"));
-		// String prop = map.get("String").toString();
-		// // i.add(node, "value", prop);
-		// node.setProperty(a.getName(), prop);
-		//
-		// } else {
-		//
-		// System.err
-		// .println("derived feature has no runnable eol code or static string, hence is ignored");
-		//
-		// }
-		//
-		// }
-		// }
-
 		for (IHawkAttribute a : indexedattributes) {
 
 			// FIXME update property index on changes not just insert them
@@ -685,7 +648,7 @@ public class GraphModelInserter {
 					nodes.put(n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString(), n);
 
 					hashCodes.put((String) n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY),
-							(int) n.getProperty("hashCode"));
+							(int) n.getProperty(ModelElementNode.PROPERTY_HASHCODE));
 				}
 				System.err.println("file contains: " + nodes.size() + " ("
 						+ hashCodes.size() + ") nodes in store");
