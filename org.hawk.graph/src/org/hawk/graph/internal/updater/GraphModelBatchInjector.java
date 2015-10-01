@@ -371,7 +371,7 @@ public class GraphModelBatchInjector {
 			String eObjectId = getEObjectId(eObject);
 			HashMap<String, Object> m = new HashMap<>();
 			m.put(IModelIndexer.IDENTIFIER_PROPERTY, eObjectId);
-			m.put("hashCode", eObject.hashCode());
+			m.put(ModelElementNode.PROPERTY_HASHCODE, eObject.hashCode());
 
 			final List<IHawkAttribute> normalattributes = new LinkedList<IHawkAttribute>();
 			final List<IHawkAttribute> indexedattributes = new LinkedList<IHawkAttribute>();
@@ -462,7 +462,7 @@ public class GraphModelBatchInjector {
 			for (String s : m.keySet()) {
 				Object value = m.get(s);
 				listener.modelElementAttributeUpdate(commitItem, eObject, s,
-						null, value, node, false);
+						null, value, node, ModelElementNode.TRANSIENT_ATTRIBUTES.contains(s));
 			}
 
 			// add derived attrs

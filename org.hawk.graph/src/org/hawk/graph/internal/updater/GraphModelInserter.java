@@ -205,7 +205,7 @@ public class GraphModelInserter {
 					// }
 
 					// node.setProperty(GraphWrapper.IDENTIFIER_PROPERTY, o.getUriFragment());
-					node.setProperty("hashCode", o.hashCode());
+					node.setProperty(ModelElementNode.PROPERTY_HASHCODE, o.hashCode());
 					updateNodeProperties(fileNode, node, o);
 					//
 					// for (String ss : node.getPropertyKeys()) {
@@ -225,7 +225,7 @@ public class GraphModelInserter {
 					listener.modelElementRemoval(this.s, node, false);
 					for (String key : node.getPropertyKeys()) {
 						listener.modelElementAttributeRemoval(this.s, null,
-								key, node, false);
+								key, node, ModelElementNode.TRANSIENT_ATTRIBUTES.contains(key));
 					}
 					for (IGraphEdge e : node.getOutgoing()) {
 						if (e.getProperty("isDerived") == null) {
@@ -685,7 +685,7 @@ public class GraphModelInserter {
 					nodes.put(n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString(), n);
 
 					hashCodes.put((String) n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY),
-							(int) n.getProperty("hashCode"));
+							(int) n.getProperty(ModelElementNode.PROPERTY_HASHCODE));
 				}
 				System.err.println("file contains: " + nodes.size() + " ("
 						+ hashCodes.size() + ") nodes in store");

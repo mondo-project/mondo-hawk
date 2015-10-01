@@ -13,10 +13,13 @@ package org.hawk.graph;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 
@@ -26,6 +29,9 @@ import org.hawk.core.graph.IGraphNode;
  * updater.
  */
 public class ModelElementNode {
+
+	/** Name of the property used to store the hash code of the model element. */
+	public static final String PROPERTY_HASHCODE = "hashCode";
 
 	/** Label for the transient edge from the model element node to its file. */
 	public static final String EDGE_LABEL_FILE = "file";
@@ -40,6 +46,8 @@ public class ModelElementNode {
 	public static final List<String> TRANSIENT_EDGE_LABELS = Arrays.asList(
 		EDGE_LABEL_FILE, EDGE_LABEL_OFKIND, EDGE_LABEL_OFTYPE
 	);
+
+	public static final Set<String> TRANSIENT_ATTRIBUTES = new HashSet<>(Arrays.asList(IModelIndexer.IDENTIFIER_PROPERTY, PROPERTY_HASHCODE));
 
 	private final IGraphNode node;
 
