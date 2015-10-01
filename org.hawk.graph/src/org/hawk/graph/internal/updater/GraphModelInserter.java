@@ -285,10 +285,8 @@ public class GraphModelInserter {
 						for (IGraphEdge e : graphtargets) {
 							IGraphNode n = e.getEndNode();
 
-							if (targetids.contains(n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY))) {
-								// update changed list
-								targetids.remove(n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
-							} else {
+							final Object id = n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
+							if (!targetids.remove(id)) {
 								// delete removed reference
 								e.delete();
 
@@ -514,44 +512,6 @@ public class GraphModelInserter {
 			}
 
 		}
-
-		// deferred for later
-		// for (IHawkAttribute a : derivedattributes) {
-		//
-		// HashSet<IHawkAnnotation> ean = a.getAnnotations();
-		//
-		// for (IHawkAnnotation e : ean) {
-		//
-		// HashMap<String, String> map = e.getDetails();
-		//
-		// if (map != null && map.containsKey("EOLCode")) {
-		//
-		// node.setProperty(a.getName(), "_NYD##" + map.get("EOLCode"));
-		// inj.addToProxyAttributes(node);
-		//
-		// } else if (map != null && map.containsKey("String")) {
-		//
-		// // BatchInserterIndex i = index.nodeIndex(eObject
-		// // .eClass().getEPackageNSURI()
-		// // + "##"
-		// // + eObject.eClass().getName()
-		// // + "##"
-		// // + a.getName(), MapUtil
-		// // .stringMap(IndexManager.PROVIDER,
-		// // "lucene", "type", "exact"));
-		// String prop = map.get("String").toString();
-		// // i.add(node, "value", prop);
-		// node.setProperty(a.getName(), prop);
-		//
-		// } else {
-		//
-		// System.err
-		// .println("derived feature has no runnable eol code or static string, hence is ignored");
-		//
-		// }
-		//
-		// }
-		// }
 
 		for (IHawkAttribute a : indexedattributes) {
 
