@@ -159,7 +159,9 @@ public class GraphModelInserter {
 				IHawkObject object = added.get(o);
 				IGraphNode node = inj.addEObject(fileNode, object);
 				addedNodes.put(node, object);
-				addedNodesHash.put(node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString(), node);
+				final String newID = node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+				addedNodesHash.put(newID, node);
+				nodes.put(newID, node);
 
 				// track change new node
 				for (final String transientLabelEdge : ModelElementNode.TRANSIENT_EDGE_LABELS) {
@@ -286,7 +288,8 @@ public class GraphModelInserter {
 							IGraphNode n = e.getEndNode();
 
 							final Object id = n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
-							if (!targetids.remove(id)) {
+							final boolean targetIdPresent = targetids.remove(id);
+							if (!targetIdPresent) {
 								// delete removed reference
 								e.delete();
 
