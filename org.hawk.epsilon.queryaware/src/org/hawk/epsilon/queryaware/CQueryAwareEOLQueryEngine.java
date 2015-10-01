@@ -23,6 +23,7 @@ import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.models.IModel;
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
@@ -30,6 +31,7 @@ import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.epsilon.emc.GraphNodeWrapper;
 import org.hawk.epsilon.emc.OptimisableCollection;
+import org.hawk.graph.ModelElementNode;
 
 public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine
 		implements IModel {
@@ -139,7 +141,7 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine
 
 			// file based!
 			for (IGraphNode filenode : files) {
-				for (IGraphEdge edge : filenode.getIncomingWithType("file")) {
+				for (IGraphEdge edge : filenode.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 					GraphNodeWrapper wrapper = new GraphNodeWrapper(edge
 							.getStartNode().getId().toString(), this);
 					allContents.add(wrapper);
@@ -183,7 +185,7 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine
 				for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
 
 					IGraphNode othernode = r.getStartNode();
-					if (othernode.getProperty("id").equals(
+					if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(
 							arg0.substring(arg0.indexOf("::") + 2))) {
 						typeNode = othernode;
 						break;
@@ -210,7 +212,7 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine
 									.getIncomingWithType("epackage")) {
 
 								IGraphNode othernode = n.getStartNode();
-								if (othernode.getProperty("id").equals(arg0)) {
+								if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(arg0)) {
 
 									possibletypenodes.add(othernode);
 
@@ -243,7 +245,7 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine
 									.getIncomingWithType("epackage")) {
 
 								IGraphNode othernode = n.getStartNode();
-								if (othernode.getProperty("id").equals(arg0)) {
+								if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(arg0)) {
 
 									typeNode = othernode;
 									break;
@@ -277,9 +279,9 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine
 
 						// System.err.println(Arrays.toString(files.toArray()));
 						// System.err.println(files.iterator().next().getGraph());
-						// System.err.println(node.getOutgoingWithType("file").iterator().next().getEndNode().getGraph());
+						// System.err.println(node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE).iterator().next().getEndNode().getGraph());
 
-						if (files.contains(node.getOutgoingWithType("file")
+						if (files.contains(node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)
 								.iterator().next().getEndNode())) {
 							nodes.add(new GraphNodeWrapper(node.getId()
 									.toString(), this));

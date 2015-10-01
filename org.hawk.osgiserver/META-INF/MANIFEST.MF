@@ -5,9 +5,10 @@ Bundle-SymbolicName: org.hawk.osgiserver;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.hawk.core;bundle-version="1.0.0",
- org.hawk.core.dependencies
+ org.hawk.core.dependencies,
+ org.hawk.graph.updateValidationListener
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: University of York
 Import-Package: org.slf4j,
- org.slf4j.spi;version="1.7.2"
+ org.slf4j.spi
 Export-Package: org.hawk.osgiserver

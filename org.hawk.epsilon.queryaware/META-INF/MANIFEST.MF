@@ -18,3 +18,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: org.hawk.epsilon.queryaware
 Bundle-Vendor: University of York
+Import-Package: org.hawk.graph

@@ -10,10 +10,13 @@
  ******************************************************************************/
 package org.hawk.epsilon.emc;
 
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.IGraphNodeReference;
 import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.graph.ModelElementNode;
 
-public class GraphNodeWrapper {
+public class GraphNodeWrapper implements IGraphNodeReference {
 
 	// private IGraphDatabase container;
 	protected String id;
@@ -56,8 +59,8 @@ public class GraphNodeWrapper {
 
 			IGraphNode n = containerModel.getBackend().getNodeById(id);
 
-			type = n.getOutgoingWithType("typeOf").iterator().next()
-					.getEndNode().getProperty("id").toString();
+			type = n.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().next()
+					.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 
 			// HawkClass e = new MetamodelUtils().getTypeOfFromNode(n,
 			// containerModel.parser);

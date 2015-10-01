@@ -12,8 +12,15 @@ package org.hawk.graph.internal.updater;
 
 import java.util.Iterator;
 
-import org.hawk.core.graph.*;
-import org.hawk.core.model.*;
+import org.hawk.core.IModelIndexer;
+import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphEdge;
+import org.hawk.core.graph.IGraphIterable;
+import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.IGraphNodeIndex;
+import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.core.model.IHawkClass;
+import org.hawk.graph.ModelElementNode;
 
 public class MetamodelUtils {
 
@@ -30,16 +37,16 @@ public class MetamodelUtils {
 			// operations on the graph
 			// ...
 
-			Iterator<IGraphEdge> it = node.getOutgoingWithType("typeOf")
+			Iterator<IGraphEdge> it = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
 					.iterator();
 
 			while (it.hasNext()) {
 				IGraphNode nn = it.next().getEndNode();
 
-				// System.err.println(nn.getProperty("id").toString());
+				// System.err.println(nn.getProperty(GraphWrapper.IDENTIFIER_PROPERTY).toString());
 				// System.err.println(">"+type);
 
-				if (nn.getProperty("id").toString().equals(type)) {
+				if (nn.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString().equals(type)) {
 					found = true;
 				}
 			}
@@ -72,8 +79,8 @@ public class MetamodelUtils {
 
 			try {
 
-				ret = node.getOutgoingWithType("typeOf").iterator().next()
-						.getEndNode().getProperty("id").toString();
+				ret = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().next()
+						.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 
 			} catch (Exception e) {
 				System.err.println("Exception in typeOfName(Node node)");
@@ -105,7 +112,7 @@ public class MetamodelUtils {
 				for (IGraphEdge r : ep.getIncomingWithType("epackage")) {
 
 					cl = r.getStartNode();
-					if (cl.getProperty("id")
+					if (cl.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
 							.equals(metaClassName.substring(metaClassName
 									.indexOf("::") + 2))) {
 						ret = cl;
@@ -118,7 +125,7 @@ public class MetamodelUtils {
 					for (IGraphEdge r : epp.getIncomingWithType("epackage")) {
 
 						cl = r.getStartNode();
-						if (cl.getProperty("id").equals(metaClassName)) {
+						if (cl.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(metaClassName)) {
 							ret = cl;
 						}
 					}

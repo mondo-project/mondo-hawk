@@ -11,6 +11,7 @@
 package org.hawk.bpmn;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -18,12 +19,12 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.hawk.core.model.*;
+import org.hawk.core.model.IHawkAttribute;
+import org.hawk.core.model.IHawkClass;
+import org.hawk.core.model.IHawkReference;
+import org.hawk.core.model.IHawkStructuralFeature;
 
 public class BPMNClass extends BPMNObject implements IHawkClass {
-
-	private static boolean hasAtLeastOneIgnoredIDproperty = false;
-
 	private EClass eclass;
 
 	// private String containingFeatureName = null;
@@ -82,32 +83,16 @@ public class BPMNClass extends BPMNObject implements IHawkClass {
 	}
 
 	@Override
-	public HashSet<IHawkAttribute> getAllAttributes() {
-
-		HashSet<IHawkAttribute> atts = new HashSet<IHawkAttribute>();
-
+	public Set<IHawkAttribute> getAllAttributes() {
+		Set<IHawkAttribute> atts = new HashSet<IHawkAttribute>();
 		for (EAttribute att : eclass.getEAllAttributes()) {
-
-			// FIXME major -- attributes named "id" are ignored
-			if (att.getName().equals("id")) {
-				if (!hasAtLeastOneIgnoredIDproperty) {
-					hasAtLeastOneIgnoredIDproperty = true;
-					System.err
-							.println("warning, type: "
-									+ getName()
-									+ " has a property named \"id\" which is ignored by Hawk (any other types with this property will also have it ignored)");
-				}
-				break;
-			}
-
 			atts.add(new BPMNAttribute(att));
-
 		}
 		return atts;
 	}
 
 	@Override
-	public HashSet<IHawkClass> getSuperTypes() {
+	public Set<IHawkClass> getSuperTypes() {
 
 		HashSet<IHawkClass> c = new HashSet<IHawkClass>();
 
@@ -122,7 +107,7 @@ public class BPMNClass extends BPMNObject implements IHawkClass {
 	}
 
 	@Override
-	public HashSet<IHawkReference> getAllReferences() {
+	public Set<IHawkReference> getAllReferences() {
 
 		HashSet<IHawkReference> c = new HashSet<IHawkReference>();
 

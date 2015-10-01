@@ -38,6 +38,14 @@ public interface IModelIndexer {
 	}
 
 	/**
+	 * Name of the property that is used by Hawk for its internal identifiers
+	 * (e.g. type names for EClasses, URI fragments for EObjects and so on).
+	 * Should be reasonably unique and avoid potential collisions that names
+	 * that might be used in a metamodel.
+	 */
+	public static final String IDENTIFIER_PROPERTY = "_hawkid";
+
+	/**
 	 * When called, attempts to synchronise the index with any changes to any
 	 * vcs connected to it
 	 * 

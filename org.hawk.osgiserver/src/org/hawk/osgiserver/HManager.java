@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.hawk.osgiserver;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -344,8 +345,13 @@ public class HManager {
 				stream.processAnnotations(HawkConfig.class);
 				stream.setClassLoader(HawksConfig.class.getClassLoader());
 				HawksConfig hc = (HawksConfig) stream.fromXML(xml);
-				for (HawkConfig s : hc.getConfigs())
-					hawks.add(s);
+				for (HawkConfig s : hc.getConfigs()) {
+					// The storage folder may have been deleted since then: check
+					// if it still exists.
+					if (new File(s.getStorageFolder()).exists()) {
+						hawks.add(s);
+					}
+				}
 			}
 
 			boolean success = true;
@@ -354,11 +360,10 @@ public class HManager {
 				success = success && addHawk(HModel.load(s, this));
 			}
 
-			if (!success){
+			if (!success) {
 				preferences.remove("config");
 				preferences.flush();
-				}
-
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			preferences.remove("config");

@@ -544,7 +544,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 					"*")) {
 
 				s = epackage.getProperty("resource").toString();
-				ep = epackage.getProperty("id").toString();
+				ep = epackage.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 				type = epackage.getProperty("type").toString();
 
 				IMetaModelResourceFactory p = getMetaModelParser(type);
@@ -1113,14 +1113,14 @@ public class ModelIndexerImpl implements IModelIndexer {
 				final String mmURI = split[0];
 
 				IGraphNode epackagenode = graph.getMetamodelIndex()
-						.get("id", mmURI).iterator().next();
+						.get(IModelIndexer.IDENTIFIER_PROPERTY, mmURI).iterator().next();
 
 				IGraphNode typenode = null;
 				for (IGraphEdge e : epackagenode
 						.getIncomingWithType("epackage")) {
 					IGraphNode temp = e.getStartNode();
 					final String typeName = split[1];
-					if (temp.getProperty("id").equals(typeName)) {
+					if (temp.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(typeName)) {
 						if (typenode == null) {
 							typenode = temp;
 						} else {

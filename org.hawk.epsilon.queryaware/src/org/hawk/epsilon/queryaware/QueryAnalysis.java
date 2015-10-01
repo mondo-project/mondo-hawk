@@ -25,8 +25,11 @@ import org.eclipse.epsilon.eol.visitor.resolution.variable.impl.VariableResolver
 import org.eclipse.epsilon.labs.effectivemetamodel.impl.EffectiveFeature;
 import org.eclipse.epsilon.labs.effectivemetamodel.impl.EffectiveMetamodel;
 import org.eclipse.epsilon.labs.effectivemetamodel.impl.EffectiveType;
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.graph.GraphWrapper;
+import org.hawk.graph.ModelElementNode;
 
 public class QueryAnalysis {
 
@@ -79,12 +82,12 @@ public class QueryAnalysis {
 
 	private EffectiveType getEffectiveType(
 			Map<String, EffectiveType> effectiveTypes, IGraphNode node) {
-		IGraphNode typeNode = node.getOutgoingWithType("typeOf").iterator()
+		IGraphNode typeNode = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator()
 				.next().getEndNode();
-		String typeName = (String) typeNode.getProperty("id");
+		String typeName = (String) typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
 		IGraphNode packageNode = typeNode.getOutgoingWithType("epackage")
 				.iterator().next().getEndNode();
-		String packageURI = (String) packageNode.getProperty("id");
+		String packageURI = (String) packageNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
 
 		EffectiveType et = effectiveTypes.get(packageURI + "#" + typeName);
 		return et;

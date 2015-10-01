@@ -37,6 +37,7 @@ import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.util.HawkConfig;
 import org.hawk.core.util.HawkProperties;
 import org.hawk.core.util.HawksConfig;
+import org.hawk.graph.updateValidationListener.UpdateChangeListener;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.thoughtworks.xstream.XStream;
@@ -64,7 +65,8 @@ public class HModel {
 			File storageFolder, String location, String dbType,
 			List<String> plugins, HManager manager, char[] apw)
 			throws Exception {
-		HModel hm = new HModel(manager, hawkFactory, name, storageFolder, location);
+		HModel hm = new HModel(manager, hawkFactory, name, storageFolder,
+				location);
 		if (dbType != null) {
 			hm.hawk.setDbtype(dbType);
 		}
@@ -116,7 +118,8 @@ public class HModel {
 	/**
 	 * Loads a previously existing Hawk instance from its {@link HawkConfig}.
 	 */
-	public static HModel load(HawkConfig config, HManager manager) throws Exception {
+	public static HModel load(HawkConfig config, HManager manager)
+			throws Exception {
 
 		try {
 
@@ -152,10 +155,11 @@ public class HModel {
 	 * Constructor for loading existing local Hawk instances and
 	 * creating/loading custom {@link IHawk} implementations.
 	 */
-	public HModel(HManager manager, IHawkFactory hawkFactory, String name, File storageFolder, String location)
-			throws Exception {
+	public HModel(HManager manager, IHawkFactory hawkFactory, String name,
+			File storageFolder, String location) throws Exception {
 		this.hawkFactory = hawkFactory;
-		this.hawk = hawkFactory.create(name, storageFolder, location, getConsole());
+		this.hawk = hawkFactory.create(name, storageFolder, location,
+				getConsole());
 		this.manager = manager;
 		this.hawkLocation = location;
 
@@ -195,8 +199,12 @@ public class HModel {
 				console.println(u.getName());
 			}
 			console.println("adding graph change listeners:");
-			for (IConfigurationElement listener : manager.getGraphChangeListeners()) {
-				IGraphChangeListener l = (IGraphChangeListener)listener.createExecutableExtension("class");
+			for (IConfigurationElement listener : manager
+					.getGraphChangeListeners()) {
+				IGraphChangeListener l = (IGraphChangeListener) listener
+						.createExecutableExtension("class");
+				if (l instanceof UpdateChangeListener)
+					((UpdateChangeListener) l).run(hawk.getModelIndexer());
 				this.hawk.getModelIndexer().addGraphChangeListener(l);
 				console.println(l.getName());
 			}
@@ -250,16 +258,16 @@ public class HModel {
 	}
 
 	/**
-	 * Registers a new graph change listener into the model indexer, if it wasn't
-	 * already registered. Otherwise, it does nothing.
+	 * Registers a new graph change listener into the model indexer, if it
+	 * wasn't already registered. Otherwise, it does nothing.
 	 */
 	public boolean addGraphChangeListener(IGraphChangeListener changeListener) {
 		return hawk.getModelIndexer().addGraphChangeListener(changeListener);
 	}
 
 	/**
-	 * Removes a new graph change listener from the model indexer, if it was already
-	 * registered. Otherwise, it does nothing.
+	 * Removes a new graph change listener from the model indexer, if it was
+	 * already registered. Otherwise, it does nothing.
 	 */
 	public boolean removeGraphChangeListener(IGraphChangeListener changeListener) {
 		return hawk.getModelIndexer().removeGraphChangeListener(changeListener);
@@ -310,7 +318,8 @@ public class HModel {
 		File f = hawk.getModelIndexer().getParentFolder();
 		while (this.isRunning()) {
 			try {
-				// XXX removing an HModel does not delete the storage and does not stop remote instances.
+				// XXX removing an HModel does not delete the storage and does
+				// not stop remote instances.
 				hawk.getModelIndexer().shutdown(ShutdownRequestType.ONLY_LOCAL);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -318,7 +327,9 @@ public class HModel {
 		}
 
 		if (f.exists()) {
-			System.err.println("hawk removed from ui but persistence remains at: " + f);
+			System.err
+					.println("hawk removed from ui but persistence remains at: "
+							+ f);
 		}
 	}
 

@@ -13,6 +13,7 @@ package org.hawk.graph;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 
@@ -31,7 +32,7 @@ public class TypeNode {
 	public TypeNode(IGraphNode node) {
 		this.node = node;
 		// TODO is node.getId().toString() equal to the line below for type nodes?
-		this.name = (String)node.getProperty("id");
+		this.name = (String)node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
 	}
 
 	public IGraphNode getNode() {
@@ -40,7 +41,7 @@ public class TypeNode {
 
 	public String getMetamodelName() {
 		for (IGraphEdge node : node.getOutgoingWithType("epackage")) {
-			return (String)node.getEndNode().getProperty("id");
+			return (String)node.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
 		}
 		return "(unknown)";
 	}
@@ -54,7 +55,7 @@ public class TypeNode {
 			slots = new ArrayList<>();
 			for (String propertyName : node.getPropertyKeys()) {
 				// skip over the 'id' property, which is a friendly identifier and not a 'real' slot
-				if ("id".equals(propertyName)) continue;
+				if (IModelIndexer.IDENTIFIER_PROPERTY.equals(propertyName)) continue;
 
 				final Slot slot = new Slot(node, propertyName);
 				if (slot.isAttribute() || slot.isReference()) {

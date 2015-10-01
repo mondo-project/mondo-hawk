@@ -6,3 +6,5 @@ notes regarding versions:
 
 2.2.0 -- UNSTABLE -- cannot use DERIVED_ATTRIBUTE indexes at all as the keyset is limited to 128 (uses: java.util.concurrent.atomic.AtomicInteger) 
 						and derived attribute indexes commonly use a lot more than 128 keys -- so it crashes.
+
+To resolve dependencies, install IvyDE, right click on the project and use "Ivy > Retrieve 'dependencies'".

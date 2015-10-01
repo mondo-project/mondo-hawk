@@ -1,4 +1,6 @@
-This folder should be filled in with the following .jar files from BIMserver 1.4.0:
+This folder should be filled in with the following .jar files from
+BIMserver 1.4.0. Some of them are in the bimserver-1.4.0-*.jar file,
+and some of them are in the bimserver-lib-1.4.0-*.zip file:
 
 antlr-2.7.7.jar
 antlr-3.1.1.jar

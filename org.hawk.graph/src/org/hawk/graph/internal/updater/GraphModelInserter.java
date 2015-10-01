@@ -39,6 +39,7 @@ import org.hawk.core.model.IHawkReference;
 import org.hawk.core.query.IAccess;
 import org.hawk.core.query.IAccessListener;
 import org.hawk.core.query.IQueryEngine;
+import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.internal.util.GraphUtil;
 
 /**
@@ -57,7 +58,7 @@ public class GraphModelInserter {
 	private String tempFolderURI;
 
 	private IHawkModelResource resource;
-	private Map<String, IHawkObject> delta = new HashMap<>();
+	private Map<String, IHawkObject> updated = new HashMap<>();
 	private Map<String, IHawkObject> added = new HashMap<>();
 	private Map<String, IHawkObject> unchanged = new HashMap<>();
 
@@ -158,25 +159,13 @@ public class GraphModelInserter {
 				IHawkObject object = added.get(o);
 				IGraphNode node = inj.addEObject(fileNode, object);
 				addedNodes.put(node, object);
-				addedNodesHash.put(node.getProperty("id").toString(), node);
+				addedNodesHash.put(node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString(), node);
 
 				// track change new node
-				listener.modelElementAddition(s, object, node, false);
-				for (String key : node.getPropertyKeys()) {
-					listener.modelElementAttributeUpdate(s, object, key, null,
-							node.getProperty(key), node, false);
-				}
-				for (IGraphEdge e : node.getOutgoingWithType("typeOf")) {
-					listener.referenceAddition(s, node, e.getEndNode(),
-							"typeOf", false);
-				}
-				for (IGraphEdge e : node.getOutgoingWithType("kindOf")) {
-					listener.referenceAddition(s, node, e.getEndNode(),
-							"kindOf", false);
-				}
-				for (IGraphEdge e : node.getOutgoingWithType("file")) {
-					listener.referenceAddition(s, node, e.getEndNode(), "file",
-							false);
+				for (final String transientLabelEdge : ModelElementNode.TRANSIENT_EDGE_LABELS) {
+					for (IGraphEdge e : node.getOutgoingWithType(transientLabelEdge)) {
+						listener.referenceAddition(s, node, e.getEndNode(), transientLabelEdge, true);
+					}
 				}
 			}
 
@@ -191,18 +180,18 @@ public class GraphModelInserter {
 
 				IGraphNode node = nodes.get(s);
 
-				if (unchanged.containsKey(node.getProperty("id"))) {
+				if (unchanged.containsKey(node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY))) {
 					// do nothing
-				} else if (delta.containsKey(node.getProperty("id"))) {
-					IHawkObject o = delta.get(node.getProperty("id"));
+				} else if (updated.containsKey(node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY))) {
+					IHawkObject o = updated.get(node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 					//
 					// System.err.println("changing node "
 					// + node.getId()
 					// + " : "
-					// + node.getProperty("id")
+					// + node.getProperty(GraphWrapper.IDENTIFIER_PROPERTY)
 					// + " : "
-					// + node.getOutgoingWithType("typeOf").iterator()
-					// .next().getEndNode().getProperty("id")
+					// + node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator()
+					// .next().getEndNode().getProperty(GraphWrapper.IDENTIFIER_PROPERTY)
 					// + " :: as new model has altered it!");
 
 					// for (String ss : node.getPropertyKeys()) {
@@ -215,7 +204,7 @@ public class GraphModelInserter {
 					// node.removeProperty(ss);
 					// }
 
-					// node.setProperty("id", o.getUriFragment());
+					// node.setProperty(GraphWrapper.IDENTIFIER_PROPERTY, o.getUriFragment());
 					node.setProperty("hashCode", o.hashCode());
 					updateNodeProperties(fileNode, node, o);
 					//
@@ -240,8 +229,8 @@ public class GraphModelInserter {
 					}
 					for (IGraphEdge e : node.getOutgoing()) {
 						if (e.getProperty("isDerived") == null) {
-							listener.referenceRemoval(this.s, node,
-									e.getEndNode(), e.getType(), false);
+							final boolean isTransient = ModelElementNode.TRANSIENT_EDGE_LABELS.contains(e.getType());
+							listener.referenceRemoval(this.s, node, e.getEndNode(), e.getType(), isTransient);
 						}
 					}
 
@@ -252,8 +241,8 @@ public class GraphModelInserter {
 			}
 
 			// change references
-			for (String o : delta.keySet()) {
-				IHawkObject ob = delta.get(o);
+			for (String o : updated.keySet()) {
+				IHawkObject ob = updated.get(o);
 				IGraphNode node = nodes.get(ob.getUriFragment());
 
 				// its null if it was just inserted (above), this is fine.
@@ -296,9 +285,9 @@ public class GraphModelInserter {
 						for (IGraphEdge e : graphtargets) {
 							IGraphNode n = e.getEndNode();
 
-							if (targetids.contains(n.getProperty("id"))) {
+							if (targetids.contains(n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY))) {
 								// update changed list
-								targetids.remove(n.getProperty("id"));
+								targetids.remove(n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 							} else {
 								// delete removed reference
 								e.delete();
@@ -435,7 +424,7 @@ public class GraphModelInserter {
 
 		List<IHawkAttribute> normalattributes = new LinkedList<IHawkAttribute>();
 		List<IHawkAttribute> indexedattributes = new LinkedList<IHawkAttribute>();
-		IGraphNode typenode = node.getOutgoingWithType("typeOf").iterator()
+		IGraphNode typenode = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator()
 				.next().getEndNode();
 		final IGraphChangeListener listener = indexer
 				.getCompositeGraphChangeListener();
@@ -681,20 +670,21 @@ public class GraphModelInserter {
 				int delta = 0;
 				HashMap<String, Integer> hashCodes = new HashMap<>();
 
+				// Get existing nodes from the store (and their hashcodes)
 				for (IGraphEdge e : graph
 						.getFileIndex()
 						.get("id",
 								repositoryURL
 										+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
 										+ s.getPath()).getSingle()
-						.getIncomingWithType("file")) {
+						.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 					IGraphNode n = e.getStartNode();
 
 					// TODO Ask Kostas - this map only takes into account the
 					// name of the file and not the repo: is it safe as is?
-					nodes.put(n.getProperty("id").toString(), n);
+					nodes.put(n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString(), n);
 
-					hashCodes.put((String) n.getProperty("id"),
+					hashCodes.put((String) n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY),
 							(int) n.getProperty("hashCode"));
 				}
 				System.err.println("file contains: " + nodes.size() + " ("
@@ -702,6 +692,8 @@ public class GraphModelInserter {
 
 				int newo = 0;
 
+				// Get the model elements from the resource and use hashcodes and URI
+				// fragments to detect additions, deletions and updates.
 				Iterator<IHawkObject> iterator = resource.getAllContents();
 				while (iterator.hasNext()) {
 					IHawkObject o = iterator.next();
@@ -709,7 +701,7 @@ public class GraphModelInserter {
 					if (hash != null) {
 						if (hash != o.hashCode()) {
 							delta++;
-							this.delta.put(o.getUriFragment(), o);
+							this.updated.put(o.getUriFragment(), o);
 						} else {
 							this.unchanged.put(o.getUriFragment(), o);
 
@@ -721,7 +713,7 @@ public class GraphModelInserter {
 					}
 				}
 				t.success();
-				System.err.println("delta is of size: " + (delta - newo) + "+"
+				System.err.println("updated is of size: " + (delta - newo) + "+"
 						+ newo + "+" + +(nodes.size() - unchanged.size()));
 				return delta + nodes.size() - unchanged.size();
 			} else {
@@ -884,7 +876,7 @@ public class GraphModelInserter {
 									for (IGraphNode no : nodes) {
 										String nodeURI = fullPathURI
 												+ "#"
-												+ no.getProperty("id")
+												+ no.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
 														.toString();
 
 										if (nodeURI.equals(proxies[i])) {
@@ -1105,7 +1097,7 @@ public class GraphModelInserter {
 	private static Iterable<IGraphEdge> allNodesWithFile(
 			final IGraphNode fileNode) {
 		if (fileNode != null)
-			return fileNode.getIncomingWithType("file");
+			return fileNode.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE);
 		else
 			return null;
 	}
@@ -1148,14 +1140,14 @@ public class GraphModelInserter {
 
 			for (IGraphEdge e : metamodelNode.getIncomingWithType("epackage")) {
 				IGraphNode othernode = e.getStartNode();
-				if (othernode.getProperty("id").equals(typename)) {
+				if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(typename)) {
 					typeNode = othernode;
 					break;
 				}
 			}
 
 			HashSet<IGraphNode> nodes = new HashSet<>();
-			for (IGraphEdge e : typeNode.getIncomingWithType("typeOf")) {
+			for (IGraphEdge e : typeNode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)) {
 				nodes.add(e.getStartNode());
 			}
 			for (IGraphEdge e : typeNode.getIncomingWithType("KindOf")) {
@@ -1261,7 +1253,7 @@ public class GraphModelInserter {
 					.getIncomingWithType("epackage")) {
 
 				IGraphNode othernode = r.getStartNode();
-				if (othernode.getProperty("id").equals(typename)) {
+				if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(typename)) {
 					typeNode = othernode;
 					break;
 				}
@@ -1284,7 +1276,7 @@ public class GraphModelInserter {
 			}
 
 			HashSet<IGraphNode> nodes = new HashSet<>();
-			for (IGraphEdge e : typeNode.getIncomingWithType("typeOf")) {
+			for (IGraphEdge e : typeNode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)) {
 				nodes.add(e.getStartNode());
 			}
 			for (IGraphEdge e : typeNode.getIncomingWithType("KindOf")) {

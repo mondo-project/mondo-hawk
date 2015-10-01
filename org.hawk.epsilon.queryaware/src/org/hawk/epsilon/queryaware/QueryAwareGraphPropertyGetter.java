@@ -19,6 +19,7 @@ import org.eclipse.epsilon.eol.types.EolBag;
 import org.eclipse.epsilon.eol.types.EolOrderedSet;
 import org.eclipse.epsilon.eol.types.EolSequence;
 import org.eclipse.epsilon.eol.types.EolSet;
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
@@ -28,6 +29,7 @@ import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.epsilon.emc.GraphNodeWrapper;
 import org.hawk.epsilon.emc.GraphPropertyGetter;
 import org.hawk.epsilon.emc.MetamodelUtils;
+import org.hawk.graph.ModelElementNode;
 
 public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
@@ -348,7 +350,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 	private boolean canHaveDerivedAttr(IGraphNode node, String property) {
 
-		featureStartingNodeClassNode = node.getOutgoingWithType("typeOf")
+		featureStartingNodeClassNode = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
 				.iterator().next().getEndNode();
 
 		if (featureStartingNodeClassNode.getProperty(property) != null) {
@@ -362,7 +364,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 		System.err.println("derived property: " + property
 				+ " not found in metamodel for type: "
-				+ featureStartingNodeClassNode.getProperty("id"));
+				+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 		return false;
 
@@ -370,7 +372,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 	private boolean canHaveAttr(IGraphNode node, String property) {
 
-		featureStartingNodeClassNode = node.getOutgoingWithType("typeOf")
+		featureStartingNodeClassNode = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
 				.iterator().next().getEndNode();
 
 		if (featureStartingNodeClassNode.getProperty(property) != null) {
@@ -384,7 +386,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 		System.err.println("property: " + property
 				+ " not found in metamodel for type: "
-				+ featureStartingNodeClassNode.getProperty("id"));
+				+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 		return false;
 
@@ -400,7 +402,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 	private boolean canHaveRef(IGraphNode node, String property) {
 
-		featureStartingNodeClassNode = node.getOutgoingWithType("typeOf")
+		featureStartingNodeClassNode = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
 				.iterator().next().getEndNode();
 
 		if (featureStartingNodeClassNode.getProperty(property) != null) {
@@ -414,7 +416,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 		System.err.println("reference: " + property
 				+ " not found in metamodel for type: "
-				+ featureStartingNodeClassNode.getProperty("id"));
+				+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 		// System.out.println(o != null && o.getEStructuralFeature(property) !=
 		// null
 		// && o.getEStructuralFeature(property) instanceof EReference);
@@ -438,7 +440,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 		}
 		System.err.println("reference: " + ref
 				+ " not found in metamodel (isMany) for type: "
-				+ featureStartingNodeClassNode.getProperty("id"));
+				+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 		return false;
 		// return featureStartingNodeClass.getEStructuralFeature(ref).isMany();
@@ -450,7 +452,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 					.equals("t");
 		System.err.println("reference: " + ref
 				+ " not found in metamodel (isOrdered) for type: "
-				+ featureStartingNodeClassNode.getProperty("id"));
+				+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 		return false;
 		// return ((HawkStructuralFeature) featureStartingNodeClass
@@ -463,7 +465,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 					.equals("t");
 		System.err.println("reference: " + ref
 				+ " not found in metamodel (isUnique) for type: "
-				+ featureStartingNodeClassNode.getProperty("id"));
+				+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 		return false;
 		// return

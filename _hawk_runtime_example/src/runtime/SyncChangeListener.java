@@ -109,7 +109,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 
 						IGraphNode filenode = graph
 								.getFileIndex()
-								.get("id",
+								.get(IModelIndexer.IDENTIFIER_PROPERTY,
 										c.getCommit().getDelta()
 												.getRepository().getUrl()
 												+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
@@ -131,17 +131,17 @@ public class SyncChangeListener implements IGraphChangeListener {
 							totalGraphSize++;
 
 							IHawkObject eobject = eobjectCache.get(instance
-									.getProperty("id"));
+									.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 							// if a node cannot be found in the model cache
 							if (eobject == null) {
 								System.err
 										.println("error in validating: graph contains node with identifier:"
-												+ instance.getProperty("id")
+												+ instance.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
 												+ " but resource does not!");
 								allValid = false;
 							} else {
-								eobjectCache.remove(instance.getProperty("id"));
+								eobjectCache.remove(instance.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 								// cache model element attributes and references
 								// by
@@ -182,7 +182,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 								for (String propertykey : instance
 										.getPropertyKeys()) {
 									if (!propertykey.equals("hashCode")
-											&& !propertykey.equals("id")
+											&& !propertykey.equals(IModelIndexer.IDENTIFIER_PROPERTY)
 											&& !propertykey
 													.startsWith("_proxyRef")) {
 										//
@@ -253,7 +253,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 													.get(reference.getType()));
 										}
 										refvals.add(reference.getEndNode()
-												.getProperty("id").toString());
+												.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
 										nodereferences.put(reference.getType(),
 												refvals);
 										//

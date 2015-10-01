@@ -12,6 +12,7 @@ package org.hawk.graph;
 
 import java.util.Iterator;
 
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
@@ -23,6 +24,8 @@ import org.hawk.graph.internal.updater.GraphModelBatchInjector;
 public class FileNode {
 	private final IGraphNode node;
 
+	public static final String PROP_REPOSITORY = "repository";
+
 	public FileNode(IGraphNode node) {
 		this.node = node;
 	}
@@ -31,8 +34,12 @@ public class FileNode {
 		return node;
 	}
 	
-	public String getFileName() {
-		return (String)node.getProperty("id");
+	public String getFilePath() {
+		return (String)node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
+	}
+
+	public String getRepositoryURL() {
+		return (String)node.getProperty(PROP_REPOSITORY);
 	}
 
 	/**
@@ -43,7 +50,7 @@ public class FileNode {
 		return new Iterable<ModelElementNode>() {
 			@Override
 			public Iterator<ModelElementNode> iterator() {
-				final Iterable<IGraphEdge> incomingWithType = node.getIncomingWithType("file");
+				final Iterable<IGraphEdge> incomingWithType = node.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE);
 				final Iterator<IGraphEdge> it = incomingWithType.iterator();
 
 				return new Iterator<ModelElementNode>() {
@@ -100,7 +107,7 @@ public class FileNode {
 
 	@Override
 	public String toString() {
-		return "FileNode [node=" + node + ", fileName=" + getFileName() + "]";
+		return "FileNode [node=" + node + ", fileName=" + getFilePath() + "]";
 	}
 
 	@Override

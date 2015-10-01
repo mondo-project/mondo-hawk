@@ -42,7 +42,7 @@ public class RegisterMeta {
 	 * @param root
 	 */
 	public static int registerPackages(EPackage root) {
-		if (!root.getNsURI().equals(EcorePackage.eNS_URI)
+		if (root.getNsURI() != null && !root.getNsURI().equals(EcorePackage.eNS_URI)
 				&& !root.getNsURI().equals(XMLTypePackage.eNS_URI)) {
 			if (EPackage.Registry.INSTANCE.get(root.getNsURI()) == null) {
 				if (EPackage.Registry.INSTANCE.put(root.getNsURI(), root) == null) {

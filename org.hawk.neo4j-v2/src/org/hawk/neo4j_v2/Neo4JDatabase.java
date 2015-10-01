@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphEdgeIndex;
@@ -184,7 +185,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 	//
 	// for (GraphNode n : it) {
 	//
-	// unregister(n.getProperty("id").toString());
+	// unregister(n.getProperty(GraphWrapper.IDENTIFIER_PROPERTY).toString());
 	//
 	// }
 	// t.success();
@@ -519,7 +520,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 				for (IGraphEdge r : n.getOutgoing()) {
 
 					str = str + "[" + r.getType() + " --> " + r.getEndNode()
-							+ "(" + r.getEndNode().getProperty("id") + ")"
+							+ "(" + r.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY) + ")"
 							+ "]";
 
 				}
@@ -545,7 +546,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 			IGraphIterable<IGraphNode> mmnodes = metamodelindex.query("*", "*");
 
 			for (IGraphNode n : mmnodes)
-				ret.add(n.getProperty("id").toString());
+				ret.add(n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
 
 		} catch (Exception e) {
 			e.printStackTrace();

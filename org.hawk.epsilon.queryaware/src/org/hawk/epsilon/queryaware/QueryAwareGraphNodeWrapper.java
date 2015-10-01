@@ -12,10 +12,12 @@ package org.hawk.epsilon.queryaware;
 
 import java.util.Map;
 
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.epsilon.emc.GraphNodeWrapper;
+import org.hawk.graph.ModelElementNode;
 
 public class QueryAwareGraphNodeWrapper extends GraphNodeWrapper {
 
@@ -72,8 +74,8 @@ public class QueryAwareGraphNodeWrapper extends GraphNodeWrapper {
 
 			IGraphNode n = containerModel.getBackend().getNodeById(id);
 
-			type = n.getOutgoingWithType("typeOf").iterator().next()
-					.getEndNode().getProperty("id").toString();
+			type = n.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().next()
+					.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 
 			// HawkClass e = new MetamodelUtils().getTypeOfFromNode(n,
 			// containerModel.parser);

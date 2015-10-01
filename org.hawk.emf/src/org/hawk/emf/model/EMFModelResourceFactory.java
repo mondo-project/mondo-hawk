@@ -12,11 +12,10 @@ package org.hawk.emf.model;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -27,15 +26,20 @@ import org.hawk.emf.metamodel.EMFMetaModelResourceFactory;
 
 public class EMFModelResourceFactory implements IModelResourceFactory {
 
-	public static void main(String[] args) throws Exception {
+	/**
+	 * Property that can be set to a comma-separated list of extensions (e.g. ".railway,.myext")
+	 * that should be supported in addition to the default ones (".xmi" and ".model"). Composite
+	 * extensions are allowed (e.g. ".rail.way").
+	 */
+	public static final String PROPERTY_EXTRA_EXTENSIONS = "org.hawk.emf.model.extraExtensions";
 
+	public static void main(String[] args) throws Exception {
 		EMFModelResourceFactory f = new EMFModelResourceFactory();
 		EMFMetaModelResourceFactory mf = new EMFMetaModelResourceFactory();
 		mf.parse(new File(
 				"C:\\Users\\kb\\Desktop\\workspace\\org.hawk.emf\\src\\org\\hawk\\emf\\metamodel\\examples\\single\\JDTAST.ecore"));
 		f.parse(new File(
 				"C:/Users/kb/Desktop/workspace/org.hawk.emf/src/org/hawk/emf/model/examples/single/0/set0.xmi"));
-
 	}
 
 	String type = "org.hawk.emf.metamodel.EMFModelParser";
@@ -44,10 +48,17 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 	Set<String> modelExtensions;
 
 	public EMFModelResourceFactory() {
-
 		modelExtensions = new HashSet<String>();
 		modelExtensions.add(".xmi");
 		modelExtensions.add(".model");
+
+		final String sExtraExtensions = System.getProperty(PROPERTY_EXTRA_EXTENSIONS);
+		if (sExtraExtensions != null) {
+			String[] extraExtensions = sExtraExtensions.split(",");
+			for (String extraExtension : extraExtensions) {
+				modelExtensions.add(extraExtension);
+			}
+		}
 	}
 
 	@Override
@@ -68,21 +79,21 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 		Resource r = null;
 
 		try {
-
 			ResourceSet resourceSet = new ResourceSetImpl();
 
-			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-					.put("xmi", new XMIResourceFactoryImpl());
-			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-					.put("model", new XMIResourceFactoryImpl());
+			final Map<String, Object> extensionToFactoryMap
+				= resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap();
+			for (String ext : modelExtensions) {
+				if (ext.startsWith(".")) {
+					// Remove the initial period (if any)
+					ext = ext.substring(1);
+				}
+				extensionToFactoryMap.put(ext, new XMIResourceFactoryImpl());
+			}
 
-			r = resourceSet.createResource(URI.createFileURI(f
-					.getAbsolutePath()));
-
+			r = resourceSet.createResource(URI.createFileURI(f.getAbsolutePath()));
 			r.load(null);
-
 			ret = new EMFModelResource(r, this);
-
 		} catch (Exception e) {
 			System.err.print("error in parse(File f): ");
 			System.err.println(e.getCause());
@@ -91,9 +102,7 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 		}
 
 		return ret;
-
 		// FIXME possibly keep metadata about failure to aid users
-
 	}
 
 	@Override
@@ -107,12 +116,8 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 
 	@Override
 	public boolean canParse(File f) {
-
 		String[] split = f.getPath().split("\\.");
 		String extension = split[split.length - 1];
-
 		return getModelExtensions().contains(extension);
-
 	}
-
 }

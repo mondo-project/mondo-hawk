@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.hawk.core.model;
 
-import java.util.HashSet;
+import java.util.Set;
 
 public interface IHawkClass extends IHawkClassifier, IHawkObject {
 
@@ -18,11 +18,11 @@ public interface IHawkClass extends IHawkClassifier, IHawkObject {
 
 	String getPackageNSURI();
 
-	HashSet<IHawkAttribute> getAllAttributes();
+	Set<IHawkAttribute> getAllAttributes();
 
-	HashSet<IHawkClass> getSuperTypes();
+	Set<IHawkClass> getSuperTypes();
 
-	HashSet<IHawkReference> getAllReferences();
+	Set<IHawkReference> getAllReferences();
 
 	boolean isAbstract();
 

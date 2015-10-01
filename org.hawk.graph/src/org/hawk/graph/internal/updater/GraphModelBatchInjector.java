@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphChange;
 import org.hawk.core.graph.IGraphChangeListener;
@@ -38,6 +39,8 @@ import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
+import org.hawk.graph.FileNode;
+import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.internal.util.GraphUtil;
 
 public class GraphModelBatchInjector {
@@ -178,19 +181,19 @@ public class GraphModelBatchInjector {
 	private IGraphNode addFileNode(VcsCommitItem s,
 			IGraphChangeListener listener) {
 		IGraphNode fileNode;
-		Map<String, Object> map = new HashMap<>();
-		map.put("id", s.getPath());
-		map.put("revision", s.getCommit().getRevision());
+		Map<String, Object> mapForFileNode = new HashMap<>();
+		mapForFileNode.put(IModelIndexer.IDENTIFIER_PROPERTY, s.getPath());
+		mapForFileNode.put("revision", s.getCommit().getRevision());
+		mapForFileNode.put(FileNode.PROP_REPOSITORY, repoURL);
 
 		// System.err.println("creating file node: "+s.getPath());
-		fileNode = graph.createNode(map, "file");
+		fileNode = graph.createNode(mapForFileNode, "file");
 
-		Map<String, Object> map2 = new HashMap<>();
-		map2.put(
-				"id",
+		Map<String, Object> mapForDictionary = new HashMap<>();
+		mapForDictionary.put("id",
 				repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
 						+ s.getPath());
-		fileDictionary.add(fileNode, map2);
+		fileDictionary.add(fileNode, mapForDictionary);
 
 		// propagate changes to listeners
 		listener.fileAddition(s, fileNode);
@@ -367,7 +370,7 @@ public class GraphModelBatchInjector {
 
 			String eObjectId = getEObjectId(eObject);
 			HashMap<String, Object> m = new HashMap<>();
-			m.put("id", eObjectId);
+			m.put(IModelIndexer.IDENTIFIER_PROPERTY, eObjectId);
 			m.put("hashCode", eObject.hashCode());
 
 			final List<IHawkAttribute> normalattributes = new LinkedList<IHawkAttribute>();
@@ -595,8 +598,6 @@ public class GraphModelBatchInjector {
 			e.printStackTrace();
 		}
 
-		// dictionary.add(node, "id", eObjectId);
-
 		return node;
 	}
 
@@ -672,7 +673,7 @@ public class GraphModelBatchInjector {
 				IGraphNode othernode = r.getStartNode();
 
 				if (!othernode.equals(epackagenode)
-						&& othernode.getProperty("id").equals(eClass.getName())) {
+						&& othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(eClass.getName())) {
 					classnode = othernode;
 					break;
 				}
@@ -731,10 +732,10 @@ public class GraphModelBatchInjector {
 		} else {
 			hash.put(eObject, node);
 
-			createReference("typeOf", node, eClass, Collections.emptyMap(),
+			createReference(ModelElementNode.EDGE_LABEL_OFTYPE, node, eClass, Collections.emptyMap(),
 					true);
 			if (originatingFile != null) {
-				createReference("file", node, originatingFile,
+				createReference(ModelElementNode.EDGE_LABEL_FILE, node, originatingFile,
 						Collections.emptyMap(), true);
 			}
 			objectCount[1]++;
@@ -743,7 +744,7 @@ public class GraphModelBatchInjector {
 			for (IHawkClass superType : ((IHawkClass) eObject.getType())
 					.getSuperTypes()) {
 				eClass = getEClassNode(superType);
-				createReference("kindOf", node, eClass, Collections.emptyMap(),
+				createReference(ModelElementNode.EDGE_LABEL_OFKIND, node, eClass, Collections.emptyMap(),
 						true);
 				objectCount[2]++;
 			}

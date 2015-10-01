@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+    <info
+        organisation="org.hawk"
+        module="neo4j-v2.dependencies"
+        status="integration">
+	</info>
+	<dependencies>
+		<dependency org="org.neo4j" name="neo4j-jmx" rev="2.0.1"/>
+		<dependency org="org.neo4j" name="neo4j-kernel" rev="2.0.1"/>
+		<dependency org="org.neo4j" name="neo4j-lucene-index" rev="2.0.1"/>
+	</dependencies>
+</ivy-module>
