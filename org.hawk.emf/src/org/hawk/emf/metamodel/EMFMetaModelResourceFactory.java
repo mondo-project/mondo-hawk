@@ -14,7 +14,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -100,11 +102,29 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 	public String dumpPackageToString(IHawkPackage pkg) throws Exception {
 		final EMFPackage ePackage = (EMFPackage) pkg;
 		final EMFMetaModelResource eResource = (EMFMetaModelResource)ePackage.getResource();
-
 		final Resource oldResource = eResource.res;
+
+		// Separate the EPackage to be saved to its own resource
 		final Resource newResource = resourceSet.createResource(URI.createURI("resource_from_epackage_" + ePackage.getNsURI()));
 		final EObject eob = ePackage.getEObject();
 		newResource.getContents().add(eob);
+
+		/*
+		 * Separate the other EPackages that may reside in the old resource in
+		 * the same way, so they all refer to each other using
+		 * resource_from_epackage_...
+		 */
+		final List<EObject> otherContents = new ArrayList<>(oldResource.getContents());
+		final List<Resource> auxResources = new ArrayList<>();
+		for (EObject otherContent : otherContents) {
+			if (otherContent instanceof EPackage) {
+				final EPackage otherEPackage = (EPackage)otherContent;
+				final Resource auxResource = resourceSet.createResource(URI.createURI("resource_from_epackage_" + otherEPackage.getNsURI()));
+				auxResources.add(auxResource);
+				auxResource.getContents().add(otherEPackage);
+			}
+		}
+		assert oldResource.getContents().isEmpty() : "The old resource should be empty before the dump";
 
 		final ByteArrayOutputStream bOS = new ByteArrayOutputStream();
 		try {
@@ -113,10 +133,24 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 			return contents;
 		} finally {
 			/*
-			 * Move back the EPackage into its original resource, to avoid
+			 * Move back all EPackages into the original resource, to avoid
 			 * inconsistencies across restarts.
 			 */
 			oldResource.getContents().add(eob);
+			oldResource.getContents().addAll(otherContents);
+
+			/*
+			 * Unload and remove all the auxiliary resources we've created
+			 * during the dumping.
+			 */
+			assert newResource.getContents().isEmpty() : "The new resource should be empty after the dump";
+			newResource.unload();
+			resourceSet.getResources().remove(newResource);
+			for (Resource auxResource : auxResources) {
+				assert auxResource.getContents().isEmpty() : "The aux resource should be empty after the dump";
+				auxResource.unload();
+				resourceSet.getResources().remove(auxResource);
+			}
 		}
 	}
 
