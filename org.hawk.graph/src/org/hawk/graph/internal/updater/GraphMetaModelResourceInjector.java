@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - protect against null EPackage nsURIs
  ******************************************************************************/
 package org.hawk.graph.internal.updater;
 
@@ -33,7 +34,6 @@ import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.core.model.IHawkReference;
-import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.ModelElementNode;
 
 public class GraphMetaModelResourceInjector {
@@ -391,7 +391,11 @@ public class GraphMetaModelResourceInjector {
 	private void addEPackage(IHawkPackage ePackage,
 			IHawkMetaModelResource metamodelResource) throws IOException {
 
-		String uri = ePackage.getNsURI();
+		final String uri = ePackage.getNsURI();
+		if (uri == null) {
+			System.err.println("WARNING: ePackage " + ePackage + " has null nsURI, ignoring");
+			return;
+		}
 
 		if (epackagedictionary.get("id", uri).iterator().hasNext() == false) {
 
