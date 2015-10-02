@@ -58,7 +58,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 public class ModelIndexerImpl implements IModelIndexer {
 
 	// validation metrics and data
-	private boolean isSyncMetricsEnabled = true;
+	private boolean isSyncMetricsEnabled = false;
 	private Map<VcsCommitItem, IHawkModelResource> fileToResourceMap = new HashMap<>();
 	private int deletedFiles = 0;
 	private int interestingFiles = 0;

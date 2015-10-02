@@ -14,6 +14,7 @@ package org.hawk.core.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
@@ -26,7 +27,8 @@ public class FileOperations {
 	 * @param destFile
 	 * @throws IOException
 	 */
-	public static void copyFile(File sourceFile, File destFile) throws IOException {
+	public static void copyFile(File sourceFile, File destFile)
+			throws IOException {
 		if (destFile.isDirectory()) {
 			System.err
 					.println("Directory given to copyFile(File sourceFile, File destFile), returning with no copying");
@@ -36,12 +38,10 @@ public class FileOperations {
 		if (!destFile.exists()) {
 			destFile.createNewFile();
 		}
-		try(
-			final FileInputStream fisSource = new FileInputStream(sourceFile);
-			final FileInputStream fisDest = new FileInputStream(destFile);
-		) {
+		try (final FileInputStream fisSource = new FileInputStream(sourceFile);
+				final FileOutputStream fosDest = new FileOutputStream(destFile);) {
 			final FileChannel source = fisSource.getChannel();
-			final FileChannel destination = fisDest.getChannel();
+			final FileChannel destination = fosDest.getChannel();
 			destination.transferFrom(source, 0, source.size());
 		}
 	}

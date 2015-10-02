@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.hawk.core.GraphChangeListenerExtensionPoint">
+      <graphChangeListener
+            class="org.hawk.graph.syncValidationListener.SyncValidationListener">
+      </graphChangeListener>
+   </extension>
+
+</plugin>
