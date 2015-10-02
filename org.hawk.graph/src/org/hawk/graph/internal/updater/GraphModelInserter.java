@@ -314,8 +314,11 @@ public class GraphModelInserter {
 						}
 
 						for (String s : targetids) {
-
 							IGraphNode dest = nodes.get(s);
+							if (dest == null) {
+								dest = addedNodesHash.get(s);
+							}
+
 							if (dest == null)
 								dest = addedNodesHash.get(s);
 							if (dest != null) {
@@ -677,8 +680,7 @@ public class GraphModelInserter {
 
 				int newo = 0;
 
-				// Get the model elements from the resource and use hashcodes
-				// and URI
+				// Get the model elements from the resource and use hashcodes and URI
 				// fragments to detect additions, deletions and updates.
 				Iterator<IHawkObject> iterator = resource.getAllContents();
 				while (iterator.hasNext()) {

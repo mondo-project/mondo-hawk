@@ -462,7 +462,7 @@ public class GraphModelBatchInjector {
 			for (String s : m.keySet()) {
 				Object value = m.get(s);
 				listener.modelElementAttributeUpdate(commitItem, eObject, s,
-						null, value, node, false);
+						null, value, node, ModelElementNode.TRANSIENT_ATTRIBUTES.contains(s));
 			}
 
 			// add derived attrs

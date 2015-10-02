@@ -156,7 +156,7 @@ final class HVCSDialog extends TitleAreaDialog {
 				String result = dd.open();
 
 				if (result != null) {
-					txtVCSLocation.setText(result);
+					txtVCSLocation.setText(new File(result).toURI().toString());
 				}
 			}
 		});

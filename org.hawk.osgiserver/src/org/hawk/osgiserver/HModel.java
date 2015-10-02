@@ -422,6 +422,7 @@ public class HModel {
 		try {
 			hawk.getModelIndexer().registerMetamodel(f);
 		} catch (Exception e) {
+			getConsole().printerrln(e);
 			return false;
 		}
 		return true;
