@@ -65,6 +65,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 	private List<Integer> currchangeditems = new LinkedList<>();
 	private List<Integer> loadedResources = new LinkedList<>();
 	private long synctime = 0;
+
 	private final class RunUpdateTask extends TimerTask {
 		@Override
 		public void run() {
@@ -92,16 +93,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	private IAbstractConsole console;
 
-	// limited for testing (usual cap: 1000 * 512)
-	private static final int MAXDELAY = 1000 * 4;
-	// testing -- usually 1000
-	public static final int INITIALDELAY = 4000;
-
+	private static final int MAXDELAY = 1000 * 512;
+	public static final int INITIALDELAY = 1000;
 	public int currentdelay = INITIALDELAY;
-	// public int leftoverdelay = 0;
-
 	private Timer updateTimer = null;
-	// private Timer countdownTimer = null;
 
 	public boolean permanentDelete = false;
 
@@ -128,7 +123,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 		this.name = name;
 		console = c;
 		this.parentfolder = parentfolder;
-		// registerMetamodelFiles();
+
 	}
 
 	@Override
@@ -414,21 +409,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 		running = false;
 	}
 
-	// @Override
-	// public void shutdown() throws Exception {
-	//
-	// for (Timer t : TimerManager.timers)
-	// t.cancel();
-	// TimerManager.timers = new HashSet<>();
-	//
-	// for (IVcsManager monitor : monitors)
-	// monitor.shutdown();
-	// monitors = new ArrayList<>();
-	//
-	// graph = null;
-	//
-	// }
-
 	public String getCurrLocalTopRevision(int i) {
 		return currLocalTopRevisions.get(i);
 	}
@@ -529,9 +509,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 		String s = null;
 		String ep = null;
 		String type = null;
-
-		// HashMap<String, IHawkMetaModelResource> registeredMetamodels = new
-		// HashMap<>();
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
 
