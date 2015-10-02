@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.hawk.core;
 
-import java.util.Map;
 import java.util.Set;
 
 import org.hawk.core.model.IHawkModelResource;
@@ -30,7 +29,8 @@ public interface IModelUpdater {
 	 * @param VcsCommitItemtoResourceMap
 	 * @return
 	 */
-	public abstract void updateStore(Map<VcsCommitItem, IHawkModelResource> VcsCommitItemtoResourceMap);
+	public abstract void updateStore(VcsCommitItem vcscommititem,
+			IHawkModelResource resource);
 
 	void run(IAbstractConsole console, IModelIndexer modelIndexer)
 			throws Exception;
@@ -49,6 +49,7 @@ public interface IModelUpdater {
 
 	public String getName();
 
-	public Set<VcsCommitItem> compareWithLocalFiles(Set<VcsCommitItem> interestingfiles);
+	public Set<VcsCommitItem> compareWithLocalFiles(
+			Set<VcsCommitItem> interestingfiles);
 
 }

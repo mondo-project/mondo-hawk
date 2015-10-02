@@ -114,7 +114,9 @@ public interface IModelIndexer {
 	void addModelResourceFactory(IModelResourceFactory modelParser);
 
 	boolean addGraphChangeListener(IGraphChangeListener changeListener);
+
 	boolean removeGraphChangeListener(IGraphChangeListener changeListener);
+
 	IGraphChangeListener getCompositeGraphChangeListener();
 
 	void setDB(IGraphDatabase db, boolean persist);
@@ -216,5 +218,13 @@ public interface IModelIndexer {
 
 	String decrypt(String pw) throws GeneralSecurityException, IOException;
 
+	/**
+	 * if set to true hawk will not unload resources between synchronise calls,
+	 * or within the calls, so that they can be used by listeners. NB: this will
+	 * greatly affect performance as the memory hawk will need will be increased
+	 * 
+	 * @param enable
+	 */
+	void setSyncMetricsEnabled(Boolean enable);
 
 }

@@ -11,7 +11,6 @@
 package org.hawk.graph.internal.updater;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.hawk.core.IAbstractConsole;
@@ -44,7 +43,7 @@ public class GraphModelUpdater implements IModelUpdater {
 	}
 
 	@Override
-	public void updateStore(Map<VcsCommitItem, IHawkModelResource> r) {
+	public void updateStore(VcsCommitItem f, IHawkModelResource res) {
 		final long start = System.currentTimeMillis();
 
 		/*
@@ -56,19 +55,17 @@ public class GraphModelUpdater implements IModelUpdater {
 		 * require any more memory, and the CPU cost should be the same.
 		 */
 		final IGraphDatabase g = indexer.getGraph();
-		final DirtyDerivedAttributesListener l = new DirtyDerivedAttributesListener(g);
+		final DirtyDerivedAttributesListener l = new DirtyDerivedAttributesListener(
+				g);
 		indexer.addGraphChangeListener(l);
 
 		try {
-			for (VcsCommitItem f : r.keySet()) {
-				try {
-					IHawkModelResource res = r.get(f);
-					if (!new GraphModelInserter(indexer).run(res, f))
-						console.printerrln("warning: failed to update item: "
-								+ f + "\nmodel resource: " + res);
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
+			try {
+				if (!new GraphModelInserter(indexer).run(res, f))
+					console.printerrln("warning: failed to update item: " + f
+							+ "\nmodel resource: " + res);
+			} catch (Exception ex) {
+				ex.printStackTrace();
 			}
 
 			long end = System.currentTimeMillis();
@@ -124,7 +121,8 @@ public class GraphModelUpdater implements IModelUpdater {
 
 	@Override
 	public void deleteAll(VcsCommitItem c) throws Exception {
-		new DeletionUtils(indexer.getGraph()).deleteAll(c, indexer.getCompositeGraphChangeListener());
+		new DeletionUtils(indexer.getGraph()).deleteAll(c,
+				indexer.getCompositeGraphChangeListener());
 	}
 
 	@Override

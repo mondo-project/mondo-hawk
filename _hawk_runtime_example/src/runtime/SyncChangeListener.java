@@ -86,10 +86,10 @@ public class SyncChangeListener implements IGraphChangeListener {
 		int totalResourceSizes = 0;
 		int totalGraphSize = 0;
 		// for all non-null resources
-		if (hawk.fileToResourceMap != null)
-			for (VcsCommitItem c : hawk.fileToResourceMap.keySet()) {
+		if (hawk.getFileToResourceMap() != null)
+			for (VcsCommitItem c : hawk.getFileToResourceMap().keySet()) {
 
-				IHawkModelResource r = hawk.fileToResourceMap.get(c);
+				IHawkModelResource r = hawk.getFileToResourceMap().get(c);
 
 				if (r == null) {
 					// file didnt get parsed so no changes are made -- any way
@@ -372,15 +372,6 @@ public class SyncChangeListener implements IGraphChangeListener {
 		// System.err
 		// .println("filetoresourcemap was empty -- maybe a metamodel addition happened?");
 
-		if (hawk.deleteditems != null)
-			for (@SuppressWarnings("unused")
-			VcsCommitItem c : hawk.deleteditems) {
-				// any other check needed other than totalsize match?
-			}
-		// else
-		// System.err
-		// .println("deleteditems was empty -- maybe a metamodel addition happened?");
-		//
 		System.err.println("changed resource size: " + totalResourceSizes);
 
 		System.err.println("relevant graph size: " + totalGraphSize);

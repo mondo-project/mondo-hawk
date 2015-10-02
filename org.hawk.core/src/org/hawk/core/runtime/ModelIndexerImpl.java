@@ -57,9 +57,14 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class ModelIndexerImpl implements IModelIndexer {
 
-	// temporary hack to facilitate evaluation -- validation of updates
-	public HashMap<VcsCommitItem, IHawkModelResource> fileToResourceMap;
-	public Set<VcsCommitItem> deleteditems;
+	// validation metrics and data
+	private boolean isSyncMetricsEnabled = true;
+	private Map<VcsCommitItem, IHawkModelResource> fileToResourceMap = new HashMap<>();
+	private int deletedFiles = 0;
+	private int interestingFiles = 0;
+	private List<Integer> currchangeditems = new LinkedList<>();
+	private List<Integer> loadedResources = new LinkedList<>();
+	private long synctime = 0;
 
 	public static final String ID = "org.hawk.core.ModelIndexer";
 
@@ -128,13 +133,14 @@ public class ModelIndexerImpl implements IModelIndexer {
 			// System.err.println(currLocalTopRevisions);
 			// System.err.println(currReposTopRevisions);
 
-			// debug info dump...
-			File dump = new File("C:/Users/kb/Desktop/hawk-sync-dump.txt");
-			BufferedWriter w = new BufferedWriter(new FileWriter(dump, true));
-			w.append("...sync started...\r\n");
 			long start = System.currentTimeMillis();
-
 			boolean allSync = true;
+			fileToResourceMap = new HashMap<>();
+			deletedFiles = 0;
+			interestingFiles = 0;
+			currchangeditems = new LinkedList<>();
+			loadedResources = new LinkedList<>();
+			synctime = 0;
 
 			if (monitors.size() > 0) {
 
@@ -166,7 +172,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 									monitorTempDir);
 							temp.mkdir();
 
-							deleteditems = new HashSet<VcsCommitItem>();
+							Set<VcsCommitItem> deleteditems = new HashSet<VcsCommitItem>();
 
 							// limit to "interesting" files
 							List<VcsCommitItem> files = m
@@ -208,18 +214,19 @@ public class ModelIndexerImpl implements IModelIndexer {
 								}
 							}
 
-							fileToResourceMap = new HashMap<>();
+							// metadata about synchronise
+							deletedFiles = deleteditems.size();
+							interestingFiles = interestingfiles.size();
 
+							// for each registered updater
 							for (IModelUpdater u : getUpdaters()) {
 
 								Set<VcsCommitItem> currreposchangeditems = u
 										.compareWithLocalFiles(interestingfiles);
 
-								w.append("deleted items " + deleteditems.size()
-										+ " interesting items "
-										+ interestingfiles.size()
-										+ " currreposchangeditems "
-										+ currreposchangeditems.size() + "\r\n");
+								// metadata about synchronise
+								currchangeditems.add(currreposchangeditems
+										.size());
 
 								// create temp files with changed repos files
 								for (VcsCommitItem s : currreposchangeditems) {
@@ -257,49 +264,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 										m.importFiles(commitPath, temp);
 
 								}
-								// sysout.println(currrepositems);
 
-								// int[] upd = { 0, 0, 0 };
-
-								// changedfiles / resourcessd
-
-								for (VcsCommitItem f : currreposchangeditems)
-									// debug eval check
-									// if
-									// (f.getPath().contains("A.2.0-roundtrip.bpmn"))
-									fileToResourceMap.put(f, null);
-
-								if (u.caresAboutResources()) {
-
-									for (VcsCommitItem f : currreposchangeditems) {
-
-										// debug eval check
-										// if
-										// (!fileToResourceMap.containsKey(f))
-										// continue;
-
-										if (fileToResourceMap.get(f) != null)
-											continue;
-
-										File file = new File(graph.getTempDir()
-												+ "/" + f.getPath());
-
-										if (!file.exists()) {
-											console.printerrln("warning, cannot find file: "
-													+ file
-													+ ", ignoring changes");
-										} else {
-											IHawkModelResource r = getModelParserFromFilename(
-													file.getName()
-															.toLowerCase())
-													.parse(file);
-											fileToResourceMap.put(f, r);
-										}
-
-									}
-								}
-
-								// FIXMEdone delete all removed files
+								// delete all removed files
 								graph.exitBatchMode();
 
 								try {
@@ -316,32 +282,51 @@ public class ModelIndexerImpl implements IModelIndexer {
 									listener.changeSuccess();
 								}
 
-								try {
-									if (currreposchangeditems.size() > 0)
-										u.updateStore(fileToResourceMap);
-								} catch (Exception e) {
-									console.printerrln("updater: " + u
-											+ "failed to update store");
-									console.printerrln(e);
+								int loadedresource = 0;
 
+								for (VcsCommitItem v : currreposchangeditems) {
+									try {
+										IHawkModelResource r = null;
+
+										if (u.caresAboutResources()) {
+
+											File file = new File(
+													graph.getTempDir() + "/"
+															+ v.getPath());
+
+											if (!file.exists()) {
+												console.printerrln("warning, cannot find file: "
+														+ file
+														+ ", ignoring changes");
+											} else {
+												r = getModelParserFromFilename(
+														file.getName()
+																.toLowerCase())
+														.parse(file);
+											}
+
+										}
+
+										u.updateStore(v, r);
+
+										if (r != null) {
+											if (!isSyncMetricsEnabled)
+												r.unload();
+											else {
+												fileToResourceMap.put(v, r);
+												loadedresource++;
+											}
+										}
+
+									} catch (Exception e) {
+										console.printerrln("updater: " + u
+												+ "failed to update store");
+										console.printerrln(e);
+
+									}
 								}
+								loadedResources.add(loadedresource);
 							}
-
-							w.append("resources " + fileToResourceMap.size()
-									+ " loaded ");
-							int count = 0;
-
-							for (IHawkModelResource r : fileToResourceMap
-									.values()) {
-								if (r != null) {
-									// FIXME note: not unloading resources for
-									// use in validation -- remove this!
-									// r.unload();
-									count++;
-								}
-							}
-
-							w.append(count + "\r\n");
 
 							boolean success = true;
 
@@ -365,10 +350,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 				}
 			}
 
-			w.append("...sync ended...(~"
-					+ (System.currentTimeMillis() - start) / 1000 + "s)\r\n");
-			w.flush();
-			w.close();
+			synctime = (System.currentTimeMillis() - start);
+
 			return allSync;
 		} finally {
 			listener.synchroniseEnd();
@@ -544,7 +527,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 					"*")) {
 
 				s = epackage.getProperty("resource").toString();
-				ep = epackage.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+				ep = epackage.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+						.toString();
 				type = epackage.getProperty("type").toString();
 
 				IMetaModelResourceFactory p = getMetaModelParser(type);
@@ -920,19 +904,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 					runUpdateTask();
 				}
 			}, 0);
-
-			// countdownTimer = TimerManager.createNewTimer("t2", false);
-			//
-			// TimerTask task2 = new TimerTask() {
-			//
-			// @Override
-			// public void run() {
-			// leftoverdelay = leftoverdelay - 1000;
-			// // updateTimers(true);
-			// }
-			// };
-			//
-			// countdownTimer.scheduleAtFixedRate(task2, 2000, 1000);
 		}
 
 		running = true;
@@ -1113,14 +1084,15 @@ public class ModelIndexerImpl implements IModelIndexer {
 				final String mmURI = split[0];
 
 				IGraphNode epackagenode = graph.getMetamodelIndex()
-						.get(IModelIndexer.IDENTIFIER_PROPERTY, mmURI).iterator().next();
+						.get("id", mmURI).iterator().next();
 
 				IGraphNode typenode = null;
 				for (IGraphEdge e : epackagenode
 						.getIncomingWithType("epackage")) {
 					IGraphNode temp = e.getStartNode();
 					final String typeName = split[1];
-					if (temp.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(typeName)) {
+					if (temp.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+							.equals(typeName)) {
 						if (typenode == null) {
 							typenode = temp;
 						} else {
@@ -1198,6 +1170,35 @@ public class ModelIndexerImpl implements IModelIndexer {
 	@Override
 	public IGraphChangeListener getCompositeGraphChangeListener() {
 		return listener;
+	}
+
+	@Override
+	public void setSyncMetricsEnabled(Boolean enable) {
+		isSyncMetricsEnabled = enable;
+	}
+
+	public Map<VcsCommitItem, IHawkModelResource> getFileToResourceMap() {
+		return fileToResourceMap;
+	}
+
+	public int getDeletedFiles() {
+		return deletedFiles;
+	}
+
+	public int getInterestingFiles() {
+		return interestingFiles;
+	}
+
+	public List<Integer> getCurrChangedItems() {
+		return currchangeditems;
+	}
+
+	public List<Integer> getLoadedResources() {
+		return loadedResources;
+	}
+
+	public long getLatestSynctime() {
+		return synctime;
 	}
 
 }
