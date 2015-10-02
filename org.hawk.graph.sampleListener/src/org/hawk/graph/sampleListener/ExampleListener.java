@@ -2,6 +2,7 @@ package org.hawk.graph.sampleListener;
 
 import java.util.Arrays;
 
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphNode;
@@ -135,6 +136,12 @@ public class ExampleListener implements IGraphChangeListener {
 	@Override
 	public String getName() {
 		return "ExampleListener";
+	}
+
+	@Override
+	public void setModelIndexer(IModelIndexer m) {
+		// not used
+
 	}
 
 }
