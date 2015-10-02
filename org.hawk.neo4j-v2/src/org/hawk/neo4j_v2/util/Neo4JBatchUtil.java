@@ -35,7 +35,7 @@ public class Neo4JBatchUtil {
 	public static BatchInserter getGraph(String st) {
 
 		File f = new File(st);
-		
+
 		Map<String, String> config = new HashMap<String, String>();
 		long x = Runtime.getRuntime().maxMemory() / 1000000 / 60;
 		config.put("neostore.nodestore.db.mapped_memory", 3 * x + "M");
@@ -67,7 +67,7 @@ public class Neo4JBatchUtil {
 	public static BatchInserter getGraph(String st, Map<String, String> config) {
 
 		File f = new File(st);
-		
+
 		System.out.println("Opening: " + f.getPath() + "\nWITH: "
 				+ Runtime.getRuntime().maxMemory() / 1000000000 + "."
 				+ Runtime.getRuntime().maxMemory() % 1000000000
@@ -83,26 +83,33 @@ public class Neo4JBatchUtil {
 
 	}
 
+	private static BatchInserter lastBatchGraph;
+
 	// extra check to make sure database is shut down if the jvm is interrupted
 	/**
 	 * 
 	 * @param graph2
 	 */
 	private static void registerShutdownHook(final BatchInserter graph2) {
-
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				try {
-					long l = System.nanoTime();
-					graph2.shutdown();
-					System.out.println("SHUTDOWN HOOK INVOKED: (took ~"
-							+ (System.nanoTime() - l) / 1000000000
-							+ "sec to commit changes)");
-				} catch (Exception e) {
+		if (lastBatchGraph == null) {
+			Runtime.getRuntime().addShutdownHook(new Thread() {
+				@Override
+				public void run() {
+					try {
+						long l = System.nanoTime();
+						lastBatchGraph.shutdown();
+						System.out.println("SHUTDOWN HOOK INVOKED: (took ~"
+								+ (System.nanoTime() - l) / 1000000000
+								+ "sec to commit changes)");
+					} catch (Exception e) {
+						System.err
+								.println("error in registerShutdownHook(final BatchInserter graph2): "
+										+ e.getCause());
+					}
 				}
-			}
-		});
+			});
+		}
+		lastBatchGraph = graph2;
 	}
 
 	private static int getTotalVM(Map<String, String> config) {
@@ -184,21 +191,28 @@ public class Neo4JBatchUtil {
 
 	}
 
-	public static void registerShutdownHook(final GraphDatabaseService database) {
+	private static GraphDatabaseService lastGraph;
 
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				try {
-					long l = System.nanoTime();
-					database.shutdown();
-					System.out.println("SHUTDOWN HOOK INVOKED: (took ~"
-							+ (System.nanoTime() - l) / 1000000000
-							+ "sec to commit changes)");
-				} catch (Exception e) {
+	public static void registerShutdownHook(final GraphDatabaseService database) {
+		if (lastGraph == null) {
+			Runtime.getRuntime().addShutdownHook(new Thread() {
+				@Override
+				public void run() {
+					try {
+						long l = System.nanoTime();
+						lastGraph.shutdown();
+						System.out.println("SHUTDOWN HOOK INVOKED: (took ~"
+								+ (System.nanoTime() - l) / 1000000000
+								+ "sec to commit changes)");
+					} catch (Exception e) {
+						System.err
+								.println("error in registerShutdownHook(final GraphDatabaseService database): "
+										+ e.getCause());
+					}
 				}
-			}
-		});
+			});
+		}
+		lastGraph = database;
 	}
 
 }

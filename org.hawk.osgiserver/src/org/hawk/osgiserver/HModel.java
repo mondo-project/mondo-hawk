@@ -37,7 +37,6 @@ import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.util.HawkConfig;
 import org.hawk.core.util.HawkProperties;
 import org.hawk.core.util.HawksConfig;
-import org.hawk.graph.updateValidationListener.UpdateChangeListener;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.thoughtworks.xstream.XStream;
@@ -203,8 +202,7 @@ public class HModel {
 					.getGraphChangeListeners()) {
 				IGraphChangeListener l = (IGraphChangeListener) listener
 						.createExecutableExtension("class");
-				if (l instanceof UpdateChangeListener)
-					((UpdateChangeListener) l).run(hawk.getModelIndexer());
+				l.setModelIndexer(this.hawk.getModelIndexer());
 				this.hawk.getModelIndexer().addGraphChangeListener(l);
 				console.println(l.getName());
 			}

@@ -129,7 +129,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 			// System.err.println(currReposTopRevisions);
 
 			// debug info dump...
-			File dump = new File("C:/Users/kb634/Desktop/hawk-sync-dump.txt");
+			File dump = new File("C:/Users/kb/Desktop/hawk-sync-dump.txt");
 			BufferedWriter w = new BufferedWriter(new FileWriter(dump, true));
 			w.append("...sync started...\r\n");
 			long start = System.currentTimeMillis();

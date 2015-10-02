@@ -14,6 +14,7 @@ package org.hawk.graph.internal.updater;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
@@ -147,7 +148,8 @@ public class DirtyDerivedAttributesListener implements IGraphChangeListener {
 	}
 
 	private void markDependentToBeUpdated(final String key, final String value) {
-		final IGraphNodeIndex idx = db.getOrCreateNodeIndex("derivedaccessdictionary");
+		final IGraphNodeIndex idx = db
+				.getOrCreateNodeIndex("derivedaccessdictionary");
 		for (IGraphNode node : idx.query(key, value)) {
 			markDependentToBeUpdated(node);
 		}
@@ -167,6 +169,11 @@ public class DirtyDerivedAttributesListener implements IGraphChangeListener {
 					.println("updateDerivedAttributes() -- derived attribute node did not contain property: "
 							+ derivedPropertyName);
 		}
+	}
+
+	@Override
+	public void setModelIndexer(IModelIndexer m) {
+		// not used
 	}
 
 }

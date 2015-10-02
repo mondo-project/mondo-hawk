@@ -109,7 +109,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 
 						IGraphNode filenode = graph
 								.getFileIndex()
-								.get(IModelIndexer.IDENTIFIER_PROPERTY,
+								.get("id",
 										c.getCommit().getDelta()
 												.getRepository().getUrl()
 												+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
@@ -130,18 +130,22 @@ public class SyncChangeListener implements IGraphChangeListener {
 							IGraphNode instance = instanceEdge.getStartNode();
 							totalGraphSize++;
 
-							IHawkObject eobject = eobjectCache.get(instance
-									.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+							IHawkObject eobject = eobjectCache
+									.get(instance
+											.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 							// if a node cannot be found in the model cache
 							if (eobject == null) {
 								System.err
 										.println("error in validating: graph contains node with identifier:"
-												+ instance.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+												+ instance
+														.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
 												+ " but resource does not!");
 								allValid = false;
 							} else {
-								eobjectCache.remove(instance.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+								eobjectCache
+										.remove(instance
+												.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 								// cache model element attributes and references
 								// by
@@ -182,7 +186,8 @@ public class SyncChangeListener implements IGraphChangeListener {
 								for (String propertykey : instance
 										.getPropertyKeys()) {
 									if (!propertykey.equals("hashCode")
-											&& !propertykey.equals(IModelIndexer.IDENTIFIER_PROPERTY)
+											&& !propertykey
+													.equals(IModelIndexer.IDENTIFIER_PROPERTY)
 											&& !propertykey
 													.startsWith("_proxyRef")) {
 										//
@@ -237,9 +242,9 @@ public class SyncChangeListener implements IGraphChangeListener {
 
 									if (reference.getType().equals("file")
 											|| reference.getType().equals(
-													"typeOf")
+													"ofType")
 											|| reference.getType().equals(
-													"kindOf")
+													"ofKind")
 											|| reference.getPropertyKeys()
 													.contains("derived")) {
 										// ignore
@@ -252,8 +257,11 @@ public class SyncChangeListener implements IGraphChangeListener {
 											refvals.addAll(nodereferences
 													.get(reference.getType()));
 										}
-										refvals.add(reference.getEndNode()
-												.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
+										refvals.add(reference
+												.getEndNode()
+												.getProperty(
+														IModelIndexer.IDENTIFIER_PROPERTY)
+												.toString());
 										nodereferences.put(reference.getType(),
 												refvals);
 										//
@@ -360,18 +368,18 @@ public class SyncChangeListener implements IGraphChangeListener {
 				}
 
 			}
-		else
-			System.err
-					.println("filetoresourcemap was empty -- maybe a metamodel addition happened?");
+		// else
+		// System.err
+		// .println("filetoresourcemap was empty -- maybe a metamodel addition happened?");
 
 		if (hawk.deleteditems != null)
 			for (@SuppressWarnings("unused")
 			VcsCommitItem c : hawk.deleteditems) {
 				// any other check needed other than totalsize match?
 			}
-		else
-			System.err
-					.println("deleteditems was empty -- maybe a metamodel addition happened?");
+		// else
+		// System.err
+		// .println("deleteditems was empty -- maybe a metamodel addition happened?");
 		//
 		System.err.println("changed resource size: " + totalResourceSizes);
 
@@ -513,6 +521,13 @@ public class SyncChangeListener implements IGraphChangeListener {
 	@Override
 	public void referenceRemoval(VcsCommitItem s, IGraphNode source,
 			IGraphNode destination, String edgelabel, boolean isTransient) {
+
+	}
+
+	@Override
+	public void setModelIndexer(IModelIndexer m) {
+		System.err
+				.println("use: SyncChangeListener(Git git, LinkedHashMap<String, RevCommit> commits, IModelIndexer hawk) constructor instead!");
 
 	}
 

@@ -12,6 +12,7 @@ package org.hawk.core.runtime;
 
 import java.util.HashSet;
 
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphNode;
@@ -28,7 +29,8 @@ import org.hawk.core.model.IHawkPackage;
  * the easiest way is to have the {@link IGraphChangeListener} implementations
  * define hashCode and equals appropriately.
  */
-public class CompositeGraphChangeListener extends HashSet<IGraphChangeListener> implements IGraphChangeListener {
+public class CompositeGraphChangeListener extends HashSet<IGraphChangeListener>
+		implements IGraphChangeListener {
 	private static final long serialVersionUID = 639097671453202757L;
 
 	@Override
@@ -96,7 +98,8 @@ public class CompositeGraphChangeListener extends HashSet<IGraphChangeListener> 
 	}
 
 	@Override
-	public void modelElementRemoval(VcsCommitItem s, IGraphNode elementNode, boolean isTransient) {
+	public void modelElementRemoval(VcsCommitItem s, IGraphNode elementNode,
+			boolean isTransient) {
 		for (IGraphChangeListener l : this) {
 			l.modelElementRemoval(s, elementNode, isTransient);
 		}
@@ -107,13 +110,15 @@ public class CompositeGraphChangeListener extends HashSet<IGraphChangeListener> 
 			IHawkObject eObject, String attrName, Object oldValue,
 			Object newValue, IGraphNode elementNode, boolean isTransient) {
 		for (IGraphChangeListener l : this) {
-			l.modelElementAttributeUpdate(s, eObject, attrName, oldValue, newValue, elementNode, isTransient);
+			l.modelElementAttributeUpdate(s, eObject, attrName, oldValue,
+					newValue, elementNode, isTransient);
 		}
 	}
 
 	@Override
 	public void modelElementAttributeRemoval(VcsCommitItem s,
-			IHawkObject eObject, String key, IGraphNode node, boolean isTransient) {
+			IHawkObject eObject, String key, IGraphNode node,
+			boolean isTransient) {
 		for (IGraphChangeListener l : this) {
 			l.modelElementAttributeRemoval(s, eObject, key, node, isTransient);
 		}
@@ -156,6 +161,12 @@ public class CompositeGraphChangeListener extends HashSet<IGraphChangeListener> 
 		}
 		sbuf.append(")");
 		return sbuf.toString();
+	}
+
+	@Override
+	public void setModelIndexer(IModelIndexer m) {
+		// not used
+
 	}
 
 }
