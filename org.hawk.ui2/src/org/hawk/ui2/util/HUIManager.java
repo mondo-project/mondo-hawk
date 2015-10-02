@@ -18,7 +18,6 @@ import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.PlatformUI;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.osgiserver.HManager;
-import org.hawk.osgiserver.HModel;
 
 public class HUIManager extends HManager implements IStructuredContentProvider,
 		IWorkbenchListener {

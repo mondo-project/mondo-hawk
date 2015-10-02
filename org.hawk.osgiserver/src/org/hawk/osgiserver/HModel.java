@@ -479,6 +479,10 @@ public class HModel {
 		}
 	}
 
+	public void sync() throws Exception {
+		hawk.getModelIndexer().requestImmediateSync();
+	}
+
 	@Override
 	public String toString() {
 		String ret = "";

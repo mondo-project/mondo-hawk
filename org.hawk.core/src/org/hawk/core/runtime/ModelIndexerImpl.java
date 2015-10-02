@@ -65,6 +65,12 @@ public class ModelIndexerImpl implements IModelIndexer {
 	private List<Integer> currchangeditems = new LinkedList<>();
 	private List<Integer> loadedResources = new LinkedList<>();
 	private long synctime = 0;
+	private final class RunUpdateTask extends TimerTask {
+		@Override
+		public void run() {
+			runUpdateTask();
+		}
+	}
 
 	public static final String ID = "org.hawk.core.ModelIndexer";
 
@@ -126,7 +132,13 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public boolean synchronise() throws Exception {
+	public void requestImmediateSync() {
+		updateTimer.cancel();
+		updateTimer = TimerManager.createNewTimer("t", false);
+		updateTimer.schedule(new RunUpdateTask(), 0);
+	}
+
+	private boolean internalSynchronise() throws Exception {
 		listener.synchroniseStart();
 
 		try {
@@ -895,15 +907,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		// begin scheduled updates from vcs
 		if (runSchedule) {
-
 			updateTimer = TimerManager.createNewTimer("t", false);
-			updateTimer.schedule(new TimerTask() {
-
-				@Override
-				public void run() {
-					runUpdateTask();
-				}
-			}, 0);
+			updateTimer.schedule(new RunUpdateTask(), 0);
 		}
 
 		running = true;
@@ -921,7 +926,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 		boolean synchronised = false;
 
 		try {
-			synchronised = synchronise();
+			synchronised = internalSynchronise();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -974,15 +979,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		}
 
-		updateTimer.schedule(new TimerTask() {
-
-			@Override
-			public void run() {
-				runUpdateTask();
-			}
-		}, currentdelay);
-		// updateTimers(false);
-		// leftoverdelay = currentdelay;
+		updateTimer.schedule(new RunUpdateTask(), currentdelay);
 
 		long time = (System.currentTimeMillis() - start);
 		System.err.println("------------------ update task took: " + time
@@ -992,24 +989,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 	@Override
 	public File getParentFolder() {
 		return parentfolder;
-	}
-
-	@Override
-	public void resetScheduler() {
-
-		currentdelay = INITIALDELAY;
-		// leftoverdelay = 1000;
-
-		updateTimer.cancel();
-		updateTimer = TimerManager.createNewTimer("t", true);
-		updateTimer.schedule(new TimerTask() {
-
-			@Override
-			public void run() {
-				runUpdateTask();
-			}
-		}, currentdelay);
-
 	}
 
 	@Override

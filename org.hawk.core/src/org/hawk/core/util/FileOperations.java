@@ -14,7 +14,6 @@ package org.hawk.core.util;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
@@ -27,45 +26,23 @@ public class FileOperations {
 	 * @param destFile
 	 * @throws IOException
 	 */
-	public static void copyFile(File sourceFile, File destFile)
-			throws IOException {
-
-		// System.err.println("copying:\t" + sourceFile.getPath());
-		// System.err.println("to:\t" + destFile.getPath());
-
+	public static void copyFile(File sourceFile, File destFile) throws IOException {
 		if (destFile.isDirectory()) {
-
 			System.err
 					.println("Directory given to copyFile(File sourceFile, File destFile), returning with no copying");
 			return;
-			// doesn't work as it disregards folder structure
-			// destFile = new File(destFile.getPath().replaceAll("\\\\", "/")
-			// + "/" + sourceFile.getName());
-
-			// System.err.println("dest is a directory! copying to:\t"
-			// + destFile.getPath());
-
 		}
-
-		// System.err.println(destFile);
 
 		if (!destFile.exists()) {
 			destFile.createNewFile();
 		}
-		FileChannel source = null;
-		FileChannel destination = null;
-		try {
-			source = new FileInputStream(sourceFile).getChannel();
-			destination = new FileOutputStream(destFile).getChannel();
+		try(
+			final FileInputStream fisSource = new FileInputStream(sourceFile);
+			final FileInputStream fisDest = new FileInputStream(destFile);
+		) {
+			final FileChannel source = fisSource.getChannel();
+			final FileChannel destination = fisDest.getChannel();
 			destination.transferFrom(source, 0, source.size());
-		} finally {
-			if (source != null) {
-				source.close();
-			}
-			if (destination != null) {
-				destination.close();
-			}
-
 		}
 	}
 

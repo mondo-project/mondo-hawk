@@ -46,14 +46,13 @@ public interface IModelIndexer {
 	public static final String IDENTIFIER_PROPERTY = "_hawkid";
 
 	/**
-	 * When called, attempts to synchronise the index with any changes to any
-	 * vcs connected to it
+	 * Forces a synchronisation to be performed immediately.
 	 * 
-	 * @return <code>true</code> if all repositories were synchronized,
-	 *         <code>false</code> otherwise.
-	 * @throws Exception
+	 * The synchronisation process may run in a separate thread. Users wishing
+	 * to run code when synchronisation really starts or ends should register
+	 * an {@link IGraphChangeListener}.
 	 */
-	boolean synchronise() throws Exception;
+	void requestImmediateSync() throws Exception;
 
 	// /**
 	// * shuts down, not persisting any metadata
@@ -175,11 +174,6 @@ public interface IModelIndexer {
 	 * @throws Exception
 	 */
 	void logFullStore() throws Exception;
-
-	/**
-	 * resets the timer for running synchronise() on hawk
-	 */
-	void resetScheduler();
 
 	void setMetaModelUpdater(IMetaModelUpdater metaModelUpdater);
 

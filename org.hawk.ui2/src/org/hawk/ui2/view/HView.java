@@ -89,6 +89,7 @@ public class HView extends ViewPart {
 	private Action query;
 	private Action start;
 	private Action stop;
+	private Action sync;
 	private Action delete;
 	private Action add;
 	private Action config;
@@ -176,17 +177,12 @@ public class HView extends ViewPart {
 				if (selection.size() == 1) {
 					enableButtons();
 
-					if (((HModel) selection.getFirstElement()).isRunning()) {
-						start.setEnabled(false);
-						stop.setEnabled(true);
-						query.setEnabled(true);
-						config.setEnabled(true);
-					} else {
-						stop.setEnabled(false);
-						start.setEnabled(true);
-						query.setEnabled(false);
-						config.setEnabled(false);
-					}
+					final boolean running = ((HModel) selection.getFirstElement()).isRunning();
+					start.setEnabled(!running);
+					stop.setEnabled(running);
+					sync.setEnabled(running);
+					query.setEnabled(running);
+					config.setEnabled(running);
 				}
 
 			}
@@ -223,6 +219,7 @@ public class HView extends ViewPart {
 		query.setEnabled(false);
 		start.setEnabled(false);
 		stop.setEnabled(false);
+		sync.setEnabled(false);
 		delete.setEnabled(false);
 
 		config.setEnabled(false);
@@ -232,6 +229,7 @@ public class HView extends ViewPart {
 		query.setEnabled(true);
 		start.setEnabled(true);
 		stop.setEnabled(true);
+		sync.setEnabled(true);
 		delete.setEnabled(true);
 
 		config.setEnabled(true);
@@ -260,6 +258,7 @@ public class HView extends ViewPart {
 		manager.add(query);
 		manager.add(start);
 		manager.add(stop);
+		manager.add(sync);
 		manager.add(delete);
 		manager.add(add);
 		manager.add(importRepos);
@@ -270,6 +269,7 @@ public class HView extends ViewPart {
 		manager.add(query);
 		manager.add(start);
 		manager.add(stop);
+		manager.add(sync);
 		manager.add(delete);
 		manager.add(add);
 		manager.add(importRepos);
@@ -280,6 +280,7 @@ public class HView extends ViewPart {
 		manager.add(query);
 		manager.add(start);
 		manager.add(stop);
+		manager.add(sync);
 		manager.add(delete);
 		manager.add(add);
 		manager.add(importRepos);
@@ -323,6 +324,7 @@ public class HView extends ViewPart {
 							viewer.refresh();
 							start.setEnabled(false);
 							stop.setEnabled(true);
+							sync.setEnabled(true);
 							query.setEnabled(true);
 							config.setEnabled(true);
 						} else {
@@ -350,6 +352,7 @@ public class HView extends ViewPart {
 					viewer.refresh();
 					start.setEnabled(true);
 					stop.setEnabled(false);
+					sync.setEnabled(false);
 					query.setEnabled(false);
 					config.setEnabled(false);
 				}
@@ -360,6 +363,25 @@ public class HView extends ViewPart {
 		stop.setImageDescriptor(ImageDescriptor.createFromURL(FileLocator.find(
 				FrameworkUtil.getBundle(this.getClass()), new Path(
 						"icons/stop.gif"), null)));
+
+		sync = new Action() {
+			public void run() {
+				IStructuredSelection selected = (IStructuredSelection) viewer
+						.getSelection();
+				if (selected.size() == 1) {
+					try {
+						((HModel) selected.getFirstElement()).sync();
+					} catch (Exception e) {
+						Activator.logError("Failed to invoke manual sync", e);
+					}
+				}
+			}
+		};
+		sync.setText("Sync");
+		sync.setToolTipText("Sync");
+		sync.setImageDescriptor(ImageDescriptor.createFromURL(FileLocator.find(
+				FrameworkUtil.getBundle(this.getClass()), new Path(
+						"icons/refresh.gif"), null)));
 
 		delete = new Action() {
 			public void run() {
