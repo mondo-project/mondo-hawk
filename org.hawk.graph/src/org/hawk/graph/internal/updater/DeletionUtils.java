@@ -11,6 +11,7 @@
 package org.hawk.graph.internal.updater;
 
 import java.util.HashSet;
+import java.util.Iterator;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
@@ -64,43 +65,49 @@ public class DeletionUtils {
 			final String repository = s.getCommit().getDelta().getRepository().getUrl();
 			final String filepath = s.getPath();
 
-			IGraphNode file = graph
+			final String fullFileID = repository
+					+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+					+ filepath;
+			final Iterator<IGraphNode> itFile = graph
 					.getFileIndex()
-					.get("id",
-							repository
-									+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
-									+ filepath).iterator().next();
+					.get("id", fullFileID).iterator();
 
-			System.out.println("deleting nodes from file: "
-					+ file.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+			if (itFile.hasNext()) {
+				IGraphNode file = itFile.next();
 
-			HashSet<IGraphNode> modelElements = new HashSet<IGraphNode>();
+				System.out.println("deleting nodes from file: "
+						+ file.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
-			for (IGraphEdge rel : file.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
-				modelElements.add(rel.getStartNode());
-				rel.delete();
+				HashSet<IGraphNode> modelElements = new HashSet<IGraphNode>();
+
+				for (IGraphEdge rel : file.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+					modelElements.add(rel.getStartNode());
+					rel.delete();
+				}
+
+				for (IGraphNode node : modelElements) {
+					dereference(node);
+				}
+
+				for (IGraphNode node : modelElements) {
+					makeProxyRefs(node, repository, file);
+				}
+
+				for (IGraphNode node : modelElements) {
+					delete(node);
+					changeListener.modelElementRemoval(s, node, false);
+				}
+
+				modelElements = null;
+
+				filedictionary = graph.getFileIndex();
+
+				filedictionary.remove(file);
+				delete(file);
+				changeListener.fileRemoval(s, file);
+			} else {
+				System.err.println("WARNING: could not find any file nodes for " + fullFileID);
 			}
-
-			for (IGraphNode node : modelElements) {
-				dereference(node);
-			}
-
-			for (IGraphNode node : modelElements) {
-				makeProxyRefs(node, repository, file);
-			}
-
-			for (IGraphNode node : modelElements) {
-				delete(node);
-				changeListener.modelElementRemoval(s, node, false);
-			}
-
-			modelElements = null;
-
-			filedictionary = graph.getFileIndex();
-
-			filedictionary.remove(file);
-			delete(file);
-			changeListener.fileRemoval(s, file);
 
 			transaction.success();
 		}
