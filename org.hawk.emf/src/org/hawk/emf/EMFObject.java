@@ -179,7 +179,7 @@ public class EMFObject implements IHawkObject {
 						}
 					}
 
-					// cyclic reference loop?
+					// cyclic reference loop? -- no we only access the urifragment of references
 					for (IHawkReference eRef : ((IHawkClass) type)
 							.getAllReferences()) {
 						if (isSet(eRef)) {

@@ -680,11 +680,9 @@ public class GraphModelInserter {
 
 				int newo = 0;
 
-				// Get the model elements from the resource and use hashcodes and URI
-				// fragments to detect additions, deletions and updates.
-				Iterator<IHawkObject> iterator = resource.getAllContents();
-				while (iterator.hasNext()) {
-					IHawkObject o = iterator.next();
+				// Get the model elements from the resource and use hashcodes
+				// and URI
+				for (IHawkObject o : resource.getAllContentsSet()) {
 					Integer hash = hashCodes.get(o.getUriFragment());
 					if (hash != null) {
 						if (hash != o.hashCode()) {

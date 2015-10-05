@@ -60,23 +60,7 @@ public class EMFModelResource implements IHawkModelResource {
 	@Override
 	public Iterator<IHawkObject> getAllContents() {
 
-		if (allContents == null) {
-
-			allContents = new HashSet<>();
-			TreeIterator<EObject> it = EcoreUtil.getAllContents(res, false);
-
-			while (it.hasNext()) {
-				EObject next = it.next();
-				if (!next.eIsProxy()) {
-					allContents.add(new EMFObject(next));
-				} else {
-					// ignore it as it will resolve later - FIXED!
-					// System.err
-					// .println("PROXY FOUND (emfmodelresource - getAllContents) !!!");
-				}
-			}
-		}
-		return allContents.iterator();
+		return getAllContentsSet().iterator();
 
 	}
 
@@ -92,6 +76,9 @@ public class EMFModelResource implements IHawkModelResource {
 			while (it.hasNext()) {
 				EObject next = it.next();
 				if (!next.eIsProxy()) {
+					//ensure the element is from the same resource -- even if emf sais its not a proxy!
+					if (EcoreUtil.getURI(next).toString().substring(0,
+							EcoreUtil.getURI(next).toString().indexOf("#")).equals(res.getURI().toString()))
 					allContents.add(new EMFObject(next));
 				} else {
 					// ignore it as it will resolve later - FIXED!
