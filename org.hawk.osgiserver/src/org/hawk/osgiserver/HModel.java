@@ -62,7 +62,7 @@ public class HModel {
 	 */
 	public static HModel create(IHawkFactory hawkFactory, String name,
 			File storageFolder, String location, String dbType,
-			List<String> plugins, HManager manager, char[] apw)
+			List<String> plugins, HManager manager, char[] apw, int minDelay, int maxDelay)
 			throws Exception {
 		HModel hm = new HModel(manager, hawkFactory, name, storageFolder,
 				location);
@@ -90,7 +90,7 @@ public class HModel {
 					+ metaModelUpdater.getName());
 			hm.hawk.getModelIndexer().setMetaModelUpdater(metaModelUpdater);
 			hm.hawk.getModelIndexer().setAdminPassword(apw);
-			hm.hawk.getModelIndexer().init();
+			hm.hawk.getModelIndexer().init(minDelay, maxDelay);
 
 			manager.addHawk(hm);
 			manager.saveHawkToMetadata(hm);
@@ -335,8 +335,8 @@ public class HModel {
 	 * Returns a {@link HawkConfig} from which this instance can be reloaded.
 	 */
 	public HawkConfig getHawkConfig() {
-		return new HawkConfig(getName(), getFolder(), hawkLocation, hawkFactory
-				.getClass().getName());
+		return new HawkConfig(getName(), getFolder(), hawkLocation,
+				hawkFactory.getClass().getName());
 	}
 
 	public boolean exists() {
@@ -454,7 +454,7 @@ public class HModel {
 	public boolean start(HManager manager, char[] apw) {
 		try {
 			hawk.getModelIndexer().setAdminPassword(apw);
-			loadIndexerMetadata();
+			final HawkProperties hp = loadIndexerMetadata();
 
 			if (hawkFactory.instancesCreateGraph()) {
 				// create the indexer with relevant database
@@ -463,7 +463,7 @@ public class HModel {
 				hawk.getModelIndexer().setDB(db, false);
 			}
 
-			hawk.getModelIndexer().init();
+			hawk.getModelIndexer().init(hp.getMaxDelay(), hp.getMaxDelay());
 		} catch (Exception e) {
 			getConsole().printerrln(e);
 		}
@@ -502,7 +502,7 @@ public class HModel {
 				derivationlogic);
 	}
 
-	private void loadIndexerMetadata() throws Exception {
+	private HawkProperties loadIndexerMetadata() throws Exception {
 		XStream stream = new XStream(new DomDriver());
 		stream.processAnnotations(HawkProperties.class);
 		stream.setClassLoader(HawkProperties.class.getClassLoader());
@@ -514,6 +514,7 @@ public class HModel {
 		for (String[] s : hp.getMonitoredVCS()) {
 			loadEncryptedVCS(s[0], s[1], s[2], s[3]);
 		}
+		return hp;
 	}
 
 	public void removeDerivedAttribute(String metamodelUri, String typeName,

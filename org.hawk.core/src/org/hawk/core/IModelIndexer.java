@@ -128,11 +128,15 @@ public interface IModelIndexer {
 	 * parameters to disregard serialisation of hawk metadata. NOTE: do not call
 	 * this method before setting all the required factories and parsers you
 	 * wish to use in this hawk!
+	 *
+	 * If <code>maxDelay</code> is 0, periodic synchronisation will be disabled,
+	 * and only manual synchronisation through {@link #requestImmediateSync()}
+	 * will be available.
 	 * 
-	 * @param adminpw
-	 * @throws Exception
+	 * @param minDelay
+	 * @param maxDelay
 	 */
-	void init() throws Exception;
+	void init(int minDelay, int maxDelay) throws Exception;
 
 	/**
 	 * Returns <code>true</code> if this indexer is running, <code>false</code>
@@ -220,5 +224,4 @@ public interface IModelIndexer {
 	 * @param enable
 	 */
 	void setSyncMetricsEnabled(Boolean enable);
-
 }

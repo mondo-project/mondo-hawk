@@ -53,6 +53,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.wizards.IWizardDescriptor;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
+import org.hawk.core.runtime.ModelIndexerImpl;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.Activator;
 import org.hawk.ui2.dialog.HConfigDialog;

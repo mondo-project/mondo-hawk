@@ -95,9 +95,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	private IAbstractConsole console;
 
-	private static final int MAXDELAY = 1000 * 512;
-	public static final int INITIALDELAY = 1000;
-	public int currentdelay = INITIALDELAY;
+	public static final int DEFAULT_MAXDELAY = 1000 * 512;
+	public static final int DEFAULT_MINDELAY = 1000;
+	private int maxDelay = DEFAULT_MAXDELAY;
+	private int minDelay = DEFAULT_MINDELAY;
+	private int currentDelay = minDelay;
 	private Timer updateTimer = null;
 
 	public boolean permanentDelete = false;
@@ -111,21 +113,13 @@ public class ModelIndexerImpl implements IModelIndexer {
 	private final CompositeGraphChangeListener listener = new CompositeGraphChangeListener();
 
 	/**
-	 * 
-	 * Creates an indexer with a name, with its contents saved in parentfolder
-	 * and printing to console c.
-	 * 
-	 * @param parentfolder
-	 * @param c
-	 * @throws Exception
+	 * Creates an indexer with a <code>name</code>, with its contents saved in
+	 * <code>parentfolder</code> and printing to console <code>c</code>.
 	 */
-	public ModelIndexerImpl(String name, File parentfolder, IAbstractConsole c)
-			throws Exception {
-
+	public ModelIndexerImpl(String name, File parentfolder, IAbstractConsole c) throws Exception {
 		this.name = name;
-		console = c;
+		this.console = c;
 		this.parentfolder = parentfolder;
-
 	}
 
 	@Override
@@ -534,9 +528,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 			t.success();
 		}
-
-		// manager.addToRegisteredMetamodels(registeredMetamodels);
-
 	}
 
 	@Override
@@ -571,14 +562,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 			if (parser == null) {
 				console.printerrln("metamodel de-regstration failed, no relevant factory found");
 			} else {
-
 				String parserType = parser.getType();
-
 				IHawkMetaModelResource metamodelResource = parser.parse(f);
-				// modelResourceSet.getResource(
-				// URI.createFileURI(mm.getAbsolutePath()), true);
-				// metamodelResource.setURI(URI.createURI("resource_from_file_"
-				// + mm.getCanonicalPath()));
 
 				if (previousParserType != null
 						&& !previousParserType.equals(parserType)) {
@@ -796,7 +781,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 			System.out.println("adding: " + meta[0] + ":" + meta[1]);
 			set.add(meta);
 		}
-		HawkProperties hp = new HawkProperties(graph.getType(), set);
+		HawkProperties hp = new HawkProperties(graph.getType(), set, minDelay, maxDelay);
 
 		String out = stream.toXML(hp);
 		try (BufferedWriter b = new BufferedWriter(new FileWriter(
@@ -834,20 +819,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 		}
 	}
 
-	// @Override
-	// public void init() throws Exception {
-	//
-	// char[] init = new char[5];
-	// init[0] = 'a';
-	// init[1] = 'd';
-	// init[2] = 'm';
-	// init[3] = 'i';
-	// init[4] = 'n';
-	//
-	// init(init);
-	//
-	// }
-
 	@Override
 	public void setAdminPassword(char[] pw) {
 		if (adminPw == null)
@@ -857,9 +828,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public void init() throws Exception {
-
-		// System.err.println("warning: automatic loading of persisted indexes on startup is only supported through the eclipse UI view extension");
+	public void init(int minDelay, int maxDelay) throws Exception {
+		this.maxDelay = maxDelay;
+		this.minDelay = minDelay;
+		this.currentDelay = minDelay;
 
 		if (adminPw == null)
 			throw new Exception(
@@ -905,28 +877,28 @@ public class ModelIndexerImpl implements IModelIndexer {
 			console.println("SYNCHRONISATION ERROR");
 		}
 
-		if (!latestUpdateFoundChanges) {
+		// Timer only enabled if the delay is non-zero
+		if (maxDelay > 0) {
+			if (!latestUpdateFoundChanges) {
+				int olddelay = currentDelay;
+				currentDelay = currentDelay * 2;
+				if (currentDelay > maxDelay)
+					currentDelay = maxDelay;
+				console.println("same revision, incrementing check timer: " + olddelay / 1000 + " -> "
+						+ currentDelay / 1000 + " (max: " + maxDelay / 1000 + ")");
 
-			// t.stop();
-			int olddelay = currentdelay;
-			currentdelay = currentdelay * 2;
-			if (currentdelay > MAXDELAY)
-				currentdelay = MAXDELAY;
-			console.println("same revision, incrementing check timer: "
-					+ olddelay / 1000 + " -> " + currentdelay / 1000
-					+ " (max: " + MAXDELAY / 1000 + ")");
+			} else {
 
-		} else {
+				// t.stop();
+				console.println("different revisions, reseting check timer and propagating changes!");
+				currentDelay = minDelay;
 
-			// t.stop();
-			console.println("different revisions, reseting check timer and propagating changes!");
-			currentdelay = INITIALDELAY;
+			}
 
+			updateTimer.schedule(new RunUpdateTask(), currentDelay);
 		}
 
-		updateTimer.schedule(new RunUpdateTask(), currentdelay);
-
-		long time = (System.currentTimeMillis() - start);
+		final long time = (System.currentTimeMillis() - start);
 		System.err.println("------------------ update task took: " + time
 				/ 1000 + "s" + time % 1000 + "ms");
 	}

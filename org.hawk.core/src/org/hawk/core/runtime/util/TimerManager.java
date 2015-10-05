@@ -17,14 +17,10 @@ public class TimerManager {
 
 	public static HashSet<Timer> timers = new HashSet<Timer>();
 	
-	public static Timer createNewTimer(String string, boolean b) {
-
-		Timer timer = new Timer(string,b);
-		//
+	public static Timer createNewTimer(String name, boolean isDaemon) {
+		Timer timer = new Timer(name, isDaemon);
 		timers.add(timer);
-
 		return timer;
-
 	}
 
 }

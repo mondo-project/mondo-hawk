@@ -12,6 +12,8 @@ package org.hawk.core.util;
 
 import java.util.Collection;
 
+import org.hawk.core.runtime.ModelIndexerImpl;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("hawkProperties")
@@ -22,6 +24,12 @@ public class HawkProperties {
 
 	@XStreamAlias("monitoredVCS")
 	protected Collection<String[]> monitoredVCS;
+
+	@XStreamAlias("minDelay")
+	protected int minDelay = ModelIndexerImpl.DEFAULT_MINDELAY;
+
+	@XStreamAlias("minDelay")
+	protected int maxDelay = ModelIndexerImpl.DEFAULT_MAXDELAY;
 
 	public String getDbType() {
 		return dbType;
@@ -39,12 +47,30 @@ public class HawkProperties {
 		this.monitoredVCS = monitoredVCS;
 	}
 
+	public int getMinDelay() {
+		return minDelay;
+	}
+
+	public void setMinDelay(int minDelay) {
+		this.minDelay = minDelay;
+	}
+
+	public int getMaxDelay() {
+		return maxDelay;
+	}
+
+	public void setMaxDelay(int maxDelay) {
+		this.maxDelay = maxDelay;
+	}
+
 	public HawkProperties() {
 	}
 
-	public HawkProperties(String dbType, Collection<String[]> monitoredVCS) {
+	public HawkProperties(String dbType, Collection<String[]> monitoredVCS, int minDelay, int maxDelay) {
 		this.dbType = dbType;
 		this.monitoredVCS = monitoredVCS;
+		this.minDelay = minDelay;
+		this.maxDelay = maxDelay;
 	}
 
 }

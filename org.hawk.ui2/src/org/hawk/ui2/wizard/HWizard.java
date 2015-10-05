@@ -69,10 +69,14 @@ public class HWizard extends Wizard implements INewWizard {
 			final String location = page.getLocation();
 			final IHawkFactory factory = page.getFactory();
 
+			// TODO: specify this from UI
+			final int maxDelay = 512 * 1000;
+			final int minDelay = 1000;
+
 			IRunnableWithProgress op = new IRunnableWithProgress() {
 				public void run(IProgressMonitor monitor) throws InvocationTargetException {
 					try {
-						doFinish(name, new File(folder), location, dbType, plugins, monitor, apw, factory);
+						doFinish(name, new File(folder), location, dbType, plugins, monitor, apw, factory, minDelay, maxDelay);
 					} catch (Exception e) {
 						throw new InvocationTargetException(e);
 					} finally {
@@ -102,10 +106,11 @@ public class HWizard extends Wizard implements INewWizard {
 	 * @param dbType
 	 * @param factoryId 
 	 */
-	private void doFinish(String name, File storageFolder, String location, String dbType, List<String> plugins, IProgressMonitor monitor, char[] apw, IHawkFactory factory) throws Exception {
+	private void doFinish(String name, File storageFolder, String location, String dbType, List<String> plugins, IProgressMonitor monitor, char[] apw, IHawkFactory factory, int minDelay, int maxDelay) throws Exception {
 		// set up a new Hawk with the selected plugins
 		HModel hm = HModel.create(factory, name, storageFolder,
-				location, dbType, plugins, HUIManager.getInstance(), apw);
+				location, dbType, plugins, HUIManager.getInstance(), apw,
+				minDelay, maxDelay);
 
 		monitor.beginTask("Creating ", 2);
 		monitor.worked(1);
