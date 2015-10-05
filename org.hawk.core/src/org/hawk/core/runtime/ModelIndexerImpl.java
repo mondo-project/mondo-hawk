@@ -66,6 +66,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 	private int loadedResources;
 	private long synctime;
 
+	private boolean latestUpdateFoundChanges = false;
+
 	private final class RunUpdateTask extends TimerTask {
 		@Override
 		public void run() {
@@ -149,6 +151,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 			loadedResources = 0;
 			synctime = 0;
 
+			latestUpdateFoundChanges = false;
+
 			if (monitors.size() > 0) {
 
 				for (int i = 0; i < monitors.size(); i++) {
@@ -171,6 +175,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 						if (!currReposTopRevisions.get(i).equals(
 								currLocalTopRevisions.get(i))) {
+
+							latestUpdateFoundChanges = true;
 
 							String monitorTempDir = graph.getTempDir();
 
@@ -412,14 +418,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 		running = false;
 	}
 
-	public String getCurrLocalTopRevision(int i) {
-		return currLocalTopRevisions.get(i);
-	}
-
-	public String getCurrReposTopRevision(int i) {
-		return currReposTopRevisions.get(i);
-	}
-
 	@Override
 	public IGraphDatabase getGraph() {
 		return graph;
@@ -441,11 +439,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 			ret.add(m);
 
 		return ret;
-
-	}
-
-	private void setCurrLocalTopRevision(int i, String local) {
-		currLocalTopRevisions.set(i, local);
 
 	}
 
@@ -899,11 +892,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 		long start = System.currentTimeMillis();
 		System.err.println("------------------ starting update task");
 
-		boolean allSame = true;
-
+		boolean synchronised = true;
 		console.println("updating indexer: ");
-
-		boolean synchronised = false;
 
 		try {
 			synchronised = internalSynchronise();
@@ -911,36 +901,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 			e.printStackTrace();
 		}
 
-		for (int i = 0; i < monitors.size(); i++) {
-
-			// IVCSMonitor m = monitors.get(i);
-
-			if (getCurrReposTopRevision(i).equals(getCurrLocalTopRevision(i))) {
-
-				//
-
-			} else {
-
-				if (!synchronised) {
-
-					System.out.println("remote top: "
-							+ getCurrReposTopRevision(i));
-					System.out.println("local top: "
-							+ getCurrLocalTopRevision(i));
-
-					console.println("SYNCHRONISATION ERROR");
-
-				} else
-					setCurrLocalTopRevision(i, getCurrReposTopRevision(i));
-
-				allSame = false;
-
-			}
-
-			// t2.restart();
+		if (!synchronised) {
+			console.println("SYNCHRONISATION ERROR");
 		}
 
-		if (allSame) {
+		if (!latestUpdateFoundChanges) {
 
 			// t.stop();
 			int olddelay = currentdelay;
