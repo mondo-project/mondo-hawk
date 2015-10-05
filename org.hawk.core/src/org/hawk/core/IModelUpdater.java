@@ -52,4 +52,6 @@ public interface IModelUpdater {
 	public Set<VcsCommitItem> compareWithLocalFiles(
 			Set<VcsCommitItem> interestingfiles);
 
+	void updateProxies();
+
 }

@@ -33,6 +33,8 @@ public class GraphModelUpdater implements IModelUpdater {
 	public static final String FILEINDEX_REPO_SEPARATOR = "////";
 	public static final boolean caresAboutResources = true;
 
+	private Set<IGraphNode> toBeUpdated = new HashSet<>();
+
 	public GraphModelUpdater() {
 	}
 
@@ -72,37 +74,48 @@ public class GraphModelUpdater implements IModelUpdater {
 			console.println((end - start) / 1000 + "s" + (end - start) % 1000
 					+ "ms [pure insertion]");
 
-			console.println("attempting to resolve any leftover cross-file references...");
-			try {
-				new GraphModelInserter(indexer).resolveProxies(indexer
-						.getGraph());
-			} catch (Exception e) {
-				console.printerrln("Exception in updateStore - resolving proxies, returning 0:");
-				console.printerrln(e);
-			}
-
-			console.println("attempting to resolve any derived proxies...");
-			try {
-				new GraphModelInserter(indexer).resolveDerivedAttributeProxies(
-						indexer.getGraph(), indexer,
-						"org.hawk.epsilon.emc.EOLQueryEngine");
-			} catch (Exception e) {
-				console.printerrln("Exception in updateStore - resolving DERIVED proxies, returning 0:");
-				console.printerrln(e);
-			}
-
-			console.println("attempting to update any relevant derived attributes...");
-			try {
-				final Set<IGraphNode> toBeUpdated = l.getNodesToBeUpdated();
-				new GraphModelInserter(indexer).updateDerivedAttributes(
-						"org.hawk.epsilon.emc.EOLQueryEngine", toBeUpdated);
-			} catch (Exception e) {
-				console.printerrln("Exception in updateStore - UPDATING DERIVED attributes");
-				console.printerrln(e);
-			}
 		} finally {
+			toBeUpdated.addAll(l.getNodesToBeUpdated());
 			indexer.removeGraphChangeListener(l);
 		}
+
+	}
+
+	@Override
+	public void updateProxies() {
+		final long start = System.currentTimeMillis();
+
+		console.println("attempting to resolve any leftover cross-file references...");
+		try {
+			new GraphModelInserter(indexer).resolveProxies(indexer.getGraph());
+		} catch (Exception e) {
+			console.printerrln("Exception in updateStore - resolving proxies, returning 0:");
+			console.printerrln(e);
+		}
+
+		console.println("attempting to resolve any derived proxies...");
+		try {
+			new GraphModelInserter(indexer).resolveDerivedAttributeProxies(
+					indexer.getGraph(), indexer,
+					"org.hawk.epsilon.emc.EOLQueryEngine");
+		} catch (Exception e) {
+			console.printerrln("Exception in updateStore - resolving DERIVED proxies, returning 0:");
+			console.printerrln(e);
+		}
+
+		console.println("attempting to update any relevant derived attributes...");
+		try {
+			new GraphModelInserter(indexer).updateDerivedAttributes(
+					"org.hawk.epsilon.emc.EOLQueryEngine", toBeUpdated);
+			toBeUpdated = new HashSet<>();
+		} catch (Exception e) {
+			toBeUpdated = new HashSet<>();
+			console.printerrln("Exception in updateStore - UPDATING DERIVED attributes");
+			console.printerrln(e);
+		}
+		long end = System.currentTimeMillis();
+		console.println((end - start) / 1000 + "s" + (end - start) % 1000
+				+ "ms [proxy update]");
 	}
 
 	public boolean isActive() {

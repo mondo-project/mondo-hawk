@@ -321,8 +321,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 												r.unload();
 											else {
 												fileToResourceMap.put(v, r);
-												loadedresource++;
+
 											}
+											loadedresource++;
 										}
 
 									} catch (Exception e) {
@@ -333,6 +334,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 									}
 								}
 								loadedResources.add(loadedresource);
+
+								// update proxies
+								u.updateProxies();
+
 							}
 
 							boolean success = true;
@@ -1134,26 +1139,34 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	public Map<VcsCommitItem, IHawkModelResource> getFileToResourceMap() {
+		if (!isSyncMetricsEnabled)
+			System.err
+					.println("WARNING: isSyncMetricsEnabled == false, this method will return an empty Map");
 		return fileToResourceMap;
 	}
 
 	public int getDeletedFiles() {
+		// works even if metrics disabled
 		return deletedFiles;
 	}
 
 	public int getInterestingFiles() {
+		// works even if metrics disabled
 		return interestingFiles;
 	}
 
 	public List<Integer> getCurrChangedItems() {
+		// works even if metrics disabled
 		return currchangeditems;
 	}
 
 	public List<Integer> getLoadedResources() {
+		// works even if metrics disabled
 		return loadedResources;
 	}
 
 	public long getLatestSynctime() {
+		// works even if metrics disabled
 		return synctime;
 	}
 

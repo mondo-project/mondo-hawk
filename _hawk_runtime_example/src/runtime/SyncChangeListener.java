@@ -40,6 +40,9 @@ public class SyncChangeListener implements IGraphChangeListener {
 		this.git = git;
 		for (RevCommit c : commits.values())
 			orderedCommits.add(0, c);
+		System.err
+				.println("SyncValidationListener: hawk.setSyncMetricsEnabled(true) called, performance will suffer!");
+		hawk.setSyncMetricsEnabled(true);
 	}
 
 	@Override
@@ -55,7 +58,9 @@ public class SyncChangeListener implements IGraphChangeListener {
 
 	@Override
 	public void synchroniseEnd() {
+
 		validateChanges();
+
 		if (orderedCommits.size() > 0) {
 			RevCommit first = orderedCommits.getFirst();
 			orderedCommits.remove();
@@ -81,7 +86,16 @@ public class SyncChangeListener implements IGraphChangeListener {
 
 	@SuppressWarnings("unchecked")
 	private void validateChanges() {
+
+		System.err.println("sync metrics:");
+		System.err.println("interesting\t" + hawk.getInterestingFiles());
+		System.err.println("deleted\t" + hawk.getDeletedFiles());
+		System.err.println("changed\t" + hawk.getCurrChangedItems());
+		System.err.println("loaded\t" + hawk.getLoadedResources());
+		System.err.println("time\t~" + hawk.getLatestSynctime() / 1000 + "s");
+
 		System.err.println("validating changes...");
+
 		boolean allValid = true;
 		int totalResourceSizes = 0;
 		int totalGraphSize = 0;
@@ -120,8 +134,21 @@ public class SyncChangeListener implements IGraphChangeListener {
 
 						// cache model elements in current resource
 						HashMap<String, IHawkObject> eobjectCache = new HashMap<>();
-						for (IHawkObject content : r.getAllContentsSet())
-							eobjectCache.put(content.getUriFragment(), content);
+						for (IHawkObject content : r.getAllContentsSet()) {
+							IHawkObject old = eobjectCache.put(
+									content.getUriFragment(), content);
+							if (old != null) {
+								System.err.println("warning (" + c.getPath()
+										+ ") eobjectCache replaced:");
+								System.err.println(old.getUri() + " | "
+										+ old.getUriFragment() + " | ofType: "
+										+ old.getType());
+								System.err.println("with:");
+								System.err.println(content.getUri() + " | "
+										+ content.getUriFragment()
+										+ " | ofType: " + content.getType());
+							}
+						}
 
 						// go through all nodes in graph from the file the
 						// resource
