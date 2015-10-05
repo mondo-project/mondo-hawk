@@ -291,7 +291,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 								}
 
 								for (VcsCommitItem v : currreposchangeditems) {
-									try {
+										try {
 										IHawkModelResource r = null;
 
 										if (u.caresAboutResources()) {
@@ -562,7 +562,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 			if (parser == null) {
 				console.printerrln("metamodel de-regstration failed, no relevant factory found");
 			} else {
+
 				String parserType = parser.getType();
+
 				IHawkMetaModelResource metamodelResource = parser.parse(f);
 
 				if (previousParserType != null
@@ -832,7 +834,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 		this.maxDelay = maxDelay;
 		this.minDelay = minDelay;
 		this.currentDelay = minDelay;
-
+		
 		if (adminPw == null)
 			throw new Exception(
 					"Please set the admin password using setAdminPassword(...) before calling init");
@@ -878,30 +880,30 @@ public class ModelIndexerImpl implements IModelIndexer {
 		}
 
 		// Timer only enabled if the delay is non-zero
-		if (maxDelay > 0) {
-			if (!latestUpdateFoundChanges) {
-				int olddelay = currentDelay;
-				currentDelay = currentDelay * 2;
-				if (currentDelay > maxDelay)
-					currentDelay = maxDelay;
-				console.println("same revision, incrementing check timer: " + olddelay / 1000 + " -> "
-						+ currentDelay / 1000 + " (max: " + maxDelay / 1000 + ")");
+				if (maxDelay > 0) {
+					if (!latestUpdateFoundChanges) {
+						int olddelay = currentDelay;
+						currentDelay = currentDelay * 2;
+						if (currentDelay > maxDelay)
+							currentDelay = maxDelay;
+						console.println("same revision, incrementing check timer: " + olddelay / 1000 + " -> "
+								+ currentDelay / 1000 + " (max: " + maxDelay / 1000 + ")");
 
-			} else {
+					} else {
 
-				// t.stop();
-				console.println("different revisions, reseting check timer and propagating changes!");
-				currentDelay = minDelay;
+						// t.stop();
+						console.println("different revisions, reseting check timer and propagating changes!");
+						currentDelay = minDelay;
 
+					}
+
+					updateTimer.schedule(new RunUpdateTask(), currentDelay);
+				}
+
+				final long time = (System.currentTimeMillis() - start);
+				System.err.println("------------------ update task took: " + time
+						/ 1000 + "s" + time % 1000 + "ms");
 			}
-
-			updateTimer.schedule(new RunUpdateTask(), currentDelay);
-		}
-
-		final long time = (System.currentTimeMillis() - start);
-		System.err.println("------------------ update task took: " + time
-				/ 1000 + "s" + time % 1000 + "ms");
-	}
 
 	@Override
 	public File getParentFolder() {

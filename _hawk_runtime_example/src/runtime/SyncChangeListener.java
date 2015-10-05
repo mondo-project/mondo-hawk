@@ -1,6 +1,7 @@
 package runtime;
 
 import java.io.File;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -219,6 +220,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 												ret = ((IHawkObject) val)
 														.getUri().replace(temp,
 																"");
+												ret = URLDecoder.decode(ret.replace("+", "%2B"),"UTF-8");
 												vals.add(repoURL
 														+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
 														+ (ret.startsWith("/") ? ret
@@ -231,6 +233,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 											// refval).isProxy())
 											ret = ((IHawkObject) refval)
 													.getUri().replace(temp, "");
+											ret = URLDecoder.decode(ret.replace("+", "%2B"),"UTF-8");
 											vals.add(repoURL
 													+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
 													+ (ret.startsWith("/") ? ret
@@ -452,8 +455,8 @@ public class SyncChangeListener implements IGraphChangeListener {
 				.println("validated changes... "
 						+ (totalErrors == 0 ? "true"
 								: ((totalErrors == malformed) + " (with "
-										+ totalErrors + "total and "
-										+ malformed + "malformed errors)"))
+										+ totalErrors + " total and "
+										+ malformed + " malformed errors)"))
 						+ (removedProxies == 0 ? "" : " [" + removedProxies
 								+ "] unresolved hawk proxies matched"));
 

@@ -1,6 +1,7 @@
 package org.hawk.graph.syncValidationListener;
 
 import java.io.File;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -193,6 +194,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 												ret = ((IHawkObject) val)
 														.getUri().replace(temp,
 																"");
+												ret = URLDecoder.decode(ret.replace("+", "%2B"),"UTF-8");
 												vals.add(repoURL
 														+ FILEINDEX_REPO_SEPARATOR
 														+ (ret.startsWith("/") ? ret
@@ -205,6 +207,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 											// refval).isProxy())
 											ret = ((IHawkObject) refval)
 													.getUri().replace(temp, "");
+											ret = URLDecoder.decode(ret.replace("+", "%2B"),"UTF-8");
 											vals.add(repoURL
 													+ FILEINDEX_REPO_SEPARATOR
 													+ (ret.startsWith("/") ? ret
