@@ -25,7 +25,6 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.hawk.bpmn.metamodel.BPMNMetaModelResourceFactory;
 import org.hawk.bpmn.model.BPMNModelResourceFactory;
 import org.hawk.core.IModelIndexer;
-import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
@@ -160,7 +159,7 @@ public class Runtime_example {
 		init[4] = 'n';
 
 		hawk.setAdminPassword(init);
-		hawk.init();
+		hawk.init(1000,512*1000);
 
 		// add console interaction if needed
 		Thread t = consoleInteraction(hawk);
