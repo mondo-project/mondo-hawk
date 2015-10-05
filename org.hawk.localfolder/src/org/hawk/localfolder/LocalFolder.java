@@ -56,13 +56,16 @@ public class LocalFolder implements IVcsManager {
 		Path path;
 		try {
 			path = Paths.get(new URI(vcsloc));
-		} catch (URISyntaxException ex) {
+		} catch (URISyntaxException | IllegalArgumentException ex) {
 			path = Paths.get(vcsloc);
 		}
 
-		rootLocation = path.toRealPath();
-		repository = new LocalFolderRepository(URLDecoder.decode(rootLocation
-				.toUri().toString().replace("+", "%2B"), "UTF-8"));
+		rootLocation = path.toFile().getCanonicalFile().toPath();
+		String repositoryURI = rootLocation.toUri().toString();
+		if (!repositoryURI.endsWith("/")) {
+			repositoryURI += "/";
+		}
+		repository = new LocalFolderRepository(URLDecoder.decode(repositoryURI.replace("+", "%2B"), "UTF-8"));
 	}
 
 	@Override
