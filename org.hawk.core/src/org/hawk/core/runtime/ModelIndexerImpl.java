@@ -60,11 +60,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 	// validation metrics and data
 	private boolean isSyncMetricsEnabled = false;
 	private Map<VcsCommitItem, IHawkModelResource> fileToResourceMap = new HashMap<>();
-	private int deletedFiles = 0;
-	private int interestingFiles = 0;
-	private List<Integer> currchangeditems = new LinkedList<>();
-	private List<Integer> loadedResources = new LinkedList<>();
-	private long synctime = 0;
+	private int deletedFiles;
+	private int interestingFiles;
+	private int currchangeditems;
+	private int loadedResources;
+	private long synctime;
 
 	private final class RunUpdateTask extends TimerTask {
 		@Override
@@ -145,8 +145,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 			fileToResourceMap = new HashMap<>();
 			deletedFiles = 0;
 			interestingFiles = 0;
-			currchangeditems = new LinkedList<>();
-			loadedResources = new LinkedList<>();
+			currchangeditems = 0;
+			loadedResources = 0;
 			synctime = 0;
 
 			if (monitors.size() > 0) {
@@ -222,8 +222,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 							}
 
 							// metadata about synchronise
-							deletedFiles = deleteditems.size();
-							interestingFiles = interestingfiles.size();
+							deletedFiles = deletedFiles + deleteditems.size();
+							interestingFiles = interestingFiles
+									+ interestingfiles.size();
 
 							// for each registered updater
 							for (IModelUpdater u : getUpdaters()) {
@@ -232,8 +233,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 										.compareWithLocalFiles(interestingfiles);
 
 								// metadata about synchronise
-								currchangeditems.add(currreposchangeditems
-										.size());
+								currchangeditems = currchangeditems
+										+ currreposchangeditems.size();
 
 								// create temp files with changed repos files
 								for (VcsCommitItem s : currreposchangeditems) {
@@ -289,8 +290,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 									listener.changeSuccess();
 								}
 
-								int loadedresource = 0;
-
 								for (VcsCommitItem v : currreposchangeditems) {
 									try {
 										IHawkModelResource r = null;
@@ -323,7 +322,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 												fileToResourceMap.put(v, r);
 
 											}
-											loadedresource++;
+											loadedResources++;
 										}
 
 									} catch (Exception e) {
@@ -333,7 +332,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 									}
 								}
-								loadedResources.add(loadedresource);
 
 								// update proxies
 								u.updateProxies();
@@ -1155,12 +1153,12 @@ public class ModelIndexerImpl implements IModelIndexer {
 		return interestingFiles;
 	}
 
-	public List<Integer> getCurrChangedItems() {
+	public int getCurrChangedItems() {
 		// works even if metrics disabled
 		return currchangeditems;
 	}
 
-	public List<Integer> getLoadedResources() {
+	public int getLoadedResources() {
 		// works even if metrics disabled
 		return loadedResources;
 	}
