@@ -31,6 +31,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -39,12 +40,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.hawk.core.IHawkFactory;
+import org.hawk.core.runtime.ModelIndexerImpl;
 import org.hawk.ui2.util.HUIManager;
 
 public class HWizardPage extends WizardPage {
@@ -66,6 +69,9 @@ public class HWizardPage extends WizardPage {
 	}
 
 	private static final String hawkConnectWarning = "Index storage folder must be empty -- Hawk will try to connect to an existing Hawk in this location";
+
+	private Text minDelay;
+	private Text maxDelay;
 
 	private Text nameText;
 	private Text folderText;
@@ -129,7 +135,8 @@ public class HWizardPage extends WizardPage {
 		factoriesWithGraph = new HashSet<>();
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		factoryIdText.setLayoutData(gd);
-		for (Map.Entry<String, IHawkFactory> factory : hminstance.getHawkFactoryInstances().entrySet()) {
+		for (Map.Entry<String, IHawkFactory> factory : hminstance
+				.getHawkFactoryInstances().entrySet()) {
 			factoryIdText.add(factory.getKey());
 			if (factory.getValue().instancesUseLocation()) {
 				factoriesWithLocation.add(factory.getKey());
@@ -178,7 +185,8 @@ public class HWizardPage extends WizardPage {
 		label.setLayoutData(gd);
 		label.setText("&Enabled plugins:");
 
-		pluginTable = new Table(container, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		pluginTable = new Table(container, SWT.BORDER | SWT.V_SCROLL
+				| SWT.H_SCROLL);
 
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		pluginTable.setLayoutData(gd);
@@ -219,6 +227,24 @@ public class HWizardPage extends WizardPage {
 		for (String db : hminstance.getIndexTypes())
 			dbidText.add(db);
 		dbidText.select(0);
+
+		label = new Label(container, SWT.NULL);
+		label.setText("");
+
+		label = new Label(container, SWT.NULL);
+		gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+		label.setLayoutData(gd);
+		label.setText("Min/Max Delay:");
+
+		Composite cDelayRow = new Composite(container, SWT.NULL);
+		cDelayRow.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		final Layout cDelayRowLayout = new FillLayout();
+		cDelayRow.setLayout(cDelayRowLayout);
+
+		minDelay = new Text(cDelayRow, SWT.BORDER | SWT.SINGLE);
+		minDelay.setText(ModelIndexerImpl.DEFAULT_MINDELAY + "");
+		maxDelay = new Text(cDelayRow, SWT.BORDER | SWT.SINGLE);
+		maxDelay.setText(ModelIndexerImpl.DEFAULT_MAXDELAY + "");
 
 		Button startButton = new Button(container, SWT.CHECK);
 		startButton.setText("Start with Workspace");
@@ -384,5 +410,21 @@ public class HWizardPage extends WizardPage {
 
 	public String getLocation() {
 		return locationText.getText();
+	}
+
+	public int getMaxDelay() {
+		try {
+			return Integer.parseInt(maxDelay.getText());
+		} catch (Exception e) {
+			return ModelIndexerImpl.DEFAULT_MAXDELAY;
+		}
+	}
+
+	public int getMinDelay() {
+		try {
+			return Integer.parseInt(minDelay.getText());
+		} catch (Exception e) {
+			return ModelIndexerImpl.DEFAULT_MINDELAY;
+		}
 	}
 }

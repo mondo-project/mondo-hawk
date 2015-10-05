@@ -28,7 +28,7 @@ public class HawkProperties {
 	@XStreamAlias("minDelay")
 	protected int minDelay = ModelIndexerImpl.DEFAULT_MINDELAY;
 
-	@XStreamAlias("minDelay")
+	@XStreamAlias("maxDelay")
 	protected int maxDelay = ModelIndexerImpl.DEFAULT_MAXDELAY;
 
 	public String getDbType() {

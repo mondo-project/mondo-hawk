@@ -68,15 +68,16 @@ public class HWizard extends Wizard implements INewWizard {
 			final char[] apw = page.getApw();
 			final String location = page.getLocation();
 			final IHawkFactory factory = page.getFactory();
-
-			// TODO: specify this from UI
-			final int maxDelay = 512 * 1000;
-			final int minDelay = 1000;
+			final int maxDelay = page.getMaxDelay();
+			final int minDelay = page.getMinDelay();
 
 			IRunnableWithProgress op = new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) throws InvocationTargetException {
+				public void run(IProgressMonitor monitor)
+						throws InvocationTargetException {
 					try {
-						doFinish(name, new File(folder), location, dbType, plugins, monitor, apw, factory, minDelay, maxDelay);
+						doFinish(name, new File(folder), location, dbType,
+								plugins, monitor, apw, factory, minDelay,
+								maxDelay);
 					} catch (Exception e) {
 						throw new InvocationTargetException(e);
 					} finally {
@@ -91,7 +92,8 @@ public class HWizard extends Wizard implements INewWizard {
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 			Throwable realException = e.getTargetException();
-			MessageDialog.openError(getShell(), "Error", realException.getMessage());
+			MessageDialog.openError(getShell(), "Error",
+					realException.getMessage());
 			return false;
 		} catch (CoreException e) {
 			e.printStackTrace();
@@ -104,13 +106,16 @@ public class HWizard extends Wizard implements INewWizard {
 	 * The worker method.
 	 * 
 	 * @param dbType
-	 * @param factoryId 
+	 * @param factoryId
 	 */
-	private void doFinish(String name, File storageFolder, String location, String dbType, List<String> plugins, IProgressMonitor monitor, char[] apw, IHawkFactory factory, int minDelay, int maxDelay) throws Exception {
+	private void doFinish(String name, File storageFolder, String location,
+			String dbType, List<String> plugins, IProgressMonitor monitor,
+			char[] apw, IHawkFactory factory, int minDelay, int maxDelay)
+			throws Exception {
 		// set up a new Hawk with the selected plugins
-		HModel hm = HModel.create(factory, name, storageFolder,
-				location, dbType, plugins, HUIManager.getInstance(), apw,
-				minDelay, maxDelay);
+		HModel hm = HModel.create(factory, name, storageFolder, location,
+				dbType, plugins, HUIManager.getInstance(), apw, minDelay,
+				maxDelay);
 
 		monitor.beginTask("Creating ", 2);
 		monitor.worked(1);
