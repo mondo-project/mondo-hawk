@@ -99,7 +99,7 @@ public class IFC_Titan_Runtime_example {
 		//
 		// initialise the server for real-time updates to changes
 		i.setAdminPassword(adminpw);
-		i.init();
+		i.init(1000,512*1000);
 
 		// add console interaction if needed
 		Thread t = consoleInteraction(i);
