@@ -12,6 +12,7 @@ package org.hawk.bpmn.model;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
@@ -19,13 +20,14 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.hawk.bpmn.BPMNObject;
 import org.hawk.core.IModelResourceFactory;
-import org.hawk.core.model.*;
+import org.hawk.core.model.IHawkModelResource;
+import org.hawk.core.model.IHawkObject;
 
 public class BPMNModelResource implements IHawkModelResource {
 
 	Resource res;
 	private IModelResourceFactory parser;
-	HashSet<IHawkObject> allContents = null;
+	Set<IHawkObject> allContents = null;
 
 	@Override
 	public void unload() {
@@ -65,7 +67,7 @@ public class BPMNModelResource implements IHawkModelResource {
 	}
 
 	@Override
-	public HashSet<IHawkObject> getAllContentsSet() {
+	public Set<IHawkObject> getAllContentsSet() {
 
 		if (allContents == null) {
 
@@ -76,10 +78,17 @@ public class BPMNModelResource implements IHawkModelResource {
 			while (it.hasNext()) {
 				EObject next = it.next();
 				if (!next.eIsProxy()) {
-					//ensure the element is from the same resource -- even if emf sais its not a proxy!
-					if (EcoreUtil.getURI(next).toString().substring(0,
-							EcoreUtil.getURI(next).toString().indexOf("#")).equals(res.getURI().toString()))
-					allContents.add(new BPMNObject(next));
+					// ensure the element is from the same resource -- even if
+					// emf sais its not a proxy!
+					String resourceURIString = res.getURI().toString();
+					String elementURIString = EcoreUtil.getURI(next).toString();
+					String elementResourceURIString = elementURIString
+							.indexOf("#") == -1 ? elementURIString
+							: elementURIString.substring(0,
+									elementURIString.lastIndexOf("#"));
+
+					if (elementResourceURIString.equals(resourceURIString))
+						allContents.add(new BPMNObject(next));
 				} else {
 					// ignore it as it will resolve later - FIXED!
 					// System.err

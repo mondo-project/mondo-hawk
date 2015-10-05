@@ -63,10 +63,10 @@ public class SyncValidationListener implements IGraphChangeListener {
 
 		System.err.println("sync metrics:");
 		System.err.println("interesting\t" + hawk.getInterestingFiles());
-		System.err.println("deleted\t" + hawk.getDeletedFiles());
-		System.err.println("changed\t" + hawk.getCurrChangedItems());
-		System.err.println("loaded\t" + hawk.getLoadedResources());
-		System.err.println("time\t~" + hawk.getLatestSynctime() / 1000 + "s");
+		System.err.println("deleted\t\t" + hawk.getDeletedFiles());
+		System.err.println("changed\t\t" + hawk.getCurrChangedItems());
+		System.err.println("loaded\t\t" + hawk.getLoadedResources());
+		System.err.println("time\t\t~" + hawk.getLatestSynctime() / 1000 + "s");
 
 		System.err.println("validating changes...");
 
