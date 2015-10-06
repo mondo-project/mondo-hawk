@@ -59,11 +59,26 @@ public class HModel {
 	/**
 	 * Creates a new Hawk instance in a local folder, and saves its metadata
 	 * into the {@link HManager}.
+	 *
+	 * @throws IllegalArgumentException
+	 *             The minimum and maximum delays are not valid or not
+	 *             consistent with each other.
 	 */
 	public static HModel create(IHawkFactory hawkFactory, String name,
 			File storageFolder, String location, String dbType,
 			List<String> plugins, HManager manager, char[] apw, int minDelay, int maxDelay)
 			throws Exception {
+
+		if (minDelay > maxDelay) {
+			throw new IllegalArgumentException("minimum delay must be less than or equal to maximum delay");
+		}
+		else if (minDelay < 0) {
+			throw new IllegalArgumentException("minimum delay must not be negative");
+		}
+		else if (maxDelay < 0) {
+			throw new IllegalArgumentException("maximum delay must not be negative");
+		}
+
 		HModel hm = new HModel(manager, hawkFactory, name, storageFolder,
 				location);
 		if (dbType != null) {
