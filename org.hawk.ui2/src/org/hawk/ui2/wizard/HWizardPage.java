@@ -70,8 +70,8 @@ public class HWizardPage extends WizardPage {
 
 	private static final String hawkConnectWarning = "Index storage folder must be empty -- Hawk will try to connect to an existing Hawk in this location";
 
-	private Text minDelay;
-	private Text maxDelay;
+	private Text minDelayText;
+	private Text maxDelayText;
 
 	private Text nameText;
 	private Text folderText;
@@ -111,7 +111,8 @@ public class HWizardPage extends WizardPage {
 		nameText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		nameText.setLayoutData(gd);
-		nameText.addModifyListener(new DialogChangeModifyListener());
+		final DialogChangeModifyListener dialogChangeListener = new DialogChangeModifyListener();
+		nameText.addModifyListener(dialogChangeListener);
 
 		label = new Label(container, SWT.NULL);
 		label.setText("");
@@ -122,7 +123,7 @@ public class HWizardPage extends WizardPage {
 		apwText = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.PASSWORD);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		apwText.setLayoutData(gd);
-		apwText.addModifyListener(new DialogChangeModifyListener());
+		apwText.addModifyListener(dialogChangeListener);
 
 		label = new Label(container, SWT.NULL);
 		label.setText("");
@@ -158,7 +159,7 @@ public class HWizardPage extends WizardPage {
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		folderText.setLayoutData(gd);
 		// folderText.setEditable(false);
-		folderText.addModifyListener(new DialogChangeModifyListener());
+		folderText.addModifyListener(dialogChangeListener);
 
 		Button button = new Button(container, SWT.PUSH);
 		button.setText("Browse...");
@@ -175,7 +176,7 @@ public class HWizardPage extends WizardPage {
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		locationText.setLayoutData(gd);
 		// folderText.setEditable(false);
-		locationText.addModifyListener(new DialogChangeModifyListener());
+		locationText.addModifyListener(dialogChangeListener);
 
 		label = new Label(container, SWT.NULL);
 		label.setText("");
@@ -241,10 +242,15 @@ public class HWizardPage extends WizardPage {
 		final Layout cDelayRowLayout = new FillLayout();
 		cDelayRow.setLayout(cDelayRowLayout);
 
-		minDelay = new Text(cDelayRow, SWT.BORDER | SWT.SINGLE);
-		minDelay.setText(ModelIndexerImpl.DEFAULT_MINDELAY + "");
-		maxDelay = new Text(cDelayRow, SWT.BORDER | SWT.SINGLE);
-		maxDelay.setText(ModelIndexerImpl.DEFAULT_MAXDELAY + "");
+		minDelayText = new Text(cDelayRow, SWT.BORDER | SWT.SINGLE);
+		minDelayText.setText(ModelIndexerImpl.DEFAULT_MINDELAY + "");
+		minDelayText.setToolTipText("Minimum delay between periodic synchronisations in milliseconds.");
+		minDelayText.addModifyListener(dialogChangeListener);
+
+		maxDelayText = new Text(cDelayRow, SWT.BORDER | SWT.SINGLE);
+		maxDelayText.setText(ModelIndexerImpl.DEFAULT_MAXDELAY + "");
+		maxDelayText.setToolTipText("Maximum delay between periodic synchronisations in milliseconds (0 disables periodic synchronisations).");
+		maxDelayText.addModifyListener(dialogChangeListener);
 
 		Button startButton = new Button(container, SWT.CHECK);
 		startButton.setText("Start with Workspace");
@@ -363,8 +369,35 @@ public class HWizardPage extends WizardPage {
 			return;
 		}
 
-		// check plugins form a valid hawk?
+		// check min/max delays
+		int minDelay;
+		try {
+			minDelay = Integer.parseInt(minDelayText.getText());
+		} catch (NumberFormatException ex) {
+			updateStatus("Minimum delay must be an integer");
+			return;
+		}
+		int maxDelay;
+		try {
+			maxDelay = Integer.parseInt(maxDelayText.getText());
+		} catch (NumberFormatException ex) {
+			updateStatus("Maximum delay must be an integer");
+			return;
+		}
+		if (minDelay > maxDelay) {
+			updateStatus("Minimum delay must be less than or equal to maximum delay");
+			return;
+		}
+		if (minDelay < 0) {
+			updateStatus("Minimum delay must be greater than or equal to zero");
+			return;
+		}
+		if (maxDelay < 0) {
+			updateStatus("Maximum delay must be greater than or equal to zero");
+			return;
+		}
 
+		// check plugins form a valid hawk?
 		updateStatus(null);
 	}
 
@@ -414,7 +447,7 @@ public class HWizardPage extends WizardPage {
 
 	public int getMaxDelay() {
 		try {
-			return Integer.parseInt(maxDelay.getText());
+			return Integer.parseInt(maxDelayText.getText());
 		} catch (Exception e) {
 			return ModelIndexerImpl.DEFAULT_MAXDELAY;
 		}
@@ -422,7 +455,7 @@ public class HWizardPage extends WizardPage {
 
 	public int getMinDelay() {
 		try {
-			return Integer.parseInt(minDelay.getText());
+			return Integer.parseInt(minDelayText.getText());
 		} catch (Exception e) {
 			return ModelIndexerImpl.DEFAULT_MINDELAY;
 		}
