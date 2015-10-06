@@ -1,7 +1,7 @@
 package org.hawk.epsilon.emc;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.List;
 
 import org.hawk.core.graph.IGraphTypeNodeReference;
@@ -39,32 +39,10 @@ public class TypeNodeWrapper implements IGraphTypeNodeReference {
 		return getTypeName();
 	}
 
-	public Iterable<GraphNodeWrapper> getAll() {
-		Iterable<ModelElementNode> unwrapped = typeNode.getAll();
-		return new Iterable<GraphNodeWrapper>() {
-
-			@Override
-			public Iterator<GraphNodeWrapper> iterator() {
-				final Iterator<ModelElementNode> itUnwrapped = unwrapped.iterator();
-				return new Iterator<GraphNodeWrapper>() {
-
-					@Override
-					public boolean hasNext() {
-						return itUnwrapped.hasNext();
-					}
-
-					@Override
-					public GraphNodeWrapper next() {
-						return new GraphNodeWrapper(itUnwrapped.next().getId(), model);
-					}
-
-					@Override
-					public void remove() {
-						itUnwrapped.remove();
-					}
-				};
-			};
-		};
+	public Collection<Object> getAll() {
+		final Collection<Object> allOf = model.getAllOf(typeNode.getNode(), ModelElementNode.EDGE_LABEL_OFKIND);
+		allOf.addAll(model.getAllOf(typeNode.getNode(), ModelElementNode.EDGE_LABEL_OFTYPE));
+		return allOf;
 	}
 
 	public List<Slot> getAttributes() {

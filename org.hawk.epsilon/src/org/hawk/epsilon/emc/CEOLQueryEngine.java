@@ -252,41 +252,38 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 				}
 			}
 
-			OptimisableCollection nodes = new OptimisableCollection(this,
-					new GraphNodeWrapper(typeNode.getId().toString(), this));
-
 			if (typeNode != null) {
-
-				try (IGraphTransaction tx = graph.beginTransaction()) {
-					// operations on the graph
-					// ...
-
-					for (IGraphEdge n : typeNode
-							.getIncomingWithType(typeorkind)) {
-
-						IGraphNode node = n.getStartNode();
-
-						// System.err.println(Arrays.toString(files.toArray()));
-						// System.err.println(files.iterator().next().getGraph());
-						// System.err.println(node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE).iterator().next().getEndNode().getGraph());
-
-						if (files.contains(node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)
-								.iterator().next().getEndNode())) {
-							nodes.add(new GraphNodeWrapper(node.getId()
-									.toString(), this));
-						}
-					}
-					tx.success();
-					tx.close();
-				}
+				return getAllOf(typeNode, typeorkind);
 			}
 
-			return nodes;
-
+			throw new EolModelElementTypeNotFoundException(this.getName(), arg0);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new EolModelElementTypeNotFoundException(this.getName(), arg0);
-
 		}
+	}
+
+	@Override
+	public Collection<Object> getAllOf(IGraphNode typeNode, final String typeorkind) {
+		OptimisableCollection nodes = new OptimisableCollection(this,
+				new GraphNodeWrapper(typeNode.getId().toString(), this));
+
+		// operations on the graph
+		// ...
+
+		for (IGraphEdge n : typeNode.getIncomingWithType(typeorkind)) {
+
+			IGraphNode node = n.getStartNode();
+
+			// System.err.println(Arrays.toString(files.toArray()));
+			// System.err.println(files.iterator().next().getGraph());
+			// System.err.println(node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE).iterator().next().getEndNode().getGraph());
+
+			if (files.contains(
+					node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE).iterator().next().getEndNode())) {
+				nodes.add(new GraphNodeWrapper(node.getId().toString(), this));
+			}
+		}
+		return nodes;
 	}
 }

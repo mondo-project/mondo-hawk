@@ -311,34 +311,14 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 	}
 
-	public Collection<Object> getAllOf(String arg0, final String typeorkind)
+	public Collection<Object> getAllOf(String typeName, final String typeorkind)
 			throws EolModelElementTypeNotFoundException {
 
 		try {
-
-			// cashing
-			// if (enableCache) {
-			//
-			// OptimisableCollection ret =
-			// typeorkind.equals(ModelElementNode.EDGE_LABEL_OFTYPE) ?
-			// typeContents
-			// .get(arg0) : superTypeContents.get(arg0);
-			//
-			// if (ret != null) {
-			// // System.err.println("using cashed collection of all: "
-			// // +
-			// // typeorkind + " : " + arg0);
-			// broadcastAllOfXAccess(ret);
-			// return ret;
-			// }
-			//
-			// }
-
 			IGraphNode typeNode = null;
 
-			if (arg0.contains("::")) {
-
-				String ep = arg0.substring(0, arg0.indexOf("::"));
+			if (typeName.contains("::")) {
+				String ep = typeName.substring(0, typeName.indexOf("::"));
 
 				IGraphNode pack = null;
 
@@ -352,7 +332,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 						IGraphNode othernode = r.getStartNode();
 						if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(
-								arg0.substring(arg0.indexOf("::") + 2))) {
+								typeName.substring(typeName.indexOf("::") + 2))) {
 							typeNode = othernode;
 							break;
 						}
@@ -360,7 +340,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 					}
 				} catch (Exception e) {
 					throw new EolModelElementTypeNotFoundException(
-							this.getName(), arg0);
+							this.getName(), typeName);
 				}
 
 			} else {
@@ -381,7 +361,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 									.getIncomingWithType("epackage")) {
 
 								IGraphNode othernode = n.getStartNode();
-								if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(arg0)) {
+								if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(typeName)) {
 
 									possibletypenodes.add(othernode);
 
@@ -394,7 +374,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 						else
 							throw new EolModelElementTypeNotFoundException(
 									this.getName(), possibletypenodes.size()
-											+ " CLASSES FOUND FOR: " + arg0);
+											+ " CLASSES FOUND FOR: " + typeName);
 
 				} else {
 
@@ -409,7 +389,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 									.getIncomingWithType("epackage")) {
 
 								IGraphNode othernode = n.getStartNode();
-								if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(arg0)) {
+								if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(typeName)) {
 
 									typeNode = othernode;
 									break;
@@ -422,46 +402,25 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 				}
 			}
 
-			// HashSet<Object> nodes = new HashSet<>();
-
-			OptimisableCollection nodes = new OptimisableCollection(this,
-					new GraphNodeWrapper(typeNode.getId().toString(), this));
-
 			if (typeNode != null) {
-
-					// operations on the graph
-					// ...
-
-					for (IGraphEdge n : typeNode
-							.getIncomingWithType(typeorkind)) {
-
-						nodes.add(new GraphNodeWrapper(n.getStartNode().getId()
-								.toString(), this));
-					}
+				return getAllOf(typeNode, typeorkind);
 			}
 
-			// System.out.println(nodes);
-
-			// for(NeoIdWrapper n:nodes){System.out.println(new
-			// IsOf().isOfClass(graph.getNodeById(n.getId())));}
-
-			// if (enableCache) {
-			//
-			// if (typeorkind.equals(ModelElementNode.EDGE_LABEL_OFTYPE)
-			// && !typeContents.containsKey(arg0))
-			// typeContents.put(arg0, nodes);
-			// else if (typeorkind.equals("kind")
-			// && !superTypeContents.containsKey(arg0))
-			// superTypeContents.put(arg0, nodes);
-			//
-			// }
-
-			broadcastAllOfXAccess(nodes);
-			return nodes;
-
+			throw new EolModelElementTypeNotFoundException(this.getName(), typeName);
 		} catch (Exception e) {
-			throw new EolModelElementTypeNotFoundException(this.getName(), arg0);
+			throw new EolModelElementTypeNotFoundException(this.getName(), typeName);
 		}
+	}
+
+	public Collection<Object> getAllOf(IGraphNode typeNode, final String typeorkind) {
+		OptimisableCollection nodes = new OptimisableCollection(this,
+				new GraphNodeWrapper(typeNode.getId().toString(), this));
+
+		for (IGraphEdge n : typeNode.getIncomingWithType(typeorkind)) {
+			nodes.add(new GraphNodeWrapper(n.getStartNode().getId().toString(), this));
+		}
+		broadcastAllOfXAccess(nodes);
+		return nodes;
 	}
 
 	private void broadcastAllOfXAccess(Iterable<Object> ret) {
