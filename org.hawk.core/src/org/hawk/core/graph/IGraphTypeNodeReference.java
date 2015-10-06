@@ -10,14 +10,9 @@
  ******************************************************************************/
 package org.hawk.core.graph;
 
-import org.hawk.core.query.IQueryEngine;
-
 /**
- * Identifier-based reference to a node in the graph. Query result elements
- * corresponding to model elements should implement this interface.
+ * Identifier-based reference to a type node in the graph. Query result elements
+ * corresponding to model element types should implement this interface.
  */
-public interface IGraphNodeReference {
-	String getId();
-	String getTypeName();
-	IQueryEngine getContainerModel();
+public interface IGraphTypeNodeReference extends IGraphNodeReference {
 }

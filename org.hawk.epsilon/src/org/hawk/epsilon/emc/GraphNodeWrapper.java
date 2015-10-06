@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.hawk.epsilon.emc;
 
+import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeReference;
@@ -29,10 +30,12 @@ public class GraphNodeWrapper implements IGraphNodeReference {
 
 	}
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public EOLQueryEngine getContainerModel() {
 		return containerModel;
 	}
@@ -47,11 +50,14 @@ public class GraphNodeWrapper implements IGraphNodeReference {
 						.equals(this.containerModel))
 			return true;
 		return false;
-
 	}
 
-	public String getTypeName() throws Exception {
+	public Object getFeature(String name) throws EolRuntimeException {
+		return containerModel.getPropertyGetter().invoke(this, name);
+	}
 
+	@Override
+	public String getTypeName() {
 		String type = "";
 
 		try (IGraphTransaction t = containerModel.getBackend()
@@ -71,10 +77,11 @@ public class GraphNodeWrapper implements IGraphNodeReference {
 			// + "";
 
 			t.success();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		return type;
-
 	}
 
 	@Override

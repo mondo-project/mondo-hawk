@@ -15,29 +15,27 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 
-import org.hawk.core.graph.IGraphNode;
-
 /**
  * Read-only abstraction of the known metadata about a slot (an attribute or a
  * reference) in the graph populated by this updater.
  */
 public class Slot {
-	private final IGraphNode typeNode;
-	private final String propertyName;
+	private final TypeNode typeNode;
+	private final String propertyName, propertyType;
 	private final boolean isAttribute, isReference;
 	private final boolean isMany, isOrdered, isUnique;
 
-	public Slot(IGraphNode typeNode, String propertyName) {
+	public Slot(TypeNode typeNode, String propertyName) {
 		this.typeNode = typeNode;
 		this.propertyName = propertyName;
 
-		final String[] propertyMetadata = (String[]) typeNode
-				.getProperty(propertyName);
+		final String[] propertyMetadata = (String[]) typeNode.getNode().getProperty(propertyName);
 		this.isAttribute = "a".equals(propertyMetadata[0]);
 		this.isReference = "r".equals(propertyMetadata[0]);
 		this.isMany = "t".equals(propertyMetadata[1]);
 		this.isOrdered = "t".equals(propertyMetadata[2]);
 		this.isUnique = "t".equals(propertyMetadata[3]);
+		this.propertyType = propertyMetadata[4];
 	}
 
 	/**
@@ -58,11 +56,11 @@ public class Slot {
 		}
 	}
 
-	public IGraphNode getTypeNode() {
+	public TypeNode getTypeNode() {
 		return typeNode;
 	}
 
-	public String getPropertyName() {
+	public String getName() {
 		return propertyName;
 	}
 
@@ -84,6 +82,10 @@ public class Slot {
 
 	public boolean isUnique() {
 		return isUnique;
+	}
+
+	public String getType() {
+		return propertyType;
 	}
 
 	@Override
@@ -122,6 +124,7 @@ public class Slot {
 	@Override
 	public String toString() {
 		return "Slot [typeNode=" + typeNode + ", propertyName=" + propertyName
+				+ ", propertyType=" + propertyType
 				+ ", isAttribute=" + isAttribute + ", isReference="
 				+ isReference + ", isMany=" + isMany + ", isOrdered="
 				+ isOrdered + ", isUnique=" + isUnique + "]";

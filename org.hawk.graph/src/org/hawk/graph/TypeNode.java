@@ -11,6 +11,7 @@
 package org.hawk.graph;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.hawk.core.IModelIndexer;
@@ -57,13 +58,51 @@ public class TypeNode {
 				// skip over the 'id' property, which is a friendly identifier and not a 'real' slot
 				if (IModelIndexer.IDENTIFIER_PROPERTY.equals(propertyName)) continue;
 
-				final Slot slot = new Slot(node, propertyName);
+				final Slot slot = new Slot(this, propertyName);
 				if (slot.isAttribute() || slot.isReference()) {
 					slots.add(slot);
 				}
 			}
 		}
 		return slots;
+	}
+
+	public Iterable<ModelElementNode> getAll() {
+		final Iterable<IGraphEdge> iterableKind = node.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFKIND);
+		final Iterable<IGraphEdge> iterableType = node.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFTYPE);
+		return new Iterable<ModelElementNode>() {
+
+			@Override
+			public Iterator<ModelElementNode> iterator() {
+				final Iterator<IGraphEdge> itKind = iterableKind.iterator();
+				final Iterator<IGraphEdge> itType = iterableType.iterator();
+				return new Iterator<ModelElementNode>() {
+
+					@Override
+					public boolean hasNext() {
+						return itKind.hasNext() || itType.hasNext();
+					}
+
+					@Override
+					public ModelElementNode next() {
+						if (itKind.hasNext()) {
+							return new ModelElementNode(itKind.next().getStartNode());
+						} else {
+							return new ModelElementNode(itType.next().getStartNode());
+						}
+					}
+
+					@Override
+					public void remove() {
+						throw new UnsupportedOperationException();
+					}
+				};
+			}
+		};
+	}
+
+	public Iterable<ModelElementNode> getAllInstances() {
+		return getAll();
 	}
 
 	@Override

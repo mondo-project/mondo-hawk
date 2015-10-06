@@ -96,9 +96,9 @@ public class ModelElementNode {
 				final Object value = getSlotValue(s);
 				if (value == null) continue;
 				if (s.isAttribute()) {
-					attributeValues.put(s.getPropertyName(), value);
+					attributeValues.put(s.getName(), value);
 				} else if (s.isReference()) {
-					referenceValues.put(s.getPropertyName(), value);
+					referenceValues.put(s.getName(), value);
 				}
 			}
 	}
@@ -109,7 +109,7 @@ public class ModelElementNode {
 	 * for this model element node.
 	 */
 	public Object getSlotValue(Slot slot) {
-		final Object rawValue = node.getProperty(slot.getPropertyName());
+		final Object rawValue = node.getProperty(slot.getName());
 		if (slot.isAttribute() && rawValue != null && slot.isMany()) {
 			final Collection<Object> collection = slot.getCollection();
 			final Class<?> componentType = rawValue.getClass().getComponentType();
@@ -146,7 +146,7 @@ public class ModelElementNode {
 			}
 
 			for (IGraphEdge r : node
-					.getOutgoingWithType(slot.getPropertyName())) {
+					.getOutgoingWithType(slot.getName())) {
 				final Object id = r.getEndNode().getId();
 				referencedIds.add(id);
 			}
@@ -160,7 +160,7 @@ public class ModelElementNode {
 			} else {
 				throw new IllegalArgumentException(String.format(
 						"A relationship with arity 1 (%s) had %d links",
-						slot.getPropertyName(), referencedIds.size()));
+						slot.getName(), referencedIds.size()));
 			}
 		} else {
 			return rawValue;

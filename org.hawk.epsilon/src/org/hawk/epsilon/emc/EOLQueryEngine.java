@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,6 +45,8 @@ import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
 import org.hawk.graph.ModelElementNode;
+import org.hawk.graph.PackageNode;
+import org.hawk.graph.TypeNode;
 
 public class EOLQueryEngine extends AbstractEpsilonModel implements
 		IQueryEngine
@@ -207,16 +210,10 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		allContents = new HashSet<Object>();
 		// GlobalGraphOperations ops = GlobalGraphOperations.at(graph);
 
-		try (IGraphTransaction t = graph.beginTransaction()) {
-
-			for (IGraphNode node : graph.allNodes("eobject")) {
-				GraphNodeWrapper wrapper = new GraphNodeWrapper(node.getId()
-						.toString(), this);
-				allContents.add(wrapper);
-			}
-			t.success();
-		} catch (Exception e) {
-			e.printStackTrace();
+		for (IGraphNode node : graph.allNodes("eobject")) {
+			GraphNodeWrapper wrapper = new GraphNodeWrapper(node.getId()
+					.toString(), this);
+			allContents.add(wrapper);
 		}
 
 		// }
@@ -345,7 +342,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 				IGraphNode pack = null;
 
-				try (IGraphTransaction tx = graph.beginTransaction()) {
+				try {
 					// operations on the graph
 					// ...
 
@@ -361,9 +358,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 						}
 
 					}
-
-					tx.success();
-					tx.close();
 				} catch (Exception e) {
 					throw new EolModelElementTypeNotFoundException(
 							this.getName(), arg0);
@@ -373,7 +367,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 				if (epackages == null) {
 
-					try (IGraphTransaction tx = graph.beginTransaction()) {
 						// operations on the graph
 						// ...
 
@@ -403,15 +396,10 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 									this.getName(), possibletypenodes.size()
 											+ " CLASSES FOUND FOR: " + arg0);
 
-						tx.success();
-						tx.close();
-					}
-
 				} else {
 
 					for (String p : epackages) {
 
-						try (IGraphTransaction tx = graph.beginTransaction()) {
 							// operations on the graph
 							// ...
 
@@ -429,9 +417,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 								}
 							}
 
-							tx.success();
-							tx.close();
-						}
 					}
 
 				}
@@ -444,7 +429,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 			if (typeNode != null) {
 
-				try (IGraphTransaction tx = graph.beginTransaction()) {
 					// operations on the graph
 					// ...
 
@@ -454,9 +438,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 						nodes.add(new GraphNodeWrapper(n.getStartNode().getId()
 								.toString(), this));
 					}
-					tx.success();
-					tx.close();
-				}
 			}
 
 			// System.out.println(nodes);
@@ -507,14 +488,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 			boolean isnull = false;
 
-			try (IGraphTransaction tx = graph.beginTransaction()) {
+			try {
 				// operations on the graph
 				// ...
 
 				isnull = graph.getNodeById(id) == null;
-
-				tx.success();
-				tx.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -541,7 +519,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 		String ret = null;
 
-		try (IGraphTransaction tx = graph.beginTransaction()) {
+		try {
 			// operations on the graph
 			// ...
 
@@ -550,9 +528,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 					.getId());
 
 			ret = typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
-
-			tx.success();
-			tx.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -565,7 +540,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 		IGraphNode typeNode = null;
 
-		try (IGraphTransaction tx = graph.beginTransaction()) {
+		try {
 
 			IGraphNode objectNode = graph.getNodeById(((GraphNodeWrapper) arg0)
 					.getId());
@@ -579,10 +554,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			typeNode = objectNode
 					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
 					.iterator().next().getEndNode();
-
-			tx.success();
-			tx.close();
-
 		} catch (Exception e) {
 			// System.err
 			// .println("error in getTypeOf, returning new NeoIdWrapper(graph,0L, this);");
@@ -622,7 +593,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 					IGraphNode pack = null;
 
-					try (IGraphTransaction tx = graph.beginTransaction()) {
+					try {
 						// operations on the graph
 						// ...
 
@@ -638,8 +609,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 								break;
 							}
 						}
-						tx.success();
-						tx.close();
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -649,7 +618,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 						LinkedList<IGraphNode> possibletypenodes = new LinkedList<IGraphNode>();
 
-						try (IGraphTransaction tx = graph.beginTransaction()) {
 							// operations on the graph
 							// ...
 
@@ -671,9 +639,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 									}
 								}
 							}
-							tx.success();
-							tx.close();
-						}
 						if (possibletypenodes.size() == 1) {
 							cachedTypes.add(arg0);
 							return true;
@@ -684,15 +649,12 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 											+ " CLASSES FOUND FOR " + arg0
 											+ ", RETURNING FALSE");
 							LinkedList<String> ret = new LinkedList<>();
-							try (IGraphTransaction tx = graph
-									.beginTransaction()) {
-								for (IGraphNode n : possibletypenodes)
+							for (IGraphNode n : possibletypenodes)
 									ret.add(n.getOutgoingWithType("epackage")
 											.iterator().next().getEndNode()
 											.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString()
 											+ "::"
 											+ n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
-							}
 							System.err.println("types found:" + ret);
 							return false;
 						}
@@ -703,8 +665,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 							IGraphNode pack = null;
 
-							try (IGraphTransaction tx = graph
-									.beginTransaction()) {
+							try {
 								// operations on the graph
 								// ...
 
@@ -723,8 +684,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 										break;
 									}
 								}
-
-								tx.success();
 							} catch (Exception e) {
 								System.err
 										.println("hastype("
@@ -811,9 +770,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		if (graph != null) {
 
 			try (IGraphTransaction tx = graph.beginTransaction()) {
-
 				epackagedictionary = graph.getMetamodelIndex();
-
 				tx.success();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -824,11 +781,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			// System.out.println("--Graph connection opened--");
 
 			// System.out.println("Loging graph - disabled");
-			try {
-				// fullLog(graph);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+//			try {
+//				// fullLog(graph);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
 			// System.out.println("Graph Loged - disabled");
 
 		} else
@@ -871,7 +828,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		FileWriter w = new FileWriter(file);
 		String id = null;
 
-		try (IGraphTransaction tx = graph.beginTransaction()) {
+		try {
 			// operations on the graph
 			// ...
 
@@ -909,8 +866,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 				w.append(n + " : " + props + refs + "\n");
 
 			}
-			tx.success();
-			tx.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -983,7 +938,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 		String id = null;
 
-		try (IGraphTransaction tx = graph.beginTransaction()) {
+		try {
 			// operations on the graph
 			// ...
 
@@ -1006,8 +961,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 				// System.err.println("warning: metaclass node asked for its type, ignored");
 				// e.printStackTrace();
 			}
-			tx.success();
-			tx.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1176,10 +1129,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 		long init = System.currentTimeMillis();
 
-		try {
+		try (IGraphTransaction tx = graph.beginTransaction()) {
 			ret = module.execute();
 			if (ret == null)
 				ret = "no result returned (maybe it directly printed the result to console?)";
+			tx.success();
 		} catch (Exception e) {
 			throw new QueryExecutionException(e);
 		}
@@ -1287,10 +1241,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 			long init = System.currentTimeMillis();
 
-			try {
+			try (IGraphTransaction tx = graph.beginTransaction()) {
 				ret = module.execute();
 				if (ret == null)
 					ret = "no result returned (maybe it directly printed the result to console?)";
+				tx.success();
 			} catch (Exception ex) {
 				throw new QueryExecutionException(ex);
 			}
@@ -1380,7 +1335,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 		HashMap<String, EolModule> cachedModules = new HashMap<String, EolModule>();
 
-		try (IGraphTransaction tx = graph.beginTransaction()) {
+		try {
 
 			for (IGraphNode n : nodes) {
 
@@ -1489,8 +1444,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			// RelationshipUtil
 			// .getNewRelationshipType("ofType")).iterator().next().getEndNode()
 			// + " :: " + n.getPropertyKeys());
-
-			tx.success();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1529,4 +1482,14 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		return ret;
 	}
 
+	public List<TypeNodeWrapper> getTypes() {
+		final List<TypeNodeWrapper> nodes = new ArrayList<>();
+		for (IGraphNode n : graph.getMetamodelIndex().query("*", "*")) {
+			final PackageNode pn = new PackageNode(n);
+			for (TypeNode tn : pn.getTypes()) {
+				nodes.add(new TypeNodeWrapper(tn, this));
+			}
+		}
+		return nodes;
+	}
 }
