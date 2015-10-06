@@ -892,7 +892,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 					} else {
 
 						// t.stop();
-						console.println("different revisions, reseting check timer and propagating changes!");
+						console.println("different revisions, resetting check timer and propagating changes!");
 						currentDelay = minDelay;
 
 					}

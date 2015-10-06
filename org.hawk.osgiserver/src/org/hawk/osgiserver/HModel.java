@@ -478,7 +478,7 @@ public class HModel {
 				hawk.getModelIndexer().setDB(db, false);
 			}
 
-			hawk.getModelIndexer().init(hp.getMaxDelay(), hp.getMaxDelay());
+			hawk.getModelIndexer().init(hp.getMinDelay(), hp.getMaxDelay());
 		} catch (Exception e) {
 			getConsole().printerrln(e);
 		}
