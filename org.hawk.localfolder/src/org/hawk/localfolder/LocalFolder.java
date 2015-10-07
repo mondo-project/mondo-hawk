@@ -12,12 +12,16 @@
 package org.hawk.localfolder;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,14 +37,41 @@ import org.hawk.core.util.FileOperations;
 
 public class LocalFolder implements IVcsManager {
 
+	private final class LastModifiedFileVisitor implements FileVisitor<Path> {
+		public long maximumLastModified;
+
+		@Override
+		public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+			maximumLastModified = Math.max(maximumLastModified, Files.getLastModifiedTime(dir).toMillis());
+			return FileVisitResult.CONTINUE;
+		}
+
+		@Override
+		public FileVisitResult preVisitDirectory(Path dir,
+				BasicFileAttributes attrs) throws IOException {
+			return FileVisitResult.CONTINUE;
+		}
+
+		@Override
+		public FileVisitResult visitFile(Path file,
+				BasicFileAttributes attrs) throws IOException {
+			maximumLastModified = Math.max(maximumLastModified, Files.getLastModifiedTime(file).toMillis());
+			return FileVisitResult.CONTINUE;
+		}
+
+		@Override
+		public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+			return FileVisitResult.CONTINUE;
+		}
+	}
+
 	private IAbstractConsole console;
 	private Path rootLocation;
 	private Set<File> previousFiles = new HashSet<>();
 	private LocalFolderRepository repository;
 
-	private static int version = 0;
-
-	// Maximum 'last modified' time observed within the folder since the last time we checked
+	// Maximum 'last modified' time observed within the folder since the last
+	// time we checked
 	private long lastModifiedRepository = 0;
 
 	public LocalFolder() {
@@ -65,7 +96,8 @@ public class LocalFolder implements IVcsManager {
 		if (!repositoryURI.endsWith("/")) {
 			repositoryURI += "/";
 		}
-		repository = new LocalFolderRepository(URLDecoder.decode(repositoryURI.replace("+", "%2B"), "UTF-8"));
+		repository = new LocalFolderRepository(URLDecoder.decode(
+				repositoryURI.replace("+", "%2B"), "UTF-8"));
 	}
 
 	@Override
@@ -74,8 +106,7 @@ public class LocalFolder implements IVcsManager {
 		// folder, every time this method is called a different value is
 		// returned, hence the check is delegated to changes in each individual
 		// file in the folder
-		version++;
-		return version + "";
+		return getCurrentRevision();
 	}
 
 	@Override
@@ -84,8 +115,15 @@ public class LocalFolder implements IVcsManager {
 		// folder, every time this method is called a different value is
 		// returned, hence the check is delegated to changes in each individual
 		// file in the folder
-		version++;
-		return version + "";
+
+		try {
+			final LastModifiedFileVisitor visitor = new LastModifiedFileVisitor();
+			Files.walkFileTree(rootLocation, visitor);
+			return visitor.maximumLastModified + "";
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			return "0";
+		}
 	}
 
 	@Override
@@ -164,7 +202,6 @@ public class LocalFolder implements IVcsManager {
 			String startRevision, String endRevision) throws Exception {
 
 		VcsRepositoryDelta delta = new VcsRepositoryDelta();
-		delta.setLatestRevision(getCurrentRevision());
 		delta.setRepository(repository);
 
 		Set<File> files = new HashSet<>();
@@ -197,11 +234,13 @@ public class LocalFolder implements IVcsManager {
 			long newLastModifiedRepository = lastModifiedRepository;
 			for (File f : files) {
 				previousFiles.add(f);
-				final long lastModified = Files.getLastModifiedTime(f.toPath()).toMillis();
+				final long lastModified = Files.getLastModifiedTime(f.toPath())
+						.toMillis();
 				if (lastModifiedRepository > lastModified) {
 					continue;
 				}
-				newLastModifiedRepository = Math.max(newLastModifiedRepository, lastModified);
+				newLastModifiedRepository = Math.max(newLastModifiedRepository,
+						lastModified);
 
 				VcsCommit commit = new VcsCommit();
 				commit.setAuthor("i am a local folder driver - no authors recorded");
@@ -225,6 +264,7 @@ public class LocalFolder implements IVcsManager {
 			}
 			lastModifiedRepository = newLastModifiedRepository;
 		}
+		delta.setLatestRevision(getCurrentRevision());
 
 		return delta;
 	}

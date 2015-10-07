@@ -159,7 +159,7 @@ public class Runtime_example {
 		init[4] = 'n';
 
 		hawk.setAdminPassword(init);
-		hawk.init(1000,512*1000);
+		hawk.init(1000, 512 * 1000);
 
 		// add console interaction if needed
 		Thread t = consoleInteraction(hawk);
@@ -217,7 +217,7 @@ public class Runtime_example {
 						if (s.equalsIgnoreCase("quit")
 								|| s.equalsIgnoreCase("exit")
 								|| s.equalsIgnoreCase("e")) {
-							//i2.shutdown(ShutdownRequestType.ONLY_LOCAL);
+							// i2.shutdown(ShutdownRequestType.ONLY_LOCAL);
 							i2.delete();
 							System.exit(0);
 						} else if (s.equalsIgnoreCase("adi")) {
@@ -269,8 +269,9 @@ public class Runtime_example {
 									queryLangID,
 									"self.returnType.isTypeOf(SimpleType) and self.revRefNav_bodyDeclarations.isTypeOf(TypeDeclaration) and self.returnType.name.fullyQualifiedName == self.revRefNav_bodyDeclarations.name.fullyQualifiedName");
 
+						} else if (s.equalsIgnoreCase("r")) {
+							hawk.requestImmediateSync();
 						}
-
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

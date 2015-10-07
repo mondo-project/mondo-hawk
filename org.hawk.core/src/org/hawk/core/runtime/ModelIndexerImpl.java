@@ -116,7 +116,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 	 * Creates an indexer with a <code>name</code>, with its contents saved in
 	 * <code>parentfolder</code> and printing to console <code>c</code>.
 	 */
-	public ModelIndexerImpl(String name, File parentfolder, IAbstractConsole c) throws Exception {
+	public ModelIndexerImpl(String name, File parentfolder, IAbstractConsole c)
+			throws Exception {
 		this.name = name;
 		this.console = c;
 		this.parentfolder = parentfolder;
@@ -291,7 +292,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 								}
 
 								for (VcsCommitItem v : currreposchangeditems) {
-										try {
+									try {
 										IHawkModelResource r = null;
 
 										if (u.caresAboutResources()) {
@@ -783,7 +784,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 			System.out.println("adding: " + meta[0] + ":" + meta[1]);
 			set.add(meta);
 		}
-		HawkProperties hp = new HawkProperties(graph.getType(), set, minDelay, maxDelay);
+		HawkProperties hp = new HawkProperties(graph.getType(), set, minDelay,
+				maxDelay);
 
 		String out = stream.toXML(hp);
 		try (BufferedWriter b = new BufferedWriter(new FileWriter(
@@ -834,7 +836,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 		this.maxDelay = maxDelay;
 		this.minDelay = minDelay;
 		this.currentDelay = minDelay;
-		
+
 		if (adminPw == null)
 			throw new Exception(
 					"Please set the admin password using setAdminPassword(...) before calling init");
@@ -880,30 +882,31 @@ public class ModelIndexerImpl implements IModelIndexer {
 		}
 
 		// Timer only enabled if the delay is non-zero
-				if (maxDelay > 0) {
-					if (!latestUpdateFoundChanges) {
-						int olddelay = currentDelay;
-						currentDelay = currentDelay * 2;
-						if (currentDelay > maxDelay)
-							currentDelay = maxDelay;
-						console.println("same revision, incrementing check timer: " + olddelay / 1000 + " -> "
-								+ currentDelay / 1000 + " (max: " + maxDelay / 1000 + ")");
+		if (maxDelay > 0) {
+			if (!latestUpdateFoundChanges) {
+				int olddelay = currentDelay;
+				currentDelay = currentDelay * 2;
+				if (currentDelay > maxDelay)
+					currentDelay = maxDelay;
+				console.println("same revision, incrementing check timer: "
+						+ olddelay / 1000 + " -> " + currentDelay / 1000
+						+ " (max: " + maxDelay / 1000 + ")");
 
-					} else {
+			} else {
 
-						// t.stop();
-						console.println("different revisions, resetting check timer and propagating changes!");
-						currentDelay = minDelay;
+				// t.stop();
+				console.println("different revisions, resetting check timer and propagating changes!");
+				currentDelay = minDelay;
 
-					}
-
-					updateTimer.schedule(new RunUpdateTask(), currentDelay);
-				}
-
-				final long time = (System.currentTimeMillis() - start);
-				System.err.println("------------------ update task took: " + time
-						/ 1000 + "s" + time % 1000 + "ms");
 			}
+
+			updateTimer.schedule(new RunUpdateTask(), currentDelay);
+		}
+
+		final long time = (System.currentTimeMillis() - start);
+		System.err.println("------------------ update task took: " + time
+				/ 1000 + "s" + time % 1000 + "ms");
+	}
 
 	@Override
 	public File getParentFolder() {
