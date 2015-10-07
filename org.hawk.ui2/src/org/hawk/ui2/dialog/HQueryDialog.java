@@ -16,8 +16,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -37,6 +40,8 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.hawk.osgiserver.HModel;
+import org.hawk.ui2.Activator;
+import org.osgi.framework.FrameworkUtil;
 
 public class HQueryDialog extends Dialog {
 
@@ -140,7 +145,12 @@ public class HQueryDialog extends Dialog {
 			queryLanguage.select(0);
 
 		l = new Label(container, SWT.READ_ONLY);
-		l.setText(" Context Repository (exact match or empty):");
+		l.setText(" Context Repositories (comma separated");
+
+		l = new Label(container, SWT.READ_ONLY);
+
+		l = new Label(container, SWT.READ_ONLY);
+		l.setText("(partial) matches using * as wildcard):");
 
 		final StyledText contextRepo = new StyledText(container, SWT.NONE);
 		GridData gridData = new GridData();
@@ -166,7 +176,7 @@ public class HQueryDialog extends Dialog {
 		gridData = new GridData();
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.horizontalSpan = 2;
-		gridData.minimumWidth = 350;
+		gridData.minimumWidth = 555;
 		button.setLayoutData(gridData);
 		button.setText("Run Query");
 
@@ -236,7 +246,8 @@ public class HQueryDialog extends Dialog {
 
 					}
 				} catch (Exception ex) {
-					final String error = "Error while running the query: " + ex.getMessage();
+					final String error = "Error while running the query: "
+							+ ex.getMessage();
 					resultField.setText(error);
 					resultField.setStyleRange(createRedBoldRange(error.length()));
 				}
@@ -244,6 +255,11 @@ public class HQueryDialog extends Dialog {
 		});
 
 		Button button2 = new Button(container, SWT.PUSH);
+		gridData = new GridData();
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.horizontalSpan = 1;
+		gridData.minimumWidth = 250;
+		button2.setLayoutData(gridData);
 		button2.setText("Reset Query");
 
 		button2.addSelectionListener(new SelectionAdapter() {
@@ -261,10 +277,29 @@ public class HQueryDialog extends Dialog {
 				String res = resultField.getText();
 				if (!res.startsWith(QUERY_EDITED)) {
 					resultField.setText(QUERY_EDITED + "\n" + res);
-					resultField.setStyleRange(createRedBoldRange(QUERY_EDITED.length()));
+					resultField.setStyleRange(createRedBoldRange(QUERY_EDITED
+							.length()));
 				}
 			}
 
+		});
+
+		// l = new Label(container, SWT.READ_ONLY);
+
+		Button button3 = new Button(container, SWT.PUSH);
+		button3.setText("Request Immediate Sync");
+		button3.setImage(ImageDescriptor.createFromURL(
+				FileLocator.find(FrameworkUtil.getBundle(this.getClass()),
+						new Path("icons/refresh.gif"), null)).createImage());
+		button3.setLayoutData(gridData);
+		button3.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				try {
+					index.sync();
+				} catch (Exception ee) {
+					Activator.logError("Failed to invoke manual sync", ee);
+				}
+			}
 		});
 
 		return container;

@@ -74,12 +74,9 @@ public class BPMNPackage extends BPMNObject implements IHawkPackage {
 		return r;
 	}
 
-	// @Override
-	// public HawkMetaModelResource getResource() {
-	// return new EMFMetaModelResource(ep.eResource(), p);
-	// }
 	@Override
 	public int hashCode() {
 		return ep.hashCode();
 	}
+	
 }

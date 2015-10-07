@@ -65,7 +65,7 @@ public class QueryAwareGraphNodeWrapper extends GraphNodeWrapper {
 
 	}
 
-	public String getTypeName() throws Exception {
+	public String getTypeName() {
 
 		String type = "";
 
@@ -74,8 +74,9 @@ public class QueryAwareGraphNodeWrapper extends GraphNodeWrapper {
 
 			IGraphNode n = containerModel.getBackend().getNodeById(id);
 
-			type = n.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().next()
-					.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+			type = n.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
+					.iterator().next().getEndNode()
+					.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 
 			// HawkClass e = new MetamodelUtils().getTypeOfFromNode(n,
 			// containerModel.parser);
@@ -86,6 +87,8 @@ public class QueryAwareGraphNodeWrapper extends GraphNodeWrapper {
 			// + "";
 
 			t.success();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		return type;

@@ -331,7 +331,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 					for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
 
 						IGraphNode othernode = r.getStartNode();
-						if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(
+						if (othernode.getProperty(
+								IModelIndexer.IDENTIFIER_PROPERTY).equals(
 								typeName.substring(typeName.indexOf("::") + 2))) {
 							typeNode = othernode;
 							break;
@@ -347,55 +348,59 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 				if (epackages == null) {
 
-						// operations on the graph
-						// ...
+					// operations on the graph
+					// ...
 
-						Iterator<IGraphNode> packs = epackagedictionary.query(
-								"id", "*").iterator();
-						LinkedList<IGraphNode> possibletypenodes = new LinkedList<IGraphNode>();
+					Iterator<IGraphNode> packs = epackagedictionary.query("id",
+							"*").iterator();
+					LinkedList<IGraphNode> possibletypenodes = new LinkedList<IGraphNode>();
 
-						while (packs.hasNext()) {
+					while (packs.hasNext()) {
 
-							IGraphNode pack = packs.next();
-							for (IGraphEdge n : pack
-									.getIncomingWithType("epackage")) {
+						IGraphNode pack = packs.next();
+						for (IGraphEdge n : pack
+								.getIncomingWithType("epackage")) {
 
-								IGraphNode othernode = n.getStartNode();
-								if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(typeName)) {
+							IGraphNode othernode = n.getStartNode();
+							if (othernode.getProperty(
+									IModelIndexer.IDENTIFIER_PROPERTY).equals(
+									typeName)) {
 
-									possibletypenodes.add(othernode);
+								possibletypenodes.add(othernode);
 
-								}
 							}
 						}
+					}
 
-						if (possibletypenodes.size() == 1)
-							typeNode = possibletypenodes.getFirst();
-						else
-							throw new EolModelElementTypeNotFoundException(
-									this.getName(), possibletypenodes.size()
-											+ " CLASSES FOUND FOR: " + typeName);
+					if (possibletypenodes.size() == 1)
+						typeNode = possibletypenodes.getFirst();
+					else
+						throw new EolModelElementTypeNotFoundException(
+								this.getName(), possibletypenodes.size()
+										+ " CLASSES FOUND FOR: " + typeName);
 
 				} else {
 
 					for (String p : epackages) {
 
-							// operations on the graph
-							// ...
+						// operations on the graph
+						// ...
 
-							IGraphNode pack = epackagedictionary.get("id", p)
-									.getSingle();
-							for (IGraphEdge n : pack
-									.getIncomingWithType("epackage")) {
+						IGraphNode pack = epackagedictionary.get("id", p)
+								.getSingle();
+						for (IGraphEdge n : pack
+								.getIncomingWithType("epackage")) {
 
-								IGraphNode othernode = n.getStartNode();
-								if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(typeName)) {
+							IGraphNode othernode = n.getStartNode();
+							if (othernode.getProperty(
+									IModelIndexer.IDENTIFIER_PROPERTY).equals(
+									typeName)) {
 
-									typeNode = othernode;
-									break;
+								typeNode = othernode;
+								break;
 
-								}
 							}
+						}
 
 					}
 
@@ -406,18 +411,22 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 				return getAllOf(typeNode, typeorkind);
 			}
 
-			throw new EolModelElementTypeNotFoundException(this.getName(), typeName);
+			throw new EolModelElementTypeNotFoundException(this.getName(),
+					typeName);
 		} catch (Exception e) {
-			throw new EolModelElementTypeNotFoundException(this.getName(), typeName);
+			throw new EolModelElementTypeNotFoundException(this.getName(),
+					typeName);
 		}
 	}
 
-	public Collection<Object> getAllOf(IGraphNode typeNode, final String typeorkind) {
+	public Collection<Object> getAllOf(IGraphNode typeNode,
+			final String typeorkind) {
 		OptimisableCollection nodes = new OptimisableCollection(this,
 				new GraphNodeWrapper(typeNode.getId().toString(), this));
 
 		for (IGraphEdge n : typeNode.getIncomingWithType(typeorkind)) {
-			nodes.add(new GraphNodeWrapper(n.getStartNode().getId().toString(), this));
+			nodes.add(new GraphNodeWrapper(n.getStartNode().getId().toString(),
+					this));
 		}
 		broadcastAllOfXAccess(nodes);
 		return nodes;
@@ -486,7 +495,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			IGraphNode typeNode = graph.getNodeById(((GraphNodeWrapper) type)
 					.getId());
 
-			ret = typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+			ret = typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+					.toString();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -577,27 +587,28 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 						LinkedList<IGraphNode> possibletypenodes = new LinkedList<IGraphNode>();
 
-							// operations on the graph
-							// ...
+						// operations on the graph
+						// ...
 
-							Iterator<IGraphNode> packs = epackagedictionary
-									.query("id", "*").iterator();
+						Iterator<IGraphNode> packs = epackagedictionary.query(
+								"id", "*").iterator();
 
-							while (packs.hasNext()) {
+						while (packs.hasNext()) {
 
-								IGraphNode pack = packs.next();
-								for (IGraphEdge n : pack
-										.getIncomingWithType("epackage")) {
+							IGraphNode pack = packs.next();
+							for (IGraphEdge n : pack
+									.getIncomingWithType("epackage")) {
 
-									IGraphNode othernode = n.getStartNode();
-									if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
-											.equals(arg0)) {
+								IGraphNode othernode = n.getStartNode();
+								if (othernode.getProperty(
+										IModelIndexer.IDENTIFIER_PROPERTY)
+										.equals(arg0)) {
 
-										possibletypenodes.add(othernode);
+									possibletypenodes.add(othernode);
 
-									}
 								}
 							}
+						}
 						if (possibletypenodes.size() == 1) {
 							cachedTypes.add(arg0);
 							return true;
@@ -609,11 +620,18 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 											+ ", RETURNING FALSE");
 							LinkedList<String> ret = new LinkedList<>();
 							for (IGraphNode n : possibletypenodes)
-									ret.add(n.getOutgoingWithType("epackage")
-											.iterator().next().getEndNode()
-											.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString()
-											+ "::"
-											+ n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
+								ret.add(n
+										.getOutgoingWithType("epackage")
+										.iterator()
+										.next()
+										.getEndNode()
+										.getProperty(
+												IModelIndexer.IDENTIFIER_PROPERTY)
+										.toString()
+										+ "::"
+										+ n.getProperty(
+												IModelIndexer.IDENTIFIER_PROPERTY)
+												.toString());
 							System.err.println("types found:" + ret);
 							return false;
 						}
@@ -635,7 +653,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 										.getIncomingWithType("epackage")) {
 
 									IGraphNode othernode = n.getStartNode();
-									if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+									if (othernode.getProperty(
+											IModelIndexer.IDENTIFIER_PROPERTY)
 											.equals(arg0)) {
 										cachedTypes.add(arg0);
 
@@ -740,11 +759,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			// System.out.println("--Graph connection opened--");
 
 			// System.out.println("Loging graph - disabled");
-//			try {
-//				// fullLog(graph);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
+			// try {
+			// // fullLog(graph);
+			// } catch (Exception e) {
+			// e.printStackTrace();
+			// }
 			// System.out.println("Graph Loged - disabled");
 
 		} else
@@ -800,7 +819,9 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 					id = "";
 
 					try {
-						id = r.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+						id = r.getEndNode()
+								.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+								.toString();
 					} catch (Exception e) {
 						id = "NO ID FOUND";
 					}
@@ -809,8 +830,14 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 					if (!r.getStartNode().equals(n))
 						x = "<-";
 
-					refs += "[" + r.getType() + " " + x + " "
-							+ r.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY) + "" + "]";
+					refs += "["
+							+ r.getType()
+							+ " "
+							+ x
+							+ " "
+							+ r.getEndNode().getProperty(
+									IModelIndexer.IDENTIFIER_PROPERTY) + ""
+							+ "]";
 
 				}
 
@@ -912,7 +939,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			try {
 				typeNode = objectNode.getOutgoingWithType(typeorkind)
 						.iterator().next().getEndNode();
-				id = typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+				id = typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+						.toString();
 			} catch (Exception e) {
 				// dont have a type - only if you are iterating all the
 				// nodes
@@ -1059,7 +1087,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 	}
 
 	@Override
-	public Object contextlessQuery(IGraphDatabase g, String query) throws QueryExecutionException, InvalidQueryException {
+	public Object contextlessQuery(IGraphDatabase g, String query)
+			throws QueryExecutionException, InvalidQueryException {
 		return contextlessQuery(g, query, null);
 	}
 
@@ -1121,7 +1150,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		return ret;
 	}
 
-	public Object contextlessQuery(IGraphDatabase g, File query) throws QueryExecutionException, InvalidQueryException {
+	public Object contextlessQuery(IGraphDatabase g, File query)
+			throws QueryExecutionException, InvalidQueryException {
 		String code = "";
 		try {
 			BufferedReader r = new BufferedReader(new FileReader(query));
@@ -1294,7 +1324,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 		HashMap<String, EolModule> cachedModules = new HashMap<String, EolModule>();
 
-		try {
+		try (IGraphTransaction t = graph.beginTransaction()) {
 
 			for (IGraphNode n : nodes) {
 
@@ -1349,10 +1379,16 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 								elementnode
 										.getOutgoingWithType(
 												ModelElementNode.EDGE_LABEL_OFTYPE)
-										.iterator().next().getEndNode()
+										.iterator()
+										.next()
+										.getEndNode()
 										.getOutgoingWithType("epackage")
-										.iterator().next().getEndNode()
-										.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString()
+										.iterator()
+										.next()
+										.getEndNode()
+										.getProperty(
+												IModelIndexer.IDENTIFIER_PROPERTY)
+										.toString()
 										//
 										// e.getEPackage().getNsURI()
 										+ "##"
@@ -1360,8 +1396,12 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 										+ elementnode
 												.getOutgoingWithType(
 														ModelElementNode.EDGE_LABEL_OFTYPE)
-												.iterator().next().getEndNode()
-												.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString()
+												.iterator()
+												.next()
+												.getEndNode()
+												.getProperty(
+														IModelIndexer.IDENTIFIER_PROPERTY)
+												.toString()
 										//
 										+ "##" + s);
 
@@ -1403,6 +1443,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			// RelationshipUtil
 			// .getNewRelationshipType("ofType")).iterator().next().getEndNode()
 			// + " :: " + n.getPropertyKeys());
+			t.success();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

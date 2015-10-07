@@ -212,6 +212,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 								if (c.getChangeType().equals(
 										VcsChangeType.DELETED)) {
 
+									if(VERBOSE)
 									console.println("-->" + c.getPath()
 											+ " HAS CHANGED ("
 											+ c.getChangeType()
@@ -242,6 +243,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 									String commitPath = s.getPath();
 
+									if(VERBOSE)
 									console.println("-->" + commitPath
 											+ " HAS CHANGED ("
 											+ s.getChangeType()
@@ -292,47 +294,51 @@ public class ModelIndexerImpl implements IModelIndexer {
 								}
 
 								for (VcsCommitItem v : currreposchangeditems) {
-									try {
-										IHawkModelResource r = null;
+									// if(v.getPath().equals("W4 BPMN+ Composer V.9.0/B.2.0-roundtrip.bpmn")){
+									//if (v.getPath().equals("A - Fixed Digrams with Variations of Attributes/eclipse BPMN2 Modeler 0.2.6/A.3.0-export.bpmn")) {
+										try {
+											IHawkModelResource r = null;
 
-										if (u.caresAboutResources()) {
+											if (u.caresAboutResources()) {
 
-											File file = new File(
-													graph.getTempDir() + "/"
-															+ v.getPath());
+												File file = new File(
+														graph.getTempDir()
+																+ "/"
+																+ v.getPath());
 
-											if (!file.exists()) {
-												console.printerrln("warning, cannot find file: "
-														+ file
-														+ ", ignoring changes");
-											} else {
-												r = getModelParserFromFilename(
-														file.getName()
-																.toLowerCase())
-														.parse(file);
-											}
-
-										}
-
-										u.updateStore(v, r);
-
-										if (r != null) {
-											if (!isSyncMetricsEnabled)
-												r.unload();
-											else {
-												fileToResourceMap.put(v, r);
+												if (!file.exists()) {
+													console.printerrln("warning, cannot find file: "
+															+ file
+															+ ", ignoring changes");
+												} else {
+													r = getModelParserFromFilename(
+															file.getName()
+																	.toLowerCase())
+															.parse(file);
+												}
 
 											}
-											loadedResources++;
+
+											u.updateStore(v, r);
+
+											if (r != null) {
+												if (!isSyncMetricsEnabled)
+													r.unload();
+												else {
+													fileToResourceMap.put(v, r);
+
+												}
+												loadedResources++;
+											}
+
+										} catch (Exception e) {
+											console.printerrln("updater: " + u
+													+ "failed to update store");
+											console.printerrln(e);
+
 										}
-
-									} catch (Exception e) {
-										console.printerrln("updater: " + u
-												+ "failed to update store");
-										console.printerrln(e);
-
 									}
-								}
+								//}
 
 								// update proxies
 								u.updateProxies();

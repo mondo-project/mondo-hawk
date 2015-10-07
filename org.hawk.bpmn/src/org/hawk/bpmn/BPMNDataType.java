@@ -72,5 +72,5 @@ public class BPMNDataType extends BPMNObject implements IHawkDataType {
 		return edatatype.hashCode();
 
 	}
-
+	
 }

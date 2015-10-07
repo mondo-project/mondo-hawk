@@ -69,7 +69,7 @@ public class ModelioPackage extends ModelioObject implements IHawkPackage {
 	public IHawkMetaModelResource getResource() {
 		return r;
 	}
-
+	
 	// @Override
 	// public HawkMetaModelResource getResource() {
 	// return new EMFMetaModelResource(ep.eResource(), p);

@@ -33,6 +33,7 @@ import org.hawk.core.util.DefaultConsole;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
 import org.hawk.graph.internal.updater.GraphModelUpdater;
+import org.hawk.graph.sampleListener.ExampleListener;
 import org.hawk.localfolder.LocalFolder;
 import org.hawk.neo4j_v2.Neo4JDatabase;
 
@@ -147,6 +148,7 @@ public class Runtime_example {
 
 		hawk.addGraphChangeListener(new SyncChangeListener(git, linkedHashMap,
 				hawk));
+		hawk.addGraphChangeListener(new ExampleListener());
 
 		// initialise the server for real-time updates to changes -- this has to
 		// be done after initialising all the relevant plugins you want online

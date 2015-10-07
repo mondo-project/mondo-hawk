@@ -249,5 +249,5 @@ public class ModelioClass extends ModelioObject implements IHawkClass {
 	// return ret == null ? new HashSet<EClass>() : ret;
 	//
 	// }
-
+	
 }

@@ -121,6 +121,9 @@ public class SyncValidationListener implements IGraphChangeListener {
 
 						// cache model elements in current resource
 						HashMap<String, IHawkObject> eobjectCache = new HashMap<>();
+						// cache of malformed object identifiers (to ignore
+						// references)
+						Set<String> malformedObjectCache = new HashSet<>();
 						for (IHawkObject content : r.getAllContentsSet()) {
 							IHawkObject old = eobjectCache.put(
 									content.getUriFragment(), content);
@@ -129,14 +132,18 @@ public class SyncValidationListener implements IGraphChangeListener {
 										+ ") eobjectCache replaced:");
 								System.err.println(old.getUri() + " | "
 										+ old.getUriFragment() + " | ofType: "
-										+ old.getType());
+										+ old.getType().getName());
 								System.err.println("with:");
 								System.err.println(content.getUri() + " | "
 										+ content.getUriFragment()
-										+ " | ofType: " + content.getType());
+										+ " | ofType: "
+										+ content.getType().getName());
 								malformed++;
+								malformedObjectCache.add(old.getUri());
 								System.err
-										.println("WARNING: MALFORMED MODEL RESOURCE, expect "
+										.println("WARNING: MALFORMED MODEL RESOURCE (multiple identical identifiers for:\n"
+												+ old.getUri()
+												+ "),\nexpect "
 												+ malformed
 												+ " errors in validation.");
 
@@ -161,240 +168,292 @@ public class SyncValidationListener implements IGraphChangeListener {
 												+ instance
 														.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
 												+ " but resource does not!");
+								// this triggers when a malformed model has 2
+								// identifiers the same
 								totalErrors++;
 							} else {
 								eobjectCache
 										.remove(instance
 												.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
-								// cache model element attributes and references
-								// by
-								// name
-								HashMap<String, Object> modelAttributes = new HashMap<>();
-								for (IHawkAttribute a : ((IHawkClass) eobject
-										.getType()).getAllAttributes())
-									if (eobject.isSet(a))
-										modelAttributes.put(a.getName(),
-												eobject.get(a));
+								if (!malformedObjectCache.contains(eobject
+										.getUri())) {
 
-								// full reference uri in order to properly
-								// compare with hawk proxies
-								HashMap<String, Set<String>> modelReferences = new HashMap<>();
+									// cache model element attributes and
+									// references
+									// by
+									// name
+									HashMap<String, Object> modelAttributes = new HashMap<>();
+									for (IHawkAttribute a : ((IHawkClass) eobject
+											.getType()).getAllAttributes())
+										if (eobject.isSet(a))
+											modelAttributes.put(a.getName(),
+													eobject.get(a));
 
-								for (IHawkReference ref : ((IHawkClass) eobject
-										.getType()).getAllReferences()) {
-									if (eobject.isSet(ref)) {
-										Object refval = eobject.get(ref, false);
-										HashSet<String> vals = new HashSet<>();
-										String ret;
-										if (refval instanceof Iterable<?>) {
-											for (Object val : ((Iterable<IHawkObject>) refval)) {
+									// full reference uri in order to properly
+									// compare with hawk proxies
+									HashMap<String, Set<String>> modelReferences = new HashMap<>();
+
+									for (IHawkReference ref : ((IHawkClass) eobject
+											.getType()).getAllReferences()) {
+										if (eobject.isSet(ref)) {
+											Object refval = eobject.get(ref,
+													false);
+											HashSet<String> vals = new HashSet<>();
+											String ret;
+											if (refval instanceof Iterable<?>) {
+												for (Object val : ((Iterable<IHawkObject>) refval)) {
+													// if (!((IHawkObject)
+													// val).isProxy())
+													ret = ((IHawkObject) val)
+															.getUri().replace(
+																	temp, "");
+													ret = URLDecoder.decode(
+															ret.replace("+",
+																	"%2B"),
+															"UTF-8");
+													vals.add(repoURL
+															+ FILEINDEX_REPO_SEPARATOR
+															+ (ret.startsWith("/") ? ret
+																	.substring(1)
+																	: ret));
+												}
+
+											} else {
 												// if (!((IHawkObject)
-												// val).isProxy())
-												ret = ((IHawkObject) val)
+												// refval).isProxy())
+												ret = ((IHawkObject) refval)
 														.getUri().replace(temp,
 																"");
-												ret = URLDecoder.decode(ret.replace("+", "%2B"),"UTF-8");
+												ret = URLDecoder
+														.decode(ret.replace(
+																"+", "%2B"),
+																"UTF-8");
 												vals.add(repoURL
 														+ FILEINDEX_REPO_SEPARATOR
 														+ (ret.startsWith("/") ? ret
 																.substring(1)
 																: ret));
+
+											}
+											if (vals.size() > 0)
+												modelReferences.put(
+														ref.getName(), vals);
+										}
+									}
+
+									// compare db attributes to model ones
+									for (String propertykey : instance
+											.getPropertyKeys()) {
+										if (!propertykey
+												.equals(IModelIndexer.SIGNATURE_PROPERTY)
+												&& !propertykey
+														.equals(IModelIndexer.IDENTIFIER_PROPERTY)
+												&& !propertykey
+														.startsWith("_proxyRef")) {
+											//
+											Object dbattr = instance
+													.getProperty(propertykey);
+											Object attr = modelAttributes
+													.get(propertykey);
+
+											if (!flattenedStringEquals(dbattr,
+													attr)) {
+												totalErrors++;
+												System.err
+														.println("error in validating, attribute: "
+																+ propertykey
+																+ " has values:");
+												String cla1 = dbattr != null ? dbattr
+														.getClass().toString()
+														: "null attr";
+												System.err
+														.println("database:\t"
+																+ (dbattr instanceof Object[] ? (Arrays
+																		.asList((Object[]) dbattr))
+																		: dbattr)
+																+ " JAVATYPE: "
+																+ cla1
+																+ " IN NODE: "
+																+ instance
+																		.getId()
+																+ " WITH ID: "
+																+ instance
+																		.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+
+												String cla2 = attr != null ? attr
+														.getClass().toString()
+														: "null attr";
+												System.err
+														.println("model:\t\t"
+																+ (attr instanceof Object[] ? (Arrays
+																		.asList((Object[]) attr))
+																		: attr)
+																+ " JAVATYPE: "
+																+ cla2
+																+ " IN ELEMENT WITH ID "
+																+ eobject
+																		.getUriFragment());
+												//
 											}
 
-										} else {
-											// if (!((IHawkObject)
-											// refval).isProxy())
-											ret = ((IHawkObject) refval)
-													.getUri().replace(temp, "");
-											ret = URLDecoder.decode(ret.replace("+", "%2B"),"UTF-8");
-											vals.add(repoURL
-													+ FILEINDEX_REPO_SEPARATOR
-													+ (ret.startsWith("/") ? ret
-															.substring(1) : ret));
-
-										}
-										if (vals.size() > 0)
-											modelReferences.put(ref.getName(),
-													vals);
-									}
-								}
-
-								// compare db attributes to model ones
-								for (String propertykey : instance
-										.getPropertyKeys()) {
-									if (!propertykey.equals("hashCode")
-											&& !propertykey
-													.equals(IModelIndexer.IDENTIFIER_PROPERTY)
-											&& !propertykey
-													.startsWith("_proxyRef")) {
-										//
-										Object dbattr = instance
-												.getProperty(propertykey);
-										Object attr = modelAttributes
-												.get(propertykey);
-
-										if (!flattenedStringEquals(dbattr, attr)) {
-											totalErrors++;
-											System.err
-													.println("error in validating, attribute: "
-															+ propertykey
-															+ " has values:");
-											String cla1 = dbattr != null ? dbattr
-													.getClass().toString()
-													: "null attr";
-											System.err
-													.println("database:\t"
-															+ (dbattr instanceof Object[] ? (Arrays
-																	.asList((Object[]) dbattr))
-																	: dbattr)
-															+ " JAVATYPE: "
-															+ cla1);
-											String cla2 = attr != null ? attr
-													.getClass().toString()
-													: "null attr";
-											System.err
-													.println("model:\t\t"
-															+ (attr instanceof Object[] ? (Arrays
-																	.asList((Object[]) attr))
-																	: attr)
-															+ " JAVATYPE: "
-															+ cla2);
-											//
-										} else
 											modelAttributes.remove(propertykey);
-									}
-								}
-
-								if (modelAttributes.size() > 0) {
-									System.err
-											.println("error in validating, the following attributes were not found in the graph node:");
-									System.err
-											.println(modelAttributes.keySet());
-									totalErrors++;
-								}
-
-								HashMap<String, Set<String>> nodereferences = new HashMap<>();
-								// cache db references
-								for (IGraphEdge reference : instance
-										.getOutgoing()) {
-
-									if (reference.getType().equals("file")
-											|| reference.getType().equals(
-													"ofType")
-											|| reference.getType().equals(
-													"ofKind")
-											|| reference.getPropertyKeys()
-													.contains("derived")) {
-										// ignore
-									} else {
-										//
-										HashSet<String> refvals = new HashSet<>();
-										if (nodereferences
-												.containsKey(reference
-														.getType())) {
-											refvals.addAll(nodereferences
-													.get(reference.getType()));
 										}
-										refvals.add(repoURL
-												+ FILEINDEX_REPO_SEPARATOR
-												+ instance
-														.getOutgoingWithType(
-																"file")
-														.iterator()
-														.next()
-														.getEndNode()
-														.getProperty(
-																IModelIndexer.IDENTIFIER_PROPERTY)
-												+ "#"
-												+ reference
-														.getEndNode()
-														.getProperty(
-																IModelIndexer.IDENTIFIER_PROPERTY)
-														.toString());
-										nodereferences.put(reference.getType(),
-												refvals);
-										//
 									}
-								}
-								// compare model and graph reference maps
-								Iterator<Entry<String, Set<String>>> rci = modelReferences
-										.entrySet().iterator();
-								while (rci.hasNext()) {
-									Entry<String, Set<String>> modelRef = rci
-											.next();
-									String modelRefName = modelRef.getKey();
 
-									if (!nodereferences
-											.containsKey(modelRefName)) {
-										// no need for this?
-										// System.err.println("error in validating: reference "+
-										// modelRefName+
-										// " had targets in the model but none in the graph: ");
-										// System.err.println(modelRef.getValue());
-										// allValid = false;
-									} else {
-										Set<String> noderefvalues = new HashSet<>();
-										noderefvalues.addAll(nodereferences
-												.get(modelRefName));
-
-										Set<String> modelrefvalues = new HashSet<>();
-										modelrefvalues.addAll(modelReferences
-												.get(modelRefName));
-
-										Set<String> noderefvaluesclone = new HashSet<>();
-										noderefvaluesclone
-												.addAll(nodereferences
-														.get(modelRefName));
-										noderefvaluesclone
-												.removeAll(modelrefvalues);
-
-										Set<String> modelrefvaluesclone = new HashSet<>();
-										modelrefvaluesclone
-												.addAll(modelReferences
-														.get(modelRefName));
-										modelrefvaluesclone
-												.removeAll(noderefvalues);
-										modelrefvaluesclone = removeHawkProxies(
-												instance, modelrefvaluesclone);
-
-										if (noderefvaluesclone.size() > 0) {
-											System.err
-													.println("error in validating: reference "
-															+ modelRefName);
-											System.err
-													.println(noderefvaluesclone);
-											System.err
-													.println("the above ids were found in the graph but not the model");
-											totalErrors++;
-										}
-
-										if (modelrefvaluesclone.size() > 0) {
-
-											System.err
-													.println("error in validating: reference "
-															+ modelRefName);
-											System.err
-													.println(modelrefvaluesclone);
-											System.err
-													.println("the above ids were found in the model but not the graph");
-											totalErrors++;
-										}
-
-										nodereferences.remove(modelRefName);
-										// rci.remove();
+									if (modelAttributes.size() > 0) {
+										System.err
+												.println("error in validating, the following attributes were not found in the graph node:");
+										System.err.println(modelAttributes
+												.keySet());
+										totalErrors++;
 									}
-								}
 
-								if (nodereferences.size() > 0) {
-									System.err
-											.println("error in validating: references "
-													+ nodereferences.keySet()
-													+ " had targets in the graph but not in the model: ");
-									System.err.println(nodereferences);
-									totalErrors++;
-								}
+									HashMap<String, Set<String>> nodereferences = new HashMap<>();
+									// cache db references
+									for (IGraphEdge reference : instance
+											.getOutgoing()) {
+										
+										if (reference.getType().equals("file")
+												|| reference.getType().equals(
+														"ofType")
+												|| reference.getType().equals(
+														"ofKind")
+												|| reference.getPropertyKeys()
+														.contains("isDerived")) {
+											// ignore
+										} else {
+											//
+											HashSet<String> refvals = new HashSet<>();
+											if (nodereferences
+													.containsKey(reference
+															.getType())) {
+												refvals.addAll(nodereferences
+														.get(reference
+																.getType()));
+											}
+											refvals.add(repoURL
+													+ FILEINDEX_REPO_SEPARATOR
+													+ instance
+															.getOutgoingWithType(
+																	"file")
+															.iterator()
+															.next()
+															.getEndNode()
+															.getProperty(
+																	IModelIndexer.IDENTIFIER_PROPERTY)
+													+ "#"
+													+ reference
+															.getEndNode()
+															.getProperty(
+																	IModelIndexer.IDENTIFIER_PROPERTY)
+															.toString());
+											nodereferences.put(
+													reference.getType(),
+													refvals);
+											//
+										}
+									}
+									// compare model and graph reference maps
+									Iterator<Entry<String, Set<String>>> rci = modelReferences
+											.entrySet().iterator();
+									while (rci.hasNext()) {
+										Entry<String, Set<String>> modelRef = rci
+												.next();
+										String modelRefName = modelRef.getKey();
 
+										if (!nodereferences
+												.containsKey(modelRefName)) {
+											// no need for this?
+											// System.err.println("error in validating: reference "+
+											// modelRefName+
+											// " had targets in the model but none in the graph: ");
+											// System.err.println(modelRef.getValue());
+											// allValid = false;
+										} else {
+											Set<String> noderefvalues = new HashSet<>();
+											noderefvalues.addAll(nodereferences
+													.get(modelRefName));
+
+											Set<String> modelrefvalues = new HashSet<>();
+											modelrefvalues
+													.addAll(modelReferences
+															.get(modelRefName));
+
+											Set<String> noderefvaluesclone = new HashSet<>();
+											noderefvaluesclone
+													.addAll(nodereferences
+															.get(modelRefName));
+											noderefvaluesclone
+													.removeAll(modelrefvalues);
+
+											Set<String> modelrefvaluesclone = new HashSet<>();
+											modelrefvaluesclone
+													.addAll(modelReferences
+															.get(modelRefName));
+											modelrefvaluesclone
+													.removeAll(noderefvalues);
+											modelrefvaluesclone = removeHawkProxies(
+													instance,
+													modelrefvaluesclone);
+
+											if (noderefvaluesclone.size() > 0) {
+												System.err
+														.println("error in validating: reference "
+																+ modelRefName
+																+ " of node: "
+																+ instance
+																		.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+																+ "\nlocated: "
+																+ instance
+																		.getOutgoingWithType(
+																				"file")
+																		.iterator()
+																		.next()
+																		.getEndNode()
+																		.getProperty(
+																				IModelIndexer.IDENTIFIER_PROPERTY));
+												System.err
+														.println(noderefvaluesclone);
+												System.err
+														.println("the above ids were found in the graph but not the model");
+												totalErrors++;
+											}
+
+											if (modelrefvaluesclone.size() > 0) {
+
+												System.err
+														.println("error in validating: reference "
+																+ modelRefName
+																+ " of model element: "
+																+ eobject
+																		.getUriFragment()
+																+ "\nlocated: "
+																+ eobject
+																		.getUri());
+												System.err
+														.println(modelrefvaluesclone);
+												System.err
+														.println("the above ids were found in the model but not the graph");
+												totalErrors++;
+											}
+
+											nodereferences.remove(modelRefName);
+											// rci.remove();
+										}
+									}
+
+									if (nodereferences.size() > 0) {
+										System.err
+												.println("error in validating: references "
+														+ nodereferences
+																.keySet()
+														+ " had targets in the graph but not in the model: ");
+										System.err.println(nodereferences);
+										totalErrors++;
+									}
+
+								}
 							}
 						}
 						// if there are model elements not found in nodes
@@ -410,7 +469,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 						t.success();
 					} catch (Exception e) {
 						System.err
-								.println("syncChangeListener transaction error:");
+								.println("syncValidationListener transaction error:");
 						e.printStackTrace();
 					}
 

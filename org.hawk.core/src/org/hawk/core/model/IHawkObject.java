@@ -42,13 +42,11 @@ public interface IHawkObject {
 	// resolving proxies (if needed)
 	Object get(IHawkReference ref, boolean b);
 
-	// override of default hashcode used to identify an object throughout
-	// different factory loading operations - an implementation is encouraged to
-	// use the following identifying features to calculate this hashcode:
+	// sha1 identifier of state:
+	// use the following identifying features to calculate this signature:
 	// getUri(), type.getName(), type.getPackageNSURI(), forAll attributes
 	// eAttribute.getName(), eAttribute-value, forAll references eRef.getName(),
 	// ref-value.getUriFragment()
-	@Override
-	public int hashCode();
+	public byte[] signature();
 
 }

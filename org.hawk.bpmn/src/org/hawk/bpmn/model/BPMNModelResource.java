@@ -106,8 +106,8 @@ public class BPMNModelResource implements IHawkModelResource {
 	}
 
 	@Override
-	public int getSignature(IHawkObject o) {
-		return o.hashCode();
+	public byte[] getSignature(IHawkObject o) {
+		return o.signature();
 	}
 
 }

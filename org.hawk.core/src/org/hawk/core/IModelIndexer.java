@@ -44,6 +44,8 @@ public interface IModelIndexer {
 	 * that might be used in a metamodel.
 	 */
 	public static final String IDENTIFIER_PROPERTY = "_hawkid";
+	public static final String SIGNATURE_PROPERTY = "_hawksignature";
+	public static final boolean VERBOSE = true;
 
 	/**
 	 * Forces a synchronisation to be performed immediately.

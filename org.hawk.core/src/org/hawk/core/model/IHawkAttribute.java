@@ -19,5 +19,5 @@ public interface IHawkAttribute extends IHawkStructuralFeature {
 	HashSet<IHawkAnnotation> getAnnotations();
 
 	IHawkClassifier getType();
-
+	
 }

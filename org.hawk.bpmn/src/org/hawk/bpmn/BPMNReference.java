@@ -99,5 +99,5 @@ public class BPMNReference extends BPMNObject implements IHawkReference {
 		return r.hashCode();
 
 	}
-
+	
 }

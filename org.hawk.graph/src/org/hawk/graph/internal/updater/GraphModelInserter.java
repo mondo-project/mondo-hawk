@@ -214,8 +214,8 @@ public class GraphModelInserter {
 
 					// node.setProperty(GraphWrapper.IDENTIFIER_PROPERTY,
 					// o.getUriFragment());
-					node.setProperty(ModelElementNode.PROPERTY_HASHCODE,
-							o.hashCode());
+					node.setProperty(IModelIndexer.SIGNATURE_PROPERTY,
+							o.signature());
 					updateNodeProperties(fileNode, node, o);
 					//
 					// for (String ss : node.getPropertyKeys()) {
@@ -653,9 +653,9 @@ public class GraphModelInserter {
 
 			if (modelfilealreadypresent) {
 				int delta = 0;
-				HashMap<String, Integer> hashCodes = new HashMap<>();
+				HashMap<String, byte[]> signatures = new HashMap<>();
 
-				// Get existing nodes from the store (and their hashcodes)
+				// Get existing nodes from the store (and their signatures)
 				for (IGraphEdge e : graph
 						.getFileIndex()
 						.get("id",
@@ -670,22 +670,23 @@ public class GraphModelInserter {
 					nodes.put(n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
 							.toString(), n);
 
-					hashCodes
+					signatures
 							.put((String) n
 									.getProperty(IModelIndexer.IDENTIFIER_PROPERTY),
-									(int) n.getProperty(ModelElementNode.PROPERTY_HASHCODE));
+									(byte[]) n
+											.getProperty(IModelIndexer.SIGNATURE_PROPERTY));
 				}
 				System.err.println("file contains: " + nodes.size() + " ("
-						+ hashCodes.size() + ") nodes in store");
+						+ signatures.size() + ") nodes in store");
 
 				int newo = 0;
 
-				// Get the model elements from the resource and use hashcodes
+				// Get the model elements from the resource and use signatures
 				// and URI
 				for (IHawkObject o : resource.getAllContentsSet()) {
-					Integer hash = hashCodes.get(o.getUriFragment());
+					byte[] hash = signatures.get(o.getUriFragment());
 					if (hash != null) {
-						if (hash != o.hashCode()) {
+						if (hash != o.signature()) {
 							delta++;
 							this.updated.put(o.getUriFragment(), o);
 						} else {
@@ -1050,6 +1051,8 @@ public class GraphModelInserter {
 			listener.changeStart();
 			// operations on the graph
 			// ...
+
+			nodesToBeUpdated = graph.retainExisting(nodesToBeUpdated);
 
 			IGraphNodeIndex derivedAccessDictionary = graph
 					.getOrCreateNodeIndex("derivedaccessdictionary");

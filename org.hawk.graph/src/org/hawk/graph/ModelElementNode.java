@@ -30,9 +30,6 @@ import org.hawk.core.graph.IGraphNode;
  */
 public class ModelElementNode {
 
-	/** Name of the property used to store the hash code of the model element. */
-	public static final String PROPERTY_HASHCODE = "hashCode";
-
 	/** Label for the transient edge from the model element node to its file. */
 	public static final String EDGE_LABEL_FILE = "file";
 
@@ -47,7 +44,7 @@ public class ModelElementNode {
 		EDGE_LABEL_FILE, EDGE_LABEL_OFKIND, EDGE_LABEL_OFTYPE
 	);
 
-	public static final Set<String> TRANSIENT_ATTRIBUTES = new HashSet<>(Arrays.asList(IModelIndexer.IDENTIFIER_PROPERTY, PROPERTY_HASHCODE));
+	public static final Set<String> TRANSIENT_ATTRIBUTES = new HashSet<>(Arrays.asList(IModelIndexer.IDENTIFIER_PROPERTY, IModelIndexer.SIGNATURE_PROPERTY));
 
 	private final IGraphNode node;
 

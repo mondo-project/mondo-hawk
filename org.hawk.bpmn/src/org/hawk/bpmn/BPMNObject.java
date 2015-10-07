@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.hawk.bpmn;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 
 import org.eclipse.emf.common.util.URI;
@@ -46,8 +48,7 @@ public class BPMNObject implements IHawkObject {
 
 	@Override
 	public String getUri() {
-		String uri = EcoreUtil.getURI(eob)
-				.toString();
+		String uri = EcoreUtil.getURI(eob).toString();
 		if (uri == null || uri == "" || uri == "/" || uri == "//")
 			System.err.println("URI error on: " + eob);
 		return uri;
@@ -62,10 +63,9 @@ public class BPMNObject implements IHawkObject {
 			String frag = uri.fragment();
 			if (frag == null || frag == "" || frag == "/")
 				System.err.println("fragment error on: "
-						+ EcoreUtil.getURI(eob)
-								.toString() + " fragment: '" + frag
-						+ "' on eobject: " + eob + " (isproxy:" + isProxy()
-						+ ")");
+						+ EcoreUtil.getURI(eob).toString() + " fragment: '"
+						+ frag + "' on eobject: " + eob + " (isproxy:"
+						+ isProxy() + ")");
 
 			return frag;
 		} catch (Exception e) {
@@ -127,32 +127,44 @@ public class BPMNObject implements IHawkObject {
 			return false;
 	}
 
-	private int hashCode = 0;
+	private byte[] signature;
 
 	@Override
 	public int hashCode() {
-		//
-		// return eob.hashCode();
-		//
-		if (hashCode == 0) {
+		//System.err.println("WARNING HASHCODE CALLED ON BPMNOBJECT -- this is inaccuarate, use signature() instead!");
+		return eob.hashCode();
+	}
+
+	@Override
+	public byte[] signature() {
+
+		if (signature == null) {
 
 			if (isProxy()) {
 
-				System.err.println("hashCode called on proxy object - 0");
-				hashCode = 0;
-				return 0;
+				System.err
+						.println("signature called on proxy object returning null");
+				return null;
 
 			} else {
 
-				hashCode = Integer.MIN_VALUE;
+				MessageDigest md = null;
 
-				hashCode += getUri().hashCode();
-				hashCode += getUriFragment().hashCode();
+				try {
+					md = MessageDigest.getInstance("SHA-1");
+				} catch (NoSuchAlgorithmException e) {
+					System.err
+							.println("signature() tried to create a SHA-1 digest but a NoSuchAlgorithmException was thrown, returning null");
+					return null;
+				}
+
+				md.update(getUri().getBytes());
+				md.update(getUriFragment().getBytes());
 
 				IHawkClassifier type = getType();
 
-				hashCode += type.getName().hashCode();
-				hashCode += type.getPackageNSURI().hashCode();
+				md.update(type.getName().getBytes());
+				md.update(type.getPackageNSURI().getBytes());
 
 				if (type instanceof IHawkDataType) {
 
@@ -164,15 +176,14 @@ public class BPMNObject implements IHawkObject {
 							.getAllAttributes()) {
 						if (eAttribute.isDerived() || isSet(eAttribute)) {
 
-							hashCode += eAttribute.getName().hashCode();
+							md.update(eAttribute.getName().getBytes());
 
 							if (!eAttribute.isDerived())
 								// XXX NOTE: using toString for hashcode of
 								// attribute values as primitives in java have
 								// different hashcodes each time, not fullproof
 								// true == "true" here
-								hashCode += get(eAttribute).toString()
-										.hashCode();
+								md.update(get(eAttribute).toString().getBytes());
 							else {
 
 								// handle derived attributes for metamodel
@@ -182,33 +193,32 @@ public class BPMNObject implements IHawkObject {
 						}
 					}
 
-					// cyclic reference loop?
 					for (IHawkReference eRef : ((IHawkClass) type)
 							.getAllReferences()) {
 						if (isSet(eRef)) {
 
-							hashCode += eRef.getName().hashCode();
+							md.update(eRef.getName().getBytes());
 
 							Object destinationObjects = get(eRef, false);
 							if (destinationObjects instanceof Iterable<?>) {
 								for (IHawkObject o : ((Iterable<IHawkObject>) destinationObjects)) {
-									hashCode += o.getUriFragment().hashCode();
+									md.update(o.getUriFragment().getBytes());
 								}
 							} else {
-								hashCode += ((IHawkObject) destinationObjects)
-										.getUriFragment().hashCode();
+								md.update(((IHawkObject) destinationObjects)
+										.getUriFragment().getBytes());
 							}
 						}
 					}
 				} else {
 					System.err
-							.println("warning emf object tried to create hashcode, but found type: "
+							.println("warning emf object tried to create signature, but found type: "
 									+ type);
 				}
+				signature = md.digest();
 			}
 		}
-		return hashCode;
-
+		return signature;
 	}
 
 	@Override

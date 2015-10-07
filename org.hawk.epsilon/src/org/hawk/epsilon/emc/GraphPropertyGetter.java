@@ -38,10 +38,14 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		ATTRIBUTE, DERIVED, REFERENCE, INVALID;
 		static PropertyType fromCharacter(String s) {
 			switch (s) {
-			case "d": return DERIVED;
-			case "r": return REFERENCE;
-			case "a": return ATTRIBUTE;
-			default: return INVALID;
+			case "d":
+				return DERIVED;
+			case "r":
+				return REFERENCE;
+			case "a":
+				return ATTRIBUTE;
+			default:
+				return INVALID;
 			}
 		}
 	}
@@ -66,7 +70,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 		Object ret = null;
 
-		//System.err.println("GraphPropertyGetter INVOKE: "+object+" ::::: "+property);
+		// System.err.println("GraphPropertyGetter INVOKE: "+object+" ::::: "+property);
 
 		// if (object.equals(null))
 		// throw new EolRuntimeException(
@@ -289,7 +293,8 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 	}
 
-	private Collection<GraphNodeWrapper> getCollectionForProperty(final String property) {
+	private Collection<GraphNodeWrapper> getCollectionForProperty(
+			final String property) {
 		if (isOrdered(property) && isUnique(property))
 			return new EolOrderedSet<GraphNodeWrapper>();
 		else if (isOrdered(property))
@@ -345,24 +350,34 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		return isTypeFlagActive(ref, IDX_FLAG_UNIQUE);
 	}
 
-	private boolean canHavePropertyWithType(IGraphNode node, String property, PropertyType expected) {
-		final Iterator<IGraphEdge> itTypeOf = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator();
+	private boolean canHavePropertyWithType(IGraphNode node, String property,
+			PropertyType expected) {
+		final Iterator<IGraphEdge> itTypeOf = node.getOutgoingWithType(
+				ModelElementNode.EDGE_LABEL_OFTYPE).iterator();
 
 		if (itTypeOf.hasNext()) {
 			featureStartingNodeClassNode = itTypeOf.next().getEndNode();
-			final String value = ((String[]) featureStartingNodeClassNode.getProperty(property))[0];
+
+			String value = "_null_hawk_value_error";
+
+			if (featureStartingNodeClassNode.getProperty(property) != null)
+				value = ((String[]) featureStartingNodeClassNode
+						.getProperty(property))[0];
+
 			final PropertyType actual = PropertyType.fromCharacter(value);
 			if (actual == expected) {
 				return true;
 			} else if (actual != PropertyType.INVALID) {
 				return false;
 			} else {
-				System.err.println("property: " + property
-					+ " not found in metamodel for type: "
-					+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+				System.err
+						.println("property: "
+								+ property
+								+ " not found in metamodel for type: "
+								+ featureStartingNodeClassNode
+										.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 			}
-		}
-		else {
+		} else {
 			System.err.println("type not found for node " + node);
 		}
 
@@ -376,12 +391,14 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		}
 		if (featureStartingNodeClassNode.getProperty(reference) != null) {
 			// System.err.println(referenceStartingNodeClassNode.getProperty(ref).toString());
-			return ((String[]) featureStartingNodeClassNode.getProperty(reference))[index]
-					.equals("t");
+			return ((String[]) featureStartingNodeClassNode
+					.getProperty(reference))[index].equals("t");
 		}
-		System.err.println("reference: " + reference
+		System.err.println("reference: "
+				+ reference
 				+ " not found in metamodel (isMany) for type: "
-				+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+				+ featureStartingNodeClassNode
+						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 		return false;
 	}

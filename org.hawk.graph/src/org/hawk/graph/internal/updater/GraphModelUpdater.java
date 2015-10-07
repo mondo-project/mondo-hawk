@@ -215,9 +215,10 @@ public class GraphModelUpdater implements IModelUpdater {
 						if (r.getCommit().getRevision().equals(rev))
 							changed.remove(r);
 
-						console.println("comparing revisions of: "
-								+ r.getPath() + " | "
-								+ r.getCommit().getRevision() + " | " + rev);
+						if (IModelIndexer.VERBOSE)
+							console.println("comparing revisions of: "
+									+ r.getPath() + " | "
+									+ r.getCommit().getRevision() + " | " + rev);
 
 					}
 				}

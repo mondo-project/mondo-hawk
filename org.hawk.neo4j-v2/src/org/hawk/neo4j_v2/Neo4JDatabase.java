@@ -16,6 +16,7 @@ import java.io.FileWriter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -519,8 +520,14 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 				for (IGraphEdge r : n.getOutgoing()) {
 
-					str = str + "[" + r.getType() + " --> " + r.getEndNode()
-							+ "(" + r.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY) + ")"
+					str = str
+							+ "["
+							+ r.getType()
+							+ " --> "
+							+ r.getEndNode()
+							+ "("
+							+ r.getEndNode().getProperty(
+									IModelIndexer.IDENTIFIER_PROPERTY) + ")"
 							+ "]";
 
 				}
@@ -546,12 +553,23 @@ public class Neo4JDatabase implements IGraphDatabase {
 			IGraphIterable<IGraphNode> mmnodes = metamodelindex.query("*", "*");
 
 			for (IGraphNode n : mmnodes)
-				ret.add(n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
+				ret.add(n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+						.toString());
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		return ret;
+	}
+
+	@Override
+	public Set<IGraphNode> retainExisting(Set<IGraphNode> nodes) {
+		for (Iterator<IGraphNode> it = nodes.iterator(); it.hasNext();) {
+			Node n;
+			if ((n = graph.getNodeById((long) it.next().getId())) == null)
+				nodes.remove(n);
+		}
+		return nodes;
 	}
 }

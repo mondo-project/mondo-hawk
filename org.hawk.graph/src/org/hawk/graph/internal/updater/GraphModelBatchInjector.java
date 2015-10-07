@@ -371,7 +371,7 @@ public class GraphModelBatchInjector {
 			String eObjectId = getEObjectId(eObject);
 			HashMap<String, Object> m = new HashMap<>();
 			m.put(IModelIndexer.IDENTIFIER_PROPERTY, eObjectId);
-			m.put("hashCode", eObject.hashCode());
+			m.put(IModelIndexer.SIGNATURE_PROPERTY, eObject.signature());
 
 			final List<IHawkAttribute> normalattributes = new LinkedList<IHawkAttribute>();
 			final List<IHawkAttribute> indexedattributes = new LinkedList<IHawkAttribute>();

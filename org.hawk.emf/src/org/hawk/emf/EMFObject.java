@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.hawk.emf;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 
 import org.eclipse.emf.common.util.URI;
@@ -40,11 +42,10 @@ public class EMFObject implements IHawkObject {
 	public boolean isProxy() {
 		return eob.eIsProxy();
 	}
-	
+
 	@Override
 	public String getUri() {
-		String uri = EcoreUtil.getURI(eob)
-				.toString();
+		String uri = EcoreUtil.getURI(eob).toString();
 		if (uri == null || uri == "" || uri == "/" || uri == "//")
 			System.err.println("URI error on: " + eob);
 		return uri;
@@ -59,10 +60,9 @@ public class EMFObject implements IHawkObject {
 			String frag = uri.fragment();
 			if (frag == null || frag == "" || frag == "/")
 				System.err.println("fragment error on: "
-						+ EcoreUtil.getURI(eob)
-								.toString() + " fragment: '" + frag
-						+ "' on eobject: " + eob + " (isproxy:" + isProxy()
-						+ ")");
+						+ EcoreUtil.getURI(eob).toString() + " fragment: '"
+						+ frag + "' on eobject: " + eob + " (isproxy:"
+						+ isProxy() + ")");
 
 			return frag;
 		} catch (Exception e) {
@@ -124,89 +124,96 @@ public class EMFObject implements IHawkObject {
 			return false;
 	}
 
-	private int hashCode = 0;
+	private byte[] signature;
 
 	@Override
 	public int hashCode() {
-		//
-		// return eob.hashCode();
-		//
-		if (hashCode == 0) {
-
-			if (isProxy()) {
-
-				System.err.println("hashCode called on proxy object - 0");
-				hashCode = 0;
-				return 0;
-
-			} else {
-
-				hashCode = Integer.MIN_VALUE;
-
-				hashCode += getUri().hashCode();
-				hashCode += getUriFragment().hashCode();
-
-				IHawkClassifier type = getType();
-
-				hashCode += type.getName().hashCode();
-				hashCode += type.getPackageNSURI().hashCode();
-
-				if (type instanceof IHawkDataType) {
-
-					//
-
-				} else if (type instanceof IHawkClass) {
-
-					for (IHawkAttribute eAttribute : ((IHawkClass) type)
-							.getAllAttributes()) {
-						if (eAttribute.isDerived() || isSet(eAttribute)) {
-
-							hashCode += eAttribute.getName().hashCode();
-
-							if (!eAttribute.isDerived())
-								// XXX NOTE: using toString for hashcode of
-								// attribute values as primitives in java have
-								// different hashcodes each time, not fullproof
-								// true == "true" here
-								hashCode += get(eAttribute).toString()
-										.hashCode();
-							else {
-
-								// handle derived attributes for metamodel
-								// evolution
-
-							}
-						}
-					}
-
-					// cyclic reference loop? -- no we only access the urifragment of references
-					for (IHawkReference eRef : ((IHawkClass) type)
-							.getAllReferences()) {
-						if (isSet(eRef)) {
-
-							hashCode += eRef.getName().hashCode();
-
-							Object destinationObjects = get(eRef, false);
-							if (destinationObjects instanceof Iterable<?>) {
-								for (IHawkObject o : ((Iterable<IHawkObject>) destinationObjects)) {
-									hashCode += o.getUriFragment().hashCode();
-								}
-							} else {
-								hashCode += ((IHawkObject) destinationObjects)
-										.getUriFragment().hashCode();
-							}
-						}
-					}
-				} else {
-					System.err
-							.println("warning emf object tried to create hashcode, but found type: "
-									+ type);
-				}
-			}
-		}
-		return hashCode;
-
+		//System.err.println("WARNING HASHCODE CALLED ON EMFOBJECT -- this is inaccuarate, use signature() instead!");
+		return eob.hashCode();
 	}
+	
+	// @Override
+	// public int hashCode() {
+	// //
+	// // return eob.hashCode();
+	// //
+	// if (hashCode == 0) {
+	//
+	// if (isProxy()) {
+	//
+	// System.err.println("hashCode called on proxy object - 0");
+	// hashCode = 0;
+	// return 0;
+	//
+	// } else {
+	//
+	// hashCode = Integer.MIN_VALUE;
+	//
+	// hashCode += getUri().hashCode();
+	// hashCode += getUriFragment().hashCode();
+	//
+	// IHawkClassifier type = getType();
+	//
+	// hashCode += type.getName().hashCode();
+	// hashCode += type.getPackageNSURI().hashCode();
+	//
+	// if (type instanceof IHawkDataType) {
+	//
+	// //
+	//
+	// } else if (type instanceof IHawkClass) {
+	//
+	// for (IHawkAttribute eAttribute : ((IHawkClass) type)
+	// .getAllAttributes()) {
+	// if (eAttribute.isDerived() || isSet(eAttribute)) {
+	//
+	// hashCode += eAttribute.getName().hashCode();
+	//
+	// if (!eAttribute.isDerived())
+	// // XXX NOTE: using toString for hashcode of
+	// // attribute values as primitives in java have
+	// // different hashcodes each time, not fullproof
+	// // true == "true" here
+	// hashCode += get(eAttribute).toString()
+	// .hashCode();
+	// else {
+	//
+	// // handle derived attributes for metamodel
+	// // evolution
+	//
+	// }
+	// }
+	// }
+	//
+	// // cyclic reference loop? -- no we only access the urifragment of
+	// references
+	// for (IHawkReference eRef : ((IHawkClass) type)
+	// .getAllReferences()) {
+	// if (isSet(eRef)) {
+	//
+	// hashCode += eRef.getName().hashCode();
+	//
+	// Object destinationObjects = get(eRef, false);
+	// if (destinationObjects instanceof Iterable<?>) {
+	// for (IHawkObject o : ((Iterable<IHawkObject>) destinationObjects)) {
+	// hashCode += o.getUriFragment().hashCode();
+	// }
+	// } else {
+	// hashCode += ((IHawkObject) destinationObjects)
+	// .getUriFragment().hashCode();
+	// }
+	// }
+	// }
+	// } else {
+	// System.err
+	// .println("warning emf object tried to create hashcode, but found type: "
+	// + type);
+	// }
+	// }
+	// }
+	// return hashCode;
+	//
+	// }
 
 	@Override
 	public String toString() {
@@ -234,5 +241,90 @@ public class EMFObject implements IHawkObject {
 		return EcoreUtil.getURI(eob).isRelative();
 
 	}
-	
+
+	@Override
+	public byte[] signature() {
+
+		if (signature == null) {
+
+			if (isProxy()) {
+
+				System.err
+						.println("signature called on proxy object returning null");
+				return null;
+
+			} else {
+
+				MessageDigest md = null;
+
+				try {
+					md = MessageDigest.getInstance("SHA-1");
+				} catch (NoSuchAlgorithmException e) {
+					System.err
+							.println("signature() tried to create a SHA-1 digest but a NoSuchAlgorithmException was thrown, returning null");
+					return null;
+				}
+
+				md.update(getUri().getBytes());
+				md.update(getUriFragment().getBytes());
+
+				IHawkClassifier type = getType();
+
+				md.update(type.getName().getBytes());
+				md.update(type.getPackageNSURI().getBytes());
+
+				if (type instanceof IHawkDataType) {
+
+					//
+
+				} else if (type instanceof IHawkClass) {
+
+					for (IHawkAttribute eAttribute : ((IHawkClass) type)
+							.getAllAttributes()) {
+						if (eAttribute.isDerived() || isSet(eAttribute)) {
+
+							md.update(eAttribute.getName().getBytes());
+
+							if (!eAttribute.isDerived())
+								// XXX NOTE: using toString for hashcode of
+								// attribute values as primitives in java have
+								// different hashcodes each time, not fullproof
+								// true == "true" here
+								md.update(get(eAttribute).toString().getBytes());
+							else {
+
+								// handle derived attributes for metamodel
+								// evolution
+
+							}
+						}
+					}
+
+					for (IHawkReference eRef : ((IHawkClass) type)
+							.getAllReferences()) {
+						if (isSet(eRef)) {
+
+							md.update(eRef.getName().getBytes());
+
+							Object destinationObjects = get(eRef, false);
+							if (destinationObjects instanceof Iterable<?>) {
+								for (IHawkObject o : ((Iterable<IHawkObject>) destinationObjects)) {
+									md.update(o.getUriFragment().getBytes());
+								}
+							} else {
+								md.update(((IHawkObject) destinationObjects)
+										.getUriFragment().getBytes());
+							}
+						}
+					}
+				} else {
+					System.err
+							.println("warning emf object tried to create signature, but found type: "
+									+ type);
+				}
+				signature = md.digest();
+			}
+		}
+		return signature;
+	}
 }

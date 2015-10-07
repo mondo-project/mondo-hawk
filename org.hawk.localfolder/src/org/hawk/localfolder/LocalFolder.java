@@ -22,8 +22,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.hawk.core.IAbstractConsole;
@@ -38,11 +40,23 @@ import org.hawk.core.util.FileOperations;
 public class LocalFolder implements IVcsManager {
 
 	private final class LastModifiedFileVisitor implements FileVisitor<Path> {
-		public long maximumLastModified;
+		public boolean hasChanged = false;
+		boolean alter;
+
+		public LastModifiedFileVisitor(boolean alter) {
+			this.alter = alter;
+		}
 
 		@Override
-		public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-			maximumLastModified = Math.max(maximumLastModified, Files.getLastModifiedTime(dir).toMillis());
+		public FileVisitResult postVisitDirectory(Path dir, IOException exc)
+				throws IOException {
+			long currentlatest = Files.getLastModifiedTime(dir).toMillis();
+			final Long lastDate = recordedModifiedDates.get(dir);
+			if (lastDate == null || !lastDate.equals(currentlatest)) {
+				if (alter)
+					recordedModifiedDates.put(dir, currentlatest);
+				hasChanged = true;
+			}
 			return FileVisitResult.CONTINUE;
 		}
 
@@ -53,14 +67,21 @@ public class LocalFolder implements IVcsManager {
 		}
 
 		@Override
-		public FileVisitResult visitFile(Path file,
-				BasicFileAttributes attrs) throws IOException {
-			maximumLastModified = Math.max(maximumLastModified, Files.getLastModifiedTime(file).toMillis());
+		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+				throws IOException {
+			long currentlatest = Files.getLastModifiedTime(file).toMillis();
+			final Long lastDate = recordedModifiedDates.get(file);
+			if (lastDate == null || !lastDate.equals(currentlatest)) {
+				if (alter)
+					recordedModifiedDates.put(file, currentlatest);
+				hasChanged = true;
+			}
 			return FileVisitResult.CONTINUE;
 		}
 
 		@Override
-		public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+		public FileVisitResult visitFileFailed(Path file, IOException exc)
+				throws IOException {
 			return FileVisitResult.CONTINUE;
 		}
 	}
@@ -70,9 +91,9 @@ public class LocalFolder implements IVcsManager {
 	private Set<File> previousFiles = new HashSet<>();
 	private LocalFolderRepository repository;
 
-	// Maximum 'last modified' time observed within the folder since the last
-	// time we checked
-	private long lastModifiedRepository = 0;
+	private long currentRevision = 0;
+
+	private Map<Path, Long> recordedModifiedDates = new HashMap<Path, Long>();
 
 	public LocalFolder() {
 
@@ -81,6 +102,7 @@ public class LocalFolder implements IVcsManager {
 	@Override
 	public void run(String vcsloc, String un, String pw, IAbstractConsole c)
 			throws Exception {
+
 		console = c;
 
 		// Accept both regular paths and file:// URIs
@@ -109,21 +131,30 @@ public class LocalFolder implements IVcsManager {
 		return getCurrentRevision();
 	}
 
-	@Override
-	public String getCurrentRevision() {
-		// XXX as there is no implementation of top-level versions on a local
+	private String getCurrentRevision(boolean alter) {
+		// as there is no implementation of top-level versions on a local
 		// folder, every time this method is called a different value is
-		// returned, hence the check is delegated to changes in each individual
-		// file in the folder
+		// returned, if something has changed in the folder (or subfolders)
 
 		try {
-			final LastModifiedFileVisitor visitor = new LastModifiedFileVisitor();
+			final LastModifiedFileVisitor visitor = new LastModifiedFileVisitor(
+					alter);
 			Files.walkFileTree(rootLocation, visitor);
-			return visitor.maximumLastModified + "";
+			long ret = visitor.hasChanged ? (currentRevision + 1)
+					: currentRevision;
+			if (alter)
+				currentRevision = ret;
+			//System.err.println(ret + " | " + alter);
+			return ret + "";
 		} catch (IOException ex) {
 			ex.printStackTrace();
 			return "0";
 		}
+	}
+
+	@Override
+	public String getCurrentRevision() {
+		return getCurrentRevision(false);
 	}
 
 	@Override
@@ -194,7 +225,7 @@ public class LocalFolder implements IVcsManager {
 	@Override
 	public VcsRepositoryDelta getDelta(VcsRepository repository,
 			String startRevision) throws Exception {
-		return getDelta(repository, startRevision, getCurrentRevision());
+		return getDelta(repository, startRevision, getCurrentRevision(false));
 	}
 
 	@Override
@@ -221,26 +252,32 @@ public class LocalFolder implements IVcsManager {
 			c.setChangeType(VcsChangeType.DELETED);
 			c.setCommit(commit);
 
-			c.setPath(makeRelative(repository.getUrl(), URLDecoder.decode(f
-					.toPath().toUri().toString().replace("+", "%2B"), "UTF-8")));
+			Path path = f.toPath();
+
+			c.setPath(makeRelative(repository.getUrl(), URLDecoder.decode(path
+					.toUri().toString().replace("+", "%2B"), "UTF-8")));
 
 			// c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 			commit.getItems().add(c);
+
+			recordedModifiedDates.remove(path);
+
 		}
 
 		previousFiles.clear();
 
 		if (files != null && files.size() > 0) {
-			long newLastModifiedRepository = lastModifiedRepository;
+			// long newLastModifiedRepository = lastModifiedRepository;
 			for (File f : files) {
 				previousFiles.add(f);
-				final long lastModified = Files.getLastModifiedTime(f.toPath())
+				Path filePath = f.toPath();
+				final long latestModified = Files.getLastModifiedTime(filePath)
 						.toMillis();
-				if (lastModifiedRepository > lastModified) {
+
+				final Long lastDate = recordedModifiedDates.get(filePath);
+				if (lastDate != null && lastDate.equals(latestModified)) {
 					continue;
 				}
-				newLastModifiedRepository = Math.max(newLastModifiedRepository,
-						lastModified);
 
 				VcsCommit commit = new VcsCommit();
 				commit.setAuthor("i am a local folder driver - no authors recorded");
@@ -262,9 +299,9 @@ public class LocalFolder implements IVcsManager {
 				// c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 				commit.getItems().add(c);
 			}
-			lastModifiedRepository = newLastModifiedRepository;
+
 		}
-		delta.setLatestRevision(getCurrentRevision());
+		delta.setLatestRevision(getCurrentRevision(true));
 
 		return delta;
 	}
