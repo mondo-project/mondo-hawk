@@ -40,7 +40,7 @@ public class TypeNode {
 		return node;
 	}
 
-	public String getMetamodelName() {
+	public String getMetamodelURI() {
 		for (IGraphEdge node : node.getOutgoingWithType("epackage")) {
 			return (String)node.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
 		}

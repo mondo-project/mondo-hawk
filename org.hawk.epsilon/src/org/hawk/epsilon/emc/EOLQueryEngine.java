@@ -521,7 +521,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		}
 
 		if (typeNode != null)
-			return new GraphNodeWrapper(typeNode.getId().toString(), this);
+			return new TypeNodeWrapper(new TypeNode(typeNode), this);
 		else
 			return null;
 	}

@@ -95,4 +95,18 @@ public class GraphWrapper {
 		}
 		return new ModelElementNode(rawNode);
 	}
+
+	/**
+	 * Retrieves a {@link TypeNode} by identifier.
+	 *
+	 * @throws NoSuchElementException
+	 *             No node with that identifier exists.
+	 */
+	public TypeNode getTypeNodeById(String id) {
+		final IGraphNode rawNode = graph.getNodeById(id);
+		if (rawNode == null) {
+			throw new NoSuchElementException();
+		}
+		return new TypeNode(rawNode);
+	}
 }

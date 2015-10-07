@@ -125,18 +125,8 @@ public class GraphNodeWrapper implements IGraphNodeReference {
 
 	}
 
-	// public String toString(){
-	// return id+"$"+new toString().tostring(containerModel.getGraph(),this);
-	// }
-
 	@Override
 	public int hashCode() {
 		return id.hashCode() + containerModel.hashCode();
 	}
-
-	// public String getInfo() {
-	//
-	// return containerModel.getInfo(this);
-	//
-	// }
 }
