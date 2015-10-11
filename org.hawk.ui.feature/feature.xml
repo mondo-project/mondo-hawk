@@ -25,6 +25,7 @@
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.hawk.core.dependencies" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.hawk.osgiserver" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.console"/>
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
@@ -33,6 +34,7 @@
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.core.variables"/>
       <import plugin="org.antlr.runtime_3.1.b1" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.hawk.core" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

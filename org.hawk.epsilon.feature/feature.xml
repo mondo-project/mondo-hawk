@@ -18,11 +18,11 @@
    </license>
 
    <requires>
-      <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.hawk.core" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.epsilon.eol.engine" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.antlr.runtime_3.1.b1" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.hawk.core"/>
+      <import plugin="org.eclipse.epsilon.eol.engine"/>
+      <import plugin="org.antlr.runtime_3.1.b1"/>
+      <import plugin="org.hawk.graph" match="greaterOrEqual"/>
    </requires>
 
    <plugin
