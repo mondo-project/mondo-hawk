@@ -125,8 +125,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	@Override
 	public void requestImmediateSync() {
-		updateTimer.cancel();
-		updateTimer = TimerManager.createNewTimer("t", false);
 		updateTimer.schedule(new RunUpdateTask(), 0);
 	}
 
