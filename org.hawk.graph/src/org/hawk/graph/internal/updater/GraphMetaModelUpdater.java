@@ -23,22 +23,30 @@ public class GraphMetaModelUpdater implements IMetaModelUpdater {
 		new GraphMetaModelResourceInjector(indexer.getGraph(), set, indexer.getCompositeGraphChangeListener());
 	}
 
+	// @Override
+	// public void removeMetamodels(Set<IHawkMetaModelResource> set,
+	// IModelIndexer indexer) {
+	// GraphMetaModelResourceInjector ret = new
+	// GraphMetaModelResourceInjector(indexer.getGraph(),
+	// indexer.getCompositeGraphChangeListener());
+	// ret.removeMetamodels(set);
+	// }
+
 	@Override
-	public void removeMetamodels(Set<IHawkMetaModelResource> set, IModelIndexer indexer) {
-		GraphMetaModelResourceInjector ret = new GraphMetaModelResourceInjector(indexer.getGraph(), indexer.getCompositeGraphChangeListener());
-		ret.removeMetamodels(set);
+	public void removeMetamodels(IModelIndexer indexer, String[] mmuri) {
+		GraphMetaModelResourceInjector ret = new GraphMetaModelResourceInjector(indexer.getGraph(),
+				indexer.getCompositeGraphChangeListener());
+		ret.removeMetamodels(mmuri);
 	}
 
 	@Override
-	public boolean addDerivedAttribute(String metamodeluri, String typename,
-			String attributename, String attributetype, boolean isMany,
-			boolean isOrdered, boolean isUnique, String derivationlanguage,
-			String derivationlogic, IModelIndexer indexer) {
+	public boolean addDerivedAttribute(String metamodeluri, String typename, String attributename, String attributetype,
+			boolean isMany, boolean isOrdered, boolean isUnique, String derivationlanguage, String derivationlogic,
+			IModelIndexer indexer) {
 
-		return GraphMetaModelResourceInjector.addDerivedAttribute(metamodeluri,
-				typename, attributename, isMany, isOrdered, isUnique,
-				attributetype, derivationlanguage, derivationlogic,
-				indexer.getGraph(), indexer.getCompositeGraphChangeListener());
+		return GraphMetaModelResourceInjector.addDerivedAttribute(metamodeluri, typename, attributename, isMany,
+				isOrdered, isUnique, attributetype, derivationlanguage, derivationlogic, indexer.getGraph(),
+				indexer.getCompositeGraphChangeListener());
 	}
 
 	@Override
@@ -47,10 +55,10 @@ public class GraphMetaModelUpdater implements IMetaModelUpdater {
 	}
 
 	@Override
-	public boolean addIndexedAttribute(String metamodeluri, String typename,
-			String attributename, IModelIndexer indexer) {
-		return GraphMetaModelResourceInjector.addIndexedAttribute(metamodeluri,
-				typename, attributename, indexer.getGraph(), indexer.getCompositeGraphChangeListener());
+	public boolean addIndexedAttribute(String metamodeluri, String typename, String attributename,
+			IModelIndexer indexer) {
+		return GraphMetaModelResourceInjector.addIndexedAttribute(metamodeluri, typename, attributename,
+				indexer.getGraph(), indexer.getCompositeGraphChangeListener());
 	}
 
 	@Override

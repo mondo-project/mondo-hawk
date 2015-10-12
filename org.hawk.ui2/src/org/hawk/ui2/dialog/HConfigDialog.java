@@ -103,7 +103,6 @@ public class HConfigDialog extends Dialog {
 
 	}
 
-
 	private void derivedAttributeAdd() {
 
 		Dialog d = new Dialog(this) {
@@ -669,10 +668,18 @@ public class HConfigDialog extends Dialog {
 
 		Button remove = new Button(composite, SWT.PUSH);
 		remove.setText("Remove");
-		remove.setEnabled(false);
+		remove.setEnabled(true);
 		remove.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				// remove action
+				String[] selectedMetamodel = null;
+				if (metamodelList.getSelection().length > 0)
+					selectedMetamodel = metamodelList.getSelection();
+
+				if (selectedMetamodel != null) {
+					hawkModel.removeMetamodel(selectedMetamodel);
+					updateMetamodelList();
+				}
 			}
 		});
 
@@ -731,10 +738,10 @@ public class HConfigDialog extends Dialog {
 		composite.setLayout(layout);
 
 		lstVCSLocations = new ListViewer(composite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
-		lstVCSLocations.setLabelProvider(new LabelProvider(){
+		lstVCSLocations.setLabelProvider(new LabelProvider() {
 			@Override
 			public String getText(Object element) {
-				return ((IVcsManager)element).getLocation();
+				return ((IVcsManager) element).getLocation();
 			}
 		});
 		lstVCSLocations.setContentProvider(new ArrayContentProvider());
@@ -775,11 +782,11 @@ public class HConfigDialog extends Dialog {
 	}
 
 	protected IVcsManager getSelectedExistingVCSManager() {
-		final IStructuredSelection sel = (IStructuredSelection)lstVCSLocations.getSelection();
+		final IStructuredSelection sel = (IStructuredSelection) lstVCSLocations.getSelection();
 		if (sel.isEmpty()) {
 			return null;
 		}
-		return (IVcsManager)sel.getFirstElement();
+		return (IVcsManager) sel.getFirstElement();
 	}
 
 	protected void configureShell(Shell newShell) {

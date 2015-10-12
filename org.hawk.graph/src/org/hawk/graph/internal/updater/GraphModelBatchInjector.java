@@ -142,7 +142,7 @@ public class GraphModelBatchInjector {
 					System.out.println(((IGraphIterable<IGraphNode>) proxyDictionary.query("_proxyRef", "*")).size()
 							+ " - sets of proxy references left in the store");
 					listener.changeSuccess();
-
+					error = false;
 				} catch (Exception e) {
 					e.printStackTrace();
 					System.err.println("ParseMResource Exception on file: " + s.getPath()
@@ -150,11 +150,14 @@ public class GraphModelBatchInjector {
 
 					new DeletionUtils(graph).deleteAll(s, listener);
 					listener.changeFailure();
+					error = true;
 				}
 			} else /* if not new */ {
 				listener.changeSuccess();
+				error = false;
 			}
 		} catch (Exception ex) {
+			error = true;
 			listener.changeFailure();
 		} finally {
 			graph.exitBatchMode();
@@ -574,6 +577,7 @@ public class GraphModelBatchInjector {
 
 	private Hashtable<IHawkClass, IGraphNode> hashedeclasses = new Hashtable<>();
 	private Hashtable<IGraphNode, Hashtable<String, Object>> hashedeclassproperties = new Hashtable<>();
+	private boolean error = false;
 
 	/**
 	 * 
@@ -1008,6 +1012,10 @@ public class GraphModelBatchInjector {
 
 	private void setUnset(int unset) {
 		this.unset = unset;
+	}
+
+	public boolean getError() {
+		return error;
 	}
 
 }

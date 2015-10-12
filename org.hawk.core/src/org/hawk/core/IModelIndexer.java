@@ -1,4 +1,5 @@
 /*******************************************************************************
+
  * Copyright (c) 2011-2015 The University of York.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -51,8 +52,8 @@ public interface IModelIndexer {
 	 * Forces a synchronisation to be performed immediately.
 	 * 
 	 * The synchronisation process may run in a separate thread. Users wishing
-	 * to run code when synchronisation really starts or ends should register
-	 * an {@link IGraphChangeListener}.
+	 * to run code when synchronisation really starts or ends should register an
+	 * {@link IGraphChangeListener}.
 	 */
 	void requestImmediateSync() throws Exception;
 
@@ -97,9 +98,9 @@ public interface IModelIndexer {
 
 	void registerMetamodel(File f) throws Exception;
 
-	void removeMetamodel(File[] metamodel) throws Exception;
+	// void removeMetamodel(File[] metamodel) throws Exception;
 
-	void removeMetamodel(File metamodel) throws Exception;
+	void removeMetamodels(String[] metamodelURI) throws Exception;
 
 	IAbstractConsole getConsole();
 
@@ -183,13 +184,10 @@ public interface IModelIndexer {
 
 	void setMetaModelUpdater(IMetaModelUpdater metaModelUpdater);
 
-	void addDerivedAttribute(String metamodeluri, String typename,
-			String attributename, String attributetype, boolean isMany,
-			boolean isOrdered, boolean isUnique, String derivationlanguage,
-			String derivationlogic);
+	void addDerivedAttribute(String metamodeluri, String typename, String attributename, String attributetype,
+			boolean isMany, boolean isOrdered, boolean isUnique, String derivationlanguage, String derivationlogic);
 
-	void addIndexedAttribute(String metamodeluri, String typename,
-			String attributename);
+	void addIndexedAttribute(String metamodeluri, String typename, String attributename);
 
 	Collection<String> getDerivedAttributes();
 
@@ -204,8 +202,7 @@ public interface IModelIndexer {
 
 	Collection<String> getIndexes();
 
-	List<String> validateExpression(String derivationlanguage,
-			String derivationlogic);
+	List<String> validateExpression(String derivationlanguage, String derivationlogic);
 
 	public String getName();
 

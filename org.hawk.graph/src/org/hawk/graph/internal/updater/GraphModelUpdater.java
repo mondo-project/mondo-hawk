@@ -45,9 +45,9 @@ public class GraphModelUpdater implements IModelUpdater {
 	}
 
 	@Override
-	public void updateStore(VcsCommitItem f, IHawkModelResource res) {
+	public boolean updateStore(VcsCommitItem f, IHawkModelResource res) {
 		final long start = System.currentTimeMillis();
-
+		boolean success = true;
 		/*
 		 * We register this listener only for this particular updater and during
 		 * this method call. It is used to collect information about which nodes
@@ -62,10 +62,13 @@ public class GraphModelUpdater implements IModelUpdater {
 
 		try {
 			try {
-				if (!new GraphModelInserter(indexer).run(res, f))
+				if (!new GraphModelInserter(indexer).run(res, f)) {
 					console.printerrln("warning: failed to update item: " + f + "\nmodel resource: " + res);
+					success = false;
+				}
 			} catch (Exception ex) {
 				ex.printStackTrace();
+				success = false;
 			}
 
 			long end = System.currentTimeMillis();
@@ -75,7 +78,7 @@ public class GraphModelUpdater implements IModelUpdater {
 			toBeUpdated.addAll(l.getNodesToBeUpdated());
 			indexer.removeGraphChangeListener(l);
 		}
-
+		return success;
 	}
 
 	@Override
@@ -127,8 +130,8 @@ public class GraphModelUpdater implements IModelUpdater {
 	}
 
 	@Override
-	public void deleteAll(VcsCommitItem c) throws Exception {
-		new DeletionUtils(indexer.getGraph()).deleteAll(c, indexer.getCompositeGraphChangeListener());
+	public boolean deleteAll(VcsCommitItem c) throws Exception {
+		return new DeletionUtils(indexer.getGraph()).deleteAll(c, indexer.getCompositeGraphChangeListener());
 	}
 
 	@Override

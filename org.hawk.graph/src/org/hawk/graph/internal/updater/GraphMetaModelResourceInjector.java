@@ -12,6 +12,7 @@
 package org.hawk.graph.internal.updater;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -207,7 +208,7 @@ public class GraphMetaModelResourceInjector {
 
 				}
 
-				del.dereference(modelElement);
+				del.dereference(modelElement, listener, null);
 			}
 
 			for (IGraphNode modelElement : modelElements)
@@ -322,8 +323,6 @@ public class GraphMetaModelResourceInjector {
 		}
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
-
-			HashMap<IGraphNode, IHawkMetaModelResource> map = new HashMap<>();
 
 			for (IHawkPackage ePackage : addedepackages) {
 
@@ -862,6 +861,38 @@ public class GraphMetaModelResourceInjector {
 
 		return requiresPropagationToInstances;
 
+	}
+
+	public void removeMetamodels(String[] mmuris) {
+
+		try (IGraphTransaction t = graph.beginTransaction()) {
+			listener.changeStart();
+			epackagedictionary = graph.getMetamodelIndex();
+
+			Set<IGraphNode> epns = new HashSet<>();
+			for (String mmuri : mmuris) {
+				try {
+					epns.add(epackagedictionary.get("id", mmuri).getSingle());
+				} catch (Exception e) {
+					System.err.println("Metamodel with uri: " + mmuri + " not indexed. Nothing happened.");
+					System.err.println(e.getMessage());
+				}
+			}
+			if (epns.size() > 0) {
+				System.err.println("Removing metamodels with uris: " + Arrays.toString(mmuris));
+				removeAll(epns);
+			}
+
+			t.success();
+			listener.changeSuccess();
+
+		} catch (Exception e) {
+			listener.changeFailure();
+			System.err.println(
+					"error in removing metamodels: " + Arrays.toString(mmuris) + "\n(ALL removal changes reverted):");
+			e.printStackTrace();
+
+		}
 	}
 
 }

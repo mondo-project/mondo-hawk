@@ -29,7 +29,7 @@ public interface IModelUpdater {
 	 * @param VcsCommitItemtoResourceMap
 	 * @return
 	 */
-	public abstract void updateStore(VcsCommitItem vcscommititem,
+	public abstract boolean updateStore(VcsCommitItem vcscommititem,
 			IHawkModelResource resource);
 
 	void run(IAbstractConsole console, IModelIndexer modelIndexer)
@@ -37,7 +37,7 @@ public interface IModelUpdater {
 
 	public abstract void shutdown();
 
-	public void deleteAll(VcsCommitItem c) throws Exception;
+	public boolean deleteAll(VcsCommitItem c) throws Exception;
 
 	public void updateDerivedAttribute(String metamodeluri, String typename,
 			String attributename, String attributetype, boolean isMany,

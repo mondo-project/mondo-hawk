@@ -86,6 +86,8 @@ public class GraphModelInserter {
 		// indexer = i;
 		inj = new GraphModelBatchInjector(graph, this.s, indexer.getCompositeGraphChangeListener());
 
+		boolean ret;
+
 		try {
 			// f = new File(dir + "/" + s.getPath());
 
@@ -96,10 +98,10 @@ public class GraphModelInserter {
 				//
 				if (delta > maxTransactionalAcceptableLoad) {
 					System.err.print("[" + delta + ">" + maxTransactionalAcceptableLoad + "] ");
-					batchUpdate();
+					ret = batchUpdate();
 				} else {
 					System.err.print("[" + delta + "<" + maxTransactionalAcceptableLoad + "] ");
-					transactionalUpdate();
+					ret = transactionalUpdate();
 				}
 
 				//
@@ -111,12 +113,12 @@ public class GraphModelInserter {
 			} else {
 				// populate the database from scratch (for this file) -- this
 				// will trigger calculation of all derived attrs
-				addNodes();
+				ret = addNodes();
 			}
 
 			System.out.print("\nProgram ending with no errors, shutting down database...");
 
-			return true;
+			return ret;
 		} finally {
 			long l = System.nanoTime();
 			// t.success();
@@ -127,7 +129,7 @@ public class GraphModelInserter {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void transactionalUpdate() throws Exception {
+	private boolean transactionalUpdate() throws Exception {
 		graph.exitBatchMode();
 
 		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
@@ -325,10 +327,12 @@ public class GraphModelInserter {
 			fileNode.setProperty("revision", s.getCommit().getRevision());
 			t.success();
 			listener.changeSuccess();
+			return true;
 		} catch (Exception e) {
 			System.err.println("exception in transactionalUpdate()");
 			e.printStackTrace();
 			listener.changeFailure();
+			return false;
 		}
 
 	}
@@ -487,7 +491,7 @@ public class GraphModelInserter {
 		}
 
 		for (IHawkAttribute a : indexedattributes) {
-			
+
 			IGraphNodeIndex i = graph.getOrCreateNodeIndex(
 					eObject.getType().getPackageNSURI() + "##" + eObject.getType().getName() + "##" + a.getName());
 
@@ -556,7 +560,7 @@ public class GraphModelInserter {
 		}
 	}
 
-	private void batchUpdate() throws Exception {
+	private boolean batchUpdate() throws Exception {
 		System.err.println("batch update called");
 
 		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
@@ -570,8 +574,10 @@ public class GraphModelInserter {
 			graph.exitBatchMode();
 
 			listener.changeSuccess();
+			return true;
 		} catch (Exception ex) {
 			listener.changeFailure();
+			return false;
 		}
 	}
 
@@ -643,11 +649,16 @@ public class GraphModelInserter {
 	 * 
 	 * @throws Exception
 	 */
-	private void addNodes() throws Exception {
+	private boolean addNodes() throws Exception {
+		boolean error = true;
 		if (resource != null) {
 			GraphModelBatchInjector batch = new GraphModelBatchInjector(graph, s, resource,
 					indexer.getCompositeGraphChangeListener());
 			unset = batch.getUnset();
+			error = batch.getError();
+			if (error)
+				System.err.println(
+						"model insertion aborted: see above error (maybe you need to register the metamodel?)");
 		} else {
 			System.err.println("model insertion aborted, see above error (maybe you need to register the metamodel?)");
 		}
@@ -657,6 +668,7 @@ public class GraphModelInserter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return error;
 	}
 
 	private void remove(IGraphNode modelElement, String repositoryURL, IGraphNode fileNode, IGraphChangeListener l) {

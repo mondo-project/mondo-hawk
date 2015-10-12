@@ -515,4 +515,13 @@ public class HModel {
 		// TODO Auto-generated method stub
 	}
 
+	public void removeMetamodel(String[] selectedMetamodels) {
+		try {
+			hawk.getModelIndexer().removeMetamodels(selectedMetamodels);
+		} catch (Exception e) {
+			System.err.println("error in removemetamodel:");
+			e.printStackTrace();
+		}
+	}
+
 }

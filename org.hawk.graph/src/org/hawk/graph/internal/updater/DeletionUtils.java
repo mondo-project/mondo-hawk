@@ -43,9 +43,11 @@ public class DeletionUtils {
 
 	}
 
-	protected void deleteAll(VcsCommitItem s, IGraphChangeListener changeListener) throws Exception {
+	protected boolean deleteAll(VcsCommitItem s, IGraphChangeListener changeListener) throws Exception {
 
 		long start = System.currentTimeMillis();
+
+		boolean success = true;
 
 		try (IGraphTransaction transaction = graph.beginTransaction()) {
 			final String repository = s.getCommit().getDelta().getRepository().getUrl();
@@ -88,11 +90,15 @@ public class DeletionUtils {
 			}
 
 			transaction.success();
+
+		} catch (Exception e) {
+			success = false;
+			e.printStackTrace();
 		}
 
 		System.out.println("deleted all, took: " + (System.currentTimeMillis() - start) / 1000 + "s"
 				+ (System.currentTimeMillis() - start) / 1000 + "ms");
-
+		return success;
 	}
 
 	protected String makeRelative(String base, String extension) {
@@ -208,7 +214,7 @@ public class DeletionUtils {
 
 			// delete derived attributes stored as nodes
 			if (rel.getProperty("isDerived") != null) {
-				if (l == null || s == null) {
+				if (l == null && s == null) {
 					System.err.println(
 							"warning dereference has null listener/vcscommit -- this should only be used for non-model elements");
 					break;
