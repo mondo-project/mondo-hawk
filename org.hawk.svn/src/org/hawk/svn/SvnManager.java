@@ -173,14 +173,6 @@ public class SvnManager extends AbstractVcsManager {
 						commit.getItems().add(commitItem);
 						commitItem.setCommit(commit);
 
-						// XXX KOSTAS - removed starting / for Hawk + entire
-						// relative making.
-						// String relativePath = makeRelative(overLappedURL,
-						// path);
-						// if (!relativePath.startsWith("/")) {
-						// relativePath = "/" + relativePath;
-						// }
-						// commitItem.setPath(relativePath);
 						commitItem.setPath(path);
 
 						if (svnLogEntryPath.getType() == 'A') {

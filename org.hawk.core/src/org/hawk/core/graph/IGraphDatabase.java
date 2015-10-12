@@ -99,6 +99,4 @@ public interface IGraphDatabase {
 
 	Set<String> getKnownMMUris();
 
-	Set<IGraphNode> retainExisting(Set<IGraphNode> nodes);
-
 }

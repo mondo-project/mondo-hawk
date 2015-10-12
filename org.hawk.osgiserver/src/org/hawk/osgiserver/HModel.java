@@ -64,23 +64,19 @@ public class HModel {
 	 *             The minimum and maximum delays are not valid or not
 	 *             consistent with each other.
 	 */
-	public static HModel create(IHawkFactory hawkFactory, String name,
-			File storageFolder, String location, String dbType,
-			List<String> plugins, HManager manager, char[] apw, int minDelay, int maxDelay)
-			throws Exception {
+	public static HModel create(IHawkFactory hawkFactory, String name, File storageFolder, String location,
+			String dbType, List<String> plugins, HManager manager, char[] apw, int minDelay, int maxDelay)
+					throws Exception {
 
 		if (minDelay > maxDelay) {
 			throw new IllegalArgumentException("minimum delay must be less than or equal to maximum delay");
-		}
-		else if (minDelay < 0) {
+		} else if (minDelay < 0) {
 			throw new IllegalArgumentException("minimum delay must not be negative");
-		}
-		else if (maxDelay < 0) {
+		} else if (maxDelay < 0) {
 			throw new IllegalArgumentException("maximum delay must not be negative");
 		}
 
-		HModel hm = new HModel(manager, hawkFactory, name, storageFolder,
-				location);
+		HModel hm = new HModel(manager, hawkFactory, name, storageFolder, location);
 		if (dbType != null) {
 			hm.hawk.setDbtype(dbType);
 		}
@@ -101,8 +97,7 @@ public class HModel {
 
 			// hard coded metamodel updater?
 			IMetaModelUpdater metaModelUpdater = manager.getMetaModelUpdater();
-			console.println("Setting up hawk's metamodel updater:\n"
-					+ metaModelUpdater.getName());
+			console.println("Setting up hawk's metamodel updater:\n" + metaModelUpdater.getName());
 			hm.hawk.getModelIndexer().setMetaModelUpdater(metaModelUpdater);
 			hm.hawk.getModelIndexer().setAdminPassword(apw);
 			hm.hawk.getModelIndexer().init(minDelay, maxDelay);
@@ -132,16 +127,14 @@ public class HModel {
 	/**
 	 * Loads a previously existing Hawk instance from its {@link HawkConfig}.
 	 */
-	public static HModel load(HawkConfig config, HManager manager)
-			throws Exception {
+	public static HModel load(HawkConfig config, HManager manager) throws Exception {
 
 		try {
 
-			final IHawkFactory hawkFactory = manager.createHawkFactory(config
-					.getHawkFactory());
+			final IHawkFactory hawkFactory = manager.createHawkFactory(config.getHawkFactory());
 
-			HModel hm = new HModel(manager, hawkFactory, config.getName(),
-					new File(config.getStorageFolder()), config.getLocation());
+			HModel hm = new HModel(manager, hawkFactory, config.getName(), new File(config.getStorageFolder()),
+					config.getLocation());
 
 			// hard coded metamodel updater?
 			IMetaModelUpdater metaModelUpdater = manager.getMetaModelUpdater();
@@ -149,8 +142,7 @@ public class HModel {
 
 			return hm;
 		} catch (Throwable e) {
-			System.err
-					.println("Exception in trying to add create Indexer from folder:");
+			System.err.println("Exception in trying to add create Indexer from folder:");
 			System.err.println(e.getMessage());
 			e.printStackTrace();
 			System.err.println("Adding of indexer aborted, please try again");
@@ -169,11 +161,10 @@ public class HModel {
 	 * Constructor for loading existing local Hawk instances and
 	 * creating/loading custom {@link IHawk} implementations.
 	 */
-	public HModel(HManager manager, IHawkFactory hawkFactory, String name,
-			File storageFolder, String location) throws Exception {
+	public HModel(HManager manager, IHawkFactory hawkFactory, String name, File storageFolder, String location)
+			throws Exception {
 		this.hawkFactory = hawkFactory;
-		this.hawk = hawkFactory.create(name, storageFolder, location,
-				getConsole());
+		this.hawk = hawkFactory.create(name, storageFolder, location, getConsole());
 		this.manager = manager;
 		this.hawkLocation = location;
 
@@ -193,30 +184,25 @@ public class HModel {
 			}
 			console.println("adding model resource factories:");
 			for (IConfigurationElement mparse : manager.getMps()) {
-				IModelResourceFactory f = (IModelResourceFactory) mparse
-						.createExecutableExtension("ModelParser");
+				IModelResourceFactory f = (IModelResourceFactory) mparse.createExecutableExtension("ModelParser");
 				this.hawk.getModelIndexer().addModelResourceFactory(f);
 				console.println(f.getHumanReadableName());
 			}
 			console.println("adding query engines:");
 			for (IConfigurationElement ql : manager.getLanguages()) {
-				IQueryEngine q = (IQueryEngine) ql
-						.createExecutableExtension("query_language");
+				IQueryEngine q = (IQueryEngine) ql.createExecutableExtension("query_language");
 				this.hawk.getModelIndexer().addQueryEngine(q);
 				console.println(q.getType());
 			}
 			console.println("adding model updaters:");
 			for (IConfigurationElement updater : manager.getUps()) {
-				IModelUpdater u = (IModelUpdater) updater
-						.createExecutableExtension("ModelUpdater");
+				IModelUpdater u = (IModelUpdater) updater.createExecutableExtension("ModelUpdater");
 				this.hawk.getModelIndexer().addModelUpdater(u);
 				console.println(u.getName());
 			}
 			console.println("adding graph change listeners:");
-			for (IConfigurationElement listener : manager
-					.getGraphChangeListeners()) {
-				IGraphChangeListener l = (IGraphChangeListener) listener
-						.createExecutableExtension("class");
+			for (IConfigurationElement listener : manager.getGraphChangeListeners()) {
+				IGraphChangeListener l = (IGraphChangeListener) listener.createExecutableExtension("class");
 				l.setModelIndexer(this.hawk.getModelIndexer());
 				this.hawk.getModelIndexer().addGraphChangeListener(l);
 				console.println(l.getName());
@@ -224,17 +210,14 @@ public class HModel {
 		}
 	}
 
-	public void addDerivedAttribute(String metamodeluri, String typename,
-			String attributename, String attributetype, Boolean isMany,
-			Boolean isOrdered, Boolean isUnique, String derivationlanguage,
-			String derivationlogic) throws Exception {
-		hawk.getModelIndexer().addDerivedAttribute(metamodeluri, typename,
-				attributename, attributetype, isMany, isOrdered, isUnique,
-				derivationlanguage, derivationlogic);
+	public void addDerivedAttribute(String metamodeluri, String typename, String attributename, String attributetype,
+			Boolean isMany, Boolean isOrdered, Boolean isUnique, String derivationlanguage, String derivationlogic)
+					throws Exception {
+		hawk.getModelIndexer().addDerivedAttribute(metamodeluri, typename, attributename, attributetype, isMany,
+				isOrdered, isUnique, derivationlanguage, derivationlogic);
 	}
 
-	private void loadEncryptedVCS(String loc, String type, String user,
-			String pass) throws Exception {
+	private void loadEncryptedVCS(String loc, String type, String user, String pass) throws Exception {
 		if (!this.getLocations().contains(loc)) {
 			String decryptedUser = user;
 			if (decryptedUser != null && !"".equals(decryptedUser)) {
@@ -252,10 +235,8 @@ public class HModel {
 		}
 	}
 
-	public void addIndexedAttribute(String metamodeluri, String typename,
-			String attributename) throws Exception {
-		hawk.getModelIndexer().addIndexedAttribute(metamodeluri, typename,
-				attributename);
+	public void addIndexedAttribute(String metamodeluri, String typename, String attributename) throws Exception {
+		hawk.getModelIndexer().addIndexedAttribute(metamodeluri, typename, attributename);
 	}
 
 	public void addVCS(String loc, String type, String user, String pass) {
@@ -294,16 +275,13 @@ public class HModel {
 	 * @throws NoSuchElementException
 	 *             Unknown query language.
 	 */
-	public Object contextFullQuery(File query, String ql,
-			Map<String, String> context) throws Exception {
-		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages()
-				.get(ql);
+	public Object contextFullQuery(File query, String ql, Map<String, String> context) throws Exception {
+		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages().get(ql);
 		if (q == null) {
 			throw new NoSuchElementException();
 		}
 
-		return q.contextfullQuery(hawk.getModelIndexer().getGraph(), query,
-				context);
+		return q.contextfullQuery(hawk.getModelIndexer().getGraph(), query, context);
 	}
 
 	/**
@@ -313,16 +291,13 @@ public class HModel {
 	 * @throws NoSuchElementException
 	 *             Unknown query language.
 	 */
-	public Object contextFullQuery(String query, String ql,
-			Map<String, String> context) throws Exception {
-		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages()
-				.get(ql);
+	public Object contextFullQuery(String query, String ql, Map<String, String> context) throws Exception {
+		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages().get(ql);
 		if (q == null) {
 			throw new NoSuchElementException();
 		}
 
-		return q.contextfullQuery(hawk.getModelIndexer().getGraph(), query,
-				context);
+		return q.contextfullQuery(hawk.getModelIndexer().getGraph(), query, context);
 	}
 
 	public void delete() throws BackingStoreException {
@@ -331,8 +306,6 @@ public class HModel {
 		File f = hawk.getModelIndexer().getParentFolder();
 		while (this.isRunning()) {
 			try {
-				// XXX removing an HModel does not delete the storage and does
-				// not stop remote instances.
 				hawk.getModelIndexer().shutdown(ShutdownRequestType.ONLY_LOCAL);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -340,9 +313,7 @@ public class HModel {
 		}
 
 		if (f.exists()) {
-			System.err
-					.println("hawk removed from ui but persistence remains at: "
-							+ f);
+			System.err.println("hawk removed from ui but persistence remains at: " + f);
 		}
 	}
 
@@ -350,8 +321,7 @@ public class HModel {
 	 * Returns a {@link HawkConfig} from which this instance can be reloaded.
 	 */
 	public HawkConfig getHawkConfig() {
-		return new HawkConfig(getName(), getFolder(), hawkLocation,
-				hawkFactory.getClass().getName());
+		return new HawkConfig(getName(), getFolder(), hawkLocation, hawkFactory.getClass().getName());
 	}
 
 	public boolean exists() {
@@ -418,8 +388,7 @@ public class HModel {
 	 * For the result types, see {@link #contextFullQuery(File, String, Map)}.
 	 */
 	public Object query(File query, String ql) throws Exception {
-		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages()
-				.get(ql);
+		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages().get(ql);
 
 		return q.contextlessQuery(hawk.getModelIndexer().getGraph(), query);
 	}
@@ -428,8 +397,7 @@ public class HModel {
 	 * For the result types, see {@link #contextFullQuery(File, String, Map)}.
 	 */
 	public Object query(String query, String ql) throws Exception {
-		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages()
-				.get(ql);
+		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages().get(ql);
 		return q.contextlessQuery(hawk.getModelIndexer().getGraph(), query);
 	}
 
@@ -443,8 +411,7 @@ public class HModel {
 		return true;
 	}
 
-	public void removeHawkFromMetadata(HawkConfig config)
-			throws BackingStoreException {
+	public void removeHawkFromMetadata(HawkConfig config) throws BackingStoreException {
 		IEclipsePreferences preferences = HManager.getPreferences();
 
 		String xml = preferences.get("config", null);
@@ -460,9 +427,7 @@ public class HModel {
 			preferences.put("config", xml);
 			preferences.flush();
 		} else {
-			getConsole()
-					.printerrln(
-							"removeHawkFromMetadata tried to load preferences but it could not.");
+			getConsole().printerrln("removeHawkFromMetadata tried to load preferences but it could not.");
 		}
 	}
 
@@ -502,27 +467,22 @@ public class HModel {
 	public String toString() {
 		String ret = "";
 		try {
-			ret = getName()
-					+ (this.isRunning() ? " (running) " : " (stopped) ") + " ["
-					+ this.getFolder() + "] ";
+			ret = getName() + (this.isRunning() ? " (running) " : " (stopped) ") + " [" + this.getFolder() + "] ";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return ret;
 	}
 
-	public List<String> validateExpression(String derivationlanguage,
-			String derivationlogic) {
-		return hawk.getModelIndexer().validateExpression(derivationlanguage,
-				derivationlogic);
+	public List<String> validateExpression(String derivationlanguage, String derivationlogic) {
+		return hawk.getModelIndexer().validateExpression(derivationlanguage, derivationlogic);
 	}
 
 	private HawkProperties loadIndexerMetadata() throws Exception {
 		XStream stream = new XStream(new DomDriver());
 		stream.processAnnotations(HawkProperties.class);
 		stream.setClassLoader(HawkProperties.class.getClassLoader());
-		String path = hawk.getModelIndexer().getParentFolder() + File.separator
-				+ "properties.xml";
+		String path = hawk.getModelIndexer().getParentFolder() + File.separator + "properties.xml";
 
 		HawkProperties hp = (HawkProperties) stream.fromXML(new File(path));
 		hawk.setDbtype(hp.getDbType());
@@ -532,14 +492,12 @@ public class HModel {
 		return hp;
 	}
 
-	public void removeDerivedAttribute(String metamodelUri, String typeName,
-			String attributeName) {
+	public void removeDerivedAttribute(String metamodelUri, String typeName, String attributeName) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void removeIndexedAttribute(String metamodelUri, String typename,
-			String attributename) {
+	public void removeIndexedAttribute(String metamodelUri, String typename, String attributename) {
 		// TODO Auto-generated method stub
 
 	}

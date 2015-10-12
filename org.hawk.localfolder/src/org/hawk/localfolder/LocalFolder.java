@@ -124,17 +124,10 @@ public class LocalFolder implements IVcsManager {
 
 	@Override
 	public String getCurrentRevision(VcsRepository r) {
-		// XXX as there is no implementation of top-level versions on a local
-		// folder, every time this method is called a different value is
-		// returned, hence the check is delegated to changes in each individual
-		// file in the folder
 		return getCurrentRevision();
 	}
 
 	private String getCurrentRevision(boolean alter) {
-		// as there is no implementation of top-level versions on a local
-		// folder, every time this method is called a different value is
-		// returned, if something has changed in the folder (or subfolders)
 
 		try {
 			final LastModifiedFileVisitor visitor = new LastModifiedFileVisitor(

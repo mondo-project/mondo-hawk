@@ -170,7 +170,7 @@ public class EMFObject implements IHawkObject {
 	// hashCode += eAttribute.getName().hashCode();
 	//
 	// if (!eAttribute.isDerived())
-	// // XXX NOTE: using toString for hashcode of
+	// // NOTE: using toString for hashcode of
 	// // attribute values as primitives in java have
 	// // different hashcodes each time, not fullproof
 	// // true == "true" here
@@ -286,7 +286,7 @@ public class EMFObject implements IHawkObject {
 							md.update(eAttribute.getName().getBytes());
 
 							if (!eAttribute.isDerived())
-								// XXX NOTE: using toString for hashcode of
+								// NOTE: using toString for hashcode of
 								// attribute values as primitives in java have
 								// different hashcodes each time, not fullproof
 								// true == "true" here

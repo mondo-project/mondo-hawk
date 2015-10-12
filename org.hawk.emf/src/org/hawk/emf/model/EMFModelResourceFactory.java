@@ -27,9 +27,10 @@ import org.hawk.emf.metamodel.EMFMetaModelResourceFactory;
 public class EMFModelResourceFactory implements IModelResourceFactory {
 
 	/**
-	 * Property that can be set to a comma-separated list of extensions (e.g. ".railway,.myext")
-	 * that should be supported in addition to the default ones (".xmi" and ".model"). Composite
-	 * extensions are allowed (e.g. ".rail.way").
+	 * Property that can be set to a comma-separated list of extensions (e.g.
+	 * ".railway,.myext") that should be supported in addition to the default
+	 * ones (".xmi" and ".model"). Composite extensions are allowed (e.g.
+	 * ".rail.way").
 	 */
 	public static final String PROPERTY_EXTRA_EXTENSIONS = "org.hawk.emf.model.extraExtensions";
 
@@ -74,6 +75,10 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 	@Override
 	public IHawkModelResource parse(File f) {
 
+		// useUUIDs()
+		// assignIDsWhileLoading()
+		// TODO set these values to true to aid loading non-id models - test
+
 		IHawkModelResource ret;
 
 		Resource r = null;
@@ -81,8 +86,8 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 		try {
 			ResourceSet resourceSet = new ResourceSetImpl();
 
-			final Map<String, Object> extensionToFactoryMap
-				= resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap();
+			final Map<String, Object> extensionToFactoryMap = resourceSet.getResourceFactoryRegistry()
+					.getExtensionToFactoryMap();
 			for (String ext : modelExtensions) {
 				if (ext.startsWith(".")) {
 					// Remove the initial period (if any)

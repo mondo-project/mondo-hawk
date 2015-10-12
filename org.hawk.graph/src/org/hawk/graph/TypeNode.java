@@ -32,7 +32,6 @@ public class TypeNode {
 
 	public TypeNode(IGraphNode node) {
 		this.node = node;
-		// TODO is node.getId().toString() equal to the line below for type nodes?
 		this.name = (String)node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
 	}
 

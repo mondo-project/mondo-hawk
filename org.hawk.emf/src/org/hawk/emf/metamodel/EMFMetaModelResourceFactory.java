@@ -47,16 +47,14 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 		metamodelExtensions.add(".ecore");
 
 		if (EPackage.Registry.INSTANCE.getEPackage(EcorePackage.eNS_URI) == null) {
-			EPackage.Registry.INSTANCE.put(EcorePackage.eNS_URI,
-					EcorePackage.eINSTANCE);
+			EPackage.Registry.INSTANCE.put(EcorePackage.eNS_URI, EcorePackage.eINSTANCE);
 		}
 
 		resourceSet = new ResourceSetImpl();
 
-		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-				.put("ecore", new EcoreResourceFactoryImpl());
-		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-				.put("*", new XMIResourceFactoryImpl());
+		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("ecore",
+				new EcoreResourceFactoryImpl());
+		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
 
 	}
 
@@ -79,8 +77,7 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 		EMFMetaModelResource ret;
 
-		Resource r = resourceSet.createResource(URI.createFileURI(f
-				.getAbsolutePath()));
+		Resource r = resourceSet.createResource(URI.createFileURI(f.getAbsolutePath()));
 		r.load(null);
 
 		//
@@ -101,11 +98,12 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 	@Override
 	public String dumpPackageToString(IHawkPackage pkg) throws Exception {
 		final EMFPackage ePackage = (EMFPackage) pkg;
-		final EMFMetaModelResource eResource = (EMFMetaModelResource)ePackage.getResource();
+		final EMFMetaModelResource eResource = (EMFMetaModelResource) ePackage.getResource();
 		final Resource oldResource = eResource.res;
 
 		// Separate the EPackage to be saved to its own resource
-		final Resource newResource = resourceSet.createResource(URI.createURI("resource_from_epackage_" + ePackage.getNsURI()));
+		final Resource newResource = resourceSet
+				.createResource(URI.createURI("resource_from_epackage_" + ePackage.getNsURI()));
 		final EObject eob = ePackage.getEObject();
 		newResource.getContents().add(eob);
 
@@ -118,8 +116,9 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 		final List<Resource> auxResources = new ArrayList<>();
 		for (EObject otherContent : otherContents) {
 			if (otherContent instanceof EPackage) {
-				final EPackage otherEPackage = (EPackage)otherContent;
-				final Resource auxResource = resourceSet.createResource(URI.createURI("resource_from_epackage_" + otherEPackage.getNsURI()));
+				final EPackage otherEPackage = (EPackage) otherContent;
+				final Resource auxResource = resourceSet
+						.createResource(URI.createURI("resource_from_epackage_" + otherEPackage.getNsURI()));
 				auxResources.add(auxResource);
 				auxResource.getContents().add(otherEPackage);
 			}
@@ -155,15 +154,13 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 	}
 
 	@Override
-	public IHawkMetaModelResource parseFromString(String name, String contents)
-			throws Exception {
+	public IHawkMetaModelResource parseFromString(String name, String contents) throws Exception {
 
 		if (name != null && contents != null) {
 
 			Resource r = resourceSet.createResource(URI.createURI(name));
 
-			InputStream input = new ByteArrayInputStream(
-					contents.getBytes("UTF-8"));
+			InputStream input = new ByteArrayInputStream(contents.getBytes("UTF-8"));
 
 			r.load(input, null);
 
@@ -196,8 +193,7 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 				e.printStackTrace();
 			}
 
-		System.err.println(found ? "removed: " + property : property
-				+ " not present in this EMF parser");
+		System.err.println(found ? "removed: " + property : property + " not present in this EMF parser");
 
 	}
 
@@ -242,7 +238,7 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 		// return graph;
 		// System.out.println("insertRegisteredMetamodels() finished");
 
-		// XXX removing any static (global registry resident) metamodels in emf
+		// removing any static (global registry resident) metamodels in emf
 		// as we treat it as file-based only for now
 		set.clear();
 		return set;

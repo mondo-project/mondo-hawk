@@ -563,13 +563,13 @@ public class Neo4JDatabase implements IGraphDatabase {
 		return ret;
 	}
 
-	@Override
-	public Set<IGraphNode> retainExisting(Set<IGraphNode> nodes) {
-		for (Iterator<IGraphNode> it = nodes.iterator(); it.hasNext();) {
-			Node n;
-			if ((n = graph.getNodeById((long) it.next().getId())) == null)
-				nodes.remove(n);
-		}
-		return nodes;
-	}
+	// @Override
+	// public Set<IGraphNode> retainExisting(Set<IGraphNode> nodes) {
+	// for (Iterator<IGraphNode> it = nodes.iterator(); it.hasNext();) {
+	// Node n;
+	// if ((n = graph.getNodeById((long) it.next().getId())) == null)
+	// nodes.remove(n);
+	// }
+	// return nodes;
+	// }
 }

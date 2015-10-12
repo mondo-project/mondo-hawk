@@ -34,12 +34,14 @@ public class DirtyDerivedAttributesListener implements IGraphChangeListener {
 
 	private final Set<IGraphNode> nodesToBeUpdated = new HashSet<>();
 	private IGraphDatabase db;
+	private Set<IGraphNode> markedForRemoval = new HashSet<>();
 
 	public DirtyDerivedAttributesListener(IGraphDatabase graph) {
 		this.db = graph;
 	}
 
 	public Set<IGraphNode> getNodesToBeUpdated() {
+		nodesToBeUpdated.removeAll(markedForRemoval);
 		return nodesToBeUpdated;
 	}
 
@@ -94,15 +96,7 @@ public class DirtyDerivedAttributesListener implements IGraphChangeListener {
 	}
 
 	@Override
-	public void modelElementAddition(VcsCommitItem s, IHawkObject element,
-			IGraphNode elementNode, boolean isTransient) {
-		if (!isTransient) {
-			markDependentToBeUpdated(elementNode.getId().toString());
-		}
-	}
-
-	@Override
-	public void modelElementRemoval(VcsCommitItem s, IGraphNode elementNode,
+	public void modelElementAddition(VcsCommitItem s, IHawkObject element, IGraphNode elementNode,
 			boolean isTransient) {
 		if (!isTransient) {
 			markDependentToBeUpdated(elementNode.getId().toString());
@@ -110,8 +104,21 @@ public class DirtyDerivedAttributesListener implements IGraphChangeListener {
 	}
 
 	@Override
-	public void modelElementAttributeUpdate(VcsCommitItem s,
-			IHawkObject eObject, String attrName, Object oldValue,
+	public void modelElementRemoval(VcsCommitItem s, IGraphNode elementNode, boolean isTransient) {
+		if (!isTransient) {
+			markDependentToBeUpdated(elementNode.getId().toString());
+		} else {
+			markForRemoval(elementNode);
+		}
+	}
+
+	private void markForRemoval(IGraphNode elementNode) {
+		markedForRemoval.add(elementNode);
+
+	}
+
+	@Override
+	public void modelElementAttributeUpdate(VcsCommitItem s, IHawkObject eObject, String attrName, Object oldValue,
 			Object newValue, IGraphNode elementNode, boolean isTransient) {
 		if (!isTransient) {
 			markDependentToBeUpdated(elementNode.getId().toString(), attrName);
@@ -119,8 +126,7 @@ public class DirtyDerivedAttributesListener implements IGraphChangeListener {
 	}
 
 	@Override
-	public void modelElementAttributeRemoval(VcsCommitItem s,
-			IHawkObject eObject, String attrName, IGraphNode node,
+	public void modelElementAttributeRemoval(VcsCommitItem s, IHawkObject eObject, String attrName, IGraphNode node,
 			boolean isTransient) {
 		if (!isTransient) {
 			markDependentToBeUpdated(node.getId().toString(), attrName);
@@ -128,16 +134,16 @@ public class DirtyDerivedAttributesListener implements IGraphChangeListener {
 	}
 
 	@Override
-	public void referenceAddition(VcsCommitItem s, IGraphNode source,
-			IGraphNode destination, String edgelabel, boolean isTransient) {
+	public void referenceAddition(VcsCommitItem s, IGraphNode source, IGraphNode destination, String edgelabel,
+			boolean isTransient) {
 		if (!isTransient) {
 			markDependentToBeUpdated(source.getId().toString(), edgelabel);
 		}
 	}
 
 	@Override
-	public void referenceRemoval(VcsCommitItem s, IGraphNode source,
-			IGraphNode destination, String edgelabel, boolean isTransient) {
+	public void referenceRemoval(VcsCommitItem s, IGraphNode source, IGraphNode destination, String edgelabel,
+			boolean isTransient) {
 		if (!isTransient) {
 			markDependentToBeUpdated(source.getId().toString(), edgelabel);
 		}
@@ -148,8 +154,7 @@ public class DirtyDerivedAttributesListener implements IGraphChangeListener {
 	}
 
 	private void markDependentToBeUpdated(final String key, final String value) {
-		final IGraphNodeIndex idx = db
-				.getOrCreateNodeIndex("derivedaccessdictionary");
+		final IGraphNodeIndex idx = db.getOrCreateNodeIndex("derivedaccessdictionary");
 		for (IGraphNode node : idx.query(key, value)) {
 			markDependentToBeUpdated(node);
 		}
@@ -161,13 +166,11 @@ public class DirtyDerivedAttributesListener implements IGraphChangeListener {
 		final String derivedPropertyName = firstIncoming.getType();
 
 		if (node.getPropertyKeys().contains(derivedPropertyName)) {
-			node.setProperty(derivedPropertyName,
-					"_NYD##" + node.getProperty("derivationlogic"));
+			node.setProperty(derivedPropertyName, "_NYD##" + node.getProperty("derivationlogic"));
 			nodesToBeUpdated.add(node);
 		} else {
-			System.err
-					.println("updateDerivedAttributes() -- derived attribute node did not contain property: "
-							+ derivedPropertyName);
+			System.err.println("updateDerivedAttributes() -- derived attribute node did not contain property: "
+					+ derivedPropertyName);
 		}
 	}
 

@@ -106,8 +106,7 @@ public class HView extends ViewPart {
 	 * example).
 	 */
 
-	class ViewLabelProvider extends LabelProvider implements
-			ITableLabelProvider {
+	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
 
 		protected Image image = null;
 
@@ -122,8 +121,7 @@ public class HView extends ViewPart {
 		public Image getImage(Object obj) {
 
 			if (image == null) {
-				image = Activator.getImageDescriptor("icons/hawk.png")
-						.createImage();
+				image = Activator.getImageDescriptor("icons/hawk.png").createImage();
 			}
 
 			return image;
@@ -151,8 +149,7 @@ public class HView extends ViewPart {
 
 		shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL);
+		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		hm = HUIManager.getInstance();
 		// hm.setView(this);
 		viewer.setContentProvider(hm);
@@ -161,8 +158,7 @@ public class HView extends ViewPart {
 		viewer.setInput(getViewSite());
 
 		// Create the help context id for the viewer's control
-		PlatformUI.getWorkbench().getHelpSystem()
-				.setHelp(viewer.getControl(), "hawkview.viewer");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "hawkview.viewer");
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
@@ -170,8 +166,7 @@ public class HView extends ViewPart {
 		contributeToActionBars();
 		viewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(final SelectionChangedEvent event) {
-				IStructuredSelection selection = (IStructuredSelection) event
-						.getSelection();
+				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 				if (selection.isEmpty() || selection.size() > 1)
 					initButtons();
 
@@ -195,12 +190,14 @@ public class HView extends ViewPart {
 		viewer.getTable().addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (viewer.getSelection().isEmpty()) return;
+				if (viewer.getSelection().isEmpty())
+					return;
 
 				if (e.character == SWT.DEL && (e.stateMask & SWT.SHIFT) > 0) {
-					if (MessageDialog.openConfirm(shell, "Are you sure?", "Do you want to permanently delete these instances (including storage)?")) {
+					if (MessageDialog.openConfirm(shell, "Are you sure?",
+							"Do you want to permanently delete these instances (including storage)?")) {
 						final IStructuredSelection selected = (IStructuredSelection) viewer.getSelection();
-						for (Iterator<?> it = selected.iterator(); it.hasNext(); ) {
+						for (Iterator<?> it = selected.iterator(); it.hasNext();) {
 							final HModel hawkModel = (HModel) it.next();
 							try {
 								hm.delete(hawkModel, hawkModel.exists());
@@ -291,25 +288,21 @@ public class HView extends ViewPart {
 	private void makeActions() {
 		query = new Action() {
 			public void run() {
-				IStructuredSelection selected = (IStructuredSelection) viewer
-						.getSelection();
+				IStructuredSelection selected = (IStructuredSelection) viewer.getSelection();
 
-				HQueryDialog dialog = new HQueryDialog(shell,
-						(HModel) selected.getFirstElement());
+				HQueryDialog dialog = new HQueryDialog(shell, (HModel) selected.getFirstElement());
 				dialog.open();
 			}
 
 		};
 		query.setText("Query");
 		query.setToolTipText("Query");
-		query.setImageDescriptor(ImageDescriptor.createFromURL(FileLocator
-				.find(FrameworkUtil.getBundle(this.getClass()), new Path(
-						"icons/query.gif"), null)));
+		query.setImageDescriptor(ImageDescriptor.createFromURL(
+				FileLocator.find(FrameworkUtil.getBundle(this.getClass()), new Path("icons/query.gif"), null)));
 
 		start = new Action() {
 			public void run() {
-				IStructuredSelection selected = (IStructuredSelection) viewer
-						.getSelection();
+				IStructuredSelection selected = (IStructuredSelection) viewer.getSelection();
 				if (selected.size() == 1) {
 
 					PasswordDialog pwd = new PasswordDialog(shell);
@@ -320,8 +313,7 @@ public class HView extends ViewPart {
 
 						char[] apw = pwd.getPassword();
 
-						if (((HModel) selected.getFirstElement())
-								.start(hm, apw)) {
+						if (((HModel) selected.getFirstElement()).start(hm, apw)) {
 							viewer.refresh();
 							start.setEnabled(false);
 							stop.setEnabled(true);
@@ -330,9 +322,6 @@ public class HView extends ViewPart {
 							config.setEnabled(true);
 						} else {
 							viewer.refresh();
-							// XXX (still relevant?) handle start
-							// HModel hm = (HModel) selected.getFirstElement();
-							// HManager.delete(hm, hm.exists());
 						}
 					}
 				}
@@ -340,14 +329,12 @@ public class HView extends ViewPart {
 		};
 		start.setText("Start");
 		start.setToolTipText("Start");
-		start.setImageDescriptor(ImageDescriptor.createFromURL(FileLocator
-				.find(FrameworkUtil.getBundle(this.getClass()), new Path(
-						"icons/nav_go.gif"), null)));
+		start.setImageDescriptor(ImageDescriptor.createFromURL(
+				FileLocator.find(FrameworkUtil.getBundle(this.getClass()), new Path("icons/nav_go.gif"), null)));
 
 		stop = new Action() {
 			public void run() {
-				IStructuredSelection selected = (IStructuredSelection) viewer
-						.getSelection();
+				IStructuredSelection selected = (IStructuredSelection) viewer.getSelection();
 				if (selected.size() == 1) {
 					((HModel) selected.getFirstElement()).stop(ShutdownRequestType.ALWAYS);
 					viewer.refresh();
@@ -361,14 +348,12 @@ public class HView extends ViewPart {
 		};
 		stop.setText("Stop");
 		stop.setToolTipText("Stop");
-		stop.setImageDescriptor(ImageDescriptor.createFromURL(FileLocator.find(
-				FrameworkUtil.getBundle(this.getClass()), new Path(
-						"icons/stop.gif"), null)));
+		stop.setImageDescriptor(ImageDescriptor.createFromURL(
+				FileLocator.find(FrameworkUtil.getBundle(this.getClass()), new Path("icons/stop.gif"), null)));
 
 		sync = new Action() {
 			public void run() {
-				IStructuredSelection selected = (IStructuredSelection) viewer
-						.getSelection();
+				IStructuredSelection selected = (IStructuredSelection) viewer.getSelection();
 				if (selected.size() == 1) {
 					try {
 						((HModel) selected.getFirstElement()).sync();
@@ -380,14 +365,12 @@ public class HView extends ViewPart {
 		};
 		sync.setText("Sync");
 		sync.setToolTipText("Sync");
-		sync.setImageDescriptor(ImageDescriptor.createFromURL(FileLocator.find(
-				FrameworkUtil.getBundle(this.getClass()), new Path(
-						"icons/refresh.gif"), null)));
+		sync.setImageDescriptor(ImageDescriptor.createFromURL(
+				FileLocator.find(FrameworkUtil.getBundle(this.getClass()), new Path("icons/refresh.gif"), null)));
 
 		delete = new Action() {
 			public void run() {
-				IStructuredSelection selected = (IStructuredSelection) viewer
-						.getSelection();
+				IStructuredSelection selected = (IStructuredSelection) viewer.getSelection();
 				if (selected.size() == 1) {
 					HModel hawkmodel = (HModel) selected.getFirstElement();
 					try {
@@ -401,14 +384,12 @@ public class HView extends ViewPart {
 		};
 		delete.setText("Delete");
 		delete.setToolTipText("Delete");
-		delete.setImageDescriptor(ImageDescriptor.createFromURL(FileLocator
-				.find(FrameworkUtil.getBundle(this.getClass()), new Path(
-						"icons/rem_co.gif"), null)));
+		delete.setImageDescriptor(ImageDescriptor.createFromURL(
+				FileLocator.find(FrameworkUtil.getBundle(this.getClass()), new Path("icons/rem_co.gif"), null)));
 
 		add = new Action() {
 			public void run() {
-				IWizardDescriptor descriptor = PlatformUI.getWorkbench()
-						.getNewWizardRegistry()
+				IWizardDescriptor descriptor = PlatformUI.getWorkbench().getNewWizardRegistry()
 						.findWizard("hawk.ui.wizard.HawkNewWizard");
 				if (descriptor != null) {
 					IWizard wizard;
@@ -425,26 +406,23 @@ public class HView extends ViewPart {
 		};
 		add.setText("Add");
 		add.setToolTipText("Add");
-		add.setImageDescriptor(ImageDescriptor.createFromURL(FileLocator.find(
-				FrameworkUtil.getBundle(this.getClass()), new Path(
-						"icons/new-hawk.png"), null)));
+		add.setImageDescriptor(ImageDescriptor.createFromURL(
+				FileLocator.find(FrameworkUtil.getBundle(this.getClass()), new Path("icons/new-hawk.png"), null)));
 
 		config = new Action() {
 			public void run() {
-				IStructuredSelection selected = (IStructuredSelection) viewer
-						.getSelection();
+				IStructuredSelection selected = (IStructuredSelection) viewer.getSelection();
 
-				HConfigDialog dialog = new HConfigDialog(PlatformUI
-						.getWorkbench().getActiveWorkbenchWindow().getShell(),
+				HConfigDialog dialog = new HConfigDialog(
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
 						((HModel) selected.getFirstElement()));
 				dialog.open();
 			}
 		};
 		config.setText("Configure");
 		config.setToolTipText("Configure");
-		config.setImageDescriptor(ImageDescriptor.createFromURL(FileLocator
-				.find(FrameworkUtil.getBundle(this.getClass()), new Path(
-						"icons/configure.gif"), null)));
+		config.setImageDescriptor(ImageDescriptor.createFromURL(
+				FileLocator.find(FrameworkUtil.getBundle(this.getClass()), new Path("icons/configure.gif"), null)));
 
 		initButtons();
 
@@ -457,9 +435,8 @@ public class HView extends ViewPart {
 		};
 		importRepos.setText("Import");
 		importRepos.setToolTipText("Import existing instances");
-		importRepos.setImageDescriptor(ImageDescriptor.createFromURL(FileLocator
-				.find(FrameworkUtil.getBundle(this.getClass()), new Path(
-						"icons/import_wiz.png"), null)));
+		importRepos.setImageDescriptor(ImageDescriptor.createFromURL(
+				FileLocator.find(FrameworkUtil.getBundle(this.getClass()), new Path("icons/import_wiz.png"), null)));
 	}
 
 	private void hookDoubleClickAction() {
@@ -491,7 +468,8 @@ public class HView extends ViewPart {
 		shell.getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				try {
-					HView view = (HView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(HView.ID);
+					HView view = (HView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+							.findView(HView.ID);
 					view.update();
 				} catch (Exception e) {
 					Activator.logError(e.getMessage(), e);
@@ -500,42 +478,33 @@ public class HView extends ViewPart {
 		});
 	}
 
-	private static void removeRecursive(java.nio.file.Path path) throws IOException
-	{
-	    Files.walkFileTree(path, new SimpleFileVisitor<java.nio.file.Path>()
-	    {
-	        @Override
-	        public FileVisitResult visitFile(java.nio.file.Path file, BasicFileAttributes attrs)
-	                throws IOException
-	        {
-	            Files.delete(file);
-	            return FileVisitResult.CONTINUE;
-	        }
+	private static void removeRecursive(java.nio.file.Path path) throws IOException {
+		Files.walkFileTree(path, new SimpleFileVisitor<java.nio.file.Path>() {
+			@Override
+			public FileVisitResult visitFile(java.nio.file.Path file, BasicFileAttributes attrs) throws IOException {
+				Files.delete(file);
+				return FileVisitResult.CONTINUE;
+			}
 
-	        @Override
-	        public FileVisitResult visitFileFailed(java.nio.file.Path file, IOException exc) throws IOException
-	        {
-	            // try to delete the file anyway, even if its attributes
-	            // could not be read, since delete-only access is
-	            // theoretically possible
-	            Files.delete(file);
-	            return FileVisitResult.CONTINUE;
-	        }
+			@Override
+			public FileVisitResult visitFileFailed(java.nio.file.Path file, IOException exc) throws IOException {
+				// try to delete the file anyway, even if its attributes
+				// could not be read, since delete-only access is
+				// theoretically possible
+				Files.delete(file);
+				return FileVisitResult.CONTINUE;
+			}
 
-	        @Override
-	        public FileVisitResult postVisitDirectory(java.nio.file.Path dir, IOException exc) throws IOException
-	        {
-	            if (exc == null)
-	            {
-	                Files.delete(dir);
-	                return FileVisitResult.CONTINUE;
-	            }
-	            else
-	            {
-	                // directory iteration failed; propagate exception
-	                throw exc;
-	            }
-	        }
-	    });
+			@Override
+			public FileVisitResult postVisitDirectory(java.nio.file.Path dir, IOException exc) throws IOException {
+				if (exc == null) {
+					Files.delete(dir);
+					return FileVisitResult.CONTINUE;
+				} else {
+					// directory iteration failed; propagate exception
+					throw exc;
+				}
+			}
+		});
 	}
 }
