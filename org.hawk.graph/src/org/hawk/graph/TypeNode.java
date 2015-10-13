@@ -39,11 +39,13 @@ public class TypeNode {
 		return node;
 	}
 
+	public MetamodelNode getMetamodel() {
+		final Iterator<IGraphEdge> itEPackageEdges = node.getOutgoingWithType("epackage").iterator();
+		return new MetamodelNode(itEPackageEdges.next().getEndNode());
+	}
+
 	public String getMetamodelURI() {
-		for (IGraphEdge node : node.getOutgoingWithType("epackage")) {
-			return (String)node.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
-		}
-		return "(unknown)";
+		return getMetamodel().getUri();
 	}
 
 	public String getTypeName() {

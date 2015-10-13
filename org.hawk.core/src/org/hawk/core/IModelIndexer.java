@@ -48,6 +48,7 @@ public interface IModelIndexer {
 	String SIGNATURE_PROPERTY = "_hawksignature";
 	String METAMODEL_TYPE_PROPERTY = "type";
 	String METAMODEL_RESOURCE_PROPERTY = "resource";
+	String METAMODEL_DEPENDENCY_EDGE = "dependency";
 
 	boolean VERBOSE = true;
 

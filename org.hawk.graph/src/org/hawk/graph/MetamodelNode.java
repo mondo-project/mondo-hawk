@@ -1,16 +1,18 @@
 package org.hawk.graph;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 
-public class PackageNode {
+public class MetamodelNode {
 
 	private IGraphNode node;
 
-	public PackageNode(IGraphNode n) {
+	public MetamodelNode(IGraphNode n) {
 		this.node = n;
 	}
 
@@ -54,5 +56,14 @@ public class PackageNode {
 
 	public String getResource() {
 		return (String)node.getProperty(IModelIndexer.METAMODEL_RESOURCE_PROPERTY);
+	}
+
+	public List<MetamodelNode> getDependencies() {
+		final List<MetamodelNode> nodes = new ArrayList<>();
+		for (IGraphEdge e : node.getOutgoingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE)) {
+			final IGraphNode depNode = e.getEndNode();
+			nodes.add(new MetamodelNode(depNode));
+		}
+		return nodes;
 	}
 }

@@ -45,7 +45,7 @@ import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
 import org.hawk.graph.ModelElementNode;
-import org.hawk.graph.PackageNode;
+import org.hawk.graph.MetamodelNode;
 import org.hawk.graph.TypeNode;
 
 public class EOLQueryEngine extends AbstractEpsilonModel implements
@@ -1485,7 +1485,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 	public List<TypeNodeWrapper> getTypes() {
 		final List<TypeNodeWrapper> nodes = new ArrayList<>();
 		for (IGraphNode n : graph.getMetamodelIndex().query("*", "*")) {
-			final PackageNode pn = new PackageNode(n);
+			final MetamodelNode pn = new MetamodelNode(n);
 			for (TypeNode tn : pn.getTypes()) {
 				nodes.add(new TypeNodeWrapper(tn, this));
 			}
@@ -1493,11 +1493,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		return nodes;
 	}
 
-	public List<PackageNodeWrapper> getPackages() {
-		final List<PackageNodeWrapper> nodes = new ArrayList<>();
+	public List<MetamodelNodeWrapper> getMetamodels() {
+		final List<MetamodelNodeWrapper> nodes = new ArrayList<>();
 		for (IGraphNode n : graph.getMetamodelIndex().query("*", "*")) {
-			final PackageNode pn = new PackageNode(n);
-			nodes.add(new PackageNodeWrapper(pn, this));
+			final MetamodelNode pn = new MetamodelNode(n);
+			nodes.add(new MetamodelNodeWrapper(pn, this));
 		}
 		return nodes;
 	}

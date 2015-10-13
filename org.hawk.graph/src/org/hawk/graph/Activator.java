@@ -15,8 +15,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.runtime.CompositeGraphChangeListener;
-import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
-import org.hawk.graph.internal.updater.GraphModelUpdater;
 import org.osgi.framework.BundleContext;
 
 public class Activator extends Plugin {

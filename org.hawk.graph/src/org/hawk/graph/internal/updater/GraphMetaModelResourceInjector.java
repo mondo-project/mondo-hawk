@@ -139,7 +139,7 @@ public class GraphMetaModelResourceInjector {
 		DeletionUtils del = new DeletionUtils(graph);
 
 		for (IGraphNode epn : epns)
-			for (IGraphEdge rel : epn.getIncomingWithType("dependency")) {
+			for (IGraphEdge rel : epn.getIncomingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE)) {
 				System.err
 						.println("dependency from: " + rel.getStartNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
 								+ " to: " + epn.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
@@ -185,7 +185,7 @@ public class GraphMetaModelResourceInjector {
 				del.delete(rel);
 			}
 
-			for (IGraphEdge rel : epn.getOutgoingWithType("dependency")) {
+			for (IGraphEdge rel : epn.getOutgoingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE)) {
 				del.delete(rel);
 			}
 
@@ -443,13 +443,13 @@ public class GraphMetaModelResourceInjector {
 
 		// hash.put(eClass, node);
 
-		IGraphNode node2 = ((IGraphIterable<IGraphNode>) epackagedictionary.get("id", eClass.getPackageNSURI()))
+		IGraphNode metamodelNode = ((IGraphIterable<IGraphNode>) epackagedictionary.get("id", eClass.getPackageNSURI()))
 				.getSingle();
 
 		// System.out.println(new
 		// ToString().toString(epackagedictionary.query("id","*")));
 
-		graph.createRelationship(node, node2, "epackage");
+		graph.createRelationship(node, metamodelNode, "epackage");
 
 		for (IHawkClass e : eClass.getSuperTypes()) {
 
@@ -485,15 +485,15 @@ public class GraphMetaModelResourceInjector {
 
 					boolean alreadythere = false;
 
-					for (IGraphEdge r : node2.getOutgoingWithType("dependency"))
+					for (IGraphEdge r : metamodelNode.getOutgoingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE))
 						if (r.getEndNode().equals(supertypeepackage))
 							alreadythere = true;
 
-					if (!node2.getOutgoingWithType("dependency").iterator().hasNext() || !alreadythere) {
+					if (!metamodelNode.getOutgoingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE).iterator().hasNext() || !alreadythere) {
 
 						System.err.println("supertype dependency from " + eClass.getPackageNSURI() + " to " + uri);
 
-						graph.createRelationship(node2, supertypeepackage, "dependency");
+						graph.createRelationship(metamodelNode, supertypeepackage, IModelIndexer.METAMODEL_DEPENDENCY_EDGE);
 
 					}
 				}
@@ -542,15 +542,15 @@ public class GraphMetaModelResourceInjector {
 
 					boolean alreadythere = false;
 
-					for (IGraphEdge r : node2.getOutgoingWithType("dependency"))
+					for (IGraphEdge r : metamodelNode.getOutgoingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE))
 						if (r.getEndNode().equals(supertypeepackage))
 							alreadythere = true;
 
-					if (!node2.getOutgoingWithType("dependency").iterator().hasNext() || !alreadythere) {
+					if (!metamodelNode.getOutgoingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE).iterator().hasNext() || !alreadythere) {
 
 						System.err.println("attribute dependency from " + eClass.getPackageNSURI() + " to " + uri);
 
-						graph.createRelationship(node2, supertypeepackage, "dependency");
+						graph.createRelationship(metamodelNode, supertypeepackage, IModelIndexer.METAMODEL_DEPENDENCY_EDGE);
 
 					}
 				}
@@ -621,15 +621,15 @@ public class GraphMetaModelResourceInjector {
 
 					boolean alreadythere = false;
 
-					for (IGraphEdge rr : node2.getOutgoingWithType("dependency"))
+					for (IGraphEdge rr : metamodelNode.getOutgoingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE))
 						if (rr.getEndNode().equals(supertypeepackage))
 							alreadythere = true;
 
-					if (!node2.getOutgoingWithType("dependency").iterator().hasNext() || !alreadythere) {
+					if (!metamodelNode.getOutgoingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE).iterator().hasNext() || !alreadythere) {
 
 						System.err.println("reference dependency from " + eClass.getPackageNSURI() + " to " + uri);
 
-						graph.createRelationship(node2, supertypeepackage, "dependency");
+						graph.createRelationship(metamodelNode, supertypeepackage, IModelIndexer.METAMODEL_DEPENDENCY_EDGE);
 
 					}
 				}

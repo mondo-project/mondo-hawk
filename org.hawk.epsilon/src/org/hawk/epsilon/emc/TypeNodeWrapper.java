@@ -69,6 +69,10 @@ public class TypeNodeWrapper implements IGraphTypeNodeReference {
 		return typeNode.getSlots();
 	}
 
+	public MetamodelNodeWrapper getMetamodel() {
+		return new MetamodelNodeWrapper(typeNode.getMetamodel(), model);
+	}
+
 	@Override
 	public String toString() {
 		return String.format("TNW|id:%s|type:%s", getId(), getTypeName());
