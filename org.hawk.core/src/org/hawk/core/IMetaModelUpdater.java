@@ -32,6 +32,6 @@ public interface IMetaModelUpdater {
 
 	public abstract String getName();
 
-	public abstract void removeMetamodels(IModelIndexer indexer, String[] mmuris);
+	public abstract Set<String> removeMetamodels(IModelIndexer indexer, String[] mmuris);
 
 }

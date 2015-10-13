@@ -85,8 +85,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 	private List<IVcsManager> monitors = new ArrayList<>();
 	private IGraphDatabase graph = null;
 	private IMetaModelUpdater metamodelupdater = null;
-	private List<String> currLocalTopRevisions = new ArrayList<>();
-	private List<String> currReposTopRevisions = new ArrayList<>();
+	private Map<String, String> currLocalTopRevisions = new HashMap<>();
+	private Map<String, String> currReposTopRevisions = new HashMap<>();
 
 	private Map<String, IModelResourceFactory> modelparsers = new HashMap<>();
 	private Map<String, IMetaModelResourceFactory> metamodelparsers = new HashMap<>();
@@ -147,14 +147,12 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 			if (monitors.size() > 0) {
 
-				for (int i = 0; i < monitors.size(); i++) {
-
-					IVcsManager m = monitors.get(i);
+				for (IVcsManager m : monitors) {
 
 					if (m.isActive()) {
 
 						try {
-							currReposTopRevisions.set(i, m.getCurrentRevision());
+							currReposTopRevisions.put(m.getLocation(), m.getCurrentRevision());
 						} catch (Exception e1) {
 							// if (e1.getMessage().contains("Authentication"))
 							// {syserr(Eclipse_VCS_NoSQL_UI_view.indexers.remove(this)+"");
@@ -166,7 +164,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 							allSync = false;
 						}
 
-						if (!currReposTopRevisions.get(i).equals(currLocalTopRevisions.get(i))) {
+						if (!currReposTopRevisions.get(m.getLocation())
+								.equals(currLocalTopRevisions.get(m.getLocation()))) {
 
 							boolean success = true;
 
@@ -182,7 +181,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 							Set<VcsCommitItem> deleteditems = new HashSet<VcsCommitItem>();
 
 							// limit to "interesting" files
-							List<VcsCommitItem> files = m.getDelta(currLocalTopRevisions.get(i));
+							List<VcsCommitItem> files = m.getDelta(currLocalTopRevisions.get(m.getLocation()));
 
 							// System.err.println(files);
 
@@ -327,7 +326,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 								console.printerrln("error in deleting temporary local vcs files");
 
 							if (success) {
-								currLocalTopRevisions.set(i, currReposTopRevisions.get(i));
+								currLocalTopRevisions.put(m.getLocation(), currReposTopRevisions.get(m.getLocation()));
 							} else {
 								allSync = false;
 							}
@@ -519,7 +518,14 @@ public class ModelIndexerImpl implements IModelIndexer {
 	 */
 	public void removeMetamodels(String[] mm) throws Exception {
 
-		metamodelupdater.removeMetamodels(this, mm);
+		for (String s : metamodelupdater.removeMetamodels(this, mm))
+			resetRepositoy(s);
+
+	}
+
+	private void resetRepositoy(String s) {
+		System.err.println("reseting local top revision of repository: " + s + "\nas elements in it were removed");
+		currLocalTopRevisions.put(s, "-3");
 	}
 
 	@Override
@@ -727,8 +733,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 	public void addVCSManager(IVcsManager vcs, boolean persist) {
 
 		monitors.add(vcs);
-		currLocalTopRevisions.add("-3");
-		currReposTopRevisions.add("-4");
+		currLocalTopRevisions.put(vcs.getLocation(), "-3");
+		currReposTopRevisions.put(vcs.getLocation(), "-4");
 
 		try {
 			if (persist)

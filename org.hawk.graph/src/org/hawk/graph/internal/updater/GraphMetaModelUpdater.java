@@ -33,10 +33,10 @@ public class GraphMetaModelUpdater implements IMetaModelUpdater {
 	// }
 
 	@Override
-	public void removeMetamodels(IModelIndexer indexer, String[] mmuri) {
+	public Set<String> removeMetamodels(IModelIndexer indexer, String[] mmuri) {
 		GraphMetaModelResourceInjector ret = new GraphMetaModelResourceInjector(indexer.getGraph(),
 				indexer.getCompositeGraphChangeListener());
-		ret.removeMetamodels(mmuri);
+		return ret.removeMetamodels(mmuri);
 	}
 
 	@Override

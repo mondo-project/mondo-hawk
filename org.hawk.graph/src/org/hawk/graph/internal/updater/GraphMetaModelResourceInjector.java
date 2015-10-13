@@ -35,6 +35,7 @@ import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.core.model.IHawkReference;
+import org.hawk.graph.FileNode;
 import org.hawk.graph.ModelElementNode;
 
 public class GraphMetaModelResourceInjector {
@@ -131,7 +132,10 @@ public class GraphMetaModelResourceInjector {
 
 	}
 
-	private void removeAll(Set<IGraphNode> epns) throws Exception {
+	private Set<String> removeAll(Set<IGraphNode> epns) throws Exception {
+
+		Set<String> affectedRepositories = new HashSet<>();
+
 		DeletionUtils del = new DeletionUtils(graph);
 
 		for (IGraphNode epn : epns)
@@ -152,7 +156,12 @@ public class GraphMetaModelResourceInjector {
 			files.addAll(remove(n));
 
 		for (IGraphNode file : files)
+			affectedRepositories.add(file.getProperty(FileNode.PROP_REPOSITORY).toString());
+
+		for (IGraphNode file : files)
 			del.delete(file);
+
+		return affectedRepositories;
 
 	}
 
@@ -863,7 +872,9 @@ public class GraphMetaModelResourceInjector {
 
 	}
 
-	public void removeMetamodels(String[] mmuris) {
+	public Set<String> removeMetamodels(String[] mmuris) {
+
+		Set<String> ret = new HashSet<>();
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
 			listener.changeStart();
@@ -880,7 +891,7 @@ public class GraphMetaModelResourceInjector {
 			}
 			if (epns.size() > 0) {
 				System.err.println("Removing metamodels with uris: " + Arrays.toString(mmuris));
-				removeAll(epns);
+				ret = removeAll(epns);
 			}
 
 			t.success();
@@ -893,6 +904,7 @@ public class GraphMetaModelResourceInjector {
 			e.printStackTrace();
 
 		}
+		return ret;
 	}
 
 }
