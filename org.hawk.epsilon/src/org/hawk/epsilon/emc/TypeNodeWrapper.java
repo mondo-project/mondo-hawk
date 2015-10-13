@@ -32,7 +32,7 @@ public class TypeNodeWrapper implements IGraphTypeNodeReference {
 
 	@Override
 	public String getTypeName() {
-		return typeNode.getTypeName();
+		return "_hawkTypeNode";
 	}
 
 	public String getName() {

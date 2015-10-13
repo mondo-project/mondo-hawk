@@ -44,9 +44,12 @@ public interface IModelIndexer {
 	 * Should be reasonably unique and avoid potential collisions that names
 	 * that might be used in a metamodel.
 	 */
-	public static final String IDENTIFIER_PROPERTY = "_hawkid";
-	public static final String SIGNATURE_PROPERTY = "_hawksignature";
-	public static final boolean VERBOSE = true;
+	String IDENTIFIER_PROPERTY = "_hawkid";
+	String SIGNATURE_PROPERTY = "_hawksignature";
+	String METAMODEL_TYPE_PROPERTY = "type";
+	String METAMODEL_RESOURCE_PROPERTY = "resource";
+
+	boolean VERBOSE = true;
 
 	/**
 	 * Forces a synchronisation to be performed immediately.

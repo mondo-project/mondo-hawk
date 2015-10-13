@@ -2,6 +2,7 @@ package org.hawk.graph;
 
 import java.util.Iterator;
 
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 
@@ -39,4 +40,19 @@ public class PackageNode {
 		};
 	}
 
+	public IGraphNode getNode() {
+		return node;
+	}
+
+	public String getUri() {
+		return (String)node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
+	}
+
+	public String getType() {
+		return (String)node.getProperty(IModelIndexer.METAMODEL_TYPE_PROPERTY);
+	}
+
+	public String getResource() {
+		return (String)node.getProperty(IModelIndexer.METAMODEL_RESOURCE_PROPERTY);
+	}
 }

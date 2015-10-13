@@ -11,7 +11,6 @@
 package org.hawk.core.util;
 
 import org.hawk.core.runtime.LocalHawkFactory;
-import org.hawk.core.runtime.ModelIndexerImpl;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 

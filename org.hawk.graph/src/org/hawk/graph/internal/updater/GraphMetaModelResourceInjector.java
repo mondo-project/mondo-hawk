@@ -341,7 +341,7 @@ public class GraphMetaModelResourceInjector {
 				// add resource to package
 				final String s = ePackage.getResource().getMetaModelResourceFactory().dumpPackageToString(ePackage);
 
-				epackagenode.setProperty("resource", s);
+				epackagenode.setProperty(IModelIndexer.METAMODEL_RESOURCE_PROPERTY, s);
 
 			}
 
@@ -390,7 +390,7 @@ public class GraphMetaModelResourceInjector {
 
 			Map<String, Object> map4 = new HashMap<>();
 			map4.put(IModelIndexer.IDENTIFIER_PROPERTY, uri);
-			map4.put("type", metamodelResource.getMetaModelResourceFactory().getType());
+			map4.put(IModelIndexer.METAMODEL_TYPE_PROPERTY, metamodelResource.getMetaModelResourceFactory().getType());
 
 			IGraphNode epackagenode = graph.createNode(new HashMap<String, Object>(), "epackage");
 

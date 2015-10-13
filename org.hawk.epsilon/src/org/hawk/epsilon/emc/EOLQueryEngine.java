@@ -1492,4 +1492,13 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		}
 		return nodes;
 	}
+
+	public List<PackageNodeWrapper> getPackages() {
+		final List<PackageNodeWrapper> nodes = new ArrayList<>();
+		for (IGraphNode n : graph.getMetamodelIndex().query("*", "*")) {
+			final PackageNode pn = new PackageNode(n);
+			nodes.add(new PackageNodeWrapper(pn, this));
+		}
+		return nodes;
+	}
 }

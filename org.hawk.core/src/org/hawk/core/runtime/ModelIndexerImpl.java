@@ -481,9 +481,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 			for (IGraphNode epackage : graph.getMetamodelIndex().query("id", "*")) {
 
-				s = epackage.getProperty("resource").toString();
-				ep = epackage.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
-				type = epackage.getProperty("type").toString();
+				s = epackage.getProperty(IModelIndexer.METAMODEL_RESOURCE_PROPERTY).toString();
+				ep = epackage.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+						.toString();
+				type = epackage.getProperty(IModelIndexer.METAMODEL_TYPE_PROPERTY).toString();
 
 				IMetaModelResourceFactory p = getMetaModelParser(type);
 
