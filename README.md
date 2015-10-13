@@ -78,6 +78,42 @@ These instructions are from a clean download of an Eclipse Luna Modelling distri
 
 After all these steps, you should have a working version of Hawk with all optional dependencies and no errors.
 
+Meta-level queries in Hawk
+--------------------------
+
+Hawk extends the regular EOL facilities to be able to query the metamodels registered within the instance:
+
+* `Model.types` lists all the types registered in Hawk (`EClass` instances for EMF).
+* `Model.metamodels` lists all the metamodels registered in Hawk (`EPackage` instances for EMF).
+* `Model.getTypeOf(obj)` retrieves the type of the object `obj`.
+
+For a metamodel `mm`, these attributes are available:
+
+* `mm.uri` is the namespace URI of the metamodel.
+* `mm.metamodelType` is the type of metamodel that was registered.
+* `mm.dependencies` lists the metamodels this metamodel depends on (usually at least the Ecore metamodel for EMF-based metamodels).
+* `mm.types` lists the types defined in this metamodel.
+* `mm.resource` retrieves the original string representation for this metamodel (the original `.ecore` file for EMF).
+
+For a type `t`, these attributes are available:
+
+* `t.metamodel` retrieves the metamodel that defines the type.
+* `t.all` retrieves all instances of that type efficiently (includes subtypes).
+* `t.name` retrieves the name of the type.
+* `t.attributes` lists the attributes of the type, as slots (see below).
+* `t.references` lists the references of the type, as slots.
+* `t.features` lists the attributes and references of the type.
+
+For a slot `sl`, these attributes are available:
+
+* `sl.name`: name of the slot.
+* `sl.type`: type of the value of the slot.
+* `sl.isMany`: true if this is a multi-valued slot.
+* `sl.isOrdered`: true if the values should follow some order.
+* `sl.isAttribute`: true if this is an attribute slot.
+* `sl.isReference`: true if this is a reference slot.
+* `sl.isUnique`: true if the value for this slot should be unique within its model.
+
 Acknowledgments
 ---------------
 
