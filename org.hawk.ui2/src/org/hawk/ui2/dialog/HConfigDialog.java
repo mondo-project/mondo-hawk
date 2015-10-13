@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -677,8 +678,18 @@ public class HConfigDialog extends Dialog {
 					selectedMetamodel = metamodelList.getSelection();
 
 				if (selectedMetamodel != null) {
-					hawkModel.removeMetamodel(selectedMetamodel);
-					updateMetamodelList();
+
+					MessageBox messageBox = new MessageBox(getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+					messageBox.setMessage(
+							"Are you sure you wish to delete the chosen metamodel(s)? This will also delete any dependant metamodels/models and may take a long time to complete.");
+					messageBox.setText("Metamodel deletion");
+					int response = messageBox.open();
+					if (response == SWT.YES) {
+
+						hawkModel.removeMetamodels(selectedMetamodel);
+
+						updateMetamodelList();
+					}
 				}
 			}
 		});

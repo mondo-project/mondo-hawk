@@ -515,7 +515,7 @@ public class HModel {
 		// TODO Auto-generated method stub
 	}
 
-	public void removeMetamodel(String[] selectedMetamodels) {
+	public void removeMetamodels(String[] selectedMetamodels) {
 		try {
 			hawk.getModelIndexer().removeMetamodels(selectedMetamodels);
 		} catch (Exception e) {
