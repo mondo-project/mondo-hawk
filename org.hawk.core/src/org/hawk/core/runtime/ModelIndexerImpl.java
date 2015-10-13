@@ -312,7 +312,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 									} catch (Exception e) {
 										console.printerrln("updater: " + u + "failed to update store");
 										console.printerrln(e);
-
+										success = false;
 									}
 								}
 								// }
@@ -328,10 +328,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 							if (success) {
 								currLocalTopRevisions.set(i, currReposTopRevisions.get(i));
-								System.out.println("+ " + currLocalTopRevisions);
 							} else {
 								allSync = false;
-								System.out.println("- " + currLocalTopRevisions);
 							}
 						}
 

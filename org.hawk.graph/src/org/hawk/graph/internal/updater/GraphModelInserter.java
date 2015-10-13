@@ -86,7 +86,7 @@ public class GraphModelInserter {
 		// indexer = i;
 		inj = new GraphModelBatchInjector(graph, this.s, indexer.getCompositeGraphChangeListener());
 
-		boolean ret;
+		boolean success;
 
 		try {
 			// f = new File(dir + "/" + s.getPath());
@@ -98,10 +98,10 @@ public class GraphModelInserter {
 				//
 				if (delta > maxTransactionalAcceptableLoad) {
 					System.err.print("[" + delta + ">" + maxTransactionalAcceptableLoad + "] ");
-					ret = batchUpdate();
+					success = batchUpdate();
 				} else {
 					System.err.print("[" + delta + "<" + maxTransactionalAcceptableLoad + "] ");
-					ret = transactionalUpdate();
+					success = transactionalUpdate();
 				}
 
 				//
@@ -113,12 +113,12 @@ public class GraphModelInserter {
 			} else {
 				// populate the database from scratch (for this file) -- this
 				// will trigger calculation of all derived attrs
-				ret = addNodes();
+				success = addNodes();
 			}
 
 			System.out.print("\nProgram ending with no errors, shutting down database...");
 
-			return ret;
+			return success;
 		} finally {
 			long l = System.nanoTime();
 			// t.success();
@@ -655,7 +655,7 @@ public class GraphModelInserter {
 			GraphModelBatchInjector batch = new GraphModelBatchInjector(graph, s, resource,
 					indexer.getCompositeGraphChangeListener());
 			unset = batch.getUnset();
-			error = batch.getError();
+			error = batch.getSuccess();
 			if (error)
 				System.err.println(
 						"model insertion aborted: see above error (maybe you need to register the metamodel?)");

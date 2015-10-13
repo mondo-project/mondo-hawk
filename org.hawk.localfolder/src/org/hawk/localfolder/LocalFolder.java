@@ -40,6 +40,7 @@ import org.hawk.core.util.FileOperations;
 public class LocalFolder implements IVcsManager {
 
 	private final class LastModifiedFileVisitor implements FileVisitor<Path> {
+
 		public boolean hasChanged = false;
 		boolean alter;
 
@@ -48,8 +49,7 @@ public class LocalFolder implements IVcsManager {
 		}
 
 		@Override
-		public FileVisitResult postVisitDirectory(Path dir, IOException exc)
-				throws IOException {
+		public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
 			long currentlatest = Files.getLastModifiedTime(dir).toMillis();
 			final Long lastDate = recordedModifiedDates.get(dir);
 			if (lastDate == null || !lastDate.equals(currentlatest)) {
@@ -61,14 +61,12 @@ public class LocalFolder implements IVcsManager {
 		}
 
 		@Override
-		public FileVisitResult preVisitDirectory(Path dir,
-				BasicFileAttributes attrs) throws IOException {
+		public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
 			return FileVisitResult.CONTINUE;
 		}
 
 		@Override
-		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
-				throws IOException {
+		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 			long currentlatest = Files.getLastModifiedTime(file).toMillis();
 			final Long lastDate = recordedModifiedDates.get(file);
 			if (lastDate == null || !lastDate.equals(currentlatest)) {
@@ -80,8 +78,7 @@ public class LocalFolder implements IVcsManager {
 		}
 
 		@Override
-		public FileVisitResult visitFileFailed(Path file, IOException exc)
-				throws IOException {
+		public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
 			return FileVisitResult.CONTINUE;
 		}
 	}
@@ -100,8 +97,7 @@ public class LocalFolder implements IVcsManager {
 	}
 
 	@Override
-	public void run(String vcsloc, String un, String pw, IAbstractConsole c)
-			throws Exception {
+	public void run(String vcsloc, String un, String pw, IAbstractConsole c) throws Exception {
 
 		console = c;
 
@@ -118,8 +114,7 @@ public class LocalFolder implements IVcsManager {
 		if (!repositoryURI.endsWith("/")) {
 			repositoryURI += "/";
 		}
-		repository = new LocalFolderRepository(URLDecoder.decode(
-				repositoryURI.replace("+", "%2B"), "UTF-8"));
+		repository = new LocalFolderRepository(URLDecoder.decode(repositoryURI.replace("+", "%2B"), "UTF-8"));
 	}
 
 	@Override
@@ -130,14 +125,12 @@ public class LocalFolder implements IVcsManager {
 	private String getCurrentRevision(boolean alter) {
 
 		try {
-			final LastModifiedFileVisitor visitor = new LastModifiedFileVisitor(
-					alter);
+			final LastModifiedFileVisitor visitor = new LastModifiedFileVisitor(alter);
 			Files.walkFileTree(rootLocation, visitor);
-			long ret = visitor.hasChanged ? (currentRevision + 1)
-					: currentRevision;
+			long ret = visitor.hasChanged ? (currentRevision + 1) : currentRevision;
 			if (alter)
 				currentRevision = ret;
-			//System.err.println(ret + " | " + alter);
+			// System.err.println(ret + " | " + alter);
 			return ret + "";
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -216,14 +209,13 @@ public class LocalFolder implements IVcsManager {
 	}
 
 	@Override
-	public VcsRepositoryDelta getDelta(VcsRepository repository,
-			String startRevision) throws Exception {
+	public VcsRepositoryDelta getDelta(VcsRepository repository, String startRevision) throws Exception {
 		return getDelta(repository, startRevision, getCurrentRevision(false));
 	}
 
 	@Override
-	public VcsRepositoryDelta getDelta(VcsRepository repository,
-			String startRevision, String endRevision) throws Exception {
+	public VcsRepositoryDelta getDelta(VcsRepository repository, String startRevision, String endRevision)
+			throws Exception {
 
 		VcsRepositoryDelta delta = new VcsRepositoryDelta();
 		delta.setRepository(repository);
@@ -247,8 +239,8 @@ public class LocalFolder implements IVcsManager {
 
 			Path path = f.toPath();
 
-			c.setPath(makeRelative(repository.getUrl(), URLDecoder.decode(path
-					.toUri().toString().replace("+", "%2B"), "UTF-8")));
+			c.setPath(makeRelative(repository.getUrl(),
+					URLDecoder.decode(path.toUri().toString().replace("+", "%2B"), "UTF-8")));
 
 			// c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 			commit.getItems().add(c);
@@ -264,12 +256,13 @@ public class LocalFolder implements IVcsManager {
 			for (File f : files) {
 				previousFiles.add(f);
 				Path filePath = f.toPath();
-				final long latestModified = Files.getLastModifiedTime(filePath)
-						.toMillis();
+				final long latestModified = Files.getLastModifiedTime(filePath).toMillis();
 
 				final Long lastDate = recordedModifiedDates.get(filePath);
+
 				if (lastDate != null && lastDate.equals(latestModified)) {
-					continue;
+					if ((currentRevision + "").equals(startRevision))
+						continue;
 				}
 
 				VcsCommit commit = new VcsCommit();
@@ -284,10 +277,8 @@ public class LocalFolder implements IVcsManager {
 				c.setChangeType(VcsChangeType.UPDATED);
 				c.setCommit(commit);
 
-				c.setPath(makeRelative(
-						repository.getUrl(),
-						URLDecoder.decode(f.toPath().toUri().toString()
-								.replace("+", "%2B"), "UTF-8")));
+				c.setPath(makeRelative(repository.getUrl(),
+						URLDecoder.decode(f.toPath().toUri().toString().replace("+", "%2B"), "UTF-8")));
 
 				// c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 				commit.getItems().add(c);
