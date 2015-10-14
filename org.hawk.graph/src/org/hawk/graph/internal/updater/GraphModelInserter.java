@@ -144,19 +144,9 @@ public class GraphModelInserter {
 			final Map<IGraphNode, IHawkObject> addedNodes = new HashMap<>();
 			final Map<String, IGraphNode> addedNodesHash = new HashMap<>();
 
-			for (String o : added.keySet()) {
-				IHawkObject object = added.get(o);
-				IGraphNode node = inj.addEObject(fileNode, object);
-				addedNodes.put(node, object);
-				final String newID = node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
-				addedNodesHash.put(newID, node);
-
-				// track change new node
-				for (final String transientLabelEdge : ModelElementNode.TRANSIENT_EDGE_LABELS) {
-					for (IGraphEdge e : node.getOutgoingWithType(transientLabelEdge)) {
-						listener.referenceAddition(s, node, e.getEndNode(), transientLabelEdge, true);
-					}
-				}
+			for (final String o : added.keySet()) {
+				final IHawkObject object = added.get(o);
+				addEObject(listener, fileNode, addedNodes, addedNodesHash, object);
 			}
 
 			// references of added object and tracking of changes
@@ -172,39 +162,20 @@ public class GraphModelInserter {
 				if (unchanged.containsKey(node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY))) {
 					// do nothing
 				} else if (updated.containsKey(node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY))) {
-					IHawkObject o = updated.get(node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
-					//
-					// System.err.println("changing node "
-					// + node.getId()
-					// + " : "
-					// + node.getProperty(GraphWrapper.IDENTIFIER_PROPERTY)
-					// + " : "
-					// +
-					// node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator()
-					// .next().getEndNode().getProperty(GraphWrapper.IDENTIFIER_PROPERTY)
-					// + " :: as new model has altered it!");
+					final IHawkObject o = updated.get(node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
-					// for (String ss : node.getPropertyKeys()) {
-					// reset properties - deprecated
-					//
-					// System.err.println("previous attribute:\t" + ss);
-					// System.err.println("previous value:\t\t" +
-					// node.getProperty(ss));
-					//
-					// node.removeProperty(ss);
-					// }
-
-					// node.setProperty(GraphWrapper.IDENTIFIER_PROPERTY,
-					// o.getUriFragment());
+					final Iterator<IGraphEdge> itTypeEdges = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator();
+					final IGraphNode typenode = itTypeEdges.next().getEndNode();
+					final String nodetype = typenode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+					final String actualtype = o.getType().getName();
+//					System.out.println(String.format("type in graph: %s, type in object: %s", nodetype, actualtype));
 					node.setProperty(IModelIndexer.SIGNATURE_PROPERTY, o.signature());
+					if (!nodetype.equals(actualtype)) {
+						// an old ID has been reused with a value of a new type (could be another subclass)
+						remove(node, repoURL, fileNode, listener);
+						addEObject(listener, fileNode, addedNodes, addedNodesHash, o);
+					}
 					updateNodeProperties(fileNode, node, o);
-					//
-					// for (String ss : node.getPropertyKeys()) {
-					// System.err.println("new attribute:\t" + ss);
-					// System.err.println("new value:\t" +
-					// node.getProperty(ss)); }
-					//
-
 				} else {
 					// not in unchanged or updated so its deleted
 					//
@@ -337,14 +308,30 @@ public class GraphModelInserter {
 
 	}
 
-	private boolean addProxyRef(IGraphNode node, IHawkObject destinationObject, String edgelabel) {
+	private void addEObject(final IGraphChangeListener listener, final IGraphNode fileNode,
+			final Map<IGraphNode, IHawkObject> addedNodes, final Map<String, IGraphNode> addedNodesHash,
+			final IHawkObject object) throws Exception {
+		final IGraphNode node = inj.addEObject(fileNode, object);
+		addedNodes.put(node, object);
+		final String newID = node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+		addedNodesHash.put(newID, node);
+
+		// track change new node
+		for (final String transientLabelEdge : ModelElementNode.TRANSIENT_EDGE_LABELS) {
+			for (final IGraphEdge e : node.getOutgoingWithType(transientLabelEdge)) {
+				listener.referenceAddition(s, node, e.getEndNode(), transientLabelEdge, true);
+			}
+		}
+	}
+
+	private boolean addProxyRef(final IGraphNode node, final IHawkObject destinationObject, final String edgelabel) {
 
 		try {
 			// proxydictionary.add(graph.getNodeById(hash.get((from))),
 			// edgelabel,
 			// ((EObject)destinationObject).eIsProxy());
 
-			String uri = destinationObject.getUri();
+			final String uri = destinationObject.getUri();
 
 			String destinationObjectRelativePathURI =
 			// new DeletionUtils(graph).getRelativeURI(
@@ -407,19 +394,21 @@ public class GraphModelInserter {
 				.getEndNode();
 		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
 
+		final String nodetype = typenode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+		final String actualtype = eObject.getType().getName();
+		System.out.println(String.format("type in graph: %s, type in object: %s", nodetype, actualtype));
+
 		for (final IHawkAttribute eAttribute : ((IHawkClass) eObject.getType()).getAllAttributes()) {
-
+			final String attrName = eAttribute.getName();
 			if (eObject.isSet(eAttribute)) {
-
-				final String attrName = eAttribute.getName();
 				final String[] propValue = (String[]) typenode.getProperty(attrName);
 				if (propValue != null && propValue[5].equals("t")) {
 					indexedattributes.add(eAttribute);
 				}
 
 				normalattributes.add(eAttribute);
-			} else {
-				node.removeProperty(eAttribute.getName());
+			} else if (node.getProperty(attrName) != null) {
+				node.removeProperty(attrName);
 				indexer.getCompositeGraphChangeListener().modelElementAttributeRemoval(
 						s, eObject, eAttribute.getName(), node, false);
 			}
