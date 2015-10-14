@@ -50,9 +50,10 @@ public class LocalFolder implements IVcsManager {
 
 		@Override
 		public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-			long currentlatest = Files.getLastModifiedTime(dir).toMillis();
-			final Long lastDate = recordedModifiedDates.get(dir);
-			if (lastDate == null || !lastDate.equals(currentlatest)) {
+			final File f = dir.toFile();
+			final String currentlatest = f.lastModified() + "-" + f.length();
+			final String lastRev = recordedModifiedDates.get(dir);
+			if (lastRev == null || !lastRev.equals(currentlatest)) {
 				if (alter)
 					recordedModifiedDates.put(dir, currentlatest);
 				hasChanged = true;
@@ -67,9 +68,10 @@ public class LocalFolder implements IVcsManager {
 
 		@Override
 		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-			long currentlatest = Files.getLastModifiedTime(file).toMillis();
-			final Long lastDate = recordedModifiedDates.get(file);
-			if (lastDate == null || !lastDate.equals(currentlatest)) {
+			final File f = file.toFile();
+			final String currentlatest = f.lastModified() + "-" + f.length();
+			final String lastRev = recordedModifiedDates.get(currentlatest);
+			if (lastRev == null || !lastRev.equals(currentlatest)) {
 				if (alter)
 					recordedModifiedDates.put(file, currentlatest);
 				hasChanged = true;
@@ -89,8 +91,7 @@ public class LocalFolder implements IVcsManager {
 	private LocalFolderRepository repository;
 
 	private long currentRevision = 0;
-
-	private Map<Path, Long> recordedModifiedDates = new HashMap<Path, Long>();
+	private Map<Path, String> recordedModifiedDates = new HashMap<>();
 
 	public LocalFolder() {
 
@@ -230,7 +231,7 @@ public class LocalFolder implements IVcsManager {
 			commit.setDelta(delta);
 			commit.setJavaDate(null);
 			commit.setMessage("i am a local folder driver - no messages recorded");
-			commit.setRevision(f.lastModified() + "");
+			commit.setRevision(f.lastModified() + "-" + f.length());
 			delta.getCommits().add(commit);
 
 			VcsCommitItem c = new VcsCommitItem();
@@ -256,11 +257,9 @@ public class LocalFolder implements IVcsManager {
 			for (File f : files) {
 				previousFiles.add(f);
 				Path filePath = f.toPath();
-				final long latestModified = Files.getLastModifiedTime(filePath).toMillis();
-
-				final Long lastDate = recordedModifiedDates.get(filePath);
-
-				if (lastDate != null && lastDate.equals(latestModified)) {
+				final String latestRev =  f.lastModified() + "-" + f.length();
+				final String lastDate = recordedModifiedDates.get(filePath);
+				if (lastDate != null && lastDate.equals(latestRev)) {
 					if ((currentRevision + "").equals(startRevision))
 						continue;
 				}
@@ -270,7 +269,7 @@ public class LocalFolder implements IVcsManager {
 				commit.setDelta(delta);
 				commit.setJavaDate(null);
 				commit.setMessage("i am a local folder driver - no messages recorded");
-				commit.setRevision(f.lastModified() + "");
+				commit.setRevision(f.lastModified() + "-" + f.length());
 				delta.getCommits().add(commit);
 
 				VcsCommitItem c = new VcsCommitItem();
