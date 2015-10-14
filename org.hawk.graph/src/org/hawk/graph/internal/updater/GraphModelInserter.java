@@ -643,13 +643,13 @@ public class GraphModelInserter {
 	 * @throws Exception
 	 */
 	private boolean addNodes() throws Exception {
-		boolean error = true;
+		boolean success = true;
 		if (resource != null) {
 			GraphModelBatchInjector batch = new GraphModelBatchInjector(graph, s, resource,
 					indexer.getCompositeGraphChangeListener());
 			unset = batch.getUnset();
-			error = batch.getSuccess();
-			if (error)
+			success = batch.getSuccess();
+			if (!success)
 				System.err.println(
 						"model insertion aborted: see above error (maybe you need to register the metamodel?)");
 		} else {
@@ -661,7 +661,7 @@ public class GraphModelInserter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return error;
+		return success;
 	}
 
 	private void remove(IGraphNode modelElement, String repositoryURL, IGraphNode fileNode, IGraphChangeListener l) {

@@ -158,6 +158,7 @@ public class GraphModelBatchInjector {
 			}
 		} catch (Exception ex) {
 			successState = false;
+			ex.printStackTrace();
 			listener.changeFailure();
 		} finally {
 			graph.exitBatchMode();
