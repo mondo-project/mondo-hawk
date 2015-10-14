@@ -307,7 +307,6 @@ public class GraphModelInserter {
 		//
 
 		// track change deleted node
-		listener.modelElementRemoval(this.s, node, false);
 		for (String key : node.getPropertyKeys()) {
 			listener.modelElementAttributeRemoval(this.s, null, key, node,
 					ModelElementNode.TRANSIENT_ATTRIBUTES.contains(key));
@@ -318,6 +317,7 @@ public class GraphModelInserter {
 				listener.referenceRemoval(this.s, node, e.getEndNode(), e.getType(), isTransient);
 			}
 		}
+		listener.modelElementRemoval(this.s, node, false);
 
 		remove(node, repoURL, fileNode, listener);
 		// new DeletionUtils(graph).delete(node);
