@@ -418,13 +418,10 @@ public class GraphModelInserter {
 				}
 
 				normalattributes.add(eAttribute);
-
-			} else
-			// depracatedTODO currently unset items are not included to may
-			// crash eol etc
-			{
+			} else {
 				node.removeProperty(eAttribute.getName());
-				// node.setProperty(eAttribute.getName(), "UNSET");
+				indexer.getCompositeGraphChangeListener().modelElementAttributeRemoval(
+						s, eObject, eAttribute.getName(), node, false);
 			}
 		}
 
