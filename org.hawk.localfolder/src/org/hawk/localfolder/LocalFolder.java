@@ -51,7 +51,7 @@ public class LocalFolder implements IVcsManager {
 		@Override
 		public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
 			final File f = dir.toFile();
-			final String currentlatest = f.lastModified() + "-" + f.length();
+			final String currentlatest = getRevisionFromFileMetadata(f);
 			final String lastRev = recordedModifiedDates.get(dir);
 			if (lastRev == null || !lastRev.equals(currentlatest)) {
 				if (alter)
@@ -69,7 +69,7 @@ public class LocalFolder implements IVcsManager {
 		@Override
 		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 			final File f = file.toFile();
-			final String currentlatest = f.lastModified() + "-" + f.length();
+			final String currentlatest = getRevisionFromFileMetadata(f);
 			final String lastRev = recordedModifiedDates.get(currentlatest);
 			if (lastRev == null || !lastRev.equals(currentlatest)) {
 				if (alter)
@@ -231,7 +231,8 @@ public class LocalFolder implements IVcsManager {
 			commit.setDelta(delta);
 			commit.setJavaDate(null);
 			commit.setMessage("i am a local folder driver - no messages recorded");
-			commit.setRevision(f.lastModified() + "-" + f.length());
+			final String currentlatest = getRevisionFromFileMetadata(f);
+			commit.setRevision(currentlatest);
 			delta.getCommits().add(commit);
 
 			VcsCommitItem c = new VcsCommitItem();
@@ -257,7 +258,7 @@ public class LocalFolder implements IVcsManager {
 			for (File f : files) {
 				previousFiles.add(f);
 				Path filePath = f.toPath();
-				final String latestRev =  f.lastModified() + "-" + f.length();
+				final String latestRev = getRevisionFromFileMetadata(f);
 				final String lastDate = recordedModifiedDates.get(filePath);
 				if (lastDate != null && lastDate.equals(latestRev)) {
 					if ((currentRevision + "").equals(startRevision))
@@ -269,7 +270,7 @@ public class LocalFolder implements IVcsManager {
 				commit.setDelta(delta);
 				commit.setJavaDate(null);
 				commit.setMessage("i am a local folder driver - no messages recorded");
-				commit.setRevision(f.lastModified() + "-" + f.length());
+				commit.setRevision(latestRev);
 				delta.getCommits().add(commit);
 
 				VcsCommitItem c = new VcsCommitItem();
@@ -337,6 +338,10 @@ public class LocalFolder implements IVcsManager {
 	@Override
 	public boolean isURLLocationAccepted() {
 		return true;
+	}
+
+	private String getRevisionFromFileMetadata(final File f) {
+		return f.lastModified() + "-" + f.length();
 	}
 
 }
