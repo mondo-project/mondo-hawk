@@ -667,7 +667,7 @@ public class GraphModelInserter {
 	private void remove(IGraphNode modelElement, String repositoryURL, IGraphNode fileNode, IGraphChangeListener l) {
 		DeletionUtils del = new DeletionUtils(graph);
 		del.dereference(modelElement, l, s);
-		del.makeProxyRefs(modelElement, repositoryURL, fileNode);
+		del.makeProxyRefs(s, modelElement, repositoryURL, fileNode, l);
 		del.delete(modelElement);
 	}
 

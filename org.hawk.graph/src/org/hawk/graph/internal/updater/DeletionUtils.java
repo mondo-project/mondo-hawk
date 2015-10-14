@@ -73,7 +73,7 @@ public class DeletionUtils {
 				}
 
 				for (IGraphNode node : modelElements) {
-					makeProxyRefs(node, repository, file);
+					makeProxyRefs(s, node, repository, file, changeListener);
 				}
 
 				for (IGraphNode node : modelElements) {
@@ -153,8 +153,8 @@ public class DeletionUtils {
 		}
 	}
 
-	protected void makeProxyRefs(IGraphNode referencedModelElement, String repositoryURL,
-			IGraphNode referencedElementFileNode) {
+	protected void makeProxyRefs(VcsCommitItem commitItem, IGraphNode referencedModelElement, String repositoryURL,
+			IGraphNode referencedElementFileNode, IGraphChangeListener listener) {
 
 		IGraphNodeIndex proxydictionary = graph.getOrCreateNodeIndex("proxydictionary");
 
@@ -163,7 +163,8 @@ public class DeletionUtils {
 		// FIXMEdone 5-11-13 check changes work
 		for (IGraphEdge rel : referencedModelElement.getIncoming()) {
 
-			IGraphNode referencingNode = rel.getStartNode();
+			final IGraphNode referencingNode = rel.getStartNode();
+			final IGraphNode endNode = rel.getEndNode();
 			String referencingNodeFileID = referencingNode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)
 					.iterator().next().getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 			String referencedElementFileID = (String) referencedElementFileNode
@@ -171,6 +172,7 @@ public class DeletionUtils {
 
 			// System.out.println(referencingNodeFileID+" ::: "+fileID);
 
+			String type = rel.getType();
 			if (!referencingNodeFileID.equals(referencedElementFileID)) {
 
 				// System.err.println("relationship is one to an object in file:
@@ -190,7 +192,7 @@ public class DeletionUtils {
 
 				Object proxies = referencingNode.getProperty("_proxyRef:" + fullReferencedElementPathFileURI);
 
-				proxies = addToElementProxies((String[]) proxies, fullReferencedElementPathElementURI, rel.getType());
+				proxies = addToElementProxies((String[]) proxies, fullReferencedElementPathElementURI, type);
 
 				referencingNode.setProperty("_proxyRef:" + fullReferencedElementPathFileURI, proxies);
 
@@ -198,14 +200,12 @@ public class DeletionUtils {
 				proxydictionary.add(referencingNode, "_proxyRef", fullReferencedElementPathFileURI);
 
 				rel.delete();
-
 			} else {
 				// same file so just delete
 				rel.delete();
 			}
-
+			listener.referenceRemoval(commitItem, referencingNode, endNode, type, false);
 		}
-
 	}
 
 	protected void dereference(IGraphNode modelElement, IGraphChangeListener l, VcsCommitItem s) {
