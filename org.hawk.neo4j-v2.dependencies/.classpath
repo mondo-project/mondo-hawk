@@ -1,31 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="2.0.1/concurrentlinkedhashmap-lru-1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/lucene-core-3.6.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/neo4j-consistency-check-2.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/neo4j-csv-2.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/neo4j-cypher-2.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/neo4j-cypher-compiler-1.9-2.0.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/neo4j-cypher-compiler-2.0-2.0.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/neo4j-cypher-compiler-2.1-2.1.8.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/neo4j-cypher-compiler-2.2-2.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/neo4j-graph-algo-2.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/neo4j-graph-matching-2.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/neo4j-import-tool-2.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/neo4j-io-2.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/neo4j-jmx-2.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/neo4j-kernel-2.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/neo4j-lucene-index-2.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/neo4j-primitive-collections-2.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/neo4j-shell-2.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/neo4j-udc-2.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/neo4j-unsafe-2.2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/opencsv-2.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/org.apache.servicemix.bundles.jline-0.9.94_1.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/parboiled-core-1.1.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/parboiled-scala_2.10-1.1.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/scala-library-2.10.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="2.0.1/server-api-2.2.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/logback-classic-1.1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/logback-core-1.1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-core-3.6.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-csv-2.2.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-io-2.2.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-jmx-2.2.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-kernel-2.2.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-lucene-index-2.2.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-primitive-collections-2.2.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-unsafe-2.2.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/slf4j-api-1.7.7.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
