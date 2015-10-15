@@ -53,7 +53,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.wizards.IWizardDescriptor;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
-import org.hawk.core.runtime.ModelIndexerImpl;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.Activator;
 import org.hawk.ui2.dialog.HConfigDialog;
@@ -313,7 +312,8 @@ public class HView extends ViewPart {
 
 						char[] apw = pwd.getPassword();
 
-						if (((HModel) selected.getFirstElement()).start(hm, apw)) {
+						final HModel hawkModel = (HModel) selected.getFirstElement();
+						if (hawkModel.start(hm, apw)) {
 							viewer.refresh();
 							start.setEnabled(false);
 							stop.setEnabled(true);

@@ -11,12 +11,14 @@
 package org.hawk.graph;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.graph.internal.updater.GraphModelUpdater;
@@ -105,8 +107,55 @@ public class GraphWrapper {
 	public TypeNode getTypeNodeById(String id) {
 		final IGraphNode rawNode = graph.getNodeById(id);
 		if (rawNode == null) {
-			throw new NoSuchElementException();
+			throw new NoSuchElementException("No type node exists with id " + id);
 		}
 		return new TypeNode(rawNode);
+	}
+
+	/**
+	 * Retrieves a metamodel node by namespace URI.
+	 *
+	 * @throws NoSuchElementException
+	 *             No metamodel node with that namespace URI exists.
+	 */
+	public MetamodelNode getMetamodelNodeByNsURI(String nsURI) {
+		final Iterator<IGraphNode> metamodelNode = graph.getMetamodelIndex().query("id", nsURI).iterator();
+		if (!metamodelNode.hasNext()) {
+			throw new NoSuchElementException("No metamodel node exists with URI " + nsURI);
+		}
+		return new MetamodelNode(metamodelNode.next());
+	}
+
+	/**
+	 * Returns an iterable of all metamodel nodes.
+	 */
+	public Iterable<MetamodelNode> getMetamodelNodes() {
+		final IGraphIterable<IGraphNode> metamodelNodes = graph.getMetamodelIndex().query("*", "*");
+		return new Iterable<MetamodelNode>() {
+
+			@Override
+			public Iterator<MetamodelNode> iterator() {
+				final Iterator<IGraphNode> itMN = metamodelNodes.iterator();
+				return new Iterator<MetamodelNode>(){
+
+					@Override
+					public boolean hasNext() {
+						return itMN.hasNext();
+					}
+
+					@Override
+					public MetamodelNode next() {
+						return new MetamodelNode(itMN.next());
+					}
+
+					@Override
+					public void remove() {
+						throw new UnsupportedOperationException();
+					}
+
+				};
+			}
+
+		};
 	}
 }

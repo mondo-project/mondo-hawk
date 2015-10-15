@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.emf.ecore.extension_parser">
+      <parser
+            class="org.hawk.ui.emf.impl.LocalHawkResourceFactoryImpl"
+            type="localhawkmodel">
+      </parser>
+   </extension>
+   <extension
+         point="org.eclipse.epsilon.dt.exeed.customizer">
+      <customizer
+            customizerClass="org.hawk.ui.emf.exeed.LocalHawkResourceExeedCustomizer"
+            resourceClass="org.hawk.ui.emf.impl.LocalHawkResourceImpl">
+      </customizer>
+   </extension>
+
+</plugin>
