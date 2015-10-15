@@ -15,5 +15,24 @@
             resourceClass="org.hawk.ui.emf.impl.LocalHawkResourceImpl">
       </customizer>
    </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="hawk.ui.plugin"
+            class="org.hawk.ui.emf.wizards.NewDescriptorWizard"
+            id="org.hawk.ui.emf.newfile"
+            name="Local Hawk Model Descriptor">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.eclipse.epsilon.dt.exeed.ExeedEditor"
+            default="true"
+            extensions="localhawkmodel"
+            id="org.hawk.ui.emf.editor.exeed"
+            name="Exeed Editor">
+      </editor>
+   </extension>
 
 </plugin>
