@@ -28,6 +28,7 @@
          point="org.eclipse.ui.editors">
       <editor
             class="org.eclipse.epsilon.dt.exeed.ExeedEditor"
+            contributorClass="org.eclipse.epsilon.dt.exeed.ExeedActionBarContributor"
             default="true"
             extensions="localhawkmodel"
             id="org.hawk.ui.emf.editor.exeed"

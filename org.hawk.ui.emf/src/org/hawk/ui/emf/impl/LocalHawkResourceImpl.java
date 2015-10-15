@@ -552,93 +552,88 @@ public class LocalHawkResourceImpl extends ResourceImpl implements IGraphChangeL
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Local Hawk resource " + uri;
 	}
 
 	@Override
 	public void setModelIndexer(IModelIndexer m) {
-		// TODO Auto-generated method stub
-		
+		// ignore
 	}
 
 	@Override
 	public void synchroniseStart() {
-		// TODO Auto-generated method stub
-		
+		// TODO: reset reload on failed change flag
 	}
 
 	@Override
 	public void synchroniseEnd() {
-		// TODO Auto-generated method stub
-		
+		// TODO: reload if some transaction failed since the sync started
 	}
 
 	@Override
 	public void changeStart() {
-		// TODO Auto-generated method stub
-		
+		// do nothing
 	}
 
 	@Override
 	public void changeSuccess() {
-		// TODO Auto-generated method stub
-		
+		// do nothing
 	}
 
 	@Override
 	public void changeFailure() {
-		// TODO Auto-generated method stub
+		// TODO: oops, transaction failed - reload after sync ends
 		
 	}
 
 	@Override
 	public void metamodelAddition(IHawkPackage pkg, IGraphNode pkgNode) {
-		// TODO Auto-generated method stub
-		
+		// do nothing
 	}
 
 	@Override
 	public void classAddition(IHawkClass cls, IGraphNode clsNode) {
-		// TODO Auto-generated method stub
-		
+		// do nothing
 	}
 
 	@Override
 	public void fileAddition(VcsCommitItem s, IGraphNode fileNode) {
-		// TODO Auto-generated method stub
-		
+		// do nothing
 	}
 
 	@Override
 	public void fileRemoval(VcsCommitItem s, IGraphNode fileNode) {
-		// TODO Auto-generated method stub
-		
+		// do nothing
 	}
 
 	@Override
-	public void modelElementAddition(VcsCommitItem s, IHawkObject element, IGraphNode elementNode,
-			boolean isTransient) {
-		// TODO Auto-generated method stub
+	public void modelElementAddition(VcsCommitItem s, IHawkObject element, IGraphNode elementNode, boolean isTransient) {
+		if (isTransient) return;
+
+		// TODO Create and add to contents
 		
 	}
 
 	@Override
 	public void modelElementRemoval(VcsCommitItem s, IGraphNode elementNode, boolean isTransient) {
+		if (isTransient) return;
+
+		// TODO Delete and remove from contents
+		
+	}
+
+	@Override
+	public void modelElementAttributeUpdate(VcsCommitItem s, IHawkObject eObject, String attrName, Object oldValue,	Object newValue, IGraphNode elementNode, boolean isTransient) {
+		if (isTransient) return;
+		
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void modelElementAttributeUpdate(VcsCommitItem s, IHawkObject eObject, String attrName, Object oldValue,
-			Object newValue, IGraphNode elementNode, boolean isTransient) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void modelElementAttributeRemoval(VcsCommitItem s, IHawkObject eObject, String attrName, IGraphNode elementNode, boolean isTransient) {
+		if (isTransient) return;
 
-	@Override
-	public void modelElementAttributeRemoval(VcsCommitItem s, IHawkObject eObject, String attrName,
-			IGraphNode elementNode, boolean isTransient) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -646,6 +641,8 @@ public class LocalHawkResourceImpl extends ResourceImpl implements IGraphChangeL
 	@Override
 	public void referenceAddition(VcsCommitItem s, IGraphNode source, IGraphNode destination, String edgelabel,
 			boolean isTransient) {
+		if (isTransient) return;
+
 		// TODO Auto-generated method stub
 		
 	}
@@ -653,6 +650,8 @@ public class LocalHawkResourceImpl extends ResourceImpl implements IGraphChangeL
 	@Override
 	public void referenceRemoval(VcsCommitItem s, IGraphNode source, IGraphNode destination, String edgelabel,
 			boolean isTransient) {
+		if (isTransient) return;
+
 		// TODO Auto-generated method stub
 		
 	}
