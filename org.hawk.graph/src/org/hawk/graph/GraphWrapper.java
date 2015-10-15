@@ -91,7 +91,7 @@ public class GraphWrapper {
 	public ModelElementNode getModelElementNodeById(Object id) {
 		final IGraphNode rawNode = graph.getNodeById(id);
 		if (rawNode == null) {
-			throw new NoSuchElementException();
+			throw new NoSuchElementException("No node exists with id " + id);
 		}
 		return new ModelElementNode(rawNode);
 	}
