@@ -468,7 +468,7 @@ public class HModel {
 	public String toString() {
 		String ret = "";
 		try {
-			ret = getName() + (this.isRunning() ? " (running) " : " (stopped) ") + " [" + this.getFolder() + "] ";
+			ret = getName() + " [" + this.getFolder() + "] ";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
