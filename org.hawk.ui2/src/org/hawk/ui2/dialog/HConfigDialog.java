@@ -83,7 +83,7 @@ public class HConfigDialog extends Dialog {
 		indexList = new List(composite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		GridData gridDataQ = new GridData();
 		gridDataQ.grabExcessHorizontalSpace = true;
-		gridDataQ.horizontalAlignment = GridData.FILL_BOTH;
+		gridDataQ.horizontalAlignment = GridData.FILL;
 		gridDataQ.heightHint = 300;
 		gridDataQ.widthHint = 600;
 		gridDataQ.horizontalSpan = 2;
@@ -429,7 +429,7 @@ public class HConfigDialog extends Dialog {
 		derivedAttributeList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
 		GridData gridDataQ = new GridData();
 		gridDataQ.grabExcessHorizontalSpace = true;
-		gridDataQ.horizontalAlignment = GridData.FILL_BOTH;
+		gridDataQ.horizontalAlignment = GridData.FILL;
 		gridDataQ.heightHint = 300;
 		gridDataQ.widthHint = 600;
 		gridDataQ.horizontalSpan = 2;
@@ -586,7 +586,7 @@ public class HConfigDialog extends Dialog {
 		indexedAttributeList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
 		GridData gridDataQ = new GridData();
 		gridDataQ.grabExcessHorizontalSpace = true;
-		gridDataQ.horizontalAlignment = GridData.FILL_BOTH;
+		gridDataQ.horizontalAlignment = GridData.FILL;
 		gridDataQ.heightHint = 300;
 		gridDataQ.widthHint = 600;
 		gridDataQ.horizontalSpan = 2;
@@ -658,7 +658,7 @@ public class HConfigDialog extends Dialog {
 		metamodelList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
 		GridData gridDataQ = new GridData();
 		gridDataQ.grabExcessHorizontalSpace = true;
-		gridDataQ.horizontalAlignment = GridData.FILL_BOTH;
+		gridDataQ.horizontalAlignment = GridData.FILL;
 		gridDataQ.heightHint = 300;
 		gridDataQ.widthHint = 600;
 		gridDataQ.horizontalSpan = 2;
