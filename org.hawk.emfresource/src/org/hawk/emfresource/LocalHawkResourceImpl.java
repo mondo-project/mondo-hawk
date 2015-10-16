@@ -129,8 +129,8 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 
 	private IModelIndexer indexer;
 
-	public LocalHawkResourceImpl(final IModelIndexer indexer) {
-		super(URI.createURI("hawk+local://" + indexer.getName()));
+	public LocalHawkResourceImpl(final URI uri, final IModelIndexer indexer) {
+		super(uri);
 		this.indexer = indexer;
 	}
 

@@ -37,12 +37,15 @@ public class LocalHawkResourceFactoryImpl implements Factory {
 				hawkInstance = br.readLine();
 			} catch (IOException e) {
 				Activator.logError("Could not read " + filePath, e);
-				return new LocalHawkResourceImpl(null);
+				return new LocalHawkResourceImpl(uri, null);
 			}
 		}
 
 		final HUIManager manager = HUIManager.getInstance();
 		final HModel hawkModel = manager.getHawkByName(hawkInstance);
+		if (hawkModel == null) {
+			return new LocalHawkResourceImpl(uri, null);
+		}
 		if (!hawkModel.isRunning()) {
 			PasswordDialog dlg = new PasswordDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
 			if (dlg.open() == Dialog.OK) {
@@ -50,7 +53,7 @@ public class LocalHawkResourceFactoryImpl implements Factory {
 				hawkModel.start(manager, apw);
 			}
 		}
-		return new LocalHawkResourceImpl(hawkModel.getIndexer());
+		return new LocalHawkResourceImpl(uri, hawkModel.getIndexer());
 	}
 }
 ;
