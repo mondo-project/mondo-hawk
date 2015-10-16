@@ -1,4 +1,14 @@
-package org.hawk.ui.emf.impl;
+/*******************************************************************************
+ * Copyright (c) 2015 University of York.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Antonio Garcia-Dominguez - initial API and implementation
+ *******************************************************************************/
+package org.hawk.emfresource;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,9 +25,13 @@ import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.graph.ModelElementNode;
-import org.hawk.ui.emf.Activator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 final class LocalHawkResourceUpdater implements IGraphChangeListener {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(LocalHawkResourceUpdater.class);
+
 	private final LocalHawkResourceImpl resource;
 
 	/** Nodes removed since the last call to either {@link #changeSuccess()} or {@link #changeFailure()}. */
@@ -71,7 +85,7 @@ final class LocalHawkResourceUpdater implements IGraphChangeListener {
 			resource.createOrUpdateEObjects(elems);
 			tx.success();
 		} catch (Exception e) {
-			Activator.logError("Error while updating resource", e);
+			LOGGER.error("Error while updating resource", e);
 			removedNodes.clear();
 			updatedNodes.clear();
 		}

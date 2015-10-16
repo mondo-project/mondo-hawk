@@ -4,14 +4,14 @@
    <extension
          point="org.eclipse.emf.ecore.extension_parser">
       <parser
-            class="org.hawk.ui.emf.LocalHawkResourceFactoryImpl"
+            class="org.hawk.ui.emfresource.LocalHawkResourceFactoryImpl"
             type="localhawkmodel">
       </parser>
    </extension>
    <extension
          point="org.eclipse.epsilon.dt.exeed.customizer">
       <customizer
-            customizerClass="org.hawk.ui.emf.exeed.LocalHawkResourceExeedCustomizer"
+            customizerClass="org.hawk.ui.emfresource.exeed.LocalHawkResourceExeedCustomizer"
             resourceClass="org.hawk.ui.emf.impl.LocalHawkResourceImpl">
       </customizer>
    </extension>
@@ -19,7 +19,7 @@
          point="org.eclipse.ui.newWizards">
       <wizard
             category="hawk.ui.plugin"
-            class="org.hawk.ui.emf.wizards.NewDescriptorWizard"
+            class="org.hawk.ui.emfresource.wizards.NewDescriptorWizard"
             id="org.hawk.ui.emf.newfile"
             name="Local Hawk Model Descriptor">
       </wizard>

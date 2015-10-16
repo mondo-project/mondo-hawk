@@ -8,7 +8,7 @@
  * Contributors:
  *    Antonio Garcia-Dominguez - initial API and implementation
  *******************************************************************************/
-package org.hawk.ui.emf;
+package org.hawk.ui.emfresource;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -18,8 +18,8 @@ import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Factory;
+import org.hawk.emfresource.LocalHawkResourceImpl;
 import org.hawk.osgiserver.HModel;
-import org.hawk.ui.emf.impl.LocalHawkResourceImpl;
 import org.hawk.ui2.util.HUIManager;
 
 public class LocalHawkResourceFactoryImpl implements Factory {

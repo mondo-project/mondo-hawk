@@ -8,7 +8,7 @@
  * Contributors:
  *    Antonio Garcia-Dominguez - initial API and implementation
  *******************************************************************************/
-package org.hawk.ui.emf.exeed;
+package org.hawk.ui.emfresource.exeed;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -45,7 +45,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartReference;
-import org.hawk.ui.emf.impl.LocalHawkResourceImpl;
+import org.hawk.emfresource.LocalHawkResourceImpl;
 
 public class LocalHawkResourceExeedCustomizer implements IExeedCustomizer {
 

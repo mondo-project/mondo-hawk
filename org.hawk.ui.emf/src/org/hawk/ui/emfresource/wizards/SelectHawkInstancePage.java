@@ -8,7 +8,7 @@
  * Contributors:
  *    Antonio Garcia-Dominguez - initial API and implementation
  *******************************************************************************/
-package org.hawk.ui.emf.wizards;
+package org.hawk.ui.emfresource.wizards;
 
 import java.util.ArrayList;
 import java.util.Collections;

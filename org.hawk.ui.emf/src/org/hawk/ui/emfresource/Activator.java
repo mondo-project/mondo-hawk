@@ -8,7 +8,7 @@
  * Contributors:
  *    Antonio Garcia-Dominguez - initial API and implementation
  *******************************************************************************/
-package org.hawk.ui.emf;
+package org.hawk.ui.emfresource;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;

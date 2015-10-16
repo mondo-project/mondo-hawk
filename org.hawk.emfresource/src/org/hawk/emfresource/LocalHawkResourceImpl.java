@@ -8,7 +8,7 @@
  * Contributors:
  *    Antonio Garcia-Dominguez - initial API and implementation
  *******************************************************************************/
-package org.hawk.ui.emf.impl;
+package org.hawk.emfresource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,7 +46,8 @@ import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.MetamodelNode;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.TypeNode;
-import org.hawk.ui.emf.Activator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -55,6 +56,8 @@ import net.sf.cglib.proxy.MethodProxy;
  * EMF driver that reads a local model from a Hawk index.
  */
 public class LocalHawkResourceImpl extends ResourceImpl {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(LocalHawkResourceImpl.class);
 
 	private final class LazyReferenceResolver implements MethodInterceptor {
 		@SuppressWarnings("unchecked")
@@ -207,7 +210,7 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 			tx.success();
 		}
 
-		Activator.logWarn(String.format("Could not find a type node for EClass %s:%s", eClass.getEPackage().getNsURI(), eClass.getName()));
+		LOGGER.warn("Could not find a type node for EClass {}:{}", eClass.getEPackage().getNsURI(), eClass.getName());
 		return new BasicEList<EObject>();
 	}
 
@@ -278,7 +281,7 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 				}
 
 				} else {
-					Activator.logWarn(String.format("We do not have the '%s' EPackage in the registry, skipping", nsURI));
+					LOGGER.warn("We do not have the '{}' EPackage in the registry, skipping", nsURI);
 				}
 			}
 
@@ -332,10 +335,10 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 				// We need an IOException so EMF will display it properly
 				throw new IOException(String.format("The Hawk instance with name '%s' is not running: please start it first", indexer.getName()));
 			}
-
+	
 			lazyResolver = new LazyResolver(this);
 			eobFactory = new LazyEObjectFactory(getResourceSet().getPackageRegistry(), new LazyReferenceResolver());
-
+	
 			final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
 			try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
 				// TODO add back ability for filtering repos/files
@@ -346,15 +349,15 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 				}
 				tx.success();
 			}
-
+	
 			changeListener = new LocalHawkResourceUpdater(this);
 			indexer.addGraphChangeListener(changeListener);
 			setLoaded(true);
 		} catch (final IOException e) {
-			Activator.logError("I/O exception while opening model", e);
+			LOGGER.error("I/O exception while opening model", e);
 			throw e;
 		} catch (final Exception e) {
-			Activator.logError("Exception while loading model", e);
+			LOGGER.error("Exception while loading model", e);
 		}
 	}
 

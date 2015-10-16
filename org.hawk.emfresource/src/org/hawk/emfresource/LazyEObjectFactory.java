@@ -8,7 +8,7 @@
  * Contributors:
  *    Antonio Garcia-Dominguez - initial API and implementation
  *******************************************************************************/
-package org.hawk.ui.emf.impl;
+package org.hawk.emfresource;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

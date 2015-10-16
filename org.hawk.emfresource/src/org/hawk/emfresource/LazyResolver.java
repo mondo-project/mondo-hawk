@@ -8,7 +8,7 @@
  * Contributors:
  *    Antonio Garcia-Dominguez - initial API and implementation
  *******************************************************************************/
-package org.hawk.ui.emf.impl;
+package org.hawk.emfresource;
 
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
@@ -21,7 +21,8 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.hawk.ui.emf.Activator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Stores which attributes or references are to be lazily resolved, and resolves
@@ -29,7 +30,9 @@ import org.hawk.ui.emf.Activator;
  * LazyResolver class in mondo-integration, which does not need to lazily
  * resolve attributes.
  */
-class LazyResolver {
+public class LazyResolver {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(LazyResolver.class);
 
 	private final LocalHawkResourceImpl resource;
 
@@ -63,7 +66,7 @@ class LazyResolver {
 				throw new UnsupportedOperationException();
 			}
 		} catch (Exception e) {
-			Activator.logError("Error while resolving lazy reference", e);
+			LOGGER.error("Error while resolving lazy reference", e);
 		}
 	}
 
@@ -142,8 +145,7 @@ class LazyResolver {
 			if (elem instanceof String) {
 				final EObject eob = resolved.get(iResolved++);
 				if (eob == null) {
-					Activator.logWarn(String.format(
-						"Failed to resolve lazy reference to node %s: deleted without notification?", elem));
+					LOGGER.warn("Failed to resolve lazy reference to node {}: deleted without notification?", elem);
 				} else {
 					result.add(eob);
 				}
