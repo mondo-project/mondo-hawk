@@ -66,9 +66,7 @@ public class Workspace implements IVcsManager {
 				try {
 					final WorkspaceDeltaVisitor visitor = new WorkspaceDeltaVisitor();
 					delta.accept(visitor);
-					if (visitor.anyChanges) {
-						revision++;
-					}
+					pendingChanges = pendingChanges || visitor.anyChanges;
 				} catch (CoreException e) {
 					console.printerrln(e);
 				}
@@ -77,6 +75,7 @@ public class Workspace implements IVcsManager {
 	}
 
 	private long revision;
+	private boolean pendingChanges = false;
 	private IAbstractConsole console;
 	private WorkspaceListener listener;
 	private WorkspaceRepository repository;
@@ -85,7 +84,7 @@ public class Workspace implements IVcsManager {
 
 	@Override
 	public String getCurrentRevision(VcsRepository repository) throws Exception {
-		return revision + "";
+		return getCurrentRevision();
 	}
 
 	@Override
@@ -119,11 +118,13 @@ public class Workspace implements IVcsManager {
 				if ((revision + "").equals(startRevision))
 					continue;
 			}
+			recordedStamps.put(f, latestRev);
 			addIFile(delta, f, VcsChangeType.UPDATED);
 		}
 
-		if (!delta.getCommits().isEmpty()) {
+		if (pendingChanges) {
 			revision++;
+			pendingChanges = false;
 		}
 		delta.setLatestRevision(revision + "");
 
@@ -233,7 +234,11 @@ public class Workspace implements IVcsManager {
 
 	@Override
 	public String getCurrentRevision() throws Exception {
-		return ResourcesPlugin.getWorkspace().getRoot().getModificationStamp() + "";
+		if (pendingChanges) {
+			return (revision +  1) + "";
+		} else {
+			return revision + "";
+		}
 	}
 
 	@Override
