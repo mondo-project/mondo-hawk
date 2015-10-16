@@ -27,6 +27,7 @@ import org.hawk.core.IHawk;
 import org.hawk.core.IHawkFactory;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.IMetaModelUpdater;
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.IModelUpdater;
@@ -505,6 +506,10 @@ public class HModel {
 	public void removeRepository(String uri) throws Exception {
 		// TODO Auto-generated method stub
 
+	}
+
+	public IModelIndexer getIndexer() {
+		return hawk.getModelIndexer();
 	}
 
 	/**

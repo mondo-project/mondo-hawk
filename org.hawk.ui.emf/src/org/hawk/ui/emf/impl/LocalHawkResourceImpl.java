@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.hawk.ui.emf.impl;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -39,6 +37,7 @@ import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphNodeReference;
 import org.hawk.core.graph.IGraphTransaction;
@@ -47,10 +46,7 @@ import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.MetamodelNode;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.TypeNode;
-import org.hawk.osgiserver.HManager;
-import org.hawk.osgiserver.HModel;
 import org.hawk.ui.emf.Activator;
-import org.hawk.ui2.util.HUIManager;
 
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -124,26 +120,20 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 
 	private final Map<String, EObject> nodeIdToEObjectMap = new HashMap<>();
 
-	private HModel hawkModel;
 	private LazyResolver lazyResolver;
 	private IGraphChangeListener changeListener;
 	private LazyEObjectFactory eobFactory;
 
-	public LocalHawkResourceImpl() {}
+	private IModelIndexer indexer;
 
-	public LocalHawkResourceImpl(final URI uri) {
-		super(uri);
+	public LocalHawkResourceImpl(final IModelIndexer indexer) {
+		super(URI.createURI("hawk+local://" + indexer.getName()));
+		this.indexer = indexer;
 	}
 
 	@Override
 	public void load(final Map<?, ?> options) throws IOException {
-		if ("hawk+local".equals(uri.scheme())) {
-			// We already have an instance name: no need to create an InputStream from the URI
-			doLoad(uri.host());
-		} else {
-			// Let Ecore create an InputStream from the URI and call doLoad(InputStream, Map)
-			super.load(options);
-		}
+		doLoad();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -165,43 +155,6 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 		return false;
 	}
 
-	public void doLoad(final String hawkInstance) throws IOException {
-		try {
-			final HManager manager = HUIManager.getInstance();
-			hawkModel = manager.getHawkByName(hawkInstance);
-			if (hawkModel == null) {
-				throw new NoSuchElementException(String.format("No Hawk instance exists with name '%s'", hawkInstance));
-			}
-			if (!hawkModel.isRunning()) {
-				// We need an IOException so EMF will display it properly
-				throw new IOException(String.format("The Hawk instance with name '%s' is not running: please start it first", hawkInstance));
-			}
-
-			lazyResolver = new LazyResolver(this);
-			eobFactory = new LazyEObjectFactory(getResourceSet().getPackageRegistry(), new LazyReferenceResolver());
-
-			final GraphWrapper gw = new GraphWrapper(hawkModel.getGraph());
-			try (IGraphTransaction tx = hawkModel.getGraph().beginTransaction()) {
-				// TODO add back ability for filtering repos/files
-				final List<String> all = Arrays.asList("*");
-				for (FileNode fileNode : gw.getFileNodes(all, all)) {
-					final Iterable<ModelElementNode> elems = fileNode.getRootModelElements();
-					createOrUpdateEObjects(elems);
-				}
-				tx.success();
-			}
-
-			changeListener = new LocalHawkResourceUpdater(this);
-			hawkModel.addGraphChangeListener(changeListener);
-			setLoaded(true);
-		} catch (final IOException e) {
-			Activator.logError("I/O exception while opening model", e);
-			throw e;
-		} catch (final Exception e) {
-			Activator.logError("Exception while loading model", e);
-		}
-	}
-
 	public EList<EObject> fetchNodes(final List<String> ids) throws Exception {
 		// Filter the objects that need to be retrieved
 		final List<String> toBeFetched = new ArrayList<>();
@@ -213,8 +166,8 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 
 		// Fetch the eObjects, decode them and resolve references
 		if (!toBeFetched.isEmpty()) {
-			try (IGraphTransaction tx = hawkModel.getGraph().beginTransaction()) {
-				final GraphWrapper gw = new GraphWrapper(hawkModel.getGraph());
+			try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
+				final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
 
 				final List<ModelElementNode> elems = new ArrayList<>();
 				for (String id : toBeFetched) {
@@ -236,8 +189,8 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 	}
 
 	public EList<EObject> fetchNodes(final EClass eClass) throws Exception {
-		try (IGraphTransaction tx = hawkModel.getGraph().beginTransaction()) {
-			final GraphWrapper gw = new GraphWrapper(hawkModel.getGraph());
+		try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
+			final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
 			final MetamodelNode mn = gw.getMetamodelNodeByNsURI(eClass.getEPackage().getNsURI());
 			for (TypeNode tn : mn.getTypes()) {
 				if (eClass.getName().equals(tn.getTypeName())) {
@@ -290,8 +243,8 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 	}
 
 	public Map<EClass, List<EStructuralFeature>> fetchTypesWithEClassifier(final EClassifier dataType) throws Exception {
-		try (IGraphTransaction tx = hawkModel.getGraph().beginTransaction()) {
-			final GraphWrapper gw = new GraphWrapper(hawkModel.getGraph());
+		try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
+			final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
 
 			final Map<EClass, List<EStructuralFeature>> candidateTypes = new IdentityHashMap<>();
 			for (MetamodelNode mn : gw.getMetamodelNodes()) {
@@ -367,9 +320,41 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 
 	@Override
 	protected void doLoad(final InputStream inputStream, final Map<?, ?> options) throws IOException {
-		try (final BufferedReader bR = new BufferedReader(new InputStreamReader(inputStream))) {
-			final String hawkInstance = bR.readLine();
-			doLoad(hawkInstance);
+		doLoad();
+	}
+
+	protected void doLoad() throws IOException {
+		try {
+			if (indexer == null) {
+				return;
+			}
+			else if (!indexer.isRunning()) {
+				// We need an IOException so EMF will display it properly
+				throw new IOException(String.format("The Hawk instance with name '%s' is not running: please start it first", indexer.getName()));
+			}
+
+			lazyResolver = new LazyResolver(this);
+			eobFactory = new LazyEObjectFactory(getResourceSet().getPackageRegistry(), new LazyReferenceResolver());
+
+			final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
+			try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
+				// TODO add back ability for filtering repos/files
+				final List<String> all = Arrays.asList("*");
+				for (FileNode fileNode : gw.getFileNodes(all, all)) {
+					final Iterable<ModelElementNode> elems = fileNode.getRootModelElements();
+					createOrUpdateEObjects(elems);
+				}
+				tx.success();
+			}
+
+			changeListener = new LocalHawkResourceUpdater(this);
+			indexer.addGraphChangeListener(changeListener);
+			setLoaded(true);
+		} catch (final IOException e) {
+			Activator.logError("I/O exception while opening model", e);
+			throw e;
+		} catch (final Exception e) {
+			Activator.logError("Exception while loading model", e);
 		}
 	}
 
@@ -377,8 +362,8 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 	protected void doUnload() {
 		super.doUnload();
 	
-		if (hawkModel != null) {
-			hawkModel.removeGraphChangeListener(changeListener);
+		if (indexer != null) {
+			indexer.removeGraphChangeListener(changeListener);
 		}
 
 		nodeIdToEObjectMap.clear();
@@ -436,7 +421,7 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 	}
 
 	protected IGraphTransaction beginGraphTransaction() throws Exception {
-		return hawkModel.getGraph().beginTransaction();
+		return indexer.getGraph().beginTransaction();
 	}
 
 	private EObject createOrUpdateEObject(final ModelElementNode me) throws Exception {
