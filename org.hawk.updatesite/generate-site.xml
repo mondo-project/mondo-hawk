@@ -1,38 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="build-site">
-	<target name="build-site">
+	<target name="init">
+		<tstamp/>
+		<property name="sitedir" value="hawk-${DSTAMP}"/>
+	</target>
+
+	<target name="build-site" depends="init">
+		<delete dir="${sitedir}"/>
 		<pde.exportFeatures
 			useworkspacecompiledclasses="true"
 			exportsource="true"
 			exporttype="folder"
-			features="org.hawk.core.feature,org.hawk.emf.feature,org.hawk.epsilon.feature,org.hawk.ifc.feature,org.hawk.bpmn.feature,org.hawk.localfolder.feature,org.hawk.modelio.feature,org.hawk.osgiserver.feature,org.hawk.svn.feature,org.hawk.ui.feature,org.hawk.neo4jv2.feature"
-			destination="." />
+			features="org.hawk.core.feature,org.hawk.emf.feature,org.hawk.epsilon.feature,org.hawk.ifc.feature,org.hawk.bpmn.feature,org.hawk.localfolder.feature,org.hawk.modelio.feature,org.hawk.osgiserver.feature,org.hawk.svn.feature,org.hawk.ui.feature,org.hawk.neo4jv2.feature,org.hawk.emfresource.feature"
+			destination="${sitedir}" />
 	</target>
 
-	<target name="publish-site">
+	<target name="publish-site" depends="init">
 		<eclipse.refreshLocal
 			resource="org.hawk.updatesite"
 			depth="project" />
 
-		<delete dir="${basedir}" includes="artifact.xml,content.xml"/>
+		<delete dir="${sitedir}" includes="artifact.xml,content.xml"/>
 
 		<eclipse.publish.featuresAndBundles
-			repository="file:/${basedir}/"
+			repository="file:/${basedir}/${sitedir}/"
 			category="file:/${basedir}/category.xml"
 			compress="true">
-			<features dir="${basedir}/features" />
-			<bundles dir="${basedir}/plugins" />
+			<features dir="${sitedir}/features" />
+			<bundles dir="${sitedir}/plugins" />
 		</eclipse.publish.featuresAndBundles>
-
-		<tstamp/>
-		<zip
-			basedir="${basedir}"
-			zipfile="hawk-updatesite-${DSTAMP}.zip"
-			includes="features/*.jar,plugins/*.jar,*.jar"
-			update="false"/>
 
 		<eclipse.refreshLocal
 			resource="org.hawk.updatesite"
 			depth="project" />
+
+		<p2.composite.repository>
+			<repository location="${basedir}"/>
+			<add>
+				<repository location="http://download.eclipse.org/epsilon/interim/"/>
+				<repository location="http://eclipse.svnkit.com/1.8.x/"/>
+				<repository location="https://www.cs.york.ac.uk/mondo/downloads/hawk/${sitedir}"/>
+			</add>
+		</p2.composite.repository>
 	</target>
 </project>

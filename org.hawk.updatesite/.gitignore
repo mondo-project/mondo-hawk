@@ -2,3 +2,5 @@
 *.zip
 plugins
 features
+/compositeArtifacts.xml
+/compositeContent.xml

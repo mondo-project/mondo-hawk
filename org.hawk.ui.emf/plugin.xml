@@ -12,7 +12,7 @@
          point="org.eclipse.epsilon.dt.exeed.customizer">
       <customizer
             customizerClass="org.hawk.ui.emfresource.exeed.LocalHawkResourceExeedCustomizer"
-            resourceClass="org.hawk.ui.emf.impl.LocalHawkResourceImpl">
+            resourceClass="org.hawk.emfresource.LocalHawkResourceImpl">
       </customizer>
    </extension>
    <extension

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.hawk.svn.feature"
-      label="Hawk SVN Connector Feature"
+      id="org.hawk.emfresource.feature"
+      label="Local Hawk EMF Resource Feature"
       version="1.0.0.qualifier"
       provider-name="University of York">
 
    <description url="http://www.example.com/description">
-      Allows Hawk to monitor a SVN repository.
+      [Enter Feature Description here.]
    </description>
 
    <copyright url="http://www.example.com/copyright">
@@ -18,16 +18,16 @@
    </license>
 
    <requires>
-      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.emf.ecore" version="2.10.2" match="greaterOrEqual"/>
       <import plugin="org.hawk.core" version="1.0.0" match="greaterOrEqual"/>
-      <import feature="org.tmatesoft.svnkit" version="1.8.11.r10483_v20150925_0010"/>
+      <import plugin="org.hawk.graph" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.slf4j.api" version="1.7.2" match="greaterOrEqual"/>
    </requires>
 
    <plugin
-         id="org.hawk.svn"
+         id="org.hawk.emfresource"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
 </feature>

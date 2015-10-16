@@ -13,28 +13,27 @@
       [Enter Copyright Description here.]
    </copyright>
 
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   <license url="https://www.eclipse.org/legal/epl-v10.html">
+      Eclipse Public License - v 1.0
    </license>
 
    <requires>
+      <import plugin="org.eclipse.epsilon.common.dt"/>
       <import plugin="org.hawk.core"/>
       <import plugin="org.hawk.epsilon"/>
+      <import plugin="org.hawk.osgiserver" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.hawk.core.dependencies" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.hawk.osgiserver" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.console"/>
-      <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.eclipse.core.variables"/>
-      <import plugin="org.antlr.runtime_3.1.b1" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.hawk.core" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.ecore" version="2.10.0" match="greaterOrEqual"/>
+      <import plugin="org.hawk.graph" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.hawk.ui2" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.epsilon.dt.exeed" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="org.hawk.emfresource" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -52,56 +51,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.epsilon.common.dt"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.epsilon.eol.engine"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.epsilon.erl.engine"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.epsilon.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.epsilon.dependencies"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.antlr.runtime_3.1.b1"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.slf4j.api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.hawk.osgiserver"
+         id="org.hawk.ui.emfresource"
          download-size="0"
          install-size="0"
          version="0.0.0"

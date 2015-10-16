@@ -7,8 +7,6 @@
 
    <description url="http://www.example.com/description">
       Feature for an OSGi-based server for Hawk.
-
-TODO: move the Hawk servlet/Thrift API from MONDO integration back into this project?
    </description>
 
    <copyright url="http://www.example.com/copyright">
@@ -16,11 +14,10 @@ TODO: move the Hawk servlet/Thrift API from MONDO integration back into this pro
    </copyright>
 
    <license url="http://www.example.com/license">
-      [Enter License Description here.]
+      Eclipse Public License - v 1.0
    </license>
 
    <requires>
-      <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.hawk.core" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.hawk.core.dependencies"/>
