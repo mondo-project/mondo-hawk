@@ -48,7 +48,6 @@ import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.runtime.util.SecurityManager;
-import org.hawk.core.runtime.util.TimerManager;
 import org.hawk.core.util.FileOperations;
 import org.hawk.core.util.HawkProperties;
 
@@ -381,9 +380,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 			e.printStackTrace();
 		}
 
-		for (Timer t : TimerManager.timers)
-			t.cancel();
-		TimerManager.timers = new HashSet<>();
+		updateTimer.cancel();
 
 		for (IVcsManager monitor : monitors)
 			monitor.shutdown();
@@ -789,7 +786,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		// begin scheduled updates from vcs
 		if (runSchedule) {
-			updateTimer = TimerManager.createNewTimer("t", false);
+			updateTimer = new Timer("t", false);
 			updateTimer.schedule(new RunUpdateTask(), 0);
 		}
 
