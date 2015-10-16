@@ -70,7 +70,7 @@ public class LocalFolder implements IVcsManager {
 		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 			final File f = file.toFile();
 			final String currentlatest = getRevisionFromFileMetadata(f);
-			final String lastRev = recordedModifiedDates.get(currentlatest);
+			final String lastRev = recordedModifiedDates.get(file);
 			if (lastRev == null || !lastRev.equals(currentlatest)) {
 				if (alter)
 					recordedModifiedDates.put(file, currentlatest);
