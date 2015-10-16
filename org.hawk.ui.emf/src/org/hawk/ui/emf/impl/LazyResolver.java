@@ -86,7 +86,7 @@ class LazyResolver {
 	/**
 	 * Adds a reference to the store, to be fetched later on demand.
 	 * 
-	 * @param sourceObj
+	 * @param eob
 	 *            EObject whose reference will be fetched later on.
 	 * @param feature
 	 *            Reference to fetch.
@@ -94,25 +94,28 @@ class LazyResolver {
 	 *            Mixed list of {@link String}s (from ID-based references) or
 	 *            {@link EObject}s (from position-based references).
 	 */
-	public void markLazyReferences(EObject sourceObj, EReference feature, EList<Object> value) {
-		Map<EReference, EList<Object>> allPending = pendingRefs.get(sourceObj);
+	public void markLazyReferences(EObject eob, EReference feature, EList<Object> value) {
+		Map<EReference, EList<Object>> allPending = pendingRefs.get(eob);
 		if (allPending == null) {
 			allPending = new IdentityHashMap<>();
-			pendingRefs.put(sourceObj, allPending);
+			pendingRefs.put(eob, allPending);
 		}
 		allPending.put(feature, value);
 	}
 
-	public boolean addToLazyReferences(EObject sourceObj, EReference feature, Object value) {
-		Map<EReference, EList<Object>> allPending = pendingRefs.get(sourceObj);
-		EList<Object> pending = allPending.get(feature);
-		return pending.add(value);
-	}
-
-	public boolean removeFromLazyReferences(EObject sourceObj, EReference feature, Object value) {
-		Map<EReference, EList<Object>> allPending = pendingRefs.get(sourceObj);
-		EList<Object> pending = allPending.get(feature);
-		return pending.remove(value);
+	/**
+	 * Removes a reference to the store.
+	 * 
+	 * @param eob
+	 *            EObject whose reference will no longer be fetched later on.
+	 * @param feature
+	 *            Reference to be removed.
+	 */
+	public void unmarkLazyReferences(EObject eob, EReference ref) {
+		Map<EReference, EList<Object>> allPending = pendingRefs.get(eob);
+		if (allPending != null) {
+			allPending.remove(ref);
+		}
 	}
 
 	private void resolvePendingReference(EObject object, EReference feature, Map<EReference, EList<Object>> pending,
@@ -172,4 +175,5 @@ class LazyResolver {
 		}
 		return null;
 	}
+
 }

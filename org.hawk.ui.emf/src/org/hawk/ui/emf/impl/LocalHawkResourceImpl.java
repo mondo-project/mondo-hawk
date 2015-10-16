@@ -29,6 +29,7 @@ import java.util.NoSuchElementException;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EFactory;
@@ -37,17 +38,10 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.impl.DynamicEObjectImpl;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
-import org.hawk.core.IModelIndexer;
-import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphChangeListener;
-import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeReference;
 import org.hawk.core.graph.IGraphTransaction;
-import org.hawk.core.model.IHawkClass;
-import org.hawk.core.model.IHawkObject;
-import org.hawk.core.model.IHawkPackage;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.MetamodelNode;
@@ -58,47 +52,15 @@ import org.hawk.osgiserver.HModel;
 import org.hawk.ui.emf.Activator;
 import org.hawk.ui2.util.HUIManager;
 
-import net.sf.cglib.proxy.CallbackHelper;
-import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
-import net.sf.cglib.proxy.NoOp;
 
 /**
  * EMF driver that reads a local model from a Hawk index.
- *
- * TODO: update on the fly.
  */
-public class LocalHawkResourceImpl extends ResourceImpl implements IGraphChangeListener {
+public class LocalHawkResourceImpl extends ResourceImpl {
 
-	private static EClass getEClass(final String metamodelUri, final String typeName,
-			final Registry packageRegistry) {
-		final EPackage pkg = packageRegistry.getEPackage(metamodelUri);
-		if (pkg == null) {
-			throw new NoSuchElementException(String.format(
-					"Could not find EPackage with URI '%s' in the registry %s",
-					metamodelUri, packageRegistry));
-		}
-
-		final EClassifier eClassifier = pkg.getEClassifier(typeName);
-		if (!(eClassifier instanceof EClass)) {
-			throw new NoSuchElementException(String.format(
-					"Received an element of type '%s', which is not an EClass",
-					eClassifier));
-		}
-		final EClass eClass = (EClass) eClassifier;
-		return eClass;
-	}
-
-	private LazyResolver lazyResolver = null;
-
-	private final Map<String, EObject> nodeIdToEObjectMap = new HashMap<>();
-
-	/** Map from classes to factories of instances instrumented by CGLIB for lazy loading. */
-	private Map<Class<?>, net.sf.cglib.proxy.Factory> factories = null;
-
-	/** Interceptor to be reused by all CGLIB {@link Enhancer}s in lazy loading modes. */
-	private final MethodInterceptor methodInterceptor = new MethodInterceptor() {
+	private final class LazyReferenceResolver implements MethodInterceptor {
 		@SuppressWarnings("unchecked")
 		@Override
 		public Object intercept(final Object o, final Method m, final Object[] args, final MethodProxy proxy) throws Throwable {
@@ -118,7 +80,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements IGraphChangeL
 					 * container reference: need to adjust the list of root
 					 * elements then.
 					 */
-					getLazyResolver().resolve(eob, sf);
+					lazyResolver.resolve(eob, sf);
 					Object superValue = proxy.invokeSuper(o, args);
 					if (superValue != null) {
 						if (ref.isContainer()) {
@@ -139,9 +101,33 @@ public class LocalHawkResourceImpl extends ResourceImpl implements IGraphChangeL
 			}
 			return proxy.invokeSuper(o, args);
 		}
-	};
+	}
+
+	private static EClass getEClass(final String metamodelUri, final String typeName,
+			final Registry packageRegistry) {
+		final EPackage pkg = packageRegistry.getEPackage(metamodelUri);
+		if (pkg == null) {
+			throw new NoSuchElementException(String.format(
+					"Could not find EPackage with URI '%s' in the registry %s",
+					metamodelUri, packageRegistry));
+		}
+
+		final EClassifier eClassifier = pkg.getEClassifier(typeName);
+		if (!(eClassifier instanceof EClass)) {
+			throw new NoSuchElementException(String.format(
+					"Received an element of type '%s', which is not an EClass",
+					eClassifier));
+		}
+		final EClass eClass = (EClass) eClassifier;
+		return eClass;
+	}
+
+	private final Map<String, EObject> nodeIdToEObjectMap = new HashMap<>();
 
 	private HModel hawkModel;
+	private LazyResolver lazyResolver;
+	private IGraphChangeListener changeListener;
+	private LazyEObjectFactory eobFactory;
 
 	public LocalHawkResourceImpl() {}
 
@@ -191,18 +177,22 @@ public class LocalHawkResourceImpl extends ResourceImpl implements IGraphChangeL
 				throw new IOException(String.format("The Hawk instance with name '%s' is not running: please start it first", hawkInstance));
 			}
 
+			lazyResolver = new LazyResolver(this);
+			eobFactory = new LazyEObjectFactory(getResourceSet().getPackageRegistry(), new LazyReferenceResolver());
+
 			final GraphWrapper gw = new GraphWrapper(hawkModel.getGraph());
 			try (IGraphTransaction tx = hawkModel.getGraph().beginTransaction()) {
 				// TODO add back ability for filtering repos/files
 				final List<String> all = Arrays.asList("*");
 				for (FileNode fileNode : gw.getFileNodes(all, all)) {
 					final Iterable<ModelElementNode> elems = fileNode.getRootModelElements();
-					createEObjectTree(elems);
+					createOrUpdateEObjects(elems);
 				}
 				tx.success();
 			}
 
-			hawkModel.addGraphChangeListener(this);
+			changeListener = new LocalHawkResourceUpdater(this);
+			hawkModel.addGraphChangeListener(changeListener);
 			setLoaded(true);
 		} catch (final IOException e) {
 			Activator.logError("I/O exception while opening model", e);
@@ -230,7 +220,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements IGraphChangeL
 				for (String id : toBeFetched) {
 					elems.add(gw.getModelElementNodeById(id));
 				}
-				createEObjectTree(elems);
+				createOrUpdateEObjects(elems);
 
 				tx.success();
 			}
@@ -252,7 +242,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements IGraphChangeL
 			for (TypeNode tn : mn.getTypes()) {
 				if (eClass.getName().equals(tn.getTypeName())) {
 					Iterable<ModelElementNode> instances = tn.getAll();
-					createEObjectTree(instances);
+					createOrUpdateEObjects(instances);
 
 					final EList<EObject> l = new BasicEList<EObject>();
 					for (ModelElementNode en : instances) {
@@ -348,7 +338,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements IGraphChangeL
 		final EClass featureEClass = feature.getEContainingClass();
 		final EList<EObject> eobs = fetchNodes(featureEClass);
 
-		if (lazyResolver != null && feature instanceof EReference) {
+		if (feature instanceof EReference) {
 			// If the feature is a reference, collect all its pending nodes in advance
 			final EReference ref = (EReference)feature;
 
@@ -375,157 +365,6 @@ public class LocalHawkResourceImpl extends ResourceImpl implements IGraphChangeL
 		return values;
 	}
 
-	private EObject createEObject(final ModelElementNode me) {
-		final Registry registry = getResourceSet().getPackageRegistry();
-		final TypeNode typeNode = me.getTypeNode();
-		final String nsURI = typeNode.getMetamodelURI();
-		final EClass eClass = getEClass(nsURI, typeNode.getTypeName(), registry);
-		final EObject obj = createInstance(eClass);
-
-		nodeIdToEObjectMap.put(me.getId(), obj);
-
-		Map<String, Object> attributeValues = new HashMap<>();
-		Map<String, Object> referenceValues = new HashMap<>();
-		me.getSlotValues(attributeValues, referenceValues);
-
-		final EFactory factory = registry.getEFactory(nsURI);
-		for (Map.Entry<String, Object> entry : attributeValues.entrySet()) {
-			final String attrName = entry.getKey();
-			final Object attrValue = entry.getValue();
-			AttributeUtils.setAttribute(factory, eClass, obj, attrName, attrValue); 
-		}
-		for (Map.Entry<String, Object> entry : referenceValues.entrySet()) {
-			final EReference ref = (EReference) eClass.getEStructuralFeature(entry.getKey());
-
-			final EList<Object> referenced = new BasicEList<>();
-			boolean hasLazy = false;
-			if (entry.getValue() instanceof Collection) {
-				for (Object o : (Collection<?>)entry.getValue()) {
-					final String id = o.toString();
-					final EObject existing = nodeIdToEObjectMap.get(id);
-					if (existing != null) {
-						referenced.add(existing);
-					} else {
-						referenced.add(id);
-						hasLazy = true;
-					}
-				}
-			} else {
-				final String id = entry.getValue().toString();
-				final EObject existing = nodeIdToEObjectMap.get(id);
-				if (existing != null) {
-					referenced.add(existing);
-				} else {
-					referenced.add(id);
-					hasLazy = true;
-				}
-			}
-			if (hasLazy) {
-				getLazyResolver().markLazyReferences(obj, ref, referenced);
-			} else if (ref.isMany()) {
-				obj.eSet(ref, referenced);
-			} else if (!referenced.isEmpty()) {
-				obj.eSet(ref, referenced.get(0));
-			}
-		}
-
-		return obj;
-	}
-
-	private EObject createInstance(final EClass eClass) {
-		final Registry packageRegistry = getResourceSet().getPackageRegistry();
-		final EFactory factory = packageRegistry.getEFactory(eClass.getEPackage().getNsURI());
-		final EObject obj = factory.create(eClass);
-		return createLazyLoadingInstance(eClass, obj.getClass());
-	}
-
-	private EObject createLazyLoadingInstance(final EClass eClass, final Class<?> klass) {
-		/*
-		 * We need to create a proxy to intercept eGet calls for lazy loading,
-		 * but we need to use a subclass of the *real* implementation, or we'll
-		 * have all kinds of issues with static metamodels (e.g. not using
-		 * DynamicEObjectImpl).
-		 */
-		if (factories == null) {
-			factories = new HashMap<>();
-		}
-
-		final net.sf.cglib.proxy.Factory factory = factories.get(klass);
-		EObject o;
-		if (factory == null) {
-			
-			final Enhancer enh = new Enhancer();
-			final CallbackHelper helper = new CallbackHelper(klass, new Class[0]) {
-				@Override
-				protected Object getCallback(final Method m) {
-					if ("eGet".equals(m.getName())
-							&& m.getParameterTypes().length > 0
-							&& EStructuralFeature.class.isAssignableFrom(m.getParameterTypes()[0])) {
-						return methodInterceptor;
-					} else {
-						return NoOp.INSTANCE;
-					}
-				}
-			};
-			enh.setSuperclass(klass);
-
-			/*
-			 * We need both classloaders: the classloader of the class to be
-			 * enhanced, and the classloader of this plugin (which includes
-			 * CGLIB). We want the CGLIB classes to always resolve to the same
-			 * Class objects, so this plugin's classloader *has* to go first.
-			 */
-			enh.setClassLoader(new BridgeClassLoader(
-				this.getClass().getClassLoader(),
-				klass.getClassLoader()));
-
-			/*
-			 * The objects created by the Enhancer implicitly implement the
-			 * CGLIB Factory interface as well. According to CGLIB, going
-			 * through the Factory is faster than recreating or reusing the
-			 * Enhancer.
-			 */
-			enh.setCallbackFilter(helper);
-			enh.setCallbacks(helper.getCallbacks());
-			o = (EObject)enh.create();
-			factories.put(klass, (net.sf.cglib.proxy.Factory)o);
-		} else {
-			o = (EObject) factory.newInstance(factory.getCallbacks());
-		}
-
-		/*
-		 * A newly created and instrumented DynamicEObjectImpl won't have the
-		 * eClass set. We need to redo that here.
-		 */
-		if (o instanceof DynamicEObjectImpl) {
-			((DynamicEObjectImpl)o).eSetClass(eClass);
-		}
-		return o;
-	}
-
-	private List<EObject> createEObjectTree(final Iterable<ModelElementNode> elems) {
-		final List<EObject> eObjects = new ArrayList<>();
-		for (final ModelElementNode me : elems) {
-			EObject eob = nodeIdToEObjectMap.get(me.getId());
-			if (eob == null) {
-				eob = createEObject(me);
-				nodeIdToEObjectMap.put(me.getId(), eob);
-				if (eob.eContainer() == null) {
-					getContents().add(eob);
-				}
-			}
-			eObjects.add(eob);
-		}
-		return eObjects;
-	}
-
-	private LazyResolver getLazyResolver() {
-		if (lazyResolver == null) {
-			lazyResolver = new LazyResolver(this);
-		}
-		return lazyResolver;
-	}
-
 	@Override
 	protected void doLoad(final InputStream inputStream, final Map<?, ?> options) throws IOException {
 		try (final BufferedReader bR = new BufferedReader(new InputStreamReader(inputStream))) {
@@ -537,12 +376,15 @@ public class LocalHawkResourceImpl extends ResourceImpl implements IGraphChangeL
 	@Override
 	protected void doUnload() {
 		super.doUnload();
-
+	
 		if (hawkModel != null) {
-			hawkModel.removeGraphChangeListener(this);
+			hawkModel.removeGraphChangeListener(changeListener);
 		}
+
 		nodeIdToEObjectMap.clear();
 		lazyResolver = null;
+		changeListener = null;
+		eobFactory = null;
 	}
 
 	@Override
@@ -550,110 +392,152 @@ public class LocalHawkResourceImpl extends ResourceImpl implements IGraphChangeL
 		throw new UnsupportedOperationException("Hawk views are read-only");
 	}
 
-	@Override
-	public String getName() {
-		return "Local Hawk resource " + uri;
+	protected List<EObject> createOrUpdateEObjects(final Iterable<ModelElementNode> elems) throws Exception {
+		synchronized (nodeIdToEObjectMap) {
+			final List<EObject> eObjects = new ArrayList<>();
+			for (final ModelElementNode me : elems) {
+				EObject eob = createOrUpdateEObject(me);
+				if (eob.eContainer() == null) {
+					getContents().add(eob);
+				}
+				eObjects.add(eob);
+			}
+			return eObjects;
+		}
 	}
 
-	@Override
-	public void setModelIndexer(IModelIndexer m) {
-		// ignore
+	/**
+	 * If we already have it loaded, returns the EObject created from the graph
+	 * node with the provided <code>id</code>. Otherwise, returns
+	 * <code>null</code>.
+	 */
+	protected EObject getNodeEObject(String id) {
+		return nodeIdToEObjectMap.get(id);
 	}
 
-	@Override
-	public void synchroniseStart() {
-		// TODO: reset reload on failed change flag
+	@SuppressWarnings("unchecked")
+	protected void removeNode(String id) {
+		synchronized (nodeIdToEObjectMap) {
+			final EObject eob = nodeIdToEObjectMap.remove(id);
+			if (eob == null) return;
+	
+			final EObject container = eob.eContainer();
+			if (container == null) {
+				getContents().remove(eob);
+			} else {
+				final EStructuralFeature containingFeature = eob.eContainingFeature();
+				if (containingFeature.isMany()) {
+					((Collection<EObject>) container.eGet(containingFeature)).remove(eob);
+				} else {
+					container.eUnset(containingFeature);
+				}
+			}
+		}
 	}
 
-	@Override
-	public void synchroniseEnd() {
-		// TODO: reload if some transaction failed since the sync started
+	protected IGraphTransaction beginGraphTransaction() throws Exception {
+		return hawkModel.getGraph().beginTransaction();
 	}
 
-	@Override
-	public void changeStart() {
-		// do nothing
+	private EObject createOrUpdateEObject(final ModelElementNode me) throws Exception {
+		final Registry registry = getResourceSet().getPackageRegistry();
+		final TypeNode typeNode = me.getTypeNode();
+		final String nsURI = typeNode.getMetamodelURI();
+		final EClass eClass = getEClass(nsURI, typeNode.getTypeName(), registry);
+
+		final EObject existing = nodeIdToEObjectMap.get(me.getId());
+		final EObject obj = existing != null ? existing : eobFactory.createInstance(eClass);
+		if (existing == null) {
+			nodeIdToEObjectMap.put(me.getId(), obj);
+		}
+
+		final Map<String, Object> attributeValues = new HashMap<>();
+		final Map<String, Object> referenceValues = new HashMap<>();
+		me.getSlotValues(attributeValues, referenceValues);
+
+		// Set or update attributes
+		final EFactory factory = registry.getEFactory(nsURI);
+		if (existing != null) {
+			// Unset attributes that do not have a value anymore
+			for (EAttribute attr : eClass.getEAllAttributes()) {
+				if (attr.isDerived() || !attr.isChangeable()) continue;
+
+				if (!attributeValues.containsKey(attr.getName())) {
+					if (existing.eIsSet(attr)) {
+						existing.eUnset(attr);
+					}
+				}
+			}
+		}
+		for (Map.Entry<String, Object> entry : attributeValues.entrySet()) {
+			final String attrName = entry.getKey();
+			final Object attrValue = entry.getValue();
+			AttributeUtils.setAttribute(factory, eClass, obj, attrName, attrValue); 
+		}
+
+		// Set or update references
+		if (existing != null) {
+			// Unset references that do not have a value anymore
+			for (EReference ref : eClass.getEAllReferences()) {
+				if (ref.isDerived() || !ref.isChangeable()) continue;
+
+				if (!referenceValues.containsKey(ref.getName())) {
+					if (lazyResolver.isPending(existing, ref)) {
+						lazyResolver.unmarkLazyReferences(existing, ref);
+					} else if (existing.eIsSet(ref)) {
+						existing.eUnset(ref);
+					}
+				}
+			}
+		}
+		for (Map.Entry<String, Object> entry : referenceValues.entrySet()) {
+			final EReference ref = (EReference) eClass.getEStructuralFeature(entry.getKey());
+
+			// If this reference was resolved before, it needs to stay resolved.
+			final boolean existingNonLazy = existing != null
+					&& !lazyResolver.isPending(existing, ref)
+					&& existing.eIsSet(ref);
+
+			final EList<Object> referenced = new BasicEList<>();
+			boolean hasLazy = false;
+			if (entry.getValue() instanceof Collection) {
+				for (Object o : (Collection<?>)entry.getValue()) {
+					final String id = o.toString();
+					hasLazy = addToReferenced(id, referenced, existingNonLazy) || hasLazy;
+				}
+			} else {
+				final String id = entry.getValue().toString();
+				hasLazy = addToReferenced(id, referenced, existingNonLazy) || hasLazy;
+			}
+
+			if (hasLazy) {
+				lazyResolver.markLazyReferences(obj, ref, referenced);
+			} else if (ref.isMany()) {
+				obj.eSet(ref, referenced);
+			} else if (!referenced.isEmpty()) {
+				obj.eSet(ref, referenced.get(0));
+			}
+		}
+
+		return obj;
 	}
 
-	@Override
-	public void changeSuccess() {
-		// do nothing
-	}
+	private boolean addToReferenced(final String id, final EList<Object> referenced, final boolean resolveMissing) throws Exception {
+		EObject refExisting = nodeIdToEObjectMap.get(id);
+		if (refExisting == null && resolveMissing) {
+			EList<EObject> refExistingResolved = fetchNodes(Arrays.asList(id));
+			if (!refExistingResolved.isEmpty()) {
+				refExisting = refExistingResolved.get(0);
+			}
+		}
 
-	@Override
-	public void changeFailure() {
-		// TODO: oops, transaction failed - reload after sync ends
-		
-	}
-
-	@Override
-	public void metamodelAddition(IHawkPackage pkg, IGraphNode pkgNode) {
-		// do nothing
-	}
-
-	@Override
-	public void classAddition(IHawkClass cls, IGraphNode clsNode) {
-		// do nothing
-	}
-
-	@Override
-	public void fileAddition(VcsCommitItem s, IGraphNode fileNode) {
-		// do nothing
-	}
-
-	@Override
-	public void fileRemoval(VcsCommitItem s, IGraphNode fileNode) {
-		// do nothing
-	}
-
-	@Override
-	public void modelElementAddition(VcsCommitItem s, IHawkObject element, IGraphNode elementNode, boolean isTransient) {
-		if (isTransient) return;
-
-		// TODO Create and add to contents
-		
-	}
-
-	@Override
-	public void modelElementRemoval(VcsCommitItem s, IGraphNode elementNode, boolean isTransient) {
-		if (isTransient) return;
-
-		// TODO Delete and remove from contents
-		
-	}
-
-	@Override
-	public void modelElementAttributeUpdate(VcsCommitItem s, IHawkObject eObject, String attrName, Object oldValue,	Object newValue, IGraphNode elementNode, boolean isTransient) {
-		if (isTransient) return;
-		
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void modelElementAttributeRemoval(VcsCommitItem s, IHawkObject eObject, String attrName, IGraphNode elementNode, boolean isTransient) {
-		if (isTransient) return;
-
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void referenceAddition(VcsCommitItem s, IGraphNode source, IGraphNode destination, String edgelabel,
-			boolean isTransient) {
-		if (isTransient) return;
-
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void referenceRemoval(VcsCommitItem s, IGraphNode source, IGraphNode destination, String edgelabel,
-			boolean isTransient) {
-		if (isTransient) return;
-
-		// TODO Auto-generated method stub
-		
+		if (refExisting != null) {
+			referenced.add(refExisting);
+			return false;
+		} else {
+			referenced.add(id);
+			return true;
+		}
 	}
 
 }
