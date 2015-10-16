@@ -60,6 +60,7 @@ final class LocalHawkResourceUpdater implements IGraphChangeListener {
 		for (IGraphNode removedNode : removedNodes) {
 			resource.removeNode(removedNode.getId().toString());
 		}
+		updatedNodes.removeAll(removedNodes);
 
 		final List<ModelElementNode> elems = new ArrayList<>();
 		for (IGraphNode updatedNode : updatedNodes) {
@@ -71,6 +72,8 @@ final class LocalHawkResourceUpdater implements IGraphChangeListener {
 			tx.success();
 		} catch (Exception e) {
 			Activator.logError("Error while updating resource", e);
+			removedNodes.clear();
+			updatedNodes.clear();
 		}
 	}
 
