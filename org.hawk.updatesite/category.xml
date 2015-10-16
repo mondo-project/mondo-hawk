@@ -36,6 +36,9 @@
    <feature url="features/org.hawk.emfresource.feature_1.0.0.qualifier.jar" id="org.hawk.emfresource.feature" version="1.0.0.qualifier">
       <category name="hawk.clients"/>
    </feature>
+   <feature url="features/org.hawk.workspace.feature_1.0.0.qualifier.jar" id="org.hawk.workspace.feature" version="1.0.0.qualifier">
+      <category name="hawk.connectors"/>
+   </feature>
    <category-def name="hawk.core" label="Hawk Core"/>
    <category-def name="hawk.connectors" label="Hawk Connectors"/>
    <category-def name="hawk.backends" label="Hawk Backends"/>
