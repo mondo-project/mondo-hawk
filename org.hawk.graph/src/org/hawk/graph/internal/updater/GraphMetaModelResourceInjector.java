@@ -455,7 +455,7 @@ public class GraphMetaModelResourceInjector {
 
 			String uri = null;
 
-			if (e.isProxy())
+			if (e.isInDifferentResourceThan(eClass))
 				uri = e.getUri()
 						// ((InternalEObject) e)
 						// .eProxyURI()
@@ -504,11 +504,8 @@ public class GraphMetaModelResourceInjector {
 
 		// System.err.println(eClass.getName()+":");
 		for (IHawkAttribute e : eClass.getAllAttributes()) {
-
 			String uri = null;
-
-			if (e.isProxy())
-
+			if (e.isInDifferentResourceThan(eClass)) {
 				uri = e.getUri()
 						// ((InternalEObject) e)
 						// .eProxyURI()
@@ -516,15 +513,14 @@ public class GraphMetaModelResourceInjector {
 						.substring(0,
 								// ((InternalEObject) e).eProxyURI().toString()
 								e.getUri().indexOf("#"));
-
-			else
-
+			} else {
 				try {
 					uri = e.getType().getPackageNSURI();
 				} catch (Exception ex) {
 					// attribute does not have a type - derived - other errors
 					uri = eClass.getPackageNSURI();
 				}
+			}
 
 			if (epackagedictionary.get("id", uri).iterator().hasNext() == false) {
 				System.err.println("EAttribute " + e.getName() + " has type "
@@ -591,19 +587,11 @@ public class GraphMetaModelResourceInjector {
 
 			String uri = null;
 
-			if (r.isProxy())
-				uri = r.getUriFragment()
-						// ((InternalEObject) r)
-						// .eProxyURI()
-						// .toString()
-						.substring(0,
-								r.getUriFragment()
-										// ((InternalEObject)
-										// r).eProxyURI().toString()
-										.indexOf("#"));
-
-			else
+			if (r.isInDifferentResourceThan(eClass)) {
+				uri = r.getUri().substring(0, r.getUri().indexOf("#"));
+			} else {
 				uri = r.getType().getPackageNSURI();
+			}
 
 			if (epackagedictionary.get("id", uri).iterator().hasNext() == false) {
 				System.err.println("EReference " + r.getName() + " has type "

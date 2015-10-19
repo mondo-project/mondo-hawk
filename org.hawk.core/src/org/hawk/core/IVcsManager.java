@@ -13,62 +13,56 @@ package org.hawk.core;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 public interface IVcsManager {
 
-	public String getCurrentRevision(VcsRepository repository) throws Exception;
+	String getCurrentRevision() throws Exception;
 
-	public String getFirstRevision(VcsRepository repository) throws Exception;
+	String getFirstRevision() throws Exception;
 
-	public VcsRepositoryDelta getDelta(VcsRepository repository,
-			String startRevision) throws Exception;
+	List<VcsCommitItem> getDelta(String startRevision) throws Exception;
 
-	public VcsRepositoryDelta getDelta(VcsRepository repository,
-			String startRevision, String endRevision) throws Exception;
+	VcsRepositoryDelta getDelta(String startRevision, String endRevision) throws Exception;
 
 	// kostas
-	public abstract void importFiles(String path, File temp);
+	void importFiles(String path, File temp);
 
 	// kostas
-	public abstract boolean isActive();
+	boolean isActive();
 
 	// kostas
 	void run(String vcsloc, String un, String pw, IAbstractConsole c, IModelIndexer indexer)
 			throws Exception;
 
 	// kostas
-	public void shutdown();
+	void shutdown();
 
 	// kostas
-	public abstract String getLocation();
+	String getLocation();
 
 	// kostas
-	public String getUsername();
+	String getUsername();
+
 	// kostas
-	public String getPassword();
+	String getPassword();
 
 	/**
 	 * Changes the username and password in one go. Both must be passed at the
 	 * same time to be able to support remote instances.
 	 */
-	public void setCredentials(String username, String password);
+	void setCredentials(String username, String password);
 
 	// kostas
-	public abstract String getType();
+	String getType();
 
 	// kostas
-	public abstract String getHumanReadableName();
-
-	// kostas
-	public String getCurrentRevision() throws Exception;
-
-	// kostas
-	public List<VcsCommitItem> getDelta(String string) throws Exception;
+	String getHumanReadableName();
 
 	/**
 	 * Returns <code>true</code> if the implementation supports authentication.
 	 */
-	public boolean isAuthSupported();
+	boolean isAuthSupported();
 
 	/**
 	 * Returns <code>true</code> if the implementation accepts filesystem paths
@@ -76,7 +70,7 @@ public interface IVcsManager {
 	 * <code>true</code> for this and {@link #isURLLocationAccepted()} at the
 	 * same time.
 	 */
-	public boolean isPathLocationAccepted();
+	boolean isPathLocationAccepted();
 
 	/**
 	 * Returns <code>true</code> if the implementation accepts URL-based paths
@@ -84,5 +78,12 @@ public interface IVcsManager {
 	 * <code>true</code> for this and {@link #isPathLocationAccepted()} at the
 	 * same time.
 	 */
-	public boolean isURLLocationAccepted();
+	boolean isURLLocationAccepted();
+
+	/**
+	 * Returns a set of prefixes that should be stripped from any inter-resource
+	 * references in the files contained within that repository in order to turn
+	 * them into relative paths within the repository.
+	 */
+	Set<String> getPrefixesToBeStripped();
 }

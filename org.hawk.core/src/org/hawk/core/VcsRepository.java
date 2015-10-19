@@ -14,13 +14,18 @@ package org.hawk.core;
 public abstract class VcsRepository {
 
 	private final String url;
+	private final IVcsManager manager;
 
-	public VcsRepository(String url) {
+	public VcsRepository(String url, IVcsManager manager) {
 		this.url = url;
+		this.manager = manager;
 	}
 
 	public String getUrl() {
 		return url;
 	}
 
+	public IVcsManager getManager() {
+		return manager;
+	}
 }

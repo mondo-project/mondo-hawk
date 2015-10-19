@@ -19,16 +19,16 @@ import java.util.List;
 public class VcsRepositoryDelta implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	transient protected VcsRepository repository;
+	protected IVcsManager vcsManager;
 	protected List<VcsCommit> commits = new ArrayList<VcsCommit>();
 	protected String latestRevision;
 
-	public VcsRepository getRepository() {
-		return repository;
+	public IVcsManager getManager() {
+		return vcsManager;
 	}
 
-	public void setRepository(VcsRepository repository) {
-		this.repository = repository;
+	public void setManager(IVcsManager manager) {
+		this.vcsManager = manager;
 	}
 
 	public List<VcsCommit> getCommits() {
@@ -90,9 +90,7 @@ public class VcsRepositoryDelta implements Serializable {
 	}
 
 	public String toString() {
-
-		return "delta on repo: " + repository.getUrl() + "\n"
-				+ commits.toString();
+		return "delta on repo: " + vcsManager.getLocation() + "\n" + commits.toString();
 
 	}
 

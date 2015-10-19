@@ -25,6 +25,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.hawk.core.IModelIndexer;
+import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphChange;
 import org.hawk.core.graph.IGraphChangeListener;
@@ -53,7 +54,7 @@ public class GraphModelBatchInjector {
 	private int unset;
 
 	private String repoURL;
-	private String tempFolderURI;
+	private Set<String> prefixesToStrip = new HashSet<>();
 
 	private static enum ParseOptions {
 		MODELELEMENTS, MODELREFERENCES
@@ -77,7 +78,12 @@ public class GraphModelBatchInjector {
 		this.graph = g;
 		this.commitItem = s;
 		this.listener = listener;
-		this.tempFolderURI = new File(g.getTempDir()).toURI().toString();
+
+		if (s != null) {
+			final IVcsManager vcsManager = s.getCommit().getDelta().getManager();
+			prefixesToStrip.addAll(vcsManager.getPrefixesToBeStripped());
+		}
+		prefixesToStrip.add(new File(g.getTempDir()).toURI().toString());
 	}
 
 	public GraphModelBatchInjector(IGraphDatabase g, VcsCommitItem s,
@@ -86,7 +92,10 @@ public class GraphModelBatchInjector {
 		this.graph = g;
 		this.commitItem = s;
 		this.listener = listener;
-		this.tempFolderURI = new File(g.getTempDir()).toURI().toString();
+
+		final IVcsManager vcsManager = s.getCommit().getDelta().getManager();
+		prefixesToStrip.addAll(vcsManager.getPrefixesToBeStripped());
+		prefixesToStrip.add(new File(g.getTempDir()).toURI().toString());
 
 		startTime = System.nanoTime();
 		graph.enterBatchMode();
@@ -101,7 +110,7 @@ public class GraphModelBatchInjector {
 
 			boolean isNew = false;
 
-			repoURL = s.getCommit().getDelta().getRepository().getUrl();
+			repoURL = s.getCommit().getDelta().getManager().getLocation();
 			IGraphNode fileNode = null;
 			long filerevision = 0L;
 			try {
@@ -234,9 +243,6 @@ public class GraphModelBatchInjector {
 		long init = System.nanoTime();
 
 		for (IHawkObject child : children) {
-			if (child.isProxy())
-				continue;
-
 			boolean ref = true;
 			boolean clas = true;
 
@@ -843,7 +849,7 @@ public class GraphModelBatchInjector {
 	 * Iterates through all of the references the eObject has and inserts them
 	 * into the graph -- not using hash -- for transactional update
 	 * 
-	 * @param object
+	 * @param source
 	 * @param addedNodesHash
 	 * 
 	 * @param eObject
@@ -851,33 +857,34 @@ public class GraphModelBatchInjector {
 	 * @throws Exception
 	 */
 	protected Set<IGraphChange> addEReferences(IGraphNode fileNode,
-			IGraphNode node, IHawkObject object,
+			IGraphNode node, IHawkObject source,
 			Map<String, IGraphNode> addedNodesHash,
 			Map<String, IGraphNode> nodes) throws Exception {
 
 		Set<IGraphChange> ret = new HashSet<>();
 		try {
-			for (final IHawkReference eReference : ((IHawkClass) object
+			for (final IHawkReference eReference : ((IHawkClass) source
 					.getType()).getAllReferences()) {
 
-				if (object.isSet(eReference)) {
+				if (source.isSet(eReference)) {
 
 					String edgelabel = eReference.getName();
 
-					Object destinationObject = object.get(eReference, false);
+					Object destinationObject = source.get(eReference, false);
 
 					if (destinationObject instanceof Iterable<?>) {
 
 						for (Object destinationEObject : ((Iterable<?>) destinationObject)) {
 
-							if (!((IHawkObject) destinationEObject).isProxy()) {
+							final IHawkObject destinationHawkObject = (IHawkObject) destinationEObject;
+							if (!destinationHawkObject.isInDifferentResourceThan(source)) {
 								IGraphNode dest = null;
 								dest = addedNodesHash
-										.get(((IHawkObject) destinationEObject)
+										.get(destinationHawkObject
 												.getUriFragment());
 								if (dest == null)
 									dest = nodes
-											.get(((IHawkObject) destinationEObject)
+											.get(destinationHawkObject
 													.getUriFragment());
 
 								Map<String, Object> props = new HashMap<String, Object>();
@@ -895,12 +902,12 @@ public class GraphModelBatchInjector {
 										.println("adding proxy [iterable] reference ("
 												+ edgelabel
 												+ " | "
-												+ ((IHawkObject) destinationEObject)
+												+ destinationHawkObject
 														.getUri()
 												+ ")... "
 												+ (addProxyRef(
 														node,
-														((IHawkObject) destinationEObject),
+														destinationHawkObject,
 														edgelabel) ? "done"
 														: "failed"));
 							}
@@ -908,13 +915,14 @@ public class GraphModelBatchInjector {
 
 					} else {
 
-						if (!((IHawkObject) destinationObject).isProxy()) {
+						final IHawkObject destinationHawkObject = (IHawkObject) destinationObject;
+						if (!destinationHawkObject.isInDifferentResourceThan(source)) {
 							IGraphNode dest = addedNodesHash
-									.get(((IHawkObject) destinationObject)
+									.get(destinationHawkObject
 											.getUriFragment());
 							if (dest == null)
 								dest = nodes
-										.get(((IHawkObject) destinationObject)
+										.get(destinationHawkObject
 												.getUriFragment());
 
 							Map<String, Object> props = new HashMap<String, Object>();
@@ -934,7 +942,7 @@ public class GraphModelBatchInjector {
 							// ")... "
 							// + (
 							addProxyRef(node,
-									((IHawkObject) destinationObject),
+									destinationHawkObject,
 									edgelabel)
 							// ? "done" : "failed"))
 							;
@@ -960,26 +968,26 @@ public class GraphModelBatchInjector {
 	 * 
 	 * @param originatingFile
 	 * 
-	 * @param eObject
+	 * @param source
 	 * @throws Exception
 	 */
-	private boolean addEReferences(IHawkObject eObject) throws Exception {
+	private boolean addEReferences(IHawkObject source) throws Exception {
 
 		boolean atLeastOneSetReference = false;
 
-		for (final IHawkReference eReference : ((IHawkClass) eObject.getType())
+		for (final IHawkReference eReference : ((IHawkClass) source.getType())
 				.getAllReferences()) {
-			if (eObject.isSet(eReference)) {
+			if (source.isSet(eReference)) {
 				atLeastOneSetReference = true;
 
 				final String edgelabel = eReference.getName();
-				final Object destinationObject = eObject.get(eReference, false);
+				final Object destinationObject = source.get(eReference, false);
 
 				if (destinationObject instanceof Iterable<?>) {
 					for (Object destinationEObject : ((Iterable<?>) destinationObject)) {
 						final IHawkObject destinationHawkObject = (IHawkObject) destinationEObject;
-						if (!destinationHawkObject.isProxy()) {
-							addEdge(eObject, destinationHawkObject, edgelabel,
+						if (!destinationHawkObject.isInDifferentResourceThan(source)) {
+							addEdge(source, destinationHawkObject, edgelabel,
 									eReference.isContainment(),
 									eReference.isContainer());
 						} else {
@@ -990,7 +998,7 @@ public class GraphModelBatchInjector {
 											+ ((IHawkObject) destinationHawkObject)
 													.getUri()
 											+ ")... "
-											+ (addProxyRef(eObject,
+											+ (addProxyRef(source,
 													destinationHawkObject,
 													edgelabel) ? "done"
 													: "failed"));
@@ -998,8 +1006,8 @@ public class GraphModelBatchInjector {
 					}
 				} else /* if destination is not iterable */{
 					final IHawkObject destinationHawkObject = (IHawkObject) destinationObject;
-					if (!destinationHawkObject.isProxy()) {
-						addEdge(eObject, destinationHawkObject, edgelabel,
+					if (!destinationHawkObject.isInDifferentResourceThan(source)) {
+						addEdge(source, destinationHawkObject, edgelabel,
 								eReference.isContainment(),
 								eReference.isContainer());
 					} else {
@@ -1008,7 +1016,7 @@ public class GraphModelBatchInjector {
 						// + ((IHawkObject) destinationHawkObject)
 						// .getUri() + ")... "
 						// + (
-						addProxyRef(eObject, destinationHawkObject, edgelabel)
+						addProxyRef(source, destinationHawkObject, edgelabel)
 						// ? "done" : "failed"))
 						;
 					}
@@ -1045,9 +1053,10 @@ public class GraphModelBatchInjector {
 			;
 
 			if (!destinationObject.URIIsRelative()) {
+				
 
 				destinationObjectRelativePathURI = new DeletionUtils(graph)
-						.makeRelative(tempFolderURI,
+						.makeRelative(prefixesToStrip,
 								destinationObjectRelativePathURI);
 
 			}

@@ -36,12 +36,6 @@ public class IFCObject implements IHawkObject {
 
 	public EObject getEObject() {
 		return eob;
-
-	}
-
-	@Override
-	public boolean isProxy() {
-		return eob.eIsProxy();
 	}
 
 	@Override
@@ -122,7 +116,7 @@ public class IFCObject implements IHawkObject {
 
 		if (signature == null) {
 
-			if (isProxy()) {
+			if (eob.eIsProxy()) {
 
 				System.err
 						.println("signature called on proxy object returning null");
@@ -228,6 +222,15 @@ public class IFCObject implements IHawkObject {
 
 		return EcoreUtil.getURI(eob).isRelative();
 
+	}
+
+	@Override
+	public boolean isInDifferentResourceThan(IHawkObject o) {
+		if (o instanceof IFCObject) {
+			final IFCObject otherR = (IFCObject)o;
+			return eob.eIsProxy() || otherR.eob.eResource() != eob.eResource();
+		}
+		return false;
 	}
 
 }

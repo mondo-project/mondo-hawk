@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,7 +35,6 @@ import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommit;
 import org.hawk.core.VcsCommitItem;
-import org.hawk.core.VcsRepository;
 import org.hawk.core.VcsRepositoryDelta;
 import org.hawk.core.util.FileOperations;
 
@@ -89,10 +89,10 @@ public class LocalFolder implements IVcsManager {
 	private IAbstractConsole console;
 	private Path rootLocation;
 	private Set<File> previousFiles = new HashSet<>();
-	private LocalFolderRepository repository;
 
 	private long currentRevision = 0;
 	private Map<Path, String> recordedModifiedDates = new HashMap<>();
+	private String repositoryURL;
 
 	public LocalFolder() {
 
@@ -116,12 +116,7 @@ public class LocalFolder implements IVcsManager {
 		if (!repositoryURI.endsWith("/")) {
 			repositoryURI += "/";
 		}
-		repository = new LocalFolderRepository(URLDecoder.decode(repositoryURI.replace("+", "%2B"), "UTF-8"));
-	}
-
-	@Override
-	public String getCurrentRevision(VcsRepository r) {
-		return getCurrentRevision();
+		repositoryURL = URLDecoder.decode(repositoryURI.replace("+", "%2B"), "UTF-8");
 	}
 
 	private String getCurrentRevision(boolean alter) {
@@ -177,7 +172,7 @@ public class LocalFolder implements IVcsManager {
 
 	@Override
 	public String getLocation() {
-		return repository.getUrl();
+		return repositoryURL;
 	}
 
 	@Override
@@ -206,21 +201,16 @@ public class LocalFolder implements IVcsManager {
 	}
 
 	@Override
-	public String getFirstRevision(VcsRepository repository) throws Exception {
+	public String getFirstRevision() throws Exception {
 		return "0";
 	}
 
 	@Override
-	public VcsRepositoryDelta getDelta(VcsRepository repository, String startRevision) throws Exception {
-		return getDelta(repository, startRevision, getCurrentRevision(false));
-	}
-
-	@Override
-	public VcsRepositoryDelta getDelta(VcsRepository repository, String startRevision, String endRevision)
+	public VcsRepositoryDelta getDelta(String startRevision, String endRevision)
 			throws Exception {
 
 		VcsRepositoryDelta delta = new VcsRepositoryDelta();
-		delta.setRepository(repository);
+		delta.setManager(this);
 
 		Set<File> files = new HashSet<>();
 		addAllFiles(rootLocation.toFile(), files);
@@ -242,7 +232,7 @@ public class LocalFolder implements IVcsManager {
 
 			Path path = f.toPath();
 
-			c.setPath(makeRelative(repository.getUrl(),
+			c.setPath(makeRelative(repositoryURL,
 					URLDecoder.decode(path.toUri().toString().replace("+", "%2B"), "UTF-8")));
 
 			// c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
@@ -278,7 +268,7 @@ public class LocalFolder implements IVcsManager {
 				c.setChangeType(VcsChangeType.UPDATED);
 				c.setCommit(commit);
 
-				c.setPath(makeRelative(repository.getUrl(),
+				c.setPath(makeRelative(repositoryURL,
 						URLDecoder.decode(f.toPath().toUri().toString().replace("+", "%2B"), "UTF-8")));
 
 				// c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
@@ -323,7 +313,7 @@ public class LocalFolder implements IVcsManager {
 
 	@Override
 	public List<VcsCommitItem> getDelta(String string) throws Exception {
-		return getDelta(repository, string).getCompactedCommitItems();
+		return getDelta(repositoryURL, string).getCompactedCommitItems();
 	}
 
 	@Override
@@ -345,4 +335,8 @@ public class LocalFolder implements IVcsManager {
 		return f.lastModified() + "-" + f.length();
 	}
 
+	@Override
+	public Set<String> getPrefixesToBeStripped() {
+		return Collections.emptySet();
+	}
 }

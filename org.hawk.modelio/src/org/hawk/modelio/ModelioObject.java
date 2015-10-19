@@ -39,11 +39,6 @@ public class ModelioObject implements IHawkObject {
 	}
 
 	@Override
-	public boolean isProxy() {
-		return eob.eIsProxy();
-	}
-
-	@Override
 	public String getUri() {
 		String uri = EcoreUtil.getURI(eob)
 				.toString();
@@ -124,7 +119,7 @@ public class ModelioObject implements IHawkObject {
 
 		if (signature == null) {
 
-			if (isProxy()) {
+			if (eob.eIsProxy()) {
 
 				System.err
 						.println("signature called on proxy object returning null");
@@ -231,5 +226,14 @@ public class ModelioObject implements IHawkObject {
 		return EcoreUtil.getURI(eob).isRelative();
 
 	}
-	
+
+	@Override
+	public boolean isInDifferentResourceThan(IHawkObject o) {
+		if (o instanceof ModelioObject) {
+			final ModelioObject otherR = (ModelioObject)o;
+			return eob.eIsProxy() || otherR.eob.eResource() != eob.eResource();
+		}
+		return false;
+	}
+
 }

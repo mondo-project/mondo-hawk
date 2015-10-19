@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +28,10 @@ import javax.swing.JOptionPane;
 
 import org.hawk.core.IAbstractConsole;
 import org.hawk.core.IModelIndexer;
+import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommit;
 import org.hawk.core.VcsCommitItem;
-import org.hawk.core.VcsRepository;
 import org.hawk.core.VcsRepositoryDelta;
 import org.hawk.core.util.DefaultConsole;
 import org.tmatesoft.svn.core.SVNLogEntry;
@@ -39,12 +40,17 @@ import org.tmatesoft.svn.core.SVNProperties;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 
-public class SvnManager extends AbstractVcsManager {
+public class SvnManager implements IVcsManager {
 
-	private SvnRepository r;
 	private IAbstractConsole console;
 
 	private boolean isActive = false;
+
+	private String repositoryURL;
+
+	private String username;
+
+	private String password;
 
 	/*
 	 * TODO we can't blacklist .zip as we need support for
@@ -55,24 +61,15 @@ public class SvnManager extends AbstractVcsManager {
 	private static final Set<String> EXTENSION_BLACKLIST
 		= new HashSet<>(Arrays.asList(".png", ".jpg", ".bmp", ".jar", ".gz", ".tar"));
 
-	private static String password() {
-		final JFrame parent = new JFrame();
-		parent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		String s = JOptionPane.showInputDialog(parent, "pw plz", "hi there");
-		parent.dispose();
-		return s;
-	}
-
 	public SvnManager() {
-	}
-
-	private VcsRepository getRepository() {
-		return r;
 	}
 
 	public static void main(String[] _a) throws Exception {
 		System.err.println("testing");
-		String pass = password();
+		final JFrame parent = new JFrame();
+		parent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		String pass = JOptionPane.showInputDialog(parent, "pw plz", "hi there");
+		parent.dispose();
 		System.err.println("testing2");
 		SvnManager m = new SvnManager();
 		System.err.println("testing3");
@@ -87,7 +84,7 @@ public class SvnManager extends AbstractVcsManager {
 		try {
 			console = new DefaultConsole();
 			System.err.println("------------");
-			System.err.println(getDelta(getRepository(), "0"));
+			System.err.println(getDelta("0"));
 			shutdown();
 			System.err.println("------------");
 		} catch (Exception e) {
@@ -101,13 +98,12 @@ public class SvnManager extends AbstractVcsManager {
 		try {
 			console = c;
 
-			r = new SvnRepository(vcsloc);
-			r.setUsername(un);
-			r.setPassword(pw);
-			pw = null;
+			this.repositoryURL = vcsloc;
+			this.username = un;
+			this.password = pw;
 
 			SvnManager m = new SvnManager();
-			m.getFirstRevision(r);
+			m.getFirstRevision();
 
 			isActive = true;
 		} catch (Exception e) {
@@ -117,26 +113,22 @@ public class SvnManager extends AbstractVcsManager {
 
 	}
 
-	protected static SVNRepository getSVNRepository(SvnRepository repository) {
+	protected static SVNRepository getSVNRepository(String url, String username, String password) {
 		SvnUtil.setupLibrary();
-		SVNRepository svnRepository = SvnUtil.connectToSVNInstance(
-				repository.getUrl(), repository.getUsername(),
-				repository.getPassword());
+		SVNRepository svnRepository = SvnUtil.connectToSVNInstance(url, username, password);
 		return svnRepository;
 	}
 
 	@Override
-	public VcsRepositoryDelta getDelta(VcsRepository repository,
+	public VcsRepositoryDelta getDelta(
 			String startRevision, String endRevision) throws Exception {
-		SvnRepository _svnRepository = (SvnRepository) repository;
-		SVNRepository svnRepository = getSVNRepository(_svnRepository);
+		SVNRepository svnRepository = getSVNRepository(repositoryURL, username, password);
 
 		VcsRepositoryDelta delta = new VcsRepositoryDelta();
-		delta.setRepository(repository);
+		delta.setManager(this);
 
-		final String userProviderURL = _svnRepository.getUrl();
 		final String rootURL = svnRepository.getRepositoryRoot(false).toDecodedString();
-		final String overLappedURL = makeRelative(rootURL, userProviderURL);
+		final String overLappedURL = makeRelative(rootURL, repositoryURL);
 
 		if (!startRevision.equals(endRevision)) {
 			Collection<?> c = svnRepository.log(new String[] { "" }, null,
@@ -202,18 +194,18 @@ public class SvnManager extends AbstractVcsManager {
 	}
 
 	@Override
-	public String getCurrentRevision(VcsRepository repository) throws Exception {
-		return getSVNRepository((SvnRepository) repository).getLatestRevision()	+ "";
+	public String getCurrentRevision() throws Exception {
+		return getSVNRepository(repositoryURL, username, password).getLatestRevision()	+ "";
 	}
 
 	/**
 	 * Cache the log?
 	 */
 	@Override
-	public String getFirstRevision(VcsRepository repository) throws Exception {
-		SVNRepository svnRepository = getSVNRepository((SvnRepository) repository);
+	public String getFirstRevision() throws Exception {
+		SVNRepository svnRepository = getSVNRepository(repositoryURL, username, password);
 		Collection<?> c = svnRepository.log(new String[] { "" }, null, 0,
-				Long.valueOf(getCurrentRevision(repository)), true, true);
+				Long.valueOf(getCurrentRevision()), true, true);
 
 		for (Object o : c) {
 			return String.valueOf(((SVNLogEntry) o).getRevision());
@@ -236,7 +228,7 @@ public class SvnManager extends AbstractVcsManager {
 
 	@Override
 	public void importFiles(String path, File temp) {
-		SVNRepository svnRepository = getSVNRepository((SvnRepository) r);
+		SVNRepository svnRepository = getSVNRepository(repositoryURL, username, password);
 
 		try {
 			OutputStream o = new FileOutputStream(temp);
@@ -259,29 +251,29 @@ public class SvnManager extends AbstractVcsManager {
 
 	@Override
 	public void shutdown() {
-		r = null;
+		repositoryURL = null;
 		console = null;
 	}
 
 	@Override
 	public String getLocation() {
-		return r.getUrl();
+		return repositoryURL;
 	}
 
 	@Override
 	public String getUsername() {
-		return r.getUsername();
+		return username;
 	}
 
 	@Override
 	public String getPassword() {
-		return r.getPassword();
+		return password;
 	}
 
 	@Override
 	public void setCredentials(String username, String password) {
-		r.setUsername(username);
-		r.setPassword(password);
+		this.username = username;
+		this.password = password;
 	}
 
 	@Override
@@ -295,16 +287,11 @@ public class SvnManager extends AbstractVcsManager {
 	}
 
 	@Override
-	public String getCurrentRevision() throws Exception {
-		return getCurrentRevision(r);
-	}
-
-	@Override
-	public List<VcsCommitItem> getDelta(String string) throws Exception {
-		if (Integer.parseInt(string) < 0)
-			return getDelta(r, getFirstRevision(r)).getCompactedCommitItems();
+	public List<VcsCommitItem> getDelta(String startRevision) throws Exception {
+		if (Integer.parseInt(startRevision) < 0)
+			return getDelta(getFirstRevision(), getCurrentRevision()).getCompactedCommitItems();
 		else
-			return getDelta(r, string).getCompactedCommitItems();
+			return getDelta(startRevision, getCurrentRevision()).getCompactedCommitItems();
 	}
 
 	@Override
@@ -321,4 +308,10 @@ public class SvnManager extends AbstractVcsManager {
 	public boolean isURLLocationAccepted() {
 		return true;
 	}
+
+	@Override
+	public Set<String> getPrefixesToBeStripped() {
+		return Collections.emptySet();
+	}
+
 }

@@ -51,12 +51,8 @@ public class BPMNModelResource implements IHawkModelResource {
 	// }
 
 	public BPMNModelResource(Resource r, IModelResourceFactory p) {
-
-		// System.err.println(r);
-
 		parser = p;
 		res = r;
-
 	}
 
 	@Override
@@ -78,21 +74,17 @@ public class BPMNModelResource implements IHawkModelResource {
 			while (it.hasNext()) {
 				EObject next = it.next();
 				if (!next.eIsProxy()) {
-					// ensure the element is from the same resource -- even if
-					// emf sais its not a proxy!
-					String resourceURIString = res.getURI().toString();
-					String elementURIString = EcoreUtil.getURI(next).toString();
-					String elementResourceURIString = elementURIString
-							.indexOf("#") == -1 ? elementURIString
-							: elementURIString.substring(0,
-									elementURIString.lastIndexOf("#"));
-
-					if (elementResourceURIString.equals(resourceURIString))
+					// Ensure the element is from the same resource -- even if
+					// EMF says its not a proxy!
+					if (next.eResource() == res) {
+						// same resource - add the object
 						allContents.add(new BPMNObject(next));
+					} else {
+						// this is from a different resource - don't go into its children
+						it.prune();
+					}
 				} else {
 					// ignore it as it will resolve later - FIXED!
-					// System.err
-					// .println("PROXY FOUND (emfmodelresource - getAllContents) !!!");
 				}
 			}
 		}
@@ -110,4 +102,7 @@ public class BPMNModelResource implements IHawkModelResource {
 		return o.signature();
 	}
 
+	public Resource getResource() {
+		return res;
+	}
 }

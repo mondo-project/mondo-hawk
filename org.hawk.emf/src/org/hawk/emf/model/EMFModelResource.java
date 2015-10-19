@@ -25,9 +25,9 @@ import org.hawk.emf.EMFObject;
 
 public class EMFModelResource implements IHawkModelResource {
 
-	Resource res;
+	private Resource res;
 	private IModelResourceFactory parser;
-	Set<IHawkObject> allContents = null;
+	private Set<IHawkObject> allContents = null;
 
 	@Override
 	public void unload() {
@@ -61,9 +61,7 @@ public class EMFModelResource implements IHawkModelResource {
 
 	@Override
 	public Iterator<IHawkObject> getAllContents() {
-
 		return getAllContentsSet().iterator();
-
 	}
 
 	@Override
@@ -78,21 +76,17 @@ public class EMFModelResource implements IHawkModelResource {
 			while (it.hasNext()) {
 				EObject next = it.next();
 				if (!next.eIsProxy()) {
-					// ensure the element is from the same resource -- even if
-					// emf sais its not a proxy!
-					String resourceURIString = res.getURI().toString();
-					String elementURIString = EcoreUtil.getURI(next).toString();
-					String elementResourceURIString = elementURIString
-							.indexOf("#") == -1 ? elementURIString
-							: elementURIString.substring(0,
-									elementURIString.lastIndexOf("#"));
-
-					if (elementResourceURIString.equals(resourceURIString))
+					// Ensure the element is from the same resource -- even if
+					// EMF says its not a proxy!
+					if (next.eResource() == res) {
+						// same resource - add the object
 						allContents.add(new EMFObject(next));
+					} else {
+						// this is from a different resource - don't go into its children
+						it.prune();
+					}
 				} else {
 					// ignore it as it will resolve later - FIXED!
-					// System.err
-					// .println("PROXY FOUND (emfmodelresource - getAllContents) !!!");
 				}
 			}
 		}
@@ -110,4 +104,7 @@ public class EMFModelResource implements IHawkModelResource {
 		return o.signature();
 	}
 
+	public Resource getResource() {
+		return res;
+	}
 }

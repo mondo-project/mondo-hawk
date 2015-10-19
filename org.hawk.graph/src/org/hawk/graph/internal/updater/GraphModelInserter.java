@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hawk.core.IModelIndexer;
+import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
@@ -55,7 +56,7 @@ public class GraphModelInserter {
 	private int unset = 0; // number of unset references (used for logging)
 
 	private String repoURL;
-	private String tempFolderURI;
+	private Set<String> prefixesToStrip = new HashSet<>();
 
 	private IHawkModelResource resource;
 	private Map<String, IHawkObject> updated = new HashMap<>();
@@ -73,12 +74,9 @@ public class GraphModelInserter {
 	public GraphModelInserter(IModelIndexer hawk) {
 		indexer = hawk;
 		graph = indexer.getGraph();
-		tempFolderURI = new File(graph.getTempDir()).toURI().toString();
 	}
 
-	public boolean run(IHawkModelResource res, VcsCommitItem s)
-			throws Exception {
-
+	public boolean run(IHawkModelResource res, VcsCommitItem s) throws Exception {
 		if (res == null)
 			return false;
 
@@ -96,6 +94,11 @@ public class GraphModelInserter {
 
 			int delta = calculateModelDeltaSize();
 			if (delta != -1) {
+				final IVcsManager manager = s.getCommit().getDelta().getManager();
+
+				prefixesToStrip.clear();
+				prefixesToStrip.add(new File(graph.getTempDir()).toURI().toString());
+				prefixesToStrip.addAll(manager.getPrefixesToBeStripped());
 
 				System.err
 						.println("file already present, calculating deltas with respect to graph storage");
@@ -145,7 +148,7 @@ public class GraphModelInserter {
 		try (IGraphTransaction t = graph.beginTransaction()) {
 			listener.changeStart();
 
-			repoURL = s.getCommit().getDelta().getRepository().getUrl();
+			repoURL = s.getCommit().getDelta().getManager().getLocation();
 			IGraphNode fileNode = indexer
 					.getGraph()
 					.getFileIndex()
@@ -221,19 +224,19 @@ public class GraphModelInserter {
 
 			// change references (including adding new proxies as required)
 			for (String o : updated.keySet()) {
-				IHawkObject ob = updated.get(o);
-				IGraphNode node = nodes.get(ob.getUriFragment());
+				IHawkObject source = updated.get(o);
+				IGraphNode node = nodes.get(source.getUriFragment());
 
 				// its null if it was just inserted (above), this is fine.
 				if (node == null)
 					continue;
 
-				for (IHawkReference r : ((IHawkClass) ob.getType())
+				for (IHawkReference r : ((IHawkClass) source.getType())
 						.getAllReferences()) {
 
-					if (ob.isSet(r)) {
+					if (source.isSet(r)) {
 
-						Object targets = ob.get(r, false);
+						Object targets = source.get(r, false);
 						String refname = r.getName();
 						boolean isContainment = r.isContainment();
 						boolean isContainer = r.isContainer();
@@ -241,14 +244,14 @@ public class GraphModelInserter {
 
 						if (targets instanceof Iterable<?>) {
 							for (IHawkObject h : ((Iterable<IHawkObject>) targets)) {
-								if (!h.isProxy())
+								if (!h.isInDifferentResourceThan(source))
 									targetids.add(h.getUriFragment());
 								else {
 									addProxyRef(node, h, refname);
 								}
 							}
 						} else {
-							if (!((IHawkObject) targets).isProxy())
+							if (!((IHawkObject) targets).isInDifferentResourceThan(source))
 								targetids.add(((IHawkObject) targets)
 										.getUriFragment());
 							else {
@@ -396,7 +399,7 @@ public class GraphModelInserter {
 			if (!destinationObject.URIIsRelative()) {
 
 				destinationObjectRelativePathURI = new DeletionUtils(graph)
-						.makeRelative(tempFolderURI,
+						.makeRelative(prefixesToStrip,
 								destinationObjectRelativePathURI);
 
 			}
@@ -652,7 +655,7 @@ public class GraphModelInserter {
 		try (IGraphTransaction t = graph.beginTransaction()) {
 
 			final String repositoryURL = s.getCommit().getDelta()
-					.getRepository().getUrl();
+					.getManager().getLocation();
 			boolean modelfilealreadypresent = graph
 					.getFileIndex()
 					.get("id",

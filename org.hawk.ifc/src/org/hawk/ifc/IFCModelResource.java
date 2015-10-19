@@ -36,5 +36,4 @@ public class IFCModelResource extends IFCAbstractModelResource {
 	protected IfcModelInterface readModel(Deserializer d) throws DeserializeException {
 		return d.read(ifc);
 	}
-
 }

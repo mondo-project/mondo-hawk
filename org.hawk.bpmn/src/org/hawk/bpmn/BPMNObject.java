@@ -24,6 +24,7 @@ import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkDataType;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
+import org.hawk.core.model.IHawkResource;
 import org.hawk.core.model.IHawkStructuralFeature;
 
 public class BPMNObject implements IHawkObject {
@@ -31,19 +32,20 @@ public class BPMNObject implements IHawkObject {
 	protected EObject eob;
 
 	public BPMNObject(EObject o) {
-
 		eob = o;
-
 	}
 
 	public EObject getEObject() {
 		return eob;
-
 	}
 
 	@Override
-	public boolean isProxy() {
-		return eob.eIsProxy();
+	public boolean isInDifferentResourceThan(IHawkObject o) {
+		if (o instanceof BPMNObject) {
+			final BPMNObject otherR = (BPMNObject)o;
+			return eob.eIsProxy() || otherR.eob.eResource() != eob.eResource();
+		}
+		return false;
 	}
 
 	@Override
@@ -65,7 +67,7 @@ public class BPMNObject implements IHawkObject {
 				System.err.println("fragment error on: "
 						+ EcoreUtil.getURI(eob).toString() + " fragment: '"
 						+ frag + "' on eobject: " + eob + " (isproxy:"
-						+ isProxy() + ")");
+						+ eob.eIsProxy() + ")");
 
 			return frag;
 		} catch (Exception e) {
@@ -140,7 +142,7 @@ public class BPMNObject implements IHawkObject {
 
 		if (signature == null) {
 
-			if (isProxy()) {
+			if (eob.eIsProxy()) {
 
 				System.err
 						.println("signature called on proxy object returning null");
@@ -243,27 +245,6 @@ public class BPMNObject implements IHawkObject {
 
 	@Override
 	public boolean URIIsRelative() {
-
 		return EcoreUtil.getURI(eob).isRelative();
-
 	}
-
-	// @Override
-	// public HawkResource getResource() {
-	//
-	// return eob.eResource();
-	// }
-
-	// @Override
-	// public HashSet<?> getAllSetAttributes() {
-	//
-	// return null;
-	// }
-	//
-	// @Override
-	// public HashSet<?> getAllSetReferences() {
-	//
-	// return null;
-	// }
-
 }

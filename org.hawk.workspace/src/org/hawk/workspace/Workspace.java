@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,7 +39,6 @@ import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommit;
 import org.hawk.core.VcsCommitItem;
-import org.hawk.core.VcsRepository;
 import org.hawk.core.VcsRepositoryDelta;
 
 /**
@@ -89,29 +89,19 @@ public class Workspace implements IVcsManager {
 	private boolean pendingChanges = false;
 	private IAbstractConsole console;
 	private WorkspaceListener listener;
-	private WorkspaceRepository repository;
+	private String repositoryURL;
 	private Set<IFile> previousFiles = new HashSet<>();
 	private Map<IFile, Long> recordedStamps = new HashMap<>();
 
 	@Override
-	public String getCurrentRevision(VcsRepository repository) throws Exception {
-		return getCurrentRevision();
-	}
-
-	@Override
-	public String getFirstRevision(VcsRepository repository) throws Exception {
+	public String getFirstRevision() throws Exception {
 		return "0";
 	}
 
 	@Override
-	public VcsRepositoryDelta getDelta(VcsRepository repository, String startRevision) throws Exception {
-		return getDelta(repository, startRevision, getCurrentRevision());
-	}
-
-	@Override
-	public VcsRepositoryDelta getDelta(VcsRepository repository, String startRevision, String endRevision) throws Exception {
+	public VcsRepositoryDelta getDelta(String startRevision, String endRevision) throws Exception {
 		VcsRepositoryDelta delta = new VcsRepositoryDelta();
-		delta.setRepository(repository);
+		delta.setManager(this);
 
 		final Set<IFile> files = getAllFiles();
 		previousFiles.removeAll(files);
@@ -137,6 +127,7 @@ public class Workspace implements IVcsManager {
 			revision++;
 			pendingChanges = false;
 		}
+		delta.setManager(this);
 		delta.setLatestRevision(revision + "");
 
 		return delta;
@@ -204,7 +195,7 @@ public class Workspace implements IVcsManager {
 
 		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		final File fWorkspaceRoot = workspaceRoot.getLocation().toFile();
-		this.repository = new WorkspaceRepository("workspace://" + fWorkspaceRoot.getAbsolutePath());
+		this.repositoryURL = "workspace://" + fWorkspaceRoot.getAbsolutePath();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(listener);
 	}
 
@@ -218,7 +209,7 @@ public class Workspace implements IVcsManager {
 
 	@Override
 	public String getLocation() {
-		return repository.getUrl();
+		return repositoryURL	;
 	}
 
 	@Override
@@ -257,7 +248,7 @@ public class Workspace implements IVcsManager {
 
 	@Override
 	public List<VcsCommitItem> getDelta(String string) throws Exception {
-		return getDelta(repository, string).getCompactedCommitItems();
+		return getDelta(string, getCurrentRevision()).getCompactedCommitItems();
 	}
 
 	@Override
@@ -273,6 +264,11 @@ public class Workspace implements IVcsManager {
 	@Override
 	public boolean isURLLocationAccepted() {
 		return false;
+	}
+
+	@Override
+	public Set<String> getPrefixesToBeStripped() {
+		return new HashSet<>(Arrays.asList("platform:/resource"));
 	}
 
 }

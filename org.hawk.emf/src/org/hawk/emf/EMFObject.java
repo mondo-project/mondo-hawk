@@ -39,8 +39,12 @@ public class EMFObject implements IHawkObject {
 	}
 
 	@Override
-	public boolean isProxy() {
-		return eob.eIsProxy();
+	public boolean isInDifferentResourceThan(IHawkObject o) {
+		if (o instanceof EMFObject) {
+			final EMFObject otherR = (EMFObject)o;
+			return eob.eIsProxy() || otherR.eob.eResource() != eob.eResource();
+		}
+		return false;
 	}
 
 	@Override
@@ -62,7 +66,7 @@ public class EMFObject implements IHawkObject {
 				System.err.println("fragment error on: "
 						+ EcoreUtil.getURI(eob).toString() + " fragment: '"
 						+ frag + "' on eobject: " + eob + " (isproxy:"
-						+ isProxy() + ")");
+						+ eob.eIsProxy() + ")");
 
 			return frag;
 		} catch (Exception e) {
@@ -247,7 +251,7 @@ public class EMFObject implements IHawkObject {
 
 		if (signature == null) {
 
-			if (isProxy()) {
+			if (eob.eIsProxy()) {
 
 				System.err
 						.println("signature called on proxy object returning null");

@@ -12,7 +12,11 @@ package org.hawk.core.model;
 
 public interface IHawkObject {
 
-	boolean isProxy();
+	/**
+	 * Returns <code>true</code> if this object belongs to the same resource
+	 * as the other, <code>false</code> otherwise.
+	 */
+	boolean isInDifferentResourceThan(IHawkObject other);
 
 	/**
 	 * Returns <code>true</code> if this object is not contained in any other.
@@ -48,5 +52,4 @@ public interface IHawkObject {
 	// eAttribute.getName(), eAttribute-value, forAll references eRef.getName(),
 	// ref-value.getUriFragment()
 	public byte[] signature();
-
 }

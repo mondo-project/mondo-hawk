@@ -12,6 +12,7 @@ package org.hawk.graph.internal.updater;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
@@ -50,7 +51,7 @@ public class DeletionUtils {
 		boolean success = true;
 
 		try (IGraphTransaction transaction = graph.beginTransaction()) {
-			final String repository = s.getCommit().getDelta().getRepository().getUrl();
+			final String repository = s.getCommit().getDelta().getManager().getLocation();
 			final String filepath = s.getPath();
 
 			final String fullFileID = repository + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + filepath;
@@ -101,18 +102,14 @@ public class DeletionUtils {
 		return success;
 	}
 
-	protected String makeRelative(String base, String extension) {
-
-		// System.err.println(base);
-		// System.err.println(extension);
-
-		if (!extension.startsWith(base))
-			return extension;
-
-		String ret = extension.substring(base.length());
-
-		return ret;
-
+	protected String makeRelative(Set<String> bases, String extension) {
+		for (final String base : bases) {
+			if (extension.startsWith(base)) {
+				return extension.substring(base.length());
+			}	
+		}
+		System.err.println(String.format("WARNING: could not make '%s' into a relative path", extension));
+		return extension;
 	}
 
 	protected String[] addToElementProxies(String[] proxies, String fullPathURI, String edgelabel) {

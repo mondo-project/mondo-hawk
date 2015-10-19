@@ -159,7 +159,7 @@ public class GraphModelUpdater implements IModelUpdater {
 		}
 
 		final VcsCommitItem firstItem = reposItems.iterator().next();
-		final String repositoryURL = firstItem.getCommit().getDelta().getRepository().getUrl();
+		final String repositoryURL = firstItem.getCommit().getDelta().getManager().getLocation();
 		final Set<VcsCommitItem> changed = new HashSet<VcsCommitItem>();
 		changed.addAll(reposItems);
 
