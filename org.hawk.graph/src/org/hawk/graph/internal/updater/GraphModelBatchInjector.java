@@ -1089,11 +1089,11 @@ public class GraphModelBatchInjector {
 		return true;
 	}
 
-	protected boolean resolveProxyRef(IGraphNode n, IGraphNode graphNode, String edgelabel) {
+	protected boolean resolveProxyRef(IGraphNode source, IGraphNode target, String edgeLabel, boolean isContainment, boolean isContainer) {
 		boolean found = false;
 
-		for (IGraphEdge e : n.getOutgoingWithType(edgelabel))
-			if (e.getEndNode().getId().equals(graphNode.getId())) {
+		for (IGraphEdge e : source.getOutgoingWithType(edgeLabel))
+			if (e.getEndNode().getId().equals(target.getId())) {
 				found = true;
 				break;
 			}
@@ -1101,8 +1101,13 @@ public class GraphModelBatchInjector {
 		if (found)
 			return false;
 		else {
-			graph.createRelationship(n, graphNode, edgelabel,
-					new HashMap<String, Object>());
+			IGraphEdge rel = graph.createRelationship(source, target, edgeLabel, new HashMap<String, Object>());
+			if (isContainment) {
+				rel.setProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT, "true");
+			}
+			else if (isContainer) {
+				rel.setProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER, "true");
+			}
 			return true;
 		}
 	}

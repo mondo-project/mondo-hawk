@@ -873,8 +873,7 @@ public class GraphModelInserter {
 					}
 
 					for (String[] proxies : allProxies) {
-						String fullPathURI = proxies[0].substring(0,
-								proxies[0].indexOf("#"));
+						final String fullPathURI = proxies[0].substring(0, proxies[0].indexOf("#"));
 
 						final String[] split = fullPathURI.split(
 								GraphModelUpdater.FILEINDEX_REPO_SEPARATOR, 2);
@@ -892,8 +891,12 @@ public class GraphModelInserter {
 
 							if (nodes.size() != 0) {
 
-								for (int i = 0; i < proxies.length; i = i + 2) {
+								for (int i = 0; i < proxies.length; i = i + 4) {
 									boolean found = false;
+
+									final String edgeLabel = proxies[i + 1];
+									final boolean isContainment = Boolean.valueOf(proxies[i + 2]);
+									final boolean isContainer = Boolean.valueOf(proxies[i + 3]);
 
 									for (IGraphNode no : nodes) {
 										String nodeURI = fullPathURI
@@ -906,21 +909,20 @@ public class GraphModelInserter {
 
 											boolean change = new GraphModelBatchInjector(
 													graph, null, listener)
-													.resolveProxyRef(n, no,
-															proxies[i + 1]);
+													.resolveProxyRef(n, no, edgeLabel, isContainment, isContainer);
 
 											if (!change) {
 												System.err
 														.println("resolving proxy ref returned false, edge already existed: "
 																+ n.getId()
 																+ " - "
-																+ proxies[i + 1]
+																+ edgeLabel
 																+ " -> "
 																+ no.getId());
 											} else {
 												listener.referenceAddition(
 														this.s, n, no,
-														proxies[i + 1], false);
+														edgeLabel, false);
 											}
 
 											found = true;
@@ -931,7 +933,7 @@ public class GraphModelInserter {
 									if (!found)
 										System.err
 												.println("[GraphModelInserter | resolveProxies] Warning: proxy unresolved: "
-														+ proxies[i + 1]
+														+ edgeLabel
 														+ " "
 														+ proxies[i]);
 								}

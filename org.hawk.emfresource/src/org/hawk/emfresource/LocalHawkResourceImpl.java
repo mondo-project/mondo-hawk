@@ -70,8 +70,30 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 			final EStructuralFeature sf = (EStructuralFeature)args[0];
 			if (sf instanceof EReference) {
 				synchronized(nodeIdToEObjectMap) {
-					final EObject eob = (EObject)o;
+					final EReference ref = (EReference) sf;
+					final EObject eob = (EObject) o;
+
+					/*
+					 * When we resolve a reference, it may be a containment or
+					 * container reference: need to adjust the list of root
+					 * elements then.
+					 */
 					lazyResolver.resolve(eob, sf);
+					Object superValue = proxy.invokeSuper(o, args);
+					if (superValue != null) {
+						if (ref.isContainer()) {
+							getContents().remove(eob);
+						} else if (ref.isContainment()) {
+							if (ref.isMany()) {
+								for (EObject child : (Iterable<EObject>) superValue) {
+									getContents().remove(child);
+								}
+							} else {
+								getContents().remove((EObject) superValue);
+							}
+						}
+					}
+
 					return proxy.invokeSuper(o, args);
 				}
 			}
