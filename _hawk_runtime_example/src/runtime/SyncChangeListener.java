@@ -113,8 +113,8 @@ public class SyncChangeListener implements IGraphChangeListener {
 		if (hawk.getFileToResourceMap() != null)
 			for (VcsCommitItem c : hawk.getFileToResourceMap().keySet()) {
 
-				String repoURL = c.getCommit().getDelta().getRepository()
-						.getUrl();
+				String repoURL = c.getCommit().getDelta().getManager()
+						.getLocation();
 
 				IHawkModelResource r = hawk.getFileToResourceMap().get(c);
 
@@ -137,8 +137,8 @@ public class SyncChangeListener implements IGraphChangeListener {
 						IGraphNode filenode = graph
 								.getFileIndex()
 								.get("id",
-										c.getCommit().getDelta()
-												.getRepository().getUrl()
+										c.getCommit().getDelta().getManager()
+												.getLocation()
 												+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
 												+ c.getPath()).getSingle();
 
@@ -535,7 +535,8 @@ public class SyncChangeListener implements IGraphChangeListener {
 
 		for (String propertykey : instance.getPropertyKeys()) {
 
-			if (propertykey.startsWith(GraphModelUpdater.PROXY_REFERENCE_PREFIX)) {
+			if (propertykey
+					.startsWith(GraphModelUpdater.PROXY_REFERENCE_PREFIX)) {
 
 				String[] proxies = (String[]) instance.getProperty(propertykey);
 

@@ -90,8 +90,8 @@ public class SyncValidationListener implements IGraphChangeListener {
 		if (hawk.getFileToResourceMap() != null)
 			for (VcsCommitItem c : hawk.getFileToResourceMap().keySet()) {
 
-				String repoURL = c.getCommit().getDelta().getRepository()
-						.getUrl();
+				String repoURL = c.getCommit().getDelta().getManager()
+						.getLocation();
 
 				IHawkModelResource r = hawk.getFileToResourceMap().get(c);
 
@@ -115,8 +115,8 @@ public class SyncValidationListener implements IGraphChangeListener {
 						IGraphNode filenode = null;
 						try {
 
-							file = c.getCommit().getDelta().getRepository()
-									.getUrl()
+							file = c.getCommit().getDelta().getManager()
+									.getLocation()
 									+ FILEINDEX_REPO_SEPARATOR + c.getPath();
 
 							filenode = graph.getFileIndex().get("id", file)
