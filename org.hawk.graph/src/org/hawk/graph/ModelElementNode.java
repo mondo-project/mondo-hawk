@@ -30,6 +30,10 @@ import org.hawk.core.graph.IGraphNode;
  */
 public class ModelElementNode {
 
+	private static final String IS_CONTAINER_PROPERTY = "isContainer";
+
+	private static final String IS_CONTAINMENT_PROPERTY = "isContainment";
+
 	/** Label for the transient edge from the model element node to its file. */
 	public static final String EDGE_LABEL_FILE = "file";
 
@@ -194,11 +198,11 @@ public class ModelElementNode {
 	}
 
 	public boolean isContainment(String featureName) {
-		return outgoingEdgeWithTypeHasProperty(featureName, "isContainment");
+		return outgoingEdgeWithTypeHasProperty(featureName, IS_CONTAINMENT_PROPERTY);
 	}
 
 	public boolean isContainer(String featureName) {
-		return outgoingEdgeWithTypeHasProperty(featureName, "isContainer");
+		return outgoingEdgeWithTypeHasProperty(featureName, IS_CONTAINER_PROPERTY);
 	}
 
 	protected IGraphNode getFirstEndNode(final String edgeLabel) {
@@ -219,5 +223,19 @@ public class ModelElementNode {
 
 	public String getId() {
 		return getNode().getId().toString();
+	}
+
+	public boolean isContained() {
+		for (IGraphEdge out : getNode().getOutgoing()) {
+			if (out.getProperty(IS_CONTAINER_PROPERTY) != null) {
+				return true;
+			}
+		}
+		for (IGraphEdge in : getNode().getIncoming()) {
+			if (in.getProperty(IS_CONTAINMENT_PROPERTY) != null) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

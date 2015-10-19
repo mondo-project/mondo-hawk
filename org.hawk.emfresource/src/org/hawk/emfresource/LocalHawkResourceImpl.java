@@ -60,7 +60,6 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalHawkResourceImpl.class);
 
 	private final class LazyReferenceResolver implements MethodInterceptor {
-		@SuppressWarnings("unchecked")
 		@Override
 		public Object intercept(final Object o, final Method m, final Object[] args, final MethodProxy proxy) throws Throwable {
 			/*
@@ -71,31 +70,9 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 			final EStructuralFeature sf = (EStructuralFeature)args[0];
 			if (sf instanceof EReference) {
 				synchronized(nodeIdToEObjectMap) {
-					final EReference ref = (EReference)sf;
 					final EObject eob = (EObject)o;
-
-					/*
-					 * When we resolve a reference, it may be a containment or
-					 * container reference: need to adjust the list of root
-					 * elements then.
-					 */
 					lazyResolver.resolve(eob, sf);
-					Object superValue = proxy.invokeSuper(o, args);
-					if (superValue != null) {
-						if (ref.isContainer()) {
-							getContents().remove(eob);
-						} else if (ref.isContainment()) {
-							if (ref.isMany()) {
-								for (EObject child : (Iterable<EObject>) superValue) {
-									getContents().remove(child);
-								}
-							} else {
-								getContents().remove((EObject) superValue);
-							}
-						}
-					}
-
-					return superValue;
+					return proxy.invokeSuper(o, args);
 				}
 			}
 			return proxy.invokeSuper(o, args);
@@ -348,8 +325,11 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 				// TODO add back ability for filtering repos/files
 				final List<String> all = Arrays.asList("*");
 				for (FileNode fileNode : gw.getFileNodes(all, all)) {
-					final Iterable<ModelElementNode> elems = fileNode.getRootModelElements();
-					createOrUpdateEObjects(elems);
+					for (ModelElementNode elem : fileNode.getRootModelElements()) {
+						if (!elem.isContained()) {
+							createOrUpdateEObject(elem);
+						}
+					}
 				}
 				tx.success();
 			}
