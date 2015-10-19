@@ -327,7 +327,8 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 				for (FileNode fileNode : gw.getFileNodes(all, all)) {
 					for (ModelElementNode elem : fileNode.getRootModelElements()) {
 						if (!elem.isContained()) {
-							createOrUpdateEObject(elem);
+							EObject eob = createOrUpdateEObject(elem);
+							getContents().add(eob);
 						}
 					}
 				}
