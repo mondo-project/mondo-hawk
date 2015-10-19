@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommit;
@@ -98,7 +99,7 @@ public class LocalFolder implements IVcsManager {
 	}
 
 	@Override
-	public void run(String vcsloc, String un, String pw, IAbstractConsole c) throws Exception {
+	public void run(String vcsloc, String un, String pw, IAbstractConsole c, IModelIndexer indexer) throws Exception {
 
 		console = c;
 

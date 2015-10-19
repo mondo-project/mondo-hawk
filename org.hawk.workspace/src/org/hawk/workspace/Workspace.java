@@ -28,10 +28,12 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommit;
@@ -59,6 +61,12 @@ public class Workspace implements IVcsManager {
 	}
 
 	private class WorkspaceListener implements IResourceChangeListener {
+		private IModelIndexer indexer;
+
+		public WorkspaceListener(IModelIndexer indexer) {
+			this.indexer = indexer;
+		}
+
 		@Override
 		public void resourceChanged(IResourceChangeEvent event) {
 			if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
@@ -66,8 +74,11 @@ public class Workspace implements IVcsManager {
 				try {
 					final WorkspaceDeltaVisitor visitor = new WorkspaceDeltaVisitor();
 					delta.accept(visitor);
-					pendingChanges = pendingChanges || visitor.anyChanges;
-				} catch (CoreException e) {
+					if (!pendingChanges && visitor.anyChanges) {
+						pendingChanges = true;
+						indexer.requestImmediateSync();
+					}
+				} catch (Exception e) {
 					console.printerrln(e);
 				}
 			}
@@ -187,10 +198,13 @@ public class Workspace implements IVcsManager {
 	}
 
 	@Override
-	public void run(String vcsloc, String un, String pw, IAbstractConsole c) throws Exception {
+	public void run(String vcsloc, String un, String pw, IAbstractConsole c, IModelIndexer indexer) throws Exception {
 		this.console = c;
-		this.listener = new WorkspaceListener();
-		this.repository = new WorkspaceRepository("platform://");
+		this.listener = new WorkspaceListener(indexer);
+
+		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		final File fWorkspaceRoot = workspaceRoot.getLocation().toFile();
+		this.repository = new WorkspaceRepository("workspace://" + fWorkspaceRoot.getAbsolutePath());
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(listener);
 	}
 

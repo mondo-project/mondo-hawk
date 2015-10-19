@@ -26,6 +26,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommit;
 import org.hawk.core.VcsCommitItem;
@@ -76,7 +77,7 @@ public class SvnManager extends AbstractVcsManager {
 		SvnManager m = new SvnManager();
 		System.err.println("testing3");
 		m.run("https://cssvn.york.ac.uk/repos/sosym/kostas/Hawk/org.hawk.emf/src/org/hawk/emf/model/examples/single/0",
-				"kb634", pass, null);
+				"kb634", pass, null, null);
 		System.err.println("testing4");
 		m.test();
 		System.err.println("testing5-end");
@@ -94,7 +95,7 @@ public class SvnManager extends AbstractVcsManager {
 		}
 	}
 
-	public void run(String vcsloc, String un, String pw, IAbstractConsole c)
+	public void run(String vcsloc, String un, String pw, IAbstractConsole c, IModelIndexer indexer)
 			throws Exception {
 
 		try {

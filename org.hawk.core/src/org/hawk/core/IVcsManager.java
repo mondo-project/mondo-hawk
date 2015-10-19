@@ -33,7 +33,7 @@ public interface IVcsManager {
 	public abstract boolean isActive();
 
 	// kostas
-	void run(String vcsloc, String un, String pw, IAbstractConsole c)
+	void run(String vcsloc, String un, String pw, IAbstractConsole c, IModelIndexer indexer)
 			throws Exception;
 
 	// kostas
