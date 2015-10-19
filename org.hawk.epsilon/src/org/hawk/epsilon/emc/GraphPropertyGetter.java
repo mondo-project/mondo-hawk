@@ -100,7 +100,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 				for (IGraphEdge r : node.getIncomingWithType(property2)) {
 
-					if (r.getProperty("isContainment") != null) {
+					if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
 						ret = new GraphNodeWrapper(r.getStartNode().getId()
 								.toString(), m);
 					} else {
@@ -139,7 +139,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 				for (IGraphEdge r : inc) {
 
-					if (r.getProperty("isContainment") != null) {
+					if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
 
 						ret = new GraphNodeWrapper(r.getStartNode().getId()
 								.toString(), m);

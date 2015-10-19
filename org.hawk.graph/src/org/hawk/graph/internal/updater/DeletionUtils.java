@@ -112,7 +112,7 @@ public class DeletionUtils {
 		return extension;
 	}
 
-	protected String[] addToElementProxies(String[] proxies, String fullPathURI, String edgelabel) {
+	protected String[] addToElementProxies(String[] proxies, String fullPathURI, String edgelabel, boolean isContainment, boolean isContainer) {
 
 		// System.err.println("addtoelementproxies: " +
 		// Arrays.toString(proxies));
@@ -132,6 +132,8 @@ public class DeletionUtils {
 
 			ret[proxies.length] = fullPathURI;
 			ret[proxies.length + 1] = edgelabel;
+			ret[proxies.length + 2] = isContainment + "";
+			ret[proxies.length + 3] = isContainer + "";
 
 			proxies = null;
 
@@ -140,12 +142,7 @@ public class DeletionUtils {
 			return ret;
 
 		} else {
-			String[] ret = new String[2];
-			ret[0] = fullPathURI;
-			ret[1] = edgelabel;
-
-			// System.err.println("ret (null proxies)" + Arrays.toString(ret));
-
+			String[] ret = new String[] {fullPathURI, edgelabel, isContainment + "", isContainer + ""};
 			return ret;
 		}
 	}
@@ -171,16 +168,6 @@ public class DeletionUtils {
 
 			String type = rel.getType();
 			if (!referencingNodeFileID.equals(referencedElementFileID)) {
-
-				// System.err.println("relationship is one to an object in file:
-				// "
-				// + rel.getStartNode()
-				// .getRelationships(
-				// Direction.OUTGOING,
-				// new RelationshipUtil()
-				// .getNewRelationshipType(ModelElementNode.EDGE_LABEL_FILE))
-				// .iterator().next().getEndNode().getProperty(GraphWrapper.IDENTIFIER_PROPERTY));
-
 				String fullReferencedElementPathFileURI = repositoryURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
 						+ referencedElementFileID;
 
@@ -189,7 +176,9 @@ public class DeletionUtils {
 
 				Object proxies = referencingNode.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + fullReferencedElementPathFileURI);
 
-				proxies = addToElementProxies((String[]) proxies, fullReferencedElementPathElementURI, type);
+				proxies = addToElementProxies((String[]) proxies, fullReferencedElementPathElementURI, type,
+						rel.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null,
+						rel.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER) != null);
 
 				referencingNode.setProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + fullReferencedElementPathFileURI, proxies);
 

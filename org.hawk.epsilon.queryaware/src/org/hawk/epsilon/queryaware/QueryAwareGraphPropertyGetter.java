@@ -86,7 +86,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 				for (IGraphEdge r : node.getIncomingWithType(property2)) {
 
-					if (r.getProperty("isContainment") != null) {
+					if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
 						ret = new GraphNodeWrapper(r.getStartNode().getId()
 								.toString(), m);
 					} else {
@@ -125,7 +125,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 				for (IGraphEdge r : inc) {
 
-					if (r.getProperty("isContainment") != null) {
+					if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
 
 						ret = new GraphNodeWrapper(r.getStartNode().getId()
 								.toString(), m);

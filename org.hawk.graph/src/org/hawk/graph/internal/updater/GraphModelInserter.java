@@ -247,7 +247,7 @@ public class GraphModelInserter {
 								if (!h.isInDifferentResourceThan(source))
 									targetids.add(h.getUriFragment());
 								else {
-									addProxyRef(node, h, refname);
+									addProxyRef(node, h, refname, isContainment, isContainer);
 								}
 							}
 						} else {
@@ -255,8 +255,7 @@ public class GraphModelInserter {
 								targetids.add(((IHawkObject) targets)
 										.getUriFragment());
 							else {
-								addProxyRef(node, (IHawkObject) targets,
-										refname);
+								addProxyRef(node, (IHawkObject) targets, refname, isContainment, isContainer);
 							}
 						}
 
@@ -294,10 +293,10 @@ public class GraphModelInserter {
 								IGraphEdge e = graph.createRelationship(node,
 										dest, refname);
 								if (isContainment) {
-									e.setProperty("isContainment", "true");
+									e.setProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT, "true");
 								}
 								if (isContainer) {
-									e.setProperty("isContainer", "true");
+									e.setProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER, "true");
 								}
 
 								// track change new reference
@@ -380,8 +379,7 @@ public class GraphModelInserter {
 		// new DeletionUtils(graph).delete(node);
 	}
 
-	private boolean addProxyRef(final IGraphNode node,
-			final IHawkObject destinationObject, final String edgelabel) {
+	private boolean addProxyRef(final IGraphNode node, final IHawkObject destinationObject, final String edgelabel, boolean isContainment, boolean isContainer) {
 
 		try {
 			// proxydictionary.add(graph.getNodeById(hash.get((from))),
@@ -429,11 +427,9 @@ public class GraphModelInserter {
 			// }
 			// System.err.println(">>>>>>>"+relativeFileURI);
 
-			proxies = node.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX
-					+ destinationObjectFullFileURI);
-			proxies = new DeletionUtils(graph)
-					.addToElementProxies((String[]) proxies,
-							destinationObjectFullPathURI, edgelabel);
+			proxies = node.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + destinationObjectFullFileURI);
+			proxies = new DeletionUtils(graph).addToElementProxies((String[]) proxies, destinationObjectFullPathURI,
+					edgelabel, isContainment, isContainer);
 
 			node.setProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX
 					+ destinationObjectFullFileURI, proxies);
