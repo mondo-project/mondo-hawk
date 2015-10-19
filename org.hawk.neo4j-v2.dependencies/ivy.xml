@@ -7,8 +7,8 @@
         status="integration">
 	</info>
 	<dependencies>
-		<dependency org="org.neo4j" name="neo4j-jmx" rev="2.2.5"/>
-		<dependency org="org.neo4j" name="neo4j-kernel" rev="2.2.5"/>
-		<dependency org="org.neo4j" name="neo4j-lucene-index" rev="2.2.5"/>
+		<dependency org="org.neo4j" name="neo4j-jmx" rev="2.2.6"/>
+		<dependency org="org.neo4j" name="neo4j-kernel" rev="2.2.6"/>
+		<dependency org="org.neo4j" name="neo4j-lucene-index" rev="2.2.6"/>
 	</dependencies>
 </ivy-module>

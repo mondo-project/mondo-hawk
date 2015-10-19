@@ -5,17 +5,17 @@ Bundle-SymbolicName: org.hawk.neo4j-v2.dependencies
 Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: University of York
-Bundle-ClassPath: 2.2.6/logback-classic-1.1.2.jar,
- 2.2.6/logback-core-1.1.2.jar,
- 2.2.6/lucene-core-3.6.2.jar,
- 2.2.6/neo4j-csv-2.2.6.jar,
- 2.2.6/neo4j-io-2.2.6.jar,
- 2.2.6/neo4j-jmx-2.2.6.jar,
- 2.2.6/neo4j-kernel-2.2.6.jar,
- 2.2.6/neo4j-lucene-index-2.2.6.jar,
- 2.2.6/neo4j-primitive-collections-2.2.6.jar,
- 2.2.6/neo4j-unsafe-2.2.6.jar,
- 2.2.6/slf4j-api-1.7.7.jar
+Bundle-ClassPath: lib/logback-classic-1.1.2.jar,
+ lib/logback-core-1.1.2.jar,
+ lib/lucene-core-3.6.2.jar,
+ lib/neo4j-csv-2.2.6.jar,
+ lib/neo4j-io-2.2.6.jar,
+ lib/neo4j-jmx-2.2.6.jar,
+ lib/neo4j-kernel-2.2.6.jar,
+ lib/neo4j-lucene-index-2.2.6.jar,
+ lib/neo4j-primitive-collections-2.2.6.jar,
+ lib/neo4j-unsafe-2.2.6.jar,
+ lib/slf4j-api-1.7.7.jar
 Export-Package: ch.qos.logback.classic,
  ch.qos.logback.classic.boolex,
  ch.qos.logback.classic.db,
