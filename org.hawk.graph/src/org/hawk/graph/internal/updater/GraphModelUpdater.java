@@ -31,6 +31,7 @@ public class GraphModelUpdater implements IModelUpdater {
 
 	private boolean isActive = false;
 	public static final String FILEINDEX_REPO_SEPARATOR = "////";
+	public static final String PROXY_REFERENCE_PREFIX = "hawkProxyRef:";
 	public static final boolean caresAboutResources = true;
 
 	private Set<IGraphNode> toBeUpdated = new HashSet<>();

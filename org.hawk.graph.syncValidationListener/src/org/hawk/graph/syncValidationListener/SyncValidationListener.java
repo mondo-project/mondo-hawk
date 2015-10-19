@@ -36,7 +36,8 @@ public class SyncValidationListener implements IGraphChangeListener {
 	@Override
 	public void setModelIndexer(IModelIndexer hawk) {
 		this.hawk = (ModelIndexerImpl) hawk;
-		System.err.println("SyncValidationListener: hawk.setSyncMetricsEnabled(true) called, performance will suffer!");
+		System.err
+				.println("SyncValidationListener: hawk.setSyncMetricsEnabled(true) called, performance will suffer!");
 		hawk.setSyncMetricsEnabled(true);
 	}
 
@@ -59,6 +60,9 @@ public class SyncValidationListener implements IGraphChangeListener {
 	// clone from GraphModelUpdater.FILEINDEX_REPO_SEPARATOR as it is not
 	// exported
 	public static final String FILEINDEX_REPO_SEPARATOR = "////";
+	// clone from GraphModelUpdater.PROXY_REFERENCE_PREFIX as it is not
+	// exported
+	public static final String PROXY_REFERENCE_PREFIX = "hawkProxyRef:";
 
 	@SuppressWarnings("unchecked")
 	private void validateChanges() {
@@ -86,7 +90,8 @@ public class SyncValidationListener implements IGraphChangeListener {
 		if (hawk.getFileToResourceMap() != null)
 			for (VcsCommitItem c : hawk.getFileToResourceMap().keySet()) {
 
-				String repoURL = c.getCommit().getDelta().getRepository().getUrl();
+				String repoURL = c.getCommit().getDelta().getRepository()
+						.getUrl();
 
 				IHawkModelResource r = hawk.getFileToResourceMap().get(c);
 
@@ -97,7 +102,8 @@ public class SyncValidationListener implements IGraphChangeListener {
 				}
 
 				else {
-					System.out.println("validating file " + c.getChangeType() + " for " + c.getPath());
+					System.out.println("validating file " + c.getChangeType()
+							+ " for " + c.getPath());
 
 					totalResourceSizes += r.getAllContentsSet().size();
 
@@ -109,16 +115,20 @@ public class SyncValidationListener implements IGraphChangeListener {
 						IGraphNode filenode = null;
 						try {
 
-							file = c.getCommit().getDelta().getRepository().getUrl() + FILEINDEX_REPO_SEPARATOR
-									+ c.getPath();
+							file = c.getCommit().getDelta().getRepository()
+									.getUrl()
+									+ FILEINDEX_REPO_SEPARATOR + c.getPath();
 
-							filenode = graph.getFileIndex().get("id", file).getSingle();
+							filenode = graph.getFileIndex().get("id", file)
+									.getSingle();
 						} catch (Exception ee) {
-							System.err.println("expected file " + file + " but it did not exist");
+							System.err.println("expected file " + file
+									+ " but it did not exist");
 							continue;
 						}
 
-						Iterable<IGraphEdge> instancesEdges = filenode.getIncomingWithType("file");
+						Iterable<IGraphEdge> instancesEdges = filenode
+								.getIncomingWithType("file");
 
 						// cache model elements in current resource
 						HashMap<String, IHawkObject> eobjectCache = new HashMap<>();
@@ -126,19 +136,27 @@ public class SyncValidationListener implements IGraphChangeListener {
 						// references)
 						Set<String> malformedObjectCache = new HashSet<>();
 						for (IHawkObject content : r.getAllContentsSet()) {
-							IHawkObject old = eobjectCache.put(content.getUriFragment(), content);
+							IHawkObject old = eobjectCache.put(
+									content.getUriFragment(), content);
 							if (old != null) {
-								System.err.println("warning (" + c.getPath() + ") eobjectCache replaced:");
-								System.err.println(old.getUri() + " | " + old.getUriFragment() + " | ofType: "
+								System.err.println("warning (" + c.getPath()
+										+ ") eobjectCache replaced:");
+								System.err.println(old.getUri() + " | "
+										+ old.getUriFragment() + " | ofType: "
 										+ old.getType().getName());
 								System.err.println("with:");
-								System.err.println(content.getUri() + " | " + content.getUriFragment() + " | ofType: "
+								System.err.println(content.getUri() + " | "
+										+ content.getUriFragment()
+										+ " | ofType: "
 										+ content.getType().getName());
 								malformed++;
 								malformedObjectCache.add(old.getUri());
-								System.err.println(
-										"WARNING: MALFORMED MODEL RESOURCE (multiple identical identifiers for:\n"
-												+ old.getUri() + "),\nexpect " + malformed + " errors in validation.");
+								System.err
+										.println("WARNING: MALFORMED MODEL RESOURCE (multiple identical identifiers for:\n"
+												+ old.getUri()
+												+ "),\nexpect "
+												+ malformed
+												+ " errors in validation.");
 
 							}
 						}
@@ -151,91 +169,142 @@ public class SyncValidationListener implements IGraphChangeListener {
 							totalGraphSize++;
 
 							IHawkObject eobject = eobjectCache
-									.get(instance.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+									.get(instance
+											.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 							// if a node cannot be found in the model cache
 							if (eobject == null) {
-								System.err.println("error in validating: graph contains node with identifier:"
-										+ instance.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
-										+ " but resource does not!");
+								System.err
+										.println("error in validating: graph contains node with identifier:"
+												+ instance
+														.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+												+ " but resource does not!");
 								// this triggers when a malformed model has 2
 								// identifiers the same
 								totalErrors++;
 							} else {
-								eobjectCache.remove(instance.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+								eobjectCache
+										.remove(instance
+												.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
-								if (!malformedObjectCache.contains(eobject.getUri())) {
+								if (!malformedObjectCache.contains(eobject
+										.getUri())) {
 
 									// cache model element attributes and
 									// references
 									// by
 									// name
 									HashMap<String, Object> modelAttributes = new HashMap<>();
-									for (IHawkAttribute a : ((IHawkClass) eobject.getType()).getAllAttributes())
+									for (IHawkAttribute a : ((IHawkClass) eobject
+											.getType()).getAllAttributes())
 										if (eobject.isSet(a))
-											modelAttributes.put(a.getName(), eobject.get(a));
+											modelAttributes.put(a.getName(),
+													eobject.get(a));
 
 									// full reference uri in order to properly
 									// compare with hawk proxies
 									HashMap<String, Set<String>> modelReferences = new HashMap<>();
 
-									for (IHawkReference ref : ((IHawkClass) eobject.getType()).getAllReferences()) {
+									for (IHawkReference ref : ((IHawkClass) eobject
+											.getType()).getAllReferences()) {
 										if (eobject.isSet(ref)) {
-											Object refval = eobject.get(ref, false);
+											Object refval = eobject.get(ref,
+													false);
 											HashSet<String> vals = new HashSet<>();
 											String ret;
 											if (refval instanceof Iterable<?>) {
 												for (Object val : ((Iterable<IHawkObject>) refval)) {
 													// if (!((IHawkObject)
 													// val).isProxy())
-													ret = ((IHawkObject) val).getUri().replace(temp, "");
-													ret = URLDecoder.decode(ret.replace("+", "%2B"), "UTF-8");
-													vals.add(repoURL + FILEINDEX_REPO_SEPARATOR
-															+ (ret.startsWith("/") ? ret.substring(1) : ret));
+													ret = ((IHawkObject) val)
+															.getUri().replace(
+																	temp, "");
+													ret = URLDecoder.decode(
+															ret.replace("+",
+																	"%2B"),
+															"UTF-8");
+													vals.add(repoURL
+															+ FILEINDEX_REPO_SEPARATOR
+															+ (ret.startsWith("/") ? ret
+																	.substring(1)
+																	: ret));
 												}
 
 											} else {
 												// if (!((IHawkObject)
 												// refval).isProxy())
-												ret = ((IHawkObject) refval).getUri().replace(temp, "");
-												ret = URLDecoder.decode(ret.replace("+", "%2B"), "UTF-8");
-												vals.add(repoURL + FILEINDEX_REPO_SEPARATOR
-														+ (ret.startsWith("/") ? ret.substring(1) : ret));
+												ret = ((IHawkObject) refval)
+														.getUri().replace(temp,
+																"");
+												ret = URLDecoder
+														.decode(ret.replace(
+																"+", "%2B"),
+																"UTF-8");
+												vals.add(repoURL
+														+ FILEINDEX_REPO_SEPARATOR
+														+ (ret.startsWith("/") ? ret
+																.substring(1)
+																: ret));
 
 											}
 											if (vals.size() > 0)
-												modelReferences.put(ref.getName(), vals);
+												modelReferences.put(
+														ref.getName(), vals);
 										}
 									}
 
 									// compare db attributes to model ones
-									for (String propertykey : instance.getPropertyKeys()) {
-										if (!propertykey.equals(IModelIndexer.SIGNATURE_PROPERTY)
-												&& !propertykey.equals(IModelIndexer.IDENTIFIER_PROPERTY)
-												&& !propertykey.startsWith("_proxyRef")) {
+									for (String propertykey : instance
+											.getPropertyKeys()) {
+										if (!propertykey
+												.equals(IModelIndexer.SIGNATURE_PROPERTY)
+												&& !propertykey
+														.equals(IModelIndexer.IDENTIFIER_PROPERTY)
+												&& !propertykey
+														.startsWith(PROXY_REFERENCE_PREFIX)) {
 											//
-											Object dbattr = instance.getProperty(propertykey);
-											Object attr = modelAttributes.get(propertykey);
+											Object dbattr = instance
+													.getProperty(propertykey);
+											Object attr = modelAttributes
+													.get(propertykey);
 
-											if (!flattenedStringEquals(dbattr, attr)) {
+											if (!flattenedStringEquals(dbattr,
+													attr)) {
 												totalErrors++;
-												System.err.println("error in validating, attribute: " + propertykey
-														+ " has values:");
-												String cla1 = dbattr != null ? dbattr.getClass().toString()
+												System.err
+														.println("error in validating, attribute: "
+																+ propertykey
+																+ " has values:");
+												String cla1 = dbattr != null ? dbattr
+														.getClass().toString()
 														: "null attr";
-												System.err.println("database:\t"
-														+ (dbattr instanceof Object[]
-																? (Arrays.asList((Object[]) dbattr)) : dbattr)
-														+ " JAVATYPE: " + cla1 + " IN NODE: " + instance.getId()
-														+ " WITH ID: "
-														+ instance.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+												System.err
+														.println("database:\t"
+																+ (dbattr instanceof Object[] ? (Arrays
+																		.asList((Object[]) dbattr))
+																		: dbattr)
+																+ " JAVATYPE: "
+																+ cla1
+																+ " IN NODE: "
+																+ instance
+																		.getId()
+																+ " WITH ID: "
+																+ instance
+																		.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
-												String cla2 = attr != null ? attr.getClass().toString() : "null attr";
-												System.err.println("model:\t\t"
-														+ (attr instanceof Object[] ? (Arrays.asList((Object[]) attr))
-																: attr)
-														+ " JAVATYPE: " + cla2 + " IN ELEMENT WITH ID "
-														+ eobject.getUriFragment());
+												String cla2 = attr != null ? attr
+														.getClass().toString()
+														: "null attr";
+												System.err
+														.println("model:\t\t"
+																+ (attr instanceof Object[] ? (Arrays
+																		.asList((Object[]) attr))
+																		: attr)
+																+ " JAVATYPE: "
+																+ cla2
+																+ " IN ELEMENT WITH ID "
+																+ eobject
+																		.getUriFragment());
 												//
 											}
 
@@ -244,42 +313,68 @@ public class SyncValidationListener implements IGraphChangeListener {
 									}
 
 									if (modelAttributes.size() > 0) {
-										System.err.println(
-												"error in validating, the following attributes were not found in the graph node:");
-										System.err.println(modelAttributes.keySet());
+										System.err
+												.println("error in validating, the following attributes were not found in the graph node:");
+										System.err.println(modelAttributes
+												.keySet());
 										totalErrors++;
 									}
 
 									HashMap<String, Set<String>> nodereferences = new HashMap<>();
 									// cache db references
-									for (IGraphEdge reference : instance.getOutgoing()) {
+									for (IGraphEdge reference : instance
+											.getOutgoing()) {
 
-										if (reference.getType().equals("file") || reference.getType().equals("ofType")
-												|| reference.getType().equals("ofKind")
-												|| reference.getPropertyKeys().contains("isDerived")) {
+										if (reference.getType().equals("file")
+												|| reference.getType().equals(
+														"ofType")
+												|| reference.getType().equals(
+														"ofKind")
+												|| reference.getPropertyKeys()
+														.contains("isDerived")) {
 											// ignore
 										} else {
 											//
 											HashSet<String> refvals = new HashSet<>();
-											if (nodereferences.containsKey(reference.getType())) {
-												refvals.addAll(nodereferences.get(reference.getType()));
+											if (nodereferences
+													.containsKey(reference
+															.getType())) {
+												refvals.addAll(nodereferences
+														.get(reference
+																.getType()));
 											}
-											refvals.add(repoURL + FILEINDEX_REPO_SEPARATOR
-													+ instance.getOutgoingWithType("file").iterator().next()
-															.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
-													+ "#" + reference.getEndNode()
-															.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
-											nodereferences.put(reference.getType(), refvals);
+											refvals.add(repoURL
+													+ FILEINDEX_REPO_SEPARATOR
+													+ instance
+															.getOutgoingWithType(
+																	"file")
+															.iterator()
+															.next()
+															.getEndNode()
+															.getProperty(
+																	IModelIndexer.IDENTIFIER_PROPERTY)
+													+ "#"
+													+ reference
+															.getEndNode()
+															.getProperty(
+																	IModelIndexer.IDENTIFIER_PROPERTY)
+															.toString());
+											nodereferences.put(
+													reference.getType(),
+													refvals);
 											//
 										}
 									}
 									// compare model and graph reference maps
-									Iterator<Entry<String, Set<String>>> rci = modelReferences.entrySet().iterator();
+									Iterator<Entry<String, Set<String>>> rci = modelReferences
+											.entrySet().iterator();
 									while (rci.hasNext()) {
-										Entry<String, Set<String>> modelRef = rci.next();
+										Entry<String, Set<String>> modelRef = rci
+												.next();
 										String modelRefName = modelRef.getKey();
 
-										if (!nodereferences.containsKey(modelRefName)) {
+										if (!nodereferences
+												.containsKey(modelRefName)) {
 											// no need for this?
 											// System.err.println("error in
 											// validating: reference "+
@@ -290,47 +385,69 @@ public class SyncValidationListener implements IGraphChangeListener {
 											// allValid = false;
 										} else {
 											Set<String> noderefvalues = new HashSet<>();
-											noderefvalues.addAll(nodereferences.get(modelRefName));
+											noderefvalues.addAll(nodereferences
+													.get(modelRefName));
 
 											Set<String> modelrefvalues = new HashSet<>();
-											modelrefvalues.addAll(modelReferences.get(modelRefName));
+											modelrefvalues
+													.addAll(modelReferences
+															.get(modelRefName));
 
 											Set<String> noderefvaluesclone = new HashSet<>();
-											noderefvaluesclone.addAll(nodereferences.get(modelRefName));
-											noderefvaluesclone.removeAll(modelrefvalues);
+											noderefvaluesclone
+													.addAll(nodereferences
+															.get(modelRefName));
+											noderefvaluesclone
+													.removeAll(modelrefvalues);
 
 											Set<String> modelrefvaluesclone = new HashSet<>();
-											modelrefvaluesclone.addAll(modelReferences.get(modelRefName));
-											modelrefvaluesclone.removeAll(noderefvalues);
-											modelrefvaluesclone = removeHawkProxies(instance, modelrefvaluesclone);
+											modelrefvaluesclone
+													.addAll(modelReferences
+															.get(modelRefName));
+											modelrefvaluesclone
+													.removeAll(noderefvalues);
+											modelrefvaluesclone = removeHawkProxies(
+													instance,
+													modelrefvaluesclone);
 
 											if (noderefvaluesclone.size() > 0) {
 												System.err
-														.println(
-																"error in validating: reference " + modelRefName
-																		+ " of node: "
-																		+ instance
-																				.getProperty(
-																						IModelIndexer.IDENTIFIER_PROPERTY)
-																		+ "\nlocated: "
-																		+ instance.getOutgoingWithType(
-																				"file").iterator().next().getEndNode()
+														.println("error in validating: reference "
+																+ modelRefName
+																+ " of node: "
+																+ instance
+																		.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+																+ "\nlocated: "
+																+ instance
+																		.getOutgoingWithType(
+																				"file")
+																		.iterator()
+																		.next()
+																		.getEndNode()
 																		.getProperty(
 																				IModelIndexer.IDENTIFIER_PROPERTY));
-												System.err.println(noderefvaluesclone);
-												System.err.println(
-														"the above ids were found in the graph but not the model");
+												System.err
+														.println(noderefvaluesclone);
+												System.err
+														.println("the above ids were found in the graph but not the model");
 												totalErrors++;
 											}
 
 											if (modelrefvaluesclone.size() > 0) {
 
-												System.err.println("error in validating: reference " + modelRefName
-														+ " of model element: " + eobject.getUriFragment()
-														+ "\nlocated: " + eobject.getUri());
-												System.err.println(modelrefvaluesclone);
-												System.err.println(
-														"the above ids were found in the model but not the graph");
+												System.err
+														.println("error in validating: reference "
+																+ modelRefName
+																+ " of model element: "
+																+ eobject
+																		.getUriFragment()
+																+ "\nlocated: "
+																+ eobject
+																		.getUri());
+												System.err
+														.println(modelrefvaluesclone);
+												System.err
+														.println("the above ids were found in the model but not the graph");
 												totalErrors++;
 											}
 
@@ -340,8 +457,11 @@ public class SyncValidationListener implements IGraphChangeListener {
 									}
 
 									if (nodereferences.size() > 0) {
-										System.err.println("error in validating: references " + nodereferences.keySet()
-												+ " had targets in the graph but not in the model: ");
+										System.err
+												.println("error in validating: references "
+														+ nodereferences
+																.keySet()
+														+ " had targets in the graph but not in the model: ");
 										System.err.println(nodereferences);
 										totalErrors++;
 									}
@@ -361,7 +481,8 @@ public class SyncValidationListener implements IGraphChangeListener {
 
 						t.success();
 					} catch (Exception e) {
-						System.err.println("syncValidationListener transaction error:");
+						System.err
+								.println("syncValidationListener transaction error:");
 						e.printStackTrace();
 					}
 
@@ -376,15 +497,19 @@ public class SyncValidationListener implements IGraphChangeListener {
 		if (totalGraphSize != totalResourceSizes)
 			totalErrors++;
 
-		System.err.println("validated changes... "
-				+ (totalErrors == 0 ? "true"
-						: ((totalErrors == malformed) + " (with " + totalErrors + " total and " + malformed
-								+ " malformed errors)"))
-				+ (removedProxies == 0 ? "" : " [" + removedProxies + "] unresolved hawk proxies matched"));
+		System.err
+				.println("validated changes... "
+						+ (totalErrors == 0 ? "true"
+								: ((totalErrors == malformed) + " (with "
+										+ totalErrors + " total and "
+										+ malformed + " malformed errors)"))
+						+ (removedProxies == 0 ? "" : " [" + removedProxies
+								+ "] unresolved hawk proxies matched"));
 
 	}
 
-	private Set<String> removeHawkProxies(IGraphNode instance, Set<String> modelrefvaluesclone) {
+	private Set<String> removeHawkProxies(IGraphNode instance,
+			Set<String> modelrefvaluesclone) {
 
 		// String repoURL = "";
 		// String destinationObjectRelativePathURI = "";
@@ -398,7 +523,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 
 		for (String propertykey : instance.getPropertyKeys()) {
 
-			if (propertykey.startsWith("_proxyRef:")) {
+			if (propertykey.startsWith(PROXY_REFERENCE_PREFIX)) {
 
 				String[] proxies = (String[]) instance.getProperty(propertykey);
 
@@ -477,37 +602,40 @@ public class SyncValidationListener implements IGraphChangeListener {
 	}
 
 	@Override
-	public void modelElementAddition(VcsCommitItem s, IHawkObject element, IGraphNode elementNode,
-			boolean isTransient) {
-
-	}
-
-	@Override
-	public void modelElementRemoval(VcsCommitItem s, IGraphNode elementNode, boolean isTransient) {
-
-	}
-
-	@Override
-	public void modelElementAttributeUpdate(VcsCommitItem s, IHawkObject eObject, String attrName, Object oldValue,
-			Object newValue, IGraphNode elementNode, boolean isTransient) {
-
-	}
-
-	@Override
-	public void modelElementAttributeRemoval(VcsCommitItem s, IHawkObject eObject, String attrName,
+	public void modelElementAddition(VcsCommitItem s, IHawkObject element,
 			IGraphNode elementNode, boolean isTransient) {
 
 	}
 
 	@Override
-	public void referenceAddition(VcsCommitItem s, IGraphNode source, IGraphNode destination, String edgelabel,
+	public void modelElementRemoval(VcsCommitItem s, IGraphNode elementNode,
 			boolean isTransient) {
 
 	}
 
 	@Override
-	public void referenceRemoval(VcsCommitItem s, IGraphNode source, IGraphNode destination, String edgelabel,
+	public void modelElementAttributeUpdate(VcsCommitItem s,
+			IHawkObject eObject, String attrName, Object oldValue,
+			Object newValue, IGraphNode elementNode, boolean isTransient) {
+
+	}
+
+	@Override
+	public void modelElementAttributeRemoval(VcsCommitItem s,
+			IHawkObject eObject, String attrName, IGraphNode elementNode,
 			boolean isTransient) {
+
+	}
+
+	@Override
+	public void referenceAddition(VcsCommitItem s, IGraphNode source,
+			IGraphNode destination, String edgelabel, boolean isTransient) {
+
+	}
+
+	@Override
+	public void referenceRemoval(VcsCommitItem s, IGraphNode source,
+			IGraphNode destination, String edgelabel, boolean isTransient) {
 
 	}
 

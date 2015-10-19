@@ -42,7 +42,7 @@ public class Modelio_Titan_Runtime_example {
 	private static IModelIndexer i;
 
 	private static File parent = new File("runtime_data");
-	
+
 	private static File query3 = new File(
 			"/media/titan-data/runtime-New_configuration/test/basic.eol");
 
@@ -68,15 +68,15 @@ public class Modelio_Titan_Runtime_example {
 		IGraphDatabase db = (new Neo4JDatabase());
 		// create the indexer with relevant database
 		db.run(i.getParentFolder(), i.getConsole());
-		i.setDB(db,true);
+		i.setDB(db, true);
 
 		// set path of vcs
 		String vcsloc = "/media/titan-data/Hawk/uk.ac.york.cs.mde.hawk.modelio/samples";
 
 		// add vcs monitors
 		IVcsManager vcs = new LocalFolder();
-		vcs.run(vcsloc, "un", "pw", i.getConsole());
-		i.addVCSManager(vcs,true);
+		vcs.run(vcsloc, "un", "pw", i.getConsole(), i);
+		i.addVCSManager(vcs, true);
 
 		// metamodel updater
 		i.setMetaModelUpdater(new GraphMetaModelUpdater());
@@ -94,10 +94,10 @@ public class Modelio_Titan_Runtime_example {
 		i.registerMetamodel(metamodel);
 
 		// add one or more metamodel files
-		//metamodel = new File(
-		//		"/media/titan-data/Hawk/uk.ac.york.cs.mde.hawk.modelio/models/UML.ecore");
+		// metamodel = new File(
+		// "/media/titan-data/Hawk/uk.ac.york.cs.mde.hawk.modelio/models/UML.ecore");
 		// register them
-		//i.registerMetamodel(metamodel);
+		// i.registerMetamodel(metamodel);
 
 		// model updater
 		i.addModelUpdater(new GraphModelUpdater());
@@ -105,10 +105,10 @@ public class Modelio_Titan_Runtime_example {
 		// query language
 		q = new EOLQueryEngine();
 		i.addQueryEngine(q);
-//
+		//
 		// initialise the server for real-time updates to changes
 		i.setAdminPassword(adminpw);
-		i.init(1000,512*1000);
+		i.init(1000, 512 * 1000);
 
 		// add console interaction if needed
 		Thread t = consoleInteraction(i);

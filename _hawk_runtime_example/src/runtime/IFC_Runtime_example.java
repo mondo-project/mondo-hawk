@@ -64,7 +64,7 @@ public class IFC_Runtime_example {
 
 		// add vcs monitors
 		IVcsManager vcs = new LocalFolder();
-		vcs.run(vcsloc, "un", "pw", i.getConsole());
+		vcs.run(vcsloc, "un", "pw", i.getConsole(),i);
 		i.addVCSManager(vcs,true);
 
 		// metamodel updater

@@ -129,7 +129,7 @@ public class Runtime_example {
 			pw = password();
 
 		if (pw != null) {
-			vcs.run(args[0], "kb634", pw, hawk.getConsole());
+			vcs.run(args[0], "kb634", pw, hawk.getConsole(), hawk);
 		} else
 			System.exit(1);
 		pw = null;

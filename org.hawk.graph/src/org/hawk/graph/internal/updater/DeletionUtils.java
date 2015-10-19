@@ -190,14 +190,14 @@ public class DeletionUtils {
 				String fullReferencedElementPathElementURI = fullReferencedElementPathFileURI + "#"
 						+ referencedModelElement.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 
-				Object proxies = referencingNode.getProperty("_proxyRef:" + fullReferencedElementPathFileURI);
+				Object proxies = referencingNode.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + fullReferencedElementPathFileURI);
 
 				proxies = addToElementProxies((String[]) proxies, fullReferencedElementPathElementURI, type);
 
-				referencingNode.setProperty("_proxyRef:" + fullReferencedElementPathFileURI, proxies);
+				referencingNode.setProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + fullReferencedElementPathFileURI, proxies);
 
 				proxydictionary = graph.getOrCreateNodeIndex("proxydictionary");
-				proxydictionary.add(referencingNode, "_proxyRef", fullReferencedElementPathFileURI);
+				proxydictionary.add(referencingNode, GraphModelUpdater.PROXY_REFERENCE_PREFIX, fullReferencedElementPathFileURI);
 
 				rel.delete();
 			} else {

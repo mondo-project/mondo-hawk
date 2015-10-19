@@ -65,15 +65,15 @@ public class IFC_Titan_Runtime_example {
 		IGraphDatabase db = (new Neo4JDatabase());
 		// create the indexer with relevant database
 		db.run(i.getParentFolder(), i.getConsole());
-		i.setDB(db,true);
+		i.setDB(db, true);
 
 		// set path of vcs
 		String vcsloc = "../uk.ac.york.cs.mde.hawk.ifc/samples";
 
 		// add vcs monitors
 		IVcsManager vcs = new LocalFolder();
-		vcs.run(vcsloc, "un", "pw", i.getConsole());
-		i.addVCSManager(vcs,true);
+		vcs.run(vcsloc, "un", "pw", i.getConsole(), i);
+		i.addVCSManager(vcs, true);
 
 		// metamodel updater
 		i.setMetaModelUpdater(new GraphMetaModelUpdater());
@@ -99,7 +99,7 @@ public class IFC_Titan_Runtime_example {
 		//
 		// initialise the server for real-time updates to changes
 		i.setAdminPassword(adminpw);
-		i.init(1000,512*1000);
+		i.init(1000, 512 * 1000);
 
 		// add console interaction if needed
 		Thread t = consoleInteraction(i);

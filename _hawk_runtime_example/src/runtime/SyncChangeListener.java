@@ -276,7 +276,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 												&& !propertykey
 														.equals(IModelIndexer.IDENTIFIER_PROPERTY)
 												&& !propertykey
-														.startsWith("_proxyRef")) {
+														.startsWith(GraphModelUpdater.PROXY_REFERENCE_PREFIX)) {
 											//
 											Object dbattr = instance
 													.getProperty(propertykey);
@@ -535,7 +535,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 
 		for (String propertykey : instance.getPropertyKeys()) {
 
-			if (propertykey.startsWith("_proxyRef:")) {
+			if (propertykey.startsWith(GraphModelUpdater.PROXY_REFERENCE_PREFIX)) {
 
 				String[] proxies = (String[]) instance.getProperty(propertykey);
 
