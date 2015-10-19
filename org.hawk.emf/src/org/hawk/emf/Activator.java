@@ -10,7 +10,16 @@
  ******************************************************************************/
 package org.hawk.emf;
 
+import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.Resource.Factory.Descriptor;
+import org.eclipse.emf.ecore.resource.Resource.Factory.Registry;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.hawk.emf.model.EMFModelResourceFactory;
 import org.osgi.framework.BundleContext;
 
 public class Activator extends Plugin {
@@ -30,10 +39,66 @@ public class Activator extends Plugin {
 	 * )
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
-		//System.out.println("kjsdbgksdjgbsdkgjbsdgkjsdbgkjsdbgksdbg");
 		super.start(bundleContext);
 		Activator.context = bundleContext;
 		Activator.instance = this;
+
+		enableRegisteredXMIExtensions();
+	}
+
+	/**
+	 * Enable this plugin for all the registered extensions that are backed by
+	 * XMI-based factories.
+	 */
+	private void enableRegisteredXMIExtensions() {
+		final Registry factoryRegistry = Resource.Factory.Registry.INSTANCE;
+		Set<String> registeredExtensions = new HashSet<>();
+		for (Entry<String, Object> entry : factoryRegistry.getExtensionToFactoryMap().entrySet()) {
+			switch (entry.getKey()) {
+			case Resource.Factory.Registry.DEFAULT_EXTENSION:
+			case "ecore":
+				continue;
+			}
+
+			if (entry.getValue() instanceof Resource.Factory.Descriptor) {
+				Descriptor descriptor = (Resource.Factory.Descriptor)entry.getValue();
+				if (descriptor.createFactory() instanceof XMIResourceFactoryImpl) {
+					registeredExtensions.add(entry.getKey());
+				}
+			}
+			if (entry.getValue() instanceof XMIResourceFactoryImpl) {
+				registeredExtensions.add(entry.getKey());
+			}
+		}
+
+		final String sManualExtensions = System.getProperty(EMFModelResourceFactory.PROPERTY_EXTRA_EXTENSIONS);
+		if (sManualExtensions != null) {
+			for (String sExtension : sManualExtensions.split(",")) {
+				sExtension = sExtension.trim();
+				if (sExtension.startsWith(".")) {
+					sExtension = sExtension.substring(1);
+				}
+				if (!sExtension.isEmpty()) {
+					registeredExtensions.add(sExtension);
+				}
+			}
+		}
+
+		if (!registeredExtensions.isEmpty()) {
+			final StringBuffer sbuf = new StringBuffer();
+			boolean first = true;
+			for (String sExtension : registeredExtensions) {
+				if (first) {
+					first = false;
+				} else {
+					sbuf.append(',');
+				}
+				sbuf.append('.');
+				sbuf.append(sExtension);
+			}
+			final String newValue = sbuf.toString();
+			System.setProperty(EMFModelResourceFactory.PROPERTY_EXTRA_EXTENSIONS, newValue);
+		}
 	}
 
 	/*
@@ -43,16 +108,13 @@ public class Activator extends Plugin {
 	 * org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
-		//System.out.println("I AM STOPPED");
 		super.stop(bundleContext);
 		Activator.context = null;
 		Activator.instance = null;
 	}
 
 	public static Plugin getInstance() {
-		//System.out.println("getIntance() : " + (instance == null));
 		return instance;
-
 	}
 
 }
