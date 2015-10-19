@@ -44,27 +44,33 @@ public class DeletionUtils {
 
 	}
 
-	protected boolean deleteAll(VcsCommitItem s, IGraphChangeListener changeListener) throws Exception {
+	protected boolean deleteAll(VcsCommitItem s,
+			IGraphChangeListener changeListener) throws Exception {
 
 		long start = System.currentTimeMillis();
 
 		boolean success = true;
 
 		try (IGraphTransaction transaction = graph.beginTransaction()) {
-			final String repository = s.getCommit().getDelta().getManager().getLocation();
+			final String repository = s.getCommit().getDelta().getManager()
+					.getLocation();
 			final String filepath = s.getPath();
 
-			final String fullFileID = repository + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + filepath;
-			final Iterator<IGraphNode> itFile = graph.getFileIndex().get("id", fullFileID).iterator();
+			final String fullFileID = repository
+					+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + filepath;
+			final Iterator<IGraphNode> itFile = graph.getFileIndex()
+					.get("id", fullFileID).iterator();
 
 			if (itFile.hasNext()) {
 				IGraphNode file = itFile.next();
 
-				System.out.println("deleting nodes from file: " + file.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+				System.out.println("deleting nodes from file: "
+						+ file.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 				HashSet<IGraphNode> modelElements = new HashSet<IGraphNode>();
 
-				for (IGraphEdge rel : file.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+				for (IGraphEdge rel : file
+						.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 					modelElements.add(rel.getStartNode());
 					rel.delete();
 				}
@@ -87,7 +93,9 @@ public class DeletionUtils {
 				delete(file);
 				changeListener.fileRemoval(s, file);
 			} else {
-				System.err.println("WARNING: could not find any file nodes for " + fullFileID);
+				System.err
+						.println("WARNING: could not find any file nodes for "
+								+ fullFileID);
 			}
 
 			transaction.success();
@@ -97,7 +105,8 @@ public class DeletionUtils {
 			e.printStackTrace();
 		}
 
-		System.out.println("deleted all, took: " + (System.currentTimeMillis() - start) / 1000 + "s"
+		System.out.println("deleted all, took: "
+				+ (System.currentTimeMillis() - start) / 1000 + "s"
 				+ (System.currentTimeMillis() - start) / 1000 + "ms");
 		return success;
 	}
@@ -106,13 +115,18 @@ public class DeletionUtils {
 		for (final String base : bases) {
 			if (extension.startsWith(base)) {
 				return extension.substring(base.length());
-			}	
+			}
 		}
-		System.err.println(String.format("WARNING: could not make '%s' into a relative path", extension));
+		System.err
+				.println(String.format(
+						"WARNING: could not make '%s' into a relative path",
+						extension));
 		return extension;
 	}
 
-	protected String[] addToElementProxies(String[] proxies, String fullPathURI, String edgelabel, boolean isContainment, boolean isContainer) {
+	protected String[] addToElementProxies(String[] proxies,
+			String fullPathURI, String edgelabel, boolean isContainment,
+			boolean isContainer) {
 
 		// System.err.println("addtoelementproxies: " +
 		// Arrays.toString(proxies));
@@ -121,12 +135,14 @@ public class DeletionUtils {
 
 		if (proxies != null) {
 
-			String[] ret = new String[proxies.length + 2];
+			String[] ret = new String[proxies.length + 4];
 
-			for (int i = 0; i < proxies.length; i = i + 2) {
+			for (int i = 0; i < proxies.length; i = i + 4) {
 
 				ret[i] = proxies[i];
 				ret[i + 1] = proxies[i + 1];
+				ret[i + 2] = proxies[i + 2];
+				ret[i + 3] = proxies[i + 3];
 
 			}
 
@@ -142,15 +158,18 @@ public class DeletionUtils {
 			return ret;
 
 		} else {
-			String[] ret = new String[] {fullPathURI, edgelabel, isContainment + "", isContainer + ""};
+			String[] ret = new String[] { fullPathURI, edgelabel,
+					isContainment + "", isContainer + "" };
 			return ret;
 		}
 	}
 
-	protected void makeProxyRefs(VcsCommitItem commitItem, IGraphNode referencedModelElement, String repositoryURL,
+	protected void makeProxyRefs(VcsCommitItem commitItem,
+			IGraphNode referencedModelElement, String repositoryURL,
 			IGraphNode referencedElementFileNode, IGraphChangeListener listener) {
 
-		IGraphNodeIndex proxydictionary = graph.getOrCreateNodeIndex("proxydictionary");
+		IGraphNodeIndex proxydictionary = graph
+				.getOrCreateNodeIndex("proxydictionary");
 
 		// handle any incoming references (after dereference, aka other file
 		// ones)
@@ -159,8 +178,10 @@ public class DeletionUtils {
 
 			final IGraphNode referencingNode = rel.getStartNode();
 			final IGraphNode endNode = rel.getEndNode();
-			String referencingNodeFileID = referencingNode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)
-					.iterator().next().getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+			String referencingNodeFileID = referencingNode
+					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)
+					.iterator().next().getEndNode()
+					.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 			String referencedElementFileID = (String) referencedElementFileNode
 					.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
 
@@ -168,41 +189,55 @@ public class DeletionUtils {
 
 			String type = rel.getType();
 			if (!referencingNodeFileID.equals(referencedElementFileID)) {
-				String fullReferencedElementPathFileURI = repositoryURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+				String fullReferencedElementPathFileURI = repositoryURL
+						+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
 						+ referencedElementFileID;
 
-				String fullReferencedElementPathElementURI = fullReferencedElementPathFileURI + "#"
-						+ referencedModelElement.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+				String fullReferencedElementPathElementURI = fullReferencedElementPathFileURI
+						+ "#"
+						+ referencedModelElement.getProperty(
+								IModelIndexer.IDENTIFIER_PROPERTY).toString();
 
-				Object proxies = referencingNode.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + fullReferencedElementPathFileURI);
+				Object proxies = referencingNode
+						.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX
+								+ fullReferencedElementPathFileURI);
 
-				proxies = addToElementProxies((String[]) proxies, fullReferencedElementPathElementURI, type,
+				proxies = addToElementProxies(
+						(String[]) proxies,
+						fullReferencedElementPathElementURI,
+						type,
 						rel.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null,
 						rel.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER) != null);
 
-				referencingNode.setProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + fullReferencedElementPathFileURI, proxies);
+				referencingNode.setProperty(
+						GraphModelUpdater.PROXY_REFERENCE_PREFIX
+								+ fullReferencedElementPathFileURI, proxies);
 
 				proxydictionary = graph.getOrCreateNodeIndex("proxydictionary");
-				proxydictionary.add(referencingNode, GraphModelUpdater.PROXY_REFERENCE_PREFIX, fullReferencedElementPathFileURI);
+				proxydictionary.add(referencingNode,
+						GraphModelUpdater.PROXY_REFERENCE_PREFIX,
+						fullReferencedElementPathFileURI);
 
 				rel.delete();
 			} else {
 				// same file so just delete
 				rel.delete();
 			}
-			listener.referenceRemoval(commitItem, referencingNode, endNode, type, false);
+			listener.referenceRemoval(commitItem, referencingNode, endNode,
+					type, false);
 		}
 	}
 
-	protected void dereference(IGraphNode modelElement, IGraphChangeListener l, VcsCommitItem s) {
+	protected void dereference(IGraphNode modelElement, IGraphChangeListener l,
+			VcsCommitItem s) {
 
 		for (IGraphEdge rel : modelElement.getOutgoing()) {
 
 			// delete derived attributes stored as nodes
 			if (rel.getProperty("isDerived") != null) {
 				if (l == null && s == null) {
-					System.err.println(
-							"warning dereference has null listener/vcscommit -- this should only be used for non-model elements");
+					System.err
+							.println("warning dereference has null listener/vcscommit -- this should only be used for non-model elements");
 					break;
 				}
 				IGraphNode n = rel.getEndNode();

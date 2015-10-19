@@ -343,9 +343,11 @@ public class SyncValidationListener implements IGraphChangeListener {
 														.get(reference
 																.getType()));
 											}
+											final IGraphNode refEndNode = reference
+													.getEndNode();
 											refvals.add(repoURL
 													+ FILEINDEX_REPO_SEPARATOR
-													+ instance
+													+ refEndNode
 															.getOutgoingWithType(
 																	"file")
 															.iterator()
@@ -354,8 +356,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 															.getProperty(
 																	IModelIndexer.IDENTIFIER_PROPERTY)
 													+ "#"
-													+ reference
-															.getEndNode()
+													+ refEndNode
 															.getProperty(
 																	IModelIndexer.IDENTIFIER_PROPERTY)
 															.toString());
@@ -434,7 +435,6 @@ public class SyncValidationListener implements IGraphChangeListener {
 											}
 
 											if (modelrefvaluesclone.size() > 0) {
-
 												System.err
 														.println("error in validating: reference "
 																+ modelRefName
@@ -527,7 +527,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 
 				String[] proxies = (String[]) instance.getProperty(propertykey);
 
-				for (int i = 0; i < proxies.length; i = i + 2)
+				for (int i = 0; i < proxies.length; i = i + 4)
 					if (modelrefvaluesclone.remove(proxies[i]))
 						removedProxies++;
 			}

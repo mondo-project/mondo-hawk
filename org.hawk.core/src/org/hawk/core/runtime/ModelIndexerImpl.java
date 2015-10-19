@@ -115,7 +115,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 	 * Creates an indexer with a <code>name</code>, with its contents saved in
 	 * <code>parentfolder</code> and printing to console <code>c</code>.
 	 */
-	public ModelIndexerImpl(String name, File parentfolder, IAbstractConsole c) throws Exception {
+	public ModelIndexerImpl(String name, File parentfolder, IAbstractConsole c)
+			throws Exception {
 		this.name = name;
 		this.console = c;
 		this.parentfolder = parentfolder;
@@ -151,7 +152,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 					if (m.isActive()) {
 
 						try {
-							currReposTopRevisions.put(m.getLocation(), m.getCurrentRevision());
+							currReposTopRevisions.put(m.getLocation(),
+									m.getCurrentRevision());
 						} catch (Exception e1) {
 							// if (e1.getMessage().contains("Authentication"))
 							// {syserr(Eclipse_VCS_NoSQL_UI_view.indexers.remove(this)+"");
@@ -163,8 +165,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 							allSync = false;
 						}
 
-						if (!currReposTopRevisions.get(m.getLocation())
-								.equals(currLocalTopRevisions.get(m.getLocation()))) {
+						if (!currReposTopRevisions.get(m.getLocation()).equals(
+								currLocalTopRevisions.get(m.getLocation()))) {
 
 							boolean success = true;
 
@@ -173,14 +175,16 @@ public class ModelIndexerImpl implements IModelIndexer {
 							String monitorTempDir = graph.getTempDir();
 
 							File temp = new File(
-									// context.getBundle().getLocation()
+							// context.getBundle().getLocation()
 									monitorTempDir);
 							temp.mkdir();
 
 							Set<VcsCommitItem> deleteditems = new HashSet<VcsCommitItem>();
 
 							// limit to "interesting" files
-							List<VcsCommitItem> files = m.getDelta(currLocalTopRevisions.get(m.getLocation()));
+							List<VcsCommitItem> files = m
+									.getDelta(currLocalTopRevisions.get(m
+											.getLocation()));
 
 							// System.err.println(files);
 
@@ -189,23 +193,29 @@ public class ModelIndexerImpl implements IModelIndexer {
 							for (VcsCommitItem r : files) {
 								for (String p : getKnownModelParserTypes()) {
 									IModelResourceFactory parser = getModelParser(p);
-									for (String ext : parser.getModelExtensions()) {
-										if (r.getPath().toLowerCase().endsWith(ext)) {
+									for (String ext : parser
+											.getModelExtensions()) {
+										if (r.getPath().toLowerCase()
+												.endsWith(ext)) {
 											interestingfiles.add(r);
 										}
 									}
 								}
 							}
 
-							Iterator<VcsCommitItem> it = interestingfiles.iterator();
+							Iterator<VcsCommitItem> it = interestingfiles
+									.iterator();
 
 							while (it.hasNext()) {
 								VcsCommitItem c = it.next();
 
-								if (c.getChangeType().equals(VcsChangeType.DELETED)) {
+								if (c.getChangeType().equals(
+										VcsChangeType.DELETED)) {
 
 									if (VERBOSE)
-										console.println("-->" + c.getPath() + " HAS CHANGED (" + c.getChangeType()
+										console.println("-->" + c.getPath()
+												+ " HAS CHANGED ("
+												+ c.getChangeType()
 												+ "), PROPAGATING CHANGES");
 
 									deleteditems.add(c);
@@ -215,15 +225,18 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 							// metadata about synchronise
 							deletedFiles = deletedFiles + deleteditems.size();
-							interestingFiles = interestingFiles + interestingfiles.size();
+							interestingFiles = interestingFiles
+									+ interestingfiles.size();
 
 							// for each registered updater
 							for (IModelUpdater u : getUpdaters()) {
 
-								Set<VcsCommitItem> currreposchangeditems = u.compareWithLocalFiles(interestingfiles);
+								Set<VcsCommitItem> currreposchangeditems = u
+										.compareWithLocalFiles(interestingfiles);
 
 								// metadata about synchronise
-								currchangeditems = currchangeditems + currreposchangeditems.size();
+								currchangeditems = currchangeditems
+										+ currreposchangeditems.size();
 
 								// create temp files with changed repos files
 								for (VcsCommitItem s : currreposchangeditems) {
@@ -231,23 +244,32 @@ public class ModelIndexerImpl implements IModelIndexer {
 									String commitPath = s.getPath();
 
 									if (VERBOSE)
-										console.println("-->" + commitPath + " HAS CHANGED (" + s.getChangeType()
+										console.println("-->" + commitPath
+												+ " HAS CHANGED ("
+												+ s.getChangeType()
 												+ "), PROPAGATING CHANGES");
 
-									String[] commitPathSplit = commitPath.split("/");
+									String[] commitPathSplit = commitPath
+											.split("/");
 
 									if (commitPathSplit.length > 1) {
 										String path = monitorTempDir;
 										for (int ii = 0; ii < commitPathSplit.length - 1; ii++) {
 
-											File dir = new File(path + "/" + commitPathSplit[ii]);
+											File dir = new File(path + "/"
+													+ commitPathSplit[ii]);
 											dir.mkdir();
-											path = path + "/" + commitPathSplit[ii];
+											path = path + "/"
+													+ commitPathSplit[ii];
 
 										}
-										temp = new File(path + "/" + commitPathSplit[commitPathSplit.length - 1]);
+										temp = new File(
+												path
+														+ "/"
+														+ commitPathSplit[commitPathSplit.length - 1]);
 									} else
-										temp = new File(monitorTempDir + "/" + commitPath);
+										temp = new File(monitorTempDir + "/"
+												+ commitPath);
 
 									if (!temp.exists())
 										m.importFiles(commitPath, temp);
@@ -264,7 +286,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 									}
 								} catch (Exception e) {
 									success = false;
-									System.err.println("error in deleting removed files from store:");
+									System.err
+											.println("error in deleting removed files from store:");
 									e.printStackTrace();
 									listener.changeFailure();
 								} finally {
@@ -283,19 +306,25 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 										if (u.caresAboutResources()) {
 
-											File file = new File(graph.getTempDir() + "/" + v.getPath());
+											File file = new File(
+													graph.getTempDir() + "/"
+															+ v.getPath());
 
 											if (!file.exists()) {
-												console.printerrln(
-														"warning, cannot find file: " + file + ", ignoring changes");
+												console.printerrln("warning, cannot find file: "
+														+ file
+														+ ", ignoring changes");
 											} else {
-												r = getModelParserFromFilename(file.getName().toLowerCase())
+												r = getModelParserFromFilename(
+														file.getName()
+																.toLowerCase())
 														.parse(file);
 											}
 
 										}
 
-										success = success && u.updateStore(v, r);
+										success = success
+												&& u.updateStore(v, r);
 
 										if (r != null) {
 											if (!isSyncMetricsEnabled)
@@ -308,7 +337,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 										}
 
 									} catch (Exception e) {
-										console.printerrln("updater: " + u + "failed to update store");
+										console.printerrln("updater: " + u
+												+ "failed to update store");
 										console.printerrln(e);
 										success = false;
 									}
@@ -321,11 +351,14 @@ public class ModelIndexerImpl implements IModelIndexer {
 							}
 
 							// delete temporary files
-							if (!FileOperations.deleteFiles(new File(monitorTempDir), true))
+							if (!FileOperations.deleteFiles(new File(
+									monitorTempDir), true))
 								console.printerrln("error in deleting temporary local vcs files");
 
 							if (success) {
-								currLocalTopRevisions.put(m.getLocation(), currReposTopRevisions.get(m.getLocation()));
+								currLocalTopRevisions.put(m.getLocation(),
+										currReposTopRevisions.get(m
+												.getLocation()));
 							} else {
 								allSync = false;
 							}
@@ -430,12 +463,13 @@ public class ModelIndexerImpl implements IModelIndexer {
 			JFileChooser filechoser = new JFileChooser();
 			filechoser.setDialogTitle("Chose EOL File to run:");
 			File genericWorkspaceFile = new File("");
-			String parent = genericWorkspaceFile.getAbsolutePath().replaceAll("\\\\", "/");
+			String parent = genericWorkspaceFile.getAbsolutePath().replaceAll(
+					"\\\\", "/");
 
 			// change to workspace directory or a generic one on release
-			filechoser.setCurrentDirectory(
-					new File(new File(parent).getParentFile().getAbsolutePath().replaceAll("\\\\", "/")
-							+ "workspace/org.hawk.epsilon/src/org/hawk/epsilon/query"));
+			filechoser.setCurrentDirectory(new File(new File(parent)
+					.getParentFile().getAbsolutePath().replaceAll("\\\\", "/")
+					+ "workspace/org.hawk.epsilon/src/org/hawk/epsilon/query"));
 
 			if (filechoser.showDialog(fileChoserWindow, "Select File") == JFileChooser.APPROVE_OPTION)
 				query = filechoser.getSelectedFile();
@@ -449,7 +483,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 				// System.err.println(getKnownQueryLanguages().keySet());
 
-				IQueryEngine q = knownQueryLanguages.get("org.hawk.epsilon.emc.EOLQueryEngine");
+				IQueryEngine q = knownQueryLanguages
+						.get("org.hawk.epsilon.emc.EOLQueryEngine");
 				//
 				//
 				Object ret = q.contextlessQuery(graph, query);
@@ -476,12 +511,15 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
 
-			for (IGraphNode epackage : graph.getMetamodelIndex().query("id", "*")) {
+			for (IGraphNode epackage : graph.getMetamodelIndex().query("id",
+					"*")) {
 
-				s = epackage.getProperty(IModelIndexer.METAMODEL_RESOURCE_PROPERTY).toString();
+				s = epackage.getProperty(
+						IModelIndexer.METAMODEL_RESOURCE_PROPERTY).toString();
 				ep = epackage.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
 						.toString();
-				type = epackage.getProperty(IModelIndexer.METAMODEL_TYPE_PROPERTY).toString();
+				type = epackage.getProperty(
+						IModelIndexer.METAMODEL_TYPE_PROPERTY).toString();
 
 				IMetaModelResourceFactory p = getMetaModelParser(type);
 
@@ -491,7 +529,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 					// )
 					;
 				else
-					console.printerrln("cannot register metamodel in graph, named: " + ep + ", with type: " + type
+					console.printerrln("cannot register metamodel in graph, named: "
+							+ ep
+							+ ", with type: "
+							+ type
 							+ ", as no relevant parser is registered");
 
 			}
@@ -522,7 +563,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	private void resetRepositoy(String s) {
-		System.err.println("reseting local top revision of repository: " + s + "\nas elements in it were removed");
+		System.err.println("reseting local top revision of repository: " + s
+				+ "\nas elements in it were removed");
 		currLocalTopRevisions.put(s, "-3");
 	}
 
@@ -551,12 +593,15 @@ public class ModelIndexerImpl implements IModelIndexer {
 			filechoser.setDialogTitle("Chose metamodel File to register:");
 			filechoser.setMultiSelectionEnabled(true);
 			File genericWorkspaceFile = new File("");
-			String parent = genericWorkspaceFile.getAbsolutePath().replaceAll("\\\\", "/");
+			String parent = genericWorkspaceFile.getAbsolutePath().replaceAll(
+					"\\\\", "/");
 
 			// change to workspace directory or a generic one on release
-			filechoser.setCurrentDirectory(
-					new File(new File(parent).getParentFile().getAbsolutePath().replaceAll("\\\\", "/")
-							+ "workspace/org.hawk.emf/src/org/hawk/emf/metamodel/examples/single"));
+			filechoser
+					.setCurrentDirectory(new File(
+							new File(parent).getParentFile().getAbsolutePath()
+									.replaceAll("\\\\", "/")
+									+ "workspace/org.hawk.emf/src/org/hawk/emf/metamodel/examples/single"));
 
 			if (filechoser.showDialog(fileChoserWindow, "Select File") == JFileChooser.APPROVE_OPTION)
 				metamodel = filechoser.getSelectedFiles();
@@ -590,12 +635,14 @@ public class ModelIndexerImpl implements IModelIndexer {
 					// metamodelResource.setURI(URI.createURI("resource_from_file_"
 					// + mm.getCanonicalPath()));
 
-					if (previousParserType != null && !previousParserType.equals(parserType)) {
-						System.err.println(
-								"cannot add heterogeneous metamodels concurrently, plase add one metamodel type at a time");
+					if (previousParserType != null
+							&& !previousParserType.equals(parserType)) {
+						System.err
+								.println("cannot add heterogeneous metamodels concurrently, plase add one metamodel type at a time");
 						set.clear();
 					} else {
-						System.out.println("Adding metamodels in: " + mm + " to store");
+						System.out.println("Adding metamodels in: " + mm
+								+ " to store");
 						set.add(metamodelResource);
 						previousParserType = parserType;
 					}
@@ -696,7 +743,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 			);
 			metamodelupdater = u;
 		} else {
-			System.err.println("metamodel updater alredy registered, cannot have more than one");
+			System.err
+					.println("metamodel updater alredy registered, cannot have more than one");
 		}
 
 	}
@@ -717,11 +765,12 @@ public class ModelIndexerImpl implements IModelIndexer {
 			System.out.println("adding: " + meta[0] + ":" + meta[1]);
 			set.add(meta);
 		}
-		HawkProperties hp = new HawkProperties(graph.getType(), set, minDelay, maxDelay);
+		HawkProperties hp = new HawkProperties(graph.getType(), set, minDelay,
+				maxDelay);
 
 		String out = stream.toXML(hp);
-		try (BufferedWriter b = new BufferedWriter(
-				new FileWriter(getParentFolder() + File.separator + "properties.xml"))) {
+		try (BufferedWriter b = new BufferedWriter(new FileWriter(
+				getParentFolder() + File.separator + "properties.xml"))) {
 			b.write(out);
 			b.flush();
 		}
@@ -741,6 +790,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 			System.err.println("addVCSManager tried to saveIndexer but failed");
 			e.printStackTrace();
 		}
+
+		requestImmediateSync();
 	}
 
 	@Override
@@ -770,10 +821,12 @@ public class ModelIndexerImpl implements IModelIndexer {
 		this.currentDelay = minDelay;
 
 		if (adminPw == null)
-			throw new Exception("Please set the admin password using setAdminPassword(...) before calling init");
+			throw new Exception(
+					"Please set the admin password using setAdminPassword(...) before calling init");
 
 		// register all static metamodels to graph
-		System.out.println("inserting static metamodels of registered metamodel factories to graph:");
+		System.out
+				.println("inserting static metamodels of registered metamodel factories to graph:");
 		for (String factoryNames : metamodelparsers.keySet()) {
 			IMetaModelResourceFactory f = metamodelparsers.get(factoryNames);
 			System.out.println(f.getType());
@@ -818,8 +871,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 				currentDelay = currentDelay * 2;
 				if (currentDelay > maxDelay)
 					currentDelay = maxDelay;
-				console.println("same revision, incrementing check timer: " + olddelay / 1000 + " -> "
-						+ currentDelay / 1000 + " (max: " + maxDelay / 1000 + ")");
+				console.println("same revision, incrementing check timer: "
+						+ olddelay / 1000 + " -> " + currentDelay / 1000
+						+ " (max: " + maxDelay / 1000 + ")");
 
 			} else {
 
@@ -833,7 +887,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 		}
 
 		final long time = (System.currentTimeMillis() - start);
-		System.err.println("------------------ update task took: " + time / 1000 + "s" + time % 1000 + "ms");
+		System.err.println("------------------ update task took: " + time
+				/ 1000 + "s" + time % 1000 + "ms");
 	}
 
 	@Override
@@ -842,21 +897,27 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public void addDerivedAttribute(String metamodeluri, String typename, String attributename, String attributetype,
-			boolean isMany, boolean isOrdered, boolean isUnique, String derivationlanguage, String derivationlogic) {
+	public void addDerivedAttribute(String metamodeluri, String typename,
+			String attributename, String attributetype, boolean isMany,
+			boolean isOrdered, boolean isUnique, String derivationlanguage,
+			String derivationlogic) {
 
-		if (metamodelupdater.addDerivedAttribute(metamodeluri, typename, attributename, attributetype, isMany,
-				isOrdered, isUnique, derivationlanguage, derivationlogic, this))
+		if (metamodelupdater.addDerivedAttribute(metamodeluri, typename,
+				attributename, attributetype, isMany, isOrdered, isUnique,
+				derivationlanguage, derivationlogic, this))
 			for (IModelUpdater u : getUpdaters())
-				u.updateDerivedAttribute(metamodeluri, typename, attributename, attributetype, isMany, isOrdered,
-						isUnique, derivationlanguage, derivationlogic);
+				u.updateDerivedAttribute(metamodeluri, typename, attributename,
+						attributetype, isMany, isOrdered, isUnique,
+						derivationlanguage, derivationlogic);
 
 	}
 
 	@Override
-	public void addIndexedAttribute(String metamodeluri, String typename, String attributename) {
+	public void addIndexedAttribute(String metamodeluri, String typename,
+			String attributename) {
 
-		if (metamodelupdater.addIndexedAttribute(metamodeluri, typename, attributename, this))
+		if (metamodelupdater.addIndexedAttribute(metamodeluri, typename,
+				attributename, this))
 			for (IModelUpdater u : getUpdaters())
 				u.updateIndexedAttribute(metamodeluri, typename, attributename);
 
@@ -876,7 +937,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 	 * Returns {@link #IS_DERIVED} if the attribute is derived or
 	 * {@link #IS_INDEXED} if not.
 	 */
-	private boolean isDerivedAttribute(IGraphNode typenode, final String attrName) {
+	private boolean isDerivedAttribute(IGraphNode typenode,
+			final String attrName) {
 		return ((String[]) typenode.getProperty(attrName))[0].equals("d");
 	}
 
@@ -905,17 +967,21 @@ public class ModelIndexerImpl implements IModelIndexer {
 				String[] split = s.split("##");
 				final String mmURI = split[0];
 
-				IGraphNode epackagenode = graph.getMetamodelIndex().get("id", mmURI).iterator().next();
+				IGraphNode epackagenode = graph.getMetamodelIndex()
+						.get("id", mmURI).iterator().next();
 
 				IGraphNode typenode = null;
-				for (IGraphEdge e : epackagenode.getIncomingWithType("epackage")) {
+				for (IGraphEdge e : epackagenode
+						.getIncomingWithType("epackage")) {
 					IGraphNode temp = e.getStartNode();
 					final String typeName = split[1];
-					if (temp.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(typeName)) {
+					if (temp.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+							.equals(typeName)) {
 						if (typenode == null) {
 							typenode = temp;
 						} else {
-							System.err.println("error in getExtraAttributes, typenode had more than 1 type found");
+							System.err
+									.println("error in getExtraAttributes, typenode had more than 1 type found");
 						}
 					}
 				}
@@ -951,7 +1017,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public List<String> validateExpression(String derivationlanguage, String derivationlogic) {
+	public List<String> validateExpression(String derivationlanguage,
+			String derivationlogic) {
 
 		IQueryEngine q = knownQueryLanguages.get(derivationlanguage);
 
@@ -964,7 +1031,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public String decrypt(String pw) throws GeneralSecurityException, IOException {
+	public String decrypt(String pw) throws GeneralSecurityException,
+			IOException {
 		return SecurityManager.decrypt(pw, adminPw);
 	}
 
@@ -995,7 +1063,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	public Map<VcsCommitItem, IHawkModelResource> getFileToResourceMap() {
 		if (!isSyncMetricsEnabled)
-			System.err.println("WARNING: isSyncMetricsEnabled == false, this method will return an empty Map");
+			System.err
+					.println("WARNING: isSyncMetricsEnabled == false, this method will return an empty Map");
 		return fileToResourceMap;
 	}
 

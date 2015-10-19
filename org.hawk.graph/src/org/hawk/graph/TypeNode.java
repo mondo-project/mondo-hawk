@@ -67,7 +67,7 @@ public class TypeNode {
 		}
 		return slots;
 	}
-
+	
 	public Iterable<ModelElementNode> getAll() {
 		final Iterable<IGraphEdge> iterableKind = node.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFKIND);
 		final Iterable<IGraphEdge> iterableType = node.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFTYPE);

@@ -36,7 +36,7 @@ public class TypeNodeWrapper implements IGraphTypeNodeReference {
 	}
 
 	public String getName() {
-		return getTypeName();
+		return typeNode.getTypeName();
 	}
 
 	public Collection<Object> getAll() {

@@ -133,14 +133,22 @@ public class SyncChangeListener implements IGraphChangeListener {
 					IGraphDatabase graph = hawk.getGraph();
 
 					try (IGraphTransaction t = graph.beginTransaction()) {
+						String file = null;
+						IGraphNode filenode = null;
+						try {
 
-						IGraphNode filenode = graph
-								.getFileIndex()
-								.get("id",
-										c.getCommit().getDelta().getManager()
-												.getLocation()
-												+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
-												+ c.getPath()).getSingle();
+							file = c.getCommit().getDelta().getManager()
+									.getLocation()
+									+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+									+ c.getPath();
+
+							filenode = graph.getFileIndex().get("id", file)
+									.getSingle();
+						} catch (Exception ee) {
+							System.err.println("expected file " + file
+									+ " but it did not exist");
+							continue;
+						}
 
 						Iterable<IGraphEdge> instancesEdges = filenode
 								.getIncomingWithType("file");
@@ -357,9 +365,11 @@ public class SyncChangeListener implements IGraphChangeListener {
 														.get(reference
 																.getType()));
 											}
+											final IGraphNode refEndNode = reference
+													.getEndNode();
 											refvals.add(repoURL
 													+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
-													+ instance
+													+ refEndNode
 															.getOutgoingWithType(
 																	"file")
 															.iterator()
@@ -368,8 +378,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 															.getProperty(
 																	IModelIndexer.IDENTIFIER_PROPERTY)
 													+ "#"
-													+ reference
-															.getEndNode()
+													+ refEndNode
 															.getProperty(
 																	IModelIndexer.IDENTIFIER_PROPERTY)
 															.toString());
@@ -390,9 +399,11 @@ public class SyncChangeListener implements IGraphChangeListener {
 										if (!nodereferences
 												.containsKey(modelRefName)) {
 											// no need for this?
-											// System.err.println("error in validating: reference "+
+											// System.err.println("error in
+											// validating: reference "+
 											// modelRefName+
-											// " had targets in the model but none in the graph: ");
+											// " had targets in the model but
+											// none in the graph: ");
 											// System.err.println(modelRef.getValue());
 											// allValid = false;
 										} else {
@@ -540,7 +551,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 
 				String[] proxies = (String[]) instance.getProperty(propertykey);
 
-				for (int i = 0; i < proxies.length; i = i + 2)
+				for (int i = 0; i < proxies.length; i = i + 4)
 					if (modelrefvaluesclone.remove(proxies[i]))
 						removedProxies++;
 			}

@@ -102,8 +102,7 @@ public class SvnManager implements IVcsManager {
 			this.username = un;
 			this.password = pw;
 
-			SvnManager m = new SvnManager();
-			m.getFirstRevision();
+			getFirstRevision();
 
 			isActive = true;
 		} catch (Exception e) {
