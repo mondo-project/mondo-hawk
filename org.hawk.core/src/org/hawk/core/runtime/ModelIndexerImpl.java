@@ -105,9 +105,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	public char[] adminPw = null;
 	private File parentfolder = null;
-
-	private final boolean runSchedule = true;
-
 	private boolean running = false;
 	private final CompositeGraphChangeListener listener = new CompositeGraphChangeListener();
 
@@ -124,7 +121,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	@Override
 	public void requestImmediateSync() {
-		updateTimer.schedule(new RunUpdateTask(), 0);
+		if (running) {
+			updateTimer.schedule(new RunUpdateTask(), 0);
+		}
 	}
 
 	private boolean internalSynchronise() throws Exception {
@@ -778,7 +777,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	@Override
 	public void addVCSManager(IVcsManager vcs, boolean persist) {
-
 		monitors.add(vcs);
 		currLocalTopRevisions.put(vcs.getLocation(), "-3");
 		currReposTopRevisions.put(vcs.getLocation(), "-4");
@@ -838,10 +836,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 		registerMetamodelFiles();
 
 		// begin scheduled updates from vcs
-		if (runSchedule) {
-			updateTimer = new Timer("t", false);
-			updateTimer.schedule(new RunUpdateTask(), 0);
-		}
+		updateTimer = new Timer("t", false);
+		updateTimer.schedule(new RunUpdateTask(), 0);
 
 		running = true;
 	}
