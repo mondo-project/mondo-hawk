@@ -8,7 +8,7 @@
  * Contributors:
  *    Antonio Garcia-Dominguez - initial API and implementation
  *******************************************************************************/
-package org.hawk.emfresource;
+package org.hawk.emfresource.util;
 
 /**
  * Classloader that combines two existing classloaders into one. Based on the

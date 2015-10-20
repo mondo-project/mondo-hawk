@@ -8,7 +8,7 @@
  * Contributors:
  *    Antonio Garcia-Dominguez - initial API and implementation
  *******************************************************************************/
-package org.hawk.emfresource;
+package org.hawk.emfresource.util;
 
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.hawk.emfresource.impl.LocalHawkResourceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

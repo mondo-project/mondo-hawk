@@ -8,7 +8,7 @@
  * Contributors:
  *    Antonio Garcia-Dominguez - initial API and implementation
  *******************************************************************************/
-package org.hawk.emfresource;
+package org.hawk.emfresource.impl;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -61,7 +61,9 @@ final class LocalHawkResourceUpdater implements IGraphChangeListener {
 
 	@Override
 	public void synchroniseEnd() {
-		// do nothing
+		for (Runnable r : resource.getSyncEndListeners()) {
+			r.run();
+		}
 	}
 
 	@Override

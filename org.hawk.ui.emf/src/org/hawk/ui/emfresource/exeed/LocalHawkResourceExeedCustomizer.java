@@ -45,7 +45,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartReference;
-import org.hawk.emfresource.LocalHawkResourceImpl;
+import org.hawk.emfresource.impl.LocalHawkResourceImpl;
 
 public class LocalHawkResourceExeedCustomizer implements IExeedCustomizer {
 

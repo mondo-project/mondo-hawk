@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Factory;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.ui.PlatformUI;
-import org.hawk.emfresource.LocalHawkResourceImpl;
+import org.hawk.emfresource.impl.LocalHawkResourceImpl;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.util.HUIManager;
 import org.hawk.ui2.util.PasswordDialog;

@@ -8,7 +8,7 @@
  * Contributors:
  *    Antonio Garcia-Dominguez - initial API and implementation
  *******************************************************************************/
-package org.hawk.emfresource;
+package org.hawk.emfresource.util;
 
 import java.util.Arrays;
 import java.util.Collection;

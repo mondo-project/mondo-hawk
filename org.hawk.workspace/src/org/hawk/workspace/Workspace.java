@@ -29,7 +29,6 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
@@ -193,9 +192,9 @@ public class Workspace implements IVcsManager {
 		this.console = c;
 		this.listener = new WorkspaceListener(indexer);
 
-		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		final File fWorkspaceRoot = workspaceRoot.getLocation().toFile();
-		this.repositoryURL = "workspace://" + fWorkspaceRoot.getAbsolutePath();
+		// Needed to emulate the usual URLs within a workspace when concatenated with the file path
+		this.repositoryURL = "platform:/resource";
+
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(listener);
 	}
 

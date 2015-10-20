@@ -8,7 +8,7 @@
  * Contributors:
  *    Antonio Garcia-Dominguez - initial API and implementation
  *******************************************************************************/
-package org.hawk.emfresource;
+package org.hawk.emfresource.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,12 +17,15 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
@@ -36,11 +39,17 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphNodeReference;
 import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.emfresource.HawkResource;
+import org.hawk.emfresource.HawkResourceChangeListener;
+import org.hawk.emfresource.util.AttributeUtils;
+import org.hawk.emfresource.util.LazyEObjectFactory;
+import org.hawk.emfresource.util.LazyResolver;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.MetamodelNode;
@@ -55,11 +64,12 @@ import net.sf.cglib.proxy.MethodProxy;
 /**
  * EMF driver that reads a local model from a Hawk index.
  */
-public class LocalHawkResourceImpl extends ResourceImpl {
+public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalHawkResourceImpl.class);
 
 	private final class LazyReferenceResolver implements MethodInterceptor {
+		@SuppressWarnings("unchecked")
 		@Override
 		public Object intercept(final Object o, final Method m, final Object[] args, final MethodProxy proxy) throws Throwable {
 			/*
@@ -78,23 +88,24 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 					 * container reference: need to adjust the list of root
 					 * elements then.
 					 */
-					lazyResolver.resolve(eob, sf);
+					if (lazyResolver != null) {
+						// Avoid NPE by invocations after doUnload is complete
+						lazyResolver.resolve(eob, sf);
+					}
 					Object superValue = proxy.invokeSuper(o, args);
 					if (superValue != null) {
 						if (ref.isContainer()) {
-							getContents().remove(eob);
+							removeFromResource(eob);
 						} else if (ref.isContainment()) {
 							if (ref.isMany()) {
 								for (EObject child : (Iterable<EObject>) superValue) {
-									getContents().remove(child);
+									removeFromResource(child);
 								}
 							} else {
-								getContents().remove((EObject) superValue);
+								removeFromResource((EObject) superValue);
 							}
 						}
 					}
-
-					return proxy.invokeSuper(o, args);
 				}
 			}
 			return proxy.invokeSuper(o, args);
@@ -121,12 +132,14 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 	}
 
 	private final Map<String, EObject> nodeIdToEObjectMap = new HashMap<>();
+	private final Map<String, Resource> resources = new HashMap<>();
 
 	private LazyResolver lazyResolver;
 	private IGraphChangeListener changeListener;
 	private LazyEObjectFactory eobFactory;
 
 	private IModelIndexer indexer;
+	private Set<Runnable> syncEndListeners = new HashSet<>();
 
 	public LocalHawkResourceImpl() {
 		// for Exeed
@@ -142,6 +155,7 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 		doLoad();
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public boolean hasChildren(final EObject o) {
 		for (final EReference r : o.eClass().getEAllReferences()) {
@@ -161,6 +175,7 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 		return false;
 	}
 
+	@Override
 	public EList<EObject> fetchNodes(final List<String> ids) throws Exception {
 		// Filter the objects that need to be retrieved
 		final List<String> toBeFetched = new ArrayList<>();
@@ -194,6 +209,7 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 		return finalList;
 	}
 
+	@Override
 	public EList<EObject> fetchNodes(final EClass eClass) throws Exception {
 		try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
 			final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
@@ -228,6 +244,7 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 		return fetchNodes(ids);
 	}
 
+	@Override
 	public List<Object> fetchValuesByEClassifier(final EClassifier dataType) throws Exception {
 		final Map<EClass, List<EStructuralFeature>> candidateTypes = fetchTypesWithEClassifier(dataType);
 
@@ -248,6 +265,7 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 		return values;
 	}
 
+	@Override
 	public Map<EClass, List<EStructuralFeature>> fetchTypesWithEClassifier(final EClassifier dataType) throws Exception {
 		try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
 			final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
@@ -293,6 +311,7 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 		}
 	}
 
+	@Override
 	public Map<EObject, Object> fetchValuesByEStructuralFeature(final EStructuralFeature feature) throws Exception {
 		final EClass featureEClass = feature.getEContainingClass();
 		final EList<EObject> eobs = fetchNodes(featureEClass);
@@ -344,13 +363,13 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 	
 			final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
 			try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
-				// TODO add back ability for filtering repos/files
+				// TODO add back ability for filtering repos/files?
 				final List<String> all = Arrays.asList("*");
 				for (FileNode fileNode : gw.getFileNodes(all, all)) {
 					for (ModelElementNode elem : fileNode.getRootModelElements()) {
 						if (!elem.isContained()) {
 							EObject eob = createOrUpdateEObject(elem);
-							getContents().add(eob);
+							addToResource(elem.getFileNode(), eob);
 						}
 					}
 				}
@@ -393,7 +412,7 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 			for (final ModelElementNode me : elems) {
 				EObject eob = createOrUpdateEObject(me);
 				if (eob.eContainer() == null) {
-					getContents().add(eob);
+					addToResource(me.getFileNode(), eob);
 				}
 				eObjects.add(eob);
 			}
@@ -418,7 +437,7 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 	
 			final EObject container = eob.eContainer();
 			if (container == null) {
-				getContents().remove(eob);
+				removeFromResource(eob);
 			} else {
 				final EStructuralFeature containingFeature = eob.eContainingFeature();
 				if (containingFeature.isMany()) {
@@ -533,6 +552,51 @@ public class LocalHawkResourceImpl extends ResourceImpl {
 			referenced.add(id);
 			return true;
 		}
+	}
+
+	private void addToResource(final FileNode fileNode, final EObject eob) {
+		final String repoURL = fileNode.getRepositoryURL();
+		final String path = fileNode.getFilePath();
+		final String fullURL = repoURL + path;
+		synchronized(resources) {
+			Resource resource = resources.get(fullURL);
+			if (resource == null) {
+				resource = getResourceSet().createResource(URI.createURI(fullURL));
+				resources.put(fullURL, resource);
+			}
+			resource.getContents().add(eob);
+		}
+	}
+
+	private void removeFromResource(EObject child) {
+		final Resource r = child.eResource();
+		if (r != null && child.eContainer() == null) {
+			r.getContents().remove(child);
+		}
+	}
+
+	@Override
+	public boolean addSyncEndListener(Runnable r) {
+		return syncEndListeners.add(r);
+	}
+
+	@Override
+	public boolean removeSyncEndListener(Runnable r) {
+		return syncEndListeners.remove(r);
+	}
+
+	public Set<Runnable> getSyncEndListeners() {
+		return Collections.unmodifiableSet(syncEndListeners);
+	}
+
+	@Override
+	public boolean addChangeListener(HawkResourceChangeListener l) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean removeChangeListener(HawkResourceChangeListener l) {
+		throw new UnsupportedOperationException();
 	}
 
 }
