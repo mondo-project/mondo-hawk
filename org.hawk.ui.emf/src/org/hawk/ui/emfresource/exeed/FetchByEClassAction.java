@@ -29,11 +29,11 @@ public class FetchByEClassAction extends Action {
 	@Override
 	public void run() {
 		final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-		final EClassSelectionDialog dlg = new EClassSelectionDialog(shell, resource.getResourceSet().getPackageRegistry());
+		final EClassSelectionDialog dlg = new EClassSelectionDialog(shell, resource);
 		if (dlg.open() == Dialog.OK) {
 			try {
 				EList<EObject> eobjs = resource.fetchNodes(dlg.getEClass());
-				Activator.logInfo("Fetched " + eobjs.size() + "nodes");
+				Activator.logInfo("Fetched " + eobjs.size() + " nodes");
 			} catch (Exception e) {
 				Activator.logError("Failed to fetch nodes by class", e);
 			}

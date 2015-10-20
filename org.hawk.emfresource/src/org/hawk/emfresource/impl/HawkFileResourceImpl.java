@@ -122,4 +122,14 @@ public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 		return false;
 	}
 
+	@Override
+	public List<String> getRegisteredMetamodels() throws Exception {
+		return mainResource.getRegisteredMetamodels();
+	}
+
+	@Override
+	public List<String> getRegisteredTypes(String metamodelURI) throws Exception {
+		return mainResource.getRegisteredTypes(metamodelURI);
+	}
+
 }

@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -33,15 +32,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.hawk.emfresource.HawkResource;
+import org.hawk.ui.emfresource.Activator;
 
 public class EClassSelectionDialog extends Dialog {
-	private final Registry registry;
+	private final HawkResource resource;
 	private EPackage ePackage;
 	private EClass eClass;
 
-	EClassSelectionDialog(Shell parentShell, Registry registry) {
+	EClassSelectionDialog(Shell parentShell, HawkResource hawkResource) {
 		super(parentShell);
-		this.registry = registry;
+		this.resource = hawkResource;
 	}
 
 	@Override
@@ -57,7 +58,13 @@ public class EClassSelectionDialog extends Dialog {
 		final ComboViewer lPackages = new ComboViewer(container, SWT.BORDER);
 		lPackages.setLabelProvider(new LabelProvider());
 		lPackages.setContentProvider(new ArrayContentProvider());
-		final Object[] packages = new ArrayList<>(registry.keySet()).toArray();
+		Object[] packages;
+		try {
+			packages = resource.getRegisteredMetamodels().toArray();
+		} catch (Exception e) {
+			Activator.logError("Could not retrieve registered metamodels", e);
+			packages = new Object[0];
+		}
 		Arrays.sort(packages);
 		lPackages.setInput(packages);
 		lPackages.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -79,12 +86,14 @@ public class EClassSelectionDialog extends Dialog {
 					final IStructuredSelection ssel = (IStructuredSelection)event.getSelection();
 					if (ssel.getFirstElement() != null) {
 						final String packageURI = (String)ssel.getFirstElement();
-						ePackage = registry.getEPackage(packageURI);
+						ePackage = resource.getResourceSet().getPackageRegistry().getEPackage(packageURI);
 
 						final List<String> eClassNames = new ArrayList<>();
-						for (EClassifier classifier : ePackage.getEClassifiers()) {
-							if (classifier instanceof EClass) {
-								eClassNames.add(classifier.getName());
+						if (ePackage != null) {
+							for (EClassifier classifier : ePackage.getEClassifiers()) {
+								if (classifier instanceof EClass) {
+									eClassNames.add(classifier.getName());
+								}
 							}
 						}
 						final Object[] arrClassNames = eClassNames.toArray();

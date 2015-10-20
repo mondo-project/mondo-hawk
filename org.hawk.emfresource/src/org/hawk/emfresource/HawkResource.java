@@ -34,6 +34,10 @@ public interface HawkResource extends Resource {
 
 	Map<EObject, Object> fetchValuesByEStructuralFeature(EStructuralFeature feature) throws Exception;
 
+	List<String> getRegisteredMetamodels() throws Exception;
+
+	List<String> getRegisteredTypes(String metamodelURI) throws Exception;
+
 	boolean addSyncEndListener(Runnable r);
 
 	boolean removeSyncEndListener(Runnable r);
@@ -55,5 +59,4 @@ public interface HawkResource extends Resource {
 	 *             The functionality is not offered for this resource yet.
 	 */
 	boolean removeChangeListener(HawkResourceChangeListener l);
-
 }

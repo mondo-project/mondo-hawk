@@ -43,6 +43,8 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphChangeListener;
+import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphNodeReference;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.emfresource.HawkResource;
@@ -606,6 +608,33 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	@Override
 	public boolean removeChangeListener(HawkResourceChangeListener l) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<String> getRegisteredMetamodels() throws Exception {
+		try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
+			IGraphNodeIndex idx = indexer.getGraph().getMetamodelIndex();
+			final List<String> metamodels = new ArrayList<>();
+			for (IGraphNode mmNode : idx.query("*", "*")) {
+				metamodels.add(new MetamodelNode(mmNode).getUri());
+			}
+			return metamodels;
+		}
+	}
+
+	@Override
+	public List<String> getRegisteredTypes(String metamodelURI) throws Exception {
+		try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
+			IGraphNodeIndex idx = indexer.getGraph().getMetamodelIndex();
+			final List<String> types = new ArrayList<>();
+			for (IGraphNode mmNode : idx.get("id", metamodelURI)) {
+				final MetamodelNode metamodel = new MetamodelNode(mmNode);
+				for (TypeNode type : metamodel.getTypes()) {
+					types.add(type.getTypeName());
+				}
+			}
+			return types;
+		}
 	}
 
 }

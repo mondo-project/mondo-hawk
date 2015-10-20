@@ -183,7 +183,7 @@ final class LocalHawkResourceUpdater implements IGraphChangeListener {
 		if (sourceClass != null) {
 			// in a container reference, the source is not a root
 			final EReference eRef = (EReference)sourceClass.getEStructuralFeature(edgelabel);
-			if (eRef.isContainer()) {
+			if (eRef != null && eRef.isContainer()) {
 				addedRootNodes.remove(source);
 			}
 		}
@@ -192,7 +192,7 @@ final class LocalHawkResourceUpdater implements IGraphChangeListener {
 		if (destClass != null) {
 			// in a containment reference, the target is not a root
 			final EReference eRef = (EReference)destClass.getEStructuralFeature(edgelabel);
-			if (eRef.isContainment()) {
+			if (eRef != null && eRef.isContainment()) {
 				addedRootNodes.remove(destination);
 			}
 		}
