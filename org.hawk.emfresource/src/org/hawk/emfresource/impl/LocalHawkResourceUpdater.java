@@ -11,17 +11,24 @@
 package org.hawk.emfresource.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EPackage.Registry;
+import org.eclipse.emf.ecore.EReference;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.model.IHawkClass;
+import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.graph.ModelElementNode;
@@ -33,6 +40,9 @@ final class LocalHawkResourceUpdater implements IGraphChangeListener {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalHawkResourceUpdater.class);
 
 	private final LocalHawkResourceImpl resource;
+
+	/** Root nodes added since the last call to either {@link #changeSuccess()} or {@link #changeFailure()}. We need the class for removing */
+	private final Map<IGraphNode, EClass> addedRootNodes = new HashMap<>();
 
 	/** Nodes removed since the last call to either {@link #changeSuccess()} or {@link #changeFailure()}. */
 	private final Set<IGraphNode> removedNodes = new HashSet<>();
@@ -75,19 +85,27 @@ final class LocalHawkResourceUpdater implements IGraphChangeListener {
 	public void changeSuccess() {
 		for (IGraphNode removedNode : removedNodes) {
 			resource.removeNode(removedNode.getId().toString());
+			resource.setModified(true);
 		}
 		updatedNodes.removeAll(removedNodes);
 
 		final List<ModelElementNode> elems = new ArrayList<>();
+		for (IGraphNode addedNode : addedRootNodes.keySet()) {
+			final ModelElementNode addedME = new ModelElementNode(addedNode);
+			elems.add(addedME);
+			resource.setModified(true);
+		}
 		for (IGraphNode updatedNode : updatedNodes) {
 			final ModelElementNode updatedME = new ModelElementNode(updatedNode);
 			elems.add(updatedME);
+			resource.setModified(true);
 		}
 		try (IGraphTransaction tx = resource.beginGraphTransaction()) {
 			resource.createOrUpdateEObjects(elems);
 			tx.success();
 		} catch (Exception e) {
 			LOGGER.error("Error while updating resource", e);
+			addedRootNodes.clear();
 			removedNodes.clear();
 			updatedNodes.clear();
 		}
@@ -95,6 +113,7 @@ final class LocalHawkResourceUpdater implements IGraphChangeListener {
 
 	@Override
 	public void changeFailure() {
+		addedRootNodes.clear();
 		removedNodes.clear();
 		updatedNodes.clear();
 	}
@@ -121,7 +140,14 @@ final class LocalHawkResourceUpdater implements IGraphChangeListener {
 
 	@Override
 	public void modelElementAddition(VcsCommitItem s, IHawkObject element, IGraphNode elementNode, boolean isTransient) {
-		// do nothing - we'll fetch it when we need it
+		// new model elements are assumed to be roots unless proven otherwise
+		if (isTransient) return;
+
+		final IHawkClassifier type = element.getType();
+		final Registry packageRegistry = resource.getResourceSet().getPackageRegistry();
+		final EPackage ePackage = packageRegistry.getEPackage(type.getPackageNSURI());
+		final EClass eClass = (EClass)ePackage.getEClassifier(type.getName());
+		addedRootNodes.put(elementNode, eClass);
 	}
 
 	@Override
@@ -152,6 +178,24 @@ final class LocalHawkResourceUpdater implements IGraphChangeListener {
 	public void referenceAddition(VcsCommitItem s, IGraphNode source, IGraphNode destination, String edgelabel, boolean isTransient) {
 		if (isTransient) return;
 		markUpdatedIfExisting(source);
+
+		final EClass sourceClass = addedRootNodes.get(source);
+		if (sourceClass != null) {
+			// in a container reference, the source is not a root
+			final EReference eRef = (EReference)sourceClass.getEStructuralFeature(edgelabel);
+			if (eRef.isContainer()) {
+				addedRootNodes.remove(source);
+			}
+		}
+
+		final EClass destClass = addedRootNodes.get(destination);
+		if (destClass != null) {
+			// in a containment reference, the target is not a root
+			final EReference eRef = (EReference)destClass.getEStructuralFeature(edgelabel);
+			if (eRef.isContainment()) {
+				addedRootNodes.remove(destination);
+			}
+		}
 	}
 
 	@Override

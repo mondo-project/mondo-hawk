@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.hawk.ui.emfresource.exeed;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -32,9 +33,11 @@ import org.eclipse.emf.edit.ui.provider.DecoratingColumLabelProvider;
 import org.eclipse.emf.edit.ui.provider.DiagnosticDecorator;
 import org.eclipse.epsilon.dt.exeed.ExeedEditor;
 import org.eclipse.epsilon.dt.exeed.extensions.IExeedCustomizer;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -46,6 +49,7 @@ import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.hawk.emfresource.HawkResource;
+import org.hawk.emfresource.impl.LocalHawkResourceImpl;
 
 public class LocalHawkResourceExeedCustomizer implements IExeedCustomizer {
 
