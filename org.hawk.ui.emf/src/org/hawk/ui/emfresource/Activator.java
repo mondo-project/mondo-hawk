@@ -51,7 +51,21 @@ public class Activator extends AbstractUIPlugin {
 	 * Logs a warning to the Error view.
 	 */
 	public static void logWarn(String msg) {
+		log(msg, IStatus.WARNING);
+	}
+
+	/**
+	 * Logs an information message to the Error view.
+	 */
+	public static void logInfo(String msg) {
+		log(msg, IStatus.INFO);
+	}
+
+	/**
+	 * Logs a message to the Error view.
+	 */
+	public static void log(String msg, final int level) {
 		final String bundleName = FrameworkUtil.getBundle(Activator.class).getSymbolicName();
-		getDefault().getLog().log(new Status(IStatus.WARNING, bundleName, msg));
+		getDefault().getLog().log(new Status(level, bundleName, msg));
 	}
 }

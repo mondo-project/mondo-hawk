@@ -21,10 +21,8 @@ import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.ui.viewer.ColumnViewerInformationControlToolTipSupport;
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.presentation.EcoreEditor;
 import org.eclipse.emf.ecore.presentation.EcoreEditorPlugin;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.ui.celleditor.AdapterFactoryTreeEditor;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
@@ -45,47 +43,10 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
-import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPartReference;
 import org.hawk.emfresource.HawkResource;
-import org.hawk.emfresource.impl.LocalHawkResourceImpl;
 
 public class LocalHawkResourceExeedCustomizer implements IExeedCustomizer {
-
-	/**
-	 * Part listener that will unload the model when the editor is closed. This
-	 * is not done by default by neither the Exeed nor the Ecore editor: they
-	 * simply rely on the Resource being GC'ed, but that doesn't work for us if
-	 * we have an ongoing subscription to event changes in the indexer.
-	 */
-	private static final class UnloadResourceSetOnCloseListener implements IPartListener2 {
-		private final IWorkbenchPage page;
-		private final EcoreEditor editor;
-
-		private UnloadResourceSetOnCloseListener(IWorkbenchPage page, EcoreEditor editor) {
-			this.page = page;
-			this.editor = editor;
-		}
-
-		@Override public void partActivated(IWorkbenchPartReference partRef) {}
-		@Override public void partBroughtToTop(IWorkbenchPartReference partRef) {}
-		@Override public void partDeactivated(IWorkbenchPartReference partRef) {}
-		@Override public void partOpened(IWorkbenchPartReference partRef) {}
-		@Override public void partHidden(IWorkbenchPartReference partRef) {}
-		@Override public void partVisible(IWorkbenchPartReference partRef) {}
-		@Override public void partInputChanged(IWorkbenchPartReference partRef) {}
-
-		@Override
-		public void partClosed(IWorkbenchPartReference partRef) {
-			if (partRef.getPage() == page) {
-				ResourceSet resourceSet = editor.getEditingDomain().getResourceSet();
-				for (Resource r : resourceSet.getResources()) {
-					r.unload();
-				}
-			}
-		}
-	}
 
 	private static final class SingleNodeDiagnosticDecorator extends DiagnosticDecorator {
 		private SingleNodeDiagnosticDecorator(EditingDomain editingDomain,
@@ -163,8 +124,29 @@ public class LocalHawkResourceExeedCustomizer implements IExeedCustomizer {
 	}
 
 	@Override
+	public Collection<IAction> generateCreateSiblingActions(
+			Collection<?> descriptors, ISelection selection) {
+		return Collections.emptyList();
+	}
+
+	@Override
+	public Collection<IAction> generateCustomizerActions(ISelection selection) {
+		if (selection instanceof IStructuredSelection) {
+			final IStructuredSelection ssel = (IStructuredSelection)selection;
+			if (ssel.getFirstElement() instanceof HawkResource) {
+				final HawkResource r = (HawkResource)ssel.getFirstElement();
+				final List<IAction> actions = new ArrayList<>();
+				final Action fetchByEClass = new FetchByEClassAction(r);
+				fetchByEClass.setText("Fetch by EClass");
+				actions.add(fetchByEClass);
+				return actions;
+			}
+		}
+		return Collections.emptyList();
+	}
+
+	@Override
 	public boolean isEnabledFor(Resource r) {
 		return r instanceof HawkResource;
 	}
-
 }
