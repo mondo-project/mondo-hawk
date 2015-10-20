@@ -33,8 +33,6 @@ public class DeriveFeature {
 		String actualEOLScript = EOLScript.startsWith("_NYD##") ? EOLScript
 				.substring(6) : EOLScript;
 
-		actualEOLScript = "return " + actualEOLScript + ";";
-
 		EolModule currentModule = null;
 
 		// FIXMEdone currently containerModel == null (from: Neo4JMonitorMInsert
@@ -79,7 +77,9 @@ public class DeriveFeature {
 			// System.out.println("-");
 			Object ret = null;
 			try {
+
 				ret = currentModule.execute();
+
 			} catch (Exception e) {
 				System.err
 						.println("----------------\nerror in derive feature on: "

@@ -52,6 +52,18 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 
 	}
 
+	@Override
+	public void delete() {
+		if (index != null)
+			index.delete();
+		else if (batchIndex != null)
+			System.err
+					.println("invoked delete(self) on a batchindex, this is not supported");
+		else
+			System.err
+					.println("invoked delete(self) on a null index, nothing happened.");
+	}
+
 	public String getName() {
 		return name;
 	}

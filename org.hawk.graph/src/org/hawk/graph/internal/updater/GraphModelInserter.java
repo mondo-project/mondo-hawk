@@ -76,7 +76,8 @@ public class GraphModelInserter {
 		graph = indexer.getGraph();
 	}
 
-	public boolean run(IHawkModelResource res, VcsCommitItem s) throws Exception {
+	public boolean run(IHawkModelResource res, VcsCommitItem s)
+			throws Exception {
 
 		resource = res;
 		this.s = s;
@@ -92,10 +93,12 @@ public class GraphModelInserter {
 
 			int delta = calculateModelDeltaSize();
 			if (delta != -1) {
-				final IVcsManager manager = s.getCommit().getDelta().getManager();
+				final IVcsManager manager = s.getCommit().getDelta()
+						.getManager();
 
 				prefixesToStrip.clear();
-				prefixesToStrip.add(new File(graph.getTempDir()).toURI().toString());
+				prefixesToStrip.add(new File(graph.getTempDir()).toURI()
+						.toString());
 				prefixesToStrip.addAll(manager.getPrefixesToBeStripped());
 
 				System.err
@@ -245,15 +248,18 @@ public class GraphModelInserter {
 								if (!h.isInDifferentResourceThan(source))
 									targetids.add(h.getUriFragment());
 								else {
-									addProxyRef(node, h, refname, isContainment, isContainer);
+									addProxyRef(node, h, refname,
+											isContainment, isContainer);
 								}
 							}
 						} else {
-							if (!((IHawkObject) targets).isInDifferentResourceThan(source))
+							if (!((IHawkObject) targets)
+									.isInDifferentResourceThan(source))
 								targetids.add(((IHawkObject) targets)
 										.getUriFragment());
 							else {
-								addProxyRef(node, (IHawkObject) targets, refname, isContainment, isContainer);
+								addProxyRef(node, (IHawkObject) targets,
+										refname, isContainment, isContainer);
 							}
 						}
 
@@ -291,10 +297,14 @@ public class GraphModelInserter {
 								IGraphEdge e = graph.createRelationship(node,
 										dest, refname);
 								if (isContainment) {
-									e.setProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT, "true");
+									e.setProperty(
+											ModelElementNode.EDGE_PROPERTY_CONTAINMENT,
+											"true");
 								}
 								if (isContainer) {
-									e.setProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER, "true");
+									e.setProperty(
+											ModelElementNode.EDGE_PROPERTY_CONTAINER,
+											"true");
 								}
 
 								// track change new reference
@@ -377,7 +387,9 @@ public class GraphModelInserter {
 		// new DeletionUtils(graph).delete(node);
 	}
 
-	private boolean addProxyRef(final IGraphNode node, final IHawkObject destinationObject, final String edgelabel, boolean isContainment, boolean isContainer) {
+	private boolean addProxyRef(final IGraphNode node,
+			final IHawkObject destinationObject, final String edgelabel,
+			boolean isContainment, boolean isContainer) {
 
 		try {
 			// proxydictionary.add(graph.getNodeById(hash.get((from))),
@@ -394,9 +406,8 @@ public class GraphModelInserter {
 
 			if (!destinationObject.URIIsRelative()) {
 
-				destinationObjectRelativePathURI = new DeletionUtils(graph)
-						.makeRelative(prefixesToStrip,
-								destinationObjectRelativePathURI);
+				destinationObjectRelativePathURI = new Utils().makeRelative(
+						prefixesToStrip, destinationObjectRelativePathURI);
 
 			}
 			// System.err.println(uri.toString().substring(uri.toString().indexOf(".metadata/.plugins/com.google.code.hawk.neo4j/temp/m/")+53));
@@ -425,9 +436,11 @@ public class GraphModelInserter {
 			// }
 			// System.err.println(">>>>>>>"+relativeFileURI);
 
-			proxies = node.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + destinationObjectFullFileURI);
-			proxies = new DeletionUtils(graph).addToElementProxies((String[]) proxies, destinationObjectFullPathURI,
-					edgelabel, isContainment, isContainer);
+			proxies = node.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX
+					+ destinationObjectFullFileURI);
+			proxies = new Utils().addToElementProxies((String[]) proxies,
+					destinationObjectFullPathURI, edgelabel, isContainment,
+					isContainer);
 
 			node.setProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX
 					+ destinationObjectFullFileURI, proxies);
@@ -648,8 +661,8 @@ public class GraphModelInserter {
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
 
-			final String repositoryURL = s.getCommit().getDelta()
-					.getManager().getLocation();
+			final String repositoryURL = s.getCommit().getDelta().getManager()
+					.getLocation();
 			boolean modelfilealreadypresent = graph
 					.getFileIndex()
 					.get("id",
@@ -764,7 +777,10 @@ public class GraphModelInserter {
 		try {
 			System.gc();
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println(e.getCause());
+			System.err
+					.println("model insertion aborted, see above error (maybe you need to register the metamodel?)");
+			success = false;
 		}
 		return success;
 	}
@@ -871,7 +887,8 @@ public class GraphModelInserter {
 					}
 
 					for (String[] proxies : allProxies) {
-						final String fullPathURI = proxies[0].substring(0, proxies[0].indexOf("#"));
+						final String fullPathURI = proxies[0].substring(0,
+								proxies[0].indexOf("#"));
 
 						final String[] split = fullPathURI.split(
 								GraphModelUpdater.FILEINDEX_REPO_SEPARATOR, 2);
@@ -893,8 +910,10 @@ public class GraphModelInserter {
 									boolean found = false;
 
 									final String edgeLabel = proxies[i + 1];
-									final boolean isContainment = Boolean.valueOf(proxies[i + 2]);
-									final boolean isContainer = Boolean.valueOf(proxies[i + 3]);
+									final boolean isContainment = Boolean
+											.valueOf(proxies[i + 2]);
+									final boolean isContainer = Boolean
+											.valueOf(proxies[i + 3]);
 
 									for (IGraphNode no : nodes) {
 										String nodeURI = fullPathURI
@@ -907,7 +926,10 @@ public class GraphModelInserter {
 
 											boolean change = new GraphModelBatchInjector(
 													graph, null, listener)
-													.resolveProxyRef(n, no, edgeLabel, isContainment, isContainer);
+													.resolveProxyRef(n, no,
+															edgeLabel,
+															isContainment,
+															isContainer);
 
 											if (!change) {
 												System.err

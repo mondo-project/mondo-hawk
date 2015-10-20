@@ -16,7 +16,6 @@ import java.io.FileWriter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -562,7 +561,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 		return ret;
 	}
-
+	
 	// @Override
 	// public Set<IGraphNode> retainExisting(Set<IGraphNode> nodes) {
 	// for (Iterator<IGraphNode> it = nodes.iterator(); it.hasNext();) {

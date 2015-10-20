@@ -322,8 +322,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 										}
 
-										success = success
-												&& u.updateStore(v, r);
+										success = u.updateStore(v, r)
+												&& success;
 
 										if (r != null) {
 											if (!isSyncMetricsEnabled)
@@ -360,6 +360,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 												.getLocation()));
 							} else {
 								allSync = false;
+								currLocalTopRevisions
+										.put(m.getLocation(), "-3");
 							}
 						}
 
@@ -990,7 +992,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 			t.success();
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println("error in getExtraAttributes");
+			System.err.println(e.getCause());
 		}
 		return ret;
 	}

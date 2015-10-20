@@ -35,6 +35,7 @@ import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.core.model.IHawkReference;
+import org.hawk.core.runtime.CompositeGraphChangeListener;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.ModelElementNode;
 
@@ -45,16 +46,19 @@ public class GraphMetaModelResourceInjector {
 	private int objectCount = 0;
 	private int unset;
 
+	private IModelIndexer hawk;
 	private IGraphDatabase graph;
 	private IGraphNodeIndex epackagedictionary;
 
 	private final long startTime = System.nanoTime();
 	private final HashSet<IHawkPackage> addedepackages = new HashSet<>();
-	private final IGraphChangeListener listener;
+	private final CompositeGraphChangeListener listener;
 
-	public GraphMetaModelResourceInjector(IGraphDatabase database, Set<IHawkMetaModelResource> set,
-			IGraphChangeListener listener) {
-		this.graph = database;
+	public GraphMetaModelResourceInjector(IModelIndexer hawk,
+			Set<IHawkMetaModelResource> set,
+			CompositeGraphChangeListener listener) {
+		this.hawk = hawk;
+		this.graph = hawk.getGraph();
 		this.listener = listener;
 
 		try {
@@ -67,8 +71,10 @@ public class GraphMetaModelResourceInjector {
 		}
 	}
 
-	public GraphMetaModelResourceInjector(IGraphDatabase database, IGraphChangeListener listener) {
-		this.graph = database;
+	public GraphMetaModelResourceInjector(IModelIndexer hawk,
+			CompositeGraphChangeListener listener) {
+		this.hawk = hawk;
+		this.graph = hawk.getGraph();
 		this.listener = listener;
 	}
 
@@ -96,19 +102,24 @@ public class GraphMetaModelResourceInjector {
 					// add the element
 					if (child instanceof IHawkPackage) {
 
-						Iterator<IGraphNode> it = epackagedictionary.get("id", ((IHawkPackage) child).getNsURI())
-								.iterator();
+						Iterator<IGraphNode> it = epackagedictionary.get("id",
+								((IHawkPackage) child).getNsURI()).iterator();
 
 						if (!it.hasNext()) {
 
-							System.err.println("Metamodel: " + ((IHawkPackage) child).getName() + " with uri: "
-									+ ((IHawkPackage) child).getNsURI() + " not indexed. Nothing happened.");
+							System.err.println("Metamodel: "
+									+ ((IHawkPackage) child).getName()
+									+ " with uri: "
+									+ ((IHawkPackage) child).getNsURI()
+									+ " not indexed. Nothing happened.");
 
 						} else {
 
 							IGraphNode epn = it.next();
 
-							System.err.println("Removing metamodel: " + ((IHawkPackage) child).getName() + " with uri: "
+							System.err.println("Removing metamodel: "
+									+ ((IHawkPackage) child).getName()
+									+ " with uri: "
 									+ ((IHawkPackage) child).getNsURI());
 
 							epns.add(epn);
@@ -126,7 +137,8 @@ public class GraphMetaModelResourceInjector {
 
 		} catch (Exception e1) {
 			listener.changeFailure();
-			System.err.println("error in removing metamodels (ALL removal changes reverted):");
+			System.err
+					.println("error in removing metamodels (ALL removal changes reverted):");
 			e1.printStackTrace();
 		}
 
@@ -139,10 +151,12 @@ public class GraphMetaModelResourceInjector {
 		DeletionUtils del = new DeletionUtils(graph);
 
 		for (IGraphNode epn : epns)
-			for (IGraphEdge rel : epn.getIncomingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE)) {
-				System.err
-						.println("dependency from: " + rel.getStartNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
-								+ " to: " + epn.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+			for (IGraphEdge rel : epn
+					.getIncomingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE)) {
+				System.err.println("dependency from: "
+						+ rel.getStartNode().getProperty(
+								IModelIndexer.IDENTIFIER_PROPERTY) + " to: "
+						+ epn.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 				// delete all dependent metamodels and models
 				IGraphNode depmm = rel.getStartNode();
@@ -156,7 +170,8 @@ public class GraphMetaModelResourceInjector {
 			files.addAll(remove(n));
 
 		for (IGraphNode file : files)
-			affectedRepositories.add(file.getProperty(FileNode.PROP_REPOSITORY).toString());
+			affectedRepositories.add(file.getProperty(FileNode.PROP_REPOSITORY)
+					.toString());
 
 		for (IGraphNode file : files)
 			del.delete(file);
@@ -173,7 +188,8 @@ public class GraphMetaModelResourceInjector {
 
 		try (IGraphTransaction transaction = graph.beginTransaction()) {
 
-			System.out.println("deleting nodes from metamodel: " + epn.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+			System.out.println("deleting nodes from metamodel: "
+					+ epn.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 			HashSet<IGraphNode> metaModelElements = new HashSet<IGraphNode>();
 			HashSet<IGraphNode> modelElements = new HashSet<IGraphNode>();
@@ -185,20 +201,23 @@ public class GraphMetaModelResourceInjector {
 				del.delete(rel);
 			}
 
-			for (IGraphEdge rel : epn.getOutgoingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE)) {
+			for (IGraphEdge rel : epn
+					.getOutgoingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE)) {
 				del.delete(rel);
 			}
 
 			del.delete(epn);
 
 			for (IGraphNode metamodelelement : metaModelElements) {
-				for (IGraphEdge rel : metamodelelement.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)) {
+				for (IGraphEdge rel : metamodelelement
+						.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)) {
 					modelElements.add(rel.getStartNode());
 					del.delete(rel);
 				}
 			}
 			for (IGraphNode metamodelelement : metaModelElements) {
-				for (IGraphEdge rel : metamodelelement.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFKIND)) {
+				for (IGraphEdge rel : metamodelelement
+						.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFKIND)) {
 					modelElements.add(rel.getStartNode());
 					del.delete(rel);
 				}
@@ -207,26 +226,60 @@ public class GraphMetaModelResourceInjector {
 			for (IGraphNode metaModelElement : metaModelElements)
 				del.delete(metaModelElement);
 
-			//
-			for (IGraphNode modelElement : modelElements) {
-				Iterator<IGraphEdge> it = modelElement.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE).iterator();
-				if (it.hasNext()) {
-					IGraphEdge e = it.next();
-					fileNodes.add(e.getEndNode());
-					del.delete(e);
+			// remove model elements and update derived attributes
+
+			if (modelElements.size() > 0) {
+
+				System.out.println("deleting nodes from relevant models...");
+
+				Set<IGraphNode> toBeUpdated = new HashSet<>();
+				final DirtyDerivedAttributesListener l = new DirtyDerivedAttributesListener(
+						graph);
+				listener.add(l);
+
+				for (IGraphNode modelElement : modelElements) {
+					Iterator<IGraphEdge> it = modelElement.getOutgoingWithType(
+							ModelElementNode.EDGE_LABEL_FILE).iterator();
+					if (it.hasNext()) {
+						IGraphEdge e = it.next();
+						fileNodes.add(e.getEndNode());
+						del.delete(e);
+
+					}
+
+					del.dereference(modelElement, listener, null);
+				}
+
+				for (IGraphNode modelElement : modelElements) {
+
+					del.delete(modelElement);
 
 				}
 
-				del.dereference(modelElement, listener, null);
-			}
+				toBeUpdated.addAll(l.getNodesToBeUpdated());
+				listener.remove(l);
 
-			for (IGraphNode modelElement : modelElements)
-				del.delete(modelElement);
+				System.out
+						.println("attempting to update any relevant derived attributes...");
+				try {
+					new GraphModelInserter(hawk).updateDerivedAttributes(
+							"org.hawk.epsilon.emc.EOLQueryEngine", toBeUpdated);
+					toBeUpdated = new HashSet<>();
+				} catch (Exception e) {
+					toBeUpdated = new HashSet<>();
+					System.err
+							.println("Exception in updateStore - UPDATING DERIVED attributes");
+					System.err.println(e);
+				}
+
+			}
+			//
 
 			transaction.success();
 		}
 
-		System.out.println("deleted all, took: " + (System.currentTimeMillis() - start) / 1000 + "s"
+		System.out.println("deleted all, took: "
+				+ (System.currentTimeMillis() - start) / 1000 + "s"
 				+ (System.currentTimeMillis() - start) / 1000 + "ms");
 
 		return fileNodes;
@@ -242,7 +295,8 @@ public class GraphMetaModelResourceInjector {
 	 * @param graph
 	 * @return
 	 */
-	private int parseResource(Set<IHawkMetaModelResource> metamodels) throws Exception {
+	private int parseResource(Set<IHawkMetaModelResource> metamodels)
+			throws Exception {
 
 		// metamodelResources = metamodels;
 
@@ -311,7 +365,9 @@ public class GraphMetaModelResourceInjector {
 					t.close();
 					listener.changeFailure();
 					try (IGraphTransaction t2 = graph.beginTransaction()) {
-						IGraphNode ePackageNode = epackagedictionary.get("id", epackage.getNsURI()).iterator().next();
+						IGraphNode ePackageNode = epackagedictionary
+								.get("id", epackage.getNsURI()).iterator()
+								.next();
 
 						new DeletionUtils(graph).delete(ePackageNode);
 
@@ -335,13 +391,16 @@ public class GraphMetaModelResourceInjector {
 
 			for (IHawkPackage ePackage : addedepackages) {
 
-				IGraphNode epackagenode = ((IGraphIterable<IGraphNode>) epackagedictionary.get("id",
-						ePackage.getNsURI())).getSingle();
+				IGraphNode epackagenode = ((IGraphIterable<IGraphNode>) epackagedictionary
+						.get("id", ePackage.getNsURI())).getSingle();
 
 				// add resource to package
-				final String s = ePackage.getResource().getMetaModelResourceFactory().dumpPackageToString(ePackage);
+				final String s = ePackage.getResource()
+						.getMetaModelResourceFactory()
+						.dumpPackageToString(ePackage);
 
-				epackagenode.setProperty(IModelIndexer.METAMODEL_RESOURCE_PROPERTY, s);
+				epackagenode.setProperty(
+						IModelIndexer.METAMODEL_RESOURCE_PROPERTY, s);
 
 			}
 
@@ -370,7 +429,8 @@ public class GraphMetaModelResourceInjector {
 			}
 
 			else
-				System.err.println("unknown classifier: (" + child.getName() + "): " + child.getClass());
+				System.err.println("unknown classifier: (" + child.getName()
+						+ "): " + child.getClass());
 
 		}
 
@@ -378,11 +438,13 @@ public class GraphMetaModelResourceInjector {
 
 	}
 
-	private void addEPackage(IHawkPackage ePackage, IHawkMetaModelResource metamodelResource) throws IOException {
+	private void addEPackage(IHawkPackage ePackage,
+			IHawkMetaModelResource metamodelResource) throws IOException {
 
 		final String uri = ePackage.getNsURI();
 		if (uri == null) {
-			System.err.println("WARNING: ePackage " + ePackage + " has null nsURI, ignoring");
+			System.err.println("WARNING: ePackage " + ePackage
+					+ " has null nsURI, ignoring");
 			return;
 		}
 
@@ -390,9 +452,11 @@ public class GraphMetaModelResourceInjector {
 
 			Map<String, Object> map4 = new HashMap<>();
 			map4.put(IModelIndexer.IDENTIFIER_PROPERTY, uri);
-			map4.put(IModelIndexer.METAMODEL_TYPE_PROPERTY, metamodelResource.getMetaModelResourceFactory().getType());
+			map4.put(IModelIndexer.METAMODEL_TYPE_PROPERTY, metamodelResource
+					.getMetaModelResourceFactory().getType());
 
-			IGraphNode epackagenode = graph.createNode(new HashMap<String, Object>(), "epackage");
+			IGraphNode epackagenode = graph.createNode(
+					new HashMap<String, Object>(), "epackage");
 
 			listener.metamodelAddition(ePackage, epackagenode);
 
@@ -403,8 +467,12 @@ public class GraphMetaModelResourceInjector {
 			epackagedictionary.add(epackagenode, "id", uri);
 			addedepackages.add(ePackage);
 		} else {
-			System.err.println("metamodel: " + (ePackage).getName() + " (" + uri
-					+ ") already in store, updating it instead (NYI) -- doing nothing!");
+			System.err
+					.println("metamodel: "
+							+ (ePackage).getName()
+							+ " ("
+							+ uri
+							+ ") already in store, updating it instead (NYI) -- doing nothing!");
 			// add to a list called changed epackages etc?
 			// XXX IDEA: handle metamodel updates -- not breaking = migrate --
 			// else
@@ -437,14 +505,15 @@ public class GraphMetaModelResourceInjector {
 		Map<String, Object> map = new HashMap<>();
 		map.put(IModelIndexer.IDENTIFIER_PROPERTY, id);
 
-		IGraphNode node = graph.createNode(new HashMap<String, Object>(), "eclass");
+		IGraphNode node = graph.createNode(new HashMap<String, Object>(),
+				"eclass");
 
 		listener.classAddition(eClass, node);
 
 		// hash.put(eClass, node);
 
-		IGraphNode metamodelNode = ((IGraphIterable<IGraphNode>) epackagedictionary.get("id", eClass.getPackageNSURI()))
-				.getSingle();
+		IGraphNode metamodelNode = ((IGraphIterable<IGraphNode>) epackagedictionary
+				.get("id", eClass.getPackageNSURI())).getSingle();
 
 		// System.out.println(new
 		// ToString().toString(epackagedictionary.query("id","*")));
@@ -457,43 +526,54 @@ public class GraphMetaModelResourceInjector {
 
 			if (e.isInDifferentResourceThan(eClass))
 				uri = e.getUri()
-						// ((InternalEObject) e)
-						// .eProxyURI()
-						// .toString()
-						.substring(0,
-								e.getUri()
-										// ((InternalEObject)
-										// e).eProxyURI().toString()
-										.indexOf("#"));
+				// ((InternalEObject) e)
+				// .eProxyURI()
+				// .toString()
+						.substring(0, e.getUri()
+						// ((InternalEObject)
+						// e).eProxyURI().toString()
+								.indexOf("#"));
 
 			else
 				uri = e.getPackageNSURI();
 
 			if (epackagedictionary.get("id", uri).iterator().hasNext() == false) {
-				System.err.println("EClass " + eClass.getName() + "has supertype "
-						+ (e.getName() == null ? e.getUri() : e.getName())
-						+ " which is in a package not registered yet, reverting all changes to this package registration, please register package with uri: "
-						+ uri + " first");
+				System.err
+						.println("EClass "
+								+ eClass.getName()
+								+ "has supertype "
+								+ (e.getName() == null ? e.getUri() : e
+										.getName())
+								+ " which is in a package not registered yet, reverting all changes to this package registration, please register package with uri: "
+								+ uri + " first");
 				return false;
 			} else {
 
 				// dependency to package
 				if (!uri.equals(eClass.getPackageNSURI())) {
 
-					IGraphNode supertypeepackage = ((IGraphIterable<IGraphNode>) epackagedictionary.get("id", uri))
-							.getSingle();
+					IGraphNode supertypeepackage = ((IGraphIterable<IGraphNode>) epackagedictionary
+							.get("id", uri)).getSingle();
 
 					boolean alreadythere = false;
 
-					for (IGraphEdge r : metamodelNode.getOutgoingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE))
+					for (IGraphEdge r : metamodelNode
+							.getOutgoingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE))
 						if (r.getEndNode().equals(supertypeepackage))
 							alreadythere = true;
 
-					if (!metamodelNode.getOutgoingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE).iterator().hasNext() || !alreadythere) {
+					if (!metamodelNode
+							.getOutgoingWithType(
+									IModelIndexer.METAMODEL_DEPENDENCY_EDGE)
+							.iterator().hasNext()
+							|| !alreadythere) {
 
-						System.err.println("supertype dependency from " + eClass.getPackageNSURI() + " to " + uri);
+						System.err.println("supertype dependency from "
+								+ eClass.getPackageNSURI() + " to " + uri);
 
-						graph.createRelationship(metamodelNode, supertypeepackage, IModelIndexer.METAMODEL_DEPENDENCY_EDGE);
+						graph.createRelationship(metamodelNode,
+								supertypeepackage,
+								IModelIndexer.METAMODEL_DEPENDENCY_EDGE);
 
 					}
 				}
@@ -507,11 +587,11 @@ public class GraphMetaModelResourceInjector {
 			String uri = null;
 			if (e.isInDifferentResourceThan(eClass)) {
 				uri = e.getUri()
-						// ((InternalEObject) e)
-						// .eProxyURI()
-						// .toString()
+				// ((InternalEObject) e)
+				// .eProxyURI()
+				// .toString()
 						.substring(0,
-								// ((InternalEObject) e).eProxyURI().toString()
+						// ((InternalEObject) e).eProxyURI().toString()
 								e.getUri().indexOf("#"));
 			} else {
 				try {
@@ -523,30 +603,42 @@ public class GraphMetaModelResourceInjector {
 			}
 
 			if (epackagedictionary.get("id", uri).iterator().hasNext() == false) {
-				System.err.println("EAttribute " + e.getName() + " has type "
-						+ (e.getType().getName() == null ? e.getType().getUri() : e.getType().getName())
-						+ " which is in a package not registered yet, reverting all changes to this package registration, please register package with uri: "
-						+ uri + " first");
+				System.err
+						.println("EAttribute "
+								+ e.getName()
+								+ " has type "
+								+ (e.getType().getName() == null ? e.getType()
+										.getUri() : e.getType().getName())
+								+ " which is in a package not registered yet, reverting all changes to this package registration, please register package with uri: "
+								+ uri + " first");
 				return false;
 			} else {
 
 				// dependency to package
 				if (!uri.equals(eClass.getPackageNSURI())) {
 
-					IGraphNode supertypeepackage = ((IGraphIterable<IGraphNode>) epackagedictionary.get("id", uri))
-							.getSingle();
+					IGraphNode supertypeepackage = ((IGraphIterable<IGraphNode>) epackagedictionary
+							.get("id", uri)).getSingle();
 
 					boolean alreadythere = false;
 
-					for (IGraphEdge r : metamodelNode.getOutgoingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE))
+					for (IGraphEdge r : metamodelNode
+							.getOutgoingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE))
 						if (r.getEndNode().equals(supertypeepackage))
 							alreadythere = true;
 
-					if (!metamodelNode.getOutgoingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE).iterator().hasNext() || !alreadythere) {
+					if (!metamodelNode
+							.getOutgoingWithType(
+									IModelIndexer.METAMODEL_DEPENDENCY_EDGE)
+							.iterator().hasNext()
+							|| !alreadythere) {
 
-						System.err.println("attribute dependency from " + eClass.getPackageNSURI() + " to " + uri);
+						System.err.println("attribute dependency from "
+								+ eClass.getPackageNSURI() + " to " + uri);
 
-						graph.createRelationship(metamodelNode, supertypeepackage, IModelIndexer.METAMODEL_DEPENDENCY_EDGE);
+						graph.createRelationship(metamodelNode,
+								supertypeepackage,
+								IModelIndexer.METAMODEL_DEPENDENCY_EDGE);
 
 					}
 				}
@@ -565,14 +657,15 @@ public class GraphMetaModelResourceInjector {
 					// System.err.println(e.getType().getName());
 					metadata[4] = e.getType().getInstanceType();
 				} else {
-					System.err.println(
-							"warning: unknown (null) type NAME found in metamodel parsing into db for attribute: "
+					System.err
+							.println("warning: unknown (null) type NAME found in metamodel parsing into db for attribute: "
 									+ e.getName() + "of type: " + e.getType());
 					metadata[4] = "unknown";
 				}
 			} else {
-				System.err.println("warning: unknown (null) type found in metamodel parsing into db for attribute: "
-						+ e.getName());
+				System.err
+						.println("warning: unknown (null) type found in metamodel parsing into db for attribute: "
+								+ e.getName());
 				metadata[4] = "unknown";
 			}
 			// isIndexed
@@ -594,30 +687,42 @@ public class GraphMetaModelResourceInjector {
 			}
 
 			if (epackagedictionary.get("id", uri).iterator().hasNext() == false) {
-				System.err.println("EReference " + r.getName() + " has type "
-						+ (r.getType().getName() == null ? r.getType().getUri() : r.getType().getName())
-						+ " which is in a package not registered yet, reverting all changes to this package registration, please register package with uri: "
-						+ uri + " first");
+				System.err
+						.println("EReference "
+								+ r.getName()
+								+ " has type "
+								+ (r.getType().getName() == null ? r.getType()
+										.getUri() : r.getType().getName())
+								+ " which is in a package not registered yet, reverting all changes to this package registration, please register package with uri: "
+								+ uri + " first");
 				return false;
 			} else {
 
 				// dependency to package
 				if (!uri.equals(eClass.getPackageNSURI())) {
 
-					IGraphNode supertypeepackage = ((IGraphIterable<IGraphNode>) epackagedictionary.get("id", uri))
-							.getSingle();
+					IGraphNode supertypeepackage = ((IGraphIterable<IGraphNode>) epackagedictionary
+							.get("id", uri)).getSingle();
 
 					boolean alreadythere = false;
 
-					for (IGraphEdge rr : metamodelNode.getOutgoingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE))
+					for (IGraphEdge rr : metamodelNode
+							.getOutgoingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE))
 						if (rr.getEndNode().equals(supertypeepackage))
 							alreadythere = true;
 
-					if (!metamodelNode.getOutgoingWithType(IModelIndexer.METAMODEL_DEPENDENCY_EDGE).iterator().hasNext() || !alreadythere) {
+					if (!metamodelNode
+							.getOutgoingWithType(
+									IModelIndexer.METAMODEL_DEPENDENCY_EDGE)
+							.iterator().hasNext()
+							|| !alreadythere) {
 
-						System.err.println("reference dependency from " + eClass.getPackageNSURI() + " to " + uri);
+						System.err.println("reference dependency from "
+								+ eClass.getPackageNSURI() + " to " + uri);
 
-						graph.createRelationship(metamodelNode, supertypeepackage, IModelIndexer.METAMODEL_DEPENDENCY_EDGE);
+						graph.createRelationship(metamodelNode,
+								supertypeepackage,
+								IModelIndexer.METAMODEL_DEPENDENCY_EDGE);
 
 					}
 				}
@@ -636,14 +741,15 @@ public class GraphMetaModelResourceInjector {
 					// System.err.println(e.getType().getName());
 					metadata[4] = r.getType().getInstanceType();
 				} else {
-					System.err.println(
-							"warning: unknown (null) type NAME found in metamodel parsing into db for attribute: "
+					System.err
+							.println("warning: unknown (null) type NAME found in metamodel parsing into db for attribute: "
 									+ r.getName() + "of type: " + r.getType());
 					metadata[4] = "unknown";
 				}
 			} else {
-				System.err.println("warning: unknown (null) type found in metamodel parsing into db for attribute: "
-						+ r.getName());
+				System.err
+						.println("warning: unknown (null) type found in metamodel parsing into db for attribute: "
+								+ r.getName());
 				metadata[4] = "unknown";
 			}
 			// metadata[4] = r.getType().getName();
@@ -704,15 +810,18 @@ public class GraphMetaModelResourceInjector {
 	 * @param graph
 	 * @return
 	 */
-	public static boolean addDerivedAttribute(String metamodeluri, String typename, String attributename,
-			boolean isMany, boolean isOrdered, boolean isUnique, String attributetype, String derivationlanguage,
-			String derivationlogic, IGraphDatabase graph, IGraphChangeListener listener) {
+	public static boolean addDerivedAttribute(String metamodeluri,
+			String typename, String attributename, boolean isMany,
+			boolean isOrdered, boolean isUnique, String attributetype,
+			String derivationlanguage, String derivationlogic,
+			IGraphDatabase graph, IGraphChangeListener listener) {
 
 		boolean requiresPropagationToInstances = false;
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
 			listener.changeStart();
-			IGraphIterable<IGraphNode> ep = graph.getMetamodelIndex().get("id", metamodeluri);
+			IGraphIterable<IGraphNode> ep = graph.getMetamodelIndex().get("id",
+					metamodeluri);
 
 			IGraphNode packagenode = null;
 
@@ -725,15 +834,21 @@ public class GraphMetaModelResourceInjector {
 			IGraphNode typenode = null;
 
 			for (IGraphEdge e : packagenode.getIncomingWithType("epackage")) {
-				if (e.getStartNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(typename)) {
+				if (e.getStartNode()
+						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+						.equals(typename)) {
 					typenode = e.getStartNode();
 					break;
 				}
 			}
 
 			if (typenode == null) {
-				System.err.println("type: " + typename + " in: " + metamodeluri
-						+ " does not exist, aborting operation: addDerivedAttribute");
+				System.err
+						.println("type: "
+								+ typename
+								+ " in: "
+								+ metamodeluri
+								+ " does not exist, aborting operation: addDerivedAttribute");
 			} else {
 				// at least one instance already present so derived attribute
 				// needs
@@ -741,8 +856,13 @@ public class GraphMetaModelResourceInjector {
 				// the
 				// derived attribute is new or existed already and is being
 				// updated)
-				if (typenode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().hasNext()
-						|| typenode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFKIND).iterator().hasNext())
+				if (typenode
+						.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
+						.iterator().hasNext()
+						|| typenode
+								.getIncomingWithType(
+										ModelElementNode.EDGE_LABEL_OFKIND)
+								.iterator().hasNext())
 					requiresPropagationToInstances = true;
 
 				String[] metadata = new String[7];
@@ -755,19 +875,24 @@ public class GraphMetaModelResourceInjector {
 				metadata[6] = derivationlogic;
 
 				if (typenode.getProperty(attributename) != null) {
-					System.err.println("attribute already derived, nothing happened!");
+					System.err
+							.println("attribute already derived, nothing happened!");
 					requiresPropagationToInstances = false;
 				} else {
 					typenode.setProperty(attributename, metadata);
-					System.err.println("derived attribute added: " + metamodeluri + ":" + typename + " " + attributename
-							+ "(isMany=" + isMany + "|isOrdered=" + isOrdered + "|isUnique=" + isUnique + "|type="
-							+ attributetype + ") " + derivationlanguage + " # " + derivationlogic);
+					System.err.println("derived attribute added: "
+							+ metamodeluri + ":" + typename + " "
+							+ attributename + "(isMany=" + isMany
+							+ "|isOrdered=" + isOrdered + "|isUnique="
+							+ isUnique + "|type=" + attributetype + ") "
+							+ derivationlanguage + " # " + derivationlogic);
 				}
 			}
 			t.success();
 			listener.changeSuccess();
 		} catch (Exception e1) {
-			System.err.println("error in adding a derived attribute to the metamodel");
+			System.err
+					.println("error in adding a derived attribute to the metamodel");
 			e1.printStackTrace();
 			listener.changeFailure();
 		}
@@ -786,27 +911,35 @@ public class GraphMetaModelResourceInjector {
 	 * @param listener2
 	 * @return
 	 */
-	public static boolean addIndexedAttribute(String metamodeluri, String typename, String attributename,
-			IGraphDatabase graph, IGraphChangeListener listener) {
+	public static boolean addIndexedAttribute(String metamodeluri,
+			String typename, String attributename, IGraphDatabase graph,
+			IGraphChangeListener listener) {
 
 		boolean requiresPropagationToInstances = false;
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
 			listener.changeStart();
-			IGraphNode packagenode = graph.getMetamodelIndex().get("id", metamodeluri).getSingle();
+			IGraphNode packagenode = graph.getMetamodelIndex()
+					.get("id", metamodeluri).getSingle();
 
 			IGraphNode typenode = null;
 
 			for (IGraphEdge e : packagenode.getIncomingWithType("epackage")) {
-				if (e.getStartNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(typename)) {
+				if (e.getStartNode()
+						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+						.equals(typename)) {
 					typenode = e.getStartNode();
 					break;
 				}
 			}
 
 			if (typenode == null) {
-				System.err.println("type: " + typename + " in: " + metamodeluri
-						+ " does not exist, aborting operation: addIndexedAttribute");
+				System.err
+						.println("type: "
+								+ typename
+								+ " in: "
+								+ metamodeluri
+								+ " does not exist, aborting operation: addIndexedAttribute");
 			} else {
 
 				// at least one instance already present so indexed attribute
@@ -816,33 +949,52 @@ public class GraphMetaModelResourceInjector {
 				// indexed attribute is new or existed already and is being
 				// updated)
 
-				String[] metadata = (String[]) typenode.getProperty(attributename);
+				String[] metadata = (String[]) typenode
+						.getProperty(attributename);
 
 				if (metadata == null) {
-					System.err.println("attribute: " + attributename + " in: " + metamodeluri + "#" + typename
-							+ " does not exist, aborting operation: addIndexedAttribute");
+					System.err
+							.println("attribute: "
+									+ attributename
+									+ " in: "
+									+ metamodeluri
+									+ "#"
+									+ typename
+									+ " does not exist, aborting operation: addIndexedAttribute");
 				} else if (!metadata[0].equals("a")) {
 					// System.err.println(Arrays.toString(metadata));
-					System.err.println(metamodeluri + "#" + typename
-							+ " is a reference not an attribute, aborting operation: addIndexedAttribute");
+					System.err
+							.println(metamodeluri
+									+ "#"
+									+ typename
+									+ " is a reference not an attribute, aborting operation: addIndexedAttribute");
 				} else {
 
-					if (typenode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().hasNext()
-							|| typenode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFKIND).iterator().hasNext())
+					if (typenode
+							.getIncomingWithType(
+									ModelElementNode.EDGE_LABEL_OFTYPE)
+							.iterator().hasNext()
+							|| typenode
+									.getIncomingWithType(
+											ModelElementNode.EDGE_LABEL_OFKIND)
+									.iterator().hasNext())
 						requiresPropagationToInstances = true;
 
 					if (metadata.length == 6) {
 						if (metadata[5] == "t") {
-							System.err.println("attribute already indexed, nothing happened!");
+							System.err
+									.println("attribute already indexed, nothing happened!");
 							requiresPropagationToInstances = false;
 						} else {
 							metadata[5] = "t";
 							typenode.setProperty(attributename, metadata);
-							System.err.println(
-									"indexed attribute added: " + metamodeluri + ":" + typename + " " + attributename);
+							System.err.println("indexed attribute added: "
+									+ metamodeluri + ":" + typename + " "
+									+ attributename);
 						}
 					} else if (metadata.length == 7)
-						System.err.println("derived attributes are already indexed, nothing happened.");
+						System.err
+								.println("derived attributes are already indexed, nothing happened.");
 					else
 						System.err
 								.println("unknown exception in addIndexedAttribute of GraphMetamodelResourceInjector");
@@ -865,21 +1017,44 @@ public class GraphMetaModelResourceInjector {
 		Set<String> ret = new HashSet<>();
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
+
+			Set<String> indexNames = graph.getNodeIndexNames();
+			Set<IGraphNodeIndex> markedForRemoval = new HashSet<>();
+
 			listener.changeStart();
 			epackagedictionary = graph.getMetamodelIndex();
 
 			Set<IGraphNode> epns = new HashSet<>();
 			for (String mmuri : mmuris) {
 				try {
+
+					for (Iterator<String> it = indexNames.iterator(); it
+							.hasNext();) {
+						String s = it.next();
+						if (s.startsWith(mmuri + "##")) {
+							IGraphNodeIndex i = graph.getOrCreateNodeIndex(s);
+							markedForRemoval.add(i);
+							it.remove();
+						}
+					}
+
 					epns.add(epackagedictionary.get("id", mmuri).getSingle());
 				} catch (Exception e) {
-					System.err.println("Metamodel with uri: " + mmuri + " not indexed. Nothing happened.");
+					System.err.println("Metamodel with uri: " + mmuri
+							+ " not indexed. Nothing happened.");
 					System.err.println(e.getMessage());
 				}
 			}
 			if (epns.size() > 0) {
-				System.err.println("Removing metamodels with uris: " + Arrays.toString(mmuris));
+				System.err.println("Removing metamodels with uris: "
+						+ Arrays.toString(mmuris));
 				ret = removeAll(epns);
+			}
+
+			for (IGraphNodeIndex i : markedForRemoval) {
+				System.err.println("deleting index: " + i.getName()
+						+ " as its metamodel was removed.");
+				i.delete();
 			}
 
 			t.success();
@@ -887,12 +1062,12 @@ public class GraphMetaModelResourceInjector {
 
 		} catch (Exception e) {
 			listener.changeFailure();
-			System.err.println(
-					"error in removing metamodels: " + Arrays.toString(mmuris) + "\n(ALL removal changes reverted):");
+			System.err.println("error in removing metamodels: "
+					+ Arrays.toString(mmuris)
+					+ "\n(ALL removal changes reverted):");
 			e.printStackTrace();
 
 		}
 		return ret;
 	}
-
 }

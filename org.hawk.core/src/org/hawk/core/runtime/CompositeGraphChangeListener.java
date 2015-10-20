@@ -36,56 +36,91 @@ public class CompositeGraphChangeListener extends HashSet<IGraphChangeListener>
 	@Override
 	public void synchroniseStart() {
 		for (IGraphChangeListener l : this) {
-			l.synchroniseStart();
+			try {
+				l.synchroniseStart();
+			} catch (Exception e) {
+				//
+			}
 		}
 	}
 
 	@Override
 	public void synchroniseEnd() {
 		for (IGraphChangeListener l : this) {
-			l.synchroniseEnd();
+			try {
+				l.synchroniseEnd();
+			} catch (Exception e) {
+				//
+			}
 		}
 	}
 
 	@Override
 	public void changeStart() {
 		for (IGraphChangeListener l : this) {
-			l.changeStart();
+			try {
+				l.changeStart();
+			} catch (Exception e) {
+				//
+			}
 		}
 	}
 
 	@Override
 	public void changeSuccess() {
 		for (IGraphChangeListener l : this) {
-			l.changeSuccess();
+			try {
+				l.changeSuccess();
+			} catch (Exception e) {
+				//
+			}
 		}
 	}
 
 	@Override
 	public void changeFailure() {
 		for (IGraphChangeListener l : this) {
-			l.changeFailure();
+			try {
+				l.changeFailure();
+			} catch (Exception e) {
+				//
+			}
 		}
 	}
 
 	@Override
 	public void fileAddition(VcsCommitItem s, IGraphNode fileNode) {
 		for (IGraphChangeListener l : this) {
-			l.fileAddition(s, fileNode);
+			try {
+				l.fileAddition(s, fileNode);
+			} catch (Exception e) {
+				//
+			}
+
 		}
 	}
 
 	@Override
 	public void metamodelAddition(IHawkPackage pkg, IGraphNode pkgNode) {
 		for (IGraphChangeListener l : this) {
-			l.metamodelAddition(pkg, pkgNode);
+			try {
+				l.metamodelAddition(pkg, pkgNode);
+			} catch (Exception e) {
+				//
+			}
+
 		}
 	}
 
 	@Override
 	public void classAddition(IHawkClass cls, IGraphNode clsNode) {
 		for (IGraphChangeListener l : this) {
-			l.classAddition(cls, clsNode);
+			try {
+				l.classAddition(cls, clsNode);
+			} catch (Exception e) {
+				//
+			}
+
 		}
 	}
 
@@ -93,7 +128,12 @@ public class CompositeGraphChangeListener extends HashSet<IGraphChangeListener>
 	public void modelElementAddition(VcsCommitItem s, IHawkObject element,
 			IGraphNode elementNode, boolean isTransient) {
 		for (IGraphChangeListener l : this) {
-			l.modelElementAddition(s, element, elementNode, isTransient);
+			try {
+				l.modelElementAddition(s, element, elementNode, isTransient);
+			} catch (Exception e) {
+				//
+			}
+
 		}
 	}
 
@@ -101,7 +141,12 @@ public class CompositeGraphChangeListener extends HashSet<IGraphChangeListener>
 	public void modelElementRemoval(VcsCommitItem s, IGraphNode elementNode,
 			boolean isTransient) {
 		for (IGraphChangeListener l : this) {
-			l.modelElementRemoval(s, elementNode, isTransient);
+			try {
+				l.modelElementRemoval(s, elementNode, isTransient);
+			} catch (Exception e) {
+				//
+			}
+
 		}
 	}
 
@@ -110,8 +155,13 @@ public class CompositeGraphChangeListener extends HashSet<IGraphChangeListener>
 			IHawkObject eObject, String attrName, Object oldValue,
 			Object newValue, IGraphNode elementNode, boolean isTransient) {
 		for (IGraphChangeListener l : this) {
-			l.modelElementAttributeUpdate(s, eObject, attrName, oldValue,
-					newValue, elementNode, isTransient);
+			try {
+				l.modelElementAttributeUpdate(s, eObject, attrName, oldValue,
+						newValue, elementNode, isTransient);
+			} catch (Exception e) {
+				//
+			}
+
 		}
 	}
 
@@ -120,7 +170,13 @@ public class CompositeGraphChangeListener extends HashSet<IGraphChangeListener>
 			IHawkObject eObject, String key, IGraphNode node,
 			boolean isTransient) {
 		for (IGraphChangeListener l : this) {
-			l.modelElementAttributeRemoval(s, eObject, key, node, isTransient);
+			try {
+				l.modelElementAttributeRemoval(s, eObject, key, node,
+						isTransient);
+			} catch (Exception e) {
+				//
+			}
+
 		}
 	}
 
@@ -128,7 +184,13 @@ public class CompositeGraphChangeListener extends HashSet<IGraphChangeListener>
 	public void referenceAddition(VcsCommitItem s, IGraphNode source,
 			IGraphNode destination, String edgelabel, boolean isTransient) {
 		for (IGraphChangeListener l : this) {
-			l.referenceAddition(s, source, destination, edgelabel, isTransient);
+			try {
+				l.referenceAddition(s, source, destination, edgelabel,
+						isTransient);
+			} catch (Exception e) {
+				//
+			}
+
 		}
 	}
 
@@ -136,14 +198,25 @@ public class CompositeGraphChangeListener extends HashSet<IGraphChangeListener>
 	public void referenceRemoval(VcsCommitItem s, IGraphNode source,
 			IGraphNode destination, String edgelabel, boolean isTransient) {
 		for (IGraphChangeListener l : this) {
-			l.referenceRemoval(s, source, destination, edgelabel, isTransient);
+			try {
+				l.referenceRemoval(s, source, destination, edgelabel,
+						isTransient);
+			} catch (Exception e) {
+				//
+			}
+
 		}
 	}
 
 	@Override
 	public void fileRemoval(VcsCommitItem s, IGraphNode fileNode) {
 		for (IGraphChangeListener l : this) {
-			l.fileRemoval(s, fileNode);
+			try {
+				l.fileRemoval(s, fileNode);
+			} catch (Exception e) {
+				//
+			}
+
 		}
 	}
 

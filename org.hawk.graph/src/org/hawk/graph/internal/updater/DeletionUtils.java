@@ -12,7 +12,6 @@ package org.hawk.graph.internal.updater;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
@@ -21,7 +20,6 @@ import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
-import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.graph.ModelElementNode;
 
 public class DeletionUtils {
@@ -51,7 +49,7 @@ public class DeletionUtils {
 
 		boolean success = true;
 
-		try (IGraphTransaction transaction = graph.beginTransaction()) {
+		try {
 			final String repository = s.getCommit().getDelta().getManager()
 					.getLocation();
 			final String filepath = s.getPath();
@@ -75,30 +73,56 @@ public class DeletionUtils {
 					rel.delete();
 				}
 
+				// if (IModelIndexer.VERBOSE)
+				// System.out
+				// .println("cached elements and deleted file edges");
+
 				for (IGraphNode node : modelElements) {
 					dereference(node, changeListener, s);
 				}
+
+				// if (IModelIndexer.VERBOSE)
+				// System.out.println("dereferenced elements");
 
 				for (IGraphNode node : modelElements) {
 					makeProxyRefs(s, node, repository, file, changeListener);
 				}
 
+				// if (IModelIndexer.VERBOSE)
+				// System.out.println("made required proxy references");
+
+				// if (IModelIndexer.VERBOSE) {
+				// System.out.println("listeners registered:");
+				//
+				// for (Iterator<IGraphChangeListener> it =
+				// ((CompositeGraphChangeListener) changeListener)
+				// .iterator(); it.hasNext();) {
+				//
+				// IGraphChangeListener l = it.next();
+				// System.out.println(l);
+				//
+				// }
+				// }
+
 				for (IGraphNode node : modelElements) {
-					delete(node);
 					changeListener.modelElementRemoval(s, node, false);
+					delete(node);
 				}
+
+				// if (IModelIndexer.VERBOSE)
+				// System.out.println("deleted elements");
 
 				modelElements = null;
 
-				delete(file);
 				changeListener.fileRemoval(s, file);
+				delete(file);
 			} else {
-				System.err
-						.println("WARNING: could not find any file nodes for "
-								+ fullFileID);
+				System.err.println("no local data found for: " + fullFileID
+						+ " (nothing to delete)");
 			}
 
-			transaction.success();
+			// if (IModelIndexer.VERBOSE)
+			// System.out.println("ending deletion");
 
 		} catch (Exception e) {
 			success = false;
@@ -109,59 +133,6 @@ public class DeletionUtils {
 				+ (System.currentTimeMillis() - start) / 1000 + "s"
 				+ (System.currentTimeMillis() - start) / 1000 + "ms");
 		return success;
-	}
-
-	protected String makeRelative(Set<String> bases, String extension) {
-		for (final String base : bases) {
-			if (extension.startsWith(base)) {
-				return extension.substring(base.length());
-			}
-		}
-		System.err
-				.println(String.format(
-						"WARNING: could not make '%s' into a relative path",
-						extension));
-		return extension;
-	}
-
-	protected String[] addToElementProxies(String[] proxies,
-			String fullPathURI, String edgelabel, boolean isContainment,
-			boolean isContainer) {
-
-		// System.err.println("addtoelementproxies: " +
-		// Arrays.toString(proxies));
-		// System.err.println("fullpathuri " + fullPathURI);
-		// System.err.println("edgelabel " + edgelabel);
-
-		if (proxies != null) {
-
-			String[] ret = new String[proxies.length + 4];
-
-			for (int i = 0; i < proxies.length; i = i + 4) {
-
-				ret[i] = proxies[i];
-				ret[i + 1] = proxies[i + 1];
-				ret[i + 2] = proxies[i + 2];
-				ret[i + 3] = proxies[i + 3];
-
-			}
-
-			ret[proxies.length] = fullPathURI;
-			ret[proxies.length + 1] = edgelabel;
-			ret[proxies.length + 2] = isContainment + "";
-			ret[proxies.length + 3] = isContainer + "";
-
-			proxies = null;
-
-			// System.err.println("ret " + Arrays.toString(ret));
-
-			return ret;
-
-		} else {
-			String[] ret = new String[] { fullPathURI, edgelabel,
-					isContainment + "", isContainer + "" };
-			return ret;
-		}
 	}
 
 	protected void makeProxyRefs(VcsCommitItem commitItem,
@@ -202,18 +173,18 @@ public class DeletionUtils {
 						.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX
 								+ fullReferencedElementPathFileURI);
 
-				proxies = addToElementProxies(
-						(String[]) proxies,
-						fullReferencedElementPathElementURI,
-						type,
-						rel.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null,
-						rel.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER) != null);
+				proxies = new Utils()
+						.addToElementProxies(
+								(String[]) proxies,
+								fullReferencedElementPathElementURI,
+								type,
+								rel.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null,
+								rel.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER) != null);
 
 				referencingNode.setProperty(
 						GraphModelUpdater.PROXY_REFERENCE_PREFIX
 								+ fullReferencedElementPathFileURI, proxies);
 
-				proxydictionary = graph.getOrCreateNodeIndex("proxydictionary");
 				proxydictionary.add(referencingNode,
 						GraphModelUpdater.PROXY_REFERENCE_PREFIX,
 						fullReferencedElementPathFileURI);
@@ -253,8 +224,10 @@ public class DeletionUtils {
 	}
 
 	private void removeFromIndexes(IGraphNode n) {
-		for (String indexName : graph.getNodeIndexNames())
-			graph.getOrCreateNodeIndex(indexName).remove(n);
+
+		for (String indexname : graph.getNodeIndexNames())
+			graph.getOrCreateNodeIndex(indexname).remove(n);
+
 	}
 
 	public void delete(IGraphEdge rel) {

@@ -166,7 +166,7 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 			}
 
 		System.err.println(found ? "removed: " + property : property
-				+ " not present in this EMF parser");
+				+ " not present in this BPMN parser");
 
 	}
 

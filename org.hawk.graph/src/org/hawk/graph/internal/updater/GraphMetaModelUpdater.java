@@ -15,12 +15,16 @@ import java.util.Set;
 import org.hawk.core.IMetaModelUpdater;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.model.IHawkMetaModelResource;
+import org.hawk.core.runtime.CompositeGraphChangeListener;
 
 public class GraphMetaModelUpdater implements IMetaModelUpdater {
 
 	@Override
-	public void insertMetamodels(Set<IHawkMetaModelResource> set, IModelIndexer indexer) {
-		new GraphMetaModelResourceInjector(indexer.getGraph(), set, indexer.getCompositeGraphChangeListener());
+	public void insertMetamodels(Set<IHawkMetaModelResource> set,
+			IModelIndexer indexer) {
+		new GraphMetaModelResourceInjector(indexer, set,
+				(CompositeGraphChangeListener) indexer
+						.getCompositeGraphChangeListener());
 	}
 
 	// @Override
@@ -34,19 +38,23 @@ public class GraphMetaModelUpdater implements IMetaModelUpdater {
 
 	@Override
 	public Set<String> removeMetamodels(IModelIndexer indexer, String[] mmuri) {
-		GraphMetaModelResourceInjector ret = new GraphMetaModelResourceInjector(indexer.getGraph(),
-				indexer.getCompositeGraphChangeListener());
+		GraphMetaModelResourceInjector ret = new GraphMetaModelResourceInjector(
+				indexer,
+				(CompositeGraphChangeListener) indexer
+						.getCompositeGraphChangeListener());
 		return ret.removeMetamodels(mmuri);
 	}
 
 	@Override
-	public boolean addDerivedAttribute(String metamodeluri, String typename, String attributename, String attributetype,
-			boolean isMany, boolean isOrdered, boolean isUnique, String derivationlanguage, String derivationlogic,
-			IModelIndexer indexer) {
+	public boolean addDerivedAttribute(String metamodeluri, String typename,
+			String attributename, String attributetype, boolean isMany,
+			boolean isOrdered, boolean isUnique, String derivationlanguage,
+			String derivationlogic, IModelIndexer indexer) {
 
-		return GraphMetaModelResourceInjector.addDerivedAttribute(metamodeluri, typename, attributename, isMany,
-				isOrdered, isUnique, attributetype, derivationlanguage, derivationlogic, indexer.getGraph(),
-				indexer.getCompositeGraphChangeListener());
+		return GraphMetaModelResourceInjector.addDerivedAttribute(metamodeluri,
+				typename, attributename, isMany, isOrdered, isUnique,
+				attributetype, derivationlanguage, derivationlogic,
+				indexer.getGraph(), indexer.getCompositeGraphChangeListener());
 	}
 
 	@Override
@@ -55,10 +63,11 @@ public class GraphMetaModelUpdater implements IMetaModelUpdater {
 	}
 
 	@Override
-	public boolean addIndexedAttribute(String metamodeluri, String typename, String attributename,
-			IModelIndexer indexer) {
-		return GraphMetaModelResourceInjector.addIndexedAttribute(metamodeluri, typename, attributename,
-				indexer.getGraph(), indexer.getCompositeGraphChangeListener());
+	public boolean addIndexedAttribute(String metamodeluri, String typename,
+			String attributename, IModelIndexer indexer) {
+		return GraphMetaModelResourceInjector.addIndexedAttribute(metamodeluri,
+				typename, attributename, indexer.getGraph(),
+				indexer.getCompositeGraphChangeListener());
 	}
 
 	@Override

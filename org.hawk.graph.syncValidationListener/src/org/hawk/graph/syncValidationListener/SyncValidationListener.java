@@ -124,6 +124,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 						} catch (Exception ee) {
 							System.err.println("expected file " + file
 									+ " but it did not exist");
+							totalErrors++;
 							continue;
 						}
 

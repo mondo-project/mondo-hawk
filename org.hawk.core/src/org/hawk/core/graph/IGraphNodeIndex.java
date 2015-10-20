@@ -36,4 +36,6 @@ public interface IGraphNodeIndex {
 
 	void flush();
 
+	void delete();
+
 }

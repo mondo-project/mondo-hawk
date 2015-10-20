@@ -1469,7 +1469,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		List<String> ret = new LinkedList<>();
 
 		try {
-			derivationlogic = "return " + derivationlogic + ";";
 			module.parse(derivationlogic);
 			for (ParseProblem p : module.getParseProblems())
 				ret.add(p.toString());

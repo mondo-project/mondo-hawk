@@ -37,8 +37,6 @@ public class DeriveFeature {
 		String actualEOLScript = EOLScript.startsWith("_NYD##") ? EOLScript
 				.substring(6) : EOLScript;
 
-		actualEOLScript = "return " + actualEOLScript + ";";
-
 		EolModule currentModule = null;
 
 		Map<String, EffectiveType> etm = null;

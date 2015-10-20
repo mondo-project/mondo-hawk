@@ -80,7 +80,8 @@ public class HConfigDialog extends Dialog {
 		gridLayout.numColumns = 1;
 		composite.setLayout(gridLayout);
 
-		indexList = new List(composite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		indexList = new List(composite, SWT.BORDER | SWT.V_SCROLL
+				| SWT.H_SCROLL);
 		GridData gridDataQ = new GridData();
 		gridDataQ.grabExcessHorizontalSpace = true;
 		gridDataQ.horizontalAlignment = GridData.FILL;
@@ -116,12 +117,13 @@ public class HConfigDialog extends Dialog {
 			Boolean isOrdered = false;
 			Boolean isUnique = false;
 			String derivationlanguage = "";
-			String derivationlogic = "self.bodyDeclarations.exists(md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public==true) and md.modifiers.exists(mod:Modifier|mod.static==true) and md.returnType.isTypeOf(SimpleType) and md.returnType.name.fullyQualifiedName == self.name.fullyQualifiedName)";
+			String derivationlogic = "return self.bodyDeclarations.exists(md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public==true) and md.modifiers.exists(mod:Modifier|mod.static==true) and md.returnType.isTypeOf(SimpleType) and md.returnType.name.fullyQualifiedName == self.name.fullyQualifiedName);";
 			String error = "";
 
 			private boolean check() {
 
-				java.util.List<String> l = hawkModel.validateExpression(derivationlanguage, derivationlogic);
+				java.util.List<String> l = hawkModel.validateExpression(
+						derivationlanguage, derivationlogic);
 
 				if (l.size() > 0) {
 
@@ -137,8 +139,10 @@ public class HConfigDialog extends Dialog {
 
 				// System.out.println(error);
 
-				return !uri.equals("") && !type.equals("") && !name.equals("") && !atttype.equals("")
-						&& !derivationlanguage.equals("") && !derivationlogic.equals("") && l.size() == 0;
+				return !uri.equals("") && !type.equals("") && !name.equals("")
+						&& !atttype.equals("")
+						&& !derivationlanguage.equals("")
+						&& !derivationlogic.equals("") && l.size() == 0;
 
 			}
 
@@ -167,7 +171,8 @@ public class HConfigDialog extends Dialog {
 					public void widgetSelected(SelectionEvent e) {
 						if (check()) {
 							try {
-								hawkModel.addDerivedAttribute(uri, type, name, atttype, isMany, isOrdered, isUnique,
+								hawkModel.addDerivedAttribute(uri, type, name,
+										atttype, isMany, isOrdered, isUnique,
 										derivationlanguage, derivationlogic);
 							} catch (Exception e1) {
 								e1.printStackTrace();
@@ -184,7 +189,8 @@ public class HConfigDialog extends Dialog {
 
 				parent.getShell().setText("Add a derived attribute");
 
-				Composite composite = (Composite) super.createDialogArea(parent);
+				Composite composite = (Composite) super
+						.createDialogArea(parent);
 
 				GridLayout la = new GridLayout();
 				la.numColumns = 2;
@@ -201,7 +207,8 @@ public class HConfigDialog extends Dialog {
 				l.setText(" Type Name: ");
 
 				final Text t = new Text(composite, SWT.BORDER);
-				GridData data = new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false);
+				GridData data = new GridData(SWT.BEGINNING, SWT.BEGINNING,
+						true, false);
 				data.minimumWidth = 200;
 				t.setLayoutData(data);
 				t.setText(type);
@@ -269,7 +276,8 @@ public class HConfigDialog extends Dialog {
 				l = new Label(composite, SWT.NONE);
 				l.setText(" Derivation Logic: ");
 
-				final Text t4 = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+				final Text t4 = new Text(composite, SWT.MULTI | SWT.BORDER
+						| SWT.WRAP | SWT.V_SCROLL);
 
 				data = new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false);
 				data.minimumWidth = 200;
@@ -287,7 +295,8 @@ public class HConfigDialog extends Dialog {
 				t5.setForeground(new Color(getShell().getDisplay(), 255, 0, 0));
 				t5.setBackground(composite.getBackground());
 				FontData fd = t5.getFont().getFontData()[0];
-				Font f = new Font(composite.getDisplay(), fd.getName(), fd.getHeight() - 1, SWT.NORMAL);
+				Font f = new Font(composite.getDisplay(), fd.getName(),
+						fd.getHeight() - 1, SWT.NORMAL);
 				t5.setFont(f);
 				t5.setLayoutData(data);
 				t5.setText("");
@@ -426,7 +435,8 @@ public class HConfigDialog extends Dialog {
 		gridLayout.numColumns = 2;
 		composite.setLayout(gridLayout);
 
-		derivedAttributeList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+		derivedAttributeList = new List(composite, SWT.BORDER | SWT.MULTI
+				| SWT.V_SCROLL | SWT.H_SCROLL);
 		GridData gridDataQ = new GridData();
 		gridDataQ.grabExcessHorizontalSpace = true;
 		gridDataQ.horizontalAlignment = GridData.FILL;
@@ -475,7 +485,8 @@ public class HConfigDialog extends Dialog {
 
 				ok.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
-						if (!uri.equals("") && !type.equals("") && !name.equals("")) {
+						if (!uri.equals("") && !type.equals("")
+								&& !name.equals("")) {
 							try {
 								hawkModel.addIndexedAttribute(uri, type, name);
 							} catch (Exception e1) {
@@ -508,7 +519,8 @@ public class HConfigDialog extends Dialog {
 					public void widgetSelected(SelectionEvent e) {
 						uri = c.getText();
 						Button ok = getButton(IDialogConstants.OK_ID);
-						if (!type.equals("") && !uri.equals("") && !name.equals(""))
+						if (!type.equals("") && !uri.equals("")
+								&& !name.equals(""))
 							ok.setEnabled(true);
 						else
 							ok.setEnabled(false);
@@ -522,7 +534,8 @@ public class HConfigDialog extends Dialog {
 				l.setText(" Type Name: ");
 
 				final Text t = new Text(parent, SWT.BORDER);
-				GridData data = new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false);
+				GridData data = new GridData(SWT.BEGINNING, SWT.BEGINNING,
+						true, false);
 				data.minimumWidth = 200;
 				t.setLayoutData(data);
 				t.setText(type);
@@ -532,7 +545,8 @@ public class HConfigDialog extends Dialog {
 					public void modifyText(ModifyEvent e) {
 						type = t.getText().trim();
 						Button ok = getButton(IDialogConstants.OK_ID);
-						if (!type.equals("") && !uri.equals("") && !name.equals(""))
+						if (!type.equals("") && !uri.equals("")
+								&& !name.equals(""))
 							ok.setEnabled(true);
 						else
 							ok.setEnabled(false);
@@ -556,7 +570,8 @@ public class HConfigDialog extends Dialog {
 					public void modifyText(ModifyEvent e) {
 						name = t2.getText().trim();
 						Button ok = getButton(IDialogConstants.OK_ID);
-						if (!type.equals("") && !uri.equals("") && !name.equals(""))
+						if (!type.equals("") && !uri.equals("")
+								&& !name.equals(""))
 							ok.setEnabled(true);
 						else
 							ok.setEnabled(false);
@@ -583,7 +598,8 @@ public class HConfigDialog extends Dialog {
 		gridLayout.numColumns = 2;
 		composite.setLayout(gridLayout);
 
-		indexedAttributeList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+		indexedAttributeList = new List(composite, SWT.BORDER | SWT.MULTI
+				| SWT.V_SCROLL | SWT.H_SCROLL);
 		GridData gridDataQ = new GridData();
 		gridDataQ.grabExcessHorizontalSpace = true;
 		gridDataQ.horizontalAlignment = GridData.FILL;
@@ -618,7 +634,8 @@ public class HConfigDialog extends Dialog {
 	private void metamodelBrowse() {
 		FileDialog fd = new FileDialog(getShell(), SWT.MULTI);
 
-		fd.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile().toString());
+		fd.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation()
+				.toFile().toString());
 		// TODO: allow selection of only parse-able/known metamodels-file-types
 		fd.setFilterExtensions(new String[] { "*.ecore" });
 		fd.setText("Select metamodels");
@@ -632,7 +649,8 @@ public class HConfigDialog extends Dialog {
 			boolean error = false;
 
 			for (int i = 0; i < metaModels.length; i++) {
-				File file = new File(fd.getFilterPath() + File.separator + metaModels[i]);
+				File file = new File(fd.getFilterPath() + File.separator
+						+ metaModels[i]);
 				if (!file.exists() || !file.canRead() || !file.isFile())
 					error = true;
 				else
@@ -655,7 +673,8 @@ public class HConfigDialog extends Dialog {
 		gridLayout.numColumns = 2;
 		composite.setLayout(gridLayout);
 
-		metamodelList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+		metamodelList = new List(composite, SWT.BORDER | SWT.MULTI
+				| SWT.V_SCROLL | SWT.H_SCROLL);
 		GridData gridDataQ = new GridData();
 		gridDataQ.grabExcessHorizontalSpace = true;
 		gridDataQ.horizontalAlignment = GridData.FILL;
@@ -679,9 +698,10 @@ public class HConfigDialog extends Dialog {
 
 				if (selectedMetamodel != null) {
 
-					MessageBox messageBox = new MessageBox(getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-					messageBox.setMessage(
-							"Are you sure you wish to delete the chosen metamodel(s)? This will also delete any dependant metamodels/models and may take a long time to complete.");
+					MessageBox messageBox = new MessageBox(getShell(),
+							SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+					messageBox
+							.setMessage("Are you sure you wish to delete the chosen metamodel(s)? This will also delete any dependant metamodels/models and may take a long time to complete.");
 					messageBox.setText("Metamodel deletion");
 					int response = messageBox.open();
 					if (response == SWT.YES) {
@@ -748,7 +768,8 @@ public class HConfigDialog extends Dialog {
 		layout.numColumns = 3;
 		composite.setLayout(layout);
 
-		lstVCSLocations = new ListViewer(composite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		lstVCSLocations = new ListViewer(composite, SWT.BORDER | SWT.V_SCROLL
+				| SWT.H_SCROLL);
 		lstVCSLocations.setLabelProvider(new LabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -757,7 +778,8 @@ public class HConfigDialog extends Dialog {
 		});
 		lstVCSLocations.setContentProvider(new ArrayContentProvider());
 		lstVCSLocations.setInput(hawkModel.getRunningVCSManagers().toArray());
-		final GridData lstVCSLocationsLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		final GridData lstVCSLocationsLayoutData = new GridData(SWT.FILL,
+				SWT.FILL, true, true);
 		lstVCSLocationsLayoutData.horizontalSpan = 3;
 		lstVCSLocations.getList().setLayoutData(lstVCSLocationsLayoutData);
 
@@ -767,7 +789,8 @@ public class HConfigDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				new HVCSDialog(getShell(), hawkModel, null).open();
-				lstVCSLocations.setInput(hawkModel.getRunningVCSManagers().toArray());
+				lstVCSLocations.setInput(hawkModel.getRunningVCSManagers()
+						.toArray());
 			}
 		});
 
@@ -776,7 +799,8 @@ public class HConfigDialog extends Dialog {
 		btnEdit.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				new HVCSDialog(getShell(), hawkModel, getSelectedExistingVCSManager()).open();
+				new HVCSDialog(getShell(), hawkModel,
+						getSelectedExistingVCSManager()).open();
 				lstVCSLocations.refresh();
 			}
 		});
@@ -793,7 +817,8 @@ public class HConfigDialog extends Dialog {
 	}
 
 	protected IVcsManager getSelectedExistingVCSManager() {
-		final IStructuredSelection sel = (IStructuredSelection) lstVCSLocations.getSelection();
+		final IStructuredSelection sel = (IStructuredSelection) lstVCSLocations
+				.getSelection();
 		if (sel.isEmpty()) {
 			return null;
 		}
@@ -805,7 +830,8 @@ public class HConfigDialog extends Dialog {
 		newShell.setText("Configure Indexer: " + hawkModel.getName());
 	}
 
-	protected Button createButton(Composite parent, int id, String label, boolean defaultButton) {
+	protected Button createButton(Composite parent, int id, String label,
+			boolean defaultButton) {
 		if (id == IDialogConstants.CANCEL_ID) {
 			return null;
 		}
@@ -823,8 +849,9 @@ public class HConfigDialog extends Dialog {
 
 	protected Control createDialogArea(Composite parent) {
 		try {
-			setDefaultImage(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(HView.ID)
-					.getTitleImage());
+			setDefaultImage(PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage()
+					.findView(HView.ID).getTitleImage());
 
 		} catch (Exception e1) {
 			e1.printStackTrace();

@@ -333,7 +333,8 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 			// cashing
 			// if (enableCache) {
 			//
-			// OptimisableCollection ret = typeorkind.equals(ModelElementNode.EDGE_LABEL_OFTYPE) ?
+			// OptimisableCollection ret =
+			// typeorkind.equals(ModelElementNode.EDGE_LABEL_OFTYPE) ?
 			// typeContents
 			// .get(arg0) : superTypeContents.get(arg0);
 			//
@@ -368,8 +369,9 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 				for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
 
 					IGraphNode othernode = r.getStartNode();
-					if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(
-							arg0.substring(arg0.indexOf("::") + 2))) {
+					if (othernode
+							.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+							.equals(arg0.substring(arg0.indexOf("::") + 2))) {
 						typeNode = othernode;
 						break;
 					}
@@ -395,7 +397,9 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 									.getIncomingWithType("epackage")) {
 
 								IGraphNode othernode = n.getStartNode();
-								if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(arg0)) {
+								if (othernode.getProperty(
+										IModelIndexer.IDENTIFIER_PROPERTY)
+										.equals(arg0)) {
 
 									possibletypenodes.add(othernode);
 
@@ -428,7 +432,9 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 									.getIncomingWithType("epackage")) {
 
 								IGraphNode othernode = n.getStartNode();
-								if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(arg0)) {
+								if (othernode.getProperty(
+										IModelIndexer.IDENTIFIER_PROPERTY)
+										.equals(arg0)) {
 
 									typeNode = othernode;
 									break;
@@ -567,7 +573,8 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 			IGraphNode typeNode = graph.getNodeById(((GraphNodeWrapper) type)
 					.getId());
 
-			ret = typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+			ret = typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+					.toString();
 
 			tx.success();
 			tx.close();
@@ -594,8 +601,9 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 			// returns the typeOf relationship of arg0 as a node id wrapper
 			// do we want the e-class instead?
 
-			typeNode = objectNode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator()
-					.next().getEndNode();
+			typeNode = objectNode
+					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
+					.iterator().next().getEndNode();
 
 			tx.success();
 			tx.close();
@@ -647,7 +655,8 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 								.getIncomingWithType("epackage")) {
 
 							IGraphNode othernode = r.getStartNode();
-							if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(
+							if (othernode.getProperty(
+									IModelIndexer.IDENTIFIER_PROPERTY).equals(
 									arg0.substring(arg0.indexOf("::") + 2))) {
 
 								found = true;
@@ -679,7 +688,8 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 										.getIncomingWithType("epackage")) {
 
 									IGraphNode othernode = n.getStartNode();
-									if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+									if (othernode.getProperty(
+											IModelIndexer.IDENTIFIER_PROPERTY)
 											.equals(arg0)) {
 
 										possibletypenodes.add(othernode);
@@ -720,7 +730,8 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 										.getIncomingWithType("epackage")) {
 
 									IGraphNode othernode = n.getStartNode();
-									if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+									if (othernode.getProperty(
+											IModelIndexer.IDENTIFIER_PROPERTY)
 											.equals(arg0)) {
 										cachedTypes.add(arg0);
 
@@ -889,7 +900,9 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 					id = "";
 
 					try {
-						id = r.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+						id = r.getEndNode()
+								.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+								.toString();
 					} catch (Exception e) {
 						id = "NO ID FOUND";
 					}
@@ -898,8 +911,14 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 					if (!r.getStartNode().equals(n))
 						x = "<-";
 
-					refs += "[" + r.getType() + " " + x + " "
-							+ r.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY) + "" + "]";
+					refs += "["
+							+ r.getType()
+							+ " "
+							+ x
+							+ " "
+							+ r.getEndNode().getProperty(
+									IModelIndexer.IDENTIFIER_PROPERTY) + ""
+							+ "]";
 
 				}
 
@@ -1003,7 +1022,8 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 			try {
 				typeNode = objectNode.getOutgoingWithType(typeorkind)
 						.iterator().next().getEndNode();
-				id = typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+				id = typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+						.toString();
 			} catch (Exception e) {
 				// dont have a type - only if you are iterating all the
 				// nodes
@@ -1453,19 +1473,32 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 						IGraphNodeIndex derivedFeature = graph
 								.getOrCreateNodeIndex(
 
-								elementnode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
-										.iterator().next().getEndNode()
+								elementnode
+										.getOutgoingWithType(
+												ModelElementNode.EDGE_LABEL_OFTYPE)
+										.iterator()
+										.next()
+										.getEndNode()
 										.getOutgoingWithType("epackage")
-										.iterator().next().getEndNode()
-										.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString()
+										.iterator()
+										.next()
+										.getEndNode()
+										.getProperty(
+												IModelIndexer.IDENTIFIER_PROPERTY)
+										.toString()
 										//
 										// e.getEPackage().getNsURI()
 										+ "##"
 										// -
 										+ elementnode
-												.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
-												.iterator().next().getEndNode()
-												.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString()
+												.getOutgoingWithType(
+														ModelElementNode.EDGE_LABEL_OFTYPE)
+												.iterator()
+												.next()
+												.getEndNode()
+												.getProperty(
+														IModelIndexer.IDENTIFIER_PROPERTY)
+												.toString()
 										//
 										+ "##" + s);
 
@@ -1534,7 +1567,6 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 		List<String> ret = new LinkedList<>();
 
 		try {
-			derivationlogic = "return " + derivationlogic + ";";
 			module.parse(derivationlogic);
 			for (ParseProblem p : module.getParseProblems())
 				ret.add(p.toString());

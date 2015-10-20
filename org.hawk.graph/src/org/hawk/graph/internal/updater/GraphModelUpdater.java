@@ -88,8 +88,19 @@ public class GraphModelUpdater implements IModelUpdater {
 					+ "ms [pure insertion]");
 
 		} finally {
-			toBeUpdated.addAll(l.getNodesToBeUpdated());
+			final long s = System.currentTimeMillis();
+			console.print("marking any relevant derived attributes for update...");
+			try (IGraphTransaction t = g.beginTransaction()) {
+				toBeUpdated.addAll(l.getNodesToBeUpdated());
+				t.success();
+			} catch (Exception e) {
+				console.printerrln("Exception in updateStore -- marking of derived attributes needing update failed.");
+				e.printStackTrace();
+				success = false;
+			}
 			indexer.removeGraphChangeListener(l);
+			final long end = System.currentTimeMillis();
+			console.println((end - s) / 1000 + "s" + (end - s) % 1000 + "ms");
 		}
 		return success;
 	}
@@ -147,8 +158,16 @@ public class GraphModelUpdater implements IModelUpdater {
 
 	@Override
 	public boolean deleteAll(VcsCommitItem c) throws Exception {
-		return new DeletionUtils(indexer.getGraph()).deleteAll(c,
-				indexer.getCompositeGraphChangeListener());
+		boolean ret = false;
+		try (IGraphTransaction t = indexer.getGraph().beginTransaction()) {
+			ret = new DeletionUtils(indexer.getGraph()).deleteAll(c,
+					indexer.getCompositeGraphChangeListener());
+			t.success();
+		} catch (Exception e) {
+			e.printStackTrace();
+			ret = false;
+		}
+		return ret;
 	}
 
 	@Override
