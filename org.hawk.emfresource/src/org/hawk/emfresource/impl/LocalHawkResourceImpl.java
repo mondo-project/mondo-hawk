@@ -77,35 +77,33 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			 * notifications, for consistency and for the ability to signal if
 			 * an EMF notification comes from lazy loading or not.
 			 */
+			final EObject eob = (EObject) o;
 			final EStructuralFeature sf = (EStructuralFeature)args[0];
-			if (sf instanceof EReference) {
+			if (lazyResolver != null && sf instanceof EReference && lazyResolver.isPending(eob, sf)) {
 				synchronized(nodeIdToEObjectMap) {
 					final EReference ref = (EReference) sf;
-					final EObject eob = (EObject) o;
+					lazyResolver.resolve(eob, sf);
 
 					/*
 					 * When we resolve a reference, it may be a containment or
 					 * container reference: need to adjust the list of root
 					 * elements then.
 					 */
-					if (lazyResolver != null) {
-						// Avoid NPE by invocations after doUnload is complete
-						lazyResolver.resolve(eob, sf);
-					}
-					Object superValue = proxy.invokeSuper(o, args);
-					if (superValue != null) {
-						if (ref.isContainer()) {
-							removeFromResource(eob);
-						} else if (ref.isContainment()) {
-							if (ref.isMany()) {
-								for (EObject child : (Iterable<EObject>) superValue) {
-									removeFromResource(child);
+						Object superValue = proxy.invokeSuper(o, args);
+						if (superValue != null) {
+							if (ref.isContainer()) {
+								removeFromResource(eob);
+							} else if (ref.isContainment()) {
+								if (ref.isMany()) {
+									for (EObject child : (Iterable<EObject>) superValue) {
+										removeFromResource(child);
+									}
+								} else {
+									removeFromResource((EObject) superValue);
 								}
-							} else {
-								removeFromResource((EObject) superValue);
 							}
 						}
-					}
+						return superValue;
 				}
 			}
 			return proxy.invokeSuper(o, args);
@@ -570,7 +568,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 
 	private void removeFromResource(EObject child) {
 		final Resource r = child.eResource();
-		if (r != null && child.eContainer() == null) {
+		if (r != null) {
 			r.getContents().remove(child);
 		}
 	}

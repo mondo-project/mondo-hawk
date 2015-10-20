@@ -14,6 +14,10 @@
             customizerClass="org.hawk.ui.emfresource.exeed.LocalHawkResourceExeedCustomizer"
             resourceClass="org.hawk.emfresource.impl.LocalHawkResourceImpl">
       </customizer>
+      <customizer
+            customizerClass="org.hawk.ui.emfresource.exeed.LocalHawkResourceExeedCustomizer"
+            resourceClass="org.hawk.emfresource.impl.HawkFileResourceImpl">
+      </customizer>
    </extension>
    <extension
          point="org.eclipse.ui.newWizards">
