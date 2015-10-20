@@ -92,14 +92,14 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 						Object superValue = proxy.invokeSuper(o, args);
 						if (superValue != null) {
 							if (ref.isContainer()) {
-								removeFromResource(eob);
+								removeRedundantRoot(eob);
 							} else if (ref.isContainment()) {
 								if (ref.isMany()) {
 									for (EObject child : (Iterable<EObject>) superValue) {
-										removeFromResource(child);
+										removeRedundantRoot(child);
 									}
 								} else {
-									removeFromResource((EObject) superValue);
+									removeRedundantRoot((EObject) superValue);
 								}
 							}
 						}
@@ -388,7 +388,12 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	@Override
 	protected void doUnload() {
 		super.doUnload();
-	
+
+		for (Resource r : resources.values()) {
+			r.unload();
+		}
+		resources.clear();
+
 		if (indexer != null) {
 			indexer.removeGraphChangeListener(changeListener);
 		}
@@ -435,7 +440,10 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	
 			final EObject container = eob.eContainer();
 			if (container == null) {
-				removeFromResource(eob);
+				Resource r = eob.eResource();
+				if (r != null) {
+					r.getContents().remove(eob);
+				}
 			} else {
 				final EStructuralFeature containingFeature = eob.eContainingFeature();
 				if (containingFeature.isMany()) {
@@ -559,16 +567,19 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		synchronized(resources) {
 			Resource resource = resources.get(fullURL);
 			if (resource == null) {
-				resource = getResourceSet().createResource(URI.createURI(fullURL));
+				resource = new HawkFileResourceImpl(URI.createURI(fullURL), this);
+				getResourceSet().getResources().add(resource);
 				resources.put(fullURL, resource);
 			}
 			resource.getContents().add(eob);
 		}
 	}
 
-	private void removeFromResource(EObject child) {
+	private void removeRedundantRoot(EObject child) {
 		final Resource r = child.eResource();
-		if (r != null) {
+		if (r != null && child.eContainer() != null && child.eResource() == child.eContainer().eResource()) {
+			// We only remove when it won't affect the results of the child.eResource() call
+			// (it's contained within something that is in the same resource).
 			r.getContents().remove(child);
 		}
 	}

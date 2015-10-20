@@ -45,7 +45,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartReference;
-import org.hawk.emfresource.impl.LocalHawkResourceImpl;
+import org.hawk.emfresource.HawkResource;
 
 public class LocalHawkResourceExeedCustomizer implements IExeedCustomizer {
 
@@ -148,7 +148,7 @@ public class LocalHawkResourceExeedCustomizer implements IExeedCustomizer {
 
 	@Override
 	public boolean hasChildren(Resource r, EObject eob) {
-		final LocalHawkResourceImpl hawkResource = (LocalHawkResourceImpl)r;
+		final HawkResource hawkResource = (HawkResource)r;
 		return hawkResource.hasChildren(eob);
 	}
 
@@ -160,7 +160,7 @@ public class LocalHawkResourceExeedCustomizer implements IExeedCustomizer {
 
 	@Override
 	public boolean isEnabledFor(Resource r) {
-		return r instanceof LocalHawkResourceImpl;
+		return r instanceof HawkResource;
 	}
 
 }

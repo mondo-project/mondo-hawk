@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.hawk.emfresource.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -98,4 +101,25 @@ public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 	public boolean removeChangeListener(final HawkResourceChangeListener l) {
 		return mainResource.removeChangeListener(l);
 	}
+
+	@Override
+	protected void doSave(OutputStream outputStream, Map<?, ?> options) throws IOException {
+		// saving is not supported by Hawk (it's a read-only index)
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected void doLoad(InputStream inputStream, Map<?, ?> options) throws IOException {
+		// do nothing - resource is populated from the main Hawk resource
+	}
+
+	@Override
+	public boolean isLoaded() {
+		// We don't want this resource to be unloaded unless unloading the main
+		// Hawk resource, so we never report it as loaded. This is needed to make
+		// on-the-fly updating work, as EcoreEditor keeps track of resources that
+		// have been changed outside it and reloads them if they are loaded.
+		return false;
+	}
+
 }
