@@ -58,13 +58,24 @@ public class GraphModelUpdater implements IModelUpdater {
 		 * require any more memory, and the CPU cost should be the same.
 		 */
 		final IGraphDatabase g = indexer.getGraph();
-		final DirtyDerivedAttributesListener l = new DirtyDerivedAttributesListener(g);
+		final DirtyDerivedAttributesListener l = new DirtyDerivedAttributesListener(
+				g);
 		indexer.addGraphChangeListener(l);
 
 		try {
 			try {
-				if (!new GraphModelInserter(indexer).run(res, f)) {
-					console.printerrln("warning: failed to update item: " + f + "\nmodel resource: " + res);
+				// file failed to update to latest version so remove it to
+				// maintain consistency
+				if (res == null) {
+					if (!deleteAll(f)) {
+						console.printerrln("warning: failed to delete item: "
+								+ f
+								+ "\nafter its resource failed to be loaded");
+						success = false;
+					}
+				} else if (!new GraphModelInserter(indexer).run(res, f)) {
+					console.printerrln("warning: failed to update item: " + f
+							+ "\nmodel resource: " + res);
 					success = false;
 				}
 			} catch (Exception ex) {
@@ -73,7 +84,8 @@ public class GraphModelUpdater implements IModelUpdater {
 			}
 
 			long end = System.currentTimeMillis();
-			console.println((end - start) / 1000 + "s" + (end - start) % 1000 + "ms [pure insertion]");
+			console.println((end - start) / 1000 + "s" + (end - start) % 1000
+					+ "ms [pure insertion]");
 
 		} finally {
 			toBeUpdated.addAll(l.getNodesToBeUpdated());
@@ -96,7 +108,8 @@ public class GraphModelUpdater implements IModelUpdater {
 
 		console.println("attempting to resolve any derived proxies...");
 		try {
-			new GraphModelInserter(indexer).resolveDerivedAttributeProxies(indexer.getGraph(), indexer,
+			new GraphModelInserter(indexer).resolveDerivedAttributeProxies(
+					indexer.getGraph(), indexer,
 					"org.hawk.epsilon.emc.EOLQueryEngine");
 		} catch (Exception e) {
 			console.printerrln("Exception in updateStore - resolving DERIVED proxies, returning 0:");
@@ -105,7 +118,8 @@ public class GraphModelUpdater implements IModelUpdater {
 
 		console.println("attempting to update any relevant derived attributes...");
 		try {
-			new GraphModelInserter(indexer).updateDerivedAttributes("org.hawk.epsilon.emc.EOLQueryEngine", toBeUpdated);
+			new GraphModelInserter(indexer).updateDerivedAttributes(
+					"org.hawk.epsilon.emc.EOLQueryEngine", toBeUpdated);
 			toBeUpdated = new HashSet<>();
 		} catch (Exception e) {
 			toBeUpdated = new HashSet<>();
@@ -113,7 +127,8 @@ public class GraphModelUpdater implements IModelUpdater {
 			console.printerrln(e);
 		}
 		long end = System.currentTimeMillis();
-		console.println((end - start) / 1000 + "s" + (end - start) % 1000 + "ms [proxy update]");
+		console.println((end - start) / 1000 + "s" + (end - start) % 1000
+				+ "ms [proxy update]");
 	}
 
 	public boolean isActive() {
@@ -132,19 +147,25 @@ public class GraphModelUpdater implements IModelUpdater {
 
 	@Override
 	public boolean deleteAll(VcsCommitItem c) throws Exception {
-		return new DeletionUtils(indexer.getGraph()).deleteAll(c, indexer.getCompositeGraphChangeListener());
+		return new DeletionUtils(indexer.getGraph()).deleteAll(c,
+				indexer.getCompositeGraphChangeListener());
 	}
 
 	@Override
-	public void updateDerivedAttribute(String metamodeluri, String typename, String attributename, String attributetype,
-			boolean isMany, boolean isOrdered, boolean isUnique, String derivationlanguage, String derivationlogic) {
-		new GraphModelInserter(indexer).updateDerivedAttribute(metamodeluri, typename, attributename, attributetype,
-				isMany, isOrdered, isUnique, derivationlanguage, derivationlogic);
+	public void updateDerivedAttribute(String metamodeluri, String typename,
+			String attributename, String attributetype, boolean isMany,
+			boolean isOrdered, boolean isUnique, String derivationlanguage,
+			String derivationlogic) {
+		new GraphModelInserter(indexer).updateDerivedAttribute(metamodeluri,
+				typename, attributename, attributetype, isMany, isOrdered,
+				isUnique, derivationlanguage, derivationlogic);
 	}
 
 	@Override
-	public void updateIndexedAttribute(String metamodeluri, String typename, String attributename) {
-		new GraphModelInserter(indexer).updateIndexedAttribute(metamodeluri, typename, attributename);
+	public void updateIndexedAttribute(String metamodeluri, String typename,
+			String attributename) {
+		new GraphModelInserter(indexer).updateIndexedAttribute(metamodeluri,
+				typename, attributename);
 	}
 
 	@Override
@@ -153,13 +174,15 @@ public class GraphModelUpdater implements IModelUpdater {
 	}
 
 	@Override
-	public Set<VcsCommitItem> compareWithLocalFiles(Set<VcsCommitItem> reposItems) {
+	public Set<VcsCommitItem> compareWithLocalFiles(
+			Set<VcsCommitItem> reposItems) {
 		if (reposItems.isEmpty()) {
 			return reposItems;
 		}
 
 		final VcsCommitItem firstItem = reposItems.iterator().next();
-		final String repositoryURL = firstItem.getCommit().getDelta().getManager().getLocation();
+		final String repositoryURL = firstItem.getCommit().getDelta()
+				.getManager().getLocation();
 		final Set<VcsCommitItem> changed = new HashSet<VcsCommitItem>();
 		changed.addAll(reposItems);
 
@@ -173,13 +196,20 @@ public class GraphModelUpdater implements IModelUpdater {
 
 				IGraphNodeIndex filedictionary = graph.getFileIndex();
 
-				if (filedictionary != null && filedictionary.query("id", repositoryURL + FILEINDEX_REPO_SEPARATOR + "*")
-						.iterator().hasNext()) {
+				if (filedictionary != null
+						&& filedictionary
+								.query("id",
+										repositoryURL
+												+ FILEINDEX_REPO_SEPARATOR
+												+ "*").iterator().hasNext()) {
 					for (VcsCommitItem r : reposItems) {
 						String rev = "-2";
 						try {
-							IGraphIterable<IGraphNode> ret = filedictionary.get("id",
-									repositoryURL + FILEINDEX_REPO_SEPARATOR + r.getPath());
+							IGraphIterable<IGraphNode> ret = filedictionary
+									.get("id",
+											repositoryURL
+													+ FILEINDEX_REPO_SEPARATOR
+													+ r.getPath());
 
 							if (ret.iterator().hasNext()) {
 								IGraphNode n = ret.getSingle();
@@ -193,7 +223,8 @@ public class GraphModelUpdater implements IModelUpdater {
 							changed.remove(r);
 
 						if (IModelIndexer.VERBOSE)
-							console.println("comparing revisions of: " + r.getPath() + " | "
+							console.println("comparing revisions of: "
+									+ r.getPath() + " | "
 									+ r.getCommit().getRevision() + " | " + rev);
 
 					}

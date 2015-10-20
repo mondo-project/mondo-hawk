@@ -77,8 +77,6 @@ public class GraphModelInserter {
 	}
 
 	public boolean run(IHawkModelResource res, VcsCommitItem s) throws Exception {
-		if (res == null)
-			return false;
 
 		resource = res;
 		this.s = s;

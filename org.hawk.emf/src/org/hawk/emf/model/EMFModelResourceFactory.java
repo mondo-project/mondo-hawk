@@ -102,7 +102,7 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 		} catch (Exception e) {
 			System.err.print("error in parse(File f): ");
 			System.err.println(e.getCause());
-			e.printStackTrace();
+			//e.printStackTrace();
 			ret = null;
 		}
 
