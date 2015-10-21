@@ -221,10 +221,26 @@ public class ModelElementNode {
 		return false;
 	}
 
-	public String getId() {
+	/**
+	 * Returns the graph node identifier for this model element. For Neo4j
+	 * databases, this will be usually an integer.
+	 */
+	public String getNodeId() {
 		return getNode().getId().toString();
 	}
 
+	/**
+	 * Returns the model element identifier for this model element. For EMF
+	 * models, this will usually be the URI fragment within the resource.
+	 */
+	public String getElementId() {
+		return getNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+	}
+
+	/**
+	 * Returns <code>true</code> if this model element is contained by any other,
+	 * regardless of whether the container is on a different file.
+	 */
 	public boolean isContained() {
 		for (IGraphEdge out : getNode().getOutgoing()) {
 			if (out.getProperty(EDGE_PROPERTY_CONTAINER) != null) {

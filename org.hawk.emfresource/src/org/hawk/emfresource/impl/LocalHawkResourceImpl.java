@@ -64,7 +64,10 @@ import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 /**
- * EMF driver that reads a local model from a Hawk index.
+ * EMF driver that reads a local model from a Hawk index. This resource will
+ * always be empty: all fetched EObjects are placed on surrogate
+ * {@link HawkFileResourceImpl}, which have the same URI as the originally
+ * indexed models.
  */
 public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource {
 
@@ -221,7 +224,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 
 					final EList<EObject> l = new BasicEList<EObject>();
 					for (ModelElementNode en : instances) {
-						l.add(nodeIdToEObjectMap.get(en.getId()));
+						l.add(nodeIdToEObjectMap.get(en.getNodeId()));
 					}
 					return l;
 				}
@@ -467,10 +470,10 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		final String nsURI = typeNode.getMetamodelURI();
 		final EClass eClass = getEClass(nsURI, typeNode.getTypeName(), registry);
 
-		final EObject existing = nodeIdToEObjectMap.get(me.getId());
+		final EObject existing = nodeIdToEObjectMap.get(me.getNodeId());
 		final EObject obj = existing != null ? existing : eobFactory.createInstance(eClass);
 		if (existing == null) {
-			nodeIdToEObjectMap.put(me.getId(), obj);
+			nodeIdToEObjectMap.put(me.getNodeId(), obj);
 		}
 
 		final Map<String, Object> attributeValues = new HashMap<>();
