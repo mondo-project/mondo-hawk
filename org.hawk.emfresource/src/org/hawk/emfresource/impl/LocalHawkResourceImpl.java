@@ -135,7 +135,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	}
 
 	private final Map<String, EObject> nodeIdToEObjectMap = new HashMap<>();
-	private final Map<String, Resource> resources = new HashMap<>();
+	private final Map<String, HawkFileResourceImpl> resources = new HashMap<>();
 
 	private LazyResolver lazyResolver;
 	private IGraphChangeListener changeListener;
