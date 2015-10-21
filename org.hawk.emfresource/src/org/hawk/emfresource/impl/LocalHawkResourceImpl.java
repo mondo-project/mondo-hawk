@@ -464,7 +464,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 
 	@Override
 	protected void doSave(final OutputStream outputStream, final Map<?, ?> options) throws IOException {
-		throw new UnsupportedOperationException("Hawk views are read-only");
+		LOGGER.warn("Hawk views are read-only: ignoring request to save");
 	}
 
 	protected List<EObject> createOrUpdateEObjects(final Iterable<ModelElementNode> elems) throws Exception {

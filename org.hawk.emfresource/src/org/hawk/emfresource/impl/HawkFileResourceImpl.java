@@ -129,8 +129,7 @@ public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 
 	@Override
 	protected void doSave(OutputStream outputStream, Map<?, ?> options) throws IOException {
-		// saving is not supported by Hawk (it's a read-only index)
-		throw new UnsupportedOperationException();
+		LOGGER.warn("Hawk views are read-only: ignoring request to save");
 	}
 
 	@Override
