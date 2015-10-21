@@ -372,7 +372,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 					for (ModelElementNode elem : fileNode.getRootModelElements()) {
 						if (!elem.isContained()) {
 							EObject eob = createOrUpdateEObject(elem);
-							addToResource(elem.getFileNode(), eob);
+							addToResource(elem, eob);
 						}
 					}
 				}
@@ -420,7 +420,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			for (final ModelElementNode me : elems) {
 				EObject eob = createOrUpdateEObject(me);
 				if (eob.eContainer() == null) {
-					addToResource(me.getFileNode(), eob);
+					addToResource(me, eob);
 				}
 				eObjects.add(eob);
 			}
@@ -565,14 +565,20 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		}
 	}
 
-	private void addToResource(final FileNode fileNode, final EObject eob) {
+	private void addToResource(final ModelElementNode modelElementNode, final EObject eob) {
+		final FileNode fileNode = modelElementNode.getFileNode();
 		final String repoURL = fileNode.getRepositoryURL();
 		final String path = fileNode.getFilePath();
 		final String fullURL = repoURL + path;
 		synchronized(resources) {
-			Resource resource = resources.get(fullURL);
+			HawkFileResourceImpl resource = resources.get(fullURL);
 			if (resource == null) {
-				resource = new HawkFileResourceImpl(URI.createURI(fullURL), this);
+				/*
+				 * We can't use the createResource method in the resource set,
+				 * as that might invoke another factory, and we need the new
+				 * resource to be a Hawk file resource.
+				 */
+				resource = new HawkFileResourceImpl(fileNode, this);
 				getResourceSet().getResources().add(resource);
 				resources.put(fullURL, resource);
 			}

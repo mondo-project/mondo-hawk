@@ -25,6 +25,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.hawk.emfresource.HawkResource;
 import org.hawk.emfresource.HawkResourceChangeListener;
+import org.hawk.graph.FileNode;
 
 /**
  * Surrogate resource to be created by a {@link HawkResource} to represent that
@@ -33,9 +34,11 @@ import org.hawk.emfresource.HawkResourceChangeListener;
 public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 
 	private final HawkResource mainResource;
+	private final FileNode fileNode;
 
 	/** Only to be used from Exeed (from the createExecutableExtension Eclipse call). */
 	public HawkFileResourceImpl() {
+		this.fileNode = null;
 		this.mainResource = null;
 	}
 
@@ -43,8 +46,9 @@ public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 	 * Creates a resource as a subordinate of another. Used to indicate the
 	 * repository URL and file of an {@link EObject}.
 	 */
-	public HawkFileResourceImpl(final URI uri, final HawkResource mainResource) {
-		super(uri);
+	public HawkFileResourceImpl(final FileNode fileNode, final HawkResource mainResource) {
+		super(URI.createURI(fileNode.getRepositoryURL() + fileNode.getFilePath()));
+		this.fileNode = fileNode;
 		this.mainResource = mainResource;
 	}
 
