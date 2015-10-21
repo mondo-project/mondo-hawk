@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.hawk.emfresource.impl;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -74,6 +73,11 @@ public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 	}
 
 	@Override
+	public void save(Map<?, ?> options) {
+		this.doSave(null, null);
+	}
+
+	@Override
 	public boolean hasChildren(final EObject o) {
 		if (mainResource != null) {
 			return mainResource.hasChildren(o);
@@ -128,12 +132,12 @@ public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 	}
 
 	@Override
-	protected void doSave(OutputStream outputStream, Map<?, ?> options) throws IOException {
+	protected void doSave(OutputStream outputStream, Map<?, ?> options) {
 		LOGGER.warn("Hawk views are read-only: ignoring request to save");
 	}
 
 	@Override
-	protected void doLoad(InputStream inputStream, Map<?, ?> options) throws IOException {
+	protected void doLoad(InputStream inputStream, Map<?, ?> options) {
 		// do nothing - resource is populated from the main Hawk resource
 	}
 
