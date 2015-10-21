@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
@@ -64,6 +65,12 @@ public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 
 	public FileNode getFileNode() {
 		return fileNode;
+	}
+
+	@Override
+	public TreeIterator<EObject> getAllContents() {
+		LOGGER.warn("getAllContents() being called on a Hawk resource: inefficient!");
+		return super.getAllContents();
 	}
 
 	@Override
