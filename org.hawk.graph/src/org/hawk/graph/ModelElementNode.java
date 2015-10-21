@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -212,11 +211,12 @@ public class ModelElementNode {
 		return rawTypeNode;
 	}
 
-	private boolean outgoingEdgeWithTypeHasProperty(String featureName,
-			final String propertyName) {
-		Iterator<IGraphEdge> edges = getNode().getOutgoingWithType(featureName).iterator();
-		if (edges.hasNext()) {
-			return edges.next().getProperty(propertyName) != null;
+	private boolean outgoingEdgeWithTypeHasProperty(String featureName,	final String propertyName) {
+		Iterable<IGraphEdge> edges = getNode().getOutgoingWithType(featureName);
+		for (IGraphEdge edge : edges) {
+			if (featureName.equals(edge.getType())) {
+				return edge.getProperty(propertyName) != null;
+			}
 		}
 		return false;
 	}
@@ -227,13 +227,11 @@ public class ModelElementNode {
 
 	public boolean isContained() {
 		for (IGraphEdge out : getNode().getOutgoing()) {
-			final String t = out.getType();
 			if (out.getProperty(EDGE_PROPERTY_CONTAINER) != null) {
 				return true;
 			}
 		}
 		for (IGraphEdge in : getNode().getIncoming()) {
-			final String t = in.getType();
 			if (in.getProperty(EDGE_PROPERTY_CONTAINMENT) != null) {
 				return true;
 			}
