@@ -11,6 +11,7 @@
 package org.hawk.emfresource.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.hawk.emfresource.impl.LocalHawkResourceImpl;
+import org.hawk.emfresource.HawkResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,9 +36,9 @@ public class LazyResolver {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LazyResolver.class);
 
-	private final LocalHawkResourceImpl resource;
+	private final HawkResource resource;
 
-	public LazyResolver(LocalHawkResourceImpl resource) {
+	public LazyResolver(HawkResource resource) {
 		this.resource = resource;
 	}
 
@@ -64,7 +65,12 @@ public class LazyResolver {
 					}
 				}
 			} else if (feature instanceof EAttribute) {
-				throw new UnsupportedOperationException();
+				String pendingId = pendingAttrs.remove(object);
+				if (pendingId != null) {
+					final Map<String, EObject> objects = new HashMap<>();
+					objects.put(pendingId, object);
+					resource.fetchAttributes(objects);
+				}
 			}
 		} catch (Exception e) {
 			LOGGER.error("Error while resolving lazy reference", e);
@@ -98,7 +104,7 @@ public class LazyResolver {
 	 *            Mixed list of {@link String}s (from ID-based references) or
 	 *            {@link EObject}s (from position-based references).
 	 */
-	public void markLazyReferences(EObject eob, EReference feature, EList<Object> value) {
+	public void putLazyReference(EObject eob, EReference feature, EList<Object> value) {
 		Map<EReference, EList<Object>> allPending = pendingRefs.get(eob);
 		if (allPending == null) {
 			allPending = new IdentityHashMap<>();
@@ -115,11 +121,43 @@ public class LazyResolver {
 	 * @param feature
 	 *            Reference to be removed.
 	 */
-	public void unmarkLazyReferences(EObject eob, EReference ref) {
+	public void removeLazyReference(EObject eob, EReference ref) {
 		Map<EReference, EList<Object>> allPending = pendingRefs.get(eob);
 		if (allPending != null) {
 			allPending.remove(ref);
 		}
+	}
+
+	public boolean addToLazyReference(EObject sourceObj, EReference feature, Object value) {
+		Map<EReference, EList<Object>> allPending = pendingRefs.get(sourceObj);
+		EList<Object> pending = allPending.get(feature);
+		LOGGER.debug("Added {} to lazy references of feature {} in #{}: {}", value, feature.getName(), sourceObj,
+				pending);
+		return pending.add(value);
+	}
+
+	public boolean removeFromLazyReference(EObject sourceObj, EReference feature, Object value) {
+		Map<EReference, EList<Object>> allPending = pendingRefs.get(sourceObj);
+		EList<Object> pending = allPending.get(feature);
+		LOGGER.debug("Removed {} from lazy references of feature {} in #{}: {}", value, feature.getName(), sourceObj,
+				pending);
+		return pending.remove(value);
+	}
+
+	/**
+	 * Marks a certain {@link EObject} so its attributes will be fetched on
+	 * demand.
+	 */
+	public void putLazyAttributes(String id, EObject eObject) {
+		pendingAttrs.put(eObject, id);
+	}
+
+	/**
+	 * Removes a certain {@link EObject} so its attributes will be fetched on
+	 * demand.
+	 */
+	public void removeLazyAttributes(String id, EObject eObject) {
+		pendingAttrs.remove(eObject);
 	}
 
 	private void resolvePendingReference(EObject object, EReference feature, Map<EReference, EList<Object>> pending,
@@ -136,7 +174,7 @@ public class LazyResolver {
 	private EList<Object> resolveReference(EObject source, EReference feature, EList<Object> targets) throws Exception {
 		final List<String> ids = new ArrayList<>();
 		addAllStrings(targets, ids);
-		final EList<EObject> resolved = resource.fetchNodes(ids);
+		final EList<EObject> resolved = resource.fetchNodes(ids, false);
 
 		// Replace all old String elements with their corresponding EObjects
 		final EList<Object> result = new BasicEList<>();

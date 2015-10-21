@@ -139,7 +139,8 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	}
 
 	private final BiMap<String, EObject> nodeIdToEObjectMap = HashBiMap.create();
-	private final Map<String, HawkFileResourceImpl> resources = new HashMap<>();
+	private final Map<String, HawkFileResourceImpl> uriToResource = new HashMap<>();
+	private final Map<String, FileNode> uriToFileNode = new HashMap<>();
 
 	private LazyResolver lazyResolver;
 	private IGraphChangeListener changeListener;
@@ -199,7 +200,12 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	}
 
 	@Override
-	public EList<EObject> fetchNodes(final List<String> ids) throws Exception {
+	public void fetchAttributes(Map<String, EObject> idToEObject) {
+		// do nothing - we fetch attributes by default already
+	}
+
+	@Override
+	public EList<EObject> fetchNodes(final List<String> ids, boolean fetchAttributes) throws Exception {
 		// Filter the objects that need to be retrieved
 		final List<String> toBeFetched = new ArrayList<>();
 		for (final String id : ids) {
@@ -233,7 +239,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	}
 
 	@Override
-	public EList<EObject> fetchNodes(final EClass eClass) throws Exception {
+	public EList<EObject> fetchNodes(final EClass eClass, boolean fetchAttributes) throws Exception {
 		try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
 			final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
 			final MetamodelNode mn = gw.getMetamodelNodeByNsURI(eClass.getEPackage().getNsURI());
@@ -257,8 +263,8 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	}
 
 	@Override
-	public EObject fetchNode(String id) throws Exception {
-		EList<EObject> fetched = fetchNodes(Arrays.asList(id));
+	public EObject fetchNode(String id, boolean fetchAttributes) throws Exception {
+		EList<EObject> fetched = fetchNodes(Arrays.asList(id), fetchAttributes);
 		if (!fetched.isEmpty()) {
 			return fetched.get(0);
 		} else {
@@ -267,13 +273,13 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	}
 
 	@Override
-	public EObject fetchNode(HawkResource containerResource, String uriFragment) throws Exception {
+	public EObject fetchNode(HawkResource containerResource, String uriFragment, boolean fetchAttributes) throws Exception {
 		if (!(containerResource instanceof HawkFileResourceImpl)) {
 			return null;
 		}
 
 		final HawkFileResourceImpl r = (HawkFileResourceImpl)containerResource;
-		final FileNode fileNode = r.getFileNode();
+		final FileNode fileNode = uriToFileNode.get(r.getURI().toString());
 		LOGGER.warn("Iterating over the contents of {}{} to find fragment {}: inefficient!",
 				fileNode.getRepositoryURL(), fileNode.getFilePath(), uriFragment);
 
@@ -289,7 +295,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		}
 
 		if (nodeId != null) {
-			return fetchNode(nodeId);
+			return fetchNode(nodeId, fetchAttributes);
 		} else {
 			return null;
 		}
@@ -303,7 +309,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 				ids.add(men.getId());
 			}
 		}
-		return fetchNodes(ids);
+		return fetchNodes(ids, false);
 	}
 
 	@Override
@@ -314,7 +320,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		for (final Entry<EClass, List<EStructuralFeature>> entry : candidateTypes.entrySet()) {
 			final EClass eClass = entry.getKey();
 			final List<EStructuralFeature> attrsWithType = entry.getValue();
-			for (final EObject eob : fetchNodes(eClass)) {
+			for (final EObject eob : fetchNodes(eClass, true)) {
 				for (final EStructuralFeature attr : attrsWithType) {
 					final Object o = eob.eGet(attr);
 					if (o != null) {
@@ -376,7 +382,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	@Override
 	public Map<EObject, Object> fetchValuesByEStructuralFeature(final EStructuralFeature feature) throws Exception {
 		final EClass featureEClass = feature.getEContainingClass();
-		final EList<EObject> eobs = fetchNodes(featureEClass);
+		final EList<EObject> eobs = fetchNodes(featureEClass, true);
 
 		if (feature instanceof EReference) {
 			// If the feature is a reference, collect all its pending nodes in advance
@@ -392,7 +398,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 					}
 				}
 			}
-			fetchNodes(allPending);
+			fetchNodes(allPending, false);
 		}
 
 		final Map<EObject, Object> values = new IdentityHashMap<>();
@@ -452,10 +458,11 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	protected void doUnload() {
 		super.doUnload();
 
-		for (Resource r : resources.values()) {
+		for (Resource r : uriToResource.values()) {
 			r.unload();
 		}
-		resources.clear();
+		uriToResource.clear();
+		uriToFileNode.clear();
 
 		if (indexer != null) {
 			indexer.removeGraphChangeListener(changeListener);
@@ -565,7 +572,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 
 				if (!referenceValues.containsKey(ref.getName())) {
 					if (lazyResolver.isPending(existing, ref)) {
-						lazyResolver.unmarkLazyReferences(existing, ref);
+						lazyResolver.removeLazyReference(existing, ref);
 					} else if (existing.eIsSet(ref)) {
 						existing.eUnset(ref);
 					}
@@ -593,7 +600,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			}
 
 			if (hasLazy) {
-				lazyResolver.markLazyReferences(eob, ref, referenced);
+				lazyResolver.putLazyReference(eob, ref, referenced);
 			} else if (ref.isMany()) {
 				eob.eSet(ref, referenced);
 			} else if (!referenced.isEmpty()) {
@@ -610,7 +617,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	private boolean addToReferenced(final String id, final EList<Object> referenced, final boolean resolveMissing) throws Exception {
 		EObject refExisting = nodeIdToEObjectMap.get(id);
 		if (refExisting == null && resolveMissing) {
-			EList<EObject> refExistingResolved = fetchNodes(Arrays.asList(id));
+			EList<EObject> refExistingResolved = fetchNodes(Arrays.asList(id), false);
 			if (!refExistingResolved.isEmpty()) {
 				refExisting = refExistingResolved.get(0);
 			}
@@ -630,17 +637,18 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		final String repoURL = fileNode.getRepositoryURL();
 		final String path = fileNode.getFilePath();
 		final String fullURL = repoURL + path;
-		synchronized(resources) {
-			HawkFileResourceImpl resource = resources.get(fullURL);
+		synchronized(uriToResource) {
+			HawkFileResourceImpl resource = uriToResource.get(fullURL);
 			if (resource == null) {
 				/*
 				 * We can't use the createResource method in the resource set,
 				 * as that might invoke another factory, and we need the new
 				 * resource to be a Hawk file resource.
 				 */
-				resource = new HawkFileResourceImpl(fileNode, this);
+				resource = new HawkFileResourceImpl(URI.createURI(fullURL), this);
 				getResourceSet().getResources().add(resource);
-				resources.put(fullURL, resource);
+				uriToResource.put(fullURL, resource);
+				uriToFileNode.put(fullURL, fileNode);
 			}
 			if (eob.eContainer() == null) {
 				resource.getContents().add(eob);

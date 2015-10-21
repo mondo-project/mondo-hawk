@@ -25,7 +25,6 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.hawk.emfresource.HawkResource;
 import org.hawk.emfresource.HawkResourceChangeListener;
-import org.hawk.graph.FileNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,12 +42,10 @@ public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HawkFileResourceImpl.class);
 	private final HawkResource mainResource;
 
-	private final FileNode fileNode;
 	private final BiMap<String, String> nodeIdToFragment = HashBiMap.create();
 
 	/** Only to be used from Exeed (from the createExecutableExtension Eclipse call). */
 	public HawkFileResourceImpl() {
-		this.fileNode = null;
 		this.mainResource = null;
 	}
 
@@ -56,14 +53,9 @@ public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 	 * Creates a resource as a subordinate of another. Used to indicate the
 	 * repository URL and file of an {@link EObject}.
 	 */
-	public HawkFileResourceImpl(final FileNode fileNode, final HawkResource mainResource) {
-		super(URI.createURI(fileNode.getRepositoryURL() + fileNode.getFilePath()));
-		this.fileNode = fileNode;
+	public HawkFileResourceImpl(final URI uri, final HawkResource mainResource) {
+		super(uri);
 		this.mainResource = mainResource;
-	}
-
-	public FileNode getFileNode() {
-		return fileNode;
 	}
 
 	@Override
@@ -92,13 +84,13 @@ public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 	}
 
 	@Override
-	public EList<EObject> fetchNodes(final EClass eClass) throws Exception {
-		return mainResource.fetchNodes(eClass);
+	public EList<EObject> fetchNodes(final EClass eClass, boolean mustFetchAttributes) throws Exception {
+		return mainResource.fetchNodes(eClass, mustFetchAttributes);
 	}
 
 	@Override
-	public EList<EObject> fetchNodes(final List<String> ids) throws Exception {
-		return mainResource.fetchNodes(ids);
+	public EList<EObject> fetchNodes(final List<String> ids, boolean mustFetchAttributes) throws Exception {
+		return mainResource.fetchNodes(ids, mustFetchAttributes);
 	}
 
 	@Override
@@ -188,9 +180,9 @@ public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 				 * We don't have that fragment: ask the main resource for the
 				 * EObject.
 				 */
-				return fetchNode(this, uriFragment);
+				return fetchNode(this, uriFragment, false);
 			} else {
-				return fetchNode(nodeId);
+				return fetchNode(nodeId, false);
 			}
 		} catch (Exception e) {
 			LOGGER.error("Could not retrieve EObject by fragment", e);
@@ -199,12 +191,17 @@ public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 	}
 
 	@Override
-	public EObject fetchNode(HawkResource containerResource, String uriFragment) throws Exception {
-		return mainResource.fetchNode(containerResource, uriFragment);
+	public EObject fetchNode(HawkResource containerResource, String uriFragment, boolean mustFetchAttributes) throws Exception {
+		return mainResource.fetchNode(containerResource, uriFragment, mustFetchAttributes);
 	}
 
 	@Override
-	public EObject fetchNode(String id) throws Exception {
-		return mainResource.fetchNode(id);
+	public EObject fetchNode(String id, boolean mustFetchAttributes) throws Exception {
+		return mainResource.fetchNode(id, mustFetchAttributes);
+	}
+
+	@Override
+	public void fetchAttributes(Map<String, EObject> idToEObject) throws Exception {
+		mainResource.fetchAttributes(idToEObject);
 	}
 }

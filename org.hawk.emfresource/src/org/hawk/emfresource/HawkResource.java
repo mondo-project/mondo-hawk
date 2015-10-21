@@ -25,23 +25,32 @@ public interface HawkResource extends Resource {
 	boolean hasChildren(EObject o);
 
 	/**
+	 * Fetches attributes for the specified objects, if they haven't been
+	 * fetched yet.
+	 * 
+	 * @param idToEObject
+	 *            Map of ID to EObject.
+	 */
+	void fetchAttributes(Map<String, EObject> idToEObject) throws Exception;
+
+	/**
 	 * Retrieves an EObject by container resource + URI fragment.
 	 */
-	EObject fetchNode(HawkResource containerResource, String uriFragment) throws Exception;
+	EObject fetchNode(HawkResource containerResource, String uriFragment, boolean mustFetchAttributes) throws Exception;
 
 	/**
 	 * Retrieves a single EObject by its graph node identifier.
 	 */
-	EObject fetchNode(String id) throws Exception;
+	EObject fetchNode(String id, boolean mustFetchAttributes) throws Exception;
 
 	/**
 	 * Returns the graph node ID for an EObject in the resource.
 	 */
 	String getEObjectNodeID(EObject obj);
 
-	EList<EObject> fetchNodes(List<String> ids) throws Exception;
+	EList<EObject> fetchNodes(List<String> ids, boolean mustFetchAttributes) throws Exception;
 
-	EList<EObject> fetchNodes(EClass eClass) throws Exception;
+	EList<EObject> fetchNodes(EClass eClass, boolean mustFetchAttributes) throws Exception;
 
 	List<Object> fetchValuesByEClassifier(EClassifier dataType) throws Exception;
 
