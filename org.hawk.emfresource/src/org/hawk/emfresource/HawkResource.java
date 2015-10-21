@@ -24,15 +24,30 @@ public interface HawkResource extends Resource {
 
 	boolean hasChildren(EObject o);
 
+	/**
+	 * Retrieves an EObject by container resource + URI fragment.
+	 */
+	EObject fetchNode(HawkResource containerResource, String uriFragment) throws Exception;
+
+	/**
+	 * Retrieves a single EObject by its graph node identifier.
+	 */
+	EObject fetchNode(String id) throws Exception;
+
+	/**
+	 * Returns the graph node ID for an EObject in the resource.
+	 */
+	String getEObjectNodeID(EObject obj);
+
 	EList<EObject> fetchNodes(List<String> ids) throws Exception;
 
 	EList<EObject> fetchNodes(EClass eClass) throws Exception;
 
 	List<Object> fetchValuesByEClassifier(EClassifier dataType) throws Exception;
 
-	Map<EClass, List<EStructuralFeature>> fetchTypesWithEClassifier(EClassifier dataType) throws Exception;
-
 	Map<EObject, Object> fetchValuesByEStructuralFeature(EStructuralFeature feature) throws Exception;
+
+	Map<EClass, List<EStructuralFeature>> fetchTypesWithEClassifier(EClassifier dataType) throws Exception;
 
 	List<String> getRegisteredMetamodels() throws Exception;
 

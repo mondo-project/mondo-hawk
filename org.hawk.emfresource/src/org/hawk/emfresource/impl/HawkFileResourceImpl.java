@@ -26,15 +26,25 @@ import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.hawk.emfresource.HawkResource;
 import org.hawk.emfresource.HawkResourceChangeListener;
 import org.hawk.graph.FileNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 /**
  * Surrogate resource to be created by a {@link HawkResource} to represent that
- * a particular model element is within a certain file in the graph.
+ * a particular model element is within a certain file in the graph. It delegates
+ * most of its operations to the main resource, except for handling URI fragments,
+ * as they are only valid within a particular file.
  */
 public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(HawkFileResourceImpl.class);
 	private final HawkResource mainResource;
+
 	private final FileNode fileNode;
+	private final BiMap<String, String> nodeIdToFragment = HashBiMap.create();
 
 	/** Only to be used from Exeed (from the createExecutableExtension Eclipse call). */
 	public HawkFileResourceImpl() {
@@ -50,6 +60,10 @@ public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 		super(URI.createURI(fileNode.getRepositoryURL() + fileNode.getFilePath()));
 		this.fileNode = fileNode;
 		this.mainResource = mainResource;
+	}
+
+	public FileNode getFileNode() {
+		return fileNode;
 	}
 
 	@Override
@@ -136,4 +150,51 @@ public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 		return mainResource.getRegisteredTypes(metamodelURI);
 	}
 
+	@Override
+	public String getEObjectNodeID(EObject obj) {
+		return mainResource.getEObjectNodeID(obj);
+	}
+
+	public void addFragment(String nodeId, String fragment) {
+		nodeIdToFragment.forcePut(nodeId, fragment);
+	}
+
+	public void removeFragment(String nodeId) {
+		nodeIdToFragment.remove(nodeId);
+	}
+
+	@Override
+	public String getURIFragment(EObject eObject) {
+		final String nodeId = getEObjectNodeID(eObject);
+		return nodeIdToFragment.get(nodeId);
+	}
+
+	@Override
+	public EObject getEObject(String uriFragment) {
+		String nodeId = nodeIdToFragment.inverse().get(uriFragment);
+		try {
+			if (nodeId == null) {
+				/**
+				 * We don't have that fragment: ask the main resource for the
+				 * EObject.
+				 */
+				return fetchNode(this, uriFragment);
+			} else {
+				return fetchNode(nodeId);
+			}
+		} catch (Exception e) {
+			LOGGER.error("Could not retrieve EObject by fragment", e);
+			return null;
+		}
+	}
+
+	@Override
+	public EObject fetchNode(HawkResource containerResource, String uriFragment) throws Exception {
+		return mainResource.fetchNode(containerResource, uriFragment);
+	}
+
+	@Override
+	public EObject fetchNode(String id) throws Exception {
+		return mainResource.fetchNode(id);
+	}
 }
