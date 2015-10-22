@@ -35,11 +35,8 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.hawk.core.ICredentialsStore;
-import org.hawk.core.ICredentialsStore.Credentials;
 import org.hawk.core.IVcsManager;
 import org.hawk.osgiserver.HModel;
-import org.hawk.ui2.Activator;
 import org.hawk.ui2.dialog.HConfigDialog.ClassNameLabelProvider;
 
 final class HVCSDialog extends TitleAreaDialog {
@@ -168,17 +165,8 @@ final class HVCSDialog extends TitleAreaDialog {
 		String usernameToEdit = null;
 		String passwordToEdit = null;
 		if (managerToEdit != null) {
-			final ICredentialsStore credentialsStore = hawkModel.getManager().getCredentialsStore();
-			Credentials credentials = null;
-			try {
-				credentials = credentialsStore.get(managerToEdit.getLocation());
-			} catch (Exception e1) {
-				Activator.logError("Could not open credentials store", e1);
-			}
-			if (credentials != null) {
-				usernameToEdit = credentials.getUsername();
-				passwordToEdit = credentials.getPassword();
-			}
+			usernameToEdit = managerToEdit.getUsername();
+			passwordToEdit = managerToEdit.getPassword();
 		}
 
 		final Label lblUser = new Label(container, SWT.NONE);

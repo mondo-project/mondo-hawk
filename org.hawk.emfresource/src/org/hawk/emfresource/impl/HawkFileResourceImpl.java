@@ -60,7 +60,9 @@ public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 
 	@Override
 	public TreeIterator<EObject> getAllContents() {
-		LOGGER.warn("getAllContents() being called on a Hawk resource: inefficient!");
+		if (!getContents().isEmpty()) {
+			LOGGER.warn("getAllContents() being called on a non-empty Hawk resource: inefficient!");
+		}
 		return super.getAllContents();
 	}
 

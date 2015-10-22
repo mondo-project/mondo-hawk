@@ -27,7 +27,6 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -59,7 +58,6 @@ import org.hawk.ui2.dialog.HConfigDialog;
 import org.hawk.ui2.dialog.HImportDialog;
 import org.hawk.ui2.dialog.HQueryDialog;
 import org.hawk.ui2.util.HUIManager;
-import org.hawk.ui2.util.PasswordDialog;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.prefs.BackingStoreException;
 

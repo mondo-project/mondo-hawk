@@ -66,7 +66,6 @@ public class HWizard extends Wizard implements INewWizard {
 			final String folder = page.getContainerName();
 			final String dbType = page.getDBID();
 			final List<String> plugins = page.getPlugins();
-			final char[] apw = page.getApw();
 			final String location = page.getLocation();
 			final IHawkFactory factory = page.getFactory();
 			final int maxDelay = page.getMaxDelay();

@@ -77,7 +77,6 @@ public class HWizardPage extends WizardPage {
 	private Text folderText;
 	private Combo dbidText;
 	private Table pluginTable;
-	private Text apwText;
 	private Combo factoryIdText;
 	private Text locationText;
 
@@ -113,17 +112,6 @@ public class HWizardPage extends WizardPage {
 		nameText.setLayoutData(gd);
 		final DialogChangeModifyListener dialogChangeListener = new DialogChangeModifyListener();
 		nameText.addModifyListener(dialogChangeListener);
-
-		label = new Label(container, SWT.NULL);
-		label.setText("");
-
-		label = new Label(container, SWT.NULL);
-		label.setText("&Admin Password:");
-
-		apwText = new Text(container, SWT.BORDER | SWT.SINGLE | SWT.PASSWORD);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		apwText.setLayoutData(gd);
-		apwText.addModifyListener(dialogChangeListener);
 
 		label = new Label(container, SWT.NULL);
 		label.setText("");
@@ -325,12 +313,6 @@ public class HWizardPage extends WizardPage {
 		locationText.setEnabled(factoriesWithLocation.contains(factoryID));
 		dbidText.setEnabled(factoriesWithGraph.contains(factoryID));
 
-		// empty adminpw
-		if (getApw().length == 0) {
-			updateStatus("Hawk admin password must not be empty.");
-			return;
-		}
-
 		// name empty or valid chars in indexername
 		if (getHawkName().trim().equals("")) {
 			updateStatus("Hawk name must not be empty.");
@@ -427,10 +409,6 @@ public class HWizardPage extends WizardPage {
 
 	public String getHawkName() {
 		return nameText.getText();
-	}
-
-	public char[] getApw() {
-		return apwText.getText().toCharArray();
 	}
 
 	public String getFactoryID() {

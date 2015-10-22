@@ -29,7 +29,6 @@ import java.util.Set;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -166,12 +165,6 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	@Override
 	public void save(Map<?, ?> options) throws IOException {
 		doSave(null, null);
-	}
-
-	@Override
-	public TreeIterator<EObject> getAllContents() {
-		LOGGER.warn("getAllContents() being called on a Hawk resource: inefficient!");
-		return super.getAllContents();
 	}
 
 	@Override

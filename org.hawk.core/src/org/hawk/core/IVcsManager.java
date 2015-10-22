@@ -41,6 +41,16 @@ public interface IVcsManager {
 	String getLocation();
 
 	/**
+	 * Returns the current username (if any is used), or <code>null</code>.
+	 */
+	String getUsername();
+
+	/**
+	 * Returns the current password (if any is used), or <code>null</code>.
+	 */
+	String getPassword();
+
+	/**
 	 * Changes the username and password in one go. Both must be passed at the
 	 * same time to be able to support remote instances.
 	 */

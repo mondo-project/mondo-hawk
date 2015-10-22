@@ -60,7 +60,9 @@ public class SecurePreferencesCredentialsStore implements ICredentialsStore {
 
 	@Override
 	public void shutdown() throws Exception {
-		preferences.flush();
+		if (preferences != null) {
+			preferences.flush();
+		}
 	}
 
 	private void checkOpen() {

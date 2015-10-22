@@ -27,6 +27,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.hawk.core.IConsole;
+import org.hawk.core.ICredentialsStore;
 import org.hawk.core.ICredentialsStore.Credentials;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IVcsManager;
@@ -51,6 +52,7 @@ public class SvnManager implements IVcsManager {
 	private String repositoryURL;
 	private String username;
 	private String password;
+	private ICredentialsStore credStore;
 
 	/*
 	 * TODO we can't blacklist .zip as we need support for
@@ -104,8 +106,9 @@ public class SvnManager implements IVcsManager {
 			console = c;
 
 			this.repositoryURL = vcsloc;
+			this.credStore = indexer.getCredentialsStore();
 
-			final Credentials credentials = indexer.getCredentialsStore().get(repositoryURL);
+			final Credentials credentials = credStore.get(repositoryURL);
 			this.username = credentials.getUsername();
 			this.password = credentials.getPassword();
 
@@ -268,6 +271,14 @@ public class SvnManager implements IVcsManager {
 
 	@Override
 	public void setCredentials(String username, String password) {
+		if (username != null && password != null && !username.equals(this.username) || !password.equals(this.password)) {
+			try {
+				credStore.put(repositoryURL, new Credentials(username, password));
+			} catch (Exception e) {
+				console.printerrln("Could not save new username/password");
+				console.printerrln(e);
+			}
+		}
 		this.username = username;
 		this.password = password;
 	}
@@ -308,6 +319,16 @@ public class SvnManager implements IVcsManager {
 	@Override
 	public Set<String> getPrefixesToBeStripped() {
 		return Collections.emptySet();
+	}
+
+	@Override
+	public String getUsername() {
+		return username;
+	}
+
+	@Override
+	public String getPassword() {
+		return password;
 	}
 
 }

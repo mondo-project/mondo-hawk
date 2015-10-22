@@ -31,6 +31,7 @@ import org.eclipse.emf.edit.ui.provider.DecoratingColumLabelProvider;
 import org.eclipse.emf.edit.ui.provider.DiagnosticDecorator;
 import org.eclipse.epsilon.dt.exeed.ExeedEditor;
 import org.eclipse.epsilon.dt.exeed.extensions.IExeedCustomizer;
+import org.eclipse.epsilon.emc.emf.InMemoryEmfModel;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -46,7 +47,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchPage;
 import org.hawk.emfresource.HawkResource;
 
-public class LocalHawkResourceExeedCustomizer implements IExeedCustomizer {
+public class HawkResourceExeedCustomizer implements IExeedCustomizer {
 
 	private static final class SingleNodeDiagnosticDecorator extends DiagnosticDecorator {
 		private SingleNodeDiagnosticDecorator(EditingDomain editingDomain,
@@ -148,5 +149,10 @@ public class LocalHawkResourceExeedCustomizer implements IExeedCustomizer {
 	@Override
 	public boolean isEnabledFor(Resource r) {
 		return r instanceof HawkResource;
+	}
+
+	@Override
+	public InMemoryEmfModel createInMemoryEmfModel(Resource mainResource) {
+		return new InMemoryEmfModel(mainResource, false);
 	}
 }

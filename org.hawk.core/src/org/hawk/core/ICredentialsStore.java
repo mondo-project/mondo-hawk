@@ -17,9 +17,15 @@ package org.hawk.core;
  * asking for the Eclipse secure storage password).
  *
  * For this reason, this interface does not provide an initialization method:
- * this should be done only after the first call to {@link #get(String)}, {@link #remove(String} or
- * {@link #put(String, Credentials)}. A shutdown method is provided for clean
- * closing of the storage, if it had been opened at all during Hawk's execution.
+ * this should be done only after the first call to {@link #get(String)},
+ * {@link #remove(String} or {@link #put(String, Credentials)}. A shutdown
+ * method is provided for clean closing of the storage, if it had been opened at
+ * all during Hawk's execution.
+ *
+ * Most of the time, only specific {@link IVcsManager} implementations should
+ * need to use {@link #put(String, Credentials)} and {@link #remove(String)}.
+ * {@link #remove(String)} and {@link #shutdown()} will be normally used by
+ * instances of {@link IModelIndexer}.
  */
 public interface ICredentialsStore {
 

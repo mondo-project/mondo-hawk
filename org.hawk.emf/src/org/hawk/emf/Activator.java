@@ -62,8 +62,12 @@ public class Activator extends Plugin {
 
 			if (entry.getValue() instanceof Resource.Factory.Descriptor) {
 				Descriptor descriptor = (Resource.Factory.Descriptor)entry.getValue();
-				if (descriptor.createFactory() instanceof XMIResourceFactoryImpl) {
-					registeredExtensions.add(entry.getKey());
+				try {
+					if (descriptor.createFactory() instanceof XMIResourceFactoryImpl) {
+						registeredExtensions.add(entry.getKey());
+					}
+				} catch (Throwable ex) {
+					System.err.println(String.format("Could not enable Hawk EMF driver for .%s files: %s", entry.getKey(), ex.getMessage()));
 				}
 			}
 			if (entry.getValue() instanceof XMIResourceFactoryImpl) {

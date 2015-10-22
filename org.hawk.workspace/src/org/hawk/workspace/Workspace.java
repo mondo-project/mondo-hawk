@@ -260,4 +260,14 @@ public class Workspace implements IVcsManager {
 		return new HashSet<>(Arrays.asList("platform:/resource"));
 	}
 
+	@Override
+	public String getUsername() {
+		return null;
+	}
+
+	@Override
+	public String getPassword() {
+		return null;
+	}
+
 }
