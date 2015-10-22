@@ -219,9 +219,9 @@ public class HModel {
 				isOrdered, isUnique, derivationlanguage, derivationlogic);
 	}
 
-	private void loadEncryptedVCS(String loc, String type, ICredentialsStore credStore) throws Exception {
+	private void loadEncryptedVCS(String loc, String type) throws Exception {
 		if (!this.getLocations().contains(loc)) {
-			final Credentials creds = credStore.get(loc);
+			final Credentials creds = manager.getCredentialsStore().get(loc);
 
 			final IModelIndexer indexer = hawk.getModelIndexer();
 			IVcsManager mo = manager.createVCSManager(type);
@@ -240,6 +240,7 @@ public class HModel {
 				IVcsManager mo = manager.createVCSManager(type);
 				mo.run(loc, user, pass, getConsole(), hawk.getModelIndexer());
 				hawk.getModelIndexer().addVCSManager(mo, true);
+				manager.getCredentialsStore().put(loc, new Credentials(user, pass));
 			}
 		} catch (Exception e) {
 			getConsole().printerrln(e);
@@ -485,7 +486,7 @@ public class HModel {
 		HawkProperties hp = (HawkProperties) stream.fromXML(new File(path));
 		hawk.setDbtype(hp.getDbType());
 		for (String[] s : hp.getMonitoredVCS()) {
-			loadEncryptedVCS(s[0], s[1], hawk.getModelIndexer().getCredentialsStore());
+			loadEncryptedVCS(s[0], s[1]);
 		}
 		return hp;
 	}
