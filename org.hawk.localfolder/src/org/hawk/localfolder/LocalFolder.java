@@ -99,7 +99,7 @@ public class LocalFolder implements IVcsManager {
 	}
 
 	@Override
-	public void run(String vcsloc, String un, String pw, IConsole c, IModelIndexer indexer) throws Exception {
+	public void run(String vcsloc, IConsole c, IModelIndexer indexer) throws Exception {
 
 		console = c;
 

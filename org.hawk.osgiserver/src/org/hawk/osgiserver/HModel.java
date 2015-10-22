@@ -221,11 +221,9 @@ public class HModel {
 
 	private void loadEncryptedVCS(String loc, String type) throws Exception {
 		if (!this.getLocations().contains(loc)) {
-			final Credentials creds = manager.getCredentialsStore().get(loc);
-
 			final IModelIndexer indexer = hawk.getModelIndexer();
 			IVcsManager mo = manager.createVCSManager(type);
-			mo.run(loc, creds.getUsername(), creds.getPassword(), getConsole(), indexer);
+			mo.run(loc, getConsole(), indexer);
 			indexer.addVCSManager(mo, false);
 		}
 	}
@@ -238,9 +236,9 @@ public class HModel {
 		try {
 			if (!this.getLocations().contains(loc)) {
 				IVcsManager mo = manager.createVCSManager(type);
-				mo.run(loc, user, pass, getConsole(), hawk.getModelIndexer());
-				hawk.getModelIndexer().addVCSManager(mo, true);
 				manager.getCredentialsStore().put(loc, new Credentials(user, pass));
+				mo.run(loc, getConsole(), hawk.getModelIndexer());
+				hawk.getModelIndexer().addVCSManager(mo, true);
 			}
 		} catch (Exception e) {
 			getConsole().printerrln(e);

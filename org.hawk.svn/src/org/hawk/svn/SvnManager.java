@@ -27,12 +27,15 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.hawk.core.IConsole;
+import org.hawk.core.ICredentialsStore.Credentials;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommit;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.VcsRepositoryDelta;
+import org.hawk.core.runtime.ModelIndexerImpl;
+import org.hawk.core.security.FileBasedCredentialsStore;
 import org.hawk.core.util.DefaultConsole;
 import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.SVNLogEntryPath;
@@ -43,13 +46,10 @@ import org.tmatesoft.svn.core.wc.SVNRevision;
 public class SvnManager implements IVcsManager {
 
 	private IConsole console;
-
 	private boolean isActive = false;
 
 	private String repositoryURL;
-
 	private String username;
-
 	private String password;
 
 	/*
@@ -70,11 +70,15 @@ public class SvnManager implements IVcsManager {
 		parent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		String pass = JOptionPane.showInputDialog(parent, "pw plz", "hi there");
 		parent.dispose();
+
 		System.err.println("testing2");
 		SvnManager m = new SvnManager();
 		System.err.println("testing3");
-		m.run("https://cssvn.york.ac.uk/repos/sosym/kostas/Hawk/org.hawk.emf/src/org/hawk/emf/model/examples/single/0",
-				"kb634", pass, null, null);
+
+		final String vcsloc = "https://cssvn.york.ac.uk/repos/sosym/kostas/Hawk/org.hawk.emf/src/org/hawk/emf/model/examples/single/0";
+		FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(new File("security.xml"), "admin".toCharArray());
+		credStore.put(vcsloc, new Credentials("kb634", pass));
+		m.run(vcsloc, null, new ModelIndexerImpl(null, null, credStore, null));
 		System.err.println("testing4");
 		m.test();
 		System.err.println("testing5-end");
@@ -92,15 +96,18 @@ public class SvnManager implements IVcsManager {
 		}
 	}
 
-	public void run(String vcsloc, String un, String pw, IConsole c, IModelIndexer indexer)
+	@Override
+	public void run(String vcsloc, IConsole c, IModelIndexer indexer)
 			throws Exception {
 
 		try {
 			console = c;
 
 			this.repositoryURL = vcsloc;
-			this.username = un;
-			this.password = pw;
+
+			final Credentials credentials = indexer.getCredentialsStore().get(repositoryURL);
+			this.username = credentials.getUsername();
+			this.password = credentials.getPassword();
 
 			getFirstRevision();
 
