@@ -12,8 +12,6 @@
 package org.hawk.core;
 
 import java.io.File;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -211,15 +209,6 @@ public interface IModelIndexer {
 	public String getName();
 
 	/**
-	 * Only sets the admin password if it is currently unset.
-	 * 
-	 * @param pw
-	 */
-	void setAdminPassword(char[] pw);
-
-	String decrypt(String pw) throws GeneralSecurityException, IOException;
-
-	/**
 	 * if set to true hawk will not unload resources between synchronise calls,
 	 * or within the calls, so that they can be used by listeners. NB: this will
 	 * greatly affect performance as the memory hawk will need will be increased
@@ -227,4 +216,6 @@ public interface IModelIndexer {
 	 * @param enable
 	 */
 	void setSyncMetricsEnabled(Boolean enable);
+
+	ICredentialsStore getCredentialsStore();
 }

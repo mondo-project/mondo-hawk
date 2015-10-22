@@ -20,6 +20,7 @@ import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.runtime.ModelIndexerImpl;
+import org.hawk.core.security.FileBasedCredentialsStore;
 import org.hawk.core.util.DefaultConsole;
 import org.hawk.emf.metamodel.EMFMetaModelResourceFactory;
 import org.hawk.emf.model.EMFModelResourceFactory;
@@ -52,7 +53,8 @@ public class Modelio_Titan_Runtime_example {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		i = new ModelIndexerImpl("hawk1", parent, new DefaultConsole());
+		final FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(new File("credentials.xml"), adminpw);
+		i = new ModelIndexerImpl("hawk1", parent, credStore, new DefaultConsole());
 
 		// metamodel
 		i.addMetaModelResourceFactory(new EMFMetaModelResourceFactory());
@@ -107,8 +109,7 @@ public class Modelio_Titan_Runtime_example {
 		i.addQueryEngine(q);
 		//
 		// initialise the server for real-time updates to changes
-		i.setAdminPassword(adminpw);
-		i.init(1000, 512 * 1000);
+		i.init(1000, 512_1000);
 
 		// add console interaction if needed
 		Thread t = consoleInteraction(i);

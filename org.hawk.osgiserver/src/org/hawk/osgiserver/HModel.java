@@ -23,6 +23,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.hawk.core.IConsole;
+import org.hawk.core.ICredentialsStore;
+import org.hawk.core.ICredentialsStore.Credentials;
 import org.hawk.core.IHawk;
 import org.hawk.core.IHawkFactory;
 import org.hawk.core.IMetaModelResourceFactory;
@@ -66,7 +68,7 @@ public class HModel {
 	 *             consistent with each other.
 	 */
 	public static HModel create(IHawkFactory hawkFactory, String name, File storageFolder, String location,
-			String dbType, List<String> plugins, HManager manager, char[] apw, int minDelay, int maxDelay)
+			String dbType, List<String> plugins, HManager manager, ICredentialsStore credStore, int minDelay, int maxDelay)
 					throws Exception {
 
 		if (minDelay > maxDelay) {
@@ -77,7 +79,7 @@ public class HModel {
 			throw new IllegalArgumentException("maximum delay must not be negative");
 		}
 
-		HModel hm = new HModel(manager, hawkFactory, name, storageFolder, location);
+		HModel hm = new HModel(manager, hawkFactory, name, storageFolder, location, credStore);
 		if (dbType != null) {
 			hm.hawk.setDbtype(dbType);
 		}
@@ -100,7 +102,6 @@ public class HModel {
 			IMetaModelUpdater metaModelUpdater = manager.getMetaModelUpdater();
 			console.println("Setting up hawk's metamodel updater:\n" + metaModelUpdater.getName());
 			hm.hawk.getModelIndexer().setMetaModelUpdater(metaModelUpdater);
-			hm.hawk.getModelIndexer().setAdminPassword(apw);
 			hm.hawk.getModelIndexer().init(minDelay, maxDelay);
 
 			manager.addHawk(hm);
@@ -133,9 +134,9 @@ public class HModel {
 		try {
 
 			final IHawkFactory hawkFactory = manager.createHawkFactory(config.getHawkFactory());
-
-			HModel hm = new HModel(manager, hawkFactory, config.getName(), new File(config.getStorageFolder()),
-					config.getLocation());
+			final HModel hm = new HModel(manager, hawkFactory, config.getName(),
+					new File(config.getStorageFolder()),
+					config.getLocation(), manager.getCredentialsStore());
 
 			// hard coded metamodel updater?
 			IMetaModelUpdater metaModelUpdater = manager.getMetaModelUpdater();
@@ -162,10 +163,10 @@ public class HModel {
 	 * Constructor for loading existing local Hawk instances and
 	 * creating/loading custom {@link IHawk} implementations.
 	 */
-	public HModel(HManager manager, IHawkFactory hawkFactory, String name, File storageFolder, String location)
+	public HModel(HManager manager, IHawkFactory hawkFactory, String name, File storageFolder, String location, ICredentialsStore credStore)
 			throws Exception {
 		this.hawkFactory = hawkFactory;
-		this.hawk = hawkFactory.create(name, storageFolder, location, getConsole());
+		this.hawk = hawkFactory.create(name, storageFolder, location, credStore, getConsole());
 		this.manager = manager;
 		this.hawkLocation = location;
 
@@ -218,21 +219,13 @@ public class HModel {
 				isOrdered, isUnique, derivationlanguage, derivationlogic);
 	}
 
-	private void loadEncryptedVCS(String loc, String type, String user, String pass) throws Exception {
+	private void loadEncryptedVCS(String loc, String type, ICredentialsStore credStore) throws Exception {
 		if (!this.getLocations().contains(loc)) {
-			String decryptedUser = user;
+			final Credentials creds = credStore.get(loc);
+
 			final IModelIndexer indexer = hawk.getModelIndexer();
-			if (decryptedUser != null && !"".equals(decryptedUser)) {
-				decryptedUser = indexer.decrypt(user);
-			}
-
-			String decryptedPass = pass;
-			if (decryptedPass != null && !"".equals(decryptedPass)) {
-				decryptedPass = indexer.decrypt(pass);
-			}
-
 			IVcsManager mo = manager.createVCSManager(type);
-			mo.run(loc, decryptedUser, decryptedPass, getConsole(), indexer);
+			mo.run(loc, creds.getUsername(), creds.getPassword(), getConsole(), indexer);
 			indexer.addVCSManager(mo, false);
 		}
 	}
@@ -386,6 +379,10 @@ public class HModel {
 		return hawk.getModelIndexer().isRunning();
 	}
 
+	public HManager getManager() {
+		return manager;
+	}
+
 	/**
 	 * For the result types, see {@link #contextFullQuery(File, String, Map)}.
 	 */
@@ -433,9 +430,8 @@ public class HModel {
 		}
 	}
 
-	public boolean start(HManager manager, char[] apw) {
+	public boolean start(HManager manager) {
 		try {
-			hawk.getModelIndexer().setAdminPassword(apw);
 			final HawkProperties hp = loadIndexerMetadata();
 
 			if (hawkFactory.instancesCreateGraph()) {
@@ -489,7 +485,7 @@ public class HModel {
 		HawkProperties hp = (HawkProperties) stream.fromXML(new File(path));
 		hawk.setDbtype(hp.getDbType());
 		for (String[] s : hp.getMonitoredVCS()) {
-			loadEncryptedVCS(s[0], s[1], s[2], s[3]);
+			loadEncryptedVCS(s[0], s[1], hawk.getModelIndexer().getCredentialsStore());
 		}
 		return hp;
 	}

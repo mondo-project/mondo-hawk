@@ -35,8 +35,11 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.hawk.core.ICredentialsStore;
+import org.hawk.core.ICredentialsStore.Credentials;
 import org.hawk.core.IVcsManager;
 import org.hawk.osgiserver.HModel;
+import org.hawk.ui2.Activator;
 import org.hawk.ui2.dialog.HConfigDialog.ClassNameLabelProvider;
 
 final class HVCSDialog extends TitleAreaDialog {
@@ -162,14 +165,30 @@ final class HVCSDialog extends TitleAreaDialog {
 		});
 		btnVCSBrowse.setEnabled(false);
 
+		String usernameToEdit = null;
+		String passwordToEdit = null;
+		if (managerToEdit != null) {
+			final ICredentialsStore credentialsStore = hawkModel.getManager().getCredentialsStore();
+			Credentials credentials = null;
+			try {
+				credentials = credentialsStore.get(managerToEdit.getLocation());
+			} catch (Exception e1) {
+				Activator.logError("Could not open credentials store", e1);
+			}
+			if (credentials != null) {
+				usernameToEdit = credentials.getUsername();
+				passwordToEdit = credentials.getPassword();
+			}
+		}
+
 		final Label lblUser = new Label(container, SWT.NONE);
 		lblUser.setText("User (optional):");
 		txtUser = new Text(container, SWT.BORDER | SWT.SINGLE);
 		final GridData txtUserLayoutData = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		txtUserLayoutData.horizontalSpan = 2;
 		txtUser.setLayoutData(txtUserLayoutData);
-		if (managerToEdit != null && managerToEdit.getUsername() != null) {
-			txtUser.setText(managerToEdit.getUsername());
+		if (usernameToEdit != null) {
+			txtUser.setText(usernameToEdit);
 		}
 		txtUser.addModifyListener(new UpdateDialogModifyListener());
 
@@ -179,8 +198,8 @@ final class HVCSDialog extends TitleAreaDialog {
 		final GridData txtPassLayoutData = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		txtPassLayoutData.horizontalSpan = 2;
 		txtPass.setLayoutData(txtPassLayoutData);
-		if (managerToEdit != null && managerToEdit.getPassword() != null) {
-			txtPass.setText(managerToEdit.getPassword());
+		if (passwordToEdit != null) {
+			txtPass.setText(passwordToEdit);
 		}
 		txtPass.addModifyListener(new UpdateDialogModifyListener());
 

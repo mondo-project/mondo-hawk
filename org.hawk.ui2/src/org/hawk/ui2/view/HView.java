@@ -303,26 +303,16 @@ public class HView extends ViewPart {
 			public void run() {
 				IStructuredSelection selected = (IStructuredSelection) viewer.getSelection();
 				if (selected.size() == 1) {
-
-					PasswordDialog pwd = new PasswordDialog(shell);
-					pwd.setBlockOnOpen(true);
-					int ret = pwd.open();
-
-					if (ret == Dialog.OK) {
-
-						char[] apw = pwd.getPassword();
-
-						final HModel hawkModel = (HModel) selected.getFirstElement();
-						if (hawkModel.start(hm, apw)) {
-							viewer.refresh();
-							start.setEnabled(false);
-							stop.setEnabled(true);
-							sync.setEnabled(true);
-							query.setEnabled(true);
-							config.setEnabled(true);
-						} else {
-							viewer.refresh();
-						}
+					final HModel hawkModel = (HModel) selected.getFirstElement();
+					if (hawkModel.start(hm)) {
+						viewer.refresh();
+						start.setEnabled(false);
+						stop.setEnabled(true);
+						sync.setEnabled(true);
+						query.setEnabled(true);
+						config.setEnabled(true);
+					} else {
+						viewer.refresh();
 					}
 				}
 			}

@@ -18,12 +18,9 @@ import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Factory;
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.ui.PlatformUI;
 import org.hawk.emfresource.impl.LocalHawkResourceImpl;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.util.HUIManager;
-import org.hawk.ui2.util.PasswordDialog;
 
 public class LocalHawkResourceFactoryImpl implements Factory {
 	@Override
@@ -47,11 +44,7 @@ public class LocalHawkResourceFactoryImpl implements Factory {
 			return new LocalHawkResourceImpl(uri, null);
 		}
 		if (!hawkModel.isRunning()) {
-			PasswordDialog dlg = new PasswordDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-			if (dlg.open() == Dialog.OK) {
-				final char[] apw = dlg.getPassword();
-				hawkModel.start(manager, apw);
-			}
+			hawkModel.start(manager);
 		}
 		return new LocalHawkResourceImpl(uri, hawkModel.getIndexer());
 	}

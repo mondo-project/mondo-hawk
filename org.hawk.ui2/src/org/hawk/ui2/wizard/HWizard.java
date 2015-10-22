@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.hawk.core.ICredentialsStore;
 import org.hawk.core.IHawkFactory;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.util.HUIManager;
@@ -71,12 +72,14 @@ public class HWizard extends Wizard implements INewWizard {
 			final int maxDelay = page.getMaxDelay();
 			final int minDelay = page.getMinDelay();
 
+			final ICredentialsStore credStore = HUIManager.getInstance().getCredentialsStore();
+
 			IRunnableWithProgress op = new IRunnableWithProgress() {
 				public void run(IProgressMonitor monitor)
 						throws InvocationTargetException {
 					try {
 						doFinish(name, new File(folder), location, dbType,
-								plugins, monitor, apw, factory, minDelay,
+								plugins, monitor, credStore, factory, minDelay,
 								maxDelay);
 					} catch (Exception e) {
 						throw new InvocationTargetException(e);
@@ -110,11 +113,11 @@ public class HWizard extends Wizard implements INewWizard {
 	 */
 	private void doFinish(String name, File storageFolder, String location,
 			String dbType, List<String> plugins, IProgressMonitor monitor,
-			char[] apw, IHawkFactory factory, int minDelay, int maxDelay)
+			ICredentialsStore credStore, IHawkFactory factory, int minDelay, int maxDelay)
 			throws Exception {
 		// set up a new Hawk with the selected plugins
 		HModel hm = HModel.create(factory, name, storageFolder, location,
-				dbType, plugins, HUIManager.getInstance(), apw, minDelay,
+				dbType, plugins, HUIManager.getInstance(), credStore, minDelay,
 				maxDelay);
 
 		monitor.beginTask("Creating ", 2);

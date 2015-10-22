@@ -212,16 +212,6 @@ public class Workspace implements IVcsManager {
 	}
 
 	@Override
-	public String getUsername() {
-		return "na";
-	}
-
-	@Override
-	public String getPassword() {
-		return "na";
-	}
-
-	@Override
 	public void setCredentials(String username, String password) {
 		// ignore
 	}

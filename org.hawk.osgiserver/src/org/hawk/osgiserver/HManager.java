@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.hawk.core.ICredentialsStore;
 import org.hawk.core.IHawk;
 import org.hawk.core.IHawkFactory;
 import org.hawk.core.IMetaModelUpdater;
@@ -376,6 +377,11 @@ public class HManager {
 		
 		firstRun = false;
 
+	}
+
+	public ICredentialsStore getCredentialsStore() {
+		// TODO provide extension point?
+		return new SecurePreferencesCredentialsStore();
 	}
 
 	public void saveHawkToMetadata(HModel e) throws BackingStoreException {

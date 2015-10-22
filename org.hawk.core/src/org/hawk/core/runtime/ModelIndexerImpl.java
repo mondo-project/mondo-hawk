@@ -13,8 +13,6 @@ package org.hawk.core.runtime;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,6 +29,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
 import org.hawk.core.IConsole;
+import org.hawk.core.ICredentialsStore;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.IMetaModelUpdater;
 import org.hawk.core.IModelIndexer;
@@ -47,7 +46,6 @@ import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.query.IQueryEngine;
-import org.hawk.core.runtime.util.SecurityManager;
 import org.hawk.core.util.FileOperations;
 import org.hawk.core.util.HawkProperties;
 
@@ -103,19 +101,21 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	public boolean permanentDelete = false;
 
-	public char[] adminPw = null;
 	private File parentfolder = null;
 	private boolean running = false;
+
+	private final ICredentialsStore credStore;
 	private final CompositeGraphChangeListener listener = new CompositeGraphChangeListener();
 
 	/**
 	 * Creates an indexer with a <code>name</code>, with its contents saved in
 	 * <code>parentfolder</code> and printing to console <code>c</code>.
 	 */
-	public ModelIndexerImpl(String name, File parentfolder, IConsole c)
+	public ModelIndexerImpl(String name, File parentfolder, ICredentialsStore credStore, IConsole c)
 			throws Exception {
 		this.name = name;
 		this.console = c;
+		this.credStore = credStore;
 		this.parentfolder = parentfolder;
 	}
 
@@ -392,6 +392,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		if (graph != null) {
 			graph.shutdown();
+			credStore.shutdown();
 		}
 		graph = null;
 	}
@@ -758,11 +759,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		HashSet<String[]> set = new HashSet<String[]>();
 		for (IVcsManager s : getRunningVCSManagers()) {
-			String[] meta = new String[4];
-			meta[0] = s.getLocation();
-			meta[1] = s.getType();
-			meta[2] = SecurityManager.encrypt(s.getUsername(), adminPw);
-			meta[3] = SecurityManager.encrypt(s.getPassword(), adminPw);
+			String[] meta = new String[] { s.getLocation(), s.getType() };
 			System.out.println("adding: " + meta[0] + ":" + meta[1]);
 			set.add(meta);
 		}
@@ -807,22 +804,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public void setAdminPassword(char[] pw) {
-		if (adminPw == null)
-			adminPw = pw;
-		else
-			console.println("Admin password has already been set, this method did nothing.");
-	}
-
-	@Override
 	public void init(int minDelay, int maxDelay) throws Exception {
 		this.maxDelay = maxDelay;
 		this.minDelay = minDelay;
 		this.currentDelay = minDelay;
-
-		if (adminPw == null)
-			throw new Exception(
-					"Please set the admin password using setAdminPassword(...) before calling init");
 
 		// register all static metamodels to graph
 		System.out
@@ -1030,12 +1015,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public String decrypt(String pw) throws GeneralSecurityException,
-			IOException {
-		return SecurityManager.decrypt(pw, adminPw);
-	}
-
-	@Override
 	public boolean isRunning() {
 		return running;
 	}
@@ -1090,6 +1069,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 	public long getLatestSynctime() {
 		// works even if metrics disabled
 		return synctime;
+	}
+
+	@Override
+	public ICredentialsStore getCredentialsStore() {
+		return credStore;
 	}
 
 }

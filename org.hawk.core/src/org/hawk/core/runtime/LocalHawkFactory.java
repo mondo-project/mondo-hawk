@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.hawk.core.Activator;
 import org.hawk.core.IConsole;
+import org.hawk.core.ICredentialsStore;
 import org.hawk.core.IHawk;
 import org.hawk.core.IHawkFactory;
 import org.hawk.core.util.HawkProperties;
@@ -35,8 +36,8 @@ public class LocalHawkFactory implements IHawkFactory {
 	public final static String ID = "org.hawk.core.hawkFactory.local";
 
 	@Override
-	public IHawk create(String name, File localStorageFolder, String location, IConsole console) throws Exception {
-		return new LocalHawk(name, localStorageFolder, console);
+	public IHawk create(String name, File localStorageFolder, String location, ICredentialsStore credStore, IConsole console) throws Exception {
+		return new LocalHawk(name, localStorageFolder, credStore, console);
 	}
 
 	@Override

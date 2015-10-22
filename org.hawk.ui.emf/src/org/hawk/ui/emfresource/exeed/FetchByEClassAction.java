@@ -32,7 +32,7 @@ public class FetchByEClassAction extends Action {
 		final EClassSelectionDialog dlg = new EClassSelectionDialog(shell, resource);
 		if (dlg.open() == Dialog.OK) {
 			try {
-				EList<EObject> eobjs = resource.fetchNodes(dlg.getEClass());
+				EList<EObject> eobjs = resource.fetchNodes(dlg.getEClass(), false);
 				Activator.logInfo("Fetched " + eobjs.size() + " nodes");
 			} catch (Exception e) {
 				Activator.logError("Failed to fetch nodes by class", e);

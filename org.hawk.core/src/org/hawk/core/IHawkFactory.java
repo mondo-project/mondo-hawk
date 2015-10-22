@@ -47,11 +47,12 @@ public interface IHawkFactory {
 	 *            Thrift API URL or the URL to a remote graph). This is only
 	 *            necessary if {@link #instancesUseLocation()} returns
 	 *            <code>true</code>.
+	 * @param credStore
+	 *            Credential storage to be used to persist VCS login details.
 	 * @param console
-	 *            {@link IConsole} implementation used to print
-	 *            messages.
+	 *            {@link IConsole} implementation used to print messages.
 	 */
-	IHawk create(String name, File storageFolder, String location, IConsole console) throws Exception;
+	IHawk create(String name, File storageFolder, String location, ICredentialsStore credStore, IConsole console) throws Exception;
 
 	/**
 	 * Returns information from all the {@link IHawk} instances that

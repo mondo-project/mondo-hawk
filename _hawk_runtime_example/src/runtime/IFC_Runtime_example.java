@@ -20,6 +20,7 @@ import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.runtime.ModelIndexerImpl;
+import org.hawk.core.security.FileBasedCredentialsStore;
 import org.hawk.core.util.DefaultConsole;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
@@ -47,7 +48,8 @@ public class IFC_Runtime_example {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		i = new ModelIndexerImpl("hawk1", parent, new DefaultConsole());
+		final FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(new File("credentials.xml"), adminpw);
+		i = new ModelIndexerImpl("hawk1", parent, credStore, new DefaultConsole());
 
 		// metamodel
 		i.addMetaModelResourceFactory(new IFCMetaModelResourceFactory());
@@ -78,7 +80,6 @@ public class IFC_Runtime_example {
 		i.addQueryEngine(q);
 
 		// initialise the server for real-time updates to changes
-		i.setAdminPassword(adminpw);
 		i.init(1000,512*1000);
 
 		// add console interaction if needed

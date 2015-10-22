@@ -41,12 +41,6 @@ public interface IVcsManager {
 	// kostas
 	String getLocation();
 
-	// kostas
-	String getUsername();
-
-	// kostas
-	String getPassword();
-
 	/**
 	 * Changes the username and password in one go. Both must be passed at the
 	 * same time to be able to support remote instances.

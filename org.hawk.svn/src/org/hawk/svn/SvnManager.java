@@ -260,16 +260,6 @@ public class SvnManager implements IVcsManager {
 	}
 
 	@Override
-	public String getUsername() {
-		return username;
-	}
-
-	@Override
-	public String getPassword() {
-		return password;
-	}
-
-	@Override
 	public void setCredentials(String username, String password) {
 		this.username = username;
 		this.password = password;

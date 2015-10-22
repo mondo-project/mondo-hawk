@@ -29,6 +29,7 @@ import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.runtime.ModelIndexerImpl;
+import org.hawk.core.security.FileBasedCredentialsStore;
 import org.hawk.core.util.DefaultConsole;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
@@ -74,7 +75,14 @@ public class Runtime_example {
 	public static void main(String[] args) throws Exception {
 
 		// create an empty hawk model indexer
-		hawk = new ModelIndexerImpl("hawk1", parent, new DefaultConsole());
+		char[] init = new char[5];
+		init[0] = 'a';
+		init[1] = 'd';
+		init[2] = 'm';
+		init[3] = 'i';
+		init[4] = 'n';
+		final FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(new File("credentials.xml"), init);
+		hawk = new ModelIndexerImpl("hawk1", parent, credStore, new DefaultConsole());
 
 		// add a metamodel factory
 		// hawk.addMetaModelResourceFactory(new EMFMetaModelResourceFactory());
@@ -152,15 +160,6 @@ public class Runtime_example {
 
 		// initialise the server for real-time updates to changes -- this has to
 		// be done after initialising all the relevant plugins you want online
-
-		char[] init = new char[5];
-		init[0] = 'a';
-		init[1] = 'd';
-		init[2] = 'm';
-		init[3] = 'i';
-		init[4] = 'n';
-
-		hawk.setAdminPassword(init);
 		hawk.init(1000, 512 * 1000);
 
 		// add console interaction if needed
