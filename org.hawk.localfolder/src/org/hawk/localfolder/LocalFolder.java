@@ -329,4 +329,14 @@ public class LocalFolder implements IVcsManager {
 	public Set<String> getPrefixesToBeStripped() {
 		return Collections.emptySet();
 	}
+
+	@Override
+	public String getUsername() {
+		return null;
+	}
+
+	@Override
+	public String getPassword() {
+		return null;
+	}
 }
