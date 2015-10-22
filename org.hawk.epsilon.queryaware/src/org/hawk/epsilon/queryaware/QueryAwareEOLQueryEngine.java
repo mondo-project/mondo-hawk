@@ -34,7 +34,7 @@ import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementT
 import org.eclipse.epsilon.eol.execute.introspection.IPropertyGetter;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertySetter;
 import org.eclipse.epsilon.labs.effectivemetamodel.impl.EffectiveType;
-import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IConsole;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
@@ -70,7 +70,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 
 	protected IGraphNodeIndex epackagedictionary;
 	protected Set<String> epackages = null;
-	protected static IAbstractConsole console;
+	protected static IConsole console;
 	// protected OptimisableCollectionOperationContributor operationContributor
 	// = new OptimisableCollectionOperationContributor();
 
@@ -90,7 +90,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 	 * @param c
 	 * @throws Exception
 	 */
-	// public void run(IGraphDatabase g, IAbstractConsole c) throws Exception {
+	// public void run(IGraphDatabase g, IConsole c) throws Exception {
 	//
 	// // this.parser = parser;
 	// console = c;

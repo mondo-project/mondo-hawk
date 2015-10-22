@@ -32,7 +32,7 @@ public interface IVcsManager {
 	boolean isActive();
 
 	// kostas
-	void run(String vcsloc, String un, String pw, IAbstractConsole c, IModelIndexer indexer)
+	void run(String vcsloc, String un, String pw, IConsole c, IModelIndexer indexer)
 			throws Exception;
 
 	// kostas

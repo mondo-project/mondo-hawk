@@ -14,7 +14,7 @@ import java.io.File;
 import java.util.Map;
 import java.util.Set;
 
-import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IConsole;
 
 public interface IGraphDatabase {
 
@@ -24,7 +24,7 @@ public interface IGraphDatabase {
 
 	String getPath();
 
-	void run(File parentfolder, IAbstractConsole c);
+	void run(File parentfolder, IConsole c);
 
 	void shutdown() throws Exception;
 

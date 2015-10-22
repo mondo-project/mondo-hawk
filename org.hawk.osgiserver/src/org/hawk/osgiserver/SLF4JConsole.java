@@ -10,12 +10,12 @@
  ******************************************************************************/
 package org.hawk.osgiserver;
 
-import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IConsole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.spi.LocationAwareLogger;
 
-public class SLF4JConsole implements IAbstractConsole {
+public class SLF4JConsole implements IConsole {
 	private static final String FQCN = SLF4JConsole.class.getName();
 
 	@Override

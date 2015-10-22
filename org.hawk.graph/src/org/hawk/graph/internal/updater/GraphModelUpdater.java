@@ -13,7 +13,7 @@ package org.hawk.graph.internal.updater;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IConsole;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IModelUpdater;
 import org.hawk.core.VcsCommitItem;
@@ -27,7 +27,7 @@ import org.hawk.core.model.IHawkModelResource;
 public class GraphModelUpdater implements IModelUpdater {
 
 	private IModelIndexer indexer;
-	private IAbstractConsole console;
+	private IConsole console;
 
 	private boolean isActive = false;
 	public static final String FILEINDEX_REPO_SEPARATOR = "////";
@@ -40,7 +40,7 @@ public class GraphModelUpdater implements IModelUpdater {
 	}
 
 	@Override
-	public void run(IAbstractConsole c, IModelIndexer hawk) throws Exception {
+	public void run(IConsole c, IModelIndexer hawk) throws Exception {
 		this.indexer = hawk;
 		this.console = c;
 	}

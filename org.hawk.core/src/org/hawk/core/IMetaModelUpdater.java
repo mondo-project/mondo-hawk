@@ -18,7 +18,7 @@ public interface IMetaModelUpdater {
 
 	public abstract void insertMetamodels(Set<IHawkMetaModelResource> set, IModelIndexer indexer);
 
-	public abstract void run(// IAbstractConsole console
+	public abstract void run(// IConsole console
 	);
 
 	boolean addDerivedAttribute(String metamodeluri, String typename, String attributename, String attributetype,

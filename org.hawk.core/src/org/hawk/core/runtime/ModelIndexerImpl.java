@@ -30,7 +30,7 @@ import java.util.TimerTask;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
-import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IConsole;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.IMetaModelUpdater;
 import org.hawk.core.IModelIndexer;
@@ -92,7 +92,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 	private Map<String, IQueryEngine> knownQueryLanguages = new HashMap<>();
 	private List<IModelUpdater> updaters = new LinkedList<>();
 
-	private IAbstractConsole console;
+	private IConsole console;
 
 	public static final int DEFAULT_MAXDELAY = 1000 * 512;
 	public static final int DEFAULT_MINDELAY = 1000;
@@ -112,7 +112,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 	 * Creates an indexer with a <code>name</code>, with its contents saved in
 	 * <code>parentfolder</code> and printing to console <code>c</code>.
 	 */
-	public ModelIndexerImpl(String name, File parentfolder, IAbstractConsole c)
+	public ModelIndexerImpl(String name, File parentfolder, IConsole c)
 			throws Exception {
 		this.name = name;
 		this.console = c;
@@ -655,7 +655,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public IAbstractConsole getConsole() {
+	public IConsole getConsole() {
 		return console;
 	}
 

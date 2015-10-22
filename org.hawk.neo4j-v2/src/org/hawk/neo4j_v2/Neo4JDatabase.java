@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IConsole;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
@@ -61,12 +61,12 @@ public class Neo4JDatabase implements IGraphDatabase {
 	private IGraphNodeIndex fileindex;
 	private IGraphNodeIndex metamodelindex;
 
-	// private IAbstractConsole console;
+	// private IConsole console;
 
 	public Neo4JDatabase() {
 	}
 
-	public void run(File location, IAbstractConsole c) {
+	public void run(File location, IConsole c) {
 
 		// console = c;
 

@@ -34,7 +34,7 @@ import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertyGetter;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertySetter;
-import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IConsole;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
@@ -70,7 +70,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 	protected IGraphNodeIndex epackagedictionary;
 	protected Set<String> epackages = null;
-	protected static IAbstractConsole console;
+	protected static IConsole console;
 
 	protected GraphPropertyGetter propertygetter;
 
@@ -87,7 +87,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 	 * @param c
 	 * @throws Exception
 	 */
-	// public void run(IGraphDatabase g, IAbstractConsole c) throws Exception {
+	// public void run(IGraphDatabase g, IConsole c) throws Exception {
 	//
 	// // this.parser = parser;
 	// console = c;

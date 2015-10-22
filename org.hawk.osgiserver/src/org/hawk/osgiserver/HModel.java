@@ -22,7 +22,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IConsole;
 import org.hawk.core.IHawk;
 import org.hawk.core.IHawkFactory;
 import org.hawk.core.IMetaModelResourceFactory;
@@ -45,15 +45,15 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class HModel {
 
-	private static IAbstractConsole CONSOLE = new SLF4JConsole();
+	private static IConsole CONSOLE = new SLF4JConsole();
 
-	public static IAbstractConsole getConsole() {
+	public static IConsole getConsole() {
 		if (CONSOLE == null)
 			CONSOLE = new SLF4JConsole();
 		return CONSOLE;
 	}
 
-	public static void setConsole(IAbstractConsole c) {
+	public static void setConsole(IConsole c) {
 		CONSOLE = c;
 	}
 
@@ -84,7 +84,7 @@ public class HModel {
 
 		// TODO use plugins list to enable only these plugins
 		IGraphDatabase db = null;
-		final IAbstractConsole console = getConsole();
+		final IConsole console = getConsole();
 		try {
 			// create the indexer with relevant database
 			console.println("Creating Hawk indexer...");
@@ -170,7 +170,7 @@ public class HModel {
 		this.hawkLocation = location;
 
 		if (hawkFactory.instancesAreExtensible()) {
-			final IAbstractConsole console = getConsole();
+			final IConsole console = getConsole();
 			// set up plugins
 			// first get all of type (static callto HawkOSGIConfigManager)
 			// check each one has the an ID that was selected

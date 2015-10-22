@@ -12,7 +12,7 @@ package org.hawk.core.runtime;
 
 import java.io.File;
 
-import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IConsole;
 import org.hawk.core.IHawk;
 import org.hawk.core.IModelIndexer;
 
@@ -24,7 +24,7 @@ public class LocalHawk implements IHawk {
 
 	private String dbtype;
 
-	public LocalHawk(String name, File storageFolder, IAbstractConsole c) throws Exception {
+	public LocalHawk(String name, File storageFolder, IConsole c) throws Exception {
 		location = storageFolder;
 		indexer = new ModelIndexerImpl(name, location, c);
 	}

@@ -13,10 +13,10 @@ package org.hawk.ui2.util;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IConsole;
 import org.hawk.ui2.Activator;
 
-public class EclipseLogConsole implements IAbstractConsole {
+public class EclipseLogConsole implements IConsole {
 
 	@Override
 	public void println(String s) {

@@ -48,10 +48,10 @@ public interface IHawkFactory {
 	 *            necessary if {@link #instancesUseLocation()} returns
 	 *            <code>true</code>.
 	 * @param console
-	 *            {@link IAbstractConsole} implementation used to print
+	 *            {@link IConsole} implementation used to print
 	 *            messages.
 	 */
-	IHawk create(String name, File storageFolder, String location, IAbstractConsole console) throws Exception;
+	IHawk create(String name, File storageFolder, String location, IConsole console) throws Exception;
 
 	/**
 	 * Returns information from all the {@link IHawk} instances that

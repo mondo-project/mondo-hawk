@@ -32,7 +32,7 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IConsole;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsChangeType;
@@ -86,7 +86,7 @@ public class Workspace implements IVcsManager {
 
 	private long revision;
 	private boolean pendingChanges = false;
-	private IAbstractConsole console;
+	private IConsole console;
 	private WorkspaceListener listener;
 	private String repositoryURL;
 	private Set<IFile> previousFiles = new HashSet<>();
@@ -188,7 +188,7 @@ public class Workspace implements IVcsManager {
 	}
 
 	@Override
-	public void run(String vcsloc, String un, String pw, IAbstractConsole c, IModelIndexer indexer) throws Exception {
+	public void run(String vcsloc, String un, String pw, IConsole c, IModelIndexer indexer) throws Exception {
 		this.console = c;
 		this.listener = new WorkspaceListener(indexer);
 

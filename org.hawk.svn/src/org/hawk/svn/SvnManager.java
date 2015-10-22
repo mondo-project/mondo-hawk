@@ -26,7 +26,7 @@ import java.util.Set;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IConsole;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsChangeType;
@@ -42,7 +42,7 @@ import org.tmatesoft.svn.core.wc.SVNRevision;
 
 public class SvnManager implements IVcsManager {
 
-	private IAbstractConsole console;
+	private IConsole console;
 
 	private boolean isActive = false;
 
@@ -92,7 +92,7 @@ public class SvnManager implements IVcsManager {
 		}
 	}
 
-	public void run(String vcsloc, String un, String pw, IAbstractConsole c, IModelIndexer indexer)
+	public void run(String vcsloc, String un, String pw, IConsole c, IModelIndexer indexer)
 			throws Exception {
 
 		try {

@@ -15,9 +15,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IConsole;
 
-public class FileOutputConsole implements IAbstractConsole {
+public class FileOutputConsole implements IConsole {
 
 	FileWriter r = null;
 

@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IConsole;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsChangeType;
@@ -86,7 +86,7 @@ public class LocalFolder implements IVcsManager {
 		}
 	}
 
-	private IAbstractConsole console;
+	private IConsole console;
 	private Path rootLocation;
 	private Set<File> previousFiles = new HashSet<>();
 
@@ -99,7 +99,7 @@ public class LocalFolder implements IVcsManager {
 	}
 
 	@Override
-	public void run(String vcsloc, String un, String pw, IAbstractConsole c, IModelIndexer indexer) throws Exception {
+	public void run(String vcsloc, String un, String pw, IConsole c, IModelIndexer indexer) throws Exception {
 
 		console = c;
 

@@ -106,7 +106,7 @@ public interface IModelIndexer {
 
 	void removeMetamodels(String[] metamodelURI) throws Exception;
 
-	IAbstractConsole getConsole();
+	IConsole getConsole();
 
 	// deprecated -- internal method now
 	// void saveIndexer(File f);

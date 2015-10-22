@@ -12,9 +12,9 @@ package org.hawk.core.util;
 
 import java.io.PrintStream;
 
-import org.hawk.core.IAbstractConsole;
+import org.hawk.core.IConsole;
 
-public class DefaultConsole implements IAbstractConsole {
+public class DefaultConsole implements IConsole {
 
 	PrintStream out = null;
 	PrintStream err = null;

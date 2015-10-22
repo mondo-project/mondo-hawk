@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.hawk.core;
 
-public interface IAbstractConsole {
+public interface IConsole {
 
 	/**
 	 * Outputs String s and then a new line
