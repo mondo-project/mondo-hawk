@@ -54,7 +54,7 @@ public interface IVcsManager {
 	 * Changes the username and password in one go. Both must be passed at the
 	 * same time to be able to support remote instances.
 	 */
-	void setCredentials(String username, String password);
+	void setCredentials(String username, String password, ICredentialsStore credStore);
 
 	// kostas
 	String getType();

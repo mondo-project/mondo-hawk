@@ -34,6 +34,7 @@ public class SecurePreferencesCredentialsStore implements ICredentialsStore {
 		final String encodedPrefix = EncodingUtils.encodeSlashes(repositoryKey);
 		preferences.put(encodedPrefix + USERNAME_SUFFIX, creds.getUsername(), true);
 		preferences.put(encodedPrefix + PASSWORD_SUFFIX, creds.getPassword(), true);
+		preferences.flush();
 	}
 
 	@Override

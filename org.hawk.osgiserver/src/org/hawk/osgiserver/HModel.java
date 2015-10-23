@@ -236,7 +236,7 @@ public class HModel {
 		try {
 			if (!this.getLocations().contains(loc)) {
 				IVcsManager mo = manager.createVCSManager(type);
-				mo.setCredentials(user, pass);
+				mo.setCredentials(user, pass, hawk.getModelIndexer().getCredentialsStore());
 				mo.run(loc, getConsole(), hawk.getModelIndexer());
 				hawk.getModelIndexer().addVCSManager(mo, true);
 			}

@@ -52,7 +52,6 @@ public class SvnManager implements IVcsManager {
 	private String repositoryURL;
 	private String username;
 	private String password;
-	private ICredentialsStore credStore;
 
 	/*
 	 * TODO we can't blacklist .zip as we need support for
@@ -106,11 +105,22 @@ public class SvnManager implements IVcsManager {
 			console = c;
 
 			this.repositoryURL = vcsloc;
-			this.credStore = indexer.getCredentialsStore();
 
+			final ICredentialsStore credStore = indexer.getCredentialsStore();
 			final Credentials credentials = credStore.get(repositoryURL);
-			this.username = credentials.getUsername();
-			this.password = credentials.getPassword();
+			if (credentials != null) {
+				this.username = credentials.getUsername();
+				this.password = credentials.getPassword();
+			} else {
+				/*
+				 * If we use null for the default username/password, SVNKit will
+				 * try to use the GNOME keyring in Linux, and that will lock up
+				 * our Eclipse instance in some cases.
+				 */
+				console.printerrln("No username/password recorded for the repository " + repositoryURL);
+				this.username = "";
+				this.password = "";
+			}
 
 			getFirstRevision();
 
@@ -270,7 +280,7 @@ public class SvnManager implements IVcsManager {
 	}
 
 	@Override
-	public void setCredentials(String username, String password) {
+	public void setCredentials(String username, String password, ICredentialsStore credStore) {
 		if (username != null && password != null && !username.equals(this.username) || !password.equals(this.password)) {
 			try {
 				credStore.put(repositoryURL, new Credentials(username, password));

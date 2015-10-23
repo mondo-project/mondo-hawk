@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hawk.core.IConsole;
+import org.hawk.core.ICredentialsStore;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsChangeType;
@@ -186,7 +187,7 @@ public class LocalFolder implements IVcsManager {
 	}
 
 	@Override
-	public void setCredentials(String username, String password) {
+	public void setCredentials(String username, String password, ICredentialsStore credStore) {
 		// ignore
 	}
 
