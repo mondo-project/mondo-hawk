@@ -163,6 +163,7 @@ public class HWizardPage extends WizardPage {
 		locationText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		locationText.setLayoutData(gd);
+		locationText.setText("http://localhost:8080/thrift/hawk/tuple");
 		// folderText.setEditable(false);
 		locationText.addModifyListener(dialogChangeListener);
 
@@ -226,7 +227,7 @@ public class HWizardPage extends WizardPage {
 		label.setText("Min/Max Delay:");
 
 		Composite cDelayRow = new Composite(container, SWT.NULL);
-		cDelayRow.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		cDelayRow.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true));
 		final Layout cDelayRowLayout = new FillLayout();
 		cDelayRow.setLayout(cDelayRowLayout);
 
