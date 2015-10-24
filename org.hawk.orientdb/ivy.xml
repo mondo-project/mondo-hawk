@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+    <info
+        organisation="org.hawk"
+        module="orientdb"
+        status="integration">
+	</info>
+	<dependencies>
+		<dependency org="com.orientechnologies" name="orientdb-graphdb" rev="2.1.4">
+			<exclude org="com.orientechnologies" module="orientdb-server"/>
+			<exclude org="com.tinkerpop.gremlin" module="gremlin-groovy"/>
+			<exclude org="com.tinkerpop.gremlin" module="gremlin-java"/>
+		</dependency>
+		<dependency org="com.orientechnologies" name="orientdb-lucene" rev="2.1.4">
+			<exclude org="com.orientechnologies" module="orientdb-server"/>
+			<exclude org="com.tinkerpop.gremlin" module="gremlin-groovy"/>
+			<exclude org="com.tinkerpop.gremlin" module="gremlin-java"/>
+			<exclude org="com.tinkerpop.rexster" name="rexster-server" />
+		</dependency>
+	</dependencies>
+</ivy-module>
