@@ -19,7 +19,6 @@ import org.hawk.orientdb.OrientNode;
 
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.id.ORID;
-import com.orientechnologies.orient.core.index.OIndexCursor;
 
 final class IndexCursorFactoryIterable implements IGraphIterable<IGraphNode> {
 	private OIndexCursorFactory factory;

@@ -46,13 +46,19 @@ public class IndexTests {
 	}
 
 	@Test
-	public void oneMetamodel() {
-		final String mmURI = "http://foo/bar";
-		final FluidMap mmNodeProps = FluidMap.create().add(IModelIndexer.IDENTIFIER_PROPERTY, mmURI);
+	public void query() {
+		final String mmBarURI = "http://foo/bar";
+		final String mmFileURI = "file://a/b/c.d";
+		final FluidMap mmBarNodeProps = FluidMap.create().add(IModelIndexer.IDENTIFIER_PROPERTY, mmBarURI);
+		final FluidMap mmFileNodeProps = FluidMap.create().add(IModelIndexer.IDENTIFIER_PROPERTY, mmFileURI);
 
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			IGraphNode mmNode = db.createNode(mmNodeProps, "metamodel");
-			db.getMetamodelIndex().add(mmNode, FluidMap.create().add("id", mmURI));
+			IGraphNode mmNode = db.createNode(mmBarNodeProps, "metamodel");
+			db.getMetamodelIndex().add(mmNode, FluidMap.create().add("id", mmBarURI));
+
+			IGraphNode mmFileNode = db.createNode(mmFileNodeProps, "metamodel");
+			db.getMetamodelIndex().add(mmFileNode, FluidMap.create().add("id", mmFileURI));
+
 			tx.success();
 		}
 
@@ -61,12 +67,23 @@ public class IndexTests {
 		assertSame(db, iter.getSingle().getGraph());
 		assertEquals(1, iter.size());
 
+		// Query with full value
+		final IGraphIterable<IGraphNode> iter3 = db.getMetamodelIndex().query("id", mmBarURI);
+		assertSame(db, iter3.getSingle().getGraph());
+		assertEquals(1, iter3.size());
+		assertEquals(mmBarURI, iter3.getSingle().getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+
+		// Query with wildcard on one field
+		final IGraphIterable<IGraphNode> iter4 = db.getMetamodelIndex().query("id", "*");
+		assertSame(db, iter4.getSingle().getGraph());
+		assertEquals(2, iter4.size());
+
 		// Retrieve with full value
-		final IGraphIterable<IGraphNode> iter2 = db.getMetamodelIndex().get("id", mmURI);
+		final IGraphIterable<IGraphNode> iter2 = db.getMetamodelIndex().get("id", mmFileURI);
 		assertEquals(1, iter2.size());
-		assertSame(db, iter2.getSingle().getGraph());
+		assertEquals(mmFileURI, iter2.getSingle().getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 		// Use */* (all fields, all values): not available with OrientDB?
-		assertEquals(new HashSet<>(Arrays.asList(mmURI)), db.getKnownMMUris());
+		assertEquals(new HashSet<>(Arrays.asList(mmBarURI, mmFileURI)), db.getKnownMMUris());
 	}
 }

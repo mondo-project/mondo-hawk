@@ -307,6 +307,8 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public Set<String> getNodeIndexNames() {
+		// TODO: need a Hawk object with some global configuration info
+		// (for now, names of node indexes)
 		return getIndexNames(Vertex.class);
 	}
 
