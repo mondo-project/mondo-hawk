@@ -8,9 +8,9 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.orientdb;
+package org.hawk.orientdb.indexes;
 
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,150 +18,96 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
+import org.hawk.orientdb.OrientDatabase;
+import org.hawk.orientdb.OrientNode;
 
+import com.orientechnologies.lucene.OLuceneMapEntryIterator;
+import com.orientechnologies.lucene.collections.LuceneResultSet;
+import com.orientechnologies.lucene.index.OLuceneFullTextIndex;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
-import com.orientechnologies.orient.core.id.ORID;
+import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.index.OIndex;
-import com.orientechnologies.orient.core.index.OIndexCursor;
 import com.orientechnologies.orient.core.index.OIndexFactory;
 import com.orientechnologies.orient.core.index.OIndexManager;
 import com.orientechnologies.orient.core.index.OIndexManagerProxy;
 import com.orientechnologies.orient.core.index.OIndexes;
 import com.orientechnologies.orient.core.index.OSimpleKeyIndexDefinition;
 import com.orientechnologies.orient.core.metadata.schema.OType;
+import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.tinkerpop.blueprints.impls.orient.OrientExtendedVertex;
 
 public class OrientNodeIndex implements IGraphNodeIndex {
 
-	private final class OrientNodeIndexAllKeysCursorIterable implements IGraphIterable<IGraphNode> {
+	private final class StarKeyValueOIndexCursorFactoryIterable implements Iterable<OIndexCursorFactory> {
 		private final Object valueExpr;
 		private final Set<String> valueIdxNames;
 
-		private OrientNodeIndexAllKeysCursorIterable(Object valueExpr, Set<String> valueIdxNames) {
+		private StarKeyValueOIndexCursorFactoryIterable(Object valueExpr, Set<String> valueIdxNames) {
 			this.valueExpr = valueExpr;
 			this.valueIdxNames = valueIdxNames;
 		}
 
 		@Override
-		public Iterator<IGraphNode> iterator() {
-			final Iterator<String> itIdxName = valueIdxNames.iterator(); 
-			return new Iterator<IGraphNode>() {
-				Iterator<IGraphNode> currentIterator = null;
-
+		public Iterator<OIndexCursorFactory> iterator() {
+			final Iterator<String> itIdxNames = valueIdxNames.iterator();
+			return new Iterator<OIndexCursorFactory>() {
 				@Override
 				public boolean hasNext() {
-					if (currentIterator == null || !currentIterator.hasNext()) {
-						if (itIdxName.hasNext()) {
-							final OIndex<?> idx = getIndex(itIdxName.next());
-							currentIterator = new OrientNodeIndexCursorIterable(valueExpr, idx).iterator();
-						} else {
-							return false;
-						}
-					}
-					return currentIterator.hasNext();
+					return itIdxNames.hasNext();
 				}
 
 				@Override
-				public IGraphNode next() {
-					return currentIterator.next();
+				public OIndexCursorFactory next() {
+					return new SingleKeyValueQueryOIndexCursorFactory(valueExpr, itIdxNames.next());
 				}
 
 				@Override
 				public void remove() {
-					currentIterator.remove();
+					itIdxNames.remove();
 				}
-				
 			};
-		}
-
-		@Override
-		public int size() {
-			int count = 0;
-			for (String name : valueIdxNames) {
-				OIndex<?> idx = getIndex(name);
-				count += new OrientNodeIndexCursorIterable(valueExpr, idx).size();
-			}
-			return count;
-		}
-
-		@Override
-		public IGraphNode getSingle() {
-			for (String name : valueIdxNames) {
-				OIndex<?> idx = getIndex(name);
-				Iterator<IGraphNode> it = new OrientNodeIndexCursorIterable(valueExpr, idx).iterator();
-				if (it.hasNext()) {
-					return it.next();
-				}
-			}
-			return null;
 		}
 	}
 
-	private final class OrientNodeIndexCursorIterable implements IGraphIterable<IGraphNode> {
+	private final class SingleKeyValueQueryOIndexCursorFactory implements OIndexCursorFactory {
 		private final Object valueExpr;
-		private final OIndex<?> index;
+		private final String key;
 
-		private OrientNodeIndexCursorIterable(Object valueExpr, OIndex<?> finalIdx) {
-			this.valueExpr = QueryParser.escape(valueExpr.toString()).replace("\\*", "*");
-			this.index = finalIdx;
+		private SingleKeyValueQueryOIndexCursorFactory(Object valueExpr, String key) {
+			this.valueExpr = valueExpr;
+			this.key = key;
 		}
 
 		@Override
-		public Iterator<IGraphNode> iterator() {
-			final OIndexCursor results = runQuery();
-
-			return new Iterator<IGraphNode>(){
-				@Override
-				public boolean hasNext() {
-					return results != null && results.hasNext();
-				}
-
-				@Override
-				public IGraphNode next() {
-					ORID id = results.next().getIdentity();
-					return new OrientNode(graph.getVertex(id), graph);
-				}
-
-				@Override
-				public void remove() {
-					results.remove();
-				}
-				
-			};
-		}
-
-		private OIndexCursor runQuery() {
+		public Iterator<OIdentifiable> query() {
+			OIndex<?> index = getIndex(key);
 			if ("*".equals(valueExpr)) {
-				final Object firstKey = QueryParser.escape(index.getFirstKey().toString());
-				final Object lastKey = QueryParser.escape(index.getLastKey().toString());
-				return index.iterateEntriesBetween(firstKey, true, lastKey, true, false);
+				if (index.getInternal() instanceof OLuceneFullTextIndex) {
+					final OLuceneFullTextIndex luceneIdx = (OLuceneFullTextIndex) index.getInternal();
+					IndexReader reader;
+					try {
+						reader = luceneIdx.searcher().getIndexReader();
+						final OLuceneMapEntryIterator<?, ?> itMapEntry = new OLuceneMapEntryIterator(reader, index.getDefinition());
+						while (itMapEntry.hasNext()) {
+							final Entry<?, ?> entry = itMapEntry.next();
+							System.out.println(entry.getKey() + ": " + entry.getValue());
+						}
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					return null;
+				}
+				return index.cursor();
 			} else {
-				return index.iterateEntries(Arrays.asList(valueExpr), false);
+				final Object escaped = QueryParser.escape(valueExpr.toString()).replace("\\*", "*");
+				return index.iterateEntries(Collections.singleton(escaped), false);
 			}
-		}
-
-		@Override
-		public int size() {
-			final OIndexCursor results = runQuery();
-			int count = 0;
-			while (results != null && results.hasNext()) {
-				count++;
-				results.next();
-			}
-			return count;
-		}
-
-		@Override
-		public IGraphNode getSingle() {
-			final Iterator<IGraphNode> it = iterator();
-			if (it.hasNext()) {
-				return it.next();
-			}
-			return null;
 		}
 	}
 
@@ -184,16 +130,19 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 	public IGraphIterable<IGraphNode> query(final String key, final Object valueExpr) {
 		if ("*".equals(key)) {
 			final Set<String> valueIdxNames = getValueIndexNames();
-			return new OrientNodeIndexAllKeysCursorIterable(valueExpr, valueIdxNames);
+			final Iterable<OIndexCursorFactory> iterFactories = new StarKeyValueOIndexCursorFactoryIterable(valueExpr,
+					valueIdxNames);
+			return new IndexCursorFactoriesIterable(iterFactories, graph);
 		} else {
-			OIndex<?> idx = getIndex(key);
-			return new OrientNodeIndexCursorIterable(valueExpr, idx);
+			final SingleKeyValueQueryOIndexCursorFactory factory = new SingleKeyValueQueryOIndexCursorFactory(valueExpr,
+					key);
+			return new IndexCursorFactoryIterable(factory, graph);
 		}
 	}
 
 	@Override
 	public IGraphIterable<IGraphNode> query(String key, int from, int to, boolean fromInclusive, boolean toInclusive) {
-		
+
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -206,18 +155,45 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 	}
 
 	@Override
-	public IGraphIterable<IGraphNode> get(String key, Object valueExpr) {
-		// TODO Auto-generated method stub
-		return null;
+	public IGraphIterable<IGraphNode> get(final String key, final Object valueExpr) {
+		// TODO Neither get nor iterateEntries work for the index: only
+		// iterateEntriesBetween seems to work?
+		final Object escaped = QueryParser.escape(valueExpr.toString());
+		final LuceneResultSet resultSet = (LuceneResultSet) getIndex(key).get(escaped);
+		return new IGraphIterable<IGraphNode>() {
+			@Override
+			public Iterator<IGraphNode> iterator() {
+				if (resultSet.isEmpty()) {
+					return Collections.emptyListIterator();
+				} else {
+					return Collections.singleton(getSingle()).iterator();
+				}
+			}
+
+			@Override
+			public int size() {
+				return resultSet.size();
+			}
+
+			@Override
+			public IGraphNode getSingle() {
+				final Iterator<OIdentifiable> iterator = resultSet.iterator();
+				if (iterator.hasNext()) {
+					return new OrientNode(graph.getVertex(iterator.next().getIdentity()), graph);
+				}
+				return null;
+			}
+
+		};
 	}
 
 	@Override
 	public void add(IGraphNode n, Map<String, Object> derived) {
 		for (Entry<String, Object> entry : derived.entrySet()) {
 			final OIndex<?> idx = getIndex(entry.getKey());
-			final OrientNode orientNode = (OrientNode)n;
-			final OrientExtendedVertex eVertex = (OrientExtendedVertex)orientNode.getVertex();
-			idx.put(entry.getValue(), eVertex.getIdentity());
+			final OrientNode orientNode = (OrientNode) n;
+			final OrientExtendedVertex eVertex = (OrientExtendedVertex) orientNode.getVertex();
+			idx.put(entry.getValue(), eVertex.getRecord());
 		}
 	}
 
@@ -251,19 +227,24 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 	}
 
 	private OIndex<?> getIndex(final String suffix) {
-		final String fullName = name + SEPARATOR + suffix;
+		final String luceneName = name + SEPARATOR + suffix;
 		final OIndexManager indexManager = getIndexManager();
-		OIndex<?> idx = indexManager.getIndex(fullName);
+		OIndex<?> idx = indexManager.getIndex(luceneName);
+
 		if (idx == null) {
 			// Indexes have to be created outside transactions
 			graph.enterBatchMode();
 			final OIndexFactory factory = OIndexes.getFactory("FULLTEXT", "LUCENE");
-			final OSimpleKeyIndexDefinition indexDefinition = new OSimpleKeyIndexDefinition(factory.getLastVersion(), OType.LINK, OType.STRING);
-			indexManager.createIndex(fullName, "FULLTEXT", indexDefinition, null, null, null, "LUCENE");
+			final OSimpleKeyIndexDefinition indexDefinition = new OSimpleKeyIndexDefinition(factory.getLastVersion(),
+					OType.LINK, OType.STRING);
+			final ODocument metadata = new ODocument().field("analyzer",
+					"org.apache.lucene.analysis.core.WhitespaceAnalyzer");
+			indexManager.createIndex(luceneName, "FULLTEXT", indexDefinition, null, null, metadata, "LUCENE");
 			graph.exitBatchMode();
-	
-			// We need to fetch again the index: using the one that was just created will result in multithreading exceptions from OrientDB
-			idx = indexManager.getIndex(fullName);
+
+			// We need to fetch again the index: using the one that was just
+			// created will result in multithreading exceptions from OrientDB
+			idx = indexManager.getIndex(luceneName);
 		}
 		return idx;
 	}

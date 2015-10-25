@@ -51,7 +51,7 @@ public interface IGraphDatabase {
 
 	Iterable<IGraphNode> allNodes(String label);
 
-	IGraphNode createNode(Map<String, Object> map, String string);
+	IGraphNode createNode(Map<String, Object> props, String label);
 
 	IGraphEdge createRelationship(IGraphNode start, IGraphNode end, String type);
 

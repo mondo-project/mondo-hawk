@@ -22,6 +22,8 @@ import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdgeIndex;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
+import org.hawk.orientdb.indexes.OrientEdgeIndex;
+import org.hawk.orientdb.indexes.OrientNodeIndex;
 
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Index;
@@ -160,7 +162,9 @@ public class OrientDatabase implements IGraphDatabase {
 			batchGraph.shutdown();
 			batchGraph = null;
 		}
-		txGraph = factory.getTx();
+		if (txGraph == null) {
+			txGraph = factory.getTx();
+		}
 	}
 
 	@Override
@@ -258,14 +262,18 @@ public class OrientDatabase implements IGraphDatabase {
 	@Override
 	public boolean nodeIndexExists(String name) {
 		try (OrientTransaction tx = beginTransaction()) {
-			return tx.getOrientGraph().getIndex(name, Vertex.class) != null;
+			boolean ret = tx.getOrientGraph().getIndex(name, Vertex.class) != null;
+			tx.success();
+			return ret;
 		}
 	}
 
 	@Override
 	public boolean edgeIndexExists(String name) {
 		try (OrientTransaction tx = beginTransaction()) {
-			return tx.getOrientGraph().getIndex(name, Vertex.class) != null;
+			final boolean ret = tx.getOrientGraph().getIndex(name, Vertex.class) != null;
+			tx.success();
+			return ret;
 		}
 	}
 
@@ -342,6 +350,7 @@ public class OrientDatabase implements IGraphDatabase {
 					names.add(idx.getIndexName());
 				}
 			}
+			tx.success();
 			return names;
 		}
 	}

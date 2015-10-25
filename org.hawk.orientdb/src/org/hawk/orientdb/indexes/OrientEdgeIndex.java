@@ -8,11 +8,13 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.orientdb;
+package org.hawk.orientdb.indexes;
 
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphEdgeIndex;
 import org.hawk.core.graph.IGraphIterable;
+import org.hawk.orientdb.OrientDatabase;
+import org.hawk.orientdb.OrientEdgeIterable;
 
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Index;
