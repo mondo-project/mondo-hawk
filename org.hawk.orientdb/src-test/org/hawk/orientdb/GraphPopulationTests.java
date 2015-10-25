@@ -43,6 +43,7 @@ public class GraphPopulationTests {
 
 	@Test
 	public void oneNode() {
+		assertEquals(0, db.allNodes("eobject").size());
 		db.createNode(new HashMap<String, Object>(), "eobject");
 		assertEquals(1, db.allNodes("eobject").size());
 	}

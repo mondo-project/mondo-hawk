@@ -12,7 +12,6 @@ package org.hawk.orientdb.indexes;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -49,6 +48,9 @@ import com.tinkerpop.blueprints.impls.orient.OrientExtendedVertex;
  * this, adding a key to a field F for the first time will create a new index of
  * each type named <code>name SEPARATOR_EXACT F</code> and
  * <code>name SEPARATOR_LUCENE F</code>, respectively.
+ *
+ * Node index names and node index field names are kept in a singleton vertex
+ * type, maintained by the {@link OrientIndexStore} class.
  */
 public class OrientNodeIndex implements IGraphNodeIndex {
 
@@ -120,6 +122,9 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 	public OrientNodeIndex(String name, OrientDatabase graph) {
 		this.name = name;
 		this.graph = graph;
+
+		final OrientIndexStore idxStore = OrientIndexStore.getInstance(graph);
+		idxStore.addNodeIndex(name);
 	}
 
 	@Override
@@ -130,7 +135,7 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 	@Override
 	public IGraphIterable<IGraphNode> query(final String key, final Object valueExpr) {
 		if ("*".equals(key)) {
-			final Set<String> valueIdxNames = getValueIndexNames();
+			final Set<String> valueIdxNames = OrientIndexStore.getInstance(graph).getNodeFieldIndexNames(name);
 			final Iterable<OIndexCursorFactory> iterFactories = new StarKeyValueOIndexCursorFactoryIterable(valueExpr, valueIdxNames);
 			return new IndexCursorFactoriesIterable(iterFactories, graph);
 		} else {
@@ -223,10 +228,12 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 
 	@Override
 	public void delete() {
-		for (String name : getValueIndexNames()) {
-			graph.removeIndex(getLuceneIndexName(name));
-			graph.removeIndex(getExactIndexName(name));
+		OrientIndexStore store = OrientIndexStore.getInstance(graph);
+		for (String fieldName : store.getNodeFieldIndexNames(name)) {
+			graph.getGraph().dropIndex(getLuceneIndexName(fieldName));
+			graph.getGraph().dropIndex(getExactIndexName(fieldName));
 		}
+		store.removeNodeIndex(name);
 	}
 
 	private OIndex<?> getFieldIndex(final String field, final boolean lucene) {
@@ -270,6 +277,8 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 		final OSimpleKeyIndexDefinition exactIndexDef = new OSimpleKeyIndexDefinition(exactFactory.getLastVersion(), OType.STRING);
 		indexManager.createIndex(exactName, "NOTUNIQUE", exactIndexDef, null, null, null, "SBTREE");
 
+		OrientIndexStore.getInstance(graph).addNodeFieldIndex(name, field);
+
 		graph.exitBatchMode();
 	}
 
@@ -285,18 +294,6 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 		final ODatabaseDocumentTx rawGraph = graph.getGraph().getRawGraph();
 		final OIndexManagerProxy indexManager = rawGraph.getMetadata().getIndexManager();
 		return indexManager;
-	}
-
-	private Set<String> getValueIndexNames() {
-		// TODO need something better than going through all indexes here
-		final String prefix = name + SEPARATOR_LUCENE;
-		final Set<String> names = new HashSet<>();
-		for (OIndex<?> idx : getIndexManager().getIndexes()) {
-			if (idx.getName().startsWith(prefix)) {
-				names.add(idx.getName().substring(prefix.length()));
-			}
-		}
-		return names;
 	}
 
 }

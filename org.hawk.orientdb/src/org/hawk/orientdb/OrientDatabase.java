@@ -11,6 +11,7 @@
 package org.hawk.orientdb;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -23,6 +24,7 @@ import org.hawk.core.graph.IGraphEdgeIndex;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.orientdb.indexes.OrientEdgeIndex;
+import org.hawk.orientdb.indexes.OrientIndexStore;
 import org.hawk.orientdb.indexes.OrientNodeIndex;
 
 import com.tinkerpop.blueprints.Edge;
@@ -34,7 +36,6 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphNoTx;
 
 public class OrientDatabase implements IGraphDatabase {
-
 	static final String NOTX_MODE = "batch";
 	static final String TX_MODE = "transactional";
 
@@ -67,10 +68,9 @@ public class OrientDatabase implements IGraphDatabase {
 		this.tempFolder = new File(storageFolder, "temp");
 		this.factory = new OrientGraphFactory("plocal:" + parentfolder.getAbsolutePath()).setupPool(1, 10);
 
+		txGraph = factory.getTx();
 		metamodelIndex = getOrCreateNodeIndex(METAMODEL_IDX_NAME);
 		fileIndex = getOrCreateNodeIndex(FILE_IDX_NAME);
-
-		txGraph = factory.getTx();
 	}
 
 	@Override
@@ -170,15 +170,21 @@ public class OrientDatabase implements IGraphDatabase {
 	@Override
 	public OrientNodeIterable allNodes(String label) {
 		if (txGraph != null) {
-			return new OrientNodeIterable(txGraph.getVertices(), this);
+			if (txGraph.getVertexType(label) == null) {
+				return new OrientNodeIterable(new ArrayList<Vertex>(), this);
+			}
+			return new OrientNodeIterable(txGraph.getVerticesOfClass(label), this);
 		} else if (batchGraph != null) {
-			return new OrientNodeIterable(batchGraph.getVertices(), this);
+			if (batchGraph.getVertexType(label) == null) {
+				return new OrientNodeIterable(new ArrayList<Vertex>(), this);
+			}
+			return new OrientNodeIterable(batchGraph.getVerticesOfClass(label), this);
 		}
 		return null;
 	}
 
 	@Override
-	public IGraphNode createNode(Map<String, Object> properties, String label) {
+	public OrientNode createNode(Map<String, Object> properties, String label) {
 		Vertex v = null;
 		if (txGraph != null) {
 			if (txGraph.getVertexType(label) == null) {
@@ -307,22 +313,12 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public Set<String> getNodeIndexNames() {
-		// TODO: need a Hawk object with some global configuration info
-		// (for now, names of node indexes)
-		return getIndexNames(Vertex.class);
+		return new HashSet<String>(OrientIndexStore.getInstance(this).getNodeIndexNames());
 	}
 
 	@Override
 	public Set<String> getEdgeIndexNames() {
 		return getIndexNames(Edge.class);
-	}
-
-	public void removeIndex(String name) {
-		if (txGraph != null) {
-			txGraph.dropIndex(name);
-		} else if (batchGraph != null) {
-			batchGraph.dropIndex(name);
-		}
 	}
 
 	@Override
