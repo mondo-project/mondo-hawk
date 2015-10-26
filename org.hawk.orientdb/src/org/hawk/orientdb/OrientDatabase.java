@@ -36,6 +36,12 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphNoTx;
 import com.tinkerpop.blueprints.impls.orient.OrientVertex;
 
+/**
+ * OrientDB backend for Hawk. Most things work, but it has two limitations:
+ * numeric ranges are not supported by the OrientDB+Lucene integration, and edge
+ * indexes do not support Lucene queries at the moment (it's a simple SBTree
+ * index for now).
+ */
 public class OrientDatabase implements IGraphDatabase {
 	static final String NOTX_MODE = "batch";
 	static final String TX_MODE = "transactional";

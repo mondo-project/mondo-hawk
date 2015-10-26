@@ -25,6 +25,7 @@ import org.hawk.core.util.DefaultConsole;
 import org.hawk.orientdb.util.FluidMap;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -89,52 +90,110 @@ public class IndexTests {
 
 	@Test
 	public void removeByNode() {
-		final String mmBarURI = populateWithOneNode();
-
-		final IGraphIterable<IGraphNode> iter = db.getMetamodelIndex().query("id", mmBarURI);
-		assertEquals(1, iter.size());
+		final String mmBarURI = populateForRemove();
 
 		// NOTE: changes in Lucene indexes are not complete until we commit the transaction
+		final IGraphIterable<IGraphNode> iter = checkBeforeRemove(mmBarURI);
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			db.getMetamodelIndex().remove(iter.getSingle());
 			tx.success();
 		}
-
-		final IGraphIterable<IGraphNode> iter2 = db.getMetamodelIndex().query("id", mmBarURI);
-		assertEquals(0, iter2.size());
-		final IGraphIterable<IGraphNode> iter3 = db.getMetamodelIndex().query("id", "http://*");
-		assertEquals(0, iter3.size());
+		checkAfterRemove(mmBarURI);
 	}
 
 	@Test
-	public void removeByKey() {
-		final String mmBarURI = populateWithOneNode();
+	public void removeByFullKey() {
+		final String mmBarURI = populateForRemove();
 
-		final IGraphIterable<IGraphNode> iter = db.getMetamodelIndex().query("id", mmBarURI);
-		assertEquals(1, iter.size());
-
-		// NOTE: changes in Lucene indexes are not complete until we commit the transaction
+		final IGraphIterable<IGraphNode> iter = checkBeforeRemove(mmBarURI);
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			db.getMetamodelIndex().remove("id", mmBarURI, iter.getSingle());
 			tx.success();
 		}
-
-		final IGraphIterable<IGraphNode> iter2 = db.getMetamodelIndex().query("id", mmBarURI);
-		assertEquals(0, iter2.size());
-		final IGraphIterable<IGraphNode> iter3 = db.getMetamodelIndex().query("id", "http://*");
-		assertEquals(0, iter3.size());
+		checkAfterRemove(mmBarURI);
 	}
 
-	private String populateWithOneNode() {
+	@Test
+	public void removeByValueNode() {
+		final String mmBarURI = populateForRemove();
+		final IGraphIterable<IGraphNode> iter = checkBeforeRemove(mmBarURI);
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			db.getMetamodelIndex().remove(null, mmBarURI, iter.getSingle());
+			tx.success();
+		}
+		checkAfterRemove(mmBarURI);
+	}
+
+	@Test
+	public void removeByFieldNode() {
+		final String mmBarURI = populateForRemove();
+
+		final IGraphIterable<IGraphNode> iter = checkBeforeRemove(mmBarURI);
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			db.getMetamodelIndex().remove("id", null, iter.getSingle());
+			tx.success();
+		}
+		checkAfterRemove(mmBarURI);
+	}
+
+	@Test
+	public void removeByNode3Arg() {
+		final String mmBarURI = populateForRemove();
+
+		// NOTE: changes in Lucene indexes are not complete until we commit the transaction
+		final IGraphIterable<IGraphNode> iter = checkBeforeRemove(mmBarURI);
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			db.getMetamodelIndex().remove(null, null, iter.getSingle());
+			tx.success();
+		}
+		checkAfterRemove(mmBarURI);
+	}
+
+	@Ignore // not working with current integration between OrientDB and Lucene
+	@Test
+	public void integerRanges() {
+		final String mmBarURI = "http://foo/bar";
+		final FluidMap mmBarNodeProps = FluidMap.create().add(IModelIndexer.IDENTIFIER_PROPERTY, mmBarURI);
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			IGraphNode mmNode = db.createNode(mmBarNodeProps, "metamodel");
+			db.getMetamodelIndex().add(mmNode, FluidMap.create().add("value", "5"));
+			tx.success();
+		}
+
+		final IGraphIterable<IGraphNode> iter = db.getMetamodelIndex().query("id", 0, 10, false, false);
+		assertEquals(1, iter.size());
+	}
+
+	private String populateForRemove() {
 		final String mmBarURI = "http://foo/bar";
 		final FluidMap mmBarNodeProps = FluidMap.create().add(IModelIndexer.IDENTIFIER_PROPERTY, mmBarURI);
 
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			IGraphNode mmNode = db.createNode(mmBarNodeProps, "metamodel");
 			db.getMetamodelIndex().add(mmNode, FluidMap.create().add("id", mmBarURI));
+
+			IGraphNode mmNode2 = db.createNode(mmBarNodeProps, "metamodel");
+			db.getMetamodelIndex().add(mmNode2, FluidMap.create().add("id", "file://foo"));
+
 			tx.success();
 		}
 		return mmBarURI;
+	}
+
+	private void checkAfterRemove(final String mmBarURI) {
+		final IGraphIterable<IGraphNode> iter2 = db.getMetamodelIndex().query("id", mmBarURI);
+		assertEquals(0, iter2.size());
+		final IGraphIterable<IGraphNode> iter3 = db.getMetamodelIndex().query("id", "http://*");
+		assertEquals(0, iter3.size());
+		final IGraphIterable<IGraphNode> iter4 = db.getMetamodelIndex().query("id", "file://*");
+		assertEquals(1, iter4.size());
+	}
+
+	private IGraphIterable<IGraphNode> checkBeforeRemove(final String mmBarURI) {
+		final IGraphIterable<IGraphNode> iter = db.getMetamodelIndex().query("id", mmBarURI);
+		assertEquals(1, iter.size());
+		return iter;
 	}
 
 }

@@ -148,17 +148,33 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 	}
 
 	@Override
-	public IGraphIterable<IGraphNode> query(String key, int from, int to, boolean fromInclusive, boolean toInclusive) {
+	public IGraphIterable<IGraphNode> query(final String key, final int from, final int to, final boolean fromInclusive, final boolean toInclusive) {
+		// Not supported by the current integration between OrientDB and Lucene
+		throw new UnsupportedOperationException();
 
-		// TODO Auto-generated method stub
-		return null;
+		// This doesn't work.
+//		return new IndexCursorFactoryIterable(new OIndexCursorFactory() {
+//			@Override
+//			public Iterator<OIdentifiable> query() {
+//				OIndex<?> luceneIndex = getFieldIndex(key, true);
+//				return luceneIndex.iterateEntriesBetween(from, fromInclusive, to, toInclusive, false);
+//			}
+//		}, graph);
 	}
 
 	@Override
-	public IGraphIterable<IGraphNode> query(String key, double from, double to, boolean fromInclusive,
-			boolean toInclusive) {
-		// TODO Auto-generated method stub
-		return null;
+	public IGraphIterable<IGraphNode> query(final String key, final double from, final double to, final boolean fromInclusive, final boolean toInclusive) {
+		// Not supported by the current integration between OrientDB and Lucene
+		throw new UnsupportedOperationException();
+
+		// This doesn't work.
+//		return new IndexCursorFactoryIterable(new OIndexCursorFactory() {
+//			@Override
+//			public Iterator<OIdentifiable> query() {
+//				OIndex<?> luceneIndex = getFieldIndex(key, true);
+//				return luceneIndex.iterateEntriesBetween(from, fromInclusive, to, toInclusive, false);
+//			}
+//		}, graph);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -213,32 +229,47 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 	public void remove(IGraphNode n) {
 		final OrientNode oNode = (OrientNode)n;
 		final OrientIndexStore store = OrientIndexStore.getInstance(graph);
-
-		final List<Object> keysToRemove = new ArrayList<>();
 		for (String fieldName : store.getNodeFieldIndexNames(name)) {
-			final OIndex<?> exactIndex = getFieldIndex(fieldName, false);
-			final OIndexCursor exactCursor = exactIndex.cursor();
-			for (Entry<Object, OIdentifiable> entry = exactCursor.nextEntry(); entry != null; entry = exactCursor.nextEntry()) {
-				if (n.getId().equals(entry.getValue().getIdentity())) {
-					keysToRemove.add(entry.getKey());
-				}
-			}
-
-			final OIndex<?> luceneIndex = getFieldIndex(fieldName, true);
-			for (Object o : keysToRemove) {
-				exactIndex.remove(o, oNode.getVertex());
-				luceneIndex.remove(o, oNode.getVertex());
-			}
+			remove(fieldName, oNode);
 		}
 	}
 
 	@Override
-	public void remove(String key, String value, IGraphNode n) {
+	public void remove(String field, String value, IGraphNode n) {
 		final OrientNode oNode = (OrientNode)n;
-		final OIndex<?> exactIndex = getFieldIndex(key, false);
-		final OIndex<?> luceneIndex = getFieldIndex(key, true);
-		exactIndex.remove(value, oNode.getVertex());
-		luceneIndex.remove(value, oNode.getVertex());
+
+		if (field == null && value == null) {
+			remove(n);
+		} else if (field == null) {
+			final OrientIndexStore store = OrientIndexStore.getInstance(graph);
+			for (String fieldName : store.getNodeFieldIndexNames(name)) {
+				remove(fieldName, value, n);
+			}
+		} else if (value == null) {
+			remove(field, oNode);
+		} else {
+			final OIndex<?> exactIndex = getFieldIndex(field, false);
+			final OIndex<?> luceneIndex = getFieldIndex(field, true);
+			exactIndex.remove(value, oNode.getVertex());
+			luceneIndex.remove(value, oNode.getVertex());
+		}
+	}
+
+	private void remove(String field, final OrientNode n) {
+		final List<Object> keysToRemove = new ArrayList<>();
+		final OIndex<?> exactIndex = getFieldIndex(field, false);
+		final OIndexCursor exactCursor = exactIndex.cursor();
+		for (Entry<Object, OIdentifiable> entry = exactCursor.nextEntry(); entry != null; entry = exactCursor.nextEntry()) {
+			if (n.getId().equals(entry.getValue().getIdentity())) {
+				keysToRemove.add(entry.getKey());
+			}
+		}
+
+		final OIndex<?> luceneIndex = getFieldIndex(field, true);
+		for (Object o : keysToRemove) {
+			exactIndex.remove(o, n.getVertex());
+			luceneIndex.remove(o, n.getVertex());
+		}
 	}
 
 	@Override
