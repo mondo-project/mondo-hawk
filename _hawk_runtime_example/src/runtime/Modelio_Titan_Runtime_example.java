@@ -53,8 +53,10 @@ public class Modelio_Titan_Runtime_example {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		final FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(new File("credentials.xml"), adminpw);
-		i = new ModelIndexerImpl("hawk1", parent, credStore, new DefaultConsole());
+		final FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(
+				new File("credentials.xml"), adminpw);
+		i = new ModelIndexerImpl("hawk1", parent, credStore,
+				new DefaultConsole());
 
 		// metamodel
 		i.addMetaModelResourceFactory(new EMFMetaModelResourceFactory());
@@ -77,7 +79,8 @@ public class Modelio_Titan_Runtime_example {
 
 		// add vcs monitors
 		IVcsManager vcs = new LocalFolder();
-		vcs.run(vcsloc, "un", "pw", i.getConsole(), i);
+		vcs.run(vcsloc, i.getConsole(), i);
+		vcs.setCredentials("un", "pw", credStore);
 		i.addVCSManager(vcs, true);
 
 		// metamodel updater

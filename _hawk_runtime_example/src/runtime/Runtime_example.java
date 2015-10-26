@@ -137,7 +137,8 @@ public class Runtime_example {
 			pw = password();
 
 		if (pw != null) {
-			vcs.run(args[0], "kb634", pw, hawk.getConsole(), hawk);
+			vcs.run(args[0], hawk.getConsole(), hawk);
+			vcs.setCredentials("kb634", pw, credStore);
 		} else
 			System.exit(1);
 		pw = null;
