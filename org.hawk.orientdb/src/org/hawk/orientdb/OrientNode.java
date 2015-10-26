@@ -16,21 +16,23 @@ import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 
+import com.orientechnologies.orient.core.id.ORID;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.blueprints.impls.orient.OrientVertex;
 
 public class OrientNode implements IGraphNode {
 	private OrientDatabase graph;
-	private Vertex vertex;
+	private OrientVertex vertex;
 
-	public OrientNode(Vertex v, OrientDatabase graph) {
+	public OrientNode(OrientVertex v, OrientDatabase graph) {
 		this.vertex = v;
 		this.graph = graph;
 	}
 
 	@Override
-	public Object getId() {
-		return vertex.getId();
+	public ORID getId() {
+		return (ORID)vertex.getId();
 	}
 
 	@Override
@@ -93,7 +95,7 @@ public class OrientNode implements IGraphNode {
 		vertex.removeProperty(name);
 	}
 
-	public Vertex getVertex() {
+	public OrientVertex getVertex() {
 		return vertex;
 	}
 

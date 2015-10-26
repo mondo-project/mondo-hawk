@@ -10,9 +10,11 @@
  ******************************************************************************/
 package org.hawk.orientdb.indexes;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -27,6 +29,7 @@ import org.hawk.orientdb.OrientNode;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.index.OIndex;
+import com.orientechnologies.orient.core.index.OIndexCursor;
 import com.orientechnologies.orient.core.index.OIndexFactory;
 import com.orientechnologies.orient.core.index.OIndexManager;
 import com.orientechnologies.orient.core.index.OIndexManagerProxy;
@@ -208,14 +211,34 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 
 	@Override
 	public void remove(IGraphNode n) {
-		// TODO Auto-generated method stub
+		final OrientNode oNode = (OrientNode)n;
+		final OrientIndexStore store = OrientIndexStore.getInstance(graph);
 
+		final List<Object> keysToRemove = new ArrayList<>();
+		for (String fieldName : store.getNodeFieldIndexNames(name)) {
+			final OIndex<?> exactIndex = getFieldIndex(fieldName, false);
+			final OIndexCursor exactCursor = exactIndex.cursor();
+			for (Entry<Object, OIdentifiable> entry = exactCursor.nextEntry(); entry != null; entry = exactCursor.nextEntry()) {
+				if (n.getId().equals(entry.getValue().getIdentity())) {
+					keysToRemove.add(entry.getKey());
+				}
+			}
+
+			final OIndex<?> luceneIndex = getFieldIndex(fieldName, true);
+			for (Object o : keysToRemove) {
+				exactIndex.remove(o, oNode.getVertex());
+				luceneIndex.remove(o, oNode.getVertex());
+			}
+		}
 	}
 
 	@Override
 	public void remove(String key, String value, IGraphNode n) {
-		// TODO Auto-generated method stub
-
+		final OrientNode oNode = (OrientNode)n;
+		final OIndex<?> exactIndex = getFieldIndex(key, false);
+		final OIndex<?> luceneIndex = getFieldIndex(key, true);
+		exactIndex.remove(value, oNode.getVertex());
+		luceneIndex.remove(value, oNode.getVertex());
 	}
 
 	@Override

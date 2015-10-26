@@ -13,6 +13,7 @@ package org.hawk.orientdb;
 import org.hawk.core.graph.IGraphNode;
 
 import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.blueprints.impls.orient.OrientVertex;
 
 public class OrientNodeIterable extends OrientIterable<IGraphNode, Vertex> {
 
@@ -22,7 +23,7 @@ public class OrientNodeIterable extends OrientIterable<IGraphNode, Vertex> {
 
 	@Override
 	protected OrientNode convert(Vertex o) {
-		return new OrientNode(o, getGraph());
+		return new OrientNode((OrientVertex)o, getGraph());
 	}
 
 }

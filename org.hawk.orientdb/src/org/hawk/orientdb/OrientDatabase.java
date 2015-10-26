@@ -34,6 +34,7 @@ import com.tinkerpop.blueprints.impls.orient.OrientBaseGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphNoTx;
+import com.tinkerpop.blueprints.impls.orient.OrientVertex;
 
 public class OrientDatabase implements IGraphDatabase {
 	static final String NOTX_MODE = "batch";
@@ -185,7 +186,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public OrientNode createNode(Map<String, Object> properties, String label) {
-		Vertex v = null;
+		OrientVertex v = null;
 		if (txGraph != null) {
 			if (txGraph.getVertexType(label) == null) {
 				// OrientDB exits the transaction to create new types anyway:
@@ -251,7 +252,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public IGraphNode getNodeById(Object id) {
-		Vertex v = null;
+		OrientVertex v = null;
 		if (txGraph != null) {
 			v = txGraph.getVertex(id);
 		} else if (batchGraph != null) {
@@ -331,7 +332,7 @@ public class OrientDatabase implements IGraphDatabase {
 		return mmURIs;
 	}
 
-	public Vertex getVertex(Object id) {
+	public OrientVertex getVertex(Object id) {
 		if (txGraph != null) {
 			return txGraph.getVertex(id);
 		} else if (batchGraph != null) {

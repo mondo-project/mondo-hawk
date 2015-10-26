@@ -86,4 +86,55 @@ public class IndexTests {
 		// Use */* (all fields, all values): not available with OrientDB?
 		assertEquals(new HashSet<>(Arrays.asList(mmBarURI, mmFileURI)), db.getKnownMMUris());
 	}
+
+	@Test
+	public void removeByNode() {
+		final String mmBarURI = populateWithOneNode();
+
+		final IGraphIterable<IGraphNode> iter = db.getMetamodelIndex().query("id", mmBarURI);
+		assertEquals(1, iter.size());
+
+		// NOTE: changes in Lucene indexes are not complete until we commit the transaction
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			db.getMetamodelIndex().remove(iter.getSingle());
+			tx.success();
+		}
+
+		final IGraphIterable<IGraphNode> iter2 = db.getMetamodelIndex().query("id", mmBarURI);
+		assertEquals(0, iter2.size());
+		final IGraphIterable<IGraphNode> iter3 = db.getMetamodelIndex().query("id", "http://*");
+		assertEquals(0, iter3.size());
+	}
+
+	@Test
+	public void removeByKey() {
+		final String mmBarURI = populateWithOneNode();
+
+		final IGraphIterable<IGraphNode> iter = db.getMetamodelIndex().query("id", mmBarURI);
+		assertEquals(1, iter.size());
+
+		// NOTE: changes in Lucene indexes are not complete until we commit the transaction
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			db.getMetamodelIndex().remove("id", mmBarURI, iter.getSingle());
+			tx.success();
+		}
+
+		final IGraphIterable<IGraphNode> iter2 = db.getMetamodelIndex().query("id", mmBarURI);
+		assertEquals(0, iter2.size());
+		final IGraphIterable<IGraphNode> iter3 = db.getMetamodelIndex().query("id", "http://*");
+		assertEquals(0, iter3.size());
+	}
+
+	private String populateWithOneNode() {
+		final String mmBarURI = "http://foo/bar";
+		final FluidMap mmBarNodeProps = FluidMap.create().add(IModelIndexer.IDENTIFIER_PROPERTY, mmBarURI);
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			IGraphNode mmNode = db.createNode(mmBarNodeProps, "metamodel");
+			db.getMetamodelIndex().add(mmNode, FluidMap.create().add("id", mmBarURI));
+			tx.success();
+		}
+		return mmBarURI;
+	}
+
 }

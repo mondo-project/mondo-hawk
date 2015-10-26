@@ -39,11 +39,13 @@ public class OrientIndexStore {
 	}
 
 	public static OrientIndexStore getInstance(OrientDatabase db) {
-		final OrientBaseGraph graph = db.getGraph();
-		if (graph.getVertexType(VCLASS) == null) {
-			graph.createVertexType(VCLASS);
+		if (db.getGraph().getVertexType(VCLASS) == null) {
+			db.enterBatchMode();
+			db.getGraph().createVertexType(VCLASS);
+			db.exitBatchMode();
 		}
 
+		final OrientBaseGraph graph = db.getGraph();
 		Iterator<Vertex> itIndexStore = graph.getVerticesOfClass(VCLASS).iterator();
 		Vertex vIndexStore = null;
 		if (!itIndexStore.hasNext()) {

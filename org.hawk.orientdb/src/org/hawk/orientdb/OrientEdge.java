@@ -17,6 +17,7 @@ import org.hawk.core.graph.IGraphNode;
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
+import com.tinkerpop.blueprints.impls.orient.OrientVertex;
 
 public class OrientEdge implements IGraphEdge {
 
@@ -49,11 +50,11 @@ public class OrientEdge implements IGraphEdge {
 	}
 
 	public IGraphNode getStartNode() {
-		return new OrientNode(edge.getVertex(Direction.OUT), db);
+		return new OrientNode((OrientVertex) edge.getVertex(Direction.OUT), db);
 	}
 
 	public IGraphNode getEndNode() {
-		return new OrientNode(edge.getVertex(Direction.IN), db);
+		return new OrientNode((OrientVertex) edge.getVertex(Direction.IN), db);
 	}
 
 	public void delete() {

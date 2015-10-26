@@ -36,7 +36,13 @@ final class IndexCursorFactoryIterable implements IGraphIterable<IGraphNode> {
 		return new Iterator<IGraphNode>(){
 			@Override
 			public boolean hasNext() {
-				return results != null && results.hasNext();
+				try {
+					return results != null && results.hasNext();
+				} catch (ArrayIndexOutOfBoundsException ex) {
+					// BUG in OrientDB Lucene indexes: this is thrown when there are no results
+					// (see LuceneResultSet.java:248 - it uses array[array.length-1]
+					return false;
+				}
 			}
 
 			@Override
@@ -55,11 +61,11 @@ final class IndexCursorFactoryIterable implements IGraphIterable<IGraphNode> {
 
 	@Override
 	public int size() {
-		final Iterator<OIdentifiable> results = factory.query();
+		final Iterator<IGraphNode> it = iterator();
 		int count = 0;
-		while (results != null && results.hasNext()) {
+		while (it.hasNext()) {
+			it.next();
 			count++;
-			results.next();
 		}
 		return count;
 	}
