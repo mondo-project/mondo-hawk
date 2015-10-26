@@ -629,7 +629,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		final FileNode fileNode = modelElementNode.getFileNode();
 		final String repoURL = fileNode.getRepositoryURL();
 		final String path = fileNode.getFilePath();
-		final String fullURL = repoURL + path;
+		final String fullURL = repoURL + (repoURL.endsWith("/") ? "" : "/") + path;
 		synchronized(uriToResource) {
 			HawkFileResourceImpl resource = uriToResource.get(fullURL);
 			if (resource == null) {
