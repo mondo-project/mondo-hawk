@@ -18,7 +18,6 @@ import org.hawk.core.graph.IGraphNode;
 
 import com.orientechnologies.orient.core.id.ORID;
 import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientVertex;
 
 public class OrientNode implements IGraphNode {
@@ -57,17 +56,17 @@ public class OrientNode implements IGraphNode {
 
 	@Override
 	public Iterable<IGraphEdge> getEdgesWithType(String type) {
-		return new OrientEdgeIterable(vertex.getEdges(Direction.BOTH, type), graph);
+		return new OrientEdgeIterable(vertex.getEdges(Direction.BOTH, OrientDatabase.EDGE_TYPE_PREFIX + type), graph);
 	}
 
 	@Override
 	public Iterable<IGraphEdge> getOutgoingWithType(String type) {
-		return new OrientEdgeIterable(vertex.getEdges(Direction.OUT, type), graph);
+		return new OrientEdgeIterable(vertex.getEdges(Direction.OUT, OrientDatabase.EDGE_TYPE_PREFIX + type), graph);
 	}
 
 	@Override
 	public Iterable<IGraphEdge> getIncomingWithType(String type) {
-		return new OrientEdgeIterable(vertex.getEdges(Direction.IN, type), graph);
+		return new OrientEdgeIterable(vertex.getEdges(Direction.IN, OrientDatabase.EDGE_TYPE_PREFIX + type), graph);
 	}
 
 	@Override
@@ -97,6 +96,36 @@ public class OrientNode implements IGraphNode {
 
 	public OrientVertex getVertex() {
 		return vertex;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((vertex == null) ? 0 : vertex.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OrientNode other = (OrientNode) obj;
+		if (vertex == null) {
+			if (other.vertex != null)
+				return false;
+		} else if (!vertex.equals(other.vertex))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "OrientNode [" + vertex + "]";
 	}
 
 }

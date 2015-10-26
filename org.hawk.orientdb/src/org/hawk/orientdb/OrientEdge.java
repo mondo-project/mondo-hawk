@@ -34,7 +34,7 @@ public class OrientEdge implements IGraphEdge {
 	}
 
 	public String getType() {
-		return edge.getLabel();
+		return edge.getLabel().replaceFirst(OrientDatabase.EDGE_TYPE_PREFIX, "");
 	}
 
 	public Set<String> getPropertyKeys() {
@@ -64,4 +64,35 @@ public class OrientEdge implements IGraphEdge {
 	public void removeProperty(String name) {
 		edge.removeProperty(name);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((edge == null) ? 0 : edge.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OrientEdge other = (OrientEdge) obj;
+		if (edge == null) {
+			if (other.edge != null)
+				return false;
+		} else if (!edge.equals(other.edge))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "OrientEdge [" + edge + "]";
+	}
+
 }

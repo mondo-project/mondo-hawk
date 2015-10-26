@@ -43,6 +43,13 @@ import com.tinkerpop.blueprints.impls.orient.OrientVertex;
  * index for now).
  */
 public class OrientDatabase implements IGraphDatabase {
+
+	/** Prefix for qualifying all edge types (edge and vertex types share same namespace). */
+	public static final String EDGE_TYPE_PREFIX = "E_";
+
+	/** Prefix for qualifying all vertex types (edge and vertex types share same namespace). */
+	public static final String VERTEX_TYPE_PREFIX = "V_";
+
 	static final String NOTX_MODE = "batch";
 	static final String TX_MODE = "transactional";
 
@@ -176,34 +183,30 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public OrientNodeIterable allNodes(String label) {
+		final String vertexTypeName = VERTEX_TYPE_PREFIX + label;
 		if (txGraph != null) {
-			if (txGraph.getVertexType(label) == null) {
+			if (txGraph.getVertexType(vertexTypeName) == null) {
 				return new OrientNodeIterable(new ArrayList<Vertex>(), this);
 			}
-			return new OrientNodeIterable(txGraph.getVerticesOfClass(label), this);
+			return new OrientNodeIterable(txGraph.getVerticesOfClass(vertexTypeName), this);
 		} else if (batchGraph != null) {
-			if (batchGraph.getVertexType(label) == null) {
+			if (batchGraph.getVertexType(vertexTypeName) == null) {
 				return new OrientNodeIterable(new ArrayList<Vertex>(), this);
 			}
-			return new OrientNodeIterable(batchGraph.getVerticesOfClass(label), this);
+			return new OrientNodeIterable(batchGraph.getVerticesOfClass(vertexTypeName), this);
 		}
 		return null;
 	}
 
 	@Override
 	public OrientNode createNode(Map<String, Object> properties, String label) {
+		final String vertexTypeName = VERTEX_TYPE_PREFIX + label;
 		OrientVertex v = null;
 		if (txGraph != null) {
-			if (txGraph.getVertexType(label) == null) {
-				// OrientDB exits the transaction to create new types anyway:
-				// this prevents having a warning printed to the console about it
-				enterBatchMode();
-				batchGraph.createVertexType(label);
-				exitBatchMode();
-			}
-			v = txGraph.addVertex(label, (String)null);
+			ensureVertexTypeExists(vertexTypeName);
+			v = txGraph.addVertex(vertexTypeName, (String)null);
 		} else if (batchGraph != null) {
-			v = batchGraph.addVertex(label, (String)null);
+			v = batchGraph.addVertex(vertexTypeName, (String)null);
 		}
 
 		if (v != null) {
@@ -215,21 +218,32 @@ public class OrientDatabase implements IGraphDatabase {
 		return new OrientNode(v, this);
 	}
 
+	public void ensureVertexTypeExists(final String vertexTypeName) {
+		if (getGraph().getVertexType(vertexTypeName) == null) {
+			// OrientDB exits the transaction to create new types anyway:
+			// this prevents having a warning printed to the console about it
+			enterBatchMode();
+			batchGraph.createVertexType(vertexTypeName);
+			exitBatchMode();
+		}
+	}
+
 	@Override
 	public OrientEdge createRelationship(IGraphNode start, IGraphNode end, String type) {
 		final OrientNode oStart = (OrientNode)start;
 		final OrientNode oEnd = (OrientNode)end;
+		final String edgeTypeName = EDGE_TYPE_PREFIX + type;
 
 		if (txGraph != null) {
-			if (txGraph.getEdgeType(type) == null) {
+			if (txGraph.getEdgeType(edgeTypeName) == null) {
 				enterBatchMode();
-				batchGraph.createEdgeType(type);
+				batchGraph.createEdgeType(edgeTypeName);
 				exitBatchMode();
 			}
-			Edge e = txGraph.addEdge(null, oStart.getVertex(), oEnd.getVertex(), type);
+			Edge e = txGraph.addEdge(null, oStart.getVertex(), oEnd.getVertex(), edgeTypeName);
 			return new OrientEdge(e, this);
 		} else if (batchGraph != null) {
-			Edge e = batchGraph.addEdge(null, oStart.getVertex(), oEnd.getVertex(), type);
+			Edge e = batchGraph.addEdge(null, oStart.getVertex(), oEnd.getVertex(), edgeTypeName);
 			return new OrientEdge(e, this);
 		}
 		return null;
@@ -274,11 +288,8 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public boolean nodeIndexExists(String name) {
-		try (OrientTransaction tx = beginTransaction()) {
-			boolean ret = tx.getOrientGraph().getIndex(name, Vertex.class) != null;
-			tx.success();
-			return ret;
-		}
+		OrientIndexStore store = OrientIndexStore.getInstance(this);
+		return store.getNodeIndexNames().contains(name);
 	}
 
 	@Override
@@ -292,7 +303,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public String getType() {
-		return "org.hawk.orientdb";
+		return OrientDatabase.class.getCanonicalName();
 	}
 
 	@Override

@@ -11,6 +11,7 @@
 package org.hawk.orientdb;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.HashMap;
@@ -77,5 +78,8 @@ public class GraphPopulationTests {
 		assertEquals(1, e.getStartNode().getProperty("x"));
 		assertEquals(10, e.getEndNode().getProperty("x"));
 		assertEquals("abc", e.getProperty("y"));
+		assertEquals("dep", e.getType());
+		assertTrue(x1.getOutgoingWithType("dep").iterator().hasNext());
+		assertTrue(x10.getIncomingWithType("dep").iterator().hasNext());
 	}
 }

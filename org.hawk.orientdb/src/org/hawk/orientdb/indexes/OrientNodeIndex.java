@@ -184,7 +184,7 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 		return new IGraphIterable<IGraphNode>() {
 			@Override
 			public Iterator<IGraphNode> iterator() {
-				if (resultSet.isEmpty()) {
+				if (resultSet == null || resultSet.isEmpty()) {
 					return Collections.emptyListIterator();
 				} else {
 					return Collections.singleton(getSingle()).iterator();
