@@ -11,7 +11,7 @@
 			useworkspacecompiledclasses="true"
 			exportsource="true"
 			exporttype="folder"
-			features="org.hawk.core.feature,org.hawk.emf.feature,org.hawk.epsilon.feature,org.hawk.ifc.feature,org.hawk.bpmn.feature,org.hawk.localfolder.feature,org.hawk.modelio.feature,org.hawk.osgiserver.feature,org.hawk.svn.feature,org.hawk.ui.feature,org.hawk.neo4jv2.feature,org.hawk.emfresource.feature,org.hawk.workspace.feature"
+			features="org.hawk.core.feature,org.hawk.emf.feature,org.hawk.epsilon.feature,org.hawk.ifc.feature,org.hawk.bpmn.feature,org.hawk.localfolder.feature,org.hawk.modelio.feature,org.hawk.osgiserver.feature,org.hawk.svn.feature,org.hawk.ui.feature,org.hawk.neo4jv2.feature,org.hawk.emfresource.feature,org.hawk.workspace.feature,org.hawk.orientdb.feature"
 			destination="${sitedir}" />
 	</target>
 
