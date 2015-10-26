@@ -20,12 +20,12 @@ import java.util.HashSet;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.util.DefaultConsole;
 import org.hawk.orientdb.util.FluidMap;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -149,20 +149,63 @@ public class IndexTests {
 		checkAfterRemove(mmBarURI);
 	}
 
-	@Ignore // not working with current integration between OrientDB and Lucene
 	@Test
 	public void integerRanges() {
 		final String mmBarURI = "http://foo/bar";
 		final FluidMap mmBarNodeProps = FluidMap.create().add(IModelIndexer.IDENTIFIER_PROPERTY, mmBarURI);
 
+		final IGraphNodeIndex idx = db.getMetamodelIndex();
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			IGraphNode mmNode = db.createNode(mmBarNodeProps, "metamodel");
-			db.getMetamodelIndex().add(mmNode, FluidMap.create().add("value", "5"));
+			idx.add(mmNode, FluidMap.create().add("value", 5));
+
+			IGraphNode mmNode2 = db.createNode(mmBarNodeProps, "metamodel");
+			idx.add(mmNode2, FluidMap.create().add("value", 8));
+
+			IGraphNode mmNode3 = db.createNode(mmBarNodeProps, "metamodel");
+			idx.add(mmNode3, FluidMap.create().add("value", 1));
 			tx.success();
 		}
 
-		final IGraphIterable<IGraphNode> iter = db.getMetamodelIndex().query("id", 0, 10, false, false);
-		assertEquals(1, iter.size());
+		assertEquals(3, idx.query("value", 0, 10, false, false).size());
+		assertEquals(1, idx.query("value", 1, 8, false, false).size());
+		assertEquals(2, idx.query("value", 1, 8, true, false).size());
+		assertEquals(2, idx.query("value", 1, 8, false, true).size());
+		assertEquals(3, idx.query("value", 1, 8, true, true).size());
+		assertEquals(2, idx.query("value", 2, 8, true, true).size());
+		assertEquals(2, idx.query("value", 1, 7, true, true).size());
+		assertEquals(1, idx.query("value", 4, 6, false, false).size());
+		assertEquals(1, idx.query("value", 5, 5, true, true).size());
+		assertEquals(0, idx.query("value", 5, 5, false, false).size());
+		assertEquals(0, idx.query("value", 5, 4, false, false).size());
+	}
+
+	@Test
+	public void floatingRanges() {
+		final String mmBarURI = "http://foo/bar";
+		final FluidMap mmBarNodeProps = FluidMap.create().add(IModelIndexer.IDENTIFIER_PROPERTY, mmBarURI);
+
+		final IGraphNodeIndex idx = db.getMetamodelIndex();
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			IGraphNode mmNode = db.createNode(mmBarNodeProps, "metamodel");
+			idx.add(mmNode, FluidMap.create().add("value", 5.3));
+
+			IGraphNode mmNode2 = db.createNode(mmBarNodeProps, "metamodel");
+			idx.add(mmNode2, FluidMap.create().add("value", 8.1d));
+
+			IGraphNode mmNode3 = db.createNode(mmBarNodeProps, "metamodel");
+			idx.add(mmNode3, FluidMap.create().add("value", 1.34));
+			tx.success();
+		}
+
+		assertEquals(3, idx.query("value", 0.0, 10.0, false, false).size());
+		assertEquals(3, idx.query("value", 1.3, 8.2, false, false).size());
+		assertEquals(2, idx.query("value", 1.4, 8.2, false, false).size());
+		assertEquals(2, idx.query("value", 1.3, 8.0, false, false).size());
+		assertEquals(1, idx.query("value", 1.4, 8.0, false, false).size());
+		assertEquals(1, idx.query("value", 5.2, 5.4, false, false).size());
+		assertEquals(0, idx.query("value", 5.2, 5.2, false, false).size());
+		assertEquals(0, idx.query("value", 5.2, 5.1, false, false).size());
 	}
 
 	private String populateForRemove() {

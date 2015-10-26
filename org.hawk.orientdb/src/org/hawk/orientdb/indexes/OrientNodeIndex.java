@@ -57,6 +57,23 @@ import com.tinkerpop.blueprints.impls.orient.OrientExtendedVertex;
  */
 public class OrientNodeIndex implements IGraphNodeIndex {
 
+	private static final class EmptyIGraphIterable implements IGraphIterable<IGraphNode> {
+		@Override
+		public Iterator<IGraphNode> iterator() {
+			return Collections.emptyListIterator();
+		}
+
+		@Override
+		public int size() {
+			return 0;
+		}
+
+		@Override
+		public IGraphNode getSingle() {
+			return null;
+		}
+	}
+
 	private final class StarKeyValueOIndexCursorFactoryIterable implements Iterable<OIndexCursorFactory> {
 		private final Object valueExpr;
 		private final Set<String> valueIdxNames;
@@ -99,11 +116,11 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 
 		@Override
 		public Iterator<OIdentifiable> query() {
-			final boolean luceneIndex = requiresLuceneIndex(valueExpr);
-			OIndex<?> index = getFieldIndex(key, luceneIndex);
+			final boolean requiresLucene = requiresLuceneIndex(valueExpr);
+			OIndex<?> index = getOrCreateFieldIndex(key, valueExpr.getClass(), requiresLucene);
 			if ("*".equals(valueExpr)) {
 				return index.cursor();
-			} else if (luceneIndex) {
+			} else if (requiresLucene) {
 				final Object escaped = QueryParser.escape(valueExpr.toString()).replace("\\*", "*");
 				return index.iterateEntries(Collections.singleton(escaped), false);
 			} else {
@@ -113,7 +130,7 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 	}
 
 	static boolean requiresLuceneIndex(Object valueExpr) {
-		return !"*".equals(valueExpr) && valueExpr.toString().contains("*");
+		return valueExpr instanceof String && !"*".equals(valueExpr) && valueExpr.toString().contains("*");
 	}
 
 	private static final String SEPARATOR_EXACT = "_@exact@_";
@@ -136,7 +153,8 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 	}
 
 	@Override
-	public IGraphIterable<IGraphNode> query(final String key, final Object valueExpr) {
+	public IGraphIterable<IGraphNode> query(final String key, Object valueExpr) {
+		valueExpr = normalizeValue(valueExpr);
 		if ("*".equals(key)) {
 			final Set<String> valueIdxNames = OrientIndexStore.getInstance(graph).getNodeFieldIndexNames(name);
 			final Iterable<OIndexCursorFactory> iterFactories = new StarKeyValueOIndexCursorFactoryIterable(valueExpr, valueIdxNames);
@@ -149,38 +167,38 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 
 	@Override
 	public IGraphIterable<IGraphNode> query(final String key, final int from, final int to, final boolean fromInclusive, final boolean toInclusive) {
-		// Not supported by the current integration between OrientDB and Lucene
-		throw new UnsupportedOperationException();
-
-		// This doesn't work.
-//		return new IndexCursorFactoryIterable(new OIndexCursorFactory() {
-//			@Override
-//			public Iterator<OIdentifiable> query() {
-//				OIndex<?> luceneIndex = getFieldIndex(key, true);
-//				return luceneIndex.iterateEntriesBetween(from, fromInclusive, to, toInclusive, false);
-//			}
-//		}, graph);
+		final OIndex<?> exactIndex = getIndexManager().getIndex(getExactIndexName(key));
+		if (exactIndex == null) {
+			return new EmptyIGraphIterable();
+		}
+		return new IndexCursorFactoryIterable(new OIndexCursorFactory() {
+			@Override
+			public Iterator<OIdentifiable> query() {
+				return exactIndex.iterateEntriesBetween(from, fromInclusive, to, toInclusive, false);
+			}
+		}, graph);
 	}
 
 	@Override
 	public IGraphIterable<IGraphNode> query(final String key, final double from, final double to, final boolean fromInclusive, final boolean toInclusive) {
-		// Not supported by the current integration between OrientDB and Lucene
-		throw new UnsupportedOperationException();
-
-		// This doesn't work.
-//		return new IndexCursorFactoryIterable(new OIndexCursorFactory() {
-//			@Override
-//			public Iterator<OIdentifiable> query() {
-//				OIndex<?> luceneIndex = getFieldIndex(key, true);
-//				return luceneIndex.iterateEntriesBetween(from, fromInclusive, to, toInclusive, false);
-//			}
-//		}, graph);
+		final OIndex<?> exactIndex = getIndexManager().getIndex(getExactIndexName(key));
+		if (exactIndex == null) {
+			return new EmptyIGraphIterable();
+		}
+		return new IndexCursorFactoryIterable(new OIndexCursorFactory() {
+			@Override
+			public Iterator<OIdentifiable> query() {
+				return exactIndex.iterateEntriesBetween(from, fromInclusive, to, toInclusive, false);
+			}
+		}, graph);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public IGraphIterable<IGraphNode> get(final String key, final Object valueExpr) {
-		final Collection<OIdentifiable> resultSet = (Collection<OIdentifiable>) getFieldIndex(key, false).get(valueExpr);
+	public IGraphIterable<IGraphNode> get(final String key, Object valueExpr) {
+		valueExpr = normalizeValue(valueExpr);
+		final OIndex<?> idx = getOrCreateFieldIndex(key, valueExpr.getClass(), requiresLuceneIndex(valueExpr));
+		final Collection<OIdentifiable> resultSet = (Collection<OIdentifiable>) idx.get(valueExpr);
 		return new IGraphIterable<IGraphNode>() {
 			@Override
 			public Iterator<IGraphNode> iterator() {
@@ -210,14 +228,36 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 
 	@Override
 	public void add(IGraphNode n, Map<String, Object> derived) {
+		final OrientNode orientNode = (OrientNode) n;
+		final OrientExtendedVertex eVertex = (OrientExtendedVertex) orientNode.getVertex();
+
 		for (Entry<String, Object> entry : derived.entrySet()) {
-			final OIndex<?> luceneIndex = getFieldIndex(entry.getKey(), true);
-			final OIndex<?> exactIndex = getFieldIndex(entry.getKey(), false);
-			final OrientNode orientNode = (OrientNode) n;
-			final OrientExtendedVertex eVertex = (OrientExtendedVertex) orientNode.getVertex();
-			luceneIndex.put(entry.getValue(), eVertex.getRecord());
-			exactIndex.put(entry.getValue(), eVertex.getRecord());
+			final String field = entry.getKey();
+			final Object valueExpr = normalizeValue(entry.getValue());
+			final Class<?> valueClass = valueExpr.getClass();
+			final OIndex<?> exactIndex = getOrCreateFieldIndex(field, valueClass, false);
+
+			exactIndex.put(valueExpr, eVertex.getRecord());
+			if (valueExpr instanceof String) {
+				final OIndex<?> luceneIndex = getOrCreateFieldIndex(field, valueClass, true);
+				luceneIndex.put(valueExpr, eVertex.getRecord());
+			}
 		}
+	}
+
+	/**
+	 * Normalizes a value expression so it'll always be either an Integer, a
+	 * Double or a String.
+	 */
+	private static Object normalizeValue(Object valueExpr) {
+		if (valueExpr instanceof Byte || valueExpr instanceof Short || valueExpr instanceof Long) {
+			valueExpr = ((Number)valueExpr).intValue();
+		} else if (valueExpr instanceof Float) {
+			valueExpr = ((Float)valueExpr).doubleValue();
+		} else if (valueExpr instanceof String || valueExpr instanceof Integer || valueExpr instanceof Double) {
+			return valueExpr;
+		}
+		return valueExpr.toString();
 	}
 
 	@Override
@@ -235,7 +275,7 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 	}
 
 	@Override
-	public void remove(String field, String value, IGraphNode n) {
+	public void remove(String field, Object value, IGraphNode n) {
 		final OrientNode oNode = (OrientNode)n;
 
 		if (field == null && value == null) {
@@ -248,16 +288,25 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 		} else if (value == null) {
 			remove(field, oNode);
 		} else {
-			final OIndex<?> exactIndex = getFieldIndex(field, false);
-			final OIndex<?> luceneIndex = getFieldIndex(field, true);
-			exactIndex.remove(value, oNode.getVertex());
-			luceneIndex.remove(value, oNode.getVertex());
+			value = normalizeValue(value);
+
+			final OIndex<?> exactIndex = getIndexManager().getIndex(getExactIndexName(field));
+			if (exactIndex != null) {
+				exactIndex.remove(value, oNode.getVertex());
+			}
+
+			final OIndex<?> luceneIndex = getIndexManager().getIndex(getLuceneIndexName(field));
+			if (luceneIndex != null) {
+				luceneIndex.remove(value, oNode.getVertex());
+			}
 		}
 	}
 
 	private void remove(String field, final OrientNode n) {
 		final List<Object> keysToRemove = new ArrayList<>();
-		final OIndex<?> exactIndex = getFieldIndex(field, false);
+		final OIndex<?> exactIndex = getIndexManager().getIndex(getExactIndexName(field));
+		if (exactIndex == null) return;
+
 		final OIndexCursor exactCursor = exactIndex.cursor();
 		for (Entry<Object, OIdentifiable> entry = exactCursor.nextEntry(); entry != null; entry = exactCursor.nextEntry()) {
 			if (n.getId().equals(entry.getValue().getIdentity())) {
@@ -265,10 +314,12 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 			}
 		}
 
-		final OIndex<?> luceneIndex = getFieldIndex(field, true);
-		for (Object o : keysToRemove) {
-			exactIndex.remove(o, n.getVertex());
-			luceneIndex.remove(o, n.getVertex());
+		final OIndex<?> luceneIndex = getIndexManager().getIndex(getLuceneIndexName(field));
+		if (luceneIndex != null) {
+			for (Object o : keysToRemove) {
+				exactIndex.remove(o, n.getVertex());
+				luceneIndex.remove(o, n.getVertex());
+			}
 		}
 	}
 
@@ -284,22 +335,26 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 	public void delete() {
 		OrientIndexStore store = OrientIndexStore.getInstance(graph);
 		for (String fieldName : store.getNodeFieldIndexNames(name)) {
-			graph.getGraph().dropIndex(getLuceneIndexName(fieldName));
-			graph.getGraph().dropIndex(getExactIndexName(fieldName));
+			final OIndex<?> exactIndex = getIndexManager().getIndex(getExactIndexName(fieldName));
+			if (exactIndex != null) {
+				exactIndex.delete();
+			}
+
+			final OIndex<?> luceneIndex = getIndexManager().getIndex(getLuceneIndexName(fieldName));
+			if (luceneIndex != null) {
+				luceneIndex.delete();
+			}
 		}
 		store.removeNodeIndex(name);
 	}
 
-	private OIndex<?> getFieldIndex(final String field, final boolean lucene) {
-		return getOrCreateIndex(field, lucene ? getLuceneIndexName(field) : getExactIndexName(field));
-	}
-
-	private OIndex<?> getOrCreateIndex(final String field, final String idxName) {
+	private OIndex<?> getOrCreateFieldIndex(final String field, final Class<?> valueClass, final boolean requiresLucene) {
+		final String idxName = requiresLucene ? getLuceneIndexName(field) : getExactIndexName(field);
 		final OIndexManager indexManager = getIndexManager();
 		OIndex<?> idx = indexManager.getIndex(idxName);
 
 		if (idx == null) {
-			createIndexes(field);
+			createIndexes(field, valueClass);
 
 			// We need to fetch again the index: using the one that was just
 			// created will result in multithreading exceptions from OrientDB
@@ -311,24 +366,33 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 	/**
 	 * Creates the exact and Lucene indexes paired to this field within this logical index. 
 	 */
-	private void createIndexes(final String field) {
+	private void createIndexes(final String field, final Class<?> keyClass) {
 		final OIndexManager indexManager = getIndexManager();
 
 		// Indexes have to be created outside transactions
 		graph.enterBatchMode();
 
-		// Lucene index, for prefix*suffix queries
-		final String luceneName = getLuceneIndexName(field);
-		final OIndexFactory luceneFactory = OIndexes.getFactory("FULLTEXT", "LUCENE");
-		final OSimpleKeyIndexDefinition indexDefinition = new OSimpleKeyIndexDefinition(luceneFactory.getLastVersion(), OType.STRING);
-		final ODocument metadata = new ODocument().field("analyzer",
-				"org.apache.lucene.analysis.core.WhitespaceAnalyzer");
-		indexManager.createIndex(luceneName, "FULLTEXT", indexDefinition, null, null, metadata, "LUCENE");
+		if (keyClass == String.class) {
+			// Lucene index, for prefix*suffix queries with string keys
+			final String luceneName = getLuceneIndexName(field);
+			final OIndexFactory luceneFactory = OIndexes.getFactory("FULLTEXT", "LUCENE");
+			final OSimpleKeyIndexDefinition indexDefinition = new OSimpleKeyIndexDefinition(luceneFactory.getLastVersion(), OType.STRING);
+			final ODocument metadata = new ODocument().field("analyzer", "org.apache.lucene.analysis.core.WhitespaceAnalyzer");
+			indexManager.createIndex(luceneName, "FULLTEXT", indexDefinition, null, null, metadata, "LUCENE");
+		}
 
-		// Exact index, for exact queries and iteration
+		// Exact index key type
+		OType keyType = OType.STRING;
+		if (keyClass == Byte.class || keyClass == Short.class || keyClass == Integer.class || keyClass == Long.class) {
+			keyType = OType.INTEGER;
+		} else if (keyClass == Float.class || keyClass == Double.class) {
+			keyType = OType.DOUBLE;
+		}
+
+		// Exact index, for exact queries, numeric ranges and iteration
 		final String exactName = getExactIndexName(field);
 		final OIndexFactory exactFactory = OIndexes.getFactory("NOTUNIQUE", "SBTREE");
-		final OSimpleKeyIndexDefinition exactIndexDef = new OSimpleKeyIndexDefinition(exactFactory.getLastVersion(), OType.STRING);
+		final OSimpleKeyIndexDefinition exactIndexDef = new OSimpleKeyIndexDefinition(exactFactory.getLastVersion(), keyType);
 		indexManager.createIndex(exactName, "NOTUNIQUE", exactIndexDef, null, null, null, "SBTREE");
 
 		OrientIndexStore.getInstance(graph).addNodeFieldIndex(name, field);

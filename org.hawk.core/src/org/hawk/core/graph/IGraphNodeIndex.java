@@ -32,7 +32,7 @@ public interface IGraphNodeIndex {
 
 	void remove(IGraphNode n);
 
-	void remove(String key, String value, IGraphNode n);
+	void remove(String key, Object value, IGraphNode n);
 
 	void flush();
 
