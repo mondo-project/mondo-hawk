@@ -54,13 +54,12 @@ public class SvnManager implements IVcsManager {
 	private String password;
 
 	/*
-	 * TODO we can't blacklist .zip as we need support for
-	 * zipped Modelio projects - should we use a different
-	 * extension (".mzip", perhaps?),or a whitelist
-	 * (".modelio.zip"?)?
+	 * TODO we can't blacklist .zip as we need support for zipped Modelio
+	 * projects - should we use a different extension (".mzip", perhaps?),or a
+	 * whitelist (".modelio.zip"?)?
 	 */
-	private static final Set<String> EXTENSION_BLACKLIST
-		= new HashSet<>(Arrays.asList(".png", ".jpg", ".bmp", ".jar", ".gz", ".tar"));
+	private static final Set<String> EXTENSION_BLACKLIST = new HashSet<>(
+			Arrays.asList(".png", ".jpg", ".bmp", ".jar", ".gz", ".tar"));
 
 	public SvnManager() {
 	}
@@ -77,9 +76,10 @@ public class SvnManager implements IVcsManager {
 		System.err.println("testing3");
 
 		final String vcsloc = "https://cssvn.york.ac.uk/repos/sosym/kostas/Hawk/org.hawk.emf/src/org/hawk/emf/model/examples/single/0";
-		FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(new File("security.xml"), "admin".toCharArray());
+		FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(
+				new File("security.xml"), "admin".toCharArray());
 		credStore.put(vcsloc, new Credentials("kb634", pass));
-		m.run(vcsloc, null, new ModelIndexerImpl(null, null, credStore, null));
+		m.run(vcsloc, new ModelIndexerImpl(null, null, credStore, null));
 		System.err.println("testing4");
 		m.test();
 		System.err.println("testing5-end");
@@ -98,11 +98,10 @@ public class SvnManager implements IVcsManager {
 	}
 
 	@Override
-	public void run(String vcsloc, IConsole c, IModelIndexer indexer)
-			throws Exception {
+	public void run(String vcsloc, IModelIndexer indexer) throws Exception {
 
 		try {
-			console = c;
+			console = indexer.getConsole();
 
 			this.repositoryURL = vcsloc;
 
@@ -117,7 +116,8 @@ public class SvnManager implements IVcsManager {
 				 * try to use the GNOME keyring in Linux, and that will lock up
 				 * our Eclipse instance in some cases.
 				 */
-				console.printerrln("No username/password recorded for the repository " + repositoryURL);
+				console.printerrln("No username/password recorded for the repository "
+						+ repositoryURL);
 				this.username = "";
 				this.password = "";
 			}
@@ -132,21 +132,25 @@ public class SvnManager implements IVcsManager {
 
 	}
 
-	protected static SVNRepository getSVNRepository(String url, String username, String password) {
+	protected static SVNRepository getSVNRepository(String url,
+			String username, String password) {
 		SvnUtil.setupLibrary();
-		SVNRepository svnRepository = SvnUtil.connectToSVNInstance(url, username, password);
+		SVNRepository svnRepository = SvnUtil.connectToSVNInstance(url,
+				username, password);
 		return svnRepository;
 	}
 
 	@Override
-	public VcsRepositoryDelta getDelta(
-			String startRevision, String endRevision) throws Exception {
-		SVNRepository svnRepository = getSVNRepository(repositoryURL, username, password);
+	public VcsRepositoryDelta getDelta(String startRevision, String endRevision)
+			throws Exception {
+		SVNRepository svnRepository = getSVNRepository(repositoryURL, username,
+				password);
 
 		VcsRepositoryDelta delta = new VcsRepositoryDelta();
 		delta.setManager(this);
 
-		final String rootURL = svnRepository.getRepositoryRoot(false).toDecodedString();
+		final String rootURL = svnRepository.getRepositoryRoot(false)
+				.toDecodedString();
 		final String overLappedURL = makeRelative(rootURL, repositoryURL);
 
 		if (!startRevision.equals(endRevision)) {
@@ -165,16 +169,19 @@ public class SvnManager implements IVcsManager {
 				commit.setJavaDate(svnLogEntry.getDate());
 				delta.getCommits().add(commit);
 
-				Map<String, SVNLogEntryPath> changedPaths = svnLogEntry.getChangedPaths();
+				Map<String, SVNLogEntryPath> changedPaths = svnLogEntry
+						.getChangedPaths();
 				for (final String path : changedPaths.keySet()) {
 					SVNLogEntryPath svnLogEntryPath = changedPaths.get(path);
 
 					final int lastDotIndex = path.lastIndexOf(".");
 					if (lastDotIndex <= 0) {
-						// No extension or file starts by "." (hidden files in Unix systems): skip
+						// No extension or file starts by "." (hidden files in
+						// Unix systems): skip
 						continue;
 					}
-					final String ext = path.substring(lastDotIndex, path.length());
+					final String ext = path.substring(lastDotIndex,
+							path.length());
 					if (EXTENSION_BLACKLIST.contains(ext)) {
 						// Blacklisted extension: skip
 						continue;
@@ -214,7 +221,8 @@ public class SvnManager implements IVcsManager {
 
 	@Override
 	public String getCurrentRevision() throws Exception {
-		return getSVNRepository(repositoryURL, username, password).getLatestRevision()	+ "";
+		return getSVNRepository(repositoryURL, username, password)
+				.getLatestRevision() + "";
 	}
 
 	/**
@@ -222,7 +230,8 @@ public class SvnManager implements IVcsManager {
 	 */
 	@Override
 	public String getFirstRevision() throws Exception {
-		SVNRepository svnRepository = getSVNRepository(repositoryURL, username, password);
+		SVNRepository svnRepository = getSVNRepository(repositoryURL, username,
+				password);
 		Collection<?> c = svnRepository.log(new String[] { "" }, null, 0,
 				Long.valueOf(getCurrentRevision()), true, true);
 
@@ -247,7 +256,8 @@ public class SvnManager implements IVcsManager {
 
 	@Override
 	public void importFiles(String path, File temp) {
-		SVNRepository svnRepository = getSVNRepository(repositoryURL, username, password);
+		SVNRepository svnRepository = getSVNRepository(repositoryURL, username,
+				password);
 
 		try {
 			OutputStream o = new FileOutputStream(temp);
@@ -280,10 +290,14 @@ public class SvnManager implements IVcsManager {
 	}
 
 	@Override
-	public void setCredentials(String username, String password, ICredentialsStore credStore) {
-		if (username != null && password != null && !username.equals(this.username) || !password.equals(this.password)) {
+	public void setCredentials(String username, String password,
+			ICredentialsStore credStore) {
+		if (username != null && password != null
+				&& !username.equals(this.username)
+				|| !password.equals(this.password)) {
 			try {
-				credStore.put(repositoryURL, new Credentials(username, password));
+				credStore.put(repositoryURL,
+						new Credentials(username, password));
 			} catch (Exception e) {
 				console.printerrln("Could not save new username/password");
 				console.printerrln(e);
@@ -306,9 +320,11 @@ public class SvnManager implements IVcsManager {
 	@Override
 	public List<VcsCommitItem> getDelta(String startRevision) throws Exception {
 		if (Integer.parseInt(startRevision) < 0)
-			return getDelta(getFirstRevision(), getCurrentRevision()).getCompactedCommitItems();
+			return getDelta(getFirstRevision(), getCurrentRevision())
+					.getCompactedCommitItems();
 		else
-			return getDelta(startRevision, getCurrentRevision()).getCompactedCommitItems();
+			return getDelta(startRevision, getCurrentRevision())
+					.getCompactedCommitItems();
 	}
 
 	@Override

@@ -23,7 +23,8 @@ public interface IVcsManager {
 
 	List<VcsCommitItem> getDelta(String startRevision) throws Exception;
 
-	VcsRepositoryDelta getDelta(String startRevision, String endRevision) throws Exception;
+	VcsRepositoryDelta getDelta(String startRevision, String endRevision)
+			throws Exception;
 
 	// kostas
 	void importFiles(String path, File temp);
@@ -32,7 +33,7 @@ public interface IVcsManager {
 	boolean isActive();
 
 	// kostas
-	void run(String vcsloc, IConsole c, IModelIndexer indexer) throws Exception;
+	void run(String vcsloc, IModelIndexer hawk) throws Exception;
 
 	// kostas
 	void shutdown();
@@ -54,7 +55,8 @@ public interface IVcsManager {
 	 * Changes the username and password in one go. Both must be passed at the
 	 * same time to be able to support remote instances.
 	 */
-	void setCredentials(String username, String password, ICredentialsStore credStore);
+	void setCredentials(String username, String password,
+			ICredentialsStore credStore);
 
 	// kostas
 	String getType();

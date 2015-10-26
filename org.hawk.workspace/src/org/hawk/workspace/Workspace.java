@@ -99,7 +99,8 @@ public class Workspace implements IVcsManager {
 	}
 
 	@Override
-	public VcsRepositoryDelta getDelta(String startRevision, String endRevision) throws Exception {
+	public VcsRepositoryDelta getDelta(String startRevision, String endRevision)
+			throws Exception {
 		VcsRepositoryDelta delta = new VcsRepositoryDelta();
 		delta.setManager(this);
 
@@ -136,16 +137,18 @@ public class Workspace implements IVcsManager {
 	private Set<IFile> getAllFiles() {
 		try {
 			final Set<IFile> allFiles = new HashSet<>();
-			ResourcesPlugin.getWorkspace().getRoot().accept(new IResourceVisitor(){
-				@Override
-				public boolean visit(IResource resource) throws CoreException {
-					if (resource instanceof IFile) {
-						allFiles.add((IFile)resource);
-					}
-					return true;
-				}
-				
-			});
+			ResourcesPlugin.getWorkspace().getRoot()
+					.accept(new IResourceVisitor() {
+						@Override
+						public boolean visit(IResource resource)
+								throws CoreException {
+							if (resource instanceof IFile) {
+								allFiles.add((IFile) resource);
+							}
+							return true;
+						}
+
+					});
 			return allFiles;
 		} catch (CoreException e) {
 			console.printerrln(e);
@@ -153,7 +156,8 @@ public class Workspace implements IVcsManager {
 		}
 	}
 
-	private void addIFile(VcsRepositoryDelta delta, IFile f, final VcsChangeType changeType) {
+	private void addIFile(VcsRepositoryDelta delta, IFile f,
+			final VcsChangeType changeType) {
 		VcsCommit commit = new VcsCommit();
 		commit.setAuthor("i am a workspace driver - no authors recorded");
 		commit.setDelta(delta);
@@ -173,7 +177,8 @@ public class Workspace implements IVcsManager {
 
 	@Override
 	public void importFiles(String path, File temp) {
-		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
+		IFile file = ResourcesPlugin.getWorkspace().getRoot()
+				.getFile(new Path(path));
 		try {
 			try (InputStream is = file.getContents()) {
 				Files.copy(is, temp.toPath());
@@ -189,11 +194,12 @@ public class Workspace implements IVcsManager {
 	}
 
 	@Override
-	public void run(String vcsloc, IConsole c, IModelIndexer indexer) throws Exception {
-		this.console = c;
+	public void run(String vcsloc, IModelIndexer indexer) throws Exception {
+		this.console = indexer.getConsole();
 		this.listener = new WorkspaceListener(indexer);
 
-		// Needed to emulate the usual URLs within a workspace when concatenated with the file path
+		// Needed to emulate the usual URLs within a workspace when concatenated
+		// with the file path
 		this.repositoryURL = "platform:/resource";
 
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(listener);
@@ -202,18 +208,20 @@ public class Workspace implements IVcsManager {
 	@Override
 	public void shutdown() {
 		if (listener != null) {
-			ResourcesPlugin.getWorkspace().removeResourceChangeListener(listener);
+			ResourcesPlugin.getWorkspace().removeResourceChangeListener(
+					listener);
 			listener = null;
 		}
 	}
 
 	@Override
 	public String getLocation() {
-		return repositoryURL	;
+		return repositoryURL;
 	}
 
 	@Override
-	public void setCredentials(String username, String password, ICredentialsStore credStore) {
+	public void setCredentials(String username, String password,
+			ICredentialsStore credStore) {
 		// ignore
 	}
 
@@ -230,7 +238,7 @@ public class Workspace implements IVcsManager {
 	@Override
 	public String getCurrentRevision() throws Exception {
 		if (pendingChanges) {
-			return (revision +  1) + "";
+			return (revision + 1) + "";
 		} else {
 			return revision + "";
 		}

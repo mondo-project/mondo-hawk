@@ -48,8 +48,10 @@ public class IFC_Runtime_example {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		final FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(new File("credentials.xml"), adminpw);
-		i = new ModelIndexerImpl("hawk1", parent, credStore, new DefaultConsole());
+		final FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(
+				new File("credentials.xml"), adminpw);
+		i = new ModelIndexerImpl("hawk1", parent, credStore,
+				new DefaultConsole());
 
 		// metamodel
 		i.addMetaModelResourceFactory(new IFCMetaModelResourceFactory());
@@ -59,16 +61,16 @@ public class IFC_Runtime_example {
 		IGraphDatabase db = (new Neo4JDatabase());
 		// create the indexer with relevant database
 		db.run(i.getParentFolder(), i.getConsole());
-		i.setDB(db,true);
+		i.setDB(db, true);
 
 		// set path of vcs
 		String vcsloc = "../org.hawk.ifc/samples";
 
 		// add vcs monitors
 		IVcsManager vcs = new LocalFolder();
-		vcs.run(vcsloc, i.getConsole(), i);
+		vcs.run(vcsloc, i);
 		vcs.setCredentials("un", "pw", credStore);
-		i.addVCSManager(vcs,true);
+		i.addVCSManager(vcs, true);
 
 		// metamodel updater
 		i.setMetaModelUpdater(new GraphMetaModelUpdater());
@@ -81,7 +83,7 @@ public class IFC_Runtime_example {
 		i.addQueryEngine(q);
 
 		// initialise the server for real-time updates to changes
-		i.init(1000,512*1000);
+		i.init(1000, 512 * 1000);
 
 		// add console interaction if needed
 		Thread t = consoleInteraction(i);

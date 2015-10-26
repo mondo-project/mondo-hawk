@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.hawk.core.IConsole;
 import org.hawk.core.ICredentialsStore;
-import org.hawk.core.ICredentialsStore.Credentials;
 import org.hawk.core.IHawk;
 import org.hawk.core.IHawkFactory;
 import org.hawk.core.IMetaModelResourceFactory;
@@ -223,7 +222,7 @@ public class HModel {
 		if (!this.getLocations().contains(loc)) {
 			final IModelIndexer indexer = hawk.getModelIndexer();
 			IVcsManager mo = manager.createVCSManager(type);
-			mo.run(loc, getConsole(), indexer);
+			mo.run(loc, indexer);
 			indexer.addVCSManager(mo, false);
 		}
 	}
@@ -237,7 +236,7 @@ public class HModel {
 			if (!this.getLocations().contains(loc)) {
 				IVcsManager mo = manager.createVCSManager(type);
 				mo.setCredentials(user, pass, hawk.getModelIndexer().getCredentialsStore());
-				mo.run(loc, getConsole(), hawk.getModelIndexer());
+				mo.run(loc, hawk.getModelIndexer());
 				hawk.getModelIndexer().addVCSManager(mo, true);
 			}
 		} catch (Exception e) {

@@ -81,8 +81,10 @@ public class Runtime_example {
 		init[2] = 'm';
 		init[3] = 'i';
 		init[4] = 'n';
-		final FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(new File("credentials.xml"), init);
-		hawk = new ModelIndexerImpl("hawk1", parent, credStore, new DefaultConsole());
+		final FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(
+				new File("credentials.xml"), init);
+		hawk = new ModelIndexerImpl("hawk1", parent, credStore,
+				new DefaultConsole());
 
 		// add a metamodel factory
 		// hawk.addMetaModelResourceFactory(new EMFMetaModelResourceFactory());
@@ -137,8 +139,9 @@ public class Runtime_example {
 			pw = password();
 
 		if (pw != null) {
-			vcs.run(args[0], hawk.getConsole(), hawk);
 			vcs.setCredentials("kb634", pw, credStore);
+			vcs.run(args[0], hawk);
+
 		} else
 			System.exit(1);
 		pw = null;

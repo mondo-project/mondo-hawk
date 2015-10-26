@@ -51,7 +51,8 @@ public class LocalFolder implements IVcsManager {
 		}
 
 		@Override
-		public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+		public FileVisitResult postVisitDirectory(Path dir, IOException exc)
+				throws IOException {
 			final File f = dir.toFile();
 			final String currentlatest = getRevisionFromFileMetadata(f);
 			final String lastRev = recordedModifiedDates.get(dir);
@@ -64,12 +65,14 @@ public class LocalFolder implements IVcsManager {
 		}
 
 		@Override
-		public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+		public FileVisitResult preVisitDirectory(Path dir,
+				BasicFileAttributes attrs) throws IOException {
 			return FileVisitResult.CONTINUE;
 		}
 
 		@Override
-		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+				throws IOException {
 			final File f = file.toFile();
 			final String currentlatest = getRevisionFromFileMetadata(f);
 			final String lastRev = recordedModifiedDates.get(file);
@@ -82,7 +85,8 @@ public class LocalFolder implements IVcsManager {
 		}
 
 		@Override
-		public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+		public FileVisitResult visitFileFailed(Path file, IOException exc)
+				throws IOException {
 			return FileVisitResult.CONTINUE;
 		}
 	}
@@ -100,9 +104,9 @@ public class LocalFolder implements IVcsManager {
 	}
 
 	@Override
-	public void run(String vcsloc, IConsole c, IModelIndexer indexer) throws Exception {
+	public void run(String vcsloc, IModelIndexer indexer) throws Exception {
 
-		console = c;
+		console = indexer.getConsole();
 
 		// Accept both regular paths and file:// URIs
 		Path path;
@@ -117,15 +121,18 @@ public class LocalFolder implements IVcsManager {
 		if (!repositoryURI.endsWith("/")) {
 			repositoryURI += "/";
 		}
-		repositoryURL = URLDecoder.decode(repositoryURI.replace("+", "%2B"), "UTF-8");
+		repositoryURL = URLDecoder.decode(repositoryURI.replace("+", "%2B"),
+				"UTF-8");
 	}
 
 	private String getCurrentRevision(boolean alter) {
 
 		try {
-			final LastModifiedFileVisitor visitor = new LastModifiedFileVisitor(alter);
+			final LastModifiedFileVisitor visitor = new LastModifiedFileVisitor(
+					alter);
 			Files.walkFileTree(rootLocation, visitor);
-			long ret = visitor.hasChanged ? (currentRevision + 1) : currentRevision;
+			long ret = visitor.hasChanged ? (currentRevision + 1)
+					: currentRevision;
 			if (alter)
 				currentRevision = ret;
 			// System.err.println(ret + " | " + alter);
@@ -187,7 +194,8 @@ public class LocalFolder implements IVcsManager {
 	}
 
 	@Override
-	public void setCredentials(String username, String password, ICredentialsStore credStore) {
+	public void setCredentials(String username, String password,
+			ICredentialsStore credStore) {
 		// ignore
 	}
 
@@ -223,8 +231,8 @@ public class LocalFolder implements IVcsManager {
 
 			Path path = f.toPath();
 
-			c.setPath(makeRelative(repositoryURL,
-					URLDecoder.decode(path.toUri().toString().replace("+", "%2B"), "UTF-8")));
+			c.setPath(makeRelative(repositoryURL, URLDecoder.decode(path
+					.toUri().toString().replace("+", "%2B"), "UTF-8")));
 
 			// c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 			commit.getItems().add(c);
@@ -259,8 +267,10 @@ public class LocalFolder implements IVcsManager {
 				c.setChangeType(VcsChangeType.UPDATED);
 				c.setCommit(commit);
 
-				c.setPath(makeRelative(repositoryURL,
-						URLDecoder.decode(f.toPath().toUri().toString().replace("+", "%2B"), "UTF-8")));
+				c.setPath(makeRelative(
+						repositoryURL,
+						URLDecoder.decode(f.toPath().toUri().toString()
+								.replace("+", "%2B"), "UTF-8")));
 
 				// c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 				commit.getItems().add(c);
