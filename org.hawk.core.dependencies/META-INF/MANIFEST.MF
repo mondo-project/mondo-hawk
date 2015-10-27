@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.hawk.core.dependencies;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: xstream-1.4.8.jar,
+ commons-codec-1.10.jar,
  .
 Export-Package: com.thoughtworks.xstream,
  com.thoughtworks.xstream.annotations,
@@ -27,5 +28,11 @@ Export-Package: com.thoughtworks.xstream,
  com.thoughtworks.xstream.io.xml.xppdom,
  com.thoughtworks.xstream.mapper,
  com.thoughtworks.xstream.persistence,
- com.thoughtworks.xstream.security
+ com.thoughtworks.xstream.security,
+ org.apache.commons.codec,
+ org.apache.commons.codec.binary,
+ org.apache.commons.codec.digest,
+ org.apache.commons.codec.language,
+ org.apache.commons.codec.language.bm,
+ org.apache.commons.codec.net
 Bundle-Vendor: University of York

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="build-site">
+	<target name="init">
+		<tstamp/>
+		<property name="sitedir" location="thirdparty-nonp2"/>
+	</target>
+
+	<!-- Packages everything we don't have in p2 update sites to a p2 update site, which we can upload to Github Pages and use from Tycho (Tycho only works with unpacked p2 repos). -->
+	<target name="build-site" depends="init">
+		<delete dir="${sitedir}"/>
+		<mkdir dir="${sitedir}/features"/>
+		<mkdir dir="${sitedir}/plugins"/>
+
+		<!-- SVNKit has a "publish yourself as OSS and you'll be fine" kind of license (http://svnkit.com/license.html) -->
+		<p2.mirror source="http://eclipse.svnkit.com/1.8.x/">
+			<destination kind="metadata" location="file://${sitedir}" name="SVNKit" append="true" />
+			<destination kind="artifact" location="file://${sitedir}" name="SVNKit" append="true" />
+			<iu id="net.java.dev.jna.feature.group" version="4.1.0.v06022015_1911"/>
+			<iu id="org.tmatesoft.svnkit.feature.group" version="1.8.11.r10483_v20150925_0010"/>
+		</p2.mirror>
+		<delete dir="${sitedir}" includes="*.jar"/>
+
+		<!-- ktable is LGPL, should be fine -->
+		<eclipse.convertPath resourcepath="/ktable/plugins/" property="ktable_plugins" />
+
+		<!-- Nebula and UML2 are Eclipse projects -->
+		<eclipse.convertPath resourcepath="/nebula-incubator/plugins/" property="nebi_plugins" />
+		<eclipse.convertPath resourcepath="/nebula-nattable/plugins/" property="nebt_plugins" />
+		<eclipse.convertPath resourcepath="/nebula/plugins/" property="neb_plugins" />
+		<eclipse.convertPath resourcepath="/uml2_3.2/plugins/" property="uml_plugins" />
+
+		<copy todir="${sitedir}/plugins">
+			<fileset dir="${ktable_plugins}" includes="*.jar"/>
+			<fileset dir="${nebi_plugins}" includes="*.jar"/>
+			<fileset dir="${nebt_plugins}" includes="*.jar"/>
+			<fileset dir="${neb_plugins}" includes="*.jar"/>
+			<fileset dir="${uml_plugins}" includes="*.jar"/>
+		</copy>
+
+		<eclipse.publish.featuresAndBundles
+			repository="file:/${sitedir}/"
+			category="file:/${basedir}/category-3rdparty.xml"
+			compress="true">
+			<features dir="${sitedir}/features" />
+			<bundles dir="${sitedir}/plugins" />
+		</eclipse.publish.featuresAndBundles>
+	</target>
+
+</project>

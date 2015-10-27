@@ -757,20 +757,19 @@ public class GraphModelBatchInjector {
 		} else {
 			hash.put(eObject, node);
 
-			createReference(ModelElementNode.EDGE_LABEL_OFTYPE, node, eClass,
-					Collections.emptyMap(), true);
+			final HashMap<String, Object> emptyMap = new HashMap<String, Object>();
+			createReference(ModelElementNode.EDGE_LABEL_OFTYPE, node, eClass, emptyMap, true);
 			if (originatingFile != null) {
 				createReference(ModelElementNode.EDGE_LABEL_FILE, node,
-						originatingFile, Collections.emptyMap(), true);
+						originatingFile, emptyMap, true);
 			}
 			objectCount[1]++;
 
 			// use metamodel to infer all supertypes for fast search and log em
-			for (IHawkClass superType : ((IHawkClass) eObject.getType())
-					.getSuperTypes()) {
+			for (IHawkClass superType : ((IHawkClass) eObject.getType()).getSuperTypes()) {
 				eClass = getEClassNode(superType);
 				createReference(ModelElementNode.EDGE_LABEL_OFKIND, node,
-						eClass, Collections.emptyMap(), true);
+						eClass, emptyMap, true);
 				objectCount[2]++;
 			}
 

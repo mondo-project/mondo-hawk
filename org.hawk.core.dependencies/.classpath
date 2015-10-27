@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry including="**/*.java" kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="commons-codec-1.10.jar"/>
 	<classpathentry exported="true" kind="lib" path="xstream-1.4.8.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="bin"/>

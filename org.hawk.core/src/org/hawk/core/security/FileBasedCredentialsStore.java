@@ -31,13 +31,11 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 
+import org.apache.commons.codec.binary.Base64;
 import org.hawk.core.ICredentialsStore;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 /**
  * Default implementation that uses a local file and encrypts passwords using
@@ -168,11 +166,11 @@ public class FileBasedCredentialsStore implements ICredentialsStore {
 
 	private static byte[] base64Decode(String property) throws IOException {
 		// NB: This class is internal, and you probably should use another impl
-		return new BASE64Decoder().decodeBuffer(property);
+		return new Base64().decode(property);
 	}
 
 	private static String base64Encode(byte[] bytes) {
 		// NB: This class is internal, and you probably should use another impl
-		return new BASE64Encoder().encode(bytes);
+		return new Base64().encodeAsString(bytes);
 	}
 }
