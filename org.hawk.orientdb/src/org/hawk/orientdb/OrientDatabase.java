@@ -24,7 +24,6 @@ import org.hawk.core.graph.IGraphEdgeIndex;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.orientdb.indexes.OrientEdgeIndex;
-import org.hawk.orientdb.indexes.OrientIndexStore;
 import org.hawk.orientdb.indexes.OrientNodeIndex;
 
 import com.tinkerpop.blueprints.Edge;
@@ -45,16 +44,21 @@ import com.tinkerpop.blueprints.impls.orient.OrientVertex;
 public class OrientDatabase implements IGraphDatabase {
 
 	/** Prefix for qualifying all edge types (edge and vertex types share same namespace). */
-	public static final String EDGE_TYPE_PREFIX = "E_";
+	static final String EDGE_TYPE_PREFIX = "E_";
 
 	/** Prefix for qualifying all vertex types (edge and vertex types share same namespace). */
-	public static final String VERTEX_TYPE_PREFIX = "V_";
+	static final String VERTEX_TYPE_PREFIX = "V_";
 
-	static final String NOTX_MODE = "batch";
-	static final String TX_MODE = "transactional";
+	/** Name of the non-transactional (batch) mode. */
+	public static final String NOTX_MODE = "batch";
 
-	// Names of the default indexes
+	/** Name of the transactional mode. */
+	public static final String TX_MODE = "transactional";
+
+	/** Name of the metamodel index. */
 	static final String METAMODEL_IDX_NAME = "hawkMetamodelIndex";
+
+	/** Name of the file index. */
 	static final String FILE_IDX_NAME = "hawkFileIndex";
 
 	private File storageFolder;

@@ -23,6 +23,7 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.util.DefaultConsole;
+import org.hawk.orientdb.OrientDatabase;
 import org.hawk.orientdb.util.FluidMap;
 import org.junit.After;
 import org.junit.Before;
@@ -31,7 +32,7 @@ import org.junit.Test;
 /**
  * Tests for populating and querying indices.
  */
-public class IndexTests {
+public class IndexTest {
 
 	private OrientDatabase db;
 

@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hawk OrientDB Backend Tests
+Bundle-SymbolicName: org.hawk.orientdb.tests
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: University of York
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Fragment-Host: org.hawk.orientdb;bundle-version="1.0.0"
+Require-Bundle: org.junit;bundle-version="4.11.0"

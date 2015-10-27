@@ -19,6 +19,8 @@ import java.util.HashMap;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.util.DefaultConsole;
+import org.hawk.orientdb.OrientDatabase;
+import org.hawk.orientdb.OrientTransaction;
 import org.hawk.orientdb.util.FluidMap;
 import org.junit.After;
 import org.junit.Before;
@@ -27,7 +29,7 @@ import org.junit.Test;
 /**
  * Tests for populating the graph with nodes and vertices and navigating it.
  */
-public class GraphPopulationTests {
+public class GraphPopulationTest {
 
 	private OrientDatabase db;
 

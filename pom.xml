@@ -30,6 +30,7 @@
     <module>org.hawk.localfolder</module>
     <module>org.hawk.localfolder.feature</module>
     <module>org.hawk.orientdb</module>
+    <module>org.hawk.orientdb.tests</module>
     <module>org.hawk.orientdb.feature</module>
     <module>org.hawk.osgiserver</module>
     <module>org.hawk.osgiserver.feature</module>

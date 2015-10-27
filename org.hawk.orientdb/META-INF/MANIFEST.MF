@@ -59,3 +59,5 @@ Bundle-ClassPath: .,
  lib/bundles/snappy-java-1.1.0.1.jar,
  lib/bundles/spatial4j-0.4.1.jar
 Bundle-ActivationPolicy: lazy
+Export-Package: org.hawk.orientdb,
+ org.hawk.orientdb.indexes

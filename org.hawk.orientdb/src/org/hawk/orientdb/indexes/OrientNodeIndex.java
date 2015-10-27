@@ -24,6 +24,7 @@ import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.orientdb.OrientDatabase;
+import org.hawk.orientdb.OrientIndexStore;
 import org.hawk.orientdb.OrientNode;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;

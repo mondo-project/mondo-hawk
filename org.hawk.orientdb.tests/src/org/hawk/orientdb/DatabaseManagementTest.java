@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.util.DefaultConsole;
+import org.hawk.orientdb.OrientDatabase;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,7 +36,7 @@ import org.junit.Test;
  * Test suite for the high-level capabilities for starting, stopping, deleting a
  * graph and switching between transactional and batch modes.
  */
-public class DatabaseManagementTests {
+public class DatabaseManagementTest {
 
 	private File dbDirectory;
 
