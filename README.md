@@ -5,12 +5,17 @@ Public repository for the prototype of the Hawk scalable model indexing system.
 
 [![Travis status](https://api.travis-ci.org/mondo-project/mondo-hawk.svg?branch=master)](https://travis-ci.org/mondo-project/mondo-hawk)
 
+The core components of Hawk and the OrientDB backend can be installed from this update site:
+
+    http://mondo-project.github.io/mondo-hawk/updates/
+
 Dependencies
 ------------
 
 * [Eclipse Luna Modeling Tools distribution](https://eclipse.org/downloads/index-developer.php)
 * [Epsilon (interim update site)](http://download.eclipse.org/epsilon/interim/) (need: Epsilon Core / Epsilon Core Development Tools / Epsilon EMF Development Tools)
-* [Neo4J(v2)](http://neo4j.com/download/other-releases/)
+* (optional) [OrientDB](http://orientdb.com/)
+* (optional) [Neo4J(v2)](http://neo4j.com/download/other-releases/)
 * (optional) [SVNKit update site](http://eclipse.svnkit.com/1.8.x)
 * (optional) [Modelio source code](https://opensourceprojects.eu/svn/p/mondo/code/trunk/modelio).
 * (optional) [BIMserver 1.4.0 (also due to imcompatible licenses)](http://bimserver.org/)
