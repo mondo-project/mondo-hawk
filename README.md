@@ -3,6 +3,8 @@ mondo-hawk
 
 Public repository for the prototype of the Hawk scalable model indexing system.
 
+[![Travis status](https://api.travis-ci.org/mondo-project/mondo-hawk.svg?branch=master)](https://travis-ci.org/mondo-project/mondo-hawk)
+
 Dependencies
 ------------
 
