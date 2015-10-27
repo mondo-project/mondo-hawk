@@ -7,12 +7,12 @@
         status="integration">
 	</info>
 	<dependencies>
-		<dependency org="com.orientechnologies" name="orientdb-graphdb" rev="2.2.0-beta">
+		<dependency org="com.orientechnologies" name="orientdb-graphdb" rev="2.1.4">
 			<exclude org="com.orientechnologies" module="orientdb-server"/>
 			<exclude org="com.tinkerpop.gremlin" module="gremlin-groovy"/>
 			<exclude org="com.tinkerpop.gremlin" module="gremlin-java"/>
 		</dependency>
-		<dependency org="com.orientechnologies" name="orientdb-lucene" rev="2.2.0-beta">
+		<dependency org="com.orientechnologies" name="orientdb-lucene" rev="2.1.4">
 			<exclude org="com.orientechnologies" module="orientdb-server"/>
 			<exclude org="com.tinkerpop.gremlin" module="gremlin-groovy"/>
 			<exclude org="com.tinkerpop.gremlin" module="gremlin-java"/>
