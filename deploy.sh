@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit immediately if something goes wrong
+set -o errexit
+
 # Run the regular build
 mvn install
 
