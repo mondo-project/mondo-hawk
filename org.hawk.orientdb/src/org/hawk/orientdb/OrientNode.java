@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.hawk.orientdb;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.hawk.core.graph.IGraphDatabase;
@@ -19,8 +20,10 @@ import org.hawk.core.graph.IGraphNode;
 import com.orientechnologies.orient.core.id.ORID;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.impls.orient.OrientVertex;
+import com.tinkerpop.blueprints.util.StringFactory;
 
 public class OrientNode implements IGraphNode {
+	private static final String ID_NONRESERVED = "_nonOrientId";
 	private OrientDatabase graph;
 	private OrientVertex vertex;
 
@@ -36,17 +39,21 @@ public class OrientNode implements IGraphNode {
 
 	@Override
 	public Set<String> getPropertyKeys() {
-		return vertex.getPropertyKeys();
+		final Set<String> keys = new HashSet<>(vertex.getPropertyKeys());
+		if (keys.remove(ID_NONRESERVED)) {
+			keys.add(StringFactory.ID);
+		}
+		return keys;
 	}
 
 	@Override
 	public Object getProperty(String name) {
-		return vertex.getProperty(name);
+		return vertex.getProperty(mapToNonReservedProperty(name));
 	}
 
 	@Override
 	public void setProperty(String name, Object value) {
-		vertex.setProperty(name, value);
+		vertex.setProperty(mapToNonReservedProperty(name), value);
 	}
 
 	@Override
@@ -91,7 +98,7 @@ public class OrientNode implements IGraphNode {
 
 	@Override
 	public void removeProperty(String name) {
-		vertex.removeProperty(name);
+		vertex.removeProperty(mapToNonReservedProperty(name));
 	}
 
 	public OrientVertex getVertex() {
@@ -128,4 +135,15 @@ public class OrientNode implements IGraphNode {
 		return "OrientNode [" + vertex + "]";
 	}
 
+	/**
+	 * There are certain reserved property names in OrientDB which we can't use for vertices.
+	 * This maps from Hawk property names to OrientDB property names.
+	 */
+	private String mapToNonReservedProperty(String propertyName) {
+		if (StringFactory.ID.equals(propertyName)) {
+			return ID_NONRESERVED;
+		} else {
+			return propertyName;
+		}
+	}
 }

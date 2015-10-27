@@ -14,13 +14,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.util.DefaultConsole;
-import org.hawk.orientdb.OrientDatabase;
-import org.hawk.orientdb.OrientTransaction;
 import org.hawk.orientdb.util.FluidMap;
 import org.junit.After;
 import org.junit.Before;
@@ -54,7 +54,10 @@ public class GraphPopulationTest {
 	@Test
 	public void oneNodeBatch() {
 		db.enterBatchMode();
-		db.createNode(new HashMap<String, Object>(), "metamodel");
+		final String idValue = "http://foo.bar";
+		OrientNode n = db.createNode(FluidMap.create().add("id", idValue), "metamodel");
+		assertEquals(new HashSet<>(Arrays.asList("id")), n.getPropertyKeys());
+		assertEquals(idValue, n.getProperty("id"));
 		db.exitBatchMode();
 		assertEquals(1, db.allNodes("metamodel").size());
 	}

@@ -214,8 +214,9 @@ public class OrientDatabase implements IGraphDatabase {
 		}
 
 		if (v != null) {
+			final OrientNode oNode = new OrientNode(v, this);
 			for (Entry<String, Object> entry : properties.entrySet()) {
-				v.setProperty(entry.getKey(), entry.getValue());
+				oNode.setProperty(entry.getKey(), entry.getValue());
 			}
 		}
 
