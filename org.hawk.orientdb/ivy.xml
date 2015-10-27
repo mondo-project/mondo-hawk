@@ -7,16 +7,19 @@
         status="integration">
 	</info>
 	<dependencies>
-		<dependency org="com.orientechnologies" name="orientdb-graphdb" rev="2.1.4">
+		<dependency org="com.orientechnologies" name="orientdb-graphdb" rev="2.2.0-beta">
 			<exclude org="com.orientechnologies" module="orientdb-server"/>
 			<exclude org="com.tinkerpop.gremlin" module="gremlin-groovy"/>
 			<exclude org="com.tinkerpop.gremlin" module="gremlin-java"/>
 		</dependency>
-		<dependency org="com.orientechnologies" name="orientdb-lucene" rev="2.1.4">
+		<dependency org="com.orientechnologies" name="orientdb-lucene" rev="2.2.0-beta">
 			<exclude org="com.orientechnologies" module="orientdb-server"/>
 			<exclude org="com.tinkerpop.gremlin" module="gremlin-groovy"/>
 			<exclude org="com.tinkerpop.gremlin" module="gremlin-java"/>
 			<exclude org="com.tinkerpop.rexster" name="rexster-server" />
+			<exclude org="org.apache.lucene" name="lucene-spatial" />
+			<exclude org="org.apache.lucene" name="lucene-spatial3d" />
+			<exclude org="org.geotools" />
 		</dependency>
 	</dependencies>
 </ivy-module>

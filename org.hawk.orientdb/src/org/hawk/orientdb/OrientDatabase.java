@@ -26,6 +26,8 @@ import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.orientdb.indexes.OrientEdgeIndex;
 import org.hawk.orientdb.indexes.OrientNodeIndex;
 
+import com.orientechnologies.orient.core.config.OGlobalConfiguration;
+import com.orientechnologies.orient.core.intent.OIntentMassiveInsert;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Index;
 import com.tinkerpop.blueprints.Vertex;
@@ -67,9 +69,10 @@ public class OrientDatabase implements IGraphDatabase {
 	private IGraphNodeIndex metamodelIndex;
 	private IGraphNodeIndex fileIndex;
 
-	private OrientGraphFactory factory;
 	private OrientGraphNoTx batchGraph;
 	private OrientGraph txGraph;
+
+	private IConsole console;
 
 	public OrientDatabase() {
 		// nothing to do
@@ -84,9 +87,12 @@ public class OrientDatabase implements IGraphDatabase {
 	public void run(File parentfolder, IConsole c) {
 		this.storageFolder = parentfolder;
 		this.tempFolder = new File(storageFolder, "temp");
-		this.factory = new OrientGraphFactory("plocal:" + parentfolder.getAbsolutePath()).setupPool(1, 10);
+		this.console = c;
+		OGlobalConfiguration.WAL_CACHE_SIZE.setValue(10000);
+		OGlobalConfiguration.WAL_SYNC_ON_PAGE_FLUSH.setValue(false);
 
-		txGraph = factory.getTx();
+		// By default, we're on transactional mode
+		exitBatchMode();
 		metamodelIndex = getOrCreateNodeIndex(METAMODEL_IDX_NAME);
 		fileIndex = getOrCreateNodeIndex(FILE_IDX_NAME);
 	}
@@ -103,18 +109,20 @@ public class OrientDatabase implements IGraphDatabase {
 
 	private void shutdown(boolean delete) {
 		if (txGraph != null) {
-			txGraph.shutdown();
+			if (delete) {
+				txGraph.drop();
+			} else {
+				txGraph.shutdown();
+			}
+			txGraph = null;
 		}
 		if (batchGraph != null) {
-			batchGraph.shutdown();
-		}
-	
-		if (factory != null) {
 			if (delete) {
-				factory.drop();
+				batchGraph.drop();
 			} else {
-				factory.close();
+				batchGraph.shutdown();
 			}
+			batchGraph = null;
 		}
 	
 		metamodelIndex = fileIndex = null;
@@ -128,12 +136,19 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public IGraphEdgeIndex getOrCreateEdgeIndex(String name) {
-		enterBatchMode();
+		final boolean wasTransactional = txGraph != null;
+		if (wasTransactional) {
+			enterBatchMode();
+		}
+
 		Index<Edge> idx = batchGraph.getIndex(name, Edge.class);
 		if (idx == null) {
 			idx = batchGraph.createIndex(name, Edge.class);
 		}
-		exitBatchMode();
+
+		if (wasTransactional) {
+			exitBatchMode();
+		}
 		return new OrientEdgeIndex(name, idx, this);
 	}
 
@@ -155,7 +170,7 @@ public class OrientDatabase implements IGraphDatabase {
 			exitBatchMode();
 		}
 
-		return new OrientTransaction(txGraph);
+		return new OrientTransaction(this);
 	}
 
 	@Override
@@ -170,7 +185,14 @@ public class OrientDatabase implements IGraphDatabase {
 			txGraph = null;
 		}
 		if (batchGraph == null) {
-			batchGraph = factory.getNoTx();
+			OGlobalConfiguration.USE_WAL.setValue(false);
+			batchGraph = new OrientGraphFactory("plocal:" + storageFolder.getAbsolutePath()).setupPool(1, 10).getNoTx();
+			batchGraph.declareIntent(new OIntentMassiveInsert());
+			batchGraph.setUseLog(false);
+			batchGraph.getRawGraph().setMVCC(false);
+			batchGraph.getRawGraph().setValidationEnabled(false);
+			batchGraph.setUseLightweightEdges(true);
+			console.println("Entering batch mode");
 		}
 	}
 
@@ -181,7 +203,14 @@ public class OrientDatabase implements IGraphDatabase {
 			batchGraph = null;
 		}
 		if (txGraph == null) {
-			txGraph = factory.getTx();
+			OGlobalConfiguration.USE_WAL.setValue(true);
+			txGraph = new OrientGraphFactory("plocal:" + storageFolder.getAbsolutePath()).setupPool(1, 10).getTx();
+			txGraph.declareIntent(new OIntentMassiveInsert());
+			txGraph.setUseLog(false);
+			txGraph.getRawGraph().setMVCC(false);
+			txGraph.getRawGraph().setValidationEnabled(false);
+			txGraph.setUseLightweightEdges(true);
+			console.println("Entering transactional mode");
 		}
 	}
 
@@ -215,9 +244,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 		if (v != null) {
 			final OrientNode oNode = new OrientNode(v, this);
-			for (Entry<String, Object> entry : properties.entrySet()) {
-				oNode.setProperty(entry.getKey(), entry.getValue());
-			}
+			oNode.setProperties(properties);
 		}
 
 		return new OrientNode(v, this);
@@ -227,9 +254,16 @@ public class OrientDatabase implements IGraphDatabase {
 		if (getGraph().getVertexType(vertexTypeName) == null) {
 			// OrientDB exits the transaction to create new types anyway:
 			// this prevents having a warning printed to the console about it
-			enterBatchMode();
+			final boolean wasTransactional = txGraph != null;
+			if (wasTransactional) {
+				enterBatchMode();
+			}
+
 			batchGraph.createVertexType(vertexTypeName);
-			exitBatchMode();
+
+			if (wasTransactional) {
+				exitBatchMode();
+			}
 		}
 	}
 
@@ -269,8 +303,10 @@ public class OrientDatabase implements IGraphDatabase {
 	@Override
 	public OrientBaseGraph getGraph() {
 		if (txGraph != null) {
+			txGraph.getRawGraph().activateOnCurrentThread();
 			return txGraph;
 		} else {
+			batchGraph.getRawGraph().activateOnCurrentThread();
 			return batchGraph;
 		}
 	}

@@ -12,3 +12,7 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.emf.common.util
+Export-Package: org.hawk.emf,
+ org.hawk.emf.metamodel,
+ org.hawk.emf.model,
+ org.hawk.emf.model.util

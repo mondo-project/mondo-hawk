@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/bundles/jettison-1.3.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/bundles/log4j-1.2.16.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/bundles/metrics-core-3.0.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/bundles/snappy-java-1.1.0.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/bundles/spatial4j-0.4.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-analyzers-common-4.7.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-core-4.7.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-facet-4.7.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-memory-4.7.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-misc-4.7.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-queries-4.7.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-queryparser-4.7.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-sandbox-4.7.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-spatial-4.7.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-lucene-2.1.4.jar" sourcepath="/home/antonio/src/orientdb-lucene"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/activation-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/ant-1.7.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/ant-launcher-1.7.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/aopalliance-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/blueprints-core-2.6.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/bsh-2.0b4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/commons-beanutils-1.7.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/commons-beanutils-core-1.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/commons-collections-3.2.1.jar"/>
@@ -25,7 +14,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/jars/commons-lang-2.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/commons-logging-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/concurrentlinkedhashmap-lru-1.4.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/hibernate-jpa-2.0-api-1.0.0.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/guice-4.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/hamcrest-core-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/hppc-0.6.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/jackson-annotations-2.2.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/jackson-core-2.2.3.jar"/>
@@ -34,22 +24,46 @@
 	<classpathentry exported="true" kind="lib" path="lib/jars/jackson-jaxrs-1.9.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/jackson-mapper-asl-1.9.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/jackson-xc-1.9.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/javassist-3.16.1-GA.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/javax.inject-1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/javax.servlet-api-3.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/jaxb-api-2.2.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/jaxb-impl-2.2.3-1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/jcommander-1.48.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/jersey-json-1.17.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/jna-4.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/jna-platform-4.0.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-client-2.1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-core-2.1.4.jar" sourcepath="/home/antonio/src/orientdb/core"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-enterprise-2.1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-graphdb-2.1.4.jar" sourcepath="/home/antonio/src/orientdb/graphdb"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-object-2.1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-tools-2.1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/jts-1.13.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/junit-4.10.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-analyzers-common-5.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-backward-codecs-5.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-core-5.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-facet-5.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-memory-5.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-misc-5.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-queries-5.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-queryparser-5.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-sandbox-5.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/mockito-core-1.10.19.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/objenesis-2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-client-2.2.0-beta.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-core-2.2.0-beta.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-enterprise-2.2.0-beta.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-graphdb-2.2.0-beta.jar" sourcepath="/home/antonio/src/orientdb"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-lucene-2.2.0-beta.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-test-commons-2.2.0-beta.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-tools-2.2.0-beta.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/rexster-core-2.6.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/stax-api-1.0-2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/stax-api-1.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/testng-6.9.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/bundles/assertj-core-2.2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/bundles/guava-16.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/bundles/jettison-1.3.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/bundles/log4j-1.2.16.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/bundles/metrics-core-3.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/bundles/snakeyaml-1.15.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/bundles/snappy-java-1.1.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/bundles/spatial4j-0.4.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>

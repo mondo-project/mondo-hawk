@@ -219,7 +219,6 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 											+ " CLASSES FOUND FOR: " + arg0);
 
 						tx.success();
-						tx.close();
 					}
 
 				} else {

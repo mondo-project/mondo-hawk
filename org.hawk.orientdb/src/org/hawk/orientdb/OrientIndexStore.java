@@ -30,28 +30,29 @@ public class OrientIndexStore {
 	private static final String NODEIDX_PROP = "nodeIndexes";
 	private static final String NODEFIELDIDX_PREFIX = "nidx_";
 
-	private final Vertex vIndexStore;
+	private static Vertex vIndexStore;
 
-	public OrientIndexStore(Vertex vIndexStore) {
-		this.vIndexStore = vIndexStore;
+	public OrientIndexStore() {
+
 	}
 
 	public static OrientIndexStore getInstance(OrientDatabase db) {
-		final String vertexTypeName = OrientDatabase.VERTEX_TYPE_PREFIX + VCLASS;
-		db.ensureVertexTypeExists(vertexTypeName);
+		if (vIndexStore == null) {
+			final String vertexTypeName = OrientDatabase.VERTEX_TYPE_PREFIX + VCLASS;
+			db.ensureVertexTypeExists(vertexTypeName);
 
-		final OrientBaseGraph graph = db.getGraph();
-		Iterator<Vertex> itIndexStore = graph.getVerticesOfClass(vertexTypeName).iterator();
-		Vertex vIndexStore = null;
-		if (!itIndexStore.hasNext()) {
-			final HashMap<String, Object> idxStoreProps = new HashMap<>();
-			idxStoreProps.put(NODEIDX_PROP, new String[]{});
-			vIndexStore = db.createNode(idxStoreProps, VCLASS).getVertex();
-		} else {
-			vIndexStore = itIndexStore.next();
+			final OrientBaseGraph graph = db.getGraph();
+			Iterator<Vertex> itIndexStore = graph.getVerticesOfClass(vertexTypeName).iterator();
+			if (!itIndexStore.hasNext()) {
+				final HashMap<String, Object> idxStoreProps = new HashMap<>();
+				idxStoreProps.put(NODEIDX_PROP, new String[] {});
+				vIndexStore = db.createNode(idxStoreProps, VCLASS).getVertex();
+			} else {
+				vIndexStore = itIndexStore.next();
+			}
 		}
 
-		return new OrientIndexStore(vIndexStore);
+		return new OrientIndexStore();
 	}
 
 	/**

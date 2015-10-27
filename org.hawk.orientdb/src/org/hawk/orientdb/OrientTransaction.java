@@ -12,24 +12,24 @@ package org.hawk.orientdb;
 
 import org.hawk.core.graph.IGraphTransaction;
 
-import com.tinkerpop.blueprints.impls.orient.OrientGraph;
+import com.tinkerpop.blueprints.impls.orient.OrientBaseGraph;
 
 public class OrientTransaction implements IGraphTransaction {
 
-	private OrientGraph graph;
+	private OrientDatabase graph;
 
-	public OrientTransaction(OrientGraph orientGraph) {
-		this.graph = orientGraph;
+	public OrientTransaction(OrientDatabase orientDatabase) {
+		this.graph = orientDatabase;
 	}
 
 	@Override
 	public void success() {
-		graph.commit();
+		graph.getGraph().commit();
 	}
 
 	@Override
 	public void failure() {
-		graph.rollback();
+		graph.getGraph().rollback();
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class OrientTransaction implements IGraphTransaction {
 		// graph.shutdown();
 	}
 
-	public OrientGraph getOrientGraph() {
-		return graph;
+	public OrientBaseGraph getOrientGraph() {
+		return graph.getGraph();
 	}
 }

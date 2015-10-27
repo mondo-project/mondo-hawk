@@ -10,13 +10,17 @@
  ******************************************************************************/
 package org.hawk.orientdb;
 
+import java.lang.reflect.Array;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 
+import com.orientechnologies.orient.core.db.record.OTrackedList;
 import com.orientechnologies.orient.core.id.ORID;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.impls.orient.OrientVertex;
@@ -48,7 +52,30 @@ public class OrientNode implements IGraphNode {
 
 	@Override
 	public Object getProperty(String name) {
-		return vertex.getProperty(mapToNonReservedProperty(name));
+		final Object value = vertex.getProperty(mapToNonReservedProperty(name));
+		if (value instanceof OTrackedList<?>) {
+			final OTrackedList<?> cValue = (OTrackedList<?>)value;
+			Class<?> genericClass = cValue.getGenericClass();
+			if (genericClass == null && !cValue.isEmpty()) {
+				genericClass = cValue.get(0).getClass();
+			}
+			final Object[] newArray = (Object[])Array.newInstance(genericClass, cValue.size());
+			return cValue.toArray(newArray);
+		}
+		return value;
+	}
+
+	public void setProperties(Map<String, Object> props) {
+		if (!props.containsKey(StringFactory.ID)) {
+			vertex.setProperties(props);
+		} else {
+			final Map<String, Object> copy = new HashMap<>();
+			copy.putAll(props);
+			Object oldValue = copy.get(StringFactory.ID);
+			copy.remove(StringFactory.ID);
+			copy.put(ID_NONRESERVED, oldValue);
+			vertex.setProperties(props);
+		}
 	}
 
 	@Override

@@ -118,7 +118,11 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 		@Override
 		public Iterator<OIdentifiable> query() {
 			final boolean requiresLucene = requiresLuceneIndex(valueExpr);
-			OIndex<?> index = getOrCreateFieldIndex(key, valueExpr.getClass(), requiresLucene);
+			final OIndex<?> index = getIndexManager().getIndex(requiresLucene ? getLuceneIndexName(key) : getExactIndexName(key));
+			if (index == null) {
+				return Collections.emptyListIterator();
+			}
+
 			if ("*".equals(valueExpr)) {
 				return index.cursor();
 			} else if (requiresLucene) {
@@ -371,7 +375,10 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 		final OIndexManager indexManager = getIndexManager();
 
 		// Indexes have to be created outside transactions
-		graph.enterBatchMode();
+		final boolean wasTransactional = graph.currentMode() == OrientDatabase.TX_MODE;
+		if (wasTransactional) {
+			graph.enterBatchMode();
+		}
 
 		if (keyClass == String.class) {
 			// Lucene index, for prefix*suffix queries with string keys
@@ -398,15 +405,17 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 
 		OrientIndexStore.getInstance(graph).addNodeFieldIndex(name, field);
 
-		graph.exitBatchMode();
+		if (wasTransactional) {
+			graph.exitBatchMode();
+		}
 	}
 
 	private String getExactIndexName(final String field) {
-		return name + SEPARATOR_EXACT + field;
+		return name + SEPARATOR_EXACT + field.replace(':', '!');
 	}
 
 	private String getLuceneIndexName(final String field) {
-		return name + SEPARATOR_LUCENE + field;
+		return name + SEPARATOR_LUCENE + field.replace(':', '!');
 	}
 
 	private OIndexManager getIndexManager() {

@@ -6,4 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: University of York
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Fragment-Host: org.hawk.orientdb;bundle-version="1.0.0"
-Require-Bundle: org.junit;bundle-version="4.11.0"
+Require-Bundle: org.junit;bundle-version="4.11.0",
+ org.hawk.emf;bundle-version="1.0.0",
+ org.hawk.epsilon;bundle-version="1.0.0",
+ org.hawk.graph;bundle-version="1.0.0",
+ org.hawk.localfolder;bundle-version="1.0.0"

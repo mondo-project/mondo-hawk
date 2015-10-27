@@ -64,15 +64,18 @@ public class GraphWrapper {
 
 		final Set<FileNode> files = new LinkedHashSet<>();
 		final IGraphNodeIndex fileIndex = graph.getFileIndex();
-		for(String repo : repoPatterns){
-		for (String file : filePatterns) {
-			final String fullPattern = repo.trim()
-					+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
-					+ file.trim();
-			for (IGraphNode n : fileIndex.query("id", fullPattern)) {
-				files.add(new FileNode(n));
+		for (String repo : repoPatterns) {
+			for (String file : filePatterns) {
+				String fullPattern;
+				if ("*".equals(repo) && "*".equals(file)) {
+					fullPattern = "*";
+				} else {
+					fullPattern = repo.trim() + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + file.trim();
+				}
+				for (IGraphNode n : fileIndex.query("id", fullPattern)) {
+					files.add(new FileNode(n));
+				}
 			}
-		}
 		}
 		return files;
 	}
