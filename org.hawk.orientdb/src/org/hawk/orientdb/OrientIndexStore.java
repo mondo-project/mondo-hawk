@@ -12,13 +12,10 @@ package org.hawk.orientdb;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.blueprints.impls.orient.OrientBaseGraph;
 
 /**
  * Stores metadata about the indexes that have been created for Hawk, as Hawk
@@ -26,33 +23,16 @@ import com.tinkerpop.blueprints.impls.orient.OrientBaseGraph;
  */
 public class OrientIndexStore {
 
-	private static final String VCLASS = "hawkIndexStore";
 	private static final String NODEIDX_PROP = "nodeIndexes";
 	private static final String NODEFIELDIDX_PREFIX = "nidx_";
 
-	private static Vertex vIndexStore;
+	private final Vertex vIndexStore;
 
-	public OrientIndexStore() {
-
-	}
-
-	public static OrientIndexStore getInstance(OrientDatabase db) {
-		if (vIndexStore == null) {
-			final String vertexTypeName = OrientDatabase.VERTEX_TYPE_PREFIX + VCLASS;
-			db.ensureVertexTypeExists(vertexTypeName);
-
-			final OrientBaseGraph graph = db.getGraph();
-			Iterator<Vertex> itIndexStore = graph.getVerticesOfClass(vertexTypeName).iterator();
-			if (!itIndexStore.hasNext()) {
-				final HashMap<String, Object> idxStoreProps = new HashMap<>();
-				idxStoreProps.put(NODEIDX_PROP, new String[] {});
-				vIndexStore = db.createNode(idxStoreProps, VCLASS).getVertex();
-			} else {
-				vIndexStore = itIndexStore.next();
-			}
+	public OrientIndexStore(Vertex v) {
+		this.vIndexStore = v;
+		if (v.getProperty(NODEIDX_PROP) == null) {
+			v.setProperty(NODEIDX_PROP, new String[] {});
 		}
-
-		return new OrientIndexStore();
 	}
 
 	/**

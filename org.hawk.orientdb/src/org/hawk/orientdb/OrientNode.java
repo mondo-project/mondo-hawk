@@ -66,14 +66,14 @@ public class OrientNode implements IGraphNode {
 	}
 
 	public void setProperties(Map<String, Object> props) {
-		if (!props.containsKey(StringFactory.ID)) {
-			vertex.setProperties(props);
-		} else {
+		if (props.containsKey(StringFactory.ID)) {
 			final Map<String, Object> copy = new HashMap<>();
 			copy.putAll(props);
 			Object oldValue = copy.get(StringFactory.ID);
 			copy.remove(StringFactory.ID);
 			copy.put(ID_NONRESERVED, oldValue);
+			vertex.setProperties(copy);
+		} else {
 			vertex.setProperties(props);
 		}
 	}

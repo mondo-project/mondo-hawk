@@ -26,7 +26,6 @@ import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
 import org.hawk.graph.internal.updater.GraphModelUpdater;
 import org.hawk.localfolder.LocalFolder;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -64,19 +63,18 @@ public class ModelQueryTest {
 	private ModelIndexerImpl indexer;
 	private CEOLQueryEngine queryEngine;
 
-	@Before
-	public void setup() throws Exception {
+	public void setup(String testCaseName) throws Exception {
 		final File dbFolder = new File("testdb");
 		deleteRecursively(dbFolder);
 		dbFolder.mkdir();
 
-		final File indexerFolder = new File("testindexer");
+		final File indexerFolder = new File("testindexer" + testCaseName);
 		deleteRecursively(indexerFolder);
 		indexerFolder.mkdir();
 
 		console = new DefaultConsole();
 		db = new OrientDatabase();
-		db.run(dbFolder, console);
+		db.run("memory:model_" + testCaseName, dbFolder, console);
 
 		final FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(new File("keystore"), "admin".toCharArray());
 
@@ -100,7 +98,8 @@ public class ModelQueryTest {
 	}
 
 	@Test
-	public void treeModel() throws Throwable {
+	public void tree() throws Throwable {
+		setup("tree");
 		indexer.registerMetamodel(new File("resources/metamodels/Ecore.ecore"));
 		indexer.registerMetamodel(new File("resources/metamodels/Tree.ecore"));
 
@@ -120,6 +119,7 @@ public class ModelQueryTest {
 
 	@Test
 	public void set0() throws Throwable {
+		setup("set0");
 		indexer.registerMetamodel(new File("resources/metamodels/Ecore.ecore"));
 		indexer.registerMetamodel(new File("resources/metamodels/JDTAST.ecore"));
 

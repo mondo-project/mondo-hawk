@@ -13,7 +13,6 @@ package org.hawk.orientdb;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,7 +22,6 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.util.DefaultConsole;
 import org.hawk.orientdb.util.FluidMap;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -33,12 +31,6 @@ public class GraphPopulationTest {
 
 	private OrientDatabase db;
 
-	@Before
-	public void setup() {
-		db = new OrientDatabase();
-		db.run(new File("testdb"), new DefaultConsole());
-	}
-
 	@After
 	public void teardown() throws Exception {
 		db.delete();
@@ -46,6 +38,8 @@ public class GraphPopulationTest {
 
 	@Test
 	public void oneNode() {
+		db = new OrientDatabase();
+		db.run("memory:oneNode", null, new DefaultConsole());
 		assertEquals(0, db.allNodes("eobject").size());
 		db.createNode(new HashMap<String, Object>(), "eobject");
 		assertEquals(1, db.allNodes("eobject").size());
@@ -53,6 +47,8 @@ public class GraphPopulationTest {
 
 	@Test
 	public void oneNodeBatch() {
+		db = new OrientDatabase();
+		db.run("memory:oneNodeBatch", null, new DefaultConsole());
 		db.enterBatchMode();
 		final String idValue = "http://foo.bar";
 		OrientNode n = db.createNode(FluidMap.create().add("id", idValue), "metamodel");
@@ -64,6 +60,8 @@ public class GraphPopulationTest {
 
 	@Test
 	public void oneNodeRollback() {
+		db = new OrientDatabase();
+		db.run("memory:oneNodeRollback", null, new DefaultConsole());
 		try (OrientTransaction tx = db.beginTransaction()) {
 			db.createNode(new HashMap<String, Object>(), "metamodel");
 			assertEquals(1, db.allNodes("metamodel").size());
@@ -74,6 +72,9 @@ public class GraphPopulationTest {
 
 	@Test
 	public void twoNodesBatch() {
+		db = new OrientDatabase();
+		db.run("memory:twoNodesBatch", null, new DefaultConsole());
+
 		db.enterBatchMode();
 		IGraphNode x1 = db.createNode(FluidMap.create().add("x", 1), "eobject");
 		IGraphNode x10 = db.createNode(FluidMap.create().add("x", 10), "eobject");

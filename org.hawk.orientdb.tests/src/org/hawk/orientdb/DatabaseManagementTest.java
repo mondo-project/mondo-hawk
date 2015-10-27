@@ -28,7 +28,6 @@ import java.util.Set;
 
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.util.DefaultConsole;
-import org.hawk.orientdb.OrientDatabase;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,7 +49,7 @@ public class DatabaseManagementTest {
 	@Test
 	public void testStartShutdown() throws Exception {
 		OrientDatabase db = new OrientDatabase();
-		db.run(dbDirectory, new DefaultConsole());
+		db.run("memory:testStartShutdown", null, new DefaultConsole());
 		final Set<String> expectedIndexes = new HashSet<>(
 			Arrays.asList(OrientDatabase.FILE_IDX_NAME, OrientDatabase.METAMODEL_IDX_NAME));
 		assertEquals(expectedIndexes, db.getNodeIndexNames());
@@ -70,7 +69,7 @@ public class DatabaseManagementTest {
 	@Test
 	public void testStartTransaction() throws Exception {
 		OrientDatabase db = new OrientDatabase();
-		db.run(dbDirectory, new DefaultConsole());
+		db.run("memory:testStartTransaction", null, new DefaultConsole());
 
 		assertEquals(OrientDatabase.TX_MODE, db.currentMode());
 		try (IGraphTransaction tx = db.beginTransaction()) {

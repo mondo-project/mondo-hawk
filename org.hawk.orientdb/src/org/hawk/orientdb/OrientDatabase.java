@@ -11,7 +11,14 @@
 package org.hawk.orientdb;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,7 +34,10 @@ import org.hawk.orientdb.indexes.OrientEdgeIndex;
 import org.hawk.orientdb.indexes.OrientNodeIndex;
 
 import com.orientechnologies.orient.core.config.OGlobalConfiguration;
+import com.orientechnologies.orient.core.id.ORecordId;
+import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.intent.OIntentMassiveInsert;
+import com.orientechnologies.orient.core.metadata.OMetadataDefault;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Index;
 import com.tinkerpop.blueprints.Vertex;
@@ -44,6 +54,12 @@ import com.tinkerpop.blueprints.impls.orient.OrientVertex;
  * index for now).
  */
 public class OrientDatabase implements IGraphDatabase {
+
+	/** Dictionary-style index always defined by OrientDB. Useful for root vertices in a graph. */
+	private static final String DICTIONARY_IDX_NAME = "dictionary";
+
+	/** Vertex class for the Hawk index store. */
+	private static final String VCLASS = "hawkIndexStore";
 
 	/** Prefix for qualifying all edge types (edge and vertex types share same namespace). */
 	static final String EDGE_TYPE_PREFIX = "E_";
@@ -74,6 +90,8 @@ public class OrientDatabase implements IGraphDatabase {
 
 	private IConsole console;
 
+	private OrientGraphFactory factory;
+
 	public OrientDatabase() {
 		// nothing to do
 	}
@@ -85,9 +103,16 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public void run(File parentfolder, IConsole c) {
+		run("plocal:" + parentfolder.getAbsolutePath(), parentfolder, c);
+	}
+
+	public void run(String iURL, File parentfolder, IConsole c) {
 		this.storageFolder = parentfolder;
 		this.tempFolder = new File(storageFolder, "temp");
 		this.console = c;
+
+		console.println("Starting database " + iURL);
+		this.factory = new OrientGraphFactory(iURL).setupPool(1, 10);
 		OGlobalConfiguration.WAL_CACHE_SIZE.setValue(10000);
 		OGlobalConfiguration.WAL_SYNC_ON_PAGE_FLUSH.setValue(false);
 
@@ -109,20 +134,23 @@ public class OrientDatabase implements IGraphDatabase {
 
 	private void shutdown(boolean delete) {
 		if (txGraph != null) {
-			if (delete) {
-				txGraph.drop();
-			} else {
-				txGraph.shutdown();
-			}
+			txGraph.shutdown();
 			txGraph = null;
 		}
 		if (batchGraph != null) {
-			if (delete) {
-				batchGraph.drop();
-			} else {
-				batchGraph.shutdown();
-			}
+			batchGraph.shutdown();
 			batchGraph = null;
+		}
+		if (factory != null) {
+			factory.close();
+		}
+
+		if (delete && storageFolder != null) {
+			try {
+				deleteRecursively(storageFolder);
+			} catch (IOException e) {
+				console.printerrln(e);
+			}
 		}
 	
 		metamodelIndex = fileIndex = null;
@@ -186,13 +214,12 @@ public class OrientDatabase implements IGraphDatabase {
 		}
 		if (batchGraph == null) {
 			OGlobalConfiguration.USE_WAL.setValue(false);
-			batchGraph = new OrientGraphFactory("plocal:" + storageFolder.getAbsolutePath()).setupPool(1, 10).getNoTx();
+			batchGraph = factory.getNoTx();
 			batchGraph.declareIntent(new OIntentMassiveInsert());
 			batchGraph.setUseLog(false);
 			batchGraph.getRawGraph().setMVCC(false);
 			batchGraph.getRawGraph().setValidationEnabled(false);
 			batchGraph.setUseLightweightEdges(true);
-			console.println("Entering batch mode");
 		}
 	}
 
@@ -204,13 +231,12 @@ public class OrientDatabase implements IGraphDatabase {
 		}
 		if (txGraph == null) {
 			OGlobalConfiguration.USE_WAL.setValue(true);
-			txGraph = new OrientGraphFactory("plocal:" + storageFolder.getAbsolutePath()).setupPool(1, 10).getTx();
+			txGraph = factory.getTx();
 			txGraph.declareIntent(new OIntentMassiveInsert());
 			txGraph.setUseLog(false);
 			txGraph.getRawGraph().setMVCC(false);
 			txGraph.getRawGraph().setValidationEnabled(false);
 			txGraph.setUseLightweightEdges(true);
-			console.println("Entering transactional mode");
 		}
 	}
 
@@ -305,10 +331,11 @@ public class OrientDatabase implements IGraphDatabase {
 		if (txGraph != null) {
 			txGraph.getRawGraph().activateOnCurrentThread();
 			return txGraph;
-		} else {
+		} else if (batchGraph != null) {
 			batchGraph.getRawGraph().activateOnCurrentThread();
 			return batchGraph;
 		}
+		return null;
 	}
 
 	@Override
@@ -329,8 +356,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public boolean nodeIndexExists(String name) {
-		OrientIndexStore store = OrientIndexStore.getInstance(this);
-		return store.getNodeIndexNames().contains(name);
+		return getIndexStore().getNodeIndexNames().contains(name);
 	}
 
 	@Override
@@ -372,7 +398,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public Set<String> getNodeIndexNames() {
-		return new HashSet<String>(OrientIndexStore.getInstance(this).getNodeIndexNames());
+		return new HashSet<String>(getIndexStore().getNodeIndexNames());
 	}
 
 	@Override
@@ -399,10 +425,30 @@ public class OrientDatabase implements IGraphDatabase {
 		return null;
 	}
 
+	public OrientIndexStore getIndexStore() {
+		final String vertexTypeName = OrientDatabase.VERTEX_TYPE_PREFIX + VCLASS;
+		ensureVertexTypeExists(vertexTypeName);
+
+		final OrientBaseGraph graph = getGraph();
+		final OMetadataDefault metadata = graph.getRawGraph().getMetadata();
+		final OIndex<?> dictIndex = metadata.getIndexManager().getIndex(DICTIONARY_IDX_NAME);
+		ORecordId idIndexStore = (ORecordId)dictIndex.get(VCLASS);
+		OrientVertex vIndexStore;
+		if (idIndexStore == null) {
+			final HashMap<String, Object> idxStoreProps = new HashMap<>();
+			vIndexStore = createNode(idxStoreProps, VCLASS).getVertex();
+			dictIndex.put(VCLASS, vIndexStore);
+		} else {
+			vIndexStore = graph.getVertex(idIndexStore);
+		}
+
+		return new OrientIndexStore(vIndexStore);
+	}
+
 	private Set<String> getIndexNames(final Class<?> klass) {
 		try (OrientTransaction tx = beginTransaction()) {
 			final Set<String> names = new HashSet<>();
-			for (Index<?> idx : tx.getOrientGraph().getIndices()) {
+			for (Index<?> idx : txGraph.getIndices()) {
 				if (klass == idx.getIndexClass()) {
 					names.add(idx.getIndexName());
 				}
@@ -410,5 +456,24 @@ public class OrientDatabase implements IGraphDatabase {
 			tx.success();
 			return names;
 		}
+	}
+
+	private static void deleteRecursively(File f) throws IOException {
+		if (!f.exists()) return;
+
+		Files.walkFileTree(f.toPath(), new SimpleFileVisitor<Path>() {
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+				Files.delete(file);
+				return FileVisitResult.CONTINUE;
+			}
+
+			@Override
+			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+				Files.delete(dir);
+				return FileVisitResult.CONTINUE;
+			}
+
+		});
 	}
 }

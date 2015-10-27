@@ -13,7 +13,6 @@ package org.hawk.orientdb;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -23,10 +22,8 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.util.DefaultConsole;
-import org.hawk.orientdb.OrientDatabase;
 import org.hawk.orientdb.util.FluidMap;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -36,10 +33,9 @@ public class IndexTest {
 
 	private OrientDatabase db;
 
-	@Before
-	public void setup() {
+	public void setup(String testCase) {
 		db = new OrientDatabase();
-		db.run(new File("testdb"), new DefaultConsole());
+		db.run("memory:index_test_" + testCase, null, new DefaultConsole());
 	}
 
 	@After
@@ -49,6 +45,8 @@ public class IndexTest {
 
 	@Test
 	public void query() {
+		setup("query");
+
 		final String mmBarURI = "http://foo/bar";
 		final String mmFileURI = "file://a/b/c.d";
 		final FluidMap mmBarNodeProps = FluidMap.create().add(IModelIndexer.IDENTIFIER_PROPERTY, mmBarURI);
@@ -91,6 +89,7 @@ public class IndexTest {
 
 	@Test
 	public void removeByNode() {
+		setup("removeByNode");
 		final String mmBarURI = populateForRemove();
 
 		// NOTE: changes in Lucene indexes are not complete until we commit the transaction
@@ -104,6 +103,7 @@ public class IndexTest {
 
 	@Test
 	public void removeByFullKey() {
+		setup("removeByFullKey");
 		final String mmBarURI = populateForRemove();
 
 		final IGraphIterable<IGraphNode> iter = checkBeforeRemove(mmBarURI);
@@ -116,6 +116,7 @@ public class IndexTest {
 
 	@Test
 	public void removeByValueNode() {
+		setup("removeByValueNode");
 		final String mmBarURI = populateForRemove();
 		final IGraphIterable<IGraphNode> iter = checkBeforeRemove(mmBarURI);
 		try (IGraphTransaction tx = db.beginTransaction()) {
@@ -127,6 +128,7 @@ public class IndexTest {
 
 	@Test
 	public void removeByFieldNode() {
+		setup("removeByFieldNode");
 		final String mmBarURI = populateForRemove();
 
 		final IGraphIterable<IGraphNode> iter = checkBeforeRemove(mmBarURI);
@@ -139,6 +141,7 @@ public class IndexTest {
 
 	@Test
 	public void removeByNode3Arg() {
+		setup("removeByNode3Arg");
 		final String mmBarURI = populateForRemove();
 
 		// NOTE: changes in Lucene indexes are not complete until we commit the transaction
@@ -152,6 +155,7 @@ public class IndexTest {
 
 	@Test
 	public void integerRanges() {
+		setup("removeByIntegerRanges");
 		final String mmBarURI = "http://foo/bar";
 		final FluidMap mmBarNodeProps = FluidMap.create().add(IModelIndexer.IDENTIFIER_PROPERTY, mmBarURI);
 
@@ -183,6 +187,7 @@ public class IndexTest {
 
 	@Test
 	public void floatingRanges() {
+		setup("floatingRanges");
 		final String mmBarURI = "http://foo/bar";
 		final FluidMap mmBarNodeProps = FluidMap.create().add(IModelIndexer.IDENTIFIER_PROPERTY, mmBarURI);
 

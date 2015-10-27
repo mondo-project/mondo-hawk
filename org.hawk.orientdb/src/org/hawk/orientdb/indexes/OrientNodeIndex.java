@@ -148,7 +148,7 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 		this.name = name;
 		this.graph = graph;
 
-		final OrientIndexStore idxStore = OrientIndexStore.getInstance(graph);
+		final OrientIndexStore idxStore = graph.getIndexStore();
 		idxStore.addNodeIndex(name);
 	}
 
@@ -161,7 +161,7 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 	public IGraphIterable<IGraphNode> query(final String key, Object valueExpr) {
 		valueExpr = normalizeValue(valueExpr);
 		if ("*".equals(key)) {
-			final Set<String> valueIdxNames = OrientIndexStore.getInstance(graph).getNodeFieldIndexNames(name);
+			final Set<String> valueIdxNames = graph.getIndexStore().getNodeFieldIndexNames(name);
 			final Iterable<OIndexCursorFactory> iterFactories = new StarKeyValueOIndexCursorFactoryIterable(valueExpr, valueIdxNames);
 			return new IndexCursorFactoriesIterable(iterFactories, graph);
 		} else {
@@ -273,7 +273,7 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 	@Override
 	public void remove(IGraphNode n) {
 		final OrientNode oNode = (OrientNode)n;
-		final OrientIndexStore store = OrientIndexStore.getInstance(graph);
+		final OrientIndexStore store = graph.getIndexStore();
 		for (String fieldName : store.getNodeFieldIndexNames(name)) {
 			remove(fieldName, oNode);
 		}
@@ -286,7 +286,7 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 		if (field == null && value == null) {
 			remove(n);
 		} else if (field == null) {
-			final OrientIndexStore store = OrientIndexStore.getInstance(graph);
+			final OrientIndexStore store = graph.getIndexStore();
 			for (String fieldName : store.getNodeFieldIndexNames(name)) {
 				remove(fieldName, value, n);
 			}
@@ -338,7 +338,7 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 
 	@Override
 	public void delete() {
-		OrientIndexStore store = OrientIndexStore.getInstance(graph);
+		OrientIndexStore store = graph.getIndexStore();
 		for (String fieldName : store.getNodeFieldIndexNames(name)) {
 			final OIndex<?> exactIndex = getIndexManager().getIndex(getExactIndexName(fieldName));
 			if (exactIndex != null) {
@@ -403,7 +403,7 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 		final OSimpleKeyIndexDefinition exactIndexDef = new OSimpleKeyIndexDefinition(exactFactory.getLastVersion(), keyType);
 		indexManager.createIndex(exactName, "NOTUNIQUE", exactIndexDef, null, null, null, "SBTREE");
 
-		OrientIndexStore.getInstance(graph).addNodeFieldIndex(name, field);
+		graph.getIndexStore().addNodeFieldIndex(name, field);
 
 		if (wasTransactional) {
 			graph.exitBatchMode();
