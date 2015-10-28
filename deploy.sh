@@ -4,7 +4,7 @@
 set -o errexit
 
 # Run the regular build
-mvn install
+mvn --quiet install
 
 # Clone the gh-pages branch
 rm -rf out || true
