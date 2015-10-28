@@ -111,10 +111,12 @@ public class OrientDatabase implements IGraphDatabase {
 		this.tempFolder = new File(storageFolder, "temp");
 		this.console = c;
 
-		console.println("Starting database " + iURL);
-		this.factory = new OrientGraphFactory(iURL).setupPool(1, 10);
 		OGlobalConfiguration.WAL_CACHE_SIZE.setValue(10000);
 		OGlobalConfiguration.WAL_SYNC_ON_PAGE_FLUSH.setValue(false);
+		OGlobalConfiguration.OBJECT_SAVE_ONLY_DIRTY.setValue(true);
+
+		console.println("Starting database " + iURL);
+		this.factory = new OrientGraphFactory(iURL);
 
 		// By default, we're on transactional mode
 		exitBatchMode();

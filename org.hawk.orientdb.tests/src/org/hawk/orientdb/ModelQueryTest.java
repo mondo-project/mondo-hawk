@@ -74,7 +74,7 @@ public class ModelQueryTest {
 
 		console = new DefaultConsole();
 		db = new OrientDatabase();
-		db.run("memory:model_" + testCaseName, dbFolder, console);
+		db.run("plocal:" + dbFolder.getAbsolutePath(), dbFolder, console);
 
 		final FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(new File("keystore"), "admin".toCharArray());
 
