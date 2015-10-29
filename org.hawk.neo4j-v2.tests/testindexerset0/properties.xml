@@ -1,0 +1,11 @@
+<hawkProperties>
+  <dbType>org.hawk.neo4j_v2.Neo4JDatabase</dbType>
+  <monitoredVCS class="set">
+    <string-array>
+      <string>file:///opt/antonio-workspaces/mondo-hawk/org.hawk.neo4j-v2.tests/resources/models/set0/</string>
+      <string>org.hawk.localfolder.LocalFolder</string>
+    </string-array>
+  </monitoredVCS>
+  <minDelay>0</minDelay>
+  <maxDelay>0</maxDelay>
+</hawkProperties>

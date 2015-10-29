@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hawk Neo4j Driver Tests
+Bundle-SymbolicName: org.hawk.neo4j-v2.tests
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: University of York
+Fragment-Host: org.hawk.neo4j-v2;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.junit;bundle-version="4.11.0",
+ org.hawk.emf;bundle-version="1.0.0",
+ org.hawk.localfolder;bundle-version="1.0.0",
+ org.hawk.epsilon;bundle-version="1.0.0"
