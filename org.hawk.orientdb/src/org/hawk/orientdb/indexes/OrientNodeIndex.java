@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.lucene.queryparser.classic.QueryParser;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
@@ -37,43 +36,23 @@ import com.orientechnologies.orient.core.index.OIndexManagerProxy;
 import com.orientechnologies.orient.core.index.OIndexes;
 import com.orientechnologies.orient.core.index.OSimpleKeyIndexDefinition;
 import com.orientechnologies.orient.core.metadata.schema.OType;
-import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.tinkerpop.blueprints.impls.orient.OrientBaseGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientExtendedVertex;
 
 /**
- * Logical index for nodes, which combines exact indexes (based on an SBTree)
- * with Lucene indexes. Both are needed, since Lucene indexes do not support
- * iterating over all values. Vertex indexes are not useful either, as they
- * would not easily support iterating over all values indexed with a certain
- * field.
+ * Logical index for nodes, which uses a set of SBTree indexes. We can't use the
+ * indexes in the OrientDB Graph API, because they do not support querying.
+ * However, the raw indexing API has only one level of naming for indexes. To
+ * overcome this, adding a key to a field F for the first time will create a new
+ * index of each type named <code>name SEPARATOR_SBTREE F</code>.
  *
- * Additionally, OrientDB has only one level of naming for indexes. To overcome
- * this, adding a key to a field F for the first time will create a new index of
- * each type named <code>name SEPARATOR_EXACT F</code> and
- * <code>name SEPARATOR_LUCENE F</code>, respectively.
+ * Star queries are implemented using range queries, with additional filtering if
+ * we have more than one star in the query string.
  *
  * Node index names and node index field names are kept in a singleton vertex
  * type, maintained by the {@link OrientIndexStore} class.
  */
 public class OrientNodeIndex implements IGraphNodeIndex {
-
-	private static final class EmptyIGraphIterable implements IGraphIterable<IGraphNode> {
-		@Override
-		public Iterator<IGraphNode> iterator() {
-			return Collections.emptyListIterator();
-		}
-
-		@Override
-		public int size() {
-			return 0;
-		}
-
-		@Override
-		public IGraphNode getSingle() {
-			return null;
-		}
-	}
 
 	private final class StarKeyValueOIndexCursorFactoryIterable implements Iterable<OIndexCursorFactory> {
 		private final Object valueExpr;
@@ -117,29 +96,57 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 
 		@Override
 		public Iterator<OIdentifiable> query() {
-			final boolean requiresLucene = requiresLuceneIndex(valueExpr);
-			final OIndex<?> index = getIndexManager().getIndex(requiresLucene ? getLuceneIndexName(key) : getExactIndexName(key));
+			final OIndex<?> index = getIndexManager().getIndex(getSBTreeIndexName(key));
 			if (index == null) {
 				return Collections.emptyListIterator();
 			}
 
-			if ("*".equals(valueExpr)) {
-				return index.cursor();
-			} else if (requiresLucene) {
-				final Object escaped = QueryParser.escape(valueExpr.toString()).replace("\\*", "*");
-				return index.iterateEntries(Collections.singleton(escaped), false);
-			} else {
+			if (!(valueExpr instanceof String)) {
+				// Not a string: go straight to the value
 				return index.iterateEntries(Collections.singleton(valueExpr), false);
 			}
+
+			final String sValueExpr = valueExpr.toString();
+			final int starPosition = sValueExpr.indexOf('*');
+			if (starPosition < 0) {
+				// No '*' found: go straight to the value
+				return index.iterateEntries(Collections.singleton(valueExpr), false);
+			}
+			else if (starPosition == 0) {
+				// value expr starts with "*"
+				if (sValueExpr.length() == 1) {
+					// value expr is "*": iterate over everything
+					return index.cursor();
+				} else {
+					// value expr starts with "*": filter all entries based on the fragments between the *
+					final String[] fragments = sValueExpr.split("[*]");
+					final OIndexCursor cursor = index.cursor();
+					return new FragmentFilteredIndexCursor(fragments, cursor);
+				}
+			}
+			else if (starPosition == sValueExpr.length() - 1) {
+				final String prefix = sValueExpr.substring(0, starPosition);
+				return prefixCursor(index, prefix);
+			} else {
+				// value expr has one or more "*" inside: use prefix to first * as a filter and
+				// then wrap with a proper filter for the rest
+				final String[] fragments = sValueExpr.split("[*]");
+				final OIndexCursor cursor = prefixCursor(index, sValueExpr.substring(0, starPosition));
+				return new FragmentFilteredIndexCursor(fragments, cursor);
+			}
+		}
+
+		private OIndexCursor prefixCursor(OIndex<?> index, String prefix) {
+			// prefix is S + C + "*", where S is a substring and C is a character:
+			// do ranged query between S + C and S + (C+1) (the next Unicode code point)
+			final char lastChar = prefix.charAt(prefix.length() - 1);
+			final String rangeStart = prefix;
+			final String rangeEnd = prefix.substring(0, rangeStart.length() - 1) + Character.toString((char)(lastChar+1));
+			return index.iterateEntriesBetween(rangeStart, true, rangeEnd, true, false);
 		}
 	}
 
-	static boolean requiresLuceneIndex(Object valueExpr) {
-		return valueExpr instanceof String && !"*".equals(valueExpr) && valueExpr.toString().contains("*");
-	}
-
-	private static final String SEPARATOR_EXACT = "_@exact@_";
-	private static final String SEPARATOR_LUCENE = "_@lucene@_";
+	private static final String SEPARATOR_SBTREE = "_@sbtree@_";
 
 	private String name;
 	private OrientDatabase graph;
@@ -172,28 +179,28 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 
 	@Override
 	public IGraphIterable<IGraphNode> query(final String key, final int from, final int to, final boolean fromInclusive, final boolean toInclusive) {
-		final OIndex<?> exactIndex = getIndexManager().getIndex(getExactIndexName(key));
-		if (exactIndex == null) {
+		final OIndex<?> idx = getIndexManager().getIndex(getSBTreeIndexName(key));
+		if (idx == null) {
 			return new EmptyIGraphIterable();
 		}
 		return new IndexCursorFactoryIterable(new OIndexCursorFactory() {
 			@Override
 			public Iterator<OIdentifiable> query() {
-				return exactIndex.iterateEntriesBetween(from, fromInclusive, to, toInclusive, false);
+				return idx.iterateEntriesBetween(from, fromInclusive, to, toInclusive, false);
 			}
 		}, graph);
 	}
 
 	@Override
 	public IGraphIterable<IGraphNode> query(final String key, final double from, final double to, final boolean fromInclusive, final boolean toInclusive) {
-		final OIndex<?> exactIndex = getIndexManager().getIndex(getExactIndexName(key));
-		if (exactIndex == null) {
+		final OIndex<?> idx = getIndexManager().getIndex(getSBTreeIndexName(key));
+		if (idx == null) {
 			return new EmptyIGraphIterable();
 		}
 		return new IndexCursorFactoryIterable(new OIndexCursorFactory() {
 			@Override
 			public Iterator<OIdentifiable> query() {
-				return exactIndex.iterateEntriesBetween(from, fromInclusive, to, toInclusive, false);
+				return idx.iterateEntriesBetween(from, fromInclusive, to, toInclusive, false);
 			}
 		}, graph);
 	}
@@ -202,7 +209,7 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 	@Override
 	public IGraphIterable<IGraphNode> get(final String key, Object valueExpr) {
 		valueExpr = normalizeValue(valueExpr);
-		final OIndex<?> idx = getOrCreateFieldIndex(key, valueExpr.getClass(), requiresLuceneIndex(valueExpr));
+		final OIndex<?> idx = getOrCreateFieldIndex(key, valueExpr.getClass());
 		final Collection<OIdentifiable> resultSet = (Collection<OIdentifiable>) idx.get(valueExpr);
 		return new IGraphIterable<IGraphNode>() {
 			@Override
@@ -240,13 +247,8 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 			final String field = entry.getKey();
 			final Object valueExpr = normalizeValue(entry.getValue());
 			final Class<?> valueClass = valueExpr.getClass();
-			final OIndex<?> exactIndex = getOrCreateFieldIndex(field, valueClass, false);
-
-			exactIndex.put(valueExpr, eVertex.getRecord());
-			if (valueExpr instanceof String) {
-				final OIndex<?> luceneIndex = getOrCreateFieldIndex(field, valueClass, true);
-				luceneIndex.put(valueExpr, eVertex.getRecord());
-			}
+			final OIndex<?> idx = getOrCreateFieldIndex(field, valueClass);
+			idx.put(valueExpr, eVertex.getRecord());
 		}
 	}
 
@@ -295,36 +297,27 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 		} else {
 			value = normalizeValue(value);
 
-			final OIndex<?> exactIndex = getIndexManager().getIndex(getExactIndexName(field));
-			if (exactIndex != null) {
-				exactIndex.remove(value, oNode.getVertex());
-			}
-
-			final OIndex<?> luceneIndex = getIndexManager().getIndex(getLuceneIndexName(field));
-			if (luceneIndex != null) {
-				luceneIndex.remove(value, oNode.getVertex());
+			final OIndex<?> idx = getIndexManager().getIndex(getSBTreeIndexName(field));
+			if (idx != null) {
+				idx.remove(value, oNode.getVertex());
 			}
 		}
 	}
 
 	private void remove(String field, final OrientNode n) {
 		final List<Object> keysToRemove = new ArrayList<>();
-		final OIndex<?> exactIndex = getIndexManager().getIndex(getExactIndexName(field));
-		if (exactIndex == null) return;
+		final OIndex<?> idx = getIndexManager().getIndex(getSBTreeIndexName(field));
+		if (idx == null) return;
 
-		final OIndexCursor exactCursor = exactIndex.cursor();
-		for (Entry<Object, OIdentifiable> entry = exactCursor.nextEntry(); entry != null; entry = exactCursor.nextEntry()) {
+		final OIndexCursor cursor = idx.cursor();
+		for (Entry<Object, OIdentifiable> entry = cursor.nextEntry(); entry != null; entry = cursor.nextEntry()) {
 			if (n.getId().equals(entry.getValue().getIdentity())) {
 				keysToRemove.add(entry.getKey());
 			}
 		}
 
-		final OIndex<?> luceneIndex = getIndexManager().getIndex(getLuceneIndexName(field));
-		if (luceneIndex != null) {
-			for (Object o : keysToRemove) {
-				exactIndex.remove(o, n.getVertex());
-				luceneIndex.remove(o, n.getVertex());
-			}
+		for (Object key : keysToRemove) {
+			idx.remove(key);
 		}
 	}
 
@@ -340,26 +333,21 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 	public void delete() {
 		OrientIndexStore store = graph.getIndexStore();
 		for (String fieldName : store.getNodeFieldIndexNames(name)) {
-			final OIndex<?> exactIndex = getIndexManager().getIndex(getExactIndexName(fieldName));
-			if (exactIndex != null) {
-				exactIndex.delete();
-			}
-
-			final OIndex<?> luceneIndex = getIndexManager().getIndex(getLuceneIndexName(fieldName));
-			if (luceneIndex != null) {
-				luceneIndex.delete();
+			final OIndex<?> idx = getIndexManager().getIndex(getSBTreeIndexName(fieldName));
+			if (idx != null) {
+				idx.delete();
 			}
 		}
 		store.removeNodeIndex(name);
 	}
 
-	private OIndex<?> getOrCreateFieldIndex(final String field, final Class<?> valueClass, final boolean requiresLucene) {
-		final String idxName = requiresLucene ? getLuceneIndexName(field) : getExactIndexName(field);
+	private OIndex<?> getOrCreateFieldIndex(final String field, final Class<?> valueClass) {
+		final String idxName = getSBTreeIndexName(field);
 		final OIndexManager indexManager = getIndexManager();
 		OIndex<?> idx = indexManager.getIndex(idxName);
 
 		if (idx == null) {
-			createIndexes(field, valueClass);
+			createIndex(field, valueClass);
 
 			// We need to fetch again the index: using the one that was just
 			// created will result in multithreading exceptions from OrientDB
@@ -369,9 +357,9 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 	}
 
 	/**
-	 * Creates the exact and Lucene indexes paired to this field within this logical index. 
+	 * Creates the SBTree index paired to this field within this logical index.
 	 */
-	private void createIndexes(final String field, final Class<?> keyClass) {
+	private void createIndex(final String field, final Class<?> keyClass) {
 		final OIndexManager indexManager = getIndexManager();
 
 		// Indexes have to be created outside transactions
@@ -380,16 +368,7 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 			graph.enterBatchMode();
 		}
 
-		if (keyClass == String.class) {
-			// Lucene index, for prefix*suffix queries with string keys
-			final String luceneName = getLuceneIndexName(field);
-			final OIndexFactory luceneFactory = OIndexes.getFactory("FULLTEXT", "LUCENE");
-			final OSimpleKeyIndexDefinition indexDefinition = new OSimpleKeyIndexDefinition(luceneFactory.getLastVersion(), OType.STRING);
-			final ODocument metadata = new ODocument().field("analyzer", "org.apache.lucene.analysis.core.WhitespaceAnalyzer");
-			indexManager.createIndex(luceneName, "FULLTEXT", indexDefinition, null, null, metadata, "LUCENE");
-		}
-
-		// Exact index key type
+		// Index key type
 		OType keyType = OType.STRING;
 		if (keyClass == Byte.class || keyClass == Short.class || keyClass == Integer.class || keyClass == Long.class) {
 			keyType = OType.INTEGER;
@@ -397,11 +376,11 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 			keyType = OType.DOUBLE;
 		}
 
-		// Exact index, for exact queries, numeric ranges and iteration
-		final String exactName = getExactIndexName(field);
-		final OIndexFactory exactFactory = OIndexes.getFactory("NOTUNIQUE", "SBTREE");
-		final OSimpleKeyIndexDefinition exactIndexDef = new OSimpleKeyIndexDefinition(exactFactory.getLastVersion(), keyType);
-		indexManager.createIndex(exactName, "NOTUNIQUE", exactIndexDef, null, null, null, "SBTREE");
+		// Create SBTree NOTUNIQUE index
+		final String idxName = getSBTreeIndexName(field);
+		final OIndexFactory idxFactory = OIndexes.getFactory("NOTUNIQUE", "SBTREE");
+		final OSimpleKeyIndexDefinition indexDef = new OSimpleKeyIndexDefinition(idxFactory.getLastVersion(), keyType);
+		indexManager.createIndex(idxName, "NOTUNIQUE", indexDef, null, null, null, "SBTREE");
 
 		graph.getIndexStore().addNodeFieldIndex(name, field);
 
@@ -410,12 +389,8 @@ public class OrientNodeIndex implements IGraphNodeIndex {
 		}
 	}
 
-	private String getExactIndexName(final String field) {
-		return name + SEPARATOR_EXACT + field.replace(':', '!');
-	}
-
-	private String getLuceneIndexName(final String field) {
-		return name + SEPARATOR_LUCENE + field.replace(':', '!');
+	private String getSBTreeIndexName(final String field) {
+		return name + SEPARATOR_SBTREE + field.replace(':', '!');
 	}
 
 	private OIndexManager getIndexManager() {

@@ -26,19 +26,10 @@
 	<classpathentry exported="true" kind="lib" path="lib/jars/jersey-json-1.17.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/jna-4.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/jna-platform-4.0.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-analyzers-common-4.7.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-core-4.7.0.jar" sourcepath="/home/antonio/src/lucene_solr_4_7_0/lucene"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-facet-4.7.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-memory-4.7.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-misc-4.7.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-queries-4.7.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-queryparser-4.7.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-sandbox-4.7.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-client-2.1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-core-2.1.4.jar" sourcepath="/home/antonio/src"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-core-2.1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-enterprise-2.1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-graphdb-2.1.4.jar" sourcepath="/home/antonio/src/orientdb"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-lucene-2.1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-graphdb-2.1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-object-2.1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-tools-2.1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/rexster-core-2.6.0.jar"/>
@@ -48,7 +39,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/bundles/log4j-1.2.16.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bundles/metrics-core-3.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bundles/snappy-java-1.1.0.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/bundles/spatial4j-0.4.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>

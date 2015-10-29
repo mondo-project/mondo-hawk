@@ -237,6 +237,10 @@ public class IndexTest {
 		assertEquals(0, iter3.size());
 		final IGraphIterable<IGraphNode> iter4 = db.getMetamodelIndex().query("id", "file://*");
 		assertEquals(1, iter4.size());
+		final IGraphIterable<IGraphNode> iter5 = db.getMetamodelIndex().query("id", "fil*://*");
+		assertEquals(1, iter5.size());
+		final IGraphIterable<IGraphNode> iter6 = db.getMetamodelIndex().query("id", "*file://*");
+		assertEquals(1, iter6.size());
 	}
 
 	private IGraphIterable<IGraphNode> checkBeforeRemove(final String mmBarURI) {
