@@ -16,26 +16,28 @@ import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.orientdb.OrientDatabase;
 
-final class IndexCursorFactoriesIterable implements IGraphIterable<IGraphNode> {
+final class IndexCursorFactoriesIterable<T> implements IGraphIterable<T> {
 	private final Iterable<OIndexCursorFactory> iterFactories;
 	private final OrientDatabase graph;
+	private final Class<T> klass;
 
-	IndexCursorFactoriesIterable(Iterable<OIndexCursorFactory> iterFactories, OrientDatabase graph) {
+	IndexCursorFactoriesIterable(Iterable<OIndexCursorFactory> iterFactories, OrientDatabase graph, Class<T> klass) {
 		this.iterFactories = iterFactories;
 		this.graph = graph;
+		this.klass = klass;
 	}
 
 	@Override
-	public Iterator<IGraphNode> iterator() {
+	public Iterator<T> iterator() {
 		final Iterator<OIndexCursorFactory> itFactory = iterFactories.iterator(); 
-		return new Iterator<IGraphNode>() {
-			Iterator<IGraphNode> currentIterator = null;
+		return new Iterator<T>() {
+			Iterator<T> currentIterator = null;
 
 			@Override
 			public boolean hasNext() {
 				if (currentIterator == null || !currentIterator.hasNext()) {
 					if (itFactory.hasNext()) {
-						currentIterator = new IndexCursorFactoryIterable(itFactory.next(), graph).iterator();
+						currentIterator = new IndexCursorFactoryNodeIterable<>(itFactory.next(), graph, klass).iterator();
 					} else {
 						return false;
 					}
@@ -44,7 +46,7 @@ final class IndexCursorFactoriesIterable implements IGraphIterable<IGraphNode> {
 			}
 
 			@Override
-			public IGraphNode next() {
+			public T next() {
 				return currentIterator.next();
 			}
 
@@ -60,15 +62,15 @@ final class IndexCursorFactoriesIterable implements IGraphIterable<IGraphNode> {
 	public int size() {
 		int count = 0;
 		for (OIndexCursorFactory factory : iterFactories) {
-			count += new IndexCursorFactoryIterable(factory, graph).size();
+			count += new IndexCursorFactoryNodeIterable<>(factory, graph, klass).size();
 		}
 		return count;
 	}
 
 	@Override
-	public IGraphNode getSingle() {
+	public T getSingle() {
 		for (OIndexCursorFactory factory : iterFactories) {
-			Iterator<IGraphNode> it = new IndexCursorFactoryIterable(factory, graph).iterator();
+			Iterator<T> it = new IndexCursorFactoryNodeIterable<>(factory, graph, klass).iterator();
 			if (it.hasNext()) {
 				return it.next();
 			}

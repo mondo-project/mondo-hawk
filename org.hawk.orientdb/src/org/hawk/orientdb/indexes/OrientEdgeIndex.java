@@ -10,25 +10,25 @@
  ******************************************************************************/
 package org.hawk.orientdb.indexes;
 
+import java.util.Collection;
+import java.util.Set;
+
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphEdgeIndex;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.orientdb.OrientDatabase;
-import org.hawk.orientdb.OrientEdgeIterable;
+import org.hawk.orientdb.OrientIndexStore;
 
-import com.tinkerpop.blueprints.Edge;
-import com.tinkerpop.blueprints.Index;
+import com.orientechnologies.orient.core.db.record.OIdentifiable;
+import com.orientechnologies.orient.core.index.OIndex;
 
-public class OrientEdgeIndex implements IGraphEdgeIndex {
+public class OrientEdgeIndex extends AbstractOrientIndex implements IGraphEdgeIndex {
 
-	private String name;
-	private Index<Edge> index;
-	private OrientDatabase graph;
+	public OrientEdgeIndex(String name, OrientDatabase graph) {
+		super(name, graph, IndexType.EDGE);
 
-	public OrientEdgeIndex(String name, Index<Edge> idx, OrientDatabase graph) {
-		this.name = name;
-		this.index = idx;
-		this.graph = graph;
+		final OrientIndexStore idxStore = graph.getIndexStore();
+		idxStore.addEdgeIndex(name);
 	}
 
 	@Override
@@ -38,12 +38,28 @@ public class OrientEdgeIndex implements IGraphEdgeIndex {
 
 	@Override
 	public IGraphIterable<IGraphEdge> query(String key, Object valueExpr) {
-		return new OrientEdgeIterable(index.query(key, valueExpr), graph);
+		valueExpr = normalizeValue(valueExpr);
+		if ("*".equals(key)) {
+			final Set<String> valueIdxNames = graph.getIndexStore().getEdgeFieldIndexNames(name);
+			final Iterable<OIndexCursorFactory> iterFactories = new StarKeyValueOIndexCursorFactoryIterable(valueExpr, this, valueIdxNames);
+			return new IndexCursorFactoriesIterable<>(iterFactories, graph, IGraphEdge.class);
+		} else {
+			final SingleKeyValueQueryOIndexCursorFactory factory = new SingleKeyValueQueryOIndexCursorFactory(valueExpr, this, key);
+			return new IndexCursorFactoryNodeIterable<>(factory, graph, IGraphEdge.class);
+		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public IGraphIterable<IGraphEdge> get(String key, Object valueExpr) {
-		return new OrientEdgeIterable(index.get(key, valueExpr), graph);
+		valueExpr = normalizeValue(valueExpr);
+		final OIndex<?> idx = getIndexManager().getIndex(getSBTreeIndexName(key));
+		if (idx == null) {
+			return new EmptyIGraphIterable<>();
+		}
+
+		final Collection<OIdentifiable> resultSet = (Collection<OIdentifiable>) idx.get(valueExpr);
+		return new ResultSetIterable<>(resultSet, graph, IGraphEdge.class);
 	}
 
 }

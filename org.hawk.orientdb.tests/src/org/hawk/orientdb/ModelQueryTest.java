@@ -111,6 +111,7 @@ public class ModelQueryTest {
 		waitForSync(new Callable<Object>() {
 			@Override
 			public Object call() throws Exception {
+				assertEquals(2, queryEngine.getAllOfType("Tree").size());
 				assertEquals(2, queryEngine.contextlessQuery(db, "return Tree.all.size;"));
 				return null;
 			}
@@ -131,6 +132,7 @@ public class ModelQueryTest {
 		waitForSync(new Callable<Object>() {
 			@Override
 			public Object call() throws Exception {
+				assertEquals(1, queryEngine.getAllOfType("IJavaProject").size());
 				assertEquals(1, queryEngine.contextlessQuery(db, "return IJavaProject.all.size;"));
 				return null;
 			}

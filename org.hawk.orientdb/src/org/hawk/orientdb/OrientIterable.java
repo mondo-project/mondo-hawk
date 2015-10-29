@@ -16,8 +16,8 @@ import org.hawk.core.graph.IGraphIterable;
 
 public abstract class OrientIterable<T, U> implements IGraphIterable<T> {
 
-	private Iterable<U> iterableEdges;
-	private OrientDatabase graph;
+	protected final Iterable<U> iterableEdges;
+	protected final OrientDatabase graph;
 
 	public OrientIterable(Iterable<U> ret, OrientDatabase graph) {
 		this.iterableEdges = ret;

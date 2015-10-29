@@ -12,18 +12,17 @@ package org.hawk.orientdb;
 
 import org.hawk.core.graph.IGraphNode;
 
-import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.blueprints.impls.orient.OrientVertex;
+import com.orientechnologies.orient.core.record.impl.ODocument;
 
-public class OrientNodeIterable extends OrientIterable<IGraphNode, Vertex> {
+public class OrientNodeIterable extends OrientIterable<IGraphNode, ODocument> {
 
-	public OrientNodeIterable(Iterable<Vertex> ret, OrientDatabase graph) {
-		super(ret, graph);
+	public OrientNodeIterable(Iterable<ODocument> oRecordIteratorCluster, OrientDatabase graph) {
+		super(oRecordIteratorCluster, graph);
 	}
 
 	@Override
-	protected OrientNode convert(Vertex o) {
-		return new OrientNode((OrientVertex)o, getGraph());
+	protected OrientNode convert(ODocument o) {
+		return new OrientNode(o, getGraph());
 	}
 
 }

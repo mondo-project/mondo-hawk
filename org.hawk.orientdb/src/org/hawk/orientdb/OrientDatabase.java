@@ -27,6 +27,7 @@ import java.util.Set;
 import org.hawk.core.IConsole;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphEdgeIndex;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
@@ -34,16 +35,11 @@ import org.hawk.orientdb.indexes.OrientEdgeIndex;
 import org.hawk.orientdb.indexes.OrientNodeIndex;
 
 import com.orientechnologies.orient.core.config.OGlobalConfiguration;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import com.orientechnologies.orient.core.id.ORID;
+import com.orientechnologies.orient.core.id.ORecordId;
 import com.orientechnologies.orient.core.intent.OIntentMassiveInsert;
 import com.orientechnologies.orient.core.record.impl.ODocument;
-import com.tinkerpop.blueprints.Edge;
-import com.tinkerpop.blueprints.Index;
-import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.blueprints.impls.orient.OrientBaseGraph;
-import com.tinkerpop.blueprints.impls.orient.OrientGraph;
-import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
-import com.tinkerpop.blueprints.impls.orient.OrientGraphNoTx;
-import com.tinkerpop.blueprints.impls.orient.OrientVertex;
 
 /**
  * OrientDB backend for Hawk. Most things work, but it has two limitations:
@@ -84,11 +80,16 @@ public class OrientDatabase implements IGraphDatabase {
 	private IGraphNodeIndex metamodelIndex;
 	private IGraphNodeIndex fileIndex;
 
-	private OrientGraphNoTx batchGraph;
-	private OrientGraph txGraph;
+	private ODatabaseDocumentTx db;
 
 	private IConsole console;
-	private OrientGraphFactory factory;
+
+	private String dbURL;
+
+	private ODatabaseDocumentTx dbTx;
+
+	private Map<String, OrientNode> dirtyNodes = new HashMap<>(100_000);
+	private Map<String, OrientEdge> dirtyEdges = new HashMap<>(100_000);
 
 	public OrientDatabase() {
 		// nothing to do
@@ -114,7 +115,13 @@ public class OrientDatabase implements IGraphDatabase {
 		OGlobalConfiguration.OBJECT_SAVE_ONLY_DIRTY.setValue(true);
 
 		console.println("Starting database " + iURL);
-		this.factory = new OrientGraphFactory(iURL).setupPool(1, 10);
+		this.dbURL = iURL;
+		this.db = new ODatabaseDocumentTx(dbURL);
+		if (db.exists()) {
+			db.open("admin", "admin");
+		} else {
+			db.create();
+		}
 
 		// By default, we're on transactional mode
 		exitBatchMode();
@@ -133,17 +140,10 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	private void shutdown(boolean delete) {
-		if (txGraph != null) {
-			txGraph.shutdown();
-			txGraph = null;
+		if (!delete) {
+			saveDirty();
 		}
-		if (batchGraph != null) {
-			batchGraph.shutdown();
-			batchGraph = null;
-		}
-		if (factory != null) {
-			factory.close();
-		}
+		getGraph().close();
 
 		if (delete && storageFolder != null) {
 			try {
@@ -152,7 +152,7 @@ public class OrientDatabase implements IGraphDatabase {
 				console.printerrln(e);
 			}
 		}
-	
+
 		metamodelIndex = fileIndex = null;
 		storageFolder = tempFolder = null;
 	}
@@ -164,20 +164,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public IGraphEdgeIndex getOrCreateEdgeIndex(String name) {
-		final boolean wasTransactional = txGraph != null;
-		if (wasTransactional) {
-			enterBatchMode();
-		}
-
-		Index<Edge> idx = batchGraph.getIndex(name, Edge.class);
-		if (idx == null) {
-			idx = batchGraph.createIndex(name, Edge.class);
-		}
-
-		if (wasTransactional) {
-			exitBatchMode();
-		}
-		return new OrientEdgeIndex(name, idx, this);
+		return new OrientEdgeIndex(name, this);
 	}
 
 	@Override
@@ -192,12 +179,9 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public OrientTransaction beginTransaction() {
-		if (txGraph == null) {
-			System.err
-					.println("cant make transactions outside transactional mode, entering it now");
+		if (dbTx == null) {
 			exitBatchMode();
 		}
-
 		return new OrientTransaction(this);
 	}
 
@@ -208,87 +192,64 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public void enterBatchMode() {
-		if (txGraph != null) {
-			txGraph.shutdown();
-			txGraph = null;
+		if (dbTx != null) {
+			saveDirty();
+			dbTx.commit();
+			dbTx = null;
 		}
-		if (batchGraph == null) {
-			batchGraph = factory.getNoTx();
-			batchGraph.declareIntent(new OIntentMassiveInsert());
-			batchGraph.setUseLog(false);
-			batchGraph.getRawGraph().setMVCC(false);
-			batchGraph.getRawGraph().setValidationEnabled(false);
-			batchGraph.setUseLightweightEdges(true);
+		db.activateOnCurrentThread();
+		db.declareIntent(new OIntentMassiveInsert());
+		db.setMVCC(false);
+	}
+
+	public void saveDirty() {
+		for (OrientNode on : dirtyNodes.values()) {
+			on.getDocument().save();
 		}
+		for (OrientEdge oe : dirtyEdges.values()) {
+			oe.getDocument().save();
+		}
+		dirtyNodes.clear();
 	}
 
 	@Override
 	public void exitBatchMode() {
-		if (batchGraph != null) {
-			batchGraph.shutdown();
-			batchGraph = null;
+		if (dbTx == null) {
+			saveDirty();
+			dbTx = db.begin();
 		}
-		if (txGraph == null) {
-			txGraph = factory.getTx();
-			txGraph.declareIntent(new OIntentMassiveInsert());
-			txGraph.setUseLog(false);
-			txGraph.getRawGraph().setMVCC(false);
-			txGraph.getRawGraph().setValidationEnabled(false);
-			txGraph.setUseLightweightEdges(true);
-		}
+		dbTx.activateOnCurrentThread();
 	}
 
 	@Override
 	public OrientNodeIterable allNodes(String label) {
 		final String vertexTypeName = VERTEX_TYPE_PREFIX + label;
-		if (txGraph != null) {
-			if (txGraph.getVertexType(vertexTypeName) == null) {
-				return new OrientNodeIterable(new ArrayList<Vertex>(), this);
-			}
-			return new OrientNodeIterable(txGraph.getVerticesOfClass(vertexTypeName), this);
-		} else if (batchGraph != null) {
-			if (batchGraph.getVertexType(vertexTypeName) == null) {
-				return new OrientNodeIterable(new ArrayList<Vertex>(), this);
-			}
-			return new OrientNodeIterable(batchGraph.getVerticesOfClass(vertexTypeName), this);
+		return allNodes(vertexTypeName, dbTx != null ? dbTx : db);
+	}
+
+	private OrientNodeIterable allNodes(final String vertexTypeName, final ODatabaseDocumentTx dbDoc) {
+		final int clusterId = dbDoc.getClusterIdByName(vertexTypeName);
+		if (clusterId == -1) {
+			return new OrientNodeIterable(new ArrayList<ODocument>(), this);
 		}
-		return null;
+		return new OrientNodeIterable(dbDoc.browseCluster(vertexTypeName), this);
 	}
 
 	@Override
 	public OrientNode createNode(Map<String, Object> properties, String label) {
 		final String vertexTypeName = VERTEX_TYPE_PREFIX + label;
-		OrientVertex v = null;
-		if (txGraph != null) {
-			ensureVertexTypeExists(vertexTypeName);
-			v = txGraph.addVertex(vertexTypeName, (String)null);
-		} else if (batchGraph != null) {
-			v = batchGraph.addVertex(vertexTypeName, (String)null);
+
+		if (!db.getMetadata().getSchema().existsClass(vertexTypeName) && dbTx != null) {
+			enterBatchMode();
+			db.getMetadata().getSchema().createClass(vertexTypeName);
+			exitBatchMode();
 		}
+		ODocument newDoc = new ODocument(vertexTypeName);
+		final OrientNode oNode = new OrientNode(newDoc, this);
+		oNode.setProperties(properties);
+		newDoc.save();
 
-		if (v != null) {
-			final OrientNode oNode = new OrientNode(v, this);
-			oNode.setProperties(properties);
-		}
-
-		return new OrientNode(v, this);
-	}
-
-	public void ensureVertexTypeExists(final String vertexTypeName) {
-		if (getGraph().getVertexType(vertexTypeName) == null) {
-			// OrientDB exits the transaction to create new types anyway:
-			// this prevents having a warning printed to the console about it
-			final boolean wasTransactional = txGraph != null;
-			if (wasTransactional) {
-				enterBatchMode();
-			}
-
-			batchGraph.createVertexType(vertexTypeName);
-
-			if (wasTransactional) {
-				exitBatchMode();
-			}
-		}
+		return oNode;
 	}
 
 	@Override
@@ -297,19 +258,18 @@ public class OrientDatabase implements IGraphDatabase {
 		final OrientNode oEnd = (OrientNode)end;
 		final String edgeTypeName = EDGE_TYPE_PREFIX + type;
 
-		if (txGraph != null) {
-			if (txGraph.getEdgeType(edgeTypeName) == null) {
-				enterBatchMode();
-				batchGraph.createEdgeType(edgeTypeName);
-				exitBatchMode();
-			}
-			Edge e = txGraph.addEdge(null, oStart.getVertex(), oEnd.getVertex(), edgeTypeName);
-			return new OrientEdge(e, this);
-		} else if (batchGraph != null) {
-			Edge e = batchGraph.addEdge(null, oStart.getVertex(), oEnd.getVertex(), edgeTypeName);
-			return new OrientEdge(e, this);
+		if (!db.getMetadata().getSchema().existsClass(edgeTypeName) && dbTx != null) {
+			enterBatchMode();
+			db.getMetadata().getSchema().createClass(edgeTypeName);
+			exitBatchMode();
 		}
-		return null;
+
+		OrientEdge newEdge = OrientEdge.create(this, oStart, oEnd, type, edgeTypeName);
+		dirtyNodes.put(oStart.getId().toString(), oStart);
+		dirtyNodes.put(oEnd.getId().toString(), oEnd);
+		dirtyEdges.put(newEdge.getId().toString(), newEdge);
+
+		return newEdge;
 	}
 
 	@Override
@@ -320,35 +280,65 @@ public class OrientDatabase implements IGraphDatabase {
 				e.setProperty(entry.getKey(), entry.getValue());
 			}
 		}
+		dirtyEdges.put(e.getId().toString(), e);
 
 		return e;
 	}
 
 	@Override
-	public OrientBaseGraph getGraph() {
-		if (txGraph != null) {
-			txGraph.getRawGraph().activateOnCurrentThread();
-			return txGraph;
-		} else if (batchGraph != null) {
-			batchGraph.getRawGraph().activateOnCurrentThread();
-			return batchGraph;
+	public ODatabaseDocumentTx getGraph() {
+		if (dbTx != null) {
+			dbTx.activateOnCurrentThread();
+			return dbTx;
+		} else {
+			db.activateOnCurrentThread();
+			return db;
 		}
-		return null;
 	}
 
 	@Override
-	public IGraphNode getNodeById(Object id) {
-		OrientVertex v = null;
-		if (txGraph != null) {
-			v = txGraph.getVertex(id);
-		} else if (batchGraph != null) {
-			v = batchGraph.getVertex(id);
+	public OrientNode getNodeById(Object id) {
+		if (id instanceof String) {
+			id = new ORecordId(id.toString());
+		}
+		OrientNode dirtyNode = dirtyNodes.get(id.toString());
+		if (dirtyNode != null) {
+			return dirtyNode;
 		}
 
-		if (v == null) {
+		ODocument doc = getDocumentById(id);
+		if (doc == null) {
 			return null;
 		} else {
-			return new OrientNode(v, this);
+			return new OrientNode(doc, this);
+		}
+	}
+
+	private ODocument getDocumentById(Object id) {
+		ODocument doc = null;
+		if (dbTx != null) {
+			doc = dbTx.load((ORID)id);
+		} else {
+			doc = db.load((ORID)id);
+		}
+		return doc;
+	}
+
+	public OrientEdge getEdgeById(Object id) {
+		if (id instanceof String) {
+			id = new ORecordId(id.toString());
+		}
+		OrientEdge dirtyEdge = dirtyEdges.get(id.toString());
+		if (dirtyEdge != null) {
+			return dirtyEdge;
+		}
+
+		ODocument doc = getDocumentById(id);
+
+		if (doc == null) {
+			return null;
+		} else {
+			return new OrientEdge(doc, this);
 		}
 	}
 
@@ -359,11 +349,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public boolean edgeIndexExists(String name) {
-		try (OrientTransaction tx = beginTransaction()) {
-			final boolean ret = tx.getOrientGraph().getIndex(name, Vertex.class) != null;
-			tx.success();
-			return ret;
-		}
+		return getIndexStore().getEdgeIndexNames().contains(name);
 	}
 
 	@Override
@@ -391,7 +377,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public String currentMode() {
-		return batchGraph != null ? NOTX_MODE : TX_MODE;
+		return dbTx == null ? NOTX_MODE : TX_MODE;
 	}
 
 	@Override
@@ -401,7 +387,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public Set<String> getEdgeIndexNames() {
-		return getIndexNames(Edge.class);
+		return new HashSet<String>(getIndexStore().getEdgeIndexNames());
 	}
 
 	@Override
@@ -414,42 +400,16 @@ public class OrientDatabase implements IGraphDatabase {
 		return mmURIs;
 	}
 
-	public OrientVertex getVertex(Object id) {
-		if (txGraph != null) {
-			return txGraph.getVertex(id);
-		} else if (batchGraph != null) {
-			return batchGraph.getVertex(id);
-		}
-		return null;
-	}
-
 	public OrientIndexStore getIndexStore() {
-		final String vertexTypeName = OrientDatabase.VERTEX_TYPE_PREFIX + VCLASS;
-		ensureVertexTypeExists(vertexTypeName);
-
-		ODocument idIndexStore = getGraph().getRawGraph().getDictionary().get(VCLASS);
-		OrientVertex vIndexStore;
+		ODocument idIndexStore = getGraph().getDictionary().get(VCLASS);
+		OrientNode vIndexStore;
 		if (idIndexStore == null) {
 			final HashMap<String, Object> idxStoreProps = new HashMap<>();
-			vIndexStore = createNode(idxStoreProps, VCLASS).getVertex();
-			getGraph().getRawGraph().getDictionary().put(VCLASS, vIndexStore);
+			vIndexStore = createNode(idxStoreProps, VCLASS);
+			getGraph().getDictionary().put(VCLASS, vIndexStore.getDocument());
+			return new OrientIndexStore(vIndexStore);
 		} else {
-			vIndexStore = getGraph().getVertex(idIndexStore);
-		}
-
-		return new OrientIndexStore(vIndexStore);
-	}
-
-	private Set<String> getIndexNames(final Class<?> klass) {
-		try (OrientTransaction tx = beginTransaction()) {
-			final Set<String> names = new HashSet<>();
-			for (Index<?> idx : txGraph.getIndices()) {
-				if (klass == idx.getIndexClass()) {
-					names.add(idx.getIndexName());
-				}
-			}
-			tx.success();
-			return names;
+			 return new OrientIndexStore(new OrientNode(idIndexStore, this));
 		}
 	}
 
@@ -470,5 +430,56 @@ public class OrientDatabase implements IGraphDatabase {
 			}
 
 		});
+	}
+
+	public void deleteEdge(OrientEdge orientEdge) {
+		final OrientNode startNode = orientEdge.getStartNode();
+		final OrientNode endNode = orientEdge.getEndNode();
+		startNode.removeOutgoing(orientEdge);
+		endNode.removeIncoming(orientEdge);
+
+		dirtyNodes.put(startNode.getId().toString(), startNode);
+		dirtyNodes.put(endNode.getId().toString(), endNode);
+		orientEdge.getDocument().delete();
+	}
+
+	public void deleteNode(OrientNode orientNode) {
+		for (IGraphEdge edge : orientNode.getEdges()) {
+			deleteEdge((OrientEdge)edge);
+		}
+		dirtyNodes.remove(orientNode);
+		orientNode.getDocument().delete();
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T getElementById(ORID id, Class<T> klass) {
+		if (klass == OrientEdge.class || klass == IGraphEdge.class) {
+			return (T) getEdgeById(id);
+		} else if (klass == OrientNode.class || klass == IGraphNode.class) {
+			return (T) getNodeById(id);
+		} else {
+			return null;
+		}
+	}
+
+	public void markNodeAsDirty(OrientNode orientNode) {
+		dirtyNodes.put(orientNode.getId().toString(), orientNode);
+	}
+
+	public void unmarkNodeAsDirty(OrientNode orientNode) {
+		dirtyNodes.remove(orientNode.getId());
+	}
+
+	public void markEdgeAsDirty(OrientEdge orientEdge) {
+		dirtyEdges.put(orientEdge.getId().toString(), orientEdge);
+	}
+
+	public void unmarkEdgeAsDirty(OrientEdge orientEdge) {
+		dirtyEdges.remove(orientEdge.getId());
+	}
+
+	public void discardDirty() {
+		dirtyNodes.clear();
+		dirtyEdges.clear();
 	}
 }

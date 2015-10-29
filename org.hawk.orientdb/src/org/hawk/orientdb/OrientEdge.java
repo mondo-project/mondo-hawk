@@ -10,66 +10,89 @@
  ******************************************************************************/
 package org.hawk.orientdb;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.hawk.core.graph.IGraphEdge;
-import org.hawk.core.graph.IGraphNode;
 
-import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.blueprints.Edge;
-import com.tinkerpop.blueprints.impls.orient.OrientVertex;
+import com.orientechnologies.orient.core.id.ORID;
+import com.orientechnologies.orient.core.id.ORecordId;
+import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class OrientEdge implements IGraphEdge {
 
-	private Edge edge;
+	private static final String TYPE_PROPERTY = "@hawk@type";
+	private static final String FROM_PROPERTY = "@hawk@from";
+	private static final String TO_PROPERTY = "@hawk@to";
+
+	private ODocument edge;
 	private OrientDatabase db;
 
-	public OrientEdge(Edge e, OrientDatabase orientDatabase) {
-		this.edge = e;
+	public OrientEdge(ODocument newDoc, OrientDatabase orientDatabase) {
+		this.edge = newDoc;
 		this.db = orientDatabase;
+		edge.deserializeFields();
 	}
 
-	public Object getId() {
-		return edge.getId();
+	public ORID getId() {
+		return edge.getIdentity();
 	}
 
 	public String getType() {
-		return edge.getLabel().replaceFirst(OrientDatabase.EDGE_TYPE_PREFIX, "");
+		return edge.field(TYPE_PROPERTY).toString();
 	}
 
 	public Set<String> getPropertyKeys() {
-		return edge.getPropertyKeys();
+		final Set<String> fieldNames = new HashSet<>(Arrays.asList(edge.fieldNames()));
+		fieldNames.remove(TYPE_PROPERTY);
+		fieldNames.remove(FROM_PROPERTY);
+		fieldNames.remove(TO_PROPERTY);
+		return fieldNames;
 	}
 
 	public Object getProperty(String name) {
-		return edge.getProperty(name);
+		return edge.field(name);
 	}
 
 	public void setProperty(String name, Object value) {
-		edge.setProperty(name, value);
+		edge.field(name, value);
+		db.markEdgeAsDirty(this);
 	}
 
-	public IGraphNode getStartNode() {
-		return new OrientNode((OrientVertex) edge.getVertex(Direction.OUT), db);
+	public OrientNode getStartNode() {
+		return getNode(FROM_PROPERTY);
 	}
 
-	public IGraphNode getEndNode() {
-		return new OrientNode((OrientVertex) edge.getVertex(Direction.IN), db);
+	public OrientNode getEndNode() {
+		return getNode(TO_PROPERTY);
+	}
+
+	private OrientNode getNode(final String property) {
+		final Object value = edge.field(property);
+		if (value instanceof ODocument) {
+			ODocument doc = (ODocument) value;
+			return db.getNodeById(doc.getIdentity());
+		} else {
+			ORecordId id = (ORecordId) value;
+			return db.getNodeById(id.getIdentity());
+		}
 	}
 
 	public void delete() {
-		edge.remove();
+		db.deleteEdge(this);
 	}
 
 	public void removeProperty(String name) {
-		edge.removeProperty(name);
+		edge.removeField(name);
+		db.markEdgeAsDirty(this);
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
+		final int prime = 5381;
 		int result = 1;
-		result = prime * result + ((edge == null) ? 0 : edge.hashCode());
+		result = prime * result + ((edge == null) ? 0 : edge.getIdentity().hashCode());
 		return result;
 	}
 
@@ -85,7 +108,7 @@ public class OrientEdge implements IGraphEdge {
 		if (edge == null) {
 			if (other.edge != null)
 				return false;
-		} else if (!edge.equals(other.edge))
+		} else if (!edge.getIdentity().equals(other.edge.getIdentity()))
 			return false;
 		return true;
 	}
@@ -93,6 +116,23 @@ public class OrientEdge implements IGraphEdge {
 	@Override
 	public String toString() {
 		return "OrientEdge [" + edge + "]";
+	}
+
+	public ODocument getDocument() {
+		return edge;
+	}
+
+	public static OrientEdge create(OrientDatabase graph, OrientNode start, OrientNode end, String type, String edgeTypeName) {
+		ODocument newDoc = new ODocument(edgeTypeName);
+		newDoc.field(TYPE_PROPERTY, type);
+		newDoc.field(FROM_PROPERTY, start.getDocument().getIdentity());
+		newDoc.field(TO_PROPERTY, end.getDocument().getIdentity());
+
+		final OrientEdge newEdge = new OrientEdge(newDoc, graph);
+		start.addOutgoing(newEdge);
+		end.addIncoming(newEdge);
+
+		return newEdge;
 	}
 
 }

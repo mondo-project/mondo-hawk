@@ -14,11 +14,10 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import org.hawk.core.graph.IGraphIterable;
-import org.hawk.core.graph.IGraphNode;
 
-final class EmptyIGraphIterable implements IGraphIterable<IGraphNode> {
+final class EmptyIGraphIterable<T> implements IGraphIterable<T> {
 	@Override
-	public Iterator<IGraphNode> iterator() {
+	public Iterator<T> iterator() {
 		return Collections.emptyListIterator();
 	}
 
@@ -28,7 +27,7 @@ final class EmptyIGraphIterable implements IGraphIterable<IGraphNode> {
 	}
 
 	@Override
-	public IGraphNode getSingle() {
+	public T getSingle() {
 		return null;
 	}
 }

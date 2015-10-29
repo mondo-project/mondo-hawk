@@ -13,27 +13,27 @@ package org.hawk.orientdb.indexes;
 import java.util.Iterator;
 
 import org.hawk.core.graph.IGraphIterable;
-import org.hawk.core.graph.IGraphNode;
 import org.hawk.orientdb.OrientDatabase;
-import org.hawk.orientdb.OrientNode;
 
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.id.ORID;
 
-final class IndexCursorFactoryIterable implements IGraphIterable<IGraphNode> {
-	private OIndexCursorFactory factory;
-	private OrientDatabase graph;
+final class IndexCursorFactoryNodeIterable<T> implements IGraphIterable<T> {
+	private final OIndexCursorFactory factory;
+	private final OrientDatabase graph;
+	private final Class<T> klass;
 
-	IndexCursorFactoryIterable(OIndexCursorFactory factory, OrientDatabase graph) {
+	IndexCursorFactoryNodeIterable(OIndexCursorFactory factory, OrientDatabase graph, Class<T> klass) {
 		this.factory = factory;
 		this.graph = graph;
+		this.klass = klass;
 	}
 
 	@Override
-	public Iterator<IGraphNode> iterator() {
+	public Iterator<T> iterator() {
 		final Iterator<OIdentifiable> results = factory.query();
 
-		return new Iterator<IGraphNode>(){
+		return new Iterator<T>(){
 			@Override
 			public boolean hasNext() {
 				try {
@@ -46,9 +46,9 @@ final class IndexCursorFactoryIterable implements IGraphIterable<IGraphNode> {
 			}
 
 			@Override
-			public IGraphNode next() {
+			public T next() {
 				ORID id = results.next().getIdentity();
-				return new OrientNode(graph.getVertex(id), graph);
+				return graph.getElementById(id, klass);
 			}
 
 			@Override
@@ -61,7 +61,7 @@ final class IndexCursorFactoryIterable implements IGraphIterable<IGraphNode> {
 
 	@Override
 	public int size() {
-		final Iterator<IGraphNode> it = iterator();
+		final Iterator<T> it = iterator();
 		int count = 0;
 		while (it.hasNext()) {
 			it.next();
@@ -71,8 +71,8 @@ final class IndexCursorFactoryIterable implements IGraphIterable<IGraphNode> {
 	}
 
 	@Override
-	public IGraphNode getSingle() {
-		final Iterator<IGraphNode> it = iterator();
+	public T getSingle() {
+		final Iterator<T> it = iterator();
 		if (it.hasNext()) {
 			return it.next();
 		}

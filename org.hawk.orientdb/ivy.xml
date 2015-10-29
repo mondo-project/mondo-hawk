@@ -7,10 +7,8 @@
         status="integration">
 	</info>
 	<dependencies>
-		<dependency org="com.orientechnologies" name="orientdb-graphdb" rev="2.1.4">
+		<dependency org="com.orientechnologies" name="orientdb-enterprise" rev="2.1.4">
 			<exclude org="com.orientechnologies" module="orientdb-server"/>
-			<exclude org="com.tinkerpop.gremlin" module="gremlin-groovy"/>
-			<exclude org="com.tinkerpop.gremlin" module="gremlin-java"/>
 		</dependency>
 	</dependencies>
 </ivy-module>
