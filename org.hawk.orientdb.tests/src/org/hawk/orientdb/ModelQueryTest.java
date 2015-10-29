@@ -24,6 +24,7 @@ import org.hawk.emf.model.EMFModelResourceFactory;
 import org.hawk.epsilon.emc.CEOLQueryEngine;
 import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
 import org.hawk.graph.internal.updater.GraphModelUpdater;
+import org.hawk.graph.syncValidationListener.SyncValidationListener;
 import org.hawk.localfolder.LocalFolder;
 import org.junit.After;
 import org.junit.Test;
@@ -62,9 +63,10 @@ public class ModelQueryTest {
 	private OrientDatabase db;
 	private ModelIndexerImpl indexer;
 	private CEOLQueryEngine queryEngine;
+	private SyncValidationListener validationListener;
 
 	public void setup(String testCaseName) throws Exception {
-		final File dbFolder = new File("testdb");
+		final File dbFolder = new File("testdb" + testCaseName);
 		deleteRecursively(dbFolder);
 		dbFolder.mkdir();
 
@@ -87,13 +89,15 @@ public class ModelQueryTest {
 		indexer.addModelUpdater(new GraphModelUpdater());
 		indexer.setDB(db, true);
 		indexer.init(0, 0);
+		validationListener = new SyncValidationListener();
+		indexer.addGraphChangeListener(validationListener);
+		validationListener.setModelIndexer(indexer);
 	}
 
 	@After
 	public void teardown() throws Exception {
-		if (indexer != null) {
-			indexer.shutdown(ShutdownRequestType.ALWAYS);
-		}
+		indexer.removeGraphChangeListener(validationListener);
+		indexer.shutdown(ShutdownRequestType.ALWAYS);
 		db.delete();
 	}
 
@@ -111,6 +115,7 @@ public class ModelQueryTest {
 		waitForSync(new Callable<Object>() {
 			@Override
 			public Object call() throws Exception {
+				assertEquals(0, validationListener.getTotalErrors());
 				assertEquals(2, queryEngine.getAllOfType("Tree").size());
 				assertEquals(2, queryEngine.contextlessQuery(db, "return Tree.all.size;"));
 				return null;
@@ -132,6 +137,7 @@ public class ModelQueryTest {
 		waitForSync(new Callable<Object>() {
 			@Override
 			public Object call() throws Exception {
+				assertEquals(0, validationListener.getTotalErrors());
 				assertEquals(1, queryEngine.getAllOfType("IJavaProject").size());
 				assertEquals(1, queryEngine.contextlessQuery(db, "return IJavaProject.all.size;"));
 				return null;
@@ -143,7 +149,7 @@ public class ModelQueryTest {
 		final Semaphore sem = new Semaphore(0);
 		final SyncEndListener changeListener = new SyncEndListener(r, sem);
 		indexer.addGraphChangeListener(changeListener);
-		if (!sem.tryAcquire(600, TimeUnit.SECONDS)) {
+		if (!sem.tryAcquire(200, TimeUnit.SECONDS)) {
 			fail("Synchronization timed out");
 		} else {
 			indexer.removeGraphChangeListener(changeListener);

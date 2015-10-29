@@ -28,6 +28,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 
 	private ModelIndexerImpl hawk;
 	private int removedProxies;
+	private int totalErrors;
 
 	public SyncValidationListener() {
 		// osgi constructor
@@ -57,6 +58,10 @@ public class SyncValidationListener implements IGraphChangeListener {
 		validateChanges();
 	}
 
+	public int getTotalErrors() {
+		return totalErrors;
+	}
+
 	// clone from GraphModelUpdater.FILEINDEX_REPO_SEPARATOR as it is not
 	// exported
 	public static final String FILEINDEX_REPO_SEPARATOR = "////";
@@ -78,7 +83,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 
 		removedProxies = 0;
 
-		int totalErrors = 0;
+		totalErrors = 0;
 		int malformed = 0;
 
 		int totalResourceSizes = 0;
