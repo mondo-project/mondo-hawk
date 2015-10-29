@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.hawk.core.runtime;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
@@ -29,7 +29,7 @@ import org.hawk.core.model.IHawkPackage;
  * the easiest way is to have the {@link IGraphChangeListener} implementations
  * define hashCode and equals appropriately.
  */
-public class CompositeGraphChangeListener extends HashSet<IGraphChangeListener>
+public class CompositeGraphChangeListener extends LinkedHashSet<IGraphChangeListener>
 		implements IGraphChangeListener {
 	private static final long serialVersionUID = 639097671453202757L;
 
