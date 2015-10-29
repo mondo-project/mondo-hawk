@@ -34,10 +34,8 @@ import org.hawk.orientdb.indexes.OrientEdgeIndex;
 import org.hawk.orientdb.indexes.OrientNodeIndex;
 
 import com.orientechnologies.orient.core.config.OGlobalConfiguration;
-import com.orientechnologies.orient.core.id.ORecordId;
-import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.intent.OIntentMassiveInsert;
-import com.orientechnologies.orient.core.metadata.OMetadataDefault;
+import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Index;
 import com.tinkerpop.blueprints.Vertex;
@@ -52,11 +50,12 @@ import com.tinkerpop.blueprints.impls.orient.OrientVertex;
  * numeric ranges are not supported by the OrientDB+Lucene integration, and edge
  * indexes do not support Lucene queries at the moment (it's a simple SBTree
  * index for now).
+ *
+ * NOTE: it is recommended to set the {@link OGlobalConfiguration#WAL_LOCATION}
+ * system property to a different filesystem, to avoid delaying regular I/O due
+ * to WAL I/O. This can be done with something like "-Dstorage.wal.path=...".
  */
 public class OrientDatabase implements IGraphDatabase {
-
-	/** Dictionary-style index always defined by OrientDB. Useful for root vertices in a graph. */
-	private static final String DICTIONARY_IDX_NAME = "dictionary";
 
 	/** Vertex class for the Hawk index store. */
 	private static final String VCLASS = "hawkIndexStore";
@@ -89,7 +88,6 @@ public class OrientDatabase implements IGraphDatabase {
 	private OrientGraph txGraph;
 
 	private IConsole console;
-
 	private OrientGraphFactory factory;
 
 	public OrientDatabase() {
@@ -116,7 +114,7 @@ public class OrientDatabase implements IGraphDatabase {
 		OGlobalConfiguration.OBJECT_SAVE_ONLY_DIRTY.setValue(true);
 
 		console.println("Starting database " + iURL);
-		this.factory = new OrientGraphFactory(iURL);
+		this.factory = new OrientGraphFactory(iURL).setupPool(1, 10);
 
 		// By default, we're on transactional mode
 		exitBatchMode();
@@ -215,7 +213,6 @@ public class OrientDatabase implements IGraphDatabase {
 			txGraph = null;
 		}
 		if (batchGraph == null) {
-			OGlobalConfiguration.USE_WAL.setValue(false);
 			batchGraph = factory.getNoTx();
 			batchGraph.declareIntent(new OIntentMassiveInsert());
 			batchGraph.setUseLog(false);
@@ -232,7 +229,6 @@ public class OrientDatabase implements IGraphDatabase {
 			batchGraph = null;
 		}
 		if (txGraph == null) {
-			OGlobalConfiguration.USE_WAL.setValue(true);
 			txGraph = factory.getTx();
 			txGraph.declareIntent(new OIntentMassiveInsert());
 			txGraph.setUseLog(false);
@@ -431,17 +427,14 @@ public class OrientDatabase implements IGraphDatabase {
 		final String vertexTypeName = OrientDatabase.VERTEX_TYPE_PREFIX + VCLASS;
 		ensureVertexTypeExists(vertexTypeName);
 
-		final OrientBaseGraph graph = getGraph();
-		final OMetadataDefault metadata = graph.getRawGraph().getMetadata();
-		final OIndex<?> dictIndex = metadata.getIndexManager().getIndex(DICTIONARY_IDX_NAME);
-		ORecordId idIndexStore = (ORecordId)dictIndex.get(VCLASS);
+		ODocument idIndexStore = getGraph().getRawGraph().getDictionary().get(VCLASS);
 		OrientVertex vIndexStore;
 		if (idIndexStore == null) {
 			final HashMap<String, Object> idxStoreProps = new HashMap<>();
 			vIndexStore = createNode(idxStoreProps, VCLASS).getVertex();
-			dictIndex.put(VCLASS, vIndexStore);
+			getGraph().getRawGraph().getDictionary().put(VCLASS, vIndexStore);
 		} else {
-			vIndexStore = graph.getVertex(idIndexStore);
+			vIndexStore = getGraph().getVertex(idIndexStore);
 		}
 
 		return new OrientIndexStore(vIndexStore);
