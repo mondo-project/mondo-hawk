@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="build-site">
+	<target name="init">
+		<tstamp/>
+		<property name="sitedir" value="hawk-gpl"/>
+	</target>
+
+	<target name="build-site" depends="init">
+		<delete dir="${sitedir}"/>
+		<pde.exportFeatures
+			useworkspacecompiledclasses="true"
+			exportsource="true"
+			exporttype="folder"
+			features="org.hawk.ifc.feature,org.hawk.modelio.feature,org.hawk.neo4jv2.feature"
+			destination="${sitedir}" />
+	</target>
+
+	<target name="publish-site" depends="init">
+		<eclipse.refreshLocal
+			resource="org.hawk.updatesite"
+			depth="project" />
+
+		<delete dir="${sitedir}" includes="artifact.xml,content.xml"/>
+
+		<eclipse.publish.featuresAndBundles
+			repository="file:/${basedir}/${sitedir}/"
+			category="file:/${basedir}/category-gpl.xml"
+			compress="true">
+			<features dir="${sitedir}/features" />
+			<bundles dir="${sitedir}/plugins" />
+		</eclipse.publish.featuresAndBundles>
+
+		<eclipse.refreshLocal
+			resource="org.hawk.updatesite"
+			depth="project" />
+	</target>
+</project>
