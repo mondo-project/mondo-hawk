@@ -565,8 +565,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	private void resetRepositoy(String s) {
-		System.err.println("reseting local top revision of repository: " + s
-				+ "\nas elements in it were removed");
+		System.err
+				.println("reseting local top revision of repository: "
+						+ s
+						+ "\n(as elements in it were removed or new metamodels were added to Hawk)");
 		currLocalTopRevisions.put(s, "-3");
 	}
 
