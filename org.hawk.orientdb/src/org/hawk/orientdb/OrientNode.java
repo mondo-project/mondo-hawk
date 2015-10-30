@@ -40,14 +40,31 @@ public class OrientNode implements IGraphNode {
 		INVALID_CHAR_REPLACEMENTS.put(",", "!hcom!");
 		INVALID_CHAR_REPLACEMENTS.put(";", "!hsco!");
 		INVALID_CHAR_REPLACEMENTS.put(" ", "!hspa!");
-		INVALID_CHAR_REPLACEMENTS.put("%", "!hper!");
+		INVALID_CHAR_REPLACEMENTS.put("%", "!hpct!");
 		INVALID_CHAR_REPLACEMENTS.put("=", "!hequ!");
+		INVALID_CHAR_REPLACEMENTS.put(".", "!hdot!");
 	}
 
 	private enum Direction { IN, OUT, BOTH };
 
 	private OrientDatabase graph;
 	private ODocument vertex;
+
+	private static String unescapeFromField(final String escapedPropertyName) {
+		String propertyName = escapedPropertyName;
+		for (Entry<String, String> entry : INVALID_CHAR_REPLACEMENTS.entrySet()) {
+			propertyName = propertyName.replace(entry.getValue(), entry.getKey());
+		}
+		return propertyName;
+	}
+
+	private static String escapeToField(final String unescapedFieldName) {
+		String fieldName = unescapedFieldName;
+		for (Entry<String, String> entry : INVALID_CHAR_REPLACEMENTS.entrySet()) {
+			fieldName = fieldName.replace(entry.getKey(), entry.getValue());
+		}
+		return fieldName;
+	}
 
 	public OrientNode(ODocument o, OrientDatabase graph) {
 		this.vertex = o;
@@ -65,7 +82,7 @@ public class OrientNode implements IGraphNode {
 		final Set<String> keys = new HashSet<>();
 		for (String s : vertex.fieldNames()) {
 			if (s.startsWith(PREFIX_PROPERTY)) {
-				keys.add(propertyForField(s));
+				keys.add(unescapeFromField(s.substring(PREFIX_PROPERTY.length())));
 			}
 		}
 		return keys;
@@ -73,7 +90,7 @@ public class OrientNode implements IGraphNode {
 
 	@Override
 	public Object getProperty(String name) {
-		final Object value = vertex.field(fieldForProperty(name));
+		final Object value = vertex.field(escapeToField(PREFIX_PROPERTY + name));
 		if (value instanceof OTrackedList<?>) {
 			final OTrackedList<?> cValue = (OTrackedList<?>)value;
 			Class<?> genericClass = cValue.getGenericClass();
@@ -94,7 +111,7 @@ public class OrientNode implements IGraphNode {
 		final Map<String, Object> mappedProps = new HashMap<>();
 		for (Entry<String, Object> entry : props.entrySet()) {
 			String fieldName = entry.getKey();
-			mappedProps.put(fieldForProperty(fieldName), entry.getValue());
+			mappedProps.put(escapeToField(PREFIX_PROPERTY + fieldName), entry.getValue());
 		}
 		vertex.fromMap(mappedProps);
 		graph.markNodeAsDirty(this);
@@ -102,26 +119,8 @@ public class OrientNode implements IGraphNode {
 
 	@Override
 	public void setProperty(String name, Object value) {
-		vertex.field(fieldForProperty(name), value);
+		vertex.field(escapeToField(PREFIX_PROPERTY + name), value);
 		graph.markNodeAsDirty(this);
-	}
-
-	private String propertyForField(String fieldName) {
-		final String escapedPropertyName = fieldName.substring(PREFIX_PROPERTY.length());
-		String propertyName = escapedPropertyName;
-		for (Entry<String, String> entry : INVALID_CHAR_REPLACEMENTS.entrySet()) {
-			propertyName = propertyName.replace(entry.getValue(), entry.getKey());
-		}
-		return propertyName;
-	}
-
-	private String fieldForProperty(String propertyName) {
-		final String unescapedFieldName = PREFIX_PROPERTY + propertyName;
-		String fieldName = unescapedFieldName;
-		for (Entry<String, String> entry : INVALID_CHAR_REPLACEMENTS.entrySet()) {
-			fieldName = fieldName.replace(entry.getKey(), entry.getValue());
-		}
-		return fieldName;
 	}
 
 	@Override
@@ -154,7 +153,7 @@ public class OrientNode implements IGraphNode {
 	private List<ODocument> getEdgeDocuments(String type, Direction direction) {
 		final List<ODocument> edges = new ArrayList<>();
 		if (direction == Direction.IN || direction == Direction.BOTH) {
-			final Iterable<ODocument> inODocs = vertex.field(PREFIX_INCOMING + type);
+			final Iterable<ODocument> inODocs = vertex.field(escapeToField(PREFIX_INCOMING + type));
 			if (inODocs != null) {
 				for (ODocument odoc : inODocs) {
 					edges.add(odoc);
@@ -163,7 +162,7 @@ public class OrientNode implements IGraphNode {
 		}
 
 		if (direction == Direction.OUT || direction == Direction.BOTH) {
-			final Iterable<ODocument> outODocs = vertex.field(PREFIX_OUTGOING + type);
+			final Iterable<ODocument> outODocs = vertex.field(escapeToField(PREFIX_OUTGOING + type));
 			if (outODocs != null) {
 				for (ODocument odoc : outODocs) {
 					edges.add(odoc);
@@ -249,7 +248,7 @@ public class OrientNode implements IGraphNode {
 	}
 
 	public void addOutgoing(OrientEdge newEdge) {
-		addToList(newEdge, PREFIX_OUTGOING + newEdge.getType());
+		addToList(newEdge, escapeToField(PREFIX_OUTGOING + newEdge.getType()));
 	}
 
 	private void addToList(OrientEdge newEdge, final String fldName) {
@@ -262,11 +261,11 @@ public class OrientNode implements IGraphNode {
 	}
 
 	public void addIncoming(OrientEdge newEdge) {
-		addToList(newEdge, PREFIX_INCOMING + newEdge.getType());
+		addToList(newEdge, escapeToField(PREFIX_INCOMING + newEdge.getType()));
 	}
 
 	public void removeOutgoing(OrientEdge orientEdge) {
-		removeFromList(orientEdge, PREFIX_OUTGOING + orientEdge.getType());
+		removeFromList(orientEdge, escapeToField(PREFIX_OUTGOING + orientEdge.getType()));
 	}
 
 	private void removeFromList(OrientEdge orientEdge, final String fldName) {
@@ -278,6 +277,6 @@ public class OrientNode implements IGraphNode {
 	}
 
 	public void removeIncoming(OrientEdge orientEdge) {
-		removeFromList(orientEdge, PREFIX_INCOMING + orientEdge.getType());
+		removeFromList(orientEdge, escapeToField(PREFIX_INCOMING + orientEdge.getType()));
 	}
 }

@@ -75,19 +75,26 @@ public class OrientDatabase implements IGraphDatabase {
 	/** Name of the file index. */
 	static final String FILE_IDX_NAME = "hawkFileIndex";
 
+	private static final Map<String, String> INVALID_CHAR_REPLACEMENTS;
+	static {
+		INVALID_CHAR_REPLACEMENTS = new HashMap<String, String>();
+		INVALID_CHAR_REPLACEMENTS.put(":", "!hcol!");
+		INVALID_CHAR_REPLACEMENTS.put(",", "!hcom!");
+		INVALID_CHAR_REPLACEMENTS.put(";", "!hsco!");
+		INVALID_CHAR_REPLACEMENTS.put(" ", "!hspa!");
+		INVALID_CHAR_REPLACEMENTS.put("%", "!hpct!");
+		INVALID_CHAR_REPLACEMENTS.put("=", "!hequ!");
+		INVALID_CHAR_REPLACEMENTS.put("@", "!hats!");
+		INVALID_CHAR_REPLACEMENTS.put(".", "!hdot!");
+	}
+
 	private File storageFolder;
 	private File tempFolder;
+	private IConsole console;
 
 	private IGraphNodeIndex metamodelIndex;
 	private IGraphNodeIndex fileIndex;
-
-	private ODatabaseDocumentTx db;
-
-	private IConsole console;
-
-	private String dbURL;
-
-	private ODatabaseDocumentTx dbTx;
+	private ODatabaseDocumentTx db, dbTx;
 
 	private Map<String, OrientNode> dirtyNodes = new HashMap<>(100_000);
 	private Map<String, OrientEdge> dirtyEdges = new HashMap<>(100_000);
@@ -116,8 +123,7 @@ public class OrientDatabase implements IGraphDatabase {
 		OGlobalConfiguration.OBJECT_SAVE_ONLY_DIRTY.setValue(true);
 
 		console.println("Starting database " + iURL);
-		this.dbURL = iURL;
-		this.db = new ODatabaseDocumentTx(dbURL);
+		this.db = new ODatabaseDocumentTx(iURL);
 		if (db.exists()) {
 			db.open("admin", "admin");
 		} else {
@@ -231,7 +237,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public OrientNodeIterable allNodes(String label) {
-		final String vertexTypeName = VERTEX_TYPE_PREFIX + label;
+		final String vertexTypeName = getVertexTypeName(label);
 		return allNodes(vertexTypeName, dbTx != null ? dbTx : db);
 	}
 
@@ -245,7 +251,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public OrientNode createNode(Map<String, Object> properties, String label) {
-		final String vertexTypeName = VERTEX_TYPE_PREFIX + label;
+		final String vertexTypeName = getVertexTypeName(label);
 
 		if (!db.getMetadata().getSchema().existsClass(vertexTypeName) && dbTx != null) {
 			enterBatchMode();
@@ -254,7 +260,9 @@ public class OrientDatabase implements IGraphDatabase {
 		}
 		ODocument newDoc = new ODocument(vertexTypeName);
 		final OrientNode oNode = new OrientNode(newDoc, this);
-		oNode.setProperties(properties);
+		if (properties != null) {
+			oNode.setProperties(properties);
+		}
 		newDoc.save();
 
 		return oNode;
@@ -264,7 +272,7 @@ public class OrientDatabase implements IGraphDatabase {
 	public OrientEdge createRelationship(IGraphNode start, IGraphNode end, String type) {
 		final OrientNode oStart = (OrientNode)start;
 		final OrientNode oEnd = (OrientNode)end;
-		final String edgeTypeName = EDGE_TYPE_PREFIX + type;
+		final String edgeTypeName = getEdgeTypeName(type);
 
 		if (!db.getMetadata().getSchema().existsClass(edgeTypeName) && dbTx != null) {
 			enterBatchMode();
@@ -291,6 +299,22 @@ public class OrientDatabase implements IGraphDatabase {
 		dirtyEdges.put(e.getId().toString(), e);
 
 		return e;
+	}
+
+	private String getVertexTypeName(String label) {
+		return getEscapedClassName(VERTEX_TYPE_PREFIX + label);
+	}
+
+	private String getEdgeTypeName(String label) {
+		return getEscapedClassName(EDGE_TYPE_PREFIX + label);
+	}
+
+	private String getEscapedClassName(final String unescaped) {
+		String escaped = unescaped;
+		for (Map.Entry<String, String> entry : INVALID_CHAR_REPLACEMENTS.entrySet()) {
+			escaped = escaped.replace(entry.getKey(), entry.getValue());
+		}
+		return escaped;
 	}
 
 	@Override

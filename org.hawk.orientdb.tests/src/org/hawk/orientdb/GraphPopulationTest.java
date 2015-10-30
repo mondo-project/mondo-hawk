@@ -100,6 +100,42 @@ public class GraphPopulationTest {
 		assertEquals(1, size(x10.getIncomingWithType("dep")));
 	}
 
+	@Test
+	public void invalidClassCharacters() {
+		db = new OrientDatabase();
+		db.run("memory:invalidClassCharacters", null, new DefaultConsole());
+
+		char[] invalidClassChars = ":,; %@=.".toCharArray();
+		for (char invalidChar : invalidClassChars) {
+			db.enterBatchMode();
+			final String nodeType = "my" + invalidChar + "object";
+			db.createNode(null, nodeType);
+			assertEquals(1, db.allNodes(nodeType).size());
+			db.exitBatchMode();
+		}
+	}
+
+	@Test
+	public void invalidClassCharactersEdges() {
+		db = new OrientDatabase();
+		db.run("memory:invalidClassCharactersEdges", null, new DefaultConsole());
+
+		db.enterBatchMode();
+		OrientNode n1 = db.createNode(null, "eobject");
+		OrientNode n2 = db.createNode(null, "eobject");
+		db.exitBatchMode();
+
+		char[] invalidClassChars = ":,; %@=.".toCharArray();
+		for (char invalidChar : invalidClassChars) {
+			final String type = "link" + invalidChar + "type";
+			db.enterBatchMode();
+			db.createRelationship(n1, n2, type);
+			assertEquals("There should be one outgoing " + type + " edge for n1", 1, size(n1.getOutgoingWithType(type)));
+			assertEquals("There should be one incoming " + type + " edge for n2", 1, size(n2.getIncomingWithType(type)));
+			db.exitBatchMode();
+		}
+	}
+
 	private <T> int size(Iterable<T> it) {
 		Iterator<T> iterator = it.iterator();
 		int count = 0;
