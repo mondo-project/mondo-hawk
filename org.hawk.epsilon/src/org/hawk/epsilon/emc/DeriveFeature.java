@@ -12,6 +12,7 @@ package org.hawk.epsilon.emc;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.epsilon.common.parse.problem.ParseProblem;
 import org.eclipse.epsilon.common.util.StringProperties;
@@ -50,10 +51,16 @@ public class DeriveFeature {
 
 				currentModule.parse(actualEOLScript);
 
-				for (ParseProblem p : currentModule.getParseProblems())
+				List<ParseProblem> pps = currentModule.getParseProblems();
+				for (ParseProblem p : pps)
 					System.err.println("PARSE PROBLEM: " + p);
 
-				cachedModules.put(actualEOLScript, currentModule);
+				if (pps.size() > 0) {
+					System.err
+							.println("There were parse problems, returning \"DERIVATION_PARSE_ERROR\" as value\n");
+					return "DERIVATION_PARSE_ERROR";
+				} else
+					cachedModules.put(actualEOLScript, currentModule);
 
 			} else {
 
@@ -90,8 +97,9 @@ public class DeriveFeature {
 								+ containerModel
 								+ "\n"
 								+ EOLScript
-								+ "\n------------\nreturning null as value\n");
+								+ "\n------------\nreturning \"DERIVATION_EXECUTION_ERROR\" as value\n");
 				e.printStackTrace();
+				return "DERIVATION_EXECUTION_ERROR";
 			}
 
 			// System.out.println(ret.getClass());
@@ -108,17 +116,18 @@ public class DeriveFeature {
 				// TODO handle collections as returns to derived features --
 				// need to type cast them for storage in the db
 				System.err
-						.println("Derivefeature got a collection back from EOL, this is not supported yet! returning \"HAWK_ERROR\"");
-				return "HAWK_ERROR";
+						.println("Derivefeature got a collection back from EOL, this is not supported yet! returning \"HAWK_COLLECTION_ERROR\"");
+				return "HAWK_COLLECTION_ERROR";
 			}
 
 		} catch (Exception e) {
-			System.err.println("ERROR IN DERIVING ATTRIBUTE:");
+			System.err
+					.println("ERROR IN DERIVING ATTRIBUTE, returning \"DERIVATION_OTHER_ERROR\" as value:");
 			e.printStackTrace();
 		}
 
 		// System.out.println("DERIVATION_ERROR");
-		return "DERIVATION_ERROR";
+		return "DERIVATION_OTHER_ERROR";
 		// ...parse like:
 		// this.bodyDeclarations.exists(md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public=='true'))
 
