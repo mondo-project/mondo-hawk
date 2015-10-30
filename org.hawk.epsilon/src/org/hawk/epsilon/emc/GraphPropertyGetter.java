@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import org.eclipse.epsilon.eol.exceptions.EolIllegalPropertyException;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.execute.introspection.AbstractPropertyGetter;
 import org.eclipse.epsilon.eol.types.EolBag;
@@ -25,7 +26,6 @@ import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
-import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.graph.ModelElementNode;
 
 public class GraphPropertyGetter extends AbstractPropertyGetter {
@@ -81,210 +81,160 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 			throw new EolRuntimeException(
 					"a non GraphNodeWrapper object passed to GraphPropertyGetter!");
 
-		try (IGraphTransaction tx = graph.beginTransaction()) {
-			// operations on the graph
-			// ...
+		// try (IGraphTransaction tx = graph.beginTransaction()) {
+		// operations on the graph
+		// ...
 
-			IGraphNode node = graph.getNodeById(((GraphNodeWrapper) object)
-					.getId());
+		IGraphNode node = graph
+				.getNodeById(((GraphNodeWrapper) object).getId());
 
-			// System.out.println(node+":::"+property);
+		// System.out.println(node+":::"+property);
 
-			// System.err.println(object+" : "+property);
+		// System.err.println(object+" : "+property);
 
-			if (property.startsWith("revRefNav_")) {
+		if (property.startsWith("revRefNav_")) {
 
-				// LinkedList<?> otherNodes = new LinkedList<>();
+			// LinkedList<?> otherNodes = new LinkedList<>();
 
-				String property2 = property.substring(10);
+			String property2 = property.substring(10);
 
-				for (IGraphEdge r : node.getIncomingWithType(property2)) {
+			for (IGraphEdge r : node.getIncomingWithType(property2)) {
 
-					if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
-						ret = new GraphNodeWrapper(r.getStartNode().getId()
-								.toString(), m);
-					} else {
-						System.err.println(r.getType() + " : not containment");
-						if (ret == null)
-							ret = new EolBag<GraphNodeWrapper>();
-						((EolBag<GraphNodeWrapper>) ret)
-								.add(new GraphNodeWrapper(r.getStartNode()
-										.getId().toString(), m));
-					}
-				}
-
-				if (ret == null) {
-					System.err.println(object);
-					System.err.println(property);
-					// throw new
-					// EolRuntimeException("REVERSE NAVIGATION FAILED (return == null)");
-					System.err
-							.println("REVERSE NAVIGATION FAILED (return == null), returning null");
-					// check metamodel if it can exist but is unset or
-					// return
-					// null?
-				}
-
-			}
-
-			else if (property.equals("eContainer")) {
-
-				// HawkClass o = new
-				// MetamodelUtils().getTypeOfFromNode(node,m.parser);
-
-				// o.isContained();
-				// System.err.println(o.eContainingFeatureName());
-
-				Iterable<IGraphEdge> inc = node.getIncoming();
-
-				for (IGraphEdge r : inc) {
-
-					if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
-
-						ret = new GraphNodeWrapper(r.getStartNode().getId()
-								.toString(), m);
-
-						break;
-
-					}
-
-				}
-
-				if (ret == null)
-					throw new EolRuntimeException("eContainer failed,\n"
-							+ object + "\nis not contained");
-
-			}
-
-			else if (canHaveDerivedAttr(node, property)) {
-
-				for (IGraphEdge r : node.getOutgoingWithType(property)) {
+				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
+					ret = new GraphNodeWrapper(r.getStartNode().getId()
+							.toString(), m);
+				} else {
+					System.err.println(r.getType() + " : not containment");
 					if (ret == null)
-						ret = r.getEndNode().getProperty(property);
-					else
-						throw new EolRuntimeException(
-								"WARNING: a derived property (arity 1) -- ( "
-										+ property
-										+ " ) has more than 1 links in store!");
+						ret = new EolBag<GraphNodeWrapper>();
+					((EolBag<GraphNodeWrapper>) ret).add(new GraphNodeWrapper(r
+							.getStartNode().getId().toString(), m));
 				}
-				if (ret == null) {
-					throw new EolRuntimeException(
-							"derived attribute lookup failed for: " + object
-									+ " # " + property);
-				} else if (ret instanceof String
-						&& ((String) ret).startsWith("_NYD##")) {
-					// XXX IDEA: dynamically derive on the spot on access
-					System.err.println("attribute: " + property
-							+ " is NYD for node: " + node.getId());
-				}
-
 			}
 
-			else if (canHaveAttr(node, property)) {
-
-				if (node.getProperty(property) != null) {
-					// FIXMEdone handle collections / ordered etc
-					if (!(isMany(property)))
-						ret = node.getProperty(property);
-					else {
-
-						ret = getCollectionForProperty(property);
-
-						Object[] array = ((Object[]) node.getProperty(property));
-
-						for (int i = 0; i < array.length; i++)
-							((Collection<Object>) ret).add(array[i]);
-
-					}
-				} else
-				// return new NeoIdWrapper(0L, m);
-				{
-					// ret = "UNSET";
-					ret = null;
-					// throw new EolRuntimeException("unset property");
-				}
-
+			if (ret == null) {
+				System.err.println(object);
+				System.err.println(property);
+				// throw new
+				// EolRuntimeException("REVERSE NAVIGATION FAILED (return == null)");
+				System.err
+						.println("REVERSE NAVIGATION FAILED (return == null), returning null");
+				// check metamodel if it can exist but is unset or
+				// return
+				// null?
 			}
 
-			else if (canHaveRef(node, property)) {
-
-				GraphNodeWrapper otherNode = null;
-				Collection<GraphNodeWrapper> otherNodes = null;
-
-				// FIXMEdone arity etc in metamodel
-				// otherNodes = new EolBag<NeoIdWrapperDebuggable>();
-				if (isMany(property)) {
-					otherNodes = getCollectionForProperty(property);
-				}
-
-				for (IGraphEdge r : node.getOutgoingWithType(property)) {
-					if (otherNodes != null)
-						otherNodes.add(new GraphNodeWrapper(r.getEndNode()
-								.getId().toString(), m));
-					else if (otherNode == null)
-						otherNode = new GraphNodeWrapper(r.getEndNode().getId()
-								.toString(), m);
-					else
-						throw new EolRuntimeException(
-								"A relationship with arity 1 ( " + property
-										+ " ) has more than 1 links");
-				}
-
-				// System.err.println(otherNodes);
-
-				ret = otherNodes != null ? otherNodes : otherNode;
-
-			} else {
-				String error = "ERROR: ";
-
-				try {
-
-					error = error + "\n>>>"
-							+ debug(graph, (GraphNodeWrapper) object);
-
-					// error = error + "\nCLASS ATTRS: " + ""
-
-					// ((EClass) r.getEObject(new MetamodelUtils()
-					// .typeOfName(node).substring(
-					// new MetamodelUtils().typeOfName(node)
-					// .indexOf("/"))))
-					// .getEAllAttributes()
-					// ;
-
-					// error = error + "\nCLASS REFS: " +
-
-					// ((EClass) r.getEObject(new MetamodelUtils()
-					// .typeOfName(node).substring(
-					// new MetamodelUtils().typeOfName(node)
-					// .indexOf("/"))))
-					// .getEAllReferences()
-					// "";
-
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-				// System.out.println(">>> " + ret);
-				// System.out.println(object);
-				// System.out.println(property + "\n-----");
-
-				throw new EolRuntimeException(
-						error
-								+ "\ndoes not have property (attribute or reference):\n"
-								+ property);
-			}
-
-			tx.success();
-			tx.close();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 
-		// if (ret instanceof Collection<?>)
-		// System.err
-		// .println(Arrays.toString(((Collection<?>) ret).toArray()));
-		// else
-		// System.err.println(ret);
+		else if (property.equals("eContainer")) {
+
+			// HawkClass o = new
+			// MetamodelUtils().getTypeOfFromNode(node,m.parser);
+
+			// o.isContained();
+			// System.err.println(o.eContainingFeatureName());
+
+			Iterable<IGraphEdge> inc = node.getIncoming();
+
+			for (IGraphEdge r : inc) {
+
+				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
+
+					ret = new GraphNodeWrapper(r.getStartNode().getId()
+							.toString(), m);
+
+					break;
+
+				}
+
+			}
+
+			if (ret == null)
+				throw new EolRuntimeException("eContainer failed,\n" + object
+						+ "\nis not contained");
+
+		}
+
+		else if (canHaveDerivedAttr(node, property)) {
+
+			for (IGraphEdge r : node.getOutgoingWithType(property)) {
+				if (ret == null)
+					ret = r.getEndNode().getProperty(property);
+				else
+					throw new EolRuntimeException(
+							"WARNING: a derived property (arity 1) -- ( "
+									+ property
+									+ " ) has more than 1 links in store!");
+			}
+			if (ret == null) {
+				throw new EolRuntimeException(
+						"derived attribute lookup failed for: " + object
+								+ " # " + property);
+			} else if (ret instanceof String
+					&& ((String) ret).startsWith("_NYD##")) {
+				// XXX IDEA: dynamically derive on the spot on access
+				System.err.println("attribute: " + property
+						+ " is NYD for node: " + node.getId());
+			}
+
+		}
+
+		else if (canHaveAttr(node, property)) {
+
+			if (node.getProperty(property) != null) {
+				// FIXMEdone handle collections / ordered etc
+				if (!(isMany(property)))
+					ret = node.getProperty(property);
+				else {
+
+					ret = getCollectionForProperty(property);
+
+					Object[] array = ((Object[]) node.getProperty(property));
+
+					for (int i = 0; i < array.length; i++)
+						((Collection<Object>) ret).add(array[i]);
+
+				}
+			} else
+			// return new NeoIdWrapper(0L, m);
+			{
+				// ret = "UNSET";
+				ret = null;
+				// throw new EolRuntimeException("unset property");
+			}
+
+		}
+
+		else if (canHaveRef(node, property)) {
+
+			GraphNodeWrapper otherNode = null;
+			Collection<GraphNodeWrapper> otherNodes = null;
+
+			// FIXMEdone arity etc in metamodel
+			// otherNodes = new EolBag<NeoIdWrapperDebuggable>();
+			if (isMany(property)) {
+				otherNodes = getCollectionForProperty(property);
+			}
+
+			for (IGraphEdge r : node.getOutgoingWithType(property)) {
+				if (otherNodes != null)
+					otherNodes.add(new GraphNodeWrapper(r.getEndNode().getId()
+							.toString(), m));
+				else if (otherNode == null)
+					otherNode = new GraphNodeWrapper(r.getEndNode().getId()
+							.toString(), m);
+				else
+					throw new EolRuntimeException(
+							"A relationship with arity 1 ( " + property
+									+ " ) has more than 1 links");
+			}
+
+			ret = otherNodes != null ? otherNodes : otherNode;
+
+		} else {
+			throw new EolIllegalPropertyException(object, property, ast,
+					context);
+		}
 
 		if (broadcastAccess)
 			broadcastAccess(object, property);
