@@ -11,11 +11,11 @@
 package org.hawk.orientdb;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
@@ -85,7 +85,17 @@ public class GraphPopulationTest {
 		assertEquals(10, e.getEndNode().getProperty("x"));
 		assertEquals("abc", e.getProperty("y"));
 		assertEquals("dep", e.getType());
-		assertTrue(x1.getOutgoingWithType("dep").iterator().hasNext());
-		assertTrue(x10.getIncomingWithType("dep").iterator().hasNext());
+		assertEquals(1, size(x1.getOutgoingWithType("dep")));
+		assertEquals(1, size(x10.getIncomingWithType("dep")));
+	}
+
+	private <T> int size(Iterable<T> it) {
+		Iterator<T> iterator = it.iterator();
+		int count = 0;
+		while (iterator.hasNext()) {
+			iterator.next();
+			count++;
+		}
+		return count;
 	}
 }
