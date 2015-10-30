@@ -20,11 +20,17 @@ import org.hawk.core.runtime.CompositeGraphChangeListener;
 public class GraphMetaModelUpdater implements IMetaModelUpdater {
 
 	@Override
-	public void insertMetamodels(Set<IHawkMetaModelResource> set,
+	public boolean insertMetamodels(Set<IHawkMetaModelResource> set,
 			IModelIndexer indexer) {
-		new GraphMetaModelResourceInjector(indexer, set,
-				(CompositeGraphChangeListener) indexer
-						.getCompositeGraphChangeListener());
+		try {
+			new GraphMetaModelResourceInjector(indexer, set,
+					(CompositeGraphChangeListener) indexer
+							.getCompositeGraphChangeListener());
+			return true;
+		} catch (Exception e) {
+			System.err.println("metamodel insertion failed: " + e.getMessage());
+			return false;
+		}
 	}
 
 	// @Override

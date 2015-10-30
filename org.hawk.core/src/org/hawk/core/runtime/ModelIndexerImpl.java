@@ -111,8 +111,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 	 * Creates an indexer with a <code>name</code>, with its contents saved in
 	 * <code>parentfolder</code> and printing to console <code>c</code>.
 	 */
-	public ModelIndexerImpl(String name, File parentfolder, ICredentialsStore credStore, IConsole c)
-			throws Exception {
+	public ModelIndexerImpl(String name, File parentfolder,
+			ICredentialsStore credStore, IConsole c) throws Exception {
 		this.name = name;
 		this.console = c;
 		this.credStore = credStore;
@@ -642,17 +642,26 @@ public class ModelIndexerImpl implements IModelIndexer {
 						System.err
 								.println("cannot add heterogeneous metamodels concurrently, plase add one metamodel type at a time");
 						set.clear();
+						break;
 					} else {
-						System.out.println("Adding metamodels in: " + mm
-								+ " to store");
-						set.add(metamodelResource);
-						previousParserType = parserType;
+						if (metamodelResource != null) {
+							System.out.println("Adding metamodels in: " + mm
+									+ " to store");
+							set.add(metamodelResource);
+							previousParserType = parserType;
+						}
 					}
 				}
 
-				metamodelupdater.insertMetamodels(set, this);
+			}// if metamodels added successfully
+			if (metamodelupdater.insertMetamodels(set, this)) {
+				// reset repositories as models may be parsable in them
+				for (IVcsManager s : monitors) {
+					resetRepositoy(s.getLocation());
+				}
 			}
 		}
+
 	}
 
 	@Override

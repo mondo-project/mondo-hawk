@@ -16,7 +16,8 @@ import org.hawk.core.model.IHawkMetaModelResource;
 
 public interface IMetaModelUpdater {
 
-	public abstract void insertMetamodels(Set<IHawkMetaModelResource> set, IModelIndexer indexer);
+	// return success
+	public abstract boolean insertMetamodels(Set<IHawkMetaModelResource> set, IModelIndexer indexer);
 
 	public abstract void run(// IConsole console
 	);
