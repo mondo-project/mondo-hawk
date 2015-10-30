@@ -101,7 +101,7 @@ public class GraphPopulationTest {
 	}
 
 	@Test
-	public void invalidClassCharacters() {
+	public void escapeInvalidClassCharacters() {
 		db = new OrientDatabase();
 		db.run("memory:invalidClassCharacters", null, new DefaultConsole());
 
@@ -116,7 +116,7 @@ public class GraphPopulationTest {
 	}
 
 	@Test
-	public void invalidClassCharactersEdges() {
+	public void escapeInvalidClassCharactersEdges() {
 		db = new OrientDatabase();
 		db.run("memory:invalidClassCharactersEdges", null, new DefaultConsole());
 

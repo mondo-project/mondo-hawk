@@ -1,6 +1,7 @@
 package org.hawk.orientdb.indexes;
 
 import org.hawk.orientdb.OrientDatabase;
+import org.hawk.orientdb.OrientNameCleaner;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.index.OIndex;
@@ -95,7 +96,7 @@ public class AbstractOrientIndex {
 	}
 
 	protected String getSBTreeIndexName(final String field) {
-		return name + SEPARATOR_SBTREE + field.replace(':', '!');
+		return OrientNameCleaner.escapeToField(name + SEPARATOR_SBTREE + field);
 	}
 
 	protected OIndexManager getIndexManager() {

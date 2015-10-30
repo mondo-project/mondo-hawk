@@ -12,6 +12,7 @@ package org.hawk.orientdb;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -212,6 +213,32 @@ public class IndexTest {
 		assertEquals(1, idx.query("value", 5.2, 5.4, false, false).size());
 		assertEquals(0, idx.query("value", 5.2, 5.2, false, false).size());
 		assertEquals(0, idx.query("value", 5.2, 5.1, false, false).size());
+	}
+
+	@Test
+	public void invalidIndexNames() {
+		// OIndexManagerShared#createIndex checks for these
+		char[] invalidChars = ":,; %=".toCharArray();
+
+		setup("invalidIndexNames");
+		OrientNode n;
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			n = db.createNode(null, "eobject");
+			tx.success();
+		}
+		for (char invalidChar : invalidChars) {
+			final String name = "my" + invalidChar + "index";
+			IGraphNodeIndex idx = db.getOrCreateNodeIndex(name);
+			idx.add(n, "id", 1);
+			assertTrue(db.getNodeIndexNames().contains(name));
+			assertTrue(db.getIndexStore().getNodeFieldIndexNames(name).contains("id"));
+		}
+		for (char invalidChar : invalidChars) {
+			final String name = "my" + invalidChar + "index";
+			db.getOrCreateEdgeIndex(name);
+			assertTrue(db.getEdgeIndexNames().contains(name));
+			// TODO: no methods to add things in IGraphEdgeIndex?
+		}
 	}
 
 	private String populateForRemove() {

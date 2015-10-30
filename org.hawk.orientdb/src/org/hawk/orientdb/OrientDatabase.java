@@ -75,19 +75,6 @@ public class OrientDatabase implements IGraphDatabase {
 	/** Name of the file index. */
 	static final String FILE_IDX_NAME = "hawkFileIndex";
 
-	private static final Map<String, String> INVALID_CHAR_REPLACEMENTS;
-	static {
-		INVALID_CHAR_REPLACEMENTS = new HashMap<String, String>();
-		INVALID_CHAR_REPLACEMENTS.put(":", "!hcol!");
-		INVALID_CHAR_REPLACEMENTS.put(",", "!hcom!");
-		INVALID_CHAR_REPLACEMENTS.put(";", "!hsco!");
-		INVALID_CHAR_REPLACEMENTS.put(" ", "!hspa!");
-		INVALID_CHAR_REPLACEMENTS.put("%", "!hpct!");
-		INVALID_CHAR_REPLACEMENTS.put("=", "!hequ!");
-		INVALID_CHAR_REPLACEMENTS.put("@", "!hats!");
-		INVALID_CHAR_REPLACEMENTS.put(".", "!hdot!");
-	}
-
 	private File storageFolder;
 	private File tempFolder;
 	private IConsole console;
@@ -302,19 +289,11 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	private String getVertexTypeName(String label) {
-		return getEscapedClassName(VERTEX_TYPE_PREFIX + label);
+		return OrientNameCleaner.escapeClass(VERTEX_TYPE_PREFIX + label);
 	}
 
 	private String getEdgeTypeName(String label) {
-		return getEscapedClassName(EDGE_TYPE_PREFIX + label);
-	}
-
-	private String getEscapedClassName(final String unescaped) {
-		String escaped = unescaped;
-		for (Map.Entry<String, String> entry : INVALID_CHAR_REPLACEMENTS.entrySet()) {
-			escaped = escaped.replace(entry.getKey(), entry.getValue());
-		}
-		return escaped;
+		return OrientNameCleaner.escapeClass(EDGE_TYPE_PREFIX + label);
 	}
 
 	@Override
