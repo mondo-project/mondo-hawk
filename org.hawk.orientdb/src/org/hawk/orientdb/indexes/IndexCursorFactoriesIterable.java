@@ -13,7 +13,6 @@ package org.hawk.orientdb.indexes;
 import java.util.Iterator;
 
 import org.hawk.core.graph.IGraphIterable;
-import org.hawk.core.graph.IGraphNode;
 import org.hawk.orientdb.OrientDatabase;
 
 final class IndexCursorFactoriesIterable<T> implements IGraphIterable<T> {
@@ -35,14 +34,14 @@ final class IndexCursorFactoriesIterable<T> implements IGraphIterable<T> {
 
 			@Override
 			public boolean hasNext() {
-				if (currentIterator == null || !currentIterator.hasNext()) {
+				while (currentIterator == null || !currentIterator.hasNext()) {
 					if (itFactory.hasNext()) {
 						currentIterator = new IndexCursorFactoryNodeIterable<>(itFactory.next(), graph, klass).iterator();
 					} else {
 						return false;
 					}
 				}
-				return currentIterator.hasNext();
+				return currentIterator != null && currentIterator.hasNext();
 			}
 
 			@Override
