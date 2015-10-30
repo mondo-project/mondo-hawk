@@ -33,6 +33,17 @@ public class OrientNode implements IGraphNode {
 	private static final String PREFIX_INCOMING = "_hi_";
 	private static final String PREFIX_OUTGOING = "_ho_";
 
+	private static final Map<String, String> INVALID_CHAR_REPLACEMENTS;
+	static {
+		INVALID_CHAR_REPLACEMENTS = new HashMap<String, String>();
+		INVALID_CHAR_REPLACEMENTS.put(":", "!hcol!");
+		INVALID_CHAR_REPLACEMENTS.put(",", "!hcom!");
+		INVALID_CHAR_REPLACEMENTS.put(";", "!hsco!");
+		INVALID_CHAR_REPLACEMENTS.put(" ", "!hspa!");
+		INVALID_CHAR_REPLACEMENTS.put("%", "!hper!");
+		INVALID_CHAR_REPLACEMENTS.put("=", "!hequ!");
+	}
+
 	private enum Direction { IN, OUT, BOTH };
 
 	private OrientDatabase graph;
@@ -54,7 +65,7 @@ public class OrientNode implements IGraphNode {
 		final Set<String> keys = new HashSet<>();
 		for (String s : vertex.fieldNames()) {
 			if (s.startsWith(PREFIX_PROPERTY)) {
-				keys.add(s.substring(PREFIX_PROPERTY.length()));
+				keys.add(propertyForField(s));
 			}
 		}
 		return keys;
@@ -62,7 +73,7 @@ public class OrientNode implements IGraphNode {
 
 	@Override
 	public Object getProperty(String name) {
-		final Object value = vertex.field(PREFIX_PROPERTY + name);
+		final Object value = vertex.field(fieldForProperty(name));
 		if (value instanceof OTrackedList<?>) {
 			final OTrackedList<?> cValue = (OTrackedList<?>)value;
 			Class<?> genericClass = cValue.getGenericClass();
@@ -82,7 +93,8 @@ public class OrientNode implements IGraphNode {
 	public void setProperties(Map<String, Object> props) {
 		final Map<String, Object> mappedProps = new HashMap<>();
 		for (Entry<String, Object> entry : props.entrySet()) {
-			mappedProps.put(PREFIX_PROPERTY + entry.getKey(), entry.getValue());
+			String fieldName = entry.getKey();
+			mappedProps.put(fieldForProperty(fieldName), entry.getValue());
 		}
 		vertex.fromMap(mappedProps);
 		graph.markNodeAsDirty(this);
@@ -90,8 +102,26 @@ public class OrientNode implements IGraphNode {
 
 	@Override
 	public void setProperty(String name, Object value) {
-		vertex.field(PREFIX_PROPERTY + name, value);
+		vertex.field(fieldForProperty(name), value);
 		graph.markNodeAsDirty(this);
+	}
+
+	private String propertyForField(String fieldName) {
+		final String escapedPropertyName = fieldName.substring(PREFIX_PROPERTY.length());
+		String propertyName = escapedPropertyName;
+		for (Entry<String, String> entry : INVALID_CHAR_REPLACEMENTS.entrySet()) {
+			propertyName = propertyName.replace(entry.getValue(), entry.getKey());
+		}
+		return propertyName;
+	}
+
+	private String fieldForProperty(String propertyName) {
+		final String unescapedFieldName = PREFIX_PROPERTY + propertyName;
+		String fieldName = unescapedFieldName;
+		for (Entry<String, String> entry : INVALID_CHAR_REPLACEMENTS.entrySet()) {
+			fieldName = fieldName.replace(entry.getKey(), entry.getValue());
+		}
+		return fieldName;
 	}
 
 	@Override

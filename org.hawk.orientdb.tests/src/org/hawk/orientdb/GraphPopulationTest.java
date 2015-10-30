@@ -12,10 +12,9 @@ package org.hawk.orientdb;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
@@ -50,10 +49,22 @@ public class GraphPopulationTest {
 		db = new OrientDatabase();
 		db.run("memory:oneNodeBatch", null, new DefaultConsole());
 		db.enterBatchMode();
+
 		final String idValue = "http://foo.bar";
-		OrientNode n = db.createNode(FluidMap.create().add("id", idValue), "metamodel");
-		assertEquals(new HashSet<>(Arrays.asList("id")), n.getPropertyKeys());
-		assertEquals(idValue, n.getProperty("id"));
+
+		// OSchemaShared#checkFieldNameIfValid refers to these invalid characters
+		char[] invalidChars = ":,; %=".toCharArray();
+		final Map<String, Object> props = new HashMap<String, Object>();
+		props.put("id", idValue);
+		for (char invalidChar : invalidChars) {
+			props.put("my" + invalidChar + "value", invalidChar + "");
+		}
+
+		OrientNode n = db.createNode(props, "metamodel");
+		assertEquals(props.keySet(), n.getPropertyKeys());
+		for (Map.Entry<String, Object> entry : props.entrySet()) {
+			assertEquals(entry.getValue(), n.getProperty(entry.getKey()));
+		}
 		db.exitBatchMode();
 		assertEquals(1, db.allNodes("metamodel").size());
 	}
