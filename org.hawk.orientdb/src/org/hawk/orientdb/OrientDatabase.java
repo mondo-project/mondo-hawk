@@ -143,8 +143,15 @@ public class OrientDatabase implements IGraphDatabase {
 	private void shutdown(boolean delete) {
 		if (!delete) {
 			saveDirty();
+			if (!getGraph().isClosed()) {
+				getGraph().close();
+			}
+		} else {
+			discardDirty();
+			if (!getGraph().isClosed()) {
+				getGraph().drop();
+			}
 		}
-		getGraph().close();
 
 		if (delete && storageFolder != null) {
 			try {
