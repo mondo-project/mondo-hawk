@@ -4,10 +4,8 @@ import org.hawk.orientdb.OrientDatabase;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.index.OIndex;
-import com.orientechnologies.orient.core.index.OIndexFactory;
 import com.orientechnologies.orient.core.index.OIndexManager;
 import com.orientechnologies.orient.core.index.OIndexManagerProxy;
-import com.orientechnologies.orient.core.index.OIndexes;
 import com.orientechnologies.orient.core.index.OSimpleKeyIndexDefinition;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 
@@ -82,8 +80,7 @@ public class AbstractOrientIndex {
 	
 		// Create SBTree NOTUNIQUE index
 		final String idxName = getSBTreeIndexName(field);
-		final OIndexFactory idxFactory = OIndexes.getFactory("NOTUNIQUE", "SBTREE");
-		final OSimpleKeyIndexDefinition indexDef = new OSimpleKeyIndexDefinition(idxFactory.getLastVersion(), keyType);
+		final OSimpleKeyIndexDefinition indexDef = new OSimpleKeyIndexDefinition(keyType);
 		indexManager.createIndex(idxName, "NOTUNIQUE", indexDef, null, null, null, "SBTREE");
 
 		if (type == IndexType.NODE) {

@@ -35,6 +35,7 @@ import org.hawk.orientdb.indexes.OrientEdgeIndex;
 import org.hawk.orientdb.indexes.OrientNodeIndex;
 
 import com.orientechnologies.orient.core.config.OGlobalConfiguration;
+import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
@@ -197,7 +198,7 @@ public class OrientDatabase implements IGraphDatabase {
 			dbTx.commit();
 			dbTx = null;
 		}
-		db.activateOnCurrentThread();
+		ODatabaseRecordThreadLocal.INSTANCE.set(db);
 		db.declareIntent(new OIntentMassiveInsert());
 		db.setMVCC(false);
 	}
@@ -218,7 +219,7 @@ public class OrientDatabase implements IGraphDatabase {
 			saveDirty();
 			dbTx = db.begin();
 		}
-		dbTx.activateOnCurrentThread();
+		ODatabaseRecordThreadLocal.INSTANCE.set(dbTx);
 	}
 
 	@Override
@@ -288,10 +289,10 @@ public class OrientDatabase implements IGraphDatabase {
 	@Override
 	public ODatabaseDocumentTx getGraph() {
 		if (dbTx != null) {
-			dbTx.activateOnCurrentThread();
+			ODatabaseRecordThreadLocal.INSTANCE.set(dbTx);
 			return dbTx;
 		} else {
-			db.activateOnCurrentThread();
+			ODatabaseRecordThreadLocal.INSTANCE.set(db);
 			return db;
 		}
 	}
