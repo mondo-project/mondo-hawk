@@ -41,6 +41,7 @@ import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
 import com.orientechnologies.orient.core.intent.OIntentMassiveInsert;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.storage.OStorage;
 
 /**
  * OrientDB backend for Hawk. Most things work, but it has two limitations:
@@ -137,7 +138,13 @@ public class OrientDatabase implements IGraphDatabase {
 		if (!delete) {
 			saveDirty();
 			if (!getGraph().isClosed()) {
+				/*
+				 * We want to completely close the database (e.g. so we can
+				 * delete the directory later from the Hawk UI).
+				 */
+				final OStorage storage = getGraph().getStorage();
 				getGraph().close();
+				storage.close(true, false);
 			}
 		} else {
 			discardDirty();
@@ -180,6 +187,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public OrientTransaction beginTransaction() {
+		getGraph(); // make sure the thread local to the OrientDB instance is set
 		if (dbTx == null) {
 			exitBatchMode();
 		}
