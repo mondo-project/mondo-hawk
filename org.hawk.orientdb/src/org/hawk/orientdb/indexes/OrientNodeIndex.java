@@ -116,7 +116,7 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 			final Object valueExpr = normalizeValue(entry.getValue());
 			final Class<?> valueClass = valueExpr.getClass();
 			final OIndex<?> idx = getOrCreateFieldIndex(field, valueClass);
-			idx.put(valueExpr, orientNode.getDocument());
+			idx.put(valueExpr, orientNode.getDocument().getIdentity());
 		}
 	}
 

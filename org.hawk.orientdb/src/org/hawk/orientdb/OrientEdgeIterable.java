@@ -12,16 +12,17 @@ package org.hawk.orientdb;
 
 import org.hawk.core.graph.IGraphEdge;
 
+import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
-public class OrientEdgeIterable extends OrientIterable<IGraphEdge, ODocument> {
+public class OrientEdgeIterable extends OrientIterable<IGraphEdge, ORID> {
 
-	public OrientEdgeIterable(Iterable<ODocument> ret, OrientDatabase graph) {
+	public OrientEdgeIterable(Iterable<ORID> ret, OrientDatabase graph) {
 		super(ret, graph);
 	}
 
 	@Override
-	protected OrientEdge convert(ODocument o) {
+	protected OrientEdge convert(ORID o) {
 		return new OrientEdge(o, getGraph());
 	}
 

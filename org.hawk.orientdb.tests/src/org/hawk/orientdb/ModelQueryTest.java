@@ -27,6 +27,7 @@ import org.hawk.graph.internal.updater.GraphModelUpdater;
 import org.hawk.graph.syncValidationListener.SyncValidationListener;
 import org.hawk.localfolder.LocalFolder;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -96,8 +97,8 @@ public class ModelQueryTest {
 
 	@After
 	public void teardown() throws Exception {
-		indexer.removeGraphChangeListener(validationListener);
 		indexer.shutdown(ShutdownRequestType.ALWAYS);
+		indexer.removeGraphChangeListener(validationListener);
 		db.delete();
 	}
 
@@ -140,6 +141,31 @@ public class ModelQueryTest {
 				assertEquals(0, validationListener.getTotalErrors());
 				assertEquals(1, queryEngine.getAllOfType("IJavaProject").size());
 				assertEquals(1, queryEngine.contextlessQuery(db, "return IJavaProject.all.size;"));
+				return null;
+			}
+		});
+	}
+
+	/**
+	 * Only for manual stress testing: replace with path to folder with only the
+	 * GraBaTs 2009 set2 .xmi.
+	 */
+	@Ignore
+	@Test
+	public void set2() throws Throwable {
+		setup("set2");
+		indexer.registerMetamodel(new File("resources/metamodels/Ecore.ecore"));
+		indexer.registerMetamodel(new File("resources/metamodels/JDTAST.ecore"));
+
+		final LocalFolder vcs = new LocalFolder();
+		vcs.run("/home/antonio/Desktop/grabats2009/set2", indexer);
+		indexer.addVCSManager(vcs, true);
+		indexer.requestImmediateSync();
+
+		waitForSync(new Callable<Object>() {
+			@Override
+			public Object call() throws Exception {
+				assertEquals(0, validationListener.getTotalErrors());
 				return null;
 			}
 		});

@@ -12,6 +12,7 @@ package org.hawk.orientdb;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -143,12 +144,12 @@ public class OrientIndexStore {
 	@SuppressWarnings("unchecked")
 	private Set<String> getIndexNames(final String property) {
 		final Object oNames = vIndexStore.getProperty(property);
-		if (oNames == null) {
-			return new HashSet<String>();
-		} else if (oNames instanceof Collection) {
+		if (oNames instanceof Collection) {
 			return new HashSet<String>((Collection<String>)oNames);
-		} else {
+		} else if (oNames instanceof String[]) {
 			return new HashSet<String>(Arrays.asList((String[])oNames));
+		} else {
+			return Collections.emptySet();
 		}
 	}
 
