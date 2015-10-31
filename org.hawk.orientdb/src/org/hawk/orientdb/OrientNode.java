@@ -243,7 +243,11 @@ public class OrientNode implements IGraphNode {
 			return vertex;
 		}
 
-		return graph.getGraph().load(id);
+		final ODocument loaded = graph.getGraph().load(id);
+		if (loaded == null) {
+			graph.getConsole().printerrln("Loading node with id " + id + " from OrientDB produced null value");
+		}
+		return loaded;
 	}
 
 	public void addOutgoing(OrientEdge newEdge) {

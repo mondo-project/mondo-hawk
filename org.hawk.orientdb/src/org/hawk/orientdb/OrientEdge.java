@@ -138,12 +138,16 @@ public class OrientEdge implements IGraphEdge {
 			return changedEdge;
 		}
 
-		ODocument dirtyEdge = db.getEdgeById(id).changedEdge;
+		final ODocument dirtyEdge = db.getEdgeById(id).changedEdge;
 		if (dirtyEdge != null) {
 			return dirtyEdge;
 		}
 
-		return db.getGraph().load(id);
+		final ODocument loaded = db.getGraph().load(id);
+		if (loaded == null) {
+			db.getConsole().printerrln("Loading edge with id " + id + " from OrientDB produced null value");
+		}
+		return loaded;
 	}
 
 	public static OrientEdge create(OrientDatabase graph, OrientNode start, OrientNode end, String type, String edgeTypeName) {

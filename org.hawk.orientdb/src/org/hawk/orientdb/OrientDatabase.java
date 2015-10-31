@@ -110,7 +110,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	private IGraphNodeIndex metamodelIndex;
 	private IGraphNodeIndex fileIndex;
-	private ODatabaseDocumentTx db, dbTx;
+	private ODatabaseDocumentTx db;
 
 	private Map<String, OrientNode> dirtyNodes = new HashMap<>(100_000);
 	private Map<String, OrientEdge> dirtyEdges = new HashMap<>(100_000);
@@ -139,7 +139,6 @@ public class OrientDatabase implements IGraphDatabase {
 		this.console = c;
 
 		OGlobalConfiguration.WAL_CACHE_SIZE.setValue(10000);
-		OGlobalConfiguration.WAL_SYNC_ON_PAGE_FLUSH.setValue(false);
 		OGlobalConfiguration.OBJECT_SAVE_ONLY_DIRTY.setValue(true);
 
 		console.println("Starting database " + iURL);
@@ -222,7 +221,7 @@ public class OrientDatabase implements IGraphDatabase {
 	@Override
 	public OrientTransaction beginTransaction() {
 		getGraph(); // make sure the thread local to the OrientDB instance is set
-		if (dbTx == null) {
+		if (!db.getTransaction().isActive()) {
 			exitBatchMode();
 		}
 		return new OrientTransaction(this);
@@ -235,10 +234,9 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public void enterBatchMode() {
-		if (dbTx != null) {
+		if (db.getTransaction().isActive()) {
 			saveDirty();
-			dbTx.commit();
-			dbTx = null;
+			db.commit();
 			reopenWithWALSetTo(false);
 		}
 		ODatabaseRecordThreadLocal.INSTANCE.set(db);
@@ -246,6 +244,7 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	private void reopenWithWALSetTo(final boolean useWAL) {
+		db.getMetadata().getIndexManager().flush();
 		db.getStorage().close(true, false);
 		db.close();
 		OGlobalConfiguration.USE_WAL.setValue(useWAL);
@@ -268,18 +267,18 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public void exitBatchMode() {
-		if (dbTx == null) {
+		if (!db.getTransaction().isActive()) {
 			saveDirty();
 			reopenWithWALSetTo(true);
-			dbTx = db.begin();
+			db.begin();
 		}
-		ODatabaseRecordThreadLocal.INSTANCE.set(dbTx);
+		ODatabaseRecordThreadLocal.INSTANCE.set(db);
 	}
 
 	@Override
 	public OrientNodeIterable allNodes(String label) {
 		final String vertexTypeName = getVertexTypeName(label);
-		return allNodes(vertexTypeName, dbTx != null ? dbTx : db);
+		return allNodes(vertexTypeName, db);
 	}
 
 	private OrientNodeIterable allNodes(final String vertexTypeName, final ODatabaseDocumentTx dbDoc) {
@@ -297,7 +296,7 @@ public class OrientDatabase implements IGraphDatabase {
 	public OrientNode createNode(Map<String, Object> properties, String label) {
 		final String vertexTypeName = getVertexTypeName(label);
 
-		if (!db.getMetadata().getSchema().existsClass(vertexTypeName) && dbTx != null) {
+		if (!db.getMetadata().getSchema().existsClass(vertexTypeName) && db.getTransaction().isActive()) {
 			enterBatchMode();
 			db.getMetadata().getSchema().createClass(vertexTypeName);
 			exitBatchMode();
@@ -317,7 +316,7 @@ public class OrientDatabase implements IGraphDatabase {
 		final OrientNode oEnd = (OrientNode)end;
 		final String edgeTypeName = getEdgeTypeName(type);
 
-		if (!db.getMetadata().getSchema().existsClass(edgeTypeName) && dbTx != null) {
+		if (!db.getMetadata().getSchema().existsClass(edgeTypeName) && db.getTransaction().isActive()) {
 			enterBatchMode();
 			db.getMetadata().getSchema().createClass(edgeTypeName);
 			exitBatchMode();
@@ -364,13 +363,8 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public ODatabaseDocumentTx getGraph() {
-		if (dbTx != null) {
-			ODatabaseRecordThreadLocal.INSTANCE.set(dbTx);
-			return dbTx;
-		} else {
-			ODatabaseRecordThreadLocal.INSTANCE.set(db);
-			return db;
-		}
+		ODatabaseRecordThreadLocal.INSTANCE.set(db);
+		return db;
 	}
 
 	@Override
@@ -432,7 +426,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public Mode currentMode() {
-		return dbTx == null ? Mode.NO_TX_MODE : Mode.TX_MODE;
+		return db.getTransaction().isActive() ? Mode.TX_MODE : Mode.NO_TX_MODE;
 	}
 
 	@Override
@@ -500,6 +494,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 		dirtyNodes.put(startNode.getId().toString(), startNode);
 		dirtyNodes.put(endNode.getId().toString(), endNode);
+		dirtyEdges.remove(orientEdge.getId().toString());
 		getGraph().delete(orientEdge.getId());
 	}
 
@@ -540,5 +535,9 @@ public class OrientDatabase implements IGraphDatabase {
 	public void deleteNode(ORID id) {
 		getGraph().delete(id);
 		dirtyNodes.remove(id.toString());
+	}
+
+	public IConsole getConsole() {
+		return console;
 	}
 }
