@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IContributionManager;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -37,6 +38,8 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -47,6 +50,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -106,13 +111,16 @@ public class HView extends ViewPart {
 	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
 
 		protected Image image = null;
-
+		
 		public String getColumnText(Object obj, int index) {
-			return getText(obj);
+			HModel hModel = (HModel) obj;
+			if (index == 0) return hModel.getName();
+			else return hModel.getFolder();
 		}
 
 		public Image getColumnImage(Object obj, int index) {
-			return getImage(obj);
+			if (index == 0) return getImage(obj);
+			else return null;
 		}
 
 		public Image getImage(Object obj) {
@@ -153,7 +161,18 @@ public class HView extends ViewPart {
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
-
+		
+		TableColumn c = new TableColumn(viewer.getTable(), SWT.FULL_SELECTION);
+		c.setText("Name");
+		c.setWidth(150);
+		
+		c = new TableColumn(viewer.getTable(), SWT.FULL_SELECTION);
+		c.setText("Location");
+		c.setWidth(450);
+		
+		viewer.getTable().setHeaderVisible(true);
+		viewer.getTable().setLinesVisible(true);
+		
 		// Create the help context id for the viewer's control
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "hawkview.viewer");
 		makeActions();
@@ -181,6 +200,7 @@ public class HView extends ViewPart {
 			}
 
 		});
+		viewer.refresh();
 	}
 
 	private void hookPermanentDeleteAction() {
@@ -235,7 +255,7 @@ public class HView extends ViewPart {
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
-				HView.this.fillContextMenu(manager);
+				HView.this.populateContributionManager(manager);
 			}
 		});
 		Menu menu = menuMgr.createContextMenu(viewer.getControl());
@@ -245,33 +265,11 @@ public class HView extends ViewPart {
 
 	private void contributeToActionBars() {
 		IActionBars bars = getViewSite().getActionBars();
-		fillLocalPullDown(bars.getMenuManager());
-		fillLocalToolBar(bars.getToolBarManager());
+		populateContributionManager(bars.getMenuManager());
+		populateContributionManager(bars.getToolBarManager());
 	}
 
-	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(query);
-		manager.add(start);
-		manager.add(stop);
-		manager.add(sync);
-		manager.add(delete);
-		manager.add(add);
-		manager.add(importRepos);
-		manager.add(config);
-	}
-
-	private void fillContextMenu(IMenuManager manager) {
-		manager.add(query);
-		manager.add(start);
-		manager.add(stop);
-		manager.add(sync);
-		manager.add(delete);
-		manager.add(add);
-		manager.add(importRepos);
-		manager.add(config);
-	}
-
-	private void fillLocalToolBar(IToolBarManager manager) {
+	private void populateContributionManager(IContributionManager manager) {
 		manager.add(query);
 		manager.add(start);
 		manager.add(stop);
