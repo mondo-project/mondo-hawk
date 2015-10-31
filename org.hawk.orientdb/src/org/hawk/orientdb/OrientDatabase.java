@@ -237,19 +237,21 @@ public class OrientDatabase implements IGraphDatabase {
 		if (db.getTransaction().isActive()) {
 			saveDirty();
 			db.commit();
-			reopenWithWALSetTo(false);
 		}
+		ensureWALSetTo(false);
 		ODatabaseRecordThreadLocal.INSTANCE.set(db);
 		db.declareIntent(new OIntentMassiveInsert());
 	}
 
-	private void reopenWithWALSetTo(final boolean useWAL) {
-		db.getMetadata().getIndexManager().flush();
-		db.getStorage().close(true, false);
-		db.close();
-		OGlobalConfiguration.USE_WAL.setValue(useWAL);
-		db = new ODatabaseDocumentTx(dbURL);
-		db.open("admin", "admin");
+	private void ensureWALSetTo(final boolean useWAL) {
+		if (useWAL != OGlobalConfiguration.USE_WAL.getValueAsBoolean()) {
+			db.getMetadata().getIndexManager().flush();
+			db.getStorage().close(true, false);
+			db.close();
+			OGlobalConfiguration.USE_WAL.setValue(useWAL);
+			db = new ODatabaseDocumentTx(dbURL);
+			db.open("admin", "admin");
+		}
 	}
 
 	public void saveDirty() {
@@ -269,9 +271,9 @@ public class OrientDatabase implements IGraphDatabase {
 	public void exitBatchMode() {
 		if (!db.getTransaction().isActive()) {
 			saveDirty();
-			reopenWithWALSetTo(true);
 			db.begin();
 		}
+		ensureWALSetTo(true);
 		ODatabaseRecordThreadLocal.INSTANCE.set(db);
 	}
 
