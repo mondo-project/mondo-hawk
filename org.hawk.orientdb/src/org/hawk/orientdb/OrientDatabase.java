@@ -237,8 +237,8 @@ public class OrientDatabase implements IGraphDatabase {
 		if (db.getTransaction().isActive()) {
 			saveDirty();
 			db.commit();
+			ensureWALSetTo(false);
 		}
-		ensureWALSetTo(false);
 		ODatabaseRecordThreadLocal.INSTANCE.set(db);
 		db.declareIntent(new OIntentMassiveInsert());
 	}
@@ -271,9 +271,9 @@ public class OrientDatabase implements IGraphDatabase {
 	public void exitBatchMode() {
 		if (!db.getTransaction().isActive()) {
 			saveDirty();
+			ensureWALSetTo(true);
 			db.begin();
 		}
-		ensureWALSetTo(true);
 		ODatabaseRecordThreadLocal.INSTANCE.set(db);
 	}
 
@@ -428,7 +428,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public Mode currentMode() {
-		return db.getTransaction().isActive() ? Mode.TX_MODE : Mode.NO_TX_MODE;
+		return OGlobalConfiguration.USE_WAL.getValueAsBoolean() ? Mode.TX_MODE : Mode.NO_TX_MODE;
 	}
 
 	@Override
