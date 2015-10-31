@@ -64,12 +64,6 @@ public class OrientDatabase implements IGraphDatabase {
 	/** Prefix for qualifying all vertex types (edge and vertex types share same namespace). */
 	static final String VERTEX_TYPE_PREFIX = "V_";
 
-	/** Name of the non-transactional (batch) mode. */
-	public static final String NOTX_MODE = "batch";
-
-	/** Name of the transactional mode. */
-	public static final String TX_MODE = "transactional";
-
 	/** Name of the metamodel index. */
 	static final String METAMODEL_IDX_NAME = "hawkMetamodelIndex";
 
@@ -395,8 +389,8 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	@Override
-	public String currentMode() {
-		return dbTx == null ? NOTX_MODE : TX_MODE;
+	public Mode currentMode() {
+		return dbTx == null ? Mode.NO_TX_MODE : Mode.TX_MODE;
 	}
 
 	@Override

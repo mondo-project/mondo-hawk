@@ -19,7 +19,7 @@ import org.hawk.core.model.IHawkPackage;
 /**
  * <p>
  * Component that listens to changes in the graph managed by Hawk. These changes
- * are transactional: listeners should only react to changes after the
+ * are TX_MODE: listeners should only react to changes after the
  * transaction has been confirmed, or be prepared to roll back if the
  * transaction is not successful.
  * </p>

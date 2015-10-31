@@ -13,7 +13,6 @@ package org.hawk.graph.internal.updater;
 import java.io.File;
 import java.lang.reflect.Array;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;

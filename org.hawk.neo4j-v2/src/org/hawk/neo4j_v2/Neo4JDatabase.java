@@ -473,13 +473,13 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 	}
 
-	public String currentMode() {
+	public Mode currentMode() {
 		if (graph != null && batch == null)
-			return transactional;
+			return Mode.TX_MODE;
 		else if (graph == null && batch != null)
-			return nonTransactional;
+			return Mode.NO_TX_MODE;
 		else
-			return "WARNING_UNKNOWN_MODE";
+			return Mode.UNKNOWN;
 	}
 
 	@Override

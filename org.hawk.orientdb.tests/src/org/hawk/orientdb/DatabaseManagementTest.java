@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.util.DefaultConsole;
 import org.junit.Before;
@@ -71,14 +72,14 @@ public class DatabaseManagementTest {
 		OrientDatabase db = new OrientDatabase();
 		db.run("memory:testStartTransaction", null, new DefaultConsole());
 
-		assertEquals(OrientDatabase.TX_MODE, db.currentMode());
+		assertEquals(IGraphDatabase.Mode.TX_MODE, db.currentMode());
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			assertEquals(OrientDatabase.TX_MODE, db.currentMode());
+			assertEquals(IGraphDatabase.Mode.TX_MODE, db.currentMode());
 		}
 		db.enterBatchMode();
-		assertEquals(OrientDatabase.NOTX_MODE, db.currentMode());
+		assertEquals(IGraphDatabase.Mode.NO_TX_MODE, db.currentMode());
 		db.exitBatchMode();
-		assertEquals(OrientDatabase.TX_MODE, db.currentMode());
+		assertEquals(IGraphDatabase.Mode.TX_MODE, db.currentMode());
 
 		db.shutdown();
 	}

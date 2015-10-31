@@ -83,15 +83,13 @@ public interface IGraphDatabase {
 	 */
 	File logFull() throws Exception;
 
-	public static final String transactional = "TRANSACTIONAL";
-	public static final String nonTransactional = "NONTRANSACTIONAL";
+	public enum Mode { TX_MODE, NO_TX_MODE, UNKNOWN };
 
 	/**
-	 * 
-	 * @return one of the two static strings defined here, either stating it is
-	 *         currently in transactional mode, or a non-transactional one
+	 * Returns whether the current database is in transactional (update) or
+	 * non-transactional (batch insert) mode.
 	 */
-	String currentMode();
+	Mode currentMode();
 
 	Set<String> getNodeIndexNames();
 

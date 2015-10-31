@@ -1,5 +1,6 @@
 package org.hawk.orientdb.indexes;
 
+import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.orientdb.OrientDatabase;
 import org.hawk.orientdb.OrientNameCleaner;
 
@@ -66,7 +67,7 @@ public class AbstractOrientIndex {
 		final OIndexManager indexManager = getIndexManager();
 	
 		// Indexes have to be created outside transactions
-		final boolean wasTransactional = graph.currentMode() == OrientDatabase.TX_MODE;
+		final boolean wasTransactional = graph.currentMode() == IGraphDatabase.Mode.TX_MODE;
 		if (wasTransactional) {
 			graph.enterBatchMode();
 		}
