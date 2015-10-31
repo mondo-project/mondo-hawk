@@ -110,7 +110,8 @@ public class HView extends ViewPart {
 
 	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
 
-		protected Image image = null;
+		protected Image runningImage = null;
+		protected Image stoppedImage = null;
 		
 		public String getColumnText(Object obj, int index) {
 			HModel hModel = (HModel) obj;
@@ -124,12 +125,20 @@ public class HView extends ViewPart {
 		}
 
 		public Image getImage(Object obj) {
-
-			if (image == null) {
-				image = Activator.getImageDescriptor("icons/hawk.png").createImage();
+			
+			if (runningImage == null) {
+				runningImage = Activator.getImageDescriptor("icons/hawk-running.png").createImage();
+				stoppedImage = Activator.getImageDescriptor("icons/hawk-stopped.png").createImage();
 			}
 
-			return image;
+			HModel hModel = (HModel) obj;
+			
+			if (hModel.isRunning()) {
+				return runningImage;
+			}
+			else {
+				return stoppedImage;
+			}
 		}
 	}
 
