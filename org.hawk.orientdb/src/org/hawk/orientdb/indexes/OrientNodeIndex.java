@@ -181,7 +181,7 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 		}
 
 		for (Object key : keysToRemove) {
-			idx.remove(key);
+			idx.remove(key, n.getDocument());
 		}
 	}
 

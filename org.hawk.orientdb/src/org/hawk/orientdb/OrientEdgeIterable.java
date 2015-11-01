@@ -12,17 +12,29 @@ package org.hawk.orientdb;
 
 import org.hawk.core.graph.IGraphEdge;
 
+import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.id.ORID;
+import com.orientechnologies.orient.core.record.impl.ODocument;
 
-public class OrientEdgeIterable extends OrientIterable<IGraphEdge, ORID> {
+public class OrientEdgeIterable extends OrientIterable<IGraphEdge, OIdentifiable> {
 
-	public OrientEdgeIterable(Iterable<ORID> ret, OrientDatabase graph) {
+	public OrientEdgeIterable(Iterable<OIdentifiable> ret, OrientDatabase graph) {
 		super(ret, graph);
 	}
 
 	@Override
-	protected OrientEdge convert(ORID o) {
-		return new OrientEdge(o, getGraph());
+	protected OrientEdge convert(OIdentifiable o) {
+		if (o instanceof ORID) {
+			return new OrientEdge((ORID)o, getGraph());
+		} else {
+			final ODocument oDoc = (ODocument)o;
+			final ORID id = oDoc.getIdentity();
+			if (id.isPersistent()) {
+				return new OrientEdge(id, getGraph());
+			} else {
+				return new OrientEdge(oDoc, getGraph());
+			}
+		}
 	}
 
 }

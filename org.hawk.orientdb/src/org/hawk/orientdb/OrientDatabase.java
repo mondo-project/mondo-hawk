@@ -60,9 +60,6 @@ public class OrientDatabase implements IGraphDatabase {
 	/** Vertex class for the Hawk index store. */
 	private static final String VCLASS = "hawkIndexStore";
 
-	/** Prefix for qualifying all edge types (edge and vertex types share same namespace). */
-	static final String EDGE_TYPE_PREFIX = "E_";
-
 	/** Prefix for qualifying all vertex types (edge and vertex types share same namespace). */
 	static final String VERTEX_TYPE_PREFIX = "V_";
 
@@ -218,7 +215,6 @@ public class OrientDatabase implements IGraphDatabase {
 
 	private void ensureWALSetTo(final boolean useWAL) {
 		if (useWAL != OGlobalConfiguration.USE_WAL.getValueAsBoolean()) {
-			db.getMetadata().getIndexManager().flush();
 			db.getStorage().close(true, false);
 			db.close();
 			OGlobalConfiguration.USE_WAL.setValue(useWAL);
@@ -297,7 +293,7 @@ public class OrientDatabase implements IGraphDatabase {
 		dirtyNodes.put(oEnd.getId().toString(), oEnd);
 		saveIfBig();
 
-		return new OrientEdge(newEdge.getId(), this);
+		return newEdge;
 	}
 
 	private void saveIfBig() {
@@ -328,7 +324,12 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	private String getEdgeTypeName(String label) {
-		return OrientNameCleaner.escapeClass(EDGE_TYPE_PREFIX + label);
+		// We don't need edge classes, as there is no allEdges(...) method:
+		// this reduces the amount of times we may need to switch back to
+		// batch mode if we need to add a new edge type (very common during
+		// proxy resolving).
+
+		return "E";
 	}
 
 	@Override

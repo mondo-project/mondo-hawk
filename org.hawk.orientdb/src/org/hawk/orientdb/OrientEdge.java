@@ -30,30 +30,39 @@ public class OrientEdge implements IGraphEdge {
 	private final OrientDatabase db;
 
 	/** Identifier of the edge within the database. */
-	private final ORID id;
+	private ORID id;
 
 	/** Keeps the changed document in memory until the next save. */
 	private ODocument changedEdge;
 
+	/** Should be used when the ID is persistent, to save memory. */
 	public OrientEdge(ORID id, OrientDatabase graph) {
+		if (!id.isPersistent()) {
+			System.err.println("Warning: OrientEdge(ORID) used with non-persistent ID " + id);
+		}
 		this.id = id;
 		this.db = graph;
 	}
 
-	/** Only used when the ID is not persistent. */
-	private OrientEdge(ODocument newDoc, OrientDatabase graph) {
-		this.id = newDoc.getIdentity();
+	/** Should only be used when the ID is not persistent. */
+	public OrientEdge(ODocument newDoc, OrientDatabase graph) {
+		if (newDoc.getIdentity().isPersistent()) {
+			System.err.println("Warning: OrientEdge(ODocument) used with persistent ID " + newDoc.getIdentity());
+		}
 		this.db = graph;
 		this.changedEdge = newDoc;
+		this.id = changedEdge.getIdentity();
 	}
 
 	public ORID getId() {
+		if (changedEdge != null) {
+			return changedEdge.getIdentity();
+		}
 		return id;
 	}
 
 	public String getType() {
 		final ODocument tmpEdge = getDocument();
-		tmpEdge.deserializeFields(TYPE_PROPERTY);
 		return tmpEdge.field(TYPE_PROPERTY).toString();
 	}
 
@@ -68,7 +77,6 @@ public class OrientEdge implements IGraphEdge {
 
 	public Object getProperty(String name) {
 		final ODocument tmpEdge = getDocument();
-		tmpEdge.deserializeFields(name);
 		return tmpEdge.field(name);
 	}
 
@@ -88,7 +96,6 @@ public class OrientEdge implements IGraphEdge {
 
 	private OrientNode getNode(final String property) {
 		final ODocument tmpEdge = getDocument();
-		tmpEdge.deserializeFields(property);
 		final Object value = tmpEdge.field(property);
 		if (value instanceof ODocument) {
 			ODocument doc = (ODocument) value;
@@ -108,7 +115,7 @@ public class OrientEdge implements IGraphEdge {
 		db.markNodeAsDirty(startNode);
 		db.markNodeAsDirty(endNode);
 		db.unmarkEdgeAsDirty(this);
-		db.getGraph().delete(id);
+		db.getGraph().delete(getId());
 
 		changedEdge = null;
 	}
@@ -123,7 +130,7 @@ public class OrientEdge implements IGraphEdge {
 	public int hashCode() {
 		final int prime = 5381;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.toString().hashCode());
+		result = prime * result + ((getId() == null) ? 0 : getId().toString().hashCode());
 		return result;
 	}
 
@@ -136,17 +143,17 @@ public class OrientEdge implements IGraphEdge {
 		if (getClass() != obj.getClass())
 			return false;
 		OrientEdge other = (OrientEdge) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (getId() == null) {
+			if (other.getId() != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!getId().equals(other.getId()))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "OrientEdge [" + id + "]";
+		return "OrientEdge [" + getId() + "]";
 	}
 
 	public ODocument getDocument() {
@@ -154,24 +161,39 @@ public class OrientEdge implements IGraphEdge {
 			return changedEdge;
 		}
 
-		final ODocument dirtyEdge = db.getEdgeById(id).changedEdge;
+		final ODocument dirtyEdge = db.getEdgeById(getId()).changedEdge;
 		if (dirtyEdge != null) {
 			return dirtyEdge;
 		}
 
-		final ODocument loaded = db.getGraph().load(id);
+		final ODocument loaded = db.getGraph().load(getId());
 		if (loaded == null) {
-			db.getConsole().printerrln("Loading edge with id " + id + " from OrientDB produced null value");
+			db.getConsole().printerrln("Loading edge with id " + getId() + " from OrientDB produced null value");
 			Thread.dumpStack();
 		}
+		loaded.deserializeFields();
 		return loaded;
 	}
 
 	public static OrientEdge create(OrientDatabase graph, OrientNode start, OrientNode end, String type, String edgeTypeName) {
 		ODocument newDoc = new ODocument(edgeTypeName);
 		newDoc.field(TYPE_PROPERTY, type);
-		newDoc.field(FROM_PROPERTY, start.getDocument().getIdentity());
-		newDoc.field(TO_PROPERTY, end.getDocument().getIdentity());
+
+		final ODocument startDoc = start.getDocument();
+		final ORID startId = startDoc.getIdentity();
+		if (startId.isPersistent()) {
+			newDoc.field(FROM_PROPERTY, startId);
+		} else {
+			newDoc.field(FROM_PROPERTY, startDoc);
+		}
+
+		final ODocument endDoc = end.getDocument();
+		final ORID endId = endDoc.getIdentity();
+		if (endId.isPersistent()) {
+			newDoc.field(TO_PROPERTY, endId);
+		} else {
+			newDoc.field(TO_PROPERTY, endDoc);
+		}
 		newDoc.save();
 
 		OrientEdge newEdge;
@@ -190,7 +212,7 @@ public class OrientEdge implements IGraphEdge {
 		if (changedEdge != null && changedEdge.isDirty()) {
 			changedEdge.save();
 		}
-		if (id.isPersistent()) {
+		if (getId().isPersistent()) {
 			changedEdge = null;
 		}
 	}
