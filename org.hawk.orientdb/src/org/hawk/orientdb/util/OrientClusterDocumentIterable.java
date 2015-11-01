@@ -44,7 +44,6 @@ public class OrientClusterDocumentIterable implements Iterable<ORID> {
 
 		final ORecordIteratorCluster<ODocument> it = db.getGraph().browseCluster(clusterName);
 		return new Iterator<ORID>(){
-
 			@Override
 			public boolean hasNext() {
 				return it.hasNext();
@@ -54,7 +53,11 @@ public class OrientClusterDocumentIterable implements Iterable<ORID> {
 			public ORID next() {
 				return it.next().getIdentity();
 			}
-			
+
+			@Override
+			public void remove() {
+				it.remove();
+			}
 		};
 	}
 }
