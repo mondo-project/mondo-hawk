@@ -238,8 +238,8 @@ public class OrientDatabase implements IGraphDatabase {
 		if (db.getTransaction().isActive()) {
 			saveDirty();
 			db.commit();
-			ensureWALSetTo(false);
 		}
+		ensureWALSetTo(false);
 		ODatabaseRecordThreadLocal.INSTANCE.set(db);
 		db.declareIntent(new OIntentMassiveInsert());
 		currentMode = Mode.NO_TX_MODE;
@@ -273,7 +273,7 @@ public class OrientDatabase implements IGraphDatabase {
 	public void exitBatchMode() {
 		if (!db.getTransaction().isActive()) {
 			saveDirty();
-			ensureWALSetTo(true);
+			ensureWALSetTo(true); // this reopens the DB, so it *must* go before db.begin()
 			db.begin();
 		}
 		ODatabaseRecordThreadLocal.INSTANCE.set(db);
@@ -347,7 +347,7 @@ public class OrientDatabase implements IGraphDatabase {
 	@Override
 	public OrientEdge createRelationship(IGraphNode start, IGraphNode end, String type, Map<String, Object> props) {
 		OrientEdge e = createRelationship(start, end, type);
-		if (e != null) {
+		if (props != null) {
 			for (Entry<String, Object> entry : props.entrySet()) {
 				e.setProperty(entry.getKey(), entry.getValue());
 			}
@@ -491,18 +491,6 @@ public class OrientDatabase implements IGraphDatabase {
 		});
 	}
 
-	public void deleteEdge(OrientEdge orientEdge) {
-		final OrientNode startNode = orientEdge.getStartNode();
-		final OrientNode endNode = orientEdge.getEndNode();
-		startNode.removeOutgoing(orientEdge);
-		endNode.removeIncoming(orientEdge);
-
-		dirtyNodes.put(startNode.getId().toString(), startNode);
-		dirtyNodes.put(endNode.getId().toString(), endNode);
-		dirtyEdges.remove(orientEdge.getId().toString());
-		getGraph().delete(orientEdge.getId());
-	}
-
 	@SuppressWarnings("unchecked")
 	public <T> T getElementById(ORID id, Class<T> klass) {
 		if (klass == OrientEdge.class || klass == IGraphEdge.class) {
@@ -535,11 +523,6 @@ public class OrientDatabase implements IGraphDatabase {
 	public void discardDirty() {
 		dirtyNodes.clear();
 		dirtyEdges.clear();
-	}
-
-	public void deleteNode(ORID id) {
-		getGraph().delete(id);
-		dirtyNodes.remove(id.toString());
 	}
 
 	public IConsole getConsole() {

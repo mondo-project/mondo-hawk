@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.util.DefaultConsole;
 import org.hawk.orientdb.util.FluidMap;
 import org.junit.After;
@@ -82,6 +83,42 @@ public class GraphPopulationTest {
 	}
 
 	@Test
+	public void oneNodeRemove() {
+		db = new OrientDatabase();
+		db.run("memory:oneNodeRemove", null, new DefaultConsole());
+		assertEquals(0, db.allNodes("eobject").size());
+		OrientNode n;
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			n = db.createNode(null, "eobject");
+			tx.success();
+		}
+		assertEquals(1, db.allNodes("eobject").size());
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			n.delete();
+			tx.success();
+		}
+		assertEquals(0, db.allNodes("eobject").size());
+	}
+
+	@Test
+	public void oneNodeRemoveRollback() {
+		db = new OrientDatabase();
+		db.run("memory:oneNodeRemove", null, new DefaultConsole());
+		assertEquals(0, db.allNodes("eobject").size());
+		OrientNode n;
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			n = db.createNode(null, "eobject");
+			tx.success();
+		}
+		assertEquals(1, db.allNodes("eobject").size());
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			n.delete();
+			tx.failure();
+		}
+		assertEquals(1, db.allNodes("eobject").size());
+	}
+
+	@Test
 	public void twoNodesBatch() {
 		db = new OrientDatabase();
 		db.run("memory:twoNodesBatch", null, new DefaultConsole());
@@ -98,6 +135,57 @@ public class GraphPopulationTest {
 		assertEquals("dep", e.getType());
 		assertEquals(1, size(x1.getOutgoingWithType("dep")));
 		assertEquals(1, size(x10.getIncomingWithType("dep")));
+	}
+
+	@Test
+	public void twoNodesBatchRemoveRel() {
+		db = new OrientDatabase();
+		db.run("memory:twoNodesBatch", null, new DefaultConsole());
+
+		db.enterBatchMode();
+		IGraphNode x1 = db.createNode(FluidMap.create().add("x", 1), "eobject");
+		IGraphNode x10 = db.createNode(FluidMap.create().add("x", 10), "eobject");
+		IGraphEdge e = db.createRelationship(x1, x10, "dep", FluidMap.create().add("y", "abc"));
+		db.exitBatchMode();
+
+		db.enterBatchMode();
+		e.delete();
+		db.exitBatchMode();
+
+		assertEquals(0, size(x1.getOutgoingWithType("dep")));
+		assertEquals(0, size(x10.getIncomingWithType("dep")));
+	}
+
+	@Test
+	public void threeNodesRemoveMiddle() {
+		db = new OrientDatabase();
+		db.run("memory:twoNodesBatch", null, new DefaultConsole());
+
+		IGraphNode left, middle, right;
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			left = db.createNode(null, "eobject");
+			middle = db.createNode(null, "eobject");
+			right = db.createNode(null, "eobject");
+			db.createRelationship(left, middle, "x", null);
+			db.createRelationship(middle, right, "x", null);
+			tx.success();
+		}
+
+		assertEquals(0, size(left.getIncoming()));
+		assertEquals(1, size(left.getOutgoing()));
+		assertEquals(1, size(middle.getIncoming()));
+		assertEquals(1, size(middle.getOutgoing()));
+		assertEquals(1, size(right.getIncoming()));
+		assertEquals(0, size(right.getOutgoing()));
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			middle.delete();
+			tx.success();
+		}
+
+		assertEquals(0, size(left.getIncoming()));
+		assertEquals(0, size(left.getOutgoing()));
+		assertEquals(0, size(right.getIncoming()));
+		assertEquals(0, size(right.getOutgoing()));
 	}
 
 	@Test

@@ -93,7 +93,16 @@ public class OrientEdge implements IGraphEdge {
 	}
 
 	public void delete() {
-		db.deleteEdge(this);
+		final OrientNode startNode = getStartNode();
+		final OrientNode endNode = getEndNode();
+		startNode.removeOutgoing(this);
+		endNode.removeIncoming(this);
+
+		db.markNodeAsDirty(startNode);
+		db.markNodeAsDirty(endNode);
+		db.unmarkEdgeAsDirty(this);
+		db.getGraph().delete(id);
+
 		changedEdge = null;
 	}
 
@@ -146,6 +155,7 @@ public class OrientEdge implements IGraphEdge {
 		final ODocument loaded = db.getGraph().load(id);
 		if (loaded == null) {
 			db.getConsole().printerrln("Loading edge with id " + id + " from OrientDB produced null value");
+			Thread.dumpStack();
 		}
 		return loaded;
 	}

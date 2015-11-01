@@ -19,7 +19,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.Callable;
 
-import org.eclipse.epsilon.eol.models.IModelElement;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.core.runtime.ModelIndexerImpl;
 import org.hawk.core.security.FileBasedCredentialsStore;

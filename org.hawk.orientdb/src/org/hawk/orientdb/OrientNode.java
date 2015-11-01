@@ -186,7 +186,10 @@ public class OrientNode implements IGraphNode {
 
 	@Override
 	public void delete() {
-		graph.deleteNode(id);
+		for (IGraphEdge e : getEdges()) {
+			e.delete();
+		}
+		graph.getGraph().delete(id);
 		changedVertex = null;
 		graph.unmarkNodeAsDirty(this);
 	}
@@ -246,6 +249,7 @@ public class OrientNode implements IGraphNode {
 		final ODocument loaded = graph.getGraph().load(id);
 		if (loaded == null) {
 			graph.getConsole().printerrln("Loading node with id " + id + " from OrientDB produced null value");
+			Thread.dumpStack();
 		}
 		return loaded;
 	}
