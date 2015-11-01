@@ -17,7 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -34,6 +33,8 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.orientdb.indexes.OrientEdgeIndex;
 import org.hawk.orientdb.indexes.OrientNodeIndex;
+import org.hawk.orientdb.util.OrientClusterDocumentIterable;
+import org.hawk.orientdb.util.OrientNameCleaner;
 
 import com.orientechnologies.orient.core.config.OGlobalConfiguration;
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
@@ -55,36 +56,6 @@ import com.orientechnologies.orient.core.storage.OStorage;
  * to WAL I/O. This can be done with something like "-Dstorage.wal.path=...".
  */
 public class OrientDatabase implements IGraphDatabase {
-
-	private static final class ORIDMapper implements Iterable<ORID> {
-		private final Iterable<ODocument> nodeDocs;
-
-		private ORIDMapper(Iterable<ODocument> nodeDocs) {
-			this.nodeDocs = nodeDocs;
-		}
-
-		@Override
-		public Iterator<ORID> iterator() {
-			final Iterator<ODocument> it = nodeDocs.iterator();
-			return new Iterator<ORID>(){
-
-				@Override
-				public boolean hasNext() {
-					return it.hasNext();
-				}
-
-				@Override
-				public ORID next() {
-					return it.next().getIdentity();
-				}
-
-				@Override
-				public void remove() {
-					it.remove();
-				}
-			};
-		}
-	}
 
 	/** Vertex class for the Hawk index store. */
 	private static final String VCLASS = "hawkIndexStore";
@@ -283,18 +254,8 @@ public class OrientDatabase implements IGraphDatabase {
 	@Override
 	public OrientNodeIterable allNodes(String label) {
 		final String vertexTypeName = getVertexTypeName(label);
-		return allNodes(vertexTypeName, db);
-	}
-
-	private OrientNodeIterable allNodes(final String vertexTypeName, final ODatabaseDocumentTx dbDoc) {
-		final int clusterId = dbDoc.getClusterIdByName(vertexTypeName);
-		if (clusterId == -1) {
-			return new OrientNodeIterable(new ArrayList<ORID>(), this);
-		}
-
-		final Iterable<ODocument> nodeDocs = dbDoc.browseCluster(vertexTypeName);
-		final Iterable<ORID> nodeIds = new ORIDMapper(nodeDocs);
-		return new OrientNodeIterable(nodeIds, this);
+		return new OrientNodeIterable(
+				new OrientClusterDocumentIterable(vertexTypeName, this), this);
 	}
 
 	@Override
@@ -312,7 +273,11 @@ public class OrientDatabase implements IGraphDatabase {
 		}
 		newDoc.save();
 
-		return new OrientNode(newDoc.getIdentity(), this);
+		if (newDoc.getIdentity().isPersistent()) {
+			return new OrientNode(newDoc.getIdentity(), this);
+		} else {
+			return new OrientNode(newDoc, this);
+		}
 	}
 
 	@Override

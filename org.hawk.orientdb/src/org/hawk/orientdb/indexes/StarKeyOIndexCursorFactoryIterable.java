@@ -3,12 +3,12 @@ package org.hawk.orientdb.indexes;
 import java.util.Iterator;
 import java.util.Set;
 
-final class StarKeyValueOIndexCursorFactoryIterable implements Iterable<OIndexCursorFactory> {
+final class StarKeyOIndexCursorFactoryIterable implements Iterable<OIndexCursorFactory> {
 	private final Object valueExpr;
 	private final Set<String> valueIdxNames;
 	private final AbstractOrientIndex idx;
 
-	StarKeyValueOIndexCursorFactoryIterable(Object valueExpr, AbstractOrientIndex idx, Set<String> valueIdxNames) {
+	StarKeyOIndexCursorFactoryIterable(Object valueExpr, AbstractOrientIndex idx, Set<String> valueIdxNames) {
 		this.valueExpr = valueExpr;
 		this.valueIdxNames = valueIdxNames;
 		this.idx = idx;
@@ -25,7 +25,7 @@ final class StarKeyValueOIndexCursorFactoryIterable implements Iterable<OIndexCu
 
 			@Override
 			public OIndexCursorFactory next() {
-				return new SingleKeyValueQueryOIndexCursorFactory(valueExpr, idx, itIdxNames.next());
+				return new SingleKeyOIndexCursorFactory(valueExpr, idx, itIdxNames.next());
 			}
 
 			@Override

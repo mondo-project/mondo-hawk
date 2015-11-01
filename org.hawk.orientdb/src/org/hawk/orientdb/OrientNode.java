@@ -23,6 +23,7 @@ import java.util.Set;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.orientdb.util.OrientNameCleaner;
 
 import com.orientechnologies.orient.core.db.record.OTrackedList;
 import com.orientechnologies.orient.core.id.ORID;
@@ -43,6 +44,13 @@ public class OrientNode implements IGraphNode {
 
 	/** Keeps the changed document in memory until the next save. */
 	private ODocument changedVertex;
+
+	/** Should only be used with non-persistent IDs. */
+	public OrientNode(ODocument doc, OrientDatabase graph) {
+		this.id = doc.getIdentity();
+		this.graph = graph;
+		this.changedVertex = doc;
+	}
 
 	public OrientNode(ORID id, OrientDatabase graph) {
 		this.id = id;
@@ -99,9 +107,13 @@ public class OrientNode implements IGraphNode {
 
 	@Override
 	public void setProperty(String name, Object value) {
-		changedVertex = getDocument();
-		changedVertex.field(OrientNameCleaner.escapeToField(PREFIX_PROPERTY + name), value);
-		graph.markNodeAsDirty(this);
+		if (value == null) {
+			removeProperty(name);
+		} else {
+			changedVertex = getDocument();
+			changedVertex.field(OrientNameCleaner.escapeToField(PREFIX_PROPERTY + name), value);
+			graph.markNodeAsDirty(this);
+		}
 	}
 
 	@Override
@@ -202,7 +214,7 @@ public class OrientNode implements IGraphNode {
 	@Override
 	public void removeProperty(String name) {
 		changedVertex = getDocument();
-		changedVertex.removeField(name);
+		changedVertex.removeField(OrientNameCleaner.escapeToField(PREFIX_PROPERTY + name));
 		graph.markNodeAsDirty(this);
 	}
 
@@ -295,6 +307,8 @@ public class OrientNode implements IGraphNode {
 		if (changedVertex != null && changedVertex.isDirty()) {
 			changedVertex.save();
 		}
-		changedVertex = null;
+		if (id.isPersistent()) {
+			changedVertex = null;
+		}
 	}
 }

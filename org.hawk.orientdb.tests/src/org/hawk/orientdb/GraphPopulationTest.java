@@ -11,6 +11,8 @@
 package org.hawk.orientdb;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,6 +45,47 @@ public class GraphPopulationTest {
 		assertEquals(0, db.allNodes("eobject").size());
 		db.createNode(new HashMap<String, Object>(), "eobject");
 		assertEquals(1, db.allNodes("eobject").size());
+	}
+
+	@Test
+	public void oneNodeProperty() {
+		db = new OrientDatabase();
+		db.run("memory:oneNodeProperty", null, new DefaultConsole());
+		final OrientNodeIterable eobs = db.allNodes("eobject");
+		assertEquals(0, eobs.size());
+		OrientNode n;
+		final String yValue = "hello";
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			n = db.createNode(FluidMap.create().add("x", 1.34).add("y", yValue), "eobject");
+			tx.success();
+		}
+		assertTrue((double)eobs.getSingle().getProperty("x") > 1.3);
+		assertEquals(1, eobs.size());
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			n.setProperty("x", 2.57);
+			tx.success();
+		}
+		assertTrue((double)eobs.getSingle().getProperty("x") > 2.5);
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			n.setProperty("x", null);
+			tx.success();
+		}
+		assertNull(eobs.getSingle().getProperty("x"));
+		assertEquals(yValue, eobs.getSingle().getProperty("y"));
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			n.removeProperty("y");
+			tx.failure();
+		}
+		assertEquals(yValue, eobs.getSingle().getProperty("y"));
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			n.removeProperty("y");
+			tx.success();
+		}
+		assertNull(eobs.getSingle().getProperty("y"));
 	}
 
 	@Test
@@ -88,7 +131,7 @@ public class GraphPopulationTest {
 		db.run("memory:oneNodeRemove", null, new DefaultConsole());
 		assertEquals(0, db.allNodes("eobject").size());
 		OrientNode n;
-		try (IGraphTransaction tx = db.beginTransaction()) {
+		try (IGraphTransaction tx = db.beginTransaction()) { 
 			n = db.createNode(null, "eobject");
 			tx.success();
 		}
@@ -106,7 +149,7 @@ public class GraphPopulationTest {
 		db.run("memory:oneNodeRemove", null, new DefaultConsole());
 		assertEquals(0, db.allNodes("eobject").size());
 		OrientNode n;
-		try (IGraphTransaction tx = db.beginTransaction()) {
+		try (IGraphTransaction tx = db.beginTransaction()) { 
 			n = db.createNode(null, "eobject");
 			tx.success();
 		}

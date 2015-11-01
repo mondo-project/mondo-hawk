@@ -18,6 +18,7 @@ import org.hawk.core.graph.IGraphEdgeIndex;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.orientdb.OrientDatabase;
 import org.hawk.orientdb.OrientIndexStore;
+import org.hawk.orientdb.util.EmptyIGraphIterable;
 
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.index.OIndex;
@@ -41,10 +42,10 @@ public class OrientEdgeIndex extends AbstractOrientIndex implements IGraphEdgeIn
 		valueExpr = normalizeValue(valueExpr);
 		if ("*".equals(key)) {
 			final Set<String> valueIdxNames = graph.getIndexStore().getEdgeFieldIndexNames(name);
-			final Iterable<OIndexCursorFactory> iterFactories = new StarKeyValueOIndexCursorFactoryIterable(valueExpr, this, valueIdxNames);
+			final Iterable<OIndexCursorFactory> iterFactories = new StarKeyOIndexCursorFactoryIterable(valueExpr, this, valueIdxNames);
 			return new IndexCursorFactoriesIterable<>(iterFactories, graph, IGraphEdge.class);
 		} else {
-			final SingleKeyValueQueryOIndexCursorFactory factory = new SingleKeyValueQueryOIndexCursorFactory(valueExpr, this, key);
+			final SingleKeyOIndexCursorFactory factory = new SingleKeyOIndexCursorFactory(valueExpr, this, key);
 			return new IndexCursorFactoryNodeIterable<>(factory, graph, IGraphEdge.class);
 		}
 	}

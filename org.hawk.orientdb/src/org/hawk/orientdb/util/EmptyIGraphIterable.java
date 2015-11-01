@@ -8,14 +8,14 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.orientdb.indexes;
+package org.hawk.orientdb.util;
 
 import java.util.Collections;
 import java.util.Iterator;
 
 import org.hawk.core.graph.IGraphIterable;
 
-final class EmptyIGraphIterable<T> implements IGraphIterable<T> {
+public final class EmptyIGraphIterable<T> implements IGraphIterable<T> {
 	@Override
 	public Iterator<T> iterator() {
 		return Collections.emptyListIterator();

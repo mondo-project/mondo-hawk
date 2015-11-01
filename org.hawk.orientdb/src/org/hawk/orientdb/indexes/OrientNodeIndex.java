@@ -25,11 +25,14 @@ import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.orientdb.OrientDatabase;
 import org.hawk.orientdb.OrientIndexStore;
 import org.hawk.orientdb.OrientNode;
+import org.hawk.orientdb.util.EmptyIGraphIterable;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
+import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.index.OIndexCursor;
+import com.orientechnologies.orient.core.record.impl.ODocument;
 
 /**
  * Logical index for nodes, which uses a set of SBTree indexes. We can't use the
@@ -58,10 +61,10 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 		valueExpr = normalizeValue(valueExpr);
 		if ("*".equals(key)) {
 			final Set<String> valueIdxNames = graph.getIndexStore().getNodeFieldIndexNames(name);
-			final Iterable<OIndexCursorFactory> iterFactories = new StarKeyValueOIndexCursorFactoryIterable(valueExpr, this, valueIdxNames);
+			final Iterable<OIndexCursorFactory> iterFactories = new StarKeyOIndexCursorFactoryIterable(valueExpr, this, valueIdxNames);
 			return new IndexCursorFactoriesIterable<>(iterFactories, graph, IGraphNode.class);
 		} else {
-			final SingleKeyValueQueryOIndexCursorFactory factory = new SingleKeyValueQueryOIndexCursorFactory(valueExpr, this, key);
+			final SingleKeyOIndexCursorFactory factory = new SingleKeyOIndexCursorFactory(valueExpr, this, key);
 			return new IndexCursorFactoryNodeIterable<>(factory, graph, IGraphNode.class);
 		}
 	}
@@ -116,7 +119,15 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 			final Object valueExpr = normalizeValue(entry.getValue());
 			final Class<?> valueClass = valueExpr.getClass();
 			final OIndex<?> idx = getOrCreateFieldIndex(field, valueClass);
-			idx.put(valueExpr, orientNode.getDocument().getIdentity());
+
+			final ODocument doc = orientNode.getDocument();
+			final ORID identity = doc.getIdentity();
+			if (identity.isPersistent()) {
+				idx.put(valueExpr, identity);
+			} else {
+				// Not persistent: we can't use the ID yet
+				idx.put(valueExpr, doc);
+			}
 		}
 	}
 

@@ -40,6 +40,13 @@ public class OrientEdge implements IGraphEdge {
 		this.db = graph;
 	}
 
+	/** Only used when the ID is not persistent. */
+	private OrientEdge(ODocument newDoc, OrientDatabase graph) {
+		this.id = newDoc.getIdentity();
+		this.db = graph;
+		this.changedEdge = newDoc;
+	}
+
 	public ORID getId() {
 		return id;
 	}
@@ -167,7 +174,12 @@ public class OrientEdge implements IGraphEdge {
 		newDoc.field(TO_PROPERTY, end.getDocument().getIdentity());
 		newDoc.save();
 
-		final OrientEdge newEdge = new OrientEdge(newDoc.getIdentity(), graph);
+		OrientEdge newEdge;
+		if (newDoc.getIdentity().isPersistent()) {
+			newEdge = new OrientEdge(newDoc.getIdentity(), graph);
+		} else {
+			newEdge = new OrientEdge(newDoc, graph);
+		}
 		start.addOutgoing(newEdge);
 		end.addIncoming(newEdge);
 
@@ -178,7 +190,9 @@ public class OrientEdge implements IGraphEdge {
 		if (changedEdge != null && changedEdge.isDirty()) {
 			changedEdge.save();
 		}
-		changedEdge = null;
+		if (id.isPersistent()) {
+			changedEdge = null;
+		}
 	}
 
 }

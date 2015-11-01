@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2015 The University of York.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Antonio Garcia-Dominguez - initial API and implementation
+ ******************************************************************************/
 package org.hawk.orientdb.indexes;
 
 import java.util.Collections;
@@ -7,12 +17,12 @@ import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.index.OIndexCursor;
 
-final class SingleKeyValueQueryOIndexCursorFactory implements OIndexCursorFactory {
+final class SingleKeyOIndexCursorFactory implements OIndexCursorFactory {
 	private final Object valueExpr;
 	private final AbstractOrientIndex idx;
 	private final String fieldName;
 
-	SingleKeyValueQueryOIndexCursorFactory(Object valueExpr, AbstractOrientIndex idx, String fieldName) {
+	SingleKeyOIndexCursorFactory(Object valueExpr, AbstractOrientIndex idx, String fieldName) {
 		this.valueExpr = valueExpr;
 		this.idx = idx;
 		this.fieldName = fieldName;

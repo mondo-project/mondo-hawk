@@ -1,4 +1,4 @@
-package org.hawk.orientdb;
+package org.hawk.orientdb.util;
 
 import java.util.HashMap;
 import java.util.Map;

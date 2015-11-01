@@ -16,17 +16,17 @@ import org.hawk.core.graph.IGraphIterable;
 
 public abstract class OrientIterable<T, U> implements IGraphIterable<T> {
 
-	protected final Iterable<U> iterableEdges;
+	protected final Iterable<U> iterable;
 	protected final OrientDatabase graph;
 
 	public OrientIterable(Iterable<U> ret, OrientDatabase graph) {
-		this.iterableEdges = ret;
+		this.iterable = ret;
 		this.graph = graph;
 	}
 
 	@Override
 	public Iterator<T> iterator() {
-		final Iterator<U> it = iterableEdges.iterator();
+		final Iterator<U> it = iterable.iterator();
 		return new Iterator<T>(){
 
 			@Override

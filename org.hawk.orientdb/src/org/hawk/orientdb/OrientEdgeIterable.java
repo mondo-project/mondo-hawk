@@ -13,7 +13,6 @@ package org.hawk.orientdb;
 import org.hawk.core.graph.IGraphEdge;
 
 import com.orientechnologies.orient.core.id.ORID;
-import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class OrientEdgeIterable extends OrientIterable<IGraphEdge, ORID> {
 
