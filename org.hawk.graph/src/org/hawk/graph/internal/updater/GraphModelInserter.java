@@ -275,12 +275,16 @@ public class GraphModelInserter {
 							final boolean targetIdPresent = targetids
 									.remove(id);
 							if (!targetIdPresent) {
+								// need to store this before we delete the edge:
+								// once we delete() it might be impossible to
+								// retrieve it
+								final String edgeType = e.getType();
+
 								// delete removed reference
 								e.delete();
 
 								// track change deleted reference
-								listener.referenceRemoval(this.s, node,
-										e.getEndNode(), e.getType(), false);
+								listener.referenceRemoval(this.s, node, n, edgeType, false);
 							}
 						}
 
@@ -323,9 +327,11 @@ public class GraphModelInserter {
 								.getOutgoingWithType(refname);
 						// track change deleted references
 						for (IGraphEdge e : graphtargets) {
+							final IGraphNode endNode = e.getEndNode();
+							final String type = e.getType();
 							e.delete();
 							listener.referenceRemoval(this.s, node,
-									e.getEndNode(), e.getType(), false);
+									endNode, type, false);
 						}
 					}
 

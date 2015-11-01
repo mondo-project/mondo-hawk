@@ -111,6 +111,7 @@ public class OrientDatabase implements IGraphDatabase {
 	private IGraphNodeIndex metamodelIndex;
 	private IGraphNodeIndex fileIndex;
 	private ODatabaseDocumentTx db;
+	private Mode currentMode;
 
 	private Map<String, OrientNode> dirtyNodes = new HashMap<>(100_000);
 	private Map<String, OrientEdge> dirtyEdges = new HashMap<>(100_000);
@@ -241,6 +242,7 @@ public class OrientDatabase implements IGraphDatabase {
 		}
 		ODatabaseRecordThreadLocal.INSTANCE.set(db);
 		db.declareIntent(new OIntentMassiveInsert());
+		currentMode = Mode.NO_TX_MODE;
 	}
 
 	private void ensureWALSetTo(final boolean useWAL) {
@@ -275,6 +277,7 @@ public class OrientDatabase implements IGraphDatabase {
 			db.begin();
 		}
 		ODatabaseRecordThreadLocal.INSTANCE.set(db);
+		currentMode = Mode.TX_MODE;
 	}
 
 	@Override
@@ -428,7 +431,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public Mode currentMode() {
-		return OGlobalConfiguration.USE_WAL.getValueAsBoolean() ? Mode.TX_MODE : Mode.NO_TX_MODE;
+		return currentMode;
 	}
 
 	@Override
