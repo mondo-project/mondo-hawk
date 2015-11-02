@@ -37,6 +37,7 @@ import org.hawk.graph.internal.updater.GraphModelUpdater;
 import org.hawk.graph.sampleListener.ExampleListener;
 import org.hawk.localfolder.LocalFolder;
 import org.hawk.neo4j_v2.Neo4JDatabase;
+import org.hawk.orientdb.OrientDatabase;
 
 public class Runtime_example {
 
@@ -46,7 +47,10 @@ public class Runtime_example {
 	private static IQueryEngine q;
 	private static IModelIndexer hawk;
 
-	private static File parent = new File("runtime_data");
+	private static File parent = new File(
+			"runtime_data"
+			//"runtime_data_OrientDB"
+			);
 
 	private static final String queryLangID = "org.hawk.epsilon.emc.EOLQueryEngine";
 
@@ -94,7 +98,10 @@ public class Runtime_example {
 		// hawk.addModelResourceFactory(new EMFModelResourceFactory());
 		hawk.addModelResourceFactory(new BPMNModelResourceFactory());
 
-		IGraphDatabase db = (new Neo4JDatabase());
+		IGraphDatabase db = (
+				new Neo4JDatabase()
+				//new OrientDatabase()
+				);
 		// create the model index with relevant database
 		db.run(hawk.getParentFolder(), hawk.getConsole());
 		hawk.setDB(db, true);
