@@ -90,7 +90,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			if (lazyResolver != null && sf instanceof EReference && lazyResolver.isPending(eob, sf)) {
 				final EReference ref = (EReference) sf;
 				synchronized(nodeIdToEObjectMap) {
-					lazyResolver.resolve(eob, sf);
+					lazyResolver.resolve(eob, sf, false, true);
 				}
 
 				/*
@@ -464,7 +464,6 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		nodeIdToEObjectMap.clear();
 		lazyResolver = null;
 		changeListener = null;
-		eobFactory = null;
 	}
 
 	@Override
@@ -629,7 +628,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		final FileNode fileNode = modelElementNode.getFileNode();
 		final String repoURL = fileNode.getRepositoryURL();
 		final String path = fileNode.getFilePath();
-		final String fullURL = repoURL + (repoURL.endsWith("/") ? "" : "/") + path;
+		final String fullURL = repoURL + (repoURL.endsWith("/") || path.startsWith("/") ? "" : "/") + path;
 		synchronized(uriToResource) {
 			HawkFileResourceImpl resource = uriToResource.get(fullURL);
 			if (resource == null) {

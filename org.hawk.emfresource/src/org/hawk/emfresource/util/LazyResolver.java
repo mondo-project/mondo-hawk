@@ -54,14 +54,14 @@ public class LazyResolver {
 	 * the actual call to {@link EObject#eGet(EStructuralFeature)} will retrieve
 	 * the appropriate value.
 	 */
-	public void resolve(EObject object, EStructuralFeature feature) {
+	public void resolve(EObject object, EStructuralFeature feature, boolean greedyReferences, boolean mustFetchAttributes) {
 		try {
 			if (feature instanceof EReference) {
 				Map<EReference, EList<Object>> pending = pendingRefs.get(object);
 				if (pending != null) {
 					EList<Object> pendingObjects = pending.remove(feature);
 					if (pendingObjects != null) {
-						resolvePendingReference(object, (EReference) feature, pending, pendingObjects);
+						resolvePendingReference(object, (EReference) feature, pending, pendingObjects, greedyReferences, mustFetchAttributes);
 					}
 				}
 			} else if (feature instanceof EAttribute) {
@@ -160,10 +160,19 @@ public class LazyResolver {
 		pendingAttrs.remove(eObject);
 	}
 
-	private void resolvePendingReference(EObject object, EReference feature, Map<EReference, EList<Object>> pending,
-			EList<Object> ids) throws Exception {
+	private void resolvePendingReference(EObject object, EReference feature, Map<EReference, EList<Object>> pending, EList<Object> ids, boolean greedyReferences, boolean mustFetchAttributes) throws Exception {
+		if (greedyReferences) {
+			// The loading mode says we should prefetch all referenced nodes
+			final List<String> childrenIds = new ArrayList<>();
+			for (EList<Object> elems : pending.values()) {
+				addAllStrings(elems, childrenIds);
+			}
+			addAllStrings(ids, childrenIds);
+			resource.fetchNodes(childrenIds, mustFetchAttributes);
+		}
+
 		// This is a pending ref: resolve its proper value
-		final EList<Object> eObjs = resolveReference(object, feature, ids);
+		final EList<Object> eObjs = resolveReference(object, feature, ids, mustFetchAttributes);
 		if (feature.isMany()) {
 			object.eSet(feature, eObjs);
 		} else if (!eObjs.isEmpty()) {
@@ -171,10 +180,10 @@ public class LazyResolver {
 		}
 	}
 
-	private EList<Object> resolveReference(EObject source, EReference feature, EList<Object> targets) throws Exception {
+	private EList<Object> resolveReference(EObject source, EReference feature, EList<Object> targets, boolean mustFetchAttributes) throws Exception {
 		final List<String> ids = new ArrayList<>();
 		addAllStrings(targets, ids);
-		final EList<EObject> resolved = resource.fetchNodes(ids, false);
+		final EList<EObject> resolved = resource.fetchNodes(ids, mustFetchAttributes);
 
 		// Replace all old String elements with their corresponding EObjects
 		final EList<Object> result = new BasicEList<>();
