@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.hawk.orientdb.indexes;
 
-import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.orientdb.OrientDatabase;
 import org.hawk.orientdb.util.OrientNameCleaner;
 
@@ -77,11 +76,14 @@ public class AbstractOrientIndex {
 		final OIndexManager indexManager = getIndexManager();
 	
 		// Indexes have to be created outside transactions
-		final boolean wasTransactional = graph.currentMode() == IGraphDatabase.Mode.TX_MODE;
-		if (wasTransactional) {
-			graph.enterBatchMode();
+		final String idxName = getSBTreeIndexName(field);
+		final boolean txWasOpen = graph.getGraph().getTransaction().isActive();
+		if (txWasOpen) {
+			graph.getConsole().printerrln("Warning: prematurely committing a transaction so we can create index " + idxName);
+			graph.saveDirty();
+			graph.getGraph().commit();
 		}
-	
+
 		// Index key type
 		OType keyType = OType.STRING;
 		if (keyClass == Byte.class || keyClass == Short.class || keyClass == Integer.class || keyClass == Long.class) {
@@ -91,7 +93,6 @@ public class AbstractOrientIndex {
 		}
 	
 		// Create SBTree NOTUNIQUE index
-		final String idxName = getSBTreeIndexName(field);
 		final OSimpleKeyIndexDefinition indexDef = new OSimpleKeyIndexDefinition(keyType);
 		indexManager.createIndex(idxName, "NOTUNIQUE", indexDef, null, null, null, "SBTREE");
 
@@ -101,8 +102,8 @@ public class AbstractOrientIndex {
 			graph.getIndexStore().addEdgeFieldIndex(name, field);
 		}
 
-		if (wasTransactional) {
-			graph.exitBatchMode();
+		if (txWasOpen) {
+			graph.getGraph().begin();
 		}
 	}
 

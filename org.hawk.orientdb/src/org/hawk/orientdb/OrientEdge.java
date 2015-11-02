@@ -38,7 +38,7 @@ public class OrientEdge implements IGraphEdge {
 	/** Should be used when the ID is persistent, to save memory. */
 	public OrientEdge(ORID id, OrientDatabase graph) {
 		if (!id.isPersistent()) {
-			System.err.println("Warning: OrientEdge(ORID) used with non-persistent ID " + id);
+			graph.getConsole().printerrln("Warning, unsafe: OrientEdge(ORID) used with non-persistent ID " + id);
 		}
 		this.id = id;
 		this.db = graph;
@@ -47,7 +47,7 @@ public class OrientEdge implements IGraphEdge {
 	/** Should only be used when the ID is not persistent. */
 	public OrientEdge(ODocument newDoc, OrientDatabase graph) {
 		if (newDoc.getIdentity().isPersistent()) {
-			System.err.println("Warning: OrientEdge(ODocument) used with persistent ID " + newDoc.getIdentity());
+			graph.getConsole().printerrln("Warning, inefficient: OrientEdge(ODocument) used with persistent ID " + newDoc.getIdentity());
 		}
 		this.db = graph;
 		this.changedEdge = newDoc;

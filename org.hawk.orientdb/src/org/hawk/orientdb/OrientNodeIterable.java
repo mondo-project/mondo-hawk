@@ -12,17 +12,23 @@ package org.hawk.orientdb;
 
 import org.hawk.core.graph.IGraphNode;
 
+import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.id.ORID;
+import com.orientechnologies.orient.core.record.impl.ODocument;
 
-public class OrientNodeIterable extends OrientIterable<IGraphNode, ORID> {
+public class OrientNodeIterable extends OrientIterable<IGraphNode, OIdentifiable> {
 
-	public OrientNodeIterable(Iterable<ORID> oRecordIteratorCluster, OrientDatabase graph) {
+	public OrientNodeIterable(Iterable<OIdentifiable> oRecordIteratorCluster, OrientDatabase graph) {
 		super(oRecordIteratorCluster, graph);
 	}
 
 	@Override
-	protected OrientNode convert(ORID o) {
-		return new OrientNode(o, getGraph());
+	protected OrientNode convert(OIdentifiable o) {
+		if (o instanceof ORID) {
+			return new OrientNode((ORID)o, getGraph());
+		} else {
+			return new OrientNode((ODocument)o, getGraph());
+		}
 	}
 
 }

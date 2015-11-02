@@ -15,6 +15,7 @@ import java.util.Iterator;
 
 import org.hawk.orientdb.OrientDatabase;
 
+import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.iterator.ORecordIteratorCluster;
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -25,7 +26,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
  * {@link Iterable}, it's not reusable as an Iterable would be. It also reports
  * missing clusters as empty, instead of throwing exceptions.
  */
-public class OrientClusterDocumentIterable implements Iterable<ORID> {
+public class OrientClusterDocumentIterable implements Iterable<OIdentifiable> {
 
 	private final String clusterName;
 	private final OrientDatabase db;
@@ -36,22 +37,28 @@ public class OrientClusterDocumentIterable implements Iterable<ORID> {
 	}
 
 	@Override
-	public Iterator<ORID> iterator() {
+	public Iterator<OIdentifiable> iterator() {
 		final int clusterId = db.getGraph().getClusterIdByName(clusterName);
 		if (clusterId == -1) {
 			return Collections.emptyListIterator();
 		}
 
 		final ORecordIteratorCluster<ODocument> it = db.getGraph().browseCluster(clusterName);
-		return new Iterator<ORID>(){
+		return new Iterator<OIdentifiable>(){
 			@Override
 			public boolean hasNext() {
 				return it.hasNext();
 			}
 
 			@Override
-			public ORID next() {
-				return it.next().getIdentity();
+			public OIdentifiable next() {
+				final ODocument doc = it.next();
+				final ORID id = doc.getIdentity();
+				if (id.isPersistent()) {
+					return id;
+				} else {
+					return doc;
+				}
 			}
 
 			@Override

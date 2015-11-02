@@ -258,11 +258,7 @@ public class OrientDatabase implements IGraphDatabase {
 	public OrientNode createNode(Map<String, Object> properties, String label) {
 		final String vertexTypeName = getVertexTypeName(label);
 
-		if (!db.getMetadata().getSchema().existsClass(vertexTypeName) && db.getTransaction().isActive()) {
-			enterBatchMode();
-			db.getMetadata().getSchema().createClass(vertexTypeName);
-			exitBatchMode();
-		}
+		ensureClassExists(vertexTypeName);
 		ODocument newDoc = new ODocument(vertexTypeName);
 		if (properties != null) {
 			OrientNode.setProperties(newDoc, properties);
@@ -276,17 +272,28 @@ public class OrientDatabase implements IGraphDatabase {
 		}
 	}
 
+	private void ensureClassExists(final String vertexTypeName) {
+		if (!db.getMetadata().getSchema().existsClass(vertexTypeName)) {
+			final boolean wasInTX = db.getTransaction().isActive();
+			if (wasInTX) {
+				console.printerrln("Warning: premature commit needed to create class " + vertexTypeName);
+				saveDirty();
+				db.commit();
+			}
+			db.getMetadata().getSchema().createClass(vertexTypeName);
+			if (wasInTX) {
+				db.begin();
+			}
+		}
+	}
+
 	@Override
 	public OrientEdge createRelationship(IGraphNode start, IGraphNode end, String type) {
 		final OrientNode oStart = (OrientNode)start;
 		final OrientNode oEnd = (OrientNode)end;
 		final String edgeTypeName = getEdgeTypeName(type);
 
-		if (!db.getMetadata().getSchema().existsClass(edgeTypeName) && db.getTransaction().isActive()) {
-			enterBatchMode();
-			db.getMetadata().getSchema().createClass(edgeTypeName);
-			exitBatchMode();
-		}
+		ensureClassExists(edgeTypeName);
 
 		OrientEdge newEdge = OrientEdge.create(this, oStart, oEnd, type, edgeTypeName);
 		dirtyNodes.put(oStart.getId().toString(), oStart);
