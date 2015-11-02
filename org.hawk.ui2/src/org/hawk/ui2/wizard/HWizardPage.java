@@ -14,10 +14,9 @@ package org.hawk.ui2.wizard;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,6 +47,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.hawk.core.IHawkFactory;
 import org.hawk.core.runtime.ModelIndexerImpl;
+import org.hawk.ui2.Activator;
 import org.hawk.ui2.util.HUIManager;
 
 public class HWizardPage extends WizardPage {
@@ -81,7 +81,7 @@ public class HWizardPage extends WizardPage {
 	private Text locationText;
 
 	private HUIManager hminstance;
-	private Set<String> factoriesWithLocation, factoriesWithGraph;
+	private Map<String, IHawkFactory> factories;
 
 	public HWizardPage(ISelection selection) {
 		super("wizardPage");
@@ -120,19 +120,11 @@ public class HWizardPage extends WizardPage {
 		label.setText("Instance type:");
 
 		factoryIdText = new Combo(container, SWT.READ_ONLY);
-		factoriesWithLocation = new HashSet<>();
-		factoriesWithGraph = new HashSet<>();
+		factories = hminstance.getHawkFactoryInstances();
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		factoryIdText.setLayoutData(gd);
-		for (Map.Entry<String, IHawkFactory> factory : hminstance
-				.getHawkFactoryInstances().entrySet()) {
+		for (Map.Entry<String, IHawkFactory> factory : factories.entrySet()) {
 			factoryIdText.add(factory.getKey());
-			if (factory.getValue().instancesUseLocation()) {
-				factoriesWithLocation.add(factory.getKey());
-			}
-			if (factory.getValue().instancesCreateGraph()) {
-				factoriesWithGraph.add(factory.getKey());
-			}
 		}
 		factoryIdText.select(0);
 		factoryIdText.addSelectionListener(new DialogChangeSelectionListener());
@@ -310,9 +302,27 @@ public class HWizardPage extends WizardPage {
 	 * Ensures that both text fields are set.
 	 */
 	private void dialogChanged() {
-		final String factoryID = getFactoryID();
-		locationText.setEnabled(factoriesWithLocation.contains(factoryID));
-		dbidText.setEnabled(factoriesWithGraph.contains(factoryID));
+		final IHawkFactory factory = factories.get(getFactoryID());
+		locationText.setEnabled(factory.instancesUseLocation());
+		try {
+			List<String> backends = factory.listBackends(locationText.getText());
+			if (backends == null) {
+				backends = new ArrayList<>();
+				backends.addAll(HUIManager.getInstance().getIndexTypes());
+			}
+			String[] newItems = backends.toArray(new String[backends.size()]);
+			if (!Arrays.equals(newItems, dbidText.getItems())) {
+				dbidText.removeAll();
+				for (String s : backends) {
+					dbidText.add(s);
+				}
+				if (newItems.length > 0) {
+					dbidText.select(0);
+				}
+			}
+		} catch (Exception ex) {
+			Activator.logError("Could not refresh backend list", ex);
+		}
 
 		// name empty or valid chars in indexername
 		if (getHawkName().trim().equals("")) {

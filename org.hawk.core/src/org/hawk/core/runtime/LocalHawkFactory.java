@@ -83,4 +83,10 @@ public class LocalHawkFactory implements IHawkFactory {
 		return entries.toArray(new InstanceInfo[entries.size()]);
 	}
 
+	@Override
+	public List<String> listBackends(String location) throws Exception {
+		// We can't say from here: ask elsewhere!
+		return null;
+	}
+
 }

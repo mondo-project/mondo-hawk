@@ -79,7 +79,7 @@ public class AbstractOrientIndex {
 		final String idxName = getSBTreeIndexName(field);
 		final boolean txWasOpen = graph.getGraph().getTransaction().isActive();
 		if (txWasOpen) {
-			graph.getConsole().printerrln("Warning: prematurely committing a transaction so we can create index " + idxName);
+			graph.getConsole().println("Warning: prematurely committing a transaction so we can create index " + idxName);
 			graph.saveDirty();
 			graph.getGraph().commit();
 		}

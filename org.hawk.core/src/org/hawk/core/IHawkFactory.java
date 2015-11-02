@@ -11,6 +11,7 @@
 package org.hawk.core;
 
 import java.io.File;
+import java.util.List;
 
 
 /**
@@ -61,6 +62,13 @@ public interface IHawkFactory {
 	 * {@link #instancesUseLocation()}.
 	 */
 	InstanceInfo[] listInstances(String location) throws Exception;
+
+	/**
+	 * Returns a set of strings with the supported backends at that location,
+	 * or <code>null</code> if we should know about them in some other way
+	 * (e.g. using OSGi configuration elements).
+	 */
+	List<String> listBackends(String location) throws Exception;
 
 	/**
 	 * Indicates whether the created instance should be customized with the
