@@ -54,7 +54,7 @@ public class OrientEdgeIndex extends AbstractOrientIndex implements IGraphEdgeIn
 	@Override
 	public IGraphIterable<IGraphEdge> get(String key, Object valueExpr) {
 		valueExpr = normalizeValue(valueExpr);
-		final OIndex<?> idx = getIndexManager().getIndex(getSBTreeIndexName(key));
+		final OIndex<?> idx = getIndexManager().getIndex(getSBTreeIndexName(valueExpr.getClass()));
 		if (idx == null) {
 			return new EmptyIGraphIterable<>();
 		}

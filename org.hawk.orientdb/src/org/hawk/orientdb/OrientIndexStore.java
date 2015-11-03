@@ -113,18 +113,20 @@ public class OrientIndexStore {
 	}
 
 	private void addIndex(String indexName, final String property) {
-		final Set<String> setNames = getNodeIndexNames();
-		setNames.add(indexName);
-		final String[] extendedNames = setNames.toArray(new String[setNames.size()]);
-		vIndexStore.setProperty(property, extendedNames);
+		final Set<String> setNames = getIndexNames(property);
+		if (setNames.add(indexName)) {
+			final String[] extendedNames = setNames.toArray(new String[setNames.size()]);
+			vIndexStore.setProperty(property, extendedNames);
+		}
 	}
 
 	private void addFieldIndex(final String prefix, String indexName, String field) {
 		final String propName = prefix + indexName;
 		final Set<String> setNames = getNodeFieldIndexNames(indexName);
-		setNames.add(field);
-		final String[] extNames = setNames.toArray(new String[setNames.size()]);
-		vIndexStore.setProperty(propName, extNames);
+		if (setNames.add(field)) {
+			final String[] extNames = setNames.toArray(new String[setNames.size()]);
+			vIndexStore.setProperty(propName, extNames);
+		}
 	}
 
 	@SuppressWarnings("unchecked")

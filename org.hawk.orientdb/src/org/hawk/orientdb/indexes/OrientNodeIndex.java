@@ -30,16 +30,19 @@ import org.hawk.orientdb.util.EmptyIGraphIterable;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.id.ORID;
+import com.orientechnologies.orient.core.index.OCompositeKey;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.index.OIndexCursor;
-import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.index.OIndexManager;
 
 /**
  * Logical index for nodes, which uses a set of SBTree indexes. We can't use the
  * indexes in the OrientDB Graph API, because they do not support querying.
- * However, the raw indexing API has only one level of naming for indexes. To
- * overcome this, adding a key to a field F for the first time will create a new
- * index of each type named <code>name SEPARATOR_SBTREE F</code>.
+ * The raw indexing API has support for composite keys, but the types of each
+ * value in the tuple must be known in advance (so we can't use STRING+ANY). To
+ * overcome this, we'll use up to three OrientDB indexes per logical index:
+ * one for strings, one for doubles and one for integers. The actual indexes created
+ * will depend on what we use (they'll be created on the fly on the first addition).
  *
  * Star queries are implemented using range queries, with additional filtering if
  * we have more than one star in the query string.
@@ -71,28 +74,30 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 
 	@Override
 	public IGraphIterable<IGraphNode> query(final String key, final int from, final int to, final boolean fromInclusive, final boolean toInclusive) {
-		final OIndex<?> idx = getIndexManager().getIndex(getSBTreeIndexName(key));
+		final OIndex<?> idx = getIndex(Integer.class);
 		if (idx == null) {
 			return new EmptyIGraphIterable<>();
 		}
 		return new IndexCursorFactoryNodeIterable<>(new OIndexCursorFactory() {
 			@Override
 			public Iterator<OIdentifiable> query() {
-				return idx.iterateEntriesBetween(from, fromInclusive, to, toInclusive, false);
+				return idx.iterateEntriesBetween(new OCompositeKey(key, from), fromInclusive,
+						new OCompositeKey(key, to), toInclusive, false);
 			}
 		}, graph, IGraphNode.class);
 	}
 
 	@Override
 	public IGraphIterable<IGraphNode> query(final String key, final double from, final double to, final boolean fromInclusive, final boolean toInclusive) {
-		final OIndex<?> idx = getIndexManager().getIndex(getSBTreeIndexName(key));
+		final OIndex<?> idx = getIndex(Double.class);
 		if (idx == null) {
 			return new EmptyIGraphIterable<>();
 		}
 		return new IndexCursorFactoryNodeIterable<>(new OIndexCursorFactory() {
 			@Override
 			public Iterator<OIdentifiable> query() {
-				return idx.iterateEntriesBetween(from, fromInclusive, to, toInclusive, false);
+				return idx.iterateEntriesBetween(new OCompositeKey(key, from), fromInclusive,
+						new OCompositeKey(key, to), toInclusive, false);
 			}
 		}, graph, IGraphNode.class);
 	}
@@ -101,12 +106,12 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 	@Override
 	public IGraphIterable<IGraphNode> get(final String key, Object valueExpr) {
 		valueExpr = normalizeValue(valueExpr);
-		final OIndex<?> idx = getIndexManager().getIndex(getSBTreeIndexName(key));
+		final OIndex<?> idx = getIndex(valueExpr.getClass());
 		if (idx == null) {
 			return new EmptyIGraphIterable<>();
 		}
 
-		final Collection<OIdentifiable> resultSet = (Collection<OIdentifiable>) idx.get(valueExpr);
+		final Collection<OIdentifiable> resultSet = (Collection<OIdentifiable>) idx.get(new OCompositeKey(key, valueExpr));
 		return new ResultSetIterable<>(resultSet, graph, IGraphNode.class);
 	}
 
@@ -119,15 +124,18 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 			final Object valueExpr = normalizeValue(entry.getValue());
 			final Class<?> valueClass = valueExpr.getClass();
 			final OIndex<?> idx = getOrCreateFieldIndex(field, valueClass);
+			final OIndex<?> keyIdx = getKeyIndex(valueClass);
 
-			final ODocument doc = orientNode.getDocument();
-			final ORID identity = doc.getIdentity();
+			final ORID identity = orientNode.getId();
+			OCompositeKey idxKey = new OCompositeKey(field, valueExpr);
+			OCompositeKey keyIdxKey;
 			if (identity.isPersistent()) {
-				idx.put(valueExpr, identity);
+				keyIdxKey = new OCompositeKey(identity, field, valueExpr);
 			} else {
-				// Not persistent: we can't use the ID yet
-				idx.put(valueExpr, doc);
+				keyIdxKey = new OCompositeKey(orientNode.getDocument(), field, valueExpr);
 			}
+			idx.put(idxKey, identity);
+			keyIdx.put(keyIdxKey, identity);
 		}
 	}
 
@@ -161,27 +169,54 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 		} else {
 			value = normalizeValue(value);
 
-			final OIndex<?> idx = getIndexManager().getIndex(getSBTreeIndexName(field));
+			final OIndex<?> idx = getIndex(value.getClass());
+			final OIndex<?> keyIdx = getKeyIndex(value.getClass());
 			if (idx != null) {
-				idx.remove(value, oNode.getDocument());
+				idx.remove(new OCompositeKey(field, value), oNode.getDocument());
+				if (oNode.getId().isPersistent()) {
+					keyIdx.remove(new OCompositeKey(oNode.getId(), field, value), oNode.getId());
+				} else {
+					keyIdx.remove(new OCompositeKey(oNode.getDocument(), field, value), oNode.getDocument());
+				}
 			}
 		}
 	}
 
 	private void remove(String field, final OrientNode n) {
-		final List<Object> keysToRemove = new ArrayList<>();
-		final OIndex<?> idx = getIndexManager().getIndex(getSBTreeIndexName(field));
-		if (idx == null) return;
+		remove(String.class, field, n);
+		remove(Double.class, field, n);
+		remove(Integer.class, field, n);
+	}
 
-		final OIndexCursor cursor = idx.cursor();
-		for (Entry<Object, OIdentifiable> entry = cursor.nextEntry(); entry != null; entry = cursor.nextEntry()) {
-			if (n.getId().equals(entry.getValue().getIdentity())) {
-				keysToRemove.add(entry.getKey());
+	private void remove(final Class<?> keyClass, String field, final OrientNode n) {
+		OIndex<?> keyIdx = getKeyIndex(keyClass);
+		if (keyIdx != null) {
+			OCompositeKey keyFrom, keyTo;
+			if (n.getId().isPersistent()) {
+				keyFrom = new OCompositeKey(n.getId(), field, AbstractOrientIndex.getMinValue(keyClass));
+				keyTo = new OCompositeKey(n.getId(), field, AbstractOrientIndex.getMaxValue(keyClass));
+			} else {
+				keyFrom = new OCompositeKey(n.getDocument(), field, AbstractOrientIndex.getMinValue(keyClass));
+				keyTo = new OCompositeKey(n.getDocument(), field, AbstractOrientIndex.getMaxValue(keyClass));
 			}
-		}
 
-		for (Object key : keysToRemove) {
-			idx.remove(key, n.getDocument());
+			final List<Object> keysToRemove = new ArrayList<>();
+			final OIndexCursor keyCursor = keyIdx.iterateEntriesBetween(keyFrom, true, keyTo, true, false);
+			for (Entry<Object, OIdentifiable> entry = keyCursor.nextEntry(); entry != null; entry = keyCursor.nextEntry()) {
+				Object key = ((OCompositeKey)entry.getKey()).getKeys().get(2);
+				keysToRemove.add(key);
+			}
+
+			final OIndex<?> idx = getIndex(keyClass);
+			for (Object key : keysToRemove) {
+				if (n.getId().isPersistent()) {
+					idx.remove(new OCompositeKey(field, key), n.getId());
+					keyIdx.remove(new OCompositeKey(n.getId(), field, key), n.getId());
+				} else {
+					idx.remove(new OCompositeKey(field, key), n.getDocument());
+					keyIdx.remove(new OCompositeKey(n.getDocument(), field, key), n.getDocument());
+				}
+			}
 		}
 	}
 
@@ -196,12 +231,21 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 	@Override
 	public void delete() {
 		OrientIndexStore store = graph.getIndexStore();
-		for (String fieldName : store.getNodeFieldIndexNames(name)) {
-			final OIndex<?> idx = getIndexManager().getIndex(getSBTreeIndexName(fieldName));
-			if (idx != null) {
-				idx.delete();
-			}
+
+		final OIndexManager indexManager = getIndexManager();
+		final OIndex<?> stringIdx = indexManager.getIndex(getSBTreeIndexName(String.class));
+		final OIndex<?> doubleIdx = indexManager.getIndex(getSBTreeIndexName(Double.class));
+		final OIndex<?> intIdx = indexManager.getIndex(getSBTreeIndexName(Integer.class));
+		if (stringIdx != null) {
+			stringIdx.delete();
 		}
+		if (doubleIdx != null) {
+			doubleIdx.delete();
+		}
+		if (intIdx != null) {
+			intIdx.delete();
+		}
+
 		store.removeNodeIndex(name);
 	}
 

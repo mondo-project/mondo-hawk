@@ -321,6 +321,7 @@ public class OrientNode implements IGraphNode {
 	public void save() {
 		if (changedVertex != null && changedVertex.isDirty()) {
 			changedVertex.save();
+			id = changedVertex.getIdentity();
 		}
 		if (getId().isPersistent()) {
 			changedVertex = null;

@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
+import com.orientechnologies.orient.core.index.OCompositeKey;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.index.OIndexCursor;
 
@@ -30,27 +31,30 @@ final class SingleKeyOIndexCursorFactory implements OIndexCursorFactory {
 
 	@Override
 	public Iterator<OIdentifiable> query() {
-		final OIndex<?> index = idx.getIndexManager().getIndex(idx.getSBTreeIndexName(fieldName));
+		final OIndex<?> index = idx.getIndex(valueExpr.getClass());
 		if (index == null) {
 			return Collections.emptyListIterator();
 		}
 
 		if (!(valueExpr instanceof String)) {
 			// Not a string: go straight to the value
-			return index.iterateEntries(Collections.singleton(valueExpr), false);
+			return index.iterateEntries(Collections.singleton(new OCompositeKey(fieldName, valueExpr)), false);
 		}
 
 		final String sValueExpr = valueExpr.toString();
 		final int starPosition = sValueExpr.indexOf('*');
 		if (starPosition < 0) {
 			// No '*' found: go straight to the value
-			return index.iterateEntries(Collections.singleton(valueExpr), false);
+			return index.iterateEntries(Collections.singleton(new OCompositeKey(fieldName, valueExpr)), false);
 		}
 		else if (starPosition == 0) {
 			// value expr starts with "*"
 			if (sValueExpr.length() == 1) {
 				// value expr is "*": iterate over everything
-				return index.cursor();
+				return index.iterateEntriesBetween(
+					new OCompositeKey(fieldName, AbstractOrientIndex.getMinValue(valueExpr.getClass())), true,
+					new OCompositeKey(fieldName, AbstractOrientIndex.getMaxValue(valueExpr.getClass())), true,
+					false);
 			} else {
 				// value expr starts with "*": filter all entries based on the fragments between the *
 				final String[] fragments = sValueExpr.split("[*]");
@@ -76,6 +80,7 @@ final class SingleKeyOIndexCursorFactory implements OIndexCursorFactory {
 		final char lastChar = prefix.charAt(prefix.length() - 1);
 		final String rangeStart = prefix;
 		final String rangeEnd = prefix.substring(0, rangeStart.length() - 1) + Character.toString((char)(lastChar+1));
-		return index.iterateEntriesBetween(rangeStart, true, rangeEnd, true, false);
+		return index.iterateEntriesBetween(new OCompositeKey(fieldName, rangeStart), true,
+				new OCompositeKey(fieldName, rangeEnd), true, false);
 	}
 }
