@@ -48,7 +48,7 @@ public interface IModelIndexer {
 	String METAMODEL_RESOURCE_PROPERTY = "resource";
 	String METAMODEL_DEPENDENCY_EDGE = "dependency";
 
-	boolean VERBOSE = true;
+	boolean VERBOSE = false;
 
 	/**
 	 * Forces a synchronisation to be performed immediately.

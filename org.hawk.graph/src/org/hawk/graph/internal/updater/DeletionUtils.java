@@ -11,7 +11,6 @@
 package org.hawk.graph.internal.updater;
 
 import java.util.HashSet;
-import java.util.Iterator;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
@@ -42,7 +41,7 @@ public class DeletionUtils {
 
 	}
 
-	protected boolean deleteAll(VcsCommitItem s,
+	protected boolean deleteAll(IGraphNode file, VcsCommitItem s,
 			IGraphChangeListener changeListener) throws Exception {
 
 		long start = System.currentTimeMillis();
@@ -52,15 +51,8 @@ public class DeletionUtils {
 		try {
 			final String repository = s.getCommit().getDelta().getManager()
 					.getLocation();
-			final String filepath = s.getPath();
 
-			final String fullFileID = repository
-					+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + filepath;
-			final Iterator<IGraphNode> itFile = graph.getFileIndex()
-					.get("id", fullFileID).iterator();
-
-			if (itFile.hasNext()) {
-				IGraphNode file = itFile.next();
+				//IGraphNode file = itFile.next();
 
 				System.out.println("deleting nodes from file: "
 						+ file.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
@@ -116,10 +108,6 @@ public class DeletionUtils {
 
 				changeListener.fileRemoval(s, file);
 				delete(file);
-			} else {
-				System.err.println("no local data found for: " + fullFileID
-						+ " (nothing to delete)");
-			}
 
 			// if (IModelIndexer.VERBOSE)
 			// System.out.println("ending deletion");

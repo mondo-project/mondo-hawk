@@ -91,7 +91,6 @@ public class MetamodelUtils {
 				}
 			}
 			tx.success();
-			tx.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -127,7 +126,6 @@ public class MetamodelUtils {
 
 			}
 			tx.success();
-			tx.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -276,7 +274,6 @@ public class MetamodelUtils {
 				}
 			}
 			tx.success();
-			tx.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

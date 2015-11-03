@@ -275,7 +275,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 		// }
 		// });
 		// tx.success();
-		// tx.close();
+		// 
 		// }
 		//
 		// }
@@ -317,7 +317,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 		//
 		// node.delete();
 		//
-		// tx.success();tx.close();
+		// tx.success();
 		//
 		// } catch (Exception e) {
 		// throw new EolRuntimeException("Failed to delete: " + arg0);
@@ -363,7 +363,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 					pack = epackagedictionary.get("id", ep).getSingle();
 
 					tx.success();
-					tx.close();
+					
 				}
 
 				for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
@@ -415,7 +415,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 											+ " CLASSES FOUND FOR: " + arg0);
 
 						tx.success();
-						tx.close();
+						
 					}
 
 				} else {
@@ -443,7 +443,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 							}
 
 							tx.success();
-							tx.close();
+							
 						}
 					}
 
@@ -472,7 +472,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 										node)));
 					}
 					tx.success();
-					tx.close();
+					
 				}
 			}
 
@@ -532,7 +532,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 				isnull = graph.getNodeById(id) == null;
 
 				tx.success();
-				tx.close();
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -577,7 +577,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 					.toString();
 
 			tx.success();
-			tx.close();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -606,7 +606,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 					.iterator().next().getEndNode();
 
 			tx.success();
-			tx.close();
+			
 
 		} catch (Exception e) {
 			// System.err
@@ -666,7 +666,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 
 						}
 						tx.success();
-						tx.close();
+						
 					}
 					found = false;
 				} else {
@@ -698,7 +698,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 								}
 							}
 							tx.success();
-							tx.close();
+							
 						}
 						if (possibletypenodes.size() == 1) {
 							cachedTypes.add(arg0);
@@ -934,7 +934,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 
 			}
 			tx.success();
-			tx.close();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1032,7 +1032,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 				// e.printStackTrace();
 			}
 			tx.success();
-			tx.close();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1045,7 +1045,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 			return false;
 		}
 		// doesn't exist in database
-		// tx.success();tx.close();
+		// tx.success();
 
 	}
 
@@ -1107,7 +1107,7 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 		// n = graph.getNodeById(((GraphNodeWrapper) instance).getId());
 		//
 		// tx.success();
-		// tx.close();
+		// 
 		// }
 		//
 		// HawkClass e = new MetamodelUtils().getTypeOfFromNode(n, parser);

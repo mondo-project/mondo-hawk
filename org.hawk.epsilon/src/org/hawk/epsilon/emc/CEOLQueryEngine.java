@@ -181,7 +181,6 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 					}
 
 					tx.success();
-					tx.close();
 				}
 
 			} else {
@@ -244,7 +243,6 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 							}
 
 							tx.success();
-							tx.close();
 						}
 					}
 

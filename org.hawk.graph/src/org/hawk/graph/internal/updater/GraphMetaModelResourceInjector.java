@@ -357,12 +357,12 @@ public class GraphMetaModelResourceInjector {
 
 				if (success) {
 					t.success();
-					t.close();
+					
 					listener.changeSuccess();
 				} else {
 					it.remove();
 					t.failure();
-					t.close();
+					
 					listener.changeFailure();
 					try (IGraphTransaction t2 = graph.beginTransaction()) {
 						IGraphNode ePackageNode = epackagedictionary

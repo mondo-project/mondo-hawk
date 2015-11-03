@@ -313,7 +313,6 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 			}
 
 			tx.success();
-			tx.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

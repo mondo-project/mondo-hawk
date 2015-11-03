@@ -230,6 +230,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 							// for each registered updater
 							for (IModelUpdater u : getUpdaters()) {
 
+								//enters transaction mode!
 								Set<VcsCommitItem> currreposchangeditems = u
 										.compareWithLocalFiles(interestingfiles);
 
@@ -276,7 +277,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 								}
 
 								// delete all removed files
-								graph.exitBatchMode();
 
 								try {
 									listener.changeStart();
@@ -292,13 +292,17 @@ public class ModelIndexerImpl implements IModelIndexer {
 								} finally {
 									listener.changeSuccess();
 								}
-
+								
+								//prepare for mass inserts if needed
+								graph.enterBatchMode();
+								
 								for (VcsCommitItem v : currreposchangeditems) {
-									// if(v.getPath().equals("W4 BPMN+ Composer
-									// V.9.0/B.2.0-roundtrip.bpmn")){
-									// if (v.getPath().equals("A - Fixed Digrams
-									// with Variations of Attributes/eclipse
-									// BPMN2 Modeler 0.2.6/A.3.0-export.bpmn"))
+									// if(v.getPath().equals("W4 BPMN+ Composer"
+									// +" V.9.0/B.2.0-roundtrip.bpmn")){
+									// if
+									// (v.getPath().equals("A - Fixed Digrams"
+									// +" with Variations of Attributes/eclipse"
+									// +" BPMN2 Modeler 0.2.6/A.3.0-export.bpmn"))
 									// {
 									try {
 										IHawkModelResource r = null;

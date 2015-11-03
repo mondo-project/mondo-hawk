@@ -179,7 +179,7 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine
 					pack = epackagedictionary.get("id", ep).getSingle();
 
 					tx.success();
-					tx.close();
+					
 				}
 
 				for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
@@ -228,7 +228,7 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine
 											+ " CLASSES FOUND FOR: " + arg0);
 
 						tx.success();
-						tx.close();
+						
 					}
 
 				} else {
@@ -254,7 +254,7 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine
 							}
 
 							tx.success();
-							tx.close();
+							
 						}
 					}
 
@@ -288,7 +288,7 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine
 						}
 					}
 					tx.success();
-					tx.close();
+					
 				}
 			}
 

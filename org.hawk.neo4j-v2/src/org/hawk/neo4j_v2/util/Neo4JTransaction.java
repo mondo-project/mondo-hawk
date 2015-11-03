@@ -27,14 +27,17 @@ public class Neo4JTransaction implements IGraphTransaction {
 	}
 
 	public void success() {
+
 		t.success();
 	}
 
 	public void failure() {
+
 		t.failure();
 	}
 
 	public void close() {
+
 		t.close();
 	}
 

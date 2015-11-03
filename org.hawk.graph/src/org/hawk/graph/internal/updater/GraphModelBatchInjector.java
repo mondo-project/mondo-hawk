@@ -162,11 +162,11 @@ public class GraphModelBatchInjector {
 							+ (System.nanoTime() - startTime) / 1000000000
 							+ "sec)");
 
-					System.out
-							.println(((IGraphIterable<IGraphNode>) proxyDictionary
-									.query(GraphModelUpdater.PROXY_REFERENCE_PREFIX,
-											"*")).size()
-									+ " - sets of proxy references left in the store");
+					// System.out
+					// .println(((IGraphIterable<IGraphNode>) proxyDictionary
+					// .query(GraphModelUpdater.PROXY_REFERENCE_PREFIX,
+					// "*")).size()
+					// + " - sets of proxy references left in the store");
 					listener.changeSuccess();
 					successState = true;
 				} catch (Exception e) {
@@ -175,16 +175,23 @@ public class GraphModelBatchInjector {
 							+ s.getPath()
 							+ "\nReverting all changes on that file.");
 					//
-					graph.exitBatchMode();
+					// graph.exitBatchMode();
 					//
-					try (IGraphTransaction t = g.beginTransaction()) {
-						new DeletionUtils(graph).deleteAll(s, listener);
-						t.success();
-					} catch (Exception e2) {
-						System.err
-								.println("error in reverting from erroneous batch insert: "
-										+ e2.getCause());
 
+					IGraphNode n = new Utils().getFileNodeFromVCSCommitItem(
+							graph, s);
+					if (n != null) {
+
+						try (IGraphTransaction t = g.beginTransaction()) {
+							new DeletionUtils(graph).deleteAll(n, s, listener);
+							t.success();
+
+						} catch (Exception e2) {
+							System.err
+									.println("error in reverting from erroneous batch insert: "
+											+ e2.getCause());
+
+						}
 					}
 					listener.changeFailure();
 					successState = false;
@@ -200,7 +207,7 @@ public class GraphModelBatchInjector {
 			ex.printStackTrace();
 			listener.changeFailure();
 		} finally {
-			graph.exitBatchMode();
+			// graph.exitBatchMode();
 		}
 	}
 
@@ -757,7 +764,8 @@ public class GraphModelBatchInjector {
 			hash.put(eObject, node);
 
 			final HashMap<String, Object> emptyMap = new HashMap<String, Object>();
-			createReference(ModelElementNode.EDGE_LABEL_OFTYPE, node, eClass, emptyMap, true);
+			createReference(ModelElementNode.EDGE_LABEL_OFTYPE, node, eClass,
+					emptyMap, true);
 			if (originatingFile != null) {
 				createReference(ModelElementNode.EDGE_LABEL_FILE, node,
 						originatingFile, emptyMap, true);
@@ -765,7 +773,8 @@ public class GraphModelBatchInjector {
 			objectCount[1]++;
 
 			// use metamodel to infer all supertypes for fast search and log em
-			for (IHawkClass superType : ((IHawkClass) eObject.getType()).getSuperTypes()) {
+			for (IHawkClass superType : ((IHawkClass) eObject.getType())
+					.getSuperTypes()) {
 				eClass = getEClassNode(superType);
 				createReference(ModelElementNode.EDGE_LABEL_OFKIND, node,
 						eClass, emptyMap, true);

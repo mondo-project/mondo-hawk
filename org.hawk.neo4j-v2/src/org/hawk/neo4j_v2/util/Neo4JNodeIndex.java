@@ -172,9 +172,11 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 	@Override
 	public void flush() {
 
-		if (batchIndex != null)
+		if (batchIndex != null) {
+			System.err.println("WARNING flush called on: " + batchIndex
+					+ "(batch mode) this will affect performance.");
 			batchIndex.flush();
-
+		}
 	}
 
 	@Override

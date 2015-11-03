@@ -478,8 +478,10 @@ public class Neo4JDatabase implements IGraphDatabase {
 			return Mode.TX_MODE;
 		else if (graph == null && batch != null)
 			return Mode.NO_TX_MODE;
-		else
+		else {
+			System.err.println("WARNING: unknown database mode!");
 			return Mode.UNKNOWN;
+		}
 	}
 
 	@Override
@@ -555,20 +557,12 @@ public class Neo4JDatabase implements IGraphDatabase {
 				ret.add(n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
 						.toString());
 
+			t.success();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		return ret;
 	}
-	
-	// @Override
-	// public Set<IGraphNode> retainExisting(Set<IGraphNode> nodes) {
-	// for (Iterator<IGraphNode> it = nodes.iterator(); it.hasNext();) {
-	// Node n;
-	// if ((n = graph.getNodeById((long) it.next().getId())) == null)
-	// nodes.remove(n);
-	// }
-	// return nodes;
-	// }
+
 }
