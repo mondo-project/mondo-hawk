@@ -90,14 +90,7 @@ public class GraphModelUpdater implements IModelUpdater {
 		} finally {
 			final long s = System.currentTimeMillis();
 			console.print("marking any relevant derived attributes for update...");
-			try (IGraphTransaction t = g.beginTransaction()) {
-				toBeUpdated.addAll(l.getNodesToBeUpdated());
-				t.success();
-			} catch (Exception e) {
-				console.printerrln("Exception in updateStore -- marking of derived attributes needing update failed.");
-				e.printStackTrace();
-				success = false;
-			}
+			toBeUpdated.addAll(l.getNodesToBeUpdated());
 			indexer.removeGraphChangeListener(l);
 			final long end = System.currentTimeMillis();
 			console.println((end - s) / 1000 + "s" + (end - s) % 1000 + "ms");
@@ -159,14 +152,23 @@ public class GraphModelUpdater implements IModelUpdater {
 	@Override
 	public boolean deleteAll(VcsCommitItem c) throws Exception {
 		boolean ret = false;
-		try (IGraphTransaction t = indexer.getGraph().beginTransaction()) {
-			ret = new DeletionUtils(indexer.getGraph()).deleteAll(c,
-					indexer.getCompositeGraphChangeListener());
-			t.success();
-		} catch (Exception e) {
-			e.printStackTrace();
-			ret = false;
-		}
+
+		IGraphNode n = new Utils().getFileNodeFromVCSCommitItem(
+				indexer.getGraph(), c);
+		if (n != null) {
+
+			try (IGraphTransaction t = indexer.getGraph().beginTransaction()) {
+				ret = new DeletionUtils(indexer.getGraph()).deleteAll(n, c,
+						indexer.getCompositeGraphChangeListener());
+				t.success();
+			} catch (Exception e) {
+				e.printStackTrace();
+				ret = false;
+			}
+
+		} else
+			return true;
+
 		return ret;
 	}
 

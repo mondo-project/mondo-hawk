@@ -19,9 +19,11 @@ import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphDatabase.Mode;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
+import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
@@ -87,27 +89,54 @@ public class DirtyDerivedAttributesListener implements IGraphChangeListener {
 
 	}
 
-	/**
-	 * needs to be in transaction
-	 * 
-	 * @return
-	 */
 	public Set<IGraphNode> getNodesToBeUpdated() {
-		nodesToBeUpdated.addAll(resolvePending());
+		resolvePending();
 		nodesToBeUpdated.removeAll(markedForRemoval);
 		return nodesToBeUpdated;
 	}
 
-	private Set<IGraphNode> resolvePending() {
+	private void resolvePending() {
 
-		Set<IGraphNode> resolved = new HashSet<>();
+		Set<IGraphNode> toBeUpdated = new HashSet<>();
 
-		for (Entry<String, String> e : pending)
-			//
-			markDependentToBeUpdated(e.getKey(), e.getValue());
+		try {
+
+			IGraphTransaction t = null;
+
+			if (db.currentMode().equals(Mode.TX_MODE))
+				t = db.beginTransaction();
+
+			final IGraphNodeIndex idx = db
+					.getOrCreateNodeIndex("derivedaccessdictionary");
+
+			for (Entry<String, String> e : pending)
+				for (IGraphNode n : idx.query(e.getKey(), e.getValue()))
+					toBeUpdated.add(n);
+
+			if (toBeUpdated.size() > 0) {
+
+				if (t == null)
+					t = db.beginTransaction();
+
+				for (IGraphNode n : toBeUpdated)
+					markDependentToBeUpdated(n);
+
+			}
+
+			if (t != null) {
+				t.success();
+				t.close();
+			}
+
+		} catch (Exception e) {
+
+			System.err
+					.println("Exception in updateStore -- marking of derived attributes needing update failed.");
+			e.printStackTrace();
+
+		}
 
 		pending.clear();
-		return resolved;
 
 	}
 
@@ -227,19 +256,6 @@ public class DirtyDerivedAttributesListener implements IGraphChangeListener {
 
 	private void markDependentToBeUpdated(final String key) {
 		pending.add(createEntry(key, "*"));
-	}
-
-	private void markDependentToBeUpdated(final String key, final String value) {
-
-		final IGraphNodeIndex idx = db
-				.getOrCreateNodeIndex("derivedaccessdictionary");
-
-		Iterable<IGraphNode> nodes = idx.query(key, value);
-
-		for (IGraphNode node : nodes) {
-			markDependentToBeUpdated(node);
-		}
-
 	}
 
 	private void markDependentToBeUpdated(IGraphNode node) {

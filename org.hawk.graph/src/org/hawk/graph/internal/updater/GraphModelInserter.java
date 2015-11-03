@@ -126,9 +126,6 @@ public class GraphModelInserter {
 				success = addNodes();
 			}
 
-			System.out
-					.print("\nProgram ending with no errors, shutting down database...");
-
 			return success;
 		} finally {
 			long l = System.nanoTime();
@@ -143,6 +140,7 @@ public class GraphModelInserter {
 	@SuppressWarnings("unchecked")
 	private boolean transactionalUpdate() throws Exception {
 		graph.exitBatchMode();
+		System.err.println("transactional update called");
 
 		final IGraphChangeListener listener = indexer
 				.getCompositeGraphChangeListener();
@@ -150,8 +148,7 @@ public class GraphModelInserter {
 			listener.changeStart();
 
 			repoURL = s.getCommit().getDelta().getManager().getLocation();
-			IGraphNode fileNode = indexer
-					.getGraph()
+			IGraphNode fileNode = graph
 					.getFileIndex()
 					.get("id",
 							repoURL
@@ -284,7 +281,8 @@ public class GraphModelInserter {
 								e.delete();
 
 								// track change deleted reference
-								listener.referenceRemoval(this.s, node, n, edgeType, false);
+								listener.referenceRemoval(this.s, node, n,
+										edgeType, false);
 							}
 						}
 
@@ -330,8 +328,8 @@ public class GraphModelInserter {
 							final IGraphNode endNode = e.getEndNode();
 							final String type = e.getType();
 							e.delete();
-							listener.referenceRemoval(this.s, node,
-									endNode, type, false);
+							listener.referenceRemoval(this.s, node, endNode,
+									type, false);
 						}
 					}
 
@@ -646,12 +644,16 @@ public class GraphModelInserter {
 				.getCompositeGraphChangeListener();
 		listener.changeStart();
 		try {
-			graph.exitBatchMode();
-			new DeletionUtils(graph).deleteAll(s, listener);
+			IGraphNode g = new Utils().getFileNodeFromVCSCommitItem(graph, s);
 
+			if (g != null) {
+				try (IGraphTransaction t = graph.beginTransaction()) {
+					new DeletionUtils(graph).deleteAll(g, s, listener);
+					t.success();
+				}
+			}
 			graph.enterBatchMode();
 			new GraphModelBatchInjector(graph, s, resource, listener);
-			graph.exitBatchMode();
 
 			listener.changeSuccess();
 			return true;
@@ -665,18 +667,13 @@ public class GraphModelInserter {
 
 		System.err.println("calculateModelDeltaSize() called:");
 
-		try (IGraphTransaction t = graph.beginTransaction()) {
+		if (new Utils().getFileNodeFromVCSCommitItem(graph, s) != null) {
 
-			final String repositoryURL = s.getCommit().getDelta().getManager()
-					.getLocation();
-			boolean modelfilealreadypresent = graph
-					.getFileIndex()
-					.get("id",
-							repositoryURL
-									+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
-									+ s.getPath()).iterator().hasNext();
+			try (IGraphTransaction t = graph.beginTransaction()) {
 
-			if (modelfilealreadypresent) {
+				final String repositoryURL = s.getCommit().getDelta()
+						.getManager().getLocation();
+
 				int delta = 0;
 				HashMap<String, byte[]> signatures = new HashMap<>();
 
@@ -748,13 +745,11 @@ public class GraphModelInserter {
 								+ newo + "+"
 								+ +(nodes.size() - unchanged.size()));
 				return delta + nodes.size() - unchanged.size();
-			} else {
-				t.success();
-				System.err
-						.println("file not in store, performing initial batch file insertion");
-				return -1;
 			}
-
+		} else {
+			System.err
+					.println("file not in store, performing initial batch file insertion");
+			return -1;
 		}
 	}
 
@@ -862,7 +857,6 @@ public class GraphModelInserter {
 	public int resolveProxies(IGraphDatabase graph) throws Exception {
 		final long start = System.currentTimeMillis();
 		int proxiesLeft = -1;
-		graph.exitBatchMode();
 
 		final IGraphChangeListener listener = indexer
 				.getCompositeGraphChangeListener();
@@ -987,7 +981,7 @@ public class GraphModelInserter {
 			}
 
 			tx.success();
-			tx.close();
+
 			listener.changeSuccess();
 		} catch (Throwable ex) {
 			listener.changeFailure();
@@ -1004,7 +998,7 @@ public class GraphModelInserter {
 			System.out.println(proxiesLeft
 					+ " - sets of proxy references left in the store");
 			tx.success();
-			tx.close();
+
 		}
 
 		System.out.println("proxy resolution took: ~"

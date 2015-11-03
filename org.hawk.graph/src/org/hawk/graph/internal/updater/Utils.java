@@ -10,7 +10,14 @@
  ******************************************************************************/
 package org.hawk.graph.internal.updater;
 
+import java.util.Iterator;
 import java.util.Set;
+
+import org.hawk.core.VcsCommitItem;
+import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.core.graph.IGraphDatabase.Mode;
 
 public class Utils {
 
@@ -67,4 +74,52 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * returns the node corresponding to the changed file in the VcsCommitItem,
+	 * or null if there are non. Only uses transactions if the current mode of
+	 * the database is transactional.
+	 * 
+	 * @param graph
+	 * @param s
+	 * @return
+	 */
+	protected IGraphNode getFileNodeFromVCSCommitItem(IGraphDatabase graph,
+			VcsCommitItem s) {
+
+		final String repository = s.getCommit().getDelta().getManager()
+				.getLocation();
+		final String filepath = s.getPath();
+
+		final String fullFileID = repository
+				+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + filepath;
+
+		IGraphNode ret = null;
+		IGraphTransaction t = null;
+
+		try {
+
+			if (graph.currentMode().equals(Mode.TX_MODE))
+				t = graph.beginTransaction();
+
+			final Iterator<IGraphNode> itFile = graph.getFileIndex()
+					.get("id", fullFileID).iterator();
+
+			if (itFile.hasNext()) {
+				ret = itFile.next();
+			} else
+				System.err.println("WARNING: no file node found for: "
+						+ s.getPath());
+
+			if (graph.currentMode().equals(Mode.TX_MODE)) {
+				t.success();
+				t.close();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return ret;
+
+	}
 }
