@@ -112,12 +112,34 @@ public class ModelioModelResource implements IHawkModelResource {
 
 		try (final TemporaryUnzippedFile unzipped = new TemporaryUnzippedFile(modelioZipFile, "mondo-modelio")) {
 			final Path tmpDirPath = unzipped.getTemporaryDirectory();
-			final Path descriptorPath = tmpDirPath.resolve("project.conf");
+			final Path descriptorPath = findProjectConf(tmpDirPath);
 			try (final ModelioProject p = new ModelioProject(descriptorPath, modulesPath)) {
 				final Package mainPackage = p.getMainPackage();
 				model = p.exportIntoXMI(mainPackage);
 				return model;
 			}
+		}
+	}
+
+	protected Path findProjectConf(final Path tmpDirPath) throws IOException {
+		final ProjectConfLocator locator = new ProjectConfLocator();
+		Files.walkFileTree(tmpDirPath, locator);
+		if (locator.projectConf == null) {
+			throw new IllegalArgumentException("No 'project.conf' file was found in " + tmpDirPath);
+		}
+		return locator.projectConf;
+	}
+
+	private static final class ProjectConfLocator extends SimpleFileVisitor<Path> {
+		Path projectConf = null;
+
+		@Override
+		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+			if ("project.conf".equals(file.getFileName().toString())) {
+				projectConf = file;
+				return FileVisitResult.TERMINATE;
+			}
+			return FileVisitResult.CONTINUE;
 		}
 	}
 

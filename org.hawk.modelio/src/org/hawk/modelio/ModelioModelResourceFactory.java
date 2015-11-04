@@ -90,6 +90,12 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 	}
 
 	public Path getModulesPath() {
-		return Paths.get(System.getProperty(MODULES_PATH_PROPERTY));
+		final String modulesPath = System.getProperty(MODULES_PATH_PROPERTY);
+		if (modulesPath == null) {
+			throw new IllegalArgumentException(
+					String.format("The '%s' Java system property with the Modelio modules path has not been set.",
+							MODULES_PATH_PROPERTY));
+		}
+		return Paths.get(modulesPath);
 	}
 }
