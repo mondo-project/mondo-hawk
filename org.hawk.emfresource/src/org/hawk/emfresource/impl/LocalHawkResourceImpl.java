@@ -573,6 +573,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		}
 		for (Map.Entry<String, Object> entry : referenceValues.entrySet()) {
 			final EReference ref = (EReference) eClass.getEStructuralFeature(entry.getKey());
+			if (!ref.isChangeable()) continue;
 
 			// If this reference was resolved before, it needs to stay resolved.
 			final boolean existingNonLazy = existing != null
