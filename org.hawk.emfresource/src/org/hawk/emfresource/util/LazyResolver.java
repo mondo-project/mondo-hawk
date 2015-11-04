@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
@@ -49,6 +50,23 @@ public class LazyResolver {
 	private Map<EObject, Map<EReference, EList<Object>>> pendingRefs = new IdentityHashMap<>();
 
 	/**
+	 * Resolves all pending features in the object.
+	 */
+	public void resolve(EObject object, boolean mustFetchAttributes) {
+		try {
+			resolveAttributes(object);
+			Map<EReference, EList<Object>> refs = pendingRefs.remove(object);
+			if (refs != null) {
+				for (Entry<EReference, EList<Object>> entry : refs.entrySet()) {
+					resolveReference(object, entry.getKey(), entry.getValue(), mustFetchAttributes);
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error while resolving lazy reference", e);
+		}
+	}
+
+	/**
 	 * Resolves the referenced feature, if it has been marked as lazy. After
 	 * fetching it from the network, it will update the object accordingly so
 	 * the actual call to {@link EObject#eGet(EStructuralFeature)} will retrieve
@@ -65,15 +83,20 @@ public class LazyResolver {
 					}
 				}
 			} else if (feature instanceof EAttribute) {
-				String pendingId = pendingAttrs.remove(object);
-				if (pendingId != null) {
-					final Map<String, EObject> objects = new HashMap<>();
-					objects.put(pendingId, object);
-					resource.fetchAttributes(objects);
-				}
+				resolveAttributes(object);
 			}
 		} catch (Exception e) {
 			LOGGER.error("Error while resolving lazy reference", e);
+			e.printStackTrace();
+		}
+	}
+
+	private void resolveAttributes(EObject object) throws Exception {
+		String pendingId = pendingAttrs.remove(object);
+		if (pendingId != null) {
+			final Map<String, EObject> objects = new HashMap<>();
+			objects.put(pendingId, object);
+			resource.fetchAttributes(objects);
 		}
 	}
 
@@ -170,14 +193,7 @@ public class LazyResolver {
 			addAllStrings(ids, childrenIds);
 			resource.fetchNodes(childrenIds, mustFetchAttributes);
 		}
-
-		// This is a pending ref: resolve its proper value
-		final EList<Object> eObjs = resolveReference(object, feature, ids, mustFetchAttributes);
-		if (feature.isMany()) {
-			object.eSet(feature, eObjs);
-		} else if (!eObjs.isEmpty()) {
-			object.eSet(feature, eObjs.get(0));
-		}
+		resolveReference(object, feature, ids, mustFetchAttributes);
 	}
 
 	private EList<Object> resolveReference(EObject source, EReference feature, EList<Object> targets, boolean mustFetchAttributes) throws Exception {
@@ -202,6 +218,11 @@ public class LazyResolver {
 			}
 		}
 
+		if (feature.isMany()) {
+			source.eSet(feature, result);
+		} else if (!result.isEmpty()) {
+			source.eSet(feature, result.get(0));
+		}
 		return result;
 	}
 
@@ -215,7 +236,7 @@ public class LazyResolver {
 
 	/**
 	 * Returns a list of {@link String} identifiers and {@link EObject}s if the
-	 * referencde <code>r</code> is pending for the object <code>o</code>, or
+	 * referenced <code>r</code> is pending for the object <code>o</code>, or
 	 * <code>null</code> otherwise.
 	 */
 	public EList<Object> getPending(EObject o, EReference r) {
@@ -224,6 +245,10 @@ public class LazyResolver {
 			return allPending.get(r);
 		}
 		return null;
+	}
+
+	public boolean isPending(EObject eob) {
+		return pendingAttrs.containsKey(eob) || pendingRefs.containsKey(eob);
 	}
 
 }
