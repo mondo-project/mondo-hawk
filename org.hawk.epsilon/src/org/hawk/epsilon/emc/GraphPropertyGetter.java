@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.epsilon.eol.exceptions.EolIllegalPropertyException;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
@@ -35,7 +36,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 	private static final int IDX_FLAG_UNIQUE = 3;
 
 	private static enum PropertyType {
-		ATTRIBUTE, DERIVED, REFERENCE, INVALID;
+		ATTRIBUTE, DERIVED, REFERENCE, MIXED, INVALID;
 		static PropertyType fromCharacter(String s) {
 			switch (s) {
 			case "d":
@@ -44,6 +45,8 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				return REFERENCE;
 			case "a":
 				return ATTRIBUTE;
+			case "m":
+				return MIXED;
 			default:
 				return INVALID;
 			}
@@ -179,6 +182,26 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 		}
 
+		else if (canHaveMixed(node, property)) {
+
+			ret = getCollectionForProperty(property);
+
+			final Collection<Object> retCollection = (Collection<Object>) ret;
+
+			if (node.getProperty(property) != null) {
+
+				final List<Object> values = Arrays.asList((Object[]) node
+						.getProperty(property));
+				retCollection.addAll(values);
+
+			}
+
+			for (IGraphEdge r : node.getOutgoingWithType(property))
+				retCollection.add(new GraphNodeWrapper(r.getEndNode().getId()
+						.toString(), m));
+
+		}
+
 		else if (canHaveAttr(node, property)) {
 
 			if (node.getProperty(property) != null) {
@@ -278,6 +301,10 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 	private boolean canHaveDerivedAttr(IGraphNode node, String property) {
 		return canHavePropertyWithType(node, property, PropertyType.DERIVED);
+	}
+
+	private boolean canHaveMixed(IGraphNode node, String property) {
+		return canHavePropertyWithType(node, property, PropertyType.MIXED);
 	}
 
 	private boolean canHaveAttr(IGraphNode node, String property) {

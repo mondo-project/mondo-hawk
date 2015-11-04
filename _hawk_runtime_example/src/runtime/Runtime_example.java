@@ -75,13 +75,13 @@ public class Runtime_example {
 	public static void main(String[] args) throws Exception {
 
 		File parent = new File(
-		// "runtime_data"
-	    "runtime_data_OrientDB"
+		"runtime_data"
+	    // "runtime_data_OrientDB"
 		);
 
 		IGraphDatabase db = (
-		// new Neo4JDatabase()
-		new OrientDatabase()
+		new Neo4JDatabase()
+		// new OrientDatabase()
 		);
 
 		// create an empty hawk model indexer

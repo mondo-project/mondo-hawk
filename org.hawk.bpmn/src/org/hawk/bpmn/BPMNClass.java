@@ -87,8 +87,7 @@ public class BPMNClass extends BPMNObject implements IHawkClass {
 	public Set<IHawkAttribute> getAllAttributes() {
 		Set<IHawkAttribute> atts = new HashSet<IHawkAttribute>();
 		for (EAttribute att : eclass.getEAllAttributes()) {
-			if (att.getEType().getInstanceClass() != FeatureMap.Entry.class)
-				atts.add(new BPMNAttribute(att));
+			atts.add(new BPMNAttribute(att));
 		}
 		return atts;
 	}

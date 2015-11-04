@@ -62,13 +62,13 @@ public class GraphMetaModelResourceInjector {
 		this.listener = listener;
 
 		// try {
-			System.out.println("ADDING METAMODELS: ");
-			System.out.print("ADDING: ");
-			System.out.println(parseResource(set) + " METAMODEL NODES! (took ~"
-					+ (System.nanoTime() - startTime) / 1000000000 + "sec)");
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+		System.out.println("ADDING METAMODELS: ");
+		System.out.print("ADDING: ");
+		System.out.println(parseResource(set) + " METAMODEL NODES! (took ~"
+				+ (System.nanoTime() - startTime) / 1000000000 + "sec)");
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
 	}
 
 	public GraphMetaModelResourceInjector(IModelIndexer hawk,
@@ -357,12 +357,12 @@ public class GraphMetaModelResourceInjector {
 
 				if (success) {
 					t.success();
-					
+
 					listener.changeSuccess();
 				} else {
 					it.remove();
 					t.failure();
-					
+
 					listener.changeFailure();
 					try (IGraphTransaction t2 = graph.beginTransaction()) {
 						IGraphNode ePackageNode = epackagedictionary
@@ -731,8 +731,12 @@ public class GraphMetaModelResourceInjector {
 
 			// System.err.println("r : "+r.getName());
 
-			String[] metadata = new String[5];
-			metadata[0] = "r";
+			String[] metadata = new String[6];
+			// XXX if the property is already there, this means that the
+			// metamodel
+			// supports having a name being both a reference and attribute (aka
+			// mixed mode)
+			metadata[0] = map.containsKey(r.getName()) ? "m" : "r";
 			metadata[1] = (r.isMany() ? "t" : "f");
 			metadata[2] = (r.isOrdered() ? "t" : "f");
 			metadata[3] = (r.isUnique() ? "t" : "f");
@@ -753,12 +757,11 @@ public class GraphMetaModelResourceInjector {
 				metadata[4] = "unknown";
 			}
 			// metadata[4] = r.getType().getName();
+			metadata[5] = "f";
 
 			map.put(r.getName(), metadata);
-
-			// map.put(r.getName(),"r."+(r.isMany()?"t":"f")+"."+(r.isOrdered()?"t":"f")+"."+(r.isUnique()?"t":"f"));
-
 		}
+		// map.put(r.getName(),"r."+(r.isMany()?"t":"f")+"."+(r.isOrdered()?"t":"f")+"."+(r.isUnique()?"t":"f"));
 
 		// n.field("nUri", ((EClass)child).getEPackage()
 		// .getNsURI());

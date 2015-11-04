@@ -89,7 +89,6 @@ public class EMFClass extends EMFObject implements IHawkClass {
 		HashSet<IHawkAttribute> atts = new HashSet<IHawkAttribute>();
 
 		for (EAttribute att : eclass.getEAllAttributes())
-			if (att.getEType().getInstanceClass() != FeatureMap.Entry.class)
 				atts.add(new EMFAttribute(att));
 
 		return atts;

@@ -13,6 +13,7 @@ package org.hawk.bpmn;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
@@ -95,8 +96,24 @@ public class BPMNObject implements IHawkObject {
 
 	@Override
 	public Object get(IHawkAttribute attribute) {
-		return eob
-				.eGet(eob.eClass().getEStructuralFeature(attribute.getName()));
+
+		final Object ret = eob.eGet(eob.eClass().getEStructuralFeature(
+				attribute.getName()));
+
+		if (ret instanceof FeatureMap) {
+			List<Object> subset = new LinkedList<>();
+
+			for (ValueListIterator<Object> it = ((FeatureMap) ret)
+					.valueListIterator(); it.hasNext();) {
+				final Object next = it.next();
+				if (!(next instanceof EObject))
+					subset.add(next);
+			}
+			return subset;
+
+		}
+
+		return ret;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -116,8 +133,10 @@ public class BPMNObject implements IHawkObject {
 			if (source instanceof FeatureMap) {
 				for (ValueListIterator<Object> it = ((FeatureMap) source)
 						.valueListIterator(); it.hasNext();) {
-					BPMNObject value = new BPMNObject((EObject) it.next());
-					((LinkedList<BPMNObject>) ret).add(value);
+					final Object next = it.next();
+					if (next instanceof EObject)
+						((LinkedList<BPMNObject>) ret).add(new BPMNObject(
+								(EObject) next));
 				}
 			}
 			// ordered ref retainment

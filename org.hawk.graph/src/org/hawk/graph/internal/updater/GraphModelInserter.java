@@ -545,9 +545,9 @@ public class GraphModelInserter {
 
 				Object r = null;
 				if (primitiveOrWrapperClass && elemClass != null) {
-					r = Array.newInstance(elemClass, 1);
+					r = Array.newInstance(elemClass, collection.size());
 				} else {
-					r = Array.newInstance(String.class, 1);
+					r = Array.newInstance(String.class, collection.size());
 				}
 				Object ret = collection.toArray((Object[]) r);
 

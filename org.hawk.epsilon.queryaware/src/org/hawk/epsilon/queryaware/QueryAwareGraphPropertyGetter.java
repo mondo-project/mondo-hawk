@@ -166,6 +166,14 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 			}
 
+			else if (canHaveMixed(node, property)) {
+
+				// XXX support mixed features
+				throw new UnsupportedOperationException(
+						"mixed features in queryaware: NYI");
+
+			}
+
 			else if (canHaveAttr(node, property)) {
 
 				//
@@ -349,7 +357,8 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 	private boolean canHaveDerivedAttr(IGraphNode node, String property) {
 
-		featureStartingNodeClassNode = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
+		featureStartingNodeClassNode = node
+				.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
 				.iterator().next().getEndNode();
 
 		if (featureStartingNodeClassNode.getProperty(property) != null) {
@@ -361,9 +370,37 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 				return false;
 		}
 
-		System.err.println("derived property: " + property
+		System.err.println("derived property: "
+				+ property
 				+ " not found in metamodel for type: "
-				+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+				+ featureStartingNodeClassNode
+						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+
+		return false;
+
+	}
+
+	private boolean canHaveMixed(IGraphNode node, String property) {
+
+		featureStartingNodeClassNode = node
+				.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
+				.iterator().next().getEndNode();
+
+		if (featureStartingNodeClassNode.getProperty(property) != null) {
+			String value = ((String[]) featureStartingNodeClassNode
+					.getProperty(property))[0];
+			if (value.equals("m"))
+				return true;
+			else if (value.equals("r") || value.equals("d")
+					|| value.equals("a"))
+				return false;
+		}
+
+		System.err.println("property: "
+				+ property
+				+ " not found in metamodel for type: "
+				+ featureStartingNodeClassNode
+						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 		return false;
 
@@ -371,7 +408,8 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 	private boolean canHaveAttr(IGraphNode node, String property) {
 
-		featureStartingNodeClassNode = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
+		featureStartingNodeClassNode = node
+				.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
 				.iterator().next().getEndNode();
 
 		if (featureStartingNodeClassNode.getProperty(property) != null) {
@@ -383,9 +421,11 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 				return false;
 		}
 
-		System.err.println("property: " + property
+		System.err.println("property: "
+				+ property
 				+ " not found in metamodel for type: "
-				+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+				+ featureStartingNodeClassNode
+						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 		return false;
 
@@ -401,7 +441,8 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 	private boolean canHaveRef(IGraphNode node, String property) {
 
-		featureStartingNodeClassNode = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
+		featureStartingNodeClassNode = node
+				.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
 				.iterator().next().getEndNode();
 
 		if (featureStartingNodeClassNode.getProperty(property) != null) {
@@ -413,9 +454,11 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 				return false;
 		}
 
-		System.err.println("reference: " + property
+		System.err.println("reference: "
+				+ property
 				+ " not found in metamodel for type: "
-				+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+				+ featureStartingNodeClassNode
+						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 		// System.out.println(o != null && o.getEStructuralFeature(property) !=
 		// null
 		// && o.getEStructuralFeature(property) instanceof EReference);
@@ -437,9 +480,11 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 			return ((String[]) featureStartingNodeClassNode.getProperty(ref))[1]
 					.equals("t");
 		}
-		System.err.println("reference: " + ref
+		System.err.println("reference: "
+				+ ref
 				+ " not found in metamodel (isMany) for type: "
-				+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+				+ featureStartingNodeClassNode
+						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 		return false;
 		// return featureStartingNodeClass.getEStructuralFeature(ref).isMany();
@@ -449,9 +494,11 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 		if (featureStartingNodeClassNode.getProperty(ref) != null)
 			return ((String[]) featureStartingNodeClassNode.getProperty(ref))[2]
 					.equals("t");
-		System.err.println("reference: " + ref
+		System.err.println("reference: "
+				+ ref
 				+ " not found in metamodel (isOrdered) for type: "
-				+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+				+ featureStartingNodeClassNode
+						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 		return false;
 		// return ((HawkStructuralFeature) featureStartingNodeClass
@@ -462,9 +509,11 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 		if (featureStartingNodeClassNode.getProperty(ref) != null)
 			return ((String[]) featureStartingNodeClassNode.getProperty(ref))[3]
 					.equals("t");
-		System.err.println("reference: " + ref
+		System.err.println("reference: "
+				+ ref
 				+ " not found in metamodel (isUnique) for type: "
-				+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+				+ featureStartingNodeClassNode
+						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 		return false;
 		// return

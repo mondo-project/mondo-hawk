@@ -468,9 +468,9 @@ public class GraphModelBatchInjector {
 
 					Object r = null;
 					if (primitiveOrWrapperClass && elemClass != null) {
-						r = Array.newInstance(elemClass, 1);
+						r = Array.newInstance(elemClass, collection.size());
 					} else {
-						r = Array.newInstance(String.class, 1);
+						r = Array.newInstance(String.class, collection.size());
 					}
 					Object ret = collection.toArray((Object[]) r);
 
@@ -482,6 +482,9 @@ public class GraphModelBatchInjector {
 				node = graph.createNode(m, "eobject");
 			} catch (IllegalArgumentException ex) {
 				System.err.println("here be dragons!");
+			} catch (Throwable e) {
+				e.printStackTrace();
+				System.err.println("boo");
 			}
 
 			// propagate changes to listeners
