@@ -25,6 +25,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.hawk.bpmn.metamodel.BPMNMetaModelResourceFactory;
 import org.hawk.bpmn.model.BPMNModelResourceFactory;
 import org.hawk.core.IModelIndexer;
+import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
@@ -46,11 +47,6 @@ public class Runtime_example {
 
 	private static IQueryEngine q;
 	private static IModelIndexer hawk;
-
-	private static File parent = new File(
-			"runtime_data"
-			//"runtime_data_OrientDB"
-			);
 
 	private static final String queryLangID = "org.hawk.epsilon.emc.EOLQueryEngine";
 
@@ -78,6 +74,16 @@ public class Runtime_example {
 	 */
 	public static void main(String[] args) throws Exception {
 
+		File parent = new File(
+		// "runtime_data"
+	    "runtime_data_OrientDB"
+		);
+
+		IGraphDatabase db = (
+		// new Neo4JDatabase()
+		new OrientDatabase()
+		);
+
 		// create an empty hawk model indexer
 		char[] init = new char[5];
 		init[0] = 'a';
@@ -98,10 +104,6 @@ public class Runtime_example {
 		// hawk.addModelResourceFactory(new EMFModelResourceFactory());
 		hawk.addModelResourceFactory(new BPMNModelResourceFactory());
 
-		IGraphDatabase db = (
-				new Neo4JDatabase()
-				//new OrientDatabase()
-				);
 		// create the model index with relevant database
 		db.run(hawk.getParentFolder(), hawk.getConsole());
 		hawk.setDB(db, true);
@@ -232,9 +234,15 @@ public class Runtime_example {
 							// i2.shutdown(ShutdownRequestType.ONLY_LOCAL);
 							i2.delete();
 							System.exit(0);
+						} else if (s.equalsIgnoreCase("qq")
+								|| s.equalsIgnoreCase("exitpersist")
+								|| s.equalsIgnoreCase("ee")) {
+							// i2.shutdown(ShutdownRequestType.ONLY_LOCAL);
+							i2.shutdown(ShutdownRequestType.ONLY_LOCAL);
+							System.exit(0);
 						} else if (s.equalsIgnoreCase("adi")) {
 							addDerivedandIndexedAttributes();
-						} else if (s.equalsIgnoreCase("qq")) {
+						} else if (s.equalsIgnoreCase("tq")) {
 							q.contextlessQuery(graph, testquery);
 						} else if (s.equalsIgnoreCase("query")
 								|| s.equalsIgnoreCase("q")) {
