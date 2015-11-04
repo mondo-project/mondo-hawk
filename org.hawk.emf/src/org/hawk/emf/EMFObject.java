@@ -18,6 +18,8 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.ecore.util.FeatureMap;
+import org.eclipse.emf.ecore.util.FeatureMap.ValueListIterator;
 import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkClassifier;
@@ -41,7 +43,7 @@ public class EMFObject implements IHawkObject {
 	@Override
 	public boolean isInDifferentResourceThan(IHawkObject o) {
 		if (o instanceof EMFObject) {
-			final EMFObject otherR = (EMFObject)o;
+			final EMFObject otherR = (EMFObject) o;
 			return eob.eIsProxy() || otherR.eob.eResource() != eob.eResource();
 		}
 		return false;
@@ -108,11 +110,21 @@ public class EMFObject implements IHawkObject {
 				resolve);
 
 		if (source instanceof Iterable<?>) {
-			// ordered ref retainment
+
 			ret = new LinkedList<EObject>();
-			for (EObject e : ((Iterable<EObject>) source)) {
-				((LinkedList<EMFObject>) ret).add(new EMFObject(e));
+
+			if (source instanceof FeatureMap) {
+				for (ValueListIterator<Object> it = ((FeatureMap) source)
+						.valueListIterator(); it.hasNext();) {
+					EMFObject value = new EMFObject((EObject) it.next());
+					((LinkedList<EMFObject>) ret).add(value);
+				}
 			}
+			// ordered ref retainment
+			else
+				for (EObject e : ((Iterable<EObject>) source)) {
+					((LinkedList<EMFObject>) ret).add(new EMFObject(e));
+				}
 		} else
 			ret = new EMFObject((EObject) source);
 
@@ -132,10 +144,10 @@ public class EMFObject implements IHawkObject {
 
 	@Override
 	public int hashCode() {
-		//System.err.println("WARNING HASHCODE CALLED ON EMFOBJECT -- this is inaccuarate, use signature() instead!");
+		// System.err.println("WARNING HASHCODE CALLED ON EMFOBJECT -- this is inaccuarate, use signature() instead!");
 		return eob.hashCode();
 	}
-	
+
 	// @Override
 	// public int hashCode() {
 	// //

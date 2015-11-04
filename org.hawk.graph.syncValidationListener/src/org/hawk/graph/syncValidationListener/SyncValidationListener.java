@@ -37,9 +37,9 @@ public class SyncValidationListener implements IGraphChangeListener {
 	@Override
 	public void setModelIndexer(IModelIndexer hawk) {
 		this.hawk = (ModelIndexerImpl) hawk;
-		System.err
-				.println("SyncValidationListener: hawk.setSyncMetricsEnabled(true) called, performance will suffer!");
-		hawk.setSyncMetricsEnabled(true);
+		//System.err
+				//.println("SyncValidationListener: hawk.setSyncMetricsEnabled(true) called, performance will suffer!");
+		hawk.setSyncMetricsEnabled(false);
 	}
 
 	@Override

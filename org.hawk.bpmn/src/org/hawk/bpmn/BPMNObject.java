@@ -18,13 +18,14 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.ecore.util.FeatureMap;
+import org.eclipse.emf.ecore.util.FeatureMap.ValueListIterator;
 import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkDataType;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
-import org.hawk.core.model.IHawkResource;
 import org.hawk.core.model.IHawkStructuralFeature;
 
 public class BPMNObject implements IHawkObject {
@@ -42,7 +43,7 @@ public class BPMNObject implements IHawkObject {
 	@Override
 	public boolean isInDifferentResourceThan(IHawkObject o) {
 		if (o instanceof BPMNObject) {
-			final BPMNObject otherR = (BPMNObject)o;
+			final BPMNObject otherR = (BPMNObject) o;
 			return eob.eIsProxy() || otherR.eob.eResource() != eob.eResource();
 		}
 		return false;
@@ -109,11 +110,21 @@ public class BPMNObject implements IHawkObject {
 				resolve);
 
 		if (source instanceof Iterable<?>) {
-			// ordered ref retainment
+
 			ret = new LinkedList<EObject>();
-			for (EObject e : ((Iterable<EObject>) source)) {
-				((LinkedList<BPMNObject>) ret).add(new BPMNObject(e));
+
+			if (source instanceof FeatureMap) {
+				for (ValueListIterator<Object> it = ((FeatureMap) source)
+						.valueListIterator(); it.hasNext();) {
+					BPMNObject value = new BPMNObject((EObject) it.next());
+					((LinkedList<BPMNObject>) ret).add(value);
+				}
 			}
+			// ordered ref retainment
+			else
+				for (EObject e : ((Iterable<EObject>) source)) {
+					((LinkedList<BPMNObject>) ret).add(new BPMNObject(e));
+				}
 		} else
 			ret = new BPMNObject((EObject) source);
 
@@ -133,7 +144,7 @@ public class BPMNObject implements IHawkObject {
 
 	@Override
 	public int hashCode() {
-		//System.err.println("WARNING HASHCODE CALLED ON BPMNOBJECT -- this is inaccuarate, use signature() instead!");
+		// System.err.println("WARNING HASHCODE CALLED ON BPMNOBJECT -- this is inaccuarate, use signature() instead!");
 		return eob.hashCode();
 	}
 

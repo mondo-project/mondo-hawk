@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.util.FeatureMap;
 import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkReference;
@@ -86,7 +87,8 @@ public class BPMNClass extends BPMNObject implements IHawkClass {
 	public Set<IHawkAttribute> getAllAttributes() {
 		Set<IHawkAttribute> atts = new HashSet<IHawkAttribute>();
 		for (EAttribute att : eclass.getEAllAttributes()) {
-			atts.add(new BPMNAttribute(att));
+			if (att.getEType().getInstanceClass() != FeatureMap.Entry.class)
+				atts.add(new BPMNAttribute(att));
 		}
 		return atts;
 	}
@@ -117,6 +119,11 @@ public class BPMNClass extends BPMNObject implements IHawkClass {
 
 		}
 
+		for (EAttribute att : eclass.getEAllAttributes()) {
+			if (att.getEType().getInstanceClass() == FeatureMap.Entry.class)
+				c.add(new BPMNFeatureMapReference(att));
+		}
+
 		return c;
 
 	}
@@ -136,9 +143,15 @@ public class BPMNClass extends BPMNObject implements IHawkClass {
 
 		EStructuralFeature esf = eclass.getEStructuralFeature(name);
 
-		if (esf instanceof EAttribute)
-			return new BPMNAttribute((EAttribute) esf);
-		else if (esf instanceof EReference)
+		if (esf instanceof EAttribute) {
+
+			if (esf.getEType().getInstanceClass() == FeatureMap.Entry.class)
+				return new BPMNFeatureMapReference((EAttribute) esf);
+
+			else
+				return new BPMNAttribute((EAttribute) esf);
+
+		} else if (esf instanceof EReference)
 			return new BPMNReference((EReference) esf);
 		else {
 			System.err.println("getEStructuralFeature( " + name
@@ -152,5 +165,5 @@ public class BPMNClass extends BPMNObject implements IHawkClass {
 		return eclass.hashCode();
 
 	}
-	
+
 }
