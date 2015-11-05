@@ -41,6 +41,8 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
+import org.eclipse.emf.ecore.util.ExtendedMetaData;
+import org.eclipse.emf.ecore.util.FeatureMap;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphNode;
@@ -534,7 +536,8 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 
 		final Map<String, Object> attributeValues = new HashMap<>();
 		final Map<String, Object> referenceValues = new HashMap<>();
-		me.getSlotValues(attributeValues, referenceValues);
+		final Map<String, Object> mixedValues = new HashMap<>();
+		me.getSlotValues(attributeValues, referenceValues, mixedValues);
 
 		// Set or update attributes
 		final EFactory factory = registry.getEFactory(nsURI);
@@ -543,7 +546,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			for (EAttribute attr : eClass.getEAllAttributes()) {
 				if (attr.isDerived() || !attr.isChangeable()) continue;
 
-				if (!attributeValues.containsKey(attr.getName())) {
+				if (!attributeValues.containsKey(attr.getName()) && !mixedValues.containsKey(attr.getName())) {
 					if (existing.eIsSet(attr)) {
 						existing.eUnset(attr);
 					}
@@ -554,6 +557,36 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			final String attrName = entry.getKey();
 			final Object attrValue = entry.getValue();
 			AttributeUtils.setAttribute(factory, eClass, eob, attrName, attrValue);
+		}
+		for (Map.Entry<String, Object> entry : mixedValues.entrySet()) {
+			final String attrName = entry.getKey();
+			final Object attrValue = entry.getValue();
+
+			final EAttribute eAttr = (EAttribute)eClass.getEStructuralFeature(attrName);
+			final boolean isMixed = ExtendedMetaData.INSTANCE.getMixedFeature(eClass) == eAttr;
+			final FeatureMap fmap = (FeatureMap)eob.eGet(eAttr);
+
+			// For now, we assume that feature maps have disjoint subsets of elements
+			// and that we can use the other references to know where each of their
+			// elements come from. We're only interested in their references right now,
+			// so we can reconstruct the structure of a BPMN model from the graph.
+			for (Object o : (Collection<?>)attrValue) {
+				// If it's a node, try to fetch it
+				EObject node = fetchNode(o.toString(), true);
+				if (node == null) continue;
+
+				// Find out where it belongs to
+				for (Entry<String, Object> refEntry : referenceValues.entrySet()) {
+					final EReference ref = (EReference)eClass.getEStructuralFeature(refEntry.getKey());
+					if (!isMixed && ExtendedMetaData.INSTANCE.getGroup(ref) != eAttr) continue;
+ 
+					if (o.equals(refEntry.getValue())) {
+						fmap.add(ref, node); 	
+					} else if (refEntry.getValue() instanceof Collection && ((Collection<?>)refEntry.getValue()).contains(o)) {
+						fmap.add(ref, node);
+					}
+				}
+			}
 		}
 
 		// Set or update references
@@ -573,7 +606,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		}
 		for (Map.Entry<String, Object> entry : referenceValues.entrySet()) {
 			final EReference ref = (EReference) eClass.getEStructuralFeature(entry.getKey());
-			if (!ref.isChangeable()) continue;
+			if (ref.isDerived() || !ref.isChangeable()) continue;
 
 			// If this reference was resolved before, it needs to stay resolved.
 			final boolean existingNonLazy = existing != null

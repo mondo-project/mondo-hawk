@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.hawk.graph;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -91,16 +90,19 @@ public class ModelElementNode {
 	 * @throws Exception
 	 *             Could not begin the transaction on the graph.
 	 */
-	public void getSlotValues(Map<String, Object> attributeValues, Map<String, Object> referenceValues) {
-			for (Slot s : getTypeNode().getSlots()) {
-				final Object value = getSlotValue(s);
-				if (value == null) continue;
-				if (s.isAttribute()) {
-					attributeValues.put(s.getName(), value);
-				} else if (s.isReference()) {
-					referenceValues.put(s.getName(), value);
-				}
+	public void getSlotValues(Map<String, Object> attributeValues, Map<String, Object> referenceValues, Map<String, Object> mixedValues) {
+		final List<Slot> slots = getTypeNode().getSlots();
+		for (Slot s : slots) {
+			final Object value = getSlotValue(s);
+			if (value == null) continue;
+			if (s.isAttribute()) {
+				attributeValues.put(s.getName(), value);
+			} else if (s.isReference()) {
+				referenceValues.put(s.getName(), value);
+			} else if (s.isMixed()) {
+				mixedValues.put(s.getName(), value);
 			}
+		}
 	}
 
 	/**
@@ -110,8 +112,9 @@ public class ModelElementNode {
 	 */
 	public Object getSlotValue(Slot slot) {
 		final Object rawValue = node.getProperty(slot.getName());
-		if (slot.isAttribute() && rawValue != null && slot.isMany()) {
-			final Collection<Object> collection = slot.getCollection();
+		final Collection<Object> collection = slot.getCollection();
+
+		if (slot.isMany() && rawValue != null && (slot.isAttribute() || slot.isMixed())) {
 			final Class<?> componentType = rawValue.getClass().getComponentType();
 			if (!componentType.isPrimitive()) {
 				// non-primitive arrays can be cast to Object[]
@@ -136,34 +139,27 @@ public class ModelElementNode {
 			} else if (componentType == boolean.class) {
 				for (boolean v : (boolean[])rawValue) collection.add(v);
 			}
-			return collection;
-		} else if (slot.isReference()) {
-			final Collection<Object> referencedIds;
-			if (slot.isMany()) {
-				referencedIds = slot.getCollection();
-			} else {
-				referencedIds = new ArrayList<>();
-			}
+		}
 
-			for (IGraphEdge r : node
-					.getOutgoingWithType(slot.getName())) {
+		if (slot.isReference() || slot.isMixed()) {
+			for (IGraphEdge r : node.getOutgoingWithType(slot.getName())) {
 				final Object id = r.getEndNode().getId();
-				referencedIds.add(id);
+				collection.add(id);
 			}
+		}
 
-			if (slot.isMany()) {
-				return referencedIds;
-			} else if (referencedIds.size() == 1) {
-				return referencedIds.iterator().next();
-			} else if (referencedIds.isEmpty()) {
-				return null;
-			} else {
-				throw new IllegalArgumentException(String.format(
-						"A relationship with arity 1 (%s) had %d links",
-						slot.getName(), referencedIds.size()));
-			}
-		} else {
+		if (slot.isMany()) {
+			return collection;
+		} else if (slot.isAttribute()) {
 			return rawValue;
+		} else if (collection.size() == 1) {
+			return collection.iterator().next();
+		} else if (collection.isEmpty()) {
+			return null;
+		} else {
+			throw new IllegalArgumentException(String.format(
+					"A relationship with arity 1 (%s) had %d links",
+					slot.getName(), collection.size()));
 		}
 	} // getValue
 

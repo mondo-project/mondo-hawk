@@ -60,7 +60,7 @@ public class TypeNode {
 				if (IModelIndexer.IDENTIFIER_PROPERTY.equals(propertyName)) continue;
 
 				final Slot slot = new Slot(this, propertyName);
-				if (slot.isAttribute() || slot.isReference()) {
+				if (slot.isAttribute() || slot.isReference() || slot.isMixed()) {
 					slots.add(slot);
 				}
 			}
