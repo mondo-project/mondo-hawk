@@ -14,8 +14,6 @@ package org.hawk.modelio;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +28,6 @@ import org.slf4j.LoggerFactory;
 
 public class ModelioModelResourceFactory implements IModelResourceFactory {
 
-	private static final String MODULES_PATH_PROPERTY = "org.hawk.modelio.modules.path";
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioModelResourceFactory.class);
 
 	@Override
@@ -40,7 +37,7 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 
 	@Override
 	public IHawkModelResource parse(File zipFile) {
-		return new ModelioModelResource(zipFile, getModulesPath(), getType());
+		return new ModelioModelResource(zipFile, getType());
 	}
 
 	@Override
@@ -74,28 +71,11 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 		// Try loading the Modelio Metamodel
 		MetamodelLoader.Load();
 
-		// Make sure we have the modules path set up as well
-		final Path modulesPath = getModulesPath();
-		if (modulesPath == null) {
-			LOGGER.error("{} has not been set to the path to the Modelio modules directory: cannot parse {}", MODULES_PATH_PROPERTY, f);
-			return false;
-		}
-
 		return true;
 	}
 
 	@Override
 	public String getHumanReadableName() {
 		return "Modelio parser for Hawk";
-	}
-
-	public Path getModulesPath() {
-		final String modulesPath = System.getProperty(MODULES_PATH_PROPERTY);
-		if (modulesPath == null) {
-			throw new IllegalArgumentException(
-					String.format("The '%s' Java system property with the Modelio modules path has not been set.",
-							MODULES_PATH_PROPERTY));
-		}
-		return Paths.get(modulesPath);
 	}
 }

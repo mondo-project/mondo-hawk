@@ -29,11 +29,4 @@ public interface IHawkClass extends IHawkClassifier, IHawkObject {
 	boolean isInterface();
 
 	IHawkStructuralFeature getStructuralFeature(String name);
-
-	//HashSet<HawkClass> eAllContents();
-
-	//String eContainingFeatureName();
-
-	//boolean isContained();
-
 }

@@ -224,11 +224,13 @@ public class SyncValidationListener implements IGraphChangeListener {
 													// val).isProxy())
 													ret = ((IHawkObject) val)
 															.getUri().replace(
-																	temp, "");
-													ret = URLDecoder.decode(
-															ret.replace("+",
-																	"%2B"),
-															"UTF-8");
+																	temp, "").replace("+",
+																			"%2B");
+													try {
+														ret = URLDecoder.decode(ret, "UTF-8");
+													} catch (Exception ex) {
+														// might not be decodable that way (Modelio can produce something like '#//%Objing%')
+													}
 													vals.add(repoURL
 															+ FILEINDEX_REPO_SEPARATOR
 															+ (ret.startsWith("/") ? ret
