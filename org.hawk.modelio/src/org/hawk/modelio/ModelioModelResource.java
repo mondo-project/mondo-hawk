@@ -17,6 +17,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,29 +34,31 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.TreeIterator;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.uml2.uml.Model;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
+import org.modelio.api.modelio.Modelio;
+import org.modelio.app.core.IModelioEventService;
+import org.modelio.app.core.events.ModelioEventService;
+import org.modelio.app.project.core.services.IProjectService;
 import org.modelio.gproject.data.project.DefinitionScope;
 import org.modelio.gproject.data.project.ProjectDescriptor;
 import org.modelio.gproject.data.project.ProjectDescriptorReader;
 import org.modelio.gproject.fragment.IProjectFragment;
 import org.modelio.gproject.gproject.GProject;
-import org.modelio.gproject.gproject.GProjectFactory;
 import org.modelio.gproject.model.MModelServices;
-import org.modelio.gproject.module.catalog.FileModuleStore;
 import org.modelio.metamodel.data.MetamodelLoader;
 import org.modelio.metamodel.mda.Project;
-import org.modelio.metamodel.uml.infrastructure.Element;
 import org.modelio.metamodel.uml.statik.Package;
 import org.modelio.vbasic.auth.NoneAuthData;
-import org.modelio.vbasic.progress.NullProgress;
 import org.modelio.vcore.smkernel.mapi.MObject;
 import org.modelio.xmi.generation.ExportServices;
-import org.modelio.xmi.generation.GenerationProperties;
+import org.modelio.xmi.gui.report.ReportModel;
+import org.modelio.xmi.util.GenerationProperties;
+import org.modelio.xmi.util.XMILogs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,13 +99,13 @@ public class ModelioModelResource implements IHawkModelResource {
 				}
 			}
 			return allElements;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			return Collections.emptySet();
 		}
 	}
 
-	private List<Model> getModels() throws IOException {
+	private List<Model> getModels() throws Exception {
 		if (models != null) {
 			return models;
 		}
@@ -111,9 +114,8 @@ public class ModelioModelResource implements IHawkModelResource {
 		try (final TemporaryUnzippedFile unzipped = new TemporaryUnzippedFile(modelioZipFile, "mondo-modelio")) {
 			final Path tmpDirPath = unzipped.getTemporaryDirectory();
 			final Path descriptorPath = find(tmpDirPath, "project.conf");
-			final Path modulesDir = find(tmpDirPath, "modules");
 
-			try (final ModelioProject p = new ModelioProject(descriptorPath, modulesDir)) {
+			try (final ModelioProject p = new ModelioProject(descriptorPath)) {
 				for (Package pkg : p.getPackages()) {
 					try {
 						models.add(p.exportIntoXMI(pkg));
@@ -165,26 +167,41 @@ public class ModelioModelResource implements IHawkModelResource {
 	private static class ModelioProject implements Closeable {
 
 		private final ProjectDescriptor descriptor;
-		private final GProject project;
+		private GProject project;
+		private IProjectService projectService;
 
-		public ModelioProject(Path resolve, Path modulesPath) throws IOException {
+		public ModelioProject(Path resolve) throws Exception {
 			MetamodelLoader.Load();
 			this.descriptor = new ProjectDescriptorReader().read(resolve, DefinitionScope.LOCAL);
-			this.project = (GProject) GProjectFactory.openProject(this.descriptor, new NoneAuthData(),
-					new FileModuleStore(modulesPath), null, new NullProgress());
+
+			// Normally LifeCycleManager does this, but it depends on too many UI components
+			Modelio modelio = Modelio.getInstance();
+			Field fldContext = modelio.getClass().getDeclaredField("eclipseContext");
+			fldContext.setAccessible(true);
+			IEclipseContext modelioEclipseContext = (IEclipseContext)fldContext.get(modelio);
+			modelioEclipseContext.set(IModelioEventService.class, new ModelioEventService(modelioEclipseContext));
+
+			projectService = modelioEclipseContext.get(IProjectService.class);
+			projectService.openProject(descriptor, new NoneAuthData(), new NullProgressMonitor());
+			project = projectService.getOpenedProject();
 		}
 
-		public Model exportIntoXMI(Package mainPackage) {
+		public Model exportIntoXMI(Package mainPackage) throws Exception {
 			GenerationProperties genProp = GenerationProperties.getInstance();
 			genProp.initialize(new MModelServices(project));
 			genProp.setTimeDisplayerActivated(false);
 			genProp.setSelectedPackage(mainPackage);
 
-			ExportServices exportService = new ExportServices();
+			final File xmiExportLog = File.createTempFile("xmiexport", ".log");
+			xmiExportLog.deleteOnExit();
+			XMILogs.getInstance().setLogFile(xmiExportLog.getAbsolutePath());
+
+			genProp.setReportModel(new ReportModel());
+			ExportServices exportService = new ExportServices(null);
 			return exportService.createEcoreModel(mainPackage, null);
 		}
 
-		public List<Package> getPackages() {
+		public List<Package> getPackages() throws Exception {
 			final List<Package> pkgs = new ArrayList<>();
 			for (IProjectFragment fragment : project.getOwnFragments()) {
 				for (MObject mObj : fragment.getRoots()) {
@@ -200,7 +217,7 @@ public class ModelioModelResource implements IHawkModelResource {
 
 		@Override
 		public void close() throws IOException {
-			project.close();
+			projectService.closeProject(project);
 		}
 	}
 
