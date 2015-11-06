@@ -17,7 +17,7 @@ Dependencies
 * (optional) [OrientDB](http://orientdb.com/)
 * (optional) [Neo4J(v2)](http://neo4j.com/download/other-releases/)
 * (optional) [SVNKit update site](http://eclipse.svnkit.com/1.8.x)
-* (optional) [Modelio source code](https://opensourceprojects.eu/svn/p/mondo/code/trunk/modelio).
+* (optional) [Modelio source code](https://github.com/mondo-project/hawk-modelio).
 * (optional) [BIMserver 1.4.0 (also due to imcompatible licenses)](http://bimserver.org/)
 
 Screencasts
@@ -45,8 +45,9 @@ Running from source
 These instructions are from a clean download of an Eclipse Luna Modelling distribution and include all optional dependencies.
 
 1. Clone this Git repository on your Eclipse instance (e.g. using `git clone` or EGit) and import all projects into the workspace (File > Import > Existing Projects into Workspace).
-2. Import the following projects from [the MONDO Modelio 3.2 SVN repository](https://opensourceprojects.eu/svn/p/mondo/code/trunk/modelio) using the "SVN Repositories" view in the "SVN Repository Exploring" perspective (you'll need the "Subversive SVN" client from the Eclipse Marketplace):
+2. Import the following projects from [our modified version of Modelio 3.2.1](https://github.com/mondo-project/hawk-modelio):
     * api
+    * api.impl
     * app.core
     * app.preferences
     * app.project.core
@@ -57,15 +58,15 @@ These instructions are from a clean download of an Eclipse Luna Modelling distri
     * core.session
     * core.estore.exml
     * core.ui
-    * core.utils (edit its `META-INF/MANIFEST.MF` file so it only exports its own packages)
-    * jdbm (you'll need to create its "src" source folder)
+    * core.utils
+    * jdbm
     * lib
     * log
     * mda.infra
     * metamodel.emfapi
     * metamodel.implementation
     * model.search.engine
-    * practicalxml (you'll need to create its "src" source folder)
+    * practicalxml
     * RCPTARGET/ktable
     * RCPTARGET/nebula
     * RCPTARGET/nebula-incubator
@@ -74,7 +75,7 @@ These instructions are from a clean download of an Eclipse Luna Modelling distri
     * script.engine
     * ui
     * vaudit
-    * xmi (edit its `META-INF/MANIFEST.MF` file, removing its dependency on `org.modelio.model.browser` and exporting the `org.modelio.xmi.generation` package)
+    * xmi
 4. Open the `org.hawk.targetplatform/org.hawk.targetplatform.target` file, wait for the target definition to be resolved and click on `Set as Target Platform`.
 5. Close the `_hawk_runtime_example` project (it is an example project running Hawk in standalone mode) if you do not need it.
 6. Close the experimental `org.hawk.epsilon.queryaware` project if you do not need it. If you do, you'll need to import the `StaticAnalysis` projects within [epsilonlabs](https://github.com/epsilonlabs/epsilonlabs) and the [effectivemetamodel](https://github.com/wrwei/org.eclipse.epsilon.labs.effectivemetamodel) project.
