@@ -20,7 +20,8 @@
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.hawk.core" version="1.0.0" match="greaterOrEqual"/>
-      <import feature="org.tmatesoft.svnkit" version="1.8.11.r10483_v20150925_0010"/>
+      <import plugin="org.tmatesoft.svnkit" version="1.8.6" match="greaterOrEqual"/>
+      <import plugin="org.tmatesoft.sqljet" version="1.1.10" match="greaterOrEqual"/>
    </requires>
 
    <plugin
