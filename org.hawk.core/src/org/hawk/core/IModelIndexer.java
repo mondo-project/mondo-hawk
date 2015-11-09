@@ -186,10 +186,13 @@ public interface IModelIndexer {
 
 	void setMetaModelUpdater(IMetaModelUpdater metaModelUpdater);
 
-	void addDerivedAttribute(String metamodeluri, String typename, String attributename, String attributetype,
-			boolean isMany, boolean isOrdered, boolean isUnique, String derivationlanguage, String derivationlogic);
+	void addDerivedAttribute(String metamodeluri, String typename,
+			String attributename, String attributetype, boolean isMany,
+			boolean isOrdered, boolean isUnique, String derivationlanguage,
+			String derivationlogic);
 
-	void addIndexedAttribute(String metamodeluri, String typename, String attributename);
+	void addIndexedAttribute(String metamodeluri, String typename,
+			String attributename);
 
 	Collection<String> getDerivedAttributes();
 
@@ -204,7 +207,8 @@ public interface IModelIndexer {
 
 	Collection<String> getIndexes();
 
-	List<String> validateExpression(String derivationlanguage, String derivationlogic);
+	List<String> validateExpression(String derivationlanguage,
+			String derivationlogic);
 
 	public String getName();
 
@@ -218,4 +222,5 @@ public interface IModelIndexer {
 	void setSyncMetricsEnabled(Boolean enable);
 
 	ICredentialsStore getCredentialsStore();
+
 }

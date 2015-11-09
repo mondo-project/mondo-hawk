@@ -37,6 +37,9 @@ public class SyncChangeListener implements IGraphChangeListener {
 	ModelIndexerImpl hawk;
 	private int removedProxies;
 
+	private int deleted = 0;
+	private Set<String> changed = new HashSet<>();
+
 	public SyncChangeListener(Git git,
 			LinkedHashMap<String, RevCommit> commits, IModelIndexer hawk) {
 		this.hawk = (ModelIndexerImpl) hawk;
@@ -63,19 +66,18 @@ public class SyncChangeListener implements IGraphChangeListener {
 	public void synchroniseEnd() {
 
 		validateChanges();
-
+		//
+		deleted = 0;
+		changed.clear();
+		//
 		if (orderedCommits.size() > 0) {
 			RevCommit first = orderedCommits.getFirst();
 			orderedCommits.remove();
 			System.out.println("changing repo to commit with time: "
 					+ first.getCommitTime());
 			// update git to this revision
-			//
-			// Repository r = git.getRepository();
-			// git.
 			CheckoutCommand c = git.checkout();
-			c.setStartPoint(first);
-			c.setAllPaths(true);
+			c.setName(first.getId().getName());
 			try {
 				c.call();
 			} catch (Exception e) {
@@ -95,6 +97,8 @@ public class SyncChangeListener implements IGraphChangeListener {
 		System.err.println("deleted\t\t" + hawk.getDeletedFiles());
 		System.err.println("changed\t\t" + hawk.getCurrChangedItems());
 		System.err.println("loaded\t\t" + hawk.getLoadedResources());
+		System.err.println("c elems\t\t" + latestChangedElements());
+		System.err.println("d elems\t\t" + latestDeletedElements());
 		System.err.println("time\t\t~" + hawk.getLatestSynctime() / 1000 + "s");
 
 		System.err.println("validating changes...");
@@ -532,6 +536,14 @@ public class SyncChangeListener implements IGraphChangeListener {
 
 	}
 
+	private int latestChangedElements() {
+		return changed.size();
+	}
+
+	private int latestDeletedElements() {
+		return deleted;
+	}
+
 	private Set<String> removeHawkProxies(IGraphNode instance,
 			Set<String> modelrefvaluesclone) {
 
@@ -629,39 +641,39 @@ public class SyncChangeListener implements IGraphChangeListener {
 	@Override
 	public void modelElementAddition(VcsCommitItem s, IHawkObject element,
 			IGraphNode elementNode, boolean isTransient) {
-
+		changed.add(elementNode.getId().toString());
 	}
 
 	@Override
 	public void modelElementRemoval(VcsCommitItem s, IGraphNode elementNode,
 			boolean isTransient) {
-
+		deleted++;
 	}
 
 	@Override
 	public void modelElementAttributeUpdate(VcsCommitItem s,
 			IHawkObject eObject, String attrName, Object oldValue,
 			Object newValue, IGraphNode elementNode, boolean isTransient) {
-
+		changed.add(elementNode.getId().toString());
 	}
 
 	@Override
 	public void modelElementAttributeRemoval(VcsCommitItem s,
 			IHawkObject eObject, String attrName, IGraphNode elementNode,
 			boolean isTransient) {
-
+		changed.add(elementNode.getId().toString());
 	}
 
 	@Override
 	public void referenceAddition(VcsCommitItem s, IGraphNode source,
 			IGraphNode destination, String edgelabel, boolean isTransient) {
-
+		changed.add(source.getId().toString());
 	}
 
 	@Override
 	public void referenceRemoval(VcsCommitItem s, IGraphNode source,
 			IGraphNode destination, String edgelabel, boolean isTransient) {
-
+		changed.add(source.getId().toString());
 	}
 
 	@Override

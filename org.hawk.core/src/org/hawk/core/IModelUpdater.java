@@ -32,8 +32,7 @@ public interface IModelUpdater {
 	public abstract boolean updateStore(VcsCommitItem vcscommititem,
 			IHawkModelResource resource);
 
-	void run(IConsole console, IModelIndexer modelIndexer)
-			throws Exception;
+	void run(IConsole console, IModelIndexer modelIndexer) throws Exception;
 
 	public abstract void shutdown();
 

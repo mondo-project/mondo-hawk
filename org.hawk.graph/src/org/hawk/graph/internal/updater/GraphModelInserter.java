@@ -78,7 +78,6 @@ public class GraphModelInserter {
 
 	public boolean run(IHawkModelResource res, VcsCommitItem s)
 			throws Exception {
-
 		resource = res;
 		this.s = s;
 
@@ -654,7 +653,6 @@ public class GraphModelInserter {
 			}
 			graph.enterBatchMode();
 			new GraphModelBatchInjector(graph, s, resource, listener);
-
 			listener.changeSuccess();
 			return true;
 		} catch (Exception ex) {
@@ -674,7 +672,6 @@ public class GraphModelInserter {
 				final String repositoryURL = s.getCommit().getDelta()
 						.getManager().getLocation();
 
-				int delta = 0;
 				HashMap<String, byte[]> signatures = new HashMap<>();
 
 				// Get existing nodes from the store (and their signatures)
@@ -699,8 +696,6 @@ public class GraphModelInserter {
 				System.err.println("file contains: " + nodes.size() + " ("
 						+ signatures.size() + ") nodes in store");
 
-				int newo = 0;
-
 				// Get the model elements from the resource and use signatures
 				// and URI
 				for (IHawkObject o : resource.getAllContentsSet()) {
@@ -720,7 +715,6 @@ public class GraphModelInserter {
 							final String nodeType = typeNode.getProperty(
 									IModelIndexer.IDENTIFIER_PROPERTY)
 									.toString();
-							delta++;
 							if (actualType.equals(nodeType)) {
 								this.updated.put(uriFragment, o);
 							} else {
@@ -734,17 +728,18 @@ public class GraphModelInserter {
 							this.unchanged.put(uriFragment, o);
 						}
 					} else {
-						newo++;
-						delta++;
 						this.added.put(uriFragment, o);
 					}
 				}
 				t.success();
-				System.err
-						.println("updated is of size: " + (delta - newo) + "+"
-								+ newo + "+"
-								+ +(nodes.size() - unchanged.size()));
-				return delta + nodes.size() - unchanged.size();
+				int addedn = added.size();
+				int retypedn = retyped.size();
+				int updatedn = updated.size();
+				int deletedn = nodes.size() - unchanged.size() - updated.size()
+						- retyped.size();
+				System.err.println("update contains | a:" + (addedn + retypedn)
+						+ " + u:" + updatedn + " + d:" + deletedn);
+				return addedn + retypedn + updatedn + deletedn;
 			}
 		} else {
 			System.err
@@ -932,13 +927,10 @@ public class GraphModelInserter {
 															isContainer);
 
 											if (!change) {
-												System.err
-														.println("resolving proxy ref returned false, edge already existed: "
-																+ n.getId()
-																+ " - "
-																+ edgeLabel
-																+ " -> "
-																+ no.getId());
+												//
+												// System.err.println("resolving proxy ref returned false, edge already existed: "+
+												// n.getId()+ " - "+ edgeLabel+
+												// " -> "+ no.getId());
 											} else {
 												listener.referenceAddition(
 														this.s, n, no,
@@ -1396,4 +1388,5 @@ public class GraphModelInserter {
 			e.printStackTrace();
 		}
 	}
+
 }

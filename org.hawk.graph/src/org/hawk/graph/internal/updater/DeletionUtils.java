@@ -52,62 +52,62 @@ public class DeletionUtils {
 			final String repository = s.getCommit().getDelta().getManager()
 					.getLocation();
 
-				//IGraphNode file = itFile.next();
+			// IGraphNode file = itFile.next();
 
-				System.out.println("deleting nodes from file: "
-						+ file.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+			System.out.println("deleting nodes from file: "
+					+ file.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
-				HashSet<IGraphNode> modelElements = new HashSet<IGraphNode>();
+			HashSet<IGraphNode> modelElements = new HashSet<IGraphNode>();
 
-				for (IGraphEdge rel : file
-						.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
-					modelElements.add(rel.getStartNode());
-					rel.delete();
-				}
+			for (IGraphEdge rel : file
+					.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+				modelElements.add(rel.getStartNode());
+				rel.delete();
+			}
 
-				// if (IModelIndexer.VERBOSE)
-				// System.out
-				// .println("cached elements and deleted file edges");
+			// if (IModelIndexer.VERBOSE)
+			// System.out
+			// .println("cached elements and deleted file edges");
 
-				for (IGraphNode node : modelElements) {
-					dereference(node, changeListener, s);
-				}
+			for (IGraphNode node : modelElements) {
+				dereference(node, changeListener, s);
+			}
 
-				// if (IModelIndexer.VERBOSE)
-				// System.out.println("dereferenced elements");
+			// if (IModelIndexer.VERBOSE)
+			// System.out.println("dereferenced elements");
 
-				for (IGraphNode node : modelElements) {
-					makeProxyRefs(s, node, repository, file, changeListener);
-				}
+			for (IGraphNode node : modelElements) {
+				makeProxyRefs(s, node, repository, file, changeListener);
+			}
 
-				// if (IModelIndexer.VERBOSE)
-				// System.out.println("made required proxy references");
+			// if (IModelIndexer.VERBOSE)
+			// System.out.println("made required proxy references");
 
-				// if (IModelIndexer.VERBOSE) {
-				// System.out.println("listeners registered:");
-				//
-				// for (Iterator<IGraphChangeListener> it =
-				// ((CompositeGraphChangeListener) changeListener)
-				// .iterator(); it.hasNext();) {
-				//
-				// IGraphChangeListener l = it.next();
-				// System.out.println(l);
-				//
-				// }
-				// }
+			// if (IModelIndexer.VERBOSE) {
+			// System.out.println("listeners registered:");
+			//
+			// for (Iterator<IGraphChangeListener> it =
+			// ((CompositeGraphChangeListener) changeListener)
+			// .iterator(); it.hasNext();) {
+			//
+			// IGraphChangeListener l = it.next();
+			// System.out.println(l);
+			//
+			// }
+			// }
 
-				for (IGraphNode node : modelElements) {
-					changeListener.modelElementRemoval(s, node, false);
-					delete(node);
-				}
+			for (IGraphNode node : modelElements) {
+				changeListener.modelElementRemoval(s, node, false);
+				delete(node);
+			}
 
-				// if (IModelIndexer.VERBOSE)
-				// System.out.println("deleted elements");
+			// if (IModelIndexer.VERBOSE)
+			// System.out.println("deleted elements");
 
-				modelElements = null;
+			modelElements = null;
 
-				changeListener.fileRemoval(s, file);
-				delete(file);
+			changeListener.fileRemoval(s, file);
+			delete(file);
 
 			// if (IModelIndexer.VERBOSE)
 			// System.out.println("ending deletion");
