@@ -293,4 +293,18 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="org.modelio.api.impl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.modelio.mda.infra.ext"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
+
 </feature>
