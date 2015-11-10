@@ -1370,12 +1370,15 @@ public class GraphModelInserter {
 
 					}
 
-					Object r = Array.newInstance(c, 1);
+					if (collection.size() > 0) {
 
-					Object ret = collection.toArray((Object[]) r);
+						Object r = Array.newInstance(c, collection.size());
 
-					m.put(attributename, ret);
+						Object ret = collection.toArray((Object[]) r);
 
+						m.put(attributename, ret);
+
+					}
 				}
 
 				i.add(node, m);
