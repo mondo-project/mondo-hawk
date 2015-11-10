@@ -35,7 +35,23 @@ final class ResultSetIterable<T> implements IGraphIterable<T> {
 		if (resultSet == null || resultSet.isEmpty()) {
 			return Collections.emptyListIterator();
 		} else {
-			return Collections.singleton(getSingle()).iterator();
+			final Iterator<OIdentifiable> itIdentifiable = resultSet.iterator();
+			return new Iterator<T>() {
+				@Override
+				public boolean hasNext() {
+					return itIdentifiable.hasNext();
+				}
+
+				@Override
+				public T next() {
+					return db.getElementById(itIdentifiable.next().getIdentity(), klass);
+				}
+
+				@Override
+				public void remove() {
+					itIdentifiable.remove();
+				}
+			};
 		}
 	}
 

@@ -11,11 +11,14 @@
 package org.hawk.orientdb;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphIterable;
@@ -23,6 +26,7 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.util.DefaultConsole;
+import org.hawk.graph.ModelElementNode;
 import org.hawk.orientdb.util.FluidMap;
 import org.junit.After;
 import org.junit.Test;
@@ -241,6 +245,44 @@ public class IndexTest {
 		}
 	}
 
+	@Test
+	public void getMultipleMatches() {
+		setup("getMultipleMatches");
+
+		IGraphNodeIndex idxRoots = db.getOrCreateNodeIndex("roots");
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			OrientNode n1 = db.createNode(null, "eobject");
+			OrientNode n2 = db.createNode(null, "eobject");
+			OrientNode n3 = db.createNode(null, "eobject");
+			OrientNode f1 = db.createNode(null, "file");
+			OrientNode f2 = db.createNode(null, "file");
+
+			db.createRelationship(n1, f1, ModelElementNode.EDGE_LABEL_FILE);
+			db.createRelationship(n2, f1, ModelElementNode.EDGE_LABEL_FILE);
+			db.createRelationship(n3, f2, ModelElementNode.EDGE_LABEL_FILE);
+			idxRoots.add(n1, "file", "a.xmi");
+			idxRoots.add(n2, "file", "a.xmi");
+			idxRoots.add(n3, "file", "b.xmi");
+			
+			tx.success();
+		}
+
+		final IGraphIterable<IGraphNode> aRoots = idxRoots.get("file", "a.xmi");
+		assertEquals(2, aRoots.size());
+		assertEquals(2, iteratorSize(aRoots.iterator()));
+		assertNotNull(aRoots.getSingle());
+
+		final IGraphIterable<IGraphNode> bRoots = idxRoots.get("file", "b.xmi");
+		assertEquals(1, bRoots.size());
+		assertEquals(1, iteratorSize(bRoots.iterator()));
+		assertNotNull(bRoots.getSingle());
+
+		final IGraphIterable<IGraphNode> cRoots = idxRoots.get("file", "c.xmi");
+		assertEquals(0, cRoots.size());
+		assertEquals(0, iteratorSize(cRoots.iterator()));
+		assertNull(cRoots.getSingle());
+	}
+
 	private String populateForRemove() {
 		final String mmBarURI = "http://foo/bar";
 		final FluidMap mmBarNodeProps = FluidMap.create().add(IModelIndexer.IDENTIFIER_PROPERTY, mmBarURI);
@@ -276,4 +318,12 @@ public class IndexTest {
 		return iter;
 	}
 
+	private int iteratorSize(Iterator<?> it) {
+		int count = 0;
+		while (it.hasNext()) {
+			it.next();
+			count++;
+		}
+		return count;
+	}
 }
