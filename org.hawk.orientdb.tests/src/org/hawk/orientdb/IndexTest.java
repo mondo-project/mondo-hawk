@@ -283,6 +283,30 @@ public class IndexTest {
 		assertNull(cRoots.getSingle());
 	}
 
+	@Test
+	public void addNullValue() {
+		setup("addNullMap");
+
+		IGraphNodeIndex idxRoots = db.getOrCreateNodeIndex("roots");
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			OrientNode n1 = db.createNode(null, "eobject");
+			idxRoots.add(n1, "file", null);
+			tx.success();
+		}
+	}
+
+	@Test
+	public void addNullMap() {
+		setup("addNullMap");
+
+		IGraphNodeIndex idxRoots = db.getOrCreateNodeIndex("roots");
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			OrientNode n1 = db.createNode(null, "eobject");
+			idxRoots.add(n1, null);
+			tx.success();
+		}
+	}
+
 	private String populateForRemove() {
 		final String mmBarURI = "http://foo/bar";
 		final FluidMap mmBarNodeProps = FluidMap.create().add(IModelIndexer.IDENTIFIER_PROPERTY, mmBarURI);

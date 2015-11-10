@@ -105,8 +105,10 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 
 	@Override
 	public void add(IGraphNode n, String s, Object value) {
-
 		Object wrappedValue = value;
+		if (wrappedValue == null) {
+			return;
+		}
 
 		if (value instanceof Integer || value instanceof Long
 				|| value instanceof Double)
@@ -136,16 +138,22 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 		if (index != null) {
 
 			for (String s : m.keySet()) {
-
 				Object wrappedValue = m.get(s);
+				if (wrappedValue == null) {
+					continue;
+				}
 
 				if (wrappedValue instanceof Integer
 						|| wrappedValue instanceof Long
 						|| wrappedValue instanceof Double)
 					wrappedValue = new ValueContext(m.get(s)).indexNumeric();
 
+				try {
 				index.add(graph.getGraph().getNodeById((long) n.getId()), s,
 						wrappedValue);
+				} catch (NullPointerException ex) {
+					System.err.println("NPE!");
+				}
 			}
 
 		} else {
@@ -153,8 +161,10 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 			Map<String, Object> wrappedMap = new HashMap<>();
 
 			for (String s : m.keySet()) {
-
 				Object wrappedValue = m.get(s);
+				if (wrappedValue == null) {
+					continue;
+				}
 
 				if (wrappedValue instanceof Integer
 						|| wrappedValue instanceof Long

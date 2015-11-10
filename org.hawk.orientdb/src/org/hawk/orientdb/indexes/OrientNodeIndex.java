@@ -117,11 +117,19 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 
 	@Override
 	public void add(IGraphNode n, Map<String, Object> derived) {
+		if (derived == null) {
+			return;
+		}
 		final OrientNode orientNode = (OrientNode) n;
 
 		for (Entry<String, Object> entry : derived.entrySet()) {
 			final String field = entry.getKey();
-			final Object valueExpr = normalizeValue(entry.getValue());
+			final Object rawValue = entry.getValue();
+			if (rawValue == null) {
+				continue;
+			}
+
+			final Object valueExpr = normalizeValue(rawValue);
 			final Class<?> valueClass = valueExpr.getClass();
 			final OIndex<?> idx = getOrCreateFieldIndex(field, valueClass);
 			final OIndex<?> keyIdx = getKeyIndex(valueClass);
