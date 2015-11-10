@@ -314,27 +314,9 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 
 		// System.err.println(">"+ast.toStringTree());
 
-		String attributename = ast.getFirstChild().getChild(1).getText();
-		// int or boolean?
-		Object attributevalue = null;
-
-		AST sibling = ast.getFirstChild().getNextSibling();
-
-		if (sibling.getType() == EolParser.BOOLEAN)
-			attributevalue = sibling.getText().equals("true") ? true : false;
-		else if (sibling.getType() == EolParser.INT) {
-			try {
-				attributevalue = Integer.parseInt(sibling.getText());
-			} catch (Exception e) {
-				attributevalue = Long.parseLong(sibling.getText().substring(0,
-						sibling.getText().length() - 1));
-			}
-		}
-		// XXX epsilon uses float but real can be float or double
-		else if (sibling.getType() == EolParser.FLOAT)
-			attributevalue = Double.parseDouble(sibling.getText());
-		else
-			attributevalue = sibling.getText();
+		final String attributename = ast.getFirstChild().getChild(1).getText();
+		final AST valueAST = ast.getFirstChild().getNextSibling();
+		final Object attributevalue = context.getExecutorFactory().executeAST(valueAST, context);
 
 		String indexname;
 
