@@ -25,4 +25,4 @@ fi
 git commit $COMMIT_FLAGS -am "Build update site"
 
 # Force push to the gh-pages branch
-git push --force "https://${GH_TOKEN}@${GH_REF}" gh-pages
+git push --quiet --force "https://${GH_TOKEN}@${GH_REF}" gh-pages
