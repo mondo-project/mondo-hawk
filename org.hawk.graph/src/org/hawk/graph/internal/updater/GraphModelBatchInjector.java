@@ -26,7 +26,6 @@ import java.util.Set;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsCommitItem;
-import org.hawk.core.graph.IGraphChange;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
@@ -873,12 +872,11 @@ public class GraphModelBatchInjector {
 	 * @return
 	 * @throws Exception
 	 */
-	protected Set<IGraphChange> addEReferences(IGraphNode fileNode,
-			IGraphNode node, IHawkObject source,
-			Map<String, IGraphNode> addedNodesHash,
+	protected boolean addEReferences(IGraphNode fileNode, IGraphNode node,
+			IHawkObject source, Map<String, IGraphNode> addedNodesHash,
 			Map<String, IGraphNode> nodes) throws Exception {
 
-		Set<IGraphChange> ret = new HashSet<>();
+		boolean ret = true;
 		try {
 			for (final IHawkReference eReference : ((IHawkClass) source
 					.getType()).getAllReferences()) {
@@ -976,6 +974,7 @@ public class GraphModelBatchInjector {
 			System.err
 					.println("Error in: addEReference(IGraphNode node, IHawkObject object,	HashMap<String, IGraphNode> nodes):");
 			e.printStackTrace();
+			ret = false;
 		}
 
 		return ret;
