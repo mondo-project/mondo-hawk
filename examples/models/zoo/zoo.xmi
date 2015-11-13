@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xmi:id="_INwLQIn2EeWZVvWyOpwPZQ" name="zoo">
+  <eAnnotations xmi:id="_INwLQYn2EeWZVvWyOpwPZQ" source="Objing">
+    <contents xmi:type="uml:Property" xmi:id="_INwLQon2EeWZVvWyOpwPZQ" name="exporterVersion">
+      <defaultValue xmi:type="uml:LiteralString" xmi:id="_INwLQ4n2EeWZVvWyOpwPZQ" value="3.0.0"/>
+    </contents>
+  </eAnnotations>
+  <packagedElement xmi:type="uml:Class" xmi:id="_INwLRIn2EeWZVvWyOpwPZQ" name="Zoo">
+    <ownedAttribute xmi:id="_INwLRYn2EeWZVvWyOpwPZQ" name="area" visibility="public" type="_INwyUIn2EeWZVvWyOpwPZQ" aggregation="composite" association="_INwLSYn2EeWZVvWyOpwPZQ">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_INwLRon2EeWZVvWyOpwPZQ" value="*"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_INwLR4n2EeWZVvWyOpwPZQ"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_INwLSIn2EeWZVvWyOpwPZQ" name="name" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_INwLSYn2EeWZVvWyOpwPZQ" memberEnd="_INwLRYn2EeWZVvWyOpwPZQ _INwLSon2EeWZVvWyOpwPZQ">
+    <ownedEnd xmi:id="_INwLSon2EeWZVvWyOpwPZQ" visibility="public" type="_INwLRIn2EeWZVvWyOpwPZQ" association="_INwLSYn2EeWZVvWyOpwPZQ"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_INwyUIn2EeWZVvWyOpwPZQ" name="Area">
+    <ownedAttribute xmi:id="_INwyUYn2EeWZVvWyOpwPZQ" name="animal" visibility="public" type="_INwyV4n2EeWZVvWyOpwPZQ" aggregation="composite" association="_INwyVYn2EeWZVvWyOpwPZQ">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_INwyUon2EeWZVvWyOpwPZQ" value="*"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_INwyU4n2EeWZVvWyOpwPZQ"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_INwyVIn2EeWZVvWyOpwPZQ" name="name" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_INwyVYn2EeWZVvWyOpwPZQ" memberEnd="_INwyUYn2EeWZVvWyOpwPZQ _INwyVon2EeWZVvWyOpwPZQ">
+    <ownedEnd xmi:id="_INwyVon2EeWZVvWyOpwPZQ" visibility="public" type="_INwyUIn2EeWZVvWyOpwPZQ" association="_INwyVYn2EeWZVvWyOpwPZQ"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_INwyV4n2EeWZVvWyOpwPZQ" name="Animal" isAbstract="true">
+    <ownedAttribute xmi:id="_INwyWIn2EeWZVvWyOpwPZQ" name="name" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedOperation xmi:id="_INwyWYn2EeWZVvWyOpwPZQ" name="sleep" visibility="public"/>
+    <ownedOperation xmi:id="_INwyWon2EeWZVvWyOpwPZQ" name="eat" visibility="public"/>
+    <ownedOperation xmi:id="_INwyW4n2EeWZVvWyOpwPZQ" name="call" visibility="public"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_INwyXIn2EeWZVvWyOpwPZQ" name="Zebra">
+    <generalization xmi:id="_INwyXYn2EeWZVvWyOpwPZQ" general="_INwyV4n2EeWZVvWyOpwPZQ"/>
+    <ownedOperation xmi:id="_INwyXon2EeWZVvWyOpwPZQ" name="neigh" visibility="public"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_INwyX4n2EeWZVvWyOpwPZQ" name="Lion">
+    <generalization xmi:id="_INwyYIn2EeWZVvWyOpwPZQ" general="_INwyV4n2EeWZVvWyOpwPZQ"/>
+    <ownedOperation xmi:id="_INwyYYn2EeWZVvWyOpwPZQ" name="roar" visibility="public"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_INwyYon2EeWZVvWyOpwPZQ" name="Elephant">
+    <generalization xmi:id="_INwyY4n2EeWZVvWyOpwPZQ" general="_INwyV4n2EeWZVvWyOpwPZQ"/>
+    <ownedOperation xmi:id="_INwyZIn2EeWZVvWyOpwPZQ" name="trumpet" visibility="public"/>
+  </packagedElement>
+</uml:Model>
