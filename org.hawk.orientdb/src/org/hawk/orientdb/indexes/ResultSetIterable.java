@@ -62,10 +62,6 @@ final class ResultSetIterable<T> implements IGraphIterable<T> {
 
 	@Override
 	public T getSingle() {
-		final Iterator<OIdentifiable> iterator = resultSet.iterator();
-		if (iterator.hasNext()) {
-			return db.getElementById(iterator.next().getIdentity(), klass);
-		}
-		return null;
+		return iterator().next();
 	}
 }

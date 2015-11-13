@@ -68,12 +68,6 @@ final class IndexCursorFactoriesIterable<T> implements IGraphIterable<T> {
 
 	@Override
 	public T getSingle() {
-		for (OIndexCursorFactory factory : iterFactories) {
-			Iterator<T> it = new IndexCursorFactoryNodeIterable<>(factory, graph, klass).iterator();
-			if (it.hasNext()) {
-				return it.next();
-			}
-		}
-		return null;
+		return iterator().next();
 	}
 }

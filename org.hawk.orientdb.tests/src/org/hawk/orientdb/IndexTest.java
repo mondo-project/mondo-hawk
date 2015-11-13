@@ -15,10 +15,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphIterable;
@@ -280,7 +282,12 @@ public class IndexTest {
 		final IGraphIterable<IGraphNode> cRoots = idxRoots.get("file", "c.xmi");
 		assertEquals(0, cRoots.size());
 		assertEquals(0, iteratorSize(cRoots.iterator()));
-		assertNull(cRoots.getSingle());
+		try {
+			cRoots.getSingle();
+			fail("NoSuchElementException should have been thrown");
+		} catch (NoSuchElementException ex) {
+			// good!
+		}
 	}
 
 	@Test

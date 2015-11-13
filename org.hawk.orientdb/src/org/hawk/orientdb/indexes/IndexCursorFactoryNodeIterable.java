@@ -72,10 +72,6 @@ final class IndexCursorFactoryNodeIterable<T> implements IGraphIterable<T> {
 
 	@Override
 	public T getSingle() {
-		final Iterator<T> it = iterator();
-		if (it.hasNext()) {
-			return it.next();
-		}
-		return null;
+		return iterator().next();
 	}
 }

@@ -28,6 +28,6 @@ public final class EmptyIGraphIterable<T> implements IGraphIterable<T> {
 
 	@Override
 	public T getSingle() {
-		return null;
+		return iterator().next();
 	}
 }
