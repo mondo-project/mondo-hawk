@@ -27,10 +27,10 @@ public class Utils {
 				return extension.substring(base.length());
 			}
 		}
-		System.err
-				.println(String.format(
-						"WARNING: could not make '%s' into a relative path",
-						extension));
+//		System.err
+//				.println(String.format(
+//						"WARNING: could not make '%s' into a relative path",
+//						extension));
 		return extension;
 	}
 

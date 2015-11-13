@@ -637,7 +637,7 @@ public class HConfigDialog extends Dialog {
 		fd.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation()
 				.toFile().toString());
 		// TODO: allow selection of only parse-able/known metamodels-file-types
-		fd.setFilterExtensions(new String[] { "*.ecore" });
+		fd.setFilterExtensions(new String[] { "*.ecore", "*.*" });
 		fd.setText("Select metamodels");
 		String result = fd.open();
 

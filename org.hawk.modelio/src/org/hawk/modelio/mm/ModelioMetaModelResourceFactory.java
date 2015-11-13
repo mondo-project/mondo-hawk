@@ -35,6 +35,8 @@ import org.hawk.modelio.ModelioPackage;
 
 public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactory {
 
+	private static final String PROFILE_XMI_SUFFIX = ".profile.xmi";
+
 	private static final String TYPE = "org.hawk.modelio.mm.ModelioMetaModelResourceFactory";
 
 	ResourceSet resourceSet = null;
@@ -75,7 +77,7 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 
 	@Override
 	public Set<String> getMetaModelExtensions() {
-		return Collections.emptySet();
+		return Collections.singleton(PROFILE_XMI_SUFFIX);
 	}
 
 	@Override
@@ -143,7 +145,7 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 
 	@Override
 	public boolean canParse(File f) {
-		return false;
+		return f.getName().endsWith(PROFILE_XMI_SUFFIX);
 	}
 
 	@Override
