@@ -81,8 +81,8 @@ public class ExampleListener implements IGraphChangeListener {
 			IHawkObject eObject, String attrName, Object oldValue,
 			Object newValue, IGraphNode elementNode, boolean isTransient) {
 
-		String oldv = convertToString(oldValue);
-		String newv = convertToString(newValue);
+		//String oldv = convertToString(oldValue);
+		//String newv = convertToString(newValue);
 
 		// if (oldv.equals("1098.0") || oldv.equals("1097.0") ||
 		// newv.equals("1098.0") || newv.equals("1097.0"))
@@ -95,7 +95,7 @@ public class ExampleListener implements IGraphChangeListener {
 		// elementNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)+ "]");
 	}
 
-	private String convertToString(Object value) {
+	protected String convertToString(Object value) {
 
 		String ret = value + "";
 

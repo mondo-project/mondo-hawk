@@ -38,7 +38,6 @@ import org.hawk.graph.internal.updater.GraphModelUpdater;
 import org.hawk.graph.sampleListener.ExampleListener;
 import org.hawk.localfolder.LocalFolder;
 import org.hawk.neo4j_v2.Neo4JDatabase;
-import org.hawk.orientdb.OrientDatabase;
 
 public class Runtime_example {
 

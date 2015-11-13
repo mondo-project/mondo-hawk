@@ -28,7 +28,6 @@ import org.eclipse.epsilon.labs.effectivemetamodel.impl.EffectiveType;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
-import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.ModelElementNode;
 
 public class QueryAnalysis {

@@ -14,6 +14,9 @@
             customizerClass="org.hawk.ui.emfresource.exeed.HawkResourceExeedCustomizer"
             resourceClass="org.hawk.emfresource.impl.LocalHawkResourceImpl">
       </customizer>
+   </extension>
+   <extension
+         point="org.eclipse.epsilon.dt.exeed.customizer">
       <customizer
             customizerClass="org.hawk.ui.emfresource.exeed.HawkResourceExeedCustomizer"
             resourceClass="org.hawk.emfresource.impl.HawkFileResourceImpl">
