@@ -668,33 +668,13 @@ public class GraphModelBatchInjector {
 
 		if (classnode == null) {
 
+			final String packageNSURI = eClass.getPackageNSURI();
 			IGraphNode epackagenode = null;
 			try {
-				epackagenode = epackageDictionary.get("id",
-						eClass.getPackageNSURI()).getSingle();
+				epackagenode = epackageDictionary.get("id", packageNSURI).getSingle();
 			} catch (NoSuchElementException ex) {
-
-				// graph.exitBatchMode();
-				// //
-				// addRequiredMetamodels();
-				// //
-				// graph.enterBatchMode();
-				//
-				// epackagedictionary = graph.getMetamodelIndex();
-				// filedictionary = graph.getFileIndex();
-				// proxydictionary =
-				// graph.getOrCreateNodeIndex("proxydictionary");
-				//
-				// epackagenode = epackagedictionary.get("id",
-				// eClass.getPackageNSURI()).getSingle();
-				//
 				throw new Exception(
-						"eClass: "
-								+ eClass.getName()
-								+ "("
-								+ eClass.getUri()
-								+ ") does not have a Node associated with it in the store, please make sure the relevant metamodel has been inserted");
-
+						"Metamodel " + packageNSURI + " does not have a Node associated with it in the store, please make sure it has been inserted");
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}
