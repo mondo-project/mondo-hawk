@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -35,16 +36,29 @@ import org.hawk.emf.model.util.RegisterMeta;
 
 public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 
-	String type = "org.hawk.emf.metamodel.EMFMetaModelParser";
-	String hrn = "EMF Metamodel Resource Factory";
+	/**
+	 * Property that can be set to a comma-separated list of extensions (e.g.
+	 * ".profile.xmi") that should be supported in addition to the default
+	 * ones (".ecore"). Composite extensions are allowed (e.g.
+	 * ".rail.way").
+	 */
+	public static final String PROPERTY_EXTRA_EXTENSIONS = "org.hawk.emf.metamodel.extraExtensions";
 
-	HashSet<String> metamodelExtensions;
-
-	ResourceSet resourceSet;
+	private final String type = "org.hawk.emf.metamodel.EMFMetaModelParser";
+	private final String hrn = "EMF Metamodel Resource Factory";
+	private final Set<String> metamodelExtensions;
+	private final ResourceSet resourceSet;
 
 	public EMFMetaModelResourceFactory() {
 		metamodelExtensions = new HashSet<String>();
 		metamodelExtensions.add(".ecore");
+		final String sExtraExtensions = System.getProperty(PROPERTY_EXTRA_EXTENSIONS);
+		if (sExtraExtensions != null) {
+			String[] extraExtensions = sExtraExtensions.split(",");
+			for (String extraExtension : extraExtensions) {
+				metamodelExtensions.add(extraExtension);
+			}
+		}
 
 		if (EPackage.Registry.INSTANCE.getEPackage(EcorePackage.eNS_URI) == null) {
 			EPackage.Registry.INSTANCE.put(EcorePackage.eNS_URI, EcorePackage.eINSTANCE);
@@ -90,8 +104,7 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 	}
 
 	@Override
-	public HashSet<String> getMetaModelExtensions() {
-
+	public Set<String> getMetaModelExtensions() {
 		return metamodelExtensions;
 	}
 
