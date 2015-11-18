@@ -223,6 +223,28 @@ public class LazyResolver {
 		} else if (!result.isEmpty()) {
 			source.eSet(feature, result.get(0));
 		}
+
+		if (feature.isContainment()) {
+			/*
+			 * If this was a containment reference, the target can't be at the
+			 * root level of its resource anymore.
+			 */
+			for (Object target : result) {
+				final EObject eobTarget = (EObject)target;
+				if (eobTarget.eContainer() != null) {
+					eobTarget.eResource().getContents().remove(eobTarget);
+				}
+			}
+		} else if (feature.isContainer()) {
+			/*
+			 * If this was a container reference, the source can't be at the
+			 * root level of its resource anymore.
+			 */
+			if (source.eContainer() != null) {
+				source.eResource().getContents().remove(source);
+			}
+		}
+
 		return result;
 	}
 
