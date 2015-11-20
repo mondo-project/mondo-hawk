@@ -123,6 +123,12 @@ public interface IModelIndexer {
 
 	IGraphChangeListener getCompositeGraphChangeListener();
 
+	boolean addStateListener(IStateListener messageListener);
+
+	boolean removeStateListener(IStateListener messageListener);
+
+	IStateListener getCompositeStateListener();
+
 	void setDB(IGraphDatabase db, boolean persist);
 
 	void addQueryEngine(IQueryEngine q);
@@ -222,8 +228,6 @@ public interface IModelIndexer {
 	void setSyncMetricsEnabled(Boolean enable);
 
 	ICredentialsStore getCredentialsStore();
-
-	void createMessage(String s, boolean isErrorMessage);
 
 	String getDerivedAttributeExecutionEngine();
 

@@ -35,6 +35,8 @@ import org.hawk.core.IMetaModelUpdater;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.IModelUpdater;
+import org.hawk.core.IStateListener;
+import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommitItem;
@@ -106,6 +108,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	private final ICredentialsStore credStore;
 	private final CompositeGraphChangeListener listener = new CompositeGraphChangeListener();
+	private final CompositeStateListener stateListener = new CompositeStateListener();
 
 	/**
 	 * Creates an indexer with a <code>name</code>, with its contents saved in
@@ -128,6 +131,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	private boolean internalSynchronise() throws Exception {
 		listener.synchroniseStart();
+		stateListener.state(HawkState.UPDATING);
 
 		try {
 			// System.err.println(currLocalTopRevisions);
@@ -381,6 +385,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 			return allSync;
 		} finally {
 			listener.synchroniseEnd();
+			stateListener.state(HawkState.RUNNING);
 		}
 	}
 
@@ -392,7 +397,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 	public void shutdown(ShutdownRequestType type) throws Exception {
 		// The type is ignored for local instances of Hawk: they
 		// must always be safely shut down, to preserve consistency.
-		createMessage("Hawk shutting down...", false);
+		stateListener.info("Hawk shutting down...");
 		preShutdown();
 
 		if (graph != null) {
@@ -400,7 +405,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 			credStore.shutdown();
 		}
 		graph = null;
-		createMessage("Hawk shut down.", false);
+		stateListener.info("Hawk shut down.");
 	}
 
 	@Override
@@ -427,6 +432,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 			monitor.shutdown();
 		monitors = new ArrayList<>();
 		running = false;
+		stateListener.state(HawkState.STOPPED);
 	}
 
 	@Override
@@ -468,7 +474,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	private void registerMetamodelFiles() throws Exception {
 
-		createMessage("Registering metamodels...", false);
+		stateListener.info("Registering metamodels...");
 
 		String s = null;
 		String ep = null;
@@ -504,7 +510,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 			t.success();
 		}
-		createMessage("Registered metamodels.", false);
+		stateListener.info("Registered metamodels.");
 	}
 
 	// @Override
@@ -522,10 +528,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 	 * cross-file references as proxies
 	 */
 	public void removeMetamodels(String[] mm) throws Exception {
-		createMessage("Removing metamodels...", false);
+		stateListener.info("Removing metamodels...");
 		for (String s : metamodelupdater.removeMetamodels(this, mm))
 			resetRepositoy(s);
-		createMessage("Removed metamodels.", false);
+		stateListener.info("Removed metamodels.");
 	}
 
 	private void resetRepositoy(String s) {
@@ -547,7 +553,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	@Override
 	public void registerMetamodel(File[] f) throws Exception {
-		createMessage("Adding metamodel(s)...", false);
+		stateListener.info("Adding metamodel(s)...");
 		File[] metamodel = null;
 
 		if (f != null) {
@@ -627,7 +633,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 				}
 			}
 		}
-		createMessage("Added metamodel(s).", false);
+		stateListener.info("Added metamodel(s).");
 	}
 
 	@Override
@@ -727,7 +733,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	public void saveIndexer() throws Exception {
-		createMessage("Saving Hawk metadata...", false);
+		stateListener.info("Saving Hawk metadata...");
 		XStream stream = new XStream(new DomDriver());
 		stream.processAnnotations(HawkProperties.class);
 
@@ -746,7 +752,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 			b.write(out);
 			b.flush();
 		}
-		createMessage("Saved Hawk metadata.", false);
+		stateListener.info("Saved Hawk metadata.");
 	}
 
 	@Override
@@ -780,7 +786,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	@Override
 	public void init(int minDelay, int maxDelay) throws Exception {
-		createMessage("Initializing Hawk...", false);
+		stateListener.info("Initializing Hawk...");
 		this.maxDelay = maxDelay;
 		this.minDelay = minDelay;
 		this.currentDelay = minDelay;
@@ -803,11 +809,12 @@ public class ModelIndexerImpl implements IModelIndexer {
 		updateTimer.schedule(new RunUpdateTask(), 0);
 
 		running = true;
-		createMessage("Initialized Hawk.", false);
+		stateListener.state(HawkState.RUNNING);
+		stateListener.info("Initialized Hawk.");
 	}
 
 	private void runUpdateTask() {
-		createMessage("Updating Hawk...", false);
+		stateListener.info("Updating Hawk...");
 		long start = System.currentTimeMillis();
 
 		boolean synchronised = true;
@@ -821,7 +828,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		if (!synchronised) {
 			console.println("SYNCHRONISATION ERROR");
-			createMessage("Update FAILED!", true);
+			stateListener.error("Update FAILED!");
 		}
 
 		// Timer only enabled if the delay is non-zero
@@ -847,9 +854,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 		}
 
 		final long time = (System.currentTimeMillis() - start);
-		createMessage("Updated Hawk "
+		stateListener.info("Updated Hawk "
 				+ (synchronised ? "(success)." : "(failure).") + " " + time
-				/ 1000 + "s" + time % 1000 + "ms", false);
+				/ 1000 + "s" + time % 1000 + "ms");
 	}
 
 	@Override
@@ -1055,17 +1062,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public void createMessage(String s, boolean isErrorMessage) {
-
-		if (isErrorMessage)
-			System.err.println(s);
-		else
-			System.out.println(s);
-
-	}
-
-	@Override
 	public String getDerivedAttributeExecutionEngine() {
+		// TODO we should honor the derivation language info that we already ask the user for
 		if (getKnownQueryLanguages().keySet().contains(
 				"org.hawk.epsilon.emc.EOLQueryEngine"))
 			return "org.hawk.epsilon.emc.EOLQueryEngine";
@@ -1073,4 +1071,19 @@ public class ModelIndexerImpl implements IModelIndexer {
 			return "error: default derived attribute engine (EOLQueryEngine) not added to Hawk. Derived attributes cannot be calculated!";
 	}
 
+	@Override
+	public boolean addStateListener(IStateListener listener) {
+		final boolean ret = stateListener.add(listener);
+		return ret;
+	}
+
+	@Override
+	public boolean removeStateListener(IStateListener listener) {
+		return stateListener.remove(listener);
+	}
+
+	@Override
+	public IStateListener getCompositeStateListener() {
+		return stateListener;
+	}
 }

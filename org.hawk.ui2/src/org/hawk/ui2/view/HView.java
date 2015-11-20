@@ -54,8 +54,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.wizards.IWizardDescriptor;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
+import org.hawk.core.IStateListener.HawkState;
 import org.hawk.osgiserver.HModel;
-import org.hawk.osgiserver.HModel.HModelState;
 import org.hawk.ui2.Activator;
 import org.hawk.ui2.dialog.HConfigDialog;
 import org.hawk.ui2.dialog.HImportDialog;
@@ -221,8 +221,8 @@ public class HView extends ViewPart {
 					enableButtons();
 
 					HModel hmodel = ((HModel) selection.getFirstElement());
-					HModelState status = hmodel.getStatus();
-					if (status == HModelState.UPDATING) {
+					HawkState status = hmodel.getStatus();
+					if (status == HawkState.UPDATING) {
 						start.setEnabled(false);
 						stop.setEnabled(false);
 						delete.setEnabled(false);
@@ -518,8 +518,8 @@ public class HView extends ViewPart {
 				.getSelection();
 		if (selected.size() == 1) {
 			HModel hmodel = ((HModel) selected.getFirstElement());
-			HModelState status = hmodel.getStatus();
-			if (status == HModelState.UPDATING) {
+			HawkState status = hmodel.getStatus();
+			if (status == HawkState.UPDATING) {
 				start.setEnabled(false);
 				stop.setEnabled(false);
 				delete.setEnabled(false);

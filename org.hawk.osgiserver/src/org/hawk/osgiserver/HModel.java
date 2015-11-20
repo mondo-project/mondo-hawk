@@ -32,6 +32,7 @@ import org.hawk.core.IModelIndexer;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.IModelUpdater;
+import org.hawk.core.IStateListener;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
@@ -44,26 +45,21 @@ import org.osgi.service.prefs.BackingStoreException;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-public class HModel {
-
-	public static enum HModelState {
-		UNKNOWN, RUNNING, UPDATING, STOPPED
-	};
-
-	private HModelState status = HModelState.UNKNOWN;
+public class HModel implements IStateListener {
+	private HawkState status;
 
 	public static String DEFAULT_INFO = "Sleeping...";
 
 	private String info = DEFAULT_INFO;
 
-	protected void setStatus(HModelState status) {
+	protected void setStatus(HawkState status) {
 		if (this.status != status) {
 			this.status = status;
 			manager.stateChanged(this);
 		}
 	}
 
-	public HModelState getStatus() {
+	public HawkState getStatus() {
 		return status;
 	}
 
@@ -145,11 +141,6 @@ public class HModel {
 			manager.addHawk(hm);
 			manager.saveHawkToMetadata(hm);
 			console.println("Created Hawk indexer!");
-			if (hm.hawk.getModelIndexer().isRunning())
-				hm.setStatus(HModelState.RUNNING);
-			else
-				hm.setStatus(HModelState.STOPPED);
-			hm.addGraphChangeListener(new SyncNotificationListener(hm));
 			return hm;
 		} catch (Exception e) {
 			console.printerrln("Adding of indexer aborted, please try again.\n"
@@ -187,11 +178,6 @@ public class HModel {
 			// hard coded metamodel updater?
 			IMetaModelUpdater metaModelUpdater = manager.getMetaModelUpdater();
 			hm.hawk.getModelIndexer().setMetaModelUpdater(metaModelUpdater);
-			if (hm.hawk.getModelIndexer().isRunning())
-				hm.setStatus(HModelState.RUNNING);
-			else
-				hm.setStatus(HModelState.STOPPED);
-			hm.addGraphChangeListener(new SyncNotificationListener(hm));
 			return hm;
 		} catch (Throwable e) {
 			System.err
@@ -272,11 +258,7 @@ public class HModel {
 				console.println(l.getName());
 			}
 		}
-		if (hawk.getModelIndexer().isRunning())
-			setStatus(HModelState.RUNNING);
-		else
-			setStatus(HModelState.STOPPED);
-		addGraphChangeListener(new SyncNotificationListener(this));
+		hawk.getModelIndexer().addStateListener(this);
 	}
 
 	public void addDerivedAttribute(String metamodeluri, String typename,
@@ -533,11 +515,6 @@ public class HModel {
 
 		boolean running = hawk.getModelIndexer().isRunning();
 
-		if (running)
-			setStatus(HModelState.RUNNING);
-		else
-			setStatus(HModelState.STOPPED);
-
 		return running;
 	}
 
@@ -547,11 +524,6 @@ public class HModel {
 		} catch (Exception e) {
 			getConsole().printerrln(e);
 		}
-		boolean running = hawk.getModelIndexer().isRunning();
-		if (running)
-			setStatus(HModelState.RUNNING);
-		else
-			setStatus(HModelState.STOPPED);
 	}
 
 	public void sync() throws Exception {
@@ -626,6 +598,21 @@ public class HModel {
 			System.err.println("error in removemetamodel:");
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void state(HawkState state) {
+		setStatus(state);
+	}
+
+	@Override
+	public void info(String s) {
+		setInfo(s);
+	}
+
+	@Override
+	public void error(String s) {
+		setInfo(s);
 	}
 
 }
