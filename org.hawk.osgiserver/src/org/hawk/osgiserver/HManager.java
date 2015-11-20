@@ -53,6 +53,11 @@ public class HManager {
 
 	private static HManager inst;
 
+	protected void stateChanged(HModel m) {
+		// implementations can use this to update UI or other elements (logs
+		// etc)
+	}
+
 	public static HManager getInstance() {
 		if (inst == null)
 			inst = new HManager();
