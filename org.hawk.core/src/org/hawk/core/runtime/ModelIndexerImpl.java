@@ -392,6 +392,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 	public void shutdown(ShutdownRequestType type) throws Exception {
 		// The type is ignored for local instances of Hawk: they
 		// must always be safely shut down, to preserve consistency.
+		createMessage("Hawk shutting down...", false);
 		preShutdown();
 
 		if (graph != null) {
@@ -399,6 +400,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 			credStore.shutdown();
 		}
 		graph = null;
+		createMessage("Hawk shut down.", false);
 	}
 
 	@Override
@@ -458,51 +460,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	}
 
-	public void runEOL() {
-
-		try {
-			JFrame fileChoserWindow = null;
-			File query = null;
-
-			fileChoserWindow = new JFrame();
-
-			JFileChooser filechoser = new JFileChooser();
-			filechoser.setDialogTitle("Chose EOL File to run:");
-			File genericWorkspaceFile = new File("");
-			String parent = genericWorkspaceFile.getAbsolutePath().replaceAll(
-					"\\\\", "/");
-
-			// change to workspace directory or a generic one on release
-			filechoser.setCurrentDirectory(new File(new File(parent)
-					.getParentFile().getAbsolutePath().replaceAll("\\\\", "/")
-					+ "workspace/org.hawk.epsilon/src/org/hawk/epsilon/query"));
-
-			if (filechoser.showDialog(fileChoserWindow, "Select File") == JFileChooser.APPROVE_OPTION)
-				query = filechoser.getSelectedFile();
-			else {
-				System.err.println("Chosing of EOL file canceled");
-			}
-
-			fileChoserWindow.dispose();
-
-			if (query != null) {
-
-				// System.err.println(getKnownQueryLanguages().keySet());
-
-				IQueryEngine q = knownQueryLanguages
-						.get("org.hawk.epsilon.emc.EOLQueryEngine");
-				//
-				//
-				Object ret = q.contextlessQuery(graph, query);
-
-				console.println(ret.toString());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
-
 	public void logFullStore() throws Exception {
 
 		graph.logFull();
@@ -510,6 +467,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	private void registerMetamodelFiles() throws Exception {
+
+		createMessage("Registering metamodels...", false);
 
 		String s = null;
 		String ep = null;
@@ -545,6 +504,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 			t.success();
 		}
+		createMessage("Registered metamodels.", false);
 	}
 
 	// @Override
@@ -562,10 +522,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 	 * cross-file references as proxies
 	 */
 	public void removeMetamodels(String[] mm) throws Exception {
-
+		createMessage("Removing metamodels...", false);
 		for (String s : metamodelupdater.removeMetamodels(this, mm))
 			resetRepositoy(s);
-
+		createMessage("Removed metamodels.", false);
 	}
 
 	private void resetRepositoy(String s) {
@@ -587,7 +547,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	@Override
 	public void registerMetamodel(File[] f) throws Exception {
-
+		createMessage("Adding metamodel(s)...", false);
 		File[] metamodel = null;
 
 		if (f != null) {
@@ -667,7 +627,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 				}
 			}
 		}
-
+		createMessage("Added metamodel(s).", false);
 	}
 
 	@Override
@@ -767,8 +727,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	public void saveIndexer() throws Exception {
-		System.out.println("saving indexer...");
-
+		createMessage("Saving Hawk metadata...", false);
 		XStream stream = new XStream(new DomDriver());
 		stream.processAnnotations(HawkProperties.class);
 
@@ -787,6 +746,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 			b.write(out);
 			b.flush();
 		}
+		createMessage("Saved Hawk metadata.", false);
 	}
 
 	@Override
@@ -820,6 +780,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	@Override
 	public void init(int minDelay, int maxDelay) throws Exception {
+		createMessage("Initializing Hawk...", false);
 		this.maxDelay = maxDelay;
 		this.minDelay = minDelay;
 		this.currentDelay = minDelay;
@@ -842,12 +803,12 @@ public class ModelIndexerImpl implements IModelIndexer {
 		updateTimer.schedule(new RunUpdateTask(), 0);
 
 		running = true;
+		createMessage("Initialized Hawk.", false);
 	}
 
 	private void runUpdateTask() {
-
+		createMessage("Updating Hawk...", false);
 		long start = System.currentTimeMillis();
-		System.err.println("------------------ starting update task");
 
 		boolean synchronised = true;
 		console.println("updating indexer: ");
@@ -860,6 +821,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		if (!synchronised) {
 			console.println("SYNCHRONISATION ERROR");
+			createMessage("Update FAILED!", true);
 		}
 
 		// Timer only enabled if the delay is non-zero
@@ -885,8 +847,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 		}
 
 		final long time = (System.currentTimeMillis() - start);
-		System.err.println("------------------ update task took: " + time
-				/ 1000 + "s" + time % 1000 + "ms");
+		createMessage("Updated Hawk "
+				+ (synchronised ? "(success)." : "(failure).") + " " + time
+				/ 1000 + "s" + time % 1000 + "ms", false);
 	}
 
 	@Override
@@ -1089,6 +1052,25 @@ public class ModelIndexerImpl implements IModelIndexer {
 	@Override
 	public ICredentialsStore getCredentialsStore() {
 		return credStore;
+	}
+
+	@Override
+	public void createMessage(String s, boolean isErrorMessage) {
+
+		if (isErrorMessage)
+			System.err.println(s);
+		else
+			System.out.println(s);
+
+	}
+
+	@Override
+	public String getDerivedAttributeExecutionEngine() {
+		if (getKnownQueryLanguages().keySet().contains(
+				"org.hawk.epsilon.emc.EOLQueryEngine"))
+			return "org.hawk.epsilon.emc.EOLQueryEngine";
+		else
+			return "error: default derived attribute engine (EOLQueryEngine) not added to Hawk. Derived attributes cannot be calculated!";
 	}
 
 }

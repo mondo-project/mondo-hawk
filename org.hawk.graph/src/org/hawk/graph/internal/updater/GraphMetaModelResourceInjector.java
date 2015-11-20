@@ -263,7 +263,8 @@ public class GraphMetaModelResourceInjector {
 						.println("attempting to update any relevant derived attributes...");
 				try {
 					new GraphModelInserter(hawk).updateDerivedAttributes(
-							"org.hawk.epsilon.emc.EOLQueryEngine", toBeUpdated);
+							hawk.getDerivedAttributeExecutionEngine(),
+							toBeUpdated);
 					toBeUpdated = new HashSet<>();
 				} catch (Exception e) {
 					toBeUpdated = new HashSet<>();

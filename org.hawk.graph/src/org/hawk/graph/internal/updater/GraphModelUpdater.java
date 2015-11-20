@@ -114,7 +114,7 @@ public class GraphModelUpdater implements IModelUpdater {
 		try {
 			new GraphModelInserter(indexer).resolveDerivedAttributeProxies(
 					indexer.getGraph(), indexer,
-					"org.hawk.epsilon.emc.EOLQueryEngine");
+					indexer.getDerivedAttributeExecutionEngine());
 		} catch (Exception e) {
 			console.printerrln("Exception in updateStore - resolving DERIVED proxies, returning 0:");
 			console.printerrln(e);
@@ -123,7 +123,7 @@ public class GraphModelUpdater implements IModelUpdater {
 		console.println("attempting to update any relevant derived attributes...");
 		try {
 			new GraphModelInserter(indexer).updateDerivedAttributes(
-					"org.hawk.epsilon.emc.EOLQueryEngine", toBeUpdated);
+					indexer.getDerivedAttributeExecutionEngine(), toBeUpdated);
 			toBeUpdated = new HashSet<>();
 		} catch (Exception e) {
 			toBeUpdated = new HashSet<>();

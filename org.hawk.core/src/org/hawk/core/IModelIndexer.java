@@ -223,4 +223,8 @@ public interface IModelIndexer {
 
 	ICredentialsStore getCredentialsStore();
 
+	void createMessage(String s, boolean isErrorMessage);
+
+	String getDerivedAttributeExecutionEngine();
+
 }

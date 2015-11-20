@@ -122,7 +122,7 @@ public class HWizard extends Wizard implements INewWizard {
 		monitor.beginTask("Creating ", 2);
 		monitor.worked(1);
 		monitor.setTaskName("Opening Hawk interface...");
-		HView.updateAsync(getShell());
+		HView.updateAsync(getShell().getDisplay());
 		HUIManager.getInstance().saveHawkToMetadata(hm);
 		monitor.worked(1);
 	}

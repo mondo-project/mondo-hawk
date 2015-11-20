@@ -52,6 +52,10 @@ public class HModel {
 
 	private HModelState status = HModelState.UNKNOWN;
 
+	public static String DEFAULT_INFO = "Sleeping...";
+
+	private String info = DEFAULT_INFO;
+
 	protected void setStatus(HModelState status) {
 		if (this.status != status) {
 			this.status = status;
@@ -61,6 +65,17 @@ public class HModel {
 
 	public HModelState getStatus() {
 		return status;
+	}
+
+	public void setInfo(String info) {
+		if (!this.info.equals(info)) {
+			this.info = info;
+			manager.infoChanged(this);
+		}
+	}
+
+	public String getInfo() {
+		return info;
 	}
 
 	private static IConsole CONSOLE = new SLF4JConsole();
@@ -611,11 +626,6 @@ public class HModel {
 			System.err.println("error in removemetamodel:");
 			e.printStackTrace();
 		}
-	}
-
-	public String getInfo() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

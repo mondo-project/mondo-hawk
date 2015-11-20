@@ -18,12 +18,14 @@ import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.PlatformUI;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.osgiserver.HManager;
+import org.hawk.osgiserver.HModel;
+import org.hawk.ui2.view.HView;
 
 public class HUIManager extends HManager implements IStructuredContentProvider,
 		IWorkbenchListener {
 
 	private static HUIManager inst;
-	
+
 	public static HUIManager getInstance() {
 		if (inst == null) {
 			inst = new HUIManager();
@@ -47,13 +49,24 @@ public class HUIManager extends HManager implements IStructuredContentProvider,
 	@Override
 	public boolean preShutdown(IWorkbench workbench, boolean forced) {
 		System.out.println("(PRE SHUTDOWN) Shutting down Hawk");
-		HUIManager.getInstance().stopAllRunningInstances(ShutdownRequestType.ONLY_LOCAL);
+		HUIManager.getInstance().stopAllRunningInstances(
+				ShutdownRequestType.ONLY_LOCAL);
 		return true;
 	}
 
 	@Override
 	public void postShutdown(IWorkbench workbench) {
 		System.out.println("(POST SHUTDOWN) Hawk shut down");
+	}
+
+	@Override
+	protected void stateChanged(HModel m) {
+		HView.updateAsync(PlatformUI.getWorkbench().getDisplay());
+	}
+
+	@Override
+	protected void infoChanged(HModel m) {
+		HView.updateAsync(PlatformUI.getWorkbench().getDisplay());
 	}
 
 }

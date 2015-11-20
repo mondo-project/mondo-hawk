@@ -267,7 +267,7 @@ public class HImportDialog extends Dialog {
 				manager.addHawk(hm);
 				manager.saveHawkToMetadata(hm);
 
-				HView.updateAsync(getShell());
+				HView.updateAsync(getShell().getDisplay());
 			} catch (Exception e) {
 				Activator.logError(e.getMessage(), e);
 			}
