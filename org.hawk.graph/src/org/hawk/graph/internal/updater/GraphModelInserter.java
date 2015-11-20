@@ -78,6 +78,9 @@ public class GraphModelInserter {
 
 	public boolean run(IHawkModelResource res, VcsCommitItem s)
 			throws Exception {
+
+		indexer.getCompositeStateListener().info(
+				"Calculating model delta for file: " + s.getPath() + "...");
 		resource = res;
 		this.s = s;
 
@@ -110,7 +113,7 @@ public class GraphModelInserter {
 				} else {
 					System.err.print("[" + delta + "<"
 							+ maxTransactionalAcceptableLoad + "] ");
-					success = transactionalUpdate();
+					success = transactionalUpdate(delta);
 				}
 
 				//
@@ -137,8 +140,11 @@ public class GraphModelInserter {
 	}
 
 	@SuppressWarnings("unchecked")
-	private boolean transactionalUpdate() throws Exception {
+	private boolean transactionalUpdate(int delta) throws Exception {
 		graph.exitBatchMode();
+		indexer.getCompositeStateListener().info(
+				"Performing transactional update (delta:" + delta
+						+ ") on file: " + s.getPath() + "...");
 		System.err.println("transactional update called");
 
 		final IGraphChangeListener listener = indexer
@@ -345,6 +351,10 @@ public class GraphModelInserter {
 			e.printStackTrace();
 			listener.changeFailure();
 			return false;
+		} finally {
+			indexer.getCompositeStateListener().info(
+					"Performed transactional update on file: " + s.getPath()
+							+ ".");
 		}
 
 	}
@@ -638,7 +648,8 @@ public class GraphModelInserter {
 
 	private boolean batchUpdate() throws Exception {
 		System.err.println("batch update called");
-
+		indexer.getCompositeStateListener().info(
+				"Performing batch update of file: " + s.getPath() + "...");
 		final IGraphChangeListener listener = indexer
 				.getCompositeGraphChangeListener();
 		listener.changeStart();
@@ -652,12 +663,15 @@ public class GraphModelInserter {
 				}
 			}
 			graph.enterBatchMode();
-			new GraphModelBatchInjector(graph, s, resource, listener);
+			new GraphModelBatchInjector(indexer, s, resource, listener);
 			listener.changeSuccess();
 			return true;
 		} catch (Exception ex) {
 			listener.changeFailure();
 			return false;
+		} finally {
+			indexer.getCompositeStateListener().info(
+					"Performed batch update of file: " + s.getPath() + ".");
 		}
 	}
 
@@ -756,9 +770,11 @@ public class GraphModelInserter {
 	 * @throws Exception
 	 */
 	private boolean addNodes() throws Exception {
+		indexer.getCompositeStateListener().info(
+				"Performing batch insert on file: " + s.getPath() + "...");
 		boolean success = true;
 		if (resource != null) {
-			GraphModelBatchInjector batch = new GraphModelBatchInjector(graph,
+			GraphModelBatchInjector batch = new GraphModelBatchInjector(indexer,
 					s, resource, indexer.getCompositeGraphChangeListener());
 			unset = batch.getUnset();
 			success = batch.getSuccess();
@@ -778,6 +794,8 @@ public class GraphModelInserter {
 					.println("model insertion aborted, see above error (maybe you need to register the metamodel?)");
 			success = false;
 		}
+		indexer.getCompositeStateListener().info(
+				"Performed batch insert on file: " + s.getPath() + ".");
 		return success;
 	}
 

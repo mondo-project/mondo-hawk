@@ -90,10 +90,15 @@ public class GraphModelUpdater implements IModelUpdater {
 		} finally {
 			final long s = System.currentTimeMillis();
 			console.print("marking any relevant derived attributes for update...");
+			indexer.getCompositeStateListener().info(
+					"Marking relevant derived attributes for update...");
 			toBeUpdated.addAll(l.getNodesToBeUpdated());
 			indexer.removeGraphChangeListener(l);
 			final long end = System.currentTimeMillis();
 			console.println((end - s) / 1000 + "s" + (end - s) % 1000 + "ms");
+			indexer.getCompositeStateListener().info(
+					"Marked relevant derived attributes for update. "
+							+ (end - s) / 1000 + "s" + (end - s) % 1000 + "ms");
 		}
 		return success;
 	}
@@ -104,14 +109,18 @@ public class GraphModelUpdater implements IModelUpdater {
 
 		console.println("attempting to resolve any leftover cross-file references...");
 		try {
+			indexer.getCompositeStateListener().info(
+					"Resolving any leftover cross-file references...");
 			new GraphModelInserter(indexer).resolveProxies(indexer.getGraph());
 		} catch (Exception e) {
 			console.printerrln("Exception in updateStore - resolving proxies, returning 0:");
 			console.printerrln(e);
 		}
 
-		console.println("attempting to resolve any derived proxies...");
+		console.println("attempting to resolve any uninitialized derived attributes...");
 		try {
+			indexer.getCompositeStateListener().info(
+					"Resolving any uninitialized derived attributes...");
 			new GraphModelInserter(indexer).resolveDerivedAttributeProxies(
 					indexer.getGraph(), indexer,
 					indexer.getDerivedAttributeExecutionEngine());
@@ -122,6 +131,8 @@ public class GraphModelUpdater implements IModelUpdater {
 
 		console.println("attempting to update any relevant derived attributes...");
 		try {
+			indexer.getCompositeStateListener().info(
+					"Updating any affected derived attributes...");
 			new GraphModelInserter(indexer).updateDerivedAttributes(
 					indexer.getDerivedAttributeExecutionEngine(), toBeUpdated);
 			toBeUpdated = new HashSet<>();
@@ -151,6 +162,8 @@ public class GraphModelUpdater implements IModelUpdater {
 
 	@Override
 	public boolean deleteAll(VcsCommitItem c) throws Exception {
+		indexer.getCompositeStateListener().info(
+				"Deleting all contents of file: " + c.getPath() + "...");
 		boolean ret = false;
 
 		IGraphNode n = new Utils().getFileNodeFromVCSCommitItem(
@@ -169,6 +182,8 @@ public class GraphModelUpdater implements IModelUpdater {
 		} else
 			return true;
 
+		indexer.getCompositeStateListener().info(
+				"Deleted all contents of file: " + c.getPath() + ".");
 		return ret;
 	}
 

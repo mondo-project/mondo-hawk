@@ -193,6 +193,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 							HashSet<VcsCommitItem> interestingfiles = new HashSet<VcsCommitItem>();
 
+							stateListener.info("Calculating relevant changed model files...");
+							
 							for (VcsCommitItem r : files) {
 								for (String p : getKnownModelParserTypes()) {
 									IModelResourceFactory parser = getModelParser(p);
@@ -241,7 +243,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 								// metadata about synchronise
 								currchangeditems = currchangeditems
 										+ currreposchangeditems.size();
-
+							
 								// create temp files with changed repos files
 								for (VcsCommitItem s : currreposchangeditems) {
 
@@ -282,6 +284,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 								// delete all removed files
 
+								stateListener.info("Deleting models removed from repository...");
+								
 								try {
 									listener.changeStart();
 									for (VcsCommitItem c : deleteditems) {
@@ -297,6 +301,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 									listener.changeSuccess();
 								}
 
+								stateListener.info("Updating models with a new version available...");
+								
 								// prepare for mass inserts if needed
 								graph.enterBatchMode();
 
@@ -352,9 +358,13 @@ public class ModelIndexerImpl implements IModelIndexer {
 								}
 								// }
 
+								stateListener.info("Updating proxies...");
+								
 								// update proxies
 								u.updateProxies();
 
+								stateListener.info("Updated proxies.");
+								
 							}
 
 							// delete temporary files
@@ -384,6 +394,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 			return allSync;
 		} finally {
+			stateListener.info("Performing optional post-sync operations.");
 			listener.synchroniseEnd();
 			stateListener.state(HawkState.RUNNING);
 		}

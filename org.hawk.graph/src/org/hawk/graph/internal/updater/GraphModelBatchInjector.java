@@ -86,9 +86,10 @@ public class GraphModelBatchInjector {
 		prefixesToStrip.add(new File(g.getTempDir()).toURI().toString());
 	}
 
-	public GraphModelBatchInjector(IGraphDatabase g, VcsCommitItem s,
+	public GraphModelBatchInjector(IModelIndexer hawk, VcsCommitItem s,
 			IHawkModelResource r, IGraphChangeListener listener)
 			throws Exception {
+		IGraphDatabase g = hawk.getGraph();
 		this.graph = g;
 		this.commitItem = s;
 		this.listener = listener;
@@ -141,7 +142,7 @@ public class GraphModelBatchInjector {
 					System.out.println("File: " + s.getPath());
 					System.out.print("ADDING: ");
 					int[] addedElements = parseResource(fileNode,
-							ParseOptions.MODELELEMENTS, children);
+							ParseOptions.MODELELEMENTS, children, hawk);
 					System.out.println(addedElements[0] + "\nNODES AND "
 							+ addedElements[1] + " + " + addedElements[2]
 							+ " M->MM REFERENCES! (took ~"
@@ -154,7 +155,7 @@ public class GraphModelBatchInjector {
 					System.out.println("File: " + s.getPath());
 					System.out.print("ADDING: ");
 					addedElements = parseResource(fileNode,
-							ParseOptions.MODELREFERENCES, children);
+							ParseOptions.MODELREFERENCES, children, hawk);
 					setUnset(getUnset() + addedElements[3]);
 					System.out.println(addedElements[0]
 							+ "\nREFERENCES! (took ~"
@@ -243,8 +244,8 @@ public class GraphModelBatchInjector {
 	 * @return
 	 */
 	private int[] parseResource(IGraphNode originatingFile,
-			ParseOptions parseOption, Set<IHawkObject> children)
-			throws Exception {
+			ParseOptions parseOption, Set<IHawkObject> children,
+			IModelIndexer hawk) throws Exception {
 
 		graph.enterBatchMode();
 		epackageDictionary = graph.getMetamodelIndex();
@@ -285,9 +286,14 @@ public class GraphModelBatchInjector {
 				}
 				inthisline++;
 				lastprint = objectCount[0];
-				System.out.print(objectCount[0] + " "
+				String out = "Adding "
+						+ (parseOption == ParseOptions.MODELELEMENTS ? "nodes" : "references")
+						+ ": " + objectCount[0] + " "
 						+ (System.nanoTime() - init) / 1000000000 + "sec ("
-						+ (System.nanoTime() - startTime) / 1000000000 + ")\t");
+						+ (System.nanoTime() - startTime) / 1000000000
+						+ "sec total)";
+				// System.out.print(out + "\t");
+				hawk.getCompositeStateListener().info(out);
 				init = System.nanoTime();
 			}
 		}
@@ -671,10 +677,13 @@ public class GraphModelBatchInjector {
 			final String packageNSURI = eClass.getPackageNSURI();
 			IGraphNode epackagenode = null;
 			try {
-				epackagenode = epackageDictionary.get("id", packageNSURI).getSingle();
+				epackagenode = epackageDictionary.get("id", packageNSURI)
+						.getSingle();
 			} catch (NoSuchElementException ex) {
 				throw new Exception(
-						"Metamodel " + packageNSURI + " does not have a Node associated with it in the store, please make sure it has been inserted");
+						"Metamodel "
+								+ packageNSURI
+								+ " does not have a Node associated with it in the store, please make sure it has been inserted");
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}

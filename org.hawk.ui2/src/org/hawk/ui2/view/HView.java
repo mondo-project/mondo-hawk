@@ -50,6 +50,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.wizards.IWizardDescriptor;
@@ -198,7 +199,7 @@ public class HView extends ViewPart {
 		c = new TableColumn(viewer.getTable(), SWT.FULL_SELECTION);
 		c.setText("Info");
 		c.setWidth(450);
-		
+
 		viewer.getTable().setHeaderVisible(true);
 		viewer.getTable().setLinesVisible(true);
 
@@ -237,7 +238,7 @@ public class HView extends ViewPart {
 						query.setEnabled(running);
 						config.setEnabled(running);
 					}
-					
+
 				}
 
 			}
@@ -543,12 +544,16 @@ public class HView extends ViewPart {
 		display.asyncExec(new Runnable() {
 			public void run() {
 				try {
-					HView view = (HView) PlatformUI.getWorkbench()
-							.getActiveWorkbenchWindow().getActivePage()
-							.findView(HView.ID);
-					view.update();
-				} catch (Exception e) {
-					Activator.logError(e.getMessage(), e);
+					IWorkbenchPage page = PlatformUI.getWorkbench()
+							.getActiveWorkbenchWindow().getActivePage();
+					try {
+						HView view = (HView) page.findView(HView.ID);
+						view.update();
+					} catch (Exception e) {
+						Activator.logError(e.getMessage(), e);
+					}
+				} catch (Throwable t) {
+					// suppress
 				}
 			}
 		});
