@@ -93,7 +93,7 @@ public class HawkModelConfigurationDialog extends
 		t1.setLayoutData(gd);
 
 		uriTextLabel = new Label(groupContent, SWT.NONE);
-		
+
 		uriTextLabel = new Label(groupContent, SWT.NONE);
 		uriTextLabel
 				.setText("File inclusion pattern (leave blank to include all files): ");
@@ -120,7 +120,9 @@ public class HawkModelConfigurationDialog extends
 
 	private void populate() {
 
-		for (String i : HUIManager.getInstance().getIndexerNames())
+		// NB only local hawks can be used in this case, for remote ones we need
+		// to use the custom hawk option in the hawk UI query dialog
+		for (String i : HUIManager.getInstance().getLocalIndexerNames())
 			selectIndexer.add(i);
 
 	}

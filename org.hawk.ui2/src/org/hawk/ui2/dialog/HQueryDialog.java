@@ -39,13 +39,17 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.Activator;
 import org.osgi.framework.FrameworkUtil;
 
 public class HQueryDialog extends Dialog {
 
-	private static final String QUERY_IS_FILE = "FILE QUERY: ";
+	private static final String QUERY_IS_FILE = "FILE QUERY:\n";
+	private static final String QUERY_IS_EDITOR = "EDITOR QUERY:\n";
 	private static final String QUERY_EDITED = "[query has been edited since last results]";
 
 	private StyledText queryField;
@@ -90,7 +94,42 @@ public class HQueryDialog extends Dialog {
 		final Label qLabel = new Label(container, SWT.NONE);
 		qLabel.setText("Query:");
 
-		final Button file = new Button(container, SWT.PUSH);
+		Composite buttons = new Composite(container, SWT.NONE);
+		buttons.setLayout(gridLayout);
+
+		buttons.setLayoutData(new GridData(GridData.END, GridData.END, true,
+				true, 1, 1));
+
+		final Button editor = new Button(buttons, SWT.PUSH);
+		editor.setLayoutData(new GridData(GridData.END, GridData.END, true,
+				true, 1, 1));
+		editor.setText("Query Current Editor");
+
+		editor.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				String s = "<ERROR: retrieving query from editor>";
+				queryField.setEditable(false);
+				IEditorPart part;
+				part = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+						.getActivePage().getActiveEditor();
+
+				if (part instanceof ITextEditor) {
+					ITextEditor editor = (ITextEditor) part;
+					s = (QUERY_IS_EDITOR + editor.getDocumentProvider()
+							.getDocument(editor.getEditorInput()).get());
+				} else {
+					s = ("<ERROR: selected editor is not a Text editor>");
+				}
+				queryField.setText(s);
+				if (s.startsWith(QUERY_IS_EDITOR))
+					queryField.setStyleRange(createBoldRange(QUERY_IS_EDITOR
+							.length()));
+				else
+					queryField.setStyleRange(createBoldRange(s.length()));
+			}
+		});
+
+		final Button file = new Button(buttons, SWT.PUSH);
 		file.setLayoutData(new GridData(GridData.END, GridData.END, true, true,
 				1, 1));
 		file.setText("Query File");
@@ -112,8 +151,11 @@ public class HQueryDialog extends Dialog {
 				if (s != null) {
 					queryField.setEditable(false);
 					queryField.setText(QUERY_IS_FILE + s);
+					queryField.setStyleRange(createBoldRange(QUERY_IS_FILE
+							.length()));
 				}
 			}
+
 		});
 
 		final Label rLabel = new Label(container, SWT.NONE);
@@ -197,11 +239,12 @@ public class HQueryDialog extends Dialog {
 						final String sRepo = contextRepo.getText();
 						final String sFiles = contextFiles.getText();
 
-						if (queryField.getText().startsWith(QUERY_IS_FILE)) {
+						if (queryField.getText().startsWith(QUERY_IS_EDITOR)) {
 							if (sRepo.trim().equals("")
 									&& sFiles.trim().equals("")) {
-								Object r = index.query(new File(queryField
-										.getText().substring(12)), ql);
+								Object r = index.query(queryField.getText()
+										.substring(QUERY_IS_EDITOR.length()),
+										ql);
 								String ret = "<null>";
 								if (r != null)
 									ret = r.toString();
@@ -213,8 +256,39 @@ public class HQueryDialog extends Dialog {
 										sFiles);
 								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_REPOSITORYCONTEXT,
 										sRepo);
-								Object r = index.contextFullQuery(new File(
-										queryField.getText().substring(12)),
+								Object r = index.contextFullQuery(
+										queryField.getText().substring(
+												QUERY_IS_EDITOR.length()), ql,
+										map);
+								String ret = "<null>";
+								if (r != null)
+									ret = r.toString();
+								resultField.setText(ret);
+							}
+						} else if (queryField.getText().startsWith(
+								QUERY_IS_FILE)) {
+							if (sRepo.trim().equals("")
+									&& sFiles.trim().equals("")) {
+								Object r = index.query(
+										new File(queryField.getText()
+												.substring(
+														QUERY_IS_FILE.length())),
+										ql);
+								String ret = "<null>";
+								if (r != null)
+									ret = r.toString();
+								resultField.setText(ret);
+							} else {
+								Map<String, String> map = new HashMap<>();
+
+								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_FILECONTEXT,
+										sFiles);
+								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_REPOSITORYCONTEXT,
+										sRepo);
+								Object r = index.contextFullQuery(
+										new File(queryField.getText()
+												.substring(
+														QUERY_IS_FILE.length())),
 										ql, map);
 								String ret = "<null>";
 								if (r != null)
@@ -328,6 +402,16 @@ public class HQueryDialog extends Dialog {
 		styleRange.length = length;
 		styleRange.fontStyle = SWT.BOLD;
 		styleRange.foreground = new Color(display, 255, 0, 0);
+		return styleRange;
+	}
+
+	private StyleRange createBoldRange(int length) {
+		Display display = getShell().getDisplay();
+		StyleRange styleRange = new StyleRange();
+		styleRange.start = 0;
+		styleRange.length = length;
+		styleRange.fontStyle = SWT.BOLD;
+		styleRange.foreground = new Color(display, 0, 0, 0);
 		return styleRange;
 	}
 }

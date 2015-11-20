@@ -10,7 +10,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide,
  org.hawk.core,
  org.hawk.core.dependencies;bundle-version="1.0.0",
- org.hawk.osgiserver;bundle-version="1.0.0"
+ org.hawk.osgiserver;bundle-version="1.0.0",
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.text
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.ui.console

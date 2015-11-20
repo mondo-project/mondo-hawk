@@ -104,7 +104,7 @@ public class HawkModelConfigurationDialog extends
 
 	private void populate() {
 
-		for (String i : HUIManager.getInstance().getIndexerNames())
+		for (String i : HUIManager.getInstance().getLocalIndexerNames())
 			selectIndexer.add(i);
 
 	}

@@ -104,7 +104,8 @@ public class HManager {
 			createExecutableExtensions(MMPARSER_CLASS_ATTRIBUTE, getMmps());
 			createExecutableExtensions(MPARSER_CLASS_ATTRIBUTE, getMps());
 			createExecutableExtensions(MUPDATER_CLASS_ATTRIBUTE, getUps());
-			createExecutableExtensions(HAWKFACTORY_CLASS_ATTRIBUTE, getHawkFactories());
+			createExecutableExtensions(HAWKFACTORY_CLASS_ATTRIBUTE,
+					getHawkFactories());
 			getLanguages();
 
 			/*
@@ -147,7 +148,8 @@ public class HManager {
 	public IVcsManager createVCSManager(String s) throws CoreException {
 		for (IConfigurationElement i : getVCS()) {
 			if (i.getAttribute(VCSMANAGER_CLASS_ATTRIBUTE).equals(s)) {
-				return (IVcsManager) i.createExecutableExtension(VCSMANAGER_CLASS_ATTRIBUTE);
+				return (IVcsManager) i
+						.createExecutableExtension(VCSMANAGER_CLASS_ATTRIBUTE);
 			}
 		}
 		throw new NoSuchElementException(
@@ -207,6 +209,14 @@ public class HManager {
 		ArrayList<String> name = new ArrayList<String>();
 		for (HModel hm : all)
 			if (hm.isRunning())
+				name.add(hm.getName());
+		return name;
+	}
+
+	public Collection<String> getLocalIndexerNames() {
+		ArrayList<String> name = new ArrayList<String>();
+		for (HModel hm : all)
+			if (hm.isLocal() && hm.isRunning())
 				name.add(hm.getName());
 		return name;
 	}
@@ -279,7 +289,8 @@ public class HManager {
 		final List<IVcsManager> instances = new ArrayList<>();
 		for (IConfigurationElement elem : getVCS()) {
 			try {
-				instances.add((IVcsManager) elem.createExecutableExtension(VCSMANAGER_CLASS_ATTRIBUTE));
+				instances.add((IVcsManager) elem
+						.createExecutableExtension(VCSMANAGER_CLASS_ATTRIBUTE));
 			} catch (CoreException e) {
 				// log exception and skip this element
 				e.printStackTrace();
@@ -301,7 +312,8 @@ public class HManager {
 		for (IConfigurationElement elem : getHawkFactories()) {
 			try {
 				ids.put(elem.getAttribute(HAWKFACTORY_CLASS_ATTRIBUTE),
-						(IHawkFactory) elem.createExecutableExtension(HAWKFACTORY_CLASS_ATTRIBUTE));
+						(IHawkFactory) elem
+								.createExecutableExtension(HAWKFACTORY_CLASS_ATTRIBUTE));
 			} catch (InvalidRegistryObjectException | CoreException e) {
 				// print error and skip this element
 				e.printStackTrace();
@@ -313,8 +325,10 @@ public class HManager {
 	public IHawkFactory createHawkFactory(String factoryClass)
 			throws CoreException {
 		for (IConfigurationElement elem : getHawkFactories()) {
-			if (factoryClass.equals(elem.getAttribute(HAWKFACTORY_CLASS_ATTRIBUTE))) {
-				return (IHawkFactory) elem.createExecutableExtension(HAWKFACTORY_CLASS_ATTRIBUTE);
+			if (factoryClass.equals(elem
+					.getAttribute(HAWKFACTORY_CLASS_ATTRIBUTE))) {
+				return (IHawkFactory) elem
+						.createExecutableExtension(HAWKFACTORY_CLASS_ATTRIBUTE);
 			}
 		}
 		return null;
@@ -347,7 +361,8 @@ public class HManager {
 				stream.setClassLoader(HawksConfig.class.getClassLoader());
 				HawksConfig hc = (HawksConfig) stream.fromXML(xml);
 				for (HawkConfig s : hc.getConfigs()) {
-					// The storage folder may have been deleted since then: check
+					// The storage folder may have been deleted since then:
+					// check
 					// if it still exists.
 					if (new File(s.getStorageFolder()).exists()) {
 						hawks.add(s);
@@ -374,7 +389,7 @@ public class HManager {
 				e1.printStackTrace();
 			}
 		}
-		
+
 		firstRun = false;
 
 	}
