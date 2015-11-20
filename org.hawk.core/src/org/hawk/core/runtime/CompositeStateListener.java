@@ -30,6 +30,7 @@ public class CompositeStateListener extends LinkedHashSet<IStateListener> implem
 		for (IStateListener l : this) {
 			l.info(s);
 		}
+		System.out.println(s);
 	}
 
 	@Override
@@ -37,6 +38,7 @@ public class CompositeStateListener extends LinkedHashSet<IStateListener> implem
 		for (IStateListener l : this) {
 			l.error(s);
 		}
+		System.err.println(s);
 	}
 
 	@Override
