@@ -20,6 +20,7 @@ import org.eclipse.epsilon.eol.models.Model;
 import org.eclipse.epsilon.eol.models.ModelReference;
 import org.eclipse.epsilon.eol.models.java.JavaModel;
 import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.epsilon.emc.CEOLQueryEngine;
 import org.hawk.epsilon.emc.EOLQueryEngine;
@@ -29,6 +30,7 @@ public class HawkModel extends ModelReference {
 
 	public static String PROPERTY_INDEXER_NAME = "databaseName";
 	protected IGraphDatabase database = null;
+	IGraphTransaction t;
 
 	public HawkModel() {
 		super(new JavaModel(Collections.emptyList(), new ArrayList<Class<?>>()));
@@ -42,7 +44,8 @@ public class HawkModel extends ModelReference {
 
 		EOLQueryEngine eolQueryEngine;
 
-		String rip = properties.getProperty(IQueryEngine.PROPERTY_REPOSITORYCONTEXT);
+		String rip = properties
+				.getProperty(IQueryEngine.PROPERTY_REPOSITORYCONTEXT);
 
 		String fip = properties.getProperty(IQueryEngine.PROPERTY_FILECONTEXT);
 
@@ -77,13 +80,30 @@ public class HawkModel extends ModelReference {
 		// System.out.println(loc);
 		//
 		// database.run(name, new File(loc), new DefaultConsole());
-		if (database != null)
+		if (database != null) {
+			try {
+				t = database.beginTransaction();
+			} catch (Exception e) {
+				throw new EolModelLoadingException(
+						new Exception(
+								"The selected Hawk cannot connect to its back-end (transaction error)"),
+						this);
+			}
 			eolQueryEngine.load(database);
-		else
+		} else
 			throw new EolModelLoadingException(
 					new Exception(
 							"The selected Hawk cannot connect to its back-end, are you sure it is not stopped?"),
 					this);
+	}
+
+	@Override
+	public void dispose() {
+		if (t != null) {
+			t.success();
+			t.close();
+		}
+		super.dispose();
 	}
 
 	// @Override

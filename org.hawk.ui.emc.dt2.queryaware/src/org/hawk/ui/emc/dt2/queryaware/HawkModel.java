@@ -20,6 +20,7 @@ import org.eclipse.epsilon.eol.models.Model;
 import org.eclipse.epsilon.eol.models.ModelReference;
 import org.eclipse.epsilon.eol.models.java.JavaModel;
 import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.epsilon.queryaware.CQueryAwareEOLQueryEngine;
 import org.hawk.epsilon.queryaware.QueryAwareEOLQueryEngine;
 import org.hawk.ui2.util.HUIManager;
@@ -29,13 +30,15 @@ public class HawkModel extends ModelReference {
 	public static String PROPERTY_INDEXER_NAME = "databaseName";
 	public static String PROPERTY_FILE_INCLUSION_PATTERN = "FILE";
 	protected IGraphDatabase database = null;
+	IGraphTransaction t;
 
 	public HawkModel() {
 		super(new JavaModel(Collections.emptyList(), new ArrayList<Class<?>>()));
 	}
 
 	@Override
-	public void load(StringProperties properties, IRelativePathResolver resolver) throws EolModelLoadingException {
+	public void load(StringProperties properties, IRelativePathResolver resolver)
+			throws EolModelLoadingException {
 
 		this.name = properties.getProperty(Model.PROPERTY_NAME);
 
@@ -54,7 +57,8 @@ public class HawkModel extends ModelReference {
 		eolQueryEngine.setDatabaseConfig(properties);
 
 		//
-		database = HUIManager.getInstance().getGraphByIndexerName(properties.getProperty(PROPERTY_INDEXER_NAME));
+		database = HUIManager.getInstance().getGraphByIndexerName(
+				properties.getProperty(PROPERTY_INDEXER_NAME));
 
 		String[] aliases = properties.getProperty("aliases").split(",");
 		for (int i = 0; i < aliases.length; i++) {
@@ -72,12 +76,30 @@ public class HawkModel extends ModelReference {
 		// System.out.println(loc);
 		//
 		// database.run(name, new File(loc), new DefaultConsole());
-		if (database != null)
+		if (database != null) {
+			try {
+				t = database.beginTransaction();
+			} catch (Exception e) {
+				throw new EolModelLoadingException(
+						new Exception(
+								"The selected Hawk cannot connect to its back-end (transaction error)"),
+						this);
+			}
 			eolQueryEngine.load(database);
-		else
+		} else
 			throw new EolModelLoadingException(
-					new Exception("The selected Hawk cannot connect to its back-end, are you sure it is not stopped?"),
+					new Exception(
+							"The selected Hawk cannot connect to its back-end, are you sure it is not stopped?"),
 					this);
+	}
+
+	@Override
+	public void dispose() {
+		if (t != null) {
+			t.success();
+			t.close();
+		}
+		super.dispose();
 	}
 
 	// @Override
