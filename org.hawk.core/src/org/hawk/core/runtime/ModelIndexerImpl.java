@@ -870,6 +870,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 			boolean isOrdered, boolean isUnique, String derivationlanguage,
 			String derivationlogic) {
 
+		stateListener.info(String.format("Adding derived attribute %s::%s::%s...",
+				metamodeluri, typename, attributename));
+
 		if (metamodelupdater.addDerivedAttribute(metamodeluri, typename,
 				attributename, attributetype, isMany, isOrdered, isUnique,
 				derivationlanguage, derivationlogic, this))
@@ -878,17 +881,24 @@ public class ModelIndexerImpl implements IModelIndexer {
 						attributetype, isMany, isOrdered, isUnique,
 						derivationlanguage, derivationlogic);
 
+		stateListener.info(String.format("Added derived attribute %s::%s::%s.",
+				metamodeluri, typename, attributename));
 	}
 
 	@Override
 	public void addIndexedAttribute(String metamodeluri, String typename,
 			String attributename) {
 
+		stateListener.info(String.format("Adding indexed attribute %s::%s::%s...",
+				metamodeluri, typename, attributename));
+
 		if (metamodelupdater.addIndexedAttribute(metamodeluri, typename,
 				attributename, this))
 			for (IModelUpdater u : getUpdaters())
 				u.updateIndexedAttribute(metamodeluri, typename, attributename);
 
+		stateListener.info(String.format("Added indexed attribute %s::%s::%s.",
+				metamodeluri, typename, attributename));
 	}
 
 	@Override
