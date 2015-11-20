@@ -47,7 +47,6 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.hawk.core.IHawkFactory;
 import org.hawk.core.runtime.ModelIndexerImpl;
-import org.hawk.osgiserver.OSGIModelIndexerImpl;
 import org.hawk.ui2.Activator;
 import org.hawk.ui2.util.HUIManager;
 
@@ -225,12 +224,12 @@ public class HWizardPage extends WizardPage {
 		cDelayRow.setLayout(cDelayRowLayout);
 
 		minDelayText = new Text(cDelayRow, SWT.BORDER | SWT.SINGLE);
-		minDelayText.setText(OSGIModelIndexerImpl.DEFAULT_MINDELAY + "");
+		minDelayText.setText(ModelIndexerImpl.DEFAULT_MINDELAY + "");
 		minDelayText.setToolTipText("Minimum delay between periodic synchronisations in milliseconds.");
 		minDelayText.addModifyListener(dialogChangeListener);
 
 		maxDelayText = new Text(cDelayRow, SWT.BORDER | SWT.SINGLE);
-		maxDelayText.setText(OSGIModelIndexerImpl.DEFAULT_MAXDELAY + "");
+		maxDelayText.setText(ModelIndexerImpl.DEFAULT_MAXDELAY + "");
 		maxDelayText.setToolTipText("Maximum delay between periodic synchronisations in milliseconds (0 disables periodic synchronisations).");
 		maxDelayText.addModifyListener(dialogChangeListener);
 
