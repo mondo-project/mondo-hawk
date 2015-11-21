@@ -26,6 +26,20 @@ public class CompositeStateListener extends LinkedHashSet<IStateListener> implem
 	}
 
 	@Override
+	public boolean remove(Object e) {
+		final boolean ret = super.remove(e);
+		if (ret) {
+			((IStateListener)e).removed();
+		}
+		return ret;
+	}
+
+	@Override
+	public void removed() {
+		// nothing to do
+	}
+
+	@Override
 	public void info(String s) {
 		for (IStateListener l : this) {
 			l.info(s);

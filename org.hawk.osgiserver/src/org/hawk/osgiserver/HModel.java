@@ -358,7 +358,7 @@ public class HModel implements IStateListener {
 		removeHawkFromMetadata(getHawkConfig());
 
 		File f = hawk.getModelIndexer().getParentFolder();
-		while (this.isRunning()) {
+		if (this.isRunning()) {
 			try {
 				hawk.getModelIndexer().shutdown(ShutdownRequestType.ONLY_LOCAL);
 			} catch (Exception e) {
@@ -615,4 +615,8 @@ public class HModel implements IStateListener {
 		setInfo(s);
 	}
 
+	@Override
+	public void removed() {
+		// nothing to do when the state listener has been removed
+	}
 }

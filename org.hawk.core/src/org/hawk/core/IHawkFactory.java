@@ -13,6 +13,8 @@ package org.hawk.core;
 import java.io.File;
 import java.util.List;
 
+import org.hawk.core.IStateListener.HawkState;
+
 
 /**
  * Interface for a factory of {@link IHawk} objects. Useful for having plugins
@@ -27,12 +29,12 @@ public interface IHawkFactory {
 	 */
 	public final static class InstanceInfo {
 		public final String name, dbType;
-		public final boolean running;
+		public final HawkState state;
 
-		public InstanceInfo(String name, String dbType, boolean running) {
+		public InstanceInfo(String name, String dbType, HawkState state) {
 			this.name = name;
 			this.dbType = dbType;
-			this.running = running;
+			this.state = state;
 		}
 	}
 

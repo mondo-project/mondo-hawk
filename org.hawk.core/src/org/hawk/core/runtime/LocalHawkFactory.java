@@ -22,6 +22,7 @@ import org.hawk.core.IConsole;
 import org.hawk.core.ICredentialsStore;
 import org.hawk.core.IHawk;
 import org.hawk.core.IHawkFactory;
+import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.util.HawkProperties;
 import org.osgi.framework.FrameworkUtil;
 
@@ -71,7 +72,7 @@ public class LocalHawkFactory implements IHawkFactory {
 						stream.setClassLoader(HawkProperties.class.getClassLoader());
 
 						HawkProperties hp = (HawkProperties) stream.fromXML(fProps);
-						entries.add(new InstanceInfo(f.getName(), hp.getDbType(), false));
+						entries.add(new InstanceInfo(f.getName(), hp.getDbType(), HawkState.STOPPED));
 					} catch (Exception ex) {
 						final String bundleName = FrameworkUtil.getBundle(LocalHawkFactory.class).getSymbolicName();
 						final Status warnStatus = new Status(IStatus.WARNING, bundleName, ex.getMessage(), ex);

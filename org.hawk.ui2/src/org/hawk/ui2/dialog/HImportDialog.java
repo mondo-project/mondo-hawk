@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.hawk.core.IHawkFactory;
+import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.util.HawkConfig;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.Activator;
@@ -178,7 +179,7 @@ public class HImportDialog extends Dialog {
 			@Override
 			public String getText(Object element) {
 				final IHawkFactory.InstanceInfo entry = (IHawkFactory.InstanceInfo)element;
-				return entry.name + (entry.running ? " (running)" : "");
+				return entry.name + (entry.state != HawkState.STOPPED ? " (running)" : "");
 			}
 		});
 		tblvInstances.setSorter(new ViewerSorter());

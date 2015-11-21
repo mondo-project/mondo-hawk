@@ -123,9 +123,9 @@ public interface IModelIndexer {
 
 	IGraphChangeListener getCompositeGraphChangeListener();
 
-	boolean addStateListener(IStateListener messageListener);
+	boolean addStateListener(IStateListener stateListener);
 
-	boolean removeStateListener(IStateListener messageListener);
+	boolean removeStateListener(IStateListener stateListener);
 
 	IStateListener getCompositeStateListener();
 
