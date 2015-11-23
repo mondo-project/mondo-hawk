@@ -72,7 +72,7 @@ public class HawkResourceExeedCustomizer implements IExeedCustomizer {
 	public void createPages(ExeedEditor editor, Composite container, AdapterFactory adapterFactory) {
 		/*
 		 * This is a slightly customized version of {@link EcoreEditor#createPages()}. The problem with
-		 * Ecore's version is that its DiagnosticDecorator implementation will scan the tree from leaves
+		 * Ecore'hawkState version is that its DiagnosticDecorator implementation will scan the tree from leaves
 		 * to roots, propagating error markers. We need to disable this behaviour to be able to provide
 		 * "lazy" loading, and we have no place to do it but right where the DiagnosticDecorator instance
 		 * is created, as the setInput(...) call will start the redecoration process.

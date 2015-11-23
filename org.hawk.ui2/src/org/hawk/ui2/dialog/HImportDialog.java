@@ -62,11 +62,11 @@ public class HImportDialog extends Dialog {
 
 			for (HModel m : manager.getHawks()) {
 				if (m.getName().equals(entry.name)) {
-					// There's already a Hawk index with that name: do not include it
+					// There'hawkState already a Hawk index with that name: do not include it
 					return false;
 				}
 				else if (new File(m.getFolder()).equals(expectedFolder)) {
-					// There's already a Hawk index in the folder we'd use for the import: do not include it
+					// There'hawkState already a Hawk index in the folder we'd use for the import: do not include it
 					return false;
 				}
 			}

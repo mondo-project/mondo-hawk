@@ -18,8 +18,8 @@ import java.util.Map;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
@@ -47,7 +47,7 @@ import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.Activator;
 import org.osgi.framework.FrameworkUtil;
 
-public class HQueryDialog extends Dialog implements IStateListener {
+public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 
 	private static final String QUERY_IS_FILE = "FILE QUERY:\n";
 	private static final String QUERY_IS_EDITOR = "EDITOR QUERY:\n";
@@ -84,16 +84,15 @@ public class HQueryDialog extends Dialog implements IStateListener {
 	}
 
 	protected Control createDialogArea(Composite parent) {
-		Composite container = (Composite) super.createDialogArea(parent);
+		super.createDialogArea(parent);
+
+		final Composite container = new Composite(parent, SWT.NONE); 
 		final GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 2;
 		container.setLayout(gridLayout);
 
-		final Label instructionsLabel = new Label(container, SWT.NONE);
-		instructionsLabel.setLayoutData(new GridData(GridData.BEGINNING,
-				GridData.CENTER, false, false, 2, 1));
-		instructionsLabel
-				.setText("Enter a query (either as text or as a file) and click [Run Query] to get a result.");
+		setTitle("Query Hawk index");
+		setMessage("Enter a query (either as text or as a file) and click [Run Query] to get a result.");
 
 		final Label qLabel = new Label(container, SWT.NONE);
 		qLabel.setText("Query:");
@@ -440,7 +439,7 @@ public class HQueryDialog extends Dialog implements IStateListener {
 		}
 	}
 
-	public void updateAsync(HawkState s) {
+	public void updateAsync(final HawkState s) {
 		Shell shell = getShell();
 		if (shell != null) {
 			Display display = shell.getDisplay();
@@ -449,17 +448,15 @@ public class HQueryDialog extends Dialog implements IStateListener {
 					public void run() {
 						try {
 							if (queryButton != null) {
-
 								boolean enable = s == HawkState.RUNNING;
-
 								queryButton.setEnabled(enable);
-								queryButton
-										.setText(enable ? "Run Query"
-												: "Run Query (DISABLED -- INDEX "
-														+ (s == HawkState.UPDATING ? "UPDATING"
-																: "STOPPED")
-														+ ")");
 
+								if (enable) {
+									setErrorMessage(null);
+								} else {
+									setErrorMessage(String.format("The index is %s - querying will be disabled",
+											s.toString().toLowerCase()));
+								}
 							}
 						} catch (Exception e) {
 							Activator.logError(e.getMessage(), e);

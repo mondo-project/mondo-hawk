@@ -203,7 +203,7 @@ public class HView extends ViewPart {
 		viewer.getTable().setHeaderVisible(true);
 		viewer.getTable().setLinesVisible(true);
 
-		// Create the help context id for the viewer's control
+		// Create the help context id for the viewer'hawkState control
 		PlatformUI.getWorkbench().getHelpSystem()
 				.setHelp(viewer.getControl(), "hawkview.viewer");
 		makeActions();
@@ -506,7 +506,7 @@ public class HView extends ViewPart {
 	// }
 
 	/**
-	 * Passing the focus request to the viewer's control.
+	 * Passing the focus request to the viewer'hawkState control.
 	 */
 	public void setFocus() {
 		viewer.getControl().setFocus();
