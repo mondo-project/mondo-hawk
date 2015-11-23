@@ -65,11 +65,6 @@ public class EMFObject implements IHawkObject {
 		try {
 			uri = EcoreUtil.getURI(eob);
 			String frag = uri.fragment();
-			if (frag == null || frag == "" || frag == "/")
-				System.err.println("fragment error on: "
-						+ EcoreUtil.getURI(eob).toString() + " fragment: '"
-						+ frag + "' on eobject: " + eob + " (isproxy:"
-						+ eob.eIsProxy() + ")");
 
 			return frag;
 		} catch (Exception e) {

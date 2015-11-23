@@ -50,10 +50,6 @@ public class IFCObject implements IHawkObject {
 	@Override
 	public String getUriFragment() {
 		String frag = EcoreUtil.getURI(eob).fragment();
-		if (frag == null || frag == "" || frag == "/")
-			System.err.println("fragment error on: "
-					+ EcoreUtil.getURI(eob).toString());
-
 		return frag;
 	}
 

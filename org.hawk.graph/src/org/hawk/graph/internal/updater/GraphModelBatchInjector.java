@@ -905,22 +905,20 @@ public class GraphModelBatchInjector {
 								createReference(edgelabel, node, dest, props,
 										false);
 							} else {
-								System.err
-										.println("adding proxy [iterable] reference ("
-												+ edgelabel
-												+ " | "
-												+ destinationHawkObject
-														.getUri()
-												+ ")... "
-												+ (addProxyRef(
-														node,
-														destinationHawkObject,
-														edgelabel,
-														eReference
-																.isContainment(),
-														eReference
-																.isContainer()) ? "done"
-														: "failed"));
+								addProxyRef(
+										node,
+										destinationHawkObject,
+										edgelabel,
+										eReference.isContainment(),
+										eReference.isContainer());
+
+//								System.err
+//										.println("adding proxy [iterable] reference ("
+//												+ edgelabel
+//												+ " | "
+//												+ destinationHawkObject.getUri()
+//												+ ")... "
+//												+ (addProxyRef ? "done" : "failed"));
 							}
 						}
 
@@ -1000,18 +998,17 @@ public class GraphModelBatchInjector {
 									eReference.isContainment(),
 									eReference.isContainer());
 						} else {
-							final boolean added = addProxyRef(source,
+							addProxyRef(source,
 									destinationHawkObject, edgelabel,
 									eReference.isContainment(),
 									eReference.isContainer());
-							System.err
-									.println("adding proxy [iterable] reference ("
-											+ edgelabel
-											+ " | "
-											+ ((IHawkObject) destinationHawkObject)
-													.getUri()
-											+ ")... "
-											+ (added ? "done" : "failed"));
+//							System.err
+//									.println("adding proxy [iterable] reference ("
+//											+ edgelabel
+//											+ " | "
+//											+ ((IHawkObject) destinationHawkObject).getUri()
+//											+ ")... "
+//											+ (added ? "done" : "failed"));
 						}
 					}
 				} else /* if destination is not iterable */{
