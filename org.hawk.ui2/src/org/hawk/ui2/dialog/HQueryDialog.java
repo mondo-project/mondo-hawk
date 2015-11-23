@@ -42,11 +42,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.hawk.core.IStateListener;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.Activator;
 import org.osgi.framework.FrameworkUtil;
 
-public class HQueryDialog extends Dialog {
+public class HQueryDialog extends Dialog implements IStateListener {
 
 	private static final String QUERY_IS_FILE = "FILE QUERY:\n";
 	private static final String QUERY_IS_EDITOR = "EDITOR QUERY:\n";
@@ -57,10 +58,13 @@ public class HQueryDialog extends Dialog {
 
 	private HModel index;
 
+	private Button queryButton;
+
 	public HQueryDialog(Shell parentShell, HModel in) {
 		super(parentShell);
 		setShellStyle(getShellStyle() & ~SWT.CLOSE);
 		index = in;
+		index.getHawk().getModelIndexer().addStateListener(this);
 	}
 
 	@Override
@@ -214,19 +218,19 @@ public class HQueryDialog extends Dialog {
 		gridData.minimumWidth = 250;
 		contextFiles.setLayoutData(gridData);
 
-		Button button = new Button(container, SWT.PUSH);
+		queryButton = new Button(container, SWT.PUSH);
 		gridData = new GridData();
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.horizontalSpan = 2;
 		gridData.minimumWidth = 555;
-		button.setLayoutData(gridData);
-		button.setText("Run Query");
+		queryButton.setLayoutData(gridData);
+		queryButton.setText("Run Query");
 
 		// return TypeDeclaration.all.size();
 
 		// l = new Label(container, SWT.READ_ONLY);
 
-		button.addSelectionListener(new SelectionAdapter() {
+		queryButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 
 				try {
@@ -413,5 +417,71 @@ public class HQueryDialog extends Dialog {
 		styleRange.fontStyle = SWT.BOLD;
 		styleRange.foreground = new Color(display, 0, 0, 0);
 		return styleRange;
+	}
+
+	@Override
+	public boolean close() {
+		index.getHawk().getModelIndexer().removeStateListener(this);
+		return super.close();
+	}
+
+	@Override
+	public void state(HawkState state) {
+		switch (state) {
+		case STOPPED:
+			updateAsync(HawkState.STOPPED);
+			break;
+		case RUNNING:
+			updateAsync(HawkState.RUNNING);
+			break;
+		case UPDATING:
+			updateAsync(HawkState.UPDATING);
+			break;
+		}
+	}
+
+	public void updateAsync(HawkState s) {
+		Shell shell = getShell();
+		if (shell != null) {
+			Display display = shell.getDisplay();
+			if (display != null) {
+				display.asyncExec(new Runnable() {
+					public void run() {
+						try {
+							if (queryButton != null) {
+
+								boolean enable = s == HawkState.RUNNING;
+
+								queryButton.setEnabled(enable);
+								queryButton
+										.setText(enable ? "Run Query"
+												: "Run Query (DISABLED -- INDEX "
+														+ (s == HawkState.UPDATING ? "UPDATING"
+																: "STOPPED")
+														+ ")");
+
+							}
+						} catch (Exception e) {
+							Activator.logError(e.getMessage(), e);
+						}
+					}
+				});
+			}
+		}
+	}
+
+	@Override
+	public void info(String s) {
+		// not used in query dialogs
+	}
+
+	@Override
+	public void error(String s) {
+		// not used in query dialogs
+	}
+
+	@Override
+	public void removed() {
+		// used for remote message cases
 	}
 }

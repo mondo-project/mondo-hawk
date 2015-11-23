@@ -46,11 +46,12 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
+import org.hawk.core.IStateListener;
 import org.hawk.core.IVcsManager;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.view.HView;
 
-public class HConfigDialog extends Dialog {
+public class HConfigDialog extends Dialog implements IStateListener {
 
 	static final class ClassNameLabelProvider extends LabelProvider {
 		@Override
@@ -67,11 +68,23 @@ public class HConfigDialog extends Dialog {
 
 	private ListViewer lstVCSLocations;
 
+	private Button indexRefreshButton;
+	private Button removeDerivedAttributeButton;
+	private Button addDerivedAttributeButton;
+	private Button removeIndexedAttributeButton;
+	private Button addIndexedAttributeButton;
+	private Button removeMetaModelsButton;
+	private Button addMetaModelsButton;
+	private Button addVCSButton;
+	private Button editVCSButton;
+	private HawkState s;
+	
 	public HConfigDialog(Shell parentShell, HModel in) {
 		super(parentShell);
 		setShellStyle(getShellStyle() & ~SWT.CLOSE);
 
 		hawkModel = in;
+		hawkModel.getHawk().getModelIndexer().addStateListener(this);
 	}
 
 	private Composite allIndexesTab(TabFolder parent) {
@@ -93,9 +106,9 @@ public class HConfigDialog extends Dialog {
 
 		updateAllIndexesList();
 
-		Button b = new Button(composite, SWT.NONE);
-		b.setText("Refresh");
-		b.addSelectionListener(new SelectionAdapter() {
+		indexRefreshButton = new Button(composite, SWT.NONE);
+		indexRefreshButton.setText("Refresh");
+		indexRefreshButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				updateAllIndexesList();
 			}
@@ -308,7 +321,7 @@ public class HConfigDialog extends Dialog {
 						uri = c.getText();
 						Button ok = getButton(IDialogConstants.OK_ID);
 						if (check())
-							ok.setEnabled(true);
+							ok.setEnabled(enableButton(ok));
 						else
 							ok.setEnabled(false);
 						t5.setText(error);
@@ -323,7 +336,7 @@ public class HConfigDialog extends Dialog {
 						type = t.getText().trim();
 						Button ok = getButton(IDialogConstants.OK_ID);
 						if (check())
-							ok.setEnabled(true);
+							ok.setEnabled(enableButton(ok));
 						else
 							ok.setEnabled(false);
 						t5.setText(error);
@@ -337,7 +350,7 @@ public class HConfigDialog extends Dialog {
 						name = t2.getText().trim();
 						Button ok = getButton(IDialogConstants.OK_ID);
 						if (check())
-							ok.setEnabled(true);
+							ok.setEnabled(enableButton(ok));
 						else
 							ok.setEnabled(false);
 						t5.setText(error);
@@ -349,7 +362,7 @@ public class HConfigDialog extends Dialog {
 						atttype = cc.getText();
 						Button ok = getButton(IDialogConstants.OK_ID);
 						if (check())
-							ok.setEnabled(true);
+							ok.setEnabled(enableButton(ok));
 						else
 							ok.setEnabled(false);
 						t5.setText(error);
@@ -361,7 +374,7 @@ public class HConfigDialog extends Dialog {
 						isMany = Boolean.parseBoolean(ccc.getText());
 						Button ok = getButton(IDialogConstants.OK_ID);
 						if (check())
-							ok.setEnabled(true);
+							ok.setEnabled(enableButton(ok));
 						else
 							ok.setEnabled(false);
 						t5.setText(error);
@@ -373,7 +386,7 @@ public class HConfigDialog extends Dialog {
 						isOrdered = Boolean.parseBoolean(cccc.getText());
 						Button ok = getButton(IDialogConstants.OK_ID);
 						if (check())
-							ok.setEnabled(true);
+							ok.setEnabled(enableButton(ok));
 						else
 							ok.setEnabled(false);
 						t5.setText(error);
@@ -385,7 +398,7 @@ public class HConfigDialog extends Dialog {
 						isUnique = Boolean.parseBoolean(ccccc.getText());
 						Button ok = getButton(IDialogConstants.OK_ID);
 						if (check())
-							ok.setEnabled(true);
+							ok.setEnabled(enableButton(ok));
 						else
 							ok.setEnabled(false);
 						t5.setText(error);
@@ -397,7 +410,7 @@ public class HConfigDialog extends Dialog {
 						derivationlanguage = cccccc.getText();
 						Button ok = getButton(IDialogConstants.OK_ID);
 						if (check())
-							ok.setEnabled(true);
+							ok.setEnabled(enableButton(ok));
 						else
 							ok.setEnabled(false);
 						t5.setText(error);
@@ -411,7 +424,7 @@ public class HConfigDialog extends Dialog {
 						derivationlogic = t4.getText().trim();
 						Button ok = getButton(IDialogConstants.OK_ID);
 						if (check())
-							ok.setEnabled(true);
+							ok.setEnabled(enableButton(ok));
 						else
 							ok.setEnabled(false);
 						t5.setText(error);
@@ -448,18 +461,19 @@ public class HConfigDialog extends Dialog {
 
 		updateDerivedAttributeList();
 
-		Button remove = new Button(composite, SWT.PUSH);
-		remove.setText("Remove");
-		remove.setEnabled(false);
-		remove.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				// remove action
-			}
-		});
+		removeDerivedAttributeButton = new Button(composite, SWT.PUSH);
+		removeDerivedAttributeButton.setText("Remove");
+		removeDerivedAttributeButton.setEnabled(false);
+		removeDerivedAttributeButton
+				.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						// remove action
+					}
+				});
 
-		Button b = new Button(composite, SWT.NONE);
-		b.setText("Add...");
-		b.addSelectionListener(new SelectionAdapter() {
+		addDerivedAttributeButton = new Button(composite, SWT.NONE);
+		addDerivedAttributeButton.setText("Add...");
+		addDerivedAttributeButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				derivedAttributeAdd();
 			}
@@ -521,7 +535,7 @@ public class HConfigDialog extends Dialog {
 						Button ok = getButton(IDialogConstants.OK_ID);
 						if (!type.equals("") && !uri.equals("")
 								&& !name.equals(""))
-							ok.setEnabled(true);
+							ok.setEnabled(enableButton(ok));
 						else
 							ok.setEnabled(false);
 					}
@@ -547,7 +561,7 @@ public class HConfigDialog extends Dialog {
 						Button ok = getButton(IDialogConstants.OK_ID);
 						if (!type.equals("") && !uri.equals("")
 								&& !name.equals(""))
-							ok.setEnabled(true);
+							ok.setEnabled(enableButton(ok));
 						else
 							ok.setEnabled(false);
 					}
@@ -572,7 +586,7 @@ public class HConfigDialog extends Dialog {
 						Button ok = getButton(IDialogConstants.OK_ID);
 						if (!type.equals("") && !uri.equals("")
 								&& !name.equals(""))
-							ok.setEnabled(true);
+							ok.setEnabled(enableButton(ok));
 						else
 							ok.setEnabled(false);
 					}
@@ -611,18 +625,19 @@ public class HConfigDialog extends Dialog {
 
 		updateIndexedAttributeList();
 
-		Button remove = new Button(composite, SWT.PUSH);
-		remove.setText("Remove");
-		remove.setEnabled(false);
-		remove.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				// remove action
-			}
-		});
+		removeIndexedAttributeButton = new Button(composite, SWT.PUSH);
+		removeIndexedAttributeButton.setText("Remove");
+		removeIndexedAttributeButton.setEnabled(false);
+		removeIndexedAttributeButton
+				.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						// remove action
+					}
+				});
 
-		Button b = new Button(composite, SWT.NONE);
-		b.setText("Add...");
-		b.addSelectionListener(new SelectionAdapter() {
+		addIndexedAttributeButton = new Button(composite, SWT.NONE);
+		addIndexedAttributeButton.setText("Add...");
+		addIndexedAttributeButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				indexedAttributeAdd();
 			}
@@ -686,10 +701,10 @@ public class HConfigDialog extends Dialog {
 
 		updateMetamodelList();
 
-		Button remove = new Button(composite, SWT.PUSH);
-		remove.setText("Remove");
-		remove.setEnabled(true);
-		remove.addSelectionListener(new SelectionAdapter() {
+		removeMetaModelsButton = new Button(composite, SWT.PUSH);
+		removeMetaModelsButton.setText(s==HawkState.RUNNING?"Remove":"Remove (DISABLED -- INDEX "+(s==HawkState.STOPPED?"STOPPED)":"UPDATING)"));
+		removeMetaModelsButton.setEnabled(s==HawkState.RUNNING);
+		removeMetaModelsButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				// remove action
 				String[] selectedMetamodel = null;
@@ -714,9 +729,9 @@ public class HConfigDialog extends Dialog {
 			}
 		});
 
-		Button browse = new Button(composite, SWT.PUSH);
-		browse.setText("Add...");
-		browse.addSelectionListener(new SelectionAdapter() {
+		addMetaModelsButton = new Button(composite, SWT.PUSH);
+		addMetaModelsButton.setText("Add...");
+		addMetaModelsButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				metamodelBrowse();
 			}
@@ -783,9 +798,9 @@ public class HConfigDialog extends Dialog {
 		lstVCSLocationsLayoutData.horizontalSpan = 3;
 		lstVCSLocations.getList().setLayoutData(lstVCSLocationsLayoutData);
 
-		final Button btnAdd = new Button(composite, SWT.NONE);
-		btnAdd.setText("Add...");
-		btnAdd.addSelectionListener(new SelectionAdapter() {
+		addVCSButton = new Button(composite, SWT.NONE);
+		addVCSButton.setText("Add...");
+		addVCSButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				new HVCSDialog(getShell(), hawkModel, null).open();
@@ -794,9 +809,9 @@ public class HConfigDialog extends Dialog {
 			}
 		});
 
-		final Button btnEdit = new Button(composite, SWT.NONE);
-		btnEdit.setText("Edit...");
-		btnEdit.addSelectionListener(new SelectionAdapter() {
+		editVCSButton = new Button(composite, SWT.NONE);
+		editVCSButton.setText("Edit...");
+		editVCSButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				new HVCSDialog(getShell(), hawkModel,
@@ -804,12 +819,17 @@ public class HConfigDialog extends Dialog {
 				lstVCSLocations.refresh();
 			}
 		});
-		btnEdit.setEnabled(false);
+		editVCSButton.setEnabled(false);
 
 		lstVCSLocations.getList().addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				btnEdit.setEnabled(getSelectedExistingVCSManager() != null);
+								
+				boolean running = s==HawkState.RUNNING;
+				editVCSButton.setText(running?"Edit...":"Edit... (DISABLED -- INDEX "+(s==HawkState.STOPPED?"STOPPED)":"UPDATING)"));
+				editVCSButton
+						.setEnabled(running && getSelectedExistingVCSManager() != null);
+				
 			}
 		});
 
@@ -842,9 +862,9 @@ public class HConfigDialog extends Dialog {
 	protected void createButtonsForButtonBar(Composite parent) {
 		super.createButtonsForButtonBar(parent);
 
-		Button cancel = getButton(IDialogConstants.OK_ID);
-		cancel.setText("Done");
-		setButtonLayoutData(cancel);
+		Button done = getButton(IDialogConstants.OK_ID);
+		done.setText("Done");
+		setButtonLayoutData(done);
 	}
 
 	protected Control createDialogArea(Composite parent) {
@@ -882,4 +902,127 @@ public class HConfigDialog extends Dialog {
 		tabFolder.pack();
 		return tabFolder;
 	}
+
+	@Override
+	public boolean close() {
+		hawkModel.getHawk().getModelIndexer().removeStateListener(this);
+		return super.close();
+	}
+
+	@Override
+	public void state(HawkState state) {
+		switch (state) {
+		case STOPPED:
+			updateAsync(HawkState.STOPPED);
+			break;
+		case RUNNING:
+			updateAsync(HawkState.RUNNING);
+			break;
+		case UPDATING:
+			updateAsync(HawkState.UPDATING);
+			break;
+		}
+	}
+
+	@Override
+	public void info(String s) {
+		// not used in config dialogs
+	}
+
+	@Override
+	public void error(String s) {
+		// not used in config dialogs
+	}
+
+	@Override
+	public void removed() {
+		// used for remote message cases
+	}
+
+	public void updateAsync(HawkState s) {
+	if(this.s!=s){
+		this.s = s;
+		Shell shell = getShell();
+		if (shell != null) {
+			Display display = shell.getDisplay();
+			if (display != null) {
+				display.asyncExec(new Runnable() {
+					public void run() {
+						try {
+							//primary display buttons
+							boolean running = s == HawkState.RUNNING;
+							boolean stopped = s == HawkState.STOPPED;
+							indexRefreshButton.setEnabled(running);
+							indexRefreshButton.setText(running?"Refresh":"Refresh (DISABLED -- INDEX "+(stopped?"STOPPED)":"UPDATING)"));
+							//removeDerivedAttributeButton.setEnabled(running);
+							removeDerivedAttributeButton.setText(running?"Remove":"Remove (DISABLED -- INDEX "+(stopped?"STOPPED)":"UPDATING)"));
+							addDerivedAttributeButton.setEnabled(running);
+							addDerivedAttributeButton.setText(running?"Add...":"Add... (DISABLED -- INDEX "+(stopped?"STOPPED)":"UPDATING)"));
+							//removeIndexedAttributeButton.setEnabled(running);
+							removeIndexedAttributeButton.setText(running?"Remove":"Remove (DISABLED -- INDEX "+(stopped?"STOPPED)":"UPDATING)"));
+							addIndexedAttributeButton.setEnabled(running);
+							addIndexedAttributeButton.setText(running?"Add...":"Add... (DISABLED -- INDEX "+(stopped?"STOPPED)":"UPDATING)"));
+							removeMetaModelsButton.setEnabled(running);
+							removeMetaModelsButton.setText(running?"Remove":"Remove (DISABLED -- INDEX "+(stopped?"STOPPED)":"UPDATING)"));
+							addMetaModelsButton.setEnabled(running);
+							addMetaModelsButton.setText(running?"Add...":"Add... (DISABLED -- INDEX "+(stopped?"STOPPED)":"UPDATING)"));
+							addVCSButton.setEnabled(running);
+							addVCSButton.setText(running?"Add...":"Add... (DISABLED -- INDEX "+(stopped?"STOPPED)":"UPDATING)"));
+							editVCSButton.setEnabled(running && getSelectedExistingVCSManager() != null);							
+							editVCSButton.setText(running?"Edit...":"Edit... (DISABLED -- INDEX "+(stopped?"STOPPED)":"UPDATING)"));
+						} catch (Exception e) {
+							// suppress
+						}
+						try{
+							//optional display buttons
+							enableButton(getButton(IDialogConstants.OK_ID));
+						}catch (Exception e) {
+							// suppress
+						}
+					}
+				});
+			}
+			
+		}
+	}
+	}
+
+	private boolean enableButton(Button ok) {
+
+		boolean initialEnableState = ok.isEnabled();
+		boolean ret = s == HawkState.RUNNING;
+		boolean stopped = s == HawkState.STOPPED;
+		
+		if(initialEnableState){
+		
+		Shell shell = getShell();
+		if (shell != null) {
+			Display display = shell.getDisplay();
+			if (display != null) {
+				display.asyncExec(new Runnable() {
+					public void run() {
+						try {
+							
+							ok.setEnabled(ret);
+							String okText = "OK";
+							String updatingText = "OK (Disabled -- INDEX UPDATING)";
+							String stoppedText = "OK (Disabled -- INDEX STOPPED)";
+							ok.setText(ret?okText:(stopped?stoppedText:updatingText));
+							
+						} catch (Exception e) {
+							// suppress
+						}
+					}
+				});
+			}
+			
+		}
+	
+		}
+		
+		return ret;
+				
+	}
+	
 }
+	

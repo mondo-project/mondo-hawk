@@ -194,6 +194,8 @@ public class HModel implements IStateListener {
 		return hawk.getModelIndexer().getGraph() != null;
 	}
 
+	public IHawk getHawk() {return hawk;}
+	
 	private List<String> allowedPlugins = new ArrayList<String>();
 	private final IHawk hawk;
 	private final IHawkFactory hawkFactory;
