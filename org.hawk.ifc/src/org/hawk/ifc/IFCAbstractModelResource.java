@@ -21,6 +21,7 @@ import org.bimserver.ifc.xml.deserializer.Ifc2x3tc1XmlDeserializer;
 import org.bimserver.ifc.xml.deserializer.Ifc4XmlDeserializer;
 import org.bimserver.models.ifc2x3tc1.Ifc2x3tc1Package;
 import org.bimserver.models.ifc2x3tc1.IfcPlaneAngleMeasure;
+import org.bimserver.models.ifc4.Ifc4Package;
 import org.bimserver.plugins.Plugin;
 import org.bimserver.plugins.PluginDescriptor;
 import org.bimserver.plugins.PluginImplementation;
@@ -106,25 +107,34 @@ public abstract class IFCAbstractModelResource implements IHawkModelResource {
 	}
 
 	private Deserializer createDeserializer() throws Exception {
+
 		Deserializer d;
-	
+		String packageLowerCaseName;
+
 		switch (ifcModelType) {
 		case IFC2X3_STEP:
-			d = new Ifc2x3tc1StepDeserializer(Schema.IFC2X3TC1); break;
+			d = new Ifc2x3tc1StepDeserializer(Schema.IFC2X3TC1);
+			packageLowerCaseName = Ifc2x3tc1Package.eINSTANCE.getName().toLowerCase();
+			break;
 		case IFC2X3_XML:
-			d = new Ifc2x3tc1XmlDeserializer(); break;
+			d = new Ifc2x3tc1XmlDeserializer();
+			packageLowerCaseName = Ifc2x3tc1Package.eINSTANCE.getName().toLowerCase();
+			break;
 		case IFC4_STEP:
-			d = new Ifc4StepDeserializer(Schema.IFC4); break;
+			d = new Ifc4StepDeserializer(Schema.IFC4);
+			packageLowerCaseName = Ifc4Package.eINSTANCE.getName().toLowerCase();
+			break;
 		case IFC4_XML:
-			d = new Ifc4XmlDeserializer(); break;
+			d = new Ifc4XmlDeserializer();
+			packageLowerCaseName = Ifc4Package.eINSTANCE.getName().toLowerCase();
+			break;
 		default:
 			throw new IllegalArgumentException("Unsupported IFC model type " + ifcModelType);
 		}
-	
+
 		PluginManager bimPluginManager = createPluginManager();
 		MetaDataManager bimMetaDataManager = new MetaDataManager(bimPluginManager);
 		bimMetaDataManager.init();
-		final String packageLowerCaseName = Ifc2x3tc1Package.eINSTANCE.getName().toLowerCase();
 		final PackageMetaData packageMetaData = bimMetaDataManager.getPackageMetaData(packageLowerCaseName);
 		d.init(packageMetaData);
 	
