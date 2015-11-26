@@ -18,6 +18,5 @@ jackson-core-2.5.1.jar
 jackson-databind-2.5.1.jar
 javassist.jar
 log4j-1.2.16.jar
-README.txt
 slf4j-api-1.6.2.jar
 slf4j-log4j12-1.6.2.jar
