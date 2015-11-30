@@ -22,7 +22,6 @@ public interface IQueryEngine {
 	public static final String PROPERTY_FILECONTEXT = "FILE";
 	public static final String PROPERTY_REPOSITORYCONTEXT = "REPOSITORY";
 	public static final String PROPERTY_ENABLE_CACHING = "ENABLE_CACHING";
-	public static final String PROPERTY_METAMODELS = "METAMODELS";
 
 	Object contextlessQuery(IGraphDatabase g, String query) throws InvalidQueryException, QueryExecutionException;
 
@@ -40,5 +39,7 @@ public interface IQueryEngine {
 	String getType();
 
 	List<String> validate(String derivationlogic);
+
+	void setDefaultNamespaces(String defaultNamespaces);
 
 }

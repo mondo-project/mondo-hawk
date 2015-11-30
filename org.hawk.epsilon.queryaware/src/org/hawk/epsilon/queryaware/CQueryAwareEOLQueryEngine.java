@@ -94,24 +94,6 @@ public class CQueryAwareEOLQueryEngine extends QueryAwareEOLQueryEngine
 			// String ec = context.get(EOLQueryEngine.PROPERTY_ENABLE_CASHING);
 			// enableCache = ec == null ? true : ec.equalsIgnoreCase("true");
 
-			// limit to declared packages if applicable
-			String pa = context
-					.get(QueryAwareEOLQueryEngine.PROPERTY_METAMODELS);
-			if (pa != null) {
-				String[] eps = ((String) pa).split(",");
-
-				if (!(eps.length == 1 && eps[0].equals("[]"))) {
-
-					epackages = new HashSet<String>();
-
-					for (String s : eps) {
-						// System.err.println(s);
-						epackages.add(s.trim().replaceAll("\\[", "")
-								.replaceAll("]", "").trim());
-					}
-				}
-			}
-
 			System.err.println("running CQueryAwareEOLQueryEngine with files: "
 					+ Arrays.toString(interestingFilesArray));
 

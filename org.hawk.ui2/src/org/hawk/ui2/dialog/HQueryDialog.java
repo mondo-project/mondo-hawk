@@ -86,7 +86,7 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 	protected Control createDialogArea(Composite parent) {
 		super.createDialogArea(parent);
 
-		final Composite container = new Composite(parent, SWT.NONE); 
+		final Composite container = new Composite(parent, SWT.NONE);
 		final GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 2;
 		container.setLayout(gridLayout);
@@ -217,6 +217,15 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		gridData.minimumWidth = 250;
 		contextFiles.setLayoutData(gridData);
 
+		l = new Label(container, SWT.READ_ONLY);
+		l.setText("Default Namespaces (comma separated)");
+
+		final StyledText defaultNamespaces = new StyledText(container, SWT.NONE);
+		gridData = new GridData();
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.minimumWidth = 250;
+		defaultNamespaces.setLayoutData(gridData);
+
 		queryButton = new Button(container, SWT.PUSH);
 		gridData = new GridData();
 		gridData.grabExcessHorizontalSpace = true;
@@ -241,6 +250,10 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 
 						final String sRepo = contextRepo.getText();
 						final String sFiles = contextFiles.getText();
+						final String defaultNamespace = defaultNamespaces
+								.getText();
+						if(!defaultNamespace.trim().equals(""))
+							index.setDefaultNamespaces(defaultNamespace);
 
 						if (queryField.getText().startsWith(QUERY_IS_EDITOR)) {
 							if (sRepo.trim().equals("")
@@ -454,8 +467,9 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 								if (enable) {
 									setErrorMessage(null);
 								} else {
-									setErrorMessage(String.format("The index is %s - querying will be disabled",
-											s.toString().toLowerCase()));
+									setErrorMessage(String
+											.format("The index is %s - querying will be disabled",
+													s.toString().toLowerCase()));
 								}
 							}
 						} catch (Exception e) {

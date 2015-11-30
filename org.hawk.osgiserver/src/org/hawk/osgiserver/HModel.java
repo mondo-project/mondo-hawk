@@ -194,13 +194,17 @@ public class HModel implements IStateListener {
 		return hawk.getModelIndexer().getGraph() != null;
 	}
 
-	public IHawk getHawk() {return hawk;}
-	
+	public IHawk getHawk() {
+		return hawk;
+	}
+
 	private List<String> allowedPlugins = new ArrayList<String>();
 	private final IHawk hawk;
 	private final IHawkFactory hawkFactory;
 	private final HManager manager;
 	private final String hawkLocation;
+
+	private String defaultNamespaces;
 
 	/**
 	 * Constructor for loading existing local Hawk instances and
@@ -332,7 +336,8 @@ public class HModel implements IStateListener {
 		if (q == null) {
 			throw new NoSuchElementException();
 		}
-
+		if (defaultNamespaces != null)
+			q.setDefaultNamespaces(defaultNamespaces);
 		return q.contextfullQuery(hawk.getModelIndexer().getGraph(), query,
 				context);
 	}
@@ -351,7 +356,8 @@ public class HModel implements IStateListener {
 		if (q == null) {
 			throw new NoSuchElementException();
 		}
-
+		if (defaultNamespaces != null)
+			q.setDefaultNamespaces(defaultNamespaces);
 		return q.contextfullQuery(hawk.getModelIndexer().getGraph(), query,
 				context);
 	}
@@ -453,7 +459,8 @@ public class HModel implements IStateListener {
 	public Object query(File query, String ql) throws Exception {
 		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages()
 				.get(ql);
-
+		if (defaultNamespaces != null)
+			q.setDefaultNamespaces(defaultNamespaces);
 		return q.contextlessQuery(hawk.getModelIndexer().getGraph(), query);
 	}
 
@@ -463,6 +470,8 @@ public class HModel implements IStateListener {
 	public Object query(String query, String ql) throws Exception {
 		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages()
 				.get(ql);
+		if (defaultNamespaces != null)
+			q.setDefaultNamespaces(defaultNamespaces);
 		return q.contextlessQuery(hawk.getModelIndexer().getGraph(), query);
 	}
 
@@ -620,5 +629,9 @@ public class HModel implements IStateListener {
 	@Override
 	public void removed() {
 		// nothing to do when the state listener has been removed
+	}
+
+	public void setDefaultNamespaces(String defaultNamespace) {
+		defaultNamespaces = defaultNamespace;
 	}
 }

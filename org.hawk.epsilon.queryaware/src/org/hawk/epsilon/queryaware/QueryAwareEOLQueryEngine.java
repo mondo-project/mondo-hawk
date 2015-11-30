@@ -521,7 +521,14 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 	@Override
 	public Object getElementById(String arg0) {
 		try {
-			Long id = Long.parseLong(arg0);
+
+			Object id;
+
+			try {
+				id = Long.parseLong(arg0);
+			} catch (NumberFormatException e) {
+				id = arg0;
+			}
 
 			boolean isnull = false;
 
@@ -806,23 +813,6 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 		// config.get(EOLQueryEngine.PROPERTY_ENABLE_CASHING);
 		// enableCache = Boolean.parseBoolean((ec == null) ? "true" : ec);
 		// System.err.println("EOL EC: " + enableCache);
-
-		// limit to declared epckages if applicable
-		Object pa = config.get(QueryAwareEOLQueryEngine.PROPERTY_METAMODELS);
-		if (pa != null) {
-			String[] eps = ((String) pa).split(",");
-
-			if (!(eps.length == 1 && eps[0].equals("[]"))) {
-
-				epackages = new HashSet<String>();
-
-				for (String s : eps) {
-					// System.err.println(s);
-					epackages.add(s.trim().replaceAll("\\[", "")
-							.replaceAll("]", "").trim());
-				}
-			}
-		}
 
 		if (graph != null) {
 
@@ -1307,24 +1297,6 @@ public class QueryAwareEOLQueryEngine extends EOLQueryEngine
 				// context.get(EOLQueryEngine.PROPERTY_ENABLE_CASHING);
 				// enableCache = ec == null ? true :
 				// ec.equalsIgnoreCase("true");
-
-				// limit to declared packages if applicable
-				String pa = context
-						.get(QueryAwareEOLQueryEngine.PROPERTY_METAMODELS);
-				if (pa != null) {
-					String[] eps = ((String) pa).split(",");
-
-					if (!(eps.length == 1 && eps[0].equals("[]"))) {
-
-						epackages = new HashSet<String>();
-
-						for (String s : eps) {
-							// System.err.println(s);
-							epackages.add(s.trim().replaceAll("\\[", "")
-									.replaceAll("]", "").trim());
-						}
-					}
-				}
 
 				q.load(context);
 

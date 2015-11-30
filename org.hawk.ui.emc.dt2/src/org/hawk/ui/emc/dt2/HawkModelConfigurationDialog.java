@@ -24,6 +24,8 @@ import org.hawk.ui2.util.HUIManager;
 
 public class HawkModelConfigurationDialog extends
 		AbstractModelConfigurationDialog {
+	static final String PROPERTY_DEFAULTNAMESPACES = "DEFAULTNAMESPACES";
+
 	protected void createPerformanceGroup(Composite parent) {
 	}
 
@@ -39,6 +41,7 @@ public class HawkModelConfigurationDialog extends
 	protected Combo selectIndexer;
 	protected Text t1;
 	protected Text t;
+	protected Text t2;
 
 	protected void createGroups(Composite control) {
 		super.createGroups(control);
@@ -106,6 +109,19 @@ public class HawkModelConfigurationDialog extends
 		// gd.minimumWidth = 320;
 		t.setLayoutData(gd);
 
+		uriTextLabel = new Label(groupContent, SWT.NONE);
+
+		uriTextLabel = new Label(groupContent, SWT.NONE);
+		uriTextLabel.setText("Default namespaces (comma separated): ");
+
+		uriTextLabel = new Label(groupContent, SWT.NONE);
+
+		t2 = new Text(groupContent, SWT.BORDER);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		// gd.widthHint = GridData.GRAB_HORIZONTAL;
+		// gd.minimumWidth = 320;
+		t2.setLayoutData(gd);
+
 		populate();
 
 		// uriText = new Text(groupContent, SWT.BORDER);
@@ -153,10 +169,18 @@ public class HawkModelConfigurationDialog extends
 
 		t.setText(files);
 
+		String namespaces = properties.getProperty(PROPERTY_DEFAULTNAMESPACES);
+
+		t2.setText(namespaces);
+
 	}
 
 	protected void storeProperties() {
 		super.storeProperties();
+
+		String namespaces = t2.getText().trim();
+		if (!namespaces.equals(""))
+			properties.put(PROPERTY_DEFAULTNAMESPACES, namespaces);
 
 		String repos = t1.getText().trim();
 		if (!repos.equals(""))

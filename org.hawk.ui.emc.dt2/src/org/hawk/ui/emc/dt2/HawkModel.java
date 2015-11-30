@@ -57,6 +57,12 @@ public class HawkModel extends ModelReference {
 		else
 			eolQueryEngine = new CEOLQueryEngine();
 
+		String namespaces = properties
+				.getProperty(HawkModelConfigurationDialog.PROPERTY_DEFAULTNAMESPACES);
+
+		if (namespaces != null && !namespaces.equals(""))
+			eolQueryEngine.setDefaultNamespaces(namespaces);
+
 		target = eolQueryEngine;
 		eolQueryEngine.setDatabaseConfig(properties);
 
