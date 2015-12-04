@@ -16,6 +16,7 @@ import java.util.Set;
 import org.hawk.core.IConsole;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IModelUpdater;
+import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphIterable;
@@ -158,6 +159,30 @@ public class GraphModelUpdater implements IModelUpdater {
 	@Override
 	public boolean caresAboutResources() {
 		return caresAboutResources;
+	}
+
+	@Override
+	public boolean deleteAll(IVcsManager c) throws Exception {
+
+		boolean ret = false;
+
+		IGraphDatabase graph = indexer.getGraph();
+
+		try (IGraphTransaction t = graph.beginTransaction()) {
+
+			IGraphNodeIndex filedictionary = graph.getFileIndex();
+
+			IGraphIterable<IGraphNode> fileNodesIt = filedictionary.query("id",
+					c.getLocation() + "*");
+
+			for (IGraphNode fileNode : fileNodesIt)
+				new DeletionUtils(graph).deleteAll(fileNode, c,
+						indexer.getCompositeGraphChangeListener());
+
+			t.success();
+		}
+
+		return ret;
 	}
 
 	@Override

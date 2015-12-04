@@ -231,4 +231,6 @@ public interface IModelIndexer {
 
 	String getDerivedAttributeExecutionEngine();
 
+	void removeVCS(IVcsManager vcs) throws Exception;
+
 }

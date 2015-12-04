@@ -320,40 +320,38 @@ public class HModel implements IStateListener {
 	}
 
 	/**
-	 * Performs a query and returns its result. The result must be
-	 * a Double, a String, an Integer, a ModelElement, the null reference or an
-	 * Iterable of these things.
+	 * Performs a query and returns its result. The result must be a Double, a
+	 * String, an Integer, a ModelElement, the null reference or an Iterable of
+	 * these things.
 	 * 
 	 * @throws NoSuchElementException
 	 *             Unknown query language.
 	 */
-	public Object query(File query, String ql,
-			Map<String, String> context) throws Exception {
+	public Object query(File query, String ql, Map<String, String> context)
+			throws Exception {
 		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages()
 				.get(ql);
 		if (q == null) {
 			throw new NoSuchElementException();
 		}
-		return q.query(hawk.getModelIndexer().getGraph(), query,
-				context);
+		return q.query(hawk.getModelIndexer().getGraph(), query, context);
 	}
 
 	/**
-	 * Performs a query and returns its result. For the result
-	 * types, see {@link #contextFullQuery(File, String, Map)}.
+	 * Performs a query and returns its result. For the result types, see
+	 * {@link #contextFullQuery(File, String, Map)}.
 	 * 
 	 * @throws NoSuchElementException
 	 *             Unknown query language.
 	 */
-	public Object query(String query, String ql,
-			Map<String, String> context) throws Exception {
+	public Object query(String query, String ql, Map<String, String> context)
+			throws Exception {
 		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages()
 				.get(ql);
 		if (q == null) {
 			throw new NoSuchElementException();
 		}
-		return q.query(hawk.getModelIndexer().getGraph(), query,
-				context);
+		return q.query(hawk.getModelIndexer().getGraph(), query, context);
 	}
 
 	public void delete() throws BackingStoreException {
@@ -557,9 +555,13 @@ public class HModel implements IStateListener {
 
 	}
 
-	public void removeRepository(String uri) throws Exception {
-		// TODO Auto-generated method stub
-
+	public void removeRepository(IVcsManager manager) throws Exception {
+		try {
+			hawk.getModelIndexer().removeVCS(manager);
+		} catch (Exception e) {
+			System.err.println("error in removerepository:");
+			e.printStackTrace();
+		}
 	}
 
 	public IModelIndexer getIndexer() {

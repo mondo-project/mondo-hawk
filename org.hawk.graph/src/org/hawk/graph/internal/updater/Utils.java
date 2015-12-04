@@ -16,6 +16,7 @@ import java.util.Set;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.graph.IGraphDatabase.Mode;
 
@@ -27,10 +28,10 @@ public class Utils {
 				return extension.substring(base.length());
 			}
 		}
-//		System.err
-//				.println(String.format(
-//						"WARNING: could not make '%s' into a relative path",
-//						extension));
+		// System.err
+		// .println(String.format(
+		// "WARNING: could not make '%s' into a relative path",
+		// extension));
 		return extension;
 	}
 
@@ -101,8 +102,10 @@ public class Utils {
 			if (graph.currentMode().equals(Mode.TX_MODE))
 				t = graph.beginTransaction();
 
-			final Iterator<IGraphNode> itFile = graph.getFileIndex()
-					.get("id", fullFileID).iterator();
+			IGraphNodeIndex fi = graph.getFileIndex();
+			fi.flush();
+			final Iterator<IGraphNode> itFile = fi.get("id", fullFileID)
+					.iterator();
 
 			if (itFile.hasNext()) {
 				ret = itFile.next();

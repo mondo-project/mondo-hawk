@@ -193,8 +193,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 							HashSet<VcsCommitItem> interestingfiles = new HashSet<VcsCommitItem>();
 
-							stateListener.info("Calculating relevant changed model files...");
-							
+							stateListener
+									.info("Calculating relevant changed model files...");
+
 							for (VcsCommitItem r : files) {
 								for (String p : getKnownModelParserTypes()) {
 									IModelResourceFactory parser = getModelParser(p);
@@ -243,7 +244,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 								// metadata about synchronise
 								currchangeditems = currchangeditems
 										+ currreposchangeditems.size();
-							
+
 								// create temp files with changed repos files
 								for (VcsCommitItem s : currreposchangeditems) {
 
@@ -284,8 +285,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 								// delete all removed files
 
-								stateListener.info("Deleting models removed from repository...");
-								
+								stateListener
+										.info("Deleting models removed from repository...");
+
 								try {
 									listener.changeStart();
 									for (VcsCommitItem c : deleteditems) {
@@ -301,8 +303,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 									listener.changeSuccess();
 								}
 
-								stateListener.info("Updating models with a new version available...");
-								
+								stateListener
+										.info("Updating models with a new version available...");
+
 								// prepare for mass inserts if needed
 								graph.enterBatchMode();
 
@@ -359,12 +362,12 @@ public class ModelIndexerImpl implements IModelIndexer {
 								// }
 
 								stateListener.info("Updating proxies...");
-								
+
 								// update proxies
 								u.updateProxies();
 
 								stateListener.info("Updated proxies.");
-								
+
 							}
 
 							// delete temporary files
@@ -539,10 +542,46 @@ public class ModelIndexerImpl implements IModelIndexer {
 	 * cross-file references as proxies
 	 */
 	public void removeMetamodels(String[] mm) throws Exception {
+		stateListener.state(HawkState.UPDATING);
 		stateListener.info("Removing metamodels...");
 		for (String s : metamodelupdater.removeMetamodels(this, mm))
 			resetRepositoy(s);
+		stateListener.state(HawkState.RUNNING);
 		stateListener.info("Removed metamodels.");
+	}
+
+	@Override
+	/**
+	 * Removes the IVcsManager from Hawk, including any contained models indexed.
+	 */
+	public void removeVCS(IVcsManager vcs) throws Exception {
+		stateListener.state(HawkState.UPDATING);
+		stateListener.info("Removing vcs...");
+		//
+
+		monitors.remove(vcs);
+		currLocalTopRevisions.remove(vcs.getLocation());
+		currReposTopRevisions.remove(vcs.getLocation());
+
+		try {
+			saveIndexer();
+		} catch (Exception e) {
+			System.err.println("removeVCS tried to saveIndexer but failed");
+			e.printStackTrace();
+		}
+
+		for(IModelUpdater u : updaters)
+		try {
+				u.deleteAll(vcs);
+		} catch (Exception e) {
+			System.err
+					.println("removeVCS tried to delete index contents but failed");
+			e.printStackTrace();
+		}
+
+		//
+		stateListener.state(HawkState.RUNNING);
+		stateListener.info("Removed vcs.");
 	}
 
 	private void resetRepositoy(String s) {
@@ -881,8 +920,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 			boolean isOrdered, boolean isUnique, String derivationlanguage,
 			String derivationlogic) {
 
-		stateListener.info(String.format("Adding derived attribute %s::%s::%s...",
-				metamodeluri, typename, attributename));
+		stateListener.info(String.format(
+				"Adding derived attribute %s::%s::%s...", metamodeluri,
+				typename, attributename));
 
 		if (metamodelupdater.addDerivedAttribute(metamodeluri, typename,
 				attributename, attributetype, isMany, isOrdered, isUnique,
@@ -900,8 +940,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 	public void addIndexedAttribute(String metamodeluri, String typename,
 			String attributename) {
 
-		stateListener.info(String.format("Adding indexed attribute %s::%s::%s...",
-				metamodeluri, typename, attributename));
+		stateListener.info(String.format(
+				"Adding indexed attribute %s::%s::%s...", metamodeluri,
+				typename, attributename));
 
 		if (metamodelupdater.addIndexedAttribute(metamodeluri, typename,
 				attributename, this))
@@ -1084,7 +1125,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	@Override
 	public String getDerivedAttributeExecutionEngine() {
-		// TODO we should honor the derivation language info that we already ask the user for
+		// TODO we should honor the derivation language info that we already ask
+		// the user for
 		if (getKnownQueryLanguages().keySet().contains(
 				"org.hawk.epsilon.emc.EOLQueryEngine"))
 			return "org.hawk.epsilon.emc.EOLQueryEngine";

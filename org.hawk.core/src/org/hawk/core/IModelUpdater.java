@@ -53,4 +53,6 @@ public interface IModelUpdater {
 
 	void updateProxies();
 
+	public boolean deleteAll(IVcsManager vcs) throws Exception;
+
 }
