@@ -393,7 +393,7 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 					MessageBox messageBox = new MessageBox(getShell(),
 							SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 					messageBox
-							.setMessage("Are you sure you wish to remove the chosen VCS location? This will also delete all indexed models from it,and may take a long time to complete.");
+							.setMessage("Are you sure you wish to remove the chosen VCS location? This will also delete all indexed models from it, and may take a long time to complete.");
 					messageBox.setText("VCS location deletion");
 					int response = messageBox.open();
 					if (response == SWT.YES) {
