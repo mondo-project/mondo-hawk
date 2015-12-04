@@ -429,6 +429,8 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 				boolean running = hawkState == HawkState.RUNNING;
 				editVCSButton.setEnabled(running
 						&& getSelectedExistingVCSManager() != null);
+				removeVCSButton.setEnabled(running
+						&& getSelectedExistingVCSManager() != null);
 
 			}
 		});
