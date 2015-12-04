@@ -24,7 +24,6 @@ import org.hawk.ui2.util.HUIManager;
 
 public class HawkModelConfigurationDialog extends
 		AbstractModelConfigurationDialog {
-	static final String PROPERTY_DEFAULTNAMESPACES = "DEFAULTNAMESPACES";
 
 	protected void createPerformanceGroup(Composite parent) {
 	}
@@ -169,7 +168,8 @@ public class HawkModelConfigurationDialog extends
 
 		t.setText(files);
 
-		String namespaces = properties.getProperty(PROPERTY_DEFAULTNAMESPACES);
+		String namespaces = properties
+				.getProperty(IQueryEngine.PROPERTY_DEFAULTNAMESPACES);
 
 		t2.setText(namespaces);
 
@@ -180,7 +180,7 @@ public class HawkModelConfigurationDialog extends
 
 		String namespaces = t2.getText().trim();
 		if (!namespaces.equals(""))
-			properties.put(PROPERTY_DEFAULTNAMESPACES, namespaces);
+			properties.put(IQueryEngine.PROPERTY_DEFAULTNAMESPACES, namespaces);
 
 		String repos = t1.getText().trim();
 		if (!repos.equals(""))

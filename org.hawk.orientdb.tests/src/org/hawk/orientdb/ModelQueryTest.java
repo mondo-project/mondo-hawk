@@ -56,9 +56,11 @@ public class ModelQueryTest {
 		db = new OrientDatabase();
 		db.run("plocal:" + dbFolder.getAbsolutePath(), dbFolder, console);
 
-		final FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(new File("keystore"), "admin".toCharArray());
+		final FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(
+				new File("keystore"), "admin".toCharArray());
 
-		indexer = new ModelIndexerImpl("test", indexerFolder, credStore, console);
+		indexer = new ModelIndexerImpl("test", indexerFolder, credStore,
+				console);
 		indexer.addMetaModelResourceFactory(new EMFMetaModelResourceFactory());
 		indexer.addModelResourceFactory(new EMFModelResourceFactory());
 		queryEngine = new CEOLQueryEngine();
@@ -95,7 +97,8 @@ public class ModelQueryTest {
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
 				assertEquals(2, queryEngine.getAllOfType("Tree").size());
-				assertEquals(2, queryEngine.contextlessQuery(db, "return Tree.all.size;"));
+				assertEquals(2,
+						queryEngine.query(db, "return Tree.all.size;", null));
 				return null;
 			}
 		});
@@ -117,7 +120,8 @@ public class ModelQueryTest {
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
 				assertEquals(1, queryEngine.getAllOfType("IJavaProject").size());
-				assertEquals(1, queryEngine.contextlessQuery(db, "return IJavaProject.all.size;"));
+				assertEquals(1, queryEngine.query(db,
+						"return IJavaProject.all.size;", null));
 				return null;
 			}
 		});

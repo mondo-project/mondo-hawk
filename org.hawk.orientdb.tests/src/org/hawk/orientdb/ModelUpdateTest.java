@@ -63,16 +63,20 @@ public class ModelUpdateTest {
 		modelFolder = new File("testmodels" + testCaseName);
 		FileUtils.deleteRecursively(modelFolder);
 		modelFolder.mkdir();
-		modelPath = new File(modelFolder, new File(baseModel).getName()).toPath();
-		Files.copy(new File("resources/models/" + baseModel).toPath(), modelPath);
+		modelPath = new File(modelFolder, new File(baseModel).getName())
+				.toPath();
+		Files.copy(new File("resources/models/" + baseModel).toPath(),
+				modelPath);
 
 		console = new DefaultConsole();
 		db = new OrientDatabase();
 		db.run("plocal:" + dbFolder.getAbsolutePath(), dbFolder, console);
 
-		final FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(new File("keystore"), "admin".toCharArray());
+		final FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(
+				new File("keystore"), "admin".toCharArray());
 
-		indexer = new ModelIndexerImpl("test", indexerFolder, credStore, console);
+		indexer = new ModelIndexerImpl("test", indexerFolder, credStore,
+				console);
 		indexer.addMetaModelResourceFactory(new EMFMetaModelResourceFactory());
 		indexer.addMetaModelResourceFactory(new BPMNMetaModelResourceFactory());
 		indexer.addModelResourceFactory(new EMFModelResourceFactory());
@@ -120,7 +124,10 @@ public class ModelUpdateTest {
 			@Override
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
-				assertEquals(3, queryEngine.getAllOf("Tree", ModelElementNode.EDGE_LABEL_OFTYPE).size());
+				assertEquals(
+						3,
+						queryEngine.getAllOf("Tree",
+								ModelElementNode.EDGE_LABEL_OFTYPE).size());
 				return null;
 			}
 		});
@@ -153,7 +160,10 @@ public class ModelUpdateTest {
 			@Override
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
-				assertEquals(1, queryEngine.getAllOf("Tree", ModelElementNode.EDGE_LABEL_OFTYPE).size());
+				assertEquals(
+						1,
+						queryEngine.getAllOf("Tree",
+								ModelElementNode.EDGE_LABEL_OFTYPE).size());
 				return null;
 			}
 		});
@@ -168,8 +178,13 @@ public class ModelUpdateTest {
 			@Override
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
-				assertEquals(2, queryEngine.getAllOf("Tree", ModelElementNode.EDGE_LABEL_OFTYPE).size());
-				assertEquals(1, queryEngine.contextlessQuery(db, "return Tree.all.select(t|t.label='t90001').size;"));
+				assertEquals(
+						2,
+						queryEngine.getAllOf("Tree",
+								ModelElementNode.EDGE_LABEL_OFTYPE).size());
+				assertEquals(1, queryEngine.query(db,
+						"return Tree.all.select(t|t.label='t90001').size;",
+						null));
 				return null;
 			}
 		});
@@ -184,8 +199,12 @@ public class ModelUpdateTest {
 			@Override
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
-				assertEquals(2, queryEngine.getAllOf("Tree", ModelElementNode.EDGE_LABEL_OFTYPE).size());
-				assertEquals(1, queryEngine.contextlessQuery(db, "return Tree.all.select(t|t.label='t40').size;"));
+				assertEquals(
+						2,
+						queryEngine.getAllOf("Tree",
+								ModelElementNode.EDGE_LABEL_OFTYPE).size());
+				assertEquals(1, queryEngine.query(db,
+						"return Tree.all.select(t|t.label='t40').size;", null));
 				return null;
 			}
 		});
@@ -193,7 +212,8 @@ public class ModelUpdateTest {
 
 	private void replaceWith(final String replacement) throws IOException {
 		final File replacementFile = new File("resources/models/" + replacement);
-		Files.copy(replacementFile.toPath(), modelPath, StandardCopyOption.REPLACE_EXISTING);
+		Files.copy(replacementFile.toPath(), modelPath,
+				StandardCopyOption.REPLACE_EXISTING);
 		System.err.println("Copied " + replacementFile + " over " + modelPath);
 	}
 }
