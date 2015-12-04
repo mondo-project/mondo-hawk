@@ -40,6 +40,13 @@ public interface IQueryEngine {
 
 	List<String> validate(String derivationlogic);
 
+	/**
+	 * Changes the default namespaces used to resolve ambiguous type references.
+	 *
+	 * @param defaultNamespaces
+	 *            Comma-separated list of namespace URIs to be used as the
+	 *            default namespaces in later queries.
+	 */
 	void setDefaultNamespaces(String defaultNamespaces);
 
 }

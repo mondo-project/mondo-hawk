@@ -1041,6 +1041,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 					+ "\n----------");
 
 			CEOLQueryEngine q = new CEOLQueryEngine();
+			q.setDefaultNamespaces(defaultnamespaces);
 
 			name = context.get(EOLQueryEngine.PROPERTY_NAME);
 			if (name == null)
@@ -1351,6 +1352,10 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			t.printStackTrace();
 		}
 
+	}
+
+	public void setDefaultNamespaces(Set<String> namespaces) {
+		defaultnamespaces = namespaces;
 	}
 
 }
