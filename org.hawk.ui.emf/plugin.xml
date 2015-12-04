@@ -27,6 +27,7 @@
       <wizard
             category="hawk.ui.plugin"
             class="org.hawk.ui.emfresource.wizards.NewDescriptorWizard"
+            icon="icons/hawkmodel.png"
             id="org.hawk.ui.emf.newfile"
             name="Local Hawk Model Descriptor">
       </wizard>

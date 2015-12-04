@@ -271,7 +271,9 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 
 		removeMetaModelsButton = new Button(composite, SWT.PUSH);
 		removeMetaModelsButton.setText("Remove");
+
 		removeMetaModelsButton.setEnabled(hawkState == HawkState.RUNNING);
+
 		removeMetaModelsButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				// remove action
@@ -426,8 +428,6 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 
 				boolean running = hawkState == HawkState.RUNNING;
 				editVCSButton.setEnabled(running
-						&& getSelectedExistingVCSManager() != null);
-				removeVCSButton.setEnabled(running
 						&& getSelectedExistingVCSManager() != null);
 
 			}

@@ -26,6 +26,8 @@ import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -157,7 +159,12 @@ public class HWizardPage extends WizardPage {
 		locationText.setLayoutData(gd);
 		locationText.setText("http://localhost:8080/thrift/hawk/tuple");
 		// folderText.setEditable(false);
-		locationText.addModifyListener(dialogChangeListener);
+		locationText.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				updateBackends();
+			}
+		});
 
 		label = new Label(container, SWT.NULL);
 		label.setText("");
@@ -304,25 +311,7 @@ public class HWizardPage extends WizardPage {
 	private void dialogChanged() {
 		final IHawkFactory factory = factories.get(getFactoryID());
 		locationText.setEnabled(factory.instancesUseLocation());
-		try {
-			List<String> backends = factory.listBackends(locationText.getText());
-			if (backends == null) {
-				backends = new ArrayList<>();
-				backends.addAll(HUIManager.getInstance().getIndexTypes());
-			}
-			String[] newItems = backends.toArray(new String[backends.size()]);
-			if (!Arrays.equals(newItems, dbidText.getItems())) {
-				dbidText.removeAll();
-				for (String s : backends) {
-					dbidText.add(s);
-				}
-				if (newItems.length > 0) {
-					dbidText.select(0);
-				}
-			}
-		} catch (Exception ex) {
-			Activator.logError("Could not refresh backend list", ex);
-		}
+		updateBackends();
 
 		// name empty or valid chars in indexername
 		if (getHawkName().trim().equals("")) {
@@ -397,6 +386,29 @@ public class HWizardPage extends WizardPage {
 	private void updateStatus(String message) {
 		setErrorMessage(message);
 		setPageComplete(message == null || message.equals(hawkConnectWarning));
+	}
+
+	protected void updateBackends() {
+		try {
+			final IHawkFactory factory = factories.get(getFactoryID());
+			List<String> backends = factory.listBackends(locationText.getText());
+			if (backends == null) {
+				backends = new ArrayList<>();
+				backends.addAll(HUIManager.getInstance().getIndexTypes());
+			}
+			String[] newItems = backends.toArray(new String[backends.size()]);
+			if (!Arrays.equals(newItems, dbidText.getItems())) {
+				dbidText.removeAll();
+				for (String s : backends) {
+					dbidText.add(s);
+				}
+				if (newItems.length > 0) {
+					dbidText.select(0);
+				}
+			}
+		} catch (Exception ex) {
+			Activator.logError("Could not refresh backend list", ex);
+		}
 	}
 
 	public String getContainerName() {
