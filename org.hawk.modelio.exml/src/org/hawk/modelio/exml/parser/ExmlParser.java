@@ -10,10 +10,15 @@
  ******************************************************************************/
 package org.hawk.modelio.exml.parser;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.FactoryConfigurationError;
@@ -23,10 +28,15 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * Parser for a single <code>.exml</code> file.
+ * Parser for a single <code>.exml</code> file or a ZIP archive containing <code>.exml</code> files.
  */
 public class ExmlParser {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ExmlParser.class);
 
 	/**
 	 * Parses a single <code>.exml</code> file and returns the
@@ -52,6 +62,56 @@ public class ExmlParser {
 		} finally {
 			reader.close();
 		}
+	}
+
+	/**
+	 * Returns an iterable object with all the {@link ExmlObject} instances in the archive.
+	 */
+	public Iterable<ExmlObject> getObjects(final ZipFile zipFile) {
+		return new Iterable<ExmlObject>() {
+
+			@Override
+			public Iterator<ExmlObject> iterator() {
+				final Enumeration<? extends ZipEntry> entries = zipFile.entries();
+
+				return new Iterator<ExmlObject>(){
+					ExmlObject nextObject = null;
+
+					@Override
+					public boolean hasNext() {
+						return findNextObject(entries) != null;
+					}
+
+					@Override
+					public ExmlObject next() {
+						final ExmlObject ret = findNextObject(entries);
+						nextObject = null;
+						return ret;
+					}
+
+					@Override
+					public void remove() {
+						throw new UnsupportedOperationException();
+					}
+
+					private ExmlObject findNextObject(final Enumeration<? extends ZipEntry> entries) {
+						while (nextObject == null && entries.hasMoreElements()) {
+							ZipEntry entry = entries.nextElement();
+							if (entry.getName().toLowerCase().endsWith(".exml")) {
+								try (InputStream is = zipFile.getInputStream(entry)) {
+									nextObject = getObject(is);
+								} catch (IOException | XMLStreamException | FactoryConfigurationError e) {
+									LOGGER.error("Could not parse entry " + entry.getName() + " in " + zipFile.getName() + ": skipping", e);
+								}
+							}
+						}
+						return nextObject;
+					}
+
+				};
+			}
+			
+		};
 	}
 
 	/**

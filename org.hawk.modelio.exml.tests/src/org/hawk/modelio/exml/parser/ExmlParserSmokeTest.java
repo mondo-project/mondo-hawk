@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.zip.ZipFile;
 
 import org.junit.Test;
 
@@ -50,5 +51,18 @@ public class ExmlParserSmokeTest {
 			}
 		};
 		Files.walkFileTree(new File("resources").toPath(), fv);
+	}
+
+	@Test
+	public void jenkinsArchive() throws Exception {
+		final ExmlParser parser = new ExmlParser();
+		Iterable<ExmlObject> objects = parser.getObjects(new ZipFile(new File("resources/jenkins_1.540.0.ramc")));
+
+		final long millis = System.currentTimeMillis();
+		long parsed = 0;
+		for (ExmlObject o : objects) {
+			++parsed;
+		}
+		System.out.println("Parsed " + parsed + " fragments in " + (System.currentTimeMillis() - millis) + "ms");
 	}
 }
