@@ -10,15 +10,16 @@
  ******************************************************************************/
 package org.hawk.graph.internal.updater;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
 
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphDatabase.Mode;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
-import org.hawk.core.graph.IGraphDatabase.Mode;
 
 public class Utils {
 
@@ -125,4 +126,36 @@ public class Utils {
 		return ret;
 
 	}
+
+	public String[] removeFromElementProxies(String[] proxies,
+			String fullPathURI, String edgelabel, boolean isContainment,
+			boolean isContainer) {
+
+		String[] result = null;
+
+		for (int i = 0; i < proxies.length; i = i + 4) {
+
+			if (proxies[i].equals(fullPathURI)
+					&& proxies[i + 1].equals(edgelabel)
+					&& Boolean.valueOf(proxies[i + 2]) == isContainment
+					&& Boolean.valueOf(proxies[i + 3]) == isContainer) {
+				//
+				result = new String[proxies.length - 4];
+				System.arraycopy(proxies, 0, result, 0, i);
+				System.arraycopy(proxies, i + 4, result, i, proxies.length - i
+						- 4);
+				break;
+			}
+
+		}
+
+		//
+		// System.out.println("removefromelementproxies:");
+		// System.out.println(Arrays.toString(proxies));
+		// System.out.println(Arrays.toString(result));
+		// System.out.println("-----------------------");
+		//
+		return result;
+	}
+
 }
