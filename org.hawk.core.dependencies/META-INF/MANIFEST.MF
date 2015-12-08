@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Hawk Core Dependencies Plugin
 Bundle-SymbolicName: org.hawk.core.dependencies;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: xstream-1.4.8.jar,
  commons-codec-1.10.jar,
  .
