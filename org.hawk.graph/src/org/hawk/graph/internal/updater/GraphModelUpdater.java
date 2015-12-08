@@ -12,7 +12,6 @@ package org.hawk.graph.internal.updater;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.hawk.core.IConsole;
@@ -169,7 +168,7 @@ public class GraphModelUpdater implements IModelUpdater {
 
 	@Override
 	public boolean deleteAll(IVcsManager c) throws Exception {
-
+		
 		boolean ret = false;
 
 		IGraphDatabase graph = indexer.getGraph();
@@ -189,21 +188,20 @@ public class GraphModelUpdater implements IModelUpdater {
 			fakeCommit.setJavaDate(new Date());
 			fakeCommit.setRevision(c.getCurrentRevision() + "-deleted");
 			fakeCommit.setMessage("stopped indexing");
+			
+			final DeletionUtils deletionUtils = new DeletionUtils(graph);	
+			final IGraphChangeListener changeListener = indexer.getCompositeGraphChangeListener();
+			
 			for (IGraphNode fileNode : fileNodes) {
+				
 				VcsCommitItem item = new VcsCommitItem();
 				item.setChangeType(VcsChangeType.DELETED);
 				item.setCommit(fakeCommit);
 				item.setPath(fileNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
-
+				
 				fakeCommit.getItems().add(item);
-			}
-
-			final DeletionUtils deletionUtils = new DeletionUtils(graph);
-			final Iterator<IGraphNode> itFileNodes = fileNodes.iterator();
-			final Iterator<VcsCommitItem> itItems = fakeCommit.getItems().iterator();
-			final IGraphChangeListener changeListener = indexer.getCompositeGraphChangeListener();
-			while (itFileNodes.hasNext()) {
-				deletionUtils.deleteAll(itFileNodes.next(), itItems.next(), changeListener);
+				//
+				deletionUtils.deleteAll(fileNode, item, changeListener);
 			}
 
 			t.success();
