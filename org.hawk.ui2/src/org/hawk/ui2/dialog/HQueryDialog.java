@@ -252,85 +252,49 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 						final String sFiles = contextFiles.getText();
 						final String defaultNamespace = defaultNamespaces
 								.getText();
-						if(!defaultNamespace.trim().equals(""))
-							index.setDefaultNamespaces(defaultNamespace);
+
+						Map<String, String> map = new HashMap<>();
+						if (sFiles != null && !sFiles.trim().equals(""))
+							map.put(org.hawk.core.query.IQueryEngine.PROPERTY_FILECONTEXT,
+									sFiles);
+						if (sRepo != null && !sRepo.trim().equals(""))
+							map.put(org.hawk.core.query.IQueryEngine.PROPERTY_REPOSITORYCONTEXT,
+									sRepo);
+						if (defaultNamespace != null
+								&& !defaultNamespace.trim().equals(""))
+							map.put(org.hawk.core.query.IQueryEngine.PROPERTY_DEFAULTNAMESPACES,
+									defaultNamespace);
+						if (map.size() == 0)
+							map = null;
 
 						if (queryField.getText().startsWith(QUERY_IS_EDITOR)) {
-							if (sRepo.trim().equals("")
-									&& sFiles.trim().equals("")) {
-								Object r = index.query(queryField.getText()
-										.substring(QUERY_IS_EDITOR.length()),
-										ql);
-								String ret = "<null>";
-								if (r != null)
-									ret = r.toString();
-								resultField.setText(ret);
-							} else {
-								Map<String, String> map = new HashMap<>();
 
-								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_FILECONTEXT,
-										sFiles);
-								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_REPOSITORYCONTEXT,
-										sRepo);
-								Object r = index.contextFullQuery(
-										queryField.getText().substring(
-												QUERY_IS_EDITOR.length()), ql,
-										map);
-								String ret = "<null>";
-								if (r != null)
-									ret = r.toString();
-								resultField.setText(ret);
-							}
+							Object r = index.query(queryField.getText()
+									.substring(QUERY_IS_EDITOR.length()), ql,
+									map);
+							String ret = "<null>";
+							if (r != null)
+								ret = r.toString();
+							resultField.setText(ret);
+
 						} else if (queryField.getText().startsWith(
 								QUERY_IS_FILE)) {
-							if (sRepo.trim().equals("")
-									&& sFiles.trim().equals("")) {
-								Object r = index.query(
-										new File(queryField.getText()
-												.substring(
-														QUERY_IS_FILE.length())),
-										ql);
-								String ret = "<null>";
-								if (r != null)
-									ret = r.toString();
-								resultField.setText(ret);
-							} else {
-								Map<String, String> map = new HashMap<>();
 
-								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_FILECONTEXT,
-										sFiles);
-								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_REPOSITORYCONTEXT,
-										sRepo);
-								Object r = index.contextFullQuery(
-										new File(queryField.getText()
-												.substring(
-														QUERY_IS_FILE.length())),
-										ql, map);
-								String ret = "<null>";
-								if (r != null)
-									ret = r.toString();
-								resultField.setText(ret);
-							}
+							Object r = index.query(new File(queryField
+									.getText()
+									.substring(QUERY_IS_FILE.length())), ql,
+									map);
+							String ret = "<null>";
+							if (r != null)
+								ret = r.toString();
+							resultField.setText(ret);
+
 						} else {
-							if (sRepo.trim().equals("")
-									&& sFiles.trim().equals("")) {
-								Object ret = index.query(queryField.getText(),
-										ql);
-								resultField.setText(ret != null ? ret
-										.toString() : "<null>");
-							} else {
-								Map<String, String> map = new HashMap<>();
-								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_FILECONTEXT,
-										sFiles);
-								map.put(org.hawk.core.query.IQueryEngine.PROPERTY_REPOSITORYCONTEXT,
-										sRepo);
-								Object r = index.contextFullQuery(
-										queryField.getText(), ql, map);
-								String ret = "<null>";
-								if (r != null)
-									ret = r.toString();
-								resultField.setText(ret);
-							}
+
+							Object ret = index.query(queryField.getText(), ql,
+									map);
+							resultField.setText(ret != null ? ret.toString()
+									: "<null>");
 
 						}
 
@@ -340,6 +304,7 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 							+ ex.getMessage();
 					resultField.setText(error);
 					resultField.setStyleRange(createRedBoldRange(error.length()));
+					ex.printStackTrace();
 				}
 			}
 		});

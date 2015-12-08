@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hawk Modelio parser (.exml based)
+Bundle-SymbolicName: org.hawk.modelio.exml
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: University of York
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ClassPath: lib/ModelioMetamodelLib-1.0.0.jar,
+ .
+Require-Bundle: org.slf4j.api;bundle-version="1.7.2"

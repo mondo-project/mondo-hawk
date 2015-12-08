@@ -72,8 +72,9 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 	private Button addMetaModelsButton;
 	private Button addVCSButton;
 	private Button editVCSButton;
+	private Button removeVCSButton;
 	HawkState hawkState;
-	
+
 	public HConfigDialog(Shell parentShell, HModel in) {
 		super(parentShell);
 		setShellStyle(getShellStyle() & ~SWT.CLOSE);
@@ -269,8 +270,10 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 		updateMetamodelList();
 
 		removeMetaModelsButton = new Button(composite, SWT.PUSH);
-		removeMetaModelsButton.setText(hawkState==HawkState.RUNNING?"Remove":"Remove (DISABLED -- INDEX "+(hawkState==HawkState.STOPPED?"STOPPED)":"UPDATING)"));
-		removeMetaModelsButton.setEnabled(hawkState==HawkState.RUNNING);
+		removeMetaModelsButton.setText("Remove");
+
+		removeMetaModelsButton.setEnabled(hawkState == HawkState.RUNNING);
+
 		removeMetaModelsButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				// remove action
@@ -283,7 +286,7 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 					MessageBox messageBox = new MessageBox(getShell(),
 							SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 					messageBox
-							.setMessage("Are you sure you wish to delete the chosen metamodel(hawkState)? This will also delete any dependant metamodels/models and may take a long time to complete.");
+							.setMessage("Are you sure you wish to delete the chosen metamodel(s)? This will also delete any dependant metamodels/models and may take a long time to complete.");
 					messageBox.setText("Metamodel deletion");
 					int response = messageBox.open();
 					if (response == SWT.YES) {
@@ -377,6 +380,37 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 		});
 		editVCSButton.setEnabled(false);
 
+		removeVCSButton = new Button(composite, SWT.NONE);
+		removeVCSButton.setText("Remove");
+		removeVCSButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// remove action
+				IVcsManager m = getSelectedExistingVCSManager();
+
+				if (m != null) {
+
+					MessageBox messageBox = new MessageBox(getShell(),
+							SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+					messageBox
+							.setMessage("Are you sure you wish to remove the chosen VCS location? This will also delete all indexed models from it, and may take a long time to complete.");
+					messageBox.setText("VCS location deletion");
+					int response = messageBox.open();
+					if (response == SWT.YES) {
+
+						try {
+							hawkModel.removeRepository(m);
+						} catch (Exception ee) {
+							ee.printStackTrace();
+						}
+
+						lstVCSLocations.refresh();
+					}
+				}
+			}
+		});
+		removeVCSButton.setEnabled(false);
+
 		addVCSButton = new Button(composite, SWT.NONE);
 		addVCSButton.setText("Add...");
 		addVCSButton.addSelectionListener(new SelectionAdapter() {
@@ -391,12 +425,13 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 		lstVCSLocations.getList().addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-								
-				boolean running = hawkState==HawkState.RUNNING;
-				editVCSButton.setText(running?"Edit...":"Edit... (DISABLED -- INDEX "+(hawkState==HawkState.STOPPED?"STOPPED)":"UPDATING)"));
-				editVCSButton
-						.setEnabled(running && getSelectedExistingVCSManager() != null);
-				
+
+				boolean running = hawkState == HawkState.RUNNING;
+				editVCSButton.setEnabled(running
+						&& getSelectedExistingVCSManager() != null);
+				removeVCSButton.setEnabled(running
+						&& getSelectedExistingVCSManager() != null);
+
 			}
 		});
 
@@ -528,13 +563,15 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 					removeMetaModelsButton.setEnabled(running);
 					addMetaModelsButton.setEnabled(running);
 					addVCSButton.setEnabled(running);
-					editVCSButton.setEnabled(running && getSelectedExistingVCSManager() != null);
+					editVCSButton.setEnabled(running
+							&& getSelectedExistingVCSManager() != null);
 
 					if (running) {
 						setErrorMessage(null);
 					} else {
-						setErrorMessage(String.format("The index is %s - some buttons will be disabled",
-								s.toString().toLowerCase()));
+						setErrorMessage(String
+								.format("The index is %s - some buttons will be disabled",
+										s.toString().toLowerCase()));
 					}
 				} catch (Exception e) {
 					// suppress
@@ -543,4 +580,3 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 		});
 	}
 }
-	

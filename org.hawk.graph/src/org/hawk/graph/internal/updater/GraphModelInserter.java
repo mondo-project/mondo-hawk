@@ -774,8 +774,9 @@ public class GraphModelInserter {
 				"Performing batch insert on file: " + s.getPath() + "...");
 		boolean success = true;
 		if (resource != null) {
-			GraphModelBatchInjector batch = new GraphModelBatchInjector(indexer,
-					s, resource, indexer.getCompositeGraphChangeListener());
+			GraphModelBatchInjector batch = new GraphModelBatchInjector(
+					indexer, s, resource,
+					indexer.getCompositeGraphChangeListener());
 			unset = batch.getUnset();
 			success = batch.getSuccess();
 			if (!success)
@@ -919,9 +920,13 @@ public class GraphModelInserter {
 
 							if (nodes.size() != 0) {
 
-								for (int i = 0; i < proxies.length; i = i + 4) {
-									boolean found = false;
+								String[] remainingProxies = proxies.clone();
 
+								// for each proxy
+								for (int i = 0; i < proxies.length; i = i + 4) {
+									boolean resolved = false;
+
+									final String uri = proxies[i];
 									final String edgeLabel = proxies[i + 1];
 									final boolean isContainment = Boolean
 											.valueOf(proxies[i + 2]);
@@ -935,7 +940,7 @@ public class GraphModelInserter {
 														IModelIndexer.IDENTIFIER_PROPERTY)
 														.toString();
 
-										if (nodeURI.equals(proxies[i])) {
+										if (nodeURI.equals(uri)) {
 
 											boolean change = new GraphModelBatchInjector(
 													graph, null, listener)
@@ -950,40 +955,56 @@ public class GraphModelInserter {
 												// n.getId()+ " - "+ edgeLabel+
 												// " -> "+ no.getId());
 											} else {
+												resolved = true;
 												listener.referenceAddition(
 														this.s, n, no,
 														edgeLabel, false);
 											}
-
-											found = true;
 											break;
 										}
 									}
 
-									if (!found)
-										System.err
-												.println("[GraphModelInserter | resolveProxies] Warning: proxy unresolved: "
-														+ edgeLabel
-														+ " "
-														+ proxies[i]);
+									// if (!resolved)
+									// System.err
+									// .println("[GraphModelInserter | resolveProxies] Warning: proxy unresolved: "
+									// + edgeLabel
+									// + " "
+									// + proxies[i]);
+
+									if (resolved) {
+										remainingProxies = new Utils()
+												.removeFromElementProxies(
+														remainingProxies, uri,
+														edgeLabel,
+														isContainment,
+														isContainer);
+									}
+
 								}
 
-								n.removeProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX
-										+ fullPathURI);
-								proxyDictionary
-										.remove(GraphModelUpdater.PROXY_REFERENCE_PREFIX,
-												fullPathURI, n);
-
-							} else
-								System.err
-										.println("[GraphModelInserter | resolveProxies] Warning: no nodes were found for file: "
-												+ filePath
-												+ " originating in repository "
-												+ repoURL
-												+ " "
-												+ proxies.length
-												/ 2
-												+ " proxies cannot be resolved");
+								if (remainingProxies == null
+										|| remainingProxies.length == 0) {
+									n.removeProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX
+											+ fullPathURI);
+									proxyDictionary
+											.remove(GraphModelUpdater.PROXY_REFERENCE_PREFIX,
+													fullPathURI, n);
+								} else
+									n.setProperty(
+											GraphModelUpdater.PROXY_REFERENCE_PREFIX
+													+ fullPathURI,
+											remainingProxies);
+							}
+							// else
+							// System.err
+							// .println("[GraphModelInserter | resolveProxies] Warning: no nodes were found for file: "
+							// + filePath
+							// + " originating in repository "
+							// + repoURL
+							// + " "
+							// + proxies.length
+							// / 2
+							// + " proxies cannot be resolved");
 						}
 					}
 				}

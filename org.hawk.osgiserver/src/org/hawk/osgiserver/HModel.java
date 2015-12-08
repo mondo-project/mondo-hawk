@@ -204,8 +204,6 @@ public class HModel implements IStateListener {
 	private final HManager manager;
 	private final String hawkLocation;
 
-	private String defaultNamespaces;
-
 	/**
 	 * Constructor for loading existing local Hawk instances and
 	 * creating/loading custom {@link IHawk} implementations.
@@ -322,44 +320,38 @@ public class HModel implements IStateListener {
 	}
 
 	/**
-	 * Performs a context-aware query and returns its result. The result must be
-	 * a Double, a String, an Integer, a ModelElement, the null reference or an
-	 * Iterable of these things.
+	 * Performs a query and returns its result. The result must be a Double, a
+	 * String, an Integer, a ModelElement, the null reference or an Iterable of
+	 * these things.
 	 * 
 	 * @throws NoSuchElementException
 	 *             Unknown query language.
 	 */
-	public Object contextFullQuery(File query, String ql,
-			Map<String, String> context) throws Exception {
+	public Object query(File query, String ql, Map<String, String> context)
+			throws Exception {
 		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages()
 				.get(ql);
 		if (q == null) {
 			throw new NoSuchElementException();
 		}
-		if (defaultNamespaces != null)
-			q.setDefaultNamespaces(defaultNamespaces);
-		return q.contextfullQuery(hawk.getModelIndexer().getGraph(), query,
-				context);
+		return q.query(hawk.getModelIndexer().getGraph(), query, context);
 	}
 
 	/**
-	 * Performs a context-aware query and returns its result. For the result
-	 * types, see {@link #contextFullQuery(File, String, Map)}.
+	 * Performs a query and returns its result. For the result types, see
+	 * {@link #contextFullQuery(File, String, Map)}.
 	 * 
 	 * @throws NoSuchElementException
 	 *             Unknown query language.
 	 */
-	public Object contextFullQuery(String query, String ql,
-			Map<String, String> context) throws Exception {
+	public Object query(String query, String ql, Map<String, String> context)
+			throws Exception {
 		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages()
 				.get(ql);
 		if (q == null) {
 			throw new NoSuchElementException();
 		}
-		if (defaultNamespaces != null)
-			q.setDefaultNamespaces(defaultNamespaces);
-		return q.contextfullQuery(hawk.getModelIndexer().getGraph(), query,
-				context);
+		return q.query(hawk.getModelIndexer().getGraph(), query, context);
 	}
 
 	public void delete() throws BackingStoreException {
@@ -451,28 +443,6 @@ public class HModel implements IStateListener {
 
 	public HManager getManager() {
 		return manager;
-	}
-
-	/**
-	 * For the result types, see {@link #contextFullQuery(File, String, Map)}.
-	 */
-	public Object query(File query, String ql) throws Exception {
-		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages()
-				.get(ql);
-		if (defaultNamespaces != null)
-			q.setDefaultNamespaces(defaultNamespaces);
-		return q.contextlessQuery(hawk.getModelIndexer().getGraph(), query);
-	}
-
-	/**
-	 * For the result types, see {@link #contextFullQuery(File, String, Map)}.
-	 */
-	public Object query(String query, String ql) throws Exception {
-		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages()
-				.get(ql);
-		if (defaultNamespaces != null)
-			q.setDefaultNamespaces(defaultNamespaces);
-		return q.contextlessQuery(hawk.getModelIndexer().getGraph(), query);
 	}
 
 	public boolean registerMeta(File... f) {
@@ -585,9 +555,13 @@ public class HModel implements IStateListener {
 
 	}
 
-	public void removeRepository(String uri) throws Exception {
-		// TODO Auto-generated method stub
-
+	public void removeRepository(IVcsManager manager) throws Exception {
+		try {
+			hawk.getModelIndexer().removeVCS(manager);
+		} catch (Exception e) {
+			System.err.println("error in removerepository:");
+			e.printStackTrace();
+		}
 	}
 
 	public IModelIndexer getIndexer() {
@@ -631,7 +605,4 @@ public class HModel implements IStateListener {
 		// nothing to do when the state listener has been removed
 	}
 
-	public void setDefaultNamespaces(String defaultNamespace) {
-		defaultNamespaces = defaultNamespace;
-	}
 }

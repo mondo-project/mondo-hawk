@@ -27,7 +27,6 @@ import org.hawk.graph.ModelElementNode;
 public abstract class AbstractEpsilonModel extends Model {
 
 	protected HashSet<String> cachedTypes = new HashSet<String>();
-	protected String backendURI = null;
 	protected StringProperties config = null;
 
 	// TODO try re-enable the use of a cache
@@ -66,8 +65,10 @@ public abstract class AbstractEpsilonModel extends Model {
 	public Collection<Object> getAllOfKind(String arg0)
 			throws EolModelElementTypeNotFoundException {
 
-		Collection<Object> ofType = (Collection<Object>) getAllOf(arg0, ModelElementNode.EDGE_LABEL_OFTYPE);
-		Collection<Object> ofKind = (Collection<Object>) getAllOf(arg0, ModelElementNode.EDGE_LABEL_OFKIND);
+		Collection<Object> ofType = (Collection<Object>) getAllOf(arg0,
+				ModelElementNode.EDGE_LABEL_OFTYPE);
+		Collection<Object> ofKind = (Collection<Object>) getAllOf(arg0,
+				ModelElementNode.EDGE_LABEL_OFKIND);
 		ofKind.addAll(ofType);
 
 		return ofKind;
@@ -91,39 +92,6 @@ public abstract class AbstractEpsilonModel extends Model {
 		throw new UnsupportedOperationException();
 	}
 
-	// public Object getEnumerationValue(String enumeration, String label)
-	// throws EolEnumerationValueNotFoundException {
-	//
-	// for (Object pkg : EPackage.Registry.INSTANCE.keySet()) {
-	//
-	// if (pkg instanceof EPackage /*|| pkg instanceof EPackage.Descriptor*/) {
-	// EPackage ePackage = null;
-	//
-	// //if (pkg instanceof EPackage) {
-	// ePackage = (EPackage) pkg;
-	// //}
-	// //else {
-	// // ePackage = ((EPackage.Descriptor) pkg).getEPackage();
-	// //}
-	//
-	// for (EClassifier classifier : ePackage.getEClassifiers()) {
-	// //for (EClassifier classifier : ePackage.getEClassifiers()) {
-	// if (classifier instanceof EEnum &&
-	// (((EEnum) classifier).getName().equals(enumeration) ||
-	// enumeration.contains("/"+classifier.getName()))){
-	// EEnum eEnum = (EEnum) classifier;
-	// EEnumLiteral literal = eEnum.getEEnumLiteral(label);
-	//
-	// if (literal != null) return literal.getInstance();
-	// }
-	// }
-	// }
-	// }
-	//
-	// throw new
-	// EolEnumerationValueNotFoundException(enumeration,label,this.getName());
-	// }
-
 	@Override
 	abstract public String getTypeNameOf(Object arg0);
 
@@ -139,48 +107,7 @@ public abstract class AbstractEpsilonModel extends Model {
 		System.err
 				.println("isInstantiable called on a hawk model, this is not supported, returning false");
 		return false;
-		// HawkClass o = null;
-		//
-		// try {
-		//
-		// if (arg0.indexOf("/") > -1) {
-		//
-		// o = parser
-		// .getEPackageRegistryInstance()
-		// .getPackage(arg0.substring(0, arg0.indexOf("/")))
-		// .getEClassifier(arg0.substring(arg0.indexOf("/") + 1));
-		//
-		// } else {
-		//
-		// for (String pack : parser
-		// .getEPackageRegistryInstance().keySet()) {
-		//
-		// if (!pack.contains("/XMLType") && !pack.contains("/Ecore")) {
-		//
-		// o = parser
-		// .getEPackageRegistryInstance()
-		// .getPackage(pack)
-		// .getEClassifier(
-		// arg0.substring(arg0.indexOf("/") + 1));
-		//
-		// if (o != null)
-		// break;
-		//
-		// }
-		//
-		// }
-		//
-		// }
-		//
-		// return o == null ? false : !(o.isAbstract() || o.isInterface());
-		//
-		// } catch (Exception e) {
-		// System.err
-		// .println("ERROR IN isInstantiable(String arg0), returning FALSE");
-		// e.printStackTrace();
-		// }
-		//
-		// return false;
+
 	}
 
 	@Override
@@ -294,14 +221,6 @@ public abstract class AbstractEpsilonModel extends Model {
 	@Override
 	public abstract boolean knowsAboutProperty(Object instance, String property);
 
-	public void setBackendURI(String uri) {
-		backendURI = uri;
-	}
-
-	public String getBackendURI() {
-		return backendURI;
-	}
-
 	@Override
 	abstract public IPropertyGetter getPropertyGetter();
 
@@ -318,5 +237,5 @@ public abstract class AbstractEpsilonModel extends Model {
 	}
 
 	abstract public void dumpDatabaseConfig();
-
+	
 }

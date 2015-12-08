@@ -110,7 +110,7 @@ public class IFC_Runtime_example {
 						}
 						if (s.equalsIgnoreCase("query")
 								|| s.equalsIgnoreCase("q")) {
-							q.contextlessQuery(i.getGraph(), query);
+							q.query(i.getGraph(), query, null);
 						}
 						if (s.equalsIgnoreCase("nuke")) {
 							i2.delete();

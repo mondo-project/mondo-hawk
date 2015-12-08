@@ -140,7 +140,7 @@ public class Modelio_Titan_Runtime_example {
 						if (s.equalsIgnoreCase("query")
 								|| s.equalsIgnoreCase("q")) {
 
-							q.contextlessQuery(i.getGraph(), query3);
+							q.query(i.getGraph(), query3, null);
 
 						}
 

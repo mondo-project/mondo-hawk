@@ -73,13 +73,11 @@ public class Runtime_example {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		File parent = new File(
-		"runtime_data"
-	    // "runtime_data_OrientDB"
+		File parent = new File("runtime_data"
+		// "runtime_data_OrientDB"
 		);
 
-		IGraphDatabase db = (
-		new Neo4JDatabase()
+		IGraphDatabase db = (new Neo4JDatabase()
 		// new OrientDatabase()
 		);
 
@@ -242,30 +240,30 @@ public class Runtime_example {
 						} else if (s.equalsIgnoreCase("adi")) {
 							addDerivedandIndexedAttributes();
 						} else if (s.equalsIgnoreCase("tq")) {
-							q.contextlessQuery(graph, testquery);
+							q.query(graph, testquery, null);
 						} else if (s.equalsIgnoreCase("query")
 								|| s.equalsIgnoreCase("q")) {
-							q.contextlessQuery(graph, query);
-							q.contextlessQuery(graph, query2);
-							q.contextlessQuery(graph, query3);
+							q.query(graph, query, null);
+							q.query(graph, query2, null);
+							q.query(graph, query3, null);
 						} else if (s.equalsIgnoreCase("q1")) {
-							q.contextlessQuery(graph, query);
+							q.query(graph, query, null);
 						} else if (s.equalsIgnoreCase("q2")) {
-							q.contextlessQuery(graph, query2);
+							q.query(graph, query2, null);
 						} else if (s.equalsIgnoreCase("q3")) {
-							q.contextlessQuery(graph, query3);
+							q.query(graph, query3, null);
 						} else if (s.equalsIgnoreCase("cq")) {
 							Map<String, String> map = new HashMap<String, String>();
 							map.put(EOLQueryEngine.PROPERTY_FILECONTEXT, "*");
-							q.contextfullQuery(graph,
+							q.query(graph,
 									"TypeDeclaration.all.size().println();",
 									map);
 						} else if (s.equalsIgnoreCase("cqs")) {
 							Map<String, String> map = new HashMap<String, String>();
 							map.put(EOLQueryEngine.PROPERTY_FILECONTEXT, "*");
-							q.contextfullQuery(graph, query, map);
-							q.contextfullQuery(graph, query2, map);
-							q.contextfullQuery(graph, query3, map);
+							q.query(graph, query, map);
+							q.query(graph, query2, map);
+							q.query(graph, query3, map);
 
 						} else if (s.equalsIgnoreCase("tf")) {
 
