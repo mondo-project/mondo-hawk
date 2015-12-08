@@ -3,10 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Hawk Modelio Plugin
 Bundle-SymbolicName: org.hawk.modelio;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.hawk.modelio.Activator
 Bundle-Vendor: University of York
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.emf.ecore;bundle-version="2.7.0",
+Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.7.0",
  org.eclipse.emf.ecore.xmi;bundle-version="2.7.0",
  org.hawk.core;bundle-version="1.0.0",
  org.eclipse.uml2.uml,
@@ -23,6 +21,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.modelio.api.impl;bundle-version="3.2.1",
  org.modelio.app.project.core;bundle-version="3.2.1",
  org.modelio.app.core;bundle-version="3.2.1",
- org.modelio.metamodel.implementation;bundle-version="3.2.1"
+ org.modelio.metamodel.implementation;bundle-version="3.2.1",
+ org.eclipse.equinox.registry
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ActivationPolicy: lazy

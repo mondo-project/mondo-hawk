@@ -3,9 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Hawk Epsilon (Queryaware) Plugin
 Bundle-SymbolicName: org.hawk.epsilon.queryaware;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.hawk.epsilon.queryaware.Activator
-Require-Bundle: org.eclipse.core.runtime,
- org.hawk.core;bundle-version="1.0.0",
+Require-Bundle: org.hawk.core;bundle-version="1.0.0",
  org.eclipse.epsilon.eol.engine;bundle-version="1.3.0",
  org.eclipse.epsilon.eol.ast2eol,
  org.eclipse.epsilon.eol.metamodel,
@@ -15,7 +13,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.epsilon.labs.effectivemetamodel,
  org.hawk.epsilon;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ActivationPolicy: lazy
 Export-Package: org.hawk.epsilon.queryaware
 Bundle-Vendor: University of York
 Import-Package: org.hawk.graph

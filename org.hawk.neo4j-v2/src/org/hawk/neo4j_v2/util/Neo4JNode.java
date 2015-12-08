@@ -11,14 +11,11 @@
 package org.hawk.neo4j_v2.util;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 
-import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
-import org.hawk.graph.ModelElementNode;
 import org.hawk.neo4j_v2.Neo4JDatabase;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.DynamicRelationshipType;
@@ -237,14 +234,7 @@ public class Neo4JNode implements IGraphNode {
 	@Override
 	public String toString() {
 
-		Iterator<IGraphEdge> it = getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator();
-
-		return "Node:"
-				+ id
-				+ " :: type: "
-				+ (it.hasNext() ? it.next().getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
-						: "NONE(not model element)") + " :: properties:"
-				+ getProperties();
+		return "Node:" + id + " :: properties:" + getProperties();
 	}
 
 	private String getProperties() {

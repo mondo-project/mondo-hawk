@@ -3,11 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Hawk Workspace Repository Plugin
 Bundle-SymbolicName: org.hawk.workspace;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.hawk.workspace.Activator
 Bundle-Vendor: University of York
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
+Require-Bundle: org.hawk.core;bundle-version="1.0.0",
  org.eclipse.core.resources,
- org.hawk.core;bundle-version="1.0.0"
+ org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ActivationPolicy: lazy

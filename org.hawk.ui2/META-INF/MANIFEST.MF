@@ -4,15 +4,13 @@ Bundle-Name: Hawk UI Plugin
 Bundle-SymbolicName: org.hawk.ui2;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.hawk.ui2.Activator
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.core.resources,
- org.eclipse.ui.ide,
+Require-Bundle: org.eclipse.core.runtime,
  org.hawk.core,
- org.hawk.core.dependencies;bundle-version="1.0.0",
- org.hawk.osgiserver;bundle-version="1.0.0",
  org.eclipse.ui.workbench.texteditor,
- org.eclipse.text
+ org.eclipse.text,
+ org.hawk.osgiserver;bundle-version="1.0.0",
+ org.eclipse.core.resources,
+ org.eclipse.ui
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.ui.console

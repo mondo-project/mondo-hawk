@@ -10,4 +10,5 @@ Require-Bundle: org.junit;bundle-version="4.11.0",
  org.hawk.emf;bundle-version="1.0.0",
  org.hawk.localfolder;bundle-version="1.0.0",
  org.hawk.epsilon;bundle-version="1.0.0",
- org.hawk.graph.syncValidationListener;bundle-version="1.0.0"
+ org.hawk.graph.syncValidationListener;bundle-version="1.0.0",
+ org.hawk.graph

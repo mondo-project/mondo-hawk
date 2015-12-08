@@ -487,9 +487,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 	@Override
 	public File logFull() throws Exception {
 
-		File logFolder = new File(Activator.getInstance().getStateLocation()
-				.toString()
-				+ "/logs");
+		File logFolder = new File(loc + "/logs");
 		logFolder.mkdir();
 
 		File log = new File(logFolder + "/log-" + "name" + "-0.txt");

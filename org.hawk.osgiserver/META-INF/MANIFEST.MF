@@ -3,10 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Hawk Server Plugin
 Bundle-SymbolicName: org.hawk.osgiserver;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Require-Bundle: org.eclipse.core.runtime,
- org.hawk.core;bundle-version="1.0.0",
- org.hawk.core.dependencies,
- org.eclipse.equinox.security
+Require-Bundle: org.hawk.core;bundle-version="1.0.0",
+ org.eclipse.equinox.security,
+ org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: University of York
 Import-Package: org.slf4j,

@@ -3,12 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Hawk Svn Plugin
 Bundle-SymbolicName: org.hawk.svn;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.hawk.svn.Activator
-Require-Bundle: org.eclipse.core.runtime,
- org.hawk.core;bundle-version="1.0.0",
+Require-Bundle: org.hawk.core;bundle-version="1.0.0",
  org.tmatesoft.svnkit;bundle-version="1.8.6",
  org.tmatesoft.sqljet;bundle-version="1.1.10"
-Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.hawk.svn
 Bundle-Vendor: University of York

@@ -15,16 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.hawk.core.Activator;
 import org.hawk.core.IConsole;
 import org.hawk.core.ICredentialsStore;
 import org.hawk.core.IHawk;
 import org.hawk.core.IHawkFactory;
 import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.util.HawkProperties;
-import org.osgi.framework.FrameworkUtil;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -58,8 +54,7 @@ public class LocalHawkFactory implements IHawkFactory {
 
 	@Override
 	public InstanceInfo[] listInstances(String location) {
-		final File basePath =
-			ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile();
+		final File basePath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile();
 
 		final List<InstanceInfo> entries = new ArrayList<>();
 		for (File f : basePath.listFiles()) {
@@ -74,9 +69,9 @@ public class LocalHawkFactory implements IHawkFactory {
 						HawkProperties hp = (HawkProperties) stream.fromXML(fProps);
 						entries.add(new InstanceInfo(f.getName(), hp.getDbType(), HawkState.STOPPED));
 					} catch (Exception ex) {
-						final String bundleName = FrameworkUtil.getBundle(LocalHawkFactory.class).getSymbolicName();
-						final Status warnStatus = new Status(IStatus.WARNING, bundleName, ex.getMessage(), ex);
-						Activator.getDefault().getLog().log(warnStatus);
+						//final String bundleName = FrameworkUtil.getBundle(LocalHawkFactory.class).getSymbolicName();
+						//final Status warnStatus = new Status(IStatus.WARNING, bundleName, ex.getMessage(), ex);
+						ex.printStackTrace();//Activator.getDefault().getLog().log(warnStatus);
 					}
 				}
 			}
