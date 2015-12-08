@@ -10,14 +10,20 @@
  ******************************************************************************/
 package org.hawk.graph.internal.updater;
 
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.hawk.core.IConsole;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IModelUpdater;
 import org.hawk.core.IVcsManager;
+import org.hawk.core.VcsChangeType;
+import org.hawk.core.VcsCommit;
 import org.hawk.core.VcsCommitItem;
+import org.hawk.core.VcsRepositoryDelta;
+import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
@@ -169,15 +175,36 @@ public class GraphModelUpdater implements IModelUpdater {
 		IGraphDatabase graph = indexer.getGraph();
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
-
 			IGraphNodeIndex filedictionary = graph.getFileIndex();
+			IGraphIterable<IGraphNode> fileNodes = filedictionary.query("id", c.getLocation() + "*");
 
-			IGraphIterable<IGraphNode> fileNodesIt = filedictionary.query("id",
-					c.getLocation() + "*");
+			// Construct a simulated VcsRepositoryDelta with a "-deleted" revision
+			final VcsRepositoryDelta delta = new VcsRepositoryDelta();
+			final VcsCommit fakeCommit = new VcsCommit();
+			delta.setManager(c);
+			delta.getCommits().add(fakeCommit);
+			delta.setLatestRevision(c.getCurrentRevision() + "-deleted");
+			fakeCommit.setAuthor("hawk");
+			fakeCommit.setDelta(delta);
+			fakeCommit.setJavaDate(new Date());
+			fakeCommit.setRevision(c.getCurrentRevision() + "-deleted");
+			fakeCommit.setMessage("stopped indexing");
+			for (IGraphNode fileNode : fileNodes) {
+				VcsCommitItem item = new VcsCommitItem();
+				item.setChangeType(VcsChangeType.DELETED);
+				item.setCommit(fakeCommit);
+				item.setPath(fileNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
 
-			for (IGraphNode fileNode : fileNodesIt)
-				new DeletionUtils(graph).deleteAll(fileNode, c,
-						indexer.getCompositeGraphChangeListener());
+				fakeCommit.getItems().add(item);
+			}
+
+			final DeletionUtils deletionUtils = new DeletionUtils(graph);
+			final Iterator<IGraphNode> itFileNodes = fileNodes.iterator();
+			final Iterator<VcsCommitItem> itItems = fakeCommit.getItems().iterator();
+			final IGraphChangeListener changeListener = indexer.getCompositeGraphChangeListener();
+			while (itFileNodes.hasNext()) {
+				deletionUtils.deleteAll(itFileNodes.next(), itItems.next(), changeListener);
+			}
 
 			t.success();
 		}

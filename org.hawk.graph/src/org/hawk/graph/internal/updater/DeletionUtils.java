@@ -13,7 +13,6 @@ package org.hawk.graph.internal.updater;
 import java.util.HashSet;
 
 import org.hawk.core.IModelIndexer;
-import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
@@ -39,18 +38,6 @@ public class DeletionUtils {
 			System.err.println("DELETE NODE EXCEPTION:");
 			e.printStackTrace();
 		}
-
-	}
-
-	protected boolean deleteAll(IGraphNode file, IVcsManager c,
-			IGraphChangeListener changeListener) throws Exception {
-
-		// VcsCommitItem v = new DeletedRepoItem(c);
-		// FIXME
-		// TODO
-		// discuss with antonio
-		System.err.println("i promise i am deleting stuff here!");
-		return false;
 
 	}
 
