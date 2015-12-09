@@ -397,14 +397,12 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 					messageBox.setText("VCS location deletion");
 					int response = messageBox.open();
 					if (response == SWT.YES) {
-
 						try {
 							hawkModel.removeRepository(m);
 						} catch (Exception ee) {
 							ee.printStackTrace();
 						}
-
-						lstVCSLocations.refresh();
+						lstVCSLocations.setInput(hawkModel.getRunningVCSManagers().toArray());
 					}
 				}
 			}
