@@ -490,20 +490,16 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		stateListener.info("Registering metamodels...");
 
-		String s = null;
-		String ep = null;
-		String type = null;
-
 		try (IGraphTransaction t = graph.beginTransaction()) {
 
 			for (IGraphNode epackage : graph.getMetamodelIndex().query("id",
 					"*")) {
 
-				s = epackage.getProperty(
+				final String s = epackage.getProperty(
 						IModelIndexer.METAMODEL_RESOURCE_PROPERTY).toString();
-				ep = epackage.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+				final String ep = epackage.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
 						.toString();
-				type = epackage.getProperty(
+				final String type = epackage.getProperty(
 						IModelIndexer.METAMODEL_TYPE_PROPERTY).toString();
 
 				IMetaModelResourceFactory p = getMetaModelParser(type);
