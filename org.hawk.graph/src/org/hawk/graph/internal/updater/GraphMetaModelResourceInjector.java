@@ -346,12 +346,7 @@ public class GraphMetaModelResourceInjector {
 			if (!success) {
 				try (IGraphTransaction t2 = graph.beginTransaction()) {
 					IGraphNode ePackageNode = epackagedictionary.get("id", epackage.getNsURI()).iterator().next();
-
-					System.out.println("Nodes before deletion: " + epackagedictionary.query("id", "*").size());
 					new DeletionUtils(graph).delete(ePackageNode);
-					System.out.println("Nodes after deletion and before transaction is committed: "
-							+ epackagedictionary.query("id", "*").size());
-
 					t2.success();
 
 				} catch (Exception e) {
