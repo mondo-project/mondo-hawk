@@ -296,47 +296,19 @@ public class GraphMetaModelResourceInjector {
 	 * @param graph
 	 * @return
 	 */
-	private int parseResource(Set<IHawkMetaModelResource> metamodels)
-			throws Exception {
-
-		// metamodelResources = metamodels;
-
-		// EObject[] contents = (EObject[]) resource.getContents().toArray();
-
-		// for (EObject content : contents) {
-		// List<EObject> children = new LinkedList<EObject>();
-		// children.add(content);
-
-		// while (!children.isEmpty()) {
-		// EObject child = children.remove(0);
-
-		// children.addAll(0, child.eContents());
+	private int parseResource(Set<IHawkMetaModelResource> metamodels) throws Exception {
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
 			listener.changeStart();
 			epackagedictionary = graph.getMetamodelIndex();
 
 			for (IHawkMetaModelResource metamodelResource : metamodels) {
-
-				// if (resourceset == null)
-				// resourceset = metamodelResource.getResourceSet();
-
 				Set<IHawkObject> children = metamodelResource.getAllContents();
 
 				for (IHawkObject child : children) {
-
-					// if (child.eIsProxy()) {
-					// throw new Exception("FAILED. PROXY UNRESOLVED: "
-					// + ((InternalEObject) child).eProxyURI()
-					// .fragment());
-					// }
-
 					// add the element
 					if (child instanceof IHawkPackage)
 						addEPackage((IHawkPackage) child, metamodelResource);
-					// )
-					// break;
-
 				}
 			}
 
@@ -349,12 +321,12 @@ public class GraphMetaModelResourceInjector {
 
 		Iterator<IHawkPackage> it = addedepackages.iterator();
 		while (it.hasNext()) {
-
 			IHawkPackage epackage = it.next();
 
+			boolean success = false;
 			try (IGraphTransaction t = graph.beginTransaction()) {
 				listener.changeStart();
-				final boolean success = addEClasses(epackage);
+				success = addEClasses(epackage);
 
 				if (success) {
 					t.success();
@@ -363,29 +335,30 @@ public class GraphMetaModelResourceInjector {
 				} else {
 					it.remove();
 					t.failure();
-
 					listener.changeFailure();
-					try (IGraphTransaction t2 = graph.beginTransaction()) {
-						IGraphNode ePackageNode = epackagedictionary
-								.get("id", epackage.getNsURI()).iterator()
-								.next();
-
-						new DeletionUtils(graph).delete(ePackageNode);
-
-						t2.success();
-
-					} catch (Exception e) {
-						System.err.println("e1");
-						e.printStackTrace();
-					}
 				}
-
 			} catch (Exception e) {
-				System.err.println("e2");
+				System.err.println("e1");
 				e.printStackTrace();
 				listener.changeFailure();
 			}
 
+			if (!success) {
+				try (IGraphTransaction t2 = graph.beginTransaction()) {
+					IGraphNode ePackageNode = epackagedictionary.get("id", epackage.getNsURI()).iterator().next();
+
+					System.out.println("Nodes before deletion: " + epackagedictionary.query("id", "*").size());
+					new DeletionUtils(graph).delete(ePackageNode);
+					System.out.println("Nodes after deletion and before transaction is committed: "
+							+ epackagedictionary.query("id", "*").size());
+
+					t2.success();
+
+				} catch (Exception e) {
+					System.err.println("e2");
+					e.printStackTrace();
+				}
+			}
 		}
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
