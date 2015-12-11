@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.hawk.core.model;
 
-import java.util.HashSet;
+import java.util.Set;
 
 public interface IHawkPackage extends IHawkObject {
 
@@ -20,7 +20,7 @@ public interface IHawkPackage extends IHawkObject {
 
 	String getNsURI();
 
-	HashSet<IHawkClassifier> getClasses();
+	Set<IHawkClassifier> getClasses();
 
 	IHawkMetaModelResource getResource();
 

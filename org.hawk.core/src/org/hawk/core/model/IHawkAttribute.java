@@ -10,13 +10,13 @@
  ******************************************************************************/
 package org.hawk.core.model;
 
-import java.util.HashSet;
+import java.util.Set;
 
 public interface IHawkAttribute extends IHawkStructuralFeature {
 
 	boolean isDerived();
 
-	HashSet<IHawkAnnotation> getAnnotations();
+	Set<IHawkAnnotation> getAnnotations();
 
 	IHawkClassifier getType();
 	
