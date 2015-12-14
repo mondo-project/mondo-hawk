@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 public class ModelioMetaModelResource implements IHawkMetaModelResource {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioMetaModelResource.class);
 
-	public static final String META_TYPE_NAME = "ModelioType";
+	private static final String META_TYPE_NAME = "ModelioType";
 	private static final String STRING_TYPE = "string";
 
 	private final ModelioMetaModelResourceFactory factory;
@@ -116,5 +116,9 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 			rawPackage.getExml(),
 			metamodel.getDataTypeByName(STRING_TYPE),
 			isMany, isUnique, isOrdered);
+	}
+
+	public ModelioDataType getStringDataType() {
+		return new ModelioDataType(getMetaPackage(), metamodel.getDataTypeByName(STRING_TYPE));
 	}
 }

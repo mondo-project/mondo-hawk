@@ -12,6 +12,7 @@ package org.hawk.modelio.exml.metamodel;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
@@ -112,5 +113,4 @@ public abstract class AbstractModelioObject implements IHawkObject {
 		}
 		return signature;
 	}
-
 }

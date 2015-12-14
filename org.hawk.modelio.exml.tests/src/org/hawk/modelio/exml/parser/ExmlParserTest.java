@@ -11,6 +11,7 @@
 package org.hawk.modelio.exml.parser;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayInputStream;
@@ -21,6 +22,8 @@ import java.util.NoSuchElementException;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
+import org.hawk.modelio.exml.model.ModelioModelResource;
 import org.junit.Test;
 
 /**
@@ -31,6 +34,8 @@ public class ExmlParserTest {
 	private static final String FRAGMENT_PATH = "resources/Zoo/data/fragments/";
 	private static final String CLASS_PATH = FRAGMENT_PATH + "Zoo/model/Class/";
 	private static final String AREA_CLASS_EXML = CLASS_PATH + "0a4ac84f-75a3-4b5b-bbad-d0e67857b4cf.exml";
+	private static final String ANIMAL_CLASS_EXML = CLASS_PATH + "4ed7f59f-f723-4f88-b6fc-ea6b83eb3108.exml";
+	private static final String ELEPHANT_CLASS_EXML = CLASS_PATH + "2d7b2cba-e694-4b33-bd9e-4d2f1db4cc7b.exml";
 
 	@Test
 	public void parseClass() throws Exception {
@@ -56,6 +61,33 @@ public class ExmlParserTest {
 			final ExmlObject ownedEnd = (ExmlObject)object.getCompositions().get("OwnedEnd").get(0);
 			final List<ExmlReference> ownedEndAssociation = ownedEnd.getCompositions().get("Association");
 			assertEquals("263b2747-a54c-49e6-9b9d-ee3a5968766a", ownedEndAssociation.get(0).getUID());
+		}
+	}
+
+	@Test
+	public void parseAnimal() throws Exception {
+		try (final FileInputStream fIS = new FileInputStream(new File(ANIMAL_CLASS_EXML))) {
+			final ExmlParser parser = new ExmlParser();
+			final ExmlObject object = parser.getObject(fIS);
+
+			assertEquals("Animal", object.getName());
+			assertEquals("Class", object.getMClassName());
+			assertEquals("4ed7f59f-f723-4f88-b6fc-ea6b83eb3108", object.getUID());
+		}
+	}
+
+	@Test
+	public void parseElephant() throws Exception {
+		try (final FileInputStream fIS = new FileInputStream(new File(ELEPHANT_CLASS_EXML))) {
+			final ExmlParser parser = new ExmlParser();
+			final ExmlObject object = parser.getObject(fIS);
+			assertEquals("Elephant", object.getName());
+
+			final List<ExmlReference> parent = object.getCompositions().get("Parent");
+			assertNotNull(parent);
+
+			final ModelioModelResource elephantModel = new ModelioModelResource(new ModelioMetaModelResource(null), object);
+			assertEquals(3, elephantModel.getAllContentsSet().size());
 		}
 	}
 

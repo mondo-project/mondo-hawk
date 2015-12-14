@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.hawk.modelio.exml.parser;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedInputStream;
@@ -18,7 +19,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
@@ -33,24 +33,38 @@ import org.junit.Test;
  */
 public class ExmlParserSmokeTest {
 
+	private final class ExmlVisitor extends SimpleFileVisitor<Path> {
+		private final ExmlParser parser;
+		public int nClasses = 0;
+
+		private ExmlVisitor(ExmlParser parser) {
+			this.parser = parser;
+		}
+
+		@Override
+		public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
+			final String fileName = path.toFile().getName();
+			if (fileName.endsWith(".exml")) {
+				try (final InputStream is = new BufferedInputStream(new FileInputStream(path.toFile()))) {
+					ExmlObject o = parser.getObject(is);
+					if (o.getMClassName().equals("Class")) {
+						nClasses++;
+					}
+				} catch (Exception e) {
+					fail("Failed to parse " + fileName + ": " + e.getMessage());
+				}
+			}
+			return FileVisitResult.CONTINUE;
+		}
+	}
+
 	@Test
 	public void zoo() throws Exception {
 		final ExmlParser parser = new ExmlParser();
-		final FileVisitor<Path> fv = new SimpleFileVisitor<Path>(){
-			@Override
-			public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
-				final String fileName = path.toFile().getName();
-				if (fileName.endsWith(".exml")) {
-					try (final InputStream is = new BufferedInputStream(new FileInputStream(path.toFile()))) {
-						parser.getObject(is);
-					} catch (Exception e) {
-						fail("Failed to parse " + fileName + ": " + e.getMessage());
-					}
-				}
-				return FileVisitResult.CONTINUE;
-			}
-		};
+
+		final ExmlVisitor fv = new ExmlVisitor(parser);
 		Files.walkFileTree(new File("resources").toPath(), fv);
+		assertEquals(6, fv.nClasses);
 	}
 
 	@Test

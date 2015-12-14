@@ -12,8 +12,6 @@ package org.hawk.modelio.exml.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -120,10 +118,8 @@ public class ExmlParser {
 	 * been the startElement of the <code>OBJECT</code> tag.
 	 */
 	private void fillObject(XMLEventReader reader, ExmlObject exmlObj) throws XMLStreamException {
-		String currentLink = "unknown";
-		String currentComp = "unknown";
-		Deque<String> elemStack = new ArrayDeque<>();
-		elemStack.push("OBJECT");
+		String currentLink = null;
+		String currentComp = null;
 
 		XMLEvent ev;
 		do {
@@ -134,15 +130,12 @@ public class ExmlParser {
 				case "ID":
 				case "FOREIGNID":
 				case "EXTID":
-					switch (elemStack.peek()) {
-					case "OBJECT":
-						fillInReference(evStart, exmlObj);
-						break;
-					case "LINK":
+					if (currentLink != null) {
 						final ExmlReference ref = new ExmlReference();
 						fillInReference(evStart, ref);
 						exmlObj.addToLink(currentLink, ref);
-						break;
+					} else {
+						fillInReference(evStart, exmlObj);
 					}
 					break;
 				case "PID":
@@ -165,18 +158,22 @@ public class ExmlParser {
 					currentComp = getAttribute(evStart, "relation");
 					break;
 				case "OBJECT":
-					switch (elemStack.peek()) {
-					case "COMP":
+					if (currentComp != null) {
 						final ExmlObject compObj = new ExmlObject();
 						fillObject(reader, compObj);
 						exmlObj.addToComposition(currentComp, compObj);
-						break;
 					}
 					break;
 				}
-				elemStack.push(evStart.getName().getLocalPart());
 			} else if (ev.isEndElement()) {
-				elemStack.pop();
+				switch (ev.asEndElement().getName().getLocalPart()) {
+				case "LINK":
+					currentLink = null;
+					break;
+				case "COMP":
+					currentComp = null;
+					break;
+				}
 			}
 		} while (!ev.isEndElement() || !ev.asEndElement().getName().getLocalPart().equals("OBJECT"));
 	}

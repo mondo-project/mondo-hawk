@@ -101,7 +101,8 @@ public class ModelioAttribute extends AbstractModelioObject implements IHawkAttr
 		if (mAttr.getMDataType() != null) {
 			return new ModelioDataType(mClass.getPackage().getResource().getMetaPackage(), mAttr.getMDataType());
 		} else {
-			return null;
+			// Fall back to string type if unknown (e.g. for enums)
+			return mClass.getPackage().getResource().getStringDataType();
 		}
 	}
 
@@ -115,5 +116,4 @@ public class ModelioAttribute extends AbstractModelioObject implements IHawkAttr
 		return "ModelioAttribute [getName()=" + getName() + ", isMany()=" + isMany() + ", isUnique()=" + isUnique()
 				+ ", isOrdered()=" + isOrdered() + ", getType()=" + getType() + "]";
 	}
-	
 }
