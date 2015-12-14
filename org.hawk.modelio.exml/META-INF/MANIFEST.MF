@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Hawk Modelio parser (.exml based)
-Bundle-SymbolicName: org.hawk.modelio.exml
+Bundle-SymbolicName: org.hawk.modelio.exml;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: University of York
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

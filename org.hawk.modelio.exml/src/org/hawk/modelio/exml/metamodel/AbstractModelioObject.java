@@ -27,7 +27,8 @@ public abstract class AbstractModelioObject implements IHawkObject {
 	@Override
 	public boolean isInDifferentResourceThan(IHawkObject other) {
 		if (other instanceof AbstractModelioObject) {
-			return getExml().equals(((AbstractModelioObject) other).getExml());
+			final String otherExml = ((AbstractModelioObject) other).getExml();
+			return !getExml().equals(otherExml);
 		}
 		return false;
 	}

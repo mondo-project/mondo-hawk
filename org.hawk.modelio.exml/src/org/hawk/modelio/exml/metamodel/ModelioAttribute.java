@@ -93,7 +93,12 @@ public class ModelioAttribute extends AbstractModelioObject implements IHawkAttr
 
 	@Override
 	public IHawkClassifier getType() {
-		return new ModelioDataType(mClass.getPackage().getResource().getMetaPackage(), mAttr.getMDataType());
+		if (mAttr.getMDataType() != null) {
+			return new ModelioDataType(mClass.getPackage().getResource().getMetaPackage(), mAttr.getMDataType());
+		} else {
+			
+			return null;
+		}
 	}
 
 	@Override

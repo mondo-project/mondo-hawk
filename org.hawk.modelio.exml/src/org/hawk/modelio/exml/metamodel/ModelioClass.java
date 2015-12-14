@@ -24,8 +24,12 @@ import org.hawk.core.model.IHawkStructuralFeature;
 import org.modelio.metamodel.MAttribute;
 import org.modelio.metamodel.MClass;
 import org.modelio.metamodel.MDependency;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ModelioClass extends AbstractModelioObject implements IHawkClass {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioClass.class);
 
 	protected final ModelioPackage mPackage;
 	protected final MClass rawClass;
@@ -39,13 +43,18 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 
 	@Override
 	public String getInstanceType() {
-		return null;
+		return rawClass.getName();
 	}
 
 	@Override
 	public boolean isRoot() {
 		// Modelio classes are always inside packages
 		return false;
+	}
+
+	@Override
+	public String getUri() {
+		return mPackage.getNsURI() + "#" + rawClass.getId();
 	}
 
 	@Override
@@ -97,7 +106,12 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 		if (attrs == null) {
 			attrs = new HashMap<>();
 			for (MAttribute mattr : rawClass.getMAttributes()) {
-				attrs.put(mattr.getName(), new ModelioAttribute(this, mattr));
+				final ModelioAttribute attr = new ModelioAttribute(this, mattr);
+				if (attr.getType() != null) {
+					attrs.put(mattr.getName(), attr);
+				} else {
+					LOGGER.warn("Attribute '{}#{}' has an unknown data type, skipping", rawClass.getName(), mattr.getName());
+				}
 			}
 		}
 		return attrs;

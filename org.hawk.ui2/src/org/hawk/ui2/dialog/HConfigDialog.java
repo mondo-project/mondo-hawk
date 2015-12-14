@@ -13,6 +13,7 @@
 package org.hawk.ui2.dialog;
 
 import java.io.File;
+import java.util.Collections;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.dialogs.Dialog;
@@ -342,7 +343,9 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 
 	private void updateMetamodelList() {
 		metamodelList.removeAll();
-		for (String mm : hawkModel.getRegisteredMetamodels()) {
+		final java.util.List<String> mms = hawkModel.getRegisteredMetamodels();
+		Collections.sort(mms);
+		for (String mm : mms) {
 			metamodelList.add(mm);
 		}
 	}
