@@ -56,6 +56,11 @@ public class ModelioAttribute extends AbstractModelioObject implements IHawkAttr
 	}
 
 	@Override
+	public String getUri() {
+		return mClass.getPackageNSURI() + "#" + getUriFragment();
+	}
+
+	@Override
 	public String getUriFragment() {
 		return mAttr.getId();
 	}
@@ -96,7 +101,6 @@ public class ModelioAttribute extends AbstractModelioObject implements IHawkAttr
 		if (mAttr.getMDataType() != null) {
 			return new ModelioDataType(mClass.getPackage().getResource().getMetaPackage(), mAttr.getMDataType());
 		} else {
-			
 			return null;
 		}
 	}

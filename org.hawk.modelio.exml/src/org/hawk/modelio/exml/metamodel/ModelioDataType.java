@@ -38,6 +38,11 @@ public class ModelioDataType extends AbstractModelioObject implements IHawkDataT
 	}
 
 	@Override
+	public String getUri() {
+		return mPackage.getNsURI() + "#" + getUriFragment();
+	}
+
+	@Override
 	public String getUriFragment() {
 		return mDataType.getId();
 	}

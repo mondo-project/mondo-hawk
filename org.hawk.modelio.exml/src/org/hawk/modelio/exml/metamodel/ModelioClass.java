@@ -105,16 +105,23 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 	public Map<String, ModelioAttribute> getAttributes() {
 		if (attrs == null) {
 			attrs = new HashMap<>();
-			for (MAttribute mattr : rawClass.getMAttributes()) {
-				final ModelioAttribute attr = new ModelioAttribute(this, mattr);
-				if (attr.getType() != null) {
-					attrs.put(mattr.getName(), attr);
-				} else {
-					LOGGER.warn("Attribute '{}#{}' has an unknown data type, skipping", rawClass.getName(), mattr.getName());
-				}
-			}
+			addAttributes(rawClass);
 		}
 		return attrs;
+	}
+
+	private void addAttributes(final MClass mc) {
+		for (MAttribute mattr : mc.getMAttributes()) {
+			final ModelioAttribute attr = new ModelioAttribute(this, mattr);
+			if (attr.getType() != null) {
+				attrs.put(mattr.getName(), attr);
+			} else {
+				LOGGER.warn("Attribute '{}#{}' has an unknown data type, skipping", mc.getName(), mattr.getName());
+			}
+		}
+		for (MClass mcSuper : mc.getMSuperType()) {
+			addAttributes(mcSuper);
+		}
 	}
 
 	@Override
@@ -125,11 +132,18 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 	public Map<String, ModelioReference> getReferences() {
 		if (refs == null) {
 			refs = new HashMap<>();
-			for (MDependency mdep : rawClass.getMDependencys()) {
-				refs.put(mdep.getName(), new ModelioReference(this, mdep));
-			}
+			addReferences(rawClass);
 		}
 		return refs;
+	}
+
+	private void addReferences(final MClass mc) {
+		for (MDependency mdep : mc.getMDependencys()) {
+			refs.put(mdep.getName(), new ModelioReference(this, mdep));
+		}
+		for (MClass mcSuper : mc.getMSuperType()) {
+			addReferences(mcSuper);
+		}
 	}
 
 	@Override

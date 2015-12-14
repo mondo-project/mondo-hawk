@@ -53,6 +53,11 @@ public class ModelioPackage extends AbstractModelioObject implements IHawkPackag
 	}
 
 	@Override
+	public String getUri() {
+		return getNsURI() + "#" + getUriFragment();
+	}
+
+	@Override
 	public String getUriFragment() {
 		return rawPackage.getId();
 	}

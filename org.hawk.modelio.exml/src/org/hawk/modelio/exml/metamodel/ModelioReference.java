@@ -42,6 +42,11 @@ public class ModelioReference extends AbstractModelioObject implements IHawkRefe
 	}
 
 	@Override
+	public String getUri() {
+		return mClass.getPackageNSURI() + "#" + getUriFragment();
+	}
+
+	@Override
 	public String getUriFragment() {
 		return mDependency.getId();
 	}
@@ -79,7 +84,7 @@ public class ModelioReference extends AbstractModelioObject implements IHawkRefe
 
 	@Override
 	public IHawkClassifier getType() {
-		return mClass.getPackage().getResource().getModelioClass(mDependency.getMClass());
+		return mClass.getPackage().getResource().getModelioClass(mDependency.getMClass().getName());
 	}
 
 	@Override

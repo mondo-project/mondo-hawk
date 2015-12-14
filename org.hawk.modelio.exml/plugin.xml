@@ -7,5 +7,11 @@
             MetaModelParser="org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory">
       </MetaModelP>
    </extension>
+   <extension
+         point="org.hawk.core.ModelExtensionPoint">
+      <ModelP
+            ModelParser="org.hawk.modelio.exml.model.ModelioModelResourceFactory">
+      </ModelP>
+   </extension>
 
 </plugin>

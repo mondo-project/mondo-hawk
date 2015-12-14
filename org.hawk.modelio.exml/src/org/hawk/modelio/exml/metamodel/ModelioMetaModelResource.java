@@ -39,7 +39,7 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 
 	private MMetamodel metamodel = new MMetamodel();
 	private Set<IHawkObject> contents;
-	private Map<String, IHawkClassifier> classesByName;
+	private Map<String, ModelioClass> classesByName;
 
 	public ModelioMetaModelResource(ModelioMetaModelResourceFactory factory) {
 		this.factory = factory;
@@ -76,7 +76,7 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 		contents.add(pkg);
 		for (IHawkClassifier cl : pkg.getClasses()) {
 			contents.add(cl);
-			if (classesByName.put(cl.getName(), cl) != null) {
+			if (classesByName.put(cl.getName(), (ModelioClass)cl) != null) {
 				LOGGER.error("Class name '{}' is not unique", cl.getName());
 			}
 		}
@@ -103,8 +103,9 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 		return metaPackage;
 	}
 
-	public IHawkClassifier getModelioClass(MClass mClass) {
-		return classesByName.get(mClass.getName());
+	public ModelioClass getModelioClass(String className) {
+		getAllContents();
+		return classesByName.get(className);
 	}
 
 	private MAttribute createStringAttribute(MPackage rawPackage, String className, String attrName) {

@@ -34,11 +34,6 @@ public abstract class AbstractModelioObject implements IHawkObject {
 	}
 
 	@Override
-	public String getUri() {
-		return getExml() + "#" + getUriFragment();
-	}
-
-	@Override
 	public boolean URIIsRelative() {
 		// TODO change this?
 		return false;
