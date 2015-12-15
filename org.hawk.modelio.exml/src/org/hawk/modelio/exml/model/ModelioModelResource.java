@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.hawk.modelio.exml.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -24,12 +26,20 @@ import org.hawk.modelio.exml.parser.ExmlReference;
 public class ModelioModelResource implements IHawkModelResource {
 
 	private final ModelioMetaModelResource metamodel;
-	private final ExmlObject exml;
+	private final List<ExmlObject> exmls;
 	private Set<IHawkObject> contents;
 
 	public ModelioModelResource(ModelioMetaModelResource metamodel, ExmlObject exml) {
 		this.metamodel = metamodel;
-		this.exml = exml;
+		this.exmls = Collections.singletonList(exml);
+	}
+
+	public ModelioModelResource(ModelioMetaModelResource metamodel, Iterable<ExmlObject> objects) {
+		this.metamodel = metamodel;
+		this.exmls = new ArrayList<>();
+		for (ExmlObject o : objects) {
+			exmls.add(o);
+		}
 	}
 
 	@Override
@@ -51,14 +61,11 @@ public class ModelioModelResource implements IHawkModelResource {
 	public Set<IHawkObject> getAllContentsSet() {
 		if (contents == null) {
 			contents = new HashSet<>();
-			addObjectToContents(exml);
+			for (ExmlObject exml : exmls) {
+				addObjectToContents(exml);
+			}
 		}
 		return contents;
-	}
-
-	@Override
-	public byte[] getSignature(IHawkObject o) {
-		return new ModelioObject(metamodel, exml).signature();
 	}
 
 	private void addObjectToContents(ExmlObject exml) {

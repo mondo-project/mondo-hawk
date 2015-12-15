@@ -72,7 +72,7 @@ public class ExmlParserSmokeTest {
 	@Test
 	public void jenkinsArchive() throws Exception {
 		final ExmlParser parser = new ExmlParser();
-		final File f = new File("resources/jenkins_1.540.0.ramc");
+		final File f = new File("resources/jenkins/jenkins_1.540.0.ramc");
 		Iterable<ExmlObject> objects = parser.getObjects(f, new ZipFile(f));
 
 		final long millis = System.currentTimeMillis();

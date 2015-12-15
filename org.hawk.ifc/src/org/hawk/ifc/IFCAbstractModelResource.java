@@ -162,11 +162,6 @@ public abstract class IFCAbstractModelResource implements IHawkModelResource {
 		return factory.getType();
 	}
 
-	@Override
-	public byte[] getSignature(IHawkObject o) {
-		return o.signature();
-	}
-
 	public IFCModelType getIFCModelType() {
 		return ifcModelType;
 	}

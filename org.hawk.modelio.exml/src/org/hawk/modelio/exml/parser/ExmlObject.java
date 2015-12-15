@@ -202,4 +202,58 @@ public class ExmlObject extends ExmlReference {
 		sbuf.append("]");		
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((attributes == null) ? 0 : attributes.hashCode());
+		result = prime * result + ((compositions == null) ? 0 : compositions.hashCode());
+		result = prime * result + ((links == null) ? 0 : links.hashCode());
+		result = prime * result + ((parentMClassName == null) ? 0 : parentMClassName.hashCode());
+		result = prime * result + ((parentName == null) ? 0 : parentName.hashCode());
+		result = prime * result + ((parentUid == null) ? 0 : parentUid.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ExmlObject other = (ExmlObject) obj;
+		if (attributes == null) {
+			if (other.attributes != null)
+				return false;
+		} else if (!attributes.equals(other.attributes))
+			return false;
+		if (compositions == null) {
+			if (other.compositions != null)
+				return false;
+		} else if (!compositions.equals(other.compositions))
+			return false;
+		if (links == null) {
+			if (other.links != null)
+				return false;
+		} else if (!links.equals(other.links))
+			return false;
+		if (parentMClassName == null) {
+			if (other.parentMClassName != null)
+				return false;
+		} else if (!parentMClassName.equals(other.parentMClassName))
+			return false;
+		if (parentName == null) {
+			if (other.parentName != null)
+				return false;
+		} else if (!parentName.equals(other.parentName))
+			return false;
+		if (parentUid == null) {
+			if (other.parentUid != null)
+				return false;
+		} else if (!parentUid.equals(other.parentUid))
+			return false;
+		return true;
+	}
 }

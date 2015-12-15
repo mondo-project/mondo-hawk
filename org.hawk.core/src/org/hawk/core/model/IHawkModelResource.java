@@ -22,6 +22,4 @@ public interface IHawkModelResource extends IHawkResource {
 
 	Set<IHawkObject> getAllContentsSet();
 
-	byte[] getSignature(IHawkObject o);
-
 }

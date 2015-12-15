@@ -99,11 +99,6 @@ public class EMFModelResource implements IHawkModelResource {
 		return parser.getType();
 	}
 
-	@Override
-	public byte[] getSignature(IHawkObject o) {
-		return o.signature();
-	}
-
 	public Resource getResource() {
 		return res;
 	}

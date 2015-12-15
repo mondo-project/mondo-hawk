@@ -58,4 +58,47 @@ public class ExmlReference {
 	public String toString() {
 		return "ExmlReference [name=" + name + ", mClassName=" + mClassName + ", uid=" + uid + "]";
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((mClassName == null) ? 0 : mClassName.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((srcFile == null) ? 0 : srcFile.hashCode());
+		result = prime * result + ((uid == null) ? 0 : uid.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ExmlReference other = (ExmlReference) obj;
+		if (mClassName == null) {
+			if (other.mClassName != null)
+				return false;
+		} else if (!mClassName.equals(other.mClassName))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (srcFile == null) {
+			if (other.srcFile != null)
+				return false;
+		} else if (!srcFile.equals(other.srcFile))
+			return false;
+		if (uid == null) {
+			if (other.uid != null)
+				return false;
+		} else if (!uid.equals(other.uid))
+			return false;
+		return true;
+	}
 }
