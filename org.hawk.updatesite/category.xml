@@ -33,6 +33,9 @@
    <feature url="features/org.hawk.orientdb.feature_1.0.0.qualifier.jar" id="org.hawk.orientdb.feature" version="1.0.0.qualifier">
       <category name="hawk.backends"/>
    </feature>
+   <feature url="features/org.hawk.modelio.exml.feature_1.0.0.qualifier.jar" id="org.hawk.modelio.exml.feature" version="1.0.0.qualifier">
+      <category name="hawk.drivers"/>
+   </feature>
    <category-def name="hawk.core" label="Hawk Core"/>
    <category-def name="hawk.connectors" label="Hawk Connectors"/>
    <category-def name="hawk.backends" label="Hawk Backends"/>

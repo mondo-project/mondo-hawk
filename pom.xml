@@ -9,7 +9,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <tycho-version>0.23.1</tycho-version>
+    <tycho-version>0.24.0</tycho-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -30,6 +30,9 @@
     <module>org.hawk.graph.syncValidationListener</module>
     <module>org.hawk.localfolder</module>
     <module>org.hawk.localfolder.feature</module>
+    <module>org.hawk.modelio.exml</module>
+    <module>org.hawk.modelio.exml.tests</module>
+    <module>org.hawk.modelio.exml.feature</module>
     <module>org.hawk.orientdb</module>
     <module>org.hawk.orientdb.tests</module>
     <module>org.hawk.orientdb.feature</module>
@@ -67,6 +70,7 @@
       <plugin>
 	<groupId>org.eclipse.tycho</groupId>
 	<artifactId>tycho-surefire-plugin</artifactId>
+	<version>${tycho-version}</version>
 	<configuration>
           <argLine>-Xms1024m -Xmx2048m</argLine>
 	</configuration>
