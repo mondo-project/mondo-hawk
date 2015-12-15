@@ -897,10 +897,7 @@ public class GraphModelInserter {
 					}
 
 					for (String[] proxies : allProxies) {
-						final String[] pathFragment = proxies[0].split("#", 2);
-						final String fullPathURI = pathFragment[0];
-						final String fragment = pathFragment[1];
-
+						final String fullPathURI = proxies[0].substring(0, proxies[0].indexOf("#"));
 						final String[] repoFile = fullPathURI.split(GraphModelUpdater.FILEINDEX_REPO_SEPARATOR, 2);
 						final String repoURL = repoFile[0];
 						final String filePath = repoFile[1];
@@ -922,6 +919,7 @@ public class GraphModelInserter {
 								boolean resolved = false;
 
 								final String uri = proxies[i];
+								final String fragment = uri.substring(uri.indexOf("#") + 1);
 								final String edgeLabel = proxies[i + 1];
 								final boolean isContainment = Boolean.valueOf(proxies[i + 2]);
 								final boolean isContainer = Boolean.valueOf(proxies[i + 3]);

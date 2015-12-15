@@ -79,7 +79,7 @@ public class ModelioReference extends AbstractModelioObject implements IHawkRefe
 
 	@Override
 	public boolean isContainment() {
-		return mDependency.getIsConposition();
+		return mDependency.getisComposition();
 	}
 
 	@Override

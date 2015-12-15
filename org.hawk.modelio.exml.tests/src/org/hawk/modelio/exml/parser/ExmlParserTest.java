@@ -36,6 +36,7 @@ public class ExmlParserTest {
 	private static final String AREA_CLASS_EXML = CLASS_PATH + "0a4ac84f-75a3-4b5b-bbad-d0e67857b4cf.exml";
 	private static final String ANIMAL_CLASS_EXML = CLASS_PATH + "4ed7f59f-f723-4f88-b6fc-ea6b83eb3108.exml";
 	private static final String ELEPHANT_CLASS_EXML = CLASS_PATH + "2d7b2cba-e694-4b33-bd9e-4d2f1db4cc7b.exml";
+	private static final String PACKAGE_CLASS_EXML = FRAGMENT_PATH + "Zoo/model/Package/ea878bd2-7ef9-4ce1-a11e-35fa129981bb.exml";
 
 	@Test
 	public void parseClass() throws Exception {
@@ -91,6 +92,21 @@ public class ExmlParserTest {
 
 			final ModelioModelResource elephantModel = new ModelioModelResource(new ModelioMetaModelResource(null), object);
 			assertEquals(3, elephantModel.getAllContentsSet().size());
+		}
+	}
+
+	@Test
+	public void parsePackage() throws Exception {
+		final File f = new File(PACKAGE_CLASS_EXML);
+		try (final FileInputStream fIS = new FileInputStream(f)) {
+			final ExmlParser parser = new ExmlParser();
+			final ExmlObject object = parser.getObject(f, fIS);
+			assertEquals("zoo", object.getName());
+			assertEquals(6, object.getCompositions().get("OwnedElement").size());
+
+			final List<ExmlReference> products = object.getCompositions().get("Product");
+			assertEquals(1, products.size());
+			assertEquals("cf6a3b18-94f9-49ba-b8d9-653cb2f93cfb", products.get(0).getUID());
 		}
 	}
 

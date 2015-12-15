@@ -435,6 +435,26 @@ public class SyncValidationListener implements IGraphChangeListener {
 													instance,
 													modelrefvaluesclone);
 
+											// Take into account fragment-based references (Modelio)
+											modelRefs:
+											for (Iterator<String> itModelRefs = modelrefvaluesclone.iterator(); itModelRefs.hasNext(); ) {
+												final String modelref = itModelRefs.next();
+
+												final int idxHash = modelref.indexOf("#");
+												final String path = modelref.substring(modelref.indexOf(FILEINDEX_REPO_SEPARATOR) + FILEINDEX_REPO_SEPARATOR.length(), idxHash);
+												if (path.equals("/*")) {
+													final String fragment = modelref.substring(idxHash + 1);
+													for (Iterator<String> itNodeRefs = noderefvaluesclone.iterator(); itNodeRefs.hasNext(); ) {
+														final String noderef = itNodeRefs.next();
+														if (noderef.endsWith("#" + fragment)) {
+															itModelRefs.remove();
+															itNodeRefs.remove();
+															continue modelRefs;
+														}
+													}
+												}
+											}
+
 											if (noderefvaluesclone.size() > 0) {
 												System.err
 														.println("error in validating: reference "

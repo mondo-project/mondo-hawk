@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.hawk.modelio.exml;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: University of York
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ClassPath: lib/ModelioMetamodelLib-1.0.0.jar,
+Bundle-ClassPath: lib/ModelioMetamodelLib-1.0.1.jar,
  .
 Require-Bundle: org.slf4j.api;bundle-version="1.7.2",
  org.hawk.core;bundle-version="1.0.0"

@@ -44,7 +44,7 @@ public class ModelioObject extends AbstractModelioObject {
 
 	@Override
 	public String getUri() {
-		return getExml() + "#" + getUriFragment();
+		return exml.getFile().toURI().toString() + "#" + getUriFragment();
 	}
 
 	@Override
