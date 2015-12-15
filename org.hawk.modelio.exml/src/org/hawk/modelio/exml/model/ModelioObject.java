@@ -21,6 +21,7 @@ import org.hawk.core.model.IHawkStructuralFeature;
 import org.hawk.modelio.exml.metamodel.AbstractModelioObject;
 import org.hawk.modelio.exml.metamodel.ModelioAttribute;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
+import org.hawk.modelio.exml.metamodel.ModelioDataType;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
 import org.hawk.modelio.exml.metamodel.ModelioReference;
 import org.hawk.modelio.exml.parser.ExmlObject;
@@ -74,7 +75,22 @@ public class ModelioObject extends AbstractModelioObject {
 
 	@Override
 	public Object get(IHawkAttribute attr) {
-		return exml.getAttribute(attr.getName());
+		final String rawValue = exml.getAttribute(attr.getName());
+		if (rawValue != null) {
+			ModelioDataType mdt = (ModelioDataType)attr.getType();
+			switch (mdt.getInstanceType()) {
+			case "Short": return Short.valueOf(rawValue);
+			case "Long": return Long.valueOf(rawValue);
+			case "Integer": return Integer.valueOf(rawValue);
+			case "Float": return Float.valueOf(rawValue);
+			case "Double": return Double.valueOf(rawValue);
+			case "Character": return rawValue.charAt(0);
+			case "Byte": return Byte.valueOf(rawValue);
+			case "Boolean": return Boolean.valueOf(rawValue);
+			default: return rawValue;
+			}
+		}
+		return rawValue;
 	}
 
 	@Override
