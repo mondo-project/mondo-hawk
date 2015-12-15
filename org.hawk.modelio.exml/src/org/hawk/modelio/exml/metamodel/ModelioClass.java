@@ -63,6 +63,11 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 	}
 
 	@Override
+	public boolean isFragmentUnique() {
+		return true;
+	}
+
+	@Override
 	public IHawkClassifier getType() {
 		return mPackage.getResource().getMetaType();
 	}

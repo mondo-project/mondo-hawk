@@ -42,7 +42,7 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 		}
 		try (final FileInputStream fIS = new FileInputStream(f)) {
 			final ExmlParser parser = new ExmlParser();
-			final ExmlObject object = parser.getObject(fIS);
+			final ExmlObject object = parser.getObject(f, fIS);
 			return new ModelioModelResource(metamodel, object);
 		}
 	}

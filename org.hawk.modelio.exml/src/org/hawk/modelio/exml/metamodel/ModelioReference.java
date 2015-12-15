@@ -52,6 +52,11 @@ public class ModelioReference extends AbstractModelioObject implements IHawkRefe
 	}
 
 	@Override
+	public boolean isFragmentUnique() {
+		return true;
+	}
+
+	@Override
 	public boolean isSet(IHawkStructuralFeature hsf) {
 		switch (hsf.getName()) {
 		case "name": return true;

@@ -38,6 +38,10 @@ public class GraphModelUpdater implements IModelUpdater {
 	private boolean isActive = false;
 	public static final String FILEINDEX_REPO_SEPARATOR = "////";
 	public static final String PROXY_REFERENCE_PREFIX = "hawkProxyRef:";
+
+	/** Used in URIs of targets when we only know the unique fragment and we don't know the file. */
+	public static final String PROXY_FILE_WILDCARD = "*";
+
 	public static final boolean caresAboutResources = true;
 
 	private Set<IGraphNode> toBeUpdated = new HashSet<>();

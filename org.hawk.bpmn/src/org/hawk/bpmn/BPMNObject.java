@@ -79,6 +79,11 @@ public class BPMNObject implements IHawkObject {
 	}
 
 	@Override
+	public boolean isFragmentUnique() {
+		return false;
+	}
+
+	@Override
 	public IHawkClassifier getType() {
 
 		return new BPMNClass(eob.eClass());

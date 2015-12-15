@@ -48,6 +48,11 @@ public class ModelioDataType extends AbstractModelioObject implements IHawkDataT
 	}
 
 	@Override
+	public boolean isFragmentUnique() {
+		return true;
+	}
+
+	@Override
 	public IHawkClassifier getType() {
 		return mPackage.getResource().getMetaType();
 	}

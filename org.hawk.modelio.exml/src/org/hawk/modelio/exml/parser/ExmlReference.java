@@ -10,17 +10,24 @@
  ******************************************************************************/
 package org.hawk.modelio.exml.parser;
 
+import java.io.File;
+
 /**
  * Reference to a Modelio object.
  */
 public class ExmlReference {
 
+	private final File srcFile;
 	private String name;
 	private String mClassName;
 	private String uid;
 
-	public ExmlReference() {
-		super();
+	public ExmlReference(File f) {
+		this.srcFile = f;
+	}
+
+	public File getFile() {
+		return srcFile;
 	}
 
 	public String getName() {

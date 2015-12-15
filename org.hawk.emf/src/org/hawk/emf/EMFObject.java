@@ -79,6 +79,11 @@ public class EMFObject implements IHawkObject {
 	}
 
 	@Override
+	public boolean isFragmentUnique() {
+		return false;
+	}
+
+	@Override
 	public IHawkClassifier getType() {
 
 		return new EMFClass(eob.eClass());

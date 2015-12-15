@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.hawk.modelio.exml.parser;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -27,6 +28,10 @@ public class ExmlObject extends ExmlReference {
 	private final Map<String, String> attributes = new LinkedHashMap<>();
 	private final Map<String, List<ExmlReference>> compositions = new LinkedHashMap<>();
 	private final Map<String, List<ExmlReference>> links = new LinkedHashMap<>();
+
+	public ExmlObject(File f) {
+		super(f);
+	}
 
 	public String getParentName() {
 		return parentName;

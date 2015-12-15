@@ -39,9 +39,10 @@ public class ExmlParserTest {
 
 	@Test
 	public void parseClass() throws Exception {
-		try (final FileInputStream fIS = new FileInputStream(new File(AREA_CLASS_EXML))) {
+		final File f = new File(AREA_CLASS_EXML);
+		try (final FileInputStream fIS = new FileInputStream(f)) {
 			final ExmlParser parser = new ExmlParser();
-			final ExmlObject object = parser.getObject(fIS);
+			final ExmlObject object = parser.getObject(f, fIS);
 
 			assertEquals("Area", object.getName());
 			assertEquals("Class", object.getMClassName());
@@ -66,9 +67,10 @@ public class ExmlParserTest {
 
 	@Test
 	public void parseAnimal() throws Exception {
-		try (final FileInputStream fIS = new FileInputStream(new File(ANIMAL_CLASS_EXML))) {
+		final File f = new File(ANIMAL_CLASS_EXML);
+		try (final FileInputStream fIS = new FileInputStream(f)) {
 			final ExmlParser parser = new ExmlParser();
-			final ExmlObject object = parser.getObject(fIS);
+			final ExmlObject object = parser.getObject(f, fIS);
 
 			assertEquals("Animal", object.getName());
 			assertEquals("Class", object.getMClassName());
@@ -78,9 +80,10 @@ public class ExmlParserTest {
 
 	@Test
 	public void parseElephant() throws Exception {
-		try (final FileInputStream fIS = new FileInputStream(new File(ELEPHANT_CLASS_EXML))) {
+		final File f = new File(ELEPHANT_CLASS_EXML);
+		try (final FileInputStream fIS = new FileInputStream(f)) {
 			final ExmlParser parser = new ExmlParser();
-			final ExmlObject object = parser.getObject(fIS);
+			final ExmlObject object = parser.getObject(f, fIS);
 			assertEquals("Elephant", object.getName());
 
 			final List<ExmlReference> parent = object.getCompositions().get("Parent");
@@ -97,7 +100,7 @@ public class ExmlParserTest {
 	@Test(expected=NoSuchElementException.class)
 	public void parseNoObjects() throws Exception {
 		final ExmlParser parser = new ExmlParser();
-		assertNull(parser.getObject(new ByteArrayInputStream("<nothing/>".getBytes())));
+		assertNull(parser.getObject(null, new ByteArrayInputStream("<nothing/>".getBytes())));
 	}
 
 	/**
@@ -106,6 +109,6 @@ public class ExmlParserTest {
 	@Test(expected=XMLStreamException.class)
 	public void parseEmpty() throws Exception {
 		final ExmlParser parser = new ExmlParser();
-		assertNull(parser.getObject(new ByteArrayInputStream(new byte[0])));
+		assertNull(parser.getObject(null, new ByteArrayInputStream(new byte[0])));
 	}
 }

@@ -23,15 +23,25 @@ public interface IHawkObject {
 	 */
 	boolean isRoot();
 
-	// full uri of element
+	/** Returns the full URI of the element. */
 	String getUri();
 
-	// returns whether the uri of this element is relative or absolute (TODO
-	// cross-file references of absolute URIs are not supported)
+	/**
+	 * Returns whether the uri of this element is relative or absolute.
+	 *
+	 * TODO cross-file references of absolute URIs are not supported
+	 */
 	boolean URIIsRelative();
 
-	// uri of the element itself without its containers
+	/** URI of the element itself without its containers */
 	String getUriFragment();
+
+	/**
+	 * Returns <code>true</code> if the URI fragment is unique across files
+	 * (as in Modelio). It should be <code>false</code> for most EMF-based
+	 * parsers.
+	 */
+	boolean isFragmentUnique();
 
 	// the type of the object
 	IHawkClassifier getType();

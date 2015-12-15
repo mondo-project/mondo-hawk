@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.hawk.modelio.exml.parser;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
@@ -41,6 +42,8 @@ public class ExmlParser {
 	 * {@link ExmlObject} inside it (which may contain other {@link ExmlObject}
 	 * instances).
 	 * 
+	 * @param container
+	 *            File that should be associated with the read contents.
 	 * @param is
 	 *            Input stream with the contents of the <code>.exml</code> file.
 	 *            The caller of this function is responsible for closing the
@@ -50,11 +53,11 @@ public class ExmlParser {
 	 * @throws NoSuchElementException
 	 *             No objects are present in the input stream.
 	 */
-	public ExmlObject getObject(InputStream is) throws XMLStreamException, FactoryConfigurationError {
+	public ExmlObject getObject(File container, InputStream is) throws XMLStreamException, FactoryConfigurationError {
 		final XMLEventReader reader = XMLInputFactory.newFactory().createXMLEventReader(is);
 		try {
 			skipUntilElementStarts(reader, "OBJECT");
-			final ExmlObject exmlObj = new ExmlObject();
+			final ExmlObject exmlObj = new ExmlObject(container);
 			fillObject(reader, exmlObj);
 			return exmlObj;
 		} finally {
@@ -63,9 +66,15 @@ public class ExmlParser {
 	}
 
 	/**
-	 * Returns an iterable object with all the {@link ExmlObject} instances in the archive.
+	 * Returns an iterable object with all the {@link ExmlObject} instances in
+	 * the archive.
+	 *
+	 * @param fZip
+	 *            File that should be associated with the read contents.
+	 * @param zipFile
+	 *            Opened zip file to read from.
 	 */
-	public Iterable<ExmlObject> getObjects(final ZipFile zipFile) {
+	public Iterable<ExmlObject> getObjects(final File fZip, final ZipFile zipFile) {
 		return new Iterable<ExmlObject>() {
 
 			@Override
@@ -97,7 +106,7 @@ public class ExmlParser {
 							ZipEntry entry = entries.nextElement();
 							if (entry.getName().toLowerCase().endsWith(".exml")) {
 								try (InputStream is = zipFile.getInputStream(entry)) {
-									nextObject = getObject(is);
+									nextObject = getObject(fZip, is);
 								} catch (IOException | XMLStreamException | FactoryConfigurationError e) {
 									LOGGER.error("Could not parse entry " + entry.getName() + " in " + zipFile.getName() + ": skipping", e);
 								}
@@ -131,7 +140,7 @@ public class ExmlParser {
 				case "FOREIGNID":
 				case "EXTID":
 					if (currentLink != null) {
-						final ExmlReference ref = new ExmlReference();
+						final ExmlReference ref = new ExmlReference(exmlObj.getFile());
 						fillInReference(evStart, ref);
 						exmlObj.addToLink(currentLink, ref);
 					} else {
@@ -144,7 +153,7 @@ public class ExmlParser {
 					exmlObj.setParentUID(getAttribute(evStart, "uid"));
 					break;
 				case "COMPID":
-					final ExmlReference ref = new ExmlReference();
+					final ExmlReference ref = new ExmlReference(exmlObj.getFile());
 					fillInReference(evStart, ref);
 					exmlObj.addToComposition(currentComp, ref);
 					break;
@@ -159,7 +168,7 @@ public class ExmlParser {
 					break;
 				case "OBJECT":
 					if (currentComp != null) {
-						final ExmlObject compObj = new ExmlObject();
+						final ExmlObject compObj = new ExmlObject(exmlObj.getFile());
 						fillObject(reader, compObj);
 						exmlObj.addToComposition(currentComp, compObj);
 					}

@@ -54,6 +54,11 @@ public class IFCObject implements IHawkObject {
 	}
 
 	@Override
+	public boolean isFragmentUnique() {
+		return false;
+	}
+
+	@Override
 	public IHawkClassifier getType() {
 
 		return new IFCClass(eob.eClass());

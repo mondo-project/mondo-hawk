@@ -53,6 +53,11 @@ public class ModelioObject extends AbstractModelioObject {
 	}
 
 	@Override
+	public boolean isFragmentUnique() {
+		return true;
+	}
+
+	@Override
 	public IHawkClassifier getType() {
 		return mc;
 	}
@@ -106,8 +111,7 @@ public class ModelioObject extends AbstractModelioObject {
 
 	@Override
 	public String getExml() {
-		// TODO can't report the actual .exml here, since Modelio links by ID and not by .exml+ID
-		return COMMON_EXML;
+		return exml.getFile().getPath();
 	}
 
 	@Override

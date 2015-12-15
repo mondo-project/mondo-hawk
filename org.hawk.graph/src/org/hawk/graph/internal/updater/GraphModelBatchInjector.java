@@ -45,8 +45,10 @@ import org.hawk.graph.internal.util.GraphUtil;
 
 public class GraphModelBatchInjector {
 
+	public static final String FRAGMENT_DICT_NAME = "fragmentdictionary";
 	public static final String ROOT_DICT_FILE_KEY = "file";
 	public static final String ROOT_DICT_NAME = "rootdictionary";
+
 	// integer array containing the current number of added elements:
 	// (element,((ofType)M->MM)reference,((ofKind)M->MM)reference,(unset(M->M))reference)
 	private int[] objectCount = { 0, 0, 0, 0 };
@@ -485,6 +487,10 @@ public class GraphModelBatchInjector {
 
 			try {
 				node = graph.createNode(m, "eobject");
+				if (eObject.isFragmentUnique()) {
+					IGraphNodeIndex fragmentIdx = graph.getOrCreateNodeIndex(FRAGMENT_DICT_NAME);
+					fragmentIdx.add(node, "id", eObject.getUriFragment());
+				}
 			} catch (IllegalArgumentException ex) {
 				System.err.println("here be dragons!");
 			} catch (Throwable e) {
@@ -1045,29 +1051,23 @@ public class GraphModelBatchInjector {
 			String edgelabel, boolean isContainment, boolean isContainer) {
 
 		try {
-			// proxydictionary.add(graph.getNodeById(hash.get((from))),
-			// edgelabel,
-			// ((EObject)destinationObject).eIsProxy());
-
 			String uri = destinationObject.getUri();
 
-			String destinationObjectRelativePathURI =
-			// new DeletionUtils(graph).getRelativeURI(
-			uri
-			// .toString())
-			;
-
-			if (!destinationObject.URIIsRelative()) {
-
+			String destinationObjectRelativePathURI = uri;
+			if (destinationObject.isFragmentUnique()) {
+				/*
+				 * In this scenario, we don't care about the file anymore: we
+				 * need to flag it properly for the later resolution.
+				 */
+				destinationObjectRelativePathURI = GraphModelUpdater.PROXY_FILE_WILDCARD
+					+ "#" + destinationObjectRelativePathURI.substring(destinationObjectRelativePathURI.indexOf("#") + 1);
+			}
+			else if (!destinationObject.URIIsRelative()) {
 				destinationObjectRelativePathURI = new Utils().makeRelative(
 						prefixesToStrip, destinationObjectRelativePathURI);
-
 			}
-			// System.err.println(uri.toString().substring(uri.toString().indexOf(".metadata/.plugins/com.google.code.hawk.neo4j/temp/m/")+53));
-			// System.err.println(uri.);
 
 			String destinationObjectRelativeFileURI = destinationObjectRelativePathURI;
-
 			destinationObjectRelativeFileURI = destinationObjectRelativePathURI
 					.substring(0, destinationObjectRelativePathURI.indexOf("#"));
 

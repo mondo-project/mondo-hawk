@@ -37,12 +37,17 @@ public class ModelioProxy extends AbstractModelioObject {
 
 	@Override
 	public String getUri() {
-		return getExml() + "#" + getUriFragment();
+		return "*#" + getUriFragment();
 	}
 
 	@Override
 	public String getUriFragment() {
 		return exml.getUID();
+	}
+
+	@Override
+	public boolean isFragmentUnique() {
+		return true;
 	}
 
 	@Override
@@ -67,7 +72,7 @@ public class ModelioProxy extends AbstractModelioObject {
 
 	@Override
 	public String getExml() {
-		return ModelioObject.COMMON_EXML;
+		return "*";
 	}
 
 	@Override

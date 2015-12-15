@@ -43,10 +43,11 @@ public class ExmlParserSmokeTest {
 
 		@Override
 		public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
-			final String fileName = path.toFile().getName();
+			final File f = path.toFile();
+			final String fileName = f.getName();
 			if (fileName.endsWith(".exml")) {
-				try (final InputStream is = new BufferedInputStream(new FileInputStream(path.toFile()))) {
-					ExmlObject o = parser.getObject(is);
+				try (final InputStream is = new BufferedInputStream(new FileInputStream(f))) {
+					ExmlObject o = parser.getObject(f, is);
 					if (o.getMClassName().equals("Class")) {
 						nClasses++;
 					}
@@ -67,10 +68,12 @@ public class ExmlParserSmokeTest {
 		assertEquals(6, fv.nClasses);
 	}
 
+	@SuppressWarnings("unused")
 	@Test
 	public void jenkinsArchive() throws Exception {
 		final ExmlParser parser = new ExmlParser();
-		Iterable<ExmlObject> objects = parser.getObjects(new ZipFile(new File("resources/jenkins_1.540.0.ramc")));
+		final File f = new File("resources/jenkins_1.540.0.ramc");
+		Iterable<ExmlObject> objects = parser.getObjects(f, new ZipFile(f));
 
 		final long millis = System.currentTimeMillis();
 		long parsed = 0;
