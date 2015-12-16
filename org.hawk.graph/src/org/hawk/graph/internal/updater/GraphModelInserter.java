@@ -12,6 +12,7 @@ package org.hawk.graph.internal.updater;
 
 import java.io.File;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -877,10 +878,13 @@ public class GraphModelInserter {
 		int proxiesLeft = -1;
 
 		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
-		IGraphIterable<IGraphNode> proxiesToBeResolved;
+		List<IGraphNode> proxiesToBeResolved = new ArrayList<>();
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex("proxydictionary");
-			proxiesToBeResolved = proxyDictionary.query(GraphModelUpdater.PROXY_REFERENCE_PREFIX, "*");
+			IGraphIterable<IGraphNode> proxies = proxyDictionary.query(GraphModelUpdater.PROXY_REFERENCE_PREFIX, "*");
+			for (IGraphNode n : proxies) {
+				proxiesToBeResolved.add(n);
+			}
 			tx.success();
 		}
 
@@ -913,8 +917,8 @@ public class GraphModelInserter {
 				if (currentProcessed >= PROXY_RESOLVE_NOTIFY_INTERVAL) {
 					totalProcessed += currentProcessed;
 					currentProcessed = 0;
-					final double elapsedSeconds = (System.currentTimeMillis() - startMillis)/1000.0;
-					indexer.getCompositeStateListener().info(String.format("Processed %d/%d nodes with proxies (%.2f seconds since start)", totalProcessed, nToBeResolved, elapsedSeconds));
+					final long elapsedSeconds = (System.currentTimeMillis() - startMillis)/1000;
+					indexer.getCompositeStateListener().info(String.format("Processed %d/%d nodes with proxies (%dsec total)", totalProcessed, nToBeResolved, elapsedSeconds));
 				}
 			}
 		}
