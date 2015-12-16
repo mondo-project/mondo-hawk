@@ -21,6 +21,7 @@ import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphDatabase.Mode;
 import org.hawk.core.graph.IGraphEdge;
+import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
@@ -109,9 +110,15 @@ public class DirtyDerivedAttributesListener implements IGraphChangeListener {
 			final IGraphNodeIndex idx = db
 					.getOrCreateNodeIndex("derivedaccessdictionary");
 
-			for (Entry<String, String> e : pending)
-				for (IGraphNode n : idx.query(e.getKey(), e.getValue()))
-					toBeUpdated.add(n);
+			// Do a quick check first if there are *any* derived attributes:
+			// repeated checks are very expensive in Neo4j due to Lucene query
+			// parsing.
+			IGraphIterable<IGraphNode> anyResults = idx.query("*", "*");
+			if (anyResults.iterator().hasNext()) {
+				for (Entry<String, String> e : pending)
+					for (IGraphNode n : idx.query(e.getKey(), e.getValue()))
+						toBeUpdated.add(n);
+			}
 
 			if (toBeUpdated.size() > 0) {
 
