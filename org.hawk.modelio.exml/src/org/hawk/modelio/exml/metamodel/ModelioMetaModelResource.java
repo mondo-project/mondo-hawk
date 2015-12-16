@@ -40,11 +40,13 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 	private MMetamodel metamodel = new MMetamodel();
 	private Set<IHawkObject> contents;
 	private Map<String, ModelioClass> classesByName;
+	private Map<String, ModelioClass> classesByUID;
 
 	public ModelioMetaModelResource(ModelioMetaModelResourceFactory factory) {
 		this.factory = factory;
 		this.metaPackage = new ModelioPackage(this, createMetaPackage());
 		this.classesByName = new HashMap<>();
+		this.classesByUID = new HashMap<>();
 	}
 
 	private MPackage createMetaPackage() {
@@ -58,6 +60,9 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 	@Override
 	public void unload() {
 		metamodel = null;
+		contents = null;
+		classesByName = null;
+		classesByUID = null;
 	}
 
 	@Override
@@ -77,7 +82,10 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 		for (IHawkClassifier cl : pkg.getClasses()) {
 			contents.add(cl);
 			if (classesByName.put(cl.getName(), (ModelioClass)cl) != null) {
-				LOGGER.error("Class name '{}' is not unique", cl.getName());
+				LOGGER.warn("Class name '{}' is not unique", cl.getName());
+			}
+			if (classesByUID.put(cl.getUriFragment(), (ModelioClass)cl) != null) {
+				LOGGER.error("Class UID '{}' is not unique", cl.getUriFragment());
 			}
 		}
 		for (ModelioPackage subpkg : pkg.getPackages()) {
@@ -103,9 +111,17 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 		return metaPackage;
 	}
 
-	public ModelioClass getModelioClass(String className) {
+	public ModelioClass getModelioClass(String className, String uid) {
 		getAllContents();
-		return classesByName.get(className);
+		ModelioClass cl = classesByUID.get(uid);
+		if (cl == null) {
+			cl = classesByName.get(className);
+		} else if (!cl.getName().equals(className)) {
+			// Should never happen (uid is supposed to be a UUID), but just in case
+			LOGGER.error("Class with UID '{}' does not have the expected name '{}' (was '{}')",
+					uid, className, cl.getName());
+		}
+		return cl;
 	}
 
 	private MAttribute createStringAttribute(MPackage rawPackage, String className, String attrName) {

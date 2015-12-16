@@ -34,7 +34,7 @@ public class ModelioObject extends AbstractModelioObject {
 	private final ExmlObject exml;
 
 	public ModelioObject(ModelioMetaModelResource metamodel, ExmlObject exml) {
-		this.mc = metamodel.getModelioClass(exml.getMClassName());
+		this.mc = metamodel.getModelioClass(exml.getMClassName(), exml.getUID());
 		this.exml = exml;
 	}
 

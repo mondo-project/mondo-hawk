@@ -44,6 +44,7 @@ public class ModelioModelResource implements IHawkModelResource {
 
 	@Override
 	public void unload() {
+		exmls.clear();
 		contents = null;
 	}
 

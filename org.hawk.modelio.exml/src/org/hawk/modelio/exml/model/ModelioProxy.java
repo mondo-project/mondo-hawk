@@ -25,7 +25,7 @@ public class ModelioProxy extends AbstractModelioObject {
 	private final ExmlReference exml;
 
 	public ModelioProxy(ModelioMetaModelResource metamodel, ExmlReference r) {
-		this.mc = metamodel.getModelioClass(r.getMClassName());
+		this.mc = metamodel.getModelioClass(r.getMClassName(), r.getUID());
 		this.exml = r;
 	}
 
