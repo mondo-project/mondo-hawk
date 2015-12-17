@@ -25,8 +25,10 @@ public class ModelioObjectTest {
 		try (final FileInputStream fIS = new FileInputStream(f)) {
 			final ExmlParser parser = new ExmlParser();
 			final ExmlObject object = parser.getObject(f, fIS);
-			final ModelioObject mO = new ModelioObject(new ModelioMetaModelResource(null), object);
-			final ModelioClass mC = (ModelioClass) mO.getType();
+
+			final ModelioMetaModelResource metamodel = new ModelioMetaModelResource(null);
+			final ModelioClass mC = metamodel.getModelioClass(object.getMClassName());
+			final ModelioObject mO = new ModelioObject(mC, object);
 
 			final Map<String, ModelioAttribute> attrs = mC.getAttributes();
 			assertTrue(((String)mO.get(attrs.get("UiData"))).startsWith("eJztXWtz27"));

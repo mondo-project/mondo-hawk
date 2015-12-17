@@ -16,7 +16,6 @@ import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
 import org.hawk.modelio.exml.metamodel.AbstractModelioObject;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
-import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
 import org.hawk.modelio.exml.parser.ExmlReference;
 
 public class ModelioProxy extends AbstractModelioObject {
@@ -24,8 +23,8 @@ public class ModelioProxy extends AbstractModelioObject {
 	private final ModelioClass mc;
 	private final ExmlReference exml;
 
-	public ModelioProxy(ModelioMetaModelResource metamodel, ExmlReference r) {
-		this.mc = metamodel.getModelioClass(r.getMClassName(), r.getUID());
+	public ModelioProxy(ModelioClass mc, ExmlReference r) {
+		this.mc = mc;
 		this.exml = r;
 	}
 

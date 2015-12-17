@@ -26,15 +26,21 @@ import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
 import org.hawk.modelio.exml.metamodel.ModelioReference;
 import org.hawk.modelio.exml.parser.ExmlObject;
 import org.hawk.modelio.exml.parser.ExmlReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ModelioObject extends AbstractModelioObject {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioObject.class);
 	public static final String COMMON_EXML = "modelio-objects.exml";
 	private final ModelioClass mc;
 	private final ExmlObject exml;
 
-	public ModelioObject(ModelioMetaModelResource metamodel, ExmlObject exml) {
-		this.mc = metamodel.getModelioClass(exml.getMClassName(), exml.getUID());
+	public ModelioObject(ModelioClass mc, ExmlObject exml) {
+		assert mc != null;
+		assert exml != null;
+
+		this.mc = mc;
 		this.exml = exml;
 	}
 
@@ -101,16 +107,24 @@ public class ModelioObject extends AbstractModelioObject {
 		final List<ExmlReference> links = exml.getLinks().get(ref.getName());
 		if (links != null) {
 			for (ExmlReference r : links) {
-				linked.add(new ModelioProxy(metamodel, r));
+				ModelioClass rMC = metamodel.getModelioClass(r.getMClassName());
+				if (rMC == null) {
+					LOGGER.warn("Could not find class with name '{}', ignoring instance", r.getMClassName());
+				} else {
+					linked.add(new ModelioProxy(rMC, r));
+				}
 			}
 		} else {
 			List<ExmlReference> cmp = exml.getCompositions().get(ref.getName());
 			if (cmp != null) {
 				for (ExmlReference r : cmp) {
-					if (r instanceof ExmlObject) {
-						linked.add(new ModelioObject(metamodel, (ExmlObject)r));
+					ModelioClass rMC = metamodel.getModelioClass(r.getMClassName());
+					if (rMC == null) {
+						LOGGER.warn("Could not find class with name '{}', ignoring instance", r.getMClassName());
+					} else if (r instanceof ExmlObject) {
+						linked.add(new ModelioObject(rMC, (ExmlObject)r));
 					} else {
-						linked.add(new ModelioProxy(metamodel, r));
+						linked.add(new ModelioProxy(rMC, r));
 					}
 				}
 			}
