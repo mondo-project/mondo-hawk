@@ -36,6 +36,7 @@ import org.hawk.orientdb.indexes.OrientNodeIndex;
 import org.hawk.orientdb.util.OrientClusterDocumentIterable;
 import org.hawk.orientdb.util.OrientNameCleaner;
 
+import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.config.OGlobalConfiguration;
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
@@ -137,22 +138,24 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	private void shutdown(boolean delete) {
-		if (!delete) {
-			saveDirty();
-			if (!getGraph().isClosed()) {
-				/*
-				 * We want to completely close the database (e.g. so we can
-				 * delete the directory later from the Hawk UI).
-				 */
-				final OStorage storage = getGraph().getStorage();
-				getGraph().close();
-				storage.close(true, false);
-			}
-		} else {
+		if (delete) {
 			discardDirty();
-			if (!getGraph().isClosed()) {
+		} else {
+			saveDirty();
+		}
+
+		if (!getGraph().isClosed()) {
+			/*
+			 * We want to completely close the database (e.g. so we can
+			 * delete the directory later from the Hawk UI).
+			 */
+			final OStorage storage = getGraph().getStorage();
+			getGraph().close();
+			if (delete) {
 				getGraph().drop();
 			}
+			storage.close(true, false);
+			Orient.instance().unregisterStorage(storage);
 		}
 
 		if (delete && storageFolder != null) {
@@ -215,8 +218,10 @@ public class OrientDatabase implements IGraphDatabase {
 
 	private void ensureWALSetTo(final boolean useWAL) {
 		if (useWAL != OGlobalConfiguration.USE_WAL.getValueAsBoolean()) {
-			db.getStorage().close(true, false);
+			final OStorage storage = db.getStorage();
+			db.commit();
 			db.close();
+			storage.close(true, false);
 			OGlobalConfiguration.USE_WAL.setValue(useWAL);
 			db = new ODatabaseDocumentTx(dbURL);
 			db.open("admin", "admin");

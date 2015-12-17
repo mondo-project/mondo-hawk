@@ -11,6 +11,7 @@
 package org.hawk.orientdb;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.io.File;
 import java.io.IOException;
@@ -208,6 +209,15 @@ public class ModelUpdateTest {
 				return null;
 			}
 		});
+	}
+
+	@Test
+	public void reuseDeleted() throws Throwable {
+		// Test case for issue #25
+		setup("reuse", "tree/tree.model");
+		teardown();
+		setup("reuse", "tree/tree.model");
+		assertFalse("The deleted directory should be reusable", db.getGraph().isClosed());
 	}
 
 	private void replaceWith(final String replacement) throws IOException {
