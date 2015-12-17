@@ -7,7 +7,7 @@
         status="integration">
 	</info>
 	<dependencies>
-		<dependency org="com.orientechnologies" name="orientdb-enterprise" rev="2.0.15">
+		<dependency org="com.orientechnologies" name="orientdb-enterprise" rev="2.0.16">
 			<exclude org="com.orientechnologies" module="orientdb-server"/>
 		</dependency>
 	</dependencies>

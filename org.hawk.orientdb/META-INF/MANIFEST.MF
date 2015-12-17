@@ -11,7 +11,7 @@ Bundle-ClassPath: .,
  lib/jars/concurrentlinkedhashmap-lru-1.4.1.jar,
  lib/jars/jna-4.0.0.jar,
  lib/jars/jna-platform-4.0.0.jar,
- lib/jars/orientdb-core-2.0.15.jar,
- lib/jars/orientdb-enterprise-2.0.15.jar
+ lib/jars/orientdb-core-2.0.16.jar,
+ lib/jars/orientdb-enterprise-2.0.16.jar
 Export-Package: org.hawk.orientdb,
  org.hawk.orientdb.indexes
