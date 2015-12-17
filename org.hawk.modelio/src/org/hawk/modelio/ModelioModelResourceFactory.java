@@ -47,12 +47,12 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 
 	@Override
 	public Set<String> getModelExtensions() {
-		return new HashSet<String>(Arrays.asList(".modelio.zip"));
+		return new HashSet<String>(Arrays.asList(".modelio.xmi.zip"));
 	}
 
 	@Override
 	public boolean canParse(File f) {
-		if (!f.canRead() || !f.isFile() || !f.getName().endsWith("zip")) {
+		if (!f.canRead() || !f.isFile() || !f.getName().endsWith("xmi.zip")) {
 			return false;
 		}
 

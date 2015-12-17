@@ -55,6 +55,11 @@ public class ModelioObject implements IHawkObject {
 	}
 
 	@Override
+	public boolean isFragmentUnique() {
+		return false;
+	}
+
+	@Override
 	public IHawkClassifier getType() {
 
 		return new ModelioClass(eob.eClass());
@@ -108,6 +113,7 @@ public class ModelioObject implements IHawkObject {
 
 	byte[] signature = null;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public byte[] signature() {
 

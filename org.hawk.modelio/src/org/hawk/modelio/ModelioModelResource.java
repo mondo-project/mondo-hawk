@@ -294,9 +294,4 @@ public class ModelioModelResource implements IHawkModelResource {
 	public String getType() {
 		return factoryClassName;
 	}
-
-	@Override
-	public byte[] getSignature(IHawkObject o) {
-		return o.signature();
-	}
 }
