@@ -26,7 +26,7 @@ import org.hawk.modelio.exml.parser.ExmlReference;
 public class ModelioModelResource implements IHawkModelResource {
 
 	private final ModelioMetaModelResource metamodel;
-	private final List<ExmlObject> exmls;
+	private List<ExmlObject> exmls;
 	private Set<IHawkObject> contents;
 
 	public ModelioModelResource(ModelioMetaModelResource metamodel, ExmlObject exml) {
@@ -44,7 +44,7 @@ public class ModelioModelResource implements IHawkModelResource {
 
 	@Override
 	public void unload() {
-		exmls.clear();
+		exmls = null;
 		contents = null;
 	}
 
