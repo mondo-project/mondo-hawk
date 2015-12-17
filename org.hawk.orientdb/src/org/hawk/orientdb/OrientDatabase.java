@@ -219,7 +219,6 @@ public class OrientDatabase implements IGraphDatabase {
 	private void ensureWALSetTo(final boolean useWAL) {
 		if (useWAL != OGlobalConfiguration.USE_WAL.getValueAsBoolean()) {
 			final OStorage storage = db.getStorage();
-			db.commit();
 			db.close();
 			storage.close(true, false);
 			OGlobalConfiguration.USE_WAL.setValue(useWAL);
