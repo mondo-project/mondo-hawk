@@ -150,9 +150,10 @@ public class OrientDatabase implements IGraphDatabase {
 			 * delete the directory later from the Hawk UI).
 			 */
 			final OStorage storage = getGraph().getStorage();
-			getGraph().close();
 			if (delete) {
 				getGraph().drop();
+			} else {
+				getGraph().close();
 			}
 			storage.close(true, false);
 			Orient.instance().unregisterStorage(storage);
