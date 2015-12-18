@@ -13,6 +13,17 @@
             MetaModelParser="org.hawk.ifc.mm.IFCMetaModelResourceFactory">
       </MetaModelP>
    </extension>
+   <extension
+         point="org.eclipse.emf.ecore.generated_package">
+      <package
+            class="org.bimserver.models.ifc2x3tc1.impl.Ifc2x3tc1PackageImpl"
+            uri="http://buildingsmart.ifc2x3tc1.ecore">
+      </package>
+      <package
+            class="org.bimserver.models.ifc4.impl.Ifc4PackageImpl"
+            uri="http://buildingsmart.ifc4.ecore">
+      </package>
+   </extension>
 
 
 </plugin>
