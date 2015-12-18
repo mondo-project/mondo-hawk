@@ -97,22 +97,26 @@ public class ModelioPackage extends AbstractModelioObject implements IHawkPackag
 
 	@Override
 	public String getName() {
-		return parent == null ? rawPackage.getName() : parent.getName() + "::" + rawPackage.getName();
+		return rawPackage.getName();
 	}
 
 	@Override
 	public ModelioClass getClassifier(String name) {
-		return internalGetClasses().get(name);
+		return getModelioClasses().get(name);
+	}
+
+	protected String getUnprefixedNsURI() {
+		return parent == null ? rawPackage.getName() : parent.getUnprefixedNsURI() + "/" + rawPackage.getName();
 	}
 
 	@Override
 	public String getNsURI() {
-		return "modelio://" + getName();
+		return "modelio://" + getUnprefixedNsURI();
 	}
 
 	@Override
 	public Set<IHawkClassifier> getClasses() {
-		return new HashSet<IHawkClassifier>(internalGetClasses().values());
+		return new HashSet<IHawkClassifier>(getModelioClasses().values());
 	}
 
 	@Override
@@ -135,7 +139,7 @@ public class ModelioPackage extends AbstractModelioObject implements IHawkPackag
 		return packages;
 	}
 
-	private Map<String, ModelioClass> internalGetClasses() {
+	public Map<String, ModelioClass> getModelioClasses() {
 		if (classes == null) {
 			classes = new HashMap<>();
 			for (MClass mc : rawPackage.getMClass()) {
@@ -150,5 +154,7 @@ public class ModelioPackage extends AbstractModelioObject implements IHawkPackag
 		return "ModelioPackage [uri=" + getNsURI() + "]";
 	}
 
-	
+	public MPackage getRawPackage() {
+		return rawPackage;
+	}
 }

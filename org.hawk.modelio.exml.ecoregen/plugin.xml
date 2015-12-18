@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.emf.ecore.dynamic_package">
+    <resource uri="modelio://analyst" location="model/modelio.ecore#/0"/>
+    <resource uri="modelio://bpmn" location="model/modelio.ecore#/1"/>
+    <resource uri="modelio://bpmn/processCollaboration" location="model/modelio.ecore#/2"/>
+    <resource uri="modelio://bpmn/rootElements" location="model/modelio.ecore#/3"/>
+    <resource uri="modelio://bpmn/flows" location="model/modelio.ecore#/4"/>
+    <resource uri="modelio://bpmn/activities" location="model/modelio.ecore#/5"/>
+    <resource uri="modelio://bpmn/events" location="model/modelio.ecore#/6"/>
+    <resource uri="modelio://bpmn/gateways" location="model/modelio.ecore#/7"/>
+    <resource uri="modelio://bpmn/objects" location="model/modelio.ecore#/8"/>
+    <resource uri="modelio://bpmn/resources" location="model/modelio.ecore#/9"/>
+    <resource uri="modelio://bpmn/bpmnDiagrams" location="model/modelio.ecore#/10"/>
+    <resource uri="modelio://bpmn/bpmnService" location="model/modelio.ecore#/11"/>
+    <resource uri="modelio://diagrams" location="model/modelio.ecore#/12"/>
+    <resource uri="modelio://mda" location="model/modelio.ecore#/13"/>
+    <resource uri="modelio://uml" location="model/modelio.ecore#/14"/>
+    <resource uri="modelio://uml/infrastructure" location="model/modelio.ecore#/15"/>
+    <resource uri="modelio://uml/infrastructure/properties" location="model/modelio.ecore#/16"/>
+    <resource uri="modelio://uml/infrastructure/matrix" location="model/modelio.ecore#/17"/>
+    <resource uri="modelio://uml/statik" location="model/modelio.ecore#/18"/>
+    <resource uri="modelio://uml/behavior" location="model/modelio.ecore#/19"/>
+    <resource uri="modelio://uml/behavior/activityModel" location="model/modelio.ecore#/20"/>
+    <resource uri="modelio://uml/behavior/commonBehaviors" location="model/modelio.ecore#/21"/>
+    <resource uri="modelio://uml/behavior/interactionModel" location="model/modelio.ecore#/22"/>
+    <resource uri="modelio://uml/behavior/interactionModel/facilities" location="model/modelio.ecore#/23"/>
+    <resource uri="modelio://uml/behavior/stateMachineModel" location="model/modelio.ecore#/24"/>
+    <resource uri="modelio://uml/behavior/usecaseModel" location="model/modelio.ecore#/25"/>
+    <resource uri="modelio://uml/behavior/communicationModel" location="model/modelio.ecore#/26"/>
+    <resource uri="modelio://uml/informationFlow" location="model/modelio.ecore#/27"/>
+   </extension>
+</plugin>
