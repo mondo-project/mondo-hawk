@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Hawk Target Platform" sequenceNumber="68">
+<?pde version="3.8"?><target name="Hawk Target Platform" sequenceNumber="69">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="com.google.guava" version="15.0.0.v201403281430"/>
@@ -117,19 +117,25 @@
 <repository location="http://download.eclipse.org/epsilon/interim/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.apache.httpcomponents.httpcore" version="4.3.3.v201411290715"/>
+<unit id="org.apache.httpcomponents.httpclient" version="4.3.6.v201411290715"/>
 <unit id="ch.qos.logback.slf4j" version="1.0.7.v20121108-1250"/>
-<unit id="org.slf4j.api" version="1.7.2.v20121108-1250"/>
-<unit id="org.apache.commons.lang" version="2.6.0.v201404270220"/>
+<unit id="org.apache.httpcomponents.httpcore.nio.source" version="4.1.0.v201101201700"/>
 <unit id="ch.qos.logback.slf4j.source" version="1.0.7.v20121108-1250"/>
-<unit id="org.apache.commons.lang3.source" version="3.1.0.v201403281430"/>
-<unit id="ch.qos.logback.classic" version="1.0.7.v20121108-1250"/>
 <unit id="ch.qos.logback.core" version="1.0.7.v20121108-1250"/>
 <unit id="org.apache.commons.codec.source" version="1.6.0.v201305230611"/>
-<unit id="org.slf4j.api.source" version="1.7.2.v20121108-1250"/>
 <unit id="ch.qos.logback.classic.source" version="1.0.7.v20121108-1250"/>
-<unit id="org.apache.commons.codec" version="1.6.0.v201305230611"/>
+<unit id="org.slf4j.api.source" version="1.7.2.v20121108-1250"/>
+<unit id="org.apache.httpcomponents.httpcore.source" version="4.3.3.v201411290715"/>
 <unit id="org.apache.commons.lang3" version="3.1.0.v201403281430"/>
 <unit id="ch.qos.logback.core.source" version="1.0.7.v20121108-1250"/>
+<unit id="org.apache.httpcomponents.httpclient.source" version="4.3.6.v201411290715"/>
+<unit id="org.slf4j.api" version="1.7.2.v20121108-1250"/>
+<unit id="org.apache.commons.lang" version="2.6.0.v201404270220"/>
+<unit id="org.apache.commons.lang3.source" version="3.1.0.v201403281430"/>
+<unit id="ch.qos.logback.classic" version="1.0.7.v20121108-1250"/>
+<unit id="org.apache.commons.codec" version="1.6.0.v201305230611"/>
+<unit id="org.apache.httpcomponents.httpcore.nio" version="4.1.0.v201101201700"/>
 <unit id="org.apache.commons.lang.source" version="2.6.0.v201404270220"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150124073747/repository/"/>
 </location>

@@ -11,6 +11,7 @@
 			useworkspacecompiledclasses="true"
 			exportsource="true"
 			exporttype="folder"
+			allowbinarycycles="true"
 			features="org.hawk.ifc.feature,org.hawk.modelio.feature,org.hawk.neo4jv2.feature"
 			destination="${sitedir}" />
 	</target>

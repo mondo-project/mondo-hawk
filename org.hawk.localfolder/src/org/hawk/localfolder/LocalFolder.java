@@ -41,6 +41,8 @@ import org.hawk.core.util.FileOperations;
 
 public class LocalFolder implements IVcsManager {
 
+	private static final String FIRST_REV = "0";
+
 	private final class LastModifiedFileVisitor implements FileVisitor<Path> {
 
 		public boolean hasChanged = false;
@@ -139,7 +141,7 @@ public class LocalFolder implements IVcsManager {
 			return ret + "";
 		} catch (IOException ex) {
 			ex.printStackTrace();
-			return "0";
+			return FIRST_REV;
 		}
 	}
 
@@ -163,7 +165,7 @@ public class LocalFolder implements IVcsManager {
 
 		System.out.println("Folder: " + f.getPath() + "\nContains:\n");
 
-		for (VcsCommitItem r : new LocalFolder().getDelta("0"))
+		for (VcsCommitItem r : new LocalFolder().getDelta(FIRST_REV))
 			System.out.println(r.getPath());
 
 	}
@@ -201,7 +203,7 @@ public class LocalFolder implements IVcsManager {
 
 	@Override
 	public String getFirstRevision() throws Exception {
-		return "0";
+		return FIRST_REV;
 	}
 
 	@Override
@@ -313,8 +315,8 @@ public class LocalFolder implements IVcsManager {
 	}
 
 	@Override
-	public List<VcsCommitItem> getDelta(String string) throws Exception {
-		return getDelta(repositoryURL, string).getCompactedCommitItems();
+	public List<VcsCommitItem> getDelta(String endRevision) throws Exception {
+		return getDelta(FIRST_REV, endRevision).getCompactedCommitItems();
 	}
 
 	@Override

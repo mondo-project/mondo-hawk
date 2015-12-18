@@ -106,20 +106,25 @@ public class SvnManager implements IVcsManager {
 			this.repositoryURL = vcsloc;
 
 			final ICredentialsStore credStore = indexer.getCredentialsStore();
-			final Credentials credentials = credStore.get(repositoryURL);
-			if (credentials != null) {
-				this.username = credentials.getUsername();
-				this.password = credentials.getPassword();
+			if (username != null) {
+				// The credentials were provided by a previous setCredentials
+				// call: retry the change to the credentials store.
+				setCredentials(username, password, credStore);
 			} else {
-				/*
-				 * If we use null for the default username/password, SVNKit will
-				 * try to use the GNOME keyring in Linux, and that will lock up
-				 * our Eclipse instance in some cases.
-				 */
-				console.printerrln("No username/password recorded for the repository "
-						+ repositoryURL);
-				this.username = "";
-				this.password = "";
+				final Credentials credentials = credStore.get(repositoryURL);
+				if (credentials != null) {
+					this.username = credentials.getUsername();
+					this.password = credentials.getPassword();
+				} else {
+					/*
+					 * If we use null for the default username/password, SVNKit
+					 * will try to use the GNOME keyring in Linux, and that will
+					 * lock up our Eclipse instance in some cases.
+					 */
+					console.printerrln("No username/password recorded for the repository " + repositoryURL);
+					this.username = "";
+					this.password = "";
+				}
 			}
 
 			getFirstRevision();
@@ -292,9 +297,9 @@ public class SvnManager implements IVcsManager {
 	@Override
 	public void setCredentials(String username, String password,
 			ICredentialsStore credStore) {
-		if (username != null && password != null
-				&& !username.equals(this.username)
-				|| !password.equals(this.password)) {
+		if (username != null && password != null && repositoryURL != null
+				&& (!username.equals(this.username)
+				|| !password.equals(this.password))) {
 			try {
 				credStore.put(repositoryURL,
 						new Credentials(username, password));

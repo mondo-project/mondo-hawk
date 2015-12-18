@@ -28,6 +28,8 @@
     <module>org.hawk.graph</module>
     <module>org.hawk.graph.sampleListener</module>
     <module>org.hawk.graph.syncValidationListener</module>
+    <module>org.hawk.http</module>
+    <module>org.hawk.http.feature</module>
     <module>org.hawk.localfolder</module>
     <module>org.hawk.localfolder.feature</module>
     <module>org.hawk.modelio.exml</module>
