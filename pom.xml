@@ -25,6 +25,8 @@
     <module>org.hawk.emfresource.feature</module>
     <module>org.hawk.epsilon</module>
     <module>org.hawk.epsilon.feature</module>
+    <module>org.hawk.git</module>
+    <module>org.hawk.git.feature</module>
     <module>org.hawk.graph</module>
     <module>org.hawk.graph.sampleListener</module>
     <module>org.hawk.graph.syncValidationListener</module>
@@ -33,6 +35,7 @@
     <module>org.hawk.localfolder</module>
     <module>org.hawk.localfolder.feature</module>
     <module>org.hawk.modelio.exml</module>
+    <module>org.hawk.modelio.exml.ecoregen</module>
     <module>org.hawk.modelio.exml.tests</module>
     <module>org.hawk.modelio.exml.feature</module>
     <module>org.hawk.orientdb</module>

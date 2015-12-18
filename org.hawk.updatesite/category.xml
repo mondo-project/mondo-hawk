@@ -36,6 +36,9 @@
    <feature url="features/org.hawk.modelio.exml.feature_1.0.0.qualifier.jar" id="org.hawk.modelio.exml.feature" version="1.0.0.qualifier">
       <category name="hawk.drivers"/>
    </feature>
+   <feature url="features/org.hawk.git.feature_1.0.0.qualifier.jar" id="org.hawk.git.feature" version="1.0.0.qualifier">
+      <category name="hawk.connectors"/>
+   </feature>
    <bundle id="org.hawk.http" version="1.0.0.qualifier">
       <category name="hawk.connectors"/>
    </bundle>
