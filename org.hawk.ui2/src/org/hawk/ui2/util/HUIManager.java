@@ -29,7 +29,13 @@ public class HUIManager extends HManager implements IStructuredContentProvider,
 	public static HUIManager getInstance() {
 		if (inst == null) {
 			inst = new HUIManager();
-			PlatformUI.getWorkbench().addWorkbenchListener(inst);
+			if (PlatformUI.isWorkbenchRunning()) {
+				PlatformUI.getWorkbench().addWorkbenchListener(inst);
+			} else {
+				System.err.println(
+					"No workbench is open: running without a workbench listener.\n"+
+					"Please ensure preShutdown is called before shutting down this application!");
+			}
 		}
 		return inst;
 	}
@@ -61,12 +67,16 @@ public class HUIManager extends HManager implements IStructuredContentProvider,
 
 	@Override
 	protected void stateChanged(HModel m) {
-		HView.updateAsync(PlatformUI.getWorkbench().getDisplay());
+		if (PlatformUI.isWorkbenchRunning()) {
+			HView.updateAsync(PlatformUI.getWorkbench().getDisplay());
+		}
 	}
 
 	@Override
 	protected void infoChanged(HModel m) {
-		HView.updateAsync(PlatformUI.getWorkbench().getDisplay());
+		if (PlatformUI.isWorkbenchRunning()) {
+			HView.updateAsync(PlatformUI.getWorkbench().getDisplay());
+		}
 	}
 
 }
