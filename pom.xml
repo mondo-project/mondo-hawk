@@ -47,7 +47,7 @@
     <module>org.hawk.svn.feature</module>
     <module>org.hawk.targetplatform</module>
     <module>org.hawk.ui.emc.dt2</module>
-    <module>org.hawk.ui.emf</module>
+    <module>org.hawk.ui.emfresource</module>
     <module>org.hawk.ui.feature</module>
     <module>org.hawk.ui2</module>
     <module>org.hawk.updatesite</module>
