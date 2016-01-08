@@ -1,5 +1,7 @@
 *.class
-bin/
+*.jar
 *~
+bin/
 target
+target-plain
 out

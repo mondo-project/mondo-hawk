@@ -14,7 +14,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.hawk.core.IConsole;
 import org.hawk.core.ICredentialsStore;
 import org.hawk.core.IHawk;
@@ -49,12 +48,12 @@ public class LocalHawkFactory implements IHawkFactory {
 
 	@Override
 	public boolean instancesUseLocation() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public InstanceInfo[] listInstances(String location) {
-		final File basePath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile();
+		final File basePath = new File(location);
 
 		final List<InstanceInfo> entries = new ArrayList<>();
 		for (File f : basePath.listFiles()) {
