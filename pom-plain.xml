@@ -26,6 +26,8 @@
     <module>org.hawk.neo4j-v2/pom-plain.xml</module>
     <module>org.hawk.orientdb/pom-plain.xml</module>
     <module>org.hawk.svn/pom-plain.xml</module>
+    <module>org.hawk.graph.sampleListener/pom-plain.xml</module>
+    <module>_hawk_runtime_example/pom-plain.xml</module>
   </modules>
 
   <dependencyManagement>
