@@ -61,6 +61,21 @@
       <artifactId>org.hawk.graph.sampleListener</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.hawk</groupId>
+      <artifactId>org.hawk.modelio.exml</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hawk</groupId>
+      <artifactId>org.hawk.svn</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hawk</groupId>
+      <artifactId>org.hawk.http</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
 
     <dependency>
       <groupId>org.eclipse.jgit</groupId>

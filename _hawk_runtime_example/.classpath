@@ -17,5 +17,7 @@
 	<classpathentry kind="lib" path="/_hawk_evaluation_simulation/org.eclipse.jgit_4.1.0.201509021535.jar"/>
 	<classpathentry kind="src" path="/org.hawk.graph.sampleListener"/>
 	<classpathentry kind="src" path="/org.hawk.orientdb"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.hawk.modelio.exml"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.hawk.http"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

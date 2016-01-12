@@ -36,7 +36,10 @@ import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
 import org.hawk.graph.internal.updater.GraphModelUpdater;
 import org.hawk.graph.sampleListener.ExampleListener;
+import org.hawk.http.HTTPManager;
 import org.hawk.localfolder.LocalFolder;
+import org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory;
+import org.hawk.modelio.exml.model.ModelioModelResourceFactory;
 import org.hawk.neo4j_v2.Neo4JDatabase;
 
 public class Runtime_example {
@@ -96,10 +99,12 @@ public class Runtime_example {
 		// add a metamodel factory
 		// hawk.addMetaModelResourceFactory(new EMFMetaModelResourceFactory());
 		hawk.addMetaModelResourceFactory(new BPMNMetaModelResourceFactory());
+		hawk.addMetaModelResourceFactory(new ModelioMetaModelResourceFactory());
 
 		// add a model factory
 		// hawk.addModelResourceFactory(new EMFModelResourceFactory());
 		hawk.addModelResourceFactory(new BPMNModelResourceFactory());
+		hawk.addModelResourceFactory(new ModelioModelResourceFactory());
 
 		// create the model index with relevant database
 		db.run(hawk.getParentFolder(), hawk.getConsole());
@@ -113,15 +118,11 @@ public class Runtime_example {
 		// String vcsloc =
 		// "../org.hawk.emf/src/org/hawk/emf/model/examples/fragmented";
 
-		//
-
 		// String vcsloc =
 		// "../org.hawk.emf/src/org/hawk/emf/model/examples/single/0";
 
 		// String vcsloc =
 		// "..\\_hawk_evaluation_simulation\\model\\bpmn-miwg_bpmn-miwg-test-suite";
-
-		//
 
 		// NB: to use svn with our local CS repository, you need to put
 		// -Dsvnkit.http.methods="NTLM,Basic,Digest,Negotiate"
@@ -131,8 +132,9 @@ public class Runtime_example {
 		// String vcsloc =
 		// "https://cssvn.york.ac.uk/repos/sosym/kostas/Hawk/org.hawk.emf/src/org/hawk/emf/model/examples/single/0";
 
-		// add a vcs monitor
+		// add a vcs monitor (we can add as many as we want)
 		// IVcsManager vcs = new SvnManager();
+		// IVcsManager vcs = new HTTPManager();
 		IVcsManager vcs = new LocalFolder();
 
 		String pw;
@@ -164,12 +166,14 @@ public class Runtime_example {
 		q = new EOLQueryEngine();
 		hawk.addQueryEngine(q);
 
-		hawk.addGraphChangeListener(new SyncChangeListener(git, linkedHashMap,
-				hawk));
+		// only needed for debugging - both can be removed for production scenarios
+		hawk.addGraphChangeListener(new SyncChangeListener(git, linkedHashMap, hawk));
 		hawk.addGraphChangeListener(new ExampleListener());
 
-		// initialise the server for real-time updates to changes -- this has to
-		// be done after initialising all the relevant plugins you want online
+		// Initialise the server for real-time updates to changes -- this has to
+		// be done after initialising all the relevant plugins you want online.
+		// These parameters can be set to 0/0, and then only manual syncs sent
+		// through #requestImmediateSync will be honored.
 		hawk.init(1000, 512 * 1000);
 
 		// add console interaction if needed
