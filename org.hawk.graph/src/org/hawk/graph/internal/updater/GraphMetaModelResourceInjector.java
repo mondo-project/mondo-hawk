@@ -490,21 +490,7 @@ public class GraphMetaModelResourceInjector {
 		graph.createRelationship(node, metamodelNode, "epackage");
 
 		for (IHawkClass e : eClass.getSuperTypes()) {
-
-			String uri = null;
-
-			if (e.isInDifferentResourceThan(eClass))
-				uri = e.getUri()
-				// ((InternalEObject) e)
-				// .eProxyURI()
-				// .toString()
-						.substring(0, e.getUri()
-						// ((InternalEObject)
-						// e).eProxyURI().toString()
-								.indexOf("#"));
-
-			else
-				uri = e.getPackageNSURI();
+			final String uri = e.getPackageNSURI();
 
 			if (epackagedictionary.get("id", uri).iterator().hasNext() == false) {
 				System.err
@@ -554,21 +540,11 @@ public class GraphMetaModelResourceInjector {
 		// System.err.println(eClass.getName()+":");
 		for (IHawkAttribute e : eClass.getAllAttributes()) {
 			String uri = null;
-			if (e.isInDifferentResourceThan(eClass)) {
-				uri = e.getUri()
-				// ((InternalEObject) e)
-				// .eProxyURI()
-				// .toString()
-						.substring(0,
-						// ((InternalEObject) e).eProxyURI().toString()
-								e.getUri().indexOf("#"));
-			} else {
-				try {
-					uri = e.getType().getPackageNSURI();
-				} catch (Exception ex) {
-					// attribute does not have a type - derived - other errors
-					uri = eClass.getPackageNSURI();
-				}
+			try {
+				uri = e.getType().getPackageNSURI();
+			} catch (Exception ex) {
+				// attribute does not have a type - derived - other errors
+				uri = eClass.getPackageNSURI();
 			}
 
 			if (epackagedictionary.get("id", uri).iterator().hasNext() == false) {
@@ -646,14 +622,7 @@ public class GraphMetaModelResourceInjector {
 		}
 
 		for (IHawkReference r : eClass.getAllReferences()) {
-
-			String uri = null;
-
-			if (r.isInDifferentResourceThan(eClass)) {
-				uri = r.getUri().substring(0, r.getUri().indexOf("#"));
-			} else {
-				uri = r.getType().getPackageNSURI();
-			}
+			final String uri = r.getType().getPackageNSURI();
 
 			if (epackagedictionary.get("id", uri).iterator().hasNext() == false) {
 				System.err
