@@ -13,6 +13,7 @@ package org.hawk.graph.internal.updater;
 import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -723,7 +724,7 @@ public class GraphModelInserter {
 					final String uriFragment = o.getUriFragment();
 					byte[] hash = signatures.get(uriFragment);
 					if (hash != null) {
-						if (hash != o.signature()) {
+						if (!Arrays.equals(hash, o.signature())) {
 							final String actualType = o.getType().getName();
 
 							final IGraphNode node = nodes.get(uriFragment);
@@ -758,7 +759,7 @@ public class GraphModelInserter {
 				int updatedn = updated.size();
 				int deletedn = nodes.size() - unchanged.size() - updated.size()
 						- retyped.size();
-				currentDeltaRatio = (addedn+retypedn+updatedn+deletedn)/nodes.size();
+				currentDeltaRatio = (addedn+retypedn+updatedn+deletedn)/((double)nodes.size());
 				System.err.println("update contains | a:" + (addedn + retypedn)
 						+ " + u:" + updatedn + " + d:" + deletedn + " ratio:" + currentDeltaRatio);
 				
