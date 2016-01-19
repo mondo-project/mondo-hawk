@@ -88,33 +88,49 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			 * an EMF notification comes from lazy loading or not.
 			 */
 			final EObject eob = (EObject) o;
-			final EStructuralFeature sf = (EStructuralFeature)args[0];
-			if (lazyResolver != null && sf instanceof EReference && lazyResolver.isPending(eob, sf)) {
-				final EReference ref = (EReference) sf;
-				synchronized(nodeIdToEObjectMap) {
-					lazyResolver.resolve(eob, sf, false, true);
-				}
 
-				/*
-				 * When we resolve a reference, it may be a containment or
-				 * container reference: need to adjust the list of root elements
-				 * then.
-				 */
-				Object superValue = proxy.invokeSuper(o, args);
-				if (superValue != null) {
-					if (ref.isContainer()) {
-						removeRedundantRoot(eob);
-					} else if (ref.isContainment()) {
-						if (ref.isMany()) {
-							for (EObject child : (Iterable<EObject>) superValue) {
-								removeRedundantRoot(child);
+			switch (m.getName()) {
+			case "eGet":
+				final EStructuralFeature sf = (EStructuralFeature)args[0];
+				if (lazyResolver != null && sf instanceof EReference && lazyResolver.isPending(eob, sf)) {
+					final EReference ref = (EReference) sf;
+					synchronized(nodeIdToEObjectMap) {
+						lazyResolver.resolve(eob, sf, false, true);
+					}
+
+					/*
+					 * When we resolve a reference, it may be a containment or
+					 * container reference: need to adjust the list of root elements
+					 * then.
+					 */
+					Object superValue = proxy.invokeSuper(o, args);
+					if (superValue != null) {
+						if (ref.isContainer()) {
+							removeRedundantRoot(eob);
+						} else if (ref.isContainment()) {
+							if (ref.isMany()) {
+								for (EObject child : (Iterable<EObject>) superValue) {
+									removeRedundantRoot(child);
+								}
+							} else {
+								removeRedundantRoot((EObject) superValue);
 							}
-						} else {
-							removeRedundantRoot((EObject) superValue);
+						}
+					}
+					return superValue;
+				}
+				break;
+			case "eContents":
+			default:
+				// Resolve all containment references for an eContents call
+				synchronized(nodeIdToEObjectMap) {
+					for (EReference ref : eob.eClass().getEAllReferences()) {
+						if (ref.isContainment()) {
+							lazyResolver.resolve(eob, (EStructuralFeature)ref, false, true);
 						}
 					}
 				}
-				return superValue;
+				break;
 			}
 			return proxy.invokeSuper(o, args);
 		}
