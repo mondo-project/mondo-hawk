@@ -55,7 +55,7 @@ public class GraphModelInserter {
 
 	private static final int PROXY_RESOLVE_TX_SIZE = 5000;
 
-	private static final int maxTransactionalAcceptableLoad = Integer.MAX_VALUE;
+	private static final double maxTransactionalAcceptableLoadRatio = 0.5;
 
 	@SuppressWarnings("unused")
 	private int unset = 0; // number of unset references (used for logging)
@@ -68,7 +68,8 @@ public class GraphModelInserter {
 	private Map<String, IHawkObject> added = new HashMap<>();
 	private Map<String, IHawkObject> unchanged = new HashMap<>();
 	private Map<String, IHawkObject> retyped = new HashMap<>();
-
+	private double currentDeltaRatio;
+	
 	private IModelIndexer indexer;
 	private IGraphDatabase graph;
 	private GraphModelBatchInjector inj;
@@ -99,6 +100,7 @@ public class GraphModelInserter {
 			// f = new File(dir + "/" + s.getPath());
 
 			int delta = calculateModelDeltaSize();
+			
 			if (delta != -1) {
 				final IVcsManager manager = s.getCommit().getDelta()
 						.getManager();
@@ -111,13 +113,13 @@ public class GraphModelInserter {
 				System.err
 						.println("file already present, calculating deltas with respect to graph storage");
 				//
-				if (delta > maxTransactionalAcceptableLoad) {
-					System.err.print("[" + delta + ">"
-							+ maxTransactionalAcceptableLoad + "] ");
+				if (currentDeltaRatio > maxTransactionalAcceptableLoadRatio) {
+					System.err.print("[" + currentDeltaRatio + ">"
+							+ maxTransactionalAcceptableLoadRatio + "] ");
 					success = batchUpdate();
 				} else {
-					System.err.print("[" + delta + "<"
-							+ maxTransactionalAcceptableLoad + "] ");
+					System.err.print("[" + currentDeltaRatio + "<="
+							+ maxTransactionalAcceptableLoadRatio + "] ");
 					success = transactionalUpdate(delta);
 				}
 
@@ -756,13 +758,16 @@ public class GraphModelInserter {
 				int updatedn = updated.size();
 				int deletedn = nodes.size() - unchanged.size() - updated.size()
 						- retyped.size();
+				currentDeltaRatio = (addedn+retypedn+updatedn+deletedn)/nodes.size();
 				System.err.println("update contains | a:" + (addedn + retypedn)
-						+ " + u:" + updatedn + " + d:" + deletedn);
+						+ " + u:" + updatedn + " + d:" + deletedn + " ratio:" + currentDeltaRatio);
+				
 				return addedn + retypedn + updatedn + deletedn;
 			}
 		} else {
 			System.err
 					.println("file not in store, performing initial batch file insertion");
+			currentDeltaRatio = -1;
 			return -1;
 		}
 	}
