@@ -28,7 +28,7 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 
 	public CGraphPropertyGetter(IGraphDatabase graph2, CEOLQueryEngine m) {
 		super(graph2, m);
-		System.out.println("CGraphPropertyGetter created.");
+		// System.out.println("CGraphPropertyGetter created.");
 		engine = m;
 	}
 
@@ -252,8 +252,8 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 		if (!engine.enableTraversalScoping)
 			return new GraphNodeWrapper(node.getId().toString(), m);
 
-		//System.out.println("addIfInScope used...");
-		
+		// System.out.println("addIfInScope used...");
+
 		GraphNodeWrapper ret = null;
 
 		if (engine.files.contains(node

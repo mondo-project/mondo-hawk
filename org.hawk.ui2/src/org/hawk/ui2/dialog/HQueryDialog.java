@@ -55,7 +55,8 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 
 	private StyledText queryField;
 	private StyledText resultField;
-
+	Boolean enableFullTraversalScoping = true;
+	
 	private HModel index;
 
 	private Button queryButton;
@@ -195,7 +196,7 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		l = new Label(container, SWT.READ_ONLY);
 
 		l = new Label(container, SWT.READ_ONLY);
-		l.setText("(partial) matches using * as wildcard):");
+		l.setText("   (partial) matches using * as wildcard):");
 
 		final StyledText contextRepo = new StyledText(container, SWT.NONE);
 		GridData gridData = new GridData();
@@ -209,7 +210,7 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		l = new Label(container, SWT.READ_ONLY);
 
 		l = new Label(container, SWT.READ_ONLY);
-		l.setText(" matches using * as wildcard):");
+		l.setText("   matches using * as wildcard):");
 
 		final StyledText contextFiles = new StyledText(container, SWT.NONE);
 		gridData = new GridData();
@@ -218,7 +219,29 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		contextFiles.setLayoutData(gridData);
 
 		l = new Label(container, SWT.READ_ONLY);
-		l.setText("Default Namespaces (comma separated)");
+		l.setText(" Enable Full Traversal Scoping (may affect");
+
+		l = new Label(container, SWT.READ_ONLY);
+
+		l = new Label(container, SWT.READ_ONLY);
+		l.setText("   performance -- only for scoped queries):");
+
+		Button enableFullTraversalScopingButton = new Button(container,
+				SWT.CHECK);
+		enableFullTraversalScoping = enableFullTraversalScopingButton.getSelection();
+		enableFullTraversalScopingButton
+				.addSelectionListener(new SelectionAdapter() {
+
+					@Override
+					public void widgetSelected(SelectionEvent event) {
+						Button btn = (Button) event.getSource();
+						//System.out.println(btn.getSelection());
+						enableFullTraversalScoping = btn.getSelection();
+					}
+				});
+
+		l = new Label(container, SWT.READ_ONLY);
+		l.setText(" Default Namespaces (comma separated)");
 
 		final StyledText defaultNamespaces = new StyledText(container, SWT.NONE);
 		gridData = new GridData();
@@ -264,6 +287,8 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 								&& !defaultNamespace.trim().equals(""))
 							map.put(org.hawk.core.query.IQueryEngine.PROPERTY_DEFAULTNAMESPACES,
 									defaultNamespace);
+						map.put(org.hawk.core.query.IQueryEngine.PROPERTY_ENABLE_TRAVERSAL_SCOPING,
+								enableFullTraversalScoping.toString());
 						if (map.size() == 0)
 							map = null;
 
@@ -313,7 +338,7 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		gridData = new GridData();
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.horizontalSpan = 1;
-		gridData.minimumWidth = 250;
+		gridData.minimumWidth = 252;
 		button2.setLayoutData(gridData);
 		button2.setText("Reset Query");
 
