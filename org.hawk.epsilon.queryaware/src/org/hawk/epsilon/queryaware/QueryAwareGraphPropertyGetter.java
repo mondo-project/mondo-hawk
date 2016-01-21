@@ -338,7 +338,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 	}
 
-	private void broadcastAccess(Object object, String property) {
+	protected void broadcastAccess(Object object, String property) {
 		accessListener.accessed(((GraphNodeWrapper) object).getId() + "",
 				property);
 	}
@@ -355,7 +355,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 		return broadcastAccess;
 	}
 
-	private boolean canHaveDerivedAttr(IGraphNode node, String property) {
+	protected boolean canHaveDerivedAttr(IGraphNode node, String property) {
 
 		featureStartingNodeClassNode = node
 				.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
@@ -380,7 +380,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 	}
 
-	private boolean canHaveMixed(IGraphNode node, String property) {
+	protected boolean canHaveMixed(IGraphNode node, String property) {
 
 		featureStartingNodeClassNode = node
 				.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
@@ -406,7 +406,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 	}
 
-	private boolean canHaveAttr(IGraphNode node, String property) {
+	protected boolean canHaveAttr(IGraphNode node, String property) {
 
 		featureStartingNodeClassNode = node
 				.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
@@ -439,7 +439,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 	}
 
-	private boolean canHaveRef(IGraphNode node, String property) {
+	protected boolean canHaveRef(IGraphNode node, String property) {
 
 		featureStartingNodeClassNode = node
 				.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
@@ -474,7 +474,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 
 	}
 
-	private boolean isMany(String ref) {
+	protected boolean isMany(String ref) {
 		if (featureStartingNodeClassNode.getProperty(ref) != null) {
 			// System.err.println(referenceStartingNodeClassNode.getProperty(ref).toString());
 			return ((String[]) featureStartingNodeClassNode.getProperty(ref))[1]
@@ -490,7 +490,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 		// return featureStartingNodeClass.getEStructuralFeature(ref).isMany();
 	}
 
-	private boolean isOrdered(String ref) {
+	protected boolean isOrdered(String ref) {
 		if (featureStartingNodeClassNode.getProperty(ref) != null)
 			return ((String[]) featureStartingNodeClassNode.getProperty(ref))[2]
 					.equals("t");
@@ -505,7 +505,7 @@ public class QueryAwareGraphPropertyGetter extends GraphPropertyGetter {
 		// .getEStructuralFeature(ref)).isOrdered();
 	}
 
-	private boolean isUnique(String ref) {
+	protected boolean isUnique(String ref) {
 		if (featureStartingNodeClassNode.getProperty(ref) != null)
 			return ((String[]) featureStartingNodeClassNode.getProperty(ref))[3]
 					.equals("t");

@@ -23,6 +23,7 @@ public interface IQueryEngine {
 	public static final String PROPERTY_REPOSITORYCONTEXT = "REPOSITORY";
 	public static final String PROPERTY_DEFAULTNAMESPACES = "DEFAULTNAMESPACES";
 	public static final String PROPERTY_ENABLE_CACHING = "ENABLE_CACHING";
+	public static final String PROPERTY_ENABLE_TRAVERSAL_SCOPING = "ENABLE_TRAVERSAL_SCOPING";
 
 	IAccessListener calculateDerivedAttributes(IGraphDatabase g,
 			Iterable<IGraphNode> nodes) throws InvalidQueryException,

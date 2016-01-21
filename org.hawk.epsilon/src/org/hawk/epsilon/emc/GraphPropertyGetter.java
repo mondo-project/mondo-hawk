@@ -31,11 +31,11 @@ import org.hawk.graph.ModelElementNode;
 
 public class GraphPropertyGetter extends AbstractPropertyGetter {
 
-	private static final int IDX_FLAG_MANY = 1;
-	private static final int IDX_FLAG_ORDERED = 2;
-	private static final int IDX_FLAG_UNIQUE = 3;
+	protected static final int IDX_FLAG_MANY = 1;
+	protected static final int IDX_FLAG_ORDERED = 2;
+	protected static final int IDX_FLAG_UNIQUE = 3;
 
-	private static enum PropertyType {
+	protected static enum PropertyType {
 		ATTRIBUTE, DERIVED, REFERENCE, MIXED, INVALID;
 		static PropertyType fromCharacter(String s) {
 			switch (s) {
@@ -53,13 +53,13 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		}
 	}
 
-	private boolean broadcastAccess = false;
+	protected boolean broadcastAccess = false;
 
 	protected IGraphDatabase graph;
 	protected EOLQueryEngine m;
-	private IGraphNode featureStartingNodeClassNode = null;
+	protected IGraphNode featureStartingNodeClassNode = null;
 
-	private static AccessListener accessListener = new AccessListener();
+	protected static AccessListener accessListener = new AccessListener();
 
 	public GraphPropertyGetter(IGraphDatabase graph2, EOLQueryEngine m) {
 		graph = graph2;
@@ -101,17 +101,32 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 			String property2 = property.substring(10);
 
+			boolean ismany = isMany(property2);
+
 			for (IGraphEdge r : node.getIncomingWithType(property2)) {
 
 				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
 					ret = new GraphNodeWrapper(r.getStartNode().getId()
 							.toString(), m);
+					break;
 				} else {
-					System.err.println(r.getType() + " : not containment");
-					if (ret == null)
-						ret = new EolBag<GraphNodeWrapper>();
-					((EolBag<GraphNodeWrapper>) ret).add(new GraphNodeWrapper(r
-							.getStartNode().getId().toString(), m));
+					System.err.println("warning: " + r.getType()
+							+ " : not containment");
+					if (!ismany) {
+						if (ret == null)
+							ret = new GraphNodeWrapper(r.getStartNode().getId()
+									.toString(), m);
+						else
+							throw new EolRuntimeException(
+									"A relationship with arity 1 ( " + property
+											+ " ) has more than 1 links");
+					} else {
+						if (ret == null)
+							ret = new EolBag<GraphNodeWrapper>();
+						((EolBag<GraphNodeWrapper>) ret)
+								.add(new GraphNodeWrapper(r.getStartNode()
+										.getId().toString(), m));
+					}
 				}
 			}
 
@@ -266,7 +281,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 	}
 
-	private Collection<GraphNodeWrapper> getCollectionForProperty(
+	protected Collection<GraphNodeWrapper> getCollectionForProperty(
 			final String property) {
 		if (isOrdered(property) && isUnique(property))
 			return new EolOrderedSet<GraphNodeWrapper>();
@@ -278,7 +293,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 			return new EolBag<GraphNodeWrapper>();
 	}
 
-	private void broadcastAccess(Object object, String property) {
+	protected void broadcastAccess(Object object, String property) {
 		accessListener.accessed(((GraphNodeWrapper) object).getId() + "",
 				property);
 	}
@@ -299,35 +314,35 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		return broadcastAccess;
 	}
 
-	private boolean canHaveDerivedAttr(IGraphNode node, String property) {
+	protected boolean canHaveDerivedAttr(IGraphNode node, String property) {
 		return canHavePropertyWithType(node, property, PropertyType.DERIVED);
 	}
 
-	private boolean canHaveMixed(IGraphNode node, String property) {
+	protected boolean canHaveMixed(IGraphNode node, String property) {
 		return canHavePropertyWithType(node, property, PropertyType.MIXED);
 	}
 
-	private boolean canHaveAttr(IGraphNode node, String property) {
+	protected boolean canHaveAttr(IGraphNode node, String property) {
 		return canHavePropertyWithType(node, property, PropertyType.ATTRIBUTE);
 	}
 
-	private boolean canHaveRef(IGraphNode node, String property) {
+	protected boolean canHaveRef(IGraphNode node, String property) {
 		return canHavePropertyWithType(node, property, PropertyType.REFERENCE);
 	}
 
-	private boolean isMany(String ref) {
+	protected boolean isMany(String ref) {
 		return isTypeFlagActive(ref, IDX_FLAG_MANY);
 	}
 
-	private boolean isOrdered(String ref) {
+	protected boolean isOrdered(String ref) {
 		return isTypeFlagActive(ref, IDX_FLAG_ORDERED);
 	}
 
-	private boolean isUnique(String ref) {
+	protected boolean isUnique(String ref) {
 		return isTypeFlagActive(ref, IDX_FLAG_UNIQUE);
 	}
 
-	private boolean canHavePropertyWithType(IGraphNode node, String property,
+	protected boolean canHavePropertyWithType(IGraphNode node, String property,
 			PropertyType expected) {
 		final Iterator<IGraphEdge> itTypeOf = node.getOutgoingWithType(
 				ModelElementNode.EDGE_LABEL_OFTYPE).iterator();
@@ -361,7 +376,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		return false;
 	}
 
-	private boolean isTypeFlagActive(String reference, final int index) {
+	protected boolean isTypeFlagActive(String reference, final int index) {
 		if (featureStartingNodeClassNode == null) {
 			System.err.println("type not found previously for " + reference);
 			return false;

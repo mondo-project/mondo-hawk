@@ -36,6 +36,7 @@ import org.hawk.graph.ModelElementNode;
 public class CEOLQueryEngine extends EOLQueryEngine {
 
 	Set<IGraphNode> files = null;
+	protected boolean enableTraversalScoping = true;
 
 	@Override
 	public void load(IGraphDatabase g) throws EolModelLoadingException {
@@ -60,6 +61,9 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 			sFilePatterns = context.get(PROPERTY_FILECONTEXT);
 			sRepoPatterns = context.get(PROPERTY_REPOSITORYCONTEXT);
 			setDefaultNamespaces(context.get(PROPERTY_DEFAULTNAMESPACES));
+			String etss = context.get(PROPERTY_ENABLE_TRAVERSAL_SCOPING);
+			if (etss != null)
+				enableTraversalScoping = Boolean.parseBoolean(etss);
 		}
 
 		System.err.println(sFilePatterns);
@@ -90,7 +94,7 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 					+ fileNodes);
 
 			if (propertygetter == null)
-				propertygetter = new GraphPropertyGetter(graph, this);
+				propertygetter = new CGraphPropertyGetter(graph, this);
 
 			name = context.get(EOLQueryEngine.PROPERTY_NAME);
 			if (name == null)
