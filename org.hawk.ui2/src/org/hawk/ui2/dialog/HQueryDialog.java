@@ -55,8 +55,8 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 
 	private StyledText queryField;
 	private StyledText resultField;
-	Boolean enableFullTraversalScoping = true;
-	
+	Button enableFullTraversalScopingButton;
+
 	private HModel index;
 
 	private Button queryButton;
@@ -226,19 +226,7 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		l = new Label(container, SWT.READ_ONLY);
 		l.setText("   performance -- only for scoped queries):");
 
-		Button enableFullTraversalScopingButton = new Button(container,
-				SWT.CHECK);
-		enableFullTraversalScoping = enableFullTraversalScopingButton.getSelection();
-		enableFullTraversalScopingButton
-				.addSelectionListener(new SelectionAdapter() {
-
-					@Override
-					public void widgetSelected(SelectionEvent event) {
-						Button btn = (Button) event.getSource();
-						//System.out.println(btn.getSelection());
-						enableFullTraversalScoping = btn.getSelection();
-					}
-				});
+		enableFullTraversalScopingButton = new Button(container, SWT.CHECK);
 
 		l = new Label(container, SWT.READ_ONLY);
 		l.setText(" Default Namespaces (comma separated)");
@@ -288,7 +276,8 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 							map.put(org.hawk.core.query.IQueryEngine.PROPERTY_DEFAULTNAMESPACES,
 									defaultNamespace);
 						map.put(org.hawk.core.query.IQueryEngine.PROPERTY_ENABLE_TRAVERSAL_SCOPING,
-								enableFullTraversalScoping.toString());
+								new Boolean(enableFullTraversalScopingButton
+										.getSelection()).toString());
 						if (map.size() == 0)
 							map = null;
 

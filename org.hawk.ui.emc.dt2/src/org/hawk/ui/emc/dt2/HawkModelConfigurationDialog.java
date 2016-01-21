@@ -15,6 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -41,6 +42,7 @@ public class HawkModelConfigurationDialog extends
 	protected Text t1;
 	protected Text t;
 	protected Text t2;
+	protected Button enableFullTraversalScoping;
 
 	protected void createGroups(Composite control) {
 		super.createGroups(control);
@@ -111,6 +113,16 @@ public class HawkModelConfigurationDialog extends
 		uriTextLabel = new Label(groupContent, SWT.NONE);
 
 		uriTextLabel = new Label(groupContent, SWT.NONE);
+		uriTextLabel
+				.setText("Enable Full Traversal Scoping (may affect performance): ");
+
+		uriTextLabel = new Label(groupContent, SWT.NONE);
+
+		enableFullTraversalScoping = new Button(groupContent, SWT.CHECK);
+
+		uriTextLabel = new Label(groupContent, SWT.NONE);
+		
+		uriTextLabel = new Label(groupContent, SWT.NONE);
 		uriTextLabel.setText("Default namespaces (comma separated): ");
 
 		uriTextLabel = new Label(groupContent, SWT.NONE);
@@ -173,6 +185,12 @@ public class HawkModelConfigurationDialog extends
 
 		t2.setText(namespaces);
 
+		String etss = properties
+				.getProperty(IQueryEngine.PROPERTY_ENABLE_TRAVERSAL_SCOPING);
+		boolean ets = Boolean.parseBoolean(etss);
+
+		enableFullTraversalScoping.setSelection(ets);
+
 	}
 
 	protected void storeProperties() {
@@ -193,6 +211,11 @@ public class HawkModelConfigurationDialog extends
 		if (selectIndexer.getSelectionIndex() != -1)
 			properties.put(HawkModel.PROPERTY_INDEXER_NAME,
 					selectIndexer.getItem(selectIndexer.getSelectionIndex()));
+
+		boolean ets = enableFullTraversalScoping.getSelection();
+		properties.put(IQueryEngine.PROPERTY_ENABLE_TRAVERSAL_SCOPING,
+				new Boolean(ets).toString());
+
 	}
 
 	protected void createNameAliasGroup(Composite parent) {

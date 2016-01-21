@@ -40,7 +40,34 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 
 	@Override
 	public void load(IGraphDatabase g) throws EolModelLoadingException {
-		super.load(g);
+		
+		if (config == null)
+			config = getDatabaseConfig();
+
+		if (g != null
+		// && graph == null
+		)
+			graph = g;
+
+		if (propertygetter == null || propertygetter.getGraph() != graph)
+			propertygetter = new CGraphPropertyGetter(graph, this);
+
+		name = (String) config.get(EOLQueryEngine.PROPERTY_NAME);
+
+		if (graph != null) {
+
+			try (IGraphTransaction tx = graph.beginTransaction()) {
+				metamodeldictionary = graph.getMetamodelIndex();
+				tx.success();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		} else
+			throw new EolModelLoadingException(new Exception(
+					"Attempt to load a model from an invalid graph: " + graph),
+					this);
+
 		load(config);
 	}
 
@@ -92,7 +119,8 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 
 			System.out.println("running CEOLQueryEngine with files: "
 					+ fileNodes);
-
+			if(enableTraversalScoping)System.out.println("Full Traversal Scoping ENABLED");
+			
 			if (propertygetter == null)
 				propertygetter = new CGraphPropertyGetter(graph, this);
 
