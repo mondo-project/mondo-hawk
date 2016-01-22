@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.hawk.epsilon.emc;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -172,7 +173,32 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 						+ "\nis not contained");
 
 		}
-
+		else if (property.equals("eContents")) {
+			final List<GraphNodeWrapper> results = new ArrayList<>();
+			Iterable<IGraphEdge> out = node.getOutgoing();
+			for (IGraphEdge r : out) {
+				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
+					final Object endNodeID = r.getEndNode().getId();
+					results.add(new GraphNodeWrapper(endNodeID.toString(), m));
+				}
+			}
+			ret = results;
+		}
+		else if (property.equals("hawkIn") || property.equals("hawkOut")) {
+			final boolean isIncoming = property.equals("hawkIn");
+			final List<GraphNodeWrapper> results = new ArrayList<>();
+			final Iterable<IGraphEdge> edges = isIncoming ? node.getIncoming() : node.getOutgoing();
+			for (IGraphEdge r : edges) {
+				if (ModelElementNode.TRANSIENT_EDGE_LABELS.contains(r.getType())) {
+					continue;
+				}
+				final IGraphNode edgeNode = isIncoming ? r.getStartNode() : r.getEndNode();
+				final Object edgeNodeID = edgeNode.getId();
+				final GraphNodeWrapper edgeNodeWrapper = new GraphNodeWrapper(edgeNodeID.toString(), m);
+				results.add(edgeNodeWrapper);
+			}
+			ret = results;
+		}
 		else if (canHaveDerivedAttr(node, property)) {
 
 			for (IGraphEdge r : node.getOutgoingWithType(property)) {

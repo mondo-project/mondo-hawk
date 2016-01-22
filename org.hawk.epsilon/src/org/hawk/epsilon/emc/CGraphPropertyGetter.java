@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.hawk.epsilon.emc;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -135,6 +136,35 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 				throw new EolRuntimeException("eContainer failed,\n" + object
 						+ "\nis not contained in current scope");
 
+		}
+
+		else if (property.equals("eContents")) {
+			final List<GraphNodeWrapper> results = new ArrayList<>();
+			Iterable<IGraphEdge> out = node.getOutgoing();
+			for (IGraphEdge r : out) {
+				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
+					final GraphNodeWrapper endNode = addIfInScope(r.getEndNode());
+					if (endNode != null) {
+						results.add(endNode);
+					}
+				}
+			}
+			ret = results;
+		}
+
+		else if (property.equals("hawkIn") || property.equals("hawkOut")) {
+			final boolean isIncoming = property.equals("hawkIn");
+			final List<GraphNodeWrapper> results = new ArrayList<>();
+			final Iterable<IGraphEdge> edges = isIncoming ? node.getIncoming() : node.getOutgoing();
+			for (IGraphEdge r : edges) {
+				if (ModelElementNode.TRANSIENT_EDGE_LABELS.contains(r.getType())) {
+					continue;
+				}
+				final IGraphNode edgeNode = isIncoming ? r.getStartNode() : r.getEndNode();
+				final GraphNodeWrapper edgeNodeWrapper = addIfInScope(edgeNode);
+				results.add(edgeNodeWrapper);
+			}
+			ret = results;
 		}
 
 		else if (canHaveDerivedAttr(node, property)) {
