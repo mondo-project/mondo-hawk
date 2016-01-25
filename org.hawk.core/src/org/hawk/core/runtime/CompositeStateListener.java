@@ -14,7 +14,8 @@ import java.util.LinkedHashSet;
 
 import org.hawk.core.IStateListener;
 
-public class CompositeStateListener extends LinkedHashSet<IStateListener> implements IStateListener {
+public class CompositeStateListener extends LinkedHashSet<IStateListener>
+		implements IStateListener {
 	private static final long serialVersionUID = 6358455874909268099L;
 	private HawkState currentState = HawkState.STOPPED;
 
@@ -29,7 +30,7 @@ public class CompositeStateListener extends LinkedHashSet<IStateListener> implem
 	public boolean remove(Object e) {
 		final boolean ret = super.remove(e);
 		if (ret) {
-			((IStateListener)e).removed();
+			((IStateListener) e).removed();
 		}
 		return ret;
 	}
@@ -61,5 +62,9 @@ public class CompositeStateListener extends LinkedHashSet<IStateListener> implem
 		for (IStateListener l : this) {
 			l.state(state);
 		}
+	}
+
+	public HawkState getCurrentState() {
+		return currentState;
 	}
 }

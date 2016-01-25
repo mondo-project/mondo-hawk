@@ -35,6 +35,7 @@ import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementT
 import org.eclipse.epsilon.eol.execute.introspection.IPropertyGetter;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertySetter;
 import org.hawk.core.IModelIndexer;
+import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
@@ -58,6 +59,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 	// TODO try re-enable the use of a cache
 	// protected boolean enableCache = true;
 
+	protected static IModelIndexer indexer = null;
 	protected static IGraphDatabase graph = null;
 
 	// TODO memory management should these get too big
@@ -74,9 +76,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 	public static long time = 0L; // total time taken in specific methods for
 									// debugging
-
-	public EOLQueryEngine() {
-	}
 
 	/**
 	 * Returns all of the contents of the database in the form of lightweight
@@ -479,21 +478,23 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 	@Override
 	public void load() throws EolModelLoadingException {
 		if (graph != null)
-			load((IGraphDatabase) null);
+			load((IModelIndexer) null);
 		else
 			throw new EolModelLoadingException(new Exception(
 					"load called with no graph store initialized"), this);
 	}
 
-	public void load(IGraphDatabase g) throws EolModelLoadingException {
+	public void load(IModelIndexer m) throws EolModelLoadingException {
 
 		if (config == null)
 			config = getDatabaseConfig();
 
-		if (g != null
+		if (m != null
 		// && graph == null
-		)
-			graph = g;
+		) {
+			indexer = m;
+			graph = m.getGraph();
+		}
 
 		if (propertygetter == null || propertygetter.getGraph() != graph)
 			propertygetter = new GraphPropertyGetter(graph, this);
@@ -536,7 +537,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 	}
 
 	@SuppressWarnings("unused")
-	private void fullLog(IGraphDatabase graph2) throws IOException {
+	private void fullLog() throws IOException {
 
 		int count = 1;
 
@@ -778,27 +779,33 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 	}
 
 	@Override
-	public Object query(IGraphDatabase g, String query,
+	public Object query(IModelIndexer m, String query,
 			Map<String, String> context) throws InvalidQueryException,
 			QueryExecutionException {
 
+		HawkState s = m.getCompositeStateListener().getCurrentState();
+
+		if (!s.equals(HawkState.RUNNING))
+			throw new QueryExecutionException(
+					"The selected Hawk cannot be currently queried (state=" + s
+							+ ")");
+
 		if (context == null)
-			return contextlessQuery(g, query, context);
+			return contextlessQuery(m, query, context);
 
 		String repo = context.get(PROPERTY_REPOSITORYCONTEXT);
 		String file = context.get(PROPERTY_FILECONTEXT);
 
 		if (repo == null && file == null) // no scope
-			return contextlessQuery(g, query, context);
+			return contextlessQuery(m, query, context);
 		else
 			// scoped
-			return contextfullQuery(g, query, context);
+			return contextfullQuery(m, query, context);
 	}
 
 	@Override
-	public Object query(IGraphDatabase g, File query,
-			Map<String, String> context) throws InvalidQueryException,
-			QueryExecutionException {
+	public Object query(IModelIndexer m, File query, Map<String, String> context)
+			throws InvalidQueryException, QueryExecutionException {
 
 		String code = "";
 		try {
@@ -811,11 +818,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			System.err.println("error reading eol code file:");
 			e.printStackTrace();
 		}
-		return query(g, code, context);
+		return query(m, code, context);
 
 	}
 
-	private Object contextlessQuery(IGraphDatabase g, String query,
+	private Object contextlessQuery(IModelIndexer m, String query,
 			Map<String, String> context) throws QueryExecutionException,
 			InvalidQueryException {
 
@@ -834,7 +841,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			q = this;
 
 		try {
-			q.load(g);
+			q.load(m);
 			q.setDefaultNamespaces(defaultnamespaces);
 		} catch (EolModelLoadingException e) {
 			throw new QueryExecutionException(
@@ -884,7 +891,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 	}
 
-	private Object contextfullQuery(IGraphDatabase g, String query,
+	private Object contextfullQuery(IModelIndexer m, String query,
 			Map<String, String> context) throws QueryExecutionException,
 			InvalidQueryException {
 
@@ -945,10 +952,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 	// deriving attributes
 	@Override
-	public AccessListener calculateDerivedAttributes(IGraphDatabase g,
+	public AccessListener calculateDerivedAttributes(IModelIndexer m,
 			Iterable<IGraphNode> nodes) {
 
-		graph = g;
+		indexer = m;
+		graph = m.getGraph();
 
 		if (config == null)
 			config = getDatabaseConfig();
@@ -961,7 +969,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		setDatabaseConfig(configuration);
 
 		try {
-			load(graph);
+			load(m);
 		} catch (EolModelLoadingException e2) {
 			e2.printStackTrace();
 		}
@@ -1003,13 +1011,14 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 											.equals(true))) {
 
 								derived = new DeriveFeature().deriveFeature(
-										cachedModules, graph, n, this, s, prop);
+										cachedModules, indexer, n, this, s,
+										prop);
 
 							} else
 
 								derived = new DeriveFeature().deriveFeature(
 										new HashMap<String, EolModule>(),
-										graph, n, this, s, prop);
+										indexer, n, this, s, prop);
 
 						} catch (Exception e1) {
 							System.err

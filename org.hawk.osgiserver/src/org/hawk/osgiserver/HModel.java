@@ -334,7 +334,7 @@ public class HModel implements IStateListener {
 		if (q == null) {
 			throw new NoSuchElementException();
 		}
-		return q.query(hawk.getModelIndexer().getGraph(), query, context);
+		return q.query(hawk.getModelIndexer(), query, context);
 	}
 
 	/**
@@ -351,7 +351,7 @@ public class HModel implements IStateListener {
 		if (q == null) {
 			throw new NoSuchElementException();
 		}
-		return q.query(hawk.getModelIndexer().getGraph(), query, context);
+		return q.query(hawk.getModelIndexer(), query, context);
 	}
 
 	public void delete() throws BackingStoreException {

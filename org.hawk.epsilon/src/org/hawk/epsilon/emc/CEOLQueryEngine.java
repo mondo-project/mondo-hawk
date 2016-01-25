@@ -39,15 +39,18 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 	protected boolean enableTraversalScoping = true;
 
 	@Override
-	public void load(IGraphDatabase g) throws EolModelLoadingException {
-		
+	public void load(IModelIndexer m) throws EolModelLoadingException {
+
 		if (config == null)
 			config = getDatabaseConfig();
 
-		if (g != null
+		if (m != null
 		// && graph == null
-		)
-			graph = g;
+		) {
+			indexer = m;
+			graph = m.getGraph();
+			;
+		}
 
 		if (propertygetter == null || propertygetter.getGraph() != graph)
 			propertygetter = new CGraphPropertyGetter(graph, this);
@@ -119,8 +122,9 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 
 			System.out.println("running CEOLQueryEngine with files: "
 					+ fileNodes);
-			if(enableTraversalScoping)System.out.println("Full Traversal Scoping ENABLED");
-			
+			if (enableTraversalScoping)
+				System.out.println("Full Traversal Scoping ENABLED");
+
 			if (propertygetter == null)
 				propertygetter = new CGraphPropertyGetter(graph, this);
 

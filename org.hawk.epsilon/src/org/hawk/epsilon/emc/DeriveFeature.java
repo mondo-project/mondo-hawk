@@ -18,7 +18,7 @@ import org.eclipse.epsilon.common.parse.problem.ParseProblem;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.eol.EolModule;
 import org.eclipse.epsilon.eol.execute.context.Variable;
-import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphNode;
 
 public class DeriveFeature {
@@ -27,7 +27,7 @@ public class DeriveFeature {
 	}
 
 	public Object deriveFeature(HashMap<String, EolModule> cachedModules,
-			IGraphDatabase g, IGraphNode n, EOLQueryEngine containerModel,
+			IModelIndexer indexer, IGraphNode n, EOLQueryEngine containerModel,
 			String propertyName, String EOLScript) throws Exception {
 
 		// remove prefix (_NYD)
@@ -47,7 +47,7 @@ public class DeriveFeature {
 				// bodyDeclarations.exists(md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public=='true'))
 				System.err.println("adding new module to cache, key:"
 						+ actualEOLScript);
-				currentModule = initModule(g, containerModel);
+				currentModule = initModule(indexer, containerModel);
 
 				currentModule.parse(actualEOLScript);
 
@@ -133,7 +133,7 @@ public class DeriveFeature {
 
 	}
 
-	private EolModule initModule(IGraphDatabase g, EOLQueryEngine model)
+	private EolModule initModule(IModelIndexer m, EOLQueryEngine model)
 			throws Exception {
 
 		EolModule currentModule = new EolModule();
@@ -144,7 +144,8 @@ public class DeriveFeature {
 		// configuration.put("DUMP_DATABASE_CONFIG_ON_EXIT", true);
 		// configuration.put("DUMP_MODEL_CONFIG_ON_EXIT", true);
 		// configuration.put("DUMP_FULL_DATABASE_CONFIG_ON_EXIT", true);
-		configuration.put(AbstractEpsilonModel.databaseLocation, g.getPath());
+		configuration.put(AbstractEpsilonModel.databaseLocation, m.getGraph()
+				.getPath());
 		configuration.put("name", "Model");
 		configuration.put(AbstractEpsilonModel.enableCaching, true);
 
@@ -159,7 +160,7 @@ public class DeriveFeature {
 
 		model.setDatabaseConfig(configuration);
 
-		model.load(g);
+		model.load(m);
 
 		currentModule.getContext().getModelRepository().addModel(model);
 

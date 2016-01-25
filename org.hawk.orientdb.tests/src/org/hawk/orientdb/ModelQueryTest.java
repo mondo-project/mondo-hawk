@@ -97,8 +97,8 @@ public class ModelQueryTest {
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
 				assertEquals(2, queryEngine.getAllOfType("Tree").size());
-				assertEquals(2,
-						queryEngine.query(db, "return Tree.all.size;", null));
+				assertEquals(2, queryEngine.query(indexer,
+						"return Tree.all.size;", null));
 				return null;
 			}
 		});
@@ -120,7 +120,7 @@ public class ModelQueryTest {
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
 				assertEquals(1, queryEngine.getAllOfType("IJavaProject").size());
-				assertEquals(1, queryEngine.query(db,
+				assertEquals(1, queryEngine.query(indexer,
 						"return IJavaProject.all.size;", null));
 				return null;
 			}

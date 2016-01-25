@@ -32,6 +32,8 @@ import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.runtime.ModelIndexerImpl;
 import org.hawk.core.security.FileBasedCredentialsStore;
 import org.hawk.core.util.DefaultConsole;
+import org.hawk.emf.metamodel.EMFMetaModelResourceFactory;
+import org.hawk.emf.model.EMFModelResourceFactory;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
 import org.hawk.graph.internal.updater.GraphModelUpdater;
@@ -45,13 +47,15 @@ import org.hawk.neo4j_v2.Neo4JDatabase;
 public class Runtime_example {
 
 	private static Git git;
-	private static LinkedHashMap<String, RevCommit> linkedHashMap;
+	private static LinkedHashMap<String, RevCommit> linkedHashMap = new LinkedHashMap<>();
 
 	private static IQueryEngine q;
 	private static IModelIndexer hawk;
 
 	private static final String queryLangID = "org.hawk.epsilon.emc.EOLQueryEngine";
 
+	// these queries assume this project is run in the same folder as the rest
+	// of hawk (for example cloning the entire hawk git repo)
 	private static File testquery = new File(
 			"../org.hawk.epsilon/src/org/hawk/epsilon/query/Test_Query.eol");
 	private static File query = new File(
@@ -97,40 +101,19 @@ public class Runtime_example {
 				new DefaultConsole());
 
 		// add a metamodel factory
-		// hawk.addMetaModelResourceFactory(new EMFMetaModelResourceFactory());
-		hawk.addMetaModelResourceFactory(new BPMNMetaModelResourceFactory());
-		hawk.addMetaModelResourceFactory(new ModelioMetaModelResourceFactory());
+		hawk.addMetaModelResourceFactory(new EMFMetaModelResourceFactory());
+		// hawk.addMetaModelResourceFactory(new BPMNMetaModelResourceFactory());
+		// hawk.addMetaModelResourceFactory(new
+		// ModelioMetaModelResourceFactory());
 
 		// add a model factory
-		// hawk.addModelResourceFactory(new EMFModelResourceFactory());
-		hawk.addModelResourceFactory(new BPMNModelResourceFactory());
-		hawk.addModelResourceFactory(new ModelioModelResourceFactory());
+		hawk.addModelResourceFactory(new EMFModelResourceFactory());
+		// hawk.addModelResourceFactory(new BPMNModelResourceFactory());
+		// hawk.addModelResourceFactory(new ModelioModelResourceFactory());
 
 		// create the model index with relevant database
 		db.run(hawk.getParentFolder(), hawk.getConsole());
 		hawk.setDB(db, true);
-
-		// set path of vcs to monitor
-
-		// String vcsloc =
-		// "C:/Users/kb/Desktop/workspace_runtime/EOL_tests/hawk_model_tests/0";
-
-		// String vcsloc =
-		// "../org.hawk.emf/src/org/hawk/emf/model/examples/fragmented";
-
-		// String vcsloc =
-		// "../org.hawk.emf/src/org/hawk/emf/model/examples/single/0";
-
-		// String vcsloc =
-		// "..\\_hawk_evaluation_simulation\\model\\bpmn-miwg_bpmn-miwg-test-suite";
-
-		// NB: to use svn with our local CS repository, you need to put
-		// -Dsvnkit.http.methods="NTLM,Basic,Digest,Negotiate"
-		// as runtime parameters so the authentication does not fail (and also
-		// your own user name and password!)
-		//
-		// String vcsloc =
-		// "https://cssvn.york.ac.uk/repos/sosym/kostas/Hawk/org.hawk.emf/src/org/hawk/emf/model/examples/single/0";
 
 		// add a vcs monitor (we can add as many as we want)
 		// IVcsManager vcs = new SvnManager();
@@ -146,6 +129,7 @@ public class Runtime_example {
 		else
 			pw = password();
 
+		// set path of vcs to monitor in args[0] for this example
 		if (pw != null) {
 			vcs.setCredentials("kb634", pw, credStore);
 			vcs.run(args[0], hawk);
@@ -156,7 +140,7 @@ public class Runtime_example {
 
 		hawk.addVCSManager(vcs, true);
 
-		// add a metamodel updater
+		// add the metamodel updater
 		hawk.setMetaModelUpdater(new GraphMetaModelUpdater());
 
 		// add a (default) model updater
@@ -166,26 +150,30 @@ public class Runtime_example {
 		q = new EOLQueryEngine();
 		hawk.addQueryEngine(q);
 
-		// only needed for debugging - both can be removed for production scenarios
-		hawk.addGraphChangeListener(new SyncChangeListener(git, linkedHashMap, hawk));
+		// only needed for debugging - both can be removed for production
+		// scenarios
+		hawk.addGraphChangeListener(new SyncChangeListener(git, linkedHashMap,
+				hawk));
 		hawk.addGraphChangeListener(new ExampleListener());
+
+		// register all metamodels found in the hawk.emf metamodel examples
+		// folder (assumed to be found alongside this project)
+		// otherwise register any metamodel by providing it here
+		for (File f : new File("../org.hawk.emf/src/org/hawk/emf/metamodel/examples/single")
+				.listFiles())
+			if (f.getPath().endsWith(".ecore"))
+				hawk.registerMetamodel(f);
 
 		// Initialise the server for real-time updates to changes -- this has to
 		// be done after initialising all the relevant plugins you want online.
 		// These parameters can be set to 0/0, and then only manual syncs sent
 		// through #requestImmediateSync will be honored.
-		hawk.init(1000, 512 * 1000);
+		// hawk.init(1000, 512 * 1000);
+		hawk.init(0, 0);
 
 		// add console interaction if needed
 		Thread t = consoleInteraction(hawk);
 		t.start();
-
-		// i.removeMetamodel(metamodel);
-
-		// hawk.addVCSManager(vcs, true);
-		//
-		// addDerivedandIndexedAttributes();
-		//
 
 		// terminate hawk
 		// h.shutdown();
@@ -221,7 +209,6 @@ public class Runtime_example {
 		return new Thread() {
 			@Override
 			public void run() {
-				final IGraphDatabase graph = i2.getGraph();
 
 				while (true) {
 					BufferedReader r = new BufferedReader(
@@ -244,30 +231,30 @@ public class Runtime_example {
 						} else if (s.equalsIgnoreCase("adi")) {
 							addDerivedandIndexedAttributes();
 						} else if (s.equalsIgnoreCase("tq")) {
-							q.query(graph, testquery, null);
+							q.query(i2, testquery, null);
 						} else if (s.equalsIgnoreCase("query")
 								|| s.equalsIgnoreCase("q")) {
-							q.query(graph, query, null);
-							q.query(graph, query2, null);
-							q.query(graph, query3, null);
+							q.query(i2, query, null);
+							q.query(i2, query2, null);
+							q.query(i2, query3, null);
 						} else if (s.equalsIgnoreCase("q1")) {
-							q.query(graph, query, null);
+							q.query(i2, query, null);
 						} else if (s.equalsIgnoreCase("q2")) {
-							q.query(graph, query2, null);
+							q.query(i2, query2, null);
 						} else if (s.equalsIgnoreCase("q3")) {
-							q.query(graph, query3, null);
+							q.query(i2, query3, null);
 						} else if (s.equalsIgnoreCase("cq")) {
 							Map<String, String> map = new HashMap<String, String>();
 							map.put(EOLQueryEngine.PROPERTY_FILECONTEXT, "*");
-							q.query(graph,
+							q.query(i2,
 									"TypeDeclaration.all.size().println();",
 									map);
 						} else if (s.equalsIgnoreCase("cqs")) {
 							Map<String, String> map = new HashMap<String, String>();
 							map.put(EOLQueryEngine.PROPERTY_FILECONTEXT, "*");
-							q.query(graph, query, map);
-							q.query(graph, query2, map);
-							q.query(graph, query3, map);
+							q.query(i2, query, map);
+							q.query(i2, query2, map);
+							q.query(i2, query3, map);
 
 						} else if (s.equalsIgnoreCase("tf")) {
 

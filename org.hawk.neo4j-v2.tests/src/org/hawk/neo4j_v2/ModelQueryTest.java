@@ -119,7 +119,7 @@ public class ModelQueryTest {
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
 				assertEquals(2,
-						queryEngine.query(db, "return Tree.all.size;", null));
+						queryEngine.query(indexer, "return Tree.all.size;", null));
 				return null;
 			}
 		});
@@ -140,7 +140,7 @@ public class ModelQueryTest {
 			@Override
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
-				assertEquals(1, queryEngine.query(db,
+				assertEquals(1, queryEngine.query(indexer,
 						"return IJavaProject.all.size;", null));
 				return null;
 			}

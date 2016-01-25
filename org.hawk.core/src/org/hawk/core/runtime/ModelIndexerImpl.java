@@ -497,8 +497,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 				final String s = epackage.getProperty(
 						IModelIndexer.METAMODEL_RESOURCE_PROPERTY).toString();
-				final String ep = epackage.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
-						.toString();
+				final String ep = epackage.getProperty(
+						IModelIndexer.IDENTIFIER_PROPERTY).toString();
 				final String type = epackage.getProperty(
 						IModelIndexer.METAMODEL_TYPE_PROPERTY).toString();
 
@@ -566,14 +566,14 @@ public class ModelIndexerImpl implements IModelIndexer {
 			e.printStackTrace();
 		}
 
-		for(IModelUpdater u : updaters)
-		try {
+		for (IModelUpdater u : updaters)
+			try {
 				u.deleteAll(vcs);
-		} catch (Exception e) {
-			System.err
-					.println("removeVCS tried to delete index contents but failed");
-			e.printStackTrace();
-		}
+			} catch (Exception e) {
+				System.err
+						.println("removeVCS tried to delete index contents but failed");
+				e.printStackTrace();
+			}
 
 		//
 		stateListener.state(HawkState.RUNNING);
@@ -1073,7 +1073,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public IGraphChangeListener getCompositeGraphChangeListener() {
+	public CompositeGraphChangeListener getCompositeGraphChangeListener() {
 		return listener;
 	}
 
@@ -1142,7 +1142,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public IStateListener getCompositeStateListener() {
+	public CompositeStateListener getCompositeStateListener() {
 		return stateListener;
 	}
 }

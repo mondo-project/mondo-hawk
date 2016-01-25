@@ -19,11 +19,13 @@ import org.eclipse.epsilon.eol.models.IRelativePathResolver;
 import org.eclipse.epsilon.eol.models.Model;
 import org.eclipse.epsilon.eol.models.ModelReference;
 import org.eclipse.epsilon.eol.models.java.JavaModel;
+import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.epsilon.emc.CEOLQueryEngine;
 import org.hawk.epsilon.emc.EOLQueryEngine;
+import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.util.HUIManager;
 
 public class HawkModel extends ModelReference {
@@ -66,26 +68,48 @@ public class HawkModel extends ModelReference {
 		target = eolQueryEngine;
 		eolQueryEngine.setDatabaseConfig(properties);
 
-		//
-		database = HUIManager.getInstance().getGraphByIndexerName(
-				properties.getProperty(PROPERTY_INDEXER_NAME));
-
 		String[] aliases = properties.getProperty("aliases").split(",");
 		for (int i = 0; i < aliases.length; i++) {
 			this.aliases.add(aliases[i].trim());
 		}
 
-		// String location = properties.getProperty(PROPERTY_DATABASE_LOCATION);
-		//
-		// System.out.println("Location: " + location);
-		//
-		// String name = location.substring(location.lastIndexOf("/") + 1);
-		// String loc = location.substring(0, location.lastIndexOf("/"));
-		//
-		// System.out.println(name);
-		// System.out.println(loc);
-		//
-		// database.run(name, new File(loc), new DefaultConsole());
+		HUIManager m = HUIManager.getInstance();
+
+		String hn = properties.getProperty(PROPERTY_INDEXER_NAME);
+
+		if (hn == null)
+			throw new EolModelLoadingException(
+					new Exception(
+							"The selected Hawk has a null name property (PROPERTY_INDEXER_NAME)"),
+					this);
+
+		HModel hm = m.getHawkByName(hn);
+
+		if (hm == null)
+			throw new EolModelLoadingException(new Exception(
+					"The selected Hawk (" + hn
+							+ ") cannot be found [HModel == null]"), this);
+
+		database = hm.getGraph();
+
+		HawkState s = hm.getStatus();
+
+		if (s.equals(HawkState.UPDATING))
+			throw new EolModelLoadingException(
+					new Exception(
+							"The selected Hawk cannot be currently queried as it is updating, please try again later"),
+					this);
+		else if (s.equals(HawkState.STOPPED))
+			throw new EolModelLoadingException(
+					new Exception(
+							"The selected Hawk cannot be currently queried as it is stopped, please start it first"),
+					this);
+		// catching other new states which may be added
+		else if (!s.equals(HawkState.RUNNING))
+			throw new EolModelLoadingException(new Exception(
+					"The selected Hawk cannot be currently queried (state=" + s
+							+ ")"), this);
+
 		if (database != null) {
 			try {
 				t = database.beginTransaction();
@@ -95,7 +119,7 @@ public class HawkModel extends ModelReference {
 								"The selected Hawk cannot connect to its back-end (transaction error)"),
 						this);
 			}
-			eolQueryEngine.load(database);
+			eolQueryEngine.load(hm.getIndexer());
 		} else
 			throw new EolModelLoadingException(
 					new Exception(

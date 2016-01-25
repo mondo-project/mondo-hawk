@@ -140,7 +140,7 @@ public class Modelio_Titan_Runtime_example {
 						if (s.equalsIgnoreCase("query")
 								|| s.equalsIgnoreCase("q")) {
 
-							q.query(i.getGraph(), query3, null);
+							q.query(i, query3, null);
 
 						}
 

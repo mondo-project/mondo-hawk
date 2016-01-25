@@ -20,6 +20,8 @@ import java.util.Set;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
+import org.hawk.core.runtime.CompositeGraphChangeListener;
+import org.hawk.core.runtime.CompositeStateListener;
 
 public interface IModelIndexer {
 
@@ -121,13 +123,13 @@ public interface IModelIndexer {
 
 	boolean removeGraphChangeListener(IGraphChangeListener changeListener);
 
-	IGraphChangeListener getCompositeGraphChangeListener();
+	CompositeGraphChangeListener getCompositeGraphChangeListener();
 
 	boolean addStateListener(IStateListener stateListener);
 
 	boolean removeStateListener(IStateListener stateListener);
 
-	IStateListener getCompositeStateListener();
+	CompositeStateListener getCompositeStateListener();
 
 	void setDB(IGraphDatabase db, boolean persist);
 

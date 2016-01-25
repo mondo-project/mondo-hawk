@@ -183,7 +183,7 @@ public class ModelUpdateTest {
 						2,
 						queryEngine.getAllOf("Tree",
 								ModelElementNode.EDGE_LABEL_OFTYPE).size());
-				assertEquals(1, queryEngine.query(db,
+				assertEquals(1, queryEngine.query(indexer,
 						"return Tree.all.select(t|t.label='t90001').size;",
 						null));
 				return null;
@@ -204,7 +204,7 @@ public class ModelUpdateTest {
 						2,
 						queryEngine.getAllOf("Tree",
 								ModelElementNode.EDGE_LABEL_OFTYPE).size());
-				assertEquals(1, queryEngine.query(db,
+				assertEquals(1, queryEngine.query(indexer,
 						"return Tree.all.select(t|t.label='t40').size;", null));
 				return null;
 			}
@@ -217,7 +217,8 @@ public class ModelUpdateTest {
 		setup("reuse", "tree/tree.model");
 		teardown();
 		setup("reuse", "tree/tree.model");
-		assertFalse("The deleted directory should be reusable", db.getGraph().isClosed());
+		assertFalse("The deleted directory should be reusable", db.getGraph()
+				.isClosed());
 	}
 
 	private void replaceWith(final String replacement) throws IOException {

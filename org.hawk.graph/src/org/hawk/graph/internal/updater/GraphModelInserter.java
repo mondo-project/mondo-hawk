@@ -70,7 +70,7 @@ public class GraphModelInserter {
 	private Map<String, IHawkObject> unchanged = new HashMap<>();
 	private Map<String, IHawkObject> retyped = new HashMap<>();
 	private double currentDeltaRatio;
-	
+
 	private IModelIndexer indexer;
 	private IGraphDatabase graph;
 	private GraphModelBatchInjector inj;
@@ -101,7 +101,7 @@ public class GraphModelInserter {
 			// f = new File(dir + "/" + s.getPath());
 
 			int delta = calculateModelDeltaSize();
-			
+
 			if (delta != -1) {
 				final IVcsManager manager = s.getCommit().getDelta()
 						.getManager();
@@ -759,10 +759,12 @@ public class GraphModelInserter {
 				int updatedn = updated.size();
 				int deletedn = nodes.size() - unchanged.size() - updated.size()
 						- retyped.size();
-				currentDeltaRatio = (addedn+retypedn+updatedn+deletedn)/((double)nodes.size());
+				currentDeltaRatio = (addedn + retypedn + updatedn + deletedn)
+						/ ((double) nodes.size());
 				System.err.println("update contains | a:" + (addedn + retypedn)
-						+ " + u:" + updatedn + " + d:" + deletedn + " ratio:" + currentDeltaRatio);
-				
+						+ " + u:" + updatedn + " + d:" + deletedn + " ratio:"
+						+ currentDeltaRatio);
+
 				return addedn + retypedn + updatedn + deletedn;
 			}
 		} else {
@@ -883,11 +885,14 @@ public class GraphModelInserter {
 		final long start = System.currentTimeMillis();
 		int proxiesLeft = -1;
 
-		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
+		final IGraphChangeListener listener = indexer
+				.getCompositeGraphChangeListener();
 		List<IGraphNode> proxiesToBeResolved = new ArrayList<>();
 		try (IGraphTransaction tx = graph.beginTransaction()) {
-			IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex("proxydictionary");
-			IGraphIterable<IGraphNode> proxies = proxyDictionary.query(GraphModelUpdater.PROXY_REFERENCE_PREFIX, "*");
+			IGraphNodeIndex proxyDictionary = graph
+					.getOrCreateNodeIndex("proxydictionary");
+			IGraphIterable<IGraphNode> proxies = proxyDictionary.query(
+					GraphModelUpdater.PROXY_REFERENCE_PREFIX, "*");
 			for (IGraphNode n : proxies) {
 				proxiesToBeResolved.add(n);
 			}
@@ -896,7 +901,7 @@ public class GraphModelInserter {
 
 		final int nToBeResolved = proxiesToBeResolved.size();
 		final long startMillis = System.currentTimeMillis();
-		int totalProcessed = 0, currentProcessed = 0; 
+		int totalProcessed = 0, currentProcessed = 0;
 		if (proxiesToBeResolved != null && nToBeResolved > 0) {
 			Iterator<IGraphNode> itProxies = proxiesToBeResolved.iterator();
 
@@ -906,9 +911,11 @@ public class GraphModelInserter {
 				int nBatch = 0;
 				try (IGraphTransaction tx = graph.beginTransaction()) {
 					listener.changeStart();
-					while (itProxies.hasNext() && nBatch < PROXY_RESOLVE_TX_SIZE) {
+					while (itProxies.hasNext()
+							&& nBatch < PROXY_RESOLVE_TX_SIZE) {
 						IGraphNode n = itProxies.next();
-						IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex("proxydictionary");
+						IGraphNodeIndex proxyDictionary = graph
+								.getOrCreateNodeIndex("proxydictionary");
 						resolveProxies(graph, listener, n, proxyDictionary);
 						++nBatch;
 					}
@@ -923,8 +930,12 @@ public class GraphModelInserter {
 				if (currentProcessed >= PROXY_RESOLVE_NOTIFY_INTERVAL) {
 					totalProcessed += currentProcessed;
 					currentProcessed = 0;
-					final long elapsedSeconds = (System.currentTimeMillis() - startMillis)/1000;
-					indexer.getCompositeStateListener().info(String.format("Processed %d/%d nodes with proxies (%dsec total)", totalProcessed, nToBeResolved, elapsedSeconds));
+					final long elapsedSeconds = (System.currentTimeMillis() - startMillis) / 1000;
+					indexer.getCompositeStateListener()
+							.info(String
+									.format("Processed %d/%d nodes with proxies (%dsec total)",
+											totalProcessed, nToBeResolved,
+											elapsedSeconds));
 				}
 			}
 		}
@@ -949,19 +960,24 @@ public class GraphModelInserter {
 
 	}
 
-	private void resolveProxies(IGraphDatabase graph, final IGraphChangeListener listener, IGraphNode n,
+	private void resolveProxies(IGraphDatabase graph,
+			final IGraphChangeListener listener, IGraphNode n,
 			IGraphNodeIndex proxyDictionary) {
 		Set<String[]> allProxies = new HashSet<>();
 		for (String propertyKey : n.getPropertyKeys()) {
-			if (propertyKey.startsWith(GraphModelUpdater.PROXY_REFERENCE_PREFIX)) {
-				final String[] propertyValue = (String[]) n.getProperty(propertyKey);
+			if (propertyKey
+					.startsWith(GraphModelUpdater.PROXY_REFERENCE_PREFIX)) {
+				final String[] propertyValue = (String[]) n
+						.getProperty(propertyKey);
 				allProxies.add(propertyValue);
 			}
 		}
 
 		for (String[] proxies : allProxies) {
-			final String fullPathURI = proxies[0].substring(0, proxies[0].indexOf("#"));
-			final String[] repoFile = fullPathURI.split(GraphModelUpdater.FILEINDEX_REPO_SEPARATOR, 2);
+			final String fullPathURI = proxies[0].substring(0,
+					proxies[0].indexOf("#"));
+			final String[] repoFile = fullPathURI.split(
+					GraphModelUpdater.FILEINDEX_REPO_SEPARATOR, 2);
 			final String repoURL = repoFile[0];
 			final String filePath = repoFile[1];
 
@@ -973,7 +989,8 @@ public class GraphModelInserter {
 					nodes.add(r.getStartNode());
 			}
 
-			final boolean isFragmentBased = filePath.equals("/" + GraphModelUpdater.PROXY_FILE_WILDCARD);
+			final boolean isFragmentBased = filePath.equals("/"
+					+ GraphModelUpdater.PROXY_FILE_WILDCARD);
 			if (nodes.size() != 0 || isFragmentBased) {
 				String[] remainingProxies = proxies.clone();
 
@@ -984,16 +1001,21 @@ public class GraphModelInserter {
 					final String uri = proxies[i];
 					final String fragment = uri.substring(uri.indexOf("#") + 1);
 					final String edgeLabel = proxies[i + 1];
-					final boolean isContainment = Boolean.valueOf(proxies[i + 2]);
+					final boolean isContainment = Boolean
+							.valueOf(proxies[i + 2]);
 					final boolean isContainer = Boolean.valueOf(proxies[i + 3]);
 
 					for (IGraphNode no : nodes) {
-						String nodeURI = fullPathURI + "#"
-								+ no.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+						String nodeURI = fullPathURI
+								+ "#"
+								+ no.getProperty(
+										IModelIndexer.IDENTIFIER_PROPERTY)
+										.toString();
 
 						if (nodeURI.equals(uri)) {
-							boolean change = new GraphModelBatchInjector(graph, null, listener)
-									.resolveProxyRef(n, no, edgeLabel, isContainment, isContainer);
+							boolean change = new GraphModelBatchInjector(graph,
+									null, listener).resolveProxyRef(n, no,
+									edgeLabel, isContainment, isContainer);
 
 							if (!change) {
 								// System.err.println("resolving
@@ -1003,7 +1025,8 @@ public class GraphModelInserter {
 								// " -> "+ no.getId());
 							} else {
 								resolved = true;
-								listener.referenceAddition(this.s, n, no, edgeLabel, false);
+								listener.referenceAddition(this.s, n, no,
+										edgeLabel, false);
 							}
 							break;
 						}
@@ -1013,31 +1036,40 @@ public class GraphModelInserter {
 						// fragment-based proxy resolution (e.g. for Modelio)
 						IGraphNodeIndex fragDictionary = graph
 								.getOrCreateNodeIndex(GraphModelBatchInjector.FRAGMENT_DICT_NAME);
-						Iterator<IGraphNode> targetNodes = fragDictionary.get("id", fragment).iterator();
+						Iterator<IGraphNode> targetNodes = fragDictionary.get(
+								"id", fragment).iterator();
 						if (targetNodes.hasNext()) {
 							final IGraphNode no = targetNodes.next();
-							boolean change = new GraphModelBatchInjector(graph, null, listener)
-									.resolveProxyRef(n, no, edgeLabel, isContainment, isContainer);
+							boolean change = new GraphModelBatchInjector(graph,
+									null, listener).resolveProxyRef(n, no,
+									edgeLabel, isContainment, isContainer);
 							if (change) {
 								resolved = true;
-								listener.referenceAddition(this.s, n, no, edgeLabel, false);
+								listener.referenceAddition(this.s, n, no,
+										edgeLabel, false);
 							}
 						}
 
 					}
 
 					if (resolved) {
-						remainingProxies = new Utils().removeFromElementProxies(remainingProxies, uri,
-								edgeLabel, isContainment, isContainer);
+						remainingProxies = new Utils()
+								.removeFromElementProxies(remainingProxies,
+										uri, edgeLabel, isContainment,
+										isContainer);
 					}
 
 				}
 
 				if (remainingProxies == null || remainingProxies.length == 0) {
-					n.removeProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + fullPathURI);
-					proxyDictionary.remove(GraphModelUpdater.PROXY_REFERENCE_PREFIX, fullPathURI, n);
+					n.removeProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX
+							+ fullPathURI);
+					proxyDictionary.remove(
+							GraphModelUpdater.PROXY_REFERENCE_PREFIX,
+							fullPathURI, n);
 				} else
-					n.setProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + fullPathURI, remainingProxies);
+					n.setProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX
+							+ fullPathURI, remainingProxies);
 			}
 			// else
 			// System.err
@@ -1082,7 +1114,7 @@ public class GraphModelInserter {
 		if (size > 0) {
 			IQueryEngine q = indexer.getKnownQueryLanguages().get(type);
 			IAccessListener accessListener = q.calculateDerivedAttributes(
-					graph, allUnresolved);
+					indexer, allUnresolved);
 
 			// dump access to lucene and add hooks on updates
 
@@ -1163,7 +1195,7 @@ public class GraphModelInserter {
 
 			IQueryEngine q = indexer.getKnownQueryLanguages().get(type);
 			IAccessListener accessListener = q.calculateDerivedAttributes(
-					graph, nodesToBeUpdated);
+					indexer, nodesToBeUpdated);
 
 			for (IAccess a : accessListener.getAccesses()) {
 				IGraphNode sourceNode = graph
@@ -1302,7 +1334,7 @@ public class GraphModelInserter {
 			//
 			//
 			IAccessListener accessListener = q.calculateDerivedAttributes(
-					graph, derivedPropertyNodes);
+					indexer, derivedPropertyNodes);
 
 			IGraphNodeIndex derivedAccessDictionary = graph
 					.getOrCreateNodeIndex("derivedaccessdictionary");

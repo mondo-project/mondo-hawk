@@ -14,7 +14,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.IModelIndexer;
+import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.graph.IGraphNode;
 
 public interface IQueryEngine {
@@ -25,7 +26,7 @@ public interface IQueryEngine {
 	public static final String PROPERTY_ENABLE_CACHING = "ENABLE_CACHING";
 	public static final String PROPERTY_ENABLE_TRAVERSAL_SCOPING = "ENABLE_TRAVERSAL_SCOPING";
 
-	IAccessListener calculateDerivedAttributes(IGraphDatabase g,
+	IAccessListener calculateDerivedAttributes(IModelIndexer m,
 			Iterable<IGraphNode> nodes) throws InvalidQueryException,
 			QueryExecutionException;
 
@@ -42,10 +43,30 @@ public interface IQueryEngine {
 	 */
 	void setDefaultNamespaces(String defaultNamespaces);
 
-	Object query(IGraphDatabase g, String query, Map<String, String> context)
+	/**
+	 * Callers of this method should honour the IModelIndexer state when
+	 * attempting to query Hawk, only accepting HawkState.RUNNING from
+	 * CompositeStateListener().getCurrentState().
+	 * 
+	 * @throws QueryExecutionException
+	 *             The model indexer is currently not available.
+	 * @throws InvalidQueryException
+	 *             The query expression is not parsable by the engine.
+	 */
+	Object query(IModelIndexer m, String query, Map<String, String> context)
 			throws InvalidQueryException, QueryExecutionException;
 
-	Object query(IGraphDatabase g, File query, Map<String, String> context)
+	/**
+	 * Callers of this method should honour the IModelIndexer state when
+	 * attempting to query Hawk, only accepting HawkState.RUNNING from
+	 * CompositeStateListener().getCurrentState()
+	 * 
+	 * @throws QueryExecutionException
+	 *             The model indexer is currently not available. * @throws
+	 *             InvalidQueryException The query expression is not parsable by
+	 *             the engine.
+	 */
+	Object query(IModelIndexer m, File query, Map<String, String> context)
 			throws InvalidQueryException, QueryExecutionException;
 
 }
