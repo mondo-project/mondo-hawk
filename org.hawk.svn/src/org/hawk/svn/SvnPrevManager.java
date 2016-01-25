@@ -12,6 +12,13 @@
  ******************************************************************************/
 package org.hawk.svn;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Frame;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -23,8 +30,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 
 import org.hawk.core.IConsole;
 import org.hawk.core.ICredentialsStore;
@@ -44,7 +55,7 @@ import org.tmatesoft.svn.core.SVNProperties;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 
-public class SvnManager implements IVcsManager {
+public class SvnPrevManager implements IVcsManager {
 
 	private IConsole console;
 	private boolean isActive = false;
@@ -61,28 +72,105 @@ public class SvnManager implements IVcsManager {
 	private static final Set<String> EXTENSION_BLACKLIST = new HashSet<>(
 			Arrays.asList(".png", ".jpg", ".bmp", ".jar", ".gz", ".tar"));
 
-	public SvnManager() {
+	public SvnPrevManager() {
 	}
 
 	public static void main(String[] _a) throws Exception {
+
 		System.err.println("testing");
-		final JFrame parent = new JFrame();
-		parent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		String pass = JOptionPane.showInputDialog(parent, "pw plz", "hi there");
-		parent.dispose();
+
+		char[] pass = authenticate();
 
 		System.err.println("testing2");
-		SvnManager m = new SvnManager();
+		SvnPrevManager m = new SvnPrevManager();
 		System.err.println("testing3");
 
 		final String vcsloc = "https://cssvn.york.ac.uk/repos/sosym/kostas/Hawk/org.hawk.emf/src/org/hawk/emf/model/examples/single/0";
 		FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(
 				new File("security.xml"), "admin".toCharArray());
-		credStore.put(vcsloc, new Credentials("kb634", pass));
-		m.run(vcsloc, new ModelIndexerImpl(null, null, credStore, new DefaultConsole()));
+		credStore.put(vcsloc, new Credentials("kb634", String.valueOf(pass)));
+		final ModelIndexerImpl indexer = new ModelIndexerImpl(null, null,
+				credStore, new DefaultConsole());
+		m.run(vcsloc, indexer);
 		System.err.println("testing4");
 		m.test();
 		System.err.println("testing5-end");
+	}
+
+	private static char[] authenticate() {
+
+		Frame f = new Frame();
+		f.setBounds(500, 500, 250, 100);
+		JDialog dialog = new JDialog(f, true);
+		Container content = dialog.getContentPane();
+
+		JPanel passPanel = new JPanel(new BorderLayout());
+		JLabel passLabel = new JLabel("Password: ");
+		passLabel.setDisplayedMnemonic(KeyEvent.VK_P);
+		JPasswordField passTextField = new JPasswordField();
+		passLabel.setLabelFor(passTextField);
+		passPanel.add(passLabel, BorderLayout.WEST);
+		passPanel.add(passTextField, BorderLayout.CENTER);
+		passTextField.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (e.getKeyChar() == 27) {
+					dialog.setVisible(false);
+					System.exit(1);
+				} else if (Character.getNumericValue(e.getKeyChar()) == -1)
+					dialog.setVisible(false);
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// System.err.println(e.getKeyChar());
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// System.err.println(e.getKeyChar());
+			}
+		});
+
+		JPanel panel = new JPanel(new BorderLayout());
+		// panel.add(userPanel, BorderLayout.NORTH);
+		panel.add(passPanel, BorderLayout.NORTH);
+		content.add(panel, BorderLayout.NORTH);
+
+		JButton b = new JButton("OK");
+		b.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				dialog.setVisible(false);
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				dialog.setVisible(false);
+			}
+		});
+		content.add(b, BorderLayout.SOUTH);
+
+		dialog.setResizable(false);
+		dialog.setBounds(800, 500, 250, 100);
+		dialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		dialog.setVisible(true);
+
+		f.dispose();
+
+		return passTextField.getPassword();
 	}
 
 	private void test() {
@@ -103,7 +191,9 @@ public class SvnManager implements IVcsManager {
 		try {
 			console = indexer.getConsole();
 
-			this.repositoryURL = vcsloc;
+			//
+			this.repositoryURL = vcsloc.endsWith("?prev") ? vcsloc : vcsloc
+					+ "?prev";
 
 			final ICredentialsStore credStore = indexer.getCredentialsStore();
 			if (username != null) {
@@ -111,7 +201,8 @@ public class SvnManager implements IVcsManager {
 				// call: retry the change to the credentials store.
 				setCredentials(username, password, credStore);
 			} else {
-				final Credentials credentials = credStore.get(repositoryURL);
+				final String actualURL = repositoryURL.replace("?prev", "");
+				final Credentials credentials = credStore.get(actualURL);
 				if (credentials != null) {
 					this.username = credentials.getUsername();
 					this.password = credentials.getPassword();
@@ -121,7 +212,8 @@ public class SvnManager implements IVcsManager {
 					 * will try to use the GNOME keyring in Linux, and that will
 					 * lock up our Eclipse instance in some cases.
 					 */
-					console.printerrln("No username/password recorded for the repository " + repositoryURL);
+					console.printerrln("No username/password recorded for the repository "
+							+ actualURL);
 					this.username = "";
 					this.password = "";
 				}
@@ -131,7 +223,7 @@ public class SvnManager implements IVcsManager {
 
 			isActive = true;
 		} catch (Exception e) {
-			console.printerrln("exception in svnmanager run():");
+			console.printerrln("exception in svnprevmanager run():");
 			console.printerrln(e);
 		}
 
@@ -226,8 +318,12 @@ public class SvnManager implements IVcsManager {
 
 	@Override
 	public String getCurrentRevision() throws Exception {
-		return getSVNRepository(repositoryURL, username, password)
-				.getLatestRevision() + "";
+		return (getSVNRepository(repositoryURL, username, password)
+				.getLatestRevision() 
+				
+				- 1) + "";
+		
+		//need actual prev in this path
 	}
 
 	/**
@@ -267,7 +363,7 @@ public class SvnManager implements IVcsManager {
 		try {
 			OutputStream o = new FileOutputStream(temp);
 
-			svnRepository.getFile(path, SVNRevision.HEAD.getNumber(),
+			svnRepository.getFile(path, SVNRevision.HEAD.getNumber() - 1,
 					new SVNProperties(), o);
 
 			o.flush();
@@ -297,11 +393,13 @@ public class SvnManager implements IVcsManager {
 	@Override
 	public void setCredentials(String username, String password,
 			ICredentialsStore credStore) {
-		if (username != null && password != null && repositoryURL != null
-				&& (!username.equals(this.username)
-				|| !password.equals(this.password))) {
+		if (username != null
+				&& password != null
+				&& repositoryURL != null
+				&& (!username.equals(this.username) || !password
+						.equals(this.password))) {
 			try {
-				credStore.put(repositoryURL,
+				credStore.put(repositoryURL.replace("?prev", ""),
 						new Credentials(username, password));
 			} catch (Exception e) {
 				console.printerrln("Could not save new username/password");
@@ -319,7 +417,7 @@ public class SvnManager implements IVcsManager {
 
 	@Override
 	public String getHumanReadableName() {
-		return "SVN Monitor";
+		return "SVN Prev Monitor";
 	}
 
 	@Override

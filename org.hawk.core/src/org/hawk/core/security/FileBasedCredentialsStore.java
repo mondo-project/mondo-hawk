@@ -77,11 +77,11 @@ public class FileBasedCredentialsStore implements ICredentialsStore {
 	private void checkOpen() throws IOException, GeneralSecurityException {
 		if (credentials != null) return;
 
+		credentials = new HashMap<>();
 		if (store.exists()) {
 			load();
 		} else {
 			store.createNewFile();
-			credentials = new HashMap<>();
 			SecureRandom random = new SecureRandom();
 			salt = random.generateSeed(8); 
 			save();
