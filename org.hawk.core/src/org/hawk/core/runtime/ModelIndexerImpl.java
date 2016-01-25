@@ -398,8 +398,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 			return allSync;
 		} finally {
 			stateListener.info("Performing optional post-sync operations.");
-			listener.synchroniseEnd();
 			stateListener.state(HawkState.RUNNING);
+			listener.synchroniseEnd();
 		}
 	}
 
