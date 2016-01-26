@@ -42,6 +42,11 @@ public interface IVcsManager {
 	void shutdown();
 
 	// kostas
+	/**
+	 * 
+	 * @return returns the canonical and normalised representation of the
+	 *         location of this VCSManager, always including a trailing slash
+	 */
 	String getLocation();
 
 	/**

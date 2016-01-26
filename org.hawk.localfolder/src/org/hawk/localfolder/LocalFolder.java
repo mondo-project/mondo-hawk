@@ -120,15 +120,14 @@ public class LocalFolder implements IVcsManager {
 
 		rootLocation = path.toFile().getCanonicalFile().toPath();
 		String repositoryURI = rootLocation.toUri().toString();
-		if (!repositoryURI.endsWith("/")) {
-			repositoryURI += "/";
-		}
+
 		repositoryURL = URLDecoder.decode(repositoryURI.replace("+", "%2B"),
 				"UTF-8");
 	}
 
 	@Override
-	public void run() { /* nothing */ }
+	public void run() { /* nothing */
+	}
 
 	private String getCurrentRevision(boolean alter) {
 
@@ -156,7 +155,10 @@ public class LocalFolder implements IVcsManager {
 	@Override
 	public void importFiles(String path, File temp) {
 		try {
-			FileOperations.copyFile(rootLocation.resolve(path).toFile(), temp);
+			FileOperations.copyFile(
+					rootLocation.resolve(
+							path.startsWith("/") ? path.replaceFirst("/", "")
+									: path).toFile(), temp);
 		} catch (Exception e) {
 			console.printerrln(e);
 		}
@@ -236,8 +238,13 @@ public class LocalFolder implements IVcsManager {
 
 			Path path = f.toPath();
 
-			c.setPath(makeRelative(repositoryURL, URLDecoder.decode(path
-					.toUri().toString().replace("+", "%2B"), "UTF-8")));
+			String relativepath = makeRelative(repositoryURL,
+					URLDecoder.decode(
+							f.toPath().toUri().toString().replace("+", "%2B"),
+							"UTF-8"));
+
+			c.setPath(relativepath.startsWith("/") ? relativepath : "/"
+					+ relativepath);
 
 			// c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 			commit.getItems().add(c);
@@ -272,10 +279,13 @@ public class LocalFolder implements IVcsManager {
 				c.setChangeType(VcsChangeType.UPDATED);
 				c.setCommit(commit);
 
-				c.setPath(makeRelative(
+				String relativepath = makeRelative(
 						repositoryURL,
 						URLDecoder.decode(f.toPath().toUri().toString()
-								.replace("+", "%2B"), "UTF-8")));
+								.replace("+", "%2B"), "UTF-8"));
+
+				c.setPath(relativepath.startsWith("/") ? relativepath
+						: ("/" + relativepath));
 
 				// c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 				commit.getItems().add(c);

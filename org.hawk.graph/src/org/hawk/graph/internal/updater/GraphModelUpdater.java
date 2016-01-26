@@ -39,7 +39,10 @@ public class GraphModelUpdater implements IModelUpdater {
 	public static final String FILEINDEX_REPO_SEPARATOR = "////";
 	public static final String PROXY_REFERENCE_PREFIX = "hawkProxyRef:";
 
-	/** Used in URIs of targets when we only know the unique fragment and we don't know the file. */
+	/**
+	 * Used in URIs of targets when we only know the unique fragment and we
+	 * don't know the file.
+	 */
 	public static final String PROXY_FILE_WILDCARD = "*";
 
 	public static final boolean caresAboutResources = true;
@@ -172,16 +175,18 @@ public class GraphModelUpdater implements IModelUpdater {
 
 	@Override
 	public boolean deleteAll(IVcsManager c) throws Exception {
-		
+
 		boolean ret = false;
 
 		IGraphDatabase graph = indexer.getGraph();
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
 			IGraphNodeIndex filedictionary = graph.getFileIndex();
-			IGraphIterable<IGraphNode> fileNodes = filedictionary.query("id", c.getLocation() + "*");
+			IGraphIterable<IGraphNode> fileNodes = filedictionary.query("id",
+					c.getLocation() + "*");
 
-			// Construct a simulated VcsRepositoryDelta with a "-deleted" revision
+			// Construct a simulated VcsRepositoryDelta with a "-deleted"
+			// revision
 			final VcsRepositoryDelta delta = new VcsRepositoryDelta();
 			final VcsCommit fakeCommit = new VcsCommit();
 			delta.setManager(c);
@@ -192,17 +197,20 @@ public class GraphModelUpdater implements IModelUpdater {
 			fakeCommit.setJavaDate(new Date());
 			fakeCommit.setRevision(c.getCurrentRevision() + "-deleted");
 			fakeCommit.setMessage("stopped indexing");
-			
-			final DeletionUtils deletionUtils = new DeletionUtils(graph);	
-			final IGraphChangeListener changeListener = indexer.getCompositeGraphChangeListener();
-			
+
+			final DeletionUtils deletionUtils = new DeletionUtils(graph);
+			final IGraphChangeListener changeListener = indexer
+					.getCompositeGraphChangeListener();
+
 			for (IGraphNode fileNode : fileNodes) {
-				
+
 				VcsCommitItem item = new VcsCommitItem();
 				item.setChangeType(VcsChangeType.DELETED);
 				item.setCommit(fakeCommit);
-				item.setPath(fileNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
-				
+				String path = fileNode.getProperty(
+						IModelIndexer.IDENTIFIER_PROPERTY).toString();
+				item.setPath(path.startsWith("/") ? path : "/" + path);
+
 				fakeCommit.getItems().add(item);
 				//
 				deletionUtils.deleteAll(fileNode, item, changeListener);

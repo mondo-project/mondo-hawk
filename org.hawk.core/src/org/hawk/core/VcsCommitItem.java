@@ -33,7 +33,12 @@ public class VcsCommitItem implements Serializable {
 		return path;
 	}
 
+	/**
+	 * path from location of repository, always starting with a single /
+	 * @param path
+	 */
 	public void setPath(String path) {
+		assert path.startsWith("/") : "Path " + path + " should start with a slash";
 		this.path = path;
 	}
 
