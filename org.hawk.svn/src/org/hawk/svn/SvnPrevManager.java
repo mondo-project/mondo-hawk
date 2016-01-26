@@ -53,7 +53,6 @@ import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.SVNLogEntryPath;
 import org.tmatesoft.svn.core.SVNProperties;
 import org.tmatesoft.svn.core.io.SVNRepository;
-import org.tmatesoft.svn.core.wc.SVNRevision;
 
 public class SvnPrevManager implements IVcsManager {
 
@@ -71,9 +70,6 @@ public class SvnPrevManager implements IVcsManager {
 	 */
 	private static final Set<String> EXTENSION_BLACKLIST = new HashSet<>(
 			Arrays.asList(".png", ".jpg", ".bmp", ".jar", ".gz", ".tar"));
-
-	public SvnPrevManager() {
-	}
 
 	public static void main(String[] _a) throws Exception {
 
@@ -201,7 +197,7 @@ public class SvnPrevManager implements IVcsManager {
 				// call: retry the change to the credentials store.
 				setCredentials(username, password, credStore);
 			} else {
-				final String actualURL = repositoryURL.replace("?prev", "");
+				final String actualURL = purge(repositoryURL);
 				final Credentials credentials = credStore.get(actualURL);
 				if (credentials != null) {
 					this.username = credentials.getUsername();
@@ -240,6 +236,10 @@ public class SvnPrevManager implements IVcsManager {
 	@Override
 	public VcsRepositoryDelta getDelta(String startRevision, String endRevision)
 			throws Exception {
+
+		System.err.println(startRevision);
+		System.err.println(endRevision);
+
 		SVNRepository svnRepository = getSVNRepository(repositoryURL, username,
 				password);
 
@@ -248,7 +248,8 @@ public class SvnPrevManager implements IVcsManager {
 
 		final String rootURL = svnRepository.getRepositoryRoot(false)
 				.toDecodedString();
-		final String overLappedURL = makeRelative(rootURL, repositoryURL);
+		final String overLappedURL = makeRelative(rootURL,
+				purge(repositoryURL));
 
 		if (!startRevision.equals(endRevision)) {
 			Collection<?> c = svnRepository.log(new String[] { "" }, null,
@@ -318,12 +319,28 @@ public class SvnPrevManager implements IVcsManager {
 
 	@Override
 	public String getCurrentRevision() throws Exception {
-		return (getSVNRepository(repositoryURL, username, password)
-				.getLatestRevision() 
-				
-				- 1) + "";
-		
-		//need actual prev in this path
+
+		SVNRepository svnRepository = getSVNRepository(repositoryURL, username,
+				password);
+
+		Collection<?> c = svnRepository.log(new String[] { "" }, null, 0, -1,
+				true, true);
+
+		long prev = -2;
+		long head = -1;
+
+		for (Object o : c) {
+			if (prev == -2)
+				prev = -1;
+			else
+				prev = head;
+
+			head = ((SVNLogEntry) o).getRevision();
+
+		}
+
+		return prev + "";
+
 	}
 
 	/**
@@ -363,7 +380,7 @@ public class SvnPrevManager implements IVcsManager {
 		try {
 			OutputStream o = new FileOutputStream(temp);
 
-			svnRepository.getFile(path, SVNRevision.HEAD.getNumber() - 1,
+			svnRepository.getFile(path, Long.parseLong(getCurrentRevision()),
 					new SVNProperties(), o);
 
 			o.flush();
@@ -399,7 +416,7 @@ public class SvnPrevManager implements IVcsManager {
 				&& (!username.equals(this.username) || !password
 						.equals(this.password))) {
 			try {
-				credStore.put(repositoryURL.replace("?prev", ""),
+				credStore.put(purge(repositoryURL),
 						new Credentials(username, password));
 			} catch (Exception e) {
 				console.printerrln("Could not save new username/password");
@@ -460,4 +477,11 @@ public class SvnPrevManager implements IVcsManager {
 		return password;
 	}
 
+	private String purge(String ss) {
+
+		ss.replace("?prev", "");
+
+		return ss;
+
+	}
 }
