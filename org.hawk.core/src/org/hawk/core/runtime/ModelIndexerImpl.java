@@ -95,7 +95,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 	private IConsole console;
 
 	public static final int DEFAULT_MAXDELAY = 1000 * 512;
-	public static final int DEFAULT_MINDELAY = 1000;
+	public static final int DEFAULT_MINDELAY = 5000;
 	private int maxDelay = DEFAULT_MAXDELAY;
 	private int minDelay = DEFAULT_MINDELAY;
 	private int currentDelay = minDelay;
