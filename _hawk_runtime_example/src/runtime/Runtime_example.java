@@ -132,8 +132,8 @@ public class Runtime_example {
 		// set path of vcs to monitor in args[0] for this example
 		if (pw != null) {
 			vcs.setCredentials("kb634", pw, credStore);
-			vcs.run(args[0], hawk);
-
+			vcs.init(args[0], hawk);
+			vcs.run();
 		} else
 			System.exit(1);
 		pw = null;

@@ -75,9 +75,10 @@ public class IFC_Titan_Runtime_example {
 		String vcsloc = "../uk.ac.york.cs.mde.hawk.ifc/samples";
 
 		// add vcs monitors
-		IVcsManager vcs = new LocalFolder();
-		vcs.run(vcsloc, i);
+		IVcsManager vcs = new LocalFolder();	
 		vcs.setCredentials("un", "pw", credStore);
+		vcs.init(vcsloc, i);
+		vcs.run();
 		i.addVCSManager(vcs, true);
 
 		// metamodel updater

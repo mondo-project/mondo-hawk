@@ -79,8 +79,9 @@ public class Modelio_Titan_Runtime_example {
 
 		// add vcs monitors
 		IVcsManager vcs = new LocalFolder();
-		vcs.run(vcsloc, i);
 		vcs.setCredentials("un", "pw", credStore);
+		vcs.init(vcsloc, i);
+		vcs.run();
 		i.addVCSManager(vcs, true);
 
 		// metamodel updater
