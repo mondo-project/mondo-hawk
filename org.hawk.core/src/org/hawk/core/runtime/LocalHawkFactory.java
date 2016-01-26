@@ -56,24 +56,26 @@ public class LocalHawkFactory implements IHawkFactory {
 		final File basePath = new File(location);
 
 		final List<InstanceInfo> entries = new ArrayList<>();
-		for (File f : basePath.listFiles()) {
-			if (f.isDirectory()) {
-				File fProps = new File(f, "properties.xml");
-				if (fProps.canRead()) {
-					try {
-						XStream stream = new XStream(new DomDriver());
-						stream.processAnnotations(HawkProperties.class);
-						stream.setClassLoader(HawkProperties.class.getClassLoader());
+		if (basePath.exists()) {
+			for (File f : basePath.listFiles()) {
+				if (f.isDirectory()) {
+					File fProps = new File(f, "properties.xml");
+					if (fProps.canRead()) {
+						try {
+							XStream stream = new XStream(new DomDriver());
+							stream.processAnnotations(HawkProperties.class);
+							stream.setClassLoader(HawkProperties.class.getClassLoader());
 
-						HawkProperties hp = (HawkProperties) stream.fromXML(fProps);
-						entries.add(new InstanceInfo(f.getName(), hp.getDbType(), HawkState.STOPPED));
-					} catch (Exception ex) {
-						//final String bundleName = FrameworkUtil.getBundle(LocalHawkFactory.class).getSymbolicName();
-						//final Status warnStatus = new Status(IStatus.WARNING, bundleName, ex.getMessage(), ex);
-						ex.printStackTrace();//Activator.getDefault().getLog().log(warnStatus);
+							HawkProperties hp = (HawkProperties) stream.fromXML(fProps);
+							entries.add(new InstanceInfo(f.getName(), hp.getDbType(), HawkState.STOPPED));
+						} catch (Exception ex) {
+							ex.printStackTrace();
+						}
 					}
 				}
 			}
+		} else {
+			System.err.println(basePath + " does not exist: returning an empty set");
 		}
 		return entries.toArray(new InstanceInfo[entries.size()]);
 	}

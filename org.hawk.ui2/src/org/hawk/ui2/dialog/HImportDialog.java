@@ -148,7 +148,7 @@ public class HImportDialog extends Dialog {
 		// Remote location ////////////////////////////////////////////////////
 
 		final Label lblLocation = new Label(container, SWT.NONE);
-		lblLocation.setText("&Remote location:");
+		lblLocation.setText("&Location:");
 
 		txtLocation = new Text(container, SWT.BORDER);
 		txtLocation.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
