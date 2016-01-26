@@ -112,7 +112,7 @@ public class Git implements IVcsManager {
 	}
 
 	@Override
-	public void run(String vcsloc, IModelIndexer indexer) throws Exception {
+	public void init(String vcsloc, IModelIndexer indexer) throws Exception {
 
 		console = indexer.getConsole();
 
@@ -132,6 +132,9 @@ public class Git implements IVcsManager {
 		repositoryURL = URLDecoder.decode(repositoryURI.replace("+", "%2B"),
 				"UTF-8");
 	}
+
+	@Override
+	public void run() { /* nothing */ }
 
 	private String getCurrentRevision(boolean alter) {
 

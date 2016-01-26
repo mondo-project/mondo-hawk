@@ -13,6 +13,7 @@ package org.hawk.http;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Date;
@@ -58,6 +59,7 @@ public class HTTPManager implements IVcsManager {
 	private String lastETag;
 
 	private String lastDelta;
+	private IModelIndexer indexer;
 
 	@Override
 	public String getCurrentRevision() throws Exception {
@@ -176,12 +178,15 @@ public class HTTPManager implements IVcsManager {
 	}
 
 	@Override
-	public void run(String vcsloc, IModelIndexer indexer) throws Exception {
+	public void init(String vcsloc, IModelIndexer indexer) throws URISyntaxException {
+		console = indexer.getConsole();
+		this.repositoryURL = new URI(vcsloc);
+		this.indexer = indexer;
+	}
+
+	@Override
+	public void run() throws Exception {
 		try {
-			console = indexer.getConsole();
-
-			this.repositoryURL = new URI(vcsloc);
-
 			final ICredentialsStore credStore = indexer.getCredentialsStore();
 			if (username != null) {
 				// The credentials were provided by a previous setCredentials
@@ -209,7 +214,6 @@ public class HTTPManager implements IVcsManager {
 			console.printerrln("exception in svnmanager run():");
 			console.printerrln(e);
 		}
-
 	}
 
 	@Override

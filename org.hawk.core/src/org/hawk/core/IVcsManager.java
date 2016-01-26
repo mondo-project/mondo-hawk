@@ -33,7 +33,10 @@ public interface IVcsManager {
 	boolean isActive();
 
 	// kostas
-	void run(String vcsloc, IModelIndexer hawk) throws Exception;
+	void init(String vcsloc, IModelIndexer hawk) throws Exception;
+
+	// kostas
+	void run() throws Exception;
 
 	// kostas
 	void shutdown();

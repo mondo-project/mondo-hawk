@@ -274,11 +274,12 @@ public class HModel implements IStateListener {
 				derivationlanguage, derivationlogic);
 	}
 
-	private void loadEncryptedVCS(String loc, String type) throws Exception {
-		if (!this.getLocations().contains(loc)) {
-			final IModelIndexer indexer = hawk.getModelIndexer();
-			IVcsManager mo = manager.createVCSManager(type);
-			mo.run(loc, indexer);
+	private void loadVCS(String loc, String type) throws Exception {
+		final IModelIndexer indexer = hawk.getModelIndexer();
+		final IVcsManager mo = manager.createVCSManager(type);
+		mo.init(loc, indexer);
+		if (!this.getLocations().contains(mo.getLocation())) {
+			mo.run();
 			indexer.addVCSManager(mo, false);
 		}
 	}
@@ -291,11 +292,12 @@ public class HModel implements IStateListener {
 
 	public void addVCS(String loc, String type, String user, String pass) {
 		try {
-			if (!this.getLocations().contains(loc)) {
-				IVcsManager mo = manager.createVCSManager(type);
-				mo.setCredentials(user, pass, hawk.getModelIndexer()
-						.getCredentialsStore());
-				mo.run(loc, hawk.getModelIndexer());
+			IVcsManager mo = manager.createVCSManager(type);
+			mo.init(loc, hawk.getModelIndexer());
+
+			if (!this.getLocations().contains(mo.getLocation())) {
+				mo.setCredentials(user, pass, hawk.getModelIndexer().getCredentialsStore());
+				mo.run();
 				hawk.getModelIndexer().addVCSManager(mo, true);
 			}
 		} catch (Exception e) {
@@ -538,7 +540,7 @@ public class HModel implements IStateListener {
 		HawkProperties hp = (HawkProperties) stream.fromXML(new File(path));
 		hawk.setDbtype(hp.getDbType());
 		for (String[] s : hp.getMonitoredVCS()) {
-			loadEncryptedVCS(s[0], s[1]);
+			loadVCS(s[0], s[1]);
 		}
 		return hp;
 	}

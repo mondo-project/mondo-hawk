@@ -56,12 +56,18 @@ import org.tmatesoft.svn.core.io.SVNRepository;
 
 public class SvnPrevManager implements IVcsManager {
 
+	private static final String URL_DECORATION_SUFFIX = "?prev";
 	private IConsole console;
 	private boolean isActive = false;
 
+	/*
+	 * Raw repository URL (without any ?prev decorations).
+	 */
 	private String repositoryURL;
+
 	private String username;
 	private String password;
+	private IModelIndexer indexer;
 
 	/*
 	 * TODO we can't blacklist .zip as we need support for zipped Modelio
@@ -87,7 +93,8 @@ public class SvnPrevManager implements IVcsManager {
 		credStore.put(vcsloc, new Credentials("kb634", String.valueOf(pass)));
 		final ModelIndexerImpl indexer = new ModelIndexerImpl(null, null,
 				credStore, new DefaultConsole());
-		m.run(vcsloc, indexer);
+		m.init(vcsloc, indexer);
+		m.run();
 		System.err.println("testing4");
 		m.test();
 		System.err.println("testing5-end");
@@ -97,7 +104,7 @@ public class SvnPrevManager implements IVcsManager {
 
 		Frame f = new Frame();
 		f.setBounds(500, 500, 250, 100);
-		JDialog dialog = new JDialog(f, true);
+		final JDialog dialog = new JDialog(f, true);
 		Container content = dialog.getContentPane();
 
 		JPanel passPanel = new JPanel(new BorderLayout());
@@ -182,23 +189,22 @@ public class SvnPrevManager implements IVcsManager {
 	}
 
 	@Override
-	public void run(String vcsloc, IModelIndexer indexer) throws Exception {
-
+	public void init(String vcsloc, IModelIndexer indexer) throws Exception {
+		console = indexer.getConsole();
+		this.repositoryURL = vcsloc.replace(URL_DECORATION_SUFFIX, "");
+		this.indexer = indexer;
+	}
+	
+	@Override
+	public void run() throws Exception {
 		try {
-			console = indexer.getConsole();
-
-			//
-			this.repositoryURL = vcsloc.endsWith("?prev") ? vcsloc : vcsloc
-					+ "?prev";
-
 			final ICredentialsStore credStore = indexer.getCredentialsStore();
 			if (username != null) {
 				// The credentials were provided by a previous setCredentials
 				// call: retry the change to the credentials store.
 				setCredentials(username, password, credStore);
 			} else {
-				final String actualURL = purge(repositoryURL);
-				final Credentials credentials = credStore.get(actualURL);
+				final Credentials credentials = credStore.get(repositoryURL);
 				if (credentials != null) {
 					this.username = credentials.getUsername();
 					this.password = credentials.getPassword();
@@ -208,8 +214,7 @@ public class SvnPrevManager implements IVcsManager {
 					 * will try to use the GNOME keyring in Linux, and that will
 					 * lock up our Eclipse instance in some cases.
 					 */
-					console.printerrln("No username/password recorded for the repository "
-							+ actualURL);
+					console.printerrln("No username/password recorded for the repository " + repositoryURL);
 					this.username = "";
 					this.password = "";
 				}
@@ -248,8 +253,7 @@ public class SvnPrevManager implements IVcsManager {
 
 		final String rootURL = svnRepository.getRepositoryRoot(false)
 				.toDecodedString();
-		final String overLappedURL = makeRelative(rootURL,
-				purge(repositoryURL));
+		final String overLappedURL = makeRelative(rootURL, repositoryURL);
 
 		if (!startRevision.equals(endRevision)) {
 			Collection<?> c = svnRepository.log(new String[] { "" }, null,
@@ -317,26 +321,26 @@ public class SvnPrevManager implements IVcsManager {
 		return delta;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public String getCurrentRevision() throws Exception {
 
 		SVNRepository svnRepository = getSVNRepository(repositoryURL, username,
 				password);
 
-		Collection<?> c = svnRepository.log(new String[] { "" }, null, 0, -1,
-				true, true);
+		Collection<SVNLogEntry> c = (Collection<SVNLogEntry>)
+			svnRepository.log(new String[] { "" }, null, 0, -1,	true, true);
 
 		long prev = -2;
 		long head = -1;
 
-		for (Object o : c) {
+		for (SVNLogEntry o : c) {
 			if (prev == -2)
 				prev = -1;
 			else
 				prev = head;
 
-			head = ((SVNLogEntry) o).getRevision();
-
+			head = o.getRevision();
 		}
 
 		return prev + "";
@@ -404,7 +408,7 @@ public class SvnPrevManager implements IVcsManager {
 
 	@Override
 	public String getLocation() {
-		return repositoryURL;
+		return repositoryURL + URL_DECORATION_SUFFIX;
 	}
 
 	@Override
@@ -416,7 +420,7 @@ public class SvnPrevManager implements IVcsManager {
 				&& (!username.equals(this.username) || !password
 						.equals(this.password))) {
 			try {
-				credStore.put(purge(repositoryURL),
+				credStore.put(repositoryURL,
 						new Credentials(username, password));
 			} catch (Exception e) {
 				console.printerrln("Could not save new username/password");
@@ -475,13 +479,5 @@ public class SvnPrevManager implements IVcsManager {
 	@Override
 	public String getPassword() {
 		return password;
-	}
-
-	private String purge(String ss) {
-
-		ss.replace("?prev", "");
-
-		return ss;
-
 	}
 }

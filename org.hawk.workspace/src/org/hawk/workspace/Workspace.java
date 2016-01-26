@@ -194,14 +194,17 @@ public class Workspace implements IVcsManager {
 	}
 
 	@Override
-	public void run(String vcsloc, IModelIndexer indexer) throws Exception {
+	public void init(String vcsloc, IModelIndexer indexer) throws Exception {
 		this.console = indexer.getConsole();
 		this.listener = new WorkspaceListener(indexer);
 
 		// Needed to emulate the usual URLs within a workspace when concatenated
 		// with the file path
 		this.repositoryURL = "platform:/resource";
+	}
 
+	@Override
+	public void run() {
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(listener);
 	}
 

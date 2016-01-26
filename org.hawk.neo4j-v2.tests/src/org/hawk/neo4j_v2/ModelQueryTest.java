@@ -110,7 +110,8 @@ public class ModelQueryTest {
 		indexer.registerMetamodel(new File("resources/metamodels/Tree.ecore"));
 
 		final LocalFolder vcs = new LocalFolder();
-		vcs.run(new File("resources/models/tree").getAbsolutePath(), indexer);
+		vcs.init(new File("resources/models/tree").getAbsolutePath(), indexer);
+		vcs.run();
 		indexer.addVCSManager(vcs, true);
 		indexer.requestImmediateSync();
 
@@ -132,7 +133,8 @@ public class ModelQueryTest {
 		indexer.registerMetamodel(new File("resources/metamodels/JDTAST.ecore"));
 
 		final LocalFolder vcs = new LocalFolder();
-		vcs.run(new File("resources/models/set0").getAbsolutePath(), indexer);
+		vcs.init(new File("resources/models/set0").getAbsolutePath(), indexer);
+		vcs.run();
 		indexer.addVCSManager(vcs, true);
 		indexer.requestImmediateSync();
 

@@ -97,7 +97,8 @@ public class ModelUpdateTest {
 		indexer.registerMetamodel(new File("resources/metamodels/Tree.ecore"));
 
 		final LocalFolder vcs = new LocalFolder();
-		vcs.run(modelFolder.getAbsolutePath(), indexer);
+		vcs.init(modelFolder.getAbsolutePath(), indexer);
+		vcs.run();
 		indexer.addVCSManager(vcs, true);
 		indexer.requestImmediateSync();
 		SyncEndListener.waitForSync(indexer, new Callable<Object>() {

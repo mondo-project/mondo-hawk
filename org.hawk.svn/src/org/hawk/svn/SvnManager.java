@@ -52,6 +52,7 @@ public class SvnManager implements IVcsManager {
 	private String repositoryURL;
 	private String username;
 	private String password;
+	private IModelIndexer indexer;
 
 	/*
 	 * TODO we can't blacklist .zip as we need support for zipped Modelio
@@ -79,7 +80,8 @@ public class SvnManager implements IVcsManager {
 		FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(
 				new File("security.xml"), "admin".toCharArray());
 		credStore.put(vcsloc, new Credentials("kb634", pass));
-		m.run(vcsloc, new ModelIndexerImpl(null, null, credStore, new DefaultConsole()));
+		m.init(vcsloc, new ModelIndexerImpl(null, null, credStore, new DefaultConsole()));
+		m.run();
 		System.err.println("testing4");
 		m.test();
 		System.err.println("testing5-end");
@@ -98,13 +100,15 @@ public class SvnManager implements IVcsManager {
 	}
 
 	@Override
-	public void run(String vcsloc, IModelIndexer indexer) throws Exception {
+	public void init(String vcsloc, IModelIndexer indexer) throws Exception {
+		console = indexer.getConsole();
+		this.repositoryURL = vcsloc;
+		this.indexer = indexer;
+	}
 
+	@Override
+	public void run() throws Exception {
 		try {
-			console = indexer.getConsole();
-
-			this.repositoryURL = vcsloc;
-
 			final ICredentialsStore credStore = indexer.getCredentialsStore();
 			if (username != null) {
 				// The credentials were provided by a previous setCredentials
