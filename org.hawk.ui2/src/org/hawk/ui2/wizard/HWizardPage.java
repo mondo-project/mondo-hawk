@@ -81,6 +81,7 @@ public class HWizardPage extends WizardPage {
 	private Table pluginTable;
 	private Combo factoryIdText;
 	private Text locationText;
+	private boolean isNew;
 
 	private HUIManager hminstance;
 	private Map<String, IHawkFactory> factories;
@@ -232,12 +233,14 @@ public class HWizardPage extends WizardPage {
 
 		minDelayText = new Text(cDelayRow, SWT.BORDER | SWT.SINGLE);
 		minDelayText.setText(ModelIndexerImpl.DEFAULT_MINDELAY + "");
-		minDelayText.setToolTipText("Minimum delay between periodic synchronisations in milliseconds.");
+		minDelayText
+				.setToolTipText("Minimum delay between periodic synchronisations in milliseconds.");
 		minDelayText.addModifyListener(dialogChangeListener);
 
 		maxDelayText = new Text(cDelayRow, SWT.BORDER | SWT.SINGLE);
 		maxDelayText.setText(ModelIndexerImpl.DEFAULT_MAXDELAY + "");
-		maxDelayText.setToolTipText("Maximum delay between periodic synchronisations in milliseconds (0 disables periodic synchronisations).");
+		maxDelayText
+				.setToolTipText("Maximum delay between periodic synchronisations in milliseconds (0 disables periodic synchronisations).");
 		maxDelayText.addModifyListener(dialogChangeListener);
 
 		Button startButton = new Button(container, SWT.CHECK);
@@ -386,12 +389,14 @@ public class HWizardPage extends WizardPage {
 	private void updateStatus(String message) {
 		setErrorMessage(message);
 		setPageComplete(message == null || message.equals(hawkConnectWarning));
+		isNew = message == null ? true : !message.equals(hawkConnectWarning);
 	}
 
 	protected void updateBackends() {
 		try {
 			final IHawkFactory factory = factories.get(getFactoryID());
-			List<String> backends = factory.listBackends(locationText.getText());
+			List<String> backends = factory
+					.listBackends(locationText.getText());
 			if (backends == null) {
 				backends = new ArrayList<>();
 				backends.addAll(HUIManager.getInstance().getIndexTypes());
@@ -460,5 +465,9 @@ public class HWizardPage extends WizardPage {
 		} catch (Exception e) {
 			return ModelIndexerImpl.DEFAULT_MINDELAY;
 		}
+	}
+
+	public boolean isNew() {
+		return isNew;
 	}
 }

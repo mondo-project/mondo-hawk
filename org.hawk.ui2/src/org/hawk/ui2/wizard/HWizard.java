@@ -27,6 +27,7 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.hawk.core.ICredentialsStore;
 import org.hawk.core.IHawkFactory;
+import org.hawk.core.util.HawkConfig;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.util.HUIManager;
 import org.hawk.ui2.view.HView;
@@ -70,8 +71,10 @@ public class HWizard extends Wizard implements INewWizard {
 			final IHawkFactory factory = page.getFactory();
 			final int maxDelay = page.getMaxDelay();
 			final int minDelay = page.getMinDelay();
-
-			final ICredentialsStore credStore = HUIManager.getInstance().getCredentialsStore();
+			final boolean isNew = page.isNew();
+			
+			final ICredentialsStore credStore = HUIManager.getInstance()
+					.getCredentialsStore();
 
 			IRunnableWithProgress op = new IRunnableWithProgress() {
 				public void run(IProgressMonitor monitor)
@@ -79,7 +82,7 @@ public class HWizard extends Wizard implements INewWizard {
 					try {
 						doFinish(name, new File(folder), location, dbType,
 								plugins, monitor, credStore, factory, minDelay,
-								maxDelay);
+								maxDelay,isNew);
 					} catch (Exception e) {
 						throw new InvocationTargetException(e);
 					} finally {
@@ -112,12 +115,27 @@ public class HWizard extends Wizard implements INewWizard {
 	 */
 	private void doFinish(String name, File storageFolder, String location,
 			String dbType, List<String> plugins, IProgressMonitor monitor,
-			ICredentialsStore credStore, IHawkFactory factory, int minDelay, int maxDelay)
-			throws Exception {
+			ICredentialsStore credStore, IHawkFactory factory, int minDelay,
+			int maxDelay,boolean isNew) throws Exception {
+
 		// set up a new Hawk with the selected plugins
-		HModel hm = HModel.create(factory, name, storageFolder, location,
-				dbType, plugins, HUIManager.getInstance(), credStore, minDelay,
-				maxDelay);
+		HModel hm;
+
+		if (isNew) {
+			System.out.println("creating new hawk...");
+			hm = HModel.create(factory, name, storageFolder, location, dbType,
+					plugins, HUIManager.getInstance(), credStore, minDelay,
+					maxDelay);
+		} else {
+			// connect to existing Hawk
+			System.out.println("loading hawk metadata...");
+			HawkConfig hc = new HawkConfig(name,
+					storageFolder.getCanonicalPath(), location, factory
+							.getClass().getName());
+			final HUIManager manager = HUIManager.getInstance();
+			hm = HModel.load(hc, manager);
+			manager.addHawk(hm);
+		}
 
 		monitor.beginTask("Creating ", 2);
 		monitor.worked(1);
