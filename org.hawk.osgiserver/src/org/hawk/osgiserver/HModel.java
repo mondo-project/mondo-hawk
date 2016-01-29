@@ -14,6 +14,7 @@ package org.hawk.osgiserver;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -296,7 +297,8 @@ public class HModel implements IStateListener {
 			mo.init(loc, hawk.getModelIndexer());
 
 			if (!this.getLocations().contains(mo.getLocation())) {
-				mo.setCredentials(user, pass, hawk.getModelIndexer().getCredentialsStore());
+				mo.setCredentials(user, pass, hawk.getModelIndexer()
+						.getCredentialsStore());
 				mo.run();
 				hawk.getModelIndexer().addVCSManager(mo, true);
 			}
@@ -545,16 +547,16 @@ public class HModel implements IStateListener {
 		return hp;
 	}
 
-	public void removeDerivedAttribute(String metamodelUri, String typeName,
+	public boolean removeDerivedAttribute(String metamodelUri, String typeName,
 			String attributeName) {
-		// TODO Auto-generated method stub
-
+		return hawk.getModelIndexer().removeDerivedAttribute(metamodelUri,
+				typeName, attributeName);
 	}
 
-	public void removeIndexedAttribute(String metamodelUri, String typename,
+	public boolean removeIndexedAttribute(String metamodelUri, String typename,
 			String attributename) {
-		// TODO Auto-generated method stub
-
+		return hawk.getModelIndexer().removeIndexedAttribute(metamodelUri,
+				typename, attributename);
 	}
 
 	public void removeRepository(IVcsManager manager) throws Exception {
@@ -575,7 +577,7 @@ public class HModel implements IStateListener {
 	 * the polling is not valid (base or max <= 0 or base > max).
 	 */
 	public void configurePolling(int base, int max) {
-		// TODO Auto-generated method stub
+		hawk.getModelIndexer().setPolling(base, max);
 	}
 
 	public void removeMetamodels(String[] selectedMetamodels) {
@@ -605,6 +607,43 @@ public class HModel implements IStateListener {
 	@Override
 	public void removed() {
 		// nothing to do when the state listener has been removed
+	}
+
+	public boolean removeIndexedAttributes(String[] selected) {
+
+		boolean allSuccess = true;
+
+		for (String s : selected) {
+			String[] ss = s.split("##");
+			if (ss.length == 3)
+				allSuccess = allSuccess
+						&& removeIndexedAttribute(ss[0], ss[1], ss[2]);
+			else {
+				setInfo("internal error in removeIndexedAttributes: "
+						+ Arrays.toString(ss));
+				allSuccess = false;
+			}
+		}
+		return allSuccess;
+
+	}
+
+	public boolean removeDerviedAttributes(String[] selected) {
+		boolean allSuccess = true;
+
+		for (String s : selected) {
+			String[] ss = s.split("##");
+			if (ss.length == 3)
+				allSuccess = allSuccess
+						&& removeDerivedAttribute(ss[0], ss[1], ss[2]);
+			else {
+				setInfo("internal error in removeIndexedAttributes: "
+						+ Arrays.toString(ss));
+				allSuccess = false;
+			}
+		}
+		return allSuccess;
+
 	}
 
 }

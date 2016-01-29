@@ -17,22 +17,34 @@ import org.hawk.core.model.IHawkMetaModelResource;
 public interface IMetaModelUpdater {
 
 	// return success
-	public abstract boolean insertMetamodels(Set<IHawkMetaModelResource> set, IModelIndexer indexer);
+	public abstract boolean insertMetamodels(Set<IHawkMetaModelResource> set,
+			IModelIndexer indexer);
 
 	public abstract void run(// IConsole console
 	);
 
-	boolean addDerivedAttribute(String metamodeluri, String typename, String attributename, String attributetype,
-			boolean isMany, boolean isOrdered, boolean isUnique, String derivationlanguage, String derivationlogic,
-			IModelIndexer indexer);
+	boolean addDerivedAttribute(String metamodeluri, String typename,
+			String attributename, String attributetype, boolean isMany,
+			boolean isOrdered, boolean isUnique, String derivationlanguage,
+			String derivationlogic, IModelIndexer indexer);
 
-	boolean addIndexedAttribute(String metamodeluri, String typename, String attributename, IModelIndexer indexer);
+	boolean addIndexedAttribute(String metamodeluri, String typename,
+			String attributename, IModelIndexer indexer);
 
 	// public abstract void removeMetamodels(
 	// Set<IHawkMetaModelResource> set, IModelIndexer indexer);
 
 	public abstract String getName();
 
-	public abstract Set<String> removeMetamodels(IModelIndexer indexer, String[] mmuris);
+	public abstract Set<String> removeMetamodels(IModelIndexer indexer,
+			String[] mmuris);
+
+	public abstract boolean removeIndexedAttribute(String metamodelUri,
+			String typename, String attributename,
+			IModelIndexer modelIndexerImpl);
+
+	public abstract boolean removeDerivedAttribute(String metamodelUri,
+			String typeName, String attributeName,
+			IModelIndexer modelIndexerImpl);
 
 }

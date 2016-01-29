@@ -235,4 +235,21 @@ public interface IModelIndexer {
 
 	void removeVCS(IVcsManager vcs) throws Exception;
 
+	/**
+	 * Sets the periodic synchronisation of Hawk's index. This interval will
+	 * start at base and will keep doubling until it reaches max every time no
+	 * changes are found, resetting to base when a change is found. If
+	 * {@code max} is set to 0, periodic polling is disabled.
+	 * 
+	 * @param base
+	 * @param max
+	 */
+	void setPolling(int base, int max);
+
+	boolean removeIndexedAttribute(String metamodelUri, String typename,
+			String attributename);
+
+	boolean removeDerivedAttribute(String metamodelUri, String typeName,
+			String attributeName);
+
 }

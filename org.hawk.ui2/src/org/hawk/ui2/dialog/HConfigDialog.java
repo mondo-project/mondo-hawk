@@ -141,17 +141,48 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 		gridDataQ.horizontalSpan = 2;
 
 		derivedAttributeList.setLayoutData(gridDataQ);
+		derivedAttributeList.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+
+				boolean running = hawkState == HawkState.RUNNING;
+				removeDerivedAttributeButton.setEnabled(running
+						&& derivedAttributeList.getSelection().length > 0);
+
+			}
+		});
 
 		updateDerivedAttributeList();
 
 		removeDerivedAttributeButton = new Button(composite, SWT.PUSH);
 		removeDerivedAttributeButton.setText("Remove");
-		removeDerivedAttributeButton.setEnabled(false);
 		removeDerivedAttributeButton
 				.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
+
 						// remove action
+						String[] selected = null;
+						if (derivedAttributeList.getSelection().length > 0)
+							selected = derivedAttributeList.getSelection();
+
+						if (selected != null) {
+
+							MessageBox messageBox = new MessageBox(getShell(),
+									SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+							messageBox
+									.setMessage("Are you sure you wish to delete the chosen derived attributes?");
+							messageBox.setText("Indexed Attribute deletion");
+							int response = messageBox.open();
+							if (response == SWT.YES) {
+
+								hawkModel.removeDerviedAttributes(selected);
+
+								updateDerivedAttributeList();
+							}
+						}
+
 					}
+
 				});
 
 		addDerivedAttributeButton = new Button(composite, SWT.NONE);
@@ -191,16 +222,46 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 		gridDataQ.horizontalSpan = 2;
 
 		indexedAttributeList.setLayoutData(gridDataQ);
+		indexedAttributeList.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+
+				boolean running = hawkState == HawkState.RUNNING;
+				removeIndexedAttributeButton.setEnabled(running
+						&& indexedAttributeList.getSelection().length > 0);
+
+			}
+		});
 
 		updateIndexedAttributeList();
 
 		removeIndexedAttributeButton = new Button(composite, SWT.PUSH);
 		removeIndexedAttributeButton.setText("Remove");
-		removeIndexedAttributeButton.setEnabled(false);
 		removeIndexedAttributeButton
 				.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
+
 						// remove action
+						String[] selected = null;
+						if (indexedAttributeList.getSelection().length > 0)
+							selected = indexedAttributeList.getSelection();
+
+						if (selected != null) {
+
+							MessageBox messageBox = new MessageBox(getShell(),
+									SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+							messageBox
+									.setMessage("Are you sure you wish to delete the chosen indexed attributes?");
+							messageBox.setText("Indexed Attribute deletion");
+							int response = messageBox.open();
+							if (response == SWT.YES) {
+
+								hawkModel.removeIndexedAttributes(selected);
+
+								updateIndexedAttributeList();
+							}
+						}
+
 					}
 				});
 
@@ -405,7 +466,8 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 						} catch (Exception ee) {
 							ee.printStackTrace();
 						}
-						lstVCSLocations.setInput(hawkModel.getRunningVCSManagers().toArray());
+						lstVCSLocations.setInput(hawkModel
+								.getRunningVCSManagers().toArray());
 					}
 				}
 			}
@@ -557,9 +619,9 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 					// primary display buttons
 					final boolean running = s == HawkState.RUNNING;
 					indexRefreshButton.setEnabled(running);
-					// removeDerivedAttributeButton.setEnabled(running);
+					removeDerivedAttributeButton.setEnabled(running);
 					addDerivedAttributeButton.setEnabled(running);
-					// removeIndexedAttributeButton.setEnabled(running);
+					removeIndexedAttributeButton.setEnabled(running);
 					addIndexedAttributeButton.setEnabled(running);
 					removeMetaModelsButton.setEnabled(running);
 					addMetaModelsButton.setEnabled(running);

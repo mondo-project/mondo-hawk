@@ -1145,4 +1145,56 @@ public class ModelIndexerImpl implements IModelIndexer {
 	public CompositeStateListener getCompositeStateListener() {
 		return stateListener;
 	}
+
+	@Override
+	public void setPolling(int base, int max) {
+		minDelay = base;
+		maxDelay = max;
+	}
+
+	@Override
+	public boolean removeIndexedAttribute(String metamodelUri, String typename,
+			String attributename) {
+
+		stateListener.info(String.format(
+				"Removing indexed attribute %s::%s::%s...", metamodelUri,
+				typename, attributename));
+
+		boolean removed = metamodelupdater.removeIndexedAttribute(metamodelUri,
+				typename, attributename, this);
+
+		stateListener
+				.info(removed ? String.format(
+						"Removed indexed attribute %s::%s::%s.", metamodelUri,
+						typename, attributename)
+						: String.format(
+								"Indexed attribute %s::%s::%s did not exist so nothing happened.",
+								metamodelUri, typename, attributename));
+
+		return removed;
+
+	}
+
+	@Override
+	public boolean removeDerivedAttribute(String metamodelUri, String typeName,
+			String attributeName) {
+
+		stateListener.info(String.format(
+				"Removing derived attribute %s::%s::%s...", metamodelUri,
+				typeName, attributeName));
+
+		boolean removed = metamodelupdater.removeDerivedAttribute(metamodelUri,
+				typeName, attributeName, this);
+
+		stateListener
+				.info(removed ? String.format(
+						"Removed derived attribute %s::%s::%s.", metamodelUri,
+						typeName, attributeName)
+						: String.format(
+								"Derived attribute %s::%s::%s did not exist so nothing happened.",
+								metamodelUri, typeName, attributeName));
+
+		return removed;
+
+	}
 }

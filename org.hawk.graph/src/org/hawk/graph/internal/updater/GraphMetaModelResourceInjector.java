@@ -296,7 +296,8 @@ public class GraphMetaModelResourceInjector {
 	 * @param graph
 	 * @return
 	 */
-	private int parseResource(Set<IHawkMetaModelResource> metamodels) throws Exception {
+	private int parseResource(Set<IHawkMetaModelResource> metamodels)
+			throws Exception {
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
 			listener.changeStart();
@@ -345,7 +346,8 @@ public class GraphMetaModelResourceInjector {
 
 			if (!success) {
 				try (IGraphTransaction t2 = graph.beginTransaction()) {
-					IGraphNode ePackageNode = epackagedictionary.get("id", epackage.getNsURI()).iterator().next();
+					IGraphNode ePackageNode = epackagedictionary
+							.get("id", epackage.getNsURI()).iterator().next();
 					new DeletionUtils(graph).delete(ePackageNode);
 					t2.success();
 
@@ -929,6 +931,10 @@ public class GraphMetaModelResourceInjector {
 						} else {
 							metadata[5] = "t";
 							typenode.setProperty(attributename, metadata);
+							//
+							graph.getOrCreateNodeIndex(metamodeluri + "##"
+									+ typename + "##" + attributename);
+							//
 							System.err.println("indexed attribute added: "
 									+ metamodeluri + ":" + typename + " "
 									+ attributename);
@@ -1010,5 +1016,252 @@ public class GraphMetaModelResourceInjector {
 
 		}
 		return ret;
+	}
+
+	public static boolean removeIndexedAttribute(String metamodelUri,
+			String typename, String attributename, IGraphDatabase graph,
+			CompositeGraphChangeListener listener) {
+
+		boolean found = false;
+
+		try (IGraphTransaction t = graph.beginTransaction()) {
+			listener.changeStart();
+
+			IGraphNode packagenode = null;
+			IGraphIterable<IGraphNode> ep = graph.getMetamodelIndex().get("id",
+					metamodelUri);
+
+			if (ep.size() == 1) {
+				packagenode = ep.getSingle();
+			} else {
+				throw new Exception("metamodel not found:" + metamodelUri);
+			}
+
+			IGraphNode typenode = null;
+
+			for (IGraphEdge e : packagenode.getIncomingWithType("epackage")) {
+				if (e.getStartNode()
+						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+						.equals(typename)) {
+					typenode = e.getStartNode();
+					break;
+				}
+			}
+
+			if (typenode == null) {
+				System.err
+						.println("type: "
+								+ typename
+								+ " in: "
+								+ metamodelUri
+								+ " does not exist, aborting operation: removeIndexedAttribute");
+				listener.changeFailure();
+			} else {
+				String[] metadata = (String[]) typenode
+						.getProperty(attributename);
+
+				if (metadata == null) {
+					System.err
+							.println("attribute: "
+									+ attributename
+									+ " in: "
+									+ metamodelUri
+									+ "#"
+									+ typename
+									+ " does not exist, aborting operation: removeIndexedAttribute");
+					listener.changeFailure();
+				} else if (!metadata[0].equals("a")) {
+					// System.err.println(Arrays.toString(metadata));
+					System.err
+							.println(metamodelUri
+									+ "#"
+									+ typename
+									+ " is a reference not an attribute, aborting operation: removeIndexedAttribute");
+					listener.changeFailure();
+				} else {
+
+					if (metadata.length == 6) {
+						if (metadata[5] == "t") {
+							metadata[5] = "f";
+							typenode.setProperty(attributename, metadata);
+							//
+							String indexname = metamodelUri + "##" + typename
+									+ "##" + attributename;
+
+							if (graph.nodeIndexExists(indexname)) {
+								graph.getOrCreateNodeIndex(indexname).delete();
+								found = true;
+							}
+
+							t.success();
+							listener.changeSuccess();
+						} else {
+							System.err
+									.println("attribute was not indexed, nothing happened!");
+							listener.changeFailure();
+						}
+
+					} else {
+						System.err
+								.println("error in removeIndexedAttribute (metadata.length!=6), nothing happened!");
+						listener.changeFailure();
+					}
+				}
+
+			}
+
+		} catch (Exception e) {
+			System.err.println("error in removing an indexed attribute:");
+			e.printStackTrace();
+			listener.changeFailure();
+		}
+		return found;
+
+	}
+
+	public static boolean removeDerivedAttribute(String metamodelUri,
+			String typeName, String attributeName, IGraphDatabase graph,
+			CompositeGraphChangeListener listener) {
+
+		boolean found = false;
+
+		try (IGraphTransaction t = graph.beginTransaction()) {
+			listener.changeStart();
+			IGraphIterable<IGraphNode> ep = graph.getMetamodelIndex().get("id",
+					metamodelUri);
+
+			IGraphNode packagenode = null;
+
+			if (ep.size() == 1) {
+				packagenode = ep.getSingle();
+			} else {
+				throw new Exception("metamodel not found:" + metamodelUri);
+			}
+
+			IGraphNode typenode = null;
+
+			for (IGraphEdge e : packagenode.getIncomingWithType("epackage")) {
+				if (e.getStartNode()
+						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+						.equals(typeName)) {
+					typenode = e.getStartNode();
+					break;
+				}
+			}
+
+			if (typenode == null) {
+				System.err
+						.println("type: "
+								+ typeName
+								+ " in: "
+								+ metamodelUri
+								+ " does not exist, aborting operation: removeDerivedAttribute");
+				listener.changeFailure();
+			} else {
+
+				String[] metadata = (String[]) typenode
+						.getProperty(attributeName);
+				if (metadata != null) {
+
+					if (metadata.length == 7 && metadata[0].equals("d")) {
+
+						System.err.println("derived attribute removed: "
+								+ metamodelUri + ":" + typeName);
+						IGraphNodeIndex derivedAccessDictionary = graph
+								.getOrCreateNodeIndex("derivedaccessdictionary");
+						IGraphNodeIndex derivedProxyDictionary = graph
+								.getOrCreateNodeIndex("derivedproxydictionary");
+
+						typenode.removeProperty(attributeName);
+						graph.getOrCreateNodeIndex(
+								metamodelUri + "##" + typeName + "##"
+										+ attributeName).delete();
+
+						boolean noerror = true;
+
+						for (IGraphEdge e : (typenode
+								.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)))
+							noerror = noerror
+									&& removeDerivedAttribute(
+											derivedAccessDictionary,
+											derivedProxyDictionary,
+											attributeName, e);
+
+						for (IGraphEdge e : (typenode
+								.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFKIND)))
+							noerror = noerror
+									&& removeDerivedAttribute(
+											derivedAccessDictionary,
+											derivedProxyDictionary,
+											attributeName, e);
+
+						if (noerror)
+							found = true;
+
+						t.success();
+						listener.changeSuccess();
+					} else {
+						System.err
+								.println("error in removeDerivedAttribute, attribute metadata not valid");
+						listener.changeFailure();
+					}
+				} else {
+					System.err
+							.println("attribute was not already derived, nothing happened!");
+					listener.changeFailure();
+				}
+			}
+
+		} catch (Exception e1) {
+			System.err
+					.println("error in removing a derived attribute to the metamodel");
+			e1.printStackTrace();
+			listener.changeFailure();
+		}
+
+		return found;
+
+	}
+
+	/**
+	 * Internal, to remove instance derived attributes
+	 */
+	private static boolean removeDerivedAttribute(
+			IGraphNodeIndex derivedAccessDictionary,
+			IGraphNodeIndex derivedProxyDictionary, String attributeName,
+			IGraphEdge instanceToTypeEdge) {
+
+		boolean error = true;
+
+		IGraphNode n = instanceToTypeEdge.getStartNode();
+
+		IGraphEdge dae = null;
+
+		for (IGraphEdge ed : n.getOutgoingWithType(attributeName)) {
+			if (dae == null)
+				dae = ed;
+			else {
+				System.err
+						.println("multiple edges found for derived attribute: "
+								+ attributeName + " in node " + n);
+				dae = null;
+				break;
+			}
+		}
+
+		if (dae == null)
+			System.err.println("derived attribute (" + attributeName
+					+ ") not found for node " + n);
+		else {
+			IGraphNode dan = dae.getEndNode();
+			dae.delete();
+			derivedAccessDictionary.remove(dan);
+			derivedProxyDictionary.remove(dan);
+			dan.delete();
+			error = false;
+		}
+
+		return !error;
+
 	}
 }

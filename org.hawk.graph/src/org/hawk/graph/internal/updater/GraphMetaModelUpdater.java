@@ -81,4 +81,20 @@ public class GraphMetaModelUpdater implements IMetaModelUpdater {
 		return "Default Hawk GraphMetaModelUpdater (v1.0)";
 	}
 
+	@Override
+	public boolean removeIndexedAttribute(String metamodelUri, String typename,
+			String attributename, IModelIndexer indexer) {
+		return GraphMetaModelResourceInjector.removeIndexedAttribute(
+				metamodelUri, typename, attributename, indexer.getGraph(),
+				indexer.getCompositeGraphChangeListener());
+	}
+
+	@Override
+	public boolean removeDerivedAttribute(String metamodelUri, String typeName,
+			String attributeName, IModelIndexer indexer) {
+		return GraphMetaModelResourceInjector.removeDerivedAttribute(
+				metamodelUri, typeName, attributeName, indexer.getGraph(),
+				indexer.getCompositeGraphChangeListener());
+	}
+
 }
