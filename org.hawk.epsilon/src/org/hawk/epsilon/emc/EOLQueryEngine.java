@@ -910,8 +910,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		System.out.println("PARSING:\n----------\n" + name == null ? "QUERY"
 				: name + "\n----------");
 
-		System.out.println("Graph path: " + graph.getPath() + "\n----------");
-
 		CEOLQueryEngine q = new CEOLQueryEngine();
 
 		// defaults to true
@@ -920,7 +918,14 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		// enableCache = ec == null ? true :
 		// ec.equalsIgnoreCase("true");
 
+		try {
+			q.load(m);
+		} catch (EolModelLoadingException e) {
+			throw new QueryExecutionException(
+					"Loading of EOLQueryEngine failed");
+		}
 		q.load(context);
+		System.out.println("Graph path: " + graph.getPath() + "\n----------");
 
 		module.getContext().getModelRepository().addModel(q);
 
