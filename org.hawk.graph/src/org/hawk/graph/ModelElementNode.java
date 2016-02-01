@@ -192,6 +192,20 @@ public class ModelElementNode {
 		return true;
 	}
 
+	public ModelElementNode getContainer() {
+		for (IGraphEdge edge : node.getOutgoing()) {
+			if (edge.getProperty(EDGE_PROPERTY_CONTAINER) != null) {
+				return new ModelElementNode(edge.getEndNode());
+			}
+		}
+		for (IGraphEdge edge : node.getIncoming()) {
+			if (edge.getProperty(EDGE_PROPERTY_CONTAINMENT) != null) {
+				return new ModelElementNode(edge.getStartNode());
+			}
+		}
+		return null;
+	}
+
 	public boolean isContainment(String featureName) {
 		return outgoingEdgeWithTypeHasProperty(featureName, EDGE_PROPERTY_CONTAINMENT);
 	}
@@ -238,16 +252,6 @@ public class ModelElementNode {
 	 * regardless of whether the container is on a different file.
 	 */
 	public boolean isContained() {
-		for (IGraphEdge out : getNode().getOutgoing()) {
-			if (out.getProperty(EDGE_PROPERTY_CONTAINER) != null) {
-				return true;
-			}
-		}
-		for (IGraphEdge in : getNode().getIncoming()) {
-			if (in.getProperty(EDGE_PROPERTY_CONTAINMENT) != null) {
-				return true;
-			}
-		}
-		return false;
+		return getContainer() != null;
 	}
 }
