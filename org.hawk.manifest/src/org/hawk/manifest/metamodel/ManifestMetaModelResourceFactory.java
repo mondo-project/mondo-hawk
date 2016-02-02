@@ -1,0 +1,113 @@
+/*******************************************************************************
+ * Copyright (c) 2011-2015 The University of York.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Konstantinos Barmpis - initial API and implementation
+ ******************************************************************************/
+package org.hawk.manifest.metamodel;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.hawk.core.IMetaModelResourceFactory;
+import org.hawk.core.model.IHawkClassifier;
+import org.hawk.core.model.IHawkMetaModelResource;
+import org.hawk.core.model.IHawkObject;
+import org.hawk.core.model.IHawkPackage;
+
+public class ManifestMetaModelResourceFactory implements
+		IMetaModelResourceFactory {
+
+	private final String type = "org.hawk.manifest.metamodel.ManifestMetaModelParser";
+	private final String hrn = "Manifest Metamodel Resource Factory";
+	private final Set<String> metamodelExtensions = new HashSet<>();
+
+	public static void main(String[] a) {
+
+		Object o = new ManifestMetaModelResourceFactory().getStaticMetamodels();
+
+	}
+
+	public ManifestMetaModelResourceFactory() {
+	}
+
+	public Map<String, IHawkClassifier> getTypes() {
+		Map<String, IHawkClassifier> types = new HashMap<>();
+
+		IHawkMetaModelResource res = new ManifestMetaModelResource(this);
+
+		for (IHawkObject o : res.getAllContents()) {
+			IHawkPackage p = ((IHawkPackage) o);
+			for (IHawkClassifier c : p.getClasses())
+				types.put(c.getName(), c);
+		}
+
+		return types;
+	}
+
+	@Override
+	public String getType() {
+		return type;
+	}
+
+	@Override
+	public String getHumanReadableName() {
+		return hrn;
+	}
+
+	@Override
+	public IHawkMetaModelResource parse(File f) throws Exception {
+		throw new Exception(
+				"ManifestMetaModelResourceFactory cannot parse files, it provides its own static metamodel");
+	}
+
+	@Override
+	public Set<String> getMetaModelExtensions() {
+		return metamodelExtensions;
+	}
+
+	@Override
+	public void removeMetamodel(String property) {
+		System.err
+				.println("ManifestMetaModelResourceFactory cannot remove metamodels, as it only provides its own single static metamodel");
+	}
+
+	@Override
+	public boolean canParse(File f) {
+		return false;
+	}
+
+	@Override
+	public HashSet<IHawkMetaModelResource> getStaticMetamodels() {
+
+		HashSet<IHawkMetaModelResource> set = new HashSet<>();
+		IHawkMetaModelResource res = new ManifestMetaModelResource(this);
+		set.add(res);
+
+		return set;
+	}
+
+	@Override
+	public void shutdown() {
+
+	}
+
+	@Override
+	public IHawkMetaModelResource parseFromString(String name, String contents)
+			throws Exception {
+		return null;
+	}
+
+	@Override
+	public String dumpPackageToString(IHawkPackage ePackage) throws Exception {
+		return "dummy_string";
+	}
+
+}
