@@ -19,12 +19,11 @@ import org.hawk.manifest.model.ManifestModelResource;
 public class ManifestPackageObject extends ManifestObject {
 
 	String name;
-	ManifestModelResource res;
 
 	public ManifestPackageObject(String name,
 			ManifestModelResource manifestModelResource) {
 
-		res = manifestModelResource;
+		this.res = manifestModelResource;
 		this.name = name;
 
 	}

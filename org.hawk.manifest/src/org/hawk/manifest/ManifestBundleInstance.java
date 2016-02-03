@@ -24,15 +24,19 @@ public class ManifestBundleInstance extends ManifestClass {
 
 	private IHawkAttribute version;
 	private Set<IHawkReference> references;
+	private IHawkAttribute otherproperties;
 
 	public ManifestBundleInstance(ManifestMetamodel p) {
 		ep = p;
 		version = new ManifestAttribute("version");
+		otherproperties = new ManifestAttribute("otherProperties");
 		references = new HashSet<>();
-		references.add(new ManifestReference("provides", false, new ManifestBundle(p)));
-		references
-				.add(new ManifestReference("requires", true, new ManifestRequires(p)));
-		references.add(new ManifestReference("imports", true, new ManifestImport(p)));
+		references.add(new ManifestReference("provides", false,
+				new ManifestBundle(p)));
+		references.add(new ManifestReference("requires", true,
+				new ManifestRequires(p)));
+		references.add(new ManifestReference("imports", true,
+				new ManifestImport(p)));
 		references.add(new ManifestReference("exports", true,
 				new ManifestPackageInstance(p)));
 	}
@@ -83,6 +87,8 @@ public class ManifestBundleInstance extends ManifestClass {
 	public IHawkStructuralFeature getStructuralFeature(String name) {
 		if (name.equals("version"))
 			return version;
+		if (name.equals("otherProperties"))
+			return otherproperties;
 		return null;
 	}
 

@@ -47,7 +47,7 @@ import org.osgi.framework.VersionRange;
 public class ManifestModelResource implements IHawkModelResource {
 
 	private IModelResourceFactory parser;
-	private Map<String, IHawkObject> allContents = new HashMap<String, IHawkObject>();
+	private Set<IHawkObject> allContents = new HashSet<IHawkObject>();
 	private String uri;
 	private Map<String, IHawkClassifier> types = new HashMap<>();
 
@@ -62,7 +62,7 @@ public class ManifestModelResource implements IHawkModelResource {
 
 		//
 		Bundle b = new Bundle();
-		//...
+		// ...
 		b.setModel(new WorkspaceBundleModel(null));
 		b.load(map);
 
@@ -104,40 +104,40 @@ public class ManifestModelResource implements IHawkModelResource {
 		// create elements
 		ManifestBundleObject bundle = new ManifestBundleObject(symbolicName,
 				this);
-		allContents.put(bundle.getUriFragment(), bundle);
+		allContents.add(bundle);
 
 		ManifestBundleInstanceObject bundleInstance = new ManifestBundleInstanceObject(
 				version, this, bundle, otherProperties);
-		allContents.put(bundleInstance.getUriFragment(), bundleInstance);
+		allContents.add(bundleInstance);
 
 		// add reference targets
 		for (RequireBundleObject o : requires) {
 			ManifestBundleObject rBundle = new ManifestBundleObject(o.getId(),
 					this);
-			allContents.put(rBundle.getUriFragment(), rBundle);
+			allContents.add(rBundle);
 			ManifestRequiresObject req = new ManifestRequiresObject(
 					o.getVersion(), this, rBundle);
-			allContents.put(req.getUriFragment(), req);
+			allContents.add(req);
 			bundleInstance.addRequires(req);
 		}
 
 		for (ImportPackageObject o : imports) {
 			ManifestPackageObject iPackage = new ManifestPackageObject(
 					o.getName(), this);
-			allContents.put(iPackage.getUriFragment(), iPackage);
+			allContents.add(iPackage);
 			ManifestImportObject imp = new ManifestImportObject(o.getVersion(),
 					this, iPackage);
-			allContents.put(imp.getUriFragment(), imp);
+			allContents.add(imp);
 			bundleInstance.addImport(imp);
 		}
 
 		for (ExportPackageObject o : exports) {
 			ManifestPackageObject ePackage = new ManifestPackageObject(
 					o.getName(), this);
-			allContents.put(ePackage.getUriFragment(), ePackage);
+			allContents.add(ePackage);
 			ManifestPackageInstanceObject pe = new ManifestPackageInstanceObject(
 					o.getVersion(), this, ePackage);
-			allContents.put(pe.getUriFragment(), pe);
+			allContents.add(pe);
 			bundleInstance.addExport(pe);
 		}
 
@@ -160,17 +160,11 @@ public class ManifestModelResource implements IHawkModelResource {
 
 	@Override
 	public Iterator<IHawkObject> getAllContents() {
-		return allContents.values().iterator();
+		return allContents.iterator();
 	}
 
 	@Override
 	public Set<IHawkObject> getAllContentsSet() {
-		Set<IHawkObject> ret = new HashSet<>();
-		ret.addAll(allContents.values());
-		return ret;
-	}
-
-	public Map<String, IHawkObject> getContentsMap() {
 		return allContents;
 	}
 

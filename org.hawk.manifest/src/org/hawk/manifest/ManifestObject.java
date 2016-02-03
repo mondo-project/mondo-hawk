@@ -30,9 +30,9 @@ public abstract class ManifestObject implements IHawkObject {
 	@Override
 	public boolean isInDifferentResourceThan(IHawkObject other) {
 		if (other instanceof ManifestObject)
-			return res == ((ManifestObject) other).getModelResource();
+			return res != ((ManifestObject) other).getModelResource();
 		else
-			return false;
+			return true;
 	}
 
 	@Override

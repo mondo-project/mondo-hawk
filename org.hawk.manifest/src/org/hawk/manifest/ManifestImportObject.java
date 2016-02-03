@@ -24,7 +24,7 @@ public class ManifestImportObject extends ManifestObject {
 	public ManifestImportObject(String version,
 			ManifestModelResource manifestModelResource, ManifestPackageObject p) {
 
-		res = manifestModelResource;
+		this.res = manifestModelResource;
 		this.version = version;
 		this.p = p;
 	}

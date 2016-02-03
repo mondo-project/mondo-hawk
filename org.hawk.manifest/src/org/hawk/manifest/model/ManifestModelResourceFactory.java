@@ -48,9 +48,12 @@ public class ManifestModelResourceFactory implements IModelResourceFactory {
 	public IHawkModelResource parse(File f) {
 
 		Map<String, String> map = getManifestContents(f);
-
-		IHawkModelResource ret = new ManifestModelResource(f.getPath(), this,
-				map);
+		IHawkModelResource ret = null;
+		try {
+			ret = new ManifestModelResource(f.toURI().toString(), this, map);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		return ret;
 

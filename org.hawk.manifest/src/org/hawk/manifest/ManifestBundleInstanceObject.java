@@ -68,6 +68,14 @@ public class ManifestBundleInstanceObject extends ManifestObject {
 		switch (name) {
 		case "version":
 			return version != null;
+		case "provides":
+			return bundle != null;
+		case "imports":
+			return imports != null;
+		case "exports":
+			return exports != null;
+		case "requires":
+			return requires != null;
 		default:
 			return false;
 		}

@@ -25,6 +25,8 @@ public class ManifestReference extends ManifestObject implements IHawkReference 
 
 	public ManifestReference(String string, boolean ismany, IHawkClassifier type) {
 		name = string;
+		this.type = type;
+		this.ismany = ismany;
 	}
 
 	@Override

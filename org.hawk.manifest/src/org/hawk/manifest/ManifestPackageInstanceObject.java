@@ -19,7 +19,6 @@ import org.hawk.manifest.model.ManifestModelResource;
 public class ManifestPackageInstanceObject extends ManifestObject {
 
 	String version;
-	ManifestModelResource res;
 	ManifestPackageObject ePackage;
 
 	public ManifestPackageInstanceObject(String version,
@@ -27,7 +26,7 @@ public class ManifestPackageInstanceObject extends ManifestObject {
 			ManifestPackageObject ePackage) {
 
 		this.version = version;
-		res = manifestModelResource;
+		this.res = manifestModelResource;
 		this.ePackage = ePackage;
 
 	}

@@ -24,7 +24,7 @@ public class ManifestRequiresObject extends ManifestObject {
 	public ManifestRequiresObject(String version,
 			ManifestModelResource manifestModelResource,
 			ManifestBundleObject bundle) {
-		res = manifestModelResource;
+		this.res = manifestModelResource;
 		this.version = version;
 		this.bundle = bundle;
 	}
