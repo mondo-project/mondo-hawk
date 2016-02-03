@@ -69,12 +69,21 @@ import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 /**
- * EMF driver that reads a local model from a Hawk index. This resource will
- * always be empty: all fetched EObjects are placed on surrogate
- * {@link HawkFileResourceImpl}, which have the same URI as the originally
- * indexed models.
+ * <p>EMF driver that reads a local model from a Hawk index. Available options:</p>
+ * <ul>
+ * <li>{@link #OPTION_SPLIT}</li>
+ * </ul>
  */
 public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource {
+
+	/**
+	 * Option key for {@link #load(Map)}: the value should be a <code>Boolean</code>.
+	 * If the value is unset or not <code>false</code>, the contents of the resource
+	 * will be split across several surrogate {@link HawkFileResourceImpl} instances
+	 * that have the same URI as the originally indexed models. If the value is set
+	 * to <code>true</code>, this behavior will be disabled.
+	 */
+	public static final String OPTION_SPLIT = "split";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalHawkResourceImpl.class);
 
@@ -166,13 +175,22 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	private IModelIndexer indexer;
 	private Set<Runnable> syncEndListeners = new HashSet<>();
 
+	private final boolean isSplit;
+
+	private List<String> repositoryPatterns;
+	private List<String> filePatterns;
+
 	public LocalHawkResourceImpl() {
 		// for Exeed
+		this.isSplit = true;
 	}
 
-	public LocalHawkResourceImpl(final URI uri, final IModelIndexer indexer) {
+	public LocalHawkResourceImpl(final URI uri, final IModelIndexer indexer, boolean isSplit, final List<String> repoPatterns, final List<String> filePatterns) {
 		super(uri);
 		this.indexer = indexer;
+		this.isSplit = isSplit;
+		this.repositoryPatterns = repoPatterns;
+		this.filePatterns = filePatterns;
 	}
 
 	@Override
@@ -444,7 +462,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
 				// TODO add back ability for filtering repos/files?
 				final List<String> all = Arrays.asList("*");
-				for (FileNode fileNode : gw.getFileNodes(all, all)) {
+				for (FileNode fileNode : gw.getFileNodes(repositoryPatterns, filePatterns)) {
 					for (ModelElementNode elem : fileNode.getRootModelElements()) {
 						if (!elem.isContained()) {
 							createOrUpdateEObject(elem);
@@ -467,7 +485,13 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 
 	@Override
 	protected void doUnload() {
-		super.doUnload();
+	    // This guard is needed to ensure that clear doesn't make the resource become loaded.
+	    if (!getContents().isEmpty())
+	    {
+	      getContents().clear();
+	    }
+	    getErrors().clear();
+	    getWarnings().clear();
 
 		for (Resource r : uriToResource.values()) {
 			r.unload();
@@ -516,8 +540,10 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			if (eob == null) return;
 	
 			final EObject container = eob.eContainer();
-			final HawkFileResourceImpl r = (HawkFileResourceImpl)eob.eResource();
-			r.removeFragment(id);
+			final Resource r = eob.eResource();
+			if (r instanceof HawkFileResourceImpl) {
+				((HawkFileResourceImpl)r).removeFragment(id);
+			}
 
 			if (container == null) {
 				if (r != null) {
@@ -679,23 +705,28 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		final String repoURL = fileNode.getRepositoryURL();
 		final String path = fileNode.getFilePath();
 		final String fullURL = repoURL + (repoURL.endsWith("/") || path.startsWith("/") ? "" : "/") + path;
-		synchronized(uriToResource) {
-			HawkFileResourceImpl resource = uriToResource.get(fullURL);
-			if (resource == null) {
-				/*
-				 * We can't use the createResource method in the resource set,
-				 * as that might invoke another factory, and we need the new
-				 * resource to be a Hawk file resource.
-				 */
-				resource = new HawkFileResourceImpl(URI.createURI(fullURL), this);
-				getResourceSet().getResources().add(resource);
-				uriToResource.put(fullURL, resource);
-				uriToFileNode.put(fullURL, fileNode);
+
+		if (isSplit) {
+			synchronized (uriToResource) {
+				HawkFileResourceImpl resource = uriToResource.get(fullURL);
+				if (resource == null) {
+					/*
+					 * We can't use the createResource method in the resource
+					 * set, as that might invoke another factory, and we need
+					 * the new resource to be a Hawk file resource.
+					 */
+					resource = new HawkFileResourceImpl(URI.createURI(fullURL), this);
+					getResourceSet().getResources().add(resource);
+					uriToResource.put(fullURL, resource);
+					uriToFileNode.put(fullURL, fileNode);
+				}
+				if (eob.eContainer() == null) {
+					resource.getContents().add(eob);
+				}
+				resource.addFragment(modelElementNode.getNodeId(), modelElementNode.getElementId());
 			}
-			if (eob.eContainer() == null) {
-				resource.getContents().add(eob);
-			}
-			resource.addFragment(modelElementNode.getNodeId(), modelElementNode.getElementId());
+		} else {
+			getContents().add(eob);
 		}
 	}
 
