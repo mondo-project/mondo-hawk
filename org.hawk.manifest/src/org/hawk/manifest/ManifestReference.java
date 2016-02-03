@@ -10,32 +10,26 @@
  ******************************************************************************/
 package org.hawk.manifest;
 
-import java.util.Set;
-
-import org.hawk.core.model.IHawkAnnotation;
 import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
 
-public class ManifestReference extends ManifestObject implements IHawkAttribute {
+public class ManifestReference extends ManifestObject implements IHawkReference {
 
 	private final static String CLASSNAME = "ManifestReference";
 
 	String name;
+	boolean ismany;
+	IHawkClassifier type;
 
-	public ManifestReference(String string) {
+	public ManifestReference(String string, boolean ismany, IHawkClassifier type) {
 		name = string;
 	}
 
 	@Override
 	public String getName() {
 		return name;
-	}
-
-	@Override
-	public boolean isMany() {
-		return false;
 	}
 
 	@Override
@@ -79,18 +73,23 @@ public class ManifestReference extends ManifestObject implements IHawkAttribute 
 	}
 
 	@Override
-	public boolean isDerived() {
+	public IHawkClassifier getType() {
+		return type;
+	}
+
+	@Override
+	public boolean isContainment() {
 		return false;
 	}
 
 	@Override
-	public Set<IHawkAnnotation> getAnnotations() {
-		return null;
+	public boolean isContainer() {
+		return false;
 	}
 
 	@Override
-	public IHawkClassifier getType() {
-		return null;
+	public boolean isMany() {
+		return ismany;
 	}
 
 }

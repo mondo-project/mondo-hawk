@@ -23,10 +23,18 @@ public class ManifestBundleInstance extends ManifestClass {
 	final static String CLASSNAME = "ManifestBundleInstance";
 
 	private IHawkAttribute version;
+	private Set<IHawkReference> references;
 
 	public ManifestBundleInstance(ManifestMetamodel p) {
 		ep = p;
 		version = new ManifestAttribute("version");
+		references = new HashSet<>();
+		references.add(new ManifestReference("provides", false, new ManifestBundle(p)));
+		references
+				.add(new ManifestReference("requires", true, new ManifestRequires(p)));
+		references.add(new ManifestReference("imports", true, new ManifestImport(p)));
+		references.add(new ManifestReference("exports", true,
+				new ManifestPackageInstance(p)));
 	}
 
 	@Override
@@ -68,8 +76,7 @@ public class ManifestBundleInstance extends ManifestClass {
 
 	@Override
 	public Set<IHawkReference> getAllReferences() {
-		// FIXME ADD EDGES TO ALL CLASSES
-		return new HashSet<>();
+		return references;
 	}
 
 	@Override

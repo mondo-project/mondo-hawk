@@ -24,10 +24,14 @@ public class ManifestRequires extends ManifestClass {
 
 	private IHawkAttribute version;
 
-	public ManifestRequires(
-			ManifestMetamodel p) {
+	private HashSet<IHawkReference> references;
+
+	public ManifestRequires(ManifestMetamodel p) {
 		ep = p;
 		version = new ManifestAttribute("version");
+		references = new HashSet<>();
+		references.add(new ManifestReference("bundle", false,
+				new ManifestBundle(p)));
 	}
 
 	@Override
@@ -69,7 +73,7 @@ public class ManifestRequires extends ManifestClass {
 
 	@Override
 	public Set<IHawkReference> getAllReferences() {
-		return new HashSet<>();
+		return references;
 	}
 
 	@Override

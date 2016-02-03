@@ -21,17 +21,21 @@ import org.hawk.core.model.IHawkStructuralFeature;
 public class ManifestImport extends ManifestClass implements IHawkClass {
 
 	final static String CLASSNAME = "ManifestImport";
-	
+
 	private IHawkAttribute version;
+	private HashSet<IHawkReference> references;
 
 	public ManifestImport(ManifestMetamodel p) {
 		ep = p;
 		version = new ManifestAttribute("version");
+		references = new HashSet<>();
+		references.add(new ManifestReference("package", false,
+				new ManifestPackage(p)));
 	}
 
 	@Override
 	public String getInstanceType() {
-		return ep.getNsURI()+"#"+CLASSNAME+"Object";
+		return ep.getNsURI() + "#" + CLASSNAME + "Object";
 	}
 
 	@Override
@@ -68,7 +72,7 @@ public class ManifestImport extends ManifestClass implements IHawkClass {
 
 	@Override
 	public Set<IHawkReference> getAllReferences() {
-		return new HashSet<>();
+		return references;
 	}
 
 	@Override
