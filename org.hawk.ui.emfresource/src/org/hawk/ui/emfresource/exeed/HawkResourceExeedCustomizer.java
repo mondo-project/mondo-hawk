@@ -80,7 +80,7 @@ public class HawkResourceExeedCustomizer implements IExeedCustomizer {
 		editor.setShowAllResources(true);
 
 		// Creates the model from the editor input
-	    editor.createModel();
+	    editor.createModelGen();
 
 	    // Only creates the other pages if there is something that can be edited
 	    //

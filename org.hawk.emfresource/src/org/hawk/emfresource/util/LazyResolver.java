@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.hawk.emfresource.HawkResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -232,7 +233,10 @@ public class LazyResolver {
 			for (Object target : result) {
 				final EObject eobTarget = (EObject)target;
 				if (eobTarget.eContainer() != null) {
-					eobTarget.eResource().getContents().remove(eobTarget);
+					final Resource eResource = eobTarget.eResource();
+					if (eResource != null) {
+						eResource.getContents().remove(eobTarget);
+					}
 				}
 			}
 		} else if (feature.isContainer()) {

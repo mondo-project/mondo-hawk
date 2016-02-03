@@ -206,4 +206,15 @@ public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 	public void fetchAttributes(Map<String, EObject> idToEObject) throws Exception {
 		mainResource.fetchAttributes(idToEObject);
 	}
+
+	@Override
+	protected void doUnload() {
+	    // This guard is needed to ensure that clear doesn't make the resource become loaded.
+	    if (!getContents().isEmpty())
+	    {
+	      getContents().clear();
+	    }
+	    getErrors().clear();
+	    getWarnings().clear();
+	}
 }
