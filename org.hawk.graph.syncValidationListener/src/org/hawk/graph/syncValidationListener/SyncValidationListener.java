@@ -15,6 +15,7 @@ import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
@@ -77,6 +78,10 @@ public class SyncValidationListener implements IGraphChangeListener {
 	// exported
 	public static final String PROXY_REFERENCE_PREFIX = "hawkProxyRef:";
 
+	// clone fromGraphModelBatchInjector.FRAGMENT_DICT_NAME as it is not
+	// exported
+	public static final String FRAGMENT_DICT_NAME = "fragmentdictionary";
+
 	@SuppressWarnings("unchecked")
 	private void validateChanges() {
 
@@ -123,6 +128,14 @@ public class SyncValidationListener implements IGraphChangeListener {
 					totalResourceSizes += r.getAllContentsSet().size();
 
 					IGraphDatabase graph = hawk.getGraph();
+
+					// FIXME for singleton model elements (using
+					// fragmentisunique and singleton index) we need to use only
+					// fragment in the maps
+					IGraphNodeIndex singletonIndex = graph
+							.getOrCreateNodeIndex(FRAGMENT_DICT_NAME);
+					boolean singletonIndexIsEmpty = !singletonIndex
+							.query("*", "*").iterator().hasNext();
 
 					try (IGraphTransaction t = graph.beginTransaction()) {
 

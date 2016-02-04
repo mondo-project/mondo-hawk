@@ -11,6 +11,7 @@
 package org.hawk.graph.internal.updater;
 
 import java.util.HashSet;
+import java.util.Iterator;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
@@ -24,20 +25,27 @@ import org.hawk.graph.ModelElementNode;
 public class DeletionUtils {
 
 	private IGraphDatabase graph;
+	private IGraphNodeIndex singletonIndex;
 
 	public DeletionUtils(IGraphDatabase graph) {
 		this.graph = graph;
+		singletonIndex = graph
+				.getOrCreateNodeIndex(GraphModelBatchInjector.FRAGMENT_DICT_NAME);
 	}
 
-	protected void delete(IGraphNode modelElement) {
+	protected boolean delete(IGraphNode modelElement) {
 
-		try {
-			removeFromIndexes(modelElement);
-			modelElement.delete();
-		} catch (Exception e) {
-			System.err.println("DELETE NODE EXCEPTION:");
-			e.printStackTrace();
-		}
+		// only try to delete nodes with no edges
+		if (!modelElement.getEdges().iterator().hasNext())
+			try {
+				removeFromIndexes(modelElement);
+				modelElement.delete();
+				return true;
+			} catch (Exception e) {
+				System.err.println("DELETE NODE EXCEPTION:");
+				e.printStackTrace();
+			}
+		return false;
 
 	}
 
@@ -97,8 +105,8 @@ public class DeletionUtils {
 			// }
 
 			for (IGraphNode node : modelElements) {
-				changeListener.modelElementRemoval(s, node, false);
-				delete(node);
+				if (delete(node))
+					changeListener.modelElementRemoval(s, node, false);
 			}
 
 			// if (IModelIndexer.VERBOSE)
@@ -123,6 +131,9 @@ public class DeletionUtils {
 		return success;
 	}
 
+	/*
+	 * Should be called after dereference
+	 */
 	protected void makeProxyRefs(VcsCommitItem commitItem,
 			IGraphNode referencedModelElement, String repositoryURL,
 			IGraphNode referencedElementFileNode, IGraphChangeListener listener) {
@@ -130,84 +141,121 @@ public class DeletionUtils {
 		IGraphNodeIndex proxydictionary = graph
 				.getOrCreateNodeIndex("proxydictionary");
 
-		// handle any incoming references (after dereference, aka other file
-		// ones)
-		// FIXMEdone 5-11-13 check changes work
-		for (IGraphEdge rel : referencedModelElement.getIncoming()) {
+		// track nodes with multiple sources (singletons)
+		boolean isOrphan = true;
 
-			final IGraphNode referencingNode = rel.getStartNode();
-			final IGraphNode endNode = rel.getEndNode();
-			String referencingNodeFileID = referencingNode
+		Iterator<IGraphNode> singletonMatches = singletonIndex.get(
+				"id",
+				referencedModelElement
+						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY))
+				.iterator();
+		if (singletonMatches.hasNext())
+			if (singletonMatches.next()
 					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)
-					.iterator().next().getEndNode()
-					.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
-			String referencedElementFileID = (String) referencedElementFileNode
-					.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
+					.iterator().hasNext())
+				isOrphan = false;
 
-			// System.out.println(referencingNodeFileID+" ::: "+fileID);
+		if (isOrphan)
+			for (IGraphEdge rel : referencedModelElement.getIncoming()) {
 
-			String type = rel.getType();
-			if (!referencingNodeFileID.equals(referencedElementFileID)) {
-				String fullReferencedElementPathFileURI = repositoryURL
-						+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
-						+ referencedElementFileID;
+				final IGraphNode referencingNode = rel.getStartNode();
+				final IGraphNode endNode = rel.getEndNode();
+				String referencingNodeFileID = referencingNode
+						.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)
+						.iterator().next().getEndNode()
+						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+						.toString();
+				String referencedElementFileID = (String) referencedElementFileNode
+						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
 
-				String fullReferencedElementPathElementURI = fullReferencedElementPathFileURI
-						+ "#"
-						+ referencedModelElement.getProperty(
-								IModelIndexer.IDENTIFIER_PROPERTY).toString();
+				// System.out.println(referencingNodeFileID+" ::: "+fileID);
 
-				Object proxies = referencingNode
-						.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX
-								+ fullReferencedElementPathFileURI);
+				String type = rel.getType();
+				if (!referencingNodeFileID.equals(referencedElementFileID)) {
+					String fullReferencedElementPathFileURI = repositoryURL
+							+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+							+ referencedElementFileID;
 
-				proxies = new Utils()
-						.addToElementProxies(
-								(String[]) proxies,
-								fullReferencedElementPathElementURI,
-								type,
-								rel.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null,
-								rel.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER) != null);
+					String fullReferencedElementPathElementURI = fullReferencedElementPathFileURI
+							+ "#"
+							+ referencedModelElement.getProperty(
+									IModelIndexer.IDENTIFIER_PROPERTY)
+									.toString();
 
-				referencingNode.setProperty(
-						GraphModelUpdater.PROXY_REFERENCE_PREFIX
-								+ fullReferencedElementPathFileURI, proxies);
+					Object proxies = referencingNode
+							.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX
+									+ fullReferencedElementPathFileURI);
 
-				proxydictionary.add(referencingNode,
-						GraphModelUpdater.PROXY_REFERENCE_PREFIX,
-						fullReferencedElementPathFileURI);
+					proxies = new Utils()
+							.addToElementProxies(
+									(String[]) proxies,
+									fullReferencedElementPathElementURI,
+									type,
+									rel.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null,
+									rel.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER) != null);
 
-				rel.delete();
-			} else {
-				// same file so just delete
-				rel.delete();
+					referencingNode
+							.setProperty(
+									GraphModelUpdater.PROXY_REFERENCE_PREFIX
+											+ fullReferencedElementPathFileURI,
+									proxies);
+
+					proxydictionary.add(referencingNode,
+							GraphModelUpdater.PROXY_REFERENCE_PREFIX,
+							fullReferencedElementPathFileURI);
+
+					rel.delete();
+				} else {
+					// same file so just delete
+					rel.delete();
+				}
+				listener.referenceRemoval(commitItem, referencingNode, endNode,
+						type, false);
 			}
-			listener.referenceRemoval(commitItem, referencingNode, endNode,
-					type, false);
-		}
 	}
 
+	/*
+	 * Should be called before makeproxyrefs
+	 */
 	protected void dereference(IGraphNode modelElement, IGraphChangeListener l,
 			VcsCommitItem s) {
 
-		for (IGraphEdge rel : modelElement.getOutgoing()) {
+		boolean safeToDereference = true;
 
-			// delete derived attributes stored as nodes
-			if (rel.getProperty("isDerived") != null) {
-				if (l == null && s == null) {
-					System.err
-							.println("warning dereference has null listener/vcscommit -- this should only be used for non-model elements");
-					break;
-				}
-				IGraphNode n = rel.getEndNode();
-				l.modelElementRemoval(s, n, true);
-				removeFromIndexes(n);
-				n.delete();
+		// track nodes with multiple sources (singletons)
+		if (s != null)
+			for (IGraphEdge rel : modelElement
+					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+				IGraphNode fileNode = rel.getEndNode();
+
+				if (s.getPath()
+						.equals(fileNode
+								.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)))
+					rel.delete();
+				else
+					safeToDereference = false;
+
 			}
 
-			rel.delete();
+		if (safeToDereference)
+			for (IGraphEdge rel : modelElement.getOutgoing()) {
 
-		}
+				// delete derived attributes stored as nodes
+				if (rel.getProperty("isDerived") != null) {
+					if (l == null && s == null) {
+						System.err
+								.println("warning dereference has null listener/vcscommit -- this should only be used for non-model elements");
+						break;
+					}
+					IGraphNode n = rel.getEndNode();
+					l.modelElementRemoval(s, n, true);
+					removeFromIndexes(n);
+					n.delete();
+				}
+
+				rel.delete();
+
+			}
 
 	}
 

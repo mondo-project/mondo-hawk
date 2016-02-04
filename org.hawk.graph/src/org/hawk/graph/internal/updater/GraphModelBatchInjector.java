@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,6 +50,9 @@ public class GraphModelBatchInjector {
 	public static final String ROOT_DICT_FILE_KEY = "file";
 	public static final String ROOT_DICT_NAME = "rootdictionary";
 
+	public static final String PROXY_DICT_NAME = "proxydictionary";
+	public static final String DERIVED_PROXY_DICT_NAME = "derivedproxydictionary";
+
 	// integer array containing the current number of added elements:
 	// (element,((ofType)M->MM)reference,((ofKind)M->MM)reference,(unset(M->M))reference)
 	private int[] objectCount = { 0, 0, 0, 0 };
@@ -67,12 +71,22 @@ public class GraphModelBatchInjector {
 			8192);
 
 	IGraphNodeIndex epackageDictionary, fileDictionary, proxyDictionary,
-			rootDictionary;
+			rootDictionary, fragmentIdx, derivedProxyDictionary;
 
 	long startTime;
 
 	private final IGraphChangeListener listener;
 	private final VcsCommitItem commitItem;
+
+	private void refreshIndexes() {
+		epackageDictionary = graph.getMetamodelIndex();
+		fileDictionary = graph.getFileIndex();
+		proxyDictionary = graph.getOrCreateNodeIndex(PROXY_DICT_NAME);
+		rootDictionary = graph.getOrCreateNodeIndex(ROOT_DICT_NAME);
+		fragmentIdx = graph.getOrCreateNodeIndex(FRAGMENT_DICT_NAME);
+		derivedProxyDictionary = graph
+				.getOrCreateNodeIndex(DERIVED_PROXY_DICT_NAME);
+	}
 
 	public GraphModelBatchInjector(IGraphDatabase g, VcsCommitItem s,
 			IGraphChangeListener listener) {
@@ -86,6 +100,8 @@ public class GraphModelBatchInjector {
 			prefixesToStrip.addAll(vcsManager.getPrefixesToBeStripped());
 		}
 		prefixesToStrip.add(new File(g.getTempDir()).toURI().toString());
+
+		refreshIndexes();
 	}
 
 	public GraphModelBatchInjector(IModelIndexer hawk, VcsCommitItem s,
@@ -106,10 +122,7 @@ public class GraphModelBatchInjector {
 		try {
 			listener.changeStart();
 
-			epackageDictionary = graph.getMetamodelIndex();
-			fileDictionary = graph.getFileIndex();
-			proxyDictionary = graph.getOrCreateNodeIndex("proxydictionary");
-			rootDictionary = graph.getOrCreateNodeIndex(ROOT_DICT_NAME);
+			refreshIndexes();
 
 			boolean isNew = false;
 
@@ -250,9 +263,6 @@ public class GraphModelBatchInjector {
 			IModelIndexer hawk) throws Exception {
 
 		graph.enterBatchMode();
-		epackageDictionary = graph.getMetamodelIndex();
-		fileDictionary = graph.getFileIndex();
-		proxyDictionary = graph.getOrCreateNodeIndex("proxydictionary");
 
 		objectCount[0] = 0;
 		objectCount[1] = 0;
@@ -289,8 +299,8 @@ public class GraphModelBatchInjector {
 				inthisline++;
 				lastprint = objectCount[0];
 				String out = "Adding "
-						+ (parseOption == ParseOptions.MODELELEMENTS ? "nodes" : "references")
-						+ ": " + objectCount[0] + " "
+						+ (parseOption == ParseOptions.MODELELEMENTS ? "nodes"
+								: "references") + ": " + objectCount[0] + " "
 						+ (System.nanoTime() - init) / 1000000000 + "sec ("
 						+ (System.nanoTime() - startTime) / 1000000000
 						+ "sec total)";
@@ -302,82 +312,6 @@ public class GraphModelBatchInjector {
 
 		return objectCount;
 	}
-
-	// private void resolveProxy(IHawkObject child, String currentFile)
-	// throws Exception {
-	//
-	// // System.err.println("Resolving references pointing to: " +
-	// // currentFile);
-	//
-	// // System.err.println(proxydictionary.);
-	//
-	// //
-	// //
-	// IHawkIterable<IGraphNode> resolvedProxies = (IHawkIterable<IGraphNode>)
-	// proxydictionary
-	// .get(GraphModelUpdater.PROXY_REFERENCE_PREFIX, currentFile);
-	//
-	// if (resolvedProxies != null && resolvedProxies.size() > 0) {
-	//
-	// for (IGraphNode n : resolvedProxies) {
-	//
-	// String[] proxies = (String[])
-	// n.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX
-	// + currentFile);
-	//
-	// //boolean found = false;
-	//
-	// if (proxies != null)
-	// for (int i = 0; i < proxies.length; i = i + 2) {
-	//
-	// //System.err.println(">>>"+ getRelativeURI(child.getUri()));
-	// //System.err.println(">>" + proxies[i]);
-	//
-	// if (getRelativeURI(child.getUri()).equals(proxies[i])) {
-	//
-	// resolveProxyRef(n, hash.get(child), proxies[i + 1]);
-	//
-	// if (proxies.length == 2)
-	// n.removeProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + currentFile);
-	// else
-	// n.setProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + currentFile,
-	// prune(proxies, i));
-	//
-	// proxydictionary.remove(n);
-	//
-	// //found = true;
-	//
-	// }
-	//
-	// }
-	// else
-	// System.err.println("error in proxy resolution, to "
-	// + currentFile + " \nnode has property keys: "
-	// + n.getPropertyKeys());
-	//
-	// //if (!found)
-	// //throw new Exception("not found: " + getRelativeURI(child.getUri()));
-	//
-	// }
-	//
-	// }
-	//
-	// }
-
-	// private String[] prune(String[] proxies, int index) {
-	//
-	// ArrayList<String> temp = new ArrayList<>();
-	// String[] ret = new String[proxies.length - 2];
-	//
-	// for (int i = 0; i < proxies.length; i = i + 2) {
-	// if (i != index) {
-	// temp.add(proxies[i]);
-	// temp.add(proxies[i + 1]);
-	// }
-	// }
-	//
-	// return temp.toArray(ret);
-	// }
 
 	/**
 	 * 
@@ -396,8 +330,8 @@ public class GraphModelBatchInjector {
 	 * @return the Node
 	 * @throws Exception
 	 */
-	private IGraphNode createEObjectNode(IGraphNode originatingFile,
-			IHawkObject eObject, IGraphNode typenode) throws Exception {
+	private IGraphNode createEObjectNode(IHawkObject eObject,
+			IGraphNode typenode) throws Exception {
 		IGraphNode node = null;
 
 		try {
@@ -488,7 +422,6 @@ public class GraphModelBatchInjector {
 			try {
 				node = graph.createNode(m, "eobject");
 				if (eObject.isFragmentUnique()) {
-					IGraphNodeIndex fragmentIdx = graph.getOrCreateNodeIndex(FRAGMENT_DICT_NAME);
 					fragmentIdx.add(node, "id", eObject.getUriFragment());
 				}
 			} catch (IllegalArgumentException ex) {
@@ -643,10 +576,7 @@ public class GraphModelBatchInjector {
 		return node;
 	}
 
-	protected void addToProxyAttributes(IGraphNode node) {
-
-		IGraphNodeIndex derivedProxyDictionary = graph
-				.getOrCreateNodeIndex("derivedproxydictionary");
+	private void addToProxyAttributes(IGraphNode node) {
 
 		Map<String, Object> m = new HashMap<>();
 		m.put("derived", "_");
@@ -746,44 +676,80 @@ public class GraphModelBatchInjector {
 	protected IGraphNode addEObject(IGraphNode originatingFile,
 			IHawkObject eObject) throws Exception {
 
-		epackageDictionary = graph.getMetamodelIndex();
-		fileDictionary = graph.getFileIndex();
-		proxyDictionary = graph.getOrCreateNodeIndex("proxydictionary");
-		rootDictionary = graph.getOrCreateNodeIndex(ROOT_DICT_NAME);
+		refreshIndexes();
 
 		IGraphNode eClass = getEClassNode(eObject.getType());
-		IGraphNode node = createEObjectNode(originatingFile, eObject, eClass);
+
+		IGraphNode node = null;
+
+		// if a unique element is already in hawk set the node to that element
+		// and return it
+		if (eObject.isFragmentUnique()) {
+			fragmentIdx.flush();
+			Iterator<IGraphNode> itr = fragmentIdx.get("id",
+					eObject.getUriFragment()).iterator();
+			while (itr.hasNext()) {
+				if (node == null)
+					node = itr.next();
+				else {
+					System.err
+							.println("WARNING: GraphModelBatchInjector: addEObject: isFragmentUnique returned more than one node, keeping first one.");
+					break;
+				}
+			}
+
+			// if this node is from a file not yet registered, add this file
+			// reference
+			if (node != null && originatingFile != null) {
+				boolean found = false;
+				for (IGraphEdge e : node
+						.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
+					if (e.getEndNode().equals(originatingFile))
+						found = true;
+				if (!found)
+					createReference(ModelElementNode.EDGE_LABEL_FILE, node,
+							originatingFile, new HashMap<>(), true);
+			}
+
+		}
 
 		if (node == null) {
-			System.err.println(String.format("The node for (%s) is null",
-					eObject));
-		} else {
-			hash.put(eObject, node);
 
-			final HashMap<String, Object> emptyMap = new HashMap<String, Object>();
-			createReference(ModelElementNode.EDGE_LABEL_OFTYPE, node, eClass,
-					emptyMap, true);
-			if (originatingFile != null) {
-				createReference(ModelElementNode.EDGE_LABEL_FILE, node,
-						originatingFile, emptyMap, true);
-			}
-			objectCount[1]++;
+			node = createEObjectNode(eObject, eClass);
 
-			// use metamodel to infer all supertypes for fast search and log em
-			for (IHawkClass superType : ((IHawkClass) eObject.getType())
-					.getSuperTypes()) {
-				eClass = getEClassNode(superType);
-				createReference(ModelElementNode.EDGE_LABEL_OFKIND, node,
+			if (node == null) {
+				System.err.println(String.format("The node for (%s) is null",
+						eObject));
+			} else {
+				hash.put(eObject, node);
+
+				final HashMap<String, Object> emptyMap = new HashMap<String, Object>();
+				createReference(ModelElementNode.EDGE_LABEL_OFTYPE, node,
 						eClass, emptyMap, true);
-				objectCount[2]++;
+				if (originatingFile != null) {
+					createReference(ModelElementNode.EDGE_LABEL_FILE, node,
+							originatingFile, emptyMap, true);
+				}
+				objectCount[1]++;
+
+				// use metamodel to infer all supertypes for fast search and log
+				// em
+				for (IHawkClass superType : ((IHawkClass) eObject.getType())
+						.getSuperTypes()) {
+					eClass = getEClassNode(superType);
+					createReference(ModelElementNode.EDGE_LABEL_OFKIND, node,
+							eClass, emptyMap, true);
+					objectCount[2]++;
+				}
+
+				objectCount[0]++;
+
+				if (eObject.isRoot()) {
+					rootDictionary.add(node, ROOT_DICT_FILE_KEY,
+							originatingFile.getId().toString());
+				}
 			}
 
-			objectCount[0]++;
-
-			if (eObject.isRoot()) {
-				rootDictionary.add(node, ROOT_DICT_FILE_KEY, originatingFile
-						.getId().toString());
-			}
 		}
 
 		return node;
@@ -871,6 +837,8 @@ public class GraphModelBatchInjector {
 			IHawkObject source, Map<String, IGraphNode> addedNodesHash,
 			Map<String, IGraphNode> nodes) throws Exception {
 
+		refreshIndexes();
+
 		boolean ret = true;
 		try {
 			for (final IHawkReference eReference : ((IHawkClass) source
@@ -911,20 +879,17 @@ public class GraphModelBatchInjector {
 								createReference(edgelabel, node, dest, props,
 										false);
 							} else {
-								addProxyRef(
-										node,
-										destinationHawkObject,
-										edgelabel,
-										eReference.isContainment(),
+								addProxyRef(node, destinationHawkObject,
+										edgelabel, eReference.isContainment(),
 										eReference.isContainer());
 
-//								System.err
-//										.println("adding proxy [iterable] reference ("
-//												+ edgelabel
-//												+ " | "
-//												+ destinationHawkObject.getUri()
-//												+ ")... "
-//												+ (addProxyRef ? "done" : "failed"));
+								// System.err
+								// .println("adding proxy [iterable] reference ("
+								// + edgelabel
+								// + " | "
+								// + destinationHawkObject.getUri()
+								// + ")... "
+								// + (addProxyRef ? "done" : "failed"));
 							}
 						}
 
@@ -1004,17 +969,16 @@ public class GraphModelBatchInjector {
 									eReference.isContainment(),
 									eReference.isContainer());
 						} else {
-							addProxyRef(source,
-									destinationHawkObject, edgelabel,
-									eReference.isContainment(),
+							addProxyRef(source, destinationHawkObject,
+									edgelabel, eReference.isContainment(),
 									eReference.isContainer());
-//							System.err
-//									.println("adding proxy [iterable] reference ("
-//											+ edgelabel
-//											+ " | "
-//											+ ((IHawkObject) destinationHawkObject).getUri()
-//											+ ")... "
-//											+ (added ? "done" : "failed"));
+							// System.err
+							// .println("adding proxy [iterable] reference ("
+							// + edgelabel
+							// + " | "
+							// + ((IHawkObject) destinationHawkObject).getUri()
+							// + ")... "
+							// + (added ? "done" : "failed"));
 						}
 					}
 				} else /* if destination is not iterable */{
@@ -1060,9 +1024,11 @@ public class GraphModelBatchInjector {
 				 * need to flag it properly for the later resolution.
 				 */
 				destinationObjectRelativePathURI = GraphModelUpdater.PROXY_FILE_WILDCARD
-					+ "#" + destinationObjectRelativePathURI.substring(destinationObjectRelativePathURI.indexOf("#") + 1);
-			}
-			else if (!destinationObject.URIIsRelative()) {
+						+ "#"
+						+ destinationObjectRelativePathURI
+								.substring(destinationObjectRelativePathURI
+										.indexOf("#") + 1);
+			} else if (!destinationObject.URIIsRelative()) {
 				destinationObjectRelativePathURI = new Utils().makeRelative(
 						prefixesToStrip, destinationObjectRelativePathURI);
 			}
@@ -1114,6 +1080,9 @@ public class GraphModelBatchInjector {
 
 	protected boolean resolveProxyRef(IGraphNode source, IGraphNode target,
 			String edgeLabel, boolean isContainment, boolean isContainer) {
+
+		refreshIndexes();
+
 		boolean found = false;
 
 		for (IGraphEdge e : source.getOutgoingWithType(edgeLabel))

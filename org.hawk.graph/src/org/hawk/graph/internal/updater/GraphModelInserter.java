@@ -402,7 +402,6 @@ public class GraphModelInserter {
 						e.getType(), isTransient);
 			}
 		}
-		listener.modelElementRemoval(this.s, node, false);
 
 		remove(node, repoURL, fileNode, listener);
 		// new DeletionUtils(graph).delete(node);
@@ -818,7 +817,8 @@ public class GraphModelInserter {
 		DeletionUtils del = new DeletionUtils(graph);
 		del.dereference(modelElement, l, s);
 		del.makeProxyRefs(s, modelElement, repositoryURL, fileNode, l);
-		del.delete(modelElement);
+		if (del.delete(modelElement))
+			l.modelElementRemoval(this.s, modelElement, false);
 	}
 
 	/*

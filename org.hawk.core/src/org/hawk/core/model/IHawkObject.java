@@ -13,8 +13,8 @@ package org.hawk.core.model;
 public interface IHawkObject {
 
 	/**
-	 * Returns <code>true</code> if this object belongs to the same resource
-	 * as the other, <code>false</code> otherwise.
+	 * Returns <code>true</code> if this object belongs to the same resource as
+	 * the other, <code>false</code> otherwise.
 	 */
 	boolean isInDifferentResourceThan(IHawkObject other);
 
@@ -37,9 +37,11 @@ public interface IHawkObject {
 	String getUriFragment();
 
 	/**
-	 * Returns <code>true</code> if the URI fragment is unique across files
-	 * (as in Modelio). It should be <code>false</code> for most EMF-based
-	 * parsers.
+	 * Returns <code>true</code> if the URI fragment is unique across files (as
+	 * in Modelio). It should be <code>false</code> for most EMF-based parsers.
+	 * Note that if multiple files contain a unique element Hawk will honour
+	 * insertion/updates assuming the various files contain an identical state
+	 * for this element
 	 */
 	boolean isFragmentUnique();
 
