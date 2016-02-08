@@ -708,7 +708,7 @@ public class GraphModelBatchInjector {
 						found = true;
 				if (!found)
 					createReference(ModelElementNode.EDGE_LABEL_FILE, node,
-							originatingFile, new HashMap<>(), true);
+							originatingFile, new HashMap<String, Object>(), true);
 			}
 
 		}
