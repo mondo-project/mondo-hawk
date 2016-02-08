@@ -82,7 +82,7 @@ public class OrientNode implements IGraphNode {
 		final Set<String> keys = new HashSet<>();
 		ODocument tmpVertex = getDocument();
 		for (String s : tmpVertex.fieldNames()) {
-			if (s.startsWith(PREFIX_PROPERTY)) {
+			if (s != null && s.startsWith(PREFIX_PROPERTY)) {
 				keys.add(OrientNameCleaner.unescapeFromField(s.substring(PREFIX_PROPERTY.length())));
 			}
 		}
