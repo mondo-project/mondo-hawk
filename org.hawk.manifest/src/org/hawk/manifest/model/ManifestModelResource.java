@@ -73,6 +73,8 @@ public class ManifestModelResource implements IHawkModelResource {
 		String version = null;
 		List<String> otherProperties = new LinkedList<String>();
 
+		// FIXME augment names of packages and bundles to avoid name collisions
+
 		for (Entry<String, String> entry : map.entrySet()) {
 
 			String key = entry.getKey();

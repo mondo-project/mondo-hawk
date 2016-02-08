@@ -82,6 +82,9 @@ public class SyncValidationListener implements IGraphChangeListener {
 	// exported
 	public static final String FRAGMENT_DICT_NAME = "fragmentdictionary";
 
+	IGraphNodeIndex singletonIndex;
+	boolean singletonIndexIsEmpty;
+
 	@SuppressWarnings("unchecked")
 	private void validateChanges() {
 
@@ -129,15 +132,12 @@ public class SyncValidationListener implements IGraphChangeListener {
 
 					IGraphDatabase graph = hawk.getGraph();
 
-					// FIXME for singleton model elements (using
-					// fragmentisunique and singleton index) we need to use only
-					// fragment in the maps
-					IGraphNodeIndex singletonIndex = graph
-							.getOrCreateNodeIndex(FRAGMENT_DICT_NAME);
-					boolean singletonIndexIsEmpty = !singletonIndex
-							.query("*", "*").iterator().hasNext();
-
 					try (IGraphTransaction t = graph.beginTransaction()) {
+
+						singletonIndex = graph
+								.getOrCreateNodeIndex(FRAGMENT_DICT_NAME);
+						singletonIndexIsEmpty = !singletonIndex.query("*", "*")
+								.iterator().hasNext();
 
 						String file = null;
 						IGraphNode filenode = null;
@@ -189,7 +189,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 
 							}
 						}
-
+						
 						// go through all nodes in graph from the file the
 						// resource
 						// is in
@@ -240,44 +240,21 @@ public class SyncValidationListener implements IGraphChangeListener {
 											Object refval = eobject.get(ref,
 													false);
 											HashSet<String> vals = new HashSet<>();
-											String ret;
 											if (refval instanceof Iterable<?>) {
 												for (Object val : ((Iterable<IHawkObject>) refval)) {
 													// if (!((IHawkObject)
 													// val).isProxy())
-													ret = ((IHawkObject) val)
-															.getUri()
-															.replace(temp, "")
-															.replace("+", "%2B");
-													try {
-														ret = URLDecoder
-																.decode(ret,
-																		"UTF-8");
-													} catch (Exception ex) {
-														// might not be
-														// decodable that way
-														// (Modelio can produce
-														// something like
-														// '#//%Objing%')
-													}
-													vals.add(repoURL
-															+ FILEINDEX_REPO_SEPARATOR
-															+ ret);
-												}
 
+													vals.add(parseValue(val,
+															repoURL, temp));
+
+												}
 											} else {
 												// if (!((IHawkObject)
 												// refval).isProxy())
-												ret = ((IHawkObject) refval)
-														.getUri().replace(temp,
-																"");
-												ret = URLDecoder
-														.decode(ret.replace(
-																"+", "%2B"),
-																"UTF-8");
-												vals.add(repoURL
-														+ FILEINDEX_REPO_SEPARATOR
-														+ ret);
+
+												vals.add(parseValue(refval,
+														repoURL, temp));
 
 											}
 											if (vals.size() > 0)
@@ -378,21 +355,38 @@ public class SyncValidationListener implements IGraphChangeListener {
 											}
 											final IGraphNode refEndNode = reference
 													.getEndNode();
-											refvals.add(repoURL
-													+ FILEINDEX_REPO_SEPARATOR
-													+ refEndNode
-															.getOutgoingWithType(
-																	"file")
+											final String refEndNodeId = refEndNode
+													.getProperty(
+															IModelIndexer.IDENTIFIER_PROPERTY)
+													.toString();
+											System.err
+													.println("checking uniqueness of "
+															+ refEndNodeId);
+											if (!singletonIndexIsEmpty
+													&& singletonIndex
+															.get("id",
+																	refEndNodeId)
 															.iterator()
-															.next()
-															.getEndNode()
-															.getProperty(
-																	IModelIndexer.IDENTIFIER_PROPERTY)
-													+ "#"
-													+ refEndNode
-															.getProperty(
-																	IModelIndexer.IDENTIFIER_PROPERTY)
-															.toString());
+															.hasNext()) {
+												System.err
+														.println("singleton found in hawk: "
+																+ refEndNodeId);
+												refvals.add(refEndNodeId);
+											} else {
+
+												refvals.add(repoURL
+														+ FILEINDEX_REPO_SEPARATOR
+														+ refEndNode
+																.getOutgoingWithType(
+																		"file")
+																.iterator()
+																.next()
+																.getEndNode()
+																.getProperty(
+																		IModelIndexer.IDENTIFIER_PROPERTY)
+														+ "#" + refEndNodeId);
+
+											}
 											nodereferences.put(
 													reference.getType(),
 													refvals);
@@ -575,6 +569,42 @@ public class SyncValidationListener implements IGraphChangeListener {
 						+ (removedProxies == 0 ? "" : " [" + removedProxies
 								+ "] unresolved hawk proxies matched"));
 
+	}
+
+	private String parseValue(Object val, String repo, String temp) {
+
+		String ret;
+		IHawkObject o = (IHawkObject) val;
+
+		System.err.println("-checking uniqueness of " + o.getUriFragment());
+		if (!singletonIndexIsEmpty
+				&& singletonIndex.get("id", o.getUriFragment()).iterator()
+						.hasNext()) {
+
+			System.err.println("-singleton: " + o.getUriFragment()
+					+ " (isfragunique: " + o.isFragmentUnique() + ")");
+			ret = o.getUriFragment();
+
+		} else {
+
+			ret = o.getUri().replace(temp, "").replace("+", "%2B");
+			try {
+				ret = URLDecoder.decode(ret, "UTF-8");
+			} catch (Exception ex) {
+				// might not be
+				// decodable that
+				// way
+				// (Modelio can
+				// produce
+				// something like
+				// '#//%Objing%')
+			}
+
+			ret = (repo + FILEINDEX_REPO_SEPARATOR + ret);
+
+		}
+
+		return ret;
 	}
 
 	private int latestChangedElements() {
