@@ -359,9 +359,9 @@ public class SyncValidationListener implements IGraphChangeListener {
 													.getProperty(
 															IModelIndexer.IDENTIFIER_PROPERTY)
 													.toString();
-											System.err
-													.println("checking uniqueness of "
-															+ refEndNodeId);
+//											System.err
+//													.println("checking uniqueness of "
+//															+ refEndNodeId);
 											if (!singletonIndexIsEmpty
 													&& singletonIndex
 															.get("id",
@@ -576,7 +576,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 		String ret;
 		IHawkObject o = (IHawkObject) val;
 
-		System.err.println("-checking uniqueness of " + o.getUriFragment());
+//		System.err.println("-checking uniqueness of " + o.getUriFragment());
 		if (!singletonIndexIsEmpty
 				&& singletonIndex.get("id", o.getUriFragment()).iterator()
 						.hasNext()) {
