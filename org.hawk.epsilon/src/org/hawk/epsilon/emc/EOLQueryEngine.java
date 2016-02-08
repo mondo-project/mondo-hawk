@@ -339,7 +339,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 	}
 
 	@Override
-	public boolean hasType(String arg0) {
+	public boolean hasType(String type) {
 		// If conflict return false
 		// doneTODO Can receive both simple and fully-qualified name e.g.
 		// x::y::A -
@@ -349,16 +349,16 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 			boolean found = false;
 
-			if (arg0.equals("UNSET"))
+			if (type.equals("UNSET"))
 				return false;
 
-			if (cachedTypes.contains(arg0)) {
+			if (cachedTypes.contains(type)) {
 				return true;
 			} else {
 
-				if (arg0.contains("::")) {
+				if (type.contains("::")) {
 
-					final String[] parts = arg0.split("::", 2);
+					final String[] parts = type.split("::", 2);
 					final String ep = parts[0];
 					final String ec = parts[1];
 
@@ -401,12 +401,15 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 								.getIncomingWithType("epackage")) {
 
 							IGraphNode othernode = n.getStartNode();
-							if (othernode.getProperty(
-									IModelIndexer.IDENTIFIER_PROPERTY).equals(
-									arg0)) {
-
+							if (othernode == null) {
+								System.err.println("WARNING: null source node!");
+							}
+							final Object id = othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
+							if (id == null) {
+								System.err.println("WARNING: null identifier in source!");
+							}
+							else if (id.equals(type)) {
 								possibletypenodes.add(othernode);
-
 							}
 						}
 					}
@@ -438,19 +441,19 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 						}
 
 						if (possibletypenodes.size() == 1) {
-							cachedTypes.add(arg0);
+							cachedTypes.add(type);
 							return true;
 						} else {
 							System.err
 									.println("ERROR IN hasType(String arg0). "
 											+ possibletypenodes.size()
-											+ " CLASSES FOUND FOR " + arg0
+											+ " CLASSES FOUND FOR " + type
 											+ ", RETURNING FALSE");
 							System.err.println("types found:" + ret);
 							return false;
 						}
 					} else {
-						cachedTypes.add(arg0);
+						cachedTypes.add(type);
 						return true;
 					}
 

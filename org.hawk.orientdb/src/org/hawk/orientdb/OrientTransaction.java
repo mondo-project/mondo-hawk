@@ -20,6 +20,7 @@ public class OrientTransaction implements IGraphTransaction {
 
 	public OrientTransaction(OrientDatabase orientDatabase) {
 		this.graph = orientDatabase;
+		graph.getGraph().begin();
 	}
 
 	@Override

@@ -246,7 +246,6 @@ public class OrientDatabase implements IGraphDatabase {
 		if (!db.getTransaction().isActive()) {
 			saveDirty();
 			ensureWALSetTo(true); // this reopens the DB, so it *must* go before db.begin()
-			db.begin();
 		}
 		ODatabaseRecordThreadLocal.INSTANCE.set(db);
 		currentMode = Mode.TX_MODE;
