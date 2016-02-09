@@ -44,6 +44,7 @@ import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
+import org.hawk.graph.FileNode;
 import org.hawk.graph.MetamodelNode;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.TypeNode;
@@ -307,8 +308,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 	}
 
 	@Override
-	public Object getTypeOf(Object arg0) {
-
+	public TypeNodeWrapper getTypeOf(Object arg0) {
 		IGraphNode typeNode = null;
 
 		try {
@@ -334,6 +334,25 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 		if (typeNode != null)
 			return new TypeNodeWrapper(new TypeNode(typeNode), this);
+		else
+			return null;
+	}
+
+	@Override
+	public FileNodeWrapper getFileOf(Object arg0) {
+		IGraphNode fileNode = null;
+
+		try {
+			IGraphNode objectNode = graph.getNodeById(((GraphNodeWrapper) arg0).getId());
+			fileNode = objectNode
+					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)
+					.iterator().next().getEndNode();
+		} catch (Exception e) {
+			System.err.println("error in getFileOf, returning null");
+		}
+
+		if (fileNode != null)
+			return new FileNodeWrapper(new FileNode(fileNode), this);
 		else
 			return null;
 	}
