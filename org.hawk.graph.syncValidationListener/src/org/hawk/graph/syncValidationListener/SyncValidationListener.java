@@ -128,8 +128,6 @@ public class SyncValidationListener implements IGraphChangeListener {
 					System.out.println("validating file " + c.getChangeType()
 							+ " for " + c.getPath());
 
-					totalResourceSizes += r.getAllContentsSet().size();
-
 					IGraphDatabase graph = hawk.getGraph();
 
 					try (IGraphTransaction t = graph.beginTransaction()) {
@@ -150,8 +148,10 @@ public class SyncValidationListener implements IGraphChangeListener {
 							filenode = graph.getFileIndex().get("id", file)
 									.getSingle();
 						} catch (Exception ee) {
-							System.err.println("expected file " + file
-									+ " but it did not exist");
+							System.err
+									.println("expected file "
+											+ file
+											+ " but it did not exist (maybe metamodel not registered, if so expect +1 errors)");
 							totalErrors++;
 							continue;
 						}
@@ -178,8 +178,8 @@ public class SyncValidationListener implements IGraphChangeListener {
 										+ content.getUriFragment()
 										+ " | ofType: "
 										+ content.getType().getName());
-								malformed++;
-								malformedObjectCache.add(old.getUri());
+								if (malformedObjectCache.add(old.getUri()))
+									malformed++;
 								System.err
 										.println("WARNING: MALFORMED MODEL RESOURCE (multiple identical identifiers for:\n"
 												+ old.getUri()
@@ -187,9 +187,10 @@ public class SyncValidationListener implements IGraphChangeListener {
 												+ malformed
 												+ " errors in validation.");
 
-							}
+							} else
+								totalResourceSizes++;
 						}
-						
+
 						// go through all nodes in graph from the file the
 						// resource
 						// is in
@@ -359,18 +360,18 @@ public class SyncValidationListener implements IGraphChangeListener {
 													.getProperty(
 															IModelIndexer.IDENTIFIER_PROPERTY)
 													.toString();
-//											System.err
-//													.println("checking uniqueness of "
-//															+ refEndNodeId);
+											// System.err
+											// .println("checking uniqueness of "
+											// + refEndNodeId);
 											if (!singletonIndexIsEmpty
 													&& singletonIndex
 															.get("id",
 																	refEndNodeId)
 															.iterator()
 															.hasNext()) {
-												System.err
-														.println("singleton found in hawk: "
-																+ refEndNodeId);
+												// System.err
+												// .println("singleton found in hawk: "
+												// + refEndNodeId);
 												refvals.add(refEndNodeId);
 											} else {
 
@@ -563,7 +564,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 		System.err
 				.println("validated changes... "
 						+ (totalErrors == 0 ? "true"
-								: ((totalErrors == malformed) + " (with "
+								: ((totalErrors <= malformed) + " (with "
 										+ totalErrors + " total and "
 										+ malformed + " malformed errors)"))
 						+ (removedProxies == 0 ? "" : " [" + removedProxies
@@ -576,13 +577,13 @@ public class SyncValidationListener implements IGraphChangeListener {
 		String ret;
 		IHawkObject o = (IHawkObject) val;
 
-//		System.err.println("-checking uniqueness of " + o.getUriFragment());
+		// System.err.println("-checking uniqueness of " + o.getUriFragment());
 		if (!singletonIndexIsEmpty
 				&& singletonIndex.get("id", o.getUriFragment()).iterator()
 						.hasNext()) {
 
-			System.err.println("-singleton: " + o.getUriFragment()
-					+ " (isfragunique: " + o.isFragmentUnique() + ")");
+			// System.err.println("-singleton: " + o.getUriFragment()
+			// + " (isfragunique: " + o.isFragmentUnique() + ")");
 			ret = o.getUriFragment();
 
 		} else {
