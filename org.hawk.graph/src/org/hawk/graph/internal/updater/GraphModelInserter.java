@@ -962,7 +962,7 @@ public class GraphModelInserter {
 
 	private void resolveProxies(IGraphDatabase graph,
 			final IGraphChangeListener listener, IGraphNode n,
-			IGraphNodeIndex proxyDictionary) {
+			IGraphNodeIndex proxyDictionary) throws Exception {
 		Set<String[]> allProxies = new HashSet<>();
 		for (String propertyKey : n.getPropertyKeys()) {
 			if (propertyKey

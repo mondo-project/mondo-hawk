@@ -21,7 +21,7 @@ public class ManifestBundleObject extends ManifestObject {
 	private String symbolicName;
 
 	public ManifestBundleObject(String symbolicName, ManifestModelResource res) {
-		this.symbolicName = symbolicName;
+		this.symbolicName = "Bundle_" + symbolicName;
 		this.res = res;
 	}
 

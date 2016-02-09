@@ -24,7 +24,7 @@ public class ManifestPackageObject extends ManifestObject {
 			ManifestModelResource manifestModelResource) {
 
 		this.res = manifestModelResource;
-		this.name = name;
+		this.name = "Package_" + name;
 
 	}
 

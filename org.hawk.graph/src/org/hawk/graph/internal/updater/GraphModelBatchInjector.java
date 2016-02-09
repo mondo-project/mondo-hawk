@@ -29,6 +29,7 @@ import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphDatabase.Mode;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
@@ -78,7 +79,22 @@ public class GraphModelBatchInjector {
 	private final IGraphChangeListener listener;
 	private final VcsCommitItem commitItem;
 
-	private void refreshIndexes() {
+	private void refreshIndexes() throws Exception {
+
+		if (graph.currentMode().equals(Mode.TX_MODE)) {
+
+			try (IGraphTransaction t = graph.beginTransaction()) {
+				refreshIx();
+				t.success();
+			}
+
+		} else {
+			refreshIx();
+		}
+
+	}
+
+	private void refreshIx() {
 		epackageDictionary = graph.getMetamodelIndex();
 		fileDictionary = graph.getFileIndex();
 		proxyDictionary = graph.getOrCreateNodeIndex(PROXY_DICT_NAME);
@@ -89,7 +105,7 @@ public class GraphModelBatchInjector {
 	}
 
 	public GraphModelBatchInjector(IGraphDatabase g, VcsCommitItem s,
-			IGraphChangeListener listener) {
+			IGraphChangeListener listener) throws Exception {
 		this.graph = g;
 		this.commitItem = s;
 		this.listener = listener;
@@ -708,7 +724,8 @@ public class GraphModelBatchInjector {
 						found = true;
 				if (!found)
 					createReference(ModelElementNode.EDGE_LABEL_FILE, node,
-							originatingFile, new HashMap<String, Object>(), true);
+							originatingFile, new HashMap<String, Object>(),
+							true);
 			}
 
 		}
@@ -1079,7 +1096,8 @@ public class GraphModelBatchInjector {
 	}
 
 	protected boolean resolveProxyRef(IGraphNode source, IGraphNode target,
-			String edgeLabel, boolean isContainment, boolean isContainer) {
+			String edgeLabel, boolean isContainment, boolean isContainer)
+			throws Exception {
 
 		refreshIndexes();
 
