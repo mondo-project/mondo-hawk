@@ -129,8 +129,9 @@ public class Git implements IVcsManager {
 		if (!repositoryURI.endsWith("/")) {
 			repositoryURI += "/";
 		}
-		repositoryURL = URLDecoder.decode(repositoryURI.replace("+", "%2B"),
-				"UTF-8");
+		repositoryURL = repositoryURI;
+		// dont decode it to ensure consistency with other managers
+		// URLDecoder.decode(repositoryURI.replace("+", "%2B"), "UTF-8");
 	}
 
 	@Override
@@ -161,8 +162,9 @@ public class Git implements IVcsManager {
 	}
 
 	@Override
-	public void importFiles(String path, File temp) {
+	public void importFiles(String p, File temp) {
 		try {
+			String path = URLDecoder.decode(p.replace("+", "%2B"), "UTF-8");
 			FileOperations.copyFile(
 					rootLocation.resolve(
 							path.startsWith("/") ? path.replaceFirst("/", "")
@@ -236,9 +238,11 @@ public class Git implements IVcsManager {
 			Path path = f.toPath();
 
 			String relativepath = makeRelative(repositoryURL,
-					URLDecoder.decode(
-							f.toPath().toUri().toString().replace("+", "%2B"),
-							"UTF-8"));
+			// dont decode it to ensure consistency with other managers
+			// URLDecoder.decode(
+					f.toPath().toUri().toString()
+			// .replace("+", "%2B"), "UTF-8")
+			);
 
 			c.setPath(relativepath.startsWith("/") ? relativepath : "/"
 					+ relativepath);
@@ -276,10 +280,11 @@ public class Git implements IVcsManager {
 				c.setChangeType(VcsChangeType.UPDATED);
 				c.setCommit(commit);
 
-				String relativepath = makeRelative(
-						repositoryURL,
-						URLDecoder.decode(f.toPath().toUri().toString()
-								.replace("+", "%2B"), "UTF-8"));
+				String relativepath = makeRelative(repositoryURL,
+				// URLDecoder.decode(
+						f.toPath().toUri().toString()
+				// .replace("+", "%2B"), "UTF-8")
+				);
 
 				c.setPath(relativepath.startsWith("/") ? relativepath : "/"
 						+ relativepath);
