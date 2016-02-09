@@ -39,9 +39,9 @@
    <feature url="features/org.hawk.git.feature_1.0.0.qualifier.jar" id="org.hawk.git.feature" version="1.0.0.qualifier">
       <category name="hawk.connectors"/>
    </feature>
-   <bundle id="org.hawk.http" version="1.0.0.qualifier">
+   <feature url="features/org.hawk.http.feature_1.0.0.qualifier.jar" id="org.hawk.http.feature" version="1.0.0.qualifier">
       <category name="hawk.connectors"/>
-   </bundle>
+   </feature>
    <category-def name="hawk.core" label="Hawk Core"/>
    <category-def name="hawk.connectors" label="Hawk Connectors"/>
    <category-def name="hawk.backends" label="Hawk Backends"/>
