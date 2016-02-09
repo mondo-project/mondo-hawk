@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.epsilon.eol.exceptions.EolIllegalPropertyException;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
@@ -28,6 +29,7 @@ import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.graph.FileNode;
 import org.hawk.graph.ModelElementNode;
 
 public class GraphPropertyGetter extends AbstractPropertyGetter {
@@ -93,10 +95,61 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				.getNodeById(((GraphNodeWrapper) object).getId());
 
 		// System.out.println(node+":::"+property);
-
 		// System.err.println(object+" : "+property);
 
-		if (property.startsWith("revRefNav_")) {
+		// avoid using switch (in the outer-most structure) to allow partial
+		// matches and method calls in alternatives
+		if (property.equals("hawkFile")) {
+
+			String sep = "";
+			StringBuilder buff = new StringBuilder(32);
+			for (IGraphEdge e : node
+					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+				buff.append(sep);
+				buff.append(e.getEndNode()
+						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+						.toString());
+				sep = ";";
+
+			}
+			ret = buff.toString();
+
+		} else if (property.equals("hawkRepo")) {
+
+			String sep = "";
+			StringBuilder buff = new StringBuilder(32);
+			for (IGraphEdge e : node
+					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+				buff.append(sep);
+				buff.append(e.getEndNode()
+						.getProperty(FileNode.PROP_REPOSITORY).toString());
+				sep = ";";
+
+			}
+			ret = buff.toString();
+
+		} else if (property.equals("hawkFiles")) {
+
+			Set<String> files = new HashSet<>();
+			for (IGraphEdge e : node
+					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
+				files.add(e.getEndNode()
+						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+						.toString());
+
+			ret = files;
+
+		} else if (property.equals("hawkRepos")) {
+
+			Set<String> repos = new HashSet<>();
+			for (IGraphEdge e : node
+					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
+				repos.add(e.getEndNode().getProperty(FileNode.PROP_REPOSITORY)
+						.toString());
+
+			ret = repos;
+
+		} else if (property.startsWith("revRefNav_")) {
 
 			// LinkedList<?> otherNodes = new LinkedList<>();
 
@@ -143,9 +196,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				// null?
 			}
 
-		}
-
-		else if (property.equals("eContainer")) {
+		} else if (property.equals("eContainer")) {
 
 			// HawkClass o = new
 			// MetamodelUtils().getTypeOfFromNode(node,m.parser);
@@ -172,8 +223,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				throw new EolRuntimeException("eContainer failed,\n" + object
 						+ "\nis not contained");
 
-		}
-		else if (property.equals("eContents")) {
+		} else if (property.equals("eContents")) {
 			final List<GraphNodeWrapper> results = new ArrayList<>();
 			Iterable<IGraphEdge> out = node.getOutgoing();
 			for (IGraphEdge r : out) {
@@ -183,23 +233,25 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				}
 			}
 			ret = results;
-		}
-		else if (property.equals("hawkIn") || property.equals("hawkOut")) {
+		} else if (property.equals("hawkIn") || property.equals("hawkOut")) {
 			final boolean isIncoming = property.equals("hawkIn");
 			final List<GraphNodeWrapper> results = new ArrayList<>();
-			final Iterable<IGraphEdge> edges = isIncoming ? node.getIncoming() : node.getOutgoing();
+			final Iterable<IGraphEdge> edges = isIncoming ? node.getIncoming()
+					: node.getOutgoing();
 			for (IGraphEdge r : edges) {
-				if (ModelElementNode.TRANSIENT_EDGE_LABELS.contains(r.getType())) {
+				if (ModelElementNode.TRANSIENT_EDGE_LABELS
+						.contains(r.getType())) {
 					continue;
 				}
-				final IGraphNode edgeNode = isIncoming ? r.getStartNode() : r.getEndNode();
+				final IGraphNode edgeNode = isIncoming ? r.getStartNode() : r
+						.getEndNode();
 				final Object edgeNodeID = edgeNode.getId();
-				final GraphNodeWrapper edgeNodeWrapper = new GraphNodeWrapper(edgeNodeID.toString(), m);
+				final GraphNodeWrapper edgeNodeWrapper = new GraphNodeWrapper(
+						edgeNodeID.toString(), m);
 				results.add(edgeNodeWrapper);
 			}
 			ret = results;
-		}
-		else if (canHaveDerivedAttr(node, property)) {
+		} else if (canHaveDerivedAttr(node, property)) {
 
 			for (IGraphEdge r : node.getOutgoingWithType(property)) {
 				if (ret == null)
@@ -221,9 +273,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 						+ " is NYD for node: " + node.getId());
 			}
 
-		}
-
-		else if (canHaveMixed(node, property)) {
+		} else if (canHaveMixed(node, property)) {
 
 			ret = getCollectionForProperty(property);
 
@@ -241,9 +291,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				retCollection.add(new GraphNodeWrapper(r.getEndNode().getId()
 						.toString(), m));
 
-		}
-
-		else if (canHaveAttr(node, property)) {
+		} else if (canHaveAttr(node, property)) {
 
 			if (node.getProperty(property) != null) {
 				// FIXMEdone handle collections / ordered etc
@@ -267,9 +315,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				// throw new EolRuntimeException("unset property");
 			}
 
-		}
-
-		else if (canHaveRef(node, property)) {
+		} else if (canHaveRef(node, property)) {
 
 			GraphNodeWrapper otherNode = null;
 			Collection<GraphNodeWrapper> otherNodes = null;

@@ -15,17 +15,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.epsilon.common.util.StringProperties;
-import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.hawk.core.IModelIndexer;
-import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTransaction;
@@ -164,101 +160,6 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 		return allContents;
 	}
 
-	public Collection<Object> getAllOf(String arg0, final String typeorkind)
-			throws EolModelElementTypeNotFoundException {
-
-		try {
-
-			IGraphNode typeNode = null;
-
-			if (arg0.contains("::")) {
-
-				String ep = arg0.substring(0, arg0.indexOf("::"));
-
-				IGraphNode pack = null;
-
-				pack = metamodeldictionary.get("id", ep).getSingle();
-
-				for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
-
-					IGraphNode othernode = r.getStartNode();
-					if (othernode
-							.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
-							.equals(arg0.substring(arg0.indexOf("::") + 2))) {
-						typeNode = othernode;
-						break;
-					}
-
-				}
-
-			} else {
-
-				Iterator<IGraphNode> packs = metamodeldictionary.query("id",
-						"*").iterator();
-				LinkedList<IGraphNode> possibletypenodes = new LinkedList<IGraphNode>();
-
-				while (packs.hasNext()) {
-
-					IGraphNode pack = packs.next();
-					for (IGraphEdge n : pack.getIncomingWithType("epackage")) {
-
-						IGraphNode othernode = n.getStartNode();
-						if (othernode.getProperty(
-								IModelIndexer.IDENTIFIER_PROPERTY).equals(arg0)) {
-
-							possibletypenodes.add(othernode);
-
-						}
-					}
-				}
-
-				if (possibletypenodes.size() == 1)
-					typeNode = possibletypenodes.getFirst();
-				else if (possibletypenodes.size() > 1) {
-					// use default namespaces to limit types
-					LinkedList<String> ret = new LinkedList<>();
-					for (Iterator<IGraphNode> it = possibletypenodes.iterator(); it
-							.hasNext();) {
-						IGraphNode n = it.next();
-						String metamodel = n.getOutgoingWithType("epackage")
-								.iterator().next().getEndNode()
-								.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
-								.toString();
-						if (defaultnamespaces != null
-								&& !defaultnamespaces.contains(metamodel)) {
-							it.remove();
-						} else
-							ret.add(metamodel
-									+ "::"
-									+ n.getProperty(
-											IModelIndexer.IDENTIFIER_PROPERTY)
-											.toString());
-					}
-
-					if (possibletypenodes.size() == 1) {
-						typeNode = possibletypenodes.getFirst();
-					} else {
-						System.err.println("types found:" + ret);
-						throw new EolModelElementTypeNotFoundException(
-								this.getName(), possibletypenodes.size()
-										+ " CLASSES FOUND FOR: " + arg0
-										+ "\ntypes found:" + ret);
-					}
-				}
-
-			}
-
-			if (typeNode != null) {
-				return getAllOf(typeNode, typeorkind);
-			}
-
-			throw new EolModelElementTypeNotFoundException(this.getName(), arg0);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new EolModelElementTypeNotFoundException(this.getName(), arg0);
-		}
-	}
-
 	@Override
 	public Collection<Object> getAllOf(IGraphNode typeNode,
 			final String typeorkind) {
@@ -276,10 +177,13 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 			// System.err.println(files.iterator().next().getGraph());
 			// System.err.println(node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE).iterator().next().getEndNode().getGraph());
 
-			if (files.contains(node
-					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)
-					.iterator().next().getEndNode())) {
-				nodes.add(new GraphNodeWrapper(node.getId().toString(), this));
+			for (IGraphEdge e : node
+					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+
+				if (files.contains(e.getEndNode())) {
+					nodes.add(new GraphNodeWrapper(node.getId().toString(),
+							this));
+				}
 			}
 		}
 		return nodes;
