@@ -21,12 +21,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.DateUtils;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -45,6 +47,7 @@ import org.hawk.core.VcsRepositoryDelta;
 @SuppressWarnings("restriction")
 public class HTTPManager implements IVcsManager {
 
+	private static final String HEADER_CONTENT_LENGTH = "Content-Length";
 	private static final String HEADER_LAST_MODIFIED = "Last-Modified";
 	private static final String HEADER_NONE_MATCH = "If-None-Match";
 	private static final String HEADER_ETAG = "ETag";
@@ -70,45 +73,76 @@ public class HTTPManager implements IVcsManager {
 			 * - ETag headers are preferred, since these explicitly check for changes.
 			 * - Otherwise, Last-Modified dates are used.
 			 * - Otherwise, Content-Length is used.
+			 *
+			 * We try first a HEAD request, and if that doesn't work a GET request.
 			 */
 
-			final HttpHead request = new HttpHead(repositoryURL);
-			if (lastETag != null) {
-				request.setHeader(HEADER_ETAG, lastETag);
-				request.setHeader(HEADER_NONE_MATCH, "*");
+			final HttpHead headRequest = new HttpHead(repositoryURL);
+			decorateCurrentRevisionRequest(headRequest);
+			try (CloseableHttpResponse response = cl.execute(headRequest)) {
+				String headRevision = getRevision(response);
+				if (headRevision != null) {
+					return headRevision;
+				}
 			}
 
-			try (CloseableHttpResponse response = cl.execute(request)) {
-				if (response.getStatusLine().getStatusCode() == 304) {
-					// Not-Modified, as told by the server
-					return lastETag;
-				} else if (response.getStatusLine().getStatusCode() != 200) {
-					// Request failed for some reason (4xx, 5xx: we already
-					// handle 3xx redirects)
-					return FIRST_REV;
-				}
-
-				final Header etagHeader = response.getFirstHeader(HEADER_ETAG);
-				if (etagHeader != null) {
-					lastETag = etagHeader.getValue();
-					return lastETag;
-				}
-
-				final Header lmHeader = response.getFirstHeader(HEADER_LAST_MODIFIED);
-				if (lmHeader != null) {
-					final Date lmDate = DateUtils.parseDate(lmHeader.getValue());
-					return lmDate.getTime() + "";
-				}
-
-				final long cLength = response.getEntity().getContentLength();
-				if (cLength >= 0) {
-					return cLength + "";
+			final HttpGet getRequest = new HttpGet(repositoryURL);
+			decorateCurrentRevisionRequest(getRequest);
+			try (CloseableHttpResponse response = cl.execute(getRequest)) {
+				String getRev = getRevision(response);
+				if (getRev != null) {
+					return getRev;
 				}
 			}
 		}
 
 		// No way to detect changes - just fetch the file once
 		return "1";
+	}
+
+	protected void decorateCurrentRevisionRequest(final HttpRequestBase request) {
+		if (lastETag != null) {
+			request.setHeader(HEADER_ETAG, lastETag);
+			request.setHeader(HEADER_NONE_MATCH, "*");
+		}
+	}
+
+	protected String getRevision(CloseableHttpResponse response) {
+		if (response.getStatusLine().getStatusCode() == 304) {
+			// Not-Modified, as told by the server
+			return lastETag;
+		} else if (response.getStatusLine().getStatusCode() != 200) {
+			// Request failed for some reason (4xx, 5xx: we already
+			// handle 3xx redirects)
+			return FIRST_REV;
+		}
+
+		final Header etagHeader = response.getFirstHeader(HEADER_ETAG);
+		if (etagHeader != null) {
+			lastETag = etagHeader.getValue();
+			return lastETag;
+		}
+
+		final Header lmHeader = response.getFirstHeader(HEADER_LAST_MODIFIED);
+		if (lmHeader != null) {
+			final Date lmDate = DateUtils.parseDate(lmHeader.getValue());
+			return lmDate.getTime() + "";
+		}
+
+		final Header clHeader = response.getFirstHeader(HEADER_CONTENT_LENGTH);
+		if (clHeader != null) {
+			return clHeader.getValue();
+		}
+
+		final HttpEntity entity = response.getEntity();
+		if (entity != null) {
+			final long cLength = entity.getContentLength();
+			if (cLength >= 0) {
+				return cLength + "";
+			}
+		}
+
+		return null;
 	}
 
 	private CloseableHttpClient createClient() {
