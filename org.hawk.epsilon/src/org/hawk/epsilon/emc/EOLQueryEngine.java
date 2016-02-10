@@ -630,50 +630,19 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 	@Override
 	public boolean owns(Object arg0) {
-
-		// System.out.println("OWNS CALLED: " + arg0);
-		boolean ret = true;
-
-		if (arg0 == null)
-			return false;
-
-		if (arg0 instanceof Collection<?>) {
-			return false;
-			// for (Object o : ((Collection<?>) arg0)) {
-			// if (!(o instanceof GraphNodeWrapper)) {
-			// System.err.println("non-neo: " + o.getClass());
-			// return false;
-			// } else
-			// ret = ret
-			// && ((GraphNodeWrapper) o).getContainerModel() == null
-			// || ((GraphNodeWrapper) o).getContainerModel()
-			// .equals(this);
-			// }
-		} else {
-
-			if (!(arg0 instanceof GraphNodeWrapper)) {
-				// System.err.println("non-neo: " + arg0.getClass());
-				return false;
+		if (arg0 instanceof GraphNodeWrapper) {
+			final GraphNodeWrapper gnw = (GraphNodeWrapper) arg0;
+			if (gnw.getContainerModel() == null || gnw.getContainerModel() == this) {
+				return true;
 			} else {
-				// System.out.println(((GraphNodeWrapper)arg0).tostring());
-				// System.out.println(((GraphNodeWrapper)arg0).getInfo());
-				// System.err.println(((GraphNodeWrapper)
-				// arg0).getContainerModel());
-				// System.err.println(this);
-				ret = ((GraphNodeWrapper) arg0).getContainerModel() == null
-						|| ((GraphNodeWrapper) arg0).getContainerModel()
-								.equals(this);
+				System.err.println("warning owns failed on : " + arg0
+						+ "\nwith getContainerModel() : "
+						+ gnw.getContainerModel()
+						+ "\nand 'this' : " + this);
 			}
-
 		}
 
-		if (ret == false)
-			System.err.println("warning owns failed on : " + arg0
-					+ "\nwith getContainerModel() : "
-					+ ((GraphNodeWrapper) arg0).getContainerModel()
-					+ "\nand 'this' : " + this);
-
-		return ret;
+		return false;
 	}
 
 	public boolean isOf(Object instance, String metaClass,

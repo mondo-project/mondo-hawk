@@ -34,9 +34,9 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 	// couple of elements into an indexed result of millions
 
 	protected EOLQueryEngine model;
-	IEolContext context;
-	boolean returnOnFirstMatch;
-	Variable iterator;
+	private IEolContext context;
+	private boolean returnOnFirstMatch;
+	private Variable iterator;
 
 	IGraphNode metaclass;
 	IGraphDatabase graph = null;

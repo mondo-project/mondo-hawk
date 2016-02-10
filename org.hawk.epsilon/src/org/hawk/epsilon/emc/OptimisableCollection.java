@@ -23,7 +23,7 @@ public class OptimisableCollection extends HashSet<Object> implements
 	protected EOLQueryEngine model;
 	protected GraphNodeWrapper type = null;
 
-	protected static OptimisableCollectionSelectOperation indexedAttributeListSelectOperation = new OptimisableCollectionSelectOperation();
+	protected OptimisableCollectionSelectOperation indexedAttributeListSelectOperation = new OptimisableCollectionSelectOperation();
 
 	/**
 	 * 
