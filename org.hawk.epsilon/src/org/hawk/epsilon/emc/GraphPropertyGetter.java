@@ -155,33 +155,11 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 			String property2 = property.substring(10);
 
-			boolean ismany = isMany(property2);
-
 			for (IGraphEdge r : node.getIncomingWithType(property2)) {
-
-				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
-					ret = new GraphNodeWrapper(r.getStartNode().getId()
-							.toString(), m);
-					break;
-				} else {
-					System.err.println("warning: " + r.getType()
-							+ " : not containment");
-					if (!ismany) {
-						if (ret == null)
-							ret = new GraphNodeWrapper(r.getStartNode().getId()
-									.toString(), m);
-						else
-							throw new EolRuntimeException(
-									"A relationship with arity 1 ( " + property
-											+ " ) has more than 1 links");
-					} else {
-						if (ret == null)
-							ret = new EolBag<GraphNodeWrapper>();
-						((EolBag<GraphNodeWrapper>) ret)
-								.add(new GraphNodeWrapper(r.getStartNode()
-										.getId().toString(), m));
-					}
-				}
+				if (ret == null)
+					ret = new EolBag<GraphNodeWrapper>();
+				((EolBag<GraphNodeWrapper>) ret).add(new GraphNodeWrapper(r
+						.getStartNode().getId().toString(), m));
 			}
 
 			if (ret == null) {

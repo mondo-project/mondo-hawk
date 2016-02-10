@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -124,33 +123,12 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 
 			String property2 = property.substring(10);
 
-			boolean ismany = isMany(property2);
-
 			for (IGraphEdge r : node.getIncomingWithType(property2)) {
-
-				IGraphNode n = r.getStartNode();
-
-				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
-					ret = addIfInScope(n);
-					break;
-				} else {
-					System.err.println("warning: " + r.getType()
-							+ " : not containment");
-					if (!ismany) {
-						if (ret == null)
-							ret = addIfInScope(n);
-						else
-							throw new EolRuntimeException(
-									"A relationship with arity 1 ( " + property
-											+ " ) has more than 1 links");
-					} else {
-						if (ret == null)
-							ret = new EolBag<GraphNodeWrapper>();
-						GraphNodeWrapper o = addIfInScope(n);
-						if (o != null)
-							((EolBag<GraphNodeWrapper>) ret)
-									.add((GraphNodeWrapper) o);
-					}
+				GraphNodeWrapper n = addIfInScope(r.getStartNode());
+				if (n != null) {
+					if (ret == null)
+						ret = new EolBag<GraphNodeWrapper>();
+					((EolBag<GraphNodeWrapper>) ret).add(n);
 				}
 			}
 
