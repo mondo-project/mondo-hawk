@@ -331,10 +331,13 @@ public class ModelIndexerImpl implements IModelIndexer {
 														+ file
 														+ ", ignoring changes");
 											} else {
-												r = getModelParserFromFilename(
-														file.getName()
-																.toLowerCase())
-														.parse(file);
+
+												IModelResourceFactory mrf = getModelParserFromFilename(file
+														.getName()
+														.toLowerCase());
+												if (mrf.canParse(file))
+													r = mrf.parse(file);
+
 											}
 
 										}

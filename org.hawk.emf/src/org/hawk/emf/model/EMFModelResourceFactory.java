@@ -53,7 +53,8 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 		modelExtensions.add(".xmi");
 		modelExtensions.add(".model");
 
-		final String sExtraExtensions = System.getProperty(PROPERTY_EXTRA_EXTENSIONS);
+		final String sExtraExtensions = System
+				.getProperty(PROPERTY_EXTRA_EXTENSIONS);
 		if (sExtraExtensions != null) {
 			String[] extraExtensions = sExtraExtensions.split(",");
 			for (String extraExtension : extraExtensions) {
@@ -86,8 +87,8 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 		try {
 			ResourceSet resourceSet = new ResourceSetImpl();
 
-			final Map<String, Object> extensionToFactoryMap = resourceSet.getResourceFactoryRegistry()
-					.getExtensionToFactoryMap();
+			final Map<String, Object> extensionToFactoryMap = resourceSet
+					.getResourceFactoryRegistry().getExtensionToFactoryMap();
 			for (String ext : modelExtensions) {
 				if (ext.startsWith(".")) {
 					// Remove the initial period (if any)
@@ -96,13 +97,14 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 				extensionToFactoryMap.put(ext, new XMIResourceFactoryImpl());
 			}
 
-			r = resourceSet.createResource(URI.createFileURI(f.getAbsolutePath()));
+			r = resourceSet.createResource(URI.createFileURI(f
+					.getAbsolutePath()));
 			r.load(null);
 			ret = new EMFModelResource(r, this);
 		} catch (Exception e) {
 			System.err.print("error in parse(File f): ");
 			System.err.println(e.getCause());
-			//e.printStackTrace();
+			// e.printStackTrace();
 			ret = null;
 		}
 
@@ -123,6 +125,6 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 	public boolean canParse(File f) {
 		String[] split = f.getPath().split("\\.");
 		String extension = split[split.length - 1];
-		return getModelExtensions().contains(extension);
+		return getModelExtensions().contains("." + extension);
 	}
 }

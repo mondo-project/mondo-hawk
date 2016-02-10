@@ -113,12 +113,9 @@ public class BPMNModelResourceFactory implements IModelResourceFactory {
 
 	@Override
 	public boolean canParse(File f) {
-
 		String[] split = f.getPath().split("\\.");
 		String extension = split[split.length - 1];
-
-		return getModelExtensions().contains(extension);
-
+		return getModelExtensions().contains("." + extension);
 	}
 
 }
