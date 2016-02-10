@@ -74,7 +74,7 @@ public class ManifestPackageInstanceObject extends ManifestObject {
 		String name = attr.getName();
 		switch (name) {
 		case "version":
-			return version != null;
+			return version;
 		default:
 			return null;
 		}

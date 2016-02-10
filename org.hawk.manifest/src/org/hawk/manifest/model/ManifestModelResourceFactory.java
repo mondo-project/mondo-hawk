@@ -72,8 +72,7 @@ public class ManifestModelResourceFactory implements IModelResourceFactory {
 	public boolean canParse(File f) {
 
 		Map<String, String> map = getManifestContents(f);
-
-		return map != null && map.containsKey(Constants.BUNDLE_SYMBOLICNAME);
+		return map != null && map.get(Constants.BUNDLE_SYMBOLICNAME) != null;
 
 	}
 

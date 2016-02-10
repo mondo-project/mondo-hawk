@@ -58,7 +58,7 @@ public class ManifestPackageObject extends ManifestObject {
 		String name = hsf.getName();
 		switch (name) {
 		case "name":
-			return name != null;
+			return this.name != null;
 		default:
 			return false;
 		}
@@ -69,7 +69,7 @@ public class ManifestPackageObject extends ManifestObject {
 		String name = attr.getName();
 		switch (name) {
 		case "name":
-			return name != null;
+			return this.name;
 		default:
 			return null;
 		}

@@ -116,7 +116,7 @@ public class ManifestModelResource implements IHawkModelResource {
 					this);
 			allContents.add(rBundle);
 			ManifestRequiresObject req = new ManifestRequiresObject(
-					o.getVersion(), this, rBundle);
+					o.getAttribute("version"), this, rBundle);
 			allContents.add(req);
 			bundleInstance.addRequires(req);
 		}
@@ -125,8 +125,8 @@ public class ManifestModelResource implements IHawkModelResource {
 			ManifestPackageObject iPackage = new ManifestPackageObject(
 					o.getName(), this);
 			allContents.add(iPackage);
-			ManifestImportObject imp = new ManifestImportObject(o.getVersion(),
-					this, iPackage);
+			ManifestImportObject imp = new ManifestImportObject(
+					o.getAttribute("version"), this, iPackage);
 			allContents.add(imp);
 			bundleInstance.addImport(imp);
 		}
@@ -136,7 +136,7 @@ public class ManifestModelResource implements IHawkModelResource {
 					o.getName(), this);
 			allContents.add(ePackage);
 			ManifestPackageInstanceObject pe = new ManifestPackageInstanceObject(
-					o.getVersion(), this, ePackage);
+					o.getAttribute("version"), this, ePackage);
 			allContents.add(pe);
 			bundleInstance.addExport(pe);
 		}
