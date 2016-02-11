@@ -48,6 +48,7 @@ import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.query.IQueryEngine;
+import org.hawk.core.query.QueryExecutionException;
 import org.hawk.core.util.FileOperations;
 import org.hawk.core.util.HawkProperties;
 
@@ -1199,5 +1200,17 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		return removed;
 
+	}
+
+	@Override
+	public void waitFor(HawkState targetState) throws InterruptedException {
+		synchronized (stateListener) {
+			for (HawkState s = stateListener.getCurrentState(); s != targetState; s = stateListener.getCurrentState()) {
+				if (s == HawkState.STOPPED) {
+					throw new IllegalStateException("The selected Hawk is stopped");
+				}
+				stateListener.wait();
+			}
+		}
 	}
 }

@@ -774,12 +774,12 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			Map<String, String> context) throws InvalidQueryException,
 			QueryExecutionException {
 
-		HawkState s = m.getCompositeStateListener().getCurrentState();
-
-		if (!s.equals(HawkState.RUNNING))
-			throw new QueryExecutionException(
-					"The selected Hawk cannot be currently queried (state=" + s
-							+ ")");
+		// Wait until the model indexer is available
+		try {
+			m.waitFor(HawkState.RUNNING);
+		} catch (InterruptedException e) {
+			throw new QueryExecutionException(e);
+		}
 
 		if (context == null)
 			return contextlessQuery(m, query, context);

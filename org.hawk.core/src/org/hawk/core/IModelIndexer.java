@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
@@ -130,6 +131,18 @@ public interface IModelIndexer {
 	boolean removeStateListener(IStateListener stateListener);
 
 	CompositeStateListener getCompositeStateListener();
+
+	/**
+	 * On a running Hawk, blocks the current thread until the state of Hawk
+	 * changes to the target state.
+	 *
+	 * @throws InterruptedException
+	 *             The wait was interrupted.
+	 *
+	 * @throws IllegalStateException
+	 *             if the Hawk instance is not running altogether.
+	 */
+	void waitFor(HawkState targetState) throws InterruptedException;
 
 	void setDB(IGraphDatabase db, boolean persist);
 

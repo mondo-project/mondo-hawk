@@ -62,6 +62,9 @@ public class CompositeStateListener extends LinkedHashSet<IStateListener>
 		for (IStateListener l : this) {
 			l.state(state);
 		}
+		synchronized(this) {
+			this.notifyAll();
+		}
 	}
 
 	public HawkState getCurrentState() {
