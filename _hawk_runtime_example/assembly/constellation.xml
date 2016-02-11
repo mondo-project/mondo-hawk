@@ -21,5 +21,13 @@
       </excludes>
       <useTransitiveFiltering>true</useTransitiveFiltering>
     </dependencySet>
+    <dependencySet>
+      <!-- Shared by Neo4j and OrientDB: since we use transitive
+           filtering for the most part, we need to include it
+           explicitly here. -->
+      <includes>
+        <include>com.googlecode.concurrentlinkedhashmap:*</include>
+      </includes>
+    </dependencySet>
   </dependencySets>
 </assembly>
