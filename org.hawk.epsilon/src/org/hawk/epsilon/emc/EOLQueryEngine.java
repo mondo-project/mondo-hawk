@@ -823,14 +823,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		if (context != null)
 			defaultnamespaces = context.get(PROPERTY_DEFAULTNAMESPACES);
 
-		EOLQueryEngine q;
-		if (defaultnamespaces != null)
-			// some options so use new engine to pass them
-			q = new EOLQueryEngine();
-		else
-			// no options so use default engine
-			q = this;
-
+		/*
+		 * Always create a new engine for every query (reusing the same engine
+		 * would not be thread-safe).
+		 */
+		final EOLQueryEngine q = new EOLQueryEngine();
 		try {
 			q.load(m);
 			q.setDefaultNamespaces(defaultnamespaces);
