@@ -1,0 +1,46 @@
+/*******************************************************************************
+ * Copyright (c) 2011-2014 The University of York.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Konstantinos Barmpis - initial API and implementation
+ ******************************************************************************/
+package org.hawk.manifest.utils;
+
+public class Utils {
+
+	public String generateVersionRangeIdentifier(String minVersion,
+			String maxVersion, Boolean isMinVersionInclusive,
+			Boolean isMaxVersionInclusive) {
+
+		if (minVersion == null)
+			return "null";
+
+		String ret = "";
+
+		if (isMinVersionInclusive)
+			ret = ret + "[";
+		else
+			ret = ret + "(";
+
+		ret = ret + minVersion;
+
+		if (maxVersion != null) {
+
+			ret = ret + "," + maxVersion;
+
+			if (isMaxVersionInclusive)
+				ret = ret + "]";
+			else
+				ret = ret + ")";
+
+		}
+
+		return ret;
+
+	}
+
+}

@@ -22,12 +22,19 @@ public class ManifestImport extends ManifestClass implements IHawkClass {
 
 	final static String CLASSNAME = "ManifestImport";
 
-	private IHawkAttribute version;
+	private IHawkAttribute minVersion;
+	private IHawkAttribute maxVersion;
+	private IHawkAttribute isMinVersionInclusive;
+	private IHawkAttribute isMaxVersionInclusive;
+
 	private HashSet<IHawkReference> references;
 
 	public ManifestImport(ManifestMetamodel p) {
 		ep = p;
-		version = new ManifestAttribute("version");
+		minVersion = new ManifestAttribute("minVersion");
+		maxVersion = new ManifestAttribute("maxVersion");
+		isMinVersionInclusive = new ManifestAttribute("isMinVersionInclusive");
+		isMaxVersionInclusive = new ManifestAttribute("isMaxVersionInclusive");
 		references = new HashSet<>();
 		references.add(new ManifestReference("package", false,
 				new ManifestPackage(p)));
@@ -61,7 +68,10 @@ public class ManifestImport extends ManifestClass implements IHawkClass {
 	@Override
 	public Set<IHawkAttribute> getAllAttributes() {
 		Set<IHawkAttribute> ret = new HashSet<>();
-		ret.add(version);
+		ret.add(minVersion);
+		ret.add(maxVersion);
+		ret.add(isMinVersionInclusive);
+		ret.add(isMaxVersionInclusive);
 		return ret;
 	}
 
@@ -77,8 +87,14 @@ public class ManifestImport extends ManifestClass implements IHawkClass {
 
 	@Override
 	public IHawkStructuralFeature getStructuralFeature(String name) {
-		if (name.equals("version"))
-			return version;
+		if (name.equals("minVersion"))
+			return minVersion;
+		if (name.equals("maxVersion"))
+			return maxVersion;
+		if (name.equals("isMinVersionInclusive"))
+			return isMinVersionInclusive;
+		if (name.equals("isMaxVersionInclusive"))
+			return isMaxVersionInclusive;
 		return null;
 	}
 

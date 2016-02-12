@@ -10,28 +10,42 @@
  ******************************************************************************/
 package org.hawk.manifest;
 
+import java.util.Arrays;
+
 import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
 import org.hawk.manifest.model.ManifestModelResource;
+import org.hawk.manifest.utils.Utils;
 
 public class ManifestImportObject extends ManifestObject {
 
-	String version;
+	String minVersion = null;
+	String maxVersion = null;
+	Boolean isMinVersionInclusive = null;
+	Boolean isMaxVersionInclusive = null;
+
 	ManifestPackageObject p;
 
-	public ManifestImportObject(String version,
-			ManifestModelResource manifestModelResource, ManifestPackageObject p) {
+	public ManifestImportObject(String[] versionRange,
+			ManifestModelResource manifestModelResource, ManifestPackageObject p)
+			throws Exception {
 
 		this.res = manifestModelResource;
-		this.version = version;
+
+		parseVersionRange(versionRange);
+
 		this.p = p;
 	}
 
 	@Override
 	public String getUri() {
-		return p.getUri() + ": " + version;
+		return p.getUri()
+				+ ": "
+				+ new Utils().generateVersionRangeIdentifier(minVersion,
+						maxVersion, isMinVersionInclusive,
+						isMaxVersionInclusive);
 	}
 
 	@Override
@@ -41,7 +55,11 @@ public class ManifestImportObject extends ManifestObject {
 
 	@Override
 	public String getUriFragment() {
-		return p.getUriFragment() + ": " + version;
+		return p.getUriFragment()
+				+ ": "
+				+ new Utils().generateVersionRangeIdentifier(minVersion,
+						maxVersion, isMinVersionInclusive,
+						isMaxVersionInclusive);
 	}
 
 	@Override
@@ -60,8 +78,14 @@ public class ManifestImportObject extends ManifestObject {
 		switch (name) {
 		case "package":
 			return p != null;
-		case "version":
-			return version != null;
+		case "minVersion":
+			return minVersion != null;
+		case "maxVersion":
+			return maxVersion != null;
+		case "isMinVersionInclusive":
+			return isMinVersionInclusive != null;
+		case "isMaxVersionInclusive":
+			return isMaxVersionInclusive != null;
 		default:
 			return false;
 		}
@@ -71,8 +95,14 @@ public class ManifestImportObject extends ManifestObject {
 	public Object get(IHawkAttribute attr) {
 		String name = attr.getName();
 		switch (name) {
-		case "version":
-			return version;
+		case "minVersion":
+			return minVersion;
+		case "maxVersion":
+			return maxVersion;
+		case "isMinVersionInclusive":
+			return isMinVersionInclusive;
+		case "isMaxVersionInclusive":
+			return isMaxVersionInclusive;
 		default:
 			return null;
 		}
@@ -87,6 +117,58 @@ public class ManifestImportObject extends ManifestObject {
 		default:
 			return null;
 		}
+	}
+
+	private void parseVersionRange(String[] versionRange) throws Exception {
+
+		if (versionRange == null)
+			return;
+
+		else if (versionRange.length == 1 || versionRange.length == 2) {
+
+			String min = versionRange[0];
+
+			if (min.startsWith("[")) {
+				minVersion = min.substring(1);
+				isMinVersionInclusive = true;
+			}
+
+			else if (min.startsWith("(")) {
+				minVersion = min.substring(1);
+				isMinVersionInclusive = false;
+			}
+
+			else {
+				minVersion = min;
+				isMinVersionInclusive = true;
+			}
+
+			if (versionRange.length == 2) {
+
+				String max = versionRange[1];
+
+				if (max.endsWith("]")) {
+					maxVersion = max.substring(0, max.length() - 1);
+					isMaxVersionInclusive = true;
+				}
+
+				else if (max.endsWith(")")) {
+					maxVersion = max.substring(0, max.length() - 1);
+					isMaxVersionInclusive = false;
+				}
+
+				else {
+					maxVersion = max;
+					isMaxVersionInclusive = true;
+				}
+
+			}
+
+		}
+
+		else
+			throw new Exception("invalid version range:"
+					+ Arrays.toString(versionRange));
 	}
 
 }

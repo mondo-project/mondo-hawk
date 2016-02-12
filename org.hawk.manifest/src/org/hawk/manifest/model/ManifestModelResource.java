@@ -56,7 +56,7 @@ public class ManifestModelResource implements IHawkModelResource {
 	}
 
 	public ManifestModelResource(String uri, IModelResourceFactory parser,
-			Map<String, String> map) {
+			Map<String, String> map) throws Exception {
 		this.uri = uri;
 		this.parser = parser;
 
@@ -116,7 +116,7 @@ public class ManifestModelResource implements IHawkModelResource {
 					this);
 			allContents.add(rBundle);
 			ManifestRequiresObject req = new ManifestRequiresObject(
-					o.getAttribute("version"), this, rBundle);
+					o.getAttributes("version"), this, rBundle);
 			allContents.add(req);
 			bundleInstance.addRequires(req);
 		}
@@ -126,7 +126,7 @@ public class ManifestModelResource implements IHawkModelResource {
 					o.getName(), this);
 			allContents.add(iPackage);
 			ManifestImportObject imp = new ManifestImportObject(
-					o.getAttribute("version"), this, iPackage);
+					o.getAttributes("version"), this, iPackage);
 			allContents.add(imp);
 			bundleInstance.addImport(imp);
 		}
