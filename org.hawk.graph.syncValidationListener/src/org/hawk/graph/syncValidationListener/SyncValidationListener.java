@@ -103,6 +103,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 
 		totalErrors = 0;
 		int malformed = 0;
+		int singletonCount = 0;
 
 		int totalResourceSizes = 0;
 		int totalGraphSize = 0;
@@ -168,27 +169,43 @@ public class SyncValidationListener implements IGraphChangeListener {
 							IHawkObject old = eobjectCache.put(
 									content.getUriFragment(), content);
 							if (old != null) {
-								System.err.println("warning (" + c.getPath()
-										+ ") eobjectCache replaced:");
-								System.err.println(old.getUri() + " | "
-										+ old.getUriFragment() + " | ofType: "
-										+ old.getType().getName());
-								System.err.println("with:");
-								System.err.println(content.getUri() + " | "
-										+ content.getUriFragment()
-										+ " | ofType: "
-										+ content.getType().getName());
-								if (malformedObjectCache.add(old.getUri()))
-									malformed++;
-								System.err
-										.println("WARNING: MALFORMED MODEL RESOURCE (multiple identical identifiers for:\n"
-												+ old.getUri()
-												+ "),\nexpect "
-												+ malformed
-												+ " errors in validation.");
 
-							} else
-								totalResourceSizes++;
+								if (!singletonIndexIsEmpty
+										&& singletonIndex
+												.get("id",
+														content.getUriFragment())
+												.iterator().hasNext())
+									singletonCount++;
+
+								else {
+
+									System.err.println("warning ("
+											+ c.getPath()
+											+ ") eobjectCache replaced:");
+									System.err.println(old.getUri() + " | "
+											+ old.getUriFragment()
+											+ " | ofType: "
+											+ old.getType().getName());
+									System.err.println("with:");
+									System.err.println(content.getUri() + " | "
+											+ content.getUriFragment()
+											+ " | ofType: "
+											+ content.getType().getName());
+
+									malformedObjectCache.add(old.getUri());
+									malformed++;
+
+									System.err
+											.println("WARNING: MALFORMED MODEL RESOURCE (multiple identical identifiers for:\n"
+													+ old.getUri()
+													+ "),\nexpect "
+													+ malformed
+													+ " objects in validation.");
+
+								}
+							}
+
+							totalResourceSizes++;
 						}
 
 						// go through all nodes in graph from the file the
@@ -556,15 +573,19 @@ public class SyncValidationListener implements IGraphChangeListener {
 
 		System.err.println("changed resource size: " + totalResourceSizes);
 
-		System.err.println("relevant graph size: " + totalGraphSize);
+		System.err
+				.println("relevant graph size: "
+						+ totalGraphSize
+						+ (singletonCount > 0 ? (" + singleton count: " + singletonCount)
+								: ""));
 
-		if (totalGraphSize != totalResourceSizes)
+		if (totalGraphSize + singletonCount != totalResourceSizes)
 			totalErrors++;
 
 		System.err
 				.println("validated changes... "
 						+ (totalErrors == 0 ? "true"
-								: ((totalErrors <= malformed) + " (with "
+								: ((totalErrors == malformed) + " (with "
 										+ totalErrors + " total and "
 										+ malformed + " malformed errors)"))
 						+ (removedProxies == 0 ? "" : " [" + removedProxies
