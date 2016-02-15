@@ -43,6 +43,14 @@ public class HawkModel extends ModelReference {
 			throws EolModelLoadingException {
 
 		this.name = properties.getProperty(Model.PROPERTY_NAME);
+		String aliasString = properties.getProperty(Model.PROPERTY_ALIASES);
+		boolean aliasStringIsValid = aliasString != null
+				&& aliasString.trim().length() > 0;
+		String[] aliasArray = aliasStringIsValid ? aliasString.split(",")
+				: new String[0];
+		for (int i = 0; i < aliasArray.length; i++) {
+			this.aliases.add(aliasArray[i].trim());
+		}
 
 		EOLQueryEngine eolQueryEngine;
 
@@ -67,11 +75,6 @@ public class HawkModel extends ModelReference {
 
 		target = eolQueryEngine;
 		eolQueryEngine.setDatabaseConfig(properties);
-
-		String[] aliases = properties.getProperty("aliases").split(",");
-		for (int i = 0; i < aliases.length; i++) {
-			this.aliases.add(aliases[i].trim());
-		}
 
 		HUIManager m = HUIManager.getInstance();
 
