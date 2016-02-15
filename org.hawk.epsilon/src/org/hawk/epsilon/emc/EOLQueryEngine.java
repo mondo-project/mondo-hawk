@@ -420,14 +420,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 								.getIncomingWithType("epackage")) {
 
 							IGraphNode othernode = n.getStartNode();
-							if (othernode == null) {
-								System.err.println("WARNING: null source node!");
-							}
 							final Object id = othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
-							if (id == null) {
-								System.err.println("WARNING: null identifier in source!");
-							}
-							else if (id.equals(type)) {
+							if (id.equals(type)) {
 								possibletypenodes.add(othernode);
 							}
 						}
@@ -791,7 +785,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			return contextlessQuery(m, query, context);
 		else
 			// scoped
-			return contextfullQuery(m, query, context);
+			return contextfulQuery(m, query, context);
 	}
 
 	@Override
@@ -879,7 +873,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 	}
 
-	private Object contextfullQuery(IModelIndexer m, String query,
+	private Object contextfulQuery(IModelIndexer m, String query,
 			Map<String, String> context) throws QueryExecutionException,
 			InvalidQueryException {
 
@@ -905,14 +899,12 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		// context.get(EOLQueryEngine.PROPERTY_ENABLE_CASHING);
 		// enableCache = ec == null ? true :
 		// ec.equalsIgnoreCase("true");
-
 		try {
 			q.load(m);
 		} catch (EolModelLoadingException e) {
-			throw new QueryExecutionException(
-					"Loading of EOLQueryEngine failed");
+			throw new QueryExecutionException("Loading of EOLQueryEngine failed");
 		}
-		q.load(context);
+		q.setContext(context);
 		System.out.println("Graph path: " + graph.getPath() + "\n----------");
 
 		module.getContext().getModelRepository().addModel(q);

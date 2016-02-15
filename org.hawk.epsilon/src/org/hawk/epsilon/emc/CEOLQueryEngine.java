@@ -66,18 +66,9 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 			throw new EolModelLoadingException(new Exception(
 					"Attempt to load a model from an invalid graph: " + graph),
 					this);
-
-		load(config);
 	}
 
-	public void load(StringProperties config) {
-		Map<String, String> m = new HashMap<String, String>();
-		for (Object s : config.keySet())
-			m.put(((String) (s)), config.getProperty((String) (s)));
-		load(m);
-	}
-
-	public void load(Map<String, String> context) {
+	public void setContext(Map<String, String> context) {
 
 		final GraphWrapper gw = new GraphWrapper(graph);
 		String sFilePatterns = null;
@@ -131,8 +122,6 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 			// defaults to true
 			// String ec = context.get(EOLQueryEngine.PROPERTY_ENABLE_CASHING);
 			// enableCache = ec == null ? true : ec.equalsIgnoreCase("true");
-
-			metamodeldictionary = graph.getMetamodelIndex();
 			tx.success();
 		} catch (Exception e) {
 			e.printStackTrace();
