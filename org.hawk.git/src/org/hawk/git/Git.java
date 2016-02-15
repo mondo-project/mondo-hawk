@@ -41,6 +41,8 @@ import org.hawk.core.util.FileOperations;
 
 public class Git implements IVcsManager {
 
+	private static final String FIRST_REV = "0";
+
 	private final class LastModifiedFileVisitor implements FileVisitor<Path> {
 
 		public boolean hasChanged = false;
@@ -68,9 +70,8 @@ public class Git implements IVcsManager {
 		public FileVisitResult preVisitDirectory(Path dir,
 				BasicFileAttributes attrs) throws IOException {
 			// skip .git folder to avoid overhead
-			if (dir.endsWith(GITMETADATAFOLDERNAME)) {
-				System.err
-						.println("Git monitor (preVisitDirectory): skipping .git folder");
+			if (dir.getFileName().equals(GITMETADATAFOLDERNAME)) {
+				// System.err.println("Git monitor (preVisitDirectory): skipping .git folder");
 				return FileVisitResult.SKIP_SUBTREE;
 			}
 			return FileVisitResult.CONTINUE;
@@ -121,14 +122,13 @@ public class Git implements IVcsManager {
 		try {
 			path = Paths.get(new URI(vcsloc));
 		} catch (URISyntaxException | IllegalArgumentException ex) {
+			ex.printStackTrace();
 			path = Paths.get(vcsloc);
 		}
 
 		rootLocation = path.toFile().getCanonicalFile().toPath();
 		String repositoryURI = rootLocation.toUri().toString();
-		if (!repositoryURI.endsWith("/")) {
-			repositoryURI += "/";
-		}
+
 		repositoryURL = repositoryURI;
 		// dont decode it to ensure consistency with other managers
 		// URLDecoder.decode(repositoryURI.replace("+", "%2B"), "UTF-8");
@@ -152,7 +152,7 @@ public class Git implements IVcsManager {
 			return ret + "";
 		} catch (IOException ex) {
 			ex.printStackTrace();
-			return "0";
+			return FIRST_REV;
 		}
 	}
 
@@ -207,7 +207,7 @@ public class Git implements IVcsManager {
 
 	@Override
 	public String getFirstRevision() throws Exception {
-		return "0";
+		return FIRST_REV;
 	}
 
 	@Override
@@ -241,7 +241,8 @@ public class Git implements IVcsManager {
 			// dont decode it to ensure consistency with other managers
 			// URLDecoder.decode(
 					f.toPath().toUri().toString()
-			// .replace("+", "%2B"), "UTF-8")
+			// .replace("+", "%2B"),
+			// "UTF-8")
 			);
 
 			c.setPath(relativepath.startsWith("/") ? relativepath : "/"
@@ -286,8 +287,8 @@ public class Git implements IVcsManager {
 				// .replace("+", "%2B"), "UTF-8")
 				);
 
-				c.setPath(relativepath.startsWith("/") ? relativepath : "/"
-						+ relativepath);
+				c.setPath(relativepath.startsWith("/") ? relativepath
+						: ("/" + relativepath));
 
 				// c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 				commit.getItems().add(c);
@@ -315,9 +316,8 @@ public class Git implements IVcsManager {
 
 	private void addAllFiles(File dir, Set<File> ret) {
 		// skip .git folder to avoid overhead
-		if (dir.getPath().endsWith(GITMETADATAFOLDERNAME)) {
-			System.err
-					.println("Git monitor (addAllFiles): skipping .git folder");
+		if (dir.getName().equals(GITMETADATAFOLDERNAME)) {
+			// System.err.println("Git monitor (addAllFiles): skipping .git folder");
 			return;
 		}
 		File[] files = dir.listFiles();
@@ -336,8 +336,8 @@ public class Git implements IVcsManager {
 	}
 
 	@Override
-	public List<VcsCommitItem> getDelta(String string) throws Exception {
-		return getDelta(repositoryURL, string).getCompactedCommitItems();
+	public List<VcsCommitItem> getDelta(String endRevision) throws Exception {
+		return getDelta(FIRST_REV, endRevision).getCompactedCommitItems();
 	}
 
 	@Override
