@@ -13,15 +13,11 @@ package org.hawk.epsilon.emc;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.epsilon.common.util.StringProperties;
-import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
-import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTransaction;
@@ -33,40 +29,6 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 
 	Set<IGraphNode> files = null;
 	protected boolean enableTraversalScoping = true;
-
-	@Override
-	public void load(IModelIndexer m) throws EolModelLoadingException {
-
-		if (config == null)
-			config = getDatabaseConfig();
-
-		if (m != null
-		// && graph == null
-		) {
-			indexer = m;
-			graph = m.getGraph();
-			;
-		}
-
-		if (propertygetter == null || propertygetter.getGraph() != graph)
-			propertygetter = new CGraphPropertyGetter(graph, this);
-
-		name = (String) config.get(EOLQueryEngine.PROPERTY_NAME);
-
-		if (graph != null) {
-
-			try (IGraphTransaction tx = graph.beginTransaction()) {
-				metamodeldictionary = graph.getMetamodelIndex();
-				tx.success();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-		} else
-			throw new EolModelLoadingException(new Exception(
-					"Attempt to load a model from an invalid graph: " + graph),
-					this);
-	}
 
 	public void setContext(Map<String, String> context) {
 

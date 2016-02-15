@@ -34,6 +34,7 @@ import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertyGetter;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertySetter;
+import org.eclipse.epsilon.eol.models.Model;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.graph.IGraphDatabase;
@@ -343,7 +344,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		IGraphNode fileNode = null;
 
 		try {
-			IGraphNode objectNode = graph.getNodeById(((GraphNodeWrapper) arg0).getId());
+			IGraphNode objectNode = graph.getNodeById(((GraphNodeWrapper) arg0)
+					.getId());
 			fileNode = objectNode
 					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)
 					.iterator().next().getEndNode();
@@ -420,7 +422,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 								.getIncomingWithType("epackage")) {
 
 							IGraphNode othernode = n.getStartNode();
-							final Object id = othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
+							final Object id = othernode
+									.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
 							if (id.equals(type)) {
 								possibletypenodes.add(othernode);
 							}
@@ -510,12 +513,21 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		) {
 			indexer = m;
 			graph = m.getGraph();
+			aliases.add(m.getName());
 		}
 
 		if (propertygetter == null || propertygetter.getGraph() != graph)
 			propertygetter = new GraphPropertyGetter(graph, this);
 
 		name = (String) config.get(EOLQueryEngine.PROPERTY_NAME);
+		String aliasString = config.getProperty(Model.PROPERTY_ALIASES);
+		boolean aliasStringIsValid = aliasString != null
+				&& aliasString.trim().length() > 0;
+		String[] aliasArray = aliasStringIsValid ? aliasString.split(",")
+				: new String[0];
+		for (int i = 0; i < aliasArray.length; i++) {
+			this.aliases.add(aliasArray[i].trim());
+		}
 
 		// String ec = (String)
 		// config.get(EOLQueryEngine.PROPERTY_ENABLE_CASHING);
@@ -535,6 +547,10 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			throw new EolModelLoadingException(new Exception(
 					"Attempt to load a model from an invalid graph: " + graph),
 					this);
+
+		System.err.println("engine initialised with model named: " + name
+				+ ", with aliases: " + aliases);
+
 	}
 
 	@Override
@@ -626,13 +642,13 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 	public boolean owns(Object arg0) {
 		if (arg0 instanceof GraphNodeWrapper) {
 			final GraphNodeWrapper gnw = (GraphNodeWrapper) arg0;
-			if (gnw.getContainerModel() == null || gnw.getContainerModel() == this) {
+			if (gnw.getContainerModel() == null
+					|| gnw.getContainerModel() == this) {
 				return true;
 			} else {
 				System.err.println("warning owns failed on : " + arg0
 						+ "\nwith getContainerModel() : "
-						+ gnw.getContainerModel()
-						+ "\nand 'this' : " + this);
+						+ gnw.getContainerModel() + "\nand 'this' : " + this);
 			}
 		}
 
@@ -902,7 +918,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 		try {
 			q.load(m);
 		} catch (EolModelLoadingException e) {
-			throw new QueryExecutionException("Loading of EOLQueryEngine failed");
+			throw new QueryExecutionException(
+					"Loading of EOLQueryEngine failed");
 		}
 		q.setContext(context);
 		System.out.println("Graph path: " + graph.getPath() + "\n----------");
