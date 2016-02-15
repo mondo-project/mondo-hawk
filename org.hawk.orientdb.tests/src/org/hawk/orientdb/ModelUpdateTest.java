@@ -28,7 +28,7 @@ import org.hawk.core.security.FileBasedCredentialsStore;
 import org.hawk.core.util.DefaultConsole;
 import org.hawk.emf.metamodel.EMFMetaModelResourceFactory;
 import org.hawk.emf.model.EMFModelResourceFactory;
-import org.hawk.epsilon.emc.CEOLQueryEngine;
+import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
 import org.hawk.graph.internal.updater.GraphModelUpdater;
@@ -47,7 +47,7 @@ public class ModelUpdateTest {
 	private DefaultConsole console;
 	private OrientDatabase db;
 	private ModelIndexerImpl indexer;
-	private CEOLQueryEngine queryEngine;
+	private EOLQueryEngine queryEngine;
 	private SyncValidationListener validationListener;
 	private File modelFolder;
 	private Path modelPath;
@@ -82,7 +82,7 @@ public class ModelUpdateTest {
 		indexer.addMetaModelResourceFactory(new BPMNMetaModelResourceFactory());
 		indexer.addModelResourceFactory(new EMFModelResourceFactory());
 		indexer.addModelResourceFactory(new BPMNModelResourceFactory());
-		queryEngine = new CEOLQueryEngine();
+		queryEngine = new EOLQueryEngine();
 		indexer.addQueryEngine(queryEngine);
 		indexer.setMetaModelUpdater(new GraphMetaModelUpdater());
 		indexer.addModelUpdater(new GraphModelUpdater());

@@ -13,6 +13,7 @@ package org.hawk.orientdb;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.concurrent.Callable;
 
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
@@ -22,6 +23,7 @@ import org.hawk.core.util.DefaultConsole;
 import org.hawk.emf.metamodel.EMFMetaModelResourceFactory;
 import org.hawk.emf.model.EMFModelResourceFactory;
 import org.hawk.epsilon.emc.CEOLQueryEngine;
+import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
 import org.hawk.graph.internal.updater.GraphModelUpdater;
 import org.hawk.graph.syncValidationListener.SyncValidationListener;
@@ -40,7 +42,7 @@ public class ModelQueryTest {
 	private DefaultConsole console;
 	private OrientDatabase db;
 	private ModelIndexerImpl indexer;
-	private CEOLQueryEngine queryEngine;
+	private EOLQueryEngine queryEngine;
 	private SyncValidationListener validationListener;
 
 	public void setup(String testCaseName) throws Exception {
@@ -63,12 +65,13 @@ public class ModelQueryTest {
 				console);
 		indexer.addMetaModelResourceFactory(new EMFMetaModelResourceFactory());
 		indexer.addModelResourceFactory(new EMFModelResourceFactory());
-		queryEngine = new CEOLQueryEngine();
+		queryEngine = new EOLQueryEngine();
 		indexer.addQueryEngine(queryEngine);
 		indexer.setMetaModelUpdater(new GraphMetaModelUpdater());
 		indexer.addModelUpdater(new GraphModelUpdater());
 		indexer.setDB(db, true);
 		indexer.init(0, 0);
+		queryEngine.load(indexer);
 		validationListener = new SyncValidationListener();
 		indexer.addGraphChangeListener(validationListener);
 		validationListener.setModelIndexer(indexer);
@@ -88,7 +91,7 @@ public class ModelQueryTest {
 		indexer.registerMetamodel(new File("resources/metamodels/Tree.ecore"));
 
 		final LocalFolder vcs = new LocalFolder();
-		vcs.init(new File("resources/models/tree").getAbsolutePath(), indexer);
+		vcs.init(new File("resources/models/tree").toURI().toASCIIString(), indexer);
 		vcs.run();
 		indexer.addVCSManager(vcs, true);
 		indexer.requestImmediateSync();
