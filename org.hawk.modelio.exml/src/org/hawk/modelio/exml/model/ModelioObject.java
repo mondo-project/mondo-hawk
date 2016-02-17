@@ -46,7 +46,7 @@ public class ModelioObject extends AbstractModelioObject {
 
 	@Override
 	public boolean isRoot() {
-		return exml.getParentUID() != null;
+		return exml.getParentUID() == null;
 	}
 
 	@Override
