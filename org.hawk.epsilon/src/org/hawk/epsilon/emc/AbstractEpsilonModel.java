@@ -26,6 +26,8 @@ import org.hawk.graph.ModelElementNode;
 
 public abstract class AbstractEpsilonModel extends Model {
 
+	protected boolean enableDebugOutput = false;
+
 	protected HashSet<String> cachedTypes = new HashSet<String>();
 	protected StringProperties config = null;
 
@@ -48,8 +50,7 @@ public abstract class AbstractEpsilonModel extends Model {
 	 */
 	@Override
 	abstract public Object createInstance(String metaClassName)
-			throws EolModelElementTypeNotFoundException,
-			EolNotInstantiableModelElementTypeException;
+			throws EolModelElementTypeNotFoundException, EolNotInstantiableModelElementTypeException;
 
 	/**
 	 * Deletes the element from the database
@@ -57,26 +58,21 @@ public abstract class AbstractEpsilonModel extends Model {
 	@Override
 	abstract public void deleteElement(Object arg0) throws EolRuntimeException;
 
-	abstract public Collection<Object> getAllOf(String arg0,
-			final String typeorkind)
+	abstract public Collection<Object> getAllOf(String arg0, final String typeorkind)
 			throws EolModelElementTypeNotFoundException;
 
 	@Override
-	public Collection<Object> getAllOfKind(String arg0)
-			throws EolModelElementTypeNotFoundException {
+	public Collection<Object> getAllOfKind(String arg0) throws EolModelElementTypeNotFoundException {
 
-		Collection<Object> ofType = (Collection<Object>) getAllOf(arg0,
-				ModelElementNode.EDGE_LABEL_OFTYPE);
-		Collection<Object> ofKind = (Collection<Object>) getAllOf(arg0,
-				ModelElementNode.EDGE_LABEL_OFKIND);
+		Collection<Object> ofType = (Collection<Object>) getAllOf(arg0, ModelElementNode.EDGE_LABEL_OFTYPE);
+		Collection<Object> ofKind = (Collection<Object>) getAllOf(arg0, ModelElementNode.EDGE_LABEL_OFKIND);
 		ofKind.addAll(ofType);
 
 		return ofKind;
 	}
 
 	@Override
-	public Collection<Object> getAllOfType(String arg0)
-			throws EolModelElementTypeNotFoundException {
+	public Collection<Object> getAllOfType(String arg0) throws EolModelElementTypeNotFoundException {
 		return getAllOf(arg0, ModelElementNode.EDGE_LABEL_OFTYPE);
 	}
 
@@ -87,8 +83,7 @@ public abstract class AbstractEpsilonModel extends Model {
 	abstract public String getElementId(Object arg0);
 
 	@Override
-	public Object getEnumerationValue(String arg0, String arg1)
-			throws EolEnumerationValueNotFoundException {
+	public Object getEnumerationValue(String arg0, String arg1) throws EolEnumerationValueNotFoundException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -106,8 +101,7 @@ public abstract class AbstractEpsilonModel extends Model {
 	@Override
 	public boolean isInstantiable(String arg0) {
 
-//		System.err
-//				.println("isInstantiable called on a hawk model, this is not supported, returning false");
+		System.err.println("isInstantiable called on a hawk model, this is not supported, returning false");
 		return false;
 
 	}
@@ -128,8 +122,7 @@ public abstract class AbstractEpsilonModel extends Model {
 	public final static String dumpDatabaseConfig = "DUMP_FULL_DATABASE_CONFIG_ON_EXIT";
 
 	@Override
-	public void load(StringProperties properties, String basePath)
-			throws EolModelLoadingException {
+	public void load(StringProperties properties, String basePath) throws EolModelLoadingException {
 
 		super.load(properties, basePath);
 
@@ -143,15 +136,13 @@ public abstract class AbstractEpsilonModel extends Model {
 	public void dispose() {
 		String dump1 = (String) config.get(dumpDatabaseConfig);
 		String dump2 = (String) config.get(dumpModelConfig);
-		if (dump1 != null && dump1.equalsIgnoreCase("true") || dump2 != null
-				&& dump2.equalsIgnoreCase("true"))
+		if (dump1 != null && dump1.equalsIgnoreCase("true") || dump2 != null && dump2.equalsIgnoreCase("true"))
 			System.out.println("\n--dumping configuration--");
 		if (dump1 != null && dump1.equalsIgnoreCase("true"))
 			dumpDatabaseConfig();
 		if (dump2 != null && dump2.equalsIgnoreCase("true"))
 			dumpModelConfig();
-		if (dump1 != null && dump1.equalsIgnoreCase("true") || dump2 != null
-				&& dump2.equalsIgnoreCase("true"))
+		if (dump1 != null && dump1.equalsIgnoreCase("true") || dump2 != null && dump2.equalsIgnoreCase("true"))
 			System.out.println("----------\n");
 		super.dispose();
 		// System.err.println(types);
@@ -162,8 +153,8 @@ public abstract class AbstractEpsilonModel extends Model {
 
 	@Override
 	public void setElementId(Object arg0, String arg1) {
-		System.err
-				.println("This impelementation of IModel does not allow for ElementId to be changed after creation, hence this method does nothing");
+		System.err.println(
+				"This impelementation of IModel does not allow for ElementId to be changed after creation, hence this method does nothing");
 	}
 
 	@Override
@@ -184,13 +175,11 @@ public abstract class AbstractEpsilonModel extends Model {
 		return true;
 	}
 
-	abstract public boolean isOf(Object instance, String metaClass,
-			final String typeorkind)
+	abstract public boolean isOf(Object instance, String metaClass, final String typeorkind)
 			throws EolModelElementTypeNotFoundException;
 
 	@Override
-	public boolean isOfKind(Object instance, String metaClass)
-			throws EolModelElementTypeNotFoundException {
+	public boolean isOfKind(Object instance, String metaClass) throws EolModelElementTypeNotFoundException {
 
 		return isOf(instance, metaClass, ModelElementNode.EDGE_LABEL_OFKIND)
 				|| isOf(instance, metaClass, ModelElementNode.EDGE_LABEL_OFTYPE);
@@ -198,8 +187,7 @@ public abstract class AbstractEpsilonModel extends Model {
 	}
 
 	@Override
-	public boolean isOfType(Object instance, String metaClass)
-			throws EolModelElementTypeNotFoundException {
+	public boolean isOfType(Object instance, String metaClass) throws EolModelElementTypeNotFoundException {
 
 		return isOf(instance, metaClass, ModelElementNode.EDGE_LABEL_OFTYPE);
 
@@ -211,8 +199,8 @@ public abstract class AbstractEpsilonModel extends Model {
 
 	public StringProperties getDatabaseConfig() {
 		if (config == null) {
-//			System.err
-//					.println("warning: no back-end configuration used for loading, using engine defaults");
+			if (enableDebugOutput)
+				System.err.println("warning: no back-end configuration used for loading, using engine defaults");
 			config = getDefaultDatabaseConfig();
 		}
 		return config;
@@ -239,5 +227,5 @@ public abstract class AbstractEpsilonModel extends Model {
 	}
 
 	abstract public void dumpDatabaseConfig();
-	
+
 }
