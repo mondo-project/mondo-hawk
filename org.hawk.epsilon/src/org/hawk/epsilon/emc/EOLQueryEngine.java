@@ -548,24 +548,9 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 					"Attempt to load a model from an invalid graph: " + graph),
 					this);
 
-		System.err.println("engine initialised with model named: " + name
-				+ ", with aliases: " + aliases);
+//		System.err.println("engine initialised with model named: " + name
+//				+ ", with aliases: " + aliases);
 
-	}
-
-	@Override
-	public void dispose() {
-		// graph.shutdown();
-		super.dispose();
-		// System.out.println("--Graph shut down--");
-
-		// System.out.println("--Logging Graph (disable for large)-- disabled");
-		// try {
-		// fullLog(graph);
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		System.out.println("--EOLQueryEngine Dispose, Done--");
 	}
 
 	@SuppressWarnings("unused")
@@ -783,12 +768,16 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 	public Object query(IModelIndexer m, String query,
 			Map<String, String> context) throws InvalidQueryException,
 			QueryExecutionException {
-
-		// Wait until the model indexer is available
-		try {
-			m.waitFor(HawkState.RUNNING);
-		} catch (InterruptedException e) {
-			throw new QueryExecutionException(e);
+		/*
+		 * Check if we're in the right state: we should not use
+		 * {@link IModelIndexer#waitFor} here, as that would introduce unwanted
+		 * synchronisation (reducing peak throughput for some cases).
+		 */
+		final HawkState currentState = m.getCompositeStateListener().getCurrentState();
+		if (currentState != HawkState.RUNNING) {
+			throw new QueryExecutionException(String.format(
+				"Cannot run the query, as the indexer is not in the RUNNING state: it is %s instead.",
+				currentState));
 		}
 
 		if (context == null)
@@ -827,7 +816,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			Map<String, String> context) throws QueryExecutionException,
 			InvalidQueryException {
 
-		final long truestart = System.currentTimeMillis();
+//		final long truestart = System.currentTimeMillis();
 
 		String defaultnamespaces = null;
 		if (context != null)
@@ -856,14 +845,14 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			throw new InvalidQueryException(ex);
 		}
 
-		System.out.println("PARSING:\n----------\n" + name == null ? "QUERY"
-				: name + "\n----------");
-
-		System.out.println("Graph path: " + graph.getPath() + "\n----------");
+//		System.out.println("PARSING:\n----------\n" + name == null ? "QUERY"
+//				: name + "\n----------");
+//
+//		System.out.println("Graph path: " + graph.getPath() + "\n----------");
 
 		module.getContext().getModelRepository().addModel(q);
 
-		long init = System.currentTimeMillis();
+//		long init = System.currentTimeMillis();
 
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			ret = module.execute();
@@ -874,16 +863,16 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			throw new QueryExecutionException(e);
 		}
 
-		System.err.println("time variable = " + EOLQueryEngine.time + "ms");
-
-		System.out.println("QUERY TOOK " + (System.currentTimeMillis() - init)
-				/ 1000 + "s" + (System.currentTimeMillis() - init) % 1000
-				+ "ms, to run");
-
-		System.out.println("total time taken "
-				+ (System.currentTimeMillis() - truestart) / 1000 + "s"
-				+ (System.currentTimeMillis() - truestart) % 1000
-				+ "ms, to run");
+//		System.err.println("time variable = " + EOLQueryEngine.time + "ms");
+//
+//		System.out.println("QUERY TOOK " + (System.currentTimeMillis() - init)
+//				/ 1000 + "s" + (System.currentTimeMillis() - init) % 1000
+//				+ "ms, to run");
+//
+//		System.out.println("total time taken "
+//				+ (System.currentTimeMillis() - truestart) / 1000 + "s"
+//				+ (System.currentTimeMillis() - truestart) % 1000
+//				+ "ms, to run");
 
 		return ret;
 
@@ -895,7 +884,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 
 		Object ret = null;
 
-		final long truestart = System.currentTimeMillis();
+//		final long truestart = System.currentTimeMillis();
 
 		EolModule module = new EolModule();
 
@@ -905,8 +894,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			throw new InvalidQueryException(ex);
 		}
 
-		System.out.println("PARSING:\n----------\n" + name == null ? "QUERY"
-				: name + "\n----------");
+//		System.out.println("PARSING:\n----------\n" + name == null ? "QUERY"
+//				: name + "\n----------");
 
 		CEOLQueryEngine q = new CEOLQueryEngine();
 
@@ -922,11 +911,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 					"Loading of EOLQueryEngine failed");
 		}
 		q.setContext(context);
-		System.out.println("Graph path: " + graph.getPath() + "\n----------");
+//		System.out.println("Graph path: " + graph.getPath() + "\n----------");
 
 		module.getContext().getModelRepository().addModel(q);
 
-		long init = System.currentTimeMillis();
+//		long init = System.currentTimeMillis();
 
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			ret = module.execute();
@@ -937,16 +926,16 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements
 			throw new QueryExecutionException(ex);
 		}
 
-		System.err.println("time variable = " + EOLQueryEngine.time + "ms");
-
-		System.out.println("QUERY TOOK " + (System.currentTimeMillis() - init)
-				/ 1000 + "s" + (System.currentTimeMillis() - init) % 1000
-				+ "ms, to run");
-
-		System.out.println("total time taken "
-				+ (System.currentTimeMillis() - truestart) / 1000 + "s"
-				+ (System.currentTimeMillis() - truestart) % 1000
-				+ "ms, to run");
+//		System.err.println("time variable = " + EOLQueryEngine.time + "ms");
+//
+//		System.out.println("QUERY TOOK " + (System.currentTimeMillis() - init)
+//				/ 1000 + "s" + (System.currentTimeMillis() - init) % 1000
+//				+ "ms, to run");
+//
+//		System.out.println("total time taken "
+//				+ (System.currentTimeMillis() - truestart) / 1000 + "s"
+//				+ (System.currentTimeMillis() - truestart) % 1000
+//				+ "ms, to run");
 
 		return ret;
 

@@ -106,8 +106,8 @@ public abstract class AbstractEpsilonModel extends Model {
 	@Override
 	public boolean isInstantiable(String arg0) {
 
-		System.err
-				.println("isInstantiable called on a hawk model, this is not supported, returning false");
+//		System.err
+//				.println("isInstantiable called on a hawk model, this is not supported, returning false");
 		return false;
 
 	}
@@ -211,8 +211,8 @@ public abstract class AbstractEpsilonModel extends Model {
 
 	public StringProperties getDatabaseConfig() {
 		if (config == null) {
-			System.err
-					.println("warning: no back-end configuration used for loading, using engine defaults");
+//			System.err
+//					.println("warning: no back-end configuration used for loading, using engine defaults");
 			config = getDefaultDatabaseConfig();
 		}
 		return config;

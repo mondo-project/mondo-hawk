@@ -57,14 +57,12 @@ public class CompositeStateListener extends LinkedHashSet<IStateListener>
 	}
 
 	@Override
-	public void state(HawkState state) {
+	public synchronized void state(HawkState state) {
 		currentState = state;
 		for (IStateListener l : this) {
 			l.state(state);
 		}
-		synchronized(this) {
-			this.notifyAll();
-		}
+		this.notifyAll();
 	}
 
 	public HawkState getCurrentState() {
