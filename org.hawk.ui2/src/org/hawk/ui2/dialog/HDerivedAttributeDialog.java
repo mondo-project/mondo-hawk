@@ -10,6 +10,9 @@
  ******************************************************************************/
 package org.hawk.ui2.dialog;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -123,8 +126,11 @@ final class HDerivedAttributeDialog extends HStateBasedDialog {
 		l.setText(" Metamodel URI: ");
 
 		final Combo c = new Combo(composite, SWT.READ_ONLY);
-		for (String s : hawkModel.getRegisteredMetamodels())
+		final ArrayList<String> metamodels = hawkModel.getRegisteredMetamodels();
+		Collections.sort(metamodels);
+		for (String s : metamodels) {
 			c.add(s);
+		}
 
 		l = new Label(composite, SWT.NONE);
 		l.setText(" Type Name: ");
