@@ -17,7 +17,23 @@ import org.hawk.core.query.IQueryEngine;
  * corresponding to model elements should implement this interface.
  */
 public interface IGraphNodeReference {
-	String getId();
+	/**
+	 * either return the node from the <code>graph</code>
+	 * 
+	 * @param graph
+	 * @return
+	 */
+	IGraphNode getNode(IGraphDatabase graph);
+
 	String getTypeName();
+
 	IQueryEngine getContainerModel();
+
+	/**
+	 * If the caller only requires the identifier, otherwise use (
+	 * {@link #getNode(IGraphDatabase)}
+	 * 
+	 * @return
+	 */
+	String getId();
 }

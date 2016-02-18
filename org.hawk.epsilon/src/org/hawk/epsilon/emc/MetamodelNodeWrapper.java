@@ -13,6 +13,8 @@ package org.hawk.epsilon.emc;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeReference;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.graph.MetamodelNode;
@@ -31,6 +33,11 @@ public class MetamodelNodeWrapper implements IGraphNodeReference {
 	@Override
 	public String getId() {
 		return metamodelNode.getNode().getId().toString();
+	}
+
+	@Override
+	public IGraphNode getNode(IGraphDatabase g) {
+		return metamodelNode.getNode();
 	}
 
 	@Override

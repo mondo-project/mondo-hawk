@@ -10,8 +10,11 @@
  ******************************************************************************/
 package org.hawk.epsilon.emc;
 
+import java.lang.ref.WeakReference;
+
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.hawk.core.IModelIndexer;
+import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeReference;
 import org.hawk.core.graph.IGraphTransaction;
@@ -22,11 +25,24 @@ public class GraphNodeWrapper implements IGraphNodeReference {
 	// private IGraphDatabase container;
 	protected String id;
 	protected EOLQueryEngine containerModel;
+	protected WeakReference<IGraphNode> node;
 
-	public GraphNodeWrapper(String id, EOLQueryEngine containerModel) {
+	public GraphNodeWrapper(IGraphNode n, EOLQueryEngine containerModel) {
 
-		this.id = id;
+		node = new WeakReference<IGraphNode>(n);
+		this.id = n.getId().toString();
 		this.containerModel = containerModel;
+
+	}
+
+	@Override
+	public IGraphNode getNode(IGraphDatabase graph) {
+		IGraphNode ret = node.get();
+		if (ret == null) {
+			ret = graph.getNodeById(id);
+			node = new WeakReference<IGraphNode>(ret);
+		}
+		return ret;
 
 	}
 
@@ -46,8 +62,7 @@ public class GraphNodeWrapper implements IGraphNodeReference {
 		if (!(o instanceof GraphNodeWrapper))
 			return false;
 		if (((GraphNodeWrapper) o).id.equals(this.id)
-				&& ((GraphNodeWrapper) o).containerModel
-						.equals(this.containerModel))
+				&& ((GraphNodeWrapper) o).containerModel.equals(this.containerModel))
 			return true;
 		return false;
 	}
@@ -60,13 +75,12 @@ public class GraphNodeWrapper implements IGraphNodeReference {
 	public String getTypeName() {
 		String type = "";
 
-		try (IGraphTransaction t = containerModel.getBackend()
-				.beginTransaction()) {
+		try (IGraphTransaction t = containerModel.getBackend().beginTransaction()) {
 
 			IGraphNode n = containerModel.getBackend().getNodeById(id);
 
-			type = n.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().next()
-					.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+			type = n.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().next().getEndNode()
+					.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 
 			// HawkClass e = new MetamodelUtils().getTypeOfFromNode(n,
 			// containerModel.parser);
@@ -89,8 +103,7 @@ public class GraphNodeWrapper implements IGraphNodeReference {
 
 		String info = "";
 
-		try (IGraphTransaction t = containerModel.getBackend()
-				.beginTransaction()) {
+		try (IGraphTransaction t = containerModel.getBackend().beginTransaction()) {
 
 			// Node n = container.getNodeById(id);
 
@@ -120,8 +133,7 @@ public class GraphNodeWrapper implements IGraphNodeReference {
 		// : "(null container model!)") + ") $ "
 		// + (info.equals("") ? "[no meta-info]" : info) + "";
 
-		return "GNW|id:" + id + "|"
-				+ (info.equals("") ? "[no meta-info]" : info) + "";
+		return "GNW|id:" + id + "|" + (info.equals("") ? "[no meta-info]" : info) + "";
 
 	}
 

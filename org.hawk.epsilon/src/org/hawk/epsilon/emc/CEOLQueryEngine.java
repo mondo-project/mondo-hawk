@@ -50,17 +50,15 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 		System.err.println(defaultnamespaces);
 
 		// if (sFilePatterns != null) {
-		final String[] filePatterns = (sFilePatterns != null && sFilePatterns
-				.trim().length() != 0) ? sFilePatterns.split(",") : null;
-		final String[] repoPatterns = (sRepoPatterns != null && sRepoPatterns
-				.trim().length() != 0) ? sRepoPatterns.split(",") : null;
+		final String[] filePatterns = (sFilePatterns != null && sFilePatterns.trim().length() != 0)
+				? sFilePatterns.split(",") : null;
+		final String[] repoPatterns = (sRepoPatterns != null && sRepoPatterns.trim().length() != 0)
+				? sRepoPatterns.split(",") : null;
 
 		this.files = new HashSet<>();
 
-		List<String> fplist = (filePatterns != null) ? Arrays
-				.asList(filePatterns) : null;
-		List<String> rplist = (repoPatterns != null) ? Arrays
-				.asList(repoPatterns) : null;
+		List<String> fplist = (filePatterns != null) ? Arrays.asList(filePatterns) : null;
+		List<String> rplist = (repoPatterns != null) ? Arrays.asList(repoPatterns) : null;
 
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 
@@ -69,8 +67,7 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 				this.files.add(fn.getNode());
 			}
 
-			System.out.println("running CEOLQueryEngine with files: "
-					+ fileNodes);
+			System.out.println("running CEOLQueryEngine with files: " + fileNodes);
 			if (enableTraversalScoping)
 				System.out.println("Full Traversal Scoping ENABLED");
 
@@ -102,8 +99,7 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 		for (IGraphNode rawFileNode : files) {
 			final FileNode f = new FileNode(rawFileNode);
 			for (ModelElementNode me : f.getModelElements()) {
-				GraphNodeWrapper wrapper = new GraphNodeWrapper(me.getNode()
-						.getId().toString(), this);
+				GraphNodeWrapper wrapper = new GraphNodeWrapper(me.getNode(), this);
 				allContents.add(wrapper);
 			}
 		}
@@ -112,10 +108,8 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 	}
 
 	@Override
-	public Collection<Object> getAllOf(IGraphNode typeNode,
-			final String typeorkind) {
-		OptimisableCollection nodes = new OptimisableCollection(this,
-				new GraphNodeWrapper(typeNode.getId().toString(), this));
+	public Collection<Object> getAllOf(IGraphNode typeNode, final String typeorkind) {
+		OptimisableCollection nodes = new OptimisableCollection(this, new GraphNodeWrapper(typeNode, this));
 
 		// operations on the graph
 		// ...
@@ -128,12 +122,10 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 			// System.err.println(files.iterator().next().getGraph());
 			// System.err.println(node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE).iterator().next().getEndNode().getGraph());
 
-			for (IGraphEdge e : node
-					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 
 				if (files.contains(e.getEndNode())) {
-					nodes.add(new GraphNodeWrapper(node.getId().toString(),
-							this));
+					nodes.add(new GraphNodeWrapper(node, this));
 				}
 			}
 		}

@@ -26,13 +26,11 @@ public class DeriveFeature {
 	public DeriveFeature() throws Exception {
 	}
 
-	public Object deriveFeature(HashMap<String, EolModule> cachedModules,
-			IModelIndexer indexer, IGraphNode n, EOLQueryEngine containerModel,
-			String propertyName, String EOLScript) throws Exception {
+	public Object deriveFeature(HashMap<String, EolModule> cachedModules, IModelIndexer indexer, IGraphNode n,
+			EOLQueryEngine containerModel, String propertyName, String EOLScript) throws Exception {
 
 		// remove prefix (_NYD)
-		String actualEOLScript = EOLScript.startsWith("_NYD##") ? EOLScript
-				.substring(6) : EOLScript;
+		String actualEOLScript = EOLScript.startsWith("_NYD##") ? EOLScript.substring(6) : EOLScript;
 
 		EolModule currentModule = null;
 
@@ -45,8 +43,7 @@ public class DeriveFeature {
 			if (!cachedModules.containsKey(actualEOLScript)) {
 				// if (cashedModules == null) {
 				// bodyDeclarations.exists(md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public=='true'))
-				System.err.println("adding new module to cache, key:"
-						+ actualEOLScript);
+				System.err.println("adding new module to cache, key:" + actualEOLScript);
 				currentModule = initModule(indexer, containerModel);
 
 				currentModule.parse(actualEOLScript);
@@ -56,8 +53,7 @@ public class DeriveFeature {
 					System.err.println("PARSE PROBLEM: " + p);
 
 				if (pps.size() > 0) {
-					System.err
-							.println("There were parse problems, returning \"DERIVATION_PARSE_ERROR\" as value\n");
+					System.err.println("There were parse problems, returning \"DERIVATION_PARSE_ERROR\" as value\n");
 					return "DERIVATION_PARSE_ERROR";
 				} else
 					cachedModules.put(actualEOLScript, currentModule);
@@ -69,15 +65,13 @@ public class DeriveFeature {
 
 			}
 
-			GraphNodeWrapper gnw = new GraphNodeWrapper(n.getIncoming()
-					.iterator().next().getStartNode().getId().toString(),
+			GraphNodeWrapper gnw = new GraphNodeWrapper(n.getIncoming().iterator().next().getStartNode(),
 					containerModel);
 
-			currentModule.getContext().getFrameStack()
-					.put(Variable.createReadOnlyVariable("self", gnw));
+			currentModule.getContext().getFrameStack().put(Variable.createReadOnlyVariable("self", gnw));
 
-			((GraphPropertyGetter) containerModel.getPropertyGetter())
-					.getAccessListener().setSourceObject(n.getId() + "");
+			((GraphPropertyGetter) containerModel.getPropertyGetter()).getAccessListener()
+					.setSourceObject(n.getId() + "");
 
 			// System.out.println("-\n" + actualEOLScript + "\n-");
 			// printAST(module.getAst());
@@ -88,16 +82,9 @@ public class DeriveFeature {
 				ret = currentModule.execute();
 
 			} catch (Exception e) {
-				System.err
-						.println("----------------\nerror in derive feature on: "
-								+ n
-								+ "\n"
-								+ n.getPropertyKeys()
-								+ "\n"
-								+ containerModel
-								+ "\n"
-								+ EOLScript
-								+ "\n------------\nreturning \"DERIVATION_EXECUTION_ERROR\" as value\n");
+				System.err.println("----------------\nerror in derive feature on: " + n + "\n" + n.getPropertyKeys()
+						+ "\n" + containerModel + "\n" + EOLScript
+						+ "\n------------\nreturning \"DERIVATION_EXECUTION_ERROR\" as value\n");
 				e.printStackTrace();
 				return "DERIVATION_EXECUTION_ERROR";
 			}
@@ -106,8 +93,7 @@ public class DeriveFeature {
 			// System.out.println(ret);
 
 			if (!(ret instanceof Collection<?>)) {
-				if (ret instanceof Boolean || ret instanceof String
-						|| ret instanceof Integer || ret instanceof Float
+				if (ret instanceof Boolean || ret instanceof String || ret instanceof Integer || ret instanceof Float
 						|| ret instanceof Double)
 					return ret;
 				else
@@ -115,14 +101,13 @@ public class DeriveFeature {
 			} else {
 				// TODO handle collections as returns to derived features --
 				// need to type cast them for storage in the db
-				System.err
-						.println("Derivefeature got a collection back from EOL, this is not supported yet! returning \"HAWK_COLLECTION_ERROR\"");
+				System.err.println(
+						"Derivefeature got a collection back from EOL, this is not supported yet! returning \"HAWK_COLLECTION_ERROR\"");
 				return "HAWK_COLLECTION_ERROR";
 			}
 
 		} catch (Exception e) {
-			System.err
-					.println("ERROR IN DERIVING ATTRIBUTE, returning \"DERIVATION_OTHER_ERROR\" as value:");
+			System.err.println("ERROR IN DERIVING ATTRIBUTE, returning \"DERIVATION_OTHER_ERROR\" as value:");
 			e.printStackTrace();
 		}
 
@@ -133,8 +118,7 @@ public class DeriveFeature {
 
 	}
 
-	private EolModule initModule(IModelIndexer m, EOLQueryEngine model)
-			throws Exception {
+	private EolModule initModule(IModelIndexer m, EOLQueryEngine model) throws Exception {
 
 		EolModule currentModule = new EolModule();
 
@@ -144,19 +128,15 @@ public class DeriveFeature {
 		// configuration.put("DUMP_DATABASE_CONFIG_ON_EXIT", true);
 		// configuration.put("DUMP_MODEL_CONFIG_ON_EXIT", true);
 		// configuration.put("DUMP_FULL_DATABASE_CONFIG_ON_EXIT", true);
-		configuration.put(AbstractEpsilonModel.databaseLocation, m.getGraph()
-				.getPath());
+		configuration.put(AbstractEpsilonModel.databaseLocation, m.getGraph().getPath());
 		configuration.put("name", "Model");
 		configuration.put(AbstractEpsilonModel.enableCaching, true);
 
 		configuration.put("neostore.nodestore.db.mapped_memory", 3 * x + "M");
-		configuration.put("neostore.relationshipstore.db.mapped_memory", 14 * x
-				+ "M");
+		configuration.put("neostore.relationshipstore.db.mapped_memory", 14 * x + "M");
 		configuration.put("neostore.propertystore.db.mapped_memory", x + "M");
-		configuration.put("neostore.propertystore.db.strings.mapped_memory", 2
-				* x + "M");
-		configuration.put("neostore.propertystore.db.arrays.mapped_memory", x
-				+ "M");
+		configuration.put("neostore.propertystore.db.strings.mapped_memory", 2 * x + "M");
+		configuration.put("neostore.propertystore.db.arrays.mapped_memory", x + "M");
 
 		model.setDatabaseConfig(configuration);
 
@@ -164,10 +144,15 @@ public class DeriveFeature {
 
 		currentModule.getContext().getModelRepository().addModel(model);
 
-		// run("Model.find(td:TypeDeclaration|td.bodyDeclarations.select(md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public='true') and md.modifiers.exists(mod:Modifier|mod.static='true') and md.returnType.isTypeOf(SimpleType) and md.returnType.name.fullyQualifiedName = td.name.fullyQualifiedName) ).size().println();");
+		// run("Model.find(td:TypeDeclaration|td.bodyDeclarations.select(md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public='true')
+		// and md.modifiers.exists(mod:Modifier|mod.static='true') and
+		// md.returnType.isTypeOf(SimpleType) and
+		// md.returnType.name.fullyQualifiedName = td.name.fullyQualifiedName)
+		// ).size().println();");
 
 		// run("Model.find(td:TypeDeclaration|td.bodyDeclarations.select(" +
-		// "md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public=='true') "
+		// "md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public=='true')
+		// "
 		// +
 		// "and md.modifiers.exists(mod:Modifier|mod.static=='true') " +
 		// "and md.returnType.isTypeOf(SimpleType) " +

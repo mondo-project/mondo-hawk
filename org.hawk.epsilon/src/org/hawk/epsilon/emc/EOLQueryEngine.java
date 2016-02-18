@@ -89,7 +89,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		// GlobalGraphOperations ops = GlobalGraphOperations.at(graph);
 
 		for (IGraphNode node : graph.allNodes("eobject")) {
-			GraphNodeWrapper wrapper = new GraphNodeWrapper(node.getId().toString(), this);
+			GraphNodeWrapper wrapper = new GraphNodeWrapper(node, this);
 			allContents.add(wrapper);
 		}
 
@@ -195,11 +195,10 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	}
 
 	public Collection<Object> getAllOf(IGraphNode typeNode, final String typeorkind) {
-		OptimisableCollection nodes = new OptimisableCollection(this,
-				new GraphNodeWrapper(typeNode.getId().toString(), this));
+		OptimisableCollection nodes = new OptimisableCollection(this, new GraphNodeWrapper(typeNode, this));
 
 		for (IGraphEdge n : typeNode.getIncomingWithType(typeorkind)) {
-			nodes.add(new GraphNodeWrapper(n.getStartNode().getId().toString(), this));
+			nodes.add(new GraphNodeWrapper(n.getStartNode(), this));
 		}
 		broadcastAllOfXAccess(nodes);
 		return nodes;
@@ -222,35 +221,12 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	}
 
 	@Override
-	public Object getElementById(String arg0) {
-		try {
+	public Object getElementById(String id) {
 
-			Object id;
+		IGraphNode ret = graph.getNodeById(id);
 
-			try {
-				id = Long.parseLong(arg0);
-			} catch (NumberFormatException e) {
-				id = arg0;
-			}
+		return ret == null ? null : new GraphNodeWrapper(ret, this);
 
-			boolean isnull = false;
-
-			try {
-				// operations on the graph
-				// ...
-
-				isnull = graph.getNodeById(id) == null;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			if (isnull)
-				return null;
-			else
-				return new GraphNodeWrapper(id.toString(), this);
-		} catch (NumberFormatException e) {
-			System.err.println("NumberFormatException returning null");
-			return null;
-		}
 	}
 
 	@Override
@@ -271,7 +247,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			// ...
 
 			Object type = getTypeOf(arg0);
-			IGraphNode typeNode = graph.getNodeById(((GraphNodeWrapper) type).getId());
+			IGraphNode typeNode = ((GraphNodeWrapper) type).getNode(graph);
 
 			ret = typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 		} catch (Exception e) {
@@ -287,7 +263,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 		try {
 
-			IGraphNode objectNode = graph.getNodeById(((GraphNodeWrapper) arg0).getId());
+			IGraphNode objectNode = ((GraphNodeWrapper) arg0).getNode(graph);
 
 			// operations on the graph
 			// ...
@@ -316,7 +292,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		IGraphNode fileNode = null;
 
 		try {
-			IGraphNode objectNode = graph.getNodeById(((GraphNodeWrapper) arg0).getId());
+			IGraphNode objectNode = ((GraphNodeWrapper) arg0).getNode(graph);
 			fileNode = objectNode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE).iterator().next().getEndNode();
 		} catch (Exception e) {
 			System.err.println("error in getFileOf, returning null");
@@ -435,12 +411,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 	@Override
 	public boolean isModelElement(Object arg0) {
-		if (!(arg0 instanceof GraphNodeWrapper))
-			return false;
-		else if (((GraphNodeWrapper) arg0).getId() != null)
-			return true;
-		else
-			return false;
+		return (arg0 instanceof GraphNodeWrapper);
 	}
 
 	@Override
@@ -590,7 +561,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 			// System.err.println(instance);
 
-			IGraphNode objectNode = graph.getNodeById(((GraphNodeWrapper) instance).getId());
+			IGraphNode objectNode = ((GraphNodeWrapper) instance).getNode(graph);
 
 			IGraphNode typeNode = null;
 
@@ -601,7 +572,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			} catch (Exception e) {
 				// dont have a type - only if you are iterating all the
 				// nodes even the metanodes
-				System.err.println("warning: metaclass node asked for its type, ignored");
+				if (enableDebugOutput)
+					System.err.println("warning: metaclass node asked for its type, ignored");
 				// e.printStackTrace();
 			}
 		} catch (Exception e) {

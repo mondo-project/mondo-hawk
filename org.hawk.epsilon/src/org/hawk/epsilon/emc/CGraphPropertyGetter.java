@@ -39,12 +39,12 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object invoke(Object object, final String property)
-			throws EolRuntimeException {
+	public Object invoke(Object object, final String property) throws EolRuntimeException {
 
 		Object ret = null;
 
-		// System.err.println("GraphPropertyGetter INVOKE: "+object+" ::::: "+property);
+		// System.err.println("GraphPropertyGetter INVOKE: "+object+" :::::
+		// "+property);
 
 		// if (object.equals(null))
 		// throw new EolRuntimeException(
@@ -52,15 +52,13 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 		// else
 
 		if (!(object instanceof GraphNodeWrapper))
-			throw new EolRuntimeException(
-					"a non GraphNodeWrapper object passed to GraphPropertyGetter!");
+			throw new EolRuntimeException("a non GraphNodeWrapper object passed to GraphPropertyGetter!");
 
 		// try (IGraphTransaction tx = graph.beginTransaction()) {
 		// operations on the graph
 		// ...
 
-		IGraphNode node = graph
-				.getNodeById(((GraphNodeWrapper) object).getId());
+		IGraphNode node = ((GraphNodeWrapper) object).getNode(graph);
 
 		// System.out.println(node+":::"+property);
 		// System.err.println(object+" : "+property);
@@ -71,12 +69,9 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 
 			String sep = "";
 			StringBuilder buff = new StringBuilder(32);
-			for (IGraphEdge e : node
-					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 				buff.append(sep);
-				buff.append(e.getEndNode()
-						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
-						.toString());
+				buff.append(e.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
 				sep = ";";
 
 			}
@@ -86,11 +81,9 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 
 			String sep = "";
 			StringBuilder buff = new StringBuilder(32);
-			for (IGraphEdge e : node
-					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 				buff.append(sep);
-				buff.append(e.getEndNode()
-						.getProperty(FileNode.PROP_REPOSITORY).toString());
+				buff.append(e.getEndNode().getProperty(FileNode.PROP_REPOSITORY).toString());
 				sep = ";";
 
 			}
@@ -99,21 +92,16 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 		} else if (property.equals("hawkFiles")) {
 
 			Set<String> files = new HashSet<>();
-			for (IGraphEdge e : node
-					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
-				files.add(e.getEndNode()
-						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
-						.toString());
+			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
+				files.add(e.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
 
 			ret = files;
 
 		} else if (property.equals("hawkRepos")) {
 
 			Set<String> repos = new HashSet<>();
-			for (IGraphEdge e : node
-					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
-				repos.add(e.getEndNode().getProperty(FileNode.PROP_REPOSITORY)
-						.toString());
+			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
+				repos.add(e.getEndNode().getProperty(FileNode.PROP_REPOSITORY).toString());
 
 			ret = repos;
 
@@ -136,9 +124,9 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 				System.err.println(object);
 				System.err.println(property);
 				// throw new
-				// EolRuntimeException("REVERSE NAVIGATION FAILED (return == null)");
-				System.err
-						.println("REVERSE NAVIGATION FAILED (return == null), returning null");
+				// EolRuntimeException("REVERSE NAVIGATION FAILED (return ==
+				// null)");
+				System.err.println("REVERSE NAVIGATION FAILED (return == null), returning null");
 				// check metamodel if it can exist but is unset or
 				// return
 				// null?
@@ -167,8 +155,7 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 			}
 
 			if (ret == null)
-				throw new EolRuntimeException("eContainer failed,\n" + object
-						+ "\nis not contained in current scope");
+				throw new EolRuntimeException("eContainer failed,\n" + object + "\nis not contained in current scope");
 
 		}
 
@@ -177,8 +164,7 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 			Iterable<IGraphEdge> out = node.getOutgoing();
 			for (IGraphEdge r : out) {
 				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
-					final GraphNodeWrapper endNode = addIfInScope(r
-							.getEndNode());
+					final GraphNodeWrapper endNode = addIfInScope(r.getEndNode());
 					if (endNode != null) {
 						results.add(endNode);
 					}
@@ -190,15 +176,12 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 		else if (property.equals("hawkIn") || property.equals("hawkOut")) {
 			final boolean isIncoming = property.equals("hawkIn");
 			final List<GraphNodeWrapper> results = new ArrayList<>();
-			final Iterable<IGraphEdge> edges = isIncoming ? node.getIncoming()
-					: node.getOutgoing();
+			final Iterable<IGraphEdge> edges = isIncoming ? node.getIncoming() : node.getOutgoing();
 			for (IGraphEdge r : edges) {
-				if (ModelElementNode.TRANSIENT_EDGE_LABELS
-						.contains(r.getType())) {
+				if (ModelElementNode.TRANSIENT_EDGE_LABELS.contains(r.getType())) {
 					continue;
 				}
-				final IGraphNode edgeNode = isIncoming ? r.getStartNode() : r
-						.getEndNode();
+				final IGraphNode edgeNode = isIncoming ? r.getStartNode() : r.getEndNode();
 				final GraphNodeWrapper edgeNodeWrapper = addIfInScope(edgeNode);
 				results.add(edgeNodeWrapper);
 			}
@@ -211,20 +194,14 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 				if (ret == null)
 					ret = r.getEndNode().getProperty(property);
 				else
-					throw new EolRuntimeException(
-							"WARNING: a derived property (arity 1) -- ( "
-									+ property
-									+ " ) has more than 1 links in store!");
+					throw new EolRuntimeException("WARNING: a derived property (arity 1) -- ( " + property
+							+ " ) has more than 1 links in store!");
 			}
 			if (ret == null) {
-				throw new EolRuntimeException(
-						"derived attribute lookup failed for: " + object
-								+ " # " + property);
-			} else if (ret instanceof String
-					&& ((String) ret).startsWith("_NYD##")) {
+				throw new EolRuntimeException("derived attribute lookup failed for: " + object + " # " + property);
+			} else if (ret instanceof String && ((String) ret).startsWith("_NYD##")) {
 				// XXX IDEA: dynamically derive on the spot on access
-				System.err.println("attribute: " + property
-						+ " is NYD for node: " + node.getId());
+				System.err.println("attribute: " + property + " is NYD for node: " + node.getId());
 			}
 
 		}
@@ -237,8 +214,7 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 
 			if (node.getProperty(property) != null) {
 
-				final List<Object> values = Arrays.asList((Object[]) node
-						.getProperty(property));
+				final List<Object> values = Arrays.asList((Object[]) node.getProperty(property));
 				retCollection.addAll(values);
 
 			}
@@ -297,15 +273,13 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 					otherNode = o;
 				else
 					throw new EolRuntimeException(
-							"A relationship with arity 1 ( " + property
-									+ " ) has more than 1 links");
+							"A relationship with arity 1 ( " + property + " ) has more than 1 links");
 			}
 
 			ret = otherNodes != null ? otherNodes : otherNode;
 
 		} else {
-			throw new EolIllegalPropertyException(object, property, ast,
-					context);
+			throw new EolIllegalPropertyException(object, property, ast, context);
 		}
 
 		if (broadcastAccess)
@@ -318,18 +292,17 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 	private GraphNodeWrapper addIfInScope(IGraphNode node) {
 
 		if (!engine.enableTraversalScoping)
-			return new GraphNodeWrapper(node.getId().toString(), m);
+			return new GraphNodeWrapper(node, m);
 
 		// System.out.println("addIfInScope used...");
 
 		GraphNodeWrapper ret = null;
 
 		// capture multiple file containment (ie for singleton nodes)
-		for (IGraphEdge e : node
-				.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+		for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 
 			if (engine.files.contains(e.getEndNode())) {
-				ret = new GraphNodeWrapper(node.getId().toString(), m);
+				ret = new GraphNodeWrapper(node, m);
 				break;
 			}
 		}

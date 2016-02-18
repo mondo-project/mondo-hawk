@@ -71,12 +71,12 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object invoke(Object object, final String property)
-			throws EolRuntimeException {
+	public Object invoke(Object object, final String property) throws EolRuntimeException {
 
 		Object ret = null;
 
-		// System.err.println("GraphPropertyGetter INVOKE: "+object+" ::::: "+property);
+		// System.err.println("GraphPropertyGetter INVOKE: "+object+" :::::
+		// "+property);
 
 		// if (object.equals(null))
 		// throw new EolRuntimeException(
@@ -84,15 +84,13 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		// else
 
 		if (!(object instanceof GraphNodeWrapper))
-			throw new EolRuntimeException(
-					"a non GraphNodeWrapper object passed to GraphPropertyGetter!");
+			throw new EolRuntimeException("a non GraphNodeWrapper object passed to GraphPropertyGetter!");
 
 		// try (IGraphTransaction tx = graph.beginTransaction()) {
 		// operations on the graph
 		// ...
 
-		IGraphNode node = graph
-				.getNodeById(((GraphNodeWrapper) object).getId());
+		IGraphNode node = ((GraphNodeWrapper) object).getNode(graph);
 
 		// System.out.println(node+":::"+property);
 		// System.err.println(object+" : "+property);
@@ -103,12 +101,9 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 			String sep = "";
 			StringBuilder buff = new StringBuilder(32);
-			for (IGraphEdge e : node
-					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 				buff.append(sep);
-				buff.append(e.getEndNode()
-						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
-						.toString());
+				buff.append(e.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
 				sep = ";";
 
 			}
@@ -118,11 +113,9 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 			String sep = "";
 			StringBuilder buff = new StringBuilder(32);
-			for (IGraphEdge e : node
-					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 				buff.append(sep);
-				buff.append(e.getEndNode()
-						.getProperty(FileNode.PROP_REPOSITORY).toString());
+				buff.append(e.getEndNode().getProperty(FileNode.PROP_REPOSITORY).toString());
 				sep = ";";
 
 			}
@@ -131,21 +124,16 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		} else if (property.equals("hawkFiles")) {
 
 			Set<String> files = new HashSet<>();
-			for (IGraphEdge e : node
-					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
-				files.add(e.getEndNode()
-						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
-						.toString());
+			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
+				files.add(e.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
 
 			ret = files;
 
 		} else if (property.equals("hawkRepos")) {
 
 			Set<String> repos = new HashSet<>();
-			for (IGraphEdge e : node
-					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
-				repos.add(e.getEndNode().getProperty(FileNode.PROP_REPOSITORY)
-						.toString());
+			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
+				repos.add(e.getEndNode().getProperty(FileNode.PROP_REPOSITORY).toString());
 
 			ret = repos;
 
@@ -158,20 +146,21 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 			for (IGraphEdge r : node.getIncomingWithType(property2)) {
 				if (ret == null)
 					ret = new EolBag<GraphNodeWrapper>();
-				((EolBag<GraphNodeWrapper>) ret).add(new GraphNodeWrapper(r
-						.getStartNode().getId().toString(), m));
+				((EolBag<GraphNodeWrapper>) ret).add(new GraphNodeWrapper(r.getStartNode(), m));
 			}
 
 			if (ret == null) {
-				System.err.println(object);
-				System.err.println(property);
-				// throw new
-				// EolRuntimeException("REVERSE NAVIGATION FAILED (return == null)");
-				System.err
-						.println("REVERSE NAVIGATION FAILED (return == null), returning null");
-				// check metamodel if it can exist but is unset or
-				// return
-				// null?
+				if (m.enableDebugOutput) {
+					System.err.println(object);
+					System.err.println(property);
+					// throw new
+					// EolRuntimeException("REVERSE NAVIGATION FAILED (return ==
+					// null)");
+					System.err.println("REVERSE NAVIGATION FAILED (return == null), returning null");
+					// check metamodel if it can exist but is unset or
+					// return
+					// null?
+				}
 			}
 
 		} else if (property.equals("eContainer")) {
@@ -188,8 +177,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
 
-					ret = new GraphNodeWrapper(r.getStartNode().getId()
-							.toString(), m);
+					ret = new GraphNodeWrapper(r.getStartNode(), m);
 
 					break;
 
@@ -198,34 +186,27 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 			}
 
 			if (ret == null)
-				throw new EolRuntimeException("eContainer failed,\n" + object
-						+ "\nis not contained");
+				throw new EolRuntimeException("eContainer failed,\n" + object + "\nis not contained");
 
 		} else if (property.equals("eContents")) {
 			final List<GraphNodeWrapper> results = new ArrayList<>();
 			Iterable<IGraphEdge> out = node.getOutgoing();
 			for (IGraphEdge r : out) {
 				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
-					final Object endNodeID = r.getEndNode().getId();
-					results.add(new GraphNodeWrapper(endNodeID.toString(), m));
+					results.add(new GraphNodeWrapper(r.getEndNode(), m));
 				}
 			}
 			ret = results;
 		} else if (property.equals("hawkIn") || property.equals("hawkOut")) {
 			final boolean isIncoming = property.equals("hawkIn");
 			final List<GraphNodeWrapper> results = new ArrayList<>();
-			final Iterable<IGraphEdge> edges = isIncoming ? node.getIncoming()
-					: node.getOutgoing();
+			final Iterable<IGraphEdge> edges = isIncoming ? node.getIncoming() : node.getOutgoing();
 			for (IGraphEdge r : edges) {
-				if (ModelElementNode.TRANSIENT_EDGE_LABELS
-						.contains(r.getType())) {
+				if (ModelElementNode.TRANSIENT_EDGE_LABELS.contains(r.getType())) {
 					continue;
 				}
-				final IGraphNode edgeNode = isIncoming ? r.getStartNode() : r
-						.getEndNode();
-				final Object edgeNodeID = edgeNode.getId();
-				final GraphNodeWrapper edgeNodeWrapper = new GraphNodeWrapper(
-						edgeNodeID.toString(), m);
+				final IGraphNode edgeNode = isIncoming ? r.getStartNode() : r.getEndNode();
+				final GraphNodeWrapper edgeNodeWrapper = new GraphNodeWrapper(edgeNode, m);
 				results.add(edgeNodeWrapper);
 			}
 			ret = results;
@@ -235,20 +216,14 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				if (ret == null)
 					ret = r.getEndNode().getProperty(property);
 				else
-					throw new EolRuntimeException(
-							"WARNING: a derived property (arity 1) -- ( "
-									+ property
-									+ " ) has more than 1 links in store!");
+					throw new EolRuntimeException("WARNING: a derived property (arity 1) -- ( " + property
+							+ " ) has more than 1 links in store!");
 			}
 			if (ret == null) {
-				throw new EolRuntimeException(
-						"derived attribute lookup failed for: " + object
-								+ " # " + property);
-			} else if (ret instanceof String
-					&& ((String) ret).startsWith("_NYD##")) {
+				throw new EolRuntimeException("derived attribute lookup failed for: " + object + " # " + property);
+			} else if (ret instanceof String && ((String) ret).startsWith("_NYD##")) {
 				// XXX IDEA: dynamically derive on the spot on access
-				System.err.println("attribute: " + property
-						+ " is NYD for node: " + node.getId());
+				System.err.println("attribute: " + property + " is NYD for node: " + node.getId());
 			}
 
 		} else if (canHaveMixed(node, property)) {
@@ -259,15 +234,13 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 			if (node.getProperty(property) != null) {
 
-				final List<Object> values = Arrays.asList((Object[]) node
-						.getProperty(property));
+				final List<Object> values = Arrays.asList((Object[]) node.getProperty(property));
 				retCollection.addAll(values);
 
 			}
 
 			for (IGraphEdge r : node.getOutgoingWithType(property))
-				retCollection.add(new GraphNodeWrapper(r.getEndNode().getId()
-						.toString(), m));
+				retCollection.add(new GraphNodeWrapper(r.getEndNode(), m));
 
 		} else if (canHaveAttr(node, property)) {
 
@@ -306,22 +279,18 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 			for (IGraphEdge r : node.getOutgoingWithType(property)) {
 				if (otherNodes != null)
-					otherNodes.add(new GraphNodeWrapper(r.getEndNode().getId()
-							.toString(), m));
+					otherNodes.add(new GraphNodeWrapper(r.getEndNode(), m));
 				else if (otherNode == null)
-					otherNode = new GraphNodeWrapper(r.getEndNode().getId()
-							.toString(), m);
+					otherNode = new GraphNodeWrapper(r.getEndNode(), m);
 				else
 					throw new EolRuntimeException(
-							"A relationship with arity 1 ( " + property
-									+ " ) has more than 1 links");
+							"A relationship with arity 1 ( " + property + " ) has more than 1 links");
 			}
 
 			ret = otherNodes != null ? otherNodes : otherNode;
 
 		} else {
-			throw new EolIllegalPropertyException(object, property, ast,
-					context);
+			throw new EolIllegalPropertyException(object, property, ast, context);
 		}
 
 		if (broadcastAccess)
@@ -331,8 +300,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 	}
 
-	protected Collection<GraphNodeWrapper> getCollectionForProperty(
-			final String property) {
+	protected Collection<GraphNodeWrapper> getCollectionForProperty(final String property) {
 		if (isOrdered(property) && isUnique(property))
 			return new EolOrderedSet<GraphNodeWrapper>();
 		else if (isOrdered(property))
@@ -344,8 +312,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 	}
 
 	protected void broadcastAccess(Object object, String property) {
-		accessListener.accessed(((GraphNodeWrapper) object).getId() + "",
-				property);
+		accessListener.accessed(((GraphNodeWrapper) object) + "", property);
 	}
 
 	public void setBroadcastAccess(boolean b) {
@@ -392,10 +359,8 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		return isTypeFlagActive(ref, IDX_FLAG_UNIQUE);
 	}
 
-	protected boolean canHavePropertyWithType(IGraphNode node, String property,
-			PropertyType expected) {
-		final Iterator<IGraphEdge> itTypeOf = node.getOutgoingWithType(
-				ModelElementNode.EDGE_LABEL_OFTYPE).iterator();
+	protected boolean canHavePropertyWithType(IGraphNode node, String property, PropertyType expected) {
+		final Iterator<IGraphEdge> itTypeOf = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator();
 
 		if (itTypeOf.hasNext()) {
 			featureStartingNodeClassNode = itTypeOf.next().getEndNode();
@@ -403,8 +368,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 			String value = "_null_hawk_value_error";
 
 			if (featureStartingNodeClassNode.getProperty(property) != null)
-				value = ((String[]) featureStartingNodeClassNode
-						.getProperty(property))[0];
+				value = ((String[]) featureStartingNodeClassNode.getProperty(property))[0];
 
 			final PropertyType actual = PropertyType.fromCharacter(value);
 			if (actual == expected) {
@@ -412,12 +376,8 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 			} else if (actual != PropertyType.INVALID) {
 				return false;
 			} else {
-				System.err
-						.println("property: "
-								+ property
-								+ " not found in metamodel for type: "
-								+ featureStartingNodeClassNode
-										.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+				System.err.println("property: " + property + " not found in metamodel for type: "
+						+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 			}
 		} else {
 			System.err.println("type not found for node " + node);
@@ -433,21 +393,17 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		}
 		if (featureStartingNodeClassNode.getProperty(reference) != null) {
 			// System.err.println(referenceStartingNodeClassNode.getProperty(ref).toString());
-			return ((String[]) featureStartingNodeClassNode
-					.getProperty(reference))[index].equals("t");
+			return ((String[]) featureStartingNodeClassNode.getProperty(reference))[index].equals("t");
 		}
-		System.err.println("reference: "
-				+ reference
-				+ " not found in metamodel (isMany) for type: "
-				+ featureStartingNodeClassNode
-						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+		System.err.println("reference: " + reference + " not found in metamodel (isMany) for type: "
+				+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 		return false;
 	}
 
-	public String debug(IGraphDatabase graph, GraphNodeWrapper object) {
+	public String debug(GraphNodeWrapper object) {
 
-		IGraphNode node = graph.getNodeById(object.getId());
+		IGraphNode node = object.getNode(graph);
 
 		String ret = node.toString();
 
@@ -464,13 +420,8 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 			if (n instanceof boolean[])
 				temp = Arrays.toString((boolean[]) n);
 
-			ret = ret
-					+ ("["
-							+ p
-							+ ";"
-							+ (((p.equals("class") || p.equals("superclass"))) ? (temp
-									.length() < 1000 ? temp
-									: "[<TOO LONG TO LOG (>1000chars)>]") : (n)) + "] ");
+			ret = ret + ("[" + p + ";" + (((p.equals("class") || p.equals("superclass")))
+					? (temp.length() < 1000 ? temp : "[<TOO LONG TO LOG (>1000chars)>]") : (n)) + "] ");
 		}
 
 		Collection<String> refs = new HashSet<String>();
@@ -483,7 +434,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 		return ret + "\nOF TYPE: " + new MetamodelUtils().typeOfName(node)
 
-		+ "\nWITH OUTGOING REFERENCES: " + refs;
+				+ "\nWITH OUTGOING REFERENCES: " + refs;
 	}
 
 }

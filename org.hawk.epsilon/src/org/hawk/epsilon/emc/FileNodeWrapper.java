@@ -13,6 +13,8 @@ package org.hawk.epsilon.emc;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeReference;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.graph.FileNode;
@@ -31,6 +33,11 @@ public class FileNodeWrapper implements IGraphNodeReference {
 	@Override
 	public String getId() {
 		return fileNode.getNode().getId().toString();
+	}
+
+	@Override
+	public IGraphNode getNode(IGraphDatabase g) {
+		return fileNode.getNode();
 	}
 
 	@Override
@@ -54,7 +61,7 @@ public class FileNodeWrapper implements IGraphNodeReference {
 	public List<GraphNodeWrapper> getRoots() {
 		List<GraphNodeWrapper> results = new ArrayList<>();
 		for (ModelElementNode n : fileNode.getRootModelElements()) {
-			results.add(new GraphNodeWrapper(n.getNodeId(), model));
+			results.add(new GraphNodeWrapper(n.getNode(), model));
 		}
 		return results;
 	}
@@ -62,7 +69,7 @@ public class FileNodeWrapper implements IGraphNodeReference {
 	public List<GraphNodeWrapper> getContents() {
 		List<GraphNodeWrapper> results = new ArrayList<>();
 		for (ModelElementNode n : fileNode.getModelElements()) {
-			results.add(new GraphNodeWrapper(n.getNodeId(), model));
+			results.add(new GraphNodeWrapper(n.getNode(), model));
 		}
 		return results;
 	}
