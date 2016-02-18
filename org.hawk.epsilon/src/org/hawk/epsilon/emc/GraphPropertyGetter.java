@@ -143,25 +143,10 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 			String property2 = property.substring(10);
 
-			for (IGraphEdge r : node.getIncomingWithType(property2)) {
-				if (ret == null)
-					ret = new EolBag<GraphNodeWrapper>();
-				((EolBag<GraphNodeWrapper>) ret).add(new GraphNodeWrapper(r.getStartNode(), m));
-			}
+			ret = new EolBag<GraphNodeWrapper>();
 
-			if (ret == null) {
-				if (m.enableDebugOutput) {
-					System.err.println(object);
-					System.err.println(property);
-					// throw new
-					// EolRuntimeException("REVERSE NAVIGATION FAILED (return ==
-					// null)");
-					System.err.println("REVERSE NAVIGATION FAILED (return == null), returning null");
-					// check metamodel if it can exist but is unset or
-					// return
-					// null?
-				}
-			}
+			for (IGraphEdge r : node.getIncomingWithType(property2))
+				((EolBag<GraphNodeWrapper>) ret).add(new GraphNodeWrapper(r.getStartNode(), m));
 
 		} else if (property.equals("eContainer")) {
 

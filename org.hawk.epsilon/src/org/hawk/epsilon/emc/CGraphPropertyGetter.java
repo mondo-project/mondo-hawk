@@ -111,25 +111,12 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 
 			String property2 = property.substring(10);
 
+			ret = new EolBag<GraphNodeWrapper>();
+
 			for (IGraphEdge r : node.getIncomingWithType(property2)) {
 				GraphNodeWrapper n = addIfInScope(r.getStartNode());
-				if (n != null) {
-					if (ret == null)
-						ret = new EolBag<GraphNodeWrapper>();
+				if (n != null)
 					((EolBag<GraphNodeWrapper>) ret).add(n);
-				}
-			}
-
-			if (ret == null) {
-				System.err.println(object);
-				System.err.println(property);
-				// throw new
-				// EolRuntimeException("REVERSE NAVIGATION FAILED (return ==
-				// null)");
-				System.err.println("REVERSE NAVIGATION FAILED (return == null), returning null");
-				// check metamodel if it can exist but is unset or
-				// return
-				// null?
 			}
 
 		} else if (property.equals("eContainer")) {
