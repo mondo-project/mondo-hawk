@@ -44,6 +44,10 @@ public class LocalHawkResourceFactoryImpl implements Factory {
 			hawkInstance = uri.host();
 		} else {
 			final String filePath = CommonPlugin.resolve(uri).toFileString();
+			if (filePath == null) {
+				Activator.logWarn("Could not resolve " + uri + " into a file: returning an empty resource");
+				return createEmptyResource(uri);
+			}
 			try (final BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), FILE_ENCODING))) {
 				hawkInstance = br.readLine();
 
@@ -61,19 +65,23 @@ public class LocalHawkResourceFactoryImpl implements Factory {
 				}
 			} catch (IOException e) {
 				Activator.logError("Could not read " + filePath, e);
-				return new LocalHawkResourceImpl(uri, null, isSplit, repoPatterns, filePatterns);
+				return createEmptyResource(uri);
 			}
 		}
 
 		final HUIManager manager = HUIManager.getInstance();
 		final HModel hawkModel = manager.getHawkByName(hawkInstance);
 		if (hawkModel == null) {
-			return new LocalHawkResourceImpl(uri, null, isSplit, repoPatterns, filePatterns);
+			return createEmptyResource(uri);
 		}
 		if (!hawkModel.isRunning()) {
 			hawkModel.start(manager);
 		}
 		return new LocalHawkResourceImpl(uri, hawkModel.getIndexer(), isSplit, repoPatterns, filePatterns);
+	}
+
+	protected LocalHawkResourceImpl createEmptyResource(URI uri) {
+		return new LocalHawkResourceImpl(uri, null, true, Arrays.asList("*"), Arrays.asList("*"));
 	}
 }
 ;
