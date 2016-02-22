@@ -331,14 +331,16 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	}
 
 	protected EList<EObject> fetchNodesByQueryResults(final List<Object> queryResults) throws Exception {
-		final List<String> ids = new ArrayList<>();
+		final List<ModelElementNode> nodes = new ArrayList<>();
 		for (Object r : queryResults) {
 			if (r instanceof IGraphNodeReference) {
-				final IGraphNodeReference men = (IGraphNodeReference)r;
-				ids.add(men.getId());
+				final IGraphNodeReference ref = (IGraphNodeReference)r;
+				final IGraphNode node = ref.getNode(indexer.getGraph());
+				final ModelElementNode men = new ModelElementNode(node);
+				nodes.add(men);
 			}
 		}
-		return fetchNodes(ids, false);
+		return createOrUpdateEObjects(nodes);
 	}
 
 	@Override
@@ -460,8 +462,6 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	
 			final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
 			try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
-				// TODO add back ability for filtering repos/files?
-				final List<String> all = Arrays.asList("*");
 				for (FileNode fileNode : gw.getFileNodes(repositoryPatterns, filePatterns)) {
 					for (ModelElementNode elem : fileNode.getRootModelElements()) {
 						if (!elem.isContained()) {
@@ -513,9 +513,9 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		LOGGER.warn("Hawk views are read-only: ignoring request to save");
 	}
 
-	protected List<EObject> createOrUpdateEObjects(final Iterable<ModelElementNode> elems) throws Exception {
+	protected EList<EObject> createOrUpdateEObjects(final Iterable<ModelElementNode> elems) throws Exception {
 		synchronized (nodeIdToEObjectMap) {
-			final List<EObject> eObjects = new ArrayList<>();
+			final EList<EObject> eObjects = new BasicEList<>();
 			for (final ModelElementNode me : elems) {
 				EObject eob = createOrUpdateEObject(me);
 				eObjects.add(eob);
