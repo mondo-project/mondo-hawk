@@ -68,6 +68,7 @@ public class SvnPrevManager implements IVcsManager {
 	private String username;
 	private String password;
 	private IModelIndexer indexer;
+	private boolean isFrozen = false;
 
 	/*
 	 * TODO we can't blacklist .zip as we need support for zipped Modelio
@@ -88,11 +89,10 @@ public class SvnPrevManager implements IVcsManager {
 		System.err.println("testing3");
 
 		final String vcsloc = "https://cssvn.york.ac.uk/repos/sosym/kostas/Hawk/org.hawk.emf/src/org/hawk/emf/model/examples/single/0";
-		FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(
-				new File("security.xml"), "admin".toCharArray());
+		FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(new File("security.xml"),
+				"admin".toCharArray());
 		credStore.put(vcsloc, new Credentials("kb634", String.valueOf(pass)));
-		final ModelIndexerImpl indexer = new ModelIndexerImpl(null, null,
-				credStore, new DefaultConsole());
+		final ModelIndexerImpl indexer = new ModelIndexerImpl(null, null, credStore, new DefaultConsole());
 		m.init(vcsloc, indexer);
 		m.run();
 		System.err.println("testing4");
@@ -194,7 +194,7 @@ public class SvnPrevManager implements IVcsManager {
 		this.repositoryURL = vcsloc.replace(URL_DECORATION_SUFFIX, "");
 		this.indexer = indexer;
 	}
-	
+
 	@Override
 	public void run() throws Exception {
 		try {
@@ -230,35 +230,29 @@ public class SvnPrevManager implements IVcsManager {
 
 	}
 
-	protected static SVNRepository getSVNRepository(String url,
-			String username, String password) {
+	protected static SVNRepository getSVNRepository(String url, String username, String password) {
 		SvnUtil.setupLibrary();
-		SVNRepository svnRepository = SvnUtil.connectToSVNInstance(url,
-				username, password);
+		SVNRepository svnRepository = SvnUtil.connectToSVNInstance(url, username, password);
 		return svnRepository;
 	}
 
 	@Override
-	public VcsRepositoryDelta getDelta(String startRevision, String endRevision)
-			throws Exception {
+	public VcsRepositoryDelta getDelta(String startRevision, String endRevision) throws Exception {
 
 		System.err.println(startRevision);
 		System.err.println(endRevision);
 
-		SVNRepository svnRepository = getSVNRepository(repositoryURL, username,
-				password);
+		SVNRepository svnRepository = getSVNRepository(repositoryURL, username, password);
 
 		VcsRepositoryDelta delta = new VcsRepositoryDelta();
 		delta.setManager(this);
 
-		final String rootURL = svnRepository.getRepositoryRoot(false)
-				.toDecodedString();
+		final String rootURL = svnRepository.getRepositoryRoot(false).toDecodedString();
 		final String overLappedURL = makeRelative(rootURL, repositoryURL);
 
 		if (!startRevision.equals(endRevision)) {
-			Collection<?> c = svnRepository.log(new String[] { "" }, null,
-					Long.valueOf(startRevision), Long.valueOf(endRevision),
-					true, true);
+			Collection<?> c = svnRepository.log(new String[] { "" }, null, Long.valueOf(startRevision),
+					Long.valueOf(endRevision), true, true);
 
 			for (Object o : c) {
 				SVNLogEntry svnLogEntry = (SVNLogEntry) o;
@@ -271,8 +265,7 @@ public class SvnPrevManager implements IVcsManager {
 				commit.setJavaDate(svnLogEntry.getDate());
 				delta.getCommits().add(commit);
 
-				Map<String, SVNLogEntryPath> changedPaths = svnLogEntry
-						.getChangedPaths();
+				Map<String, SVNLogEntryPath> changedPaths = svnLogEntry.getChangedPaths();
 				for (final String path : changedPaths.keySet()) {
 					SVNLogEntryPath svnLogEntryPath = changedPaths.get(path);
 
@@ -282,8 +275,7 @@ public class SvnPrevManager implements IVcsManager {
 						// Unix systems): skip
 						continue;
 					}
-					final String ext = path.substring(lastDotIndex,
-							path.length());
+					final String ext = path.substring(lastDotIndex, path.length());
 					if (EXTENSION_BLACKLIST.contains(ext)) {
 						// Blacklisted extension: skip
 						continue;
@@ -305,8 +297,7 @@ public class SvnPrevManager implements IVcsManager {
 						} else if (svnLogEntryPath.getType() == 'R') {
 							commitItem.setChangeType(VcsChangeType.REPLACED);
 						} else {
-							console.printerrln("Found unrecognised svn log entry type: "
-									+ svnLogEntryPath.getType());
+							console.printerrln("Found unrecognised svn log entry type: " + svnLogEntryPath.getType());
 							commitItem.setChangeType(VcsChangeType.UNKNOWN);
 						}
 					}
@@ -325,11 +316,10 @@ public class SvnPrevManager implements IVcsManager {
 	@Override
 	public String getCurrentRevision() throws Exception {
 
-		SVNRepository svnRepository = getSVNRepository(repositoryURL, username,
-				password);
+		SVNRepository svnRepository = getSVNRepository(repositoryURL, username, password);
 
-		Collection<SVNLogEntry> c = (Collection<SVNLogEntry>)
-			svnRepository.log(new String[] { "" }, null, 0, -1,	true, true);
+		Collection<SVNLogEntry> c = (Collection<SVNLogEntry>) svnRepository.log(new String[] { "" }, null, 0, -1, true,
+				true);
 
 		long prev = -2;
 		long head = -1;
@@ -352,10 +342,9 @@ public class SvnPrevManager implements IVcsManager {
 	 */
 	@Override
 	public String getFirstRevision() throws Exception {
-		SVNRepository svnRepository = getSVNRepository(repositoryURL, username,
-				password);
-		Collection<?> c = svnRepository.log(new String[] { "" }, null, 0,
-				Long.valueOf(getCurrentRevision()), true, true);
+		SVNRepository svnRepository = getSVNRepository(repositoryURL, username, password);
+		Collection<?> c = svnRepository.log(new String[] { "" }, null, 0, Long.valueOf(getCurrentRevision()), true,
+				true);
 
 		for (Object o : c) {
 			return String.valueOf(((SVNLogEntry) o).getRevision());
@@ -378,14 +367,12 @@ public class SvnPrevManager implements IVcsManager {
 
 	@Override
 	public void importFiles(String path, File temp) {
-		SVNRepository svnRepository = getSVNRepository(repositoryURL, username,
-				password);
+		SVNRepository svnRepository = getSVNRepository(repositoryURL, username, password);
 
 		try {
 			OutputStream o = new FileOutputStream(temp);
 
-			svnRepository.getFile(path, Long.parseLong(getCurrentRevision()),
-					new SVNProperties(), o);
+			svnRepository.getFile(path, Long.parseLong(getCurrentRevision()), new SVNProperties(), o);
 
 			o.flush();
 			o.close();
@@ -412,16 +399,11 @@ public class SvnPrevManager implements IVcsManager {
 	}
 
 	@Override
-	public void setCredentials(String username, String password,
-			ICredentialsStore credStore) {
-		if (username != null
-				&& password != null
-				&& repositoryURL != null
-				&& (!username.equals(this.username) || !password
-						.equals(this.password))) {
+	public void setCredentials(String username, String password, ICredentialsStore credStore) {
+		if (username != null && password != null && repositoryURL != null
+				&& (!username.equals(this.username) || !password.equals(this.password))) {
 			try {
-				credStore.put(repositoryURL,
-						new Credentials(username, password));
+				credStore.put(repositoryURL, new Credentials(username, password));
 			} catch (Exception e) {
 				console.printerrln("Could not save new username/password");
 				console.printerrln(e);
@@ -444,11 +426,9 @@ public class SvnPrevManager implements IVcsManager {
 	@Override
 	public List<VcsCommitItem> getDelta(String startRevision) throws Exception {
 		if (Integer.parseInt(startRevision) < 0)
-			return getDelta(getFirstRevision(), getCurrentRevision())
-					.getCompactedCommitItems();
+			return getDelta(getFirstRevision(), getCurrentRevision()).getCompactedCommitItems();
 		else
-			return getDelta(startRevision, getCurrentRevision())
-					.getCompactedCommitItems();
+			return getDelta(startRevision, getCurrentRevision()).getCompactedCommitItems();
 	}
 
 	@Override
@@ -479,5 +459,15 @@ public class SvnPrevManager implements IVcsManager {
 	@Override
 	public String getPassword() {
 		return password;
+	}
+
+	@Override
+	public boolean isFrozen() {
+		return isFrozen;
+	}
+
+	@Override
+	public void setFrozen(boolean f) {
+		isFrozen = f;
 	}
 }

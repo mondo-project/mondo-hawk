@@ -49,7 +49,7 @@ final class HVCSDialog extends TitleAreaDialog {
 
 	private final IVcsManager managerToEdit;
 	private final HModel hawkModel;
-
+	private Button freeze;
 	private ComboViewer cmbVCSType;
 	private Text txtVCSLocation;
 	private Button btnVCSBrowse;
@@ -67,7 +67,8 @@ final class HVCSDialog extends TitleAreaDialog {
 		super.create();
 		if (managerToEdit == null) {
 			setTitle("Add repository");
-			setMessage("Select the repository type, enter the location and optionally enter the authentication credentials.");
+			setMessage(
+					"Select the repository type, enter the location and optionally enter the authentication credentials.");
 		} else {
 			setTitle("Edit repository");
 			setMessage("Change the authentication credentials.");
@@ -83,7 +84,7 @@ final class HVCSDialog extends TitleAreaDialog {
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		final Composite area = (Composite)super.createDialogArea(parent);
+		final Composite area = (Composite) super.createDialogArea(parent);
 		final Composite container = new Composite(area, SWT.NONE);
 		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		final GridLayout containerLayout = new GridLayout();
@@ -191,6 +192,13 @@ final class HVCSDialog extends TitleAreaDialog {
 		}
 		txtPass.addModifyListener(new UpdateDialogModifyListener());
 
+		final Label lblFreeze = new Label(container, SWT.NONE);
+		lblFreeze.setText("Freeze repo:");
+
+		freeze = new Button(container, SWT.CHECK);
+		boolean isFrozen = managerToEdit == null ? false : managerToEdit.isFrozen();
+		freeze.setSelection(isFrozen);
+
 		return container;
 	}
 
@@ -200,8 +208,8 @@ final class HVCSDialog extends TitleAreaDialog {
 	}
 
 	private IVcsManager getSelectedVCSManager() {
-		final IStructuredSelection selection = (IStructuredSelection)cmbVCSType.getSelection();
-		return (IVcsManager)selection.getFirstElement();
+		final IStructuredSelection selection = (IStructuredSelection) cmbVCSType.getSelection();
+		return (IVcsManager) selection.getFirstElement();
 	}
 
 	private boolean isLocationValid() {
@@ -222,25 +230,22 @@ final class HVCSDialog extends TitleAreaDialog {
 
 		if (!isLocationValid()) {
 			setErrorMessage("The location is not valid");
-		}
-		else if (getSelectedVCSManager() == null) {
+		} else if (getSelectedVCSManager() == null) {
 			setErrorMessage("No VCS manager type has been selected");
-		}
-		else if ("".equals(txtUser.getText()) != "".equals(txtPass.getText())) {
+		} else if ("".equals(txtUser.getText()) != "".equals(txtPass.getText())) {
 			setErrorMessage("The username and password must be empty or not empty at the same time");
-		}
-		else {
+		} else {
 			setErrorMessage(null);
 		}
 	}
 
 	@Override
-    public void setErrorMessage(String newErrorMessage) {
-        Button okButton = getButton(IDialogConstants.OK_ID);
-        if (okButton != null) 
-            okButton.setEnabled(newErrorMessage == null);
-        super.setErrorMessage(newErrorMessage);
-    }
+	public void setErrorMessage(String newErrorMessage) {
+		Button okButton = getButton(IDialogConstants.OK_ID);
+		if (okButton != null)
+			okButton.setEnabled(newErrorMessage == null);
+		super.setErrorMessage(newErrorMessage);
+	}
 
 	private boolean isLocationValidPath() {
 		File dir = new File(txtVCSLocation.getText());
@@ -267,11 +272,12 @@ final class HVCSDialog extends TitleAreaDialog {
 		final String pass = txtPass.getText();
 
 		if (managerToEdit == null) {
-			hawkModel.addVCS(location, vcsType, user, pass);
+			hawkModel.addVCS(location, vcsType, user, pass, freeze.getSelection());
 		} else {
 			managerToEdit.setCredentials(user, pass, hawkModel.getManager().getCredentialsStore());
+			managerToEdit.setFrozen(freeze.getSelection());
 		}
 		super.okPressed();
 	}
-	
+
 }

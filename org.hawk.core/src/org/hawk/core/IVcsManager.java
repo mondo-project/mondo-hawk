@@ -99,4 +99,10 @@ public interface IVcsManager {
 	 * them into relative paths within the repository.
 	 */
 	Set<String> getPrefixesToBeStripped();
+
+	// kostas
+	boolean isFrozen();
+
+	// kostas
+	void setFrozen(boolean f);
 }

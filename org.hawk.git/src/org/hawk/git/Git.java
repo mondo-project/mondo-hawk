@@ -53,8 +53,7 @@ public class Git implements IVcsManager {
 		}
 
 		@Override
-		public FileVisitResult postVisitDirectory(Path dir, IOException exc)
-				throws IOException {
+		public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
 			final File f = dir.toFile();
 			final String currentlatest = getRevisionFromFileMetadata(f);
 			final String lastRev = recordedModifiedDates.get(dir);
@@ -67,19 +66,18 @@ public class Git implements IVcsManager {
 		}
 
 		@Override
-		public FileVisitResult preVisitDirectory(Path dir,
-				BasicFileAttributes attrs) throws IOException {
+		public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
 			// skip .git folder to avoid overhead
 			if (dir.getFileName().equals(GITMETADATAFOLDERNAME)) {
-				// System.err.println("Git monitor (preVisitDirectory): skipping .git folder");
+				// System.err.println("Git monitor (preVisitDirectory): skipping
+				// .git folder");
 				return FileVisitResult.SKIP_SUBTREE;
 			}
 			return FileVisitResult.CONTINUE;
 		}
 
 		@Override
-		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
-				throws IOException {
+		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 			final File f = file.toFile();
 			final String currentlatest = getRevisionFromFileMetadata(f);
 			final String lastRev = recordedModifiedDates.get(file);
@@ -92,8 +90,7 @@ public class Git implements IVcsManager {
 		}
 
 		@Override
-		public FileVisitResult visitFileFailed(Path file, IOException exc)
-				throws IOException {
+		public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
 			return FileVisitResult.CONTINUE;
 		}
 	}
@@ -107,6 +104,8 @@ public class Git implements IVcsManager {
 	private long currentRevision = 0;
 	private Map<Path, String> recordedModifiedDates = new HashMap<>();
 	private String repositoryURL;
+
+	private boolean isFrozen = false;
 
 	public Git() {
 
@@ -141,11 +140,9 @@ public class Git implements IVcsManager {
 	private String getCurrentRevision(boolean alter) {
 
 		try {
-			final LastModifiedFileVisitor visitor = new LastModifiedFileVisitor(
-					alter);
+			final LastModifiedFileVisitor visitor = new LastModifiedFileVisitor(alter);
 			Files.walkFileTree(rootLocation, visitor);
-			long ret = visitor.hasChanged ? (currentRevision + 1)
-					: currentRevision;
+			long ret = visitor.hasChanged ? (currentRevision + 1) : currentRevision;
 			if (alter)
 				currentRevision = ret;
 			// System.err.println(ret + " | " + alter);
@@ -166,9 +163,7 @@ public class Git implements IVcsManager {
 		try {
 			String path = URLDecoder.decode(p.replace("+", "%2B"), "UTF-8");
 			FileOperations.copyFile(
-					rootLocation.resolve(
-							path.startsWith("/") ? path.replaceFirst("/", "")
-									: path).toFile(), temp);
+					rootLocation.resolve(path.startsWith("/") ? path.replaceFirst("/", "") : path).toFile(), temp);
 		} catch (Exception e) {
 			console.printerrln(e);
 		}
@@ -200,8 +195,7 @@ public class Git implements IVcsManager {
 	}
 
 	@Override
-	public void setCredentials(String username, String password,
-			ICredentialsStore credStore) {
+	public void setCredentials(String username, String password, ICredentialsStore credStore) {
 		// ignore
 	}
 
@@ -211,8 +205,7 @@ public class Git implements IVcsManager {
 	}
 
 	@Override
-	public VcsRepositoryDelta getDelta(String startRevision, String endRevision)
-			throws Exception {
+	public VcsRepositoryDelta getDelta(String startRevision, String endRevision) throws Exception {
 
 		VcsRepositoryDelta delta = new VcsRepositoryDelta();
 		delta.setManager(this);
@@ -238,15 +231,14 @@ public class Git implements IVcsManager {
 			Path path = f.toPath();
 
 			String relativepath = makeRelative(repositoryURL,
-			// dont decode it to ensure consistency with other managers
-			// URLDecoder.decode(
+					// dont decode it to ensure consistency with other managers
+					// URLDecoder.decode(
 					f.toPath().toUri().toString()
 			// .replace("+", "%2B"),
 			// "UTF-8")
 			);
 
-			c.setPath(relativepath.startsWith("/") ? relativepath : "/"
-					+ relativepath);
+			c.setPath(relativepath.startsWith("/") ? relativepath : "/" + relativepath);
 
 			// c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 			commit.getItems().add(c);
@@ -282,13 +274,12 @@ public class Git implements IVcsManager {
 				c.setCommit(commit);
 
 				String relativepath = makeRelative(repositoryURL,
-				// URLDecoder.decode(
+						// URLDecoder.decode(
 						f.toPath().toUri().toString()
 				// .replace("+", "%2B"), "UTF-8")
 				);
 
-				c.setPath(relativepath.startsWith("/") ? relativepath
-						: ("/" + relativepath));
+				c.setPath(relativepath.startsWith("/") ? relativepath : ("/" + relativepath));
 
 				// c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 				commit.getItems().add(c);
@@ -317,7 +308,8 @@ public class Git implements IVcsManager {
 	private void addAllFiles(File dir, Set<File> ret) {
 		// skip .git folder to avoid overhead
 		if (dir.getName().equals(GITMETADATAFOLDERNAME)) {
-			// System.err.println("Git monitor (addAllFiles): skipping .git folder");
+			// System.err.println("Git monitor (addAllFiles): skipping .git
+			// folder");
 			return;
 		}
 		File[] files = dir.listFiles();
@@ -372,5 +364,15 @@ public class Git implements IVcsManager {
 	@Override
 	public String getPassword() {
 		return null;
+	}
+
+	@Override
+	public boolean isFrozen() {
+		return isFrozen;
+	}
+
+	@Override
+	public void setFrozen(boolean f) {
+		isFrozen = f;
 	}
 }

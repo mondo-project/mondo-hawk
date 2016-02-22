@@ -63,18 +63,21 @@ public class HTTPManager implements IVcsManager {
 
 	private String lastDelta;
 	private IModelIndexer indexer;
+	private boolean isFrozen = false;
 
 	@Override
 	public String getCurrentRevision() throws Exception {
 		try (final CloseableHttpClient cl = createClient()) {
 			/*
-			 * Since HTTP servers can be quite varied, we try several methods in sequence:
+			 * Since HTTP servers can be quite varied, we try several methods in
+			 * sequence:
 			 *
-			 * - ETag headers are preferred, since these explicitly check for changes.
-			 * - Otherwise, Last-Modified dates are used.
-			 * - Otherwise, Content-Length is used.
+			 * - ETag headers are preferred, since these explicitly check for
+			 * changes. - Otherwise, Last-Modified dates are used. - Otherwise,
+			 * Content-Length is used.
 			 *
-			 * We try first a HEAD request, and if that doesn't work a GET request.
+			 * We try first a HEAD request, and if that doesn't work a GET
+			 * request.
 			 */
 
 			final HttpHead headRequest = new HttpHead(repositoryURL);
@@ -151,7 +154,8 @@ public class HTTPManager implements IVcsManager {
 		// Provide username and password if specified
 		if (username != null) {
 			final BasicCredentialsProvider credProvider = new BasicCredentialsProvider();
-			credProvider.setCredentials(new AuthScope(new HttpHost(repositoryURL.getHost())), new UsernamePasswordCredentials(username, password));
+			credProvider.setCredentials(new AuthScope(new HttpHost(repositoryURL.getHost())),
+					new UsernamePasswordCredentials(username, password));
 			builder.setDefaultCredentialsProvider(credProvider);
 		}
 
@@ -272,14 +276,11 @@ public class HTTPManager implements IVcsManager {
 	}
 
 	@Override
-	public void setCredentials(String username, String password,
-			ICredentialsStore credStore) {
+	public void setCredentials(String username, String password, ICredentialsStore credStore) {
 		if (username != null && password != null && repositoryURL != null
-				&& (!username.equals(this.username)
-				|| !password.equals(this.password))) {
+				&& (!username.equals(this.username) || !password.equals(this.password))) {
 			try {
-				credStore.put(repositoryURL.toString(),
-						new Credentials(username, password));
+				credStore.put(repositoryURL.toString(), new Credentials(username, password));
 			} catch (Exception e) {
 				console.printerrln("Could not save new username/password");
 				console.printerrln(e);
@@ -319,4 +320,13 @@ public class HTTPManager implements IVcsManager {
 		return Collections.emptySet();
 	}
 
+	@Override
+	public boolean isFrozen() {
+		return isFrozen;
+	}
+
+	@Override
+	public void setFrozen(boolean f) {
+		isFrozen = f;
+	}
 }

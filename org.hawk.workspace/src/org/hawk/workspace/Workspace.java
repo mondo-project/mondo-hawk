@@ -92,6 +92,7 @@ public class Workspace implements IVcsManager {
 	private String repositoryURL;
 	private Set<IFile> previousFiles = new HashSet<>();
 	private Map<IFile, Long> recordedStamps = new HashMap<>();
+	private boolean isFrozen = false;
 
 	@Override
 	public String getFirstRevision() throws Exception {
@@ -99,8 +100,7 @@ public class Workspace implements IVcsManager {
 	}
 
 	@Override
-	public VcsRepositoryDelta getDelta(String startRevision, String endRevision)
-			throws Exception {
+	public VcsRepositoryDelta getDelta(String startRevision, String endRevision) throws Exception {
 		VcsRepositoryDelta delta = new VcsRepositoryDelta();
 		delta.setManager(this);
 
@@ -137,18 +137,16 @@ public class Workspace implements IVcsManager {
 	private Set<IFile> getAllFiles() {
 		try {
 			final Set<IFile> allFiles = new HashSet<>();
-			ResourcesPlugin.getWorkspace().getRoot()
-					.accept(new IResourceVisitor() {
-						@Override
-						public boolean visit(IResource resource)
-								throws CoreException {
-							if (resource instanceof IFile) {
-								allFiles.add((IFile) resource);
-							}
-							return true;
-						}
+			ResourcesPlugin.getWorkspace().getRoot().accept(new IResourceVisitor() {
+				@Override
+				public boolean visit(IResource resource) throws CoreException {
+					if (resource instanceof IFile) {
+						allFiles.add((IFile) resource);
+					}
+					return true;
+				}
 
-					});
+			});
 			return allFiles;
 		} catch (CoreException e) {
 			console.printerrln(e);
@@ -156,8 +154,7 @@ public class Workspace implements IVcsManager {
 		}
 	}
 
-	private void addIFile(VcsRepositoryDelta delta, IFile f,
-			final VcsChangeType changeType) {
+	private void addIFile(VcsRepositoryDelta delta, IFile f, final VcsChangeType changeType) {
 		VcsCommit commit = new VcsCommit();
 		commit.setAuthor("i am a workspace driver - no authors recorded");
 		commit.setDelta(delta);
@@ -177,8 +174,7 @@ public class Workspace implements IVcsManager {
 
 	@Override
 	public void importFiles(String path, File temp) {
-		IFile file = ResourcesPlugin.getWorkspace().getRoot()
-				.getFile(new Path(path));
+		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
 		try {
 			try (InputStream is = file.getContents()) {
 				Files.copy(is, temp.toPath());
@@ -211,8 +207,7 @@ public class Workspace implements IVcsManager {
 	@Override
 	public void shutdown() {
 		if (listener != null) {
-			ResourcesPlugin.getWorkspace().removeResourceChangeListener(
-					listener);
+			ResourcesPlugin.getWorkspace().removeResourceChangeListener(listener);
 			listener = null;
 		}
 	}
@@ -223,8 +218,7 @@ public class Workspace implements IVcsManager {
 	}
 
 	@Override
-	public void setCredentials(String username, String password,
-			ICredentialsStore credStore) {
+	public void setCredentials(String username, String password, ICredentialsStore credStore) {
 		// ignore
 	}
 
@@ -282,4 +276,13 @@ public class Workspace implements IVcsManager {
 		return null;
 	}
 
+	@Override
+	public boolean isFrozen() {
+		return isFrozen;
+	}
+
+	@Override
+	public void setFrozen(boolean f) {
+		isFrozen = f;
+	}
 }
