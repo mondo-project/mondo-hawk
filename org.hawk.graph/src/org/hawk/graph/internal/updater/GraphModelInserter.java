@@ -1259,6 +1259,7 @@ public class GraphModelInserter {
 
 		HashSet<IGraphNode> derivedPropertyNodes = new HashSet<>();
 
+		IAccessListener accessListener;
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			// operations on the graph
 			// ...
@@ -1329,42 +1330,57 @@ public class GraphModelInserter {
 			}
 
 			// derive the new property
-			IQueryEngine q = indexer.getKnownQueryLanguages().get(
-					derivationlanguage);
-			//
-			//
-			IAccessListener accessListener = q.calculateDerivedAttributes(
-					indexer, derivedPropertyNodes);
-
-			IGraphNodeIndex derivedAccessDictionary = graph
-					.getOrCreateNodeIndex("derivedaccessdictionary");
-
-			for (IAccess a : accessListener.getAccesses()) {
-
-				IGraphNode sourceNode = graph
-						.getNodeById(a.getSourceObjectID());
-
-				if (sourceNode != null)
-					derivedAccessDictionary.remove(sourceNode);
-
-			}
-
-			for (IAccess a : accessListener.getAccesses()) {
-
-				IGraphNode sourceNode = graph
-						.getNodeById(a.getSourceObjectID());
-
-				if (sourceNode != null)
-					derivedAccessDictionary.add(sourceNode,
-							a.getAccessObjectID(), a.getProperty());
-			}
+			IQueryEngine q = indexer.getKnownQueryLanguages().get(derivationlanguage);
+			accessListener = q.calculateDerivedAttributes(indexer, derivedPropertyNodes);
 
 			tx.success();
-
 		} catch (Exception e) {
 			e.printStackTrace();
+			return;
 		}
 
+		// Derive the new property (need to break up the transaction into chunks, as Neo4j cannot modify
+		// more than 65,535 Lucene indexes in the same transaction).
+		final int BATCH_SIZE = 50_000;
+		final Set<IAccess> accesses = accessListener.getAccesses();
+
+		for (Iterator<IAccess> itAccess = accesses.iterator(); itAccess.hasNext(); ) {
+			try (IGraphTransaction tx = graph.beginTransaction()) {
+				final IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex("derivedaccessdictionary");
+
+				for (int i = 0; i < BATCH_SIZE && itAccess.hasNext(); i++) {
+					final IAccess a = itAccess.next();
+					final IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
+					if (sourceNode != null) {
+						derivedAccessDictionary.remove(sourceNode);
+					}
+				}
+			
+				tx.success();
+			} catch (Exception e) {
+				e.printStackTrace();
+				return;
+			}
+		}
+
+		for (Iterator<IAccess> itAccess = accesses.iterator(); itAccess.hasNext(); ) {
+			try (IGraphTransaction tx = graph.beginTransaction()) {
+				final IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex("derivedaccessdictionary");
+
+				for (int i = 0; i < BATCH_SIZE && itAccess.hasNext(); i++) {
+					final IAccess a = itAccess.next();
+					final IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
+					if (sourceNode != null) {
+						derivedAccessDictionary.add(sourceNode,
+								a.getAccessObjectID(), a.getProperty());
+					}
+				}
+
+				tx.success();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void updateIndexedAttribute(String metamodeluri, String typename,
