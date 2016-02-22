@@ -270,7 +270,7 @@ public class HModel implements IStateListener {
 		hawk.getModelIndexer().addIndexedAttribute(metamodeluri, typename, attributename);
 	}
 
-	public void addVCS(String loc, String type, String user, String pass, boolean b) {
+	public void addVCS(String loc, String type, String user, String pass, boolean isFrozen) {
 		try {
 			IVcsManager mo = manager.createVCSManager(type);
 			mo.init(loc, hawk.getModelIndexer());
@@ -278,7 +278,7 @@ public class HModel implements IStateListener {
 			if (!this.getLocations().contains(mo.getLocation())) {
 				mo.setCredentials(user, pass, hawk.getModelIndexer().getCredentialsStore());
 				mo.run();
-				mo.setFrozen(b);
+				mo.setFrozen(isFrozen);
 				hawk.getModelIndexer().addVCSManager(mo, true);
 			}
 		} catch (Exception e) {
