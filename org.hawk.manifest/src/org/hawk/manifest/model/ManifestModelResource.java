@@ -55,7 +55,7 @@ public class ManifestModelResource implements IHawkModelResource {
 		return types.get(s);
 	}
 
-	public ManifestModelResource(String uri, IModelResourceFactory parser, Map<String, String> map) throws Exception {
+	public ManifestModelResource(String uri, IModelResourceFactory parser, Map<String, String> map) {
 		this.uri = uri;
 		this.parser = parser;
 
@@ -90,8 +90,13 @@ public class ManifestModelResource implements IHawkModelResource {
 			} else if (h instanceof BundleSymbolicNameHeader) {
 				symbolicName = ((BundleSymbolicNameHeader) h).getId();
 			} else if (h instanceof BundleVersionHeader) {
-				VersionRange r = ((BundleVersionHeader) h).getVersionRange();
-				version = r.getLeft().toString();
+				BundleVersionHeader versionHeader = ((BundleVersionHeader) h);
+				try {
+					VersionRange r = versionHeader.getVersionRange();
+					version = r.getLeft().toString();
+				} catch (IllegalArgumentException e) {
+					version = versionHeader.getMainComponent();
+				}
 			} else {
 				otherProperties.add(key + ": " + entry.getValue());
 			}

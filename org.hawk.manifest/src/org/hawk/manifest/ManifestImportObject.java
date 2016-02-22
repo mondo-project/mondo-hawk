@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.hawk.manifest;
 
-import java.util.Arrays;
-
 import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkReference;
@@ -30,7 +28,7 @@ public class ManifestImportObject extends ManifestObject {
 	private ManifestPackageObject p;
 
 	public ManifestImportObject(String[] versionRange, String optional, ManifestModelResource manifestModelResource,
-			ManifestPackageObject p) throws Exception {
+			ManifestPackageObject p) {
 
 		optionalResolution = optional != null ? optional.equals("optional") : false;
 
@@ -119,7 +117,7 @@ public class ManifestImportObject extends ManifestObject {
 		}
 	}
 
-	private void parseVersionRange(String[] versionRange) throws Exception {
+	private void parseVersionRange(String[] versionRange) {
 
 		if (versionRange == null)
 			return;
@@ -166,8 +164,10 @@ public class ManifestImportObject extends ManifestObject {
 
 		}
 
-		else
-			throw new Exception("invalid version range:" + Arrays.toString(versionRange));
+		// default to no version if range is malformed
+		// else
+		// throw new Exception("invalid version range:" +
+		// Arrays.toString(versionRange));
 	}
 
 }
