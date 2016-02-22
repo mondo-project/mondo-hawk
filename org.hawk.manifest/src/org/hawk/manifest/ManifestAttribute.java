@@ -22,7 +22,7 @@ public class ManifestAttribute extends ManifestObject implements IHawkAttribute 
 
 	private final static String CLASSNAME = "ManifestAttribute";
 
-	String name;
+	private String name;
 
 	public ManifestAttribute(String string) {
 		name = string;

@@ -18,8 +18,8 @@ import org.hawk.manifest.model.ManifestModelResource;
 
 public class ManifestPackageInstanceObject extends ManifestObject {
 
-	String version;
-	ManifestPackageObject ePackage;
+	private String version;
+	private ManifestPackageObject ePackage;
 
 	public ManifestPackageInstanceObject(String version,
 			ManifestModelResource manifestModelResource,

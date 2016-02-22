@@ -55,8 +55,7 @@ public class ManifestModelResource implements IHawkModelResource {
 		return types.get(s);
 	}
 
-	public ManifestModelResource(String uri, IModelResourceFactory parser,
-			Map<String, String> map) throws Exception {
+	public ManifestModelResource(String uri, IModelResourceFactory parser, Map<String, String> map) throws Exception {
 		this.uri = uri;
 		this.parser = parser;
 
@@ -80,16 +79,13 @@ public class ManifestModelResource implements IHawkModelResource {
 			IManifestHeader h = b.getManifestHeader(key);
 
 			if (h instanceof ExportPackageHeader) {
-				for (ExportPackageObject o : ((ExportPackageHeader) h)
-						.getPackages())
+				for (ExportPackageObject o : ((ExportPackageHeader) h).getPackages())
 					exports.add(o);
 			} else if (h instanceof ImportPackageHeader) {
-				for (ImportPackageObject o : ((ImportPackageHeader) h)
-						.getPackages())
+				for (ImportPackageObject o : ((ImportPackageHeader) h).getPackages())
 					imports.add(o);
 			} else if (h instanceof RequireBundleHeader) {
-				for (RequireBundleObject o : ((RequireBundleHeader) h)
-						.getRequiredBundles())
+				for (RequireBundleObject o : ((RequireBundleHeader) h).getRequiredBundles())
 					requires.add(o);
 			} else if (h instanceof BundleSymbolicNameHeader) {
 				symbolicName = ((BundleSymbolicNameHeader) h).getId();
@@ -102,41 +98,37 @@ public class ManifestModelResource implements IHawkModelResource {
 		}
 
 		// create elements
-		ManifestBundleObject bundle = new ManifestBundleObject(symbolicName,
-				this);
+		ManifestBundleObject bundle = new ManifestBundleObject(symbolicName, this);
 		allContents.add(bundle);
 
-		ManifestBundleInstanceObject bundleInstance = new ManifestBundleInstanceObject(
-				version, this, bundle, otherProperties);
+		ManifestBundleInstanceObject bundleInstance = new ManifestBundleInstanceObject(version, this, bundle,
+				otherProperties);
 		allContents.add(bundleInstance);
 
 		// add reference targets
 		for (RequireBundleObject o : requires) {
-			ManifestBundleObject rBundle = new ManifestBundleObject(o.getId(),
-					this);
+			ManifestBundleObject rBundle = new ManifestBundleObject(o.getId(), this);
 			allContents.add(rBundle);
-			ManifestRequiresObject req = new ManifestRequiresObject(
-					o.getAttributes("version"), this, rBundle);
+			ManifestRequiresObject req = new ManifestRequiresObject(o.getAttributes("version"),
+					o.getDirective("resolution"), this, rBundle);
 			allContents.add(req);
 			bundleInstance.addRequires(req);
 		}
 
 		for (ImportPackageObject o : imports) {
-			ManifestPackageObject iPackage = new ManifestPackageObject(
-					o.getName(), this);
+			ManifestPackageObject iPackage = new ManifestPackageObject(o.getName(), this);
 			allContents.add(iPackage);
-			ManifestImportObject imp = new ManifestImportObject(
-					o.getAttributes("version"), this, iPackage);
+			ManifestImportObject imp = new ManifestImportObject(o.getAttributes("version"),
+					o.getDirective("resolution"), this, iPackage);
 			allContents.add(imp);
 			bundleInstance.addImport(imp);
 		}
 
 		for (ExportPackageObject o : exports) {
-			ManifestPackageObject ePackage = new ManifestPackageObject(
-					o.getName(), this);
+			ManifestPackageObject ePackage = new ManifestPackageObject(o.getName(), this);
 			allContents.add(ePackage);
-			ManifestPackageInstanceObject pe = new ManifestPackageInstanceObject(
-					o.getAttribute("version"), this, ePackage);
+			ManifestPackageInstanceObject pe = new ManifestPackageInstanceObject(o.getAttribute("version"), this,
+					ePackage);
 			allContents.add(pe);
 			bundleInstance.addExport(pe);
 		}

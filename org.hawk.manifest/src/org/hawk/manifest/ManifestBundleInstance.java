@@ -17,6 +17,7 @@ import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
+import org.hawk.manifest.utils.Utils;
 
 public class ManifestBundleInstance extends ManifestClass {
 
@@ -31,14 +32,10 @@ public class ManifestBundleInstance extends ManifestClass {
 		version = new ManifestAttribute("version");
 		otherproperties = new ManifestAttribute("otherProperties");
 		references = new HashSet<>();
-		references.add(new ManifestReference("provides", false,
-				new ManifestBundle(p)));
-		references.add(new ManifestReference("requires", true,
-				new ManifestRequires(p)));
-		references.add(new ManifestReference("imports", true,
-				new ManifestImport(p)));
-		references.add(new ManifestReference("exports", true,
-				new ManifestPackageInstance(p)));
+		references.add(new ManifestReference("provides", false, new ManifestBundle(p)));
+		references.add(new ManifestReference("requires", true, new ManifestRequires(p)));
+		references.add(new ManifestReference("imports", true, new ManifestImport(p)));
+		references.add(new ManifestReference("exports", true, new ManifestPackageInstance(p)));
 	}
 
 	@Override
@@ -70,6 +67,7 @@ public class ManifestBundleInstance extends ManifestClass {
 	public Set<IHawkAttribute> getAllAttributes() {
 		Set<IHawkAttribute> ret = new HashSet<>();
 		ret.add(version);
+		ret.add(otherproperties);
 		return ret;
 	}
 
@@ -89,6 +87,14 @@ public class ManifestBundleInstance extends ManifestClass {
 			return version;
 		if (name.equals("otherProperties"))
 			return otherproperties;
+		if (name.equals("provides"))
+			return new Utils().getReference("provides", references);
+		if (name.equals("requires"))
+			return new Utils().getReference("requires", references);
+		if (name.equals("imports"))
+			return new Utils().getReference("imports", references);
+		if (name.equals("exports"))
+			return new Utils().getReference("exports", references);
 		return null;
 	}
 

@@ -49,6 +49,7 @@ public abstract class ManifestObject implements IHawkObject {
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public byte[] signature() {
 

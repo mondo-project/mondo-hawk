@@ -17,6 +17,7 @@ import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
+import org.hawk.manifest.utils.Utils;
 
 public class ManifestImport extends ManifestClass implements IHawkClass {
 
@@ -26,6 +27,7 @@ public class ManifestImport extends ManifestClass implements IHawkClass {
 	private IHawkAttribute maxVersion;
 	private IHawkAttribute isMinVersionInclusive;
 	private IHawkAttribute isMaxVersionInclusive;
+	private IHawkAttribute optionalResolution;
 
 	private HashSet<IHawkReference> references;
 
@@ -35,9 +37,9 @@ public class ManifestImport extends ManifestClass implements IHawkClass {
 		maxVersion = new ManifestAttribute("maxVersion");
 		isMinVersionInclusive = new ManifestAttribute("isMinVersionInclusive");
 		isMaxVersionInclusive = new ManifestAttribute("isMaxVersionInclusive");
+		optionalResolution = new ManifestAttribute("optionalResolution");
 		references = new HashSet<>();
-		references.add(new ManifestReference("package", false,
-				new ManifestPackage(p)));
+		references.add(new ManifestReference("package", false, new ManifestPackage(p)));
 	}
 
 	@Override
@@ -72,6 +74,7 @@ public class ManifestImport extends ManifestClass implements IHawkClass {
 		ret.add(maxVersion);
 		ret.add(isMinVersionInclusive);
 		ret.add(isMaxVersionInclusive);
+		ret.add(optionalResolution);
 		return ret;
 	}
 
@@ -95,6 +98,10 @@ public class ManifestImport extends ManifestClass implements IHawkClass {
 			return isMinVersionInclusive;
 		if (name.equals("isMaxVersionInclusive"))
 			return isMaxVersionInclusive;
+		if (name.equals("optionalResolution"))
+			return optionalResolution;
+		if (name.equals("package"))
+			return new Utils().getReference("package", references);
 		return null;
 	}
 

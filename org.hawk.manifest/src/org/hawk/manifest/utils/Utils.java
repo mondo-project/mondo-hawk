@@ -10,10 +10,14 @@
  ******************************************************************************/
 package org.hawk.manifest.utils;
 
+import java.util.Set;
+
+import org.hawk.core.model.IHawkReference;
+import org.hawk.core.model.IHawkStructuralFeature;
+
 public class Utils {
 
-	public String generateVersionRangeIdentifier(String minVersion,
-			String maxVersion, Boolean isMinVersionInclusive,
+	public String generateVersionRangeIdentifier(String minVersion, String maxVersion, Boolean isMinVersionInclusive,
 			Boolean isMaxVersionInclusive) {
 
 		if (minVersion == null)
@@ -41,6 +45,15 @@ public class Utils {
 
 		return ret;
 
+	}
+
+	public IHawkStructuralFeature getReference(String string, Set<IHawkReference> references) {
+
+		for (IHawkReference r : references)
+			if (r.getName().equals(string))
+				return r;
+
+		return null;
 	}
 
 }

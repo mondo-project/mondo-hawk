@@ -17,6 +17,7 @@ import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
+import org.hawk.manifest.utils.Utils;
 
 public class ManifestPackageInstance extends ManifestClass {
 
@@ -30,8 +31,7 @@ public class ManifestPackageInstance extends ManifestClass {
 		ep = p;
 		version = new ManifestAttribute("version");
 		references = new HashSet<>();
-		references.add(new ManifestReference("provides", false,
-				new ManifestPackage(p)));
+		references.add(new ManifestReference("provides", false, new ManifestPackage(p)));
 	}
 
 	@Override
@@ -80,6 +80,8 @@ public class ManifestPackageInstance extends ManifestClass {
 	public IHawkStructuralFeature getStructuralFeature(String name) {
 		if (name.equals("version"))
 			return version;
+		if (name.equals("provides"))
+			return new Utils().getReference("provides", references);
 		return null;
 	}
 

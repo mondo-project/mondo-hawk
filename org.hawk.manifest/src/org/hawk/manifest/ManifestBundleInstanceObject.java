@@ -33,8 +33,7 @@ public class ManifestBundleInstanceObject extends ManifestObject {
 	private Collection<ManifestImportObject> imports = new HashSet<>();
 	private Collection<ManifestPackageInstanceObject> exports = new HashSet<>();
 
-	public ManifestBundleInstanceObject(String version,
-			ManifestModelResource res, ManifestBundleObject bundle,
+	public ManifestBundleInstanceObject(String version, ManifestModelResource res, ManifestBundleObject bundle,
 			List<String> otherProperties) {
 		this.version = version;
 		this.res = res;
@@ -76,6 +75,8 @@ public class ManifestBundleInstanceObject extends ManifestObject {
 			return exports != null;
 		case "requires":
 			return requires != null;
+		case "otherProperties":
+			return otherProperties != null;
 		default:
 			return false;
 		}
@@ -90,8 +91,7 @@ public class ManifestBundleInstanceObject extends ManifestObject {
 		case "otherProperties":
 			return otherProperties;
 		default:
-			System.err.println("attribute: " + name
-					+ " not found for ManifestBundleObject, returning null");
+			System.err.println("attribute: " + name + " not found for ManifestBundleObject, returning null");
 			return null;
 		}
 	}
@@ -113,8 +113,7 @@ public class ManifestBundleInstanceObject extends ManifestObject {
 			return requires;
 		}
 		default:
-			System.err.println("attribute: " + name
-					+ " not found for ManifestBundleObject, returning null");
+			System.err.println("attribute: " + name + " not found for ManifestBundleObject, returning null");
 			return null;
 		}
 	}

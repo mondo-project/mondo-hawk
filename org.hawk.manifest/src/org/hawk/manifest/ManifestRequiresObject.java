@@ -21,16 +21,18 @@ import org.hawk.manifest.utils.Utils;
 
 public class ManifestRequiresObject extends ManifestObject {
 
-	String minVersion = null;
-	String maxVersion = null;
-	Boolean isMinVersionInclusive = null;
-	Boolean isMaxVersionInclusive = null;
+	private String minVersion = null;
+	private String maxVersion = null;
+	private Boolean isMinVersionInclusive = null;
+	private Boolean isMaxVersionInclusive = null;
+	private Boolean optionalResolution = null;
 
 	private ManifestBundleObject bundle;
 
-	public ManifestRequiresObject(String[] versionRange,
-			ManifestModelResource manifestModelResource,
+	public ManifestRequiresObject(String[] versionRange, String optional, ManifestModelResource manifestModelResource,
 			ManifestBundleObject bundle) throws Exception {
+
+		optionalResolution = optional != null ? optional.equals("optional") : false;
 
 		this.res = manifestModelResource;
 
@@ -41,20 +43,14 @@ public class ManifestRequiresObject extends ManifestObject {
 
 	@Override
 	public String getUri() {
-		return bundle.getUri()
-				+ ": "
-				+ new Utils().generateVersionRangeIdentifier(minVersion,
-						maxVersion, isMinVersionInclusive,
-						isMaxVersionInclusive);
+		return bundle.getUri() + ": " + new Utils().generateVersionRangeIdentifier(minVersion, maxVersion,
+				isMinVersionInclusive, isMaxVersionInclusive);
 	}
 
 	@Override
 	public String getUriFragment() {
-		return bundle.getUriFragment()
-				+ ": "
-				+ new Utils().generateVersionRangeIdentifier(minVersion,
-						maxVersion, isMinVersionInclusive,
-						isMaxVersionInclusive);
+		return bundle.getUriFragment() + ": " + new Utils().generateVersionRangeIdentifier(minVersion, maxVersion,
+				isMinVersionInclusive, isMaxVersionInclusive);
 	}
 
 	@Override
@@ -81,6 +77,8 @@ public class ManifestRequiresObject extends ManifestObject {
 			return isMinVersionInclusive != null;
 		case "isMaxVersionInclusive":
 			return isMaxVersionInclusive != null;
+		case "optionalResolution":
+			return optionalResolution != null;
 		default:
 			return false;
 		}
@@ -98,6 +96,8 @@ public class ManifestRequiresObject extends ManifestObject {
 			return isMinVersionInclusive;
 		case "isMaxVersionInclusive":
 			return isMaxVersionInclusive;
+		case "optionalResolution":
+			return optionalResolution;
 		default:
 			return null;
 		}
@@ -162,8 +162,7 @@ public class ManifestRequiresObject extends ManifestObject {
 		}
 
 		else
-			throw new Exception("invalid version range:"
-					+ Arrays.toString(versionRange));
+			throw new Exception("invalid version range:" + Arrays.toString(versionRange));
 	}
 
 }

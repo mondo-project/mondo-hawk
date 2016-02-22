@@ -24,10 +24,10 @@ import org.osgi.framework.Constants;
 
 public class ManifestModelResourceFactory implements IModelResourceFactory {
 
-	String type = "org.hawk.manifest.metamodel.ManifestModelParser";
-	String hrn = "Manifest Model Resource Factory";
+	private String type = "org.hawk.manifest.metamodel.ManifestModelParser";
+	private String hrn = "Manifest Model Resource Factory";
 
-	Set<String> modelExtensions;
+	private Set<String> modelExtensions;
 
 	public ManifestModelResourceFactory() {
 		modelExtensions = new HashSet<String>();

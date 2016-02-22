@@ -19,9 +19,9 @@ public class ManifestReference extends ManifestObject implements IHawkReference 
 
 	private final static String CLASSNAME = "ManifestReference";
 
-	String name;
-	boolean ismany;
-	IHawkClassifier type;
+	private String name;
+	private Boolean ismany;
+	private IHawkClassifier type;
 
 	public ManifestReference(String string, boolean ismany, IHawkClassifier type) {
 		name = string;
