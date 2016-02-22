@@ -182,6 +182,7 @@ public class Neo4JBatchUtil {
 				.setConfig(GraphDatabaseSettings.arrays_mapped_memory_size,
 						x + "M")
 				.setConfig(GraphDatabaseSettings.keep_logical_logs, "false")
+				.setConfig(GraphDatabaseSettings.allow_store_upgrade, "true")
 				// .setConfig( config )
 				.newGraphDatabase();
 
