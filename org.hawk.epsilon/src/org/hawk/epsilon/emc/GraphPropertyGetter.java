@@ -13,9 +13,11 @@ package org.hawk.epsilon.emc;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.epsilon.eol.exceptions.EolIllegalPropertyException;
@@ -61,198 +63,85 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 	protected IGraphDatabase graph;
 	protected EOLQueryEngine m;
 	protected IGraphNode featureStartingNodeClassNode = null;
+	protected AccessListener accessListener = new AccessListener();
 
-	protected static AccessListener accessListener = new AccessListener();
+	// Cache: type node -> property name -> property type 
+	protected Map<IGraphNode, Map<String, PropertyType>> propertyTypeCache = new HashMap<>();
+	protected Map<IGraphNode, Map<String, String[]>> propertyTypeFlagsCache = new HashMap<>();
 
 	public GraphPropertyGetter(IGraphDatabase graph2, EOLQueryEngine m) {
 		graph = graph2;
 		this.m = m;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Object invoke(Object object, final String property) throws EolRuntimeException {
-
-		Object ret = null;
-
-		// System.err.println("GraphPropertyGetter INVOKE: "+object+" :::::
-		// "+property);
-
-		// if (object.equals(null))
-		// throw new EolRuntimeException(
-		// "null object passed to neopropertygetter!");
-		// else
-
 		if (!(object instanceof GraphNodeWrapper))
 			throw new EolRuntimeException("a non GraphNodeWrapper object passed to GraphPropertyGetter!");
 
-		// try (IGraphTransaction tx = graph.beginTransaction()) {
-		// operations on the graph
-		// ...
-
 		IGraphNode node = ((GraphNodeWrapper) object).getNode(graph);
+		Object ret = invokePredefined(property, node);
+		if (ret == null) {
+			ret = invokeElementProperty(object, property, node);
+		}
+		if (broadcastAccess)
+			broadcastAccess(object, property);
 
-		// System.out.println(node+":::"+property);
-		// System.err.println(object+" : "+property);
+		return ret;
+	}
 
-		// avoid using switch (in the outer-most structure) to allow partial
-		// matches and method calls in alternatives
-		if (property.equals("hawkFile")) {
-
-			String sep = "";
-			StringBuilder buff = new StringBuilder(32);
-			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
-				buff.append(sep);
-				buff.append(e.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
-				sep = ";";
-
-			}
-			ret = buff.toString();
-
-		} else if (property.equals("hawkRepo")) {
-
-			String sep = "";
-			StringBuilder buff = new StringBuilder(32);
-			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
-				buff.append(sep);
-				buff.append(e.getEndNode().getProperty(FileNode.PROP_REPOSITORY).toString());
-				sep = ";";
-
-			}
-			ret = buff.toString();
-
-		} else if (property.equals("hawkFiles")) {
-
-			Set<String> files = new HashSet<>();
-			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
-				files.add(e.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
-
-			ret = files;
-
-		} else if (property.equals("hawkRepos")) {
-
-			Set<String> repos = new HashSet<>();
-			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
-				repos.add(e.getEndNode().getProperty(FileNode.PROP_REPOSITORY).toString());
-
-			ret = repos;
-
-		} else if (property.startsWith("revRefNav_")) {
-
-			// LinkedList<?> otherNodes = new LinkedList<>();
-
-			String property2 = property.substring(10);
-
-			ret = new EolBag<GraphNodeWrapper>();
-
-			for (IGraphEdge r : node.getIncomingWithType(property2))
-				((EolBag<GraphNodeWrapper>) ret).add(new GraphNodeWrapper(r.getStartNode(), m));
-
-		} else if (property.equals("eContainer")) {
-
-			// HawkClass o = new
-			// MetamodelUtils().getTypeOfFromNode(node,m.parser);
-
-			// o.isContained();
-			// System.err.println(o.eContainingFeatureName());
-
-			Iterable<IGraphEdge> inc = node.getIncoming();
-
-			for (IGraphEdge r : inc) {
-
-				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
-
-					ret = new GraphNodeWrapper(r.getStartNode(), m);
-
-					break;
-
+	protected Object invokeElementProperty(final Object obj, final String property, IGraphNode node)
+			throws EolRuntimeException, EolIllegalPropertyException {
+		PropertyType propertyType = getPropertyType(node, property);
+		switch (propertyType) {
+		case ATTRIBUTE:
+			if (node.getProperty(property) != null) {
+				// FIXMEdone handle collections / ordered etc
+				if (!(isMany(property))) {
+					return node.getProperty(property);
 				}
-
-			}
-
-			if (ret == null)
-				throw new EolRuntimeException("eContainer failed,\n" + object + "\nis not contained");
-
-		} else if (property.equals("eContents")) {
-			final List<GraphNodeWrapper> results = new ArrayList<>();
-			Iterable<IGraphEdge> out = node.getOutgoing();
-			for (IGraphEdge r : out) {
-				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
-					results.add(new GraphNodeWrapper(r.getEndNode(), m));
+				else {
+					Collection<GraphNodeWrapper> ret = getCollectionForProperty(property);
+					Object[] array = (Object[]) node.getProperty(property);
+					for (int i = 0; i < array.length; i++)
+						ret.add((GraphNodeWrapper) array[i]);
+					return ret;
 				}
+			} else {
+				return null;
 			}
-			ret = results;
-		} else if (property.equals("hawkIn") || property.equals("hawkOut")) {
-			final boolean isIncoming = property.equals("hawkIn");
-			final List<GraphNodeWrapper> results = new ArrayList<>();
-			final Iterable<IGraphEdge> edges = isIncoming ? node.getIncoming() : node.getOutgoing();
-			for (IGraphEdge r : edges) {
-				if (ModelElementNode.TRANSIENT_EDGE_LABELS.contains(r.getType())) {
-					continue;
-				}
-				final IGraphNode edgeNode = isIncoming ? r.getStartNode() : r.getEndNode();
-				final GraphNodeWrapper edgeNodeWrapper = new GraphNodeWrapper(edgeNode, m);
-				results.add(edgeNodeWrapper);
-			}
-			ret = results;
-		} else if (canHaveDerivedAttr(node, property)) {
 
+		case DERIVED:
+			Object derivedValue = null;
 			for (IGraphEdge r : node.getOutgoingWithType(property)) {
-				if (ret == null)
-					ret = r.getEndNode().getProperty(property);
-				else
+				if (derivedValue == null) {
+					derivedValue = r.getEndNode().getProperty(property);
+				} else {
 					throw new EolRuntimeException("WARNING: a derived property (arity 1) -- ( " + property
 							+ " ) has more than 1 links in store!");
+				}
 			}
-			if (ret == null) {
-				throw new EolRuntimeException("derived attribute lookup failed for: " + object + " # " + property);
-			} else if (ret instanceof String && ((String) ret).startsWith("_NYD##")) {
+
+			if (derivedValue == null) {
+				throw new EolRuntimeException("derived attribute lookup failed for: " + node + " # " + property);
+			} else if (derivedValue instanceof String && ((String) derivedValue).startsWith("_NYD##")) {
 				// XXX IDEA: dynamically derive on the spot on access
 				System.err.println("attribute: " + property + " is NYD for node: " + node.getId());
 			}
+			return derivedValue;
 
-		} else if (canHaveMixed(node, property)) {
-
-			ret = getCollectionForProperty(property);
-
-			final Collection<Object> retCollection = (Collection<Object>) ret;
-
+		case MIXED:
+			final Collection<GraphNodeWrapper> retCollection = getCollectionForProperty(property);
 			if (node.getProperty(property) != null) {
-
-				final List<Object> values = Arrays.asList((Object[]) node.getProperty(property));
+				final List<GraphNodeWrapper> values = Arrays.asList((GraphNodeWrapper[]) node.getProperty(property));
 				retCollection.addAll(values);
-
 			}
-
-			for (IGraphEdge r : node.getOutgoingWithType(property))
+			for (IGraphEdge r : node.getOutgoingWithType(property)) {
 				retCollection.add(new GraphNodeWrapper(r.getEndNode(), m));
-
-		} else if (canHaveAttr(node, property)) {
-
-			if (node.getProperty(property) != null) {
-				// FIXMEdone handle collections / ordered etc
-				if (!(isMany(property)))
-					ret = node.getProperty(property);
-				else {
-
-					ret = getCollectionForProperty(property);
-
-					Object[] array = ((Object[]) node.getProperty(property));
-
-					for (int i = 0; i < array.length; i++)
-						((Collection<Object>) ret).add(array[i]);
-
-				}
-			} else
-			// return new NeoIdWrapper(0L, m);
-			{
-				// ret = "UNSET";
-				ret = null;
-				// throw new EolRuntimeException("unset property");
 			}
+			return retCollection;
 
-		} else if (canHaveRef(node, property)) {
-
+		case REFERENCE:
 			GraphNodeWrapper otherNode = null;
 			Collection<GraphNodeWrapper> otherNodes = null;
 
@@ -272,17 +161,117 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 							"A relationship with arity 1 ( " + property + " ) has more than 1 links");
 			}
 
-			ret = otherNodes != null ? otherNodes : otherNode;
-
-		} else {
-			throw new EolIllegalPropertyException(object, property, ast, context);
+			return otherNodes != null ? otherNodes : otherNode;
+		default:
+			throw new EolIllegalPropertyException(obj, property, ast, context);
 		}
+	}
 
-		if (broadcastAccess)
-			broadcastAccess(object, property);
+	protected Object invokePredefined(final String property, IGraphNode node) throws EolRuntimeException {
+		// avoid using switch (in the outer-most structure) to allow partial
+		// matches and method calls in alternatives
+		if (property.equals("hawkFile")) {
 
-		return ret;
+			String sep = "";
+			StringBuilder buff = new StringBuilder(32);
+			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+				buff.append(sep);
+				buff.append(e.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
+				sep = ";";
 
+			}
+			return buff.toString();
+
+		} else if (property.equals("hawkRepo")) {
+
+			String sep = "";
+			StringBuilder buff = new StringBuilder(32);
+			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+				buff.append(sep);
+				buff.append(e.getEndNode().getProperty(FileNode.PROP_REPOSITORY).toString());
+				sep = ";";
+
+			}
+			return buff.toString();
+
+		} else if (property.equals("hawkFiles")) {
+
+			Set<String> files = new HashSet<>();
+			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
+				files.add(e.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
+
+			return files;
+
+		} else if (property.equals("hawkRepos")) {
+
+			Set<String> repos = new HashSet<>();
+			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
+				repos.add(e.getEndNode().getProperty(FileNode.PROP_REPOSITORY).toString());
+
+			return repos;
+
+		} else if (property.startsWith("revRefNav_")) {
+
+			// LinkedList<?> otherNodes = new LinkedList<>();
+
+			String property2 = property.substring(10);
+
+			EolBag<GraphNodeWrapper> ret = new EolBag<GraphNodeWrapper>();
+
+			for (IGraphEdge r : node.getIncomingWithType(property2))
+				ret.add(new GraphNodeWrapper(r.getStartNode(), m));
+
+			return ret;
+		} else if (property.equals("eContainer")) {
+
+			// HawkClass o = new
+			// MetamodelUtils().getTypeOfFromNode(node,m.parser);
+
+			// o.isContained();
+			// System.err.println(o.eContainingFeatureName());
+
+			Iterable<IGraphEdge> inc = node.getIncoming();
+			GraphNodeWrapper ret = null;
+			for (IGraphEdge r : inc) {
+				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
+
+					ret = new GraphNodeWrapper(r.getStartNode(), m);
+
+					break;
+
+				}
+
+			}
+
+			if (ret == null)
+				throw new EolRuntimeException("eContainer failed,\n" + node + "\nis not contained");
+
+			return ret;
+		} else if (property.equals("eContents")) {
+			final List<GraphNodeWrapper> results = new ArrayList<>();
+			Iterable<IGraphEdge> out = node.getOutgoing();
+			for (IGraphEdge r : out) {
+				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
+					results.add(new GraphNodeWrapper(r.getEndNode(), m));
+				}
+			}
+			return results;
+		} else if (property.equals("hawkIn") || property.equals("hawkOut")) {
+			final boolean isIncoming = property.equals("hawkIn");
+			final List<GraphNodeWrapper> results = new ArrayList<>();
+			final Iterable<IGraphEdge> edges = isIncoming ? node.getIncoming() : node.getOutgoing();
+			for (IGraphEdge r : edges) {
+				if (ModelElementNode.TRANSIENT_EDGE_LABELS.contains(r.getType())) {
+					continue;
+				}
+				final IGraphNode edgeNode = isIncoming ? r.getStartNode() : r.getEndNode();
+				final GraphNodeWrapper edgeNodeWrapper = new GraphNodeWrapper(edgeNode, m);
+				results.add(edgeNodeWrapper);
+			}
+			return results;
+		} else {
+			return null;
+		}
 	}
 
 	protected Collection<GraphNodeWrapper> getCollectionForProperty(final String property) {
@@ -317,19 +306,19 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 	}
 
 	protected boolean canHaveDerivedAttr(IGraphNode node, String property) {
-		return canHavePropertyWithType(node, property, PropertyType.DERIVED);
+		return getPropertyType(node, property) == PropertyType.DERIVED;
 	}
 
 	protected boolean canHaveMixed(IGraphNode node, String property) {
-		return canHavePropertyWithType(node, property, PropertyType.MIXED);
+		return getPropertyType(node, property) == PropertyType.MIXED;
 	}
 
 	protected boolean canHaveAttr(IGraphNode node, String property) {
-		return canHavePropertyWithType(node, property, PropertyType.ATTRIBUTE);
+		return getPropertyType(node, property) == PropertyType.ATTRIBUTE;
 	}
 
 	protected boolean canHaveRef(IGraphNode node, String property) {
-		return canHavePropertyWithType(node, property, PropertyType.REFERENCE);
+		return getPropertyType(node, property) == PropertyType.REFERENCE;
 	}
 
 	protected boolean isMany(String ref) {
@@ -344,31 +333,37 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		return isTypeFlagActive(ref, IDX_FLAG_UNIQUE);
 	}
 
-	protected boolean canHavePropertyWithType(IGraphNode node, String property, PropertyType expected) {
+	protected PropertyType getPropertyType(IGraphNode node, String property) {
 		final Iterator<IGraphEdge> itTypeOf = node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator();
 
 		if (itTypeOf.hasNext()) {
 			featureStartingNodeClassNode = itTypeOf.next().getEndNode();
-
-			String value = "_null_hawk_value_error";
-
-			if (featureStartingNodeClassNode.getProperty(property) != null)
-				value = ((String[]) featureStartingNodeClassNode.getProperty(property))[0];
-
-			final PropertyType actual = PropertyType.fromCharacter(value);
-			if (actual == expected) {
-				return true;
-			} else if (actual != PropertyType.INVALID) {
-				return false;
-			} else {
-				System.err.println("property: " + property + " not found in metamodel for type: "
-						+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+			Map<String, PropertyType> knownProperties = propertyTypeCache.get(featureStartingNodeClassNode);
+			if (knownProperties == null) {
+				knownProperties = new HashMap<>();
+				propertyTypeCache.put(featureStartingNodeClassNode, knownProperties);
 			}
+
+			PropertyType actual = knownProperties.get(property);
+			if (actual == null) {
+				String value = "_null_hawk_value_error";
+
+				if (featureStartingNodeClassNode.getProperty(property) != null)
+					value = ((String[]) featureStartingNodeClassNode.getProperty(property))[0];
+
+				actual = PropertyType.fromCharacter(value);
+				if (actual == PropertyType.INVALID) {
+					System.err.println("property: " + property + " not found in metamodel for type: "
+							+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
+				}
+				knownProperties.put(property, actual);
+			}
+			return actual;
 		} else {
 			System.err.println("type not found for node " + node);
 		}
 
-		return false;
+		return PropertyType.INVALID;
 	}
 
 	protected boolean isTypeFlagActive(String reference, final int index) {
@@ -376,13 +371,24 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 			System.err.println("type not found previously for " + reference);
 			return false;
 		}
-		if (featureStartingNodeClassNode.getProperty(reference) != null) {
-			// System.err.println(referenceStartingNodeClassNode.getProperty(ref).toString());
-			return ((String[]) featureStartingNodeClassNode.getProperty(reference))[index].equals("t");
+
+		// Cache type flags
+		Map<String, String[]> knownTypeFlags = propertyTypeFlagsCache.get(featureStartingNodeClassNode);
+		if (knownTypeFlags == null) {
+			knownTypeFlags = new HashMap<>();
+			propertyTypeFlagsCache.put(featureStartingNodeClassNode, knownTypeFlags);
 		}
+		String[] typeFlags = knownTypeFlags.get(reference);
+		if (typeFlags == null && featureStartingNodeClassNode.getProperty(reference) != null) {
+			typeFlags = (String[]) featureStartingNodeClassNode.getProperty(reference);
+			knownTypeFlags.put(reference, typeFlags);
+		}
+		if (typeFlags != null) {
+			return typeFlags[index].equals("t");
+		}
+
 		System.err.println("reference: " + reference + " not found in metamodel (isMany) for type: "
 				+ featureStartingNodeClassNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
-
 		return false;
 	}
 
