@@ -335,7 +335,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		for (Object r : queryResults) {
 			if (r instanceof IGraphNodeReference) {
 				final IGraphNodeReference ref = (IGraphNodeReference)r;
-				final IGraphNode node = ref.getNode(indexer.getGraph());
+				final IGraphNode node = ref.getNode();
 				final ModelElementNode men = new ModelElementNode(node);
 				nodes.add(men);
 			}

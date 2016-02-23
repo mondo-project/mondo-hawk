@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTypeNodeReference;
 import org.hawk.core.query.IQueryEngine;
@@ -38,7 +37,7 @@ public class TypeNodeWrapper implements IGraphTypeNodeReference {
 	}
 
 	@Override
-	public IGraphNode getNode(IGraphDatabase g) {
+	public IGraphNode getNode() {
 		return typeNode.getNode();
 	}
 

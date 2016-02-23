@@ -23,7 +23,7 @@ public interface IGraphNodeReference {
 	 * @param graph
 	 * @return
 	 */
-	IGraphNode getNode(IGraphDatabase graph);
+	IGraphNode getNode();
 
 	String getTypeName();
 

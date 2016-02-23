@@ -36,14 +36,13 @@ public class GraphNodeWrapper implements IGraphNodeReference {
 	}
 
 	@Override
-	public IGraphNode getNode(IGraphDatabase graph) {
+	public IGraphNode getNode() {
 		IGraphNode ret = node.get();
 		if (ret == null) {
-			ret = graph.getNodeById(id);
+			ret = containerModel.getBackend().getNodeById(id);
 			node = new WeakReference<IGraphNode>(ret);
 		}
 		return ret;
-
 	}
 
 	@Override

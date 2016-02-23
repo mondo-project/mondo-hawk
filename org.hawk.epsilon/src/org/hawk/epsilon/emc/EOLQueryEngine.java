@@ -247,7 +247,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			// ...
 
 			Object type = getTypeOf(arg0);
-			IGraphNode typeNode = ((GraphNodeWrapper) type).getNode(graph);
+			IGraphNode typeNode = ((GraphNodeWrapper) type).getNode();
 
 			ret = typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 		} catch (Exception e) {
@@ -263,7 +263,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 		try {
 
-			IGraphNode objectNode = ((GraphNodeWrapper) arg0).getNode(graph);
+			IGraphNode objectNode = ((GraphNodeWrapper) arg0).getNode();
 
 			// operations on the graph
 			// ...
@@ -292,7 +292,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		IGraphNode fileNode = null;
 
 		try {
-			IGraphNode objectNode = ((GraphNodeWrapper) arg0).getNode(graph);
+			IGraphNode objectNode = ((GraphNodeWrapper) arg0).getNode();
 			fileNode = objectNode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE).iterator().next().getEndNode();
 		} catch (Exception e) {
 			System.err.println("error in getFileOf, returning null");
@@ -580,15 +580,10 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			e.printStackTrace();
 		}
 		if (id != null) {
-
 			return metaClass.equals(id) || metaClass.equals(id.substring(id.lastIndexOf("/") + 1));
 		} else {
-
 			return false;
 		}
-		// doesn't exist in database
-		// tx.success();tx.close();
-
 	}
 
 	protected StringProperties getDefaultDatabaseConfig() {

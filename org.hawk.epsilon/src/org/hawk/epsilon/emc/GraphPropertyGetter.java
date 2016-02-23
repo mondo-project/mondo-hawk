@@ -79,7 +79,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		if (!(object instanceof GraphNodeWrapper))
 			throw new EolRuntimeException("a non GraphNodeWrapper object passed to GraphPropertyGetter!");
 
-		IGraphNode node = ((GraphNodeWrapper) object).getNode(graph);
+		IGraphNode node = ((GraphNodeWrapper) object).getNode();
 		Object ret = invokePredefined(property, node);
 		if (ret == null) {
 			ret = invokeElementProperty(object, property, node);
@@ -394,7 +394,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 	public String debug(GraphNodeWrapper object) {
 
-		IGraphNode node = object.getNode(graph);
+		IGraphNode node = object.getNode();
 
 		String ret = node.toString();
 

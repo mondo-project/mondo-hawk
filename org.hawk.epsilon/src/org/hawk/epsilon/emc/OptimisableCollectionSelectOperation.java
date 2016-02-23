@@ -68,7 +68,7 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 
 			graph = model.getBackend();
 			try (IGraphTransaction ignored = graph.beginTransaction()) {
-				metaclass = ((OptimisableCollection) target).type.getNode(graph);
+				metaclass = ((OptimisableCollection) target).type.getNode();
 				ignored.success();
 			} catch (Exception e) {
 				e.printStackTrace();

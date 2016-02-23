@@ -58,7 +58,7 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 		// operations on the graph
 		// ...
 
-		IGraphNode node = ((GraphNodeWrapper) object).getNode(graph);
+		IGraphNode node = ((GraphNodeWrapper) object).getNode();
 
 		// System.out.println(node+":::"+property);
 		// System.err.println(object+" : "+property);
