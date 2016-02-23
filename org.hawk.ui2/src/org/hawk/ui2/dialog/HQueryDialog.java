@@ -252,6 +252,8 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		queryButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 
+				long start = System.currentTimeMillis();
+				
 				try {
 
 					String ql = null;
@@ -320,6 +322,11 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 					resultField.setStyleRange(createRedBoldRange(error.length()));
 					ex.printStackTrace();
 				}
+				
+				long end = System.currentTimeMillis();
+				long time = end-start;
+				setMessage("Query took: "+time/1000+"s "+time%1000+"ms",0);
+				
 			}
 		});
 
