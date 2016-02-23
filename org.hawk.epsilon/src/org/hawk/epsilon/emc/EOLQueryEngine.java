@@ -556,19 +556,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		String id = null;
 
 		try {
-			// operations on the graph
-			// ...
-
-			// System.err.println(instance);
-
-			IGraphNode objectNode = ((GraphNodeWrapper) instance).getNode(graph);
-
-			IGraphNode typeNode = null;
-
-			// String[] splitId = null;
 			try {
-				typeNode = objectNode.getOutgoingWithType(typeorkind).iterator().next().getEndNode();
-				id = typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+				id = ((GraphNodeWrapper) instance).getTypeName();
 			} catch (Exception e) {
 				// dont have a type - only if you are iterating all the
 				// nodes even the metanodes
