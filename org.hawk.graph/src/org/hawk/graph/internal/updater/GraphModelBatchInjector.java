@@ -78,17 +78,28 @@ public class GraphModelBatchInjector {
 	private final IGraphChangeListener listener;
 	private final VcsCommitItem commitItem;
 
+	private Mode previousMode = Mode.UNKNOWN;
+
 	private void refreshIndexes() throws Exception {
 
-		if (graph.currentMode().equals(Mode.TX_MODE)) {
+		// only do it if db state changed to avoid overhead
+		Mode currentMode = graph.currentMode();
 
-			try (IGraphTransaction t = graph.beginTransaction()) {
+		if (previousMode != currentMode) {
+
+			previousMode = currentMode;
+
+			if (graph.currentMode().equals(Mode.TX_MODE)) {
+
+				try (IGraphTransaction t = graph.beginTransaction()) {
+					refreshIx();
+					t.success();
+				}
+
+			} else {
 				refreshIx();
-				t.success();
 			}
 
-		} else {
-			refreshIx();
 		}
 
 	}
@@ -222,6 +233,7 @@ public class GraphModelBatchInjector {
 			listener.changeFailure();
 		} finally {
 			// graph.exitBatchMode();
+			//System.err.println("INDEXERDEBUG: " + debug / 1000 + "s " + debug % 1000 + "ms");
 		}
 	}
 
