@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/logback-classic-1.1.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/logback-core-1.1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/geronimo-jta_1.1_spec-1.1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/logback-classic-1.0.9.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/logback-core-1.0.9.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-core-3.6.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-csv-2.2.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-io-2.2.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-jmx-2.2.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-kernel-2.2.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-lucene-index-2.2.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-primitive-collections-2.2.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-unsafe-2.2.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/slf4j-api-1.7.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-jmx-2.0.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-kernel-2.0.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-lucene-index-2.0.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/slf4j-api-1.6.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
