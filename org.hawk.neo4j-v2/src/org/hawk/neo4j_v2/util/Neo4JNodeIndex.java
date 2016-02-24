@@ -40,15 +40,11 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 		this.name = name;
 
 		if (neo4jDatabase.getGraph() != null)
-			index = neo4jDatabase.getIndexer().forNodes(
-					name,
-					MapUtil.stringMap(IndexManager.PROVIDER, "lucene", "type",
-							"exact"));
+			index = neo4jDatabase.getIndexer().forNodes(name,
+					MapUtil.stringMap(IndexManager.PROVIDER, "lucene", "type", "exact"));
 		else
-			batchIndex = neo4jDatabase.getBatchIndexer().nodeIndex(
-					name,
-					MapUtil.stringMap(IndexManager.PROVIDER, "lucene", "type",
-							"exact"));
+			batchIndex = neo4jDatabase.getBatchIndexer().nodeIndex(name,
+					MapUtil.stringMap(IndexManager.PROVIDER, "lucene", "type", "exact"));
 
 	}
 
@@ -57,11 +53,9 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 		if (index != null)
 			index.delete();
 		else if (batchIndex != null)
-			System.err
-					.println("invoked delete(self) on a batchindex, this is not supported");
+			System.err.println("invoked delete(self) on a batchindex, this is not supported");
 		else
-			System.err
-					.println("invoked delete(self) on a null index, nothing happened.");
+			System.err.println("invoked delete(self) on a null index, nothing happened.");
 	}
 
 	public String getName() {
@@ -77,15 +71,12 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 	 */
 	public IGraphIterable<IGraphNode> query(String key, Object valueExpr) {
 
-		valueExpr = QueryParser.escape(valueExpr.toString())
-				.replace("\\*", "*");
+		valueExpr = QueryParser.escape(valueExpr.toString()).replace("\\*", "*");
 
 		if (index != null) {
-			return new Neo4JIterable<IGraphNode>(index.query(key, valueExpr),
-					graph);
+			return new Neo4JIterable<IGraphNode>(index.query(key, valueExpr), graph);
 		} else {
-			return new Neo4JIterable<IGraphNode>(batchIndex.query(key,
-					valueExpr), graph);
+			return new Neo4JIterable<IGraphNode>(batchIndex.query(key, valueExpr), graph);
 		}
 	}
 
@@ -95,11 +86,9 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 		// StringFormatter.escapeLuceneAllSpecalCharacters(valueExpr);
 
 		if (index != null) {
-			return new Neo4JIterable<IGraphNode>(index.get(key, valueExpr),
-					graph);
+			return new Neo4JIterable<IGraphNode>(index.get(key, valueExpr), graph);
 		} else {
-			return new Neo4JIterable<IGraphNode>(
-					batchIndex.get(key, valueExpr), graph);
+			return new Neo4JIterable<IGraphNode>(batchIndex.get(key, valueExpr), graph);
 		}
 	}
 
@@ -110,13 +99,11 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 			return;
 		}
 
-		if (value instanceof Integer || value instanceof Long
-				|| value instanceof Double)
+		if (value instanceof Integer || value instanceof Long || value instanceof Double)
 			wrappedValue = new ValueContext(value).indexNumeric();
 
 		if (index != null) {
-			index.add(graph.getGraph().getNodeById((long) n.getId()), s,
-					wrappedValue);
+			index.add(graph.getGraph().getNodeById((long) n.getId()), s, wrappedValue);
 		} else {
 			Map<String, Object> m = new HashMap<>();
 			m.put(s, wrappedValue);
@@ -143,14 +130,11 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 					continue;
 				}
 
-				if (wrappedValue instanceof Integer
-						|| wrappedValue instanceof Long
-						|| wrappedValue instanceof Double)
+				if (wrappedValue instanceof Integer || wrappedValue instanceof Long || wrappedValue instanceof Double)
 					wrappedValue = new ValueContext(m.get(s)).indexNumeric();
 
 				try {
-				index.add(graph.getGraph().getNodeById((long) n.getId()), s,
-						wrappedValue);
+					index.add(graph.getGraph().getNodeById((long) n.getId()), s, wrappedValue);
 				} catch (NullPointerException ex) {
 					System.err.println("NPE!");
 				}
@@ -166,9 +150,7 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 					continue;
 				}
 
-				if (wrappedValue instanceof Integer
-						|| wrappedValue instanceof Long
-						|| wrappedValue instanceof Double)
+				if (wrappedValue instanceof Integer || wrappedValue instanceof Long || wrappedValue instanceof Double)
 					wrappedValue = new ValueContext(m.get(s)).indexNumeric();
 
 				wrappedMap.put(s, wrappedValue);
@@ -183,40 +165,35 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 	public void flush() {
 
 		if (batchIndex != null) {
-			System.err.println("WARNING flush called on: " + batchIndex
-					+ "(batch mode) this will affect performance.");
+			// System.err.println("WARNING flush called on: " + batchIndex
+			// + "(batch mode) this will affect performance.");
 			batchIndex.flush();
 		}
 	}
 
 	@Override
-	public IGraphIterable<IGraphNode> query(String key, int from, int to,
-			boolean fromInclusive, boolean toInclusive) {
+	public IGraphIterable<IGraphNode> query(String key, int from, int to, boolean fromInclusive, boolean toInclusive) {
 
 		if (index != null) {
-			return new Neo4JIterable<IGraphNode>(index.query(QueryContext
-					.numericRange(key, from, to, fromInclusive, toInclusive)),
-					graph);
+			return new Neo4JIterable<IGraphNode>(
+					index.query(QueryContext.numericRange(key, from, to, fromInclusive, toInclusive)), graph);
 		} else {
-			return new Neo4JIterable<IGraphNode>(batchIndex.query(QueryContext
-					.numericRange(key, from, to, fromInclusive, toInclusive)),
-					graph);
+			return new Neo4JIterable<IGraphNode>(
+					batchIndex.query(QueryContext.numericRange(key, from, to, fromInclusive, toInclusive)), graph);
 		}
 
 	}
 
 	@Override
-	public IGraphIterable<IGraphNode> query(String key, double from, double to,
-			boolean fromInclusive, boolean toInclusive) {
+	public IGraphIterable<IGraphNode> query(String key, double from, double to, boolean fromInclusive,
+			boolean toInclusive) {
 
 		if (index != null) {
-			return new Neo4JIterable<IGraphNode>(index.query(QueryContext
-					.numericRange(key, from, to, fromInclusive, toInclusive)),
-					graph);
+			return new Neo4JIterable<IGraphNode>(
+					index.query(QueryContext.numericRange(key, from, to, fromInclusive, toInclusive)), graph);
 		} else {
-			return new Neo4JIterable<IGraphNode>(batchIndex.query(QueryContext
-					.numericRange(key, from, to, fromInclusive, toInclusive)),
-					graph);
+			return new Neo4JIterable<IGraphNode>(
+					batchIndex.query(QueryContext.numericRange(key, from, to, fromInclusive, toInclusive)), graph);
 		}
 
 	}
@@ -231,8 +208,7 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 			try {
 				node = g.getNodeById(l);
 			} catch (Exception e) {
-				System.err.println("tried to remove node: " + l
-						+ " from index " + name + " but it does not exist");
+				System.err.println("tried to remove node: " + l + " from index " + name + " but it does not exist");
 			}
 
 			if (node != null) {
@@ -247,12 +223,10 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 					index.remove(node, key, value);
 
 			} else
-				System.err.println("tried to remove node: " + l
-						+ " from index " + name + " but it does not exist");
+				System.err.println("tried to remove node: " + l + " from index " + name + " but it does not exist");
 
 		} else {
-			System.err
-					.println("invoked remove on a batchindex, this is not supported");
+			System.err.println("invoked remove on a batchindex, this is not supported");
 		}
 
 	}

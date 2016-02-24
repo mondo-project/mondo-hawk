@@ -109,8 +109,7 @@ public class Neo4JNode implements IGraphNode {
 				node = graph.getGraph().getNodeById(id);
 			return new Neo4JIterable<IGraphEdge>(node.getRelationships(), graph);
 		} else {
-			return new Neo4JIterable<IGraphEdge>(graph.getBatch()
-					.getRelationships(id), graph);
+			return new Neo4JIterable<IGraphEdge>(graph.getBatch().getRelationships(id), graph);
 		}
 
 	}
@@ -121,13 +120,12 @@ public class Neo4JNode implements IGraphNode {
 		if (graph.getGraph() != null) {
 			if (node == null)
 				node = graph.getGraph().getNodeById(id);
-			return new Neo4JIterable<IGraphEdge>(
-					node.getRelationships(getNewRelationshipType(type)), graph);
+			return new Neo4JIterable<IGraphEdge>(node.getRelationships(getNewRelationshipType(type)), graph);
 		} else {
-			System.err
-					.println("warning batch neo4j does not support getting edges with type, returning all edges instead");
-			return new Neo4JIterable<IGraphEdge>(graph.getBatch()
-					.getRelationships(id), graph);
+			// System.err
+			// .println("warning batch neo4j does not support getting edges with
+			// type, returning all edges instead");
+			return new Neo4JIterable<IGraphEdge>(graph.getBatch().getRelationships(id), graph);
 		}
 
 	}
@@ -138,13 +136,13 @@ public class Neo4JNode implements IGraphNode {
 		if (graph.getGraph() != null) {
 			if (node == null)
 				node = graph.getGraph().getNodeById(id);
-			return new Neo4JIterable<IGraphEdge>(node.getRelationships(
-					getNewRelationshipType(type), Direction.OUTGOING), graph);
+			return new Neo4JIterable<IGraphEdge>(
+					node.getRelationships(getNewRelationshipType(type), Direction.OUTGOING), graph);
 		} else {
-			System.err
-					.println("warning batch neo4j does not support getting outgoing edges with type, returning all edges instead");
-			return new Neo4JIterable<IGraphEdge>(graph.getBatch()
-					.getRelationships(id), graph);
+			// System.err
+			// .println("warning batch neo4j does not support getting outgoing
+			// edges with type, returning all edges instead");
+			return new Neo4JIterable<IGraphEdge>(graph.getBatch().getRelationships(id), graph);
 		}
 	}
 
@@ -154,13 +152,13 @@ public class Neo4JNode implements IGraphNode {
 		if (graph.getGraph() != null) {
 			if (node == null)
 				node = graph.getGraph().getNodeById(id);
-			return new Neo4JIterable<IGraphEdge>(node.getRelationships(
-					getNewRelationshipType(type), Direction.INCOMING), graph);
+			return new Neo4JIterable<IGraphEdge>(
+					node.getRelationships(getNewRelationshipType(type), Direction.INCOMING), graph);
 		} else {
-			System.err
-					.println("warning batch neo4j does not support getting incoming edges with type, returning all edges instead");
-			return new Neo4JIterable<IGraphEdge>(graph.getBatch()
-					.getRelationships(id), graph);
+			// System.err
+			// .println("warning batch neo4j does not support getting incoming
+			// edges with type, returning all edges instead");
+			return new Neo4JIterable<IGraphEdge>(graph.getBatch().getRelationships(id), graph);
 		}
 	}
 
@@ -169,13 +167,12 @@ public class Neo4JNode implements IGraphNode {
 		if (graph.getGraph() != null) {
 			if (node == null)
 				node = graph.getGraph().getNodeById(id);
-			return new Neo4JIterable<IGraphEdge>(
-					node.getRelationships(Direction.INCOMING), graph);
+			return new Neo4JIterable<IGraphEdge>(node.getRelationships(Direction.INCOMING), graph);
 		} else {
-			System.err
-					.println("warning batch neo4j does not support getting incoming edges, returning all edges instead");
-			return new Neo4JIterable<IGraphEdge>(graph.getBatch()
-					.getRelationships(id), graph);
+			// System.err
+			// .println("warning batch neo4j does not support getting incoming
+			// edges, returning all edges instead");
+			return new Neo4JIterable<IGraphEdge>(graph.getBatch().getRelationships(id), graph);
 		}
 	}
 
@@ -184,13 +181,12 @@ public class Neo4JNode implements IGraphNode {
 		if (graph.getGraph() != null) {
 			if (node == null)
 				node = graph.getGraph().getNodeById(id);
-			return new Neo4JIterable<IGraphEdge>(
-					node.getRelationships(Direction.OUTGOING), graph);
+			return new Neo4JIterable<IGraphEdge>(node.getRelationships(Direction.OUTGOING), graph);
 		} else {
-			System.err
-					.println("warning batch neo4j does not support getting outgoing edges, returning all edges instead");
-			return new Neo4JIterable<IGraphEdge>(graph.getBatch()
-					.getRelationships(id), graph);
+			// System.err
+			// .println("warning batch neo4j does not support getting outgoing
+			// edges, returning all edges instead");
+			return new Neo4JIterable<IGraphEdge>(graph.getBatch().getRelationships(id), graph);
 		}
 	}
 
@@ -200,8 +196,7 @@ public class Neo4JNode implements IGraphNode {
 		if (graph.getGraph() != null)
 			node.delete();
 		else
-			System.err
-					.println("delete called on a batch connector to neo4j, exit batch mode first");
+			System.err.println("delete called on a batch connector to neo4j, exit batch mode first");
 
 	}
 
@@ -211,8 +206,7 @@ public class Neo4JNode implements IGraphNode {
 		if (!(o instanceof Neo4JNode))
 			return false;
 		else
-			return id.equals(((Neo4JNode) o).getId())
-					&& graph.equals(((Neo4JNode) o).getGraph());
+			return id.equals(((Neo4JNode) o).getId()) && graph.equals(((Neo4JNode) o).getGraph());
 	}
 
 	@Override
