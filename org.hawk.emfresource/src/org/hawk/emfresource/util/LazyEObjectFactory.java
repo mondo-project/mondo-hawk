@@ -73,6 +73,8 @@ public class LazyEObjectFactory {
 						return methodInterceptor;
 					} else if ("eContents".equals(m.getName()) && m.getParameterTypes().length == 0) {
 						return methodInterceptor;
+					} else if ("eIsSet".equals(m.getName()) && m.getParameterTypes().length == 1 && EStructuralFeature.class.isAssignableFrom(m.getParameterTypes()[0])) {
+						return methodInterceptor;
 					} else {
 						return NoOp.INSTANCE;
 					}

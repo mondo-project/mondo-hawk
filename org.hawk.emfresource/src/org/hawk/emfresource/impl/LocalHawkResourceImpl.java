@@ -99,9 +99,11 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			final EObject eob = (EObject) o;
 
 			switch (m.getName()) {
+			case "eIsSet":
+				return (Boolean)proxy.invokeSuper(o, args) || lazyResolver.isPending(eob, (EStructuralFeature) args[0]);
 			case "eGet":
 				final EStructuralFeature sf = (EStructuralFeature)args[0];
-				if (lazyResolver != null && sf instanceof EReference && lazyResolver.isPending(eob, sf)) {
+				if (sf instanceof EReference && lazyResolver.isPending(eob, sf)) {
 					final EReference ref = (EReference) sf;
 					synchronized(nodeIdToEObjectMap) {
 						lazyResolver.resolve(eob, sf, false, true);
