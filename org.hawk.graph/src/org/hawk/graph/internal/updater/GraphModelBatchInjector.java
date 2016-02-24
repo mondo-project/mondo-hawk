@@ -68,11 +68,10 @@ public class GraphModelBatchInjector {
 
 	private IGraphDatabase graph;
 
-	private final Map<IHawkObject, IGraphNode> hash = new HashMap<IHawkObject, IGraphNode>(
-			8192);
+	private final Map<IHawkObject, IGraphNode> hash = new HashMap<IHawkObject, IGraphNode>(8192);
 
-	IGraphNodeIndex epackageDictionary, fileDictionary, proxyDictionary,
-			rootDictionary, fragmentIdx, derivedProxyDictionary;
+	IGraphNodeIndex epackageDictionary, fileDictionary, proxyDictionary, rootDictionary, fragmentIdx,
+			derivedProxyDictionary;
 
 	long startTime;
 
@@ -100,19 +99,16 @@ public class GraphModelBatchInjector {
 		proxyDictionary = graph.getOrCreateNodeIndex(PROXY_DICT_NAME);
 		rootDictionary = graph.getOrCreateNodeIndex(ROOT_DICT_NAME);
 		fragmentIdx = graph.getOrCreateNodeIndex(FRAGMENT_DICT_NAME);
-		derivedProxyDictionary = graph
-				.getOrCreateNodeIndex(DERIVED_PROXY_DICT_NAME);
+		derivedProxyDictionary = graph.getOrCreateNodeIndex(DERIVED_PROXY_DICT_NAME);
 	}
 
-	public GraphModelBatchInjector(IGraphDatabase g, VcsCommitItem s,
-			IGraphChangeListener listener) throws Exception {
+	public GraphModelBatchInjector(IGraphDatabase g, VcsCommitItem s, IGraphChangeListener listener) throws Exception {
 		this.graph = g;
 		this.commitItem = s;
 		this.listener = listener;
 
 		if (s != null) {
-			final IVcsManager vcsManager = s.getCommit().getDelta()
-					.getManager();
+			final IVcsManager vcsManager = s.getCommit().getDelta().getManager();
 			prefixesToStrip.addAll(vcsManager.getPrefixesToBeStripped());
 		}
 		prefixesToStrip.add(new File(g.getTempDir()).toURI().toString());
@@ -120,9 +116,8 @@ public class GraphModelBatchInjector {
 		refreshIndexes();
 	}
 
-	public GraphModelBatchInjector(IModelIndexer hawk, VcsCommitItem s,
-			IHawkModelResource r, IGraphChangeListener listener)
-			throws Exception {
+	public GraphModelBatchInjector(IModelIndexer hawk, VcsCommitItem s, IHawkModelResource r,
+			IGraphChangeListener listener) throws Exception {
 		IGraphDatabase g = hawk.getGraph();
 		this.graph = g;
 		this.commitItem = s;
@@ -146,10 +141,8 @@ public class GraphModelBatchInjector {
 			IGraphNode fileNode = null;
 			long filerevision = 0L;
 			try {
-				fileNode = ((IGraphIterable<IGraphNode>) fileDictionary.get(
-						"id", repoURL
-								+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
-								+ s.getPath())).getSingle();
+				fileNode = ((IGraphIterable<IGraphNode>) fileDictionary.get("id",
+						repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + s.getPath())).getSingle();
 				if (fileNode != null)
 					filerevision = (Long) fileNode.getProperty("revision");
 			} catch (Exception e) {
@@ -172,26 +165,21 @@ public class GraphModelBatchInjector {
 
 					System.out.println("File: " + s.getPath());
 					System.out.print("ADDING: ");
-					int[] addedElements = parseResource(fileNode,
-							ParseOptions.MODELELEMENTS, children, hawk);
-					System.out.println(addedElements[0] + "\nNODES AND "
-							+ addedElements[1] + " + " + addedElements[2]
-							+ " M->MM REFERENCES! (took ~"
-							+ (System.nanoTime() - startTime) / 1000000000
-							+ "sec)");
+					int[] addedElements = parseResource(fileNode, ParseOptions.MODELELEMENTS, children, hawk,
+							r.providesSingletonElements());
+					System.out.println(addedElements[0] + "\nNODES AND " + addedElements[1] + " + " + addedElements[2]
+							+ " M->MM REFERENCES! (took ~" + (System.nanoTime() - startTime) / 1000000000 + "sec)");
 
 					startTime = System.nanoTime();
 
 					// add references
 					System.out.println("File: " + s.getPath());
 					System.out.print("ADDING: ");
-					addedElements = parseResource(fileNode,
-							ParseOptions.MODELREFERENCES, children, hawk);
+					addedElements = parseResource(fileNode, ParseOptions.MODELREFERENCES, children, hawk,
+							r.providesSingletonElements());
 					setUnset(getUnset() + addedElements[3]);
-					System.out.println(addedElements[0]
-							+ "\nREFERENCES! (took ~"
-							+ (System.nanoTime() - startTime) / 1000000000
-							+ "sec)");
+					System.out.println(addedElements[0] + "\nREFERENCES! (took ~"
+							+ (System.nanoTime() - startTime) / 1000000000 + "sec)");
 
 					// System.out
 					// .println(((IGraphIterable<IGraphNode>) proxyDictionary
@@ -202,15 +190,13 @@ public class GraphModelBatchInjector {
 					successState = true;
 				} catch (Exception e) {
 					e.printStackTrace();
-					System.err.println("ParseMResource Exception on file: "
-							+ s.getPath()
+					System.err.println("ParseMResource Exception on file: " + s.getPath()
 							+ "\nReverting all changes on that file.");
 					//
 					// graph.exitBatchMode();
 					//
 
-					IGraphNode n = new Utils().getFileNodeFromVCSCommitItem(
-							graph, s);
+					IGraphNode n = new Utils().getFileNodeFromVCSCommitItem(graph, s);
 					if (n != null) {
 
 						try (IGraphTransaction t = g.beginTransaction()) {
@@ -218,18 +204,15 @@ public class GraphModelBatchInjector {
 							t.success();
 
 						} catch (Exception e2) {
-							System.err
-									.println("error in reverting from erroneous batch insert: "
-											+ e2.getCause());
+							System.err.println("error in reverting from erroneous batch insert: " + e2.getCause());
 
 						}
 					}
 					listener.changeFailure();
 					successState = false;
 				}
-			} else /* if not new */{
-				System.err
-						.println("warning: GraphModelBatchInjector used with a model already in Hawk.");
+			} else /* if not new */ {
+				System.err.println("warning: GraphModelBatchInjector used with a model already in Hawk.");
 				listener.changeSuccess();
 				successState = true;
 			}
@@ -242,8 +225,7 @@ public class GraphModelBatchInjector {
 		}
 	}
 
-	private IGraphNode addFileNode(VcsCommitItem s,
-			IGraphChangeListener listener) {
+	private IGraphNode addFileNode(VcsCommitItem s, IGraphChangeListener listener) {
 		IGraphNode fileNode;
 		Map<String, Object> mapForFileNode = new HashMap<>();
 		mapForFileNode.put(IModelIndexer.IDENTIFIER_PROPERTY, s.getPath());
@@ -254,8 +236,7 @@ public class GraphModelBatchInjector {
 		fileNode = graph.createNode(mapForFileNode, "file");
 
 		Map<String, Object> mapForDictionary = new HashMap<>();
-		mapForDictionary.put("id", repoURL
-				+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + s.getPath());
+		mapForDictionary.put("id", repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + s.getPath());
 		fileDictionary.add(fileNode, mapForDictionary);
 
 		// propagate changes to listeners
@@ -274,9 +255,8 @@ public class GraphModelBatchInjector {
 	 * @param graph
 	 * @return
 	 */
-	private int[] parseResource(IGraphNode originatingFile,
-			ParseOptions parseOption, Set<IHawkObject> children,
-			IModelIndexer hawk) throws Exception {
+	private int[] parseResource(IGraphNode originatingFile, ParseOptions parseOption, Set<IHawkObject> children,
+			IModelIndexer hawk, boolean resourceCanProvideSingletons) throws Exception {
 
 		graph.enterBatchMode();
 
@@ -296,30 +276,25 @@ public class GraphModelBatchInjector {
 
 			switch (parseOption) {
 			case MODELELEMENTS:
-				addEObject(originatingFile, child);
+				addEObject(originatingFile, child, resourceCanProvideSingletons);
 				break;
 			case MODELREFERENCES:
 				ref = addEReferences(child);
 				break;
 			default:
-				System.err.println("parse option: " + parseOption
-						+ " not recognised!");
+				System.err.println("parse option: " + parseOption + " not recognised!");
 			}
 
-			if (ref && clas && objectCount[0] % 50000 == 0
-					|| lastprint < objectCount[0] - 50000) {
+			if (ref && clas && objectCount[0] % 50000 == 0 || lastprint < objectCount[0] - 50000) {
 				if (inthisline > 5) {
 					System.out.println("\t");
 					inthisline = 0;
 				}
 				inthisline++;
 				lastprint = objectCount[0];
-				String out = "Adding "
-						+ (parseOption == ParseOptions.MODELELEMENTS ? "nodes"
-								: "references") + ": " + objectCount[0] + " "
-						+ (System.nanoTime() - init) / 1000000000 + "sec ("
-						+ (System.nanoTime() - startTime) / 1000000000
-						+ "sec total)";
+				String out = "Adding " + (parseOption == ParseOptions.MODELELEMENTS ? "nodes" : "references") + ": "
+						+ objectCount[0] + " " + (System.nanoTime() - init) / 1000000000 + "sec ("
+						+ (System.nanoTime() - startTime) / 1000000000 + "sec total)";
 				// System.out.print(out + "\t");
 				hawk.getCompositeStateListener().info(out);
 				init = System.nanoTime();
@@ -346,8 +321,7 @@ public class GraphModelBatchInjector {
 	 * @return the Node
 	 * @throws Exception
 	 */
-	private IGraphNode createEObjectNode(IHawkObject eObject,
-			IGraphNode typenode) throws Exception {
+	private IGraphNode createEObjectNode(IHawkObject eObject, IGraphNode typenode) throws Exception {
 		IGraphNode node = null;
 
 		try {
@@ -360,14 +334,11 @@ public class GraphModelBatchInjector {
 			final List<IHawkAttribute> normalattributes = new LinkedList<IHawkAttribute>();
 			final List<IHawkAttribute> indexedattributes = new LinkedList<IHawkAttribute>();
 
-			for (final IHawkAttribute eAttribute : ((IHawkClass) eObject
-					.getType()).getAllAttributes()) {
+			for (final IHawkAttribute eAttribute : ((IHawkClass) eObject.getType()).getAllAttributes()) {
 				if (eObject.isSet(eAttribute)) {
 
-					final String[] attributeProperties = (String[]) typenode
-							.getProperty(eAttribute.getName());
-					final boolean isIndexed = attributeProperties[5]
-							.equals("t");
+					final String[] attributeProperties = (String[]) typenode.getProperty(eAttribute.getName());
+					final boolean isIndexed = attributeProperties[5].equals("t");
 					if (isIndexed) {
 						indexedattributes.add(eAttribute);
 					}
@@ -410,8 +381,7 @@ public class GraphModelBatchInjector {
 					if (!srcCollection.isEmpty()) {
 						final Object first = srcCollection.iterator().next();
 						elemClass = first.getClass();
-						primitiveOrWrapperClass = new GraphUtil()
-								.isPrimitiveOrWrapperType(elemClass);
+						primitiveOrWrapperClass = new GraphUtil().isPrimitiveOrWrapperType(elemClass);
 						if (primitiveOrWrapperClass) {
 							for (Object o : srcCollection) {
 								collection.add(o);
@@ -451,26 +421,22 @@ public class GraphModelBatchInjector {
 			listener.modelElementAddition(commitItem, eObject, node, false);
 			for (String s : m.keySet()) {
 				Object value = m.get(s);
-				listener.modelElementAttributeUpdate(commitItem, eObject, s,
-						null, value, node,
+				listener.modelElementAttributeUpdate(commitItem, eObject, s, null, value, node,
 						ModelElementNode.TRANSIENT_ATTRIBUTES.contains(s));
 			}
 
 			// add derived attrs
 			Set<String> attributekeys;
-			Hashtable<String, Object> hashed = hashedeclassproperties
-					.get(typenode);
+			Hashtable<String, Object> hashed = hashedeclassproperties.get(typenode);
 			if (hashed == null) {
 				attributekeys = typenode.getPropertyKeys();
-				System.err
-						.println("non-hashed type properties - will slow insert");
+				System.err.println("non-hashed type properties - will slow insert");
 			} else
 				attributekeys = hashed.keySet();
 
 			for (String attributekey : attributekeys) {
 
-				Object attr = hashed == null ? typenode
-						.getProperty(attributekey) : hashed.get(attributekey);
+				Object attr = hashed == null ? typenode.getProperty(attributekey) : hashed.get(attributekey);
 
 				if (attr instanceof String[]) {
 
@@ -495,14 +461,12 @@ public class GraphModelBatchInjector {
 						m.put("derivationlogic", metadata[6]);
 						m.put(attributekey, "_NYD##" + metadata[6]);
 
-						IGraphNode derivedattributenode = graph.createNode(m,
-								"derivedattribute");
+						IGraphNode derivedattributenode = graph.createNode(m, "derivedattribute");
 
 						m.clear();
 						m.put("isDerived", true);
 
-						graph.createRelationship(node, derivedattributenode,
-								attributekey, m);
+						graph.createRelationship(node, derivedattributenode, attributekey, m);
 
 						addToProxyAttributes(derivedattributenode);
 
@@ -513,10 +477,8 @@ public class GraphModelBatchInjector {
 			}
 
 			for (IHawkAttribute a : indexedattributes) {
-				IGraphNodeIndex i = graph.getOrCreateNodeIndex(eObject
-						.getType().getPackageNSURI()
-						+ "##"
-						+ eObject.getType().getName() + "##" + a.getName());
+				IGraphNodeIndex i = graph.getOrCreateNodeIndex(
+						eObject.getType().getPackageNSURI() + "##" + eObject.getType().getName() + "##" + a.getName());
 
 				m.clear();
 				// graph.setNodeProperty(node,"value",
@@ -553,8 +515,7 @@ public class GraphModelBatchInjector {
 					if (!srcCollection.isEmpty()) {
 						final Object first = srcCollection.iterator().next();
 						elemClass = first.getClass();
-						primitiveOrWrapperClass = new GraphUtil()
-								.isPrimitiveOrWrapperType(elemClass);
+						primitiveOrWrapperClass = new GraphUtil().isPrimitiveOrWrapperType(elemClass);
 						if (primitiveOrWrapperClass) {
 							for (Object o : srcCollection) {
 								collection.add(o);
@@ -584,8 +545,7 @@ public class GraphModelBatchInjector {
 		}
 
 		catch (Exception e) {
-			System.err
-					.println("GraphModelBatchInjector: createEobjectNode: error in inserting attributes: ");
+			System.err.println("GraphModelBatchInjector: createEobjectNode: error in inserting attributes: ");
 			e.printStackTrace();
 		}
 
@@ -618,9 +578,7 @@ public class GraphModelBatchInjector {
 		if (e instanceof IHawkClass)
 			eClass = ((IHawkClass) e);
 		else
-			System.err
-					.println("getEClassNode called on a non-class classifier:\n"
-							+ e);
+			System.err.println("getEClassNode called on a non-class classifier:\n" + e);
 
 		IGraphNode classnode = hashedeclasses.get(eClass);
 
@@ -629,13 +587,10 @@ public class GraphModelBatchInjector {
 			final String packageNSURI = eClass.getPackageNSURI();
 			IGraphNode epackagenode = null;
 			try {
-				epackagenode = epackageDictionary.get("id", packageNSURI)
-						.getSingle();
+				epackagenode = epackageDictionary.get("id", packageNSURI).getSingle();
 			} catch (NoSuchElementException ex) {
-				throw new Exception(
-						"Metamodel "
-								+ packageNSURI
-								+ " does not have a Node associated with it in the store, please make sure it has been inserted");
+				throw new Exception("Metamodel " + packageNSURI
+						+ " does not have a Node associated with it in the store, please make sure it has been inserted");
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}
@@ -645,9 +600,7 @@ public class GraphModelBatchInjector {
 				IGraphNode othernode = r.getStartNode();
 
 				if (!othernode.equals(epackagenode)
-						&& othernode.getProperty(
-								IModelIndexer.IDENTIFIER_PROPERTY).equals(
-								eClass.getName())) {
+						&& othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(eClass.getName())) {
 					classnode = othernode;
 					break;
 				}
@@ -656,12 +609,8 @@ public class GraphModelBatchInjector {
 			if (classnode != null)
 				hashedeclasses.put(eClass, classnode);
 			else {
-				throw new Exception(
-						"eClass: "
-								+ eClass.getName()
-								+ "("
-								+ eClass.getUri()
-								+ ") does not have a Node associated with it in the store, please make sure the relevant metamodel has been inserted");
+				throw new Exception("eClass: " + eClass.getName() + "(" + eClass.getUri()
+						+ ") does not have a Node associated with it in the store, please make sure the relevant metamodel has been inserted");
 
 			}
 
@@ -689,8 +638,8 @@ public class GraphModelBatchInjector {
 	 * @return
 	 * @throws Exception
 	 */
-	protected IGraphNode addEObject(IGraphNode originatingFile,
-			IHawkObject eObject) throws Exception {
+	protected IGraphNode addEObject(IGraphNode originatingFile, IHawkObject eObject,
+			boolean resourceCanProvideSingletons) throws Exception {
 
 		refreshIndexes();
 
@@ -700,16 +649,15 @@ public class GraphModelBatchInjector {
 
 		// if a unique element is already in hawk set the node to that element
 		// and return it
-		if (eObject.isFragmentUnique()) {
+		if (resourceCanProvideSingletons && eObject.isFragmentUnique()) {
 			fragmentIdx.flush();
-			Iterator<IGraphNode> itr = fragmentIdx.get("id",
-					eObject.getUriFragment()).iterator();
+			Iterator<IGraphNode> itr = fragmentIdx.get("id", eObject.getUriFragment()).iterator();
 			while (itr.hasNext()) {
 				if (node == null)
 					node = itr.next();
 				else {
-					System.err
-							.println("WARNING: GraphModelBatchInjector: addEObject: isFragmentUnique returned more than one node, keeping first one.");
+					System.err.println(
+							"WARNING: GraphModelBatchInjector: addEObject: isFragmentUnique returned more than one node, keeping first one.");
 					break;
 				}
 			}
@@ -718,14 +666,12 @@ public class GraphModelBatchInjector {
 			// reference
 			if (node != null && originatingFile != null) {
 				boolean found = false;
-				for (IGraphEdge e : node
-						.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
+				for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
 					if (e.getEndNode().equals(originatingFile))
 						found = true;
 				if (!found)
-					createReference(ModelElementNode.EDGE_LABEL_FILE, node,
-							originatingFile, new HashMap<String, Object>(),
-							true);
+					createReference(ModelElementNode.EDGE_LABEL_FILE, node, originatingFile,
+							new HashMap<String, Object>(), true);
 			}
 
 		}
@@ -735,35 +681,29 @@ public class GraphModelBatchInjector {
 			node = createEObjectNode(eObject, eClass);
 
 			if (node == null) {
-				System.err.println(String.format("The node for (%s) is null",
-						eObject));
+				System.err.println(String.format("The node for (%s) is null", eObject));
 			} else {
 				hash.put(eObject, node);
 
 				final HashMap<String, Object> emptyMap = new HashMap<String, Object>();
-				createReference(ModelElementNode.EDGE_LABEL_OFTYPE, node,
-						eClass, emptyMap, true);
+				createReference(ModelElementNode.EDGE_LABEL_OFTYPE, node, eClass, emptyMap, true);
 				if (originatingFile != null) {
-					createReference(ModelElementNode.EDGE_LABEL_FILE, node,
-							originatingFile, emptyMap, true);
+					createReference(ModelElementNode.EDGE_LABEL_FILE, node, originatingFile, emptyMap, true);
 				}
 				objectCount[1]++;
 
 				// use metamodel to infer all supertypes for fast search and log
 				// em
-				for (IHawkClass superType : ((IHawkClass) eObject.getType())
-						.getSuperTypes()) {
+				for (IHawkClass superType : ((IHawkClass) eObject.getType()).getSuperTypes()) {
 					eClass = getEClassNode(superType);
-					createReference(ModelElementNode.EDGE_LABEL_OFKIND, node,
-							eClass, emptyMap, true);
+					createReference(ModelElementNode.EDGE_LABEL_OFKIND, node, eClass, emptyMap, true);
 					objectCount[2]++;
 				}
 
 				objectCount[0]++;
 
 				if (eObject.isRoot()) {
-					rootDictionary.add(node, ROOT_DICT_FILE_KEY,
-							originatingFile.getId().toString());
+					rootDictionary.add(node, ROOT_DICT_FILE_KEY, originatingFile.getId().toString());
 				}
 			}
 
@@ -781,9 +721,8 @@ public class GraphModelBatchInjector {
 	 * @param edgelabel
 	 * @throws Exception
 	 */
-	private void addEdge(IHawkObject from, IHawkObject to,
-			final String edgelabel, boolean isContainment, boolean isContainer)
-			throws Exception {
+	private void addEdge(IHawkObject from, IHawkObject to, final String edgelabel, boolean isContainment,
+			boolean isContainer) throws Exception {
 
 		IGraphNode source = null;
 		IGraphNode destination = null;
@@ -793,21 +732,17 @@ public class GraphModelBatchInjector {
 
 		if (source == null && destination == null) {
 
-			System.err.println("hash error 1, not found from (class: "
-					+ (from).getType().getName() + ") and to (class: "
-					+ ((IHawkObject) to).getType().getName()
-					+ ") on reference: " + edgelabel + " source = " + source
-					+ " destination = " + destination);
+			System.err.println("hash error 1, not found from (class: " + (from).getType().getName()
+					+ ") and to (class: " + ((IHawkObject) to).getType().getName() + ") on reference: " + edgelabel
+					+ " source = " + source + " destination = " + destination);
 
 		}
 
 		else if (source == null) {
 
-			System.err.println("hash error 2, not found from (class: "
-					+ (from).getType().getName() + ") and to (class: "
-					+ ((IHawkObject) to).getType().getName()
-					+ ") on reference: " + edgelabel + " source = " + source
-					+ " destination = " + destination);
+			System.err.println("hash error 2, not found from (class: " + (from).getType().getName()
+					+ ") and to (class: " + ((IHawkObject) to).getType().getName() + ") on reference: " + edgelabel
+					+ " source = " + source + " destination = " + destination);
 
 		} else if (destination == null) {
 			// the modelling technology managed to resolve a cross-file proxy
@@ -831,12 +766,10 @@ public class GraphModelBatchInjector {
 
 	}
 
-	private void createReference(final String edgelabel, IGraphNode source,
-			IGraphNode destination, Map<String, Object> props,
-			boolean isTransient) {
+	private void createReference(final String edgelabel, IGraphNode source, IGraphNode destination,
+			Map<String, Object> props, boolean isTransient) {
 		graph.createRelationship(source, destination, edgelabel, props);
-		listener.referenceAddition(commitItem, source, destination, edgelabel,
-				isTransient);
+		listener.referenceAddition(commitItem, source, destination, edgelabel, isTransient);
 	}
 
 	/**
@@ -850,16 +783,14 @@ public class GraphModelBatchInjector {
 	 * @return
 	 * @throws Exception
 	 */
-	protected boolean addEReferences(IGraphNode fileNode, IGraphNode node,
-			IHawkObject source, Map<String, IGraphNode> addedNodesHash,
-			Map<String, IGraphNode> nodes) throws Exception {
+	protected boolean addEReferences(IGraphNode fileNode, IGraphNode node, IHawkObject source,
+			Map<String, IGraphNode> addedNodesHash, Map<String, IGraphNode> nodes) throws Exception {
 
 		refreshIndexes();
 
 		boolean ret = true;
 		try {
-			for (final IHawkReference eReference : ((IHawkClass) source
-					.getType()).getAllReferences()) {
+			for (final IHawkReference eReference : ((IHawkClass) source.getType()).getAllReferences()) {
 
 				if (source.isSet(eReference)) {
 
@@ -872,36 +803,28 @@ public class GraphModelBatchInjector {
 						for (Object destinationEObject : ((Iterable<?>) destinationObject)) {
 
 							final IHawkObject destinationHawkObject = (IHawkObject) destinationEObject;
-							if (!destinationHawkObject
-									.isInDifferentResourceThan(source)) {
+							if (!destinationHawkObject.isInDifferentResourceThan(source)) {
 								IGraphNode dest = null;
-								dest = addedNodesHash.get(destinationHawkObject
-										.getUriFragment());
+								dest = addedNodesHash.get(destinationHawkObject.getUriFragment());
 								if (dest == null)
-									dest = nodes.get(destinationHawkObject
-											.getUriFragment());
+									dest = nodes.get(destinationHawkObject.getUriFragment());
 
 								Map<String, Object> props = new HashMap<String, Object>();
 								if (eReference.isContainment()) {
-									props.put(
-											ModelElementNode.EDGE_PROPERTY_CONTAINMENT,
-											"true");
+									props.put(ModelElementNode.EDGE_PROPERTY_CONTAINMENT, "true");
 								}
 								if (eReference.isContainer()) {
-									props.put(
-											ModelElementNode.EDGE_PROPERTY_CONTAINER,
-											"true");
+									props.put(ModelElementNode.EDGE_PROPERTY_CONTAINER, "true");
 								}
 
-								createReference(edgelabel, node, dest, props,
-										false);
+								createReference(edgelabel, node, dest, props, false);
 							} else {
-								addProxyRef(node, destinationHawkObject,
-										edgelabel, eReference.isContainment(),
+								addProxyRef(node, destinationHawkObject, edgelabel, eReference.isContainment(),
 										eReference.isContainer());
 
 								// System.err
-								// .println("adding proxy [iterable] reference ("
+								// .println("adding proxy [iterable] reference
+								// ("
 								// + edgelabel
 								// + " | "
 								// + destinationHawkObject.getUri()
@@ -913,31 +836,23 @@ public class GraphModelBatchInjector {
 					} else {
 
 						final IHawkObject destinationHawkObject = (IHawkObject) destinationObject;
-						if (!destinationHawkObject
-								.isInDifferentResourceThan(source)) {
-							IGraphNode dest = addedNodesHash
-									.get(destinationHawkObject.getUriFragment());
+						if (!destinationHawkObject.isInDifferentResourceThan(source)) {
+							IGraphNode dest = addedNodesHash.get(destinationHawkObject.getUriFragment());
 							if (dest == null)
-								dest = nodes.get(destinationHawkObject
-										.getUriFragment());
+								dest = nodes.get(destinationHawkObject.getUriFragment());
 
 							Map<String, Object> props = new HashMap<String, Object>();
 
 							if (eReference.isContainment()) {
-								props.put(
-										ModelElementNode.EDGE_PROPERTY_CONTAINMENT,
-										"true");
+								props.put(ModelElementNode.EDGE_PROPERTY_CONTAINMENT, "true");
 							}
 							if (eReference.isContainer()) {
-								props.put(
-										ModelElementNode.EDGE_PROPERTY_CONTAINER,
-										"true");
+								props.put(ModelElementNode.EDGE_PROPERTY_CONTAINER, "true");
 							}
 
 							createReference(edgelabel, node, dest, props, false);
 						} else {
-							addProxyRef(node, destinationHawkObject, edgelabel,
-									eReference.isContainment(),
+							addProxyRef(node, destinationHawkObject, edgelabel, eReference.isContainment(),
 									eReference.isContainer());
 						}
 					}
@@ -946,8 +861,8 @@ public class GraphModelBatchInjector {
 
 			}
 		} catch (Exception e) {
-			System.err
-					.println("Error in: addEReference(IGraphNode node, IHawkObject object,	HashMap<String, IGraphNode> nodes):");
+			System.err.println(
+					"Error in: addEReference(IGraphNode node, IHawkObject object,	HashMap<String, IGraphNode> nodes):");
 			e.printStackTrace();
 			ret = false;
 		}
@@ -969,8 +884,7 @@ public class GraphModelBatchInjector {
 
 		boolean atLeastOneSetReference = false;
 
-		for (final IHawkReference eReference : ((IHawkClass) source.getType())
-				.getAllReferences()) {
+		for (final IHawkReference eReference : ((IHawkClass) source.getType()).getAllReferences()) {
 			if (source.isSet(eReference)) {
 				atLeastOneSetReference = true;
 
@@ -980,14 +894,11 @@ public class GraphModelBatchInjector {
 				if (destinationObject instanceof Iterable<?>) {
 					for (Object destinationEObject : ((Iterable<?>) destinationObject)) {
 						final IHawkObject destinationHawkObject = (IHawkObject) destinationEObject;
-						if (!destinationHawkObject
-								.isInDifferentResourceThan(source)) {
-							addEdge(source, destinationHawkObject, edgelabel,
-									eReference.isContainment(),
+						if (!destinationHawkObject.isInDifferentResourceThan(source)) {
+							addEdge(source, destinationHawkObject, edgelabel, eReference.isContainment(),
 									eReference.isContainer());
 						} else {
-							addProxyRef(source, destinationHawkObject,
-									edgelabel, eReference.isContainment(),
+							addProxyRef(source, destinationHawkObject, edgelabel, eReference.isContainment(),
 									eReference.isContainer());
 							// System.err
 							// .println("adding proxy [iterable] reference ("
@@ -998,21 +909,18 @@ public class GraphModelBatchInjector {
 							// + (added ? "done" : "failed"));
 						}
 					}
-				} else /* if destination is not iterable */{
+				} else /* if destination is not iterable */ {
 					final IHawkObject destinationHawkObject = (IHawkObject) destinationObject;
-					if (!destinationHawkObject
-							.isInDifferentResourceThan(source)) {
-						addEdge(source, destinationHawkObject, edgelabel,
-								eReference.isContainment(),
+					if (!destinationHawkObject.isInDifferentResourceThan(source)) {
+						addEdge(source, destinationHawkObject, edgelabel, eReference.isContainment(),
 								eReference.isContainer());
 					} else {
-						addProxyRef(source, destinationHawkObject, edgelabel,
-								eReference.isContainment(),
+						addProxyRef(source, destinationHawkObject, edgelabel, eReference.isContainment(),
 								eReference.isContainer());
 					}
 				}
 
-			} else /* if reference is not set */{
+			} else /* if reference is not set */ {
 				objectCount[3]++;
 			}
 		}
@@ -1020,16 +928,14 @@ public class GraphModelBatchInjector {
 		return atLeastOneSetReference;
 	}
 
-	private boolean addProxyRef(IHawkObject from,
-			IHawkObject destinationObject, String edgelabel,
+	private boolean addProxyRef(IHawkObject from, IHawkObject destinationObject, String edgelabel,
 			boolean isContainment, boolean isContainer) {
 		IGraphNode withProxy = hash.get(from);
-		return addProxyRef(withProxy, destinationObject, edgelabel,
-				isContainment, isContainer);
+		return addProxyRef(withProxy, destinationObject, edgelabel, isContainment, isContainer);
 	}
 
-	private boolean addProxyRef(IGraphNode node, IHawkObject destinationObject,
-			String edgelabel, boolean isContainment, boolean isContainer) {
+	private boolean addProxyRef(IGraphNode node, IHawkObject destinationObject, String edgelabel, boolean isContainment,
+			boolean isContainer) {
 
 		try {
 			String uri = destinationObject.getUri();
@@ -1040,26 +946,21 @@ public class GraphModelBatchInjector {
 				 * In this scenario, we don't care about the file anymore: we
 				 * need to flag it properly for the later resolution.
 				 */
-				destinationObjectRelativePathURI = GraphModelUpdater.PROXY_FILE_WILDCARD
-						+ "#"
-						+ destinationObjectRelativePathURI
-								.substring(destinationObjectRelativePathURI
-										.indexOf("#") + 1);
+				destinationObjectRelativePathURI = GraphModelUpdater.PROXY_FILE_WILDCARD + "#"
+						+ destinationObjectRelativePathURI.substring(destinationObjectRelativePathURI.indexOf("#") + 1);
 			} else if (!destinationObject.URIIsRelative()) {
-				destinationObjectRelativePathURI = new Utils().makeRelative(
-						prefixesToStrip, destinationObjectRelativePathURI);
+				destinationObjectRelativePathURI = new Utils().makeRelative(prefixesToStrip,
+						destinationObjectRelativePathURI);
 			}
 
 			String destinationObjectRelativeFileURI = destinationObjectRelativePathURI;
-			destinationObjectRelativeFileURI = destinationObjectRelativePathURI
-					.substring(0, destinationObjectRelativePathURI.indexOf("#"));
+			destinationObjectRelativeFileURI = destinationObjectRelativePathURI.substring(0,
+					destinationObjectRelativePathURI.indexOf("#"));
 
-			String destinationObjectFullPathURI = repoURL
-					+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+			String destinationObjectFullPathURI = repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
 					+ destinationObjectRelativePathURI;
 
-			String destinationObjectFullFileURI = repoURL
-					+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
+			String destinationObjectFullFileURI = repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
 					+ destinationObjectRelativeFileURI;
 
 			Object proxies = null;
@@ -1072,18 +973,14 @@ public class GraphModelBatchInjector {
 			// }
 			// System.err.println(">>>>>>>"+relativeFileURI);
 
-			proxies = node.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX
-					+ destinationObjectFullFileURI);
-			proxies = new Utils().addToElementProxies((String[]) proxies,
-					destinationObjectFullPathURI, edgelabel, isContainment,
-					isContainer);
+			proxies = node.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + destinationObjectFullFileURI);
+			proxies = new Utils().addToElementProxies((String[]) proxies, destinationObjectFullPathURI, edgelabel,
+					isContainment, isContainer);
 
-			node.setProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX
-					+ destinationObjectFullFileURI, proxies);
+			node.setProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + destinationObjectFullFileURI, proxies);
 
 			HashMap<String, Object> m = new HashMap<>();
-			m.put(GraphModelUpdater.PROXY_REFERENCE_PREFIX,
-					destinationObjectFullFileURI);
+			m.put(GraphModelUpdater.PROXY_REFERENCE_PREFIX, destinationObjectFullFileURI);
 
 			proxyDictionary.add(node, m);
 
@@ -1095,9 +992,8 @@ public class GraphModelBatchInjector {
 		return true;
 	}
 
-	protected boolean resolveProxyRef(IGraphNode source, IGraphNode target,
-			String edgeLabel, boolean isContainment, boolean isContainer)
-			throws Exception {
+	protected boolean resolveProxyRef(IGraphNode source, IGraphNode target, String edgeLabel, boolean isContainment,
+			boolean isContainer) throws Exception {
 
 		refreshIndexes();
 
@@ -1112,14 +1008,11 @@ public class GraphModelBatchInjector {
 		if (found)
 			return false;
 		else {
-			IGraphEdge rel = graph.createRelationship(source, target,
-					edgeLabel, new HashMap<String, Object>());
+			IGraphEdge rel = graph.createRelationship(source, target, edgeLabel, new HashMap<String, Object>());
 			if (isContainment) {
-				rel.setProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT,
-						"true");
+				rel.setProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT, "true");
 			} else if (isContainer) {
-				rel.setProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER,
-						"true");
+				rel.setProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER, "true");
 			}
 			return true;
 		}

@@ -82,7 +82,8 @@ public class EMFModelResource implements IHawkModelResource {
 						// same resource - add the object
 						allContents.add(new EMFObject(next));
 					} else {
-						// this is from a different resource - don't go into its children
+						// this is from a different resource - don't go into its
+						// children
 						it.prune();
 					}
 				} else {
@@ -101,5 +102,10 @@ public class EMFModelResource implements IHawkModelResource {
 
 	public Resource getResource() {
 		return res;
+	}
+
+	@Override
+	public boolean providesSingletonElements() {
+		return false;
 	}
 }

@@ -80,7 +80,8 @@ public class BPMNModelResource implements IHawkModelResource {
 						// same resource - add the object
 						allContents.add(new BPMNObject(next));
 					} else {
-						// this is from a different resource - don't go into its children
+						// this is from a different resource - don't go into its
+						// children
 						it.prune();
 					}
 				} else {
@@ -99,5 +100,10 @@ public class BPMNModelResource implements IHawkModelResource {
 
 	public Resource getResource() {
 		return res;
+	}
+
+	@Override
+	public boolean providesSingletonElements() {
+		return false;
 	}
 }

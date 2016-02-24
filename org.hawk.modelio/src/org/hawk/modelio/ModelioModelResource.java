@@ -174,11 +174,12 @@ public class ModelioModelResource implements IHawkModelResource {
 			MetamodelLoader.Load();
 			this.descriptor = new ProjectDescriptorReader().read(resolve, DefinitionScope.LOCAL);
 
-			// Normally LifeCycleManager does this, but it depends on too many UI components
+			// Normally LifeCycleManager does this, but it depends on too many
+			// UI components
 			Modelio modelio = Modelio.getInstance();
 			Field fldContext = modelio.getClass().getDeclaredField("eclipseContext");
 			fldContext.setAccessible(true);
-			IEclipseContext modelioEclipseContext = (IEclipseContext)fldContext.get(modelio);
+			IEclipseContext modelioEclipseContext = (IEclipseContext) fldContext.get(modelio);
 			modelioEclipseContext.set(IModelioEventService.class, new ModelioEventService(modelioEclipseContext));
 
 			projectService = modelioEclipseContext.get(IProjectService.class);
@@ -259,7 +260,8 @@ public class ModelioModelResource implements IHawkModelResource {
 		}
 
 		private void recursiveDelete() {
-			// based on http://stackoverflow.com/questions/779519/delete-files-recursively-in-java/8685959#8685959
+			// based on
+			// http://stackoverflow.com/questions/779519/delete-files-recursively-in-java/8685959#8685959
 			try {
 				Files.walkFileTree(tmpDir, new SimpleFileVisitor<Path>() {
 					@Override
@@ -293,5 +295,10 @@ public class ModelioModelResource implements IHawkModelResource {
 	@Override
 	public String getType() {
 		return factoryClassName;
+	}
+
+	@Override
+	public boolean providesSingletonElements() {
+		return false;
 	}
 }

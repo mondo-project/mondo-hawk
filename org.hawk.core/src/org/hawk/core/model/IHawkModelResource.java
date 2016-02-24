@@ -15,11 +15,20 @@ import java.util.Set;
 
 public interface IHawkModelResource extends IHawkResource {
 
-	// type of resource factory used to get this model resource 
+	// type of resource factory used to get this model resource
 	String getType();
 
 	Iterator<IHawkObject> getAllContents();
 
 	Set<IHawkObject> getAllContentsSet();
+
+	/**
+	 * If true, model elements in this resource with globally unique fragments (
+	 * <code>IHawkObject.isFragmentUnique()</code>) are treated as singleton
+	 * elements (at most one copy of them will be present in Hawk)
+	 * 
+	 * @return
+	 */
+	boolean providesSingletonElements();
 
 }

@@ -19,7 +19,8 @@ public class IFCZippedModelResource extends IFCAbstractModelResource {
 	private ZipFile zipFile;
 	private List<ZipEntry> ifcEntries;
 
-	public IFCZippedModelResource(ZipFile zf, List<ZipEntry> ifcEntries, IFCModelFactory ifcModelFactory, IFCModelType type) {
+	public IFCZippedModelResource(ZipFile zf, List<ZipEntry> ifcEntries, IFCModelFactory ifcModelFactory,
+			IFCModelType type) {
 		super(ifcModelFactory, type);
 		this.zipFile = zf;
 		this.ifcEntries = ifcEntries;
@@ -43,6 +44,11 @@ public class IFCZippedModelResource extends IFCAbstractModelResource {
 		final ZipEntry first = ifcEntries.get(0);
 
 		return d.read(zipFile.getInputStream(first), first.getName(), first.getSize());
+	}
+
+	@Override
+	public boolean providesSingletonElements() {
+		return false;
 	}
 
 }

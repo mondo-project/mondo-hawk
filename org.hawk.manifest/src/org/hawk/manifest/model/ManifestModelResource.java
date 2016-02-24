@@ -169,4 +169,9 @@ public class ManifestModelResource implements IHawkModelResource {
 		return uri;
 	}
 
+	@Override
+	public boolean providesSingletonElements() {
+		return true;
+	}
+
 }
