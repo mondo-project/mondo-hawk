@@ -199,6 +199,9 @@ final class HVCSDialog extends TitleAreaDialog {
 		boolean isFrozen = managerToEdit == null ? false : managerToEdit.isFrozen();
 		freeze.setSelection(isFrozen);
 
+		if (managerToEdit == null)
+			freeze.setEnabled(false);
+
 		return container;
 	}
 
