@@ -28,6 +28,7 @@ public class ManifestRequires extends ManifestClass {
 	private IHawkAttribute isMinVersionInclusive;
 	private IHawkAttribute isMaxVersionInclusive;
 	private IHawkAttribute optionalResolution;
+	private IHawkAttribute reExport;
 
 	private HashSet<IHawkReference> references;
 
@@ -38,6 +39,7 @@ public class ManifestRequires extends ManifestClass {
 		isMinVersionInclusive = new ManifestAttribute("isMinVersionInclusive");
 		isMaxVersionInclusive = new ManifestAttribute("isMaxVersionInclusive");
 		optionalResolution = new ManifestAttribute("optionalResolution");
+		reExport = new ManifestAttribute("reExport");
 		references = new HashSet<>();
 		references.add(new ManifestReference("bundle", false, new ManifestBundle(p)));
 	}
@@ -75,6 +77,7 @@ public class ManifestRequires extends ManifestClass {
 		ret.add(isMinVersionInclusive);
 		ret.add(isMaxVersionInclusive);
 		ret.add(optionalResolution);
+		ret.add(reExport);
 		return ret;
 	}
 
@@ -100,6 +103,8 @@ public class ManifestRequires extends ManifestClass {
 			return isMaxVersionInclusive;
 		if (name.equals("optionalResolution"))
 			return optionalResolution;
+		if (name.equals("reExport"))
+			return reExport;
 		if (name.equals("bundle"))
 			return new Utils().getReference("bundle", references);
 		return null;

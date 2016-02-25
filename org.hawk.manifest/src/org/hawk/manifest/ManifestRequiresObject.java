@@ -24,13 +24,16 @@ public class ManifestRequiresObject extends ManifestObject {
 	private Boolean isMinVersionInclusive = null;
 	private Boolean isMaxVersionInclusive = null;
 	private Boolean optionalResolution = null;
+	private Boolean reExport = null;
 
 	private ManifestBundleObject bundle;
 
-	public ManifestRequiresObject(String[] versionRange, String optional, ManifestModelResource manifestModelResource,
-			ManifestBundleObject bundle) {
+	public ManifestRequiresObject(String[] versionRange, String optional, String visibility,
+			ManifestModelResource manifestModelResource, ManifestBundleObject bundle) {
 
 		optionalResolution = optional != null ? optional.equals("optional") : false;
+
+		reExport = visibility != null ? visibility.equals("reexport") : false;
 
 		this.res = manifestModelResource;
 
@@ -77,6 +80,8 @@ public class ManifestRequiresObject extends ManifestObject {
 			return isMaxVersionInclusive != null;
 		case "optionalResolution":
 			return optionalResolution != null;
+		case "reExport":
+			return reExport != null;
 		default:
 			return false;
 		}
@@ -96,6 +101,8 @@ public class ManifestRequiresObject extends ManifestObject {
 			return isMaxVersionInclusive;
 		case "optionalResolution":
 			return optionalResolution;
+		case "reExport":
+			return reExport;
 		default:
 			return null;
 		}
