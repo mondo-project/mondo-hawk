@@ -152,8 +152,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 				for (IVcsManager m : monitors) {
 
-					if (m.isActive()) {
-						if (!m.isFrozen()) {
+					if (!m.isFrozen()) {
+						if (m.isActive()) {
 
 							try {
 								currReposTopRevisions.put(m.getLocation(), m.getCurrentRevision());
@@ -364,12 +364,12 @@ public class ModelIndexerImpl implements IModelIndexer {
 							}
 
 						} else {
-							console.printerrln("Monitor is frozen, skipping it.");
-							// frozen do nothing
+							console.printerrln("Warning, monitor is inactive, synchronisation failed!");
+							allSync = false;
 						}
 					} else {
-						console.printerrln("Warning, monitor is inactive, synchronisation failed!");
-						allSync = false;
+						console.printerrln("Monitor is frozen, skipping it.");
+						// frozen do nothing
 
 					}
 				}
