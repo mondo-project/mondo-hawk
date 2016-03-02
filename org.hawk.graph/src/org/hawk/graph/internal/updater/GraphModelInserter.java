@@ -702,13 +702,6 @@ public class GraphModelInserter {
 			System.err.println("model insertion aborted, see above error (maybe you need to register the metamodel?)");
 		}
 
-		try {
-			System.gc();
-		} catch (Exception e) {
-			System.err.println(e.getCause());
-			System.err.println("model insertion aborted, see above error (maybe you need to register the metamodel?)");
-			success = false;
-		}
 		indexer.getCompositeStateListener().info("Performed batch insert on file: " + s.getPath() + ".");
 		return success;
 	}

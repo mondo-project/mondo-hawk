@@ -348,8 +348,14 @@ public class GraphModelBatchInjector {
 
 			for (final IHawkAttribute eAttribute : ((IHawkClass) eObject.getType()).getAllAttributes()) {
 				if (eObject.isSet(eAttribute)) {
+					Map<String, Object> hashedProperties = hashedEClassProperties.get(typenode);
+					String[] attributeProperties;
+					if (hashedProperties != null) {
+						attributeProperties = (String[]) hashedProperties.get(eAttribute.getName());
+					} else {
+						attributeProperties = (String[]) typenode.getProperty(eAttribute.getName());
+					}
 
-					final String[] attributeProperties = (String[]) typenode.getProperty(eAttribute.getName());
 					final boolean isIndexed = attributeProperties[5].equals("t");
 					if (isIndexed) {
 						indexedattributes.add(eAttribute);
@@ -439,7 +445,7 @@ public class GraphModelBatchInjector {
 
 			// add derived attrs
 			Set<String> attributekeys;
-			Hashtable<String, Object> hashed = hashedeclassproperties.get(typenode);
+			Map<String, Object> hashed = hashedEClassProperties.get(typenode);
 			if (hashed == null) {
 				attributekeys = typenode.getPropertyKeys();
 				System.err.println("non-hashed type properties - will slow insert");
@@ -592,7 +598,7 @@ public class GraphModelBatchInjector {
 		else
 			System.err.println("getEClassNode called on a non-class classifier:\n" + e);
 
-		IGraphNode classnode = hashedeclasses.get(eClass);
+		IGraphNode classnode = hashedEClasses.get(eClass);
 
 		if (classnode == null) {
 
@@ -619,21 +625,21 @@ public class GraphModelBatchInjector {
 			}
 
 			if (classnode != null)
-				hashedeclasses.put(eClass, classnode);
+				hashedEClasses.put(eClass, classnode);
 			else {
 				throw new Exception("eClass: " + eClass.getName() + "(" + eClass.getUri()
 						+ ") does not have a Node associated with it in the store, please make sure the relevant metamodel has been inserted");
 
 			}
 
-			// cache properties
+			// typeCache properties
 			Hashtable<String, Object> properties = new Hashtable<>();
 			for (String s : classnode.getPropertyKeys()) {
 				Object prop = classnode.getProperty(s);
 				if (prop instanceof String[])
 					properties.put(s, prop);
 			}
-			hashedeclassproperties.put(classnode, properties);
+			hashedEClassProperties.put(classnode, properties);
 		}
 
 		return classnode;

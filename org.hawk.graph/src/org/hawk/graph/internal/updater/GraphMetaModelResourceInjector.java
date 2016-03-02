@@ -959,6 +959,7 @@ public class GraphMetaModelResourceInjector {
 
 	}
 
+	// FIXME: why do we have two removeMetamodels(...) methods?
 	public Set<String> removeMetamodels(String[] mmuris) {
 
 		Set<String> ret = new HashSet<>();
