@@ -366,18 +366,18 @@ public class SvnPrevManager implements IVcsManager {
 	}
 
 	@Override
-	public void importFiles(String path, File temp) {
+	public File importFiles(String path, File temp) {
 		SVNRepository svnRepository = getSVNRepository(repositoryURL, username, password);
 
 		try {
 			OutputStream o = new FileOutputStream(temp);
-
 			svnRepository.getFile(path, Long.parseLong(getCurrentRevision()), new SVNProperties(), o);
-
 			o.flush();
 			o.close();
+			return temp;
 		} catch (Exception e) {
 			console.printerrln(e);
+			return null;
 		}
 
 	}
@@ -424,7 +424,7 @@ public class SvnPrevManager implements IVcsManager {
 	}
 
 	@Override
-	public List<VcsCommitItem> getDelta(String startRevision) throws Exception {
+	public Collection<VcsCommitItem> getDelta(String startRevision) throws Exception {
 		if (Integer.parseInt(startRevision) < 0)
 			return getDelta(getFirstRevision(), getCurrentRevision()).getCompactedCommitItems();
 		else

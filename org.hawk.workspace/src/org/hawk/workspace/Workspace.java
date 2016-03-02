@@ -15,10 +15,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -173,14 +173,16 @@ public class Workspace implements IVcsManager {
 	}
 
 	@Override
-	public void importFiles(String path, File temp) {
+	public File importFiles(String path, File temp) {
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
 		try {
 			try (InputStream is = file.getContents()) {
 				Files.copy(is, temp.toPath());
+				return temp;
 			}
 		} catch (IOException | CoreException e) {
 			console.printerrln(e);
+			return null;
 		}
 	}
 
@@ -242,7 +244,7 @@ public class Workspace implements IVcsManager {
 	}
 
 	@Override
-	public List<VcsCommitItem> getDelta(String string) throws Exception {
+	public Collection<VcsCommitItem> getDelta(String string) throws Exception {
 		return getDelta(string, getCurrentRevision()).getCompactedCommitItems();
 	}
 

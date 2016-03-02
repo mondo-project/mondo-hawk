@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2016 The University of York.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,13 +8,16 @@
  * Contributors:
  * 	   Nikolas Matragkas, James Williams, Dimitris Kolovos - initial API and implementation
  *     Konstantinos Barmpis - adaption for use in Hawk
+ *     Antonio Garcia-Dominguez - speed up commit item compaction
  ******************************************************************************/
 package org.hawk.core;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class VcsRepositoryDelta implements Serializable {
 
@@ -45,48 +48,25 @@ public class VcsRepositoryDelta implements Serializable {
 		// CREATION
 
 	// XXX (Kostas comment) keeping all info from svn, compacted
-	public List<VcsCommitItem> getCompactedCommitItems() {
-		List<VcsCommitItem> commitItems = new ArrayList<VcsCommitItem>();
-
+	public Collection<VcsCommitItem> getCompactedCommitItems() {
+		final Map<String, VcsCommitItem> compacted = new HashMap<>();
 		for (VcsCommit commit : commits) {
 			for (VcsCommitItem item : commit.getItems()) {
 				switch (item.getChangeType()) {
 				case ADDED:
-					removeCommitItemByPath(commitItems, item.getPath());
-					commitItems.add(item);
-					break;
 				case DELETED:
-					removeCommitItemByPath(commitItems, item.getPath());
-					commitItems.add(item);
-					break;
 				case UPDATED:
-					removeCommitItemByPath(commitItems, item.getPath());
-					commitItems.add(item);
-					break;
 				case REPLACED:
-					removeCommitItemByPath(commitItems, item.getPath());
-					commitItems.add(item);
+					compacted.put(item.getPath(), item);
 					break;
 				case UNKNOWN:
-					// ignore
-					System.err.println("Found unknnown commit kind: "
-							+ item.getChangeType());
+					System.err.println("Found unknnown commit kind: " + item.getChangeType());
 					break;
 				}
 			}
 		}
 
-		return commitItems;
-	}
-
-	// TODO: (VcsRepositoryDelta developer comment) Is the path enough?
-	protected void removeCommitItemByPath(List<VcsCommitItem> items, String path) {
-		Iterator<VcsCommitItem> it = items.iterator();
-		while (it.hasNext()) {
-			VcsCommitItem item = it.next();
-			if (item.getPath().equals(path))
-				it.remove();
-		}
+		return compacted.values();
 	}
 
 	public String toString() {

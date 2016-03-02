@@ -11,7 +11,6 @@
 package org.hawk.core.runtime;
 
 import java.io.BufferedWriter;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -186,7 +185,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 								Set<VcsCommitItem> deleteditems = new HashSet<VcsCommitItem>();
 
 								// limit to "interesting" files
-								List<VcsCommitItem> files = m.getDelta(currLocalTopRevisions.get(m.getLocation()));
+								Collection<VcsCommitItem> files = m.getDelta(currLocalTopRevisions.get(m.getLocation()));
 
 								// System.err.println(files);
 
@@ -237,6 +236,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 									// create temp files with changed repos
 									// files
+									final Map<String, File> pathToImported = new HashMap<>();
 									for (VcsCommitItem s : currreposchangeditems) {
 
 										String commitPath = s.getPath();
@@ -260,9 +260,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 										} else
 											temp = new File(monitorTempDir + "/" + commitPath);
 
-										if (!temp.exists())
-											m.importFiles(commitPath, temp);
-
+										if (!pathToImported.containsKey(commitPath)) {
+											final File imported = m.importFiles(commitPath, temp);
+											pathToImported.put(commitPath, imported);
+										}
 									}
 
 									// delete all removed files
@@ -304,21 +305,16 @@ public class ModelIndexerImpl implements IModelIndexer {
 											IHawkModelResource r = null;
 
 											if (u.caresAboutResources()) {
-
-												File file = new File(graph.getTempDir() + "/" + v.getPath());
-
-												if (!file.exists()) {
+												final File file = pathToImported.get(v.getPath());
+												if (file == null || !file.exists()) {
 													console.printerrln("warning, cannot find file: " + file
 															+ ", ignoring changes");
 												} else {
-
 													IModelResourceFactory mrf = getModelParserFromFilename(
 															file.getName().toLowerCase());
 													if (mrf.canParse(file))
 														r = mrf.parse(file);
-
 												}
-
 											}
 
 											success = u.updateStore(v, r) && success;

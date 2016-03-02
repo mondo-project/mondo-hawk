@@ -15,9 +15,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.http.Header;
@@ -171,7 +171,7 @@ public class HTTPManager implements IVcsManager {
 	}
 
 	@Override
-	public List<VcsCommitItem> getDelta(String endRevision) throws Exception {
+	public Collection<VcsCommitItem> getDelta(String endRevision) throws Exception {
 		return getDelta(FIRST_REV, endRevision).getCompactedCommitItems();
 	}
 
@@ -200,13 +200,15 @@ public class HTTPManager implements IVcsManager {
 	}
 
 	@Override
-	public void importFiles(String path, File temp) {
+	public File importFiles(String path, File temp) {
 		try (CloseableHttpClient cl = createClient()) {
 			try (CloseableHttpResponse response = cl.execute(new HttpGet(repositoryURL))) {
 				Files.copy(response.getEntity().getContent(), temp.toPath());
+				return temp;
 			}
 		} catch (IOException e) {
 			console.printerrln(e);
+			return null;
 		}
 	}
 

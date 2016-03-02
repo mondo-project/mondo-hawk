@@ -22,10 +22,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,7 +37,6 @@ import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommit;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.VcsRepositoryDelta;
-import org.hawk.core.util.FileOperations;
 
 public class Git implements IVcsManager {
 
@@ -159,13 +158,14 @@ public class Git implements IVcsManager {
 	}
 
 	@Override
-	public void importFiles(String p, File temp) {
+	public File importFiles(String p, File temp) {
 		try {
-			String path = URLDecoder.decode(p.replace("+", "%2B"), "UTF-8");
-			FileOperations.copyFile(
-					rootLocation.resolve(path.startsWith("/") ? path.replaceFirst("/", "") : path).toFile(), temp);
+			final String path = URLDecoder.decode(p.replace("+", "%2B"), "UTF-8");
+			final Path resolvedPath = rootLocation.resolve(path.startsWith("/") ? path.replaceFirst("/", "") : path);
+			return resolvedPath.toFile();
 		} catch (Exception e) {
 			console.printerrln(e);
+			return null;
 		}
 	}
 
@@ -328,7 +328,7 @@ public class Git implements IVcsManager {
 	}
 
 	@Override
-	public List<VcsCommitItem> getDelta(String endRevision) throws Exception {
+	public Collection<VcsCommitItem> getDelta(String endRevision) throws Exception {
 		return getDelta(FIRST_REV, endRevision).getCompactedCommitItems();
 	}
 

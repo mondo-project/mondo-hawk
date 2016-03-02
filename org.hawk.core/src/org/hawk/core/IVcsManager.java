@@ -12,7 +12,7 @@
 package org.hawk.core;
 
 import java.io.File;
-import java.util.List;
+import java.util.Collection;
 import java.util.Set;
 
 public interface IVcsManager {
@@ -21,13 +21,21 @@ public interface IVcsManager {
 
 	String getFirstRevision() throws Exception;
 
-	List<VcsCommitItem> getDelta(String startRevision) throws Exception;
+	Collection<VcsCommitItem> getDelta(String startRevision) throws Exception;
 
 	VcsRepositoryDelta getDelta(String startRevision, String endRevision)
 			throws Exception;
 
-	// kostas
-	void importFiles(String path, File temp);
+	/**
+	 * Places the contents of the resource located at <code>path</code> in a
+	 * local file. Hawk will provide a suggested temporary file location through
+	 * <code>optionalTemp</code>, but the implementation may use another one
+	 * (e.g. the file might already be available on disk somewhere else). The
+	 * implementation must return the file that should be read in the end.
+	 * Implementations should be careful to preserve relative paths between the
+	 * files in the same repository when implementing this method.
+	 */
+	File importFiles(String path, File optionalTemp);
 
 	// kostas
 	boolean isActive();
