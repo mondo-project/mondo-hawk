@@ -579,8 +579,8 @@ public class GraphModelBatchInjector {
 
 	}
 
-	private Hashtable<IHawkClass, IGraphNode> hashedeclasses = new Hashtable<>();
-	private Hashtable<IGraphNode, Hashtable<String, Object>> hashedeclassproperties = new Hashtable<>();
+	private Hashtable<IHawkClass, IGraphNode> hashedEClasses = new Hashtable<>();
+	private Hashtable<IGraphNode, Hashtable<String, Object>> hashedEClassProperties = new Hashtable<>();
 	private boolean successState = true;
 
 	/**
