@@ -277,37 +277,30 @@ public class GraphModelBatchInjector {
 		objectCount[2] = 0;
 		objectCount[3] = 0;
 
-		int lastprint = 0;
-		int inthisline = 0;
-
+		final String fileID = originatingFile.getProperty(IModelIndexer.IDENTIFIER_PROPERTY) + "";
 		long init = System.nanoTime();
+		int lastprint = 0;
 
 		for (IHawkObject child : children) {
-			boolean ref = true;
-			boolean clas = true;
-
 			switch (parseOption) {
 			case MODELELEMENTS:
 				addEObject(originatingFile, child, resourceCanProvideSingletons);
 				break;
 			case MODELREFERENCES:
-				ref = addEReferences(child);
+				addEReferences(child);
 				break;
 			default:
 				System.err.println("parse option: " + parseOption + " not recognised!");
 			}
 
-			if (ref && clas && objectCount[0] % 50000 == 0 || lastprint < objectCount[0] - 50000) {
-				if (inthisline > 5) {
-					System.out.println("\t");
-					inthisline = 0;
-				}
-				inthisline++;
+			if (lastprint < objectCount[0] - 50000) {
 				lastprint = objectCount[0];
-				String out = "Adding " + (parseOption == ParseOptions.MODELELEMENTS ? "nodes" : "references") + ": "
-						+ objectCount[0] + " " + (System.nanoTime() - init) / 1000000000 + "sec ("
-						+ (System.nanoTime() - startTime) / 1000000000 + "sec total)";
-				// System.out.print(out + "\t");
+
+				final String out = String.format("Adding %s: %d %d sec (%d sec total) to %s",
+						parseOption == ParseOptions.MODELELEMENTS ? "nodes" : "references",
+								objectCount[0], (System.nanoTime() - init) / 1_000_000_000,
+								(System.nanoTime() - startTime) / 1_000_000_000, fileID);
+
 				hawk.getCompositeStateListener().info(out);
 				init = System.nanoTime();
 			}

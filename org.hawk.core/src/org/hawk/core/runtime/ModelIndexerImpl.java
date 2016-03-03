@@ -232,7 +232,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 											.compareWithLocalFiles(interestingfiles);
 
 									// metadata about synchronise
-									currchangeditems = currchangeditems + currreposchangeditems.size();
+									final int totalFiles = currreposchangeditems.size();
+									currchangeditems = currchangeditems + totalFiles;
 
 									// create temp files with changed repos
 									// files
@@ -289,6 +290,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 									// prepare for mass inserts if needed
 									graph.enterBatchMode();
 
+									final boolean fileCountProgress = totalFiles > 100;
+									final long millisSinceStart = System.currentTimeMillis();
+									int totalProcessedFiles = 0, filesProcessedSinceLastPrint = 0;
+									long millisSinceLastPrint = millisSinceStart;
+
 									for (VcsCommitItem v : currreposchangeditems) {
 										// if(v.getPath().equals("W4 BPMN+
 										// Composer"
@@ -327,6 +333,21 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 												}
 												loadedResources++;
+											}
+
+											if (fileCountProgress) {
+												filesProcessedSinceLastPrint++;
+												if (filesProcessedSinceLastPrint == 1000) {
+													totalProcessedFiles += filesProcessedSinceLastPrint;
+
+													final long millisPrint = System.currentTimeMillis();
+													stateListener.info(String.format(
+															"Processed %d/%d files in repo %s (%s sec, %s sec total)", totalProcessedFiles,
+															totalFiles, m.getLocation(), (millisPrint - millisSinceLastPrint)/1000, (millisPrint - millisSinceStart)/1000));
+
+													filesProcessedSinceLastPrint = 0;
+													millisSinceLastPrint = millisPrint;
+												}
 											}
 
 										} catch (Exception e) {

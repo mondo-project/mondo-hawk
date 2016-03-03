@@ -39,6 +39,7 @@ public abstract class IFCAbstractModelResource implements IHawkModelResource {
 
 	private final IFCModelFactory factory;
 	private final IFCModelType ifcModelType;
+	private Set<IHawkObject> allElements;
 
 	public IFCAbstractModelResource(IFCModelFactory p, IFCModelType type) {
 		this.factory = p;
@@ -55,17 +56,19 @@ public abstract class IFCAbstractModelResource implements IHawkModelResource {
 
 	@Override
 	public Set<IHawkObject> getAllContentsSet() {
-		Set<IHawkObject> allElements = new HashSet<IHawkObject>();
-	
-		try {
-			Deserializer d = createDeserializer();
-			IfcModelInterface s = readModel(d);
-			for (IdEObject eo : s.getValues()) {
-				allElements.add(new IFCObject(eo));
-				addFloating(allElements, eo);
+		if (allElements == null) {
+			allElements = new HashSet<IHawkObject>();
+
+			try {
+				Deserializer d = createDeserializer();
+				IfcModelInterface s = readModel(d);
+				for (IdEObject eo : s.getValues()) {
+					allElements.add(new IFCObject(eo));
+					addFloating(allElements, eo);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	
 		return allElements;

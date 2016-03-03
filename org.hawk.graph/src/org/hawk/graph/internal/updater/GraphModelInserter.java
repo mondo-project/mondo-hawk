@@ -83,67 +83,57 @@ public class GraphModelInserter {
 		graph = indexer.getGraph();
 	}
 
-	public boolean run(IHawkModelResource res, VcsCommitItem s) throws Exception {
-
-		indexer.getCompositeStateListener().info("Calculating model delta for file: " + s.getPath() + "...");
-		resource = res;
+	public boolean run(IHawkModelResource res, VcsCommitItem s, final boolean verbose) throws Exception {
+		if (verbose) {
+			indexer.getCompositeStateListener()
+				.info("Calculating model delta for file: " + s.getPath() + "...");
+		}
+		this.resource = res;
 		this.s = s;
+		this.inj = new GraphModelBatchInjector(graph, this.s, indexer.getCompositeGraphChangeListener());
 
-		// indexer = i;
-		inj = new GraphModelBatchInjector(graph, this.s, indexer.getCompositeGraphChangeListener());
+		final int delta = calculateModelDeltaSize();
+		if (delta != -1) {
+			final IVcsManager manager = s.getCommit().getDelta().getManager();
 
-		boolean success;
+			prefixesToStrip.clear();
+			prefixesToStrip.add(new File(graph.getTempDir()).toURI().toString());
+			prefixesToStrip.addAll(manager.getPrefixesToBeStripped());
 
-		try {
-			// f = new File(dir + "/" + s.getPath());
-
-			int delta = calculateModelDeltaSize();
-
-			if (delta != -1) {
-				final IVcsManager manager = s.getCommit().getDelta().getManager();
-
-				prefixesToStrip.clear();
-				prefixesToStrip.add(new File(graph.getTempDir()).toURI().toString());
-				prefixesToStrip.addAll(manager.getPrefixesToBeStripped());
-
+			if (verbose) {
 				System.err.println("file already present, calculating deltas with respect to graph storage");
-				//
-				if (currentDeltaRatio > maxTransactionalAcceptableLoadRatio) {
-					System.err.print("[" + currentDeltaRatio + ">" + maxTransactionalAcceptableLoadRatio + "] ");
-					success = batchUpdate();
-				} else {
-					System.err.print("[" + currentDeltaRatio + "<=" + maxTransactionalAcceptableLoadRatio + "] ");
-					success = transactionalUpdate(delta);
-				}
-
-				//
-				// FIXMEdone -- at end of all updates similar to derived proxy
-				// // for each change see if any derived attributes need
-				// re-calculation - if they do add em to derived proxy
-				// dictionary for re-calculation!
-				//
+			}
+			if (currentDeltaRatio > maxTransactionalAcceptableLoadRatio) {
+				// System.err.print("[" + currentDeltaRatio + ">" +
+				// maxTransactionalAcceptableLoadRatio + "] ");
+				return batchUpdate(verbose);
 			} else {
-				// populate the database from scratch (for this file) -- this
-				// will trigger calculation of all derived attrs
-				success = addNodes();
+				// System.err.print("[" + currentDeltaRatio + "<=" +
+				// maxTransactionalAcceptableLoadRatio + "] ");
+				return transactionalUpdate(delta, verbose);
 			}
 
-			return success;
-		} finally {
-			long l = System.nanoTime();
-			// t.success();
-			// t.finish();
-			// graph.shutdown();
-			System.out.println("(took ~" + (System.nanoTime() - l) / 1000000000 + "sec to commit changes)");
+			//
+			// FIXMEdone -- at end of all updates similar to derived proxy
+			// // for each change see if any derived attributes need
+			// re-calculation - if they do add em to derived proxy
+			// dictionary for re-calculation!
+			//
+		} else {
+			// populate the database from scratch (for this file) -- this
+			// will trigger calculation of all derived attrs
+			return addNodes(verbose);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private boolean transactionalUpdate(int delta) throws Exception {
+	private boolean transactionalUpdate(int delta, final boolean verbose) throws Exception {
 		graph.exitBatchMode();
-		indexer.getCompositeStateListener()
-				.info("Performing transactional update (delta:" + delta + ") on file: " + s.getPath() + "...");
-		System.err.println("transactional update called");
+		if (verbose) {
+			indexer.getCompositeStateListener()
+					.info("Performing transactional update (delta:" + delta + ") on file: " + s.getPath() + "...");
+			System.err.println("transactional update called");
+		}
 
 		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
 		try (IGraphTransaction t = graph.beginTransaction()) {
@@ -319,7 +309,9 @@ public class GraphModelInserter {
 			listener.changeFailure();
 			return false;
 		} finally {
-			indexer.getCompositeStateListener().info("Performed transactional update on file: " + s.getPath() + ".");
+			if (verbose) {
+				indexer.getCompositeStateListener().info("Performed transactional update on file: " + s.getPath() + ".");
+			}
 		}
 
 	}
@@ -581,9 +573,11 @@ public class GraphModelInserter {
 		}
 	}
 
-	private boolean batchUpdate() throws Exception {
-		System.err.println("batch update called");
-		indexer.getCompositeStateListener().info("Performing batch update of file: " + s.getPath() + "...");
+	private boolean batchUpdate(final boolean verbose) throws Exception {
+		if (verbose) {
+			System.err.println("batch update called");
+			indexer.getCompositeStateListener().info("Performing batch update of file: " + s.getPath() + "...");
+		}
 		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
 		listener.changeStart();
 		try {
@@ -603,7 +597,9 @@ public class GraphModelInserter {
 			listener.changeFailure();
 			return false;
 		} finally {
-			indexer.getCompositeStateListener().info("Performed batch update of file: " + s.getPath() + ".");
+			if (verbose) {
+				indexer.getCompositeStateListener().info("Performed batch update of file: " + s.getPath() + ".");
+			}
 		}
 	}
 
@@ -682,13 +678,16 @@ public class GraphModelInserter {
 
 	/**
 	 * Populates the database with the model, using util.parseresource
+	 * @param verbose 
 	 * 
 	 * @return
 	 * 
 	 * @throws Exception
 	 */
-	private boolean addNodes() throws Exception {
-		indexer.getCompositeStateListener().info("Performing batch insert on file: " + s.getPath() + "...");
+	private boolean addNodes(boolean verbose) throws Exception {
+		if (verbose) {
+			indexer.getCompositeStateListener().info("Performing batch insert on file: " + s.getPath() + "...");
+		}
 		boolean success = true;
 		if (resource != null) {
 			GraphModelBatchInjector batch = new GraphModelBatchInjector(indexer, s, resource,
@@ -702,7 +701,9 @@ public class GraphModelInserter {
 			System.err.println("model insertion aborted, see above error (maybe you need to register the metamodel?)");
 		}
 
-		indexer.getCompositeStateListener().info("Performed batch insert on file: " + s.getPath() + ".");
+		if (verbose) {
+			indexer.getCompositeStateListener().info("Performed batch insert on file: " + s.getPath() + ".");
+		}
 		return success;
 	}
 

@@ -62,6 +62,7 @@ public class GraphModelUpdater implements IModelUpdater {
 	public boolean updateStore(VcsCommitItem f, IHawkModelResource res) {
 		final long start = System.currentTimeMillis();
 		boolean success = true;
+
 		/*
 		 * We register this listener only for this particular updater and during
 		 * this method call. It is used to collect information about which nodes
@@ -71,9 +72,14 @@ public class GraphModelUpdater implements IModelUpdater {
 		 * require any more memory, and the CPU cost should be the same.
 		 */
 		final IGraphDatabase g = indexer.getGraph();
-		final DirtyDerivedAttributesListener l = new DirtyDerivedAttributesListener(
-				g);
+		final DirtyDerivedAttributesListener l = new DirtyDerivedAttributesListener(g);
 		indexer.addGraphChangeListener(l);
+
+		/*
+		 * Print more information when we have few commit items: normally this
+		 * means we have a few big files instead of many small files.
+		 */
+		final boolean verbose = f.getCommit().getDelta().getCommits().size() < 100;
 
 		try {
 			try {
@@ -86,7 +92,7 @@ public class GraphModelUpdater implements IModelUpdater {
 								+ "\nafter its resource failed to be loaded");
 						success = false;
 					}
-				} else if (!new GraphModelInserter(indexer).run(res, f)) {
+				} else if (!new GraphModelInserter(indexer).run(res, f, verbose)) {
 					console.printerrln("warning: failed to update item: " + f
 							+ "\nmodel resource: " + res);
 					success = false;
@@ -102,16 +108,19 @@ public class GraphModelUpdater implements IModelUpdater {
 
 		} finally {
 			final long s = System.currentTimeMillis();
-			console.print("marking any relevant derived attributes for update...");
-			indexer.getCompositeStateListener().info(
-					"Marking relevant derived attributes for update...");
+			if (verbose) {
+				console.print("marking any relevant derived attributes for update...");
+				indexer.getCompositeStateListener().info("Marking relevant derived attributes for update...");
+			}
 			toBeUpdated.addAll(l.getNodesToBeUpdated());
 			indexer.removeGraphChangeListener(l);
-			final long end = System.currentTimeMillis();
-			console.println((end - s) / 1000 + "s" + (end - s) % 1000 + "ms");
-			indexer.getCompositeStateListener().info(
-					"Marked relevant derived attributes for update. "
-							+ (end - s) / 1000 + "s" + (end - s) % 1000 + "ms");
+
+			if (verbose) {
+				final long end = System.currentTimeMillis();
+				console.println((end - s) / 1000 + "s" + (end - s) % 1000 + "ms");
+				indexer.getCompositeStateListener().info("Marked relevant derived attributes for update. "
+						+ (end - s) / 1000 + "s" + (end - s) % 1000 + "ms");
+			}
 		}
 		return success;
 	}
