@@ -50,6 +50,7 @@ import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Text;
 import org.hawk.core.IHawkFactory;
 import org.hawk.core.runtime.ModelIndexerImpl;
+import org.hawk.osgiserver.HManager;
 import org.hawk.ui2.Activator;
 import org.hawk.ui2.util.HUIManager;
 
@@ -186,6 +187,7 @@ public class HWizardPage extends WizardPage {
 			@Override
 			public void focusLost(FocusEvent e) {
 				updateBackends();
+				updatePlugins();
 			}
 		});
 
@@ -197,7 +199,7 @@ public class HWizardPage extends WizardPage {
 		pluginTable = CheckboxTableViewer.newCheckList(container, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		pluginTable.setContentProvider(new ListContentProvider());
 		pluginTable.setLabelProvider(new LabelProvider());
-		pluginTable.setInput(getHawkPlugins());
+		pluginTable.setInput(HManager.getInstance().getAvailablePlugins());
 		pluginTable.setAllChecked(true);
 
 		gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -273,22 +275,7 @@ public class HWizardPage extends WizardPage {
 		setControl(container);
 	}
 
-	private List<String> getHawkPlugins() {
-		List<String> all = new ArrayList<String>();
-		all.addAll(hminstance.getUpdaterTypes());
-		all.addAll(hminstance.getIndexTypes());
-		all.addAll(hminstance.getMetaModelTypes());
-		all.addAll(hminstance.getModelTypes());
-		all.addAll(hminstance.getVCSTypes());
-		return all;
-	}
-
-	/**
-	 * Tests if the current workbench selection is a suitable container to use.
-	 */
-
 	private void initialize() {
-
 		// set the default indexer name "MyHawk"
 		nameText.setText("myhawk");
 		// set the default indexer location
@@ -324,6 +311,7 @@ public class HWizardPage extends WizardPage {
 		final IHawkFactory factory = factories.get(getFactoryID());
 		locationText.setEnabled(factory.instancesUseLocation());
 		updateBackends();
+		updatePlugins();
 
 		// name empty or valid chars in indexername
 		if (getHawkName().trim().equals("")) {
@@ -393,6 +381,34 @@ public class HWizardPage extends WizardPage {
 
 		// check plugins form a valid hawk?
 		updateStatus(null);
+	}
+
+	@SuppressWarnings("unchecked")
+	protected void updatePlugins() {
+		try {
+			final IHawkFactory factory = factories.get(getFactoryID());
+			List<String> plugins = factory
+					.listPlugins(locationText.getText());
+			if (plugins == null) {
+				plugins = new ArrayList<>();
+				plugins.addAll(HUIManager.getInstance().getAvailablePlugins());
+			}
+
+			final List<String> oldInput = (List<String>) pluginTable.getInput();
+			final List<Object> oldChecked = Arrays.asList(pluginTable.getCheckedElements());
+			if (!oldInput.equals(plugins)) {
+				pluginTable.setInput(plugins);
+				pluginTable.setAllChecked(true);
+				for (String newElem : plugins) {
+					// Keep unchecked values across switches
+					if (oldInput.contains(newElem) && !oldChecked.contains(newElem)) {
+						pluginTable.setChecked(newElem, false);
+					}
+				}
+			}
+		} catch (Exception ex) {
+			Activator.logError("Could not refresh plugin list", ex);
+		}
 	}
 
 	private void updateStatus(String message) {

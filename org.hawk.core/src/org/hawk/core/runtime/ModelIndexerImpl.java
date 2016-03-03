@@ -285,7 +285,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 										listener.changeSuccess();
 									}
 
-									stateListener.info("Updating models with a new version available...");
+									stateListener.info("Updating models to the new version...");
 
 									// prepare for mass inserts if needed
 									graph.enterBatchMode();

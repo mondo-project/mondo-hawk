@@ -32,7 +32,11 @@ public class LocalHawkFactory implements IHawkFactory {
 	public final static String ID = "org.hawk.core.hawkFactory.local";
 
 	@Override
-	public IHawk create(String name, File localStorageFolder, String location, ICredentialsStore credStore, IConsole console) throws Exception {
+	public IHawk create(String name, File localStorageFolder, String location, ICredentialsStore credStore, IConsole console, List<String> plugins) throws Exception {
+		/**
+		 * This implementation ignores the plugins parameter, as it is not OSGi-aware:
+		 * the OSGi-awareness is done in the HModel class itself. 
+		 */
 		return new LocalHawk(name, localStorageFolder, credStore, console);
 	}
 
@@ -82,6 +86,12 @@ public class LocalHawkFactory implements IHawkFactory {
 
 	@Override
 	public List<String> listBackends(String location) throws Exception {
+		// We can't say from here: ask elsewhere!
+		return null;
+	}
+
+	@Override
+	public List<String> listPlugins(String location) throws Exception {
 		// We can't say from here: ask elsewhere!
 		return null;
 	}

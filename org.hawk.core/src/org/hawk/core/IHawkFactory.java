@@ -54,8 +54,10 @@ public interface IHawkFactory {
 	 *            Credential storage to be used to persist VCS login details.
 	 * @param console
 	 *            {@link IConsole} implementation used to print messages.
+	 * @param enabledPlugins
+	 *            Plugins that should be enabled in the created instance.
 	 */
-	IHawk create(String name, File storageFolder, String location, ICredentialsStore credStore, IConsole console) throws Exception;
+	IHawk create(String name, File storageFolder, String location, ICredentialsStore credStore, IConsole console, List<String> enabledPlugins) throws Exception;
 
 	/**
 	 * Returns information from all the {@link IHawk} instances that
@@ -71,6 +73,13 @@ public interface IHawkFactory {
 	 * (e.g. using OSGi configuration elements).
 	 */
 	List<String> listBackends(String location) throws Exception;
+
+	/**
+	 * Returns a list of all the available plugins at that location, or
+	 * <code>null</code> if we should know about them in some other way
+	 * (e.g. using OSGi configuration elements).
+	 */
+	List<String> listPlugins(String location) throws Exception;
 
 	/**
 	 * Indicates whether the created instance should be customized with the

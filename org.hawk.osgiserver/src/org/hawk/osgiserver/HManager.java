@@ -15,6 +15,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -45,11 +46,13 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class HManager {
 
-	private static final String MUPDATER_CLASS_ATTRIBUTE = "ModelUpdater";
-	private static final String MPARSER_CLASS_ATTRIBUTE = "ModelParser";
-	private static final String MMPARSER_CLASS_ATTRIBUTE = "MetaModelParser";
-	private static final String VCSMANAGER_CLASS_ATTRIBUTE = "VCSManager";
-	private static final String HAWKFACTORY_CLASS_ATTRIBUTE = "class";
+	static final String MUPDATER_CLASS_ATTRIBUTE = "ModelUpdater";
+	static final String MPARSER_CLASS_ATTRIBUTE = "ModelParser";
+	static final String MMPARSER_CLASS_ATTRIBUTE = "MetaModelParser";
+	static final String VCSMANAGER_CLASS_ATTRIBUTE = "VCSManager";
+	static final String HAWKFACTORY_CLASS_ATTRIBUTE = "class";
+	static final String QUERYLANG_CLASS_ATTRIBUTE = "query_language";
+	static final String GCHANGEL_CLASS_ATTRIBUTE = "class";
 
 	private static HManager inst;
 
@@ -239,8 +242,8 @@ public class HManager {
 		return getConfigurationElementsFor("org.hawk.core.QueryExtensionPoint");
 	}
 
-	public Set<String> getMetaModelTypes() {
-		return getAttributeFor(MMPARSER_CLASS_ATTRIBUTE, getMmps());
+	public Set<String> getLanguageTypes() {
+		return getAttributeFor(QUERYLANG_CLASS_ATTRIBUTE, getLanguages());
 	}
 
 	public IMetaModelUpdater getMetaModelUpdater() throws CoreException {
@@ -265,6 +268,10 @@ public class HManager {
 		else
 			return null;
 
+	}
+
+	public Set<String> getMetaModelTypes() {
+		return getAttributeFor(MMPARSER_CLASS_ATTRIBUTE, getMmps());
 	}
 
 	public List<IConfigurationElement> getMmps() {
@@ -295,6 +302,21 @@ public class HManager {
 		return getAttributeFor(VCSMANAGER_CLASS_ATTRIBUTE, getVCS());
 	}
 
+	/**
+	 * Returns a sorted list with all the possible plugins that can be
+	 * enabled/disabled.
+	 */
+	public List<String> getAvailablePlugins() {
+		List<String> all = new ArrayList<String>();
+		all.addAll(getMetaModelTypes());
+		all.addAll(getModelTypes());
+		all.addAll(getLanguageTypes());
+		all.addAll(getUpdaterTypes());
+		all.addAll(getGraphChangeListenerTypes());
+		Collections.sort(all);
+		return all;
+	}
+
 	public List<IVcsManager> getVCSInstances() {
 		final List<IVcsManager> instances = new ArrayList<>();
 		for (IConfigurationElement elem : getVCS()) {
@@ -315,6 +337,10 @@ public class HManager {
 
 	public List<IConfigurationElement> getGraphChangeListeners() {
 		return getConfigurationElementsFor("org.hawk.core.GraphChangeListenerExtensionPoint");
+	}
+
+	public Set<String> getGraphChangeListenerTypes() {
+		return getAttributeFor(GCHANGEL_CLASS_ATTRIBUTE, getGraphChangeListeners());
 	}
 
 	public Map<String, IHawkFactory> getHawkFactoryInstances() {

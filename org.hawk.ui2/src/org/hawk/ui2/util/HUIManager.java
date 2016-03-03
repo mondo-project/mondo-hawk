@@ -78,5 +78,4 @@ public class HUIManager extends HManager implements IStructuredContentProvider,
 			HView.updateAsync(PlatformUI.getWorkbench().getDisplay());
 		}
 	}
-
 }

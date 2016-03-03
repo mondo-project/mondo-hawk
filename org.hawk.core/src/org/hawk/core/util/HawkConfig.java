@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.hawk.core.util;
 
+import java.util.List;
+
 import org.hawk.core.runtime.LocalHawkFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -29,14 +31,18 @@ public class HawkConfig {
 	@XStreamAlias("hawkFactory")
 	protected String hawkFactory = LocalHawkFactory.ID;
 
+	@XStreamAlias("hawkEnabledPlugins")
+	protected List<String> hawkEnabledPlugins;
+
 	public HawkConfig() {
 	}
 
-	public HawkConfig(String name, String storage, String location, String factory) {
+	public HawkConfig(String name, String storage, String location, String factory, List<String> plugins) {
 		this.name = name;
 		this.storageFolder = storage;
 		this.location = location;
 		this.hawkFactory = factory;
+		this.hawkEnabledPlugins = plugins;
 	}
 
 	public String getName() {
@@ -69,6 +75,14 @@ public class HawkConfig {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	public List<String> getEnabledPlugins() {
+		return hawkEnabledPlugins;
+	}
+
+	public void setEnabledPlugins(List<String> hawkEnabledPlugins) {
+		this.hawkEnabledPlugins = hawkEnabledPlugins;
 	}
 
 	@Override

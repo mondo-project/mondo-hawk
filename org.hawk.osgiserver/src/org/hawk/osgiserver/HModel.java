@@ -16,6 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -107,7 +108,7 @@ public class HModel implements IStateListener {
 			throw new IllegalArgumentException("maximum delay must not be negative");
 		}
 
-		HModel hm = new HModel(manager, hawkFactory, name, storageFolder, location, credStore);
+		HModel hm = new HModel(manager, hawkFactory, name, storageFolder, location, credStore, plugins);
 		if (dbType != null) {
 			hm.hawk.setDbtype(dbType);
 		}
@@ -161,10 +162,9 @@ public class HModel implements IStateListener {
 	public static HModel load(HawkConfig config, HManager manager) throws Exception {
 
 		try {
-
 			final IHawkFactory hawkFactory = manager.createHawkFactory(config.getHawkFactory());
 			final HModel hm = new HModel(manager, hawkFactory, config.getName(), new File(config.getStorageFolder()),
-					config.getLocation(), manager.getCredentialsStore());
+					config.getLocation(), manager.getCredentialsStore(), config.getEnabledPlugins());
 
 			// hard coded metamodel updater?
 			IMetaModelUpdater metaModelUpdater = manager.getMetaModelUpdater();
@@ -188,7 +188,10 @@ public class HModel implements IStateListener {
 		return hawk;
 	}
 
-	private List<String> allowedPlugins = new ArrayList<String>();
+	/**
+	 * Either <code>null</code> (all plugins are implicitly enabled) or a collection of plugins (as reported by HManager
+	 */
+	private List<String> enabledPlugins;
 	private final IHawk hawk;
 	private final IHawkFactory hawkFactory;
 	private final HManager manager;
@@ -197,13 +200,15 @@ public class HModel implements IStateListener {
 	/**
 	 * Constructor for loading existing local Hawk instances and
 	 * creating/loading custom {@link IHawk} implementations.
+	 * @param plugins 
+	 * @param plugins 
 	 */
-	public HModel(HManager manager, IHawkFactory hawkFactory, String name, File storageFolder, String location,
-			ICredentialsStore credStore) throws Exception {
+	public HModel(HManager manager, IHawkFactory hawkFactory, String name, File storageFolder, String location, ICredentialsStore credStore, List<String> plugins) throws Exception {
 		this.hawkFactory = hawkFactory;
-		this.hawk = hawkFactory.create(name, storageFolder, location, credStore, getConsole());
+		this.hawk = hawkFactory.create(name, storageFolder, location, credStore, getConsole(), plugins);
 		this.manager = manager;
 		this.hawkLocation = location;
+		this.enabledPlugins = plugins;
 
 		if (hawkFactory.instancesAreExtensible()) {
 			final IConsole console = getConsole();
@@ -215,34 +220,44 @@ public class HModel implements IStateListener {
 			console.println("adding metamodel resource factories:");
 			for (IConfigurationElement mmparse : manager.getMmps()) {
 				IMetaModelResourceFactory f = (IMetaModelResourceFactory) mmparse
-						.createExecutableExtension("MetaModelParser");
-				this.hawk.getModelIndexer().addMetaModelResourceFactory(f);
-				console.println(f.getHumanReadableName());
+						.createExecutableExtension(HManager.MMPARSER_CLASS_ATTRIBUTE);
+				if (enabledPlugins == null || enabledPlugins.contains(f.getClass().getName())) {
+					this.hawk.getModelIndexer().addMetaModelResourceFactory(f);
+					console.println(f.getHumanReadableName());
+				}
 			}
 			console.println("adding model resource factories:");
 			for (IConfigurationElement mparse : manager.getMps()) {
-				IModelResourceFactory f = (IModelResourceFactory) mparse.createExecutableExtension("ModelParser");
-				this.hawk.getModelIndexer().addModelResourceFactory(f);
-				console.println(f.getHumanReadableName());
+				IModelResourceFactory f = (IModelResourceFactory) mparse.createExecutableExtension(HManager.MPARSER_CLASS_ATTRIBUTE);
+				if (enabledPlugins == null || enabledPlugins.contains(f.getClass().getName())) {
+					this.hawk.getModelIndexer().addModelResourceFactory(f);
+					console.println(f.getHumanReadableName());
+				}
 			}
 			console.println("adding query engines:");
 			for (IConfigurationElement ql : manager.getLanguages()) {
-				IQueryEngine q = (IQueryEngine) ql.createExecutableExtension("query_language");
-				this.hawk.getModelIndexer().addQueryEngine(q);
-				console.println(q.getType());
+				IQueryEngine q = (IQueryEngine) ql.createExecutableExtension(HManager.QUERYLANG_CLASS_ATTRIBUTE);
+				if (enabledPlugins == null || enabledPlugins.contains(q.getClass().getName())) {
+					this.hawk.getModelIndexer().addQueryEngine(q);
+					console.println(q.getType());
+				}
 			}
 			console.println("adding model updaters:");
 			for (IConfigurationElement updater : manager.getUps()) {
-				IModelUpdater u = (IModelUpdater) updater.createExecutableExtension("ModelUpdater");
-				this.hawk.getModelIndexer().addModelUpdater(u);
-				console.println(u.getName());
+				IModelUpdater u = (IModelUpdater) updater.createExecutableExtension(HManager.MUPDATER_CLASS_ATTRIBUTE);
+				if (enabledPlugins == null || enabledPlugins.contains(u.getClass().getName())) {
+					this.hawk.getModelIndexer().addModelUpdater(u);
+					console.println(u.getName());
+				}
 			}
 			console.println("adding graph change listeners:");
 			for (IConfigurationElement listener : manager.getGraphChangeListeners()) {
-				IGraphChangeListener l = (IGraphChangeListener) listener.createExecutableExtension("class");
+				IGraphChangeListener l = (IGraphChangeListener) listener.createExecutableExtension(HManager.GCHANGEL_CLASS_ATTRIBUTE);
 				l.setModelIndexer(this.hawk.getModelIndexer());
-				this.hawk.getModelIndexer().addGraphChangeListener(l);
-				console.println(l.getName());
+				if (enabledPlugins == null || enabledPlugins.contains(l.getClass().getName())) {
+					this.hawk.getModelIndexer().addGraphChangeListener(l);
+					console.println(l.getName());
+				}
 			}
 		}
 		hawk.getModelIndexer().addStateListener(this);
@@ -354,15 +369,15 @@ public class HModel implements IStateListener {
 	 * Returns a {@link HawkConfig} from which this instance can be reloaded.
 	 */
 	public HawkConfig getHawkConfig() {
-		return new HawkConfig(getName(), getFolder(), hawkLocation, hawkFactory.getClass().getName());
+		return new HawkConfig(getName(), getFolder(), hawkLocation, hawkFactory.getClass().getName(), enabledPlugins);
 	}
 
 	public boolean exists() {
 		return hawk != null && hawk.exists();
 	}
 
-	public List<String> getAllowedPlugins() {
-		return allowedPlugins;
+	public List<String> getEnabledPlugins() {
+		return enabledPlugins;
 	}
 
 	public Collection<String> getDerivedAttributes() {
@@ -510,6 +525,7 @@ public class HModel implements IStateListener {
 		for (String[] s : hp.getMonitoredVCS()) {
 			loadVCS(s[0], s[1], s.length > 2 ? Boolean.parseBoolean(s[2]) : false);
 		}
+
 		return hp;
 	}
 

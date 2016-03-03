@@ -261,7 +261,7 @@ public class HImportDialog extends Dialog {
 			final IHawkFactory.InstanceInfo instance = (IHawkFactory.InstanceInfo)o;
 			File storage = new File(base, instance.name);
 			try {
-				HawkConfig hc = new HawkConfig(instance.name, storage.getCanonicalPath(), location, factory.getClass().getName());
+				HawkConfig hc = new HawkConfig(instance.name, storage.getCanonicalPath(), location, factory.getClass().getName(), null);
 
 				final HUIManager manager = HUIManager.getInstance();
 				final HModel hm = HModel.load(hc, manager);

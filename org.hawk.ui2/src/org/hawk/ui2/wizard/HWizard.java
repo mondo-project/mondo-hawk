@@ -131,7 +131,7 @@ public class HWizard extends Wizard implements INewWizard {
 			System.out.println("loading hawk metadata...");
 			HawkConfig hc = new HawkConfig(name,
 					storageFolder.getCanonicalPath(), location, factory
-							.getClass().getName());
+							.getClass().getName(), plugins);
 			final HUIManager manager = HUIManager.getInstance();
 			hm = HModel.load(hc, manager);
 			manager.addHawk(hm);
