@@ -23,7 +23,13 @@ import java.util.regex.Pattern;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogPage;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.CheckboxTableViewer;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
@@ -39,13 +45,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.hawk.core.IHawkFactory;
 import org.hawk.core.runtime.ModelIndexerImpl;
@@ -55,6 +56,28 @@ import org.hawk.ui2.util.HUIManager;
 public class HWizardPage extends WizardPage {
 
 	private static final Pattern PATTERN = Pattern.compile("[^A-Za-z0-9_]");
+
+	private static final class ListContentProvider implements IStructuredContentProvider {
+		@Override
+		public void dispose() {
+			// nothing
+		}
+
+		@Override
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			// nothing
+		}
+
+		@Override
+		public Object[] getElements(Object inputElement) {
+			if (inputElement instanceof List) {
+				return ((List<?>) inputElement).toArray();
+			}
+			else {
+				return new Object[0];
+			}
+		}
+	}
 
 	private final class DialogChangeSelectionListener extends SelectionAdapter {
 		@Override
@@ -78,7 +101,7 @@ public class HWizardPage extends WizardPage {
 	private Text nameText;
 	private Text folderText;
 	private Combo dbidText;
-	private Table pluginTable;
+	private CheckboxTableViewer pluginTable;
 	private Combo factoryIdText;
 	private Text locationText;
 	private boolean isNew;
@@ -112,12 +135,10 @@ public class HWizardPage extends WizardPage {
 
 		nameText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 2;
 		nameText.setLayoutData(gd);
 		final DialogChangeModifyListener dialogChangeListener = new DialogChangeModifyListener();
 		nameText.addModifyListener(dialogChangeListener);
-
-		label = new Label(container, SWT.NULL);
-		label.setText("");
 
 		label = new Label(container, SWT.NULL);
 		label.setText("Instance type:");
@@ -125,15 +146,13 @@ public class HWizardPage extends WizardPage {
 		factoryIdText = new Combo(container, SWT.READ_ONLY);
 		factories = hminstance.getHawkFactoryInstances();
 		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 2;
 		factoryIdText.setLayoutData(gd);
 		for (Map.Entry<String, IHawkFactory> factory : factories.entrySet()) {
 			factoryIdText.add(factory.getKey());
 		}
 		factoryIdText.select(0);
 		factoryIdText.addSelectionListener(new DialogChangeSelectionListener());
-
-		label = new Label(container, SWT.NULL);
-		label.setText("");
 
 		label = new Label(container, SWT.NULL);
 		label.setText("&Local storage folder:");
@@ -145,6 +164,8 @@ public class HWizardPage extends WizardPage {
 		folderText.addModifyListener(dialogChangeListener);
 
 		Button button = new Button(container, SWT.PUSH);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		button.setLayoutData(gd);
 		button.setText("Browse...");
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -157,6 +178,7 @@ public class HWizardPage extends WizardPage {
 
 		locationText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 2;
 		locationText.setLayoutData(gd);
 		locationText.setText("http://localhost:8080/thrift/hawk/tuple");
 		// folderText.setEditable(false);
@@ -168,50 +190,54 @@ public class HWizardPage extends WizardPage {
 		});
 
 		label = new Label(container, SWT.NULL);
-		label.setText("");
-
-		label = new Label(container, SWT.NULL);
 		gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		label.setLayoutData(gd);
 		label.setText("&Enabled plugins:");
 
-		pluginTable = new Table(container, SWT.BORDER | SWT.V_SCROLL
-				| SWT.H_SCROLL);
+		pluginTable = CheckboxTableViewer.newCheckList(container, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		pluginTable.setContentProvider(new ListContentProvider());
+		pluginTable.setLabelProvider(new LabelProvider());
+		pluginTable.setInput(getHawkPlugins());
+		pluginTable.setAllChecked(true);
 
 		gd = new GridData(GridData.FILL_HORIZONTAL);
-		pluginTable.setLayoutData(gd);
-		pluginTable.setHeaderVisible(false);
-		pluginTable.setEnabled(false);
+		pluginTable.getTable().setLayoutData(gd);
+		pluginTable.getTable().setHeaderVisible(false);
 
-		TableColumn column = new TableColumn(pluginTable, SWT.NULL);
-		column.setText("plugin");
-
-		for (String plugin : this.getHawkPlugins()) {
-			TableItem item = new TableItem(pluginTable, SWT.NULL);
-			item.setText(plugin);
-			item.setText(0, plugin);
-			// item.setChecked(true);
-		}
-
-		pluginTable.getColumn(0).pack();
-
-		pluginTable.addListener(SWT.Selection, new Listener() {
+		pluginTable.addCheckStateListener(new ICheckStateListener() {
 			@Override
-			public void handleEvent(Event event) {
-				if (event.detail == SWT.CHECK) {
-					dialogChanged();
-				}
+			public void checkStateChanged(CheckStateChangedEvent event) {
+				dialogChanged();
 			}
 		});
 
-		label = new Label(container, SWT.NULL);
-		label.setText("");
+		Composite cTableButtons = new Composite(container, SWT.NULL);
+		gd = new GridData(SWT.FILL, SWT.TOP, true, true);
+		cTableButtons.setLayoutData(gd);
+		cTableButtons.setLayout(new FillLayout(SWT.VERTICAL));
+		Button btnEnableAll = new Button(cTableButtons, SWT.NULL);
+		btnEnableAll.setText("Enable all");
+		btnEnableAll.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				pluginTable.setAllChecked(true);
+			}
+		});
+		Button btnDisableAll = new Button(cTableButtons, SWT.NULL);
+		btnDisableAll.setText("Disable all");
+		btnDisableAll.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				pluginTable.setAllChecked(false);
+			}
+		});
 
 		label = new Label(container, SWT.NULL);
 		label.setText("Back-end:");
 
 		dbidText = new Combo(container, SWT.READ_ONLY);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 2;
 		// dbidText.set
 		dbidText.setLayoutData(gd);
 		for (String db : hminstance.getIndexTypes())
@@ -219,15 +245,14 @@ public class HWizardPage extends WizardPage {
 		dbidText.select(0);
 
 		label = new Label(container, SWT.NULL);
-		label.setText("");
-
-		label = new Label(container, SWT.NULL);
 		gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		label.setLayoutData(gd);
 		label.setText("Min/Max Delay:");
 
 		Composite cDelayRow = new Composite(container, SWT.NULL);
-		cDelayRow.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true));
+		gd = new GridData(SWT.FILL, SWT.TOP, true, true);
+		gd.horizontalSpan = 2;
+		cDelayRow.setLayoutData(gd);
 		final Layout cDelayRowLayout = new FillLayout();
 		cDelayRow.setLayout(cDelayRowLayout);
 
@@ -242,22 +267,6 @@ public class HWizardPage extends WizardPage {
 		maxDelayText
 				.setToolTipText("Maximum delay between periodic synchronisations in milliseconds (0 disables periodic synchronisations).");
 		maxDelayText.addModifyListener(dialogChangeListener);
-
-		Button startButton = new Button(container, SWT.CHECK);
-		startButton.setText("Start with Workspace");
-		startButton.setVisible(false);
-		startButton.addSelectionListener(new DialogChangeSelectionListener());
-
-		label = new Label(container, SWT.NULL);
-		label.setText("");
-
-		label = new Label(container, SWT.NULL);
-		label.setText("");
-
-		Button deleteButton = new Button(container, SWT.CHECK);
-		deleteButton.setText("Delete existing indexes");
-		deleteButton.setVisible(false);
-		deleteButton.addSelectionListener(new DialogChangeSelectionListener());
 
 		initialize();
 		dialogChanged();
@@ -423,9 +432,8 @@ public class HWizardPage extends WizardPage {
 	public List<String> getPlugins() {
 		List<String> selected = new ArrayList<String>();
 
-		for (TableItem t : pluginTable.getItems()) {
-			if (t.getChecked())
-				selected.add(t.getText());
+		for (Object checked : pluginTable.getCheckedElements()) {
+			selected.add(checked.toString());
 		}
 
 		return selected;
