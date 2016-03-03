@@ -1,6 +1,8 @@
 package org.hawk.graph.syncValidationListener;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -59,7 +61,11 @@ public class SyncValidationListener implements IGraphChangeListener {
 
 	@Override
 	public void synchroniseEnd() {
-		validateChanges();
+		try {
+			validateChanges();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 
 		//
 		deleted = 0;
@@ -86,7 +92,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 	boolean singletonIndexIsEmpty;
 
 	@SuppressWarnings("unchecked")
-	private void validateChanges() {
+	private void validateChanges() throws URISyntaxException {
 
 		System.err.println("sync metrics:");
 		System.err.println("interesting\t" + hawk.getInterestingFiles());
@@ -108,14 +114,14 @@ public class SyncValidationListener implements IGraphChangeListener {
 		int totalResourceSizes = 0;
 		int totalGraphSize = 0;
 
-		String temp = new File(hawk.getGraph().getTempDir()).toURI().toString();
+		final URI tempURI = new File(hawk.getGraph().getTempDir()).toURI();
 
 		// for all non-null resources
 		if (hawk.getFileToResourceMap() != null)
 			for (VcsCommitItem c : hawk.getFileToResourceMap().keySet()) {
 
-				String repoURL = c.getCommit().getDelta().getManager()
-						.getLocation();
+				String repoURL = c.getCommit().getDelta().getManager().getLocation();
+				URI repoURI = new URI(repoURL);
 
 				IHawkModelResource r = hawk.getFileToResourceMap().get(c);
 
@@ -263,16 +269,14 @@ public class SyncValidationListener implements IGraphChangeListener {
 													// if (!((IHawkObject)
 													// val).isProxy())
 
-													vals.add(parseValue(val,
-															repoURL, temp));
+													vals.add(parseValue(val, repoURI, tempURI));
 
 												}
 											} else {
 												// if (!((IHawkObject)
 												// refval).isProxy())
 
-												vals.add(parseValue(refval,
-														repoURL, temp));
+												vals.add(parseValue(refval, repoURI, tempURI));
 
 											}
 											if (vals.size() > 0)
@@ -593,7 +597,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 
 	}
 
-	private String parseValue(Object val, String repo, String temp) {
+	private String parseValue(Object val, URI repo, URI temp) throws URISyntaxException {
 
 		String ret;
 		IHawkObject o = (IHawkObject) val;
@@ -609,7 +613,15 @@ public class SyncValidationListener implements IGraphChangeListener {
 
 		} else {
 
-			ret = o.getUri().replace(temp, "").replace("+", "%2B");
+			final URI objURI = new URI(o.getUri());
+			ret = objURI.getPath().replace(repo.getPath(), "").replace(temp.getPath(), "").replace("+", "%2B");
+			if (objURI.getFragment() != null) {
+				ret += "#" + objURI.getFragment();
+			}
+			if (!ret.startsWith("/")) {
+				ret = "/" + ret;
+			}
+
 			try {
 				ret = URLDecoder.decode(ret, "UTF-8");
 			} catch (Exception ex) {
