@@ -792,4 +792,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		}
 	}
 
+	public IModelIndexer getIndexer() {
+		return indexer;
+	}
 }
