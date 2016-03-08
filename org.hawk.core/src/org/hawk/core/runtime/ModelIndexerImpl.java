@@ -529,7 +529,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 	 * removes metamodel with uri mm and all containing models, keeping
 	 * cross-file references as proxies
 	 */
-	public void removeMetamodels(String[] mm) throws Exception {
+	public void removeMetamodels(String... mm) throws Exception {
 		stateListener.state(HawkState.UPDATING);
 		stateListener.info("Removing metamodels...");
 		for (String s : metamodelupdater.removeMetamodels(this, mm))
@@ -579,16 +579,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public void registerMetamodel(File f) throws Exception {
-
-		File[] ret = { f };
-
-		registerMetamodel(ret);
-
-	}
-
-	@Override
-	public void registerMetamodel(File[] f) throws Exception {
+	public void registerMetamodels(File... f) throws Exception {
 		stateListener.info("Adding metamodel(s)...");
 		File[] metamodel = null;
 

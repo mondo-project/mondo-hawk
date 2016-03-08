@@ -49,6 +49,7 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphNodeReference;
 import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.core.query.IQueryEngine;
 import org.hawk.emfresource.HawkResource;
 import org.hawk.emfresource.HawkResourceChangeListener;
 import org.hawk.emfresource.util.AttributeUtils;
@@ -235,6 +236,32 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		// do nothing - we fetch attributes by default already
 	}
 
+	public EList<EObject> fetchByQuery(final String language, final String query, final Map<String, String> context) throws Exception {
+		final Map<String, IQueryEngine> knownQL = indexer.getKnownQueryLanguages();
+		final IQueryEngine queryEngine = knownQL.get(language);
+		if (queryEngine == null) {
+			throw new IllegalArgumentException(String.format("Unknown query langue %s: known query languages are %s", language, knownQL.keySet()));
+		}
+
+		final List<String> ids = new ArrayList<>();
+		Object rawResult = queryEngine.query(indexer, query, context);
+		addAllResults(rawResult, ids);
+
+		return fetchNodes(ids, true);
+	}
+
+	private List<String> addAllResults(Object rawResult, List<String> ids) {
+		if (rawResult instanceof Iterable) {
+			for (Object rawElem : (Iterable<?>)rawResult) {
+				addAllResults(rawElem, ids);
+			}
+		} else if (rawResult instanceof IGraphNodeReference) {
+			IGraphNodeReference ref = (IGraphNodeReference)rawResult;
+			ids.add(ref.getId());
+		}
+		return ids;
+	}
+
 	@Override
 	public EList<EObject> fetchNodes(final List<String> ids, boolean fetchAttributes) throws Exception {
 		// Filter the objects that need to be retrieved
@@ -271,14 +298,43 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 
 	@Override
 	public EList<EObject> fetchNodes(final EClass eClass, boolean fetchAttributes) throws Exception {
+		return fetchNodesByContainerFragment(eClass, null, null);
+	}
+
+	/**
+	 * Fetches all the instances of a certain {@link EClass} that are contained within the specified file.
+	 */
+	public EList<EObject> fetchNodesByContainerFragment(EClass eClass, String location, String path) throws Exception {
 		try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
 			final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
 			final MetamodelNode mn = gw.getMetamodelNodeByNsURI(eClass.getEPackage().getNsURI());
 			for (TypeNode tn : mn.getTypes()) {
 				if (eClass.getName().equals(tn.getTypeName())) {
 					Iterable<ModelElementNode> instances = tn.getAll();
-					createOrUpdateEObjects(instances);
 
+					if (location != null && path != null) {
+						Set<FileNode> fileNodes = gw.getFileNodes(Arrays.asList(location), Arrays.asList(path));
+
+						final List<ModelElementNode> filtered = new ArrayList<>();
+						for (ModelElementNode men : instances) {
+							/*
+							 * In order for men to be added, either itself or
+							 * one of its containers must be contained within
+							 * the specified file.
+							 */
+							ModelElementNode contained = men;
+							while (contained != null && !fileNodes.contains(contained.getFileNode())) {
+								contained = contained.getContainer();
+							}
+							if (contained != null) {
+								filtered.add(men);
+							}
+						}
+
+						instances = filtered;
+					}
+
+					createOrUpdateEObjects(instances);
 					final EList<EObject> l = new BasicEList<EObject>();
 					for (ModelElementNode en : instances) {
 						l.add(nodeIdToEObjectMap.get(en.getNodeId()));

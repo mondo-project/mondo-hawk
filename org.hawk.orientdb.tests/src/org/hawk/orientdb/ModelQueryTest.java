@@ -13,7 +13,6 @@ package org.hawk.orientdb;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.concurrent.Callable;
 
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
@@ -22,7 +21,6 @@ import org.hawk.core.security.FileBasedCredentialsStore;
 import org.hawk.core.util.DefaultConsole;
 import org.hawk.emf.metamodel.EMFMetaModelResourceFactory;
 import org.hawk.emf.model.EMFModelResourceFactory;
-import org.hawk.epsilon.emc.CEOLQueryEngine;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
 import org.hawk.graph.internal.updater.GraphModelUpdater;
@@ -87,8 +85,8 @@ public class ModelQueryTest {
 	@Test
 	public void tree() throws Throwable {
 		setup("tree");
-		indexer.registerMetamodel(new File("resources/metamodels/Ecore.ecore"));
-		indexer.registerMetamodel(new File("resources/metamodels/Tree.ecore"));
+		indexer.registerMetamodels(new File("resources/metamodels/Ecore.ecore"),
+				new File("resources/metamodels/Tree.ecore"));
 
 		final LocalFolder vcs = new LocalFolder();
 		vcs.init(new File("resources/models/tree").toURI().toASCIIString(), indexer);
@@ -111,8 +109,8 @@ public class ModelQueryTest {
 	@Test
 	public void set0() throws Throwable {
 		setup("set0");
-		indexer.registerMetamodel(new File("resources/metamodels/Ecore.ecore"));
-		indexer.registerMetamodel(new File("resources/metamodels/JDTAST.ecore"));
+		indexer.registerMetamodels(new File("resources/metamodels/Ecore.ecore"),
+				new File("resources/metamodels/JDTAST.ecore"));
 
 		final LocalFolder vcs = new LocalFolder();
 		vcs.init(new File("resources/models/set0").getAbsolutePath(), indexer);
@@ -140,8 +138,8 @@ public class ModelQueryTest {
 	@Test
 	public void set2() throws Throwable {
 		setup("set2");
-		indexer.registerMetamodel(new File("resources/metamodels/Ecore.ecore"));
-		indexer.registerMetamodel(new File("resources/metamodels/JDTAST.ecore"));
+		indexer.registerMetamodels(new File("resources/metamodels/Ecore.ecore"),
+				new File("resources/metamodels/JDTAST.ecore"));
 
 		final LocalFolder vcs = new LocalFolder();
 		vcs.init("/home/antonio/Desktop/grabats2009/set2", indexer);

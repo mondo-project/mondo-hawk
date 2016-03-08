@@ -99,13 +99,9 @@ public interface IModelIndexer {
 
 	String getId();
 
-	void registerMetamodel(File[] f) throws Exception;
+	void registerMetamodels(File... f) throws Exception;
 
-	void registerMetamodel(File f) throws Exception;
-
-	// void removeMetamodel(File[] metamodel) throws Exception;
-
-	void removeMetamodels(String[] metamodelURI) throws Exception;
+	void removeMetamodels(String... metamodelURI) throws Exception;
 
 	IConsole getConsole();
 

@@ -437,7 +437,7 @@ public class HModel implements IStateListener {
 
 	public boolean registerMeta(File... f) {
 		try {
-			hawk.getModelIndexer().registerMetamodel(f);
+			hawk.getModelIndexer().registerMetamodels(f);
 		} catch (Exception e) {
 			getConsole().printerrln(e);
 			return false;

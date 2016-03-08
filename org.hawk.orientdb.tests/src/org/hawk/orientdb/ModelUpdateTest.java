@@ -92,9 +92,9 @@ public class ModelUpdateTest {
 		indexer.addGraphChangeListener(validationListener);
 		validationListener.setModelIndexer(indexer);
 
-		indexer.registerMetamodel(new File("resources/metamodels/Ecore.ecore"));
-		indexer.registerMetamodel(new File("resources/metamodels/XMLType.ecore"));
-		indexer.registerMetamodel(new File("resources/metamodels/Tree.ecore"));
+		indexer.registerMetamodels(new File("resources/metamodels/Ecore.ecore"));
+		indexer.registerMetamodels(new File("resources/metamodels/XMLType.ecore"));
+		indexer.registerMetamodels(new File("resources/metamodels/Tree.ecore"));
 
 		final LocalFolder vcs = new LocalFolder();
 		vcs.init(modelFolder.getAbsolutePath(), indexer);

@@ -106,8 +106,8 @@ public class ModelQueryTest {
 	@Test
 	public void tree() throws Throwable {
 		setup("tree");
-		indexer.registerMetamodel(new File("resources/metamodels/Ecore.ecore"));
-		indexer.registerMetamodel(new File("resources/metamodels/Tree.ecore"));
+		indexer.registerMetamodels(new File("resources/metamodels/Ecore.ecore"),
+				new File("resources/metamodels/Tree.ecore"));
 
 		final LocalFolder vcs = new LocalFolder();
 		vcs.init(new File("resources/models/tree").getAbsolutePath(), indexer);
@@ -129,8 +129,8 @@ public class ModelQueryTest {
 	@Test
 	public void set0() throws Throwable {
 		setup("set0");
-		indexer.registerMetamodel(new File("resources/metamodels/Ecore.ecore"));
-		indexer.registerMetamodel(new File("resources/metamodels/JDTAST.ecore"));
+		indexer.registerMetamodels(new File("resources/metamodels/Ecore.ecore"),
+				new File("resources/metamodels/JDTAST.ecore"));
 
 		final LocalFolder vcs = new LocalFolder();
 		vcs.init(new File("resources/models/set0").getAbsolutePath(), indexer);
