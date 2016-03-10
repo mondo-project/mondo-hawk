@@ -6,7 +6,9 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: University of York
 Require-Bundle: org.eclipse.emf.ecore,
  org.eclipse.emf.ecore.xmi,
- org.hawk.core
+ org.hawk.core,
+ org.eclipse.osgi,
+ org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.emf.common.util,
  org.eclipse.emf.ecore.util
@@ -14,3 +16,5 @@ Export-Package: org.hawk.emf,
  org.hawk.emf.metamodel,
  org.hawk.emf.model,
  org.hawk.emf.model.util
+Bundle-Activator: org.hawk.emf.Activator
+Bundle-ActivationPolicy: lazy
