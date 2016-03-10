@@ -415,9 +415,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		if (graph != null) {
 			graph.shutdown();
+			graph = null;
+		}
+		if (credStore != null) {
 			credStore.shutdown();
 		}
-		graph = null;
 		stateListener.info("Hawk shut down.");
 	}
 

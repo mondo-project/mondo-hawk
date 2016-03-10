@@ -8,7 +8,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.hawk.core,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.text,
- org.hawk.osgiserver;bundle-version="1.0.0",
+ org.hawk.osgiserver,
  org.eclipse.core.resources,
  org.eclipse.ui
 Bundle-ActivationPolicy: lazy
