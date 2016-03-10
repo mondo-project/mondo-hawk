@@ -425,7 +425,6 @@ public class GraphModelBatchInjector {
 				System.err.println("here be dragons!");
 			} catch (Throwable e) {
 				e.printStackTrace();
-				System.err.println("boo");
 			}
 
 			// propagate changes to listeners
