@@ -519,7 +519,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 
 			lazyResolver = new LazyResolver(this);
 			eobFactory = new LazyEObjectFactory(getResourceSet().getPackageRegistry(), new LazyReferenceResolver());
-	
+
 			final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
 			try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
 				for (FileNode fileNode : gw.getFileNodes(repositoryPatterns, filePatterns)) {
@@ -536,10 +536,9 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			indexer.addGraphChangeListener(changeListener);
 			setLoaded(true);
 		} catch (final IOException e) {
-			LOGGER.error("I/O exception while opening model", e);
 			throw e;
 		} catch (final Exception e) {
-			LOGGER.error("Exception while loading model", e);
+			throw new IOException(e);
 		}
 	}
 
