@@ -190,6 +190,11 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 
 	public LocalHawkResourceImpl(final URI uri, final IModelIndexer indexer, boolean isSplit, final List<String> repoPatterns, final List<String> filePatterns) {
 		super(uri);
+
+		if (indexer == null) {
+			throw new NullPointerException("indexer cannot be null");
+		}
+
 		this.indexer = indexer;
 		this.isSplit = isSplit;
 		this.repositoryPatterns = repoPatterns;
@@ -507,14 +512,11 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 
 	protected void doLoad() throws IOException {
 		try {
-			if (indexer == null) {
-				return;
-			}
-			else if (!indexer.isRunning()) {
+			if (!indexer.isRunning()) {
 				// We need an IOException so EMF will display it properly
 				throw new IOException(String.format("The Hawk instance with name '%s' is not running: please start it first", indexer.getName()));
 			}
-	
+
 			lazyResolver = new LazyResolver(this);
 			eobFactory = new LazyEObjectFactory(getResourceSet().getPackageRegistry(), new LazyReferenceResolver());
 	

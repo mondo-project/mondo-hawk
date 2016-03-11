@@ -548,7 +548,10 @@ public class HView extends ViewPart {
 							.getActiveWorkbenchWindow().getActivePage();
 					try {
 						HView view = (HView) page.findView(HView.ID);
-						view.update();
+						if (view != null) {
+							// View might not be open (e.g. Hawk is started through other means)
+							view.update();
+						}
 					} catch (Exception e) {
 						Activator.logError(e.getMessage(), e);
 					}
