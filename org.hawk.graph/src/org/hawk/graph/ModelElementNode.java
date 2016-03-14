@@ -84,8 +84,9 @@ public class ModelElementNode {
 	/**
 	 * Fills in the <code>attributeValues</code> and
 	 * <code>referenceValues</code> maps with the contents of the slots of the
-	 * <code>modelElementNode</code>. Derived attributes and
-	 * reverse references are *not* included either.
+	 * <code>modelElementNode</code>. Derived attributes and reverse references
+	 * are *not* included either. If a <code>null</code> value is passed, that
+	 * type of slot will not be read.
 	 *
 	 * @throws Exception
 	 *             Could not begin the transaction on the graph.
@@ -93,13 +94,17 @@ public class ModelElementNode {
 	public void getSlotValues(Map<String, Object> attributeValues, Map<String, Object> referenceValues, Map<String, Object> mixedValues) {
 		final List<Slot> slots = getTypeNode().getSlots();
 		for (Slot s : slots) {
-			final Object value = getSlotValue(s);
-			if (value == null) continue;
-			if (s.isAttribute()) {
+			if (s.isAttribute() && attributeValues != null) {
+				final Object value = getSlotValue(s);
+				if (value == null) continue;
 				attributeValues.put(s.getName(), value);
-			} else if (s.isReference()) {
+			} else if (s.isReference() && referenceValues != null) {
+				final Object value = getSlotValue(s);
+				if (value == null) continue;
 				referenceValues.put(s.getName(), value);
-			} else if (s.isMixed()) {
+			} else if (s.isMixed() && mixedValues != null) {
+				final Object value = getSlotValue(s);
+				if (value == null) continue;
 				mixedValues.put(s.getName(), value);
 			}
 		}
