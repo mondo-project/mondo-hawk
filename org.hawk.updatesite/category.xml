@@ -1,51 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.hawk.core.feature_1.0.0.qualifier.jar" id="org.hawk.core.feature" version="1.0.0.qualifier">
-      <category name="hawk.core"/>
-   </feature>
-   <feature url="features/org.hawk.svn.feature_1.0.0.qualifier.jar" id="org.hawk.svn.feature" version="1.0.0.qualifier">
-      <category name="hawk.connectors"/>
-   </feature>
-   <feature url="features/org.hawk.localfolder.feature_1.0.0.qualifier.jar" id="org.hawk.localfolder.feature" version="1.0.0.qualifier">
-      <category name="hawk.connectors"/>
-   </feature>
-   <feature url="features/org.hawk.emf.feature_1.0.0.qualifier.jar" id="org.hawk.emf.feature" version="1.0.0.qualifier">
-      <category name="hawk.drivers"/>
-   </feature>
-   <feature url="features/org.hawk.epsilon.feature_1.0.0.qualifier.jar" id="org.hawk.epsilon.feature" version="1.0.0.qualifier">
-      <category name="hawk.queries"/>
-   </feature>
-   <feature url="features/org.hawk.osgiserver.feature_1.0.0.qualifier.jar" id="org.hawk.osgiserver.feature" version="1.0.0.qualifier">
-      <category name="hawk.clients"/>
-   </feature>
-   <feature url="features/org.hawk.ui.feature_1.0.0.qualifier.jar" id="org.hawk.ui.feature" version="1.0.0.qualifier">
-      <category name="hawk.clients"/>
-   </feature>
-   <feature url="features/org.hawk.bpmn.feature_1.0.0.qualifier.jar" id="org.hawk.bpmn.feature" version="1.0.0.qualifier">
-      <category name="hawk.drivers"/>
-   </feature>
-   <feature url="features/org.hawk.emfresource.feature_1.0.0.qualifier.jar" id="org.hawk.emfresource.feature" version="1.0.0.qualifier">
-      <category name="hawk.clients"/>
-   </feature>
-   <feature url="features/org.hawk.workspace.feature_1.0.0.qualifier.jar" id="org.hawk.workspace.feature" version="1.0.0.qualifier">
-      <category name="hawk.connectors"/>
-   </feature>
-   <feature url="features/org.hawk.orientdb.feature_1.0.0.qualifier.jar" id="org.hawk.orientdb.feature" version="1.0.0.qualifier">
-      <category name="hawk.backends"/>
-   </feature>
-   <feature url="features/org.hawk.modelio.exml.feature_1.0.0.qualifier.jar" id="org.hawk.modelio.exml.feature" version="1.0.0.qualifier">
-      <category name="hawk.drivers"/>
-   </feature>
-   <feature url="features/org.hawk.git.feature_1.0.0.qualifier.jar" id="org.hawk.git.feature" version="1.0.0.qualifier">
-      <category name="hawk.connectors"/>
-   </feature>
-   <feature url="features/org.hawk.http.feature_1.0.0.qualifier.jar" id="org.hawk.http.feature" version="1.0.0.qualifier">
-      <category name="hawk.connectors"/>
-   </feature>
-   <category-def name="hawk.core" label="Hawk Core"/>
-   <category-def name="hawk.connectors" label="Hawk Connectors"/>
-   <category-def name="hawk.backends" label="Hawk Backends"/>
-   <category-def name="hawk.drivers" label="Hawk Model Drivers"/>
-   <category-def name="hawk.queries" label="Hawk Query Languages"/>
-   <category-def name="hawk.clients" label="Hawk Clients"/>
+  <!-- Binaries -->
+  <feature url="features/org.hawk.core.feature_1.0.0.qualifier.jar" id="org.hawk.core.feature" version="1.0.0.qualifier">
+    <category name="hawk.core"/>
+  </feature>
+  <feature url="features/org.hawk.svn.feature_1.0.0.qualifier.jar" id="org.hawk.svn.feature" version="1.0.0.qualifier">
+    <category name="hawk.connectors"/>
+  </feature>
+  <feature url="features/org.hawk.localfolder.feature_1.0.0.qualifier.jar" id="org.hawk.localfolder.feature" version="1.0.0.qualifier">
+    <category name="hawk.connectors"/>
+  </feature>
+  <feature url="features/org.hawk.emf.feature_1.0.0.qualifier.jar" id="org.hawk.emf.feature" version="1.0.0.qualifier">
+    <category name="hawk.drivers"/>
+  </feature>
+  <feature url="features/org.hawk.epsilon.feature_1.0.0.qualifier.jar" id="org.hawk.epsilon.feature" version="1.0.0.qualifier">
+    <category name="hawk.queries"/>
+  </feature>
+  <feature url="features/org.hawk.osgiserver.feature_1.0.0.qualifier.jar" id="org.hawk.osgiserver.feature" version="1.0.0.qualifier">
+    <category name="hawk.clients"/>
+  </feature>
+  <feature url="features/org.hawk.ui.feature_1.0.0.qualifier.jar" id="org.hawk.ui.feature" version="1.0.0.qualifier">
+    <category name="hawk.clients"/>
+  </feature>
+  <feature url="features/org.hawk.bpmn.feature_1.0.0.qualifier.jar" id="org.hawk.bpmn.feature" version="1.0.0.qualifier">
+    <category name="hawk.drivers"/>
+  </feature>
+  <feature url="features/org.hawk.emfresource.feature_1.0.0.qualifier.jar" id="org.hawk.emfresource.feature" version="1.0.0.qualifier">
+    <category name="hawk.clients"/>
+  </feature>
+  <feature url="features/org.hawk.workspace.feature_1.0.0.qualifier.jar" id="org.hawk.workspace.feature" version="1.0.0.qualifier">
+    <category name="hawk.connectors"/>
+  </feature>
+  <feature url="features/org.hawk.orientdb.feature_1.0.0.qualifier.jar" id="org.hawk.orientdb.feature" version="1.0.0.qualifier">
+    <category name="hawk.backends"/>
+  </feature>
+  <feature url="features/org.hawk.modelio.exml.feature_1.0.0.qualifier.jar" id="org.hawk.modelio.exml.feature" version="1.0.0.qualifier">
+    <category name="hawk.drivers"/>
+  </feature>
+  <feature url="features/org.hawk.git.feature_1.0.0.qualifier.jar" id="org.hawk.git.feature" version="1.0.0.qualifier">
+    <category name="hawk.connectors"/>
+  </feature>
+  <feature url="features/org.hawk.http.feature_1.0.0.qualifier.jar" id="org.hawk.http.feature" version="1.0.0.qualifier">
+    <category name="hawk.connectors"/>
+  </feature>
+
+  <!-- Sources -->
+  <feature url="features/org.hawk.core.feature.source_1.0.0.qualifier.jar" id="org.hawk.core.feature.source" version="1.0.0.qualifier">
+    <category name="hawk.core"/>
+  </feature>
+  <feature url="features/org.hawk.svn.feature.source_1.0.0.qualifier.jar" id="org.hawk.svn.feature.source" version="1.0.0.qualifier">
+    <category name="hawk.connectors"/>
+  </feature>
+  <feature url="features/org.hawk.localfolder.feature.source_1.0.0.qualifier.jar" id="org.hawk.localfolder.feature.source" version="1.0.0.qualifier">
+    <category name="hawk.connectors"/>
+  </feature>
+  <feature url="features/org.hawk.emf.feature.source_1.0.0.qualifier.jar" id="org.hawk.emf.feature.source" version="1.0.0.qualifier">
+    <category name="hawk.drivers"/>
+  </feature>
+  <feature url="features/org.hawk.epsilon.feature.source_1.0.0.qualifier.jar" id="org.hawk.epsilon.feature.source" version="1.0.0.qualifier">
+    <category name="hawk.queries"/>
+  </feature>
+  <feature url="features/org.hawk.osgiserver.feature.source_1.0.0.qualifier.jar" id="org.hawk.osgiserver.feature.source" version="1.0.0.qualifier">
+    <category name="hawk.clients"/>
+  </feature>
+  <feature url="features/org.hawk.ui.feature.source_1.0.0.qualifier.jar" id="org.hawk.ui.feature.source" version="1.0.0.qualifier">
+    <category name="hawk.clients"/>
+  </feature>
+  <feature url="features/org.hawk.bpmn.feature.source_1.0.0.qualifier.jar" id="org.hawk.bpmn.feature.source" version="1.0.0.qualifier">
+    <category name="hawk.drivers"/>
+  </feature>
+  <feature url="features/org.hawk.emfresource.feature.source_1.0.0.qualifier.jar" id="org.hawk.emfresource.feature.source" version="1.0.0.qualifier">
+    <category name="hawk.clients"/>
+  </feature>
+  <feature url="features/org.hawk.workspace.feature.source_1.0.0.qualifier.jar" id="org.hawk.workspace.feature.source" version="1.0.0.qualifier">
+    <category name="hawk.connectors"/>
+  </feature>
+  <feature url="features/org.hawk.orientdb.feature.source_1.0.0.qualifier.jar" id="org.hawk.orientdb.feature.source" version="1.0.0.qualifier">
+    <category name="hawk.backends"/>
+  </feature>
+  <feature url="features/org.hawk.modelio.exml.feature.source_1.0.0.qualifier.jar" id="org.hawk.modelio.exml.feature.source" version="1.0.0.qualifier">
+    <category name="hawk.drivers"/>
+  </feature>
+  <feature url="features/org.hawk.git.feature.source_1.0.0.qualifier.jar" id="org.hawk.git.feature.source" version="1.0.0.qualifier">
+    <category name="hawk.connectors"/>
+  </feature>
+  <feature url="features/org.hawk.http.feature.source_1.0.0.qualifier.jar" id="org.hawk.http.feature.source" version="1.0.0.qualifier">
+    <category name="hawk.connectors"/>
+  </feature>
+
+  <!-- Categories -->
+  <category-def name="hawk.core" label="Hawk Core"/>
+  <category-def name="hawk.connectors" label="Hawk Connectors"/>
+  <category-def name="hawk.backends" label="Hawk Backends"/>
+  <category-def name="hawk.drivers" label="Hawk Model Drivers"/>
+  <category-def name="hawk.queries" label="Hawk Query Languages"/>
+  <category-def name="hawk.clients" label="Hawk Clients"/>
 </site>
