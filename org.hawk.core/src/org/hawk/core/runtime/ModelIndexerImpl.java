@@ -1143,12 +1143,30 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	@Override
 	public void waitFor(HawkState targetState) throws InterruptedException {
+		waitFor(targetState, 0);
+	}
+
+	@Override
+	public void waitFor(HawkState targetState, long timeoutMillis) throws InterruptedException {
 		synchronized (stateListener) {
+			final long end = System.currentTimeMillis() + timeoutMillis;
 			for (HawkState s = stateListener.getCurrentState(); s != targetState; s = stateListener.getCurrentState()) {
 				if (s == HawkState.STOPPED) {
 					throw new IllegalStateException("The selected Hawk is stopped");
 				}
-				stateListener.wait();
+
+				if (timeoutMillis == 0) {
+					stateListener.wait();
+				} else {
+					final long remaining = end - System.currentTimeMillis();
+					if (remaining > 0) {
+						// Wait for the remaining time
+						stateListener.wait(remaining);
+					} else {
+						// Exit the loop due to timeout
+						break;
+					}
+				}
 			}
 		}
 	}

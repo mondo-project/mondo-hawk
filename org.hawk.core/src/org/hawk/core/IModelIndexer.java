@@ -129,16 +129,24 @@ public interface IModelIndexer {
 	CompositeStateListener getCompositeStateListener();
 
 	/**
+	 * Convenience method for {@link #waitFor(HawkState)} that waits indefinitely.
+	 */
+	void waitFor(HawkState targetState) throws InterruptedException;
+
+	/**
 	 * On a running Hawk, blocks the current thread until the state of Hawk
-	 * changes to the target state.
+	 * changes to the target state or a certain amount of time passes.
 	 *
+	 * @param targetState
+	 *            State that we should wait for.
+	 * @param timeoutMillis
+	 *            Milliseconds to wait (or 0 to wait indefinitely).
 	 * @throws InterruptedException
 	 *             The wait was interrupted.
-	 *
 	 * @throws IllegalStateException
 	 *             if the Hawk instance is not running altogether.
 	 */
-	void waitFor(HawkState targetState) throws InterruptedException;
+	void waitFor(HawkState targetState, long timeoutMillis) throws InterruptedException;
 
 	void setDB(IGraphDatabase db, boolean persist);
 

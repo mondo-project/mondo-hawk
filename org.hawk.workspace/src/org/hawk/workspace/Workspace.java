@@ -89,7 +89,11 @@ public class Workspace implements IVcsManager {
 	private boolean pendingChanges = false;
 	private IConsole console;
 	private WorkspaceListener listener;
-	private String repositoryURL;
+
+	// Needed to emulate the usual URLs within a workspace when concatenated
+	// with the file path
+	private final String repositoryURL = "platform:/resource";
+
 	private Set<IFile> previousFiles = new HashSet<>();
 	private Map<IFile, Long> recordedStamps = new HashMap<>();
 	private boolean isFrozen = false;
@@ -195,10 +199,6 @@ public class Workspace implements IVcsManager {
 	public void init(String vcsloc, IModelIndexer indexer) throws Exception {
 		this.console = indexer.getConsole();
 		this.listener = new WorkspaceListener(indexer);
-
-		// Needed to emulate the usual URLs within a workspace when concatenated
-		// with the file path
-		this.repositoryURL = "platform:/resource";
 	}
 
 	@Override
