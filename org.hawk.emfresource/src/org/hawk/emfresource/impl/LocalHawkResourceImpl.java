@@ -219,21 +219,18 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean hasChildren(final EObject o) {
-		for (final EReference r : o.eClass().getEAllReferences()) {
-			if (r.isContainment()) {
-				if (lazyResolver != null) {
-					final EList<Object> pending = lazyResolver.getPending(o, r);
-					if (pending != null) {
-						return !pending.isEmpty();
-					}
-				}
-				final Object v = o.eGet(r);
-				if (r.isMany() && !((Collection<EObject>)v).isEmpty() || !r.isMany() && v != null) {
-					return true;
-				}
-			}
+		String nodeId = eObjectToNodeIdMap.getIfPresent(o);
+
+		final GraphWrapper gW = new GraphWrapper(this.indexer.getGraph());
+		try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
+			ModelElementNode node = gW.getModelElementNodeById(nodeId);
+			final boolean ret = node.hasChildren();
+			tx.success();
+			return ret;
+		} catch (Throwable t) {
+			LOGGER.error(t.getMessage(), t);
+			return false;
 		}
-		return false;
 	}
 
 	@Override

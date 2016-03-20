@@ -259,4 +259,13 @@ public class ModelElementNode {
 	public boolean isContained() {
 		return getContainer() != null;
 	}
+
+	public boolean hasChildren() {
+		for (IGraphEdge edge : node.getOutgoing()) {
+			if (edge.getProperty(EDGE_PROPERTY_CONTAINMENT) != null) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
