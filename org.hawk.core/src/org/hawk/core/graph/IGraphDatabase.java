@@ -16,6 +16,13 @@ import java.util.Set;
 
 import org.hawk.core.IConsole;
 
+/**
+ * Assumes all iterators returned will provide a consistent ordering of results
+ * as long as the database state has not changed
+ * 
+ * @author kb
+ *
+ */
 public interface IGraphDatabase {
 
 	String fileIndexName = "FILEINDEX";
@@ -55,8 +62,7 @@ public interface IGraphDatabase {
 
 	IGraphEdge createRelationship(IGraphNode start, IGraphNode end, String type);
 
-	IGraphEdge createRelationship(IGraphNode start, IGraphNode end,
-			String type, Map<String, Object> props);
+	IGraphEdge createRelationship(IGraphNode start, IGraphNode end, String type, Map<String, Object> props);
 
 	Object getGraph();
 
@@ -83,7 +89,9 @@ public interface IGraphDatabase {
 	 */
 	File logFull() throws Exception;
 
-	public enum Mode { TX_MODE, NO_TX_MODE, UNKNOWN };
+	public enum Mode {
+		TX_MODE, NO_TX_MODE, UNKNOWN
+	};
 
 	/**
 	 * Returns whether the current database is in transactional (update) or

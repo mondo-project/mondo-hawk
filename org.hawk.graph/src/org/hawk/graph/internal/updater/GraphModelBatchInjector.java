@@ -233,7 +233,8 @@ public class GraphModelBatchInjector {
 			listener.changeFailure();
 		} finally {
 			// graph.exitBatchMode();
-			//System.err.println("INDEXERDEBUG: " + debug / 1000 + "s " + debug % 1000 + "ms");
+			// System.err.println("INDEXERDEBUG: " + debug / 1000 + "s " + debug
+			// % 1000 + "ms");
 		}
 	}
 
@@ -297,9 +298,9 @@ public class GraphModelBatchInjector {
 				lastprint = objectCount[0];
 
 				final String out = String.format("Adding %s: %d %d sec (%d sec total) to %s",
-						parseOption == ParseOptions.MODELELEMENTS ? "nodes" : "references",
-								objectCount[0], (System.nanoTime() - init) / 1_000_000_000,
-								(System.nanoTime() - startTime) / 1_000_000_000, fileID);
+						parseOption == ParseOptions.MODELELEMENTS ? "nodes" : "references", objectCount[0],
+						(System.nanoTime() - init) / 1_000_000_000, (System.nanoTime() - startTime) / 1_000_000_000,
+						fileID);
 
 				hawk.getCompositeStateListener().info(out);
 				init = System.nanoTime();
@@ -377,12 +378,8 @@ public class GraphModelBatchInjector {
 				} else {
 					Collection<Object> collection = null;
 
-					if (a.isOrdered() && a.isUnique())
+					if (a.isUnique())
 						collection = new LinkedHashSet<Object>();
-					else if (a.isOrdered())
-						collection = new LinkedList<Object>();
-					else if (a.isUnique())
-						collection = new HashSet<Object>();
 					else
 						collection = new LinkedList<Object>();
 
@@ -510,12 +507,8 @@ public class GraphModelBatchInjector {
 
 					Collection<Object> collection = null;
 
-					if (a.isOrdered() && a.isUnique())
+					if (a.isUnique())
 						collection = new LinkedHashSet<Object>();
-					else if (a.isOrdered())
-						collection = new LinkedList<Object>();
-					else if (a.isUnique())
-						collection = new HashSet<Object>();
 					else
 						collection = new LinkedList<Object>();
 

@@ -88,13 +88,13 @@ public class IFC_Titan_Runtime_example {
 		File metamodel = new File(
 				"../uk.ac.york.cs.mde.hawk.ifc/models/Ecore.ecore");
 		// register them
-		i.registerMetamodel(metamodel);
+		i.registerMetamodels(metamodel);
 
 		// add one or more metamodel files
 		metamodel = new File(
 				"../uk.ac.york.cs.mde.hawk.ifc/models/ifc2x3tc1.ecore");
 		// register them
-		i.registerMetamodel(metamodel);
+		i.registerMetamodels(metamodel);
 
 		// model updater
 		i.addModelUpdater(new GraphModelUpdater());

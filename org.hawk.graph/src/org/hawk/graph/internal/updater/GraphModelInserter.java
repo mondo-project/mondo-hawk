@@ -85,8 +85,7 @@ public class GraphModelInserter {
 
 	public boolean run(IHawkModelResource res, VcsCommitItem s, final boolean verbose) throws Exception {
 		if (verbose) {
-			indexer.getCompositeStateListener()
-				.info("Calculating model delta for file: " + s.getPath() + "...");
+			indexer.getCompositeStateListener().info("Calculating model delta for file: " + s.getPath() + "...");
 		}
 		this.resource = res;
 		this.s = s;
@@ -310,7 +309,8 @@ public class GraphModelInserter {
 			return false;
 		} finally {
 			if (verbose) {
-				indexer.getCompositeStateListener().info("Performed transactional update on file: " + s.getPath() + ".");
+				indexer.getCompositeStateListener()
+						.info("Performed transactional update on file: " + s.getPath() + ".");
 			}
 		}
 
@@ -460,12 +460,8 @@ public class GraphModelInserter {
 			} else {
 				Collection<Object> collection = null;
 
-				if (a.isOrdered() && a.isUnique())
+				if (a.isUnique())
 					collection = new LinkedHashSet<Object>();
-				else if (a.isOrdered())
-					collection = new LinkedList<Object>();
-				else if (a.isUnique())
-					collection = new HashSet<Object>();
 				else
 					collection = new LinkedList<Object>();
 
@@ -524,12 +520,8 @@ public class GraphModelInserter {
 
 				Collection<Object> collection = null;
 
-				if (a.isOrdered() && a.isUnique())
+				if (a.isUnique())
 					collection = new LinkedHashSet<Object>();
-				else if (a.isOrdered())
-					collection = new LinkedList<Object>();
-				else if (a.isUnique())
-					collection = new HashSet<Object>();
 				else
 					collection = new LinkedList<Object>();
 
@@ -678,7 +670,8 @@ public class GraphModelInserter {
 
 	/**
 	 * Populates the database with the model, using util.parseresource
-	 * @param verbose 
+	 * 
+	 * @param verbose
 	 * 
 	 * @return
 	 * 
@@ -1269,12 +1262,8 @@ public class GraphModelInserter {
 
 					Collection<Object> collection = null;
 
-					if (metadata[2] == "t" && metadata[3] == "t")
+					if (metadata[3] == "t")
 						collection = new LinkedHashSet<Object>();
-					else if (metadata[2] == "t")
-						collection = new LinkedList<Object>();
-					else if (metadata[3] == "t")
-						collection = new HashSet<Object>();
 					else
 						collection = new LinkedList<Object>();
 

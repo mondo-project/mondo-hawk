@@ -162,7 +162,7 @@ public class Runtime_example {
 		for (File f : new File("../org.hawk.emf/src/org/hawk/emf/metamodel/examples/single")
 				.listFiles())
 			if (f.getPath().endsWith(".ecore"))
-				hawk.registerMetamodel(f);
+				hawk.registerMetamodels(f);
 
 		// Initialise the server for real-time updates to changes -- this has to
 		// be done after initialising all the relevant plugins you want online.
