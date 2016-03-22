@@ -10,9 +10,13 @@
  ******************************************************************************/
 package org.hawk.epsilon.emc;
 
+import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.epsilon.common.parse.problem.ParseProblem;
 import org.eclipse.epsilon.common.util.StringProperties;
@@ -20,8 +24,11 @@ import org.eclipse.epsilon.eol.EolModule;
 import org.eclipse.epsilon.eol.execute.context.Variable;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.graph.internal.util.GraphUtil;
 
 public class DeriveFeature {
+
+	protected final static String REFERENCETARGETPREFIX = "GNW::";
 
 	public DeriveFeature() throws Exception {
 	}
@@ -93,17 +100,35 @@ public class DeriveFeature {
 			// System.out.println(ret);
 
 			if (!(ret instanceof Collection<?>)) {
-				if (ret instanceof Boolean || ret instanceof String || ret instanceof Integer || ret instanceof Float
-						|| ret instanceof Double)
-					return ret;
-				else
-					return ret.toString();
+				return toPrimitive(ret);
 			} else {
-				// TODO handle collections as returns to derived features --
-				// need to type cast them for storage in the db
-				System.err.println(
-						"Derivefeature got a collection back from EOL, this is not supported yet! returning \"HAWK_COLLECTION_ERROR\"");
-				return "HAWK_COLLECTION_ERROR";
+
+				Collection<Object> collection = null;
+				// check for uniqueness
+				if (ret instanceof Set<?>)
+					collection = new LinkedHashSet<>();
+				else
+					collection = new LinkedList<>();
+
+				final Collection<?> srcCollection = (Collection<?>) ret;
+				Class<?> elemClass = null;
+				boolean primitiveOrWrapperClass = false;
+				if (!srcCollection.isEmpty()) {
+					final Object first = srcCollection.iterator().next();
+					elemClass = first.getClass();
+					primitiveOrWrapperClass = new GraphUtil().isPrimitiveOrWrapperType(elemClass);
+					for (Object o : srcCollection)
+						collection.add(toPrimitive(o));
+				}
+
+				Object r = null;
+				if (primitiveOrWrapperClass && elemClass != null) {
+					r = Array.newInstance(elemClass, collection.size());
+				} else {
+					r = Array.newInstance(String.class, collection.size());
+				}
+				return collection.toArray((Object[]) r);
+
 			}
 
 		} catch (Exception e) {
@@ -116,6 +141,17 @@ public class DeriveFeature {
 		// ...parse like:
 		// this.bodyDeclarations.exists(md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public=='true'))
 
+	}
+
+	protected static Object toPrimitive(Object ret) {
+		if (ret instanceof Collection<?>)
+			return "Hawk collection error: nested collections are not supported for derived/indexed attributes";
+		if (new GraphUtil().isPrimitiveOrWrapperType(ret.getClass()))
+			return ret;
+		else if (ret instanceof GraphNodeWrapper)
+			return REFERENCETARGETPREFIX + ((GraphNodeWrapper) ret).getId();
+		else
+			return ret.toString();
 	}
 
 	private EolModule initModule(IModelIndexer m, EOLQueryEngine model) throws Exception {

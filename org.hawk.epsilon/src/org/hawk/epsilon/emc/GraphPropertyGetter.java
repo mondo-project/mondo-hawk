@@ -23,10 +23,8 @@ import java.util.Set;
 import org.eclipse.epsilon.eol.exceptions.EolIllegalPropertyException;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.execute.introspection.AbstractPropertyGetter;
-import org.eclipse.epsilon.eol.types.EolBag;
 import org.eclipse.epsilon.eol.types.EolOrderedSet;
 import org.eclipse.epsilon.eol.types.EolSequence;
-import org.eclipse.epsilon.eol.types.EolSet;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
@@ -65,7 +63,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 	protected IGraphNode featureStartingNodeClassNode = null;
 	protected AccessListener accessListener = new AccessListener();
 
-	// Cache: type node -> property name -> property type 
+	// Cache: type node -> property name -> property type
 	protected Map<IGraphNode, Map<String, PropertyType>> propertyTypeCache = new HashMap<>();
 	protected Map<IGraphNode, Map<String, String[]>> propertyTypeFlagsCache = new HashMap<>();
 
@@ -95,14 +93,13 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		PropertyType propertyType = getPropertyType(node, property);
 		switch (propertyType) {
 		case ATTRIBUTE:
-			if (node.getProperty(property) != null) {
-				// FIXMEdone handle collections / ordered etc
-				if (!(isMany(property))) {
-					return node.getProperty(property);
-				}
+			Object value = node.getProperty(property);
+			if (value != null) {
+				if (!(isMany(property)))
+					return value;
 				else {
-					Collection<GraphNodeWrapper> ret = getCollectionForProperty(property);
-					Object[] array = (Object[]) node.getProperty(property);
+					Collection<Object> ret = getCollectionForProperty(property);
+					Object[] array = (Object[]) value;
 					for (int i = 0; i < array.length; i++)
 						ret.add((GraphNodeWrapper) array[i]);
 					return ret;
@@ -117,7 +114,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				if (derivedValue == null) {
 					derivedValue = r.getEndNode().getProperty(property);
 				} else {
-					throw new EolRuntimeException("WARNING: a derived property (arity 1) -- ( " + property
+					throw new EolRuntimeException("WARNING: a derived property node (arity 1) -- ( " + property
 							+ " ) has more than 1 links in store!");
 				}
 			}
@@ -128,12 +125,12 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				// XXX IDEA: dynamically derive on the spot on access
 				System.err.println("attribute: " + property + " is NYD for node: " + node.getId());
 			}
-			return derivedValue;
+			return resolvePossibleReferences(property, derivedValue);
 
 		case MIXED:
-			final Collection<GraphNodeWrapper> retCollection = getCollectionForProperty(property);
+			final Collection<Object> retCollection = getCollectionForProperty(property);
 			if (node.getProperty(property) != null) {
-				final List<GraphNodeWrapper> values = Arrays.asList((GraphNodeWrapper[]) node.getProperty(property));
+				final List<Object> values = Arrays.asList((Object[]) node.getProperty(property));
 				retCollection.addAll(values);
 			}
 			for (IGraphEdge r : node.getOutgoingWithType(property)) {
@@ -143,7 +140,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 		case REFERENCE:
 			GraphNodeWrapper otherNode = null;
-			Collection<GraphNodeWrapper> otherNodes = null;
+			Collection<Object> otherNodes = null;
 
 			// FIXMEdone arity etc in metamodel
 			// otherNodes = new EolBag<NeoIdWrapperDebuggable>();
@@ -165,6 +162,37 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		default:
 			throw new EolIllegalPropertyException(obj, property, ast, context);
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private Object resolvePossibleReferences(String property, Object derivedValue) {
+
+		Object ret = null;
+
+		if (derivedValue instanceof Object[]) {
+			ret = getCollectionForProperty(property);
+			for (Object o : (Object[]) derivedValue)
+				((Collection<Object>) ret).add(containsReferenceTarget(o) ? resolveReferenceTarget((String) o) : o);
+		} else if (derivedValue instanceof Iterable<?>) {
+			ret = getCollectionForProperty(property);
+			for (Object o : (Iterable<?>) derivedValue)
+				((Collection<Object>) ret).add(containsReferenceTarget(o) ? resolveReferenceTarget((String) o) : o);
+		} else if (containsReferenceTarget(derivedValue))
+			ret = resolveReferenceTarget((String) derivedValue);
+		else
+			ret = derivedValue;
+		return ret;
+
+	}
+
+	private boolean containsReferenceTarget(Object derivedValue) {
+		return derivedValue instanceof String
+				&& ((String) derivedValue).startsWith(DeriveFeature.REFERENCETARGETPREFIX);
+	}
+
+	private GraphNodeWrapper resolveReferenceTarget(String derivedValue) {
+		return new GraphNodeWrapper(
+				graph.getNodeById(derivedValue.substring(DeriveFeature.REFERENCETARGETPREFIX.length())), m);
 	}
 
 	protected Object invokePredefined(final String property, IGraphNode node) throws EolRuntimeException {
@@ -216,7 +244,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 			String property2 = property.substring(10);
 
-			EolBag<GraphNodeWrapper> ret = new EolBag<GraphNodeWrapper>();
+			EolSequence<GraphNodeWrapper> ret = new EolSequence<GraphNodeWrapper>();
 
 			for (IGraphEdge r : node.getIncomingWithType(property2))
 				ret.add(new GraphNodeWrapper(r.getStartNode(), m));
@@ -274,15 +302,11 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		}
 	}
 
-	protected Collection<GraphNodeWrapper> getCollectionForProperty(final String property) {
-		if (isOrdered(property) && isUnique(property))
-			return new EolOrderedSet<GraphNodeWrapper>();
-		else if (isOrdered(property))
-			return new EolSequence<GraphNodeWrapper>();
-		else if (isUnique(property))
-			return new EolSet<GraphNodeWrapper>();
-		else
-			return new EolBag<GraphNodeWrapper>();
+	protected Collection<Object> getCollectionForProperty(final String property) {
+		if (isUnique(property))
+			return new EolOrderedSet<Object>();
+		else 
+			return new EolSequence<Object>();
 	}
 
 	protected void broadcastAccess(Object object, String property) {

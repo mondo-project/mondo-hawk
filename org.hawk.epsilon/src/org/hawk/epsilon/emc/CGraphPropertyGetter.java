@@ -19,7 +19,7 @@ import java.util.Set;
 
 import org.eclipse.epsilon.eol.exceptions.EolIllegalPropertyException;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
-import org.eclipse.epsilon.eol.types.EolBag;
+import org.eclipse.epsilon.eol.types.EolSequence;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
@@ -111,12 +111,12 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 
 			String property2 = property.substring(10);
 
-			ret = new EolBag<GraphNodeWrapper>();
+			ret = new EolSequence<GraphNodeWrapper>();
 
 			for (IGraphEdge r : node.getIncomingWithType(property2)) {
 				GraphNodeWrapper n = addIfInScope(r.getStartNode());
 				if (n != null)
-					((EolBag<GraphNodeWrapper>) ret).add(n);
+					((EolSequence<GraphNodeWrapper>) ret).add(n);
 			}
 
 		} else if (property.equals("eContainer")) {
@@ -242,7 +242,7 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 		else if (canHaveRef(node, property)) {
 
 			GraphNodeWrapper otherNode = null;
-			Collection<GraphNodeWrapper> otherNodes = null;
+			Collection<Object> otherNodes = null;
 
 			// FIXMEdone arity etc in metamodel
 			// otherNodes = new EolBag<NeoIdWrapperDebuggable>();

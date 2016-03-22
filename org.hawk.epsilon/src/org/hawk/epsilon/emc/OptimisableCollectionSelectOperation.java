@@ -10,8 +10,10 @@
  ******************************************************************************/
 package org.hawk.epsilon.emc;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import org.eclipse.epsilon.common.parse.AST;
 import org.eclipse.epsilon.eol.dom.Expression;
@@ -289,21 +291,41 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 	private Collection<Object> optimisedExecution(Object target, AST ast) throws EolRuntimeException {
 
 		// System.err.println(">"+ast.toStringTree());
-
 		final String attributename = ast.getFirstChild().getChild(1).getText();
 		final AST valueAST = ast.getFirstChild().getNextSibling();
-		final Object attributevalue = context.getExecutorFactory().executeAST(valueAST, context);
-
+		Object attributevalue = null;
+		try {
+			attributevalue = context.getExecutorFactory().executeAST(valueAST, context);
+		} catch (Exception e) {
+			// if the rhs is invalid or tries to use the iterator of the select
+			// (which is outside its scope) -- default to epsilon's select
+			System.err.println("Warning: the RHS of the expression:\n" + ast.toStringTree()
+					+ "\ncannot be evaluated using database indexing,\nas the iterator variable of the current select operation ("
+					+ iterator.getName() + ") is not used in this process.\nDefaulting to Epsion's Select");
+		}
 		String indexname;
-
-		if ((indexname = isIndexed(attributename)) != null) {
+		if (attributevalue != null && (indexname = isIndexed(attributename)) != null) {
+			if (!(attributevalue instanceof Collection<?>)) {
+				attributevalue = DeriveFeature.toPrimitive(attributevalue);
+			} else {
+				Collection<?> cRet = (Collection<?>) attributevalue;
+				Object[] aRet = new Object[cRet.size()];
+				int count = 0;
+				for (Iterator<?> it = cRet.iterator(); it.hasNext();) {
+					aRet[count] = DeriveFeature.toPrimitive(it.next());
+					count++;
+				}
+				// flatten to allow comparison to index value (which cannot be
+				// multi-valued)
+				attributevalue = Arrays.toString(aRet);
+			}
 
 			HashSet<Object> result = new HashSet<Object>();
 			result.addAll((Collection<Object>) target);
 
 			System.err.println("indexed ast found: " + ast.getFirstChild().getFirstChild().getText()
-					+ ast.getFirstChild().getText() + attributename + ast.getText() + attributevalue + " (type:"
-					+ attributevalue.getClass() + ")");
+					+ ast.getFirstChild().getText() + attributename + ast.getText() + toString(attributevalue)
+					+ " (type:" + attributevalue.getClass() + ")");
 
 			HashSet<Object> filter = new HashSet<Object>();
 			// use index to query
@@ -342,7 +364,7 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 						hits = index.query(attributename, (double) attributevalue, Double.MAX_VALUE, true, true);
 					else
 						throw new EolRuntimeException(
-								"> used with a non numeric value (" + attributevalue.getClass() + ")");
+								">= used with a non numeric value (" + attributevalue.getClass() + ")");
 				} else if (ast.getText().equals("<")) {
 					if (attributevalue instanceof Integer)
 						hits = index.query(attributename, Integer.MIN_VALUE, (int) attributevalue, true, false);
@@ -352,7 +374,7 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 						hits = index.query(attributename, Double.MIN_VALUE, (double) attributevalue, true, false);
 					else
 						throw new EolRuntimeException(
-								"> used with a non numeric value (" + attributevalue.getClass() + ")");
+								"< used with a non numeric value (" + attributevalue.getClass() + ")");
 				} else if (ast.getText().equals("<=")) {
 					if (attributevalue instanceof Integer)
 						hits = index.query(attributename, Integer.MIN_VALUE, (int) attributevalue, true, true);
@@ -362,7 +384,7 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 						hits = index.query(attributename, Double.MIN_VALUE, (double) attributevalue, true, true);
 					else
 						throw new EolRuntimeException(
-								"> used with a non numeric value (" + attributevalue.getClass() + ")");
+								"<= used with a non numeric value (" + attributevalue.getClass() + ")");
 				}
 
 				// modifiedlist.clear();
@@ -401,6 +423,14 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 
 		}
 
+	}
+
+	private String toString(Object attributevalue) {
+
+		if (attributevalue instanceof Object[])
+			return Arrays.toString((Object[]) attributevalue);
+
+		return attributevalue.toString();
 	}
 
 	private boolean isOptimisable(AST ast) {

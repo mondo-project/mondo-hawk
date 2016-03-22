@@ -14,7 +14,6 @@ import java.lang.ref.WeakReference;
 
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.hawk.core.IModelIndexer;
-import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeReference;
 import org.hawk.core.graph.IGraphTransaction;

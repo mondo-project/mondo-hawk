@@ -16,6 +16,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -888,19 +889,17 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 						IGraphNode elementnode = n.getIncoming().iterator().next().getStartNode();
 
-						IGraphNodeIndex derivedFeature = graph.getOrCreateNodeIndex(
-
-								elementnode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().next()
-										.getEndNode().getOutgoingWithType("epackage").iterator().next().getEndNode()
-										.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString()
+						IGraphNode typeNode = elementnode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
+								.iterator().next().getEndNode();
+						IGraphNodeIndex derivedFeature = graph
+								.getOrCreateNodeIndex(typeNode.getOutgoingWithType("epackage").iterator().next()
+										.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString()
 										//
 										// e.getEPackage().getNsURI()
 										+ "##"
 										// -
-										+ elementnode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator()
-												.next().getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
-												.toString()
-												//
+										+ typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString()
+										//
 										+ "##" + s);
 
 						// System.err.println(">< " + derived);
@@ -922,6 +921,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 						// + ((derived instanceof Collection<?>) ? "t"
 						// : "f") + ".u.u");
 
+						if(derived instanceof Object[])derived = Arrays.toString((Object[]) derived);
+						
 						derivedFeature.add(elementnode, s, derived);
 					}
 				}
