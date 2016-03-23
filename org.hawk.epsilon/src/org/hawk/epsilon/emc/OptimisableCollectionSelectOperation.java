@@ -28,6 +28,7 @@ import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.core.util.Utils;
 
 public class OptimisableCollectionSelectOperation extends SelectOperation {
 
@@ -324,7 +325,7 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 			result.addAll((Collection<Object>) target);
 
 			System.err.println("indexed ast found: " + ast.getFirstChild().getFirstChild().getText()
-					+ ast.getFirstChild().getText() + attributename + ast.getText() + toString(attributevalue)
+					+ ast.getFirstChild().getText() + attributename + ast.getText() + new Utils().toString(attributevalue)
 					+ " (type:" + attributevalue.getClass() + ")");
 
 			HashSet<Object> filter = new HashSet<Object>();
@@ -423,14 +424,6 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 
 		}
 
-	}
-
-	private String toString(Object attributevalue) {
-
-		if (attributevalue instanceof Object[])
-			return Arrays.toString((Object[]) attributevalue);
-
-		return attributevalue.toString();
 	}
 
 	private boolean isOptimisable(AST ast) {

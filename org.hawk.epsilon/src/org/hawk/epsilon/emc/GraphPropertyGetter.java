@@ -29,6 +29,7 @@ import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.util.Utils;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.ModelElementNode;
 
@@ -97,16 +98,10 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 			if (value != null) {
 				if (!(isMany(property)))
 					return value;
-				else {
-					Collection<Object> ret = getCollectionForProperty(property);
-					Object[] array = (Object[]) value;
-					for (int i = 0; i < array.length; i++)
-						ret.add((GraphNodeWrapper) array[i]);
-					return ret;
-				}
-			} else {
+				else
+					return new Utils().asList(value);
+			} else
 				return null;
-			}
 
 		case DERIVED:
 			Object derivedValue = null;
@@ -130,7 +125,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		case MIXED:
 			final Collection<Object> retCollection = getCollectionForProperty(property);
 			if (node.getProperty(property) != null) {
-				final List<Object> values = Arrays.asList((Object[]) node.getProperty(property));
+				final List<?> values = new Utils().asList(node.getProperty(property));
 				retCollection.addAll(values);
 			}
 			for (IGraphEdge r : node.getOutgoingWithType(property)) {
@@ -165,15 +160,16 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Object resolvePossibleReferences(String property, Object derivedValue) {
+	protected Object resolvePossibleReferences(String property, Object derivedValue) {
 
 		Object ret = null;
 
-		if (derivedValue instanceof Object[]) {
-			ret = getCollectionForProperty(property);
-			for (Object o : (Object[]) derivedValue)
-				((Collection<Object>) ret).add(containsReferenceTarget(o) ? resolveReferenceTarget((String) o) : o);
-		} else if (derivedValue instanceof Iterable<?>) {
+		Class<?> cType = derivedValue.getClass().getComponentType();
+		if (cType != null) {
+			derivedValue = new Utils().asList(derivedValue);
+		}
+
+		if (derivedValue instanceof Iterable<?>) {
 			ret = getCollectionForProperty(property);
 			for (Object o : (Iterable<?>) derivedValue)
 				((Collection<Object>) ret).add(containsReferenceTarget(o) ? resolveReferenceTarget((String) o) : o);
@@ -305,7 +301,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 	protected Collection<Object> getCollectionForProperty(final String property) {
 		if (isUnique(property))
 			return new EolOrderedSet<Object>();
-		else 
+		else
 			return new EolSequence<Object>();
 	}
 

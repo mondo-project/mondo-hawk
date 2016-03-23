@@ -11,9 +11,9 @@
 package org.hawk.epsilon.emc;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +24,7 @@ import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.util.Utils;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.ModelElementNode;
 
@@ -178,9 +179,13 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 		else if (canHaveDerivedAttr(node, property)) {
 
 			for (IGraphEdge r : node.getOutgoingWithType(property)) {
-				if (ret == null)
+				if (ret == null) {
 					ret = r.getEndNode().getProperty(property);
-				else
+					// XXX limit to scope for derived refs?
+					ret = resolvePossibleReferences(property, ret);
+					ret = retainScoped(ret);
+
+				} else
 					throw new EolRuntimeException("WARNING: a derived property (arity 1) -- ( " + property
 							+ " ) has more than 1 links in store!");
 			}
@@ -201,7 +206,7 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 
 			if (node.getProperty(property) != null) {
 
-				final List<Object> values = Arrays.asList((Object[]) node.getProperty(property));
+				final List<?> values = new Utils().asList(node.getProperty(property));
 				retCollection.addAll(values);
 
 			}
@@ -273,6 +278,44 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 			broadcastAccess(object, property);
 
 		return ret;
+
+	}
+
+	private Object retainScoped(Object ret) {
+
+		Collection<?> cRet = null;
+		if (ret instanceof Collection<?>)
+			cRet = (Collection<?>) ret;
+
+		if (cRet == null) {
+			if (ret instanceof GraphNodeWrapper)
+				ret = retainScoped((GraphNodeWrapper) ret);
+		} else {
+			Iterator<?> it = cRet.iterator();
+			while (it.hasNext()) {
+				Object r = it.next();
+				if (r instanceof GraphNodeWrapper)
+					if (retainScoped((GraphNodeWrapper) ret) == null)
+						it.remove();
+			}
+		}
+		return cRet == null ? ret : cRet;
+	}
+
+	private Object retainScoped(GraphNodeWrapper ret) {
+
+		if (!engine.enableTraversalScoping)
+			return ret;
+
+		// capture multiple file containment (ie for singleton nodes)
+		for (IGraphEdge e : graph.getNodeById(ret.getId()).getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+
+			if (engine.files.contains(e.getEndNode())) {
+				return ret;
+			}
+		}
+
+		return null;
 
 	}
 

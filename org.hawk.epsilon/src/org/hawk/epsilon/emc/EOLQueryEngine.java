@@ -16,7 +16,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,6 +45,7 @@ import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
+import org.hawk.core.util.Utils;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.MetamodelNode;
 import org.hawk.graph.ModelElementNode;
@@ -904,25 +904,10 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 						// System.err.println(">< " + derived);
 
-						// XXXdeprecated derived attribute to metamodel
-						// resolution -
-						// only needed if no info in mm
+						// flatten multi-valued derived features for indexing
+						if (derived.getClass().getComponentType() != null || derived instanceof Collection<?>)
+							derived = new Utils().toString(derived);
 
-						// n.getRelationships(
-						// Direction.OUTGOING,
-						// RelationshipUtil
-						// .getNewRelationshipType(ModelElementNode.EDGE_LABEL_OFTYPE))
-						// .iterator()
-						// .next()
-						// .getEndNode()
-						// .setProperty(
-						// s,
-						// "a."
-						// + ((derived instanceof Collection<?>) ? "t"
-						// : "f") + ".u.u");
-
-						if(derived instanceof Object[])derived = Arrays.toString((Object[]) derived);
-						
 						derivedFeature.add(elementnode, s, derived);
 					}
 				}

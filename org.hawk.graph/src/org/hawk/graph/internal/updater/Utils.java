@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.hawk.graph.internal.updater;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -36,9 +35,8 @@ public class Utils {
 		return extension;
 	}
 
-	protected String[] addToElementProxies(String[] proxies,
-			String fullPathURI, String edgelabel, boolean isContainment,
-			boolean isContainer) {
+	protected String[] addToElementProxies(String[] proxies, String fullPathURI, String edgelabel,
+			boolean isContainment, boolean isContainer) {
 
 		// System.err.println("addtoelementproxies: " +
 		// Arrays.toString(proxies));
@@ -70,8 +68,7 @@ public class Utils {
 			return ret;
 
 		} else {
-			String[] ret = new String[] { fullPathURI, edgelabel,
-					isContainment + "", isContainer + "" };
+			String[] ret = new String[] { fullPathURI, edgelabel, isContainment + "", isContainer + "" };
 			return ret;
 		}
 	}
@@ -85,15 +82,12 @@ public class Utils {
 	 * @param s
 	 * @return
 	 */
-	protected IGraphNode getFileNodeFromVCSCommitItem(IGraphDatabase graph,
-			VcsCommitItem s) {
+	protected IGraphNode getFileNodeFromVCSCommitItem(IGraphDatabase graph, VcsCommitItem s) {
 
-		final String repository = s.getCommit().getDelta().getManager()
-				.getLocation();
+		final String repository = s.getCommit().getDelta().getManager().getLocation();
 		final String filepath = s.getPath();
 
-		final String fullFileID = repository
-				+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + filepath;
+		final String fullFileID = repository + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + filepath;
 
 		IGraphNode ret = null;
 		IGraphTransaction t = null;
@@ -105,14 +99,12 @@ public class Utils {
 
 			IGraphNodeIndex fi = graph.getFileIndex();
 			fi.flush();
-			final Iterator<IGraphNode> itFile = fi.get("id", fullFileID)
-					.iterator();
+			final Iterator<IGraphNode> itFile = fi.get("id", fullFileID).iterator();
 
 			if (itFile.hasNext()) {
 				ret = itFile.next();
 			} else
-				System.err.println("WARNING: no file node found for: "
-						+ s.getPath());
+				System.err.println("WARNING: no file node found for: " + s.getPath());
 
 			if (graph.currentMode().equals(Mode.TX_MODE)) {
 				t.success();
@@ -127,23 +119,20 @@ public class Utils {
 
 	}
 
-	public String[] removeFromElementProxies(String[] proxies,
-			String fullPathURI, String edgelabel, boolean isContainment,
-			boolean isContainer) {
+	public String[] removeFromElementProxies(String[] proxies, String fullPathURI, String edgelabel,
+			boolean isContainment, boolean isContainer) {
 
 		String[] result = null;
 
 		for (int i = 0; i < proxies.length; i = i + 4) {
 
-			if (proxies[i].equals(fullPathURI)
-					&& proxies[i + 1].equals(edgelabel)
+			if (proxies[i].equals(fullPathURI) && proxies[i + 1].equals(edgelabel)
 					&& Boolean.valueOf(proxies[i + 2]) == isContainment
 					&& Boolean.valueOf(proxies[i + 3]) == isContainer) {
 				//
 				result = new String[proxies.length - 4];
 				System.arraycopy(proxies, 0, result, 0, i);
-				System.arraycopy(proxies, i + 4, result, i, proxies.length - i
-						- 4);
+				System.arraycopy(proxies, i + 4, result, i, proxies.length - i - 4);
 				break;
 			}
 
