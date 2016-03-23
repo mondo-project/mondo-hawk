@@ -22,6 +22,10 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 public interface HawkResource extends Resource {
 
+	/**
+	 * Returns <code>true</code> if the object has any children, without
+	 * retrieving the actual value.
+	 */
 	boolean hasChildren(EObject o);
 
 	/**
@@ -83,4 +87,9 @@ public interface HawkResource extends Resource {
 	 *             The functionality is not offered for this resource yet.
 	 */
 	boolean removeChangeListener(HawkResourceChangeListener l);
+
+	/**
+	 * Marks an object as changed, indicating that it shouldn't be garbage collected.
+	 */
+	void markChanged(final EObject eob);
 }

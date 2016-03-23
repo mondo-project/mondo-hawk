@@ -217,4 +217,9 @@ public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 	    getErrors().clear();
 	    getWarnings().clear();
 	}
+
+	@Override
+	public void markChanged(EObject eob) {
+		mainResource.markChanged(eob);
+	}
 }

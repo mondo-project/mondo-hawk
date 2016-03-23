@@ -27,6 +27,8 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -63,8 +65,8 @@ import org.hawk.graph.TypeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -101,13 +103,24 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 
 			switch (m.getName()) {
 			case "eIsSet":
-				return (Boolean)proxy.invokeSuper(o, args) || lazyResolver.isPending(eob, (EStructuralFeature) args[0]);
+				return (Boolean)proxy.invokeSuper(o, args) || lazyResolver.isLazy(eob, (EStructuralFeature) args[0]);
+			case "eContainmentFeature":
+				final Object rawCF = proxy.invokeSuper(o, args);
+				return rawCF != null ? rawCF : lazyResolver.getContainingFeature(eob);
+			case "eContainer":
+				final EObject rawContainer = (EObject) proxy.invokeSuper(o, args);
+				return rawContainer != null ? rawContainer : lazyResolver.getContainer(eob);
+			case "eResource":
+				final Object rawResource = proxy.invokeSuper(o, args);
+				return rawResource != null ? rawResource : lazyResolver.getResource(eob);
 			case "eGet":
 				final EStructuralFeature sf = (EStructuralFeature)args[0];
-				if (sf instanceof EReference && lazyResolver.isPending(eob, sf)) {
+				if (sf instanceof EReference && lazyResolver.isLazy(eob, sf)) {
 					final EReference ref = (EReference) sf;
-					synchronized(nodeIdToEObjectMap) {
-						lazyResolver.resolve(eob, sf, false, true);
+					Object value;
+					synchronized(nodeIdToEObjectCache) {
+						value = lazyResolver.resolve(eob, sf, false, true);
+						System.out.println("Value of " + sf + ": " + value);
 					}
 
 					/*
@@ -115,27 +128,28 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 					 * container reference: need to adjust the list of root elements
 					 * then.
 					 */
-					Object superValue = proxy.invokeSuper(o, args);
-					if (superValue != null) {
+					if (value != null) {
 						if (ref.isContainer()) {
 							removeRedundantRoot(eob);
 						} else if (ref.isContainment()) {
 							if (ref.isMany()) {
-								for (EObject child : (Iterable<EObject>) superValue) {
+								for (EObject child : (Iterable<EObject>) value) {
 									removeRedundantRoot(child);
 								}
 							} else {
-								removeRedundantRoot((EObject) superValue);
+								removeRedundantRoot((EObject) value);
 							}
 						}
+						return value;
+					} else {
+						return proxy.invokeSuper(o, args);
 					}
-					return superValue;
 				}
 				break;
 			case "eContents":
 			default:
 				// Resolve all containment references for an eContents call
-				synchronized(nodeIdToEObjectMap) {
+				synchronized(nodeIdToEObjectCache) {
 					for (EReference ref : eob.eClass().getEAllReferences()) {
 						if (ref.isContainment()) {
 							lazyResolver.resolve(eob, (EStructuralFeature)ref, false, true);
@@ -167,7 +181,15 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		return eClass;
 	}
 
-	private final BiMap<String, EObject> nodeIdToEObjectMap = HashBiMap.create();
+	private final Cache<String, EObject> nodeIdToEObjectCache = CacheBuilder.newBuilder().softValues().build();
+	private final Cache<EObject, String> eObjectToNodeIdCache = CacheBuilder.newBuilder().weakKeys().build();
+
+	/**
+	 * Contains strong references to all the objects that have been changed, to
+	 * prevent these changes from being lost during GC.
+	 */
+	private final Map<EObject, Object> dirtyObjects = new IdentityHashMap<>();
+
 	private final Map<String, HawkFileResourceImpl> uriToResource = new HashMap<>();
 	private final Map<String, FileNode> uriToFileNode = new HashMap<>();
 
@@ -213,13 +235,12 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 
 	@Override
 	public String getEObjectNodeID(EObject obj) {
-		return nodeIdToEObjectMap.inverse().get(obj);
+		return eObjectToNodeIdCache.getIfPresent(obj);
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public boolean hasChildren(final EObject o) {
-		String nodeId = eObjectToNodeIdMap.getIfPresent(o);
+		final String nodeId = eObjectToNodeIdCache.getIfPresent(o);
 
 		final GraphWrapper gW = new GraphWrapper(this.indexer.getGraph());
 		try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
@@ -266,15 +287,20 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 
 	@Override
 	public EList<EObject> fetchNodes(final List<String> ids, boolean fetchAttributes) throws Exception {
-		// Filter the objects that need to be retrieved
+		// Split IDs into cached (keeping a strong ref so we don't lose them) and to be fetched
+		final List<EObject> allCached = new ArrayList<>();
 		final List<String> toBeFetched = new ArrayList<>();
 		for (final String id : ids) {
-			if (!nodeIdToEObjectMap.containsKey(id)) {
+			EObject cached = nodeIdToEObjectCache.getIfPresent(id);
+			if (cached != null) {
+				allCached.add(cached);
+			} else {
 				toBeFetched.add(id);
 			}
 		}
 
-		// Fetch the eObjects, decode them and resolve references
+		// Fetch the pending eObjects, decode them and resolve references. Keep strong refs to them as well.
+		@SuppressWarnings("unused") EList<EObject> fetched = null;
 		if (!toBeFetched.isEmpty()) {
 			try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
 				final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
@@ -283,7 +309,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 				for (String id : toBeFetched) {
 					elems.add(gw.getModelElementNodeById(id));
 				}
-				createOrUpdateEObjects(elems);
+				fetched = createOrUpdateEObjects(elems);
 
 				tx.success();
 			}
@@ -292,7 +318,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		// Rebuild the real EList now
 		final EList<EObject> finalList = new BasicEList<EObject>(ids.size());
 		for (final String id : ids) {
-			final EObject eObject = nodeIdToEObjectMap.get(id);
+			final EObject eObject = nodeIdToEObjectCache.getIfPresent(id);
 			finalList.add(eObject);
 		}
 		return finalList;
@@ -336,12 +362,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 						instances = filtered;
 					}
 
-					createOrUpdateEObjects(instances);
-					final EList<EObject> l = new BasicEList<EObject>();
-					for (ModelElementNode en : instances) {
-						l.add(nodeIdToEObjectMap.get(en.getNodeId()));
-					}
-					return l;
+					return createOrUpdateEObjects(instances);
 				}
 			}
 			tx.success();
@@ -559,7 +580,8 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			indexer.removeGraphChangeListener(changeListener);
 		}
 
-		nodeIdToEObjectMap.clear();
+		nodeIdToEObjectCache.invalidateAll();
+		eObjectToNodeIdCache.invalidateAll();
 		lazyResolver = null;
 		changeListener = null;
 	}
@@ -570,7 +592,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	}
 
 	protected EList<EObject> createOrUpdateEObjects(final Iterable<ModelElementNode> elems) throws Exception {
-		synchronized (nodeIdToEObjectMap) {
+		synchronized (nodeIdToEObjectCache) {
 			final EList<EObject> eObjects = new BasicEList<>();
 			for (final ModelElementNode me : elems) {
 				EObject eob = createOrUpdateEObject(me);
@@ -586,14 +608,19 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	 * <code>null</code>.
 	 */
 	protected EObject getNodeEObject(String id) {
-		return nodeIdToEObjectMap.get(id);
+		return nodeIdToEObjectCache.getIfPresent(id);
 	}
 
 	@SuppressWarnings("unchecked")
 	protected void removeNode(String id) {
-		synchronized (nodeIdToEObjectMap) {
-			final EObject eob = nodeIdToEObjectMap.remove(id);
-			if (eob == null) return;
+		synchronized (nodeIdToEObjectCache) {
+			final EObject eob = nodeIdToEObjectCache.getIfPresent(id);
+			if (eob == null) {
+				return;
+			} else {
+				nodeIdToEObjectCache.invalidate(id);
+				eObjectToNodeIdCache.invalidate(eob);
+			}
 	
 			final EObject container = eob.eContainer();
 			final Resource r = eob.eResource();
@@ -626,10 +653,17 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		final String nsURI = typeNode.getMetamodelURI();
 		final EClass eClass = getEClass(nsURI, typeNode.getTypeName(), registry);
 
-		final EObject existing = nodeIdToEObjectMap.get(me.getNodeId());
+		final EObject existing = nodeIdToEObjectCache.getIfPresent(me.getNodeId());
 		final EObject eob = existing != null ? existing : eobFactory.createInstance(eClass);
 		if (existing == null) {
-			nodeIdToEObjectMap.put(me.getNodeId(), eob);
+			nodeIdToEObjectCache.put(me.getNodeId(), eob);
+			eObjectToNodeIdCache.put(eob, me.getNodeId());
+			eob.eAdapters().add(new AdapterImpl(){
+				@Override
+				public void notifyChanged(Notification msg) {
+					markChanged(eob);
+				}
+			});
 		}
 
 		final Map<String, Object> attributeValues = new HashMap<>();
@@ -694,7 +728,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 				if (ref.isDerived() || !ref.isChangeable()) continue;
 
 				if (!referenceValues.containsKey(ref.getName())) {
-					if (lazyResolver.isPending(existing, ref)) {
+					if (lazyResolver.isLazy(existing, ref)) {
 						lazyResolver.removeLazyReference(existing, ref);
 					} else if (existing.eIsSet(ref)) {
 						existing.eUnset(ref);
@@ -708,7 +742,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 
 			// If this reference was resolved before, it needs to stay resolved.
 			final boolean existingNonLazy = existing != null
-					&& !lazyResolver.isPending(existing, ref)
+					&& !lazyResolver.isLazy(existing, ref)
 					&& existing.eIsSet(ref);
 
 			final EList<Object> referenced = new BasicEList<>();
@@ -739,7 +773,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	}
 
 	private boolean addToReferenced(final String id, final EList<Object> referenced, final boolean resolveMissing) throws Exception {
-		EObject refExisting = nodeIdToEObjectMap.get(id);
+		EObject refExisting = nodeIdToEObjectCache.getIfPresent(id);
 		if (refExisting == null && resolveMissing) {
 			EList<EObject> refExistingResolved = fetchNodes(Arrays.asList(id), false);
 			if (!refExistingResolved.isEmpty()) {
@@ -848,5 +882,10 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 
 	public IModelIndexer getIndexer() {
 		return indexer;
+	}
+
+	@Override
+	public void markChanged(final EObject eob) {
+		dirtyObjects.put(eob, 1);
 	}
 }
