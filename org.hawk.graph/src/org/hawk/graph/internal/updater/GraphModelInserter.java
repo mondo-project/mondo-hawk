@@ -77,10 +77,12 @@ public class GraphModelInserter {
 	private VcsCommitItem s;
 
 	private Map<String, IGraphNode> nodes = new HashMap<>();
+	private TypeCache typeCache;
 
-	public GraphModelInserter(IModelIndexer hawk) {
-		indexer = hawk;
-		graph = indexer.getGraph();
+	public GraphModelInserter(IModelIndexer hawk, TypeCache typeCache) {
+		this.indexer = hawk;
+		this.graph = indexer.getGraph();
+		this.typeCache = typeCache;
 	}
 
 	public boolean run(IHawkModelResource res, VcsCommitItem s, final boolean verbose) throws Exception {
@@ -89,7 +91,7 @@ public class GraphModelInserter {
 		}
 		this.resource = res;
 		this.s = s;
-		this.inj = new GraphModelBatchInjector(graph, this.s, indexer.getCompositeGraphChangeListener());
+		this.inj = new GraphModelBatchInjector(graph, typeCache, this.s, indexer.getCompositeGraphChangeListener());
 
 		final int delta = calculateModelDeltaSize();
 		if (delta != -1) {
@@ -582,7 +584,7 @@ public class GraphModelInserter {
 				}
 			}
 			graph.enterBatchMode();
-			new GraphModelBatchInjector(indexer, s, resource, listener);
+			new GraphModelBatchInjector(indexer, typeCache, s, resource, listener);
 			listener.changeSuccess();
 			return true;
 		} catch (Exception ex) {
@@ -683,7 +685,7 @@ public class GraphModelInserter {
 		}
 		boolean success = true;
 		if (resource != null) {
-			GraphModelBatchInjector batch = new GraphModelBatchInjector(indexer, s, resource,
+			GraphModelBatchInjector batch = new GraphModelBatchInjector(indexer, typeCache, s, resource,
 					indexer.getCompositeGraphChangeListener());
 			unset = batch.getUnset();
 			success = batch.getSuccess();
@@ -876,7 +878,7 @@ public class GraphModelInserter {
 								+ no.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 
 						if (nodeURI.equals(uri)) {
-							boolean change = new GraphModelBatchInjector(graph, null, listener).resolveProxyRef(n, no,
+							boolean change = new GraphModelBatchInjector(graph, typeCache, null, listener).resolveProxyRef(n, no,
 									edgeLabel, isContainment, isContainer);
 
 							if (!change) {
@@ -900,7 +902,7 @@ public class GraphModelInserter {
 						Iterator<IGraphNode> targetNodes = fragDictionary.get("id", fragment).iterator();
 						if (targetNodes.hasNext()) {
 							final IGraphNode no = targetNodes.next();
-							boolean change = new GraphModelBatchInjector(graph, null, listener).resolveProxyRef(n, no,
+							boolean change = new GraphModelBatchInjector(graph, typeCache, null, listener).resolveProxyRef(n, no,
 									edgeLabel, isContainment, isContainer);
 							if (change) {
 								resolved = true;

@@ -34,6 +34,7 @@ public class GraphModelUpdater implements IModelUpdater {
 
 	private IModelIndexer indexer;
 	private IConsole console;
+	private TypeCache typeCache = new TypeCache();
 
 	private boolean isActive = false;
 	public static final String FILEINDEX_REPO_SEPARATOR = "////";
@@ -92,7 +93,7 @@ public class GraphModelUpdater implements IModelUpdater {
 								+ "\nafter its resource failed to be loaded");
 						success = false;
 					}
-				} else if (!new GraphModelInserter(indexer).run(res, f, verbose)) {
+				} else if (!new GraphModelInserter(indexer, typeCache).run(res, f, verbose)) {
 					console.printerrln("warning: failed to update item: " + f
 							+ "\nmodel resource: " + res);
 					success = false;
@@ -133,7 +134,7 @@ public class GraphModelUpdater implements IModelUpdater {
 		try {
 			indexer.getCompositeStateListener().info(
 					"Resolving any leftover cross-file references...");
-			new GraphModelInserter(indexer).resolveProxies(indexer.getGraph());
+			new GraphModelInserter(indexer, typeCache).resolveProxies(indexer.getGraph());
 		} catch (Exception e) {
 			console.printerrln("Exception in updateStore - resolving proxies, returning 0:");
 			console.printerrln(e);
@@ -143,7 +144,7 @@ public class GraphModelUpdater implements IModelUpdater {
 		try {
 			indexer.getCompositeStateListener().info(
 					"Resolving any uninitialized derived attributes...");
-			new GraphModelInserter(indexer).resolveDerivedAttributeProxies(
+			new GraphModelInserter(indexer, typeCache).resolveDerivedAttributeProxies(
 					indexer.getGraph(), indexer,
 					indexer.getDerivedAttributeExecutionEngine());
 		} catch (Exception e) {
@@ -155,7 +156,7 @@ public class GraphModelUpdater implements IModelUpdater {
 		try {
 			indexer.getCompositeStateListener().info(
 					"Updating any affected derived attributes...");
-			new GraphModelInserter(indexer).updateDerivedAttributes(
+			new GraphModelInserter(indexer, typeCache).updateDerivedAttributes(
 					indexer.getDerivedAttributeExecutionEngine(), toBeUpdated);
 			toBeUpdated = new HashSet<>();
 		} catch (Exception e) {
@@ -166,6 +167,9 @@ public class GraphModelUpdater implements IModelUpdater {
 		long end = System.currentTimeMillis();
 		console.println((end - start) / 1000 + "s" + (end - start) % 1000
 				+ "ms [proxy update]");
+
+		// Clear the type cache by creating a new one and letting the old one be GC'ed
+		typeCache = new TypeCache();
 	}
 
 	public boolean isActive() {
@@ -263,7 +267,7 @@ public class GraphModelUpdater implements IModelUpdater {
 			String attributename, String attributetype, boolean isMany,
 			boolean isOrdered, boolean isUnique, String derivationlanguage,
 			String derivationlogic) {
-		new GraphModelInserter(indexer).updateDerivedAttribute(metamodeluri,
+		new GraphModelInserter(indexer, typeCache).updateDerivedAttribute(metamodeluri,
 				typename, attributename, attributetype, isMany, isOrdered,
 				isUnique, derivationlanguage, derivationlogic);
 	}
@@ -271,7 +275,7 @@ public class GraphModelUpdater implements IModelUpdater {
 	@Override
 	public void updateIndexedAttribute(String metamodeluri, String typename,
 			String attributename) {
-		new GraphModelInserter(indexer).updateIndexedAttribute(metamodeluri,
+		new GraphModelInserter(indexer, typeCache).updateIndexedAttribute(metamodeluri,
 				typename, attributename);
 	}
 

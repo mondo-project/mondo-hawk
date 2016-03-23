@@ -15,13 +15,11 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.hawk.core.IModelIndexer;
@@ -37,7 +35,6 @@ import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
-import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
@@ -70,7 +67,7 @@ public class GraphModelBatchInjector {
 
 	private final Map<IHawkObject, IGraphNode> hash = new HashMap<IHawkObject, IGraphNode>(8192);
 
-	IGraphNodeIndex epackageDictionary, fileDictionary, proxyDictionary, rootDictionary, fragmentIdx,
+	IGraphNodeIndex fileDictionary, proxyDictionary, rootDictionary, fragmentIdx,
 			derivedProxyDictionary;
 
 	long startTime;
@@ -105,7 +102,6 @@ public class GraphModelBatchInjector {
 	}
 
 	private void refreshIx() {
-		epackageDictionary = graph.getMetamodelIndex();
 		fileDictionary = graph.getFileIndex();
 		proxyDictionary = graph.getOrCreateNodeIndex(PROXY_DICT_NAME);
 		rootDictionary = graph.getOrCreateNodeIndex(ROOT_DICT_NAME);
@@ -113,8 +109,9 @@ public class GraphModelBatchInjector {
 		derivedProxyDictionary = graph.getOrCreateNodeIndex(DERIVED_PROXY_DICT_NAME);
 	}
 
-	public GraphModelBatchInjector(IGraphDatabase g, VcsCommitItem s, IGraphChangeListener listener) throws Exception {
+	public GraphModelBatchInjector(IGraphDatabase g, TypeCache typeCache, VcsCommitItem s, IGraphChangeListener listener) throws Exception {
 		this.graph = g;
+		this.typeCache = typeCache;
 		this.commitItem = s;
 		this.listener = listener;
 
@@ -127,10 +124,11 @@ public class GraphModelBatchInjector {
 		refreshIndexes();
 	}
 
-	public GraphModelBatchInjector(IModelIndexer hawk, VcsCommitItem s, IHawkModelResource r,
+	public GraphModelBatchInjector(IModelIndexer hawk, TypeCache typeCache, VcsCommitItem s, IHawkModelResource r,
 			IGraphChangeListener listener) throws Exception {
 		IGraphDatabase g = hawk.getGraph();
 		this.graph = g;
+		this.typeCache = typeCache;
 		this.commitItem = s;
 		this.listener = listener;
 
@@ -342,13 +340,8 @@ public class GraphModelBatchInjector {
 
 			for (final IHawkAttribute eAttribute : ((IHawkClass) eObject.getType()).getAllAttributes()) {
 				if (eObject.isSet(eAttribute)) {
-					Map<String, Object> hashedProperties = hashedEClassProperties.get(typenode);
-					String[] attributeProperties;
-					if (hashedProperties != null) {
-						attributeProperties = (String[]) hashedProperties.get(eAttribute.getName());
-					} else {
-						attributeProperties = (String[]) typenode.getProperty(eAttribute.getName());
-					}
+					final Map<String, Object> hashedProperties = typeCache.getEClassNodeProperties(graph, eObject.getType());
+					final String[] attributeProperties = (String[]) hashedProperties.get(eAttribute.getName());
 
 					final boolean isIndexed = attributeProperties[5].equals("t");
 					if (isIndexed) {
@@ -433,32 +426,17 @@ public class GraphModelBatchInjector {
 			}
 
 			// add derived attrs
-			Set<String> attributekeys;
-			Map<String, Object> hashed = hashedEClassProperties.get(typenode);
-			if (hashed == null) {
-				attributekeys = typenode.getPropertyKeys();
-				System.err.println("non-hashed type properties - will slow insert");
-			} else
-				attributekeys = hashed.keySet();
+			final Map<String, Object> hashed = typeCache.getEClassNodeProperties(graph, eObject.getType());
+			final Set<String> attributekeys = hashed.keySet();
 
 			for (String attributekey : attributekeys) {
-
-				Object attr = hashed == null ? typenode.getProperty(attributekey) : hashed.get(attributekey);
+				final Object attr = hashed.get(attributekey);
 
 				if (attr instanceof String[]) {
 
 					String[] metadata = (String[]) attr;
 
 					if (metadata[0].equals("d")) {
-
-						// metadata[0] = "d";
-						// metadata[1] = (isMany ? "t" : "f");
-						// metadata[2] = (isOrdered ? "t" : "f");
-						// metadata[3] = (isUnique ? "t" : "f");
-						// metadata[4] = attributetype;
-						// metadata[5] = derivationlanguage;
-						// metadata[6] = derivationlogic;
-
 						m.clear();
 						m.put("isMany", metadata[1]);
 						m.put("isOrdered", metadata[2]);
@@ -474,7 +452,6 @@ public class GraphModelBatchInjector {
 						m.put("isDerived", true);
 
 						graph.createRelationship(node, derivedattributenode, attributekey, m);
-
 						addToProxyAttributes(derivedattributenode);
 
 					}
@@ -564,72 +541,8 @@ public class GraphModelBatchInjector {
 
 	}
 
-	private Hashtable<IHawkClass, IGraphNode> hashedEClasses = new Hashtable<>();
-	private Hashtable<IGraphNode, Hashtable<String, Object>> hashedEClassProperties = new Hashtable<>();
+	private final TypeCache typeCache;
 	private boolean successState = true;
-
-	/**
-	 * 
-	 * @param eClass
-	 * @return the ORID of the eClass
-	 * @throws Exception
-	 */
-	private IGraphNode getEClassNode(IHawkClassifier e) throws Exception {
-
-		IHawkClass eClass = null;
-
-		if (e instanceof IHawkClass)
-			eClass = ((IHawkClass) e);
-		else
-			System.err.println("getEClassNode called on a non-class classifier:\n" + e);
-
-		IGraphNode classnode = hashedEClasses.get(eClass);
-
-		if (classnode == null) {
-
-			final String packageNSURI = eClass.getPackageNSURI();
-			IGraphNode epackagenode = null;
-			try {
-				epackagenode = epackageDictionary.get("id", packageNSURI).getSingle();
-			} catch (NoSuchElementException ex) {
-				throw new Exception("Metamodel " + packageNSURI
-						+ " does not have a Node associated with it in the store, please make sure it has been inserted");
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-
-			for (IGraphEdge r : epackagenode.getEdges()) {
-
-				IGraphNode othernode = r.getStartNode();
-
-				if (!othernode.equals(epackagenode)
-						&& othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(eClass.getName())) {
-					classnode = othernode;
-					break;
-				}
-			}
-
-			if (classnode != null)
-				hashedEClasses.put(eClass, classnode);
-			else {
-				throw new Exception("eClass: " + eClass.getName() + "(" + eClass.getUri()
-						+ ") does not have a Node associated with it in the store, please make sure the relevant metamodel has been inserted");
-
-			}
-
-			// typeCache properties
-			Hashtable<String, Object> properties = new Hashtable<>();
-			for (String s : classnode.getPropertyKeys()) {
-				Object prop = classnode.getProperty(s);
-				if (prop instanceof String[])
-					properties.put(s, prop);
-			}
-			hashedEClassProperties.put(classnode, properties);
-		}
-
-		return classnode;
-
-	}
 
 	/**
 	 * Creates a node with the eObject, adds it to the hash and adds it the the
@@ -646,7 +559,7 @@ public class GraphModelBatchInjector {
 
 		refreshIndexes();
 
-		IGraphNode eClass = getEClassNode(eObject.getType());
+		IGraphNode eClass = typeCache.getEClassNode(graph, eObject.getType());
 
 		IGraphNode node = null;
 
@@ -698,7 +611,7 @@ public class GraphModelBatchInjector {
 				// use metamodel to infer all supertypes for fast search and log
 				// em
 				for (IHawkClass superType : ((IHawkClass) eObject.getType()).getSuperTypes()) {
-					eClass = getEClassNode(superType);
+					eClass = typeCache.getEClassNode(graph, superType);
 					createReference(ModelElementNode.EDGE_LABEL_OFKIND, node, eClass, emptyMap, true);
 					objectCount[2]++;
 				}
