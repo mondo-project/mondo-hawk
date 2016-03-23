@@ -252,8 +252,8 @@ public class HModel implements IStateListener {
 			console.println("adding graph change listeners:");
 			for (IConfigurationElement listener : manager.getGraphChangeListeners()) {
 				IGraphChangeListener l = (IGraphChangeListener) listener.createExecutableExtension(HManager.GCHANGEL_CLASS_ATTRIBUTE);
-				l.setModelIndexer(this.hawk.getModelIndexer());
 				if (enabledPlugins == null || enabledPlugins.contains(l.getClass().getName())) {
+					l.setModelIndexer(this.hawk.getModelIndexer());
 					this.hawk.getModelIndexer().addGraphChangeListener(l);
 					console.println(l.getName());
 				}
