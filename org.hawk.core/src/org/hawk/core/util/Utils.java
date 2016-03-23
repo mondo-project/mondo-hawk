@@ -48,7 +48,7 @@ public class Utils {
 
 		// object arrays
 		if (source instanceof Object[])
-			return Arrays.asList((Object) source);
+			return Arrays.asList((Object[]) source);
 
 		List<Object> ret = new LinkedList<>();
 		// primitive arrays
