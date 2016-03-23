@@ -197,6 +197,18 @@ public class ModelElementNode {
 		return true;
 	}
 
+	/**
+	 * Returns <code>true</code> if this model element is the root of the
+	 * {@link FileNode} it is part of. Note that a root model element might be
+	 * still contained within another model element in a different file node.
+	 *
+	 * TODO: check into why some non-root model elements in Modelio do not have
+	 * a container.
+	 */
+	public boolean isRoot() {
+		return getFileNode().isRoot(this);
+	}
+
 	public ModelElementNode getContainer() {
 		for (IGraphEdge edge : node.getOutgoing()) {
 			if (edge.getProperty(EDGE_PROPERTY_CONTAINER) != null) {

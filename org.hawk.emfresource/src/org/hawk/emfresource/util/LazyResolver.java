@@ -25,6 +25,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.BasicInternalEList;
 import org.hawk.emfresource.HawkResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,12 +54,12 @@ public class LazyResolver {
 
 	private final HawkResource resource;
 
-	private final class DirtyObjectMarkingEList<T> extends BasicEList<T> {
+	private final class DirtyObjectMarkingEList<T> extends BasicInternalEList<T> {
 		private static final long serialVersionUID = 1L;
 		private final EObject eob;
 
 		private DirtyObjectMarkingEList(Collection<T> collection, EObject source) {
-			super(collection);
+			super(Object.class, collection);
 			this.eob = source;
 		}
 
@@ -80,7 +81,7 @@ public class LazyResolver {
 			this.backingEList = pending;
 		}
 
-		public EList<Object> get(EObject object, EReference feature, Map<EReference, LazyEListWrapper> pending, boolean greedyReferences, boolean mustFetchAttributes) {
+		public Object get(EObject object, EReference feature, Map<EReference, LazyEListWrapper> pending, boolean greedyReferences, boolean mustFetchAttributes) {
 			if (isPending) {
 				try {
 					resolvePendingReference(object, feature, pending, backingEList, greedyReferences, mustFetchAttributes);
@@ -89,7 +90,13 @@ public class LazyResolver {
 					return new BasicEList<>();
 				}
 			}
-			return backingEList;
+			if (feature.isMany()) {
+				return backingEList;
+			} else if (!backingEList.isEmpty()) {
+				return backingEList.get(0);
+			} else {
+				return null;
+			}
 		}
 
 		public boolean add(Object value) {

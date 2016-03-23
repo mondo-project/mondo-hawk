@@ -73,6 +73,17 @@ public class FileNode {
 		};
 	}
 
+	/**
+	 * Returns <code>true</code> if the model element is the root of this file node.
+	 */
+	public boolean isRoot(ModelElementNode men) {
+		for (ModelElementNode root : getRootModelElements()) {
+			if (root.getNodeId().equals(men.getNodeId())) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public Iterable<ModelElementNode> getRootModelElements() {
 		final IGraphNodeIndex rootDictionary = node.getGraph()

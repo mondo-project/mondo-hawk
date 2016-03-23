@@ -168,4 +168,10 @@ public class ModelioObject extends AbstractModelioObject {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "ModelioObject [mc=" + mc.getName() + ", exml=" + getExml() + ", uid=" + exml.getUID() + ", pid=" + exml.getParentUID() + "]";
+	}
+
 }

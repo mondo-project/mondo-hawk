@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.hawk.core.model.IHawkModelResource;
@@ -79,8 +80,12 @@ public class ModelioModelResource implements IHawkModelResource {
 			LOGGER.warn("Could not find class '{}', skipping", exml.getMClassName());
 		} else {
 			contents.add(new ModelioObject(mc, exml));
-			for (List<ExmlReference> composition : exml.getCompositions().values()) {
-				for (ExmlReference r : composition) {
+			for (Entry<String, List<ExmlReference>> composition : exml.getCompositions().entrySet()) {
+				if (mc.getStructuralFeature(composition.getKey()) == null) {
+					LOGGER.warn("Unknown feature '{}', skipping", composition.getKey());
+					continue;
+				}
+				for (ExmlReference r : composition.getValue()) {
 					if (r instanceof ExmlObject) {
 						addObjectToContents((ExmlObject) r);
 					}

@@ -120,7 +120,6 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 					Object value;
 					synchronized(nodeIdToEObjectCache) {
 						value = lazyResolver.resolve(eob, sf, false, true);
-						System.out.println("Value of " + sf + ": " + value);
 					}
 
 					/*
@@ -728,11 +727,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 				if (ref.isDerived() || !ref.isChangeable()) continue;
 
 				if (!referenceValues.containsKey(ref.getName())) {
-					if (lazyResolver.isLazy(existing, ref)) {
-						lazyResolver.removeLazyReference(existing, ref);
-					} else if (existing.eIsSet(ref)) {
-						existing.eUnset(ref);
-					}
+					lazyResolver.removeLazyReference(existing, ref);
 				}
 			}
 		}
@@ -740,54 +735,24 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			final EReference ref = (EReference) eClass.getEStructuralFeature(entry.getKey());
 			if (ref.isDerived() || !ref.isChangeable()) continue;
 
-			// If this reference was resolved before, it needs to stay resolved.
-			final boolean existingNonLazy = existing != null
-					&& !lazyResolver.isLazy(existing, ref)
-					&& existing.eIsSet(ref);
-
-			final EList<Object> referenced = new BasicEList<>();
-			boolean hasLazy = false;
+			final EList<Object> ids = new BasicEList<>();
 			if (entry.getValue() instanceof Collection) {
 				for (Object o : (Collection<?>)entry.getValue()) {
 					final String id = o.toString();
-					hasLazy = addToReferenced(id, referenced, existingNonLazy) || hasLazy;
+					ids.add(id);
 				}
 			} else {
 				final String id = entry.getValue().toString();
-				hasLazy = addToReferenced(id, referenced, existingNonLazy) || hasLazy;
+				ids.add(id);
 			}
 
-			if (hasLazy) {
-				lazyResolver.putLazyReference(eob, ref, referenced);
-			} else if (ref.isMany()) {
-				eob.eSet(ref, referenced);
-			} else if (!referenced.isEmpty()) {
-				eob.eSet(ref, referenced.get(0));
-			}
+			lazyResolver.putLazyReference(eob, ref, ids);
 		}
 
 		if (existing == null) {
 			addToResource(me, eob);
 		}
 		return eob;
-	}
-
-	private boolean addToReferenced(final String id, final EList<Object> referenced, final boolean resolveMissing) throws Exception {
-		EObject refExisting = nodeIdToEObjectCache.getIfPresent(id);
-		if (refExisting == null && resolveMissing) {
-			EList<EObject> refExistingResolved = fetchNodes(Arrays.asList(id), false);
-			if (!refExistingResolved.isEmpty()) {
-				refExisting = refExistingResolved.get(0);
-			}
-		}
-
-		if (refExisting != null) {
-			referenced.add(refExisting);
-			return false;
-		} else {
-			referenced.add(id);
-			return true;
-		}
 	}
 
 	private void addToResource(final ModelElementNode modelElementNode, final EObject eob) {
@@ -810,19 +775,22 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 					uriToResource.put(fullURL, resource);
 					uriToFileNode.put(fullURL, fileNode);
 				}
-				if (eob.eContainer() == null) {
+
+				if (modelElementNode.getContainer() == null) {
 					resource.getContents().add(eob);
 				}
 				resource.addFragment(modelElementNode.getNodeId(), modelElementNode.getElementId());
 			}
 		} else {
-			getContents().add(eob);
+			if (modelElementNode.getContainer() == null) {
+				getContents().add(eob);
+			}
 		}
 	}
 
 	private void removeRedundantRoot(EObject child) {
 		final Resource r = child.eResource();
-		if (r != null && child.eContainer() != null && child.eResource() == child.eContainer().eResource()) {
+		if (r != null && child.eContainer() != null && child.eResource() == child.eContainer().eResource() && child.eResource().getContents().contains(child)) {
 			// We only remove when it won't affect the results of the child.eResource() call
 			// (it's contained within something that is in the same resource).
 			r.getContents().remove(child);
