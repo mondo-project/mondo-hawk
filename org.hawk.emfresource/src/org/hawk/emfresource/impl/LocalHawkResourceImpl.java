@@ -776,21 +776,21 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 					uriToFileNode.put(fullURL, fileNode);
 				}
 
-				if (modelElementNode.getContainer() == null) {
+				if (eob.eContainer() == null) {
 					resource.getContents().add(eob);
 				}
 				resource.addFragment(modelElementNode.getNodeId(), modelElementNode.getElementId());
 			}
 		} else {
-			if (modelElementNode.getContainer() == null) {
-				getContents().add(eob);
-			}
+			getContents().add(eob);
 		}
 	}
 
 	private void removeRedundantRoot(EObject child) {
 		final Resource r = child.eResource();
-		if (r != null && child.eContainer() != null && child.eResource() == child.eContainer().eResource() && child.eResource().getContents().contains(child)) {
+
+		final EObject eContainer = child.eContainer();
+		if (r != null && eContainer != null && r == eContainer.eResource() && r.getContents().contains(child)) {
 			// We only remove when it won't affect the results of the child.eResource() call
 			// (it's contained within something that is in the same resource).
 			r.getContents().remove(child);
