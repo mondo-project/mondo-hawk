@@ -818,6 +818,10 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	@Override
 	public AccessListener calculateDerivedAttributes(IModelIndexer m, Iterable<IGraphNode> nodes) {
 
+		boolean enableDebug = false;
+		int count = 0;
+		long time = System.currentTimeMillis();
+
 		indexer = m;
 		graph = m.getGraph();
 
@@ -838,9 +842,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		}
 
 		// listen to accesses
-		GraphPropertyGetter pg = (GraphPropertyGetter) getPropertyGetter();
-		pg.setBroadcastAccess(true);
-
+		GraphPropertyGetter pg = null;
+		if (!enableDebug) {
+			pg = (GraphPropertyGetter) getPropertyGetter();
+			pg.setBroadcastAccess(true);
+		}
 		//
 		// init eol stuff
 		//
@@ -915,6 +921,16 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 				IGraphNodeIndex derivedProxyDictionary = graph.getOrCreateNodeIndex("derivedproxydictionary");
 				derivedProxyDictionary.remove(n);
 
+				if (enableDebug) {
+					count++;
+					if (count % 10 == 0) {
+						time = System.currentTimeMillis() - time;
+						System.err.println(
+								count + " derivations complete, took ~ " + time / 1000 + "s " + time % 1000 + "ms");
+						time = System.currentTimeMillis();
+					}
+				}
+
 			}
 
 			// allUnresolved = derivedProxyDictionary.query("derived", "*");
@@ -931,9 +947,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			e.printStackTrace();
 		}
 
-		pg.setBroadcastAccess(false);
-
-		return pg.getAccessListener();
+		if (!enableDebug) {
+			pg.setBroadcastAccess(false);
+			return pg.getAccessListener();
+		}
+		return null;
 	}
 
 	@Override

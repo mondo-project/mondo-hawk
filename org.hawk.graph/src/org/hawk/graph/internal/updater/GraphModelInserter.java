@@ -878,8 +878,8 @@ public class GraphModelInserter {
 								+ no.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 
 						if (nodeURI.equals(uri)) {
-							boolean change = new GraphModelBatchInjector(graph, typeCache, null, listener).resolveProxyRef(n, no,
-									edgeLabel, isContainment, isContainer);
+							boolean change = new GraphModelBatchInjector(graph, typeCache, null, listener)
+									.resolveProxyRef(n, no, edgeLabel, isContainment, isContainer);
 
 							if (!change) {
 								// System.err.println("resolving
@@ -902,8 +902,8 @@ public class GraphModelInserter {
 						Iterator<IGraphNode> targetNodes = fragDictionary.get("id", fragment).iterator();
 						if (targetNodes.hasNext()) {
 							final IGraphNode no = targetNodes.next();
-							boolean change = new GraphModelBatchInjector(graph, typeCache, null, listener).resolveProxyRef(n, no,
-									edgeLabel, isContainment, isContainer);
+							boolean change = new GraphModelBatchInjector(graph, typeCache, null, listener)
+									.resolveProxyRef(n, no, edgeLabel, isContainment, isContainer);
 							if (change) {
 								resolved = true;
 								listener.referenceAddition(this.s, n, no, edgeLabel, false);
@@ -1084,6 +1084,10 @@ public class GraphModelInserter {
 	public void updateDerivedAttribute(String metamodeluri, String typename, String attributename, String attributetype,
 			boolean isMany, boolean isOrdered, boolean isUnique, String derivationlanguage, String derivationlogic) {
 
+		boolean enableDebug = false;
+		long time = System.currentTimeMillis();
+		System.err.println("creating/updating derived attribute...");
+
 		HashSet<IGraphNode> derivedPropertyNodes = new HashSet<>();
 
 		IAccessListener accessListener;
@@ -1106,7 +1110,7 @@ public class GraphModelInserter {
 			for (IGraphEdge e : typeNode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)) {
 				nodes.add(e.getStartNode());
 			}
-			for (IGraphEdge e : typeNode.getIncomingWithType("KindOf")) {
+			for (IGraphEdge e : typeNode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFKIND)) {
 				nodes.add(e.getStartNode());
 			}
 
@@ -1149,6 +1153,10 @@ public class GraphModelInserter {
 
 			}
 
+			if (enableDebug)
+				System.err.println(derivedPropertyNodes.size()
+						+ " instances found.\ncalculating derived attribute for instances...");
+
 			// derive the new property
 			IQueryEngine q = indexer.getKnownQueryLanguages().get(derivationlanguage);
 			accessListener = q.calculateDerivedAttributes(indexer, derivedPropertyNodes);
@@ -1159,48 +1167,74 @@ public class GraphModelInserter {
 			return;
 		}
 
+		if (enableDebug)
+			System.err.println("updating derived access indexes...");
+
 		// Derive the new property (need to break up the transaction into
 		// chunks, as Neo4j cannot modify
 		// more than 65,535 Lucene indexes in the same transaction).
 		final int BATCH_SIZE = 50_000;
-		final Set<IAccess> accesses = accessListener.getAccesses();
+		final Set<IAccess> accesses = accessListener == null ? null : accessListener.getAccesses();
+		int iterations = 0;
 
-		for (Iterator<IAccess> itAccess = accesses.iterator(); itAccess.hasNext();) {
-			try (IGraphTransaction tx = graph.beginTransaction()) {
-				final IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex("derivedaccessdictionary");
+		if (enableDebug)
+			System.err.println("removing previous accesses...");
 
-				for (int i = 0; i < BATCH_SIZE && itAccess.hasNext(); i++) {
-					final IAccess a = itAccess.next();
-					final IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
-					if (sourceNode != null) {
-						derivedAccessDictionary.remove(sourceNode);
+		if (accesses != null)
+			for (Iterator<IAccess> itAccess = accesses.iterator(); itAccess.hasNext();) {
+				try (IGraphTransaction tx = graph.beginTransaction()) {
+					final IGraphNodeIndex derivedAccessDictionary = graph
+							.getOrCreateNodeIndex("derivedaccessdictionary");
+
+					for (int i = 0; i < BATCH_SIZE && itAccess.hasNext(); i++) {
+						final IAccess a = itAccess.next();
+						final IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
+						if (sourceNode != null) {
+							derivedAccessDictionary.remove(sourceNode);
+						}
 					}
+
+					tx.success();
+				} catch (Exception e) {
+					e.printStackTrace();
+					return;
 				}
-
-				tx.success();
-			} catch (Exception e) {
-				e.printStackTrace();
-				return;
+				if (enableDebug) {
+					iterations++;
+					System.err
+							.println(iterations + " index update [removal] iterations (up to 50k updates) performed.");
+				}
 			}
-		}
 
-		for (Iterator<IAccess> itAccess = accesses.iterator(); itAccess.hasNext();) {
-			try (IGraphTransaction tx = graph.beginTransaction()) {
-				final IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex("derivedaccessdictionary");
+		System.err.println("adding new accesses...");
+		iterations = 0;
 
-				for (int i = 0; i < BATCH_SIZE && itAccess.hasNext(); i++) {
-					final IAccess a = itAccess.next();
-					final IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
-					if (sourceNode != null) {
-						derivedAccessDictionary.add(sourceNode, a.getAccessObjectID(), a.getProperty());
+		if (accesses != null)
+			for (Iterator<IAccess> itAccess = accesses.iterator(); itAccess.hasNext();) {
+				try (IGraphTransaction tx = graph.beginTransaction()) {
+					final IGraphNodeIndex derivedAccessDictionary = graph
+							.getOrCreateNodeIndex("derivedaccessdictionary");
+
+					for (int i = 0; i < BATCH_SIZE && itAccess.hasNext(); i++) {
+						final IAccess a = itAccess.next();
+						final IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
+						if (sourceNode != null) {
+							derivedAccessDictionary.add(sourceNode, a.getAccessObjectID(), a.getProperty());
+						}
 					}
-				}
 
-				tx.success();
-			} catch (Exception e) {
-				e.printStackTrace();
+					tx.success();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				if (enableDebug) {
+					iterations++;
+					System.err
+							.println(iterations + " index update [addition] iterations (up to 50k updates) performed.");
+				}
 			}
-		}
+		time = System.currentTimeMillis() - time;
+		System.err.println("took ~" + time / 1000 + "s" + time % 1000 + "ms");
 	}
 
 	public void updateIndexedAttribute(String metamodeluri, String typename, String attributename) {
@@ -1242,7 +1276,7 @@ public class GraphModelInserter {
 			for (IGraphEdge e : typeNode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)) {
 				nodes.add(e.getStartNode());
 			}
-			for (IGraphEdge e : typeNode.getIncomingWithType("KindOf")) {
+			for (IGraphEdge e : typeNode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFKIND)) {
 				nodes.add(e.getStartNode());
 			}
 

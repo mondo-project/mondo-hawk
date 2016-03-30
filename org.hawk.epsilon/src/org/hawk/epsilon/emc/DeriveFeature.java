@@ -50,7 +50,8 @@ public class DeriveFeature {
 			if (!cachedModules.containsKey(actualEOLScript)) {
 				// if (cashedModules == null) {
 				// bodyDeclarations.exists(md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public=='true'))
-				System.err.println("adding new module to cache, key:" + actualEOLScript);
+				System.err.println("adding new module to cache, key:" + (actualEOLScript.length() > 100
+						? actualEOLScript.substring(0, 100) + "\n[! long script, snipped !]" : actualEOLScript));
 				currentModule = initModule(indexer, containerModel);
 
 				currentModule.parse(actualEOLScript);
@@ -89,10 +90,11 @@ public class DeriveFeature {
 				ret = currentModule.execute();
 
 			} catch (Exception e) {
-				System.err.println("----------------\nerror in derive feature on: " + n + "\n" + n.getPropertyKeys()
-						+ "\n" + containerModel + "\n" + EOLScript
+				System.err.println("----------------\nerror in derive feature on: " + n.getId()
+				// + "\n" + n.getPropertyKeys()
+				// + "\n" + containerModel + "\n" + EOLScript
 						+ "\n------------\nreturning \"DERIVATION_EXECUTION_ERROR\" as value\n");
-				e.printStackTrace();
+				// e.printStackTrace();
 				return "DERIVATION_EXECUTION_ERROR";
 			}
 
