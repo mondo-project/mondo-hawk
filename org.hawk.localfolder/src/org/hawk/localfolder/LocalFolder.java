@@ -115,10 +115,20 @@ public class LocalFolder implements IVcsManager {
 			path = Paths.get(vcsloc);
 		}
 
-		rootLocation = path.toFile().getCanonicalFile().toPath();
+		final File canonicalFile = path.toFile().getCanonicalFile();
+		rootLocation = canonicalFile.toPath();
 		String repositoryURI = rootLocation.toUri().toString();
 
-		repositoryURL = repositoryURI;
+		// If the file doesn't exist, it might be because this is a local folder in
+		// a remote server - try to preserve the provided vcsloc as is. Otherwise,
+		// if the server and the client use different operating systems we could end
+		// up with an unusable URL in the server.
+		if (canonicalFile.exists()) {
+			repositoryURL = repositoryURI;
+		} else {
+			repositoryURL = vcsloc;
+		}
+
 		// dont decode it to ensure consistency with other managers
 		// URLDecoder.decode(repositoryURI.replace("+", "%2B"), "UTF-8");
 	}
