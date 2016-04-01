@@ -310,8 +310,11 @@ public class HManager {
 		List<String> all = new ArrayList<String>();
 		all.addAll(getMetaModelTypes());
 		all.addAll(getModelTypes());
-		all.addAll(getLanguageTypes());
-		all.addAll(getUpdaterTypes());
+
+		// So far we only have one choice for each, and it doesn't make sense to enable/disable them
+		//		all.addAll(getLanguageTypes());
+		//		all.addAll(getUpdaterTypes());
+
 		all.addAll(getGraphChangeListenerTypes());
 		Collections.sort(all);
 		return all;

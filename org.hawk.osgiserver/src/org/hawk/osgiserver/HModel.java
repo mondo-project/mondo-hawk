@@ -236,18 +236,20 @@ public class HModel implements IStateListener {
 			console.println("adding query engines:");
 			for (IConfigurationElement ql : manager.getLanguages()) {
 				IQueryEngine q = (IQueryEngine) ql.createExecutableExtension(HManager.QUERYLANG_CLASS_ATTRIBUTE);
-				if (enabledPlugins == null || enabledPlugins.contains(q.getClass().getName())) {
+				// So far we only have one choice (EOL) and it doesn't make sense to disable it - see HManager#getAvailablePlugins()
+//				if (enabledPlugins == null || enabledPlugins.contains(q.getClass().getName())) {
 					this.hawk.getModelIndexer().addQueryEngine(q);
 					console.println(q.getType());
-				}
+//				}
 			}
 			console.println("adding model updaters:");
 			for (IConfigurationElement updater : manager.getUps()) {
 				IModelUpdater u = (IModelUpdater) updater.createExecutableExtension(HManager.MUPDATER_CLASS_ATTRIBUTE);
-				if (enabledPlugins == null || enabledPlugins.contains(u.getClass().getName())) {
+				// So far we only have one choice (graph updater) and it doesn't make sense to disable it - see HManager#getAvailablePlugins()
+//				if (enabledPlugins == null || enabledPlugins.contains(u.getClass().getName())) {
 					this.hawk.getModelIndexer().addModelUpdater(u);
 					console.println(u.getName());
-				}
+//				}
 			}
 			console.println("adding graph change listeners:");
 			for (IConfigurationElement listener : manager.getGraphChangeListeners()) {
