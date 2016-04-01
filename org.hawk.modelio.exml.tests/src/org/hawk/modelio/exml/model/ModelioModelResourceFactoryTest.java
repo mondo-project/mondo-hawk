@@ -4,30 +4,33 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
+import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
+import org.hawk.core.model.IHawkReference;
 import org.junit.Test;
 
 public class ModelioModelResourceFactoryTest {
 
 	private static final String RAMC_PATH = "resources/jenkins/jenkins_1.540.0.ramc";
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void ramc() throws Exception {
 		ModelioModelResourceFactory factory = new ModelioModelResourceFactory();
 		IHawkModelResource resource = factory.parse(new File(RAMC_PATH));
 
 		final Map<String, IHawkObject> elements = new HashMap<>();
-		//final Set<String> rootOrContained = new HashSet<>();
+		final Set<String> rootOrContained = new HashSet<>();
 		for (IHawkObject o : resource.getAllContentsSet()) {
 			if (elements.put(o.getUriFragment(), o) != null) {
 				fail("Fragment " + o.getUriFragment() + " is repeated in the resource!");
 			}
 
-			// TODO: need to ask Antonin about dangling Association and AssociationEnds
-			/*
 			if (o.isRoot()) {
 				rootOrContained.add(o.getUriFragment());
 			}
@@ -47,10 +50,8 @@ public class ModelioModelResourceFactoryTest {
 					}
 				}
 			}
-			*/
 		}
 
-		/*
 		HashSet<String> unreachable = new HashSet<>(elements.keySet());
 		unreachable.removeAll(rootOrContained);
 		if (!unreachable.isEmpty()) {
@@ -60,6 +61,5 @@ public class ModelioModelResourceFactoryTest {
 			}
 			fail("There should be no unreachable objects from the roots");
 		}
-		*/
 	}
 }

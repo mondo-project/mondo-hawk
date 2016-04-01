@@ -103,6 +103,14 @@ public class ModelioObject extends AbstractModelioObject {
 	public Object get(IHawkReference ref, boolean b) {
 		final List<IHawkObject> linked = new ArrayList<>();
 
+		if (ref.getName().equals(ModelioClass.REF_PARENT)) {
+			ExmlReference parentRef = new ExmlReference(exml.getFile());
+			parentRef.setName(ModelioClass.REF_PARENT);
+			parentRef.setMClassName(ModelioClass.REF_PARENT_MCLASS);
+			parentRef.setUID(exml.getParentUID());
+			return new ModelioProxy((ModelioClass) ref.getType(), parentRef);
+		}
+
 		final ModelioMetaModelResource metamodel = mc.getPackage().getResource();
 		final List<ExmlReference> links = exml.getLinks().get(ref.getName());
 		if (links != null) {

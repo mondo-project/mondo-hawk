@@ -1,6 +1,7 @@
 package org.hawk.modelio.exml.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -10,6 +11,7 @@ import java.util.Map;
 import org.hawk.modelio.exml.metamodel.ModelioAttribute;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
+import org.hawk.modelio.exml.metamodel.ModelioReference;
 import org.hawk.modelio.exml.parser.ExmlObject;
 import org.hawk.modelio.exml.parser.ExmlParser;
 import org.junit.Test;
@@ -33,6 +35,10 @@ public class ModelioObjectTest {
 			final Map<String, ModelioAttribute> attrs = mC.getAttributes();
 			assertTrue(((String)mO.get(attrs.get("UiData"))).startsWith("eJztXWtz27"));
 			assertEquals(88, mO.get(attrs.get("UiDataVersion")));
+
+			ModelioProxy value = (ModelioProxy) mO.get((ModelioReference) mC.getStructuralFeature(ModelioClass.REF_PARENT), false);
+			assertNotNull("Parent should be a ModelioProxy", value);
+			assertEquals("Parent ModelioProxy should point to the right object", "ea878bd2-7ef9-4ce1-a11e-35fa129981bb", value.getUriFragment());
 		}
 	}
 }

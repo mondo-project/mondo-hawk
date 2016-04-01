@@ -12,6 +12,20 @@ public class ModelioReference extends AbstractModelioObject implements IHawkRefe
 	private final ModelioClass mClass;
 	private final MDependency mDependency;
 
+	/**
+	 * Creates a new reference.
+	 * 
+	 * @param mc
+	 *            Modelio class containing the reference.
+	 * @param mdep
+	 *            Modelio dependency from the metamodel library.
+	 * @param forcedContainer
+	 *            If not <code>null</code>, {@link #isContainer()} uses this
+	 *            value instead of going to the {@link MDependency}.
+	 * @param forcedContainment
+	 *            If not <code>null</code>, {@link #isContainment()} uses this
+	 *            value instead of going to the {@link MDependency}.
+	 */
 	public ModelioReference(ModelioClass mc, MDependency mdep) {
 		this.mClass = mc;
 		this.mDependency = mdep;

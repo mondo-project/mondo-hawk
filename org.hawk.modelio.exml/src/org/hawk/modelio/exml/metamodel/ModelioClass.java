@@ -29,7 +29,22 @@ import org.slf4j.LoggerFactory;
 
 public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 
+	/**
+	 * Name of the synthetic reference that Hawk uses to represent Modelio
+	 * OID->PID containment. Needed since Modelio containment is sometimes
+	 * instance-dependent (which EMF does not like). Antonin mentioned this in
+	 * regards to Association and AssociationEnd objects.
+	 */
+	public static final String REF_PARENT = "hawkParent"; 
+
+	/**
+	 * MClass that represents the type of the synthetic {@link #REF_PARENT}
+	 * reference.
+	 */
+	public static final String REF_PARENT_MCLASS = "Element";
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioClass.class);
+
 
 	protected final ModelioPackage mPackage;
 	protected final MClass rawClass;
@@ -144,8 +159,14 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 
 	private void addReferences(final MClass mc) {
 		for (MDependency mdep : mc.getMDependencys()) {
-			refs.put(mdep.getName(), new ModelioReference(this, mdep));
+			refs.put(mdep.getName(), new IgnoreContainmentModelioReference(this, mdep));
 		}
+
+		// Add synthetic containment reference
+		MClass refTypeClass = mPackage.getResource().getModelioClass(REF_PARENT_MCLASS).rawClass;
+		MDependency mContainmentDep = new MDependency("HP", REF_PARENT, "hawk.exml", refTypeClass, false, false, true, false);
+		refs.put(mContainmentDep.getName(), new AlwaysContainerModelioReference(this, mContainmentDep));
+
 		for (MClass mcSuper : mc.getMSuperType()) {
 			addReferences(mcSuper);
 		}

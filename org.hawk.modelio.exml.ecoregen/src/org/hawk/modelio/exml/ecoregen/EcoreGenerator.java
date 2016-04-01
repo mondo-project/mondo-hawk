@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
+import org.hawk.modelio.exml.metamodel.ModelioClass;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
 import org.hawk.modelio.exml.metamodel.ModelioPackage;
 import org.modelio.metamodel.MAttribute;
@@ -70,7 +71,7 @@ public class EcoreGenerator {
 	public static void main(String[] args) {
 		try {
 			final EcoreGenerator generator = new EcoreGenerator();
-			final File f = new File("model/modelio.ecore");
+			final File f = new File("model/modelio-v2.ecore");
 			final Resource r = generator.generate(f);
 			System.out.println("plugin.xml fragment:\n\n" + generator.generatePluginXml(r));
 		} catch (Exception e) {
@@ -168,7 +169,7 @@ public class EcoreGenerator {
 				eref.setUnique(mdep.getIsUnique());
 				eref.setUpperBound(mdep.getIsMany() ? EReference.UNBOUNDED_MULTIPLICITY : 1);
 				eref.setEType(targetEClass);
-				eref.setContainment(mdep.getisComposition());
+				eref.setContainment(false);
 				ec.getEStructuralFeatures().add(eref);
 			}
 		}
