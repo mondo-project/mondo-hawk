@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.hawk.modelio.exml.metamodel;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -21,6 +20,7 @@ import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
+import org.hawk.modelio.exml.listeners.ModelioGraphChangeListener;
 import org.modelio.metamodel.MAttribute;
 import org.modelio.metamodel.MClass;
 import org.modelio.metamodel.MDependency;
@@ -36,6 +36,13 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 	 * regards to Association and AssociationEnd objects.
 	 */
 	public static final String REF_PARENT = "hawkParent"; 
+
+	/**
+	 * Name of the synthetic derived containment reference that is added to make
+	 * the Modelio graph compatible with EMF. See
+	 * {@link ModelioGraphChangeListener} for details.
+	 */
+	public static final String REF_CHILDREN = "hawkChildren";
 
 	/**
 	 * MClass that represents the type of the synthetic {@link #REF_PARENT}
@@ -152,24 +159,24 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 	public Map<String, ModelioReference> getReferences() {
 		if (refs == null) {
 			refs = new HashMap<>();
-			addReferences(rawClass);
+			for (MDependency mdep : rawClass.getMDependencys()) {
+				refs.put(mdep.getName(), new IgnoreContainmentModelioReference(this, mdep));
+			}
+
+			if (rawClass.getMSuperType().isEmpty()) {
+				// Add synthetic container/containment references to root Modelio classes
+				MClass refTypeClass = mPackage.getResource().getModelioClass(REF_PARENT_MCLASS).rawClass;
+				MDependency mContainmentDep = new MDependency("HP", REF_PARENT, "hawk.exml", refTypeClass, false, false, true, false);
+				refs.put(mContainmentDep.getName(), new AlwaysContainerModelioReference(this, mContainmentDep));
+			}
+
+			for (IHawkClass mcSuper : getSuperTypes()) {
+				for (IHawkReference superRef : mcSuper.getAllReferences()) {
+					refs.put(superRef.getName(), (ModelioReference)superRef);
+				}
+			}
 		}
 		return refs;
-	}
-
-	private void addReferences(final MClass mc) {
-		for (MDependency mdep : mc.getMDependencys()) {
-			refs.put(mdep.getName(), new IgnoreContainmentModelioReference(this, mdep));
-		}
-
-		// Add synthetic containment reference
-		MClass refTypeClass = mPackage.getResource().getModelioClass(REF_PARENT_MCLASS).rawClass;
-		MDependency mContainmentDep = new MDependency("HP", REF_PARENT, "hawk.exml", refTypeClass, false, false, true, false);
-		refs.put(mContainmentDep.getName(), new AlwaysContainerModelioReference(this, mContainmentDep));
-
-		for (MClass mcSuper : mc.getMSuperType()) {
-			addReferences(mcSuper);
-		}
 	}
 
 	@Override
@@ -179,7 +186,12 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 
 	@Override
 	public Set<IHawkClass> getSuperTypes() {
-		return Collections.singleton((IHawkClass) getType());
+		final Set<IHawkClass> superClasses = new HashSet<>();
+		for (MClass superRawClass : rawClass.getMSuperType()) {
+			ModelioClass superClass = mPackage.getResource().getModelioClass(superRawClass.getName());
+			superClasses.add(superClass);
+		}
+		return superClasses;
 	}
 
 	@Override

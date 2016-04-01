@@ -13,5 +13,11 @@
             ModelParser="org.hawk.modelio.exml.model.ModelioModelResourceFactory">
       </ModelP>
    </extension>
+   <extension
+         point="org.hawk.core.GraphChangeListenerExtensionPoint">
+      <graphChangeListener
+            class="org.hawk.modelio.exml.listeners.ModelioGraphChangeListener">
+      </graphChangeListener>
+   </extension>
 
 </plugin>

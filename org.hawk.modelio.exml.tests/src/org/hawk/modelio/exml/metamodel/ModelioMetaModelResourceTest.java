@@ -66,6 +66,22 @@ public class ModelioMetaModelResourceTest {
 				assertTrue("Class " + hawkClass.getName() + " should have an OID-PID reference", bHasPIDReference);
 			}
 		}
-		
+	}
+
+	@Test
+	public void expectedRootMClasses() {
+		final List<String> rootClasses = new ArrayList<>();
+		for (IHawkObject o : r.getAllContents()) {
+			if (o instanceof IHawkClass) {
+				IHawkClass hc = (IHawkClass)o;
+				if (hc.getSuperTypes().isEmpty()) {
+					rootClasses.add(hc.getName());
+				}
+			}
+		}
+		assertTrue("Should contain the Element root MClass", rootClasses.contains("Element"));
+		assertTrue("Should contain the InteractionNavigationServices MClass", rootClasses.contains("InteractionNavigationServices"));
+		assertTrue("Should contain the meta type", rootClasses.contains(ModelioMetaModelResource.META_TYPE_NAME));
+		assertEquals("There should be exactly three root ModelioClasses", 3, rootClasses.size());
 	}
 }

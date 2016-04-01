@@ -247,36 +247,35 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 			return ret;
 		} else if (property.equals("eContainer")) {
-
-			// HawkClass o = new
-			// MetamodelUtils().getTypeOfFromNode(node,m.parser);
-
-			// o.isContained();
-			// System.err.println(o.eContainingFeatureName());
-
-			Iterable<IGraphEdge> inc = node.getIncoming();
 			GraphNodeWrapper ret = null;
-			for (IGraphEdge r : inc) {
+			for (IGraphEdge r : node.getIncoming()) {
 				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
-
 					ret = new GraphNodeWrapper(r.getStartNode(), m);
-
 					break;
-
 				}
-
 			}
-
+			if (ret == null) {
+				for (IGraphEdge r : node.getOutgoing()) {
+					if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER) != null) {
+						ret = new GraphNodeWrapper(r.getEndNode(), m);
+						break;
+					}
+				}
+			}
 			if (ret == null)
 				throw new EolRuntimeException("eContainer failed,\n" + node + "\nis not contained");
 
 			return ret;
 		} else if (property.equals("eContents")) {
 			final List<GraphNodeWrapper> results = new ArrayList<>();
-			Iterable<IGraphEdge> out = node.getOutgoing();
-			for (IGraphEdge r : out) {
+			for (IGraphEdge r : node.getOutgoing()) {
 				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
 					results.add(new GraphNodeWrapper(r.getEndNode(), m));
+				}
+			}
+			for (IGraphEdge r : node.getIncoming()) {
+				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER) != null) {
+					results.add(new GraphNodeWrapper(r.getStartNode(), m));
 				}
 			}
 			return results;

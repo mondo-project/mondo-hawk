@@ -74,7 +74,9 @@ public class ModelioObject extends AbstractModelioObject {
 		if (hsf instanceof ModelioAttribute) {
 			return exml.getAttributes().containsKey(hsf.getName());
 		} else if (hsf instanceof ModelioReference) {
-			return exml.getLinks().containsKey(hsf.getName()) || exml.getCompositions().containsKey(hsf.getName());
+			return exml.getLinks().containsKey(hsf.getName())
+				|| exml.getCompositions().containsKey(hsf.getName())
+				|| hsf.getName().equals(ModelioClass.REF_PARENT) && exml.getParentUID() != null;
 		}
 		return false;
 	}

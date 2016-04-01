@@ -30,6 +30,10 @@ public class ModelioAttribute extends AbstractModelioObject implements IHawkAttr
 		this.mAttr = mattr;
 	}
 
+	public MAttribute getRawAttribute() {
+		return mAttr;
+	}
+
 	@Override
 	public String getName() {
 		return mAttr.getName();

@@ -398,15 +398,13 @@ public class GraphMetaModelResourceInjector {
 			map4.put(IModelIndexer.METAMODEL_TYPE_PROPERTY, metamodelResource.getMetaModelResourceFactory().getType());
 
 			IGraphNode epackagenode = graph.createNode(new HashMap<String, Object>(), "epackage");
-
-			listener.metamodelAddition(ePackage, epackagenode);
-
 			for (String s : map4.keySet()) {
 				epackagenode.setProperty(s, map4.get(s));
 			}
 
 			epackagedictionary.add(epackagenode, "id", uri);
 			addedepackages.add(ePackage);
+			listener.metamodelAddition(ePackage, epackagenode);
 		} else {
 			System.err.println("metamodel: " + (ePackage).getName() + " (" + uri
 					+ ") already in store, updating it instead (NYI) -- doing nothing!");
@@ -443,10 +441,6 @@ public class GraphMetaModelResourceInjector {
 		map.put(IModelIndexer.IDENTIFIER_PROPERTY, id);
 
 		IGraphNode node = graph.createNode(new HashMap<String, Object>(), "eclass");
-
-		listener.classAddition(eClass, node);
-
-		// hash.put(eClass, node);
 
 		IGraphNode metamodelNode = ((IGraphIterable<IGraphNode>) epackagedictionary.get("id", eClass.getPackageNSURI()))
 				.getSingle();
@@ -629,23 +623,16 @@ public class GraphMetaModelResourceInjector {
 						+ r.getName());
 				metadata[4] = "unknown";
 			}
-			// metadata[4] = r.getType().getName();
 			metadata[5] = "f";
 
 			map.put(r.getName(), metadata);
 		}
-		// map.put(r.getName(),"r."+(r.isMany()?"t":"f")+"."+(r.isOrdered()?"t":"f")+"."+(r.isUnique()?"t":"f"));
-
-		// n.field("nUri", ((EClass)child).getEPackage()
-		// .getNsURI());
-
-		// System.err.println(">>>"+map.keySet());
 
 		for (String s : map.keySet()) {
 			node.setProperty(s, map.get(s));
 		}
 
-		// System.err.println(node.getPropertyKeys());
+		listener.classAddition(eClass, node);
 
 		return success;
 	}
