@@ -31,6 +31,10 @@ public class ModelioReference extends AbstractModelioObject implements IHawkRefe
 		this.mDependency = mdep;
 	}
 
+	public MDependency getRawDependency() {
+		return mDependency;
+	}
+
 	@Override
 	public String getName() {
 		return mDependency.getName();

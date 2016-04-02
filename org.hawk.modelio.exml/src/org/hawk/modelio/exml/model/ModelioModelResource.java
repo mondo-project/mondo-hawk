@@ -22,6 +22,7 @@ import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
+import org.hawk.modelio.exml.metamodel.ModelioReference;
 import org.hawk.modelio.exml.parser.ExmlObject;
 import org.hawk.modelio.exml.parser.ExmlReference;
 import org.slf4j.Logger;
@@ -81,12 +82,20 @@ public class ModelioModelResource implements IHawkModelResource {
 		} else {
 			contents.add(new ModelioObject(mc, exml));
 			for (Entry<String, List<ExmlReference>> composition : exml.getCompositions().entrySet()) {
-				if (mc.getStructuralFeature(composition.getKey()) == null) {
+				final ModelioReference sf = (ModelioReference) mc.getStructuralFeature(composition.getKey());
+				if (sf == null) {
 					LOGGER.warn("Unknown feature '{}', skipping", composition.getKey());
 					continue;
 				}
 				for (ExmlReference r : composition.getValue()) {
 					if (r instanceof ExmlObject) {
+						final ExmlObject exmlObject = (ExmlObject)r;
+						if (sf.getRawDependency().getisComposition() && exmlObject.getParentUID() == null) {
+							// Implicit containment - e.g. TagTypes (don't have explicit PID)
+							exmlObject.setParentMClassName(exml.getMClassName());
+							exmlObject.setParentName(exml.getName());
+							exmlObject.setParentUID(exml.getUID());
+						}
 						addObjectToContents((ExmlObject) r);
 					}
 				}

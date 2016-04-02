@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hawk.core.model.IHawkAttribute;
-import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
@@ -31,8 +30,10 @@ import org.slf4j.LoggerFactory;
 
 public class ModelioObject extends AbstractModelioObject {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioObject.class);
 	public static final String COMMON_EXML = "modelio-objects.exml";
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioObject.class);
+
 	private final ModelioClass mc;
 	private final ExmlObject exml;
 
@@ -65,7 +66,7 @@ public class ModelioObject extends AbstractModelioObject {
 	}
 
 	@Override
-	public IHawkClassifier getType() {
+	public ModelioClass getType() {
 		return mc;
 	}
 
@@ -105,7 +106,7 @@ public class ModelioObject extends AbstractModelioObject {
 	public Object get(IHawkReference ref, boolean b) {
 		final List<IHawkObject> linked = new ArrayList<>();
 
-		if (ref.getName().equals(ModelioClass.REF_PARENT)) {
+		if (ref.getName().equals(ModelioClass.REF_PARENT) && exml.getParentUID() != null) {
 			ExmlReference parentRef = new ExmlReference(exml.getFile());
 			parentRef.setName(ModelioClass.REF_PARENT);
 			parentRef.setMClassName(ModelioClass.REF_PARENT_MCLASS);

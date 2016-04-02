@@ -1,8 +1,5 @@
 package org.hawk.modelio.exml.listeners;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphChangeListener;

@@ -1,5 +1,7 @@
 package org.hawk.modelio.exml.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -12,11 +14,14 @@ import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
+import org.hawk.modelio.exml.metamodel.ModelioClass;
+import org.hawk.modelio.exml.metamodel.ModelioReference;
 import org.junit.Test;
 
 public class ModelioModelResourceFactoryTest {
 
 	private static final String RAMC_PATH = "resources/jenkins/jenkins_1.540.0.ramc";
+	private static final String ICONTAINMENT_PATH = "resources/implicitContainment/example.exml";
 
 	@SuppressWarnings("unchecked")
 	@Test
@@ -60,6 +65,36 @@ public class ModelioModelResourceFactoryTest {
 				System.err.println(elements.get(o));
 			}
 			fail("There should be no unreachable objects from the roots");
+		}
+	}
+
+	@Test
+	public void implicitContainment() throws Exception {
+		final String grandparentUID = "25801104-0000-1069-0000-000000000000";
+		final String parentUID = "00d01054-0001-1627-0000-000000000000";
+		final String childUID = "00d011d0-0000-041f-0000-000000000000";
+
+		ModelioModelResourceFactory factory = new ModelioModelResourceFactory();
+		IHawkModelResource resource = factory.parse(new File(ICONTAINMENT_PATH));
+
+		Set<IHawkObject> allContents = resource.getAllContentsSet();
+		for (IHawkObject ob : allContents) {
+			final ModelioObject mob = (ModelioObject)ob;
+			final ModelioReference refParent = (ModelioReference)mob.getType().getStructuralFeature(ModelioClass.REF_PARENT);
+			final ModelioProxy refValue = (ModelioProxy) mob.get(refParent, true);
+
+			switch (mob.getUriFragment()) {
+			case parentUID:
+				assertNotNull("Parent of the parent should be set", refValue);
+				assertEquals("Parent of the parent should be " + grandparentUID, grandparentUID, refValue.getUriFragment());
+				break;
+			case childUID:
+				assertNotNull("Parent of the child should be set", refValue);
+				assertEquals("Parent of the child should be the parent", parentUID, refValue.getUriFragment());
+				break;
+			default:
+				fail("Unexpected object " + mob.getUriFragment());
+			}
 		}
 	}
 }
