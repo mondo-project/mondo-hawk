@@ -22,16 +22,19 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.ETypedElement;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
+import org.hawk.core.model.IHawkAttribute;
+import org.hawk.core.model.IHawkClass;
+import org.hawk.core.model.IHawkClassifier;
+import org.hawk.core.model.IHawkReference;
+import org.hawk.modelio.exml.metamodel.ModelioAttribute;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
 import org.hawk.modelio.exml.metamodel.ModelioPackage;
-import org.modelio.metamodel.MAttribute;
-import org.modelio.metamodel.MClass;
-import org.modelio.metamodel.MDependency;
 import org.modelio.metamodel.MMetamodel;
 import org.modelio.metamodel.MPackage;
 
@@ -65,7 +68,7 @@ public class EcoreGenerator {
 
 	private final EcoreFactory factory;
 	private final List<EPackage> packages = new ArrayList<>();
-	private final Map<String, Tuple<EClass, MClass>> mClasses = new HashMap<>();
+	private final Map<String, Tuple<EClass, ModelioClass>> mClasses = new HashMap<>();
 	private int nPackage = 0;
 
 	public static void main(String[] args) {
@@ -112,19 +115,19 @@ public class EcoreGenerator {
 		}
 
 		// On the second pass, create features and references
-		for (Tuple<EClass, MClass> entry : mClasses.values()) {
+		for (Tuple<EClass, ModelioClass> entry : mClasses.values()) {
 			final EcorePackage ecorePkg = EcorePackage.eINSTANCE;
 			final EClass ec = entry.getLeft();
-			final MClass mc = entry.getRight();
+			final ModelioClass mc = entry.getRight();
 
-			for (MClass superMClass : mc.getMSuperType()) {
+			for (IHawkClass superMClass : mc.getSuperTypes()) {
 				EClass eSuper = mClasses.get(superMClass.getName()).getLeft();
 				ec.getESuperTypes().add(eSuper);
 			}
 
-			for (MAttribute mattr : mc.getMAttributes()) {
+			for (IHawkAttribute mattr : mc.getOwnAttributesMap().values()) {
 				EDataType edt = ecorePkg.getEString();
-				switch (mattr.getMDataType().getJavaEquivalent()) {
+				switch (((ModelioAttribute)mattr).getRawAttribute().getMDataType().getJavaEquivalent()) {
 				case "Short":
 					edt = ecorePkg.getEShort();
 					break;
@@ -154,23 +157,39 @@ public class EcoreGenerator {
 				final EAttribute eattr = factory.createEAttribute();
 				eattr.setName(mattr.getName());
 				eattr.setEType(edt);
-				eattr.setOrdered(mattr.getIsOrdered());
-				eattr.setUnique(mattr.getIsUnique());
-				eattr.setUpperBound(mattr.getIsMany() ? EAttribute.UNBOUNDED_MULTIPLICITY : 1);
+				eattr.setOrdered(mattr.isOrdered());
+				eattr.setUnique(mattr.isUnique());
+				eattr.setUpperBound(mattr.isMany() ? EAttribute.UNBOUNDED_MULTIPLICITY : 1);
 				ec.getEStructuralFeatures().add(eattr);
 			}
 
-			for (MDependency mdep : mc.getMDependencys()) {
-				final EClass targetEClass = mClasses.get(mdep.getMClass().getName()).getLeft();
+			for (IHawkReference mdep : mc.getOwnReferencesMap().values()) {
+				final EClass targetEClass = mClasses.get(mdep.getType().getName()).getLeft();
 
 				final EReference eref = factory.createEReference();
 				eref.setName(mdep.getName());
-				eref.setOrdered(mdep.getIsOrdered());
-				eref.setUnique(mdep.getIsUnique());
-				eref.setUpperBound(mdep.getIsMany() ? EReference.UNBOUNDED_MULTIPLICITY : 1);
+				eref.setOrdered(mdep.isOrdered());
+				eref.setUnique(mdep.isUnique());
+				eref.setUpperBound(mdep.isMany() ? EReference.UNBOUNDED_MULTIPLICITY : 1);
 				eref.setEType(targetEClass);
-				eref.setContainment(false);
+				eref.setContainment(mdep.isContainment());
 				ec.getEStructuralFeatures().add(eref);
+			}
+
+			if (mc.getSuperTypes().isEmpty()) {
+				final EReference eRefChildren = factory.createEReference();
+				eRefChildren.setName(ModelioClass.REF_CHILDREN);
+				eRefChildren.setOrdered(true);
+				eRefChildren.setUnique(true);
+				eRefChildren.setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
+				eRefChildren.setEType(ec);
+				eRefChildren.setContainment(true);
+
+				final EReference eRefParent = (EReference) ec.getEStructuralFeature(ModelioClass.REF_PARENT);
+				eRefChildren.setEOpposite(eRefParent);
+				eRefParent.setEOpposite(eRefChildren);
+
+				ec.getEStructuralFeatures().add(eRefChildren);
 			}
 		}
 
@@ -186,11 +205,11 @@ public class EcoreGenerator {
 		r.getContents().add(ep);
 		this.packages.add(ep);
 
-		for (final MClass mc : pkg.getRawPackage().getMClass()) {
+		for (final IHawkClassifier mc : pkg.getClasses()) {
 			final EClass ec = factory.createEClass();
 			ec.setName(mc.getName());
 			ep.getEClassifiers().add(ec);
-			if (mClasses.put(mc.getName(), new Tuple<>(ec, mc)) != null) {
+			if (mClasses.put(mc.getName(), new Tuple<>(ec, (ModelioClass) mc)) != null) {
 				throw new Exception("More than one class named " + mc.getName() + ": aborting");
 			}
 		}

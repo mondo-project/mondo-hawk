@@ -31,5 +31,34 @@
     <resource uri="modelio://uml/behavior/usecaseModel" location="model/modelio.ecore#/25"/>
     <resource uri="modelio://uml/behavior/communicationModel" location="model/modelio.ecore#/26"/>
     <resource uri="modelio://uml/informationFlow" location="model/modelio.ecore#/27"/>
+
+    <resource uri="modelio://analyst/v2" location="model/modelio-v2.ecore#/0"/>
+    <resource uri="modelio://bpmn/v2" location="model/modelio-v2.ecore#/1"/>
+    <resource uri="modelio://bpmn/processCollaboration/v2" location="model/modelio-v2.ecore#/2"/>
+    <resource uri="modelio://bpmn/rootElements/v2" location="model/modelio-v2.ecore#/3"/>
+    <resource uri="modelio://bpmn/flows/v2" location="model/modelio-v2.ecore#/4"/>
+    <resource uri="modelio://bpmn/activities/v2" location="model/modelio-v2.ecore#/5"/>
+    <resource uri="modelio://bpmn/events/v2" location="model/modelio-v2.ecore#/6"/>
+    <resource uri="modelio://bpmn/gateways/v2" location="model/modelio-v2.ecore#/7"/>
+    <resource uri="modelio://bpmn/objects/v2" location="model/modelio-v2.ecore#/8"/>
+    <resource uri="modelio://bpmn/resources/v2" location="model/modelio-v2.ecore#/9"/>
+    <resource uri="modelio://bpmn/bpmnDiagrams/v2" location="model/modelio-v2.ecore#/10"/>
+    <resource uri="modelio://bpmn/bpmnService/v2" location="model/modelio-v2.ecore#/11"/>
+    <resource uri="modelio://diagrams/v2" location="model/modelio-v2.ecore#/12"/>
+    <resource uri="modelio://mda/v2" location="model/modelio-v2.ecore#/13"/>
+    <resource uri="modelio://uml/v2" location="model/modelio-v2.ecore#/14"/>
+    <resource uri="modelio://uml/infrastructure/v2" location="model/modelio-v2.ecore#/15"/>
+    <resource uri="modelio://uml/infrastructure/properties/v2" location="model/modelio-v2.ecore#/16"/>
+    <resource uri="modelio://uml/infrastructure/matrix/v2" location="model/modelio-v2.ecore#/17"/>
+    <resource uri="modelio://uml/statik/v2" location="model/modelio-v2.ecore#/18"/>
+    <resource uri="modelio://uml/behavior/v2" location="model/modelio-v2.ecore#/19"/>
+    <resource uri="modelio://uml/behavior/activityModel/v2" location="model/modelio-v2.ecore#/20"/>
+    <resource uri="modelio://uml/behavior/commonBehaviors/v2" location="model/modelio-v2.ecore#/21"/>
+    <resource uri="modelio://uml/behavior/interactionModel/v2" location="model/modelio-v2.ecore#/22"/>
+    <resource uri="modelio://uml/behavior/interactionModel/facilities/v2" location="model/modelio-v2.ecore#/23"/>
+    <resource uri="modelio://uml/behavior/stateMachineModel/v2" location="model/modelio-v2.ecore#/24"/>
+    <resource uri="modelio://uml/behavior/usecaseModel/v2" location="model/modelio-v2.ecore#/25"/>
+    <resource uri="modelio://uml/behavior/communicationModel/v2" location="model/modelio-v2.ecore#/26"/>
+    <resource uri="modelio://uml/informationFlow/v2" location="model/modelio-v2.ecore#/27"/>
    </extension>
 </plugin>

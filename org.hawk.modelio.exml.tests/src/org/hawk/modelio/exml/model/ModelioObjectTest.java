@@ -32,7 +32,7 @@ public class ModelioObjectTest {
 			final ModelioClass mC = metamodel.getModelioClass(object.getMClassName());
 			final ModelioObject mO = new ModelioObject(mC, object);
 
-			final Map<String, ModelioAttribute> attrs = mC.getAttributes();
+			final Map<String, ModelioAttribute> attrs = mC.getAllAttributesMap();
 			assertTrue(((String)mO.get(attrs.get("UiData"))).startsWith("eJztXWtz27"));
 			assertEquals(88, mO.get(attrs.get("UiDataVersion")));
 

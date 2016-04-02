@@ -106,12 +106,13 @@ public class ModelioPackage extends AbstractModelioObject implements IHawkPackag
 	}
 
 	protected String getUnprefixedNsURI() {
+		// We use '/v2' to tell apart the new design based on hawkParent/hawkChildren
 		return parent == null ? rawPackage.getName() : parent.getUnprefixedNsURI() + "/" + rawPackage.getName();
 	}
 
 	@Override
 	public String getNsURI() {
-		return "modelio://" + getUnprefixedNsURI();
+		return "modelio://" + getUnprefixedNsURI() + "/v2";
 	}
 
 	@Override

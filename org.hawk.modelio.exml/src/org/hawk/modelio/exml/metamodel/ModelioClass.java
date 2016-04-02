@@ -55,8 +55,8 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 
 	protected final ModelioPackage mPackage;
 	protected final MClass rawClass;
-	protected Map<String, ModelioAttribute> attrs;
-	protected Map<String, ModelioReference> refs;
+	protected Map<String, ModelioAttribute> ownAttributes, allAttributes;
+	protected Map<String, ModelioReference> ownReferences, allReferences;
 
 	public ModelioClass(ModelioPackage pkg, MClass mc) {
 		this.mPackage = pkg;
@@ -129,59 +129,83 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 		return mPackage.getNsURI();
 	}
 
-	public Map<String, ModelioAttribute> getAttributes() {
-		if (attrs == null) {
-			attrs = new HashMap<>();
-			addAttributes(rawClass);
-		}
-		return attrs;
-	}
-
-	private void addAttributes(final MClass mc) {
-		for (MAttribute mattr : mc.getMAttributes()) {
-			final ModelioAttribute attr = new ModelioAttribute(this, mattr);
-			if (attr.getType() != null) {
-				attrs.put(mattr.getName(), attr);
-			} else {
-				LOGGER.warn("Attribute '{}#{}' has an unknown data type, skipping", mc.getName(), mattr.getName());
-			}
-		}
-		for (MClass mcSuper : mc.getMSuperType()) {
-			addAttributes(mcSuper);
-		}
-	}
-
 	@Override
 	public Set<IHawkAttribute> getAllAttributes() {
-		return new HashSet<IHawkAttribute>(getAttributes().values());
+		return new HashSet<IHawkAttribute>(getAllAttributesMap().values());
 	}
 
-	public Map<String, ModelioReference> getReferences() {
-		if (refs == null) {
-			refs = new HashMap<>();
-			for (MDependency mdep : rawClass.getMDependencys()) {
-				refs.put(mdep.getName(), new IgnoreContainmentModelioReference(this, mdep));
-			}
+	public Map<String, ModelioAttribute> getAllAttributesMap() {
+		if (allAttributes == null) {
+			allAttributes = new HashMap<>();
+			addAllAttributes(allAttributes);
+		}
+		return allAttributes;
+	}
 
-			if (rawClass.getMSuperType().isEmpty()) {
-				// Add synthetic container/containment references to root Modelio classes
-				MClass refTypeClass = mPackage.getResource().getModelioClass(REF_PARENT_MCLASS).rawClass;
-				MDependency mContainmentDep = new MDependency("HP", REF_PARENT, "hawk.exml", refTypeClass, false, false, true, false);
-				refs.put(mContainmentDep.getName(), new AlwaysContainerModelioReference(this, mContainmentDep));
-			}
-
-			for (IHawkClass mcSuper : getSuperTypes()) {
-				for (IHawkReference superRef : mcSuper.getAllReferences()) {
-					refs.put(superRef.getName(), (ModelioReference)superRef);
+	public Map<String, ModelioAttribute> getOwnAttributesMap() {
+		if (ownAttributes == null) {
+			ownAttributes = new HashMap<>();
+			for (MAttribute mattr : rawClass.getMAttributes()) {
+				final ModelioAttribute attr = new ModelioAttribute(this, mattr);
+				if (attr.getType() != null) {
+					ownAttributes.put(mattr.getName(), attr);
+				} else {
+					LOGGER.warn("Attribute '{}#{}' has an unknown data type, skipping", rawClass.getName(), mattr.getName());
 				}
 			}
 		}
-		return refs;
+		return ownAttributes;
+	}
+
+	protected void addAllAttributes(Map<String, ModelioAttribute> attrs) {
+		attrs.putAll(getOwnAttributesMap());
+		for (IHawkClass mcSuper : getSuperTypes()) {
+		    ((ModelioClass)mcSuper).addAllAttributes(attrs);
+		}
 	}
 
 	@Override
 	public Set<IHawkReference> getAllReferences() {
-		return new HashSet<IHawkReference>(getReferences().values());
+		return new HashSet<IHawkReference>(getAllReferencesMap().values());
+	}
+
+	/**
+	 * Returns a map with all the references in this class (own and inherited).
+	 */
+	public Map<String, ModelioReference> getAllReferencesMap() {
+		if (allReferences == null) {
+			allReferences = new HashMap<>();
+			addAllReferences(allReferences);
+		}
+		return allReferences;
+	}
+
+	/**
+	 * Returns a map with only the references in this class (excluding the inherited).
+	 */
+	public Map<String, ModelioReference> getOwnReferencesMap() {
+		if (ownReferences == null) {
+			ownReferences = new HashMap<>();
+
+			for (MDependency mdep : rawClass.getMDependencys()) {
+				ownReferences.put(mdep.getName(), new IgnoreContainmentModelioReference(this, mdep));
+			}
+			if (rawClass.getMSuperType().isEmpty()) {
+				// Add synthetic container/containment references to root Modelio classes
+				MClass refTypeClass = mPackage.getResource().getModelioClass(REF_PARENT_MCLASS).rawClass;
+				MDependency mContainmentDep = new MDependency("HP", REF_PARENT, "hawk.exml", refTypeClass, false, false, true, false);
+				ownReferences.put(mContainmentDep.getName(), new AlwaysContainerModelioReference(this, mContainmentDep));
+			}
+		}
+
+		return ownReferences;
+	}
+
+	protected void addAllReferences(Map<String, ModelioReference> refs) {
+		refs.putAll(getOwnReferencesMap());
+		for (IHawkClass mcSuper : getSuperTypes()) {
+			((ModelioClass)mcSuper).addAllReferences(refs);
+		}
 	}
 
 	@Override
@@ -208,11 +232,11 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 
 	@Override
 	public IHawkStructuralFeature getStructuralFeature(String name) {
-		ModelioAttribute attr = getAttributes().get(name);
+		ModelioAttribute attr = getAllAttributesMap().get(name);
 		if (attr != null) {
 			return attr;
 		}
-		return getReferences().get(name);
+		return getAllReferencesMap().get(name);
 	}
 
 	@Override

@@ -28,7 +28,7 @@ import org.hawk.graph.internal.util.GraphUtil;
 
 public class DeriveFeature {
 
-	protected final static String REFERENCETARGETPREFIX = "GNW::";
+	public final static String REFERENCETARGETPREFIX = "GNW::";
 
 	public DeriveFeature() throws Exception {
 	}
