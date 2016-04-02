@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -57,6 +58,7 @@ import org.hawk.emfresource.HawkResourceChangeListener;
 import org.hawk.emfresource.util.AttributeUtils;
 import org.hawk.emfresource.util.LazyEObjectFactory;
 import org.hawk.emfresource.util.LazyResolver;
+import org.hawk.epsilon.emc.DeriveFeature;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.MetamodelNode;
@@ -646,7 +648,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		return indexer.getGraph().beginTransaction();
 	}
 
-	private EObject createOrUpdateEObject(final ModelElementNode me) throws Exception {
+	protected EObject createOrUpdateEObject(final ModelElementNode me) throws Exception {
 		final Registry registry = getResourceSet().getPackageRegistry();
 		final TypeNode typeNode = me.getTypeNode();
 		final String nsURI = typeNode.getMetamodelURI();
@@ -668,7 +670,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		final Map<String, Object> attributeValues = new HashMap<>();
 		final Map<String, Object> referenceValues = new HashMap<>();
 		final Map<String, Object> mixedValues = new HashMap<>();
-		me.getSlotValues(attributeValues, referenceValues, mixedValues);
+		getSlotValues(me, attributeValues, referenceValues, mixedValues);
 
 		// Set or update attributes
 		final EFactory factory = registry.getEFactory(nsURI);
@@ -720,7 +722,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			}
 		}
 
-		// Set or update references
+		// Set or update references (need to consider derived references in some parts)
 		if (existing != null) {
 			// Unset references that do not have a value anymore
 			for (EReference ref : eClass.getEAllReferences()) {
@@ -746,13 +748,45 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 				ids.add(id);
 			}
 
-			lazyResolver.putLazyReference(eob, ref, ids);
+			if (!ids.isEmpty()) {
+				lazyResolver.putLazyReference(eob, ref, ids);
+			}
 		}
 
 		if (existing == null) {
 			addToResource(me, eob);
 		}
 		return eob;
+	}
+
+	protected void getSlotValues(final ModelElementNode me, final Map<String, Object> attributeValues,
+			final Map<String, Object> referenceValues, final Map<String, Object> mixedValues) {
+		final Map<String, Object> derivedValues = new HashMap<>();
+		me.getSlotValues(attributeValues, referenceValues, mixedValues, derivedValues);
+
+		for (final Iterator<Entry<String, Object>> itDerived = derivedValues.entrySet().iterator(); itDerived.hasNext(); ) {
+			final Entry<String, Object> derivedEntry = itDerived.next();
+
+			final Object value = derivedEntry.getValue();
+			if (value instanceof String && ((String)value).startsWith(DeriveFeature.REFERENCETARGETPREFIX)) {
+				referenceValues.put(derivedEntry.getKey(), value.toString().substring(DeriveFeature.REFERENCETARGETPREFIX.length()));
+			} else if (value instanceof Iterable<?>) {
+				final Iterable<?> iterableValue = (Iterable<?>)value;
+				final Iterator<?> itValue = iterableValue.iterator();
+				if (itValue.hasNext() && itValue.next().toString().startsWith(DeriveFeature.REFERENCETARGETPREFIX)) {
+					final EList<Object> ids = new BasicEList<>();
+					for (Object element : iterableValue) {
+						ids.add(element.toString().substring(DeriveFeature.REFERENCETARGETPREFIX.length()));
+					}
+
+					referenceValues.put(derivedEntry.getKey(), ids);
+				} else {
+					attributeValues.put(derivedEntry.getKey(), value);
+				}
+			} else {
+				attributeValues.put(derivedEntry.getKey(), value);
+			}
+		}
 	}
 
 	private void addToResource(final ModelElementNode modelElementNode, final EObject eob) {

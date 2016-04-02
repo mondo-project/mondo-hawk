@@ -91,7 +91,7 @@ public class ModelElementNode {
 	 * @throws Exception
 	 *             Could not begin the transaction on the graph.
 	 */
-	public void getSlotValues(Map<String, Object> attributeValues, Map<String, Object> referenceValues, Map<String, Object> mixedValues) {
+	public void getSlotValues(Map<String, Object> attributeValues, Map<String, Object> referenceValues, Map<String, Object> mixedValues, Map<String, Object> derivedValues) {
 		final List<Slot> slots = getTypeNode().getSlots();
 		for (Slot s : slots) {
 			if (s.isAttribute() && attributeValues != null) {
@@ -106,20 +106,40 @@ public class ModelElementNode {
 				final Object value = getSlotValue(s);
 				if (value == null) continue;
 				mixedValues.put(s.getName(), value);
+			} else if (s.isDerived()) {
+				final Object value = getSlotValue(s);
+				if (value == null) continue;
+				derivedValues.put(s.getName(), value);
 			}
 		}
 	}
 
 	/**
-	 * Returns the value of the <code>slot</code> for this model element node.
+	 * Returns the value of the non-derived <code>slot</code> for this model element node.
 	 * The slot should be among those returned by {@link TypeNode#getSlots()}
 	 * for this model element node.
 	 */
 	public Object getSlotValue(Slot slot) {
-		final Object rawValue = node.getProperty(slot.getName());
+		Object rawValue = null;
+		if (slot.isDerived()) {
+			for (IGraphEdge r : node.getOutgoingWithType(slot.getName())) {
+				if (rawValue == null) {
+					rawValue = r.getEndNode().getProperty(slot.getName());
+				} else {
+					throw new IllegalStateException("WARNING: a derived property node (arity 1) -- ( " + slot.getName() + " ) has more than 1 links in store!");
+				}
+			}
+		} else {
+			rawValue = node.getProperty(slot.getName());
+		}
+
+		return decodeRawValue(slot, rawValue);
+	}
+
+	protected Object decodeRawValue(Slot slot, final Object rawValue) {
 		final Collection<Object> collection = slot.getCollection();
 
-		if (slot.isMany() && rawValue != null && (slot.isAttribute() || slot.isMixed())) {
+		if (slot.isMany() && rawValue != null && (slot.isAttribute() || slot.isMixed() || slot.isDerived())) {
 			final Class<?> componentType = rawValue.getClass().getComponentType();
 			if (!componentType.isPrimitive()) {
 				// non-primitive arrays can be cast to Object[]
@@ -166,7 +186,7 @@ public class ModelElementNode {
 					"A relationship with arity 1 (%s) had %d links",
 					slot.getName(), collection.size()));
 		}
-	} // getValue
+	}
 
 	public IGraphNode getNode() {
 		return node;
@@ -275,6 +295,11 @@ public class ModelElementNode {
 	public boolean hasChildren() {
 		for (IGraphEdge edge : node.getOutgoing()) {
 			if (edge.getProperty(EDGE_PROPERTY_CONTAINMENT) != null) {
+				return true;
+			}
+		}
+		for (IGraphEdge edge : node.getIncoming()) {
+			if (edge.getProperty(EDGE_PROPERTY_CONTAINER) != null) {
 				return true;
 			}
 		}

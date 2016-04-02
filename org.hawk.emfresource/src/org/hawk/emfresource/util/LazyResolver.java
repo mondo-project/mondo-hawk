@@ -191,9 +191,15 @@ public class LazyResolver {
 		}
 	}
 
-	private static class LazyEContainment {
-		private final EObject eContainer;
+	private class LazyEContainment {
+		private String containerID;
+		private EObject eContainer;
 		private final EReference eContainmentReference;
+
+		private LazyEContainment(String containerID, EReference eContainmentReference) {
+			this.containerID = containerID;
+			this.eContainmentReference = eContainmentReference;
+		}
 
 		private LazyEContainment(EObject eContainer, EReference eContainmentReference) {
 			this.eContainer = eContainer;
@@ -201,6 +207,13 @@ public class LazyResolver {
 		}
 
 		public EObject getContainer() {
+			if (eContainer == null) {
+				try {
+					eContainer = resource.fetchNode(containerID, false);
+				} catch (Exception e) {
+					LOGGER.error("Could not fetch container: " + e.getMessage(), e);
+				}
+			}
 			return eContainer;
 		}
 
@@ -309,6 +322,10 @@ public class LazyResolver {
 			eObjectToLazyRefs.put(eob, allPending);
 		}
 		allPending.put(feature, new LazyEListWrapper(value));
+
+		if (feature.isContainer()) {
+			eObjectToContainer.put(eob, new LazyEContainment(value.get(0).toString(), feature));
+		}
 	}
 
 	/**

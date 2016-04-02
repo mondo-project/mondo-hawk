@@ -22,7 +22,7 @@ import java.util.LinkedHashSet;
 public class Slot {
 	private final TypeNode typeNode;
 	private final String propertyName, propertyType;
-	private final boolean isAttribute, isReference, isMixed;
+	private final boolean isAttribute, isReference, isMixed, isDerived;
 	private final boolean isMany, isOrdered, isUnique;
 
 	public Slot(TypeNode typeNode, String propertyName) {
@@ -33,6 +33,7 @@ public class Slot {
 		this.isAttribute = "a".equals(propertyMetadata[0]);
 		this.isReference = "r".equals(propertyMetadata[0]);
 		this.isMixed = "m".equals(propertyMetadata[0]);
+		this.isDerived = "d".equals(propertyMetadata[0]);
 		this.isMany = "t".equals(propertyMetadata[1]);
 		this.isOrdered = "t".equals(propertyMetadata[2]);
 		this.isUnique = "t".equals(propertyMetadata[3]);
@@ -75,6 +76,10 @@ public class Slot {
 
 	public boolean isMixed() {
 		return isMixed;
+	}
+
+	public boolean isDerived() {
+		return isDerived;
 	}
 
 	public boolean isMany() {
@@ -129,7 +134,7 @@ public class Slot {
 	@Override
 	public String toString() {
 		return "Slot [typeNode=" + typeNode + ", propertyName=" + propertyName + ", propertyType=" + propertyType
-				+ ", isAttribute=" + isAttribute + ", isReference=" + isReference + ", isMixed=" + isMixed + ", isMany="
-				+ isMany + ", isOrdered=" + isOrdered + ", isUnique=" + isUnique + "]";
+				+ ", isAttribute=" + isAttribute + ", isReference=" + isReference + ", isMixed=" + isMixed + ", isDerived=" + isDerived
+				+ ", isMany=" + isMany + ", isOrdered=" + isOrdered + ", isUnique=" + isUnique + "]";
 	}
 }
