@@ -99,8 +99,6 @@ public class ModelioModelResource implements IHawkModelResource {
 
 	@Override
 	public boolean providesSingletonElements() {
-		// We could have the same object in multiple projects
-		// (for instance, after we imported the same .ramc)
-		return true;
+		return false;
 	}
 }

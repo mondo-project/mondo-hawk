@@ -88,7 +88,7 @@ public class LocalFolder implements IVcsManager {
 		}
 	}
 
-	private IConsole console;
+	protected IConsole console;
 	private Path rootLocation;
 	private Set<File> previousFiles = new HashSet<>();
 
@@ -320,7 +320,7 @@ public class LocalFolder implements IVcsManager {
 
 	}
 
-	private void addAllFiles(File dir, Set<File> ret) {
+	protected void addAllFiles(File dir, Set<File> ret) {
 		File[] files = dir.listFiles();
 		if (files == null) {
 			// couldn't list files in that directory
