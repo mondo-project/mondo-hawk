@@ -60,7 +60,7 @@ public class ModelioGraphChangeListener implements IGraphChangeListener {
 			// Used to get back an EMF-compatible containment reference based on .exml PID container references
 			modelIndexer.addDerivedAttribute(cls.getPackageNSURI(), cls.getName(), ModelioClass.REF_CHILDREN,
 				ModelioClass.REF_PARENT_MCLASS, true, true, false, EOLQueryEngine.TYPE,
-				"return self.eContents;");
+				"return self.revRefNav_hawkParent;");
 		}
 	}
 

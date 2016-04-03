@@ -12,7 +12,6 @@ package org.hawk.graph.internal.updater;
 
 import java.io.File;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -42,8 +41,6 @@ import org.hawk.core.model.IHawkReference;
 import org.hawk.core.query.IAccess;
 import org.hawk.core.query.IAccessListener;
 import org.hawk.core.query.IQueryEngine;
-import org.hawk.core.query.InvalidQueryException;
-import org.hawk.core.query.QueryExecutionException;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.internal.util.GraphUtil;
 
@@ -774,7 +771,7 @@ public class GraphModelInserter {
 		int proxiesLeft = -1;
 
 		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
-		List<IGraphNode> proxiesToBeResolved = new ArrayList<>();
+		List<IGraphNode> proxiesToBeResolved = new LinkedList<>();
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex("proxydictionary");
 			IGraphIterable<IGraphNode> proxies = proxyDictionary.query(GraphModelUpdater.PROXY_REFERENCE_PREFIX, "*");
@@ -798,6 +795,7 @@ public class GraphModelInserter {
 					listener.changeStart();
 					while (itProxies.hasNext() && nBatch < PROXY_RESOLVE_TX_SIZE) {
 						IGraphNode n = itProxies.next();
+						itProxies.remove();
 						IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex("proxydictionary");
 						resolveProxies(graph, listener, n, proxyDictionary);
 						++nBatch;
@@ -986,8 +984,9 @@ public class GraphModelInserter {
 						derivedAccessDictionary.add(sourceNode, a.getAccessObjectID(), a.getProperty());
 				}
 
-				System.err.println("accesses: " + accessListener.getAccesses().size() + " ("
-						+ derivedAccessDictionary.query("*", "*").size() + " nodes)");
+				// TODO: discuss with Kostas - this produces OOMEs for the Modelio 2.4GB workspace and takes a *lot* of time
+				//System.err.println("accesses: " + accessListener.getAccesses().size() + " ("
+				//		+ derivedAccessDictionary.query("*", "*").size() + " nodes)");
 
 				tx.success();
 				listener.changeSuccess();
@@ -1017,7 +1016,6 @@ public class GraphModelInserter {
 		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
 
 		// This is done outside any other tx, as we need to be able to break up derivation into smaller tx
-		IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex("derivedaccessdictionary");
 		IQueryEngine q = indexer.getKnownQueryLanguages().get(type);
 		IAccessListener accessListener = q.calculateDerivedAttributes(indexer, nodesToBeUpdated);
 
@@ -1029,6 +1027,7 @@ public class GraphModelInserter {
 			// not needed as indexes should be up to date
 			// nodesToBeUpdated = graph.retainExisting(nodesToBeUpdated);
 
+			IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex("derivedaccessdictionary");
 			for (IAccess a : accessListener.getAccesses()) {
 				IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
 
