@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.hawk.core.IModelIndexer;
-import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.graph.IGraphNode;
 
 public interface IQueryEngine {

@@ -55,6 +55,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 	public static final String TYPE = "org.hawk.epsilon.emc.EOLQueryEngine";
 
+	/**
+	 * Maximum transaction size for computing derived attributes.
+	 */
+	private static final int CALCULATE_DERIVED_TXSIZE = 10_000;
+
 	protected HashSet<String> cachedTypes = new HashSet<String>();
 	protected StringProperties config = null;
 
@@ -817,10 +822,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	// deriving attributes
 	@Override
 	public AccessListener calculateDerivedAttributes(IModelIndexer m, Iterable<IGraphNode> nodes) {
-
-		boolean enableDebug = false;
-		int count = 0;
-		long time = System.currentTimeMillis();
+		final boolean enableDebug = false;
+		final long startTime = System.currentTimeMillis();
 
 		indexer = m;
 		graph = m.getGraph();
@@ -834,7 +837,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		StringProperties configuration = new StringProperties();
 		configuration.put(EOLQueryEngine.PROPERTY_ENABLE_CACHING, true);
 		setDatabaseConfig(configuration);
-
 		try {
 			load(m);
 		} catch (EolModelLoadingException e2) {
@@ -847,104 +849,35 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			pg = (GraphPropertyGetter) getPropertyGetter();
 			pg.setBroadcastAccess(true);
 		}
-		//
-		// init eol stuff
-		//
 
-		HashMap<String, EolModule> cachedModules = new HashMap<String, EolModule>();
-
-		try (IGraphTransaction t = graph.beginTransaction()) {
-
-			for (IGraphNode n : nodes) {
-
-				// System.err.println(n.getId());
-				// ...
-				for (String s : n.getPropertyKeys()) {
-
-					String prop = n.getProperty(s).toString();
-
-					if (prop.startsWith("_NYD##")) {
-
-						Object derived = "DERIVATION_EXCEPTION";
-						try {
-
-							// System.out.println(getDatabaseConfig().keySet());
-
-							Object enablecaching = getDatabaseConfig().get(EOLQueryEngine.PROPERTY_ENABLE_CACHING);
-
-							// System.out.println(enablecaching);
-
-							if (enablecaching != null && (enablecaching.equals("true") || enablecaching.equals(true))) {
-
-								derived = new DeriveFeature().deriveFeature(cachedModules, indexer, n, this, s, prop);
-
-							} else
-
-								derived = new DeriveFeature().deriveFeature(new HashMap<String, EolModule>(), indexer,
-										n, this, s, prop);
-
-						} catch (Exception e1) {
-							System.err.println("Exception in deriving attribute");
-							e1.printStackTrace();
-						}
-
-						// System.err.println(derived.getClass());
-						// System.err.println(derived);
-
-						n.setProperty(s, derived);
-
-						IGraphNode elementnode = n.getIncoming().iterator().next().getStartNode();
-
-						IGraphNode typeNode = elementnode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
-								.iterator().next().getEndNode();
-						IGraphNodeIndex derivedFeature = graph
-								.getOrCreateNodeIndex(typeNode.getOutgoingWithType("epackage").iterator().next()
-										.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString()
-										//
-										// e.getEPackage().getNsURI()
-										+ "##"
-										// -
-										+ typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString()
-										//
-										+ "##" + s);
-
-						// System.err.println(">< " + derived);
-
-						// flatten multi-valued derived features for indexing
-						if (derived.getClass().getComponentType() != null || derived instanceof Collection<?>)
-							derived = new Utils().toString(derived);
-
-						derivedFeature.add(elementnode, s, derived);
-					}
+		// Break up update into smaller transactions in order to scale to large models
+		final Map<String, EolModule> cachedModules = new HashMap<String, EolModule>();
+		final Iterator<IGraphNode> itNodes = nodes.iterator();
+		int count = 0;
+		boolean hasNext = true;
+		while (hasNext) {
+			final long txStartTime = System.currentTimeMillis();
+			try (IGraphTransaction t = graph.beginTransaction()) {
+				int txSize = 0;
+				while (itNodes.hasNext() && txSize < CALCULATE_DERIVED_TXSIZE) {
+					IGraphNode n = itNodes.next();
+					calculateDerivedAttributes(cachedModules, n);
+					++txSize;
 				}
+				count += txSize;
+				hasNext = itNodes.hasNext();
 
-				IGraphNodeIndex derivedProxyDictionary = graph.getOrCreateNodeIndex("derivedproxydictionary");
-				derivedProxyDictionary.remove(n);
-
-				if (enableDebug) {
-					count++;
-					if (count % 10 == 0) {
-						time = System.currentTimeMillis() - time;
-						System.err.println(
-								count + " derivations complete, took ~ " + time / 1000 + "s " + time % 1000 + "ms");
-						time = System.currentTimeMillis();
-					}
-				}
-
+				t.success();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 
-			// allUnresolved = derivedProxyDictionary.query("derived", "*");
-			//
-			// for (Node n : allUnresolved)
-			// System.err.println(n.getId()
-			// + " :: "
-			// + n.getRelationships(Direction.OUTGOING,
-			// RelationshipUtil
-			// .getNewRelationshipType("ofType")).iterator().next().getEndNode()
-			// + " :: " + n.getPropertyKeys());
-			t.success();
-		} catch (Exception e) {
-			e.printStackTrace();
+			final long nowMillis = System.currentTimeMillis();
+			final long txTimeMillis = nowMillis - txStartTime;
+			final long totalTimeMillis = nowMillis - startTime;
+			m.getCompositeStateListener().info(
+					String.format("Calculated derived features for %d nodes (%d s, %d s total)",
+							count, txTimeMillis/1000, totalTimeMillis/1000));
 		}
 
 		if (!enableDebug) {
@@ -952,6 +885,50 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			return pg.getAccessListener();
 		}
 		return null;
+	}
+
+	protected void calculateDerivedAttributes(Map<String, EolModule> cachedModules, IGraphNode n) {
+		for (String s : n.getPropertyKeys()) {
+			String prop = n.getProperty(s).toString();
+
+			if (prop.startsWith("_NYD##")) {
+				Object derived = "DERIVATION_EXCEPTION";
+				try {
+					Object enablecaching = getDatabaseConfig().get(EOLQueryEngine.PROPERTY_ENABLE_CACHING);
+					if (enablecaching != null && (enablecaching.equals("true") || enablecaching.equals(true))) {
+						derived = new DeriveFeature().deriveFeature(cachedModules, indexer, n, this, s, prop);
+					} else {
+						derived = new DeriveFeature().deriveFeature(new HashMap<String, EolModule>(), indexer,
+								n, this, s, prop);
+					}
+				} catch (Exception e1) {
+					System.err.println("Exception in deriving attribute");
+					e1.printStackTrace();
+				}
+
+				n.setProperty(s, derived);
+
+				IGraphNode elementnode = n.getIncoming().iterator().next().getStartNode();
+
+				IGraphNode typeNode = elementnode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
+						.iterator().next().getEndNode();
+				IGraphNodeIndex derivedFeature = graph
+						.getOrCreateNodeIndex(typeNode.getOutgoingWithType("epackage").iterator().next()
+								.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString()
+								+ "##"
+								+ typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString()
+								+ "##" + s);
+
+				// flatten multi-valued derived features for indexing
+				if (derived.getClass().getComponentType() != null || derived instanceof Collection<?>)
+					derived = new Utils().toString(derived);
+
+				derivedFeature.add(elementnode, s, derived);
+			}
+		}
+
+		IGraphNodeIndex derivedProxyDictionary = graph.getOrCreateNodeIndex("derivedproxydictionary");
+		derivedProxyDictionary.remove(n);
 	}
 
 	@Override

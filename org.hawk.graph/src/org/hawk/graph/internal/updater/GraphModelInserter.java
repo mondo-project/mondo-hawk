@@ -42,6 +42,8 @@ import org.hawk.core.model.IHawkReference;
 import org.hawk.core.query.IAccess;
 import org.hawk.core.query.IAccessListener;
 import org.hawk.core.query.IQueryEngine;
+import org.hawk.core.query.InvalidQueryException;
+import org.hawk.core.query.QueryExecutionException;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.internal.util.GraphUtil;
 
@@ -942,24 +944,16 @@ public class GraphModelInserter {
 	public int resolveDerivedAttributeProxies(IGraphDatabase graph, IModelIndexer m, String type) throws Exception {
 
 		int derivedLeft = -1;
-		Iterable<IGraphNode> allUnresolved = null;
+		IGraphIterable<IGraphNode> allUnresolved = null;
 		IGraphNodeIndex derivedProxyDictionary = null;
 		int size = 0;
 
 		System.err.println("deriving attributes...");
 
 		try (IGraphTransaction tx = graph.beginTransaction()) {
-			// operations on the graph
-			// ...
-
-			// doneFIXME (a) discuss strategy for class level annotations
-
 			derivedProxyDictionary = graph.getOrCreateNodeIndex("derivedproxydictionary");
-
 			allUnresolved = derivedProxyDictionary.query("derived", "*");
-
-			size = ((IGraphIterable<IGraphNode>) allUnresolved).size();
-
+			size = allUnresolved.size();
 			tx.success();
 		}
 
@@ -968,7 +962,6 @@ public class GraphModelInserter {
 			IAccessListener accessListener = q.calculateDerivedAttributes(indexer, allUnresolved);
 
 			// dump access to lucene and add hooks on updates
-
 			final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
 			try (IGraphTransaction tx = graph.beginTransaction()) {
 				listener.changeStart();
@@ -1020,7 +1013,14 @@ public class GraphModelInserter {
 	}
 
 	public void updateDerivedAttributes(String type, Set<IGraphNode> nodesToBeUpdated) throws Exception {
+
 		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
+
+		// This is done outside any other tx, as we need to be able to break up derivation into smaller tx
+		IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex("derivedaccessdictionary");
+		IQueryEngine q = indexer.getKnownQueryLanguages().get(type);
+		IAccessListener accessListener = q.calculateDerivedAttributes(indexer, nodesToBeUpdated);
+
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			listener.changeStart();
 			// operations on the graph
@@ -1028,11 +1028,6 @@ public class GraphModelInserter {
 
 			// not needed as indexes should be up to date
 			// nodesToBeUpdated = graph.retainExisting(nodesToBeUpdated);
-
-			IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex("derivedaccessdictionary");
-
-			IQueryEngine q = indexer.getKnownQueryLanguages().get(type);
-			IAccessListener accessListener = q.calculateDerivedAttributes(indexer, nodesToBeUpdated);
 
 			for (IAccess a : accessListener.getAccesses()) {
 				IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
@@ -1088,7 +1083,7 @@ public class GraphModelInserter {
 		long time = System.currentTimeMillis();
 		System.err.println("creating/updating derived attribute...");
 
-		HashSet<IGraphNode> derivedPropertyNodes = new HashSet<>();
+		Set<IGraphNode> derivedPropertyNodes = new HashSet<>();
 
 		IAccessListener accessListener;
 		try (IGraphTransaction tx = graph.beginTransaction()) {
@@ -1157,11 +1152,16 @@ public class GraphModelInserter {
 				System.err.println(derivedPropertyNodes.size()
 						+ " instances found.\ncalculating derived attribute for instances...");
 
-			// derive the new property
-			IQueryEngine q = indexer.getKnownQueryLanguages().get(derivationlanguage);
-			accessListener = q.calculateDerivedAttributes(indexer, derivedPropertyNodes);
-
 			tx.success();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+
+		// derive the new property
+		IQueryEngine q = indexer.getKnownQueryLanguages().get(derivationlanguage);
+		try {
+			accessListener = q.calculateDerivedAttributes(indexer, derivedPropertyNodes);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;

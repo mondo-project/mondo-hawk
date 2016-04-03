@@ -12,10 +12,10 @@ package org.hawk.epsilon.emc;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.epsilon.common.parse.problem.ParseProblem;
@@ -33,7 +33,7 @@ public class DeriveFeature {
 	public DeriveFeature() throws Exception {
 	}
 
-	public Object deriveFeature(HashMap<String, EolModule> cachedModules, IModelIndexer indexer, IGraphNode n,
+	public Object deriveFeature(Map<String, EolModule> cachedModules, IModelIndexer indexer, IGraphNode n,
 			EOLQueryEngine containerModel, String propertyName, String EOLScript) throws Exception {
 
 		// remove prefix (_NYD)
