@@ -99,6 +99,6 @@ public class ModelioModelResource implements IHawkModelResource {
 
 	@Override
 	public boolean providesSingletonElements() {
-		return false;
+		return true;
 	}
 }
