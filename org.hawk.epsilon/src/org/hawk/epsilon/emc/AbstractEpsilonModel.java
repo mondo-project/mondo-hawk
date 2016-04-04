@@ -95,6 +95,8 @@ public abstract class AbstractEpsilonModel extends Model {
 
 	abstract public Object getFileOf(Object arg0);
 
+	abstract public Object getFilesOf(Object arg0);
+
 	@Override
 	abstract public boolean hasType(String arg0);
 

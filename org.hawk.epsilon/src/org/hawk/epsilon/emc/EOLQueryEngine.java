@@ -311,6 +311,24 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	}
 
 	@Override
+	public List<FileNodeWrapper> getFilesOf(Object arg0) {
+		final List<FileNodeWrapper> files = new ArrayList<>();
+
+		try {
+			IGraphNode objectNode = ((GraphNodeWrapper) arg0).getNode();
+			for (IGraphEdge outFileEdge : objectNode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+				final FileNode fileNode = new FileNode(outFileEdge.getEndNode());
+				final FileNodeWrapper fileNodeWrapper = new FileNodeWrapper(fileNode, this);
+				files.add(fileNodeWrapper);
+			}
+		} catch (Exception e) {
+			System.err.println("error in getFilesOf, returning null: " + e.getMessage());
+		}
+
+		return files;
+	}
+
+	@Override
 	public boolean hasType(String type) {
 		// If conflict return false
 		// doneTODO Can receive both simple and fully-qualified name e.g.
