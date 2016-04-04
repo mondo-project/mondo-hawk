@@ -286,7 +286,7 @@ public class GraphModelBatchInjector {
 				addEObject(originatingFile, child, resourceCanProvideSingletons);
 				break;
 			case MODELREFERENCES:
-				addEReferences(child);
+				addEReferences(child, resourceCanProvideSingletons);
 				break;
 			default:
 				System.err.println("parse option: " + parseOption + " not recognised!");
@@ -410,6 +410,7 @@ public class GraphModelBatchInjector {
 				node = graph.createNode(m, "eobject");
 				if (eObject.isFragmentUnique()) {
 					fragmentIdx.add(node, "id", eObject.getUriFragment());
+					fragmentIdx.flush();
 				}
 			} catch (IllegalArgumentException ex) {
 				System.err.println("here be dragons!");
@@ -566,17 +567,7 @@ public class GraphModelBatchInjector {
 		// if a unique element is already in hawk set the node to that element
 		// and return it
 		if (resourceCanProvideSingletons && eObject.isFragmentUnique()) {
-			fragmentIdx.flush();
-			Iterator<IGraphNode> itr = fragmentIdx.get("id", eObject.getUriFragment()).iterator();
-			while (itr.hasNext()) {
-				if (node == null)
-					node = itr.next();
-				else {
-					System.err.println(
-							"WARNING: GraphModelBatchInjector: addEObject: isFragmentUnique returned more than one node, keeping first one.");
-					break;
-				}
-			}
+			node = getFromFragmentIndex(eObject);
 
 			// if this node is from a file not yet registered, add this file
 			// reference
@@ -623,6 +614,23 @@ public class GraphModelBatchInjector {
 				}
 			}
 
+		}
+
+		return node;
+	}
+
+	protected IGraphNode getFromFragmentIndex(IHawkObject eObject) {
+		IGraphNode node = null;
+
+		final Iterator<IGraphNode> itr = fragmentIdx.get("id", eObject.getUriFragment()).iterator();
+		while (itr.hasNext()) {
+			if (node == null)
+				node = itr.next();
+			else {
+				System.err.println(
+						"WARNING: GraphModelBatchInjector: addEObject: isFragmentUnique returned more than one node, keeping first one.");
+				break;
+			}
 		}
 
 		return node;
@@ -796,9 +804,12 @@ public class GraphModelBatchInjector {
 	 * @param source
 	 * @throws Exception
 	 */
-	private boolean addEReferences(IHawkObject source) throws Exception {
-
+	private boolean addEReferences(IHawkObject source, boolean resourceCanProvideSingletons) throws Exception {
 		boolean atLeastOneSetReference = false;
+		if (source.isFragmentUnique() && resourceCanProvideSingletons && hash.get(source) == null) {
+			// Avoid trying to add references from a singleton object we already had
+			return atLeastOneSetReference;
+		}
 
 		for (final IHawkReference eReference : ((IHawkClass) source.getType()).getAllReferences()) {
 			if (source.isSet(eReference)) {
