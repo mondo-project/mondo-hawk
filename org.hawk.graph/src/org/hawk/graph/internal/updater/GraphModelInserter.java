@@ -51,6 +51,9 @@ import org.hawk.graph.internal.util.GraphUtil;
  */
 public class GraphModelInserter {
 
+	// toggle to enabled detailed output of update process
+	private static final boolean enableDebug = false;
+
 	private static final int PROXY_RESOLVE_NOTIFY_INTERVAL = 25000;
 
 	private static final int PROXY_RESOLVE_TX_SIZE = 5000;
@@ -984,9 +987,11 @@ public class GraphModelInserter {
 						derivedAccessDictionary.add(sourceNode, a.getAccessObjectID(), a.getProperty());
 				}
 
-				// TODO: discuss with Kostas - this produces OOMEs for the Modelio 2.4GB workspace and takes a *lot* of time
-				//System.err.println("accesses: " + accessListener.getAccesses().size() + " ("
-				//		+ derivedAccessDictionary.query("*", "*").size() + " nodes)");
+				// high overhead in certain corner cases (modelio -- large
+				// workspace -- only enable for debugging)
+				if (enableDebug)
+					System.err.println("accesses: " + accessListener.getAccesses().size() + " ("
+							+ derivedAccessDictionary.query("*", "*").size() + " nodes)");
 
 				tx.success();
 				listener.changeSuccess();
@@ -1015,7 +1020,8 @@ public class GraphModelInserter {
 
 		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
 
-		// This is done outside any other tx, as we need to be able to break up derivation into smaller tx
+		// This is done outside any other tx, as we need to be able to break up
+		// derivation into smaller tx
 		IQueryEngine q = indexer.getKnownQueryLanguages().get(type);
 		IAccessListener accessListener = q.calculateDerivedAttributes(indexer, nodesToBeUpdated);
 
@@ -1078,7 +1084,6 @@ public class GraphModelInserter {
 	public void updateDerivedAttribute(String metamodeluri, String typename, String attributename, String attributetype,
 			boolean isMany, boolean isOrdered, boolean isUnique, String derivationlanguage, String derivationlogic) {
 
-		boolean enableDebug = false;
 		long time = System.currentTimeMillis();
 		System.err.println("creating/updating derived attribute...");
 
