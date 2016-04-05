@@ -963,43 +963,23 @@ public class GraphModelInserter {
 			IAccessListener accessListener = q.calculateDerivedAttributes(indexer, allUnresolved);
 
 			// dump access to lucene and add hooks on updates
-			final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
-			try (IGraphTransaction tx = graph.beginTransaction()) {
-				listener.changeStart();
+			final boolean removeStage = true;
+			processAccessDictionary(graph, m, accessListener, removeStage);
+			processAccessDictionary(graph, m, accessListener, !removeStage);
 
-				// operations on the graph
-				// ...
-				IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex("derivedaccessdictionary");
-
-				// reset accesses of nodes updated
-				// ...
-				for (IAccess a : accessListener.getAccesses()) {
-					IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
-
-					if (sourceNode != null)
-						derivedAccessDictionary.remove(sourceNode);
+			if (enableDebug) {
+				/* high overhead in certain corner cases (modelio -- large workspace -- only enable for debugging) */
+				try (IGraphTransaction tx = graph.beginTransaction()) {
+					IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex("derivedaccessdictionary");
+					if (enableDebug) {
+						System.err.println("accesses: " + accessListener.getAccesses().size() + " ("
+								+ derivedAccessDictionary.query("*", "*").size() + " nodes)");
+					}
+					tx.success();
+				} catch (Throwable ex) {
+					throw ex;
 				}
-
-				for (IAccess a : accessListener.getAccesses()) {
-					IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
-
-					if (sourceNode != null)
-						derivedAccessDictionary.add(sourceNode, a.getAccessObjectID(), a.getProperty());
-				}
-
-				// high overhead in certain corner cases (modelio -- large
-				// workspace -- only enable for debugging)
-				if (enableDebug)
-					System.err.println("accesses: " + accessListener.getAccesses().size() + " ("
-							+ derivedAccessDictionary.query("*", "*").size() + " nodes)");
-
-				tx.success();
-				listener.changeSuccess();
-			} catch (Throwable ex) {
-				listener.changeFailure();
-				throw ex;
 			}
-
 			accessListener.resetAccesses();
 		}
 
@@ -1010,10 +990,58 @@ public class GraphModelInserter {
 			derivedLeft = ((IGraphIterable<IGraphNode>) derivedProxyDictionary.query("derived", "*")).size();
 			tx.success();
 		}
-
 		System.out.println(derivedLeft + " - sets of proxy [derived] attributes left incomplete in the store");
 
 		return derivedLeft;
+	}
+
+	/**
+	 * Implements the two stages in processing the recorded list of accesses:
+	 * the first stage should be with removeStage = true for removing all old
+	 * accesses, and the second stage should be with removeStage = false to add
+	 * all new accesses.
+	 *
+	 * This method is used in order to reuse the same transaction-splitting logic
+	 * for both stages.
+	 */
+	protected void processAccessDictionary(final IGraphDatabase graph, final IModelIndexer m, final IAccessListener accessListener, final boolean removeStage) throws Exception {
+		// TODO: see if this can be made more incremental or if the remove/add stages can be merged
+		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
+		final int nAccesses = accessListener.getAccesses().size();
+		final Iterator<IAccess> itAccesses = accessListener.getAccesses().iterator();
+		while (itAccesses.hasNext()) {
+			int count = 0;
+			try (IGraphTransaction tx = graph.beginTransaction()) {
+				listener.changeStart();
+				IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex("derivedaccessdictionary");
+
+				int txCount = 0;
+				while (itAccesses.hasNext() && txCount < PROXY_RESOLVE_TX_SIZE) {
+					final IAccess a = itAccesses.next();
+					final IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
+					if (sourceNode != null) {
+						if (removeStage) {
+							derivedAccessDictionary.remove(sourceNode);
+						} else {
+							derivedAccessDictionary.add(sourceNode, a.getAccessObjectID(), a.getProperty());
+						}
+					}
+					++txCount;
+				}
+				count += txCount;
+
+				m.getCompositeStateListener().info(String.format(removeStage
+						? "Removed old derived feature accesses from %d/%d nodes"
+						: "Added new derived feature accesses from %d/%d nodes",
+						count, nAccesses));
+
+				tx.success();
+				listener.changeSuccess();
+			} catch (Exception ex) {
+				listener.changeFailure();
+				throw ex;
+			}
+		}
 	}
 
 	public void updateDerivedAttributes(String type, Set<IGraphNode> nodesToBeUpdated) throws Exception {
