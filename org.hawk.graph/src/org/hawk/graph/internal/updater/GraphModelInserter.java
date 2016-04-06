@@ -12,6 +12,7 @@ package org.hawk.graph.internal.updater;
 
 import java.io.File;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,6 +42,8 @@ import org.hawk.core.model.IHawkReference;
 import org.hawk.core.query.IAccess;
 import org.hawk.core.query.IAccessListener;
 import org.hawk.core.query.IQueryEngine;
+import org.hawk.core.query.InvalidQueryException;
+import org.hawk.core.query.QueryExecutionException;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.internal.util.GraphUtil;
 
@@ -942,15 +945,12 @@ public class GraphModelInserter {
 		}
 	}
 
-	public int resolveDerivedAttributeProxies(IGraphDatabase graph, IModelIndexer m, String type) throws Exception {
-
-		int derivedLeft = -1;
+	public int resolveDerivedAttributeProxies(String type) throws Exception {
 		IGraphIterable<IGraphNode> allUnresolved = null;
 		IGraphNodeIndex derivedProxyDictionary = null;
 		int size = 0;
 
 		System.err.println("deriving attributes...");
-
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			derivedProxyDictionary = graph.getOrCreateNodeIndex("derivedproxydictionary");
 			allUnresolved = derivedProxyDictionary.query("derived", "*");
@@ -959,34 +959,11 @@ public class GraphModelInserter {
 		}
 
 		if (size > 0) {
-			IQueryEngine q = indexer.getKnownQueryLanguages().get(type);
-			IAccessListener accessListener = q.calculateDerivedAttributes(indexer, allUnresolved);
-
-			// dump access to lucene and add hooks on updates
-			final boolean removeStage = true;
-			processAccessDictionary(graph, m, accessListener, removeStage);
-			processAccessDictionary(graph, m, accessListener, !removeStage);
-
-			if (enableDebug) {
-				/* high overhead in certain corner cases (modelio -- large workspace -- only enable for debugging) */
-				try (IGraphTransaction tx = graph.beginTransaction()) {
-					IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex("derivedaccessdictionary");
-					if (enableDebug) {
-						System.err.println("accesses: " + accessListener.getAccesses().size() + " ("
-								+ derivedAccessDictionary.query("*", "*").size() + " nodes)");
-					}
-					tx.success();
-				} catch (Throwable ex) {
-					throw ex;
-				}
-			}
-			accessListener.resetAccesses();
+			processDerivedFeatureNodes(type, allUnresolved, size);
 		}
 
+		int derivedLeft = -1;
 		try (IGraphTransaction tx = graph.beginTransaction()) {
-			// operations on the graph
-			// ...
-
 			derivedLeft = ((IGraphIterable<IGraphNode>) derivedProxyDictionary.query("derived", "*")).size();
 			tx.success();
 		}
@@ -995,51 +972,54 @@ public class GraphModelInserter {
 		return derivedLeft;
 	}
 
-	/**
-	 * Implements the two stages in processing the recorded list of accesses:
-	 * the first stage should be with removeStage = true for removing all old
-	 * accesses, and the second stage should be with removeStage = false to add
-	 * all new accesses.
-	 *
-	 * This method is used in order to reuse the same transaction-splitting logic
-	 * for both stages.
-	 */
-	protected void processAccessDictionary(final IGraphDatabase graph, final IModelIndexer m, final IAccessListener accessListener, final boolean removeStage) throws Exception {
-		// TODO: see if this can be made more incremental or if the remove/add stages can be merged
-		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
-		final int nAccesses = accessListener.getAccesses().size();
-		final Iterator<IAccess> itAccesses = accessListener.getAccesses().iterator();
-		while (itAccesses.hasNext()) {
-			int count = 0;
+	protected void processDerivedFeatureNodes(final String type, final Iterable<IGraphNode> derivedFeatureNodes, final int nNodes)
+					throws InvalidQueryException, QueryExecutionException, Exception {
+		final long startMillis = System.currentTimeMillis();
+		final IQueryEngine q = indexer.getKnownQueryLanguages().get(type);
+
+		// Process derived nodes in chunks, to keep the size of the access listener and the transactions bounded
+		int count = 0;
+		final Iterator<IGraphNode> itUnresolved = derivedFeatureNodes.iterator();
+		boolean done = false;
+		while (!done) {
 			try (IGraphTransaction tx = graph.beginTransaction()) {
-				listener.changeStart();
-				IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex("derivedaccessdictionary");
+				final long startChunkMillis = System.currentTimeMillis();
 
-				int txCount = 0;
-				while (itAccesses.hasNext() && txCount < PROXY_RESOLVE_TX_SIZE) {
-					final IAccess a = itAccesses.next();
-					final IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
-					if (sourceNode != null) {
-						if (removeStage) {
-							derivedAccessDictionary.remove(sourceNode);
-						} else {
-							derivedAccessDictionary.add(sourceNode, a.getAccessObjectID(), a.getProperty());
-						}
-					}
-					++txCount;
+				final List<IGraphNode> chunk = new ArrayList<>(PROXY_RESOLVE_TX_SIZE);
+				for (int i = 0; i < PROXY_RESOLVE_TX_SIZE && itUnresolved.hasNext(); i++) {
+					chunk.add(itUnresolved.next());
 				}
-				count += txCount;
+				done = !itUnresolved.hasNext();
 
-				m.getCompositeStateListener().info(String.format(removeStage
-						? "Removed old derived feature accesses from %d/%d nodes"
-						: "Added new derived feature accesses from %d/%d nodes",
-						count, nAccesses));
+				final IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex("derivedaccessdictionary");
+				final IAccessListener accessListener = q.calculateDerivedAttributes(indexer, chunk);
 
+				// dump access to Lucene and add hooks on updates
+				for (IAccess a : accessListener.getAccesses()) {
+					final IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
+					derivedAccessDictionary.remove(sourceNode);
+				}
+				for (IAccess a : accessListener.getAccesses()) {
+					final IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
+					derivedAccessDictionary.add(sourceNode, a.getAccessObjectID(), a.getProperty());
+				}
+
+				if (enableDebug) {
+					/* high overhead in certain corner cases (modelio -- large workspace -- only enable for debugging) */
+					System.err.println("accesses: " + accessListener.getAccesses().size() + " ("
+							+ derivedAccessDictionary.query("*", "*").size() + " nodes)");
+				}
+
+				accessListener.resetAccesses();
 				tx.success();
-				listener.changeSuccess();
-			} catch (Exception ex) {
-				listener.changeFailure();
-				throw ex;
+
+				count += chunk.size();
+				final long now = System.currentTimeMillis();
+				final long chunkMillis = now - startChunkMillis;
+				final long totalMillis = now - startMillis;
+				indexer.getCompositeStateListener().info(String.format(
+						"Processed %d/%d derived feature nodes of type '%s' (%d s, %d s total)",
+						count, nNodes, type, chunkMillis/1000, totalMillis/1000));
 			}
 		}
 	}
@@ -1112,12 +1092,11 @@ public class GraphModelInserter {
 	public void updateDerivedAttribute(String metamodeluri, String typename, String attributename, String attributetype,
 			boolean isMany, boolean isOrdered, boolean isUnique, String derivationlanguage, String derivationlogic) {
 
-		long time = System.currentTimeMillis();
+		final long startMillis = System.currentTimeMillis();
 		System.err.println("creating/updating derived attribute...");
 
+		// Add the new derived property nodes
 		Set<IGraphNode> derivedPropertyNodes = new HashSet<>();
-
-		IAccessListener accessListener;
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			// operations on the graph
 			// ...
@@ -1191,82 +1170,14 @@ public class GraphModelInserter {
 		}
 
 		// derive the new property
-		IQueryEngine q = indexer.getKnownQueryLanguages().get(derivationlanguage);
 		try {
-			accessListener = q.calculateDerivedAttributes(indexer, derivedPropertyNodes);
+			processDerivedFeatureNodes(derivationlanguage, derivedPropertyNodes, derivedPropertyNodes.size());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
 		}
 
-		if (enableDebug)
-			System.err.println("updating derived access indexes...");
-
-		// Derive the new property (need to break up the transaction into
-		// chunks, as Neo4j cannot modify
-		// more than 65,535 Lucene indexes in the same transaction).
-		final int BATCH_SIZE = 50_000;
-		final Set<IAccess> accesses = accessListener == null ? null : accessListener.getAccesses();
-		int iterations = 0;
-
-		if (enableDebug)
-			System.err.println("removing previous accesses...");
-
-		if (accesses != null)
-			for (Iterator<IAccess> itAccess = accesses.iterator(); itAccess.hasNext();) {
-				try (IGraphTransaction tx = graph.beginTransaction()) {
-					final IGraphNodeIndex derivedAccessDictionary = graph
-							.getOrCreateNodeIndex("derivedaccessdictionary");
-
-					for (int i = 0; i < BATCH_SIZE && itAccess.hasNext(); i++) {
-						final IAccess a = itAccess.next();
-						final IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
-						if (sourceNode != null) {
-							derivedAccessDictionary.remove(sourceNode);
-						}
-					}
-
-					tx.success();
-				} catch (Exception e) {
-					e.printStackTrace();
-					return;
-				}
-				if (enableDebug) {
-					iterations++;
-					System.err
-							.println(iterations + " index update [removal] iterations (up to 50k updates) performed.");
-				}
-			}
-
-		System.err.println("adding new accesses...");
-		iterations = 0;
-
-		if (accesses != null)
-			for (Iterator<IAccess> itAccess = accesses.iterator(); itAccess.hasNext();) {
-				try (IGraphTransaction tx = graph.beginTransaction()) {
-					final IGraphNodeIndex derivedAccessDictionary = graph
-							.getOrCreateNodeIndex("derivedaccessdictionary");
-
-					for (int i = 0; i < BATCH_SIZE && itAccess.hasNext(); i++) {
-						final IAccess a = itAccess.next();
-						final IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
-						if (sourceNode != null) {
-							derivedAccessDictionary.add(sourceNode, a.getAccessObjectID(), a.getProperty());
-						}
-					}
-
-					tx.success();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				if (enableDebug) {
-					iterations++;
-					System.err
-							.println(iterations + " index update [addition] iterations (up to 50k updates) performed.");
-				}
-			}
-		time = System.currentTimeMillis() - time;
-		System.err.println("took ~" + time / 1000 + "s" + time % 1000 + "ms");
+		System.err.println("finished adding derived feature in " + (System.currentTimeMillis() - startMillis) + " ms");
 	}
 
 	public void updateIndexedAttribute(String metamodeluri, String typename, String attributename) {

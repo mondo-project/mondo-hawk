@@ -841,7 +841,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	@Override
 	public AccessListener calculateDerivedAttributes(IModelIndexer m, Iterable<IGraphNode> nodes) {
 		final boolean enableDebug = false;
-		final long startTime = System.currentTimeMillis();
 
 		indexer = m;
 		graph = m.getGraph();
@@ -868,34 +867,15 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			pg.setBroadcastAccess(true);
 		}
 
-		// Break up update into smaller transactions in order to scale to large models
+		// Compute the derived attributes
 		final Map<String, EolModule> cachedModules = new HashMap<String, EolModule>();
-		final Iterator<IGraphNode> itNodes = nodes.iterator();
-		int count = 0;
-		boolean hasNext = true;
-		while (hasNext) {
-			final long txStartTime = System.currentTimeMillis();
-			try (IGraphTransaction t = graph.beginTransaction()) {
-				int txSize = 0;
-				while (itNodes.hasNext() && txSize < CALCULATE_DERIVED_TXSIZE) {
-					IGraphNode n = itNodes.next();
-					calculateDerivedAttributes(cachedModules, n);
-					++txSize;
-				}
-				count += txSize;
-				hasNext = itNodes.hasNext();
-
-				t.success();
-			} catch (Exception e) {
-				e.printStackTrace();
+		try (IGraphTransaction t = graph.beginTransaction()) {
+			for (IGraphNode n : nodes) {
+				calculateDerivedAttributes(cachedModules, n);
 			}
-
-			final long nowMillis = System.currentTimeMillis();
-			final long txTimeMillis = nowMillis - txStartTime;
-			final long totalTimeMillis = nowMillis - startTime;
-			m.getCompositeStateListener().info(
-					String.format("Calculated derived features for %d nodes (%d s, %d s total)",
-							count, txTimeMillis/1000, totalTimeMillis/1000));
+			t.success();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		if (!enableDebug) {

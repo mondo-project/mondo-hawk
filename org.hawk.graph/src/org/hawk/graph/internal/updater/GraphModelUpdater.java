@@ -145,7 +145,6 @@ public class GraphModelUpdater implements IModelUpdater {
 			indexer.getCompositeStateListener().info(
 					"Resolving any uninitialized derived attributes...");
 			new GraphModelInserter(indexer, typeCache).resolveDerivedAttributeProxies(
-					indexer.getGraph(), indexer,
 					indexer.getDerivedAttributeExecutionEngine());
 		} catch (Exception e) {
 			console.printerrln("Exception in updateStore - resolving DERIVED proxies, returning 0:");
