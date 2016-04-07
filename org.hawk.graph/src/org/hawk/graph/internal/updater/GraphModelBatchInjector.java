@@ -65,7 +65,10 @@ public class GraphModelBatchInjector {
 
 	private IGraphDatabase graph;
 
-	private final Map<IHawkObject, IGraphNode> hash = new HashMap<IHawkObject, IGraphNode>(8192);
+	/*
+	 * We don't keep the original objects, only the URIs, which saves on memory.
+	 */
+	private final Map<String, IGraphNode> hash = new HashMap<String, IGraphNode>(8192);
 
 	IGraphNodeIndex fileDictionary, proxyDictionary, rootDictionary, fragmentIdx,
 			derivedProxyDictionary;
@@ -168,7 +171,7 @@ public class GraphModelBatchInjector {
 				try {
 
 					// add model elements
-					Set<IHawkObject> children = r.getAllContentsSet();
+					Iterable<IHawkObject> children = r.getAllContents();
 
 					startTime = System.nanoTime();
 
@@ -266,7 +269,7 @@ public class GraphModelBatchInjector {
 	 * @param graph
 	 * @return
 	 */
-	private int[] parseResource(IGraphNode originatingFile, ParseOptions parseOption, Set<IHawkObject> children,
+	private int[] parseResource(IGraphNode originatingFile, ParseOptions parseOption, Iterable<IHawkObject> children,
 			IModelIndexer hawk, boolean resourceCanProvideSingletons) throws Exception {
 
 		graph.enterBatchMode();
@@ -590,7 +593,7 @@ public class GraphModelBatchInjector {
 			if (node == null) {
 				System.err.println(String.format("The node for (%s) is null", eObject));
 			} else {
-				hash.put(eObject, node);
+				hash.put(eObject.getUri(), node);
 
 				final HashMap<String, Object> emptyMap = new HashMap<String, Object>();
 				createReference(ModelElementNode.EDGE_LABEL_OFTYPE, node, eClass, emptyMap, true);
@@ -651,8 +654,8 @@ public class GraphModelBatchInjector {
 		IGraphNode source = null;
 		IGraphNode destination = null;
 
-		source = hash.get(from);
-		destination = hash.get(to);
+		source = hash.get(from.getUri());
+		destination = hash.get(to.getUri());
 
 		if (source == null && destination == null) {
 
@@ -806,7 +809,7 @@ public class GraphModelBatchInjector {
 	 */
 	private boolean addEReferences(IHawkObject source, boolean resourceCanProvideSingletons) throws Exception {
 		boolean atLeastOneSetReference = false;
-		if (source.isFragmentUnique() && resourceCanProvideSingletons && hash.get(source) == null) {
+		if (source.isFragmentUnique() && resourceCanProvideSingletons && hash.get(source.getUri()) == null) {
 			// Avoid trying to add references from a singleton object we already had
 			return atLeastOneSetReference;
 		}
@@ -857,7 +860,7 @@ public class GraphModelBatchInjector {
 
 	private boolean addProxyRef(IHawkObject from, IHawkObject destinationObject, String edgelabel,
 			boolean isContainment, boolean isContainer) {
-		IGraphNode withProxy = hash.get(from);
+		IGraphNode withProxy = hash.get(from.getUri());
 		return addProxyRef(withProxy, destinationObject, edgelabel, isContainment, isContainer);
 	}
 

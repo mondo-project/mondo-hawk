@@ -13,6 +13,7 @@ package org.hawk.modelio.exml.parser;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -67,57 +68,70 @@ public class ExmlParser {
 
 	/**
 	 * Returns an iterable object with all the {@link ExmlObject} instances in
-	 * the archive.
+	 * the archive. The zipfile is re-read upon each iteration, to save on
+	 * memory, and is closed automatically once the iterator has been fully
+	 * consumed.
 	 *
 	 * @param fZip
 	 *            File that should be associated with the read contents.
-	 * @param zipFile
-	 *            Opened zip file to read from.
 	 */
-	public Iterable<ExmlObject> getObjects(final File fZip, final ZipFile zipFile) {
+	public Iterable<ExmlObject> getObjects(final File fZip) {
 		return new Iterable<ExmlObject>() {
-
 			@Override
 			public Iterator<ExmlObject> iterator() {
-				final Enumeration<? extends ZipEntry> entries = zipFile.entries();
+				try {
+					final ZipFile zipFile = new ZipFile(fZip);
+					final Enumeration<? extends ZipEntry> entries = zipFile.entries();
+					return new Iterator<ExmlObject>() {
+						ExmlObject nextObject = null;
+						boolean closed = false;
 
-				return new Iterator<ExmlObject>(){
-					ExmlObject nextObject = null;
+						@Override
+						public boolean hasNext() {
+							return findNextObject(entries) != null;
+						}
 
-					@Override
-					public boolean hasNext() {
-						return findNextObject(entries) != null;
-					}
+						@Override
+						public ExmlObject next() {
+							final ExmlObject ret = findNextObject(entries);
+							nextObject = null;
+							return ret;
+						}
 
-					@Override
-					public ExmlObject next() {
-						final ExmlObject ret = findNextObject(entries);
-						nextObject = null;
-						return ret;
-					}
+						@Override
+						public void remove() {
+							throw new UnsupportedOperationException();
+						}
 
-					@Override
-					public void remove() {
-						throw new UnsupportedOperationException();
-					}
-
-					private ExmlObject findNextObject(final Enumeration<? extends ZipEntry> entries) {
-						while (nextObject == null && entries.hasMoreElements()) {
-							ZipEntry entry = entries.nextElement();
-							if (entry.getName().toLowerCase().endsWith(".exml")) {
-								try (InputStream is = zipFile.getInputStream(entry)) {
-									nextObject = getObject(fZip, is);
-								} catch (IOException | XMLStreamException | FactoryConfigurationError e) {
-									LOGGER.error("Could not parse entry " + entry.getName() + " in " + zipFile.getName() + ": skipping", e);
+						private ExmlObject findNextObject(final Enumeration<? extends ZipEntry> entries) {
+							while (!closed && nextObject == null && entries.hasMoreElements()) {
+								ZipEntry entry = entries.nextElement();
+								if (entry.getName().toLowerCase().endsWith(".exml")) {
+									try (InputStream is = zipFile.getInputStream(entry)) {
+										nextObject = getObject(fZip, is);
+									} catch (IOException | XMLStreamException | FactoryConfigurationError e) {
+										LOGGER.error("Could not parse entry " + entry.getName() + " in "
+												+ zipFile.getName() + ": skipping", e);
+									}
 								}
 							}
+							if (nextObject == null) {
+								try {
+									closed = true;
+									zipFile.close();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							}
+							return nextObject;
 						}
-						return nextObject;
-					}
 
-				};
+					};
+				} catch (IOException e1) {
+					e1.printStackTrace();
+					return Collections.emptyIterator();
+				}
 			}
-			
 		};
 	}
 
@@ -171,6 +185,8 @@ public class ExmlParser {
 						final ExmlObject compObj = new ExmlObject(exmlObj.getFile());
 						fillObject(reader, compObj);
 						exmlObj.addToComposition(currentComp, compObj);
+					} else {
+					    throw new IllegalArgumentException("Unexpected <OBJECT> outside a composition");
 					}
 					break;
 				}

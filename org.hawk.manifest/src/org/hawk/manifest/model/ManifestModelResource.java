@@ -12,7 +12,6 @@ package org.hawk.manifest.model;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -156,8 +155,8 @@ public class ManifestModelResource implements IHawkModelResource {
 	}
 
 	@Override
-	public Iterator<IHawkObject> getAllContents() {
-		return allContents.iterator();
+	public Iterable<IHawkObject> getAllContents() {
+		return allContents;
 	}
 
 	@Override

@@ -10,10 +10,11 @@
  ******************************************************************************/
 package org.hawk.modelio.exml.model;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -31,7 +32,7 @@ public class ModelioModelResource implements IHawkModelResource {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioModelResource.class);
 	private final ModelioMetaModelResource metamodel;
-	private List<ExmlObject> exmls;
+	private Iterable<ExmlObject> exmls;
 	private Set<IHawkObject> contents;
 
 	public ModelioModelResource(ModelioMetaModelResource metamodel, ExmlObject exml) {
@@ -41,10 +42,7 @@ public class ModelioModelResource implements IHawkModelResource {
 
 	public ModelioModelResource(ModelioMetaModelResource metamodel, Iterable<ExmlObject> objects) {
 		this.metamodel = metamodel;
-		this.exmls = new ArrayList<>();
-		for (ExmlObject o : objects) {
-			exmls.add(o);
-		}
+		this.exmls = objects;
 	}
 
 	@Override
@@ -59,8 +57,39 @@ public class ModelioModelResource implements IHawkModelResource {
 	}
 
 	@Override
-	public Iterator<IHawkObject> getAllContents() {
-		return getAllContentsSet().iterator();
+	public Iterable<IHawkObject> getAllContents() {
+		return new Iterable<IHawkObject>() {
+			@Override
+			public Iterator<IHawkObject> iterator() {
+				// Iterator through all the model fragments - makes it
+				// possible to have only one fragment in memory at once,
+				// but requires reading it again on every iteration.
+				final Iterator<ExmlObject> itExmls = exmls.iterator();
+				final List<IHawkObject> currentFragment = new LinkedList<>();
+
+				return new Iterator<IHawkObject>() {
+					@Override
+					public boolean hasNext() {
+						return itExmls.hasNext() || !currentFragment.isEmpty();
+					}
+
+					@Override
+					public IHawkObject next() {
+						if (currentFragment.isEmpty()) {
+							// Reads the next fragment
+							ExmlObject nextRoot = itExmls.next();
+							addObjectToContents(nextRoot, currentFragment);
+						}
+						return currentFragment.remove(0);
+					}
+
+					@Override
+					public void remove() {
+						throw new UnsupportedOperationException();
+					}
+				};
+			}
+		};
 	}
 
 	@Override
@@ -68,13 +97,13 @@ public class ModelioModelResource implements IHawkModelResource {
 		if (contents == null) {
 			contents = new HashSet<>();
 			for (ExmlObject exml : exmls) {
-				addObjectToContents(exml);
+				addObjectToContents(exml, contents);
 			}
 		}
 		return contents;
 	}
 
-	private void addObjectToContents(ExmlObject exml) {
+	private void addObjectToContents(ExmlObject exml, Collection<IHawkObject> contents) {
 		ModelioClass mc = metamodel.getModelioClass(exml.getMClassName());
 		if (mc == null) {
 			LOGGER.warn("Could not find class '{}', skipping", exml.getMClassName());
@@ -90,7 +119,7 @@ public class ModelioModelResource implements IHawkModelResource {
 							exmlObject.setParentName(exml.getName());
 							exmlObject.setParentUID(exml.getUID());
 						}
-						addObjectToContents(exmlObject);
+						addObjectToContents(exmlObject, contents);
 					}
 				}
 			}

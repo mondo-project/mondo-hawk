@@ -629,7 +629,7 @@ public class GraphModelInserter {
 
 				// Get the model elements from the resource and use signatures
 				// and URI
-				for (IHawkObject o : resource.getAllContentsSet()) {
+				for (IHawkObject o : resource.getAllContents()) {
 					final String uriFragment = o.getUriFragment();
 					byte[] hash = signatures.get(uriFragment);
 					if (hash != null) {

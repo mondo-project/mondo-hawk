@@ -3,7 +3,6 @@ package org.hawk.ifc;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
@@ -50,8 +49,8 @@ public abstract class IFCAbstractModelResource implements IHawkModelResource {
 			throws DeserializeException, IOException;
 
 	@Override
-	public Iterator<IHawkObject> getAllContents() {
-		return getAllContentsSet().iterator();
+	public Iterable<IHawkObject> getAllContents() {
+		return getAllContentsSet();
 	}
 
 	@Override

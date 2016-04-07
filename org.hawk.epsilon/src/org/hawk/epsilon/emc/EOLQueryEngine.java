@@ -55,11 +55,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 	public static final String TYPE = "org.hawk.epsilon.emc.EOLQueryEngine";
 
-	/**
-	 * Maximum transaction size for computing derived attributes.
-	 */
-	private static final int CALCULATE_DERIVED_TXSIZE = 10_000;
-
 	protected HashSet<String> cachedTypes = new HashSet<String>();
 	protected StringProperties config = null;
 

@@ -31,10 +31,14 @@ public class ModelioModelResourceFactoryTest {
 
 		final Map<String, IHawkObject> elements = new HashMap<>();
 		final Set<String> rootOrContained = new HashSet<>();
-		for (IHawkObject o : resource.getAllContentsSet()) {
-			if (elements.put(o.getUriFragment(), o) != null) {
-				fail("Fragment " + o.getUriFragment() + " is repeated in the resource!");
-			}
+		for (IHawkObject o : resource.getAllContents()) {
+			// Note: due to the way Associations work, the "same" (e.g. with the
+			// same UID) ExmlObject might be repeated multiple times in a .ramc.
+			// This can happen for Associations, since the same ExmlObject might
+			// be on the two sides of it (but only truly contained in one).
+			// This is OK: each copy will have the same state, and Modelio objects
+			// are treated as singleton objects anyway.
+			elements.put(o.getUriFragment(), o);
 
 			if (o.isRoot()) {
 				rootOrContained.add(o.getUriFragment());
@@ -77,8 +81,7 @@ public class ModelioModelResourceFactoryTest {
 		ModelioModelResourceFactory factory = new ModelioModelResourceFactory();
 		IHawkModelResource resource = factory.parse(new File(ICONTAINMENT_PATH));
 
-		Set<IHawkObject> allContents = resource.getAllContentsSet();
-		for (IHawkObject ob : allContents) {
+		for (IHawkObject ob : resource.getAllContents()) {
 			final ModelioObject mob = (ModelioObject)ob;
 			final ModelioReference refParent = (ModelioReference)mob.getType().getStructuralFeature(ModelioClass.REF_PARENT);
 			final ModelioProxy refValue = (ModelioProxy) mob.get(refParent, true);

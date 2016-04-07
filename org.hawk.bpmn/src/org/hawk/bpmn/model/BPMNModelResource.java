@@ -11,7 +11,6 @@
 package org.hawk.bpmn.model;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.TreeIterator;
@@ -56,10 +55,8 @@ public class BPMNModelResource implements IHawkModelResource {
 	}
 
 	@Override
-	public Iterator<IHawkObject> getAllContents() {
-
-		return getAllContentsSet().iterator();
-
+	public Iterable<IHawkObject> getAllContents() {
+		return getAllContentsSet();
 	}
 
 	@Override

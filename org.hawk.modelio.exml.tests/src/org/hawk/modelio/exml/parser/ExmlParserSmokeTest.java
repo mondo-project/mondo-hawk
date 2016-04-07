@@ -23,7 +23,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.zip.ZipFile;
 
 import org.junit.Test;
 
@@ -73,7 +72,7 @@ public class ExmlParserSmokeTest {
 	public void jenkinsArchive() throws Exception {
 		final ExmlParser parser = new ExmlParser();
 		final File f = new File("resources/jenkins/jenkins_1.540.0.ramc");
-		Iterable<ExmlObject> objects = parser.getObjects(f, new ZipFile(f));
+		Iterable<ExmlObject> objects = parser.getObjects(f);
 
 		final long millis = System.currentTimeMillis();
 		long parsed = 0;

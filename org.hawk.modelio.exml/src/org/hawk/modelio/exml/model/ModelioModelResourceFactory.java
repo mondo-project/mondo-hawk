@@ -60,7 +60,7 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 		} else {
 			try (final ZipFile zf = new ZipFile(f)) {
 				final ExmlParser parser = new ExmlParser();
-				final Iterable<ExmlObject> objects = parser.getObjects(f, zf);
+				final Iterable<ExmlObject> objects = parser.getObjects(f);
 				return new ModelioModelResource(metamodel, objects);
 			}
 		}

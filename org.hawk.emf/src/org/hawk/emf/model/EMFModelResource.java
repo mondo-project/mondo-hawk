@@ -60,8 +60,8 @@ public class EMFModelResource implements IHawkModelResource {
 	}
 
 	@Override
-	public Iterator<IHawkObject> getAllContents() {
-		return getAllContentsSet().iterator();
+	public Iterable<IHawkObject> getAllContents() {
+		return getAllContentsSet();
 	}
 
 	@Override

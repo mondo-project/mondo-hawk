@@ -171,7 +171,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 						// cache of malformed object identifiers (to ignore
 						// references)
 						Set<String> malformedObjectCache = new HashSet<>();
-						for (IHawkObject content : r.getAllContentsSet()) {
+						for (IHawkObject content : r.getAllContents()) {
 							IHawkObject old = eobjectCache.put(
 									content.getUriFragment(), content);
 							if (old != null) {
