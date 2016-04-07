@@ -24,7 +24,6 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -37,6 +36,8 @@ import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommit;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.VcsRepositoryDelta;
+import org.mapdb.DB;
+import org.mapdb.DBMaker;
 
 public class LocalFolder implements IVcsManager {
 
@@ -90,19 +91,29 @@ public class LocalFolder implements IVcsManager {
 
 	protected IConsole console;
 	private Path rootLocation;
-	protected Set<File> previousFiles = new HashSet<>();
+	private String repositoryURL;
 
 	private long currentRevision = 0;
-	protected Map<String, String> recordedModifiedDates = new HashMap<>();
-	private String repositoryURL;
+	protected Set<File> previousFiles;
+	protected Map<String, String> recordedModifiedDates;
+
 	private boolean isFrozen = false;
 
-	public LocalFolder() {
+	/**
+	 * MapDB database: using file-backed Java collections allows us to save
+	 * memory when handling folders with a large number of files.
+	 */
+	private DB db;
 
+	public LocalFolder() {
 	}
 
 	@Override
 	public void init(String vcsloc, IModelIndexer indexer) throws Exception {
+		final File fMapDB = File.createTempFile("localfolder", "mapdb");
+		db = DBMaker.newFileDB(fMapDB).deleteFilesAfterClose().closeOnJvmShutdown().make();
+		previousFiles = db.createHashSet("previousFiles").make();
+		recordedModifiedDates = db.createHashMap("recordedModifiedDates").make();
 
 		console = indexer.getConsole();
 
@@ -189,6 +200,9 @@ public class LocalFolder implements IVcsManager {
 	@Override
 	public void shutdown() {
 		rootLocation = null;
+		if (!db.isClosed()) {
+			db.close();
+		}
 	}
 
 	@Override
