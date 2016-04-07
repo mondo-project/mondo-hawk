@@ -55,10 +55,10 @@ public class LocalFolder implements IVcsManager {
 		public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
 			final File f = dir.toFile();
 			final String currentlatest = getRevisionFromFileMetadata(f);
-			final String lastRev = recordedModifiedDates.get(dir);
+			final String lastRev = recordedModifiedDates.get(dir.toString());
 			if (lastRev == null || !lastRev.equals(currentlatest)) {
 				if (alter)
-					recordedModifiedDates.put(dir, currentlatest);
+					recordedModifiedDates.put(dir.toString(), currentlatest);
 				hasChanged = true;
 			}
 			return FileVisitResult.CONTINUE;
@@ -73,10 +73,10 @@ public class LocalFolder implements IVcsManager {
 		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 			final File f = file.toFile();
 			final String currentlatest = getRevisionFromFileMetadata(f);
-			final String lastRev = recordedModifiedDates.get(file);
+			final String lastRev = recordedModifiedDates.get(file.toString());
 			if (lastRev == null || !lastRev.equals(currentlatest)) {
 				if (alter)
-					recordedModifiedDates.put(file, currentlatest);
+					recordedModifiedDates.put(file.toString(), currentlatest);
 				hasChanged = true;
 			}
 			return FileVisitResult.CONTINUE;
@@ -90,10 +90,10 @@ public class LocalFolder implements IVcsManager {
 
 	protected IConsole console;
 	private Path rootLocation;
-	private Set<File> previousFiles = new HashSet<>();
+	protected Set<File> previousFiles = new HashSet<>();
 
 	private long currentRevision = 0;
-	private Map<Path, String> recordedModifiedDates = new HashMap<>();
+	protected Map<String, String> recordedModifiedDates = new HashMap<>();
 	private String repositoryURL;
 	private boolean isFrozen = false;
 
@@ -256,7 +256,7 @@ public class LocalFolder implements IVcsManager {
 			// c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 			commit.getItems().add(c);
 
-			recordedModifiedDates.remove(path);
+			recordedModifiedDates.remove(path.toString());
 
 		}
 
@@ -268,7 +268,7 @@ public class LocalFolder implements IVcsManager {
 				previousFiles.add(f);
 				Path filePath = f.toPath();
 				final String latestRev = getRevisionFromFileMetadata(f);
-				final String lastDate = recordedModifiedDates.get(filePath);
+				final String lastDate = recordedModifiedDates.get(filePath.toString());
 				if (lastDate != null && lastDate.equals(latestRev)) {
 					if ((currentRevision + "").equals(startRevision))
 						continue;
