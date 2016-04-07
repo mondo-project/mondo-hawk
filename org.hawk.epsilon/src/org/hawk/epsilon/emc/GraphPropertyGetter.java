@@ -292,7 +292,10 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				results.add(edgeNodeWrapper);
 			}
 			return results;
-		} else {
+		} else if (property.equals("hawkURIFragment")) {
+			return node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
+		}
+		else {
 			return null;
 		}
 	}
