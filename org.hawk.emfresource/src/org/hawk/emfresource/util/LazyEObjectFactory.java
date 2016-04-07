@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage.Registry;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.DynamicEObjectImpl;
 
@@ -81,7 +82,15 @@ public class LazyEObjectFactory {
 						return methodInterceptor;
 					} else if ("eIsSet".equals(m.getName()) && m.getParameterTypes().length == 1 && EStructuralFeature.class.isAssignableFrom(m.getParameterTypes()[0])) {
 						return methodInterceptor;
-					} else {
+					} else if (m.getName().startsWith("get") && m.getParameterTypes().length == 0) {
+						EReference eRef = guessEReferenceFromGetter(eClass, m.getName());
+						if (eRef != null) {
+							return methodInterceptor;
+						} else {
+							return NoOp.INSTANCE;
+						}
+					}
+					else {
 						return NoOp.INSTANCE;
 					}
 				}
@@ -122,4 +131,24 @@ public class LazyEObjectFactory {
 		return o;
 	}
 
+	public EReference guessEReferenceFromGetter(EClass eClass, String methodName) {
+		assert methodName.startsWith("get") : "method name should start with get";
+
+		String referenceName = methodName.substring("get".length());
+		if (referenceName.length() == 0) {
+			return null;
+		}
+
+		// For getFirstElement, try both "FirstElement" and "firstElement" 
+		EStructuralFeature sf = eClass.getEStructuralFeature(referenceName);
+		if (sf == null) {
+			referenceName = Character.toLowerCase(referenceName.charAt(0)) + referenceName.substring(1);
+			sf = eClass.getEStructuralFeature(referenceName);
+		}
+		if (sf instanceof EReference) {
+			return (EReference)sf;
+		} else {
+			return null;
+		}
+	}
 }

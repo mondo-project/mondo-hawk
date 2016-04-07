@@ -148,13 +148,22 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 				}
 				break;
 			case "eContents":
-			default:
 				// Resolve all containment references for an eContents call
 				synchronized(nodeIdToEObjectCache) {
 					for (EReference ref : eob.eClass().getEAllReferences()) {
 						if (ref.isContainment()) {
 							lazyResolver.resolve(eob, (EStructuralFeature)ref, false, true);
 						}
+					}
+				}
+				break;
+			default:
+				if (m.getName().startsWith("get")) {
+					// Reuse the regular eGet
+					EReference eRef = eobFactory.guessEReferenceFromGetter(eob.eClass(), m.getName());
+					if (eRef != null) {
+						Method mEGet = eob.getClass().getMethod("eGet", EStructuralFeature.class);
+						return mEGet.invoke(o, eRef);
 					}
 				}
 				break;
