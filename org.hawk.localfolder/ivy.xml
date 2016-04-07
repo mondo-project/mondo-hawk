@@ -7,6 +7,6 @@
         status="integration">
 	</info>
   <dependencies>
-   <dependency org="org.mapdb" name="mapdb" rev="1.0.9"/>
+    <dependency org="org.mapdb" name="mapdb" rev="1.0.9"/>
   </dependencies>
 </ivy-module>
