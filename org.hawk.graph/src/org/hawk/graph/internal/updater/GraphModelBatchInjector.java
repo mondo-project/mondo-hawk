@@ -77,7 +77,6 @@ public class GraphModelBatchInjector {
 
 	private final IGraphChangeListener listener;
 	private final VcsCommitItem commitItem;
-
 	private Mode previousMode = Mode.UNKNOWN;
 
 	private void refreshIndexes() throws Exception {
@@ -128,7 +127,7 @@ public class GraphModelBatchInjector {
 	}
 
 	public GraphModelBatchInjector(IModelIndexer hawk, TypeCache typeCache, VcsCommitItem s, IHawkModelResource r,
-			IGraphChangeListener listener) throws Exception {
+			IGraphChangeListener listener, boolean verbose) throws Exception {
 		IGraphDatabase g = hawk.getGraph();
 		this.graph = g;
 		this.typeCache = typeCache;
@@ -172,32 +171,32 @@ public class GraphModelBatchInjector {
 
 					// add model elements
 					Iterable<IHawkObject> children = r.getAllContents();
-
-					startTime = System.nanoTime();
-
-					System.out.println("File: " + s.getPath());
-					System.out.print("ADDING: ");
+					if (verbose) {
+						startTime = System.nanoTime();
+						System.out.println("File: " + s.getPath());
+						System.out.print("ADDING: ");
+					}
 					int[] addedElements = parseResource(fileNode, ParseOptions.MODELELEMENTS, children, hawk,
 							r.providesSingletonElements());
-					System.out.println(addedElements[0] + "\nNODES AND " + addedElements[1] + " + " + addedElements[2]
+					if (verbose) {
+						System.out.println(addedElements[0] + "\nNODES AND " + addedElements[1] + " + " + addedElements[2]
 							+ " M->MM REFERENCES! (took ~" + (System.nanoTime() - startTime) / 1000000000 + "sec)");
-
-					startTime = System.nanoTime();
+					}
 
 					// add references
-					System.out.println("File: " + s.getPath());
-					System.out.print("ADDING: ");
+					if (verbose) {
+						startTime = System.nanoTime();
+						System.out.println("File: " + s.getPath());
+						System.out.print("ADDING: ");
+					}
 					addedElements = parseResource(fileNode, ParseOptions.MODELREFERENCES, children, hawk,
 							r.providesSingletonElements());
 					setUnset(getUnset() + addedElements[3]);
-					System.out.println(addedElements[0] + "\nREFERENCES! (took ~"
+					if (verbose) {
+						System.out.println(addedElements[0] + "\nREFERENCES! (took ~"
 							+ (System.nanoTime() - startTime) / 1000000000 + "sec)");
+					}
 
-					// System.out
-					// .println(((IGraphIterable<IGraphNode>) proxyDictionary
-					// .query(GraphModelUpdater.PROXY_REFERENCE_PREFIX,
-					// "*")).size()
-					// + " - sets of proxy references left in the store");
 					listener.changeSuccess();
 					successState = true;
 				} catch (Exception e) {
@@ -232,10 +231,6 @@ public class GraphModelBatchInjector {
 			successState = false;
 			ex.printStackTrace();
 			listener.changeFailure();
-		} finally {
-			// graph.exitBatchMode();
-			// System.err.println("INDEXERDEBUG: " + debug / 1000 + "s " + debug
-			// % 1000 + "ms");
 		}
 	}
 

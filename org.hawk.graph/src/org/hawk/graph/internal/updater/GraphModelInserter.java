@@ -589,7 +589,7 @@ public class GraphModelInserter {
 				}
 			}
 			graph.enterBatchMode();
-			new GraphModelBatchInjector(indexer, typeCache, s, resource, listener);
+			new GraphModelBatchInjector(indexer, typeCache, s, resource, listener, verbose);
 			listener.changeSuccess();
 			return true;
 		} catch (Exception ex) {
@@ -691,7 +691,7 @@ public class GraphModelInserter {
 		boolean success = true;
 		if (resource != null) {
 			GraphModelBatchInjector batch = new GraphModelBatchInjector(indexer, typeCache, s, resource,
-					indexer.getCompositeGraphChangeListener());
+					indexer.getCompositeGraphChangeListener(), verbose);
 			unset = batch.getUnset();
 			success = batch.getSuccess();
 			if (!success)
