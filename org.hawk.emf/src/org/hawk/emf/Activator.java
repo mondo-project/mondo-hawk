@@ -11,7 +11,9 @@
  ******************************************************************************/
 package org.hawk.emf;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -53,8 +55,15 @@ public class Activator extends Plugin {
 	 */
 	private void enableRegisteredXMIExtensions() {
 		final Registry factoryRegistry = Resource.Factory.Registry.INSTANCE;
-		Set<String> registeredExtensions = new HashSet<>();
-		for (Entry<String, Object> entry : factoryRegistry.getExtensionToFactoryMap().entrySet()) {
+		final Set<String> registeredExtensions = new HashSet<>();
+
+		/*
+		 * Do a defensive copy of the extension factory registry map, in case some of the triggered plugins
+		 * try to add their own extensions. This happened to SOFT-MAINT with the OCL pivot plugins when invoking
+		 * descriptor.createFactory.
+		 */
+		final Map<String, Object> extensionFactoryMapCopy = new HashMap<>(factoryRegistry.getExtensionToFactoryMap());
+		for (Entry<String, Object> entry : extensionFactoryMapCopy.entrySet()) {
 			switch (entry.getKey()) {
 			case Resource.Factory.Registry.DEFAULT_EXTENSION:
 			case "ecore":
