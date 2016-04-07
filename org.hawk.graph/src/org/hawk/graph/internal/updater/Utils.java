@@ -103,9 +103,7 @@ public class Utils {
 
 			if (itFile.hasNext()) {
 				ret = itFile.next();
-			} else
-				System.err.println("WARNING: no file node found for: " + s.getPath());
-
+			}
 			if (graph.currentMode().equals(Mode.TX_MODE)) {
 				t.success();
 				t.close();

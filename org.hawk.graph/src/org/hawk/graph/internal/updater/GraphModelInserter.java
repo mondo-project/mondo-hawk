@@ -98,7 +98,7 @@ public class GraphModelInserter {
 		this.s = s;
 		this.inj = new GraphModelBatchInjector(graph, typeCache, this.s, indexer.getCompositeGraphChangeListener());
 
-		final int delta = calculateModelDeltaSize();
+		final int delta = calculateModelDeltaSize(verbose);
 		if (delta != -1) {
 			final IVcsManager manager = s.getCommit().getDelta().getManager();
 
@@ -602,9 +602,10 @@ public class GraphModelInserter {
 		}
 	}
 
-	private int calculateModelDeltaSize() throws Exception {
-
-		System.err.println("calculateModelDeltaSize() called:");
+	private int calculateModelDeltaSize(boolean verbose) throws Exception {
+		if (verbose) {
+			System.err.println("calculateModelDeltaSize() called:");
+		}
 
 		if (new Utils().getFileNodeFromVCSCommitItem(graph, s) != null) {
 
@@ -625,7 +626,9 @@ public class GraphModelInserter {
 					signatures.put((String) n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY),
 							(byte[]) n.getProperty(IModelIndexer.SIGNATURE_PROPERTY));
 				}
-				System.err.println("file contains: " + nodes.size() + " (" + signatures.size() + ") nodes in store");
+				if (verbose) {
+					System.err.println("file contains: " + nodes.size() + " (" + signatures.size() + ") nodes in store");
+				}
 
 				// Get the model elements from the resource and use signatures
 				// and URI
@@ -663,13 +666,17 @@ public class GraphModelInserter {
 				int updatedn = updated.size();
 				int deletedn = nodes.size() - unchanged.size() - updated.size() - retyped.size();
 				currentDeltaRatio = (addedn + retypedn + updatedn + deletedn) / ((double) nodes.size());
-				System.err.println("update contains | a:" + (addedn + retypedn) + " + u:" + updatedn + " + d:"
+				if (verbose) {
+					System.err.println("update contains | a:" + (addedn + retypedn) + " + u:" + updatedn + " + d:"
 						+ deletedn + " ratio:" + currentDeltaRatio);
+				}
 
 				return addedn + retypedn + updatedn + deletedn;
 			}
 		} else {
-			System.err.println("file not in store, performing initial batch file insertion");
+			if (verbose) {
+				System.err.println("file not in store, performing initial batch file insertion");
+			}
 			currentDeltaRatio = -1;
 			return -1;
 		}

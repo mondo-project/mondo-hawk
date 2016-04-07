@@ -103,10 +103,10 @@ public class GraphModelUpdater implements IModelUpdater {
 				success = false;
 			}
 
-			long end = System.currentTimeMillis();
-			console.println((end - start) / 1000 + "s" + (end - start) % 1000
-					+ "ms [pure insertion]");
-
+			if (verbose) {
+				long end = System.currentTimeMillis();
+				console.println((end - start) / 1000 + "s" + (end - start) % 1000 + "ms [pure insertion]");
+			}
 		} finally {
 			final long s = System.currentTimeMillis();
 			if (verbose) {
