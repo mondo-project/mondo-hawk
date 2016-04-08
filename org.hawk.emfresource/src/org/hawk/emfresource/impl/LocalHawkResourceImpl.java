@@ -13,6 +13,7 @@ package org.hawk.emfresource.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -163,7 +164,15 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 					EReference eRef = eobFactory.guessEReferenceFromGetter(eob.eClass(), m.getName());
 					if (eRef != null) {
 						Method mEGet = eob.getClass().getMethod("eGet", EStructuralFeature.class);
-						return mEGet.invoke(o, eRef);
+						try {
+							return mEGet.invoke(o, eRef);
+						} catch (InvocationTargetException ex) {
+							if (ex.getCause() != null) {
+								throw ex.getCause();
+							} else {
+								throw ex;
+							}
+						}
 					}
 				}
 				break;
