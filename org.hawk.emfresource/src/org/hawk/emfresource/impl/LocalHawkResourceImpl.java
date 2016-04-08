@@ -13,7 +13,6 @@ package org.hawk.emfresource.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -118,36 +117,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 				return rawResource != null ? rawResource : lazyResolver.getResource(eob);
 			case "eGet":
 				final EStructuralFeature sf = (EStructuralFeature)args[0];
-				if (sf instanceof EReference && lazyResolver.isLazy(eob, sf)) {
-					final EReference ref = (EReference) sf;
-					Object value;
-					synchronized(nodeIdToEObjectCache) {
-						value = lazyResolver.resolve(eob, sf, false, true);
-					}
-
-					/*
-					 * When we resolve a reference, it may be a containment or
-					 * container reference: need to adjust the list of root elements
-					 * then.
-					 */
-					if (value != null) {
-						if (ref.isContainer()) {
-							removeRedundantRoot(eob);
-						} else if (ref.isContainment()) {
-							if (ref.isMany()) {
-								for (EObject child : (Iterable<EObject>) value) {
-									removeRedundantRoot(child);
-								}
-							} else {
-								removeRedundantRoot((EObject) value);
-							}
-						}
-						return value;
-					} else {
-						return proxy.invokeSuper(o, args);
-					}
-				}
-				break;
+				return interceptEGet(o, args, proxy, eob, sf);
 			case "eContents":
 				// Resolve all containment references for an eContents call
 				synchronized(nodeIdToEObjectCache) {
@@ -163,19 +133,43 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 					// Reuse the regular eGet
 					EReference eRef = eobFactory.guessEReferenceFromGetter(eob.eClass(), m.getName());
 					if (eRef != null) {
-						Method mEGet = eob.getClass().getMethod("eGet", EStructuralFeature.class);
-						try {
-							return mEGet.invoke(o, eRef);
-						} catch (InvocationTargetException ex) {
-							if (ex.getCause() != null) {
-								throw ex.getCause();
-							} else {
-								throw ex;
-							}
-						}
+						return interceptEGet(o, args, proxy, eob, eRef);
 					}
 				}
 				break;
+			}
+			return proxy.invokeSuper(o, args);
+		}
+
+		@SuppressWarnings("unchecked")
+		protected Object interceptEGet(final Object o, final Object[] args, final MethodProxy proxy, final EObject eob,
+				final EStructuralFeature sf) throws Throwable {
+			if (sf instanceof EReference && lazyResolver.isLazy(eob, sf)) {
+				final EReference ref = (EReference) sf;
+				Object value;
+				synchronized(nodeIdToEObjectCache) {
+					value = lazyResolver.resolve(eob, sf, false, true);
+				}
+
+				/*
+				 * When we resolve a reference, it may be a containment or
+				 * container reference: need to adjust the list of root elements
+				 * then.
+				 */
+				if (value != null) {
+					if (ref.isContainer()) {
+						removeRedundantRoot(eob);
+					} else if (ref.isContainment()) {
+						if (ref.isMany()) {
+							for (EObject child : (Iterable<EObject>) value) {
+								removeRedundantRoot(child);
+							}
+						} else {
+							removeRedundantRoot((EObject) value);
+						}
+					}
+					return value;
+				}
 			}
 			return proxy.invokeSuper(o, args);
 		}
