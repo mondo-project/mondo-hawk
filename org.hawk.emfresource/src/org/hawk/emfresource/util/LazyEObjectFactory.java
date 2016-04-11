@@ -13,6 +13,7 @@ package org.hawk.emfresource.util;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EFactory;
@@ -44,7 +45,12 @@ public class LazyEObjectFactory {
 	}
 
 	public EObject createInstance(final EClass eClass) {
-		final EFactory factory = packageRegistry.getEFactory(eClass.getEPackage().getNsURI());
+		final String nsURI = eClass.getEPackage().getNsURI();
+		final EFactory factory = packageRegistry.getEFactory(nsURI);
+		if (factory == null) {
+			throw new NoSuchElementException(String.format("Could not find the EFactory for nsURI '%s' in the resource set's package registry", nsURI));
+		}
+
 		final EObject obj = factory.create(eClass);
 		return createLazyLoadingInstance(eClass, obj.getClass());
 	}
