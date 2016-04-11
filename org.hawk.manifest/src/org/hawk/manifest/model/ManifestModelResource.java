@@ -113,7 +113,7 @@ public class ManifestModelResource implements IHawkModelResource {
 		for (RequireBundleObject o : requires) {
 			ManifestBundleObject rBundle = new ManifestBundleObject(o.getId(), this);
 			allContents.add(rBundle);
-			ManifestRequiresObject req = new ManifestRequiresObject(o.getAttributes("version"),
+			ManifestRequiresObject req = new ManifestRequiresObject(o.getAttributes("bundle-version"),
 					o.getDirective("resolution"), o.getDirective("visibility"), this, rBundle);
 			allContents.add(req);
 			bundleInstance.addRequires(req);
