@@ -60,11 +60,9 @@ public class HawkResourceExeedCustomizer implements IExeedCustomizer {
 				Map<Object, BasicDiagnostic> objects,
 				ITreeContentProvider treeContentProvider, Set<Object> visited,
 				Object object, List<Integer> path) {
-			BasicDiagnostic result = decorations.get(object);
-			if (visited.add(object)) {
-				result = decorate(decorations, object, result, path);
-			}
-			return result;
+			// Don't descend recursively (otherwise it won't be lazy)
+			visited.add(object);
+			return decorations.get(object);
 		}
 	}
 
