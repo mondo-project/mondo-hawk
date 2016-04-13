@@ -19,6 +19,7 @@ import com.orientechnologies.orient.core.index.OCompositeKey;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.index.OIndexCursor;
 import com.orientechnologies.orient.core.index.OIndexRemote;
+import com.orientechnologies.orient.core.record.impl.ODocument;
 
 final class SingleKeyOIndexCursorFactory implements OIndexCursorFactory {
 	private final Object valueExpr;
@@ -85,7 +86,23 @@ final class SingleKeyOIndexCursorFactory implements OIndexCursorFactory {
 		// Not a string: go straight to the value
 		if (index instanceof OIndexRemote) {
 			// OIndexRemote does not support iterateEntries in 2.0.16
-			return ((OIndexRemote)index).getEntries(keys).iterator();
+			final Iterator<ODocument> itEntries = ((OIndexRemote)index).getEntries(keys).iterator();
+			return new Iterator<OIdentifiable>() {
+				@Override
+				public boolean hasNext() {
+					return itEntries.hasNext();
+				}
+
+				@Override
+				public OIdentifiable next() {
+					return itEntries.next().field("rid");
+				}
+
+				@Override
+				public void remove() {
+					throw new UnsupportedOperationException("iterateEntries iterator");
+				}
+			};
 		} else {
 			return index.iterateEntries(keys, false);
 		}

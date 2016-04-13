@@ -107,7 +107,8 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 		return new IndexCursorFactoryNodeIterable<>(new OIndexCursorFactory() {
 			@Override
 			public Iterator<OIdentifiable> query() {
-				return iterateEntriesBetween(key, from, to, fromInclusive, toInclusive, idx, graph.getGraph());
+				// Workaround for SQL-based approach: > seems to work like >= for composite keys (see RemoteIndexIT)
+				return iterateEntriesBetween(key, fromInclusive ? from : from + 1, toInclusive ? to : to - 1, true, true, idx, graph.getGraph());
 			}
 		}, graph, IGraphNode.class);
 	}
