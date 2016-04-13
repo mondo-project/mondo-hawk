@@ -34,6 +34,7 @@ import com.orientechnologies.orient.core.index.OCompositeKey;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.index.OIndexCursor;
 import com.orientechnologies.orient.core.index.OIndexManager;
+import com.orientechnologies.orient.core.index.OIndexRemote;
 
 /**
  * Logical index for nodes, which uses a set of SBTree indexes. We can't use the
@@ -51,6 +52,31 @@ import com.orientechnologies.orient.core.index.OIndexManager;
  * type, maintained by the {@link OrientIndexStore} class.
  */
 public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIndex {
+
+	public static class PostponedIndexAdd {
+		private final OIndex<?> index;
+		private final Object key;
+		private final OIdentifiable value;
+
+		private PostponedIndexAdd(OIndex<?> index, Object key, OIdentifiable value) {
+			this.index = index;
+			this.key = key;
+			this.value = value;
+		}
+
+		public OIndex<?> getIndex() {
+			return index;
+		}
+
+		public Object getKey() {
+			return key;
+		}
+
+		public OIdentifiable getValue() {
+			return value;
+		}
+	}
+	private static final List<PostponedIndexAdd> postponed = new ArrayList<>();
 
 	public OrientNodeIndex(String name, OrientDatabase graph) {
 		super(name, graph, IndexType.NODE);
@@ -81,8 +107,7 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 		return new IndexCursorFactoryNodeIterable<>(new OIndexCursorFactory() {
 			@Override
 			public Iterator<OIdentifiable> query() {
-				return idx.iterateEntriesBetween(new OCompositeKey(key, from), fromInclusive,
-						new OCompositeKey(key, to), toInclusive, false);
+				return iterateEntriesBetween(key, from, to, fromInclusive, toInclusive, idx, graph.getGraph());
 			}
 		}, graph, IGraphNode.class);
 	}
@@ -96,8 +121,7 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 		return new IndexCursorFactoryNodeIterable<>(new OIndexCursorFactory() {
 			@Override
 			public Iterator<OIdentifiable> query() {
-				return idx.iterateEntriesBetween(new OCompositeKey(key, from), fromInclusive,
-						new OCompositeKey(key, to), toInclusive, false);
+				return iterateEntriesBetween(key, from, to, fromInclusive, toInclusive, idx, graph.getGraph());
 			}
 		}, graph, IGraphNode.class);
 	}
@@ -142,8 +166,16 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 			} else {
 				keyIdxKey = new OCompositeKey(orientNode.getDocument(), field, valueExpr);
 			}
-			idx.put(idxKey, identity);
-			keyIdx.put(keyIdxKey, identity);
+
+			if (idx instanceof OIndexRemote && identity.isNew()) {
+				// To avoid "Temporary RID cannot be managed at server side", we need to postpone the put
+				postponed.add(new PostponedIndexAdd(idx, idxKey, identity));
+				postponed.add(new PostponedIndexAdd(keyIdx, keyIdxKey, identity));
+				graph.addPostponedIndex(this);
+			} else {
+				idx.put(idxKey, identity);
+				keyIdx.put(keyIdxKey, identity);
+			}
 		}
 	}
 
@@ -209,7 +241,7 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 			}
 
 			final List<Object> keysToRemove = new ArrayList<>();
-			final OIndexCursor keyCursor = keyIdx.iterateEntriesBetween(keyFrom, true, keyTo, true, false);
+			final OIndexCursor keyCursor = iterateEntriesBetween(keyFrom, true, keyTo, true, keyIdx, graph.getGraph());
 			for (Entry<Object, OIdentifiable> entry = keyCursor.nextEntry(); entry != null; entry = keyCursor.nextEntry()) {
 				Object key = ((OCompositeKey)entry.getKey()).getKeys().get(2);
 				keysToRemove.add(key);
@@ -257,4 +289,12 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 		store.removeNodeIndex(name);
 	}
 
+	/**
+	 * Returns a list of index additions that should be done once the current transaction is completed. This
+	 * is only needed for remote OrientDB indexes, which do not accept temporary values that only exist
+	 * so far on the client.
+	 */
+	public List<PostponedIndexAdd> getPostponedIndexAdditions() {
+		return postponed;
+	}
 }

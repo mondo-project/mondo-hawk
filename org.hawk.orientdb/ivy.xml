@@ -10,5 +10,6 @@
 		<dependency org="com.orientechnologies" name="orientdb-enterprise" rev="2.0.16">
 			<exclude org="com.orientechnologies" module="orientdb-server"/>
 		</dependency>
+		<dependency org="com.orientechnologies" name="orientdb-client" rev="2.0.16"/>
 	</dependencies>
 </ivy-module>

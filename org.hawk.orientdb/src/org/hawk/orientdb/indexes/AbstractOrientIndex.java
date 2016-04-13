@@ -10,20 +10,65 @@
  ******************************************************************************/
 package org.hawk.orientdb.indexes;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.hawk.orientdb.OrientDatabase;
 import org.hawk.orientdb.util.OrientNameCleaner;
 
+import com.orientechnologies.orient.core.db.ODatabase;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import com.orientechnologies.orient.core.db.record.OIdentifiable;
+import com.orientechnologies.orient.core.index.OCompositeKey;
 import com.orientechnologies.orient.core.index.OIndex;
+import com.orientechnologies.orient.core.index.OIndexAbstractCursor;
+import com.orientechnologies.orient.core.index.OIndexCursor;
 import com.orientechnologies.orient.core.index.OIndexManager;
 import com.orientechnologies.orient.core.index.OIndexManagerProxy;
+import com.orientechnologies.orient.core.index.OIndexRemote;
 import com.orientechnologies.orient.core.index.OSimpleKeyIndexDefinition;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OType;
+import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.sql.OCommandSQL;
 
 public class AbstractOrientIndex {
 
 	private static final String KEY_IDX_SUFFIX = "_keys";
+
+	protected static final class DocumentCollectionOIndexCursor extends OIndexAbstractCursor {
+		private final Iterator<ODocument> documentIterator;
+
+		protected DocumentCollectionOIndexCursor(Collection<ODocument> result) {
+			documentIterator = result.iterator();
+		}
+
+		@Override
+		public Map.Entry<Object, OIdentifiable> nextEntry() {
+			if (!documentIterator.hasNext())
+				return null;
+
+			final ODocument value = documentIterator.next();
+
+			return new Map.Entry<Object, OIdentifiable>() {
+				@Override
+				public Object getKey() {
+					return value.field("key");
+				}
+
+				@Override
+				public OIdentifiable getValue() {
+					return value.field("rid");
+				}
+
+				@Override
+				public OIdentifiable setValue(OIdentifiable value) {
+					throw new UnsupportedOperationException("setValue");
+				}
+			};
+		}
+	}
 
 	public enum IndexType { NODE, EDGE };
 	private static final String SEPARATOR_SBTREE = "_@sbtree@_";
@@ -49,6 +94,10 @@ public class AbstractOrientIndex {
 
 	public String getName() {
 		return name;
+	}
+
+	public OrientDatabase getDatabase() {
+		return graph;
 	}
 
 	public AbstractOrientIndex(String name, OrientDatabase graph, IndexType type) {
@@ -158,4 +207,39 @@ public class AbstractOrientIndex {
 		}
 	}
 
+	public static OIndexCursor iterateEntriesBetween(final String key, final Object from, final Object to,
+			final boolean fromInclusive, final boolean toInclusive, final OIndex<?> idx, final ODatabase<?> db) {
+		return iterateEntriesBetween(
+				new OCompositeKey(key, from), fromInclusive,
+				new OCompositeKey(key, to), toInclusive,
+				idx, db);
+	}
+
+	public static OIndexCursor iterateEntriesBetween(final OCompositeKey cmpFrom, final boolean fromInclusive,
+			final OCompositeKey cmpTo, final boolean toInclusive, final OIndex<?> idx, final ODatabase<?> db) {
+		if (idx instanceof OIndexRemote) {
+		    final StringBuilder query = new StringBuilder(OIndexRemote.QUERY_GET_VALUES_BEETWEN_SELECT);
+
+		    if (fromInclusive)
+		      query.append(OIndexRemote.QUERY_GET_VALUES_BEETWEN_INCLUSIVE_FROM_CONDITION);
+		    else
+		      query.append(OIndexRemote.QUERY_GET_VALUES_BEETWEN_EXCLUSIVE_FROM_CONDITION);
+
+		    query.append(OIndexRemote.QUERY_GET_VALUES_AND_OPERATOR);
+
+		    if (toInclusive)
+		      query.append(OIndexRemote.QUERY_GET_VALUES_BEETWEN_INCLUSIVE_TO_CONDITION);
+		    else
+		      query.append(OIndexRemote.QUERY_GET_VALUES_BEETWEN_EXCLUSIVE_TO_CONDITION);
+
+		    final String sql = String.format(query.toString(), idx.getName());
+		    final OCommandSQL cmd = new OCommandSQL(sql);
+		    final Collection<ODocument> result = db.command(cmd).execute(cmpFrom, cmpTo);
+
+		    return new DocumentCollectionOIndexCursor(result);
+
+		} else {
+			return idx.iterateEntriesBetween(cmpFrom, fromInclusive, cmpTo, toInclusive, false);
+		}
+	}
 }

@@ -33,6 +33,7 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.orientdb.indexes.OrientEdgeIndex;
 import org.hawk.orientdb.indexes.OrientNodeIndex;
+import org.hawk.orientdb.indexes.OrientNodeIndex.PostponedIndexAdd;
 import org.hawk.orientdb.util.OrientClusterDocumentIterable;
 import org.hawk.orientdb.util.OrientNameCleaner;
 
@@ -79,7 +80,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	private IGraphNodeIndex metamodelIndex;
 	private IGraphNodeIndex fileIndex;
-	private ODatabaseDocumentTx db;
+	protected ODatabaseDocumentTx db;
 	private Mode currentMode;
 
 	private Map<String, OrientNode> dirtyNodes = new HashMap<>(100_000);
@@ -88,6 +89,8 @@ public class OrientDatabase implements IGraphDatabase {
 	private OrientIndexStore indexStore;
 
 	private String dbURL;
+
+	private Set<OrientNodeIndex> postponedIndexes = new HashSet<>();
 
 	public OrientDatabase() {
 		// nothing to do
@@ -100,10 +103,14 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public void run(File parentfolder, IConsole c) {
-		run("plocal:" + parentfolder.getAbsolutePath(), parentfolder, c);
+		try {
+			run("plocal:" + parentfolder.getAbsolutePath(), parentfolder, c);
+		} catch (IOException e) {
+			c.printerrln(e);
+		}
 	}
 
-	public void run(String iURL, File parentfolder, IConsole c) {
+	public void run(String iURL, File parentfolder, IConsole c) throws IOException {
 		this.storageFolder = parentfolder;
 		this.tempFolder = new File(storageFolder, "temp");
 		this.console = c;
@@ -114,17 +121,22 @@ public class OrientDatabase implements IGraphDatabase {
 		console.println("Starting database " + iURL);
 		this.dbURL = iURL;
 		this.db = new ODatabaseDocumentTx(iURL);
-		if (db.exists()) {
-			db.open("admin", "admin");
-		} else {
-			db.create();
-		}
+
+		openDatabase();
 
 		metamodelIndex = getOrCreateNodeIndex(METAMODEL_IDX_NAME);
 		fileIndex = getOrCreateNodeIndex(FILE_IDX_NAME);
 
 		// By default, we're on transactional mode
 		exitBatchMode();
+	}
+
+	protected void openDatabase() throws IOException {
+		if (db.exists()) {
+			db.open("admin", "admin");
+		} else {
+			db.create();
+		}
 	}
 
 	@Override
@@ -504,5 +516,31 @@ public class OrientDatabase implements IGraphDatabase {
 
 	public IConsole getConsole() {
 		return console;
+	}
+
+	public void addPostponedIndex(OrientNodeIndex orientNodeIndex) {
+		postponedIndexes.add(orientNodeIndex);
+	}
+
+	public void clearPostponedIndexes() {
+		for (OrientNodeIndex idx : postponedIndexes) {
+			idx.getPostponedIndexAdditions().clear();
+		}
+		postponedIndexes.clear();
+	}
+
+	public void processPostponedIndexes() {
+		if (postponedIndexes.isEmpty()) {
+			return;
+		}
+
+		for (OrientNodeIndex idx : postponedIndexes) {
+			for (PostponedIndexAdd addition : idx.getPostponedIndexAdditions()) {
+				addition.getIndex().put(addition.getKey(), addition.getValue());
+			}
+			idx.getPostponedIndexAdditions().clear();
+		}
+		postponedIndexes.clear();
+		getGraph().commit();
 	}
 }

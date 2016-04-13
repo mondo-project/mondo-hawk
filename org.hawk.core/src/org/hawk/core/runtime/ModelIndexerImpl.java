@@ -13,6 +13,7 @@ package org.hawk.core.runtime;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -768,6 +769,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 		}
 		HawkProperties hp = new HawkProperties(graph.getType(), set, minDelay, maxDelay);
 
+		Files.createDirectories(getParentFolder().toPath());
 		String out = stream.toXML(hp);
 		try (BufferedWriter b = new BufferedWriter(
 				new FileWriter(getParentFolder() + File.separator + "properties.xml"))) {

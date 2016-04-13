@@ -57,9 +57,6 @@ public class OrientNode implements IGraphNode {
 	}
 
 	public OrientNode(ORID id, OrientDatabase graph) {
-		if (!id.isPersistent()) {
-			graph.getConsole().println("Warning, unsafe: OrientNode(ORID) being used with non-persistent ID " + id);
-		}
 		this.id = id;
 		this.graph = graph;
 	}

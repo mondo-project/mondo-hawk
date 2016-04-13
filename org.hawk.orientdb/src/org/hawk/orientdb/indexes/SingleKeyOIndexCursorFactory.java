@@ -12,11 +12,13 @@ package org.hawk.orientdb.indexes;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Set;
 
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.index.OCompositeKey;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.index.OIndexCursor;
+import com.orientechnologies.orient.core.index.OIndexRemote;
 
 final class SingleKeyOIndexCursorFactory implements OIndexCursorFactory {
 	private final Object valueExpr;
@@ -29,6 +31,7 @@ final class SingleKeyOIndexCursorFactory implements OIndexCursorFactory {
 		this.fieldName = fieldName;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Iterator<OIdentifiable> query() {
 		final OIndex<?> index = idx.getIndex(valueExpr.getClass());
@@ -36,25 +39,28 @@ final class SingleKeyOIndexCursorFactory implements OIndexCursorFactory {
 			return Collections.emptyListIterator();
 		}
 
+		final Set<OCompositeKey> keys = Collections.singleton(new OCompositeKey(fieldName, valueExpr));
 		if (!(valueExpr instanceof String)) {
-			// Not a string: go straight to the value
-			return index.iterateEntries(Collections.singleton(new OCompositeKey(fieldName, valueExpr)), false);
+			return iterateEntries(index, keys);
 		}
 
 		final String sValueExpr = valueExpr.toString();
 		final int starPosition = sValueExpr.indexOf('*');
 		if (starPosition < 0) {
 			// No '*' found: go straight to the value
-			return index.iterateEntries(Collections.singleton(new OCompositeKey(fieldName, valueExpr)), false);
+			return iterateEntries(index, keys);
 		}
 		else if (starPosition == 0) {
 			// value expr starts with "*"
 			if (sValueExpr.length() == 1) {
 				// value expr is "*": iterate over everything
-				return index.iterateEntriesBetween(
-					new OCompositeKey(fieldName, AbstractOrientIndex.getMinValue(valueExpr.getClass())), true,
-					new OCompositeKey(fieldName, AbstractOrientIndex.getMaxValue(valueExpr.getClass())), true,
-					false);
+				if (index instanceof OIndexRemote) {
+					return ((OIndexRemote)index).cursor();
+				} else {
+					final Object minValue = AbstractOrientIndex.getMinValue(valueExpr.getClass());
+					final Object maxValue = AbstractOrientIndex.getMaxValue(valueExpr.getClass());
+					return AbstractOrientIndex.iterateEntriesBetween(fieldName, minValue, maxValue, true, true, index, idx.getDatabase().getGraph());
+				}
 			} else {
 				// value expr starts with "*": filter all entries based on the fragments between the *
 				final String[] fragments = sValueExpr.split("[*]");
@@ -74,13 +80,23 @@ final class SingleKeyOIndexCursorFactory implements OIndexCursorFactory {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	protected Iterator<OIdentifiable> iterateEntries(final OIndex<?> index, final Set<OCompositeKey> keys) {
+		// Not a string: go straight to the value
+		if (index instanceof OIndexRemote) {
+			// OIndexRemote does not support iterateEntries in 2.0.16
+			return ((OIndexRemote)index).getEntries(keys).iterator();
+		} else {
+			return index.iterateEntries(keys, false);
+		}
+	}
+
 	private OIndexCursor prefixCursor(OIndex<?> index, String prefix) {
 		// prefix is S + C + "*", where S is a substring and C is a character:
 		// do ranged query between S + C and S + (C+1) (the next Unicode code point)
 		final char lastChar = prefix.charAt(prefix.length() - 1);
 		final String rangeStart = prefix;
 		final String rangeEnd = prefix.substring(0, rangeStart.length() - 1) + Character.toString((char)(lastChar+1));
-		return index.iterateEntriesBetween(new OCompositeKey(fieldName, rangeStart), true,
-				new OCompositeKey(fieldName, rangeEnd), true, false);
+		return AbstractOrientIndex.iterateEntriesBetween(fieldName, rangeStart, rangeEnd, true, true, index, idx.getDatabase().getGraph());
 	}
 }

@@ -7,5 +7,11 @@
             store="org.hawk.orientdb.OrientDatabase">
       </Backend>
    </extension>
+   <extension
+         point="org.hawk.core.BackEndExtensionPoint">
+      <Backend
+            store="org.hawk.orientdb.RemoteOrientDatabase">
+      </Backend>
+   </extension>
 
 </plugin>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-client-2.0.16.jar" sourcepath="lib/sources/orientdb-client-2.0.16.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-core-2.0.16.jar" sourcepath="/home/antonio/src/orientdb/core/src"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-enterprise-2.0.16.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/concurrentlinkedhashmap-lru-1.4.1.jar"/>

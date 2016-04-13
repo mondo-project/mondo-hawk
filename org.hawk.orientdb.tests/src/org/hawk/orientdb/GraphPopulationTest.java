@@ -39,7 +39,7 @@ public class GraphPopulationTest {
 	}
 
 	@Test
-	public void oneNode() {
+	public void oneNode() throws Exception {
 		db = new OrientDatabase();
 		db.run("memory:oneNode", null, new DefaultConsole());
 		assertEquals(0, db.allNodes("eobject").size());
@@ -48,7 +48,7 @@ public class GraphPopulationTest {
 	}
 
 	@Test
-	public void oneNodeProperty() {
+	public void oneNodeProperty() throws Exception {
 		db = new OrientDatabase();
 		db.run("memory:oneNodeProperty", null, new DefaultConsole());
 		final OrientNodeIterable eobs = db.allNodes("eobject");
@@ -89,7 +89,7 @@ public class GraphPopulationTest {
 	}
 
 	@Test
-	public void oneNodeBatch() {
+	public void oneNodeBatch() throws Exception {
 		db = new OrientDatabase();
 		db.run("memory:oneNodeBatch", null, new DefaultConsole());
 		db.enterBatchMode();
@@ -114,7 +114,7 @@ public class GraphPopulationTest {
 	}
 
 	@Test
-	public void oneNodeRollback() {
+	public void oneNodeRollback() throws Exception {
 		db = new OrientDatabase();
 		db.run("memory:oneNodeRollback", null, new DefaultConsole());
 		try (OrientTransaction tx = db.beginTransaction()) {
@@ -126,7 +126,7 @@ public class GraphPopulationTest {
 	}
 
 	@Test
-	public void oneNodeRemove() {
+	public void oneNodeRemove() throws Exception {
 		db = new OrientDatabase();
 		db.run("memory:oneNodeRemove", null, new DefaultConsole());
 		assertEquals(0, db.allNodes("eobject").size());
@@ -144,7 +144,7 @@ public class GraphPopulationTest {
 	}
 
 	@Test
-	public void oneNodeRemoveRollback() {
+	public void oneNodeRemoveRollback() throws Exception {
 		db = new OrientDatabase();
 		db.run("memory:oneNodeRemove", null, new DefaultConsole());
 		assertEquals(0, db.allNodes("eobject").size());
@@ -162,7 +162,7 @@ public class GraphPopulationTest {
 	}
 
 	@Test
-	public void twoNodesBatch() {
+	public void twoNodesBatch() throws Exception {
 		db = new OrientDatabase();
 		db.run("memory:twoNodesBatch", null, new DefaultConsole());
 
@@ -181,7 +181,7 @@ public class GraphPopulationTest {
 	}
 
 	@Test
-	public void twoNodesBatchRemoveRel() {
+	public void twoNodesBatchRemoveRel() throws Exception {
 		db = new OrientDatabase();
 		db.run("memory:twoNodesBatch", null, new DefaultConsole());
 
@@ -200,7 +200,7 @@ public class GraphPopulationTest {
 	}
 
 	@Test
-	public void threeNodesRemoveMiddle() {
+	public void threeNodesRemoveMiddle() throws Exception {
 		db = new OrientDatabase();
 		db.run("memory:twoNodesBatch", null, new DefaultConsole());
 
@@ -232,7 +232,7 @@ public class GraphPopulationTest {
 	}
 
 	@Test
-	public void escapeInvalidClassCharacters() {
+	public void escapeInvalidClassCharacters() throws Exception {
 		db = new OrientDatabase();
 		db.run("memory:invalidClassCharacters", null, new DefaultConsole());
 
@@ -247,7 +247,7 @@ public class GraphPopulationTest {
 	}
 
 	@Test
-	public void escapeInvalidClassCharactersEdges() {
+	public void escapeInvalidClassCharactersEdges() throws Exception {
 		db = new OrientDatabase();
 		db.run("memory:invalidClassCharactersEdges", null, new DefaultConsole());
 

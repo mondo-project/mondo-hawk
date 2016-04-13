@@ -40,7 +40,7 @@ public class IndexTest {
 
 	private OrientDatabase db;
 
-	public void setup(String testCase) {
+	public void setup(String testCase) throws Exception {
 		db = new OrientDatabase();
 		db.run("memory:index_test_" + testCase, null, new DefaultConsole());
 	}
@@ -51,7 +51,7 @@ public class IndexTest {
 	}
 
 	@Test
-	public void query() {
+	public void query() throws Exception {
 		setup("query");
 
 		final String mmBarURI = "http://foo/bar";
@@ -95,7 +95,7 @@ public class IndexTest {
 	}
 
 	@Test
-	public void removeByNode() {
+	public void removeByNode() throws Exception {
 		setup("removeByNode");
 		final String mmBarURI = populateForRemove();
 
@@ -109,7 +109,7 @@ public class IndexTest {
 	}
 
 	@Test
-	public void removeByFullKey() {
+	public void removeByFullKey() throws Exception {
 		setup("removeByFullKey");
 		final String mmBarURI = populateForRemove();
 
@@ -122,7 +122,7 @@ public class IndexTest {
 	}
 
 	@Test
-	public void removeByValueNode() {
+	public void removeByValueNode() throws Exception {
 		setup("removeByValueNode");
 		final String mmBarURI = populateForRemove();
 		final IGraphIterable<IGraphNode> iter = checkBeforeRemove(mmBarURI);
@@ -134,7 +134,7 @@ public class IndexTest {
 	}
 
 	@Test
-	public void removeByFieldNode() {
+	public void removeByFieldNode() throws Exception {
 		setup("removeByFieldNode");
 		final String mmBarURI = populateForRemove();
 
@@ -147,7 +147,7 @@ public class IndexTest {
 	}
 
 	@Test
-	public void removeByNode3Arg() {
+	public void removeByNode3Arg() throws Exception {
 		setup("removeByNode3Arg");
 		final String mmBarURI = populateForRemove();
 
@@ -161,7 +161,7 @@ public class IndexTest {
 	}
 
 	@Test
-	public void integerRanges() {
+	public void integerRanges() throws Exception {
 		setup("removeByIntegerRanges");
 		final String mmBarURI = "http://foo/bar";
 		final FluidMap mmBarNodeProps = FluidMap.create().add(IModelIndexer.IDENTIFIER_PROPERTY, mmBarURI);
@@ -193,7 +193,7 @@ public class IndexTest {
 	}
 
 	@Test
-	public void floatingRanges() {
+	public void floatingRanges() throws Exception {
 		setup("floatingRanges");
 		final String mmBarURI = "http://foo/bar";
 		final FluidMap mmBarNodeProps = FluidMap.create().add(IModelIndexer.IDENTIFIER_PROPERTY, mmBarURI);
@@ -222,7 +222,7 @@ public class IndexTest {
 	}
 
 	@Test
-	public void invalidIndexNames() {
+	public void invalidIndexNames() throws Exception {
 		// OIndexManagerShared#createIndex checks for these
 		char[] invalidChars = ":,; %=".toCharArray();
 
@@ -248,7 +248,7 @@ public class IndexTest {
 	}
 
 	@Test
-	public void getMultipleMatches() {
+	public void getMultipleMatches() throws Exception {
 		setup("getMultipleMatches");
 
 		IGraphNodeIndex idxRoots = db.getOrCreateNodeIndex("roots");
@@ -291,7 +291,7 @@ public class IndexTest {
 	}
 
 	@Test
-	public void addNullValue() {
+	public void addNullValue() throws Exception {
 		setup("addNullMap");
 
 		IGraphNodeIndex idxRoots = db.getOrCreateNodeIndex("roots");
@@ -303,7 +303,7 @@ public class IndexTest {
 	}
 
 	@Test
-	public void addNullMap() {
+	public void addNullMap() throws Exception {
 		setup("addNullMap");
 
 		IGraphNodeIndex idxRoots = db.getOrCreateNodeIndex("roots");

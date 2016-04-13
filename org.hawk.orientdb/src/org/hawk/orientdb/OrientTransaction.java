@@ -20,6 +20,7 @@ public class OrientTransaction implements IGraphTransaction {
 
 	public OrientTransaction(OrientDatabase orientDatabase) {
 		this.graph = orientDatabase;
+		graph.clearPostponedIndexes();
 		graph.getGraph().begin();
 	}
 
@@ -27,11 +28,13 @@ public class OrientTransaction implements IGraphTransaction {
 	public void success() {
 		graph.saveDirty();
 		graph.getGraph().commit();
+		graph.processPostponedIndexes();
 	}
 
 	@Override
 	public void failure() {
 		graph.discardDirty();
+		graph.clearPostponedIndexes();
 		graph.getGraph().rollback();
 	}
 
