@@ -106,9 +106,13 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			switch (m.getName()) {
 			case "eIsSet":
 				return (Boolean)proxy.invokeSuper(o, args) || lazyResolver.isLazy(eob, (EStructuralFeature) args[0]);
-			// Both eContainingFeature and eContainmentFeature rely on eContainerFeatureID, so
-			// we only intercept this method. 
+			case "eContainingFeature":
+			case "eContainmentFeature":
+				// Most implementations use eContainerFeatureID, but if they don't we fall back to the lazy resolver
+				EReference sfContainingF = lazyResolver.getContainingFeature(eob);
+				return sfContainingF != null ? sfContainingF : proxy.invokeSuper(o, args);
 			case "eContainerFeatureID":
+				// InternalEObject has this: stay consistent with eContainingFeature / eContainmentFeature
 				EReference sfContaining = lazyResolver.getContainingFeature(eob);
 				if (sfContaining != null) {
 					assert sfContaining.isContainment() : "containing feature should be containment";
