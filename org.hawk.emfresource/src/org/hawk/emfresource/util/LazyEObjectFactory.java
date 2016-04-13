@@ -82,7 +82,9 @@ public class LazyEObjectFactory {
 						return methodInterceptor;
 					} else if ("eContainer".equals(m.getName()) && m.getParameterTypes().length == 0) {
 						return methodInterceptor;
-					} else if ("eContainmentFeature".equals(m.getName()) && m.getParameterTypes().length == 0) {
+					} else if ("eInternalContainer".equals(m.getName()) && m.getParameterTypes().length == 0) {
+						return methodInterceptor;
+					} else if ("eContainerFeatureID".equals(m.getName()) && m.getParameterTypes().length == 0) {
 						return methodInterceptor;
 					} else if ("eResource".equals(m.getName()) && m.getParameterTypes().length == 0) {
 						return methodInterceptor;

@@ -42,6 +42,7 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
@@ -93,7 +94,6 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalHawkResourceImpl.class);
 
 	private final class LazyReferenceResolver implements MethodInterceptor {
-		@SuppressWarnings("unchecked")
 		@Override
 		public Object intercept(final Object o, final Method m, final Object[] args, final MethodProxy proxy) throws Throwable {
 			/*
@@ -106,9 +106,21 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			switch (m.getName()) {
 			case "eIsSet":
 				return (Boolean)proxy.invokeSuper(o, args) || lazyResolver.isLazy(eob, (EStructuralFeature) args[0]);
-			case "eContainmentFeature":
-				final Object rawCF = proxy.invokeSuper(o, args);
-				return rawCF != null ? rawCF : lazyResolver.getContainingFeature(eob);
+			// Both eContainingFeature and eContainmentFeature rely on eContainerFeatureID, so
+			// we only intercept this method. 
+			case "eContainerFeatureID":
+				EReference sfContaining = lazyResolver.getContainingFeature(eob);
+				if (sfContaining != null) {
+					assert sfContaining.isContainment() : "containing feature should be containment";
+					if (sfContaining.getEOpposite() != null) {
+						return sfContaining.getEOpposite().getFeatureID();
+					} else {
+						return InternalEObject.EOPPOSITE_FEATURE_BASE - sfContaining.getFeatureID();
+					}
+				} else {
+					return proxy.invokeSuper(o, args);
+				}
+			case "eInternalContainer":
 			case "eContainer":
 				final EObject rawContainer = (EObject) proxy.invokeSuper(o, args);
 				return rawContainer != null ? rawContainer : lazyResolver.getContainer(eob);
