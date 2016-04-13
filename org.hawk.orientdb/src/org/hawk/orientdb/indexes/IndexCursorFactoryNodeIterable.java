@@ -47,7 +47,8 @@ final class IndexCursorFactoryNodeIterable<T> implements IGraphIterable<T> {
 
 			@Override
 			public T next() {
-				ORID id = results.next().getIdentity();
+				final OIdentifiable next = results.next();
+				ORID id = next.getIdentity();
 				return graph.getElementById(id, klass);
 			}
 

@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,7 +32,12 @@ import org.junit.Test;
  */
 public class GraphPopulationTest {
 
-	private OrientDatabase db;
+	protected OrientDatabase db;
+
+	public void setup(final String testCase) throws IOException, Exception {
+		db = new OrientDatabase();
+		db.run("memory:" + testCase, null, new DefaultConsole());
+	}
 
 	@After
 	public void teardown() throws Exception {
@@ -40,8 +46,7 @@ public class GraphPopulationTest {
 
 	@Test
 	public void oneNode() throws Exception {
-		db = new OrientDatabase();
-		db.run("memory:oneNode", null, new DefaultConsole());
+		setup("oneNode");
 		assertEquals(0, db.allNodes("eobject").size());
 		db.createNode(new HashMap<String, Object>(), "eobject");
 		assertEquals(1, db.allNodes("eobject").size());
@@ -49,8 +54,7 @@ public class GraphPopulationTest {
 
 	@Test
 	public void oneNodeProperty() throws Exception {
-		db = new OrientDatabase();
-		db.run("memory:oneNodeProperty", null, new DefaultConsole());
+		setup("oneNodeProperty");
 		final OrientNodeIterable eobs = db.allNodes("eobject");
 		assertEquals(0, eobs.size());
 		OrientNode n;
@@ -90,8 +94,7 @@ public class GraphPopulationTest {
 
 	@Test
 	public void oneNodeBatch() throws Exception {
-		db = new OrientDatabase();
-		db.run("memory:oneNodeBatch", null, new DefaultConsole());
+		setup("oneNodeBatch");
 		db.enterBatchMode();
 
 		final String idValue = "http://foo.bar";
@@ -115,8 +118,7 @@ public class GraphPopulationTest {
 
 	@Test
 	public void oneNodeRollback() throws Exception {
-		db = new OrientDatabase();
-		db.run("memory:oneNodeRollback", null, new DefaultConsole());
+		setup("oneNodeRollback");
 		try (OrientTransaction tx = db.beginTransaction()) {
 			db.createNode(new HashMap<String, Object>(), "metamodel");
 			assertEquals(1, db.allNodes("metamodel").size());
@@ -127,8 +129,7 @@ public class GraphPopulationTest {
 
 	@Test
 	public void oneNodeRemove() throws Exception {
-		db = new OrientDatabase();
-		db.run("memory:oneNodeRemove", null, new DefaultConsole());
+		setup("oneNodeRemove");
 		assertEquals(0, db.allNodes("eobject").size());
 		OrientNode n;
 		try (IGraphTransaction tx = db.beginTransaction()) { 
@@ -145,8 +146,7 @@ public class GraphPopulationTest {
 
 	@Test
 	public void oneNodeRemoveRollback() throws Exception {
-		db = new OrientDatabase();
-		db.run("memory:oneNodeRemove", null, new DefaultConsole());
+		setup("oneNodeRemoveRollback");
 		assertEquals(0, db.allNodes("eobject").size());
 		OrientNode n;
 		try (IGraphTransaction tx = db.beginTransaction()) { 
@@ -163,8 +163,7 @@ public class GraphPopulationTest {
 
 	@Test
 	public void twoNodesBatch() throws Exception {
-		db = new OrientDatabase();
-		db.run("memory:twoNodesBatch", null, new DefaultConsole());
+		setup("twoNodesBatch");
 
 		db.enterBatchMode();
 		IGraphNode x1 = db.createNode(FluidMap.create().add("x", 1), "eobject");
@@ -182,8 +181,7 @@ public class GraphPopulationTest {
 
 	@Test
 	public void twoNodesBatchRemoveRel() throws Exception {
-		db = new OrientDatabase();
-		db.run("memory:twoNodesBatch", null, new DefaultConsole());
+		setup("twoNodesBatchRemoveRel");
 
 		db.enterBatchMode();
 		IGraphNode x1 = db.createNode(FluidMap.create().add("x", 1), "eobject");
@@ -201,8 +199,7 @@ public class GraphPopulationTest {
 
 	@Test
 	public void threeNodesRemoveMiddle() throws Exception {
-		db = new OrientDatabase();
-		db.run("memory:twoNodesBatch", null, new DefaultConsole());
+		setup("twoNodesBatchRemoveMiddle");
 
 		IGraphNode left, middle, right;
 		try (IGraphTransaction tx = db.beginTransaction()) {
@@ -233,8 +230,7 @@ public class GraphPopulationTest {
 
 	@Test
 	public void escapeInvalidClassCharacters() throws Exception {
-		db = new OrientDatabase();
-		db.run("memory:invalidClassCharacters", null, new DefaultConsole());
+		setup("invalidClassCharacters");
 
 		char[] invalidClassChars = ":,; %@=.".toCharArray();
 		for (char invalidChar : invalidClassChars) {
@@ -248,8 +244,7 @@ public class GraphPopulationTest {
 
 	@Test
 	public void escapeInvalidClassCharactersEdges() throws Exception {
-		db = new OrientDatabase();
-		db.run("memory:invalidClassCharactersEdges", null, new DefaultConsole());
+		setup("invalidClassCharactersEdges");
 
 		db.enterBatchMode();
 		OrientNode n1 = db.createNode(null, "eobject");
