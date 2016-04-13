@@ -10,22 +10,23 @@
  ******************************************************************************/
 package org.hawk.orientdb.remote;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.hawk.core.util.DefaultConsole;
-import org.hawk.orientdb.IndexTest;
+import org.hawk.orientdb.ModelQueryTest;
 import org.hawk.orientdb.RemoteOrientDatabase;
 
-/**
- * Manually run integration test for remote indexes.
- */
-public class RemoteIndexIT extends IndexTest {
+public class RemoteModelQueryIT extends ModelQueryTest {
 
 	@Override
-	public void setup(String testCase) throws Exception {
+	protected void createDB(File dbFolder) throws IOException {
 		final RemoteOrientDatabase remoteDB = new RemoteOrientDatabase();
 		db = remoteDB;
 		remoteDB.setStorageType(RemoteOrientDatabase.DBSTORAGE_MEMORY);
 
-		db.run("remote:localhost/" + testCase, null, new DefaultConsole());
+		db.run("remote:localhost/" + dbFolder.getName(), null, new DefaultConsole());
 	}
+
 	
 }

@@ -13,6 +13,7 @@ package org.hawk.orientdb;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.Callable;
 
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
@@ -38,7 +39,7 @@ import org.junit.Test;
 public class ModelQueryTest {
 
 	private DefaultConsole console;
-	private OrientDatabase db;
+	protected OrientDatabase db;
 	private ModelIndexerImpl indexer;
 	private EOLQueryEngine queryEngine;
 	private SyncValidationListener validationListener;
@@ -53,8 +54,7 @@ public class ModelQueryTest {
 		indexerFolder.mkdir();
 
 		console = new DefaultConsole();
-		db = new OrientDatabase();
-		db.run("plocal:" + dbFolder.getAbsolutePath(), dbFolder, console);
+		createDB(dbFolder);
 
 		final FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(
 				new File("keystore"), "admin".toCharArray());
@@ -73,6 +73,11 @@ public class ModelQueryTest {
 		validationListener = new SyncValidationListener();
 		indexer.addGraphChangeListener(validationListener);
 		validationListener.setModelIndexer(indexer);
+	}
+
+	protected void createDB(final File dbFolder) throws IOException {
+		db = new OrientDatabase();
+		db.run("plocal:" + dbFolder.getAbsolutePath(), dbFolder, console);
 	}
 
 	@After

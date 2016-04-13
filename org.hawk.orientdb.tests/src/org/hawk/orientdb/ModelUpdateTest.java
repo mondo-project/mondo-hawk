@@ -45,7 +45,7 @@ import org.junit.Test;
 public class ModelUpdateTest {
 
 	private DefaultConsole console;
-	private OrientDatabase db;
+	protected OrientDatabase db;
 	private ModelIndexerImpl indexer;
 	private EOLQueryEngine queryEngine;
 	private SyncValidationListener validationListener;
@@ -70,8 +70,7 @@ public class ModelUpdateTest {
 				modelPath);
 
 		console = new DefaultConsole();
-		db = new OrientDatabase();
-		db.run("plocal:" + dbFolder.getAbsolutePath(), dbFolder, console);
+		createDB(dbFolder);
 
 		final FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(
 				new File("keystore"), "admin".toCharArray());
@@ -108,6 +107,11 @@ public class ModelUpdateTest {
 				return null;
 			}
 		});
+	}
+
+	protected void createDB(final File dbFolder) throws IOException {
+		db = new OrientDatabase();
+		db.run("plocal:" + dbFolder.getAbsolutePath(), dbFolder, console);
 	}
 
 	@After
