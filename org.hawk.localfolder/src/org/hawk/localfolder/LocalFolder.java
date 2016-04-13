@@ -122,7 +122,7 @@ public class LocalFolder implements IVcsManager {
 		try {
 			path = Paths.get(new URI(vcsloc));
 		} catch (URISyntaxException | IllegalArgumentException ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
 			path = Paths.get(vcsloc);
 		}
 
