@@ -13,5 +13,11 @@
             store="org.hawk.orientdb.RemoteOrientDatabase">
       </Backend>
    </extension>
+   <extension
+         point="org.hawk.core.QueryExtensionPoint">
+      <query
+            query_language="org.hawk.orientdb.query.OrientSQLQueryEngine">
+      </query>
+   </extension>
 
 </plugin>
