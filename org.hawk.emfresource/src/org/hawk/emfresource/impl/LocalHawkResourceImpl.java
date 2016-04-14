@@ -127,10 +127,10 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			case "eInternalContainer":
 			case "eContainer":
 				final EObject rawContainer = (EObject) proxy.invokeSuper(o, args);
-				return rawContainer != null ? rawContainer : lazyResolver.getContainer(eob);
+				return rawContainer != null ? rawContainer : (lazyResolver != null ? lazyResolver.getContainer(eob) : null);
 			case "eResource":
 				final Object rawResource = proxy.invokeSuper(o, args);
-				return rawResource != null ? rawResource : lazyResolver.getResource(eob);
+				return rawResource != null ? rawResource : (lazyResolver != null ? lazyResolver.getContainer(eob) : null);
 			case "eGet":
 				final EStructuralFeature sf = (EStructuralFeature)args[0];
 				return interceptEGet(o, args, proxy, eob, sf);
