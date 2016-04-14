@@ -23,8 +23,15 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 public class OrientEdge implements IGraphEdge {
 
 	private static final String TYPE_PROPERTY = "_hp_type";
-	private static final String FROM_PROPERTY = "_hp_from";
-	private static final String TO_PROPERTY = "_hp_to";
+
+	// We use the same names as OrientDB's GraphDB implementation, so the Graph viewer in Studio works as usual.
+	// We only use one E class however, but at least we can traverse through the graph with the usual facilities.
+	private static final String FROM_PROPERTY = "out";
+	private static final String TO_PROPERTY = "in";
+
+	// Old names, kept to preserve backwards compatibility
+	private static final String FROM_PROPERTY_OLD = "_hp_from";
+	private static final String TO_PROPERTY_OLD = "_hp_to";
 
 	/** Database that contains this edge. */
 	private final OrientDatabase db;
@@ -72,6 +79,8 @@ public class OrientEdge implements IGraphEdge {
 		fieldNames.remove(TYPE_PROPERTY);
 		fieldNames.remove(FROM_PROPERTY);
 		fieldNames.remove(TO_PROPERTY);
+		fieldNames.remove(FROM_PROPERTY_OLD);
+		fieldNames.remove(TO_PROPERTY_OLD);
 		return fieldNames;
 	}
 
@@ -87,11 +96,13 @@ public class OrientEdge implements IGraphEdge {
 	}
 
 	public OrientNode getStartNode() {
-		return getNode(FROM_PROPERTY);
+		final OrientNode fromNode = getNode(FROM_PROPERTY);
+		return fromNode != null ? fromNode : getNode(FROM_PROPERTY_OLD);
 	}
 
 	public OrientNode getEndNode() {
-		return getNode(TO_PROPERTY);
+		final OrientNode toNode = getNode(TO_PROPERTY);
+		return toNode != null ? toNode : getNode(TO_PROPERTY_OLD);
 	}
 
 	private OrientNode getNode(final String property) {
@@ -100,9 +111,11 @@ public class OrientEdge implements IGraphEdge {
 		if (value instanceof ODocument) {
 			ODocument doc = (ODocument) value;
 			return db.getNodeById(doc.getIdentity());
-		} else {
+		} else if (value != null) {
 			ORecordId id = (ORecordId) value;
 			return db.getNodeById(id);
+		} else {
+			return null;
 		}
 	}
 

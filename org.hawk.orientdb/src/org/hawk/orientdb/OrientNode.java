@@ -32,8 +32,18 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class OrientNode implements IGraphNode {
 	private static final String PREFIX_PROPERTY = "_hp_";
-	private static final String PREFIX_INCOMING = "_hi_";
-	private static final String PREFIX_OUTGOING = "_ho_";
+
+	// These are the same prefixes used by OrientDB's Graph API
+	private static final String PREFIX_INCOMING = "in_";
+	private static final String PREFIX_OUTGOING = "out_";
+
+	/*
+	 * Old prefixes, kept for backwards compatibility (new edges use new
+	 * prefixes, we combine new/old edges when listing, removing works on both
+	 * new/old edges)
+	 */
+	private static final String PREFIX_INCOMING_OLD = "_hi_";
+	private static final String PREFIX_OUTGOING_OLD = "_ho_";
 
 	private enum Direction { IN, OUT, BOTH };
 
@@ -141,6 +151,10 @@ public class OrientNode implements IGraphNode {
 				Iterable<Object> odocs = tmpVertex.field(propName);
 				addAllOIdentifiable(edges, odocs);
 			}
+			if (propName.startsWith(PREFIX_INCOMING_OLD) && dir != Direction.OUT || propName.startsWith(PREFIX_OUTGOING_OLD) && dir != Direction.IN) {
+				Iterable<Object> odocs = tmpVertex.field(propName);
+				addAllOIdentifiable(edges, odocs);
+			}
 		}
 		return edges;
 	}
@@ -168,12 +182,20 @@ public class OrientNode implements IGraphNode {
 			final String fldName = OrientNameCleaner.escapeToField(PREFIX_INCOMING + type);
 			final Iterable<Object> inODocs = tmpVertex.field(fldName);
 			addAllOIdentifiable(edges, inODocs);
+
+			final String fldNameOld = OrientNameCleaner.escapeToField(PREFIX_INCOMING_OLD + type);
+			final Iterable<Object> inODocsOld = tmpVertex.field(fldNameOld);
+			addAllOIdentifiable(edges, inODocsOld);
 		}
 
 		if (direction == Direction.OUT || direction == Direction.BOTH) {
 			final String fldName = OrientNameCleaner.escapeToField(PREFIX_OUTGOING + type);
 			final Iterable<Object> outODocs = tmpVertex.field(fldName);
 			addAllOIdentifiable(edges, outODocs);
+
+			final String fldNameOld = OrientNameCleaner.escapeToField(PREFIX_OUTGOING_OLD + type);
+			final Iterable<Object> outODocsOld = tmpVertex.field(fldNameOld);
+			addAllOIdentifiable(edges, outODocsOld);
 		}
 		return edges;
 	}
@@ -300,6 +322,7 @@ public class OrientNode implements IGraphNode {
 
 	public void removeOutgoing(OrientEdge orientEdge) {
 		removeFromList(orientEdge, OrientNameCleaner.escapeToField(PREFIX_OUTGOING + orientEdge.getType()));
+		removeFromList(orientEdge, OrientNameCleaner.escapeToField(PREFIX_OUTGOING_OLD + orientEdge.getType()));
 	}
 
 	private void removeFromList(OrientEdge orientEdge, final String fldName) {
@@ -313,6 +336,7 @@ public class OrientNode implements IGraphNode {
 
 	public void removeIncoming(OrientEdge orientEdge) {
 		removeFromList(orientEdge, OrientNameCleaner.escapeToField(PREFIX_INCOMING + orientEdge.getType()));
+		removeFromList(orientEdge, OrientNameCleaner.escapeToField(PREFIX_INCOMING_OLD + orientEdge.getType()));
 	}
 
 	public void save() {

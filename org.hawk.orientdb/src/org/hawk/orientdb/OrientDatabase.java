@@ -44,14 +44,16 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
 import com.orientechnologies.orient.core.intent.OIntentMassiveInsert;
+import com.orientechnologies.orient.core.metadata.schema.OClass;
+import com.orientechnologies.orient.core.metadata.schema.OSchemaProxy;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.storage.OStorage;
 
 /**
- * OrientDB backend for Hawk. Most things work, but it has two limitations:
- * numeric ranges are not supported by the OrientDB+Lucene integration, and edge
- * indexes do not support Lucene queries at the moment (it's a simple SBTree
- * index for now).
+ * OrientDB backend for Hawk. It is based on the Document API as it has better
+ * performance than their GraphDB implementation (probably because it tries to
+ * mimic Blueprints too much), but it follows the same conventions as their
+ * GraphDB, so graphs can be queried and viewed as usual.
  *
  * NOTE: it is recommended to set the {@link OGlobalConfiguration#WAL_LOCATION}
  * system property to a different filesystem, to avoid delaying regular I/O due
@@ -289,14 +291,30 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	private void ensureClassExists(final String vertexTypeName) {
-		if (!db.getMetadata().getSchema().existsClass(vertexTypeName)) {
+		final OSchemaProxy schema = db.getMetadata().getSchema();
+		if (!schema.existsClass(vertexTypeName)) {
 			final boolean wasInTX = db.getTransaction().isActive();
 			if (wasInTX) {
 				console.printerrln("Warning: premature commit needed to create class " + vertexTypeName);
 				saveDirty();
 				db.commit();
 			}
-			db.getMetadata().getSchema().createClass(vertexTypeName);
+
+			/*
+			 * In order to be treated by OrientDB's query layer as a vertex (e.g. the "Graph" viewer
+			 * in the OrientDB Studio), the vertex classes need to have V as a superclass and refer
+			 * to outgoing edges as out_X and incoming edges as in_X. All edge documents must then
+			 * belong to E or a subclass of and use out and in for the source and target of the edge.
+			 */
+			final OClass newVertexClass = schema.createClass(vertexTypeName);
+			if (vertexTypeName.startsWith(VERTEX_TYPE_PREFIX)) {
+				OClass baseVertexClass = schema.getClass("V");
+				if (baseVertexClass == null) {
+					baseVertexClass = schema.createClass("V");
+				}
+				newVertexClass.setSuperClass(baseVertexClass);
+			}
+
 			if (wasInTX) {
 				db.begin();
 			}
