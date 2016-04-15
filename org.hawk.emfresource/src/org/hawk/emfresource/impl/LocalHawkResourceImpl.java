@@ -358,6 +358,12 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		return fetchNodesByContainerFragment(eClass, null, null);
 	}
 
+	@Override
+	public Object performRawQuery(String queryLanguage, String query, Map<String, String> context) throws Exception {
+		final IQueryEngine ql = indexer.getKnownQueryLanguages().get(queryLanguage);
+		return ql.query(indexer, query, context);
+	}
+
 	/**
 	 * Fetches all the instances of a certain {@link EClass} that are contained within the specified file.
 	 */

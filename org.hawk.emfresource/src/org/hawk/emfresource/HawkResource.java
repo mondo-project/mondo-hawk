@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.hawk.core.query.IQueryEngine;
 
 public interface HawkResource extends Resource {
 
@@ -55,6 +56,21 @@ public interface HawkResource extends Resource {
 	EList<EObject> fetchNodes(List<String> ids, boolean mustFetchAttributes) throws Exception;
 
 	EList<EObject> fetchNodes(EClass eClass, boolean mustFetchAttributes) throws Exception;
+
+	/**
+	 * Performs a raw query on the underlying graph and returns the result
+	 * as-is. Does not load results.
+	 *
+	 * @param queryLanguage
+	 *            Name of the query language, as reported by the appropriate
+	 *            {@link IQueryEngine#getType()} method.
+	 * @param query
+	 *            String representing the query itself.
+	 * @param context
+	 *            Map from the query options to their values: see
+	 *            {@link IQueryEngine} for some common keys.
+	 */
+	Object performRawQuery(String queryLanguage, String query, Map<String, String> context) throws Exception;
 
 	List<Object> fetchValuesByEClassifier(EClassifier dataType) throws Exception;
 

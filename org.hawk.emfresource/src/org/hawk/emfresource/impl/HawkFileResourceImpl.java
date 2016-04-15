@@ -222,4 +222,9 @@ public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 	public void markChanged(EObject eob) {
 		mainResource.markChanged(eob);
 	}
+
+	@Override
+	public Object performRawQuery(String queryLanguage, String query, Map<String, String> context) throws Exception {
+		return mainResource.performRawQuery(queryLanguage, query, context);
+	}
 }
