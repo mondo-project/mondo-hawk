@@ -367,7 +367,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	/**
 	 * Fetches all the instances of a certain {@link EClass} that are contained within the specified file.
 	 */
-	public EList<EObject> fetchNodesByContainerFragment(EClass eClass, String location, String path) throws Exception {
+	public EList<EObject> fetchNodesByContainerFragment(EClass eClass, String repoURL, String path) throws Exception {
 		try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
 			final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
 			final MetamodelNode mn = gw.getMetamodelNodeByNsURI(eClass.getEPackage().getNsURI());
@@ -375,8 +375,8 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 				if (eClass.getName().equals(tn.getTypeName())) {
 					Iterable<ModelElementNode> instances = tn.getAll();
 
-					if (location != null && path != null) {
-						Set<FileNode> fileNodes = gw.getFileNodes(Arrays.asList(location), Arrays.asList(path));
+					if (repoURL != null && path != null) {
+						Set<FileNode> fileNodes = gw.getFileNodes(Arrays.asList(repoURL), Arrays.asList(path));
 
 						final List<ModelElementNode> filtered = new ArrayList<>();
 						for (ModelElementNode men : instances) {
