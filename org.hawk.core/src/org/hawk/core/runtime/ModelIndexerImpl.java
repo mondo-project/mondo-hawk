@@ -57,6 +57,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class ModelIndexerImpl implements IModelIndexer {
 
+	private static final int FILECOUNT_PROGRESS_THRESHOLD = 100;
 	// validation metrics and data
 	private boolean isSyncMetricsEnabled = false;
 	private Map<VcsCommitItem, IHawkModelResource> fileToResourceMap = new HashMap<>();
@@ -291,24 +292,28 @@ public class ModelIndexerImpl implements IModelIndexer {
 									// prepare for mass inserts if needed
 									graph.enterBatchMode();
 
-									final boolean fileCountProgress = totalFiles > 100;
+									final boolean fileCountProgress = totalFiles > FILECOUNT_PROGRESS_THRESHOLD;
 									final long millisSinceStart = System.currentTimeMillis();
 									int totalProcessedFiles = 0, filesProcessedSinceLastPrint = 0;
 									long millisSinceLastPrint = millisSinceStart;
 
 									for (VcsCommitItem v : currreposchangeditems) {
-										// if(v.getPath().equals("W4 BPMN+
-										// Composer"
-										// +" V.9.0/B.2.0-roundtrip.bpmn")){
-										// if
-										// (v.getPath().equals("A - Fixed
-										// Digrams"
-										// +" with Variations of
-										// Attributes/eclipse"
-										// +" BPMN2 Modeler
-										// 0.2.6/A.3.0-export.bpmn"))
-										// {
 										try {
+											// Place before the actual update so we print the 0/X message as well
+											if (fileCountProgress && (totalProcessedFiles == 0 && filesProcessedSinceLastPrint == 0 || filesProcessedSinceLastPrint == FILECOUNT_PROGRESS_THRESHOLD)) {
+												totalProcessedFiles += filesProcessedSinceLastPrint;
+
+												final long millisPrint = System.currentTimeMillis();
+												stateListener.info(String.format(
+														"Processed %d/%d files in repo %s (%s sec, %s sec total)",
+														totalProcessedFiles, totalFiles, m.getLocation(),
+														(millisPrint - millisSinceLastPrint) / 1000,
+														(millisPrint - millisSinceStart) / 1000));
+
+												filesProcessedSinceLastPrint = 0;
+												millisSinceLastPrint = millisPrint;
+											}
+
 											IHawkModelResource r = null;
 
 											if (u.caresAboutResources()) {
@@ -336,20 +341,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 												loadedResources++;
 											}
 
-											if (fileCountProgress) {
-												filesProcessedSinceLastPrint++;
-												if (filesProcessedSinceLastPrint == 1000) {
-													totalProcessedFiles += filesProcessedSinceLastPrint;
-
-													final long millisPrint = System.currentTimeMillis();
-													stateListener.info(String.format(
-															"Processed %d/%d files in repo %s (%s sec, %s sec total)", totalProcessedFiles,
-															totalFiles, m.getLocation(), (millisPrint - millisSinceLastPrint)/1000, (millisPrint - millisSinceStart)/1000));
-
-													filesProcessedSinceLastPrint = 0;
-													millisSinceLastPrint = millisPrint;
-												}
-											}
+											filesProcessedSinceLastPrint++;
 
 										} catch (Exception e) {
 											console.printerrln("updater: " + u + "failed to update store");
@@ -357,7 +349,17 @@ public class ModelIndexerImpl implements IModelIndexer {
 											success = false;
 										}
 									}
-									// }
+
+									// Print the final message
+									if (fileCountProgress) {
+										totalProcessedFiles += filesProcessedSinceLastPrint;
+										final long millisPrint = System.currentTimeMillis();
+										stateListener.info(String.format(
+												"Processed %d/%d files in repo %s (%s sec, %s sec total)",
+												totalProcessedFiles, totalFiles, m.getLocation(),
+												(millisPrint - millisSinceLastPrint) / 1000,
+												(millisPrint - millisSinceStart) / 1000));
+									}
 
 									stateListener.info("Updating proxies...");
 
