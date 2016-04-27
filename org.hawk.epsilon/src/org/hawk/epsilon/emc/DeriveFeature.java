@@ -28,6 +28,7 @@ import org.hawk.graph.internal.util.GraphUtil;
 
 public class DeriveFeature {
 
+	// TODO move to core (it's used from LocalHawkResourceImpl in org.hawk.emfresource)
 	public final static String REFERENCETARGETPREFIX = "GNW::";
 
 	public DeriveFeature() throws Exception {

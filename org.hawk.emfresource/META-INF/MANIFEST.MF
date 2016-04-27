@@ -21,7 +21,6 @@ Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.10.2",
  org.hawk.core;bundle-version="1.0.0",
  org.hawk.graph;bundle-version="1.0.0",
  org.slf4j.api;bundle-version="1.7.2",
- com.google.guava,
- org.hawk.epsilon;bundle-version="1.0.0"
+ com.google.guava
 Bundle-ClassPath: lib/cglib-nodep-3.1.jar,
  .
