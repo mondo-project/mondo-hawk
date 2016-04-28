@@ -853,7 +853,9 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 				}
 				resource.addFragment(modelElementNode.getNodeId(), modelElementNode.getElementId());
 			}
-		} else {
+		} else if (eob.eContainer() == null) {
+			// eob.eContainer() check needed to avoid ConcurrentModificationException during loading in EGL
+			// (since it iterates through getContents())
 			getContents().add(eob);
 		}
 	}
