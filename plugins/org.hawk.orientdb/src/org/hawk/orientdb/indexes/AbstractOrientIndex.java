@@ -24,9 +24,11 @@ import com.orientechnologies.orient.core.index.OCompositeKey;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.index.OIndexAbstractCursor;
 import com.orientechnologies.orient.core.index.OIndexCursor;
+import com.orientechnologies.orient.core.index.OIndexFactory;
 import com.orientechnologies.orient.core.index.OIndexManager;
 import com.orientechnologies.orient.core.index.OIndexManagerProxy;
 import com.orientechnologies.orient.core.index.OIndexRemote;
+import com.orientechnologies.orient.core.index.OIndexes;
 import com.orientechnologies.orient.core.index.OSimpleKeyIndexDefinition;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OType;
@@ -154,9 +156,11 @@ public class AbstractOrientIndex {
 		}
 	
 		// Create SBTree NOTUNIQUE index
-		final OSimpleKeyIndexDefinition indexDef = new OSimpleKeyIndexDefinition( OType.STRING, keyType);
+	    final OIndexFactory factory = OIndexes.getFactory(OClass.INDEX_TYPE.NOTUNIQUE.toString(), null);
+		
+		final OSimpleKeyIndexDefinition indexDef = new OSimpleKeyIndexDefinition(factory.getLastVersion(), OType.STRING, keyType);
 		indexManager.createIndex(idxName, OClass.INDEX_TYPE.NOTUNIQUE.toString(), indexDef, null, null, null, null);
-		final OSimpleKeyIndexDefinition keyIndexDef = new OSimpleKeyIndexDefinition(OType.LINK, OType.STRING, keyType);
+		final OSimpleKeyIndexDefinition keyIndexDef = new OSimpleKeyIndexDefinition(factory.getLastVersion(), OType.LINK, OType.STRING, keyType);
 		indexManager.createIndex(idxName + KEY_IDX_SUFFIX, OClass.INDEX_TYPE.NOTUNIQUE.toString(), keyIndexDef, null, null, null, null);
 
 		if (txWasOpen) {

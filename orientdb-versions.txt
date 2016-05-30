@@ -1,0 +1,19 @@
+OrientDB 2.0.16
+--
+
+Tried indexing synthetic Modelio workspaces ("||" means different
+executions of Eclipse, "+" means different trials in same execution):
+
+m2 - 95s376ms || 383s (?!) + 174s + 173s + 174s
+m4 - 288s187ms || 314s + 305s + 302s || 306s + 301s
+m16 - 1308s62ms - 1081s - 1072s
+
+OrientDB 2.2.0
+--
+
+m2 - 137s + 135s + 137s + 137s || 155s + 153s + 154s + 389s (?!)
+m4 - 288s + 265s + 272s + 269s || 292s + 290s || 276s + 270s
+m16 - 2385s + 717s (?!) + 2409s + 2276s
+
+2.0 is still fastest for largest models, 2.2 seems to be slightly faster for
+smaller ones (but slightly inconsistent?).
