@@ -11,6 +11,7 @@
 package org.hawk.orientdb.indexes;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.orientdb.OrientDatabase;
@@ -38,9 +39,10 @@ final class IndexCursorFactoryNodeIterable<T> implements IGraphIterable<T> {
 			public boolean hasNext() {
 				try {
 					return results != null && results.hasNext();
-				} catch (ArrayIndexOutOfBoundsException ex) {
-					// BUG in OrientDB Lucene indexes: this is thrown when there are no results
-					// (see LuceneResultSet.java:248 - it uses array[array.length-1]
+				} catch (ArrayIndexOutOfBoundsException|NoSuchElementException ex) {
+					// BUG in OrientDB: hasNext throws exceptions when there are no results
+					// 2.0.x - (see LuceneResultSet.java:248 - it uses array[array.length-1]
+					// 2.2.x - throws NoSuchElementException instead
 					return false;
 				}
 			}
