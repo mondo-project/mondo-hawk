@@ -62,7 +62,7 @@ public class ManifestPackage extends ManifestClass {
 	}
 
 	@Override
-	public Set<IHawkClass> getSuperTypes() {
+	public Set<IHawkClass> getAllSuperTypes() {
 		return new HashSet<>();
 	}
 

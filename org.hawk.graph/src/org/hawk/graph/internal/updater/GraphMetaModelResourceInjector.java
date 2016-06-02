@@ -450,7 +450,7 @@ public class GraphMetaModelResourceInjector {
 
 		graph.createRelationship(node, metamodelNode, "epackage");
 
-		for (IHawkClass e : eClass.getSuperTypes()) {
+		for (IHawkClass e : eClass.getAllSuperTypes()) {
 			final String uri = e.getPackageNSURI();
 
 			if (epackagedictionary.get("id", uri).iterator().hasNext() == false) {

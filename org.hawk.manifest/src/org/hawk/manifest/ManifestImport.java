@@ -79,7 +79,7 @@ public class ManifestImport extends ManifestClass implements IHawkClass {
 	}
 
 	@Override
-	public Set<IHawkClass> getSuperTypes() {
+	public Set<IHawkClass> getAllSuperTypes() {
 		return new HashSet<>();
 	}
 

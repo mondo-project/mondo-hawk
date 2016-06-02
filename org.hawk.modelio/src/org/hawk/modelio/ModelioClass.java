@@ -17,7 +17,10 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.hawk.core.model.*;
+import org.hawk.core.model.IHawkAttribute;
+import org.hawk.core.model.IHawkClass;
+import org.hawk.core.model.IHawkReference;
+import org.hawk.core.model.IHawkStructuralFeature;
 
 public class ModelioClass extends ModelioObject implements IHawkClass {
 
@@ -84,11 +87,11 @@ public class ModelioClass extends ModelioObject implements IHawkClass {
 	}
 
 	@Override
-	public HashSet<IHawkClass> getSuperTypes() {
+	public HashSet<IHawkClass> getAllSuperTypes() {
 
 		HashSet<IHawkClass> c = new HashSet<IHawkClass>();
 
-		for (EClass e : eclass.getESuperTypes()) {
+		for (EClass e : eclass.getEAllSuperTypes()) {
 
 			c.add(new ModelioClass(e));
 

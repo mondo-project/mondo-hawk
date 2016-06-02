@@ -11,6 +11,7 @@
 package org.hawk.emf;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -95,18 +96,13 @@ public class EMFClass extends EMFObject implements IHawkClass {
 	}
 
 	@Override
-	public HashSet<IHawkClass> getSuperTypes() {
+	public Set<IHawkClass> getAllSuperTypes() {
+		Set<IHawkClass> c = new HashSet<IHawkClass>();
 
-		HashSet<IHawkClass> c = new HashSet<IHawkClass>();
-
-		for (EClass e : eclass.getESuperTypes()) {
-
+		for (EClass e : eclass.getEAllSuperTypes()) {
 			c.add(new EMFClass(e));
-
 		}
-
 		return c;
-
 	}
 
 	@Override

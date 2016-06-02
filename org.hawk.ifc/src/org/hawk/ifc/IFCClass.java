@@ -85,11 +85,11 @@ public class IFCClass extends IFCObject implements IHawkClass {
 	}
 
 	@Override
-	public HashSet<IHawkClass> getSuperTypes() {
+	public HashSet<IHawkClass> getAllSuperTypes() {
 
 		HashSet<IHawkClass> c = new HashSet<IHawkClass>();
 
-		for (EClass e : eclass.getESuperTypes()) {
+		for (EClass e : eclass.getEAllSuperTypes()) {
 
 			c.add(new IFCClass(e));
 

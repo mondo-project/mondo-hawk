@@ -176,7 +176,7 @@ public class EcoreGenerator {
 				ec.getEStructuralFeatures().add(eref);
 			}
 
-			if (mc.getSuperTypes().isEmpty()) {
+			if (mc.getAllSuperTypes().isEmpty()) {
 				final EReference eRefChildren = factory.createEReference();
 				eRefChildren.setName(ModelioClass.REF_CHILDREN);
 				eRefChildren.setOrdered(true);

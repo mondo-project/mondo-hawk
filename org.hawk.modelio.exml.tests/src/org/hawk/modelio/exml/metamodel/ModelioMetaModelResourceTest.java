@@ -15,7 +15,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkObject;
@@ -74,7 +76,7 @@ public class ModelioMetaModelResourceTest {
 		for (IHawkObject o : r.getAllContents()) {
 			if (o instanceof IHawkClass) {
 				IHawkClass hc = (IHawkClass)o;
-				if (hc.getSuperTypes().isEmpty()) {
+				if (hc.getAllSuperTypes().isEmpty()) {
 					rootClasses.add(hc.getName());
 				}
 			}
@@ -84,4 +86,15 @@ public class ModelioMetaModelResourceTest {
 		assertTrue("Should contain the meta type", rootClasses.contains(ModelioMetaModelResource.META_TYPE_NAME));
 		assertEquals("There should be exactly three root ModelioClasses", 3, rootClasses.size());
 	}
+
+	@Test
+	public void checkModuleComponentHierarchy() {
+		final Set<String> names = new HashSet<>();
+		for (IHawkClass hc : r.getModelioClass("ModuleComponent").getAllSuperTypes()) {
+			names.add(hc.getName());
+		}
+		assertTrue(names.contains("Class"));
+		assertTrue(names.contains("Component"));
+	}
+
 }

@@ -137,7 +137,11 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 	public Map<String, ModelioAttribute> getAllAttributesMap() {
 		if (allAttributes == null) {
 			allAttributes = new HashMap<>();
-			addAllAttributes(allAttributes);
+			allAttributes.putAll(getOwnAttributesMap());
+			for (IHawkClass cSuper : getAllSuperTypes()) {
+				final ModelioClass mcSuper = (ModelioClass)cSuper;
+				allAttributes.putAll(mcSuper.getOwnAttributesMap());
+			}
 		}
 		return allAttributes;
 	}
@@ -157,13 +161,6 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 		return ownAttributes;
 	}
 
-	protected void addAllAttributes(Map<String, ModelioAttribute> attrs) {
-		attrs.putAll(getOwnAttributesMap());
-		for (IHawkClass mcSuper : getSuperTypes()) {
-		    ((ModelioClass)mcSuper).addAllAttributes(attrs);
-		}
-	}
-
 	@Override
 	public Set<IHawkReference> getAllReferences() {
 		return new HashSet<IHawkReference>(getAllReferencesMap().values());
@@ -175,7 +172,11 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 	public Map<String, ModelioReference> getAllReferencesMap() {
 		if (allReferences == null) {
 			allReferences = new HashMap<>();
-			addAllReferences(allReferences);
+			allReferences.putAll(getOwnReferencesMap());
+			for (IHawkClass cSuper : getAllSuperTypes()) {
+				final ModelioClass mcSuper = (ModelioClass)cSuper;
+				allReferences.putAll(mcSuper.getOwnReferencesMap());
+			}
 		}
 		return allReferences;
 	}
@@ -201,14 +202,21 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 		return ownReferences;
 	}
 
-	protected void addAllReferences(Map<String, ModelioReference> refs) {
-		refs.putAll(getOwnReferencesMap());
-		for (IHawkClass mcSuper : getSuperTypes()) {
-			((ModelioClass)mcSuper).addAllReferences(refs);
+	@Override
+	public Set<IHawkClass> getAllSuperTypes() {
+		final Set<IHawkClass> superClasses = new HashSet<>();
+		for (MClass superRawClass : rawClass.getMSuperType()) {
+			ModelioClass superClass = mPackage.getResource().getModelioClass(superRawClass.getName());
+			if (superClasses.add(superClass)) {
+				superClasses.addAll(superClass.getAllSuperTypes());
+			}
 		}
+		return superClasses;
 	}
 
-	@Override
+	/**
+	 * Returns only the direct supertypes.
+	 */
 	public Set<IHawkClass> getSuperTypes() {
 		final Set<IHawkClass> superClasses = new HashSet<>();
 		for (MClass superRawClass : rawClass.getMSuperType()) {

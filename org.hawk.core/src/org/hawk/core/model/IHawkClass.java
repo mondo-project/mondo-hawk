@@ -18,10 +18,19 @@ public interface IHawkClass extends IHawkClassifier, IHawkObject {
 
 	String getPackageNSURI();
 
+	/**
+	 * Returns all directly defined and inherited attributes of this type.
+	 */
 	Set<IHawkAttribute> getAllAttributes();
 
-	Set<IHawkClass> getSuperTypes();
+	/**
+	 * Returns all direct and indirect supertypes of this type.
+	 */
+	Set<IHawkClass> getAllSuperTypes();
 
+	/**
+	 * Returns all directly defined and inherited references of this type.
+	 */
 	Set<IHawkReference> getAllReferences();
 
 	boolean isAbstract();
