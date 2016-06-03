@@ -154,9 +154,15 @@ public class ExmlParser {
 				case "FOREIGNID":
 				case "EXTID":
 					if (currentLink != null) {
+						// ID inside <LINK>
 						final ExmlReference ref = new ExmlReference(exmlObj.getFile());
 						fillInReference(evStart, ref);
 						exmlObj.addToLink(currentLink, ref);
+					} else if (currentComp != null) {
+						// ID inside <COMP> (e.g. inside a <REFOBJ>)
+						final ExmlReference ref = new ExmlReference(exmlObj.getFile());
+						fillInReference(evStart, ref);
+						exmlObj.addToComposition(currentComp, ref);
 					} else {
 						fillInReference(evStart, exmlObj);
 					}
@@ -204,9 +210,13 @@ public class ExmlParser {
 	}
 
 	private void fillInReference(final StartElement evStart, ExmlReference ref) {
-		ref.setName(getAttribute(evStart, "name"));
-		ref.setMClassName(getAttribute(evStart, "mc"));
-		ref.setUID(getAttribute(evStart, "uid"));
+		if (ref.getName() == null) {
+			ref.setName(getAttribute(evStart, "name"));
+			ref.setMClassName(getAttribute(evStart, "mc"));
+			ref.setUID(getAttribute(evStart, "uid"));
+		} else {
+			System.err.println("WARNING: tried to overwrite reference " + ref);
+		}
 	}
 
 	private String getAttribute(final StartElement evStart, final String attr) {
