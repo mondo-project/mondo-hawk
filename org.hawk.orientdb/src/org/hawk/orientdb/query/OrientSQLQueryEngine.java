@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.IGraphNodeReference;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.query.IAccessListener;
 import org.hawk.core.query.IQueryEngine;
@@ -20,6 +21,7 @@ import org.hawk.orientdb.OrientDatabase;
 
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.record.impl.ODocumentHelper;
 import com.orientechnologies.orient.core.sql.OCommandExecutorSQLSelect;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.orientechnologies.orient.core.sql.OCommandSQLParsingException;
@@ -28,6 +30,67 @@ import com.orientechnologies.orient.core.sql.OCommandSQLParsingException;
  * Gives raw access to OrientDB SELECT SQL queries. 
  */
 public class OrientSQLQueryEngine implements IQueryEngine {
+
+	private class OrientNodeWrapper implements IGraphNodeReference {
+		private final ORID identity;
+		private final OrientDatabase db;
+
+		private OrientNodeWrapper(ORID identity, OrientDatabase db) {
+			this.identity = identity;
+			this.db = db;
+		}
+
+		@Override
+		public String getTypeName() {
+			final IGraphNode typeNode = getNode().getEdgesWithType("ofType").iterator().next().getEndNode();
+			return typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+		}
+
+		@Override
+		public IGraphNode getNode() {
+			return db.getNodeById(identity);
+		}
+
+		@Override
+		public String getId() {
+			return identity.toString();
+		}
+
+		@Override
+		public IQueryEngine getContainerModel() {
+			return OrientSQLQueryEngine.this;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((identity == null) ? 0 : identity.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			OrientNodeWrapper other = (OrientNodeWrapper) obj;
+			if (identity == null) {
+				if (other.identity != null)
+					return false;
+			} else if (!identity.equals(other.identity))
+				return false;
+			return true;
+		}
+
+		@Override
+		public String toString() {
+			return "ONW|id:" + identity + "|" + getTypeName();
+		}
+	}
 
 	@Override
 	public IAccessListener calculateDerivedAttributes(IModelIndexer m, Iterable<IGraphNode> nodes)
@@ -97,12 +160,20 @@ public class OrientSQLQueryEngine implements IQueryEngine {
 				final ORID identity = ((ODocument) result).getIdentity();
 				return identity.isValid() ? db.getNodeById(identity) : null;
 			} else if (result instanceof Iterable) {
-				List<IGraphNode> results = new ArrayList<>();
+				List<Object> results = new ArrayList<>();
 				for (Object elem : (Iterable<?>)result) {
 					if (elem instanceof ODocument) {
-						ORID identity = ((ODocument) elem).getIdentity();
-						if (identity.isValid()) {
-							results.add(db.getNodeById(identity));
+						final ODocument odoc = (ODocument) elem;
+						final ORID identity = odoc.getIdentity();
+						if (identity.isPersistent()) {
+							// This is a proper model element node - return it as a graph node reference
+							results.add(new OrientNodeWrapper(identity, db));
+						} else {
+							// This is a temporary result document - return it as a standard map,
+							// removing the Orient @rid (which isn't meaningful here anyway)
+							Map<String, Object> mapResult = odoc.toMap();
+							mapResult.remove(ODocumentHelper.ATTRIBUTE_RID);
+							results.add(mapResult);
 						}
 					}
 				}
