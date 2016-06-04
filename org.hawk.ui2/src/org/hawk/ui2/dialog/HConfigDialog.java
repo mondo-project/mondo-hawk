@@ -543,6 +543,7 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 		}
 
 		TabFolder tabFolder = new TabFolder(parent, SWT.BORDER);
+		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		TabItem metamodelTab = new TabItem(tabFolder, SWT.NULL);
 		metamodelTab.setText("Metamodels");
