@@ -599,7 +599,7 @@ public class GraphModelBatchInjector {
 
 				// use metamodel to infer all supertypes for fast search and log
 				// em
-				for (IHawkClass superType : ((IHawkClass) eObject.getType()).getAllSuperTypes()) {
+				for (IHawkClass superType : ((IHawkClass) eObject.getType()).getSuperTypes()) {
 					eClass = typeCache.getEClassNode(graph, superType);
 					createReference(ModelElementNode.EDGE_LABEL_OFKIND, node, eClass, emptyMap, true);
 					objectCount[2]++;
