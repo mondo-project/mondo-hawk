@@ -58,8 +58,8 @@ public class GraphModelInserter {
 	private static final boolean enableDebug = false;
 
 	private static final int PROXY_RESOLVE_NOTIFY_INTERVAL = 25000;
-
 	private static final int PROXY_RESOLVE_TX_SIZE = 5000;
+	private static final int DERIVED_PNODE_TX_SIZE = 1000;
 
 	private static final double maxTransactionalAcceptableLoadRatio = 0.5;
 
@@ -992,8 +992,8 @@ public class GraphModelInserter {
 			try (IGraphTransaction tx = graph.beginTransaction()) {
 				final long startChunkMillis = System.currentTimeMillis();
 
-				final List<IGraphNode> chunk = new ArrayList<>(PROXY_RESOLVE_TX_SIZE);
-				for (int i = 0; i < PROXY_RESOLVE_TX_SIZE && itUnresolved.hasNext(); i++) {
+				final List<IGraphNode> chunk = new ArrayList<>(DERIVED_PNODE_TX_SIZE);
+				for (int i = 0; i < DERIVED_PNODE_TX_SIZE && itUnresolved.hasNext(); i++) {
 					chunk.add(itUnresolved.next());
 				}
 				done = !itUnresolved.hasNext();
@@ -1002,6 +1002,7 @@ public class GraphModelInserter {
 				final IAccessListener accessListener = q.calculateDerivedAttributes(indexer, chunk);
 
 				// dump access to Lucene and add hooks on updates
+				// TODO - break transactions by accesses, not by derived nodes
 				for (IAccess a : accessListener.getAccesses()) {
 					final IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
 					derivedAccessDictionary.remove(sourceNode);
