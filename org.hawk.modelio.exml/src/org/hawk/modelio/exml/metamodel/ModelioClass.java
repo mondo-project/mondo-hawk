@@ -214,10 +214,15 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 		return superClasses;
 	}
 
+	@Override
+	public Set<IHawkClass> getSuperTypes() {
+		return getAllSuperTypes();
+	}
+
 	/**
 	 * Returns only the direct supertypes.
 	 */
-	public Set<IHawkClass> getSuperTypes() {
+	public Set<IHawkClass> getOwnSuperTypes() {
 		final Set<IHawkClass> superClasses = new HashSet<>();
 		for (MClass superRawClass : rawClass.getMSuperType()) {
 			ModelioClass superClass = mPackage.getResource().getModelioClass(superRawClass.getName());

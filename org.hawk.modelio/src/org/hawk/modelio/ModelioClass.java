@@ -11,6 +11,7 @@
 package org.hawk.modelio;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -99,6 +100,11 @@ public class ModelioClass extends ModelioObject implements IHawkClass {
 
 		return c;
 
+	}
+
+	@Override
+	public Set<IHawkClass> getSuperTypes() {
+		return getAllSuperTypes();
 	}
 
 	@Override

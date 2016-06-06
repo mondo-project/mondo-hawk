@@ -120,7 +120,7 @@ public class EcoreGenerator {
 			final EClass ec = entry.getLeft();
 			final ModelioClass mc = entry.getRight();
 
-			for (IHawkClass superMClass : mc.getSuperTypes()) {
+			for (IHawkClass superMClass : mc.getOwnSuperTypes()) {
 				EClass eSuper = mClasses.get(superMClass.getName()).getLeft();
 				ec.getESuperTypes().add(eSuper);
 			}

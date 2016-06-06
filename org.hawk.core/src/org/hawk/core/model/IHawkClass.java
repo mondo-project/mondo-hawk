@@ -29,6 +29,13 @@ public interface IHawkClass extends IHawkClassifier, IHawkObject {
 	Set<IHawkClass> getAllSuperTypes();
 
 	/**
+	 * Old name for {@link #getAllSuperTypes()}: this will be removed in future versions.
+	 * Kept for interim compatibility while updating binary artefacts.
+	 */
+	@Deprecated
+	Set<IHawkClass> getSuperTypes();
+
+	/**
 	 * Returns all directly defined and inherited references of this type.
 	 */
 	Set<IHawkReference> getAllReferences();

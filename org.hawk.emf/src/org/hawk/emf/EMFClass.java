@@ -106,6 +106,11 @@ public class EMFClass extends EMFObject implements IHawkClass {
 	}
 
 	@Override
+	public Set<IHawkClass> getSuperTypes() {
+		return getAllSuperTypes();
+	}
+
+	@Override
 	public HashSet<IHawkReference> getAllReferences() {
 
 		HashSet<IHawkReference> c = new HashSet<IHawkReference>();

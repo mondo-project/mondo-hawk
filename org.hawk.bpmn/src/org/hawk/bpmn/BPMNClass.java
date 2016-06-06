@@ -108,6 +108,11 @@ public class BPMNClass extends BPMNObject implements IHawkClass {
 	}
 
 	@Override
+	public Set<IHawkClass> getSuperTypes() {
+		return getAllSuperTypes();
+	}
+
+	@Override
 	public Set<IHawkReference> getAllReferences() {
 
 		HashSet<IHawkReference> c = new HashSet<IHawkReference>();

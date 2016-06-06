@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.hawk.manifest;
 
+import java.util.Set;
+
 import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkClassifier;
@@ -57,6 +59,11 @@ public abstract class ManifestClass extends ManifestObject implements
 	@Override
 	public Object get(IHawkReference ref, boolean b) {
 		return null;
+	}
+
+	@Override
+	public Set<IHawkClass> getSuperTypes() {
+		return getAllSuperTypes();
 	}
 
 }
