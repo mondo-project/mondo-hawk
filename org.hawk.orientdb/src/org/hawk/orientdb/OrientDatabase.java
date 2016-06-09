@@ -119,6 +119,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 		OGlobalConfiguration.WAL_CACHE_SIZE.setValue(10000);
 		OGlobalConfiguration.OBJECT_SAVE_ONLY_DIRTY.setValue(true);
+		OGlobalConfiguration.SBTREE_MAX_KEY_SIZE.setValue(102_400);
 
 		console.println("Starting database " + iURL);
 		this.dbURL = iURL;

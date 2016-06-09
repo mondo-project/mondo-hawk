@@ -141,7 +141,10 @@ public class ModelElementNode {
 
 		if (slot.isMany() && rawValue != null && (slot.isAttribute() || slot.isMixed() || slot.isDerived())) {
 			final Class<?> componentType = rawValue.getClass().getComponentType();
-			if (!componentType.isPrimitive()) {
+			if (componentType == null) {
+				// Derived reference that has not been computed yet, or there was an error evaluating it - no value for now
+				return null;
+			} else if (!componentType.isPrimitive()) {
 				// non-primitive arrays can be cast to Object[]
 				collection.addAll(Arrays.asList((Object[]) rawValue));
 			} else if (componentType == double.class) {
