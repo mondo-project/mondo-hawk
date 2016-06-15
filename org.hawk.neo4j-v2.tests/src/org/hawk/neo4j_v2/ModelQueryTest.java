@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -144,6 +145,11 @@ public class ModelQueryTest {
 				assertEquals(0, validationListener.getTotalErrors());
 				assertEquals(1, queryEngine.query(indexer,
 						"return IJavaProject.all.size;", null));
+
+				final int reportedSize = (Integer) queryEngine.query(indexer,  "return TypeDeclaration.all.size;", null);
+				final Collection<?> actualList = (Collection<?>)queryEngine.query(indexer, "return TypeDeclaration.all;", null);
+				assertEquals(reportedSize, actualList.size());
+
 				return null;
 			}
 		});

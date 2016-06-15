@@ -12,6 +12,7 @@
 package org.hawk.ui2.dialog;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -254,8 +255,8 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 
 				long start = System.currentTimeMillis();
 				
+				Object result = null;
 				try {
-
 					String ql = null;
 					String text = queryLanguage.getText();
 					ql = text.equals("") ? null : text;
@@ -285,33 +286,28 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 
 						if (queryField.getText().startsWith(QUERY_IS_EDITOR)) {
 
-							Object r = index.query(queryField.getText()
+							result = index.query(queryField.getText()
 									.substring(QUERY_IS_EDITOR.length()), ql,
 									map);
 							String ret = "<null>";
-							if (r != null)
-								ret = r.toString();
+							if (result != null)
+								ret = result.toString();
 							resultField.setText(ret);
 
-						} else if (queryField.getText().startsWith(
-								QUERY_IS_FILE)) {
+						} else if (queryField.getText().startsWith(QUERY_IS_FILE)) {
 
-							Object r = index.query(new File(queryField
+							result = index.query(new File(queryField
 									.getText()
 									.substring(QUERY_IS_FILE.length())), ql,
 									map);
 							String ret = "<null>";
-							if (r != null)
-								ret = r.toString();
+							if (result != null)
+								ret = result.toString();
 							resultField.setText(ret);
 
 						} else {
-
-							Object ret = index.query(queryField.getText(), ql,
-									map);
-							resultField.setText(ret != null ? ret.toString()
-									: "<null>");
-
+							result = index.query(queryField.getText(), ql, map);
+							resultField.setText(result != null ? result.toString() : "<null>");
 						}
 
 					}
@@ -325,7 +321,12 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 				
 				long end = System.currentTimeMillis();
 				long time = end-start;
-				setMessage("Query took: "+time/1000+"s "+time%1000+"ms",0);
+
+				if (result instanceof Collection) {
+					setMessage(String.format("Query returned %d results in %d s %d ms", ((Collection)result).size(), time/1000,  time % 1000), 0);
+				} else {
+					setMessage(String.format("Query completed in %d s %d ms", time/1000,  time % 1000), 0);
+				}
 				
 			}
 		});
