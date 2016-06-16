@@ -6,6 +6,11 @@ set -o errexit
 # Run the regular build
 mvn --quiet install
 
+# Only continue deploying to update site for the master branch
+if [[ "$TRAVIS_BRANCH" != 'master' ]]; then
+    exit 0
+fi
+
 # Clone the gh-pages branch
 rm -rf out || true
 git clone -b gh-pages --single-branch https://github.com/mondo-project/mondo-hawk.git out
