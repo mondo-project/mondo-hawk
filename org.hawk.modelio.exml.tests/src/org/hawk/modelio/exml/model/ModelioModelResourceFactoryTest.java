@@ -2,6 +2,7 @@ package org.hawk.modelio.exml.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -10,6 +11,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
@@ -22,6 +24,7 @@ public class ModelioModelResourceFactoryTest {
 
 	private static final String RAMC_PATH = "resources/jenkins/jenkins_1.540.0.ramc";
 	private static final String ICONTAINMENT_PATH = "resources/implicitContainment/example.exml";
+	private static final String BPMNCATCH_PATH = "resources/bpmn/bpmnCatchEvent.exml";
 
 	@SuppressWarnings("unchecked")
 	@Test
@@ -99,5 +102,26 @@ public class ModelioModelResourceFactoryTest {
 				fail("Unexpected object " + mob.getUriFragment());
 			}
 		}
+	}
+
+	@Test
+	public void bpmnCatchEvent() throws Exception {
+		ModelioModelResourceFactory factory = new ModelioModelResourceFactory();
+		IHawkModelResource resource = factory.parse(new File(BPMNCATCH_PATH));
+		assertEquals(5, resource.getAllContentsSet().size());
+
+		boolean found = false;
+		for (IHawkObject element : resource.getAllContentsSet()) {
+			final IHawkClass type = (IHawkClass) element.getType();
+			final IHawkAttribute attrName = (IHawkAttribute)type.getStructuralFeature("Name");
+			if (attrName != null) {
+				final String name = element.get(attrName) + "";
+				if ("BpmnCatchEvent".equals(name)) {
+					assertEquals("BpmnCatchEvent should be a Class", "Class", element.getType().getName());
+					found = true;
+				}
+			}
+		}
+		assertTrue("The .exml file should contain a BpmnCatchEvent element", found);
 	}
 }
