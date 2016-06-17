@@ -70,7 +70,7 @@ public interface HawkResource extends Resource {
 	 *            Map from the query options to their values: see
 	 *            {@link IQueryEngine} for some common keys.
 	 */
-	Object performRawQuery(String queryLanguage, String query, Map<String, String> context) throws Exception;
+	Object performRawQuery(String queryLanguage, String query, Map<String, Object> context) throws Exception;
 
 	List<Object> fetchValuesByEClassifier(EClassifier dataType) throws Exception;
 

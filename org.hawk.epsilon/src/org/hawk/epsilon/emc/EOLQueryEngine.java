@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.epsilon.common.parse.problem.ParseProblem;
@@ -32,6 +33,7 @@ import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
+import org.eclipse.epsilon.eol.execute.context.Variable;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertyGetter;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertySetter;
 import org.eclipse.epsilon.eol.models.Model;
@@ -465,11 +467,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			this.aliases.add(aliasArray[i].trim());
 		}
 
-		// String ec = (String)
-		// config.get(EOLQueryEngine.PROPERTY_ENABLE_CASHING);
-		// enableCache = Boolean.parseBoolean((ec == null) ? "true" : ec);
-		// System.err.println("EOL EC: " + enableCache);
-
 		if (graph != null) {
 
 			try (IGraphTransaction tx = graph.beginTransaction()) {
@@ -662,7 +659,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	}
 
 	@Override
-	public Object query(IModelIndexer m, String query, Map<String, String> context)
+	public Object query(IModelIndexer m, String query, Map<String, Object> context)
 			throws InvalidQueryException, QueryExecutionException {
 		/*
 		 * Check if we're in the right state: we should not use {@link
@@ -679,9 +676,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		if (context == null)
 			return contextlessQuery(m, query, context);
 
-		String repo = context.get(PROPERTY_REPOSITORYCONTEXT);
-		String file = context.get(PROPERTY_FILECONTEXT);
-
+		final Object repo = context.get(PROPERTY_REPOSITORYCONTEXT);
+		final Object file = context.get(PROPERTY_FILECONTEXT);
 		if (repo == null && file == null) // no scope
 			return contextlessQuery(m, query, context);
 		else
@@ -690,7 +686,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	}
 
 	@Override
-	public Object query(IModelIndexer m, File query, Map<String, String> context)
+	public Object query(IModelIndexer m, File query, Map<String, Object> context)
 			throws InvalidQueryException, QueryExecutionException {
 
 		String code = "";
@@ -708,14 +704,14 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 	}
 
-	private Object contextlessQuery(IModelIndexer m, String query, Map<String, String> context)
+	private Object contextlessQuery(IModelIndexer m, String query, Map<String, Object> context)
 			throws QueryExecutionException, InvalidQueryException {
 
 		final long truestart = System.currentTimeMillis();
 
 		String defaultnamespaces = null;
 		if (context != null)
-			defaultnamespaces = context.get(PROPERTY_DEFAULTNAMESPACES);
+			defaultnamespaces = (String) context.get(PROPERTY_DEFAULTNAMESPACES);
 
 		/*
 		 * Always create a new engine for every query (reusing the same engine
@@ -745,6 +741,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		}
 
 		module.getContext().getModelRepository().addModel(q);
+		addQueryArguments(context, module);
 
 		long init = System.currentTimeMillis();
 
@@ -771,13 +768,23 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 	}
 
-	private Object contextfulQuery(IModelIndexer m, String query, Map<String, String> context)
+	@SuppressWarnings("unchecked")
+	protected void addQueryArguments(Map<String, Object> context, final EolModule module) {
+		if (context != null) {
+			final Map<String, Object> args = (Map<String, Object>) context.get(PROPERTY_ARGUMENTS);
+			if (args != null) {
+				for (Entry<String, Object> entry : args.entrySet()) {
+					module.getContext().getFrameStack().putGlobal(new Variable(entry.getKey(), entry.getValue(), null));
+				}
+			}
+		}
+	}
+
+	private Object contextfulQuery(IModelIndexer m, String query, Map<String, Object> context)
 			throws QueryExecutionException, InvalidQueryException {
 
 		Object ret = null;
-
 		final long truestart = System.currentTimeMillis();
-
 		EolModule module = new EolModule();
 
 		try {
@@ -786,16 +793,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			throw new InvalidQueryException(ex);
 		}
 
-		if (enableDebugOutput)
+		if (enableDebugOutput) {
 			System.out.println("PARSING:\n----------\n" + name == null ? "QUERY" : name + "\n----------");
+		}
 
 		CEOLQueryEngine q = new CEOLQueryEngine();
-
-		// defaults to true
-		// String ec =
-		// context.get(EOLQueryEngine.PROPERTY_ENABLE_CASHING);
-		// enableCache = ec == null ? true :
-		// ec.equalsIgnoreCase("true");
 		try {
 			q.load(m);
 		} catch (EolModelLoadingException e) {
@@ -807,8 +809,9 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			System.out.println("Graph path: " + graph.getPath() + "\n----------");
 
 		module.getContext().getModelRepository().addModel(q);
+		addQueryArguments(context, module);
 
-		long init = System.currentTimeMillis();
+		final long init = System.currentTimeMillis();
 
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			ret = module.execute();

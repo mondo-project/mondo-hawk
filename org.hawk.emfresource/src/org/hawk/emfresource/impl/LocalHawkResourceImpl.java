@@ -288,7 +288,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		// do nothing - we fetch attributes by default already
 	}
 
-	public EList<EObject> fetchByQuery(final String language, final String query, final Map<String, String> context) throws Exception {
+	public EList<EObject> fetchByQuery(final String language, final String query, final Map<String, Object> context) throws Exception {
 		final Map<String, IQueryEngine> knownQL = indexer.getKnownQueryLanguages();
 		final IQueryEngine queryEngine = knownQL.get(language);
 		if (queryEngine == null) {
@@ -359,7 +359,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	}
 
 	@Override
-	public Object performRawQuery(String queryLanguage, String query, Map<String, String> context) throws Exception {
+	public Object performRawQuery(String queryLanguage, String query, Map<String, Object> context) throws Exception {
 		final IQueryEngine ql = indexer.getKnownQueryLanguages().get(queryLanguage);
 		return ql.query(indexer, query, context);
 	}

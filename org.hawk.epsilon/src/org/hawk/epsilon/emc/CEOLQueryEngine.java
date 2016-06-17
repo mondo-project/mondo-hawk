@@ -30,17 +30,17 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 	Set<IGraphNode> files = null;
 	protected boolean enableTraversalScoping = true;
 
-	public void setContext(Map<String, String> context) {
+	public void setContext(Map<String, Object> context) {
 
 		final GraphWrapper gw = new GraphWrapper(graph);
 		String sFilePatterns = null;
 		String sRepoPatterns = null;
 
 		if (context != null) {
-			sFilePatterns = context.get(PROPERTY_FILECONTEXT);
-			sRepoPatterns = context.get(PROPERTY_REPOSITORYCONTEXT);
-			setDefaultNamespaces(context.get(PROPERTY_DEFAULTNAMESPACES));
-			String etss = context.get(PROPERTY_ENABLE_TRAVERSAL_SCOPING);
+			sFilePatterns = (String) context.get(PROPERTY_FILECONTEXT);
+			sRepoPatterns = (String)context.get(PROPERTY_REPOSITORYCONTEXT);
+			setDefaultNamespaces((String) context.get(PROPERTY_DEFAULTNAMESPACES));
+			String etss = (String)context.get(PROPERTY_ENABLE_TRAVERSAL_SCOPING);
 			if (etss != null)
 				enableTraversalScoping = Boolean.parseBoolean(etss);
 		}
@@ -74,7 +74,7 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 			if (propertygetter == null)
 				propertygetter = new CGraphPropertyGetter(graph, this);
 
-			name = context.get(EOLQueryEngine.PROPERTY_NAME);
+			name = (String) context.get(EOLQueryEngine.PROPERTY_NAME);
 			if (name == null)
 				name = "Model";
 

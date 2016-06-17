@@ -224,7 +224,7 @@ public class HawkFileResourceImpl extends ResourceImpl implements HawkResource {
 	}
 
 	@Override
-	public Object performRawQuery(String queryLanguage, String query, Map<String, String> context) throws Exception {
+	public Object performRawQuery(String queryLanguage, String query, Map<String, Object> context) throws Exception {
 		return mainResource.performRawQuery(queryLanguage, query, context);
 	}
 }

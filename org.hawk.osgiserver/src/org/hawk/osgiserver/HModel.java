@@ -326,7 +326,7 @@ public class HModel implements IStateListener {
 	 * @throws NoSuchElementException
 	 *             Unknown query language.
 	 */
-	public Object query(File query, String ql, Map<String, String> context) throws Exception {
+	public Object query(File query, String ql, Map<String, Object> context) throws Exception {
 		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages().get(ql);
 		if (q == null) {
 			throw new NoSuchElementException();
@@ -341,7 +341,7 @@ public class HModel implements IStateListener {
 	 * @throws NoSuchElementException
 	 *             Unknown query language.
 	 */
-	public Object query(String query, String ql, Map<String, String> context) throws Exception {
+	public Object query(String query, String ql, Map<String, Object> context) throws Exception {
 		IQueryEngine q = hawk.getModelIndexer().getKnownQueryLanguages().get(ql);
 		if (q == null) {
 			throw new NoSuchElementException();

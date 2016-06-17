@@ -120,7 +120,7 @@ public class OrientSQLQueryEngine implements IQueryEngine {
 	}
 
 	@Override
-	public Object query(IModelIndexer m, String query, Map<String, String> context)
+	public Object query(IModelIndexer m, String query, Map<String, Object> context)
 			throws InvalidQueryException, QueryExecutionException {
 		if (m.getGraph() instanceof OrientDatabase) {
 			final OrientDatabase graph = (OrientDatabase) m.getGraph();
@@ -135,7 +135,7 @@ public class OrientSQLQueryEngine implements IQueryEngine {
 	}
 
 	@Override
-	public Object query(IModelIndexer m, File query, Map<String, String> context) throws InvalidQueryException, QueryExecutionException {
+	public Object query(IModelIndexer m, File query, Map<String, Object> context) throws InvalidQueryException, QueryExecutionException {
 		final StringBuffer sbuf = new StringBuffer();
 		try (final BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(query), "UTF-8"))) {
 			String line;

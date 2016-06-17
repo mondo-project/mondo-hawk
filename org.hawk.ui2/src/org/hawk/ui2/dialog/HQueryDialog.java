@@ -267,7 +267,7 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 						final String defaultNamespace = defaultNamespaces
 								.getText();
 
-						Map<String, String> map = new HashMap<>();
+						Map<String, Object> map = new HashMap<>();
 						if (sFiles != null && !sFiles.trim().equals(""))
 							map.put(org.hawk.core.query.IQueryEngine.PROPERTY_FILECONTEXT,
 									sFiles);

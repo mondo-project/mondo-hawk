@@ -15,6 +15,8 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
@@ -131,6 +133,14 @@ public class ModelQueryTest {
 				assertEquals(1, queryEngine.getAllOfType("IJavaProject").size());
 				assertEquals(1, queryEngine.query(indexer,
 						"return IJavaProject.all.size;", null));
+
+				// Test query argument support
+				final Map<String, Object> args = new HashMap<>();
+				args.put("ename", "org.eclipse.jdt.apt.pluggable.core");
+				final Map<String, Object> context = new HashMap<>();
+				context.put(EOLQueryEngine.PROPERTY_ARGUMENTS, args);
+				assertEquals(false, queryEngine.query(indexer,
+					"return IJavaProject.all.selectOne(p|p.elementName=ename).isReadOnly;", context));
 
 				final int reportedSize = (Integer) queryEngine.query(indexer,  "return TypeDeclaration.all.size;", null);
 				final Collection<?> actualList = (Collection<?>)queryEngine.query(indexer, "return TypeDeclaration.all;", null);
