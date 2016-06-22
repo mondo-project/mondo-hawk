@@ -244,13 +244,13 @@ public class Runtime_example {
 						} else if (s.equalsIgnoreCase("q3")) {
 							q.query(i2, query3, null);
 						} else if (s.equalsIgnoreCase("cq")) {
-							Map<String, String> map = new HashMap<String, String>();
+							Map<String, Object> map = new HashMap<String, Object>();
 							map.put(EOLQueryEngine.PROPERTY_FILECONTEXT, "*");
 							q.query(i2,
 									"TypeDeclaration.all.size().println();",
 									map);
 						} else if (s.equalsIgnoreCase("cqs")) {
-							Map<String, String> map = new HashMap<String, String>();
+							Map<String, Object> map = new HashMap<String, Object>();
 							map.put(EOLQueryEngine.PROPERTY_FILECONTEXT, "*");
 							q.query(i2, query, map);
 							q.query(i2, query2, map);
