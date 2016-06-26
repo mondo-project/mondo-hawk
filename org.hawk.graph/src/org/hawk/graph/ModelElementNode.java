@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 The University of York.
+ * Copyright (c) 2015-2016 The University of York.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,8 @@ import org.hawk.core.graph.IGraphNode;
 
 /**
  * Read-only abstraction of a model element within the graph populated by this
- * updater.
+ * updater. Note: this class does not deal with transactions at all - the caller
+ * should handle it.
  */
 public class ModelElementNode {
 
@@ -306,6 +307,24 @@ public class ModelElementNode {
 				return true;
 			}
 		}
+		return false;
+	}
+
+	/**
+	 * Returns <code>true</code> if this model element is contained directly or
+	 * indirectly by the provided file within the provided repository.
+	 */
+	public boolean isContainedWithin(final String containerRepository, final String containerPath) {
+		for (ModelElementNode men = this; men != null; men = men.getContainer()) {
+			final FileNode fn = men.getFileNode();
+			final String repositoryURL = fn.getRepositoryURL();
+			final String filePath = fn.getFilePath();
+
+			if (repositoryURL.equals(containerRepository) && filePath.equals(containerPath)) {
+				return true;
+			}
+		}
+
 		return false;
 	}
 }

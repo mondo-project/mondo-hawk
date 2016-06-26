@@ -355,48 +355,12 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 
 	@Override
 	public EList<EObject> fetchNodes(final EClass eClass, boolean fetchAttributes) throws Exception {
-		return fetchNodesByContainerFragment(eClass, null, null);
-	}
-
-	@Override
-	public Object performRawQuery(String queryLanguage, String query, Map<String, Object> context) throws Exception {
-		final IQueryEngine ql = indexer.getKnownQueryLanguages().get(queryLanguage);
-		return ql.query(indexer, query, context);
-	}
-
-	/**
-	 * Fetches all the instances of a certain {@link EClass} that are contained within the specified file.
-	 */
-	public EList<EObject> fetchNodesByContainerFragment(EClass eClass, String repoURL, String path) throws Exception {
 		try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
 			final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
 			final MetamodelNode mn = gw.getMetamodelNodeByNsURI(eClass.getEPackage().getNsURI());
 			for (TypeNode tn : mn.getTypes()) {
 				if (eClass.getName().equals(tn.getTypeName())) {
 					Iterable<ModelElementNode> instances = tn.getAll();
-
-					if (repoURL != null && path != null) {
-						Set<FileNode> fileNodes = gw.getFileNodes(Arrays.asList(repoURL), Arrays.asList(path));
-
-						final List<ModelElementNode> filtered = new ArrayList<>();
-						for (ModelElementNode men : instances) {
-							/*
-							 * In order for men to be added, either itself or
-							 * one of its containers must be contained within
-							 * the specified file.
-							 */
-							ModelElementNode contained = men;
-							while (contained != null && !fileNodes.contains(contained.getFileNode())) {
-								contained = contained.getContainer();
-							}
-							if (contained != null) {
-								filtered.add(men);
-							}
-						}
-
-						instances = filtered;
-					}
-
 					return createOrUpdateEObjects(instances);
 				}
 			}
@@ -405,6 +369,12 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 
 		LOGGER.warn("Could not find a type node for EClass {}:{}", eClass.getEPackage().getNsURI(), eClass.getName());
 		return new BasicEList<EObject>();
+	}
+
+	@Override
+	public Object performRawQuery(String queryLanguage, String query, Map<String, Object> context) throws Exception {
+		final IQueryEngine ql = indexer.getKnownQueryLanguages().get(queryLanguage);
+		return ql.query(indexer, query, context);
 	}
 
 	@Override

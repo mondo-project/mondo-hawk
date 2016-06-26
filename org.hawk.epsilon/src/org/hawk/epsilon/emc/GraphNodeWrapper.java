@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2016 The University of York.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - add isContainedWithin (for EMF-Splitter integration)
  ******************************************************************************/
 package org.hawk.epsilon.emc;
 
@@ -69,13 +70,26 @@ public class GraphNodeWrapper implements IGraphNodeReference {
 		return containerModel.getPropertyGetter().invoke(this, name);
 	}
 
+	/**
+	 * Returns true if this model element is contained directly or indirectly
+	 * within the specified path at the specified repository.
+	 */
+	public boolean isContainedWithin(String repository, String path) {
+		try (IGraphTransaction t = containerModel.getBackend().beginTransaction()) {
+			final ModelElementNode men = new ModelElementNode(getNode());
+			return men.isContainedWithin(repository, path);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	@Override
 	public String getTypeName() {
 		String type = "";
 
 		try (IGraphTransaction t = containerModel.getBackend().beginTransaction()) {
-
-			IGraphNode n = containerModel.getBackend().getNodeById(id);
+			IGraphNode n = getNode();
 
 			type = n.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().next().getEndNode()
 					.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
