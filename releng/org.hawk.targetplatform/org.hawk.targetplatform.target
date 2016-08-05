@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Hawk Target Platform" sequenceNumber="83">
+<?pde version="3.8"?><target name="Hawk Target Platform" sequenceNumber="84">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.apache.httpcomponents.httpcore" version="4.3.3.v201411290715"/>
@@ -129,15 +129,16 @@
 <repository location="http://mondo-project.github.io/mondo-hawk/thirdparty-nonp2/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.platform.feature.group" version="4.4.2.v20150204-1700"/>
-<repository location="http://download.eclipse.org/eclipse/updates/4.4/R-4.4.2-201502041700"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.epsilon.core.feature.feature.group" version="1.4.0.201608051353"/>
 <unit id="org.eclipse.epsilon.core.dt.feature.feature.group" version="1.4.0.201608051353"/>
 <unit id="org.eclipse.epsilon.emf.feature.feature.group" version="1.4.0.201608051353"/>
 <unit id="org.eclipse.epsilon.emf.dt.feature.feature.group" version="1.4.0.201608051353"/>
 <repository location="http://download.eclipse.org/epsilon/interim/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.platform.feature.group" version="4.4.2.v20150204-1700"/>
+<unit id="org.eclipse.pde.feature.group" version="3.10.1.v20150204-1700"/>
+<repository location="http://download.eclipse.org/eclipse/updates/4.4/R-4.4.2-201502041700"/>
 </location>
 </locations>
 </target>
