@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Hawk Core Plugin
 Bundle-SymbolicName: org.hawk.core;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.1.0.qualifier
 Export-Package: org.hawk.core,
  org.hawk.core.graph,
  org.hawk.core.model,
@@ -11,5 +11,5 @@ Export-Package: org.hawk.core,
  org.hawk.core.security,
  org.hawk.core.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.hawk.core.dependencies;bundle-version="1.0.0";visibility:=reexport
+Require-Bundle: org.hawk.core.dependencies;visibility:=reexport
 Bundle-Vendor: University of York

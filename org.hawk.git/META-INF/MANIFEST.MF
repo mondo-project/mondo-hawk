@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Hawk Git Plugin
 Bundle-SymbolicName: org.hawk.git;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-Vendor: University of York
-Require-Bundle: org.hawk.core;bundle-version="1.0.0"
+Require-Bundle: org.hawk.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.hawk.git

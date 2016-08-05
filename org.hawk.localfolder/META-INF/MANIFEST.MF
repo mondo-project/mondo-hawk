@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Hawk Localfolder Plugin
 Bundle-SymbolicName: org.hawk.localfolder;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-Vendor: University of York
 Require-Bundle: org.eclipse.core.runtime,
- org.hawk.core;bundle-version="1.0.0"
+ org.hawk.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.hawk.localfolder
 Bundle-ClassPath: lib/bundles/mapdb-1.0.9.jar,

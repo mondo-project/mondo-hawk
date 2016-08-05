@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Hawk Modelio Plugin
 Bundle-SymbolicName: org.hawk.modelio;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-Vendor: University of York
 Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.7.0",
  org.eclipse.emf.ecore.xmi;bundle-version="2.7.0",
- org.hawk.core;bundle-version="1.0.0",
+ org.hawk.core,
  org.eclipse.uml2.uml,
  org.slf4j.api;bundle-version="1.7.2",
  org.eclipse.e4.core.contexts,

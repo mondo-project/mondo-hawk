@@ -2,7 +2,7 @@
 <feature
       id="org.hawk.modelio.feature"
       label="Hawk Modelio Driver Feature"
-      version="1.0.0.qualifier"
+      version="1.1.0.qualifier"
       provider-name="University of York">
 
    <description url="https://github.com/kb634/mondo-hawk">

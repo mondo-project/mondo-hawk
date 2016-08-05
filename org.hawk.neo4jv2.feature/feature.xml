@@ -2,7 +2,7 @@
 <feature
       id="org.hawk.neo4jv2.feature"
       label="Hawk Neo4Jv2 Backend Feature"
-      version="1.0.0.qualifier"
+      version="1.1.0.qualifier"
       provider-name="University of York">
 
    <description url="http://www.example.com/description">

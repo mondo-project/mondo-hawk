@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Hawk HTTP File Plugin
 Bundle-SymbolicName: org.hawk.http;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-Vendor: University of York
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.hawk.core;bundle-version="1.0.0",
+Require-Bundle: org.hawk.core,
  org.apache.httpcomponents.httpclient;bundle-version="4.3.6",
  org.apache.httpcomponents.httpcore;bundle-version="4.3.3",
  org.apache.httpcomponents.httpcore.nio;bundle-version="4.1.0"

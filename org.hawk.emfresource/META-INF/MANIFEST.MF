@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Local Hawk EMF resource
 Bundle-SymbolicName: org.hawk.emfresource
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-Vendor: University of York
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: net.sf.cglib.asm,
@@ -18,8 +18,8 @@ Export-Package: net.sf.cglib.asm,
  org.hawk.emfresource.impl,
  org.hawk.emfresource.util
 Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.10.2",
- org.hawk.core;bundle-version="1.0.0",
- org.hawk.graph;bundle-version="1.0.0",
+ org.hawk.core,
+ org.hawk.graph,
  org.slf4j.api;bundle-version="1.7.2",
  com.google.guava
 Bundle-ClassPath: lib/cglib-nodep-3.1.jar,
