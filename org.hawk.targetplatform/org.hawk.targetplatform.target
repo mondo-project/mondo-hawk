@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Hawk Target Platform" sequenceNumber="80">
+<?pde version="3.8"?><target name="Hawk Target Platform" sequenceNumber="82">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.apache.httpcomponents.httpcore" version="4.3.3.v201411290715"/>
@@ -133,11 +133,11 @@
 <repository location="http://download.eclipse.org/eclipse/updates/4.4/R-4.4.2-201502041700"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.epsilon.emf.feature.feature.group" version="1.3.0.201602270002"/>
-<unit id="org.eclipse.epsilon.core.dt.feature.feature.group" version="1.3.0.201602270002"/>
-<unit id="org.eclipse.epsilon.emf.dt.feature.feature.group" version="1.3.0.201602270002"/>
-<unit id="org.eclipse.epsilon.core.feature.feature.group" version="1.3.0.201602270002"/>
-<repository location="http://download.eclipse.org/epsilon/updates/"/>
+<unit id="org.eclipse.epsilon.emf.feature.feature.group" version="1.4.0.201608042318"/>
+<unit id="org.eclipse.epsilon.core.dt.feature.feature.group" version="1.4.0.201608042318"/>
+<unit id="org.eclipse.epsilon.emf.dt.feature.feature.group" version="1.4.0.201608042318"/>
+<unit id="org.eclipse.epsilon.core.feature.feature.group" version="1.4.0.201608042318"/>
+<repository location="http://download.eclipse.org/epsilon/interim/"/>
 </location>
 </locations>
 </target>
