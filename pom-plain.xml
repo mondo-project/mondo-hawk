@@ -13,21 +13,21 @@
   </properties>
 
   <modules>
-    <module>org.hawk.bpmn/pom-plain.xml</module>
-    <module>org.hawk.core/pom-plain.xml</module>
-    <module>org.hawk.emf/pom-plain.xml</module>
-    <module>org.hawk.emfresource/pom-plain.xml</module>
-    <module>org.hawk.epsilon/pom-plain.xml</module>
-    <module>org.hawk.git/pom-plain.xml</module>
-    <module>org.hawk.graph/pom-plain.xml</module>
-    <module>org.hawk.http/pom-plain.xml</module>
-    <module>org.hawk.localfolder/pom-plain.xml</module>
-    <module>org.hawk.modelio.exml/pom-plain.xml</module>
-    <module>org.hawk.neo4j-v2/pom-plain.xml</module>
-    <module>org.hawk.orientdb/pom-plain.xml</module>
-    <module>org.hawk.svn/pom-plain.xml</module>
-    <module>org.hawk.graph.sampleListener/pom-plain.xml</module>
-    <module>_hawk_runtime_example/pom-plain.xml</module>
+    <module>plugins/org.hawk.bpmn/pom-plain.xml</module>
+    <module>plugins/org.hawk.core/pom-plain.xml</module>
+    <module>plugins/org.hawk.emf/pom-plain.xml</module>
+    <module>plugins/org.hawk.emfresource/pom-plain.xml</module>
+    <module>plugins/org.hawk.epsilon/pom-plain.xml</module>
+    <module>plugins/org.hawk.git/pom-plain.xml</module>
+    <module>plugins/org.hawk.graph/pom-plain.xml</module>
+    <module>plugins/org.hawk.http/pom-plain.xml</module>
+    <module>plugins/org.hawk.localfolder/pom-plain.xml</module>
+    <module>plugins/org.hawk.modelio.exml/pom-plain.xml</module>
+    <module>plugins/org.hawk.neo4j-v2/pom-plain.xml</module>
+    <module>plugins/org.hawk.orientdb/pom-plain.xml</module>
+    <module>plugins/org.hawk.svn/pom-plain.xml</module>
+    <module>plugins/org.hawk.graph.sampleListener/pom-plain.xml</module>
+    <module>standalone/_hawk_runtime_example/pom-plain.xml</module>
   </modules>
 
   <dependencyManagement>

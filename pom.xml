@@ -14,45 +14,48 @@
   </properties>
 
   <modules>
-    <module>org.hawk.bpmn</module>
-    <module>org.hawk.bpmn.feature</module>
-    <module>org.hawk.core</module>
-    <module>org.hawk.core.dependencies</module>
-    <module>org.hawk.core.feature</module>
-    <module>org.hawk.emf</module>
-    <module>org.hawk.emf.feature</module>
-    <module>org.hawk.emfresource</module>
-    <module>org.hawk.emfresource.feature</module>
-    <module>org.hawk.epsilon</module>
-    <module>org.hawk.epsilon.feature</module>
-    <module>org.hawk.git</module>
-    <module>org.hawk.git.feature</module>
-    <module>org.hawk.graph</module>
-    <module>org.hawk.graph.sampleListener</module>
-    <module>org.hawk.graph.syncValidationListener</module>
-    <module>org.hawk.http</module>
-    <module>org.hawk.http.feature</module>
-    <module>org.hawk.localfolder</module>
-    <module>org.hawk.localfolder.feature</module>
-    <module>org.hawk.modelio.exml</module>
-    <module>org.hawk.modelio.exml.ecoregen</module>
-    <module>org.hawk.modelio.exml.tests</module>
-    <module>org.hawk.modelio.exml.feature</module>
-    <module>org.hawk.orientdb</module>
-    <module>org.hawk.orientdb.tests</module>
-    <module>org.hawk.orientdb.feature</module>
-    <module>org.hawk.osgiserver</module>
-    <module>org.hawk.osgiserver.feature</module>
-    <module>org.hawk.svn</module>
-    <module>org.hawk.svn.feature</module>
-    <module>org.hawk.targetplatform</module>
-    <module>org.hawk.ui.emc.dt2</module>
-    <module>org.hawk.ui.emfresource</module>
-    <module>org.hawk.ui.feature</module>
-    <module>org.hawk.ui2</module>
-    <module>org.hawk.updatesite</module>
-    <module>org.hawk.workspace</module>
-    <module>org.hawk.workspace.feature</module>
+    <module>features/org.hawk.bpmn.feature</module>
+    <module>features/org.hawk.core.feature</module>
+    <module>features/org.hawk.emf.feature</module>
+    <module>features/org.hawk.emfresource.feature</module>
+    <module>features/org.hawk.epsilon.feature</module>
+    <module>features/org.hawk.git.feature</module>
+    <module>features/org.hawk.http.feature</module>
+    <module>features/org.hawk.localfolder.feature</module>
+    <module>features/org.hawk.modelio.exml.feature</module>
+    <module>features/org.hawk.orientdb.feature</module>
+    <module>features/org.hawk.osgiserver.feature</module>
+    <module>features/org.hawk.svn.feature</module>
+    <module>features/org.hawk.ui.feature</module>
+    <module>features/org.hawk.workspace.feature</module>
+
+    <module>plugins/org.hawk.bpmn</module>
+    <module>plugins/org.hawk.core.dependencies</module>
+    <module>plugins/org.hawk.core</module>
+    <module>plugins/org.hawk.emf</module>
+    <module>plugins/org.hawk.emfresource</module>
+    <module>plugins/org.hawk.epsilon</module>
+    <module>plugins/org.hawk.git</module>
+    <module>plugins/org.hawk.graph.sampleListener</module>
+    <module>plugins/org.hawk.graph.syncValidationListener</module>
+    <module>plugins/org.hawk.graph</module>
+    <module>plugins/org.hawk.http</module>
+    <module>plugins/org.hawk.localfolder</module>
+    <module>plugins/org.hawk.modelio.exml.ecoregen</module>
+    <module>plugins/org.hawk.modelio.exml</module>
+    <module>plugins/org.hawk.orientdb</module>
+    <module>plugins/org.hawk.osgiserver</module>
+    <module>plugins/org.hawk.svn</module>
+    <module>plugins/org.hawk.ui.emc.dt2</module>
+    <module>plugins/org.hawk.ui.emfresource</module>
+    <module>plugins/org.hawk.ui2</module>
+    <module>plugins/org.hawk.workspace</module>
+
+    <module>releng/org.hawk.targetplatform</module>
+    <module>releng/org.hawk.updatesite</module>
+
+    <module>tests/org.hawk.modelio.exml.tests</module>
+    <module>tests/org.hawk.orientdb.tests</module>
   </modules>
 
   <build>

@@ -8,7 +8,7 @@ curl -L -o "$MODELIO_MM_LIB" \
      https://github.com/aabherve/modelio-metamodel-lib/releases/download/v1.0.1/ModelioMetamodelLib-1.0.1.jar
 
 curl -L -o "$EPSILON_LIB" \
-     http://ftp.halifax.rwth-aachen.de/eclipse//epsilon/interim-jars/epsilon-1.3-core.jar
+     http://ftp.halifax.rwth-aachen.de/eclipse//epsilon/interim-jars/epsilon-1.4-core.jar
 
 curl -L -o "$BPMN2_LIB" \
      http://download.eclipse.org/modeling/mdt/bpmn2/updates/mars/1.0.0/plugins/org.eclipse.bpmn2_1.0.0.201407022025.jar
@@ -19,7 +19,7 @@ mvn -f pom-plain.xml install:install-file \
 
 mvn -f pom-plain.xml install:install-file \
     "-Dfile=$EPSILON_LIB" -DgroupId=org.eclipse.epsilon \
-    -DartifactId=epsilon-core -Dversion=1.3 -Dpackaging=jar
+    -DartifactId=epsilon-core -Dversion=1.4 -Dpackaging=jar
 
 mvn -f pom-plain.xml install:install-file \
     "-Dfile=$BPMN2_LIB" -DgroupId=org.eclipse.mdt \
