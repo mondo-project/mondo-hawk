@@ -327,4 +327,22 @@ public class ModelElementNode {
 
 		return false;
 	}
+
+	public boolean isOfKind(String metaClass) {
+		return isOf(metaClass, EDGE_LABEL_OFKIND) || isOf(metaClass, EDGE_LABEL_OFTYPE);
+	}
+
+	public boolean isOfType(String metaClass) {
+		return isOf(metaClass, EDGE_LABEL_OFTYPE);
+	}
+
+	protected boolean isOf(String metaClass, final String edgeLabel) {
+		for (IGraphEdge edge : node.getOutgoingWithType(edgeLabel)) {
+			TypeNode tn = new TypeNode(edge.getEndNode());
+			if (metaClass.equals(tn.getTypeName())) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

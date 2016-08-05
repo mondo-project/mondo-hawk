@@ -560,6 +560,26 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		return false;
 	}
 
+	@Override
+	public boolean isOfKind(Object instance, String metaClass) throws EolModelElementTypeNotFoundException {
+		if (!(instance instanceof GraphNodeWrapper)) {
+			return false;
+		}
+		final GraphNodeWrapper gnw = (GraphNodeWrapper) instance;
+		final ModelElementNode men = new ModelElementNode(gnw.getNode());
+		return men.isOfKind(metaClass);
+	}
+
+	@Override
+	public boolean isOfType(Object instance, String metaClass) throws EolModelElementTypeNotFoundException {
+		if (!(instance instanceof GraphNodeWrapper)) {
+			return false;
+		}
+		final GraphNodeWrapper gnw = (GraphNodeWrapper) instance;
+		final ModelElementNode men = new ModelElementNode(gnw.getNode());
+		return men.isOfType(metaClass);
+	}
+
 	public boolean isOf(Object instance, String metaClass, final String typeorkind)
 			throws EolModelElementTypeNotFoundException {
 

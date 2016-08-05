@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2016 The University of York.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - further improvements, clean up isOfKind/isOfType
  ******************************************************************************/
 package org.hawk.epsilon.emc;
 
@@ -175,24 +176,6 @@ public abstract class AbstractEpsilonModel extends Model {
 		// call
 		// throw new UnsupportedOperationException();
 		return true;
-	}
-
-	abstract public boolean isOf(Object instance, String metaClass, final String typeorkind)
-			throws EolModelElementTypeNotFoundException;
-
-	@Override
-	public boolean isOfKind(Object instance, String metaClass) throws EolModelElementTypeNotFoundException {
-
-		return isOf(instance, metaClass, ModelElementNode.EDGE_LABEL_OFKIND)
-				|| isOf(instance, metaClass, ModelElementNode.EDGE_LABEL_OFTYPE);
-
-	}
-
-	@Override
-	public boolean isOfType(Object instance, String metaClass) throws EolModelElementTypeNotFoundException {
-
-		return isOf(instance, metaClass, ModelElementNode.EDGE_LABEL_OFTYPE);
-
 	}
 
 	public void setDatabaseConfig(StringProperties configuration) {
