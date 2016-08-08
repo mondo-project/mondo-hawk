@@ -11,6 +11,7 @@
   <properties>
     <tycho-version>0.24.0</tycho-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
   </properties>
 
   <modules>
@@ -28,6 +29,16 @@
     <module>features/org.hawk.svn.feature</module>
     <module>features/org.hawk.ui.feature</module>
     <module>features/org.hawk.workspace.feature</module>
+    <module>features/uk.ac.york.mondo.integration.api.feature</module>
+    <module>features/uk.ac.york.mondo.integration.clients.cli.feature</module>
+    <module>features/uk.ac.york.mondo.integration.hawk.cli.feature</module>
+    <module>features/uk.ac.york.mondo.integration.hawk.emf.feature</module>
+    <module>features/uk.ac.york.mondo.integration.hawk.emf.dt.feature</module>
+    <!-- <module>features/uk.ac.york.mondo.integration.hawk.emf.ifcexport.feature</module> -->
+    <module>features/uk.ac.york.mondo.integration.hawk.remote.thrift.feature</module>
+    <module>features/uk.ac.york.mondo.integration.hawk.servlet.feature</module>
+    <module>features/uk.ac.york.mondo.integration.server.feature</module>
+    <module>features/uk.ac.york.mondo.integration.server.users.cli.feature</module>
 
     <module>plugins/org.hawk.bpmn</module>
     <module>plugins/org.hawk.core.dependencies</module>
@@ -51,11 +62,33 @@
     <module>plugins/org.hawk.ui2</module>
     <module>plugins/org.hawk.workspace</module>
 
+    <module>plugins-server/uk.ac.york.mondo.integration.api.dt</module>
+    <module>plugins-server/uk.ac.york.mondo.integration.api</module>
+    <module>plugins-server/uk.ac.york.mondo.integration.artemis.server</module>
+    <module>plugins-server/uk.ac.york.mondo.integration.artemis</module>
+    <module>plugins-server/uk.ac.york.mondo.integration.clients.cli.application</module>
+    <module>plugins-server/uk.ac.york.mondo.integration.hawk.cli</module>
+    <module>plugins-server/uk.ac.york.mondo.integration.hawk.emf.dt</module>
+    <!-- <module>plugins-server/uk.ac.york.mondo.integration.hawk.emf.ifcexport</module> -->
+    <module>plugins-server/uk.ac.york.mondo.integration.hawk.emf</module>
+    <module>plugins-server/uk.ac.york.mondo.integration.hawk.remote.thrift</module>
+    <module>plugins-server/uk.ac.york.mondo.integration.hawk.servlet</module>
+    <module>plugins-server/uk.ac.york.mondo.integration.server.application</module>
+    <module>plugins-server/uk.ac.york.mondo.integration.server.cli</module>
+    <module>plugins-server/uk.ac.york.mondo.integration.server.gzip</module>
+    <module>plugins-server/uk.ac.york.mondo.integration.server.logback</module>
+    <module>plugins-server/uk.ac.york.mondo.integration.server.users.cli</module>
+    <module>plugins-server/uk.ac.york.mondo.integration.server.users.servlet</module>
+
     <module>releng/org.hawk.targetplatform</module>
     <module>releng/org.hawk.updatesite</module>
+    <module>releng/uk.ac.york.mondo.integration.clients.cli.product</module>
+    <module>releng/uk.ac.york.mondo.integration.server.product</module>
+    <module>releng/uk.ac.york.mondo.integration.server.productdefs</module>
 
     <module>tests/org.hawk.modelio.exml.tests</module>
     <module>tests/org.hawk.orientdb.tests</module>
+    <module>tests/uk.ac.york.mondo.integration.hawk.emf.tests</module>
   </modules>
 
   <build>

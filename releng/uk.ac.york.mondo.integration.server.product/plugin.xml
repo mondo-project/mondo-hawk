@@ -8,6 +8,18 @@
       <product
             application="uk.ac.york.mondo.integration.server.application.serverapp"
             name="Server Product">
+         <property
+               name="appName"
+               value="Server Product">
+         </property>
+      </product>
+   </extension>
+   <extension
+         id="nogplserver"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="uk.ac.york.mondo.integration.server.application.serverapp"
+            name="Server Product">
       </product>
    </extension>
 

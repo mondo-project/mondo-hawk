@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Server Product" uid="uk.ac.york.mondo.integration.server.product.nogplserver" id="uk.ac.york.mondo.integration.server.product.nogplserver" application="uk.ac.york.mondo.integration.server.application.serverapp" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Server Product" uid="uk.ac.york.mondo.integration.server.product.nogplserver" id="uk.ac.york.mondo.integration.server.product.nogplserver" application="uk.ac.york.mondo.integration.server.application.serverapp" version="1.1.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -52,7 +52,6 @@
    </plugins>
 
    <features>
-      <feature id="fr.inria.atlanmod.mondo.integration.cloudatl.servlet.feature" installMode="root"/>
       <feature id="uk.ac.york.mondo.integration.hawk.servlet.feature" installMode="root"/>
       <feature id="uk.ac.york.mondo.integration.server.feature" installMode="root"/>
       <feature id="uk.ac.york.mondo.integration.hawk.emf.feature" installMode="root"/>
@@ -67,42 +66,33 @@
       <feature id="org.hawk.bpmn.feature" installMode="root"/>
       <feature id="org.hawk.emfresource.feature" installMode="root"/>
       <feature id="org.tmatesoft.svnkit"/>
-      <feature id="org.eclipse.core.runtime.feature"/>
-      <feature id="org.eclipse.equinox.core.feature"/>
-      <feature id="org.eclipse.emf.ecore"/>
-      <feature id="org.eclipse.equinox.server.core"/>
-      <feature id="org.eclipse.equinox.server.jetty"/>
-      <feature id="org.eclipse.xsd"/>
-      <feature id="org.eclipse.platform"/>
-      <feature id="org.eclipse.emf.edit"/>
-      <feature id="org.eclipse.emf.validation"/>
-      <feature id="org.eclipse.ecf.filetransfer.httpclient4.feature"/>
-      <feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature"/>
-      <feature id="org.eclipse.emf.common"/>
-      <feature id="org.eclipse.equinox.p2.core.feature"/>
-      <feature id="org.eclipse.ecf.core.ssl.feature"/>
-      <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
-      <feature id="org.eclipse.rcp"/>
-      <feature id="org.eclipse.ecf.core.feature"/>
-      <feature id="org.eclipse.equinox.p2.rcp.feature"/>
-      <feature id="org.eclipse.ecf.filetransfer.feature"/>
-      <feature id="org.eclipse.e4.rcp"/>
-      <feature id="org.eclipse.emf.mapping"/>
-      <feature id="org.eclipse.emf.ecore.edit"/>
-      <feature id="org.eclipse.epsilon.core.feature" installMode="root"/>
-      <feature id="org.eclipse.epsilon.core.dependencies.feature" installMode="root"/>
-      <feature id="org.eclipse.emf.mapping.ecore"/>
-      <feature id="org.eclipse.emf.edit.ui"/>
-      <feature id="org.eclipse.emf.common.ui"/>
-      <feature id="org.eclipse.equinox.core.sdk"/>
-      <feature id="org.eclipse.bpmn2.feature"/>
       <feature id="org.hawk.modelio.exml.feature" installMode="root"/>
       <feature id="org.hawk.git.feature" installMode="root"/>
       <feature id="org.hawk.http.feature" installMode="root"/>
-      <feature id="org.mondo.collaboration.security.lens.offline.server.feature" installMode="root"/>
-      <feature id="org.mondo.collaboration.security.online.server.feature" installMode="root"/>
-      <feature id="org.mondo.wt.cstudy.online.feature" installMode="root"/>
-      <feature id="org.mondo.collaboration.offline.management.server.feature" installMode="root"/>
+
+      <feature id="org.tmatesoft.svnkit"/>
+      <feature id="org.eclipse.platform"/>
+      <feature id="org.eclipse.help"/>
+      <feature id="org.eclipse.emf.common"/>
+      <feature id="org.eclipse.equinox.p2.core.feature"/>
+      <feature id="org.eclipse.emf.ecore"/>
+      <feature id="org.eclipse.equinox.p2.extras.feature"/>
+      <feature id="org.eclipse.rcp"/>
+      <feature id="org.eclipse.equinox.p2.rcp.feature"/>
+      <feature id="org.eclipse.e4.rcp"/>
+      <feature id="org.eclipse.equinox.p2.user.ui"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient4.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature"/>
+      <feature id="org.eclipse.ecf.core.ssl.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
+      <feature id="org.eclipse.ecf.core.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.feature"/>
+      <feature id="org.eclipse.xsd"/>
+      <feature id="org.eclipse.emf.edit"/>
+      <feature id="org.eclipse.epsilon.core.feature"/>
+      <feature id="org.eclipse.bpmn2.feature"/>
+      <feature id="org.eclipse.emf.edit.ui"/>
+      <feature id="org.eclipse.emf.common.ui"/>
    </features>
 
    <configurations>

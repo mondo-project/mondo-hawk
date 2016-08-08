@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: EMC Driver Developer Tools for remote Hawk EMF Resource
 Bundle-SymbolicName: uk.ac.york.mondo.integration.hawk.emc.dt;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: uk.ac.york.mondo.integration.hawk.emc.dt.Activator
 Bundle-Vendor: University of York
 Require-Bundle: org.eclipse.ui,
