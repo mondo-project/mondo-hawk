@@ -3,6 +3,10 @@
 	<target name="init">
 		<tstamp/>
 		<property name="sitedir" location="thirdparty-nonp2"/>
+
+		<property name="thriftversion" value="0.9.3"/>
+		<property name="thrifturl" value="https://repo1.maven.org/maven2/org/apache/thrift/libthrift/${thriftversion}/libthrift-${thriftversion}.jar" />
+		<property name="thriftfname" value="org.apache.thrift_${thriftversion}.jar"/>
 	</target>
 
 	<!-- Packages everything we don't have in p2 update sites to a p2 update site, which we can upload to Github Pages and use from Tycho (Tycho only works with unpacked p2 repos). -->
@@ -21,13 +25,16 @@
 		<delete dir="${sitedir}" includes="*.jar"/>
 
 		<!-- ktable is LGPL, should be fine -->
-		<eclipse.convertPath resourcepath="/ktable/plugins/" property="ktable_plugins" />
+		<eclipse.convertPath resourcepath="/RCPTARGET/ktable/plugins/" property="ktable_plugins" />
 
 		<!-- Nebula and UML2 are Eclipse projects -->
-		<eclipse.convertPath resourcepath="/nebula-incubator/plugins/" property="nebi_plugins" />
-		<eclipse.convertPath resourcepath="/nebula-nattable/plugins/" property="nebt_plugins" />
-		<eclipse.convertPath resourcepath="/nebula/plugins/" property="neb_plugins" />
-		<eclipse.convertPath resourcepath="/uml2_3.2/plugins/" property="uml_plugins" />
+		<eclipse.convertPath resourcepath="/RCPTARGET/nebula-incubator/plugins/" property="nebi_plugins" />
+		<eclipse.convertPath resourcepath="/RCPTARGET/nebula-nattable/plugins/" property="nebt_plugins" />
+		<eclipse.convertPath resourcepath="/RCPTARGET/nebula/plugins/" property="neb_plugins" />
+		<eclipse.convertPath resourcepath="/RCPTARGET/uml2_3.2/plugins/" property="uml_plugins" />
+
+		<!-- Thrift is an Apache project (ASL 2.0) -->
+		<get src="${thrifturl}" dest="${sitedir}/plugins/${thriftfname}"/>
 
 		<copy todir="${sitedir}/plugins">
 			<fileset dir="${ktable_plugins}" includes="*.jar"/>
