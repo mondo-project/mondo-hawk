@@ -10,7 +10,7 @@
     <relativePath>../..</relativePath>
   </parent>
   
-  <artifactId>uk.ac.york.mondo.integration.server.product.product</artifactId>
+  <artifactId>org.hawk.service.server.product</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>eclipse-repository</packaging>
 
@@ -32,15 +32,15 @@
 	<configuration>
 	  <products>
 	    <!-- <product> -->
-	    <!--   <id>uk.ac.york.mondo.integration.server.product.product</id> -->
+	    <!--   <id>org.hawk.service.server.product.product</id> -->
 	    <!--   <archiveFileName>mondo-server_${maven.build.timestamp}</archiveFileName> -->
 	    <!--   <rootFolder>mondo-server_${maven.build.timestamp}</rootFolder> -->
 	    <!-- </product> -->
 	    <product>
-	      <id>uk.ac.york.mondo.integration.server.product.nogplserver</id>
+	      <id>org.hawk.service.server.product.nogplserver</id>
 	      <attachId>nogpl</attachId>
-	      <archiveFileName>mondo-server-nogpl_${maven.build.timestamp}</archiveFileName>
-	      <rootFolder>mondo-server-nogpl_${maven.build.timestamp}</rootFolder>
+	      <archiveFileName>hawk-server-nogpl_${maven.build.timestamp}</archiveFileName>
+	      <rootFolder>hawk-server-nogpl_${maven.build.timestamp}</rootFolder>
 	    </product>
 	  </products>
 	</configuration>	

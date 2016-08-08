@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Server Product" uid="uk.ac.york.mondo.integration.server.product.product" id="uk.ac.york.mondo.integration.server.product.product" application="uk.ac.york.mondo.integration.server.application.serverapp" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Server Product" uid="org.hawk.service.server.product.product" id="org.hawk.service.server.product.product" application="uk.ac.york.mondo.integration.server.application.serverapp" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>

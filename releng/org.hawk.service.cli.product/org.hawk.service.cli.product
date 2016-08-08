@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="MONDO CLI Client Product" uid="uk.ac.mondo.integration.clients.cli.product.product" id="uk.ac.york.mondo.integration.clients.cli.product.product" application="uk.ac.york.mondo.integration.clients.cli.application.app" version="1.1.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="MONDO CLI Client Product" uid="org.hawk.service.cli.product" id="org.hawk.service.cli.product.product" application="uk.ac.york.mondo.integration.clients.cli.application.app" version="1.1.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -17,7 +17,7 @@
 
    <windowImages/>
 
-   <launcher name="mondo-cli">
+   <launcher name="hawk-cli">
       <solaris/>
       <win useIco="false">
          <bmp/>

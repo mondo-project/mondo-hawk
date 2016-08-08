@@ -82,8 +82,8 @@
 
     <module>releng/org.hawk.targetplatform</module>
     <module>releng/org.hawk.updatesite</module>
-    <module>releng/uk.ac.york.mondo.integration.clients.cli.product</module>
-    <module>releng/uk.ac.york.mondo.integration.server.product</module>
+    <module>releng/org.hawk.service.cli.product</module>
+    <module>releng/org.hawk.service.server.product</module>
     <module>releng/uk.ac.york.mondo.integration.server.productdefs</module>
 
     <module>tests/org.hawk.modelio.exml.tests</module>

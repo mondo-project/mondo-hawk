@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: MONDO Integration - Server Products
-Bundle-SymbolicName: uk.ac.york.mondo.integration.server.product;singleton:=true
+Bundle-SymbolicName: org.hawk.service.server.product;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Vendor: University of York
