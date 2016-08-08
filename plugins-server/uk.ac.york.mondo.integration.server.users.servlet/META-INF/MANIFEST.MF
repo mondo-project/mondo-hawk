@@ -14,7 +14,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.apache.commons.beanutils;bundle-version="1.8.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: lib/mapdb-1.0.8.jar,
+Bundle-ClassPath: lib/mapdb-1.0.9.jar,
  lib/shiro-core-1.2.4.jar,
  lib/shiro-web-1.2.4.jar,
  .

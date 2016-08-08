@@ -1,0 +1,14 @@
+<ivy-module version="2.0">
+	<info organisation="uk.ac.york.mondo.integration" module="artemis"/>
+	<dependencies>
+		<dependency org="org.mapdb" name="mapdb" rev="1.0.9"/>
+		<dependency org="org.apache.shiro" name="shiro-core" rev="1.2.4">
+			<exclude org="org.slf4j"/>
+			<exclude org="commons-beanutils"/>
+		</dependency>
+		<dependency org="org.apache.shiro" name="shiro-web" rev="1.2.4">
+			<exclude org="javax.servlet"/>
+			<exclude org="javax.servlet.jsp"/>
+		</dependency>
+	</dependencies>
+</ivy-module>
