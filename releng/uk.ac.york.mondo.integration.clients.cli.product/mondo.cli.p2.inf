@@ -1,0 +1,19 @@
+requires.0.namespace = org.eclipse.equinox.p2.iu
+requires.0.name = fr.inria.atlanmod.mondo.integration.cloudatl.cli.feature.feature.group
+requires.0.range = [0.0.0,2.0.0)
+
+requires.1.namespace = org.eclipse.equinox.p2.iu
+requires.1.name = uk.ac.york.mondo.integration.clients.cli.feature.feature.group
+requires.1.range = [1.0.0,2.0.0)
+
+requires.2.namespace = org.eclipse.equinox.p2.iu
+requires.2.name = uk.ac.york.mondo.integration.hawk.cli.feature.feature.group
+requires.2.range = [1.0.0,2.0.0)
+
+requires.3.namespace = org.eclipse.equinox.p2.iu
+requires.3.name = uk.ac.york.mondo.integration.api.feature.feature.group
+requires.3.range = [1.0.0,2.0.0)
+
+requires.4.namespace = org.eclipse.equinox.p2.iu
+requires.4.name = uk.ac.york.mondo.integration.server.users.cli.feature.feature.group
+requires.4.range = [1.0.0,2.0.0)

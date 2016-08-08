@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: MONDO Server IFC Export Servlet
+Bundle-SymbolicName: uk.ac.york.mondo.integration.server.ifcexport.servlet;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: uk.ac.york.mondo.integration.server.ifcexport.servlet.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.11.1",
+ org.eclipse.equinox.http.servlet;bundle-version="1.2.1",
+ org.apache.thrift;bundle-version="0.9.3",
+ uk.ac.york.mondo.integration.api;bundle-version="1.0.0",
+ javax.servlet;bundle-version="3.1.0",
+ org.apache.commons.beanutils;bundle-version="1.8.0",
+ org.eclipse.equinox.http.registry;bundle-version="1.1.300",
+ org.hawk.osgiserver;bundle-version="1.0.0",
+ org.hawk.ifc;bundle-version="1.0.0",
+ org.hawk.core;bundle-version="1.0.0",
+ org.hawk.emfresource;bundle-version="1.0.0",
+ org.eclipse.emf.ecore,
+ uk.ac.york.mondo.integration.hawk.emf;bundle-version="1.0.0"
+Bundle-ActivationPolicy: lazy

@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: EMC Driver for remote Hawk EMF resources
+Bundle-SymbolicName: uk.ac.york.mondo.integration.hawk.emc;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: University of York
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.hawk.emfresource,
+ uk.ac.york.mondo.integration.hawk.emf,
+ org.eclipse.epsilon.eol.engine,
+ org.eclipse.epsilon.emc.emf,
+ org.eclipse.emf.common,
+ uk.ac.york.mondo.integration.api;bundle-version="1.0.0",
+ org.apache.thrift;bundle-version="0.9.3"
+Export-Package: uk.ac.york.mondo.integration.hawk.emc

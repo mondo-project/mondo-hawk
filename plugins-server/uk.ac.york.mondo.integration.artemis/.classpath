@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="lib/artemis-commons-jar-1.2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/artemis-core-client-jar-1.2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/artemis-journal-jar-1.2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/artemis-native-bundle-1.2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/artemis-selector-jar-1.2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/artemis-server-jar-1.2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/artemis-server-javadoc-1.2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/artemis-stomp-protocol-bundle-1.2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-beanutils-jar-1.9.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-collections-jar-3.2.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-logging-jar-1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/guava-bundle-18.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/javassist-bundle-3.20.0-GA.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/javassist-javadoc-3.20.0-GA.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jboss-logging-annotations-jar-2.0.0.Alpha1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jboss-logging-jar-3.1.4.GA.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jboss-logging-processor-jar-2.0.0.Alpha2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jboss-logmanager-jar-1.5.4.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jdeparser-jar-2.0.0.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jgroups-bundle-3.6.6.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/netty-all-jar-4.0.32.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.osgi.core-jar-6.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/osgi.cmpn-jar-6.0.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="uk.ac.york.mondo.integration.api.dt.ui.MONDOServersPreferencePage"
+            id="uk.ac.york.mondo.integration.api.dt.page"
+            name="MONDO Servers">
+      </page>
+   </extension>
+
+</plugin>

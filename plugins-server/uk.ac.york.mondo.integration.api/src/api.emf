@@ -1,0 +1,870 @@
+@doc(dServices="
+The present section lists the services offered by the current version
+of the MONDO platform. For each service, the available operations are
+presented, along with the parameters they take, their return type and
+the exceptions they can throw. Readers familiar with Thrift may notice
+that some types inherit from others, which is not supported by Thrift
+itself: this is implemented through the
+Ecore2Thrift~\cite{ecore2thrift} model-to-text transformation
+developed in WP6, which takes into account inherited fields when
+transforming an \class{EClass} into a Thrift data type.
+
+In addition to their explicitly listed exceptions, operations
+requiring authentication may produce replies with HTTP 4xx status
+codes if the user fails to provide valid credentials or does not have
+the required permissions. In its current version, the MONDO platform
+assumes that authenticated users will have the necessary permissions.
+")
+@thrift(javans="uk.ac.york.mondo.integration.api")
+@namespace(uri="mondo_api", prefix="")
+package mondo_api;
+
+// MONDO credentials (Hawk/ReactiveATL/CloudATL): implied in the "auth" @doc attribute.
+// VCSAuthenticationFailed, VCSAuthorizationFailed: for VCS credentials (Hawk/Collaboration).
+//
+// AG: to simplify the API, auth="true" (the default) should imply that both authorization
+// and authentication exceptions could happen.
+
+@doc(d="The majority of service operations provided by the MONDO
+		platform require user authentication (indicated in the top-left
+		cell of each operation table) to prevent unaccountable use.
+		As such, the platform needs to provide basic user management service operations
+		for creating, updating and deleting user accounts.")
+class Users {
+	@doc(d="Creates a new platform user")
+	op void createUser (
+		@doc(d="A unique identifier for the user") String username,
+		@doc(d="The desired password") String password,
+		@doc(d="The profile of the user") UserProfile profile
+	) throws UserExists;
+
+	@doc(d="Updates the profile of a platform user")
+	op void updateProfile (
+		@doc(d="The name of the user to update the profile of") String username,
+		@doc(d="The updated profile of the user") UserProfile profile
+	) throws UserNotFound;
+
+	@doc(d="Updates the password of a platform user")
+	op void updatePassword (
+		@doc(d="The name of the user to update the profile of") String username,
+		@doc(d="New password to be set") String newPassword
+	) throws UserNotFound;
+
+	@doc(d="Deletes a platform user")
+	op void deleteUser (
+		@doc(d="The name of the user to delete") String username
+	) throws UserNotFound;
+}
+
+@doc(d="
+The following service operations expose the capabilities of the Hawk heterogeneous model indexing
+framework developed in Work Package 5. The framework is discussed in detail in D5.2 and D5.3
+")
+class Hawk {
+	@doc(d="Creates a new Hawk instance (stopped).")
+	op void createInstance(
+		@doc(d="The unique name of the new Hawk instance") String name,
+		@doc(d="The name of the backend to be used, as returned by listBackends()") String backend,
+		@doc(d="Minimum delay between periodic synchronization in milliseconds") int minimumDelayMillis,
+		@doc(d="Maximum delay between periodic synchronization in milliseconds (0 to disable periodic synchronization)") int maximumDelayMillis,
+		@doc(d="List of plugins to be enabled: if not set, all plugins are enabled.", optional="true") String[*] enabledPlugins 
+	);
+
+	@doc(d="Lists the names of the available storage backends")
+	op String[*] listBackends();
+
+	@doc(d="Lists all the Hawk plugins that can be enabled or disabled: metamodel parsers, model parsers and graph change listeners.")
+	op String[*] listPlugins();
+
+	@doc(d="Lists the details of all Hawk instances")
+	op HawkInstance[*] listInstances();
+
+	@doc(d="Removes an existing Hawk instance")
+	op void removeInstance(
+		@doc(d="The name of the Hawk instance to remove") String name
+	) throws HawkInstanceNotFound;
+
+	@doc(d="Starts a stopped Hawk instance")
+	op void startInstance(
+		@doc(d="The name of the Hawk instance to start") String name
+	) throws HawkInstanceNotFound;
+
+	@doc(d="Stops a running Hawk instance")
+	op void stopInstance(
+		@doc(d="The name of the Hawk instance to stop") String name
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+
+    @doc(d="Forces an immediate synchronization on a Hawk instance")
+    op void syncInstance(
+		@doc(d="The name of the Hawk instance to stop") String name,
+		@doc(d="If true, blocks the call until the synchronisation completes. False by default.", optional="true", default="false") boolean blockUntilDone
+    ) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+
+	@doc(d="Registers a set of file-based metamodels with a Hawk instance")
+	op void registerMetamodels (
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="The metamodels to register.
+			More than one metamodel file can be provided in one
+			request, to accomodate fragmented metamodels.") File[*] metamodel
+	) throws HawkInstanceNotFound, InvalidMetamodel, HawkInstanceNotRunning;
+
+	@doc(d="Unregisters a metamodel from a Hawk instance")
+	op void unregisterMetamodels (
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="The URIs of the metamodels") String[*] metamodel
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+
+	@doc(d="Lists the URIs of the registered metamodels of a Hawk instance")
+	op String[*] listMetamodels (
+		@doc(d="The name of the Hawk instance") String name
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+
+    @doc(d="Lists the supported query languages and their status")
+    op String[*] listQueryLanguages(
+	@doc(d="The name of the Hawk instance") String name
+    );
+
+	@doc(d="Runs a query on a Hawk instance and returns a sequence of scalar values and/or model elements.")
+	op QueryResult[*] query (
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="The query to be executed") String query,
+		@doc(d="The name of the query language used (e.g. EOL, OCL)") String language,
+		@doc(d="Options for the query") HawkQueryOptions options
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning, UnknownQueryLanguage, InvalidQuery, FailedQuery;
+
+	@doc(d="Returns populated model elements for the provided proxies")
+	op ModelElement[*] resolveProxies (
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="Proxy model element IDs to be resolved") String[*] ids,
+		@doc(d="Options for the query") HawkQueryOptions options
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+
+	@doc(d="Asks a Hawk instance to start monitoring a repository")
+	op void addRepository (
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="The repository to monitor") Repository repo,
+		@doc(d="A valid set of credentials that has read-access to the repository", optional="true") Credentials credentials
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning, UnknownRepositoryType, VCSAuthenticationFailed;
+
+	@doc(d="Returns true if a repository is frozen, false otherwise.")
+	op boolean isFrozen (
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="The URI of the repository to query") String uri
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+
+	@doc(d="Changes the 'frozen' state of a repository")
+	op void setFrozen (
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="The URI of the repository to be changed") String uri,
+		@doc(d="Whether the repository should be frozen (true) or not (false)") Boolean isFrozen
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+
+	@doc(d="Asks a Hawk instance to stop monitoring a repository and remove its elements from the graph")
+	op void removeRepository (
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="The URI of the repository to stop monitoring") String uri
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+
+	@doc(d="Changes the credentials used to monitor a repository")
+	op void updateRepositoryCredentials (
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="The URI of the repository to update") String uri,
+		@doc(d="The new credentials to be used") Credentials cred
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+
+	@doc(d="Lists the repositories monitored by a Hawk instance")
+	op Repository[*] listRepositories (
+		@doc(d="The name of the Hawk instance") String name
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+
+	@doc(d="Lists the available repository types in this installation")
+	op String[*] listRepositoryTypes();
+
+	@doc(d="Lists the paths of the files of the indexed repository")
+	op String[*] listFiles (
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="The URI of the indexed repository") String[*] repository,
+		@doc(d="File name patterns to search for (* lists all files)") String[*] filePatterns
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+
+	@doc(d="Sets the base polling period and max interval of a Hawk instance")
+	op void configurePolling (
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="The base polling period (in seconds)") int base,
+		@doc(d="The maximum polling interval (in seconds)") int max
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning, InvalidPollingConfiguration;
+
+	@doc(d="Add a new derived attribute to a Hawk instance")
+	op void addDerivedAttribute (
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="The details of the new derived attribute") DerivedAttributeSpec spec
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning, InvalidDerivedAttributeSpec;
+
+	@doc(d="Remove a derived attribute from a Hawk instance")
+	op void removeDerivedAttribute (
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="The details of the derived attribute to be removed.
+			Only the first three fields of the spec
+			need to be populated") DerivedAttributeSpec spec
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+
+	@doc(d="Lists the derived attributes of a Hawk instance. Only the first three fields of the spec are currently populated")
+	op DerivedAttributeSpec[*] listDerivedAttributes (
+		@doc(d="The name of the Hawk instance") String name
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+
+	@doc(d="Add a new indexed attribute to a Hawk instance")
+	op void addIndexedAttribute (
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="The details of the new indexed attribute") IndexedAttributeSpec spec
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning, InvalidIndexedAttributeSpec;
+
+	@doc(d="Remove a indexed attribute from a Hawk instance")
+	op void removeIndexedAttribute (
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="The details of the indexed attribute to be removed") IndexedAttributeSpec spec
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+
+	@doc(d="Lists the indexed attributes of a Hawk instance")
+	op IndexedAttributeSpec[*] listIndexedAttributes (
+		@doc(d="The name of the Hawk instance") String name
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+
+	@doc(d="Returns the contents of one or more models indexed in a Hawk instance. Cross-model references are also resolved, and contained objects are always sent.")
+	op ModelElement[*] getModel (
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="Options to limit the contents to be sent") HawkQueryOptions options
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+
+	@doc(d="Returns the root objects of one or more models indexed in a Hawk instance. Node IDs are always sent, and contained objects are never sent.")
+	op ModelElement[*] getRootElements (
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="Options to limit the contents to be sent") HawkQueryOptions options
+	);
+
+	@doc(d="Returns subscription details to a queue of HawkStateEvents with notifications about changes in the indexer's state", queueOf="HawkStateEvent")
+	op Subscription watchStateChanges(
+		@doc(d="The name of the Hawk instance") String name
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+
+	@doc(d="Returns subscription details to a queue of HawkChangeEvents with notifications about changes to a set of indexed models.", queueOf="HawkChangeEvent")
+	op Subscription watchModelChanges(
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="The URI of the repository in which the model is contained") String repositoryUri,
+		@doc(d="The pattern(s) for the model file(s) in the repository") String[*] filePath,
+		@doc(d="Unique client ID (used as suffix for the queue name)") String clientID,
+		@doc(d="Durability of the subscription.") SubscriptionDurability durableEvents
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+}
+
+@doc(d="Representation of a set of rules for either including or excluding metamodels, types or slots")
+@thrift.map(key="uri", value="metamodel")
+class EffectiveMetamodelMap {
+    @doc(d="Namespace URI of the metamodel")
+    val String uri;
+    @doc(d="Types and slots within the metamodel that should be included or excluded: empty means 'all types and slots'")
+    val EffectiveMetamodel[*] metamodel;
+}
+
+@doc(d="Representation of a set of rules for either including or excluding certain types and/or slots within a metamodel")
+@thrift.map(key="type", value="slots")
+class EffectiveMetamodel {
+    @doc(d="Type that should be included or excluded")
+	val String type;
+	@doc(d="Slots within the type that should be included or excluded: empty means 'all slots'")
+    @thrift.set
+	val String[*] slots;
+}
+
+@doc(d="Options for a Hawk query")
+class HawkQueryOptions {
+  @doc(d="The repository for the query (or * for all repositories)", optional="true", default="*")
+  attr String repositoryPattern;
+
+  @doc(d="The file patterns for the query (e.g. *.uml)", optional="true")
+  attr String[*] filePatterns;
+
+  @doc(d="The default namespaces to be used to resolve ambiguous unqualified types", optional="true", default="")
+  attr String defaultNamespaces;
+
+  @doc(d="Whether to include attributes (true) or not (false) in model element results", optional="true", default="true")
+  attr Boolean includeAttributes;
+
+  @doc(d="Whether to include references (true) or not (false) in model element results", optional="true", default="true")
+  attr Boolean includeReferences;
+
+  @doc(d="Whether to include node IDs (true) or not (false) in model element results", optional="true", default="false")
+  attr Boolean includeNodeIDs;
+
+  @doc(d="Whether to include all the child elements of the model element results (true) or not (false)", optional="true", default="true")
+  attr Boolean includeContained;
+
+  @doc(d="If set and not empty, only the specified metamodels, types and features will be fetched. Otherwise, everything that is not excluded will be fetched. The string '*' can be used to refer to all types within a metamodel or all fields within a type.", optional="true")
+  val EffectiveMetamodelMap effectiveMetamodelIncludes;
+
+  @doc(d="If set and not empty, the mentioned metamodels, types and features will not be fetched. The string '*' can be used to refer to all types within a metamodel or all fields within a type.", optional="true")
+  val EffectiveMetamodelMap effectiveMetamodelExcludes;
+}
+
+@doc(d="Entity that represents a model repository")
+class Repository {
+	@doc(d="The URI to the repository") attr String uri;
+	@doc(d="The type of repository") attr String type;
+	@doc(d="True if the repository is frozen, false otherwise", default="false", optional="true") attr Boolean isFrozen;
+}
+
+@doc(d="One of the states that a Hawk instance can be in.")
+enum HawkState {
+	@doc(d="The instance is running and monitoring the indexed locations") RUNNING;
+	@doc(d="The instance is updating its contents from the indexed locations") UPDATING;
+	@doc(d="The instance is stopped and is not monitoring any indexed locations") STOPPED;
+}
+
+@doc(d="Serialized form of a change in the state of a Hawk instance")
+class HawkStateEvent {
+	@doc(d="Timestamp for this state change") val long timestamp;
+	@doc(d="State of the Hawk instance") val HawkState state;
+	@doc(d="Short message about the current status of the server") val String message;
+}
+
+@doc(d="Serialized form of a change in the indexed models of a Hawk instance")
+@thrift(union="true")
+class HawkChangeEvent {
+	@doc(d="A model element was added.") val HawkModelElementAdditionEvent modelElementAddition;
+	@doc(d="A model element was removed.") val HawkModelElementRemovalEvent modelElementRemoval;
+	@doc(d="An attribute was updated.") val HawkAttributeUpdateEvent modelElementAttributeUpdate;
+	@doc(d="An attribute was removed.") val HawkAttributeRemovalEvent modelElementAttributeRemoval;
+	@doc(d="A reference was added.") val HawkReferenceAdditionEvent referenceAddition;
+	@doc(d="A reference was removed.") val HawkReferenceRemovalEvent referenceRemoval;
+	@doc(d="Synchronization started.") val HawkSynchronizationStartEvent syncStart;
+	@doc(d="Synchronization ended.") val HawkSynchronizationEndEvent syncEnd;
+	@doc(d="A file was added.") val HawkFileAdditionEvent fileAddition;
+	@doc(d="A file was removed.") val HawkFileRemovalEvent fileRemoval;
+}
+
+@doc(d="Serialized form of a model element addition event.")
+class HawkModelElementAdditionEvent {
+	@doc(d="Entry within the commit that produced the changes.") val CommitItem vcsItem;
+	@doc(d="Metamodel URI of the type of the model element") val String metamodelURI;
+	@doc(d="Name of the type of the model element") val String typeName;
+	@doc(d="Identifier of the model element that was added.") val String ~id;
+}
+
+@doc(d="Serialized form of a model element removal event.")
+class HawkModelElementRemovalEvent {
+	@doc(d="Entry within the commit that produced the changes.") val CommitItem vcsItem;
+	@doc(d="Identifier of the model element that was removed.") val String ~id;
+}
+
+@doc(d="Serialized form of an attribute update event.")
+class HawkAttributeUpdateEvent {
+	@doc(d="Entry within the commit that produced the changes.") val CommitItem vcsItem;
+	@doc(d="Identifier of the model element that was changed.") val String ~id;
+	@doc(d="Name of the attribute that was changed.") val String attribute;
+	@doc(d="New value for the attribute.") val SlotValue value;
+}
+
+@doc(d="Serialized form of an attribute removal event.")
+class HawkAttributeRemovalEvent {
+	@doc(d="Entry within the commit that produced the changes.") val CommitItem vcsItem;
+	@doc(d="Identifier of the model element that was changed.") val String ~id;
+	@doc(d="Name of the attribute that was removed.") val String attribute;
+}
+
+@doc(d="Serialized form of a reference addition event.")
+class HawkReferenceAdditionEvent {
+	@doc(d="Entry within the commit that produced the changes.") val CommitItem vcsItem;
+	@doc(d="Identifier of the source model element.") val String ~sourceId;
+	@doc(d="Identifier of the target model element.") val String ~targetId;
+	@doc(d="Name of the reference that was added.") val String refName;
+}
+
+@doc(d="Serialized form of a reference removal event.")
+class HawkReferenceRemovalEvent {
+	@doc(d="Entry within the commit that produced the changes.") val CommitItem vcsItem;
+	@doc(d="Identifier of the source model element.") val String ~sourceId;
+	@doc(d="Identifier of the target model element.") val String ~targetId;
+	@doc(d="Name of the reference that was removed.") val String refName;
+}
+
+@doc(d="Serialized form of a sync start event.")
+class HawkSynchronizationStartEvent {
+	@doc(d="Local timestamp, measured in nanoseconds. Only meant to be used to compute synchronization cost.") val long timestampNanos;
+}
+
+@doc(d="Serialized form of a sync end event.")
+class HawkSynchronizationEndEvent {
+	@doc(d="Local timestamp, measured in nanoseconds. Only meant to be used to compute synchronization cost.") val long timestampNanos;
+}
+
+@doc(d="Serialized form of a file addition event.")
+class HawkFileAdditionEvent {	
+	@doc(d="Reference to file that was added, including VCS metadata.") val CommitItem vcsItem;
+}
+
+@doc(d="A file was removed.")
+class HawkFileRemovalEvent {
+	@doc(d="Reference to file that was removed, including VCS metadata.") val CommitItem vcsItem;
+}
+
+@doc(d="Simplified entry within a commit of a repository.")
+class CommitItem {
+	@doc(d="URL of the repository") attr String repoURL;
+	@doc(d="Unique identifier of the revision of the repository.") attr String revision;
+	@doc(d="Path within the repository, using / as separator.") attr String path;
+	@doc(d="Type of change within the commit.") attr CommitItemChangeType type;
+}
+
+@doc(d="Type of change within a commit.")
+enum CommitItemChangeType {
+	@doc(d="File was added.") ADDED;
+	@doc(d="File was removed.") DELETED;
+	@doc(d="File was updated.") UPDATED;
+	@doc(d="File was removed.") REPLACED;
+	@doc(d="Unknown type of change.") UNKNOWN;
+}
+
+@doc(d="No Hawk instance exists with that name.")
+class HawkInstanceNotFound {}
+
+@doc(d="The selected Hawk instance is not running.")
+class HawkInstanceNotRunning {}
+
+@doc(d="The provided metamodel is not valid (e.g. unparsable or inconsistent).")
+class InvalidMetamodel {
+	@doc(d="Reason for the metamodel not being valid.") attr String reason;
+}
+
+@doc(d="The specified query language is not supported by the operation.")
+class UnknownQueryLanguage {}
+
+@doc(d="The specified repository type is not supported by the operation.")
+class UnknownRepositoryType {}
+
+@doc(d="The specified query is not valid")
+class InvalidQuery {
+	@doc(d="Reason for the query not being valid.") attr String reason;
+}
+
+@doc(d="The specified query failed to complete its execution")
+class FailedQuery {
+	@doc(d="Reason for the query failing to complete its execution.") attr String reason;
+}
+
+@doc(d="The derived attribute specification is not valid")
+class InvalidDerivedAttributeSpec {
+	@doc(d="Reason for the spec not being valid.") attr String reason;
+}
+
+@doc(d="The indexed attribute specification is not valid")
+class InvalidIndexedAttributeSpec {
+	@doc(d="Reason for the spec not being valid.") attr String reason;
+}
+
+@doc(d="The polling configuration is not valid")
+class InvalidPollingConfiguration {
+	@doc(d="Reason for the spec not being valid.") attr String reason;
+}
+
+
+@doc(d="
+The offline collaboration tool is realized in the MONDO platform through the
+MONDO Offline Collaboration Server, as mentioned in D4.4~\cite{D4.4}. It extends an
+off-the-shelf version control server with ``hooks'' that enforce access control and
+maintain the lens relationship between the ``gold'' repository and the ``front'' repositories.
+This allows users to continue using their preferred tools for interacting with the version
+control systems in their day-to-day modelling activities. The access control rules to be used 
+by the security lens are themselves described in the repository.
+
+Nevertheless, managing the operation of the hooks and the lens relationship requires
+its own API, as this is not covered by traditional VCS protocols. The rest of the section
+describes an API for managing these access rules.
+")
+class OfflineCollaboration {
+
+  @doc(d="Retrieve the list of all managed gold repositories")
+  op String[*] listGoldRepositories()
+		throws UnauthorizedRepositoryOperation, OfflineCollaborationInternalError;
+
+  @doc(d="Regenerate all front repositories based on the gold repository. Requires superuser privileges. ")
+  op void regenerateFrontRepositories(
+    @doc(d="URL of the gold repository") String goldRepoURL)
+		throws GoldRepoNotFound, UnauthorizedRepositoryOperation, OfflineCollaborationInternalError;
+
+  @doc(d="Retrieve the front repository URL for the current user")
+  op String getMyFrontRepositoryURL(
+    @doc(d="URL of the gold repository") String goldRepoURL)
+		throws GoldRepoNotFound, UnauthorizedRepositoryOperation, OfflineCollaborationInternalError;
+		
+  @doc(d="Retrieve the online collaboration access point URL for the current user")
+  op String getOnlineCollaborationURL(
+    @doc(d="URL of the gold repository") String goldRepoURL)
+		throws GoldRepoNotFound, UnauthorizedRepositoryOperation, OfflineCollaborationInternalError;
+}
+@doc(d="No gold repository is configured at the specified URL")
+class GoldRepoNotFound {}
+@doc(d="Authenticated user is not permitted to carry out the requested operation on the specified repository")
+class UnauthorizedRepositoryOperation {}
+@doc(d="An internal error occurred on the collaboration server. See details in server log.")
+class OfflineCollaborationInternalError {
+    @doc(d="Summary description of the error. See details in server log.")
+	attr String errorMessage;
+}
+
+@doc(d="Credentials of the client in the target VCS")
+class Credentials {
+    @doc(d="Username for logging into the VCS")
+	attr String username;
+	@doc(d="Password for logging into the VCS")
+	attr String password;
+}
+
+@doc(d="
+The following service operations expose the capabilities of the cloud-enabled
+version of the ATL transformation language which is presented in D3.3~\cite{D3.3}.
+")
+class CloudATL {
+
+	@doc(d="Invokes a cloud-based transformation in a batch non-blocking mode.
+			Returns a token that can be used to check the status of the transformation.")
+	op String launch (
+		@doc(d="The ATL source-code of the transformation") String transformation,
+		/*
+		@doc(d="The input models of the transformation") ModelSpec[*] source,
+		@doc(d="The target models of the transformation") ModelSpec[*] target
+		
+		Changed for simplicity for the first prototype, multiple input/output models
+		is not suported by the first ATL-MR prototype
+		
+		*/ 
+		@doc(d="The input models of the transformation") ModelSpec source,
+		@doc(d="The target models of the transformation") ModelSpec target
+	) throws InvalidTransformation, InvalidModelSpec;
+
+	@doc(d="Lists the identifiers of the transformation jobs tracked by this server")
+	op String[*] getJobs ();
+
+	@doc(d="Returns the status of a previously invoked transformation")
+	op TransformationStatus getStatus (
+		@doc(d="A valid token returned by a previous call to launch()") String token
+	) throws TransformationTokenNotFound;
+	
+	@doc(d="Kills a previously invoked transformation")
+	op void kill (
+		@doc(d="A valid token returned by a previous call to launch()") String token
+	) throws TransformationTokenNotFound;
+}
+
+@doc(d="Represents a model element")
+class ModelElement {
+	@doc(d="Unique ID of the model element (not set if using position-based references)", optional="true")
+	attr String ~id;
+	@doc(d="URI of the repository to which the element belongs (not set if equal to that of the previous model element)", optional="true")
+	attr String repositoryURL;
+	@doc(d="Name of the file to which the element belongs (not set if equal to that of the previous model element)", optional="true")
+	attr String file;
+	@doc(d="URI of the metamodel to which the type of the element belongs (not set if equal to that of the previous model element)", optional="true")
+	attr String metamodelUri;
+	@doc(d="Name of the type that the model element is an instance of (not set if equal to that of the previous model element)", optional="true")
+	attr String typeName;
+	@doc(d="Slots holding the values of the model element's attributes, if any have been set", optional="true")
+	val AttributeSlot[*] attributes;
+	@doc(d="Slots holding the values of the model element's references, if any have been set", optional="true")
+	val ReferenceSlot[*] references;
+	@doc(d="Slots holding contained model elements, if any have been set", optional="true")
+	val ContainerSlot[*] containers;
+}
+
+@doc(d="Represents a type of model element")
+class ModelElementType {
+	@doc(d="Unique ID of the model element type")
+	attr String ~id;
+	@doc(d="URI of the metamodel to which the type belongs")
+	attr String metamodelUri;
+	@doc(d="Name of the type")
+	attr String typeName;
+	@doc(d="Metadata for the attribute slots", optional="true")
+	val SlotMetadata[*] attributes;
+	@doc(d="Metadata for the reference slots", optional="true")
+	val SlotMetadata[*] references;
+}
+
+@doc(d="Represents a slot that can store the value(s) of a property of a model element")
+class Slot {
+	@doc(d="The name of the model element property the value of which is stored in this slot")
+	attr String name;
+}
+
+@doc(d="Represents the metadata of a slot in a model element type")
+class SlotMetadata {
+	@doc(d="The name of the model element property that is stored in this slot")
+	attr String name;
+	@doc(d="The type of the values in this slot")
+	attr String type;
+	@doc(d="True if this slot holds a collection of values instead of a single value.")
+	attr boolean isMany;
+	@doc(d="True if the values in this slot are ordered.")
+	attr boolean isOrdered;
+	@doc(d="True if the value of this slot must be unique within its containing model.")
+	attr boolean isUnique;
+}
+
+@doc(d="Represents a slot that can store the value(s) of an attribute of a model element")
+class AttributeSlot extends Slot {
+	@doc(d="Value of the slot (if set).", optional="true")
+	val SlotValue value;
+}
+
+@doc(d="
+Represents a slot that can store the value(s) of a reference  of a model element.
+References can be expressed as positions within a result tree (using pre-order traversal)
+or IDs. id, ids, position, positions and mixed are all mutually exclusive. At least one position
+or one ID must be given.
+")
+class ReferenceSlot extends Slot {
+    @doc(d="Position of the referenced element (if there is only one position-based reference in this slot)", optional="true")
+    val int position;
+
+	@doc(d="Positions of the referenced elements (if more than one).", optional="true")
+	val int[*] positions;
+
+    @doc(d="Unique identifier of the referenced element (if there is only one ID based reference in this slot)", optional="true")
+    val String ~id;
+
+	@doc(d="Unique identifiers of the referenced elements (if more than one).", optional="true")
+	val String[*] ids;
+
+	@doc(d="Mix of identifier- and position-bsaed references (if there is at least one position and one ID)", optional="true")
+	val MixedReference[*] mixed;
+}
+
+@thrift(union="true")
+@doc(d="Represents a reference to a model element: it can be an identifier or a position.
+Only used when the same ReferenceSlot has both identifier-based and position-based references.
+This may be the case if we are retrieving a subset of the model which has references
+between its elements and with elements outside the subset at the same time.")
+class MixedReference {
+	@doc(d="Identifier-based reference to a model element")
+	val String ~id;
+
+	@doc(d="Position-based reference to a model element")
+	val int position;
+}
+
+// @thrift.map(key="name", value="elements")
+@doc(d="Represents a slot that can store other model elements within a model element")
+class ContainerSlot extends Slot {
+	@doc(d="Contained elements for this slot.")
+	val ModelElement[*] elements;
+}
+
+@thrift(union="true")
+@doc(d="Union type for a scalar value or a reference to a model element. Useful for heterogeneous collections.")
+class QueryResult extends Value {
+    @doc(d="Encoded model element.")
+	val ModelElement vModelElement;
+	@doc(d="Encoded model element type.")
+	val ModelElementType vModelElementType;
+}
+
+@thrift(union="true")
+@doc(d="Union type for a single scalar value.")
+class Value {
+	// If we only have one value, even if it should be a list, it's
+	// better to use this so we don't use space specifying "size 1".
+	@doc(d="Boolean (true/false) value.") attr boolean vBoolean;
+	@doc(d="8-bit signed integer value.") attr byte vByte;
+	@doc(d="16-bit signed integer value.")attr short vShort;
+	@doc(d="32-bit signed integer value.")attr int vInteger;
+	@doc(d="64-bit signed integer value.")attr long vLong;
+	@doc(d="64-bit floating point value.") attr double vDouble;
+	@doc(d="Sequence of UTF8 characters.") attr String vString;
+}
+
+@thrift(union="true")
+@doc(d="Union type for a single scalar value or a homogeneous collection of scalar values.")
+class SlotValue extends Value {
+	// Only for when we have 2 or more values!
+	@doc(d="List of true/false values.") attr boolean[*] vBooleans;
+	@doc(d="List of 8-bit signed integers.") attr EByteArray vBytes;
+	@doc(d="List of 16-bit signed integers.") attr short[*] vShorts;
+	@doc(d="List of 32-bit signed integers.") attr int[*] vIntegers;
+	@doc(d="List of 64-bit signed integers.") attr long[*] vLongs;
+	@doc(d="List of 64-bit floating point values.") attr double[*] vDoubles;
+	@doc(d="List of sequences of UTF8 characters.") attr String[*] vStrings;
+}
+
+@doc(d="Captures information about source/target models of ATL transformations")
+class ModelSpec {
+	@doc(d="The URI from which the model will be loaded or to which it will be persisted")
+	attr String uri;
+	@doc(d="The URIs of the metamodels to which elements of the model conform")
+	attr String[*] metamodelUris;
+}
+
+@doc(d="Used to configure Hawk's indexed attributes (discussed in D5.3)")
+class IndexedAttributeSpec {
+	@doc(d="The URI of the metamodel to which the indexed attribute belongs")
+	attr String metamodelUri;
+	@doc(d="The name of the type to which the indexed attribute belongs")
+	attr String typeName;
+	@doc(d="The name of the indexed attribute")
+	attr String attributeName;
+}
+
+@doc(d="Used to configure Hawk's derived attributes (discussed in D5.3)")
+class DerivedAttributeSpec {
+	@doc(d="The URI of the metamodel to which the derived attribute belongs")
+	attr String metamodelUri;
+	@doc(d="The name of the type to which the derived attribute belongs")
+	attr String typeName;
+	@doc(d="The name of the derived attribute")
+	attr String attributeName;
+	@doc(d="The (primitive) type of the derived attribute", optional="true")
+	attr String attributeType;
+	@doc(d="The multiplicity of the derived attribute", optional="true")
+	attr boolean isMany;
+	@doc(d="A flag specifying whether the order of the values of the derived attribute is significant (only makes sense when isMany=true)", optional="true")
+	attr boolean isOrdered;
+	@doc(d="A flag specifying whether the the values of the derived attribute are unique (only makes sense when isMany=true)", optional="true")
+	attr boolean isUnique;
+	@doc(d="The language used to express the derivation logic", optional="true")
+	attr String derivationLanguage;
+	@doc(d="An executable expression of the derivation logic in the language above", optional="true")
+	attr String derivationLogic;
+}
+
+@doc(d="Used to report the status of a long-running transformation by CloudATL")
+class TransformationStatus {
+	@doc(d="State of the tranformation")
+	attr TransformationState state;
+	@doc(d="Time passed since the start of execution, in milliseconds")
+	attr long elapsed;
+	@doc(d="Description of the error that caused the transformation to fail")
+	attr String error;
+}
+
+@doc(d="State of the execution of the transformation")
+enum TransformationState {
+    @doc(d="The transformation is running.") RUNNING;
+    @doc(d="The transformation has completed successfully.") SUCCEEDED;
+    @doc(d="The transformation has failed.") FAILED;
+    @doc(d="The transformation is in preparation.") PREP;
+    @doc(d="The transformation was interrupted by a user (i.e. killed).") KILLED;
+}
+
+@doc(d="Status of a Hawk instance")
+class HawkInstance {
+	@doc(d="The name of the instance")
+	attr String name;
+	@doc(d="Current state of the instance")
+	attr HawkState state;
+	@doc(d="Last info message from the instance")
+	attr String message;
+}
+
+@doc(d="Minimal details about registered users")
+class UserProfile {
+	@doc(d="The real name of the user")
+	attr String realName;
+	@doc(d="Whether the user has admin rights (i.e. so that they can create new users, change the status of admin users etc)")
+	attr boolean admin;
+}
+
+datatype EByteArray : "byte[]";
+
+@doc(d="A file to be sent through the network")
+class File {
+  @doc(d="Name of the file.") attr String name;
+  @doc(d="Sequence of bytes with the contents of the file.") attr EByteArray contents;
+}
+
+@doc(d="The specified username already exists.")
+class UserExists {}
+
+@doc(d="The specified username does not exist.")
+class UserNotFound {}
+
+@doc(d="The client failed to prove its identity in the VCS.")
+class VCSAuthenticationFailed {}
+
+@doc(d="The transformation is not valid: it is unparsable or inconsistent.")
+class InvalidTransformation {
+	@doc(d="Reason for the transformation not being valid.") attr String reason;
+	@doc(d="Location of the problem, if applicable. Usually a combination of line and column numbers.") attr String location;
+}
+
+@doc(d="The model specification is not valid: the model or the metamodels are inaccessible or invalid.")
+class InvalidModelSpec {
+	@doc(d="A copy of the invalid model specification.") val ModelSpec spec;
+	@doc(d="Reason for the spec not being valid.") attr String reason;
+}
+
+@doc(d="The specified transformation token does not exist within the invokved MONDO instance.")
+class TransformationTokenNotFound {
+	@doc(d="Transformation token which was not found within the invoked MONDO instance.") attr String token;
+}
+
+@doc(d="Details about a subscription to a topic queue")
+class Subscription {
+	@doc(d="Host name of the message queue server") attr String host;
+	@doc(d="Port in which the message queue server is listening") attr int port;
+	@doc(d="Address of the topic queue") attr String queueAddress;
+	@doc(d="Name of the topic queue") attr String queueName;
+	@doc(d="Whether SSL is required or not", default="false") attr boolean sslRequired;
+}
+
+@doc(d="Durability of a subscription")
+enum SubscriptionDurability {
+	@doc(d="Subscription removed after disconnecting.") TEMPORARY;
+	@doc(d="Subscription survives client disconnections but not server restarts.") DEFAULT;
+	@doc(d="Subscription survives client disconnections and server restarts.") DURABLE;
+}
+
+// Server-side IFC export ///////////////////////////////////////////////////////////
+
+@doc(d="Options for a server-side IFC export.")
+class IFCExportOptions {
+  @doc(d="The repository for the query (or * for all repositories)", optional="true", default="*")
+  attr String repositoryPattern;
+
+  @doc(d="The file patterns for the query (e.g. *.uml)", optional="true")
+  attr String[*] filePatterns;
+
+  @doc(d="If set and not empty, only the specified metamodels, types and features will be fetched. Otherwise, everything that is not excluded will be fetched. The string '*' can be used to refer to all types within a metamodel or all fields within a type.", optional="true")
+  val EffectiveMetamodelMap includeRules;
+
+  @doc(d="If set and not empty, the mentioned metamodels, types and features will not be fetched. The string '*' can be used to refer to all types within a metamodel or all fields within a type.", optional="true")
+  val EffectiveMetamodelMap excludeRules;
+}
+
+@doc(d="Status of a server-side IFC export job.")
+enum IFCExportStatus {
+	@doc(d="The job has been scheduled but has not started yet.") SCHEDULED;
+	@doc(d="The job is currently running.") RUNNING;
+	@doc(d="The job has been cancelled.") CANCELLED;
+	@doc(d="The job has failed.") FAILED;
+	@doc(d="The job is completed.") DONE;
+}
+
+@doc(d="Information about a server-side IFC export job.")
+class IFCExportJob {
+	attr String jobID;
+	attr IFCExportStatus status;
+	attr String message;
+}
+
+@doc(d="IFC export facility for getting IFC models from MONDO server")
+class IFCExport {
+	@doc(d="Export part of a Hawk index in IFC STEP format")
+	op IFCExportJob exportAsSTEP(String hawkInstance, IFCExportOptions options);
+
+	@doc(d="List all the previously scheduled IFC export jobs")
+	op IFCExportJob[*] getJobs();
+
+	@doc(d="Retrieve the current status of the job with the specified ID")
+	op IFCExportJob getJobStatus(String jobID);
+
+	@doc(d="Cancel the job with the specified ID")
+	op boolean killJob(String jobID);
+}

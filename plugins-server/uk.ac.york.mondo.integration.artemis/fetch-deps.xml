@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project" default="retrieve" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+	<target name="retrieve">
+		<property name="native-package-type" value="jar" />
+		<property name="ivy.default.settings.native-package-type" value="jar" />
+		<ivy:retrieve pattern="lib/[artifact]-[type]-[revision].[ext]"/>
+	</target>
+
+</project>

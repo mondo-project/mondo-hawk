@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: MONDO Server -- Logback Configuration
+Bundle-SymbolicName: uk.ac.york.mondo.integration.server.logback
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: University of York
+Fragment-Host: ch.qos.logback.classic;bundle-version="1.0.7.v20121108-1250"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Eclipse-BundleShape: dir

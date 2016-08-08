@@ -1,0 +1,2004 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="mondo_api" nsURI="mondo_api" nsPrefix="">
+  <eAnnotations source="doc">
+    <details key="dServices" value="&#xA;The present section lists the services offered by the current version&#xA;of the MONDO platform. For each service, the available operations are&#xA;presented, along with the parameters they take, their return type and&#xA;the exceptions they can throw. Readers familiar with Thrift may notice&#xA;that some types inherit from others, which is not supported by Thrift&#xA;itself: this is implemented through the&#xA;Ecore2Thrift~\cite{ecore2thrift} model-to-text transformation&#xA;developed in WP6, which takes into account inherited fields when&#xA;transforming an \class{EClass} into a Thrift data type.&#xA;&#xA;In addition to their explicitly listed exceptions, operations&#xA;requiring authentication may produce replies with HTTP 4xx status&#xA;codes if the user fails to provide valid credentials or does not have&#xA;the required permissions. In its current version, the MONDO platform&#xA;assumes that authenticated users will have the necessary permissions.&#xA;"/>
+  </eAnnotations>
+  <eAnnotations source="thrift">
+    <details key="javans" value="uk.ac.york.mondo.integration.api"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Users">
+    <eAnnotations source="doc">
+      <details key="d" value="The majority of service operations provided by the MONDO&#xA;&#x9;&#x9;platform require user authentication (indicated in the top-left&#xA;&#x9;&#x9;cell of each operation table) to prevent unaccountable use.&#xA;&#x9;&#x9;As such, the platform needs to provide basic user management service operations&#xA;&#x9;&#x9;for creating, updating and deleting user accounts."/>
+    </eAnnotations>
+    <eOperations name="createUser" eExceptions="#//UserExists">
+      <eAnnotations source="doc">
+        <details key="d" value="Creates a new platform user"/>
+      </eAnnotations>
+      <eParameters name="username" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="A unique identifier for the user"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="password" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The desired password"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="profile" eType="#//UserProfile">
+        <eAnnotations source="doc">
+          <details key="d" value="The profile of the user"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="updateProfile" eExceptions="#//UserNotFound">
+      <eAnnotations source="doc">
+        <details key="d" value="Updates the profile of a platform user"/>
+      </eAnnotations>
+      <eParameters name="username" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the user to update the profile of"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="profile" eType="#//UserProfile">
+        <eAnnotations source="doc">
+          <details key="d" value="The updated profile of the user"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="updatePassword" eExceptions="#//UserNotFound">
+      <eAnnotations source="doc">
+        <details key="d" value="Updates the password of a platform user"/>
+      </eAnnotations>
+      <eParameters name="username" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the user to update the profile of"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="newPassword" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="New password to be set"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="deleteUser" eExceptions="#//UserNotFound">
+      <eAnnotations source="doc">
+        <details key="d" value="Deletes a platform user"/>
+      </eAnnotations>
+      <eParameters name="username" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the user to delete"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Hawk">
+    <eAnnotations source="doc">
+      <details key="d" value="&#xA;The following service operations expose the capabilities of the Hawk heterogeneous model indexing&#xA;framework developed in Work Package 5. The framework is discussed in detail in D5.2 and D5.3&#xA;"/>
+    </eAnnotations>
+    <eOperations name="createInstance">
+      <eAnnotations source="doc">
+        <details key="d" value="Creates a new Hawk instance (stopped)."/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The unique name of the new Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="backend" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the backend to be used, as returned by listBackends()"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="minimumDelayMillis" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eAnnotations source="doc">
+          <details key="d" value="Minimum delay between periodic synchronization in milliseconds"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="maximumDelayMillis" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eAnnotations source="doc">
+          <details key="d" value="Maximum delay between periodic synchronization in milliseconds (0 to disable periodic synchronization)"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="enabledPlugins" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="List of plugins to be enabled: if not set, all plugins are enabled."/>
+          <details key="optional" value="true"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="listBackends" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Lists the names of the available storage backends"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="listPlugins" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Lists all the Hawk plugins that can be enabled or disabled: metamodel parsers, model parsers and graph change listeners."/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="listInstances" upperBound="-1" eType="#//HawkInstance">
+      <eAnnotations source="doc">
+        <details key="d" value="Lists the details of all Hawk instances"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="removeInstance" eExceptions="#//HawkInstanceNotFound">
+      <eAnnotations source="doc">
+        <details key="d" value="Removes an existing Hawk instance"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance to remove"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="startInstance" eExceptions="#//HawkInstanceNotFound">
+      <eAnnotations source="doc">
+        <details key="d" value="Starts a stopped Hawk instance"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance to start"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="stopInstance" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Stops a running Hawk instance"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance to stop"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="syncInstance" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Forces an immediate synchronization on a Hawk instance"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance to stop"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="blockUntilDone" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="doc">
+          <details key="d" value="If true, blocks the call until the synchronisation completes. False by default."/>
+          <details key="optional" value="true"/>
+          <details key="default" value="false"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="registerMetamodels" eExceptions="#//HawkInstanceNotFound #//InvalidMetamodel #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Registers a set of file-based metamodels with a Hawk instance"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="metamodel" upperBound="-1" eType="#//File">
+        <eAnnotations source="doc">
+          <details key="d" value="The metamodels to register.&#xA;&#x9;&#x9;&#x9;More than one metamodel file can be provided in one&#xA;&#x9;&#x9;&#x9;request, to accomodate fragmented metamodels."/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="unregisterMetamodels" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Unregisters a metamodel from a Hawk instance"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="metamodel" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The URIs of the metamodels"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="listMetamodels" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Lists the URIs of the registered metamodels of a Hawk instance"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="listQueryLanguages" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Lists the supported query languages and their status"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="query" upperBound="-1" eType="#//QueryResult" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning #//UnknownQueryLanguage #//InvalidQuery #//FailedQuery">
+      <eAnnotations source="doc">
+        <details key="d" value="Runs a query on a Hawk instance and returns a sequence of scalar values and/or model elements."/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="query" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The query to be executed"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="language" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the query language used (e.g. EOL, OCL)"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="options" eType="#//HawkQueryOptions">
+        <eAnnotations source="doc">
+          <details key="d" value="Options for the query"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="resolveProxies" upperBound="-1" eType="#//ModelElement" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Returns populated model elements for the provided proxies"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="ids" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="Proxy model element IDs to be resolved"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="options" eType="#//HawkQueryOptions">
+        <eAnnotations source="doc">
+          <details key="d" value="Options for the query"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="addRepository" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning #//UnknownRepositoryType #//VCSAuthenticationFailed">
+      <eAnnotations source="doc">
+        <details key="d" value="Asks a Hawk instance to start monitoring a repository"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="repo" eType="#//Repository">
+        <eAnnotations source="doc">
+          <details key="d" value="The repository to monitor"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="credentials" eType="#//Credentials">
+        <eAnnotations source="doc">
+          <details key="d" value="A valid set of credentials that has read-access to the repository"/>
+          <details key="optional" value="true"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="isFrozen" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Returns true if a repository is frozen, false otherwise."/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="uri" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The URI of the repository to query"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="setFrozen" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Changes the 'frozen' state of a repository"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="uri" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The URI of the repository to be changed"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="isFrozen" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBooleanObject">
+        <eAnnotations source="doc">
+          <details key="d" value="Whether the repository should be frozen (true) or not (false)"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="removeRepository" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Asks a Hawk instance to stop monitoring a repository and remove its elements from the graph"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="uri" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The URI of the repository to stop monitoring"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="updateRepositoryCredentials" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Changes the credentials used to monitor a repository"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="uri" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The URI of the repository to update"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="cred" eType="#//Credentials">
+        <eAnnotations source="doc">
+          <details key="d" value="The new credentials to be used"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="listRepositories" upperBound="-1" eType="#//Repository" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Lists the repositories monitored by a Hawk instance"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="listRepositoryTypes" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Lists the available repository types in this installation"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="listFiles" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Lists the paths of the files of the indexed repository"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="repository" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The URI of the indexed repository"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="filePatterns" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="File name patterns to search for (* lists all files)"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="configurePolling" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning #//InvalidPollingConfiguration">
+      <eAnnotations source="doc">
+        <details key="d" value="Sets the base polling period and max interval of a Hawk instance"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="base" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eAnnotations source="doc">
+          <details key="d" value="The base polling period (in seconds)"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="max" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eAnnotations source="doc">
+          <details key="d" value="The maximum polling interval (in seconds)"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="addDerivedAttribute" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning #//InvalidDerivedAttributeSpec">
+      <eAnnotations source="doc">
+        <details key="d" value="Add a new derived attribute to a Hawk instance"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="spec" eType="#//DerivedAttributeSpec">
+        <eAnnotations source="doc">
+          <details key="d" value="The details of the new derived attribute"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="removeDerivedAttribute" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Remove a derived attribute from a Hawk instance"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="spec" eType="#//DerivedAttributeSpec">
+        <eAnnotations source="doc">
+          <details key="d" value="The details of the derived attribute to be removed.&#xA;&#x9;&#x9;&#x9;Only the first three fields of the spec&#xA;&#x9;&#x9;&#x9;need to be populated"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="listDerivedAttributes" upperBound="-1" eType="#//DerivedAttributeSpec"
+        eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Lists the derived attributes of a Hawk instance. Only the first three fields of the spec are currently populated"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="addIndexedAttribute" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning #//InvalidIndexedAttributeSpec">
+      <eAnnotations source="doc">
+        <details key="d" value="Add a new indexed attribute to a Hawk instance"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="spec" eType="#//IndexedAttributeSpec">
+        <eAnnotations source="doc">
+          <details key="d" value="The details of the new indexed attribute"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="removeIndexedAttribute" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Remove a indexed attribute from a Hawk instance"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="spec" eType="#//IndexedAttributeSpec">
+        <eAnnotations source="doc">
+          <details key="d" value="The details of the indexed attribute to be removed"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="listIndexedAttributes" upperBound="-1" eType="#//IndexedAttributeSpec"
+        eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Lists the indexed attributes of a Hawk instance"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="getModel" upperBound="-1" eType="#//ModelElement" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Returns the contents of one or more models indexed in a Hawk instance. Cross-model references are also resolved, and contained objects are always sent."/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="options" eType="#//HawkQueryOptions">
+        <eAnnotations source="doc">
+          <details key="d" value="Options to limit the contents to be sent"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="getRootElements" upperBound="-1" eType="#//ModelElement">
+      <eAnnotations source="doc">
+        <details key="d" value="Returns the root objects of one or more models indexed in a Hawk instance. Node IDs are always sent, and contained objects are never sent."/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="options" eType="#//HawkQueryOptions">
+        <eAnnotations source="doc">
+          <details key="d" value="Options to limit the contents to be sent"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="watchStateChanges" eType="#//Subscription" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Returns subscription details to a queue of HawkStateEvents with notifications about changes in the indexer's state"/>
+        <details key="queueOf" value="HawkStateEvent"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="watchModelChanges" eType="#//Subscription" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Returns subscription details to a queue of HawkChangeEvents with notifications about changes to a set of indexed models."/>
+        <details key="queueOf" value="HawkChangeEvent"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="repositoryUri" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The URI of the repository in which the model is contained"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="filePath" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The pattern(s) for the model file(s) in the repository"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="clientID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="Unique client ID (used as suffix for the queue name)"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="durableEvents" eType="#//SubscriptionDurability">
+        <eAnnotations source="doc">
+          <details key="d" value="Durability of the subscription."/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EffectiveMetamodelMap">
+    <eAnnotations source="doc">
+      <details key="d" value="Representation of a set of rules for either including or excluding metamodels, types or slots"/>
+    </eAnnotations>
+    <eAnnotations source="thrift.map">
+      <details key="key" value="uri"/>
+      <details key="value" value="metamodel"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="uri" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Namespace URI of the metamodel"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="metamodel" upperBound="-1"
+        eType="#//EffectiveMetamodel" containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Types and slots within the metamodel that should be included or excluded: empty means 'all types and slots'"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EffectiveMetamodel">
+    <eAnnotations source="doc">
+      <details key="d" value="Representation of a set of rules for either including or excluding certain types and/or slots within a metamodel"/>
+    </eAnnotations>
+    <eAnnotations source="thrift.map">
+      <details key="key" value="type"/>
+      <details key="value" value="slots"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Type that should be included or excluded"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="slots" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Slots within the type that should be included or excluded: empty means 'all slots'"/>
+      </eAnnotations>
+      <eAnnotations source="thrift.set"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HawkQueryOptions">
+    <eAnnotations source="doc">
+      <details key="d" value="Options for a Hawk query"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="repositoryPattern" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The repository for the query (or * for all repositories)"/>
+        <details key="optional" value="true"/>
+        <details key="default" value="*"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="filePatterns" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The file patterns for the query (e.g. *.uml)"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultNamespaces" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The default namespaces to be used to resolve ambiguous unqualified types"/>
+        <details key="optional" value="true"/>
+        <details key="default" value=""/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="includeAttributes" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBooleanObject">
+      <eAnnotations source="doc">
+        <details key="d" value="Whether to include attributes (true) or not (false) in model element results"/>
+        <details key="optional" value="true"/>
+        <details key="default" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="includeReferences" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBooleanObject">
+      <eAnnotations source="doc">
+        <details key="d" value="Whether to include references (true) or not (false) in model element results"/>
+        <details key="optional" value="true"/>
+        <details key="default" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="includeNodeIDs" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBooleanObject">
+      <eAnnotations source="doc">
+        <details key="d" value="Whether to include node IDs (true) or not (false) in model element results"/>
+        <details key="optional" value="true"/>
+        <details key="default" value="false"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="includeContained" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBooleanObject">
+      <eAnnotations source="doc">
+        <details key="d" value="Whether to include all the child elements of the model element results (true) or not (false)"/>
+        <details key="optional" value="true"/>
+        <details key="default" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="effectiveMetamodelIncludes"
+        eType="#//EffectiveMetamodelMap" containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="If set and not empty, only the specified metamodels, types and features will be fetched. Otherwise, everything that is not excluded will be fetched. The string '*' can be used to refer to all types within a metamodel or all fields within a type."/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="effectiveMetamodelExcludes"
+        eType="#//EffectiveMetamodelMap" containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="If set and not empty, the mentioned metamodels, types and features will not be fetched. The string '*' can be used to refer to all types within a metamodel or all fields within a type."/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Repository">
+    <eAnnotations source="doc">
+      <details key="d" value="Entity that represents a model repository"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="uri" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The URI to the repository"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The type of repository"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isFrozen" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBooleanObject">
+      <eAnnotations source="doc">
+        <details key="d" value="True if the repository is frozen, false otherwise"/>
+        <details key="default" value="false"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="HawkState">
+    <eAnnotations source="doc">
+      <details key="d" value="One of the states that a Hawk instance can be in."/>
+    </eAnnotations>
+    <eLiterals name="RUNNING">
+      <eAnnotations source="doc">
+        <details key="d" value="The instance is running and monitoring the indexed locations"/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="UPDATING" value="1">
+      <eAnnotations source="doc">
+        <details key="d" value="The instance is updating its contents from the indexed locations"/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="STOPPED" value="2">
+      <eAnnotations source="doc">
+        <details key="d" value="The instance is stopped and is not monitoring any indexed locations"/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HawkStateEvent">
+    <eAnnotations source="doc">
+      <details key="d" value="Serialized form of a change in the state of a Hawk instance"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="timestamp" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Timestamp for this state change"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="state" eType="#//HawkState"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="State of the Hawk instance"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="message" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Short message about the current status of the server"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HawkChangeEvent">
+    <eAnnotations source="doc">
+      <details key="d" value="Serialized form of a change in the indexed models of a Hawk instance"/>
+    </eAnnotations>
+    <eAnnotations source="thrift">
+      <details key="union" value="true"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="modelElementAddition" eType="#//HawkModelElementAdditionEvent"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="A model element was added."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="modelElementRemoval" eType="#//HawkModelElementRemovalEvent"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="A model element was removed."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="modelElementAttributeUpdate"
+        eType="#//HawkAttributeUpdateEvent" containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="An attribute was updated."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="modelElementAttributeRemoval"
+        eType="#//HawkAttributeRemovalEvent" containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="An attribute was removed."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="referenceAddition" eType="#//HawkReferenceAdditionEvent"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="A reference was added."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="referenceRemoval" eType="#//HawkReferenceRemovalEvent"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="A reference was removed."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="syncStart" eType="#//HawkSynchronizationStartEvent"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Synchronization started."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="syncEnd" eType="#//HawkSynchronizationEndEvent"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Synchronization ended."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fileAddition" eType="#//HawkFileAdditionEvent"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="A file was added."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fileRemoval" eType="#//HawkFileRemovalEvent"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="A file was removed."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HawkModelElementAdditionEvent">
+    <eAnnotations source="doc">
+      <details key="d" value="Serialized form of a model element addition event."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vcsItem" eType="#//CommitItem"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Entry within the commit that produced the changes."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="metamodelURI" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Metamodel URI of the type of the model element"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="typeName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Name of the type of the model element"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Identifier of the model element that was added."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HawkModelElementRemovalEvent">
+    <eAnnotations source="doc">
+      <details key="d" value="Serialized form of a model element removal event."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vcsItem" eType="#//CommitItem"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Entry within the commit that produced the changes."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Identifier of the model element that was removed."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HawkAttributeUpdateEvent">
+    <eAnnotations source="doc">
+      <details key="d" value="Serialized form of an attribute update event."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vcsItem" eType="#//CommitItem"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Entry within the commit that produced the changes."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Identifier of the model element that was changed."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attribute" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Name of the attribute that was changed."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//SlotValue"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="New value for the attribute."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HawkAttributeRemovalEvent">
+    <eAnnotations source="doc">
+      <details key="d" value="Serialized form of an attribute removal event."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vcsItem" eType="#//CommitItem"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Entry within the commit that produced the changes."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Identifier of the model element that was changed."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attribute" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Name of the attribute that was removed."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HawkReferenceAdditionEvent">
+    <eAnnotations source="doc">
+      <details key="d" value="Serialized form of a reference addition event."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vcsItem" eType="#//CommitItem"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Entry within the commit that produced the changes."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceId" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Identifier of the source model element."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targetId" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Identifier of the target model element."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="refName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Name of the reference that was added."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HawkReferenceRemovalEvent">
+    <eAnnotations source="doc">
+      <details key="d" value="Serialized form of a reference removal event."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vcsItem" eType="#//CommitItem"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Entry within the commit that produced the changes."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceId" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Identifier of the source model element."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targetId" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Identifier of the target model element."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="refName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Name of the reference that was removed."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HawkSynchronizationStartEvent">
+    <eAnnotations source="doc">
+      <details key="d" value="Serialized form of a sync start event."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="timestampNanos" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Local timestamp, measured in nanoseconds. Only meant to be used to compute synchronization cost."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HawkSynchronizationEndEvent">
+    <eAnnotations source="doc">
+      <details key="d" value="Serialized form of a sync end event."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="timestampNanos" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Local timestamp, measured in nanoseconds. Only meant to be used to compute synchronization cost."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HawkFileAdditionEvent">
+    <eAnnotations source="doc">
+      <details key="d" value="Serialized form of a file addition event."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vcsItem" eType="#//CommitItem"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Reference to file that was added, including VCS metadata."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HawkFileRemovalEvent">
+    <eAnnotations source="doc">
+      <details key="d" value="A file was removed."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vcsItem" eType="#//CommitItem"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Reference to file that was removed, including VCS metadata."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CommitItem">
+    <eAnnotations source="doc">
+      <details key="d" value="Simplified entry within a commit of a repository."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="repoURL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="URL of the repository"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="revision" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Unique identifier of the revision of the repository."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="path" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Path within the repository, using / as separator."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//CommitItemChangeType">
+      <eAnnotations source="doc">
+        <details key="d" value="Type of change within the commit."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="CommitItemChangeType">
+    <eAnnotations source="doc">
+      <details key="d" value="Type of change within a commit."/>
+    </eAnnotations>
+    <eLiterals name="ADDED">
+      <eAnnotations source="doc">
+        <details key="d" value="File was added."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="DELETED" value="1">
+      <eAnnotations source="doc">
+        <details key="d" value="File was removed."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="UPDATED" value="2">
+      <eAnnotations source="doc">
+        <details key="d" value="File was updated."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="REPLACED" value="3">
+      <eAnnotations source="doc">
+        <details key="d" value="File was removed."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="UNKNOWN" value="4">
+      <eAnnotations source="doc">
+        <details key="d" value="Unknown type of change."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HawkInstanceNotFound">
+    <eAnnotations source="doc">
+      <details key="d" value="No Hawk instance exists with that name."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HawkInstanceNotRunning">
+    <eAnnotations source="doc">
+      <details key="d" value="The selected Hawk instance is not running."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InvalidMetamodel">
+    <eAnnotations source="doc">
+      <details key="d" value="The provided metamodel is not valid (e.g. unparsable or inconsistent)."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reason" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Reason for the metamodel not being valid."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UnknownQueryLanguage">
+    <eAnnotations source="doc">
+      <details key="d" value="The specified query language is not supported by the operation."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UnknownRepositoryType">
+    <eAnnotations source="doc">
+      <details key="d" value="The specified repository type is not supported by the operation."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InvalidQuery">
+    <eAnnotations source="doc">
+      <details key="d" value="The specified query is not valid"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reason" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Reason for the query not being valid."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FailedQuery">
+    <eAnnotations source="doc">
+      <details key="d" value="The specified query failed to complete its execution"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reason" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Reason for the query failing to complete its execution."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InvalidDerivedAttributeSpec">
+    <eAnnotations source="doc">
+      <details key="d" value="The derived attribute specification is not valid"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reason" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Reason for the spec not being valid."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InvalidIndexedAttributeSpec">
+    <eAnnotations source="doc">
+      <details key="d" value="The indexed attribute specification is not valid"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reason" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Reason for the spec not being valid."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InvalidPollingConfiguration">
+    <eAnnotations source="doc">
+      <details key="d" value="The polling configuration is not valid"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reason" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Reason for the spec not being valid."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OfflineCollaboration">
+    <eAnnotations source="doc">
+      <details key="d" value="&#xA;The offline collaboration tool is realized in the MONDO platform through the&#xA;MONDO Offline Collaboration Server, as mentioned in D4.4~\cite{D4.4}. It extends an&#xA;off-the-shelf version control server with ``hooks'' that enforce access control and&#xA;maintain the lens relationship between the ``gold'' repository and the ``front'' repositories.&#xA;This allows users to continue using their preferred tools for interacting with the version&#xA;control systems in their day-to-day modelling activities. The access control rules to be used &#xA;by the security lens are themselves described in the repository.&#xA;&#xA;Nevertheless, managing the operation of the hooks and the lens relationship requires&#xA;its own API, as this is not covered by traditional VCS protocols. The rest of the section&#xA;describes an API for managing these access rules.&#xA;"/>
+    </eAnnotations>
+    <eOperations name="listGoldRepositories" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        eExceptions="#//UnauthorizedRepositoryOperation #//OfflineCollaborationInternalError">
+      <eAnnotations source="doc">
+        <details key="d" value="Retrieve the list of all managed gold repositories"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="regenerateFrontRepositories" eExceptions="#//GoldRepoNotFound #//UnauthorizedRepositoryOperation #//OfflineCollaborationInternalError">
+      <eAnnotations source="doc">
+        <details key="d" value="Regenerate all front repositories based on the gold repository. Requires superuser privileges. "/>
+      </eAnnotations>
+      <eParameters name="goldRepoURL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="URL of the gold repository"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="getMyFrontRepositoryURL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        eExceptions="#//GoldRepoNotFound #//UnauthorizedRepositoryOperation #//OfflineCollaborationInternalError">
+      <eAnnotations source="doc">
+        <details key="d" value="Retrieve the front repository URL for the current user"/>
+      </eAnnotations>
+      <eParameters name="goldRepoURL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="URL of the gold repository"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="getOnlineCollaborationURL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        eExceptions="#//GoldRepoNotFound #//UnauthorizedRepositoryOperation #//OfflineCollaborationInternalError">
+      <eAnnotations source="doc">
+        <details key="d" value="Retrieve the online collaboration access point URL for the current user"/>
+      </eAnnotations>
+      <eParameters name="goldRepoURL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="URL of the gold repository"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GoldRepoNotFound">
+    <eAnnotations source="doc">
+      <details key="d" value="No gold repository is configured at the specified URL"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UnauthorizedRepositoryOperation">
+    <eAnnotations source="doc">
+      <details key="d" value="Authenticated user is not permitted to carry out the requested operation on the specified repository"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OfflineCollaborationInternalError">
+    <eAnnotations source="doc">
+      <details key="d" value="An internal error occurred on the collaboration server. See details in server log."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="errorMessage" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Summary description of the error. See details in server log."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Credentials">
+    <eAnnotations source="doc">
+      <details key="d" value="Credentials of the client in the target VCS"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="username" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Username for logging into the VCS"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="password" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Password for logging into the VCS"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CloudATL">
+    <eAnnotations source="doc">
+      <details key="d" value="&#xA;The following service operations expose the capabilities of the cloud-enabled&#xA;version of the ATL transformation language which is presented in D3.3~\cite{D3.3}.&#xA;"/>
+    </eAnnotations>
+    <eOperations name="launch" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        eExceptions="#//InvalidTransformation #//InvalidModelSpec">
+      <eAnnotations source="doc">
+        <details key="d" value="Invokes a cloud-based transformation in a batch non-blocking mode.&#xA;&#x9;&#x9;&#x9;Returns a token that can be used to check the status of the transformation."/>
+      </eAnnotations>
+      <eParameters name="transformation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The ATL source-code of the transformation"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="source" eType="#//ModelSpec">
+        <eAnnotations source="doc">
+          <details key="d" value="The input models of the transformation"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="target" eType="#//ModelSpec">
+        <eAnnotations source="doc">
+          <details key="d" value="The target models of the transformation"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="getJobs" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Lists the identifiers of the transformation jobs tracked by this server"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getStatus" eType="#//TransformationStatus" eExceptions="#//TransformationTokenNotFound">
+      <eAnnotations source="doc">
+        <details key="d" value="Returns the status of a previously invoked transformation"/>
+      </eAnnotations>
+      <eParameters name="token" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="A valid token returned by a previous call to launch()"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="kill" eExceptions="#//TransformationTokenNotFound">
+      <eAnnotations source="doc">
+        <details key="d" value="Kills a previously invoked transformation"/>
+      </eAnnotations>
+      <eParameters name="token" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="A valid token returned by a previous call to launch()"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ModelElement">
+    <eAnnotations source="doc">
+      <details key="d" value="Represents a model element"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Unique ID of the model element (not set if using position-based references)"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="repositoryURL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="URI of the repository to which the element belongs (not set if equal to that of the previous model element)"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="file" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Name of the file to which the element belongs (not set if equal to that of the previous model element)"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="metamodelUri" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="URI of the metamodel to which the type of the element belongs (not set if equal to that of the previous model element)"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Name of the type that the model element is an instance of (not set if equal to that of the previous model element)"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
+        eType="#//AttributeSlot" containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Slots holding the values of the model element's attributes, if any have been set"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="references" upperBound="-1"
+        eType="#//ReferenceSlot" containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Slots holding the values of the model element's references, if any have been set"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="containers" upperBound="-1"
+        eType="#//ContainerSlot" containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Slots holding contained model elements, if any have been set"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ModelElementType">
+    <eAnnotations source="doc">
+      <details key="d" value="Represents a type of model element"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Unique ID of the model element type"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="metamodelUri" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="URI of the metamodel to which the type belongs"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Name of the type"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
+        eType="#//SlotMetadata" containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Metadata for the attribute slots"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="references" upperBound="-1"
+        eType="#//SlotMetadata" containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Metadata for the reference slots"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Slot">
+    <eAnnotations source="doc">
+      <details key="d" value="Represents a slot that can store the value(s) of a property of a model element"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The name of the model element property the value of which is stored in this slot"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SlotMetadata">
+    <eAnnotations source="doc">
+      <details key="d" value="Represents the metadata of a slot in a model element type"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The name of the model element property that is stored in this slot"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The type of the values in this slot"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isMany" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="doc">
+        <details key="d" value="True if this slot holds a collection of values instead of a single value."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isOrdered" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="doc">
+        <details key="d" value="True if the values in this slot are ordered."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isUnique" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="doc">
+        <details key="d" value="True if the value of this slot must be unique within its containing model."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AttributeSlot" eSuperTypes="#//Slot">
+    <eAnnotations source="doc">
+      <details key="d" value="Represents a slot that can store the value(s) of an attribute of a model element"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//SlotValue"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Value of the slot (if set)."/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ReferenceSlot" eSuperTypes="#//Slot">
+    <eAnnotations source="doc">
+      <details key="d" value="&#xA;Represents a slot that can store the value(s) of a reference  of a model element.&#xA;References can be expressed as positions within a result tree (using pre-order traversal)&#xA;or IDs. id, ids, position, positions and mixed are all mutually exclusive. At least one position&#xA;or one ID must be given.&#xA;"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="position" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Position of the referenced element (if there is only one position-based reference in this slot)"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="positions" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt" containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Positions of the referenced elements (if more than one)."/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Unique identifier of the referenced element (if there is only one ID based reference in this slot)"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ids" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Unique identifiers of the referenced elements (if more than one)."/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mixed" upperBound="-1"
+        eType="#//MixedReference" containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Mix of identifier- and position-bsaed references (if there is at least one position and one ID)"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MixedReference">
+    <eAnnotations source="thrift">
+      <details key="union" value="true"/>
+    </eAnnotations>
+    <eAnnotations source="doc">
+      <details key="d" value="Represents a reference to a model element: it can be an identifier or a position.&#xA;Only used when the same ReferenceSlot has both identifier-based and position-based references.&#xA;This may be the case if we are retrieving a subset of the model which has references&#xA;between its elements and with elements outside the subset at the same time."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Identifier-based reference to a model element"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="position" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Position-based reference to a model element"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ContainerSlot" eSuperTypes="#//Slot">
+    <eAnnotations source="doc">
+      <details key="d" value="Represents a slot that can store other model elements within a model element"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
+        eType="#//ModelElement" containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Contained elements for this slot."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="QueryResult" eSuperTypes="#//Value">
+    <eAnnotations source="thrift">
+      <details key="union" value="true"/>
+    </eAnnotations>
+    <eAnnotations source="doc">
+      <details key="d" value="Union type for a scalar value or a reference to a model element. Useful for heterogeneous collections."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vModelElement" eType="#//ModelElement"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Encoded model element."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vModelElementType" eType="#//ModelElementType"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Encoded model element type."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Value">
+    <eAnnotations source="thrift">
+      <details key="union" value="true"/>
+    </eAnnotations>
+    <eAnnotations source="doc">
+      <details key="d" value="Union type for a single scalar value."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vBoolean" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="doc">
+        <details key="d" value="Boolean (true/false) value."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vByte" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EByte">
+      <eAnnotations source="doc">
+        <details key="d" value="8-bit signed integer value."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vShort" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EShort">
+      <eAnnotations source="doc">
+        <details key="d" value="16-bit signed integer value."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vInteger" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+      <eAnnotations source="doc">
+        <details key="d" value="32-bit signed integer value."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vLong" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong">
+      <eAnnotations source="doc">
+        <details key="d" value="64-bit signed integer value."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vDouble" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+      <eAnnotations source="doc">
+        <details key="d" value="64-bit floating point value."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vString" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Sequence of UTF8 characters."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SlotValue" eSuperTypes="#//Value">
+    <eAnnotations source="thrift">
+      <details key="union" value="true"/>
+    </eAnnotations>
+    <eAnnotations source="doc">
+      <details key="d" value="Union type for a single scalar value or a homogeneous collection of scalar values."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vBooleans" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="doc">
+        <details key="d" value="List of true/false values."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vBytes" eType="#//EByteArray">
+      <eAnnotations source="doc">
+        <details key="d" value="List of 8-bit signed integers."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vShorts" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EShort">
+      <eAnnotations source="doc">
+        <details key="d" value="List of 16-bit signed integers."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vIntegers" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+      <eAnnotations source="doc">
+        <details key="d" value="List of 32-bit signed integers."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vLongs" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong">
+      <eAnnotations source="doc">
+        <details key="d" value="List of 64-bit signed integers."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vDoubles" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+      <eAnnotations source="doc">
+        <details key="d" value="List of 64-bit floating point values."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vStrings" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="List of sequences of UTF8 characters."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ModelSpec">
+    <eAnnotations source="doc">
+      <details key="d" value="Captures information about source/target models of ATL transformations"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="uri" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The URI from which the model will be loaded or to which it will be persisted"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="metamodelUris" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The URIs of the metamodels to which elements of the model conform"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IndexedAttributeSpec">
+    <eAnnotations source="doc">
+      <details key="d" value="Used to configure Hawk's indexed attributes (discussed in D5.3)"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="metamodelUri" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The URI of the metamodel to which the indexed attribute belongs"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The name of the type to which the indexed attribute belongs"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="attributeName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The name of the indexed attribute"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DerivedAttributeSpec">
+    <eAnnotations source="doc">
+      <details key="d" value="Used to configure Hawk's derived attributes (discussed in D5.3)"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="metamodelUri" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The URI of the metamodel to which the derived attribute belongs"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The name of the type to which the derived attribute belongs"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="attributeName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The name of the derived attribute"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="attributeType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The (primitive) type of the derived attribute"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isMany" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="doc">
+        <details key="d" value="The multiplicity of the derived attribute"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isOrdered" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="doc">
+        <details key="d" value="A flag specifying whether the order of the values of the derived attribute is significant (only makes sense when isMany=true)"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isUnique" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="doc">
+        <details key="d" value="A flag specifying whether the the values of the derived attribute are unique (only makes sense when isMany=true)"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="derivationLanguage" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The language used to express the derivation logic"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="derivationLogic" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="An executable expression of the derivation logic in the language above"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TransformationStatus">
+    <eAnnotations source="doc">
+      <details key="d" value="Used to report the status of a long-running transformation by CloudATL"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="state" eType="#//TransformationState">
+      <eAnnotations source="doc">
+        <details key="d" value="State of the tranformation"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="elapsed" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong">
+      <eAnnotations source="doc">
+        <details key="d" value="Time passed since the start of execution, in milliseconds"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="error" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Description of the error that caused the transformation to fail"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="TransformationState">
+    <eAnnotations source="doc">
+      <details key="d" value="State of the execution of the transformation"/>
+    </eAnnotations>
+    <eLiterals name="RUNNING">
+      <eAnnotations source="doc">
+        <details key="d" value="The transformation is running."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="SUCCEEDED" value="1">
+      <eAnnotations source="doc">
+        <details key="d" value="The transformation has completed successfully."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="FAILED" value="2">
+      <eAnnotations source="doc">
+        <details key="d" value="The transformation has failed."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="PREP" value="3">
+      <eAnnotations source="doc">
+        <details key="d" value="The transformation is in preparation."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="KILLED" value="4">
+      <eAnnotations source="doc">
+        <details key="d" value="The transformation was interrupted by a user (i.e. killed)."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HawkInstance">
+    <eAnnotations source="doc">
+      <details key="d" value="Status of a Hawk instance"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The name of the instance"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="state" eType="#//HawkState">
+      <eAnnotations source="doc">
+        <details key="d" value="Current state of the instance"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="message" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Last info message from the instance"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UserProfile">
+    <eAnnotations source="doc">
+      <details key="d" value="Minimal details about registered users"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="realName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The real name of the user"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="admin" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="doc">
+        <details key="d" value="Whether the user has admin rights (i.e. so that they can create new users, change the status of admin users etc)"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="EByteArray" instanceClassName="byte[]"/>
+  <eClassifiers xsi:type="ecore:EClass" name="File">
+    <eAnnotations source="doc">
+      <details key="d" value="A file to be sent through the network"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Name of the file."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="contents" eType="#//EByteArray">
+      <eAnnotations source="doc">
+        <details key="d" value="Sequence of bytes with the contents of the file."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UserExists">
+    <eAnnotations source="doc">
+      <details key="d" value="The specified username already exists."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UserNotFound">
+    <eAnnotations source="doc">
+      <details key="d" value="The specified username does not exist."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VCSAuthenticationFailed">
+    <eAnnotations source="doc">
+      <details key="d" value="The client failed to prove its identity in the VCS."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InvalidTransformation">
+    <eAnnotations source="doc">
+      <details key="d" value="The transformation is not valid: it is unparsable or inconsistent."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reason" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Reason for the transformation not being valid."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="location" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Location of the problem, if applicable. Usually a combination of line and column numbers."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InvalidModelSpec">
+    <eAnnotations source="doc">
+      <details key="d" value="The model specification is not valid: the model or the metamodels are inaccessible or invalid."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="spec" eType="#//ModelSpec"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="A copy of the invalid model specification."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reason" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Reason for the spec not being valid."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TransformationTokenNotFound">
+    <eAnnotations source="doc">
+      <details key="d" value="The specified transformation token does not exist within the invokved MONDO instance."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="token" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Transformation token which was not found within the invoked MONDO instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Subscription">
+    <eAnnotations source="doc">
+      <details key="d" value="Details about a subscription to a topic queue"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="host" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Host name of the message queue server"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="port" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+      <eAnnotations source="doc">
+        <details key="d" value="Port in which the message queue server is listening"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="queueAddress" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Address of the topic queue"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="queueName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Name of the topic queue"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sslRequired" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="doc">
+        <details key="d" value="Whether SSL is required or not"/>
+        <details key="default" value="false"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="SubscriptionDurability">
+    <eAnnotations source="doc">
+      <details key="d" value="Durability of a subscription"/>
+    </eAnnotations>
+    <eLiterals name="TEMPORARY">
+      <eAnnotations source="doc">
+        <details key="d" value="Subscription removed after disconnecting."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="DEFAULT" value="1">
+      <eAnnotations source="doc">
+        <details key="d" value="Subscription survives client disconnections but not server restarts."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="DURABLE" value="2">
+      <eAnnotations source="doc">
+        <details key="d" value="Subscription survives client disconnections and server restarts."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IFCExportOptions">
+    <eAnnotations source="doc">
+      <details key="d" value="Options for a server-side IFC export."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="repositoryPattern" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The repository for the query (or * for all repositories)"/>
+        <details key="optional" value="true"/>
+        <details key="default" value="*"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="filePatterns" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="The file patterns for the query (e.g. *.uml)"/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="includeRules" eType="#//EffectiveMetamodelMap"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="If set and not empty, only the specified metamodels, types and features will be fetched. Otherwise, everything that is not excluded will be fetched. The string '*' can be used to refer to all types within a metamodel or all fields within a type."/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="excludeRules" eType="#//EffectiveMetamodelMap"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="If set and not empty, the mentioned metamodels, types and features will not be fetched. The string '*' can be used to refer to all types within a metamodel or all fields within a type."/>
+        <details key="optional" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="IFCExportStatus">
+    <eAnnotations source="doc">
+      <details key="d" value="Status of a server-side IFC export job."/>
+    </eAnnotations>
+    <eLiterals name="SCHEDULED">
+      <eAnnotations source="doc">
+        <details key="d" value="The job has been scheduled but has not started yet."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="RUNNING" value="1">
+      <eAnnotations source="doc">
+        <details key="d" value="The job is currently running."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="CANCELLED" value="2">
+      <eAnnotations source="doc">
+        <details key="d" value="The job has been cancelled."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="FAILED" value="3">
+      <eAnnotations source="doc">
+        <details key="d" value="The job has failed."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="DONE" value="4">
+      <eAnnotations source="doc">
+        <details key="d" value="The job is completed."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IFCExportJob">
+    <eAnnotations source="doc">
+      <details key="d" value="Information about a server-side IFC export job."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="jobID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="status" eType="#//IFCExportStatus"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="message" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IFCExport">
+    <eAnnotations source="doc">
+      <details key="d" value="IFC export facility for getting IFC models from MONDO server"/>
+    </eAnnotations>
+    <eOperations name="exportAsSTEP" eType="#//IFCExportJob">
+      <eAnnotations source="doc">
+        <details key="d" value="Export part of a Hawk index in IFC STEP format"/>
+      </eAnnotations>
+      <eParameters name="hawkInstance" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="options" eType="#//IFCExportOptions"/>
+    </eOperations>
+    <eOperations name="getJobs" upperBound="-1" eType="#//IFCExportJob">
+      <eAnnotations source="doc">
+        <details key="d" value="List all the previously scheduled IFC export jobs"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getJobStatus" eType="#//IFCExportJob">
+      <eAnnotations source="doc">
+        <details key="d" value="Retrieve the current status of the job with the specified ID"/>
+      </eAnnotations>
+      <eParameters name="jobID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="killJob" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="doc">
+        <details key="d" value="Cancel the job with the specified ID"/>
+      </eAnnotations>
+      <eParameters name="jobID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+  </eClassifiers>
+</ecore:EPackage>

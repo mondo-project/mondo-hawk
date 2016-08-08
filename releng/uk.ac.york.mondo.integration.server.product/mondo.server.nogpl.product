@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Server Product" uid="uk.ac.york.mondo.integration.server.product.nogplserver" id="uk.ac.york.mondo.integration.server.product.nogplserver" application="uk.ac.york.mondo.integration.server.application.serverapp" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-console -consoleLog
+      </programArgs>
+      <vmArgs>-Dorg.osgi.service.http.port=8080 -Dorg.osgi.service.http.port.secure=8443
+-Dosgi.noShutdown=true -Xmx4g -Xms2g -XX:+UseG1GC
+-Dorg.eclipse.equinox.http.jetty.customizer.class=uk.ac.york.mondo.integration.server.gzip.Customizer -Dorg.eclipse.update.reconcile=false
+-Dartemis.security.enabled=false
+-Dhawk.artemis.host=localhost
+-Dhawk.artemis.listenAll=false
+-Dhawk.artemis.sslEnabled=false
+-Dhawk.tcp.port=2080 -Dhawk.tcp.thriftProtocol=TUPLE
+
+-Dmondo.repository.gold=http://localhost/svn/wt-demo
+-Dmondo.extensions=wtspec4m
+-Dmondo.workspace.folder=/home/mondo/Desktop/mondo-server-product/workspace
+-Dmondo.eiq=http://localhost/svn/wt-demo/macl.project/src/macl/project/queries.eiq
+-Dmondo.macl=http://localhost/svn/wt-demo/macl.project/src/macl/project/rules.macl
+-Dmondo.mpbl=http://localhost/svn/wt-demo/macl.project/src/macl/project/lock.mpbl
+-Dmondo.scripts.folder=/home/mondo/Desktop/mondo-offline-scripts/scripts
+      </vmArgs>
+      <vmArgsLin>-Dsvnkit.library.gnome-keyring.enabled=false
+      </vmArgsLin>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
+   </launcherArgs>
+
+   <windowImages/>
+
+   <launcher name="mondo-server">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</linux>
+      <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</macos>
+      <solaris include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</solaris>
+      <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</windows>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="fr.inria.atlanmod.mondo.integration.cloudatl.servlet.feature" installMode="root"/>
+      <feature id="uk.ac.york.mondo.integration.hawk.servlet.feature" installMode="root"/>
+      <feature id="uk.ac.york.mondo.integration.server.feature" installMode="root"/>
+      <feature id="uk.ac.york.mondo.integration.hawk.emf.feature" installMode="root"/>
+      <feature id="uk.ac.york.mondo.integration.api.feature" installMode="root"/>
+      <feature id="org.hawk.orientdb.feature" installMode="root"/>
+      <feature id="org.hawk.localfolder.feature" installMode="root"/>
+      <feature id="org.hawk.emf.feature" installMode="root"/>
+      <feature id="org.hawk.svn.feature" installMode="root"/>
+      <feature id="org.hawk.epsilon.feature" installMode="root"/>
+      <feature id="org.hawk.core.feature" installMode="root"/>
+      <feature id="org.hawk.osgiserver.feature" installMode="root"/>
+      <feature id="org.hawk.bpmn.feature" installMode="root"/>
+      <feature id="org.hawk.emfresource.feature" installMode="root"/>
+      <feature id="org.tmatesoft.svnkit"/>
+      <feature id="org.eclipse.core.runtime.feature"/>
+      <feature id="org.eclipse.equinox.core.feature"/>
+      <feature id="org.eclipse.emf.ecore"/>
+      <feature id="org.eclipse.equinox.server.core"/>
+      <feature id="org.eclipse.equinox.server.jetty"/>
+      <feature id="org.eclipse.xsd"/>
+      <feature id="org.eclipse.platform"/>
+      <feature id="org.eclipse.emf.edit"/>
+      <feature id="org.eclipse.emf.validation"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient4.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature"/>
+      <feature id="org.eclipse.emf.common"/>
+      <feature id="org.eclipse.equinox.p2.core.feature"/>
+      <feature id="org.eclipse.ecf.core.ssl.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
+      <feature id="org.eclipse.rcp"/>
+      <feature id="org.eclipse.ecf.core.feature"/>
+      <feature id="org.eclipse.equinox.p2.rcp.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.feature"/>
+      <feature id="org.eclipse.e4.rcp"/>
+      <feature id="org.eclipse.emf.mapping"/>
+      <feature id="org.eclipse.emf.ecore.edit"/>
+      <feature id="org.eclipse.epsilon.core.feature" installMode="root"/>
+      <feature id="org.eclipse.epsilon.core.dependencies.feature" installMode="root"/>
+      <feature id="org.eclipse.emf.mapping.ecore"/>
+      <feature id="org.eclipse.emf.edit.ui"/>
+      <feature id="org.eclipse.emf.common.ui"/>
+      <feature id="org.eclipse.equinox.core.sdk"/>
+      <feature id="org.eclipse.bpmn2.feature"/>
+      <feature id="org.hawk.modelio.exml.feature" installMode="root"/>
+      <feature id="org.hawk.git.feature" installMode="root"/>
+      <feature id="org.hawk.http.feature" installMode="root"/>
+      <feature id="org.mondo.collaboration.security.lens.offline.server.feature" installMode="root"/>
+      <feature id="org.mondo.collaboration.security.online.server.feature" installMode="root"/>
+      <feature id="org.mondo.wt.cstudy.online.feature" installMode="root"/>
+      <feature id="org.mondo.collaboration.offline.management.server.feature" installMode="root"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.http.jetty" autoStart="true" startLevel="3" />
+      <plugin id="org.eclipse.equinox.http.registry" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.rap.rwt" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.rwt.osgi" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.rap.ui.workbench" autoStart="true" startLevel="0" />
+      <plugin id="uk.ac.york.mondo.integration.artemis.server" autoStart="true" startLevel="4" />
+      <plugin id="uk.ac.york.mondo.integration.hawk.servlet" autoStart="true" startLevel="0" />
+   </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
+
+</product>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="uk.ac.york.mondo.integration.hawk.emf.ifcexport.IFCExportCommand"
+            id="uk.ac.york.mondo.integration.hawk.emf.ifcexport.command1"
+            name="Export to IFC STEP">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
+         <command
+               commandId="uk.ac.york.mondo.integration.hawk.emf.ifcexport.command1"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <reference
+                     definitionId="uk.ac.york.mondo.integration.hawk.emf.ifcexport.isHawkModel">
+               </reference>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu">
+         <command
+               commandId="uk.ac.york.mondo.integration.hawk.emf.ifcexport.command1"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <reference
+                     definitionId="uk.ac.york.mondo.integration.hawk.emf.ifcexport.isHawkModel">
+               </reference>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="uk.ac.york.mondo.integration.hawk.emf.ifcexport.isHawkModel">
+         <and>
+            <count
+                  value="1">
+            </count>
+            <iterate
+                  ifEmpty="false"
+                  operator="and">
+               <adapt
+                     type="org.eclipse.core.resources.IFile">
+                  <test
+                        property="org.eclipse.core.resources.extension"
+                        value="hawkmodel">
+                  </test>
+               </adapt>
+            </iterate>
+         </and>
+      </definition>
+   </extension>
+
+</plugin>

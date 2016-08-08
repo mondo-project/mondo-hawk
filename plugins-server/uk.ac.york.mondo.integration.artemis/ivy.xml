@@ -1,0 +1,11 @@
+<ivy-module version="2.0">
+	<info organisation="uk.ac.york.mondo.integration" module="artemis"/>
+	<dependencies>
+		<dependency org="org.apache.activemq" name="artemis-server" rev="1.2.0">
+			<exclude org="log4j"/>
+			<exclude org="org.slf4j"/>
+		</dependency>
+		<dependency org="org.apache.activemq" name="artemis-stomp-protocol" rev="1.2.0"/>
+		<dependency org="org.javassist" name="javassist" rev="3.20.0-GA"/>
+	</dependencies>
+</ivy-module>
