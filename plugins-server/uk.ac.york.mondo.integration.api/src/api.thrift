@@ -28,14 +28,6 @@ enum SubscriptionDurability {
 		/* Subscription removed after disconnecting. */ TEMPORARY 
 }
 
-enum TransformationState {
-		/* The transformation has failed. */ FAILED 
-		/* The transformation was interrupted by a user (i.e. killed). */ KILLED 
-		/* The transformation is in preparation. */ PREP 
-		/* The transformation is running. */ RUNNING 
-		/* The transformation has completed successfully. */ SUCCEEDED 
-}
-
 
 struct CommitItem {
 	 /* URL of the repository. */ 1: required string repoURL,
@@ -68,9 +60,6 @@ exception FailedQuery {
 struct File {
 	 /* Name of the file. */ 1: required string name,
 	 /* Sequence of bytes with the contents of the file. */ 2: required binary contents,
-}
-
-exception GoldRepoNotFound {
 }
 
 struct HawkInstance {
@@ -131,7 +120,7 @@ exception InvalidQuery {
 	 /* Reason for the query not being valid. */ 1: required string reason,
 }
 
-exception InvalidTransformation {
+struct InvalidTransformation {
 	 /* Reason for the transformation not being valid. */ 1: required string reason,
 	 /* Location of the problem, if applicable. Usually a combination of line and column numbers. */ 2: required string location,
 }
@@ -144,10 +133,6 @@ union MixedReference {
 struct ModelSpec {
 	 /* The URI from which the model will be loaded or to which it will be persisted. */ 1: required string uri,
 	 /* The URIs of the metamodels to which elements of the model conform. */ 2: required list<string> metamodelUris,
-}
-
-exception OfflineCollaborationInternalError {
-	 /* Summary description of the error. See details in server log. */ 1: required string errorMessage,
 }
 
 struct Repository {
@@ -193,17 +178,8 @@ struct Subscription {
 	 /* Whether SSL is required or not. */ 5: required bool sslRequired = false,
 }
 
-struct TransformationStatus {
-	 /* State of the tranformation. */ 1: required TransformationState state,
-	 /* Time passed since the start of execution, in milliseconds. */ 2: required i64 elapsed,
-	 /* Description of the error that caused the transformation to fail. */ 3: required string error,
-}
-
-exception TransformationTokenNotFound {
+struct TransformationTokenNotFound {
 	 /* Transformation token which was not found within the invoked MONDO instance. */ 1: required string token,
-}
-
-exception UnauthorizedRepositoryOperation {
 }
 
 exception UnknownQueryLanguage {
@@ -288,7 +264,7 @@ struct HawkReferenceRemovalEvent {
 	 /* Name of the reference that was removed. */ 4: required string refName,
 }
 
-exception InvalidModelSpec {
+struct InvalidModelSpec {
 	 /* A copy of the invalid model specification. */ 1: required ModelSpec spec,
 	 /* Reason for the spec not being valid. */ 2: required string reason,
 }
@@ -725,95 +701,6 @@ service Hawk {
   throws (
 	1: HawkInstanceNotFound err1 /* No Hawk instance exists with that name. */ 
 	2: HawkInstanceNotRunning err2 /* The selected Hawk instance is not running. */ 
-	) 
-	
-}
-
-/* The offline collaboration tool is realized in the MONDO platform through the
-   MONDO Offline Collaboration Server, as mentioned in D4.4~\cite{D4.4}. It extends an
-   off-the-shelf version control server with ``hooks'' that enforce access control and
-   maintain the lens relationship between the ``gold'' repository and the ``front'' repositories.
-   This allows users to continue using their preferred tools for interacting with the version
-   control systems in their day-to-day modelling activities. The access control rules to be used 
-   by the security lens are themselves described in the repository.
-   
-   Nevertheless, managing the operation of the hooks and the lens relationship requires
-   its own API, as this is not covered by traditional VCS protocols. The rest of the section
-   describes an API for managing these access rules. */
-service OfflineCollaboration {
-  /* Retrieve the list of all managed gold repositories. Auth needed: Yes */
-  list<string> listGoldRepositories(
-  )
-  throws (
-	1: UnauthorizedRepositoryOperation err1 /* Authenticated user is not permitted to carry out the requested operation on the specified repository. */ 
-	2: OfflineCollaborationInternalError err2 /* An internal error occurred on the collaboration server. See details in server log. */ 
-	) 
-	
-  /* Regenerate all front repositories based on the gold repository. Requires superuser privileges. Auth needed: Yes */
-  void regenerateFrontRepositories(
-	/* URL of the gold repository. */ 1: required string goldRepoURL,
-  )
-  throws (
-	1: GoldRepoNotFound err1 /* No gold repository is configured at the specified URL. */ 
-	2: UnauthorizedRepositoryOperation err2 /* Authenticated user is not permitted to carry out the requested operation on the specified repository. */ 
-	3: OfflineCollaborationInternalError err3 /* An internal error occurred on the collaboration server. See details in server log. */ 
-	) 
-	
-  /* Retrieve the front repository URL for the current user. Auth needed: Yes */
-  string getMyFrontRepositoryURL(
-	/* URL of the gold repository. */ 1: required string goldRepoURL,
-  )
-  throws (
-	1: GoldRepoNotFound err1 /* No gold repository is configured at the specified URL. */ 
-	2: UnauthorizedRepositoryOperation err2 /* Authenticated user is not permitted to carry out the requested operation on the specified repository. */ 
-	3: OfflineCollaborationInternalError err3 /* An internal error occurred on the collaboration server. See details in server log. */ 
-	) 
-	
-  /* Retrieve the online collaboration access point URL for the current user. Auth needed: Yes */
-  string getOnlineCollaborationURL(
-	/* URL of the gold repository. */ 1: required string goldRepoURL,
-  )
-  throws (
-	1: GoldRepoNotFound err1 /* No gold repository is configured at the specified URL. */ 
-	2: UnauthorizedRepositoryOperation err2 /* Authenticated user is not permitted to carry out the requested operation on the specified repository. */ 
-	3: OfflineCollaborationInternalError err3 /* An internal error occurred on the collaboration server. See details in server log. */ 
-	) 
-	
-}
-
-/* The following service operations expose the capabilities of the cloud-enabled
-   version of the ATL transformation language which is presented in D3.3~\cite{D3.3}. */
-service CloudATL {
-  /* Invokes a cloud-based transformation in a batch non-blocking mode.
-     			Returns a token that can be used to check the status of the transformation. Auth needed: Yes */
-  string launch(
-	/* The ATL source-code of the transformation. */ 1: required string transformation,
-	/* The input models of the transformation. */ 2: required ModelSpec source,
-	/* The target models of the transformation. */ 3: required ModelSpec target,
-  )
-  throws (
-	1: InvalidTransformation err1 /* The transformation is not valid: it is unparsable or inconsistent. */ 
-	2: InvalidModelSpec err2 /* The model specification is not valid: the model or the metamodels are inaccessible or invalid. */ 
-	) 
-	
-  /* Lists the identifiers of the transformation jobs tracked by this server. Auth needed: Yes */
-  list<string> getJobs(
-  )
-	
-  /* Returns the status of a previously invoked transformation. Auth needed: Yes */
-  TransformationStatus getStatus(
-	/* A valid token returned by a previous call to launch(). */ 1: required string token,
-  )
-  throws (
-	1: TransformationTokenNotFound err1 /* The specified transformation token does not exist within the invokved MONDO instance. */ 
-	) 
-	
-  /* Kills a previously invoked transformation. Auth needed: Yes */
-  void kill(
-	/* A valid token returned by a previous call to launch(). */ 1: required string token,
-  )
-  throws (
-	1: TransformationTokenNotFound err1 /* The specified transformation token does not exist within the invokved MONDO instance. */ 
 	) 
 	
 }

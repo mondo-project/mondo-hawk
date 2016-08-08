@@ -29,13 +29,6 @@ SubscriptionDurability = {
   'DURABLE' : 1,
   'TEMPORARY' : 2
 };
-TransformationState = {
-  'FAILED' : 0,
-  'KILLED' : 1,
-  'PREP' : 2,
-  'RUNNING' : 3,
-  'SUCCEEDED' : 4
-};
 CommitItem = function(args) {
   this.repoURL = null;
   this.revision = null;
@@ -517,35 +510,6 @@ File.prototype.write = function(output) {
     output.writeBinary(this.contents);
     output.writeFieldEnd();
   }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-GoldRepoNotFound = function(args) {
-};
-Thrift.inherits(GoldRepoNotFound, Thrift.TException);
-GoldRepoNotFound.prototype.name = 'GoldRepoNotFound';
-GoldRepoNotFound.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    input.skip(ftype);
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-GoldRepoNotFound.prototype.write = function(output) {
-  output.writeStructBegin('GoldRepoNotFound');
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -1367,8 +1331,7 @@ InvalidTransformation = function(args) {
     }
   }
 };
-Thrift.inherits(InvalidTransformation, Thrift.TException);
-InvalidTransformation.prototype.name = 'InvalidTransformation';
+InvalidTransformation.prototype = {};
 InvalidTransformation.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
@@ -1573,62 +1536,6 @@ ModelSpec.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-OfflineCollaborationInternalError = function(args) {
-  this.errorMessage = null;
-  if (args) {
-    if (args.errorMessage !== undefined && args.errorMessage !== null) {
-      this.errorMessage = args.errorMessage;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field errorMessage is unset!');
-    }
-  }
-};
-Thrift.inherits(OfflineCollaborationInternalError, Thrift.TException);
-OfflineCollaborationInternalError.prototype.name = 'OfflineCollaborationInternalError';
-OfflineCollaborationInternalError.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.STRING) {
-        this.errorMessage = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 0:
-        input.skip(ftype);
-        break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-OfflineCollaborationInternalError.prototype.write = function(output) {
-  output.writeStructBegin('OfflineCollaborationInternalError');
-  if (this.errorMessage !== null && this.errorMessage !== undefined) {
-    output.writeFieldBegin('errorMessage', Thrift.Type.STRING, 1);
-    output.writeString(this.errorMessage);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -2415,94 +2322,6 @@ Subscription.prototype.write = function(output) {
   return;
 };
 
-TransformationStatus = function(args) {
-  this.state = null;
-  this.elapsed = null;
-  this.error = null;
-  if (args) {
-    if (args.state !== undefined && args.state !== null) {
-      this.state = args.state;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field state is unset!');
-    }
-    if (args.elapsed !== undefined && args.elapsed !== null) {
-      this.elapsed = args.elapsed;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field elapsed is unset!');
-    }
-    if (args.error !== undefined && args.error !== null) {
-      this.error = args.error;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field error is unset!');
-    }
-  }
-};
-TransformationStatus.prototype = {};
-TransformationStatus.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.state = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.I64) {
-        this.elapsed = input.readI64().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.STRING) {
-        this.error = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-TransformationStatus.prototype.write = function(output) {
-  output.writeStructBegin('TransformationStatus');
-  if (this.state !== null && this.state !== undefined) {
-    output.writeFieldBegin('state', Thrift.Type.I32, 1);
-    output.writeI32(this.state);
-    output.writeFieldEnd();
-  }
-  if (this.elapsed !== null && this.elapsed !== undefined) {
-    output.writeFieldBegin('elapsed', Thrift.Type.I64, 2);
-    output.writeI64(this.elapsed);
-    output.writeFieldEnd();
-  }
-  if (this.error !== null && this.error !== undefined) {
-    output.writeFieldBegin('error', Thrift.Type.STRING, 3);
-    output.writeString(this.error);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
 TransformationTokenNotFound = function(args) {
   this.token = null;
   if (args) {
@@ -2513,8 +2332,7 @@ TransformationTokenNotFound = function(args) {
     }
   }
 };
-Thrift.inherits(TransformationTokenNotFound, Thrift.TException);
-TransformationTokenNotFound.prototype.name = 'TransformationTokenNotFound';
+TransformationTokenNotFound.prototype = {};
 TransformationTokenNotFound.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
@@ -2554,35 +2372,6 @@ TransformationTokenNotFound.prototype.write = function(output) {
     output.writeString(this.token);
     output.writeFieldEnd();
   }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-UnauthorizedRepositoryOperation = function(args) {
-};
-Thrift.inherits(UnauthorizedRepositoryOperation, Thrift.TException);
-UnauthorizedRepositoryOperation.prototype.name = 'UnauthorizedRepositoryOperation';
-UnauthorizedRepositoryOperation.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    input.skip(ftype);
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-UnauthorizedRepositoryOperation.prototype.write = function(output) {
-  output.writeStructBegin('UnauthorizedRepositoryOperation');
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -3735,8 +3524,7 @@ InvalidModelSpec = function(args) {
     }
   }
 };
-Thrift.inherits(InvalidModelSpec, Thrift.TException);
-InvalidModelSpec.prototype.name = 'InvalidModelSpec';
+InvalidModelSpec.prototype = {};
 InvalidModelSpec.prototype.read = function(input) {
   input.readStructBegin();
   while (true)

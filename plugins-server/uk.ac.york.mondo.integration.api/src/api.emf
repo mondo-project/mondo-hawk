@@ -1,23 +1,6 @@
-@doc(dServices="
-The present section lists the services offered by the current version
-of the MONDO platform. For each service, the available operations are
-presented, along with the parameters they take, their return type and
-the exceptions they can throw. Readers familiar with Thrift may notice
-that some types inherit from others, which is not supported by Thrift
-itself: this is implemented through the
-Ecore2Thrift~\cite{ecore2thrift} model-to-text transformation
-developed in WP6, which takes into account inherited fields when
-transforming an \class{EClass} into a Thrift data type.
-
-In addition to their explicitly listed exceptions, operations
-requiring authentication may produce replies with HTTP 4xx status
-codes if the user fails to provide valid credentials or does not have
-the required permissions. In its current version, the MONDO platform
-assumes that authenticated users will have the necessary permissions.
-")
 @thrift(javans="uk.ac.york.mondo.integration.api")
-@namespace(uri="mondo_api", prefix="")
-package mondo_api;
+@namespace(uri="hawk_api", prefix="")
+package hawk_api;
 
 // MONDO credentials (Hawk/ReactiveATL/CloudATL): implied in the "auth" @doc attribute.
 // VCSAuthenticationFailed, VCSAuthorizationFailed: for VCS credentials (Hawk/Collaboration).
@@ -467,92 +450,12 @@ class InvalidPollingConfiguration {
 }
 
 
-@doc(d="
-The offline collaboration tool is realized in the MONDO platform through the
-MONDO Offline Collaboration Server, as mentioned in D4.4~\cite{D4.4}. It extends an
-off-the-shelf version control server with ``hooks'' that enforce access control and
-maintain the lens relationship between the ``gold'' repository and the ``front'' repositories.
-This allows users to continue using their preferred tools for interacting with the version
-control systems in their day-to-day modelling activities. The access control rules to be used 
-by the security lens are themselves described in the repository.
-
-Nevertheless, managing the operation of the hooks and the lens relationship requires
-its own API, as this is not covered by traditional VCS protocols. The rest of the section
-describes an API for managing these access rules.
-")
-class OfflineCollaboration {
-
-  @doc(d="Retrieve the list of all managed gold repositories")
-  op String[*] listGoldRepositories()
-		throws UnauthorizedRepositoryOperation, OfflineCollaborationInternalError;
-
-  @doc(d="Regenerate all front repositories based on the gold repository. Requires superuser privileges. ")
-  op void regenerateFrontRepositories(
-    @doc(d="URL of the gold repository") String goldRepoURL)
-		throws GoldRepoNotFound, UnauthorizedRepositoryOperation, OfflineCollaborationInternalError;
-
-  @doc(d="Retrieve the front repository URL for the current user")
-  op String getMyFrontRepositoryURL(
-    @doc(d="URL of the gold repository") String goldRepoURL)
-		throws GoldRepoNotFound, UnauthorizedRepositoryOperation, OfflineCollaborationInternalError;
-		
-  @doc(d="Retrieve the online collaboration access point URL for the current user")
-  op String getOnlineCollaborationURL(
-    @doc(d="URL of the gold repository") String goldRepoURL)
-		throws GoldRepoNotFound, UnauthorizedRepositoryOperation, OfflineCollaborationInternalError;
-}
-@doc(d="No gold repository is configured at the specified URL")
-class GoldRepoNotFound {}
-@doc(d="Authenticated user is not permitted to carry out the requested operation on the specified repository")
-class UnauthorizedRepositoryOperation {}
-@doc(d="An internal error occurred on the collaboration server. See details in server log.")
-class OfflineCollaborationInternalError {
-    @doc(d="Summary description of the error. See details in server log.")
-	attr String errorMessage;
-}
-
 @doc(d="Credentials of the client in the target VCS")
 class Credentials {
     @doc(d="Username for logging into the VCS")
 	attr String username;
 	@doc(d="Password for logging into the VCS")
 	attr String password;
-}
-
-@doc(d="
-The following service operations expose the capabilities of the cloud-enabled
-version of the ATL transformation language which is presented in D3.3~\cite{D3.3}.
-")
-class CloudATL {
-
-	@doc(d="Invokes a cloud-based transformation in a batch non-blocking mode.
-			Returns a token that can be used to check the status of the transformation.")
-	op String launch (
-		@doc(d="The ATL source-code of the transformation") String transformation,
-		/*
-		@doc(d="The input models of the transformation") ModelSpec[*] source,
-		@doc(d="The target models of the transformation") ModelSpec[*] target
-		
-		Changed for simplicity for the first prototype, multiple input/output models
-		is not suported by the first ATL-MR prototype
-		
-		*/ 
-		@doc(d="The input models of the transformation") ModelSpec source,
-		@doc(d="The target models of the transformation") ModelSpec target
-	) throws InvalidTransformation, InvalidModelSpec;
-
-	@doc(d="Lists the identifiers of the transformation jobs tracked by this server")
-	op String[*] getJobs ();
-
-	@doc(d="Returns the status of a previously invoked transformation")
-	op TransformationStatus getStatus (
-		@doc(d="A valid token returned by a previous call to launch()") String token
-	) throws TransformationTokenNotFound;
-	
-	@doc(d="Kills a previously invoked transformation")
-	op void kill (
-		@doc(d="A valid token returned by a previous call to launch()") String token
-	) throws TransformationTokenNotFound;
 }
 
 @doc(d="Represents a model element")
@@ -732,25 +635,6 @@ class DerivedAttributeSpec {
 	attr String derivationLanguage;
 	@doc(d="An executable expression of the derivation logic in the language above", optional="true")
 	attr String derivationLogic;
-}
-
-@doc(d="Used to report the status of a long-running transformation by CloudATL")
-class TransformationStatus {
-	@doc(d="State of the tranformation")
-	attr TransformationState state;
-	@doc(d="Time passed since the start of execution, in milliseconds")
-	attr long elapsed;
-	@doc(d="Description of the error that caused the transformation to fail")
-	attr String error;
-}
-
-@doc(d="State of the execution of the transformation")
-enum TransformationState {
-    @doc(d="The transformation is running.") RUNNING;
-    @doc(d="The transformation has completed successfully.") SUCCEEDED;
-    @doc(d="The transformation has failed.") FAILED;
-    @doc(d="The transformation is in preparation.") PREP;
-    @doc(d="The transformation was interrupted by a user (i.e. killed).") KILLED;
 }
 
 @doc(d="Status of a Hawk instance")

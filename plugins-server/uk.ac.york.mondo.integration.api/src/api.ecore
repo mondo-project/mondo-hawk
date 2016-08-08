@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="mondo_api" nsURI="mondo_api" nsPrefix="">
-  <eAnnotations source="doc">
-    <details key="dServices" value="&#xA;The present section lists the services offered by the current version&#xA;of the MONDO platform. For each service, the available operations are&#xA;presented, along with the parameters they take, their return type and&#xA;the exceptions they can throw. Readers familiar with Thrift may notice&#xA;that some types inherit from others, which is not supported by Thrift&#xA;itself: this is implemented through the&#xA;Ecore2Thrift~\cite{ecore2thrift} model-to-text transformation&#xA;developed in WP6, which takes into account inherited fields when&#xA;transforming an \class{EClass} into a Thrift data type.&#xA;&#xA;In addition to their explicitly listed exceptions, operations&#xA;requiring authentication may produce replies with HTTP 4xx status&#xA;codes if the user fails to provide valid credentials or does not have&#xA;the required permissions. In its current version, the MONDO platform&#xA;assumes that authenticated users will have the necessary permissions.&#xA;"/>
-  </eAnnotations>
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="hawk_api" nsURI="hawk_api" nsPrefix="">
   <eAnnotations source="thrift">
     <details key="javans" value="uk.ac.york.mondo.integration.api"/>
   </eAnnotations>
@@ -1147,69 +1144,6 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="OfflineCollaboration">
-    <eAnnotations source="doc">
-      <details key="d" value="&#xA;The offline collaboration tool is realized in the MONDO platform through the&#xA;MONDO Offline Collaboration Server, as mentioned in D4.4~\cite{D4.4}. It extends an&#xA;off-the-shelf version control server with ``hooks'' that enforce access control and&#xA;maintain the lens relationship between the ``gold'' repository and the ``front'' repositories.&#xA;This allows users to continue using their preferred tools for interacting with the version&#xA;control systems in their day-to-day modelling activities. The access control rules to be used &#xA;by the security lens are themselves described in the repository.&#xA;&#xA;Nevertheless, managing the operation of the hooks and the lens relationship requires&#xA;its own API, as this is not covered by traditional VCS protocols. The rest of the section&#xA;describes an API for managing these access rules.&#xA;"/>
-    </eAnnotations>
-    <eOperations name="listGoldRepositories" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        eExceptions="#//UnauthorizedRepositoryOperation #//OfflineCollaborationInternalError">
-      <eAnnotations source="doc">
-        <details key="d" value="Retrieve the list of all managed gold repositories"/>
-      </eAnnotations>
-    </eOperations>
-    <eOperations name="regenerateFrontRepositories" eExceptions="#//GoldRepoNotFound #//UnauthorizedRepositoryOperation #//OfflineCollaborationInternalError">
-      <eAnnotations source="doc">
-        <details key="d" value="Regenerate all front repositories based on the gold repository. Requires superuser privileges. "/>
-      </eAnnotations>
-      <eParameters name="goldRepoURL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="doc">
-          <details key="d" value="URL of the gold repository"/>
-        </eAnnotations>
-      </eParameters>
-    </eOperations>
-    <eOperations name="getMyFrontRepositoryURL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        eExceptions="#//GoldRepoNotFound #//UnauthorizedRepositoryOperation #//OfflineCollaborationInternalError">
-      <eAnnotations source="doc">
-        <details key="d" value="Retrieve the front repository URL for the current user"/>
-      </eAnnotations>
-      <eParameters name="goldRepoURL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="doc">
-          <details key="d" value="URL of the gold repository"/>
-        </eAnnotations>
-      </eParameters>
-    </eOperations>
-    <eOperations name="getOnlineCollaborationURL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        eExceptions="#//GoldRepoNotFound #//UnauthorizedRepositoryOperation #//OfflineCollaborationInternalError">
-      <eAnnotations source="doc">
-        <details key="d" value="Retrieve the online collaboration access point URL for the current user"/>
-      </eAnnotations>
-      <eParameters name="goldRepoURL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="doc">
-          <details key="d" value="URL of the gold repository"/>
-        </eAnnotations>
-      </eParameters>
-    </eOperations>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="GoldRepoNotFound">
-    <eAnnotations source="doc">
-      <details key="d" value="No gold repository is configured at the specified URL"/>
-    </eAnnotations>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="UnauthorizedRepositoryOperation">
-    <eAnnotations source="doc">
-      <details key="d" value="Authenticated user is not permitted to carry out the requested operation on the specified repository"/>
-    </eAnnotations>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="OfflineCollaborationInternalError">
-    <eAnnotations source="doc">
-      <details key="d" value="An internal error occurred on the collaboration server. See details in server log."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="errorMessage" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="doc">
-        <details key="d" value="Summary description of the error. See details in server log."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Credentials">
     <eAnnotations source="doc">
       <details key="d" value="Credentials of the client in the target VCS"/>
@@ -1224,57 +1158,6 @@
         <details key="d" value="Password for logging into the VCS"/>
       </eAnnotations>
     </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="CloudATL">
-    <eAnnotations source="doc">
-      <details key="d" value="&#xA;The following service operations expose the capabilities of the cloud-enabled&#xA;version of the ATL transformation language which is presented in D3.3~\cite{D3.3}.&#xA;"/>
-    </eAnnotations>
-    <eOperations name="launch" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        eExceptions="#//InvalidTransformation #//InvalidModelSpec">
-      <eAnnotations source="doc">
-        <details key="d" value="Invokes a cloud-based transformation in a batch non-blocking mode.&#xA;&#x9;&#x9;&#x9;Returns a token that can be used to check the status of the transformation."/>
-      </eAnnotations>
-      <eParameters name="transformation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="doc">
-          <details key="d" value="The ATL source-code of the transformation"/>
-        </eAnnotations>
-      </eParameters>
-      <eParameters name="source" eType="#//ModelSpec">
-        <eAnnotations source="doc">
-          <details key="d" value="The input models of the transformation"/>
-        </eAnnotations>
-      </eParameters>
-      <eParameters name="target" eType="#//ModelSpec">
-        <eAnnotations source="doc">
-          <details key="d" value="The target models of the transformation"/>
-        </eAnnotations>
-      </eParameters>
-    </eOperations>
-    <eOperations name="getJobs" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="doc">
-        <details key="d" value="Lists the identifiers of the transformation jobs tracked by this server"/>
-      </eAnnotations>
-    </eOperations>
-    <eOperations name="getStatus" eType="#//TransformationStatus" eExceptions="#//TransformationTokenNotFound">
-      <eAnnotations source="doc">
-        <details key="d" value="Returns the status of a previously invoked transformation"/>
-      </eAnnotations>
-      <eParameters name="token" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="doc">
-          <details key="d" value="A valid token returned by a previous call to launch()"/>
-        </eAnnotations>
-      </eParameters>
-    </eOperations>
-    <eOperations name="kill" eExceptions="#//TransformationTokenNotFound">
-      <eAnnotations source="doc">
-        <details key="d" value="Kills a previously invoked transformation"/>
-      </eAnnotations>
-      <eParameters name="token" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="doc">
-          <details key="d" value="A valid token returned by a previous call to launch()"/>
-        </eAnnotations>
-      </eParameters>
-    </eOperations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ModelElement">
     <eAnnotations source="doc">
@@ -1692,56 +1575,6 @@
         <details key="optional" value="true"/>
       </eAnnotations>
     </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TransformationStatus">
-    <eAnnotations source="doc">
-      <details key="d" value="Used to report the status of a long-running transformation by CloudATL"/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="state" eType="#//TransformationState">
-      <eAnnotations source="doc">
-        <details key="d" value="State of the tranformation"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="elapsed" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong">
-      <eAnnotations source="doc">
-        <details key="d" value="Time passed since the start of execution, in milliseconds"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="error" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="doc">
-        <details key="d" value="Description of the error that caused the transformation to fail"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="TransformationState">
-    <eAnnotations source="doc">
-      <details key="d" value="State of the execution of the transformation"/>
-    </eAnnotations>
-    <eLiterals name="RUNNING">
-      <eAnnotations source="doc">
-        <details key="d" value="The transformation is running."/>
-      </eAnnotations>
-    </eLiterals>
-    <eLiterals name="SUCCEEDED" value="1">
-      <eAnnotations source="doc">
-        <details key="d" value="The transformation has completed successfully."/>
-      </eAnnotations>
-    </eLiterals>
-    <eLiterals name="FAILED" value="2">
-      <eAnnotations source="doc">
-        <details key="d" value="The transformation has failed."/>
-      </eAnnotations>
-    </eLiterals>
-    <eLiterals name="PREP" value="3">
-      <eAnnotations source="doc">
-        <details key="d" value="The transformation is in preparation."/>
-      </eAnnotations>
-    </eLiterals>
-    <eLiterals name="KILLED" value="4">
-      <eAnnotations source="doc">
-        <details key="d" value="The transformation was interrupted by a user (i.e. killed)."/>
-      </eAnnotations>
-    </eLiterals>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="HawkInstance">
     <eAnnotations source="doc">
