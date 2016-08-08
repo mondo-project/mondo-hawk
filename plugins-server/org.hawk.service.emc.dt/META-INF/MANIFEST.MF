@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: EMC Driver Developer Tools for remote Hawk EMF Resource
+Bundle-SymbolicName: org.hawk.service.emc.dt;singleton:=true
+Bundle-Version: 1.1.0.qualifier
+Bundle-Activator: org.hawk.service.emc.dt.Activator
+Bundle-Vendor: University of York
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.ide,
+ org.hawk.service.emc,
+ org.eclipse.epsilon.common.dt,
+ org.eclipse.epsilon.emc.emf,
+ org.eclipse.epsilon.emf.dt
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy

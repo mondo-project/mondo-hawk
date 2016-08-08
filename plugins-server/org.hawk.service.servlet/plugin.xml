@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.equinox.http.registry.servlets">
+      <servlet
+            alias="/thrift/hawk/tuple"
+            class="org.hawk.service.servlet.servlets.HawkThriftTupleServlet">
+      </servlet>
+      <servlet
+            alias="/thrift/hawk/compact"
+            class="org.hawk.service.servlet.servlets.HawkThriftCompactServlet">
+      </servlet>
+      <servlet
+            alias="/thrift/hawk/binary"
+            class="org.hawk.service.servlet.servlets.HawkThriftBinaryServlet">
+      </servlet>
+      <servlet
+            alias="/thrift/hawk/json"
+            class="org.hawk.service.servlet.servlets.HawkThriftJSONServlet">
+      </servlet>
+   </extension>
+
+</plugin>

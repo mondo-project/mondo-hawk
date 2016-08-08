@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: MONDO User Management - CLI client
+Bundle-SymbolicName: org.hawk.service.server.users.cli
+Bundle-Version: 1.1.0.qualifier
+Bundle-Vendor: University of York
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.10.0",
+ org.eclipse.equinox.console;bundle-version="1.1.0",
+ org.eclipse.equinox.ds;bundle-version="1.4.200",
+ org.apache.thrift;bundle-version="0.9.3",
+ org.hawk.service.api;bundle-version="1.0.0",
+ org.slf4j.api;bundle-version="1.7.2",
+ org.apache.httpcomponents.httpclient;bundle-version="4.3.6"
+Service-Component: component.xml

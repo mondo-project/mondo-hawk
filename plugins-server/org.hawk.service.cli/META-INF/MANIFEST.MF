@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: MONDO CLI Hawk Client
+Bundle-SymbolicName: org.hawk.service.cli;singleton:=true
+Bundle-Version: 1.1.0.qualifier
+Bundle-Vendor: University of York
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.equinox.console,
+ org.slf4j.api;bundle-version="1.7.2",
+ org.eclipse.equinox.ds;bundle-version="1.4.200",
+ org.apache.thrift;bundle-version="0.9.2",
+ org.apache.httpcomponents.httpcore;bundle-version="4.3.3",
+ org.apache.httpcomponents.httpclient;bundle-version="4.3.6",
+ org.hawk.service.api;bundle-version="1.0.0",
+ org.hawk.service.artemis;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Service-Component: component.xml
+Bundle-Activator: org.hawk.service.cli.Activator

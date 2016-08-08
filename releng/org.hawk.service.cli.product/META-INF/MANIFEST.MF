@@ -4,4 +4,4 @@ Bundle-Name: MONDO CLI Product
 Bundle-SymbolicName: org.hawk.service.cli.product;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
- uk.ac.york.mondo.integration.clients.cli.application;bundle-version="1.0.0"
+ org.hawk.service.clients.cli.application;bundle-version="1.0.0"

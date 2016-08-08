@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="emmImporter" name="Effective Metamodel Importer" schema="schema/emmImporter.exsd"/>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="Remote Hawk Model Descriptor Editor"
+            extensions="hawkmodel"
+            icon="icons/hawkmodel.png"
+            contributorClass="org.hawk.service.emf.dt.editors.HawkMultiPageEditorContributor"
+            class="org.hawk.service.emf.dt.editors.HawkMultiPageEditor"
+            id="org.hawk.service.emf.dt.editors.HawkMultiPageEditor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            name="Remote Hawk Model Descriptor File"
+            icon="icons/hawkmodel.png"
+            category="hawk.ui.plugin"
+            class="org.hawk.service.emf.dt.wizards.NewRemoteHawkModelDescriptorWizard"
+            id="org.hawk.service.emf.dt.wizards.NewRemoteHawkModelDescriptorWizard">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.epsilon.dt.exeed.customizer">
+      <customizer
+            customizerClass="org.hawk.ui.emfresource.exeed.HawkResourceExeedCustomizer"
+            resourceClass="org.hawk.service.emf.impl.HawkResourceImpl">
+      </customizer>
+   </extension>
+   <extension
+         name="Hawk model descriptor importer"
+         point="org.hawk.service.emf.dt.emmImporter">
+      <importer
+            class="org.hawk.service.emf.dt.importers.HawkModelDescriptorEMMImporter">
+      </importer>
+   </extension>
+
+</plugin>

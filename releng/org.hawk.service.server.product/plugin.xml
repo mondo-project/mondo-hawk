@@ -6,7 +6,7 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="uk.ac.york.mondo.integration.server.application.serverapp"
+            application="org.hawk.service.server.application.serverapp"
             name="Server Product">
          <property
                name="appName"
@@ -18,7 +18,7 @@
          id="nogplserver"
          point="org.eclipse.core.runtime.products">
       <product
-            application="uk.ac.york.mondo.integration.server.application.serverapp"
+            application="org.hawk.service.server.application.serverapp"
             name="Server Product">
       </product>
    </extension>

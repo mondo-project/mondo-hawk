@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="MONDO CLI Client Product" uid="org.hawk.service.cli.product" id="org.hawk.service.cli.product.product" application="uk.ac.york.mondo.integration.clients.cli.application.app" version="1.1.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="MONDO CLI Client Product" uid="org.hawk.service.cli.product" id="org.hawk.service.cli.product.product" application="org.hawk.service.clients.cli.application.app" version="1.1.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -31,10 +31,10 @@
    </plugins>
 
    <features>
-      <feature id="uk.ac.york.mondo.integration.clients.cli.feature" installMode="root"/>
-      <feature id="uk.ac.york.mondo.integration.hawk.cli.feature" installMode="root"/>
-      <feature id="uk.ac.york.mondo.integration.api.feature" installMode="root"/>
-      <feature id="uk.ac.york.mondo.integration.server.users.cli.feature" installMode="root"/>
+      <feature id="org.hawk.service.clients.cli.feature" installMode="root"/>
+      <feature id="org.hawk.service.cli.feature" installMode="root"/>
+      <feature id="org.hawk.service.api.feature" installMode="root"/>
+      <feature id="org.hawk.service.server.users.cli.feature" installMode="root"/>
       <feature id="org.eclipse.core.runtime.feature"/>
       <feature id="org.eclipse.equinox.core.feature"/>
    </features>
@@ -43,8 +43,8 @@
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
-      <plugin id="uk.ac.york.mondo.integration.hawk.cli" autoStart="true" startLevel="0" />
-      <plugin id="uk.ac.york.mondo.integration.server.users.cli" autoStart="true" startLevel="0" />
+      <plugin id="org.hawk.service.cli" autoStart="true" startLevel="0" />
+      <plugin id="org.hawk.service.server.users.cli" autoStart="true" startLevel="0" />
    </configurations>
 
 </product>

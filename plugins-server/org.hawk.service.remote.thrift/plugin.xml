@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.hawk.core.HawkFactoryExtensionPoint">
+      <hawkFactory
+            class="org.hawk.service.remote.thrift.ThriftRemoteHawkFactory"
+            id="org.hawk.service.remote.thrift.hawkFactory"
+            name="Remote (API)">
+      </hawkFactory>
+   </extension>
+
+</plugin>

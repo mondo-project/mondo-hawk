@@ -1,0 +1,33 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: MONDO User Management Servlet
+Bundle-SymbolicName: org.hawk.service.server.users.servlet;singleton:=true
+Bundle-Version: 1.1.0.qualifier
+Bundle-Activator: org.hawk.service.server.users.servlet.UsersPlugin
+Bundle-Vendor: University of York
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.equinox.http.registry;bundle-version="1.1.300",
+ org.slf4j.api;bundle-version="1.7.2",
+ org.apache.thrift;bundle-version="0.9.3",
+ org.hawk.service.api;bundle-version="1.0.0",
+ javax.servlet;bundle-version="3.0.0",
+ org.apache.commons.beanutils;bundle-version="1.8.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: lib/mapdb-1.0.9.jar,
+ lib/shiro-core-1.2.4.jar,
+ lib/shiro-web-1.2.4.jar,
+ .
+Export-Package: org.apache.shiro,
+ org.apache.shiro.authc,
+ org.apache.shiro.authc.credential,
+ org.apache.shiro.mgt,
+ org.apache.shiro.realm,
+ org.apache.shiro.subject,
+ org.apache.shiro.subject.support,
+ org.hawk.service.server.users.servlet,
+ org.hawk.service.server.users.servlet.db,
+ org.hawk.service.server.users.servlet.filters,
+ org.hawk.service.server.users.servlet.servlets,
+ org.hawk.service.server.users.servlet.shiro,
+ org.mapdb

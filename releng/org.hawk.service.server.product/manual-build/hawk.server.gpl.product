@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Server Product" uid="org.hawk.service.server.product.product" id="org.hawk.service.server.product.product" application="uk.ac.york.mondo.integration.server.application.serverapp" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Server Product" uid="org.hawk.service.server.product.product" id="org.hawk.service.server.product.product" application="org.hawk.service.server.application.serverapp" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -11,7 +11,7 @@
       </programArgs>
       <vmArgs>-Dorg.osgi.service.http.port=8080 -Dorg.osgi.service.http.port.secure=8443
 -Dosgi.noShutdown=true -Xmx4g -Xms2g -XX:+UseG1GC
--Dorg.eclipse.equinox.http.jetty.customizer.class=uk.ac.york.mondo.integration.server.gzip.Customizer -Dorg.eclipse.update.reconcile=false
+-Dorg.eclipse.equinox.http.jetty.customizer.class=org.hawk.service.server.gzip.Customizer -Dorg.eclipse.update.reconcile=false
 -Dartemis.security.enabled=false
 -Dhawk.artemis.host=localhost
 -Dhawk.artemis.listenAll=false
@@ -50,10 +50,10 @@
    </plugins>
 
    <features>
-      <feature id="uk.ac.york.mondo.integration.hawk.servlet.feature" installMode="root"/>
-      <feature id="uk.ac.york.mondo.integration.server.feature" installMode="root"/>
-      <feature id="uk.ac.york.mondo.integration.hawk.emf.feature" installMode="root"/>
-      <feature id="uk.ac.york.mondo.integration.api.feature" installMode="root"/>
+      <feature id="org.hawk.service.servlet.feature" installMode="root"/>
+      <feature id="org.hawk.service.server.feature" installMode="root"/>
+      <feature id="org.hawk.service.emf.feature" installMode="root"/>
+      <feature id="org.hawk.service.api.feature" installMode="root"/>
       <feature id="org.hawk.neo4jv2.feature" installMode="root"/>
       <feature id="org.hawk.orientdb.feature" installMode="root"/>
       <feature id="org.hawk.localfolder.feature" installMode="root"/>
@@ -102,8 +102,8 @@
       <plugin id="org.eclipse.equinox.http.registry" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
-      <plugin id="uk.ac.york.mondo.integration.artemis.server" autoStart="true" startLevel="4" />
-      <plugin id="uk.ac.york.mondo.integration.hawk.servlet" autoStart="true" startLevel="0" />
+      <plugin id="org.hawk.service.artemis.server" autoStart="true" startLevel="4" />
+      <plugin id="org.hawk.service.servlet" autoStart="true" startLevel="0" />
    </configurations>
 
    <preferencesInfo>

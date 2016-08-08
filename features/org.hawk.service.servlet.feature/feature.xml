@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.hawk.service.servlet.feature"
+      label="MONDO Integration - Hawk Servlet Feature"
+      version="1.1.0.qualifier"
+      provider-name="University of York">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <includes
+         id="org.hawk.core.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.hawk.emf.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.hawk.epsilon.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.hawk.localfolder.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.hawk.svn.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.hawk.service.api.feature"
+         version="0.0.0"/>
+
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.hawk.service.api" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.http.registry" version="1.1.300" match="greaterOrEqual"/>
+      <import plugin="org.slf4j.api" version="1.7.2" match="greaterOrEqual"/>
+      <import plugin="org.apache.thrift" version="0.9.2" match="greaterOrEqual"/>
+      <import plugin="org.hawk.core" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.hawk.core.dependencies" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.hawk.osgiserver" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.hawk.graph" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.hawk.service.artemis" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="javax.servlet"/>
+      <import plugin="org.hawk.service.artemis.server"/>
+   </requires>
+
+   <plugin
+         id="org.hawk.service.servlet"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.hawk.service.artemis"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

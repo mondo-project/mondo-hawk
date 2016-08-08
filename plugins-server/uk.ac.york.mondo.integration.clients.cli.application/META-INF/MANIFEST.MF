@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: MONDO Clients -- Command Line App
-Bundle-SymbolicName: uk.ac.york.mondo.integration.clients.cli.application;singleton:=true
-Bundle-Version: 1.1.0.qualifier
-Require-Bundle: org.eclipse.core.runtime
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ActivationPolicy: lazy

@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Thrift integration for Hawk GUI
+Bundle-SymbolicName: org.hawk.service.remote.thrift;singleton:=true
+Bundle-Version: 1.1.0.qualifier
+Bundle-Vendor: University of York
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.hawk.core,
+ org.hawk.service.api,
+ org.apache.thrift;bundle-version="0.9.3",
+ org.hawk.core.dependencies,
+ org.eclipse.osgi,
+ org.slf4j.api,
+ org.eclipse.core.runtime,
+ org.hawk.service.artemis,
+ org.apache.httpcomponents.httpclient;bundle-version="4.3.6",
+ org.eclipse.swt,
+ org.eclipse.jface,
+ org.eclipse.ui,
+ org.hawk.osgiserver,
+ org.hawk.service.api.dt
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.hawk.service.remote.thrift.Activator

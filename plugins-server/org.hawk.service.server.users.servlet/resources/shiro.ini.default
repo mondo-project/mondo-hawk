@@ -1,0 +1,23 @@
+[main]
+# Objects and their properties are defined here, 
+# Such as the securityManager, Realms and anything
+# else needed to build the SecurityManager
+
+# Toggle to enforce using SSL: should be true in production!
+ssl.enabled = false
+
+# Toggle to enable/disable authentication completely: should be true in production!
+authcBasic.enabled = false
+
+# Use MONDO realm
+mondoRealm = org.hawk.service.server.users.servlet.shiro.UsersRealm
+securityManager.realms = $mondoRealm
+
+# We're using SHA-512 for passwords, with 10k iterations
+credentialsMatcher = org.apache.shiro.authc.credential.Sha512CredentialsMatcher
+credentialsMatcher.hashIterations = 10000
+mondoRealm.credentialsMatcher = $credentialsMatcher
+
+[urls]
+
+/thrift/** = ssl, authcBasic

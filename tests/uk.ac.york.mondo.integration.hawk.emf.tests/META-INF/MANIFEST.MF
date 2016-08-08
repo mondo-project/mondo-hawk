@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Tests for the Remote Hawk EMF Driver
-Bundle-SymbolicName: uk.ac.york.mondo.integration.hawk.emf.tests
-Bundle-Version: 1.1.0.qualifier
-Fragment-Host: uk.ac.york.mondo.integration.hawk.emf;bundle-version="1.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.junit;bundle-version="4.0.0"
