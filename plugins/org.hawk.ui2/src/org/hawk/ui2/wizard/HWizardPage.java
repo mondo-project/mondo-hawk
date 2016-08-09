@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2016 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ package org.hawk.ui2.wizard;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -149,8 +150,10 @@ public class HWizardPage extends WizardPage {
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 2;
 		factoryIdText.setLayoutData(gd);
-		for (Map.Entry<String, IHawkFactory> factory : factories.entrySet()) {
-			factoryIdText.add(factory.getKey());
+		final List<String> sortedFactories = new ArrayList<>(factories.keySet());
+		Collections.sort(sortedFactories);
+		for (String factory : sortedFactories) {
+			factoryIdText.add(factory);
 		}
 		factoryIdText.select(0);
 		factoryIdText.addSelectionListener(new DialogChangeSelectionListener());
