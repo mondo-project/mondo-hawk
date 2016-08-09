@@ -344,6 +344,8 @@ union QueryResult {
 	 /* Sequence of UTF8 characters. */ 7: optional string vString,
 	 /* Encoded model element. */ 8: optional ModelElement vModelElement,
 	 /* Encoded model element type. */ 9: optional ModelElementType vModelElementType,
+	 /* Map between query results. */ 10: optional map<string,QueryResult> vMap,
+	 /* Nested list of query results. */ 11: optional list<QueryResult> vList,
 }
 
 /* The majority of service operations provided by the MONDO
@@ -487,7 +489,7 @@ service Hawk {
   )
 	
   /* Runs a query on a Hawk instance and returns a sequence of scalar values and/or model elements. Auth needed: Yes */
-  list<QueryResult> query(
+  QueryResult query(
 	/* The name of the Hawk instance. */ 1: required string name,
 	/* The query to be executed. */ 2: required string query,
 	/* The name of the query language used (e.g. EOL, OCL). */ 3: required string language,

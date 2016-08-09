@@ -75,13 +75,13 @@ import org.hawk.service.api.InvalidPollingConfiguration;
 import org.hawk.service.api.InvalidQuery;
 import org.hawk.service.api.ModelElement;
 import org.hawk.service.api.QueryResult;
+import org.hawk.service.api.QueryResult._Fields;
 import org.hawk.service.api.Repository;
 import org.hawk.service.api.Subscription;
 import org.hawk.service.api.SubscriptionDurability;
 import org.hawk.service.api.UnknownQueryLanguage;
 import org.hawk.service.api.UnknownRepositoryType;
 import org.hawk.service.api.VCSAuthenticationFailed;
-import org.hawk.service.api.QueryResult._Fields;
 import org.hawk.service.api.utils.APIUtils.ThriftProtocol;
 import org.hawk.service.artemis.server.Server;
 import org.hawk.service.servlet.Activator;
@@ -219,7 +219,7 @@ public final class HawkThriftIface implements Hawk.Iface {
 	}
 
 	@Override
-	public List<QueryResult> query(String name, String query, String language, HawkQueryOptions opts)
+	public QueryResult query(String name, String query, String language, HawkQueryOptions opts)
 			throws HawkInstanceNotFound, UnknownQueryLanguage, InvalidQuery,
 			FailedQuery, TException {
 		final HModel model = getRunningHawkByName(name);
@@ -254,9 +254,7 @@ public final class HawkThriftIface implements Hawk.Iface {
 			final HawkModelElementTypeEncoder typeEnc = new HawkModelElementTypeEncoder(gw);
 
 			try (final IGraphTransaction t = model.getGraph().beginTransaction()) {
-				final List<QueryResult> l = new ArrayList<>();
-				addEncodedValue(model, ret, l, enc, typeEnc);
-				return l;
+				return encodeValue(model, ret, enc, typeEnc);
 			}
 		} catch (InvalidQueryException ex) {
 			throw new InvalidQuery(ex.getMessage());
@@ -281,32 +279,32 @@ public final class HawkThriftIface implements Hawk.Iface {
 		return sbuf.toString();
 	}
 
-	private void addEncodedValue(final HModel model, Object ret, final List<QueryResult> l,
+	private QueryResult encodeValue(final HModel model, Object ret,
 			HawkModelElementEncoder enc,
 			HawkModelElementTypeEncoder typeEnc) throws Exception {
 		if (ret instanceof Boolean) {
-			l.add(new QueryResult(_Fields.V_BOOLEAN, (Boolean)ret));
+			return new QueryResult(_Fields.V_BOOLEAN, (Boolean)ret);
 		} else if (ret instanceof Byte) {
-			l.add(new QueryResult(_Fields.V_BYTE, (Byte)ret));
+			return new QueryResult(_Fields.V_BYTE, (Byte)ret);
 		} else if (ret instanceof Double || ret instanceof Float) {
-			l.add(new QueryResult(_Fields.V_DOUBLE, (Double)ret));
+			return new QueryResult(_Fields.V_DOUBLE, (Double)ret);
 		} else if (ret instanceof Integer) {
-			l.add(new QueryResult(_Fields.V_INTEGER, (Integer)ret));
+			return new QueryResult(_Fields.V_INTEGER, (Integer)ret);
 		} else if (ret instanceof Long) {
-			l.add(new QueryResult(_Fields.V_LONG, (Long)ret));
+			return new QueryResult(_Fields.V_LONG, (Long)ret);
 		} else if (ret instanceof Short) {
-			l.add(new QueryResult(_Fields.V_SHORT, (Short)ret));
+			return new QueryResult(_Fields.V_SHORT, (Short)ret);
 		} else if (ret instanceof String) {
-			l.add(new QueryResult(_Fields.V_STRING, (String)ret));
+			return new QueryResult(_Fields.V_STRING, (String)ret);
 		} else if (ret instanceof IGraphTypeNodeReference) {
 			final IGraphNode n = ((IGraphTypeNodeReference)ret).getNode();
-			l.add(new QueryResult(_Fields.V_MODEL_ELEMENT_TYPE, typeEnc.encode(n)));
+			return new QueryResult(_Fields.V_MODEL_ELEMENT_TYPE, typeEnc.encode(n));
 		} else if (ret instanceof IGraphNodeReference) {
 			final IGraphNodeReference ref = (IGraphNodeReference)ret;
 			if (!enc.isEncoded(ref.getId())) {
 				final ModelElement meEncoded = enc.encode(ref.getNode());
 				if (meEncoded != null) {
-					l.add(new QueryResult(_Fields.V_MODEL_ELEMENT, meEncoded));
+					return new QueryResult(_Fields.V_MODEL_ELEMENT, meEncoded);
 				}
 			}
 		} else if (ret instanceof IGraphNode) {
@@ -314,17 +312,26 @@ public final class HawkThriftIface implements Hawk.Iface {
 			if (!enc.isEncoded(meNode)) {
 				final ModelElement meEncoded = enc.encode(meNode);
 				if (meEncoded != null) {
-					l.add(new QueryResult(_Fields.V_MODEL_ELEMENT, meEncoded));
+					return new QueryResult(_Fields.V_MODEL_ELEMENT, meEncoded);
 				}
 			}
+		} else if (ret instanceof Map) {
+			final Map<String, QueryResult> result = new HashMap<>();
+			for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)ret).entrySet()) {
+				result.put(entry.getKey() + "", encodeValue(model, entry.getValue(), enc, typeEnc));
+			}
+			return new QueryResult(_Fields.V_MAP, result);
 		} else if (ret instanceof Iterable) {
+			final List<QueryResult> result = new ArrayList<>();
 			final Iterable<?> c = (Iterable<?>) ret;
 			for (Object o : c) {
-				addEncodedValue(model, o, l, enc, typeEnc);
+				result.add(encodeValue(model, o, enc, typeEnc));
 			}
-		} else {
-			l.add(new QueryResult(_Fields.V_STRING, ret + ""));
+			return new QueryResult(_Fields.V_LIST, result);
 		}
+
+		// Fallback on converting to a string
+		return new QueryResult(_Fields.V_STRING, ret + "");
 	}
 
 	@Override

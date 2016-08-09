@@ -217,7 +217,7 @@
         </eAnnotations>
       </eParameters>
     </eOperations>
-    <eOperations name="query" upperBound="-1" eType="#//QueryResult" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning #//UnknownQueryLanguage #//InvalidQuery #//FailedQuery">
+    <eOperations name="query" eType="#//QueryResult" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning #//UnknownQueryLanguage #//InvalidQuery #//FailedQuery">
       <eAnnotations source="doc">
         <details key="d" value="Runs a query on a Hawk instance and returns a sequence of scalar values and/or model elements."/>
       </eAnnotations>
@@ -1377,7 +1377,7 @@
       <details key="union" value="true"/>
     </eAnnotations>
     <eAnnotations source="doc">
-      <details key="d" value="Union type for a scalar value or a reference to a model element. Useful for heterogeneous collections."/>
+      <details key="d" value="Union type for a scalar value, a reference to a model element, a heterogeneous&#xA;list or a string/value map. Query results may return all types of results, so we need&#xA;to stay flexible."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="vModelElement" eType="#//ModelElement"
         containment="true">
@@ -1391,6 +1391,27 @@
         <details key="d" value="Encoded model element type."/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vMap" eType="#//QueryResultMap"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Map between query results."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vList" upperBound="-1"
+        eType="#//QueryResult" containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Nested list of query results."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="QueryResultMap">
+    <eAnnotations source="thrift.map">
+      <details key="key" value="name"/>
+      <details key="value" value="value"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//QueryResult"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Value">
     <eAnnotations source="thrift">

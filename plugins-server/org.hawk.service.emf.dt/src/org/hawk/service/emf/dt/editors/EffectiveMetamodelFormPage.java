@@ -35,10 +35,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -48,10 +46,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -494,12 +490,12 @@ public class EffectiveMetamodelFormPage extends FormPage {
 				try {
 					final HawkModelDescriptor descriptor = editor.buildDescriptor();
 					final Hawk.Client client = editor.connectToHawk(descriptor);
-					final List<QueryResult> results = client.query(descriptor.getHawkInstance(),
+					final QueryResult results = client.query(descriptor.getHawkInstance(),
 						"return Model.types;", HawkResourceImpl.EOL_QUERY_LANG,
 						new HawkQueryOptions());
 
 					final Map<String, MetamodelNode> mmNodes = new TreeMap<>();
-					for (QueryResult qr : results) {
+					for (QueryResult qr : results.getVList()) {
 						if (qr.isSetVModelElementType()) {
 							final ModelElementType met = qr.getVModelElementType();
 							MetamodelNode mn = mmNodes.get(met.getMetamodelUri());

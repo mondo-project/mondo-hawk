@@ -5146,6 +5146,8 @@ QueryResult = function(args) {
   this.vString = null;
   this.vModelElement = null;
   this.vModelElementType = null;
+  this.vMap = null;
+  this.vList = null;
   if (args) {
     if (args.vBoolean !== undefined && args.vBoolean !== null) {
       this.vBoolean = args.vBoolean;
@@ -5173,6 +5175,12 @@ QueryResult = function(args) {
     }
     if (args.vModelElementType !== undefined && args.vModelElementType !== null) {
       this.vModelElementType = new ModelElementType(args.vModelElementType);
+    }
+    if (args.vMap !== undefined && args.vMap !== null) {
+      this.vMap = Thrift.copyMap(args.vMap, [null]);
+    }
+    if (args.vList !== undefined && args.vList !== null) {
+      this.vList = Thrift.copyList(args.vList, [null]);
     }
   }
 };
@@ -5255,6 +5263,57 @@ QueryResult.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 10:
+      if (ftype == Thrift.Type.MAP) {
+        var _size256 = 0;
+        var _rtmp3260;
+        this.vMap = {};
+        var _ktype257 = 0;
+        var _vtype258 = 0;
+        _rtmp3260 = input.readMapBegin();
+        _ktype257 = _rtmp3260.ktype;
+        _vtype258 = _rtmp3260.vtype;
+        _size256 = _rtmp3260.size;
+        for (var _i261 = 0; _i261 < _size256; ++_i261)
+        {
+          if (_i261 > 0 ) {
+            if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
+              input.rstack.pop();
+            }
+          }
+          var key262 = null;
+          var val263 = null;
+          key262 = input.readString().value;
+          val263 = new QueryResult();
+          val263.read(input);
+          this.vMap[key262] = val263;
+        }
+        input.readMapEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 11:
+      if (ftype == Thrift.Type.LIST) {
+        var _size264 = 0;
+        var _rtmp3268;
+        this.vList = [];
+        var _etype267 = 0;
+        _rtmp3268 = input.readListBegin();
+        _etype267 = _rtmp3268.etype;
+        _size264 = _rtmp3268.size;
+        for (var _i269 = 0; _i269 < _size264; ++_i269)
+        {
+          var elem270 = null;
+          elem270 = new QueryResult();
+          elem270.read(input);
+          this.vList.push(elem270);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -5309,6 +5368,35 @@ QueryResult.prototype.write = function(output) {
   if (this.vModelElementType !== null && this.vModelElementType !== undefined) {
     output.writeFieldBegin('vModelElementType', Thrift.Type.STRUCT, 9);
     this.vModelElementType.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.vMap !== null && this.vMap !== undefined) {
+    output.writeFieldBegin('vMap', Thrift.Type.MAP, 10);
+    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.vMap));
+    for (var kiter271 in this.vMap)
+    {
+      if (this.vMap.hasOwnProperty(kiter271))
+      {
+        var viter272 = this.vMap[kiter271];
+        output.writeString(kiter271);
+        viter272.write(output);
+      }
+    }
+    output.writeMapEnd();
+    output.writeFieldEnd();
+  }
+  if (this.vList !== null && this.vList !== undefined) {
+    output.writeFieldBegin('vList', Thrift.Type.LIST, 11);
+    output.writeListBegin(Thrift.Type.STRUCT, this.vList.length);
+    for (var iter273 in this.vList)
+    {
+      if (this.vList.hasOwnProperty(iter273))
+      {
+        iter273 = this.vList[iter273];
+        iter273.write(output);
+      }
+    }
+    output.writeListEnd();
     output.writeFieldEnd();
   }
   output.writeFieldStop();

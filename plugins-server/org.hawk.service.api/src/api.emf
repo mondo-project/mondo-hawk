@@ -108,7 +108,7 @@ class Hawk {
     );
 
 	@doc(d="Runs a query on a Hawk instance and returns a sequence of scalar values and/or model elements.")
-	op QueryResult[*] query (
+	op QueryResult query (
 		@doc(d="The name of the Hawk instance") String name,
 		@doc(d="The query to be executed") String query,
 		@doc(d="The name of the query language used (e.g. EOL, OCL)") String language,
@@ -562,12 +562,25 @@ class ContainerSlot extends Slot {
 }
 
 @thrift(union="true")
-@doc(d="Union type for a scalar value or a reference to a model element. Useful for heterogeneous collections.")
+@doc(d="Union type for a scalar value, a reference to a model element, a heterogeneous
+list or a string/value map. Query results may return all types of results, so we need
+to stay flexible.")
 class QueryResult extends Value {
     @doc(d="Encoded model element.")
 	val ModelElement vModelElement;
 	@doc(d="Encoded model element type.")
 	val ModelElementType vModelElementType;
+
+	@doc(d="Map between query results.")
+	val QueryResultMap vMap;
+	@doc(d="Nested list of query results.")
+	val QueryResult[*] vList;
+}
+
+@thrift.map(key="name", value="value")
+class QueryResultMap {
+	attr String name;
+	val QueryResult value;
 }
 
 @thrift(union="true")

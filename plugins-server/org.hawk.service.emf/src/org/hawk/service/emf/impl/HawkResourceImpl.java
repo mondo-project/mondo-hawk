@@ -93,6 +93,7 @@ import org.hawk.service.api.Subscription;
 import org.hawk.service.api.SubscriptionDurability;
 import org.hawk.service.api.UnknownQueryLanguage;
 import org.hawk.service.api.Hawk.Client;
+import org.hawk.service.api.QueryResult._Fields;
 import org.hawk.service.api.utils.APIUtils;
 import org.hawk.service.api.utils.ActiveMQBufferTransport;
 import org.hawk.service.artemis.consumer.Consumer;
@@ -695,9 +696,14 @@ public class HawkResourceImpl extends ResourceImpl implements HawkResource {
 		final String query = descriptor.getHawkQuery();
 		final boolean useQuery = queryLanguage != null && queryLanguage.length() > 0 && query != null && query.length() > 0;
 		if (useQuery) {
-			List<QueryResult> results = client.query(descriptor.getHawkInstance(), query, queryLanguage, opts);
+			// Make sure we have a list, even if the original query did not produce a list
+			QueryResult results = client.query(descriptor.getHawkInstance(), query, queryLanguage, opts);
+			if (!results.isSetVList()) {
+				results = new QueryResult(_Fields.V_LIST, results);
+			}
+
 			elems = new ArrayList<>();
-			for (final QueryResult result : results) {
+			for (final QueryResult result : results.getVList()) {
 				if (result.isSetVModelElement()) {
 					elems.add(result.getVModelElement());
 				}
@@ -909,9 +915,12 @@ public class HawkResourceImpl extends ResourceImpl implements HawkResource {
 	}
 
 	public EList<EObject> fetchByQuery(final String language, final String query, final HawkQueryOptions opts) throws HawkInstanceNotFound, HawkInstanceNotRunning, TException, IOException {
-		final List<QueryResult> typeInstanceIDs = client.query(descriptor.getHawkInstance(), query, language, opts);
-		final EList<EObject> fetched = fetchNodesByQueryResults(typeInstanceIDs, opts.includeAttributes);
-		return fetched;
+		QueryResult typeInstanceIDs = client.query(descriptor.getHawkInstance(), query, language, opts);
+		if (!typeInstanceIDs.isSetVList()) {
+			typeInstanceIDs = new QueryResult(_Fields.V_LIST, typeInstanceIDs);
+		}
+
+		return fetchNodesByQueryResults(typeInstanceIDs.getVList(), opts.includeAttributes);
 	}
 
 	protected EList<EObject> fetchNodesByQueryResults(final List<QueryResult> typeInstanceIDs, boolean includeAttributes)
@@ -953,12 +962,12 @@ public class HawkResourceImpl extends ResourceImpl implements HawkResource {
 		opts.setRepositoryPattern(descriptor.getHawkRepository());
 		opts.setFilePatterns(Arrays.asList(descriptor.getHawkFilePatterns()));
 		setEffectiveMetamodelOptions(opts, descriptor.getEffectiveMetamodel());
-		final List<QueryResult> typesWithInstances = client.query(descriptor.getHawkInstance(),
+		final QueryResult typesWithInstances = client.query(descriptor.getHawkInstance(),
 				"return Model.types.select(t|not t.all.isEmpty);",
 				EOL_QUERY_LANG, opts);
 
 		final Map<EClass, List<EStructuralFeature>> candidateTypes = new IdentityHashMap<EClass, List<EStructuralFeature>>();
-		for (final QueryResult qr : typesWithInstances) {
+		for (final QueryResult qr : typesWithInstances.getVList()) {
 			final ModelElementType type = qr.getVModelElementType();
 			final EClass eClass = getEClass(type.metamodelUri, type.typeName, getResourceSet().getPackageRegistry());
 
@@ -1542,17 +1551,15 @@ public class HawkResourceImpl extends ResourceImpl implements HawkResource {
 		HawkQueryOptions opts = new HawkQueryOptions();
 		opts.setRepositoryPattern(descriptor.getHawkRepository());
 		opts.setFilePatterns(Arrays.asList(descriptor.getHawkFilePatterns()));
-		 List<QueryResult> queryResults = client.query(
-			descriptor.getHawkInstance(),
-			"return Model.metamodels.selectOne(p|p.uri='%s').types.name;",
-			EOL_QUERY_LANG, opts);
+		QueryResult queryResults = client.query(descriptor.getHawkInstance(),
+				"return Model.metamodels.selectOne(p|p.uri='%s').types.name;", EOL_QUERY_LANG, opts);
 
-		 final List<String> types = new ArrayList<>();
-		 for (QueryResult qr : queryResults) {
-			 if (qr.isSetVString()) {
-				 types.add(qr.getVString());
-			 }
-		 }
+		final List<String> types = new ArrayList<>();
+		for (QueryResult qr : queryResults.getVList()) {
+			if (qr.isSetVString()) {
+				types.add(qr.getVString());
+			}
+		}
 		return types;
 	}
 
