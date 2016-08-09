@@ -15,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -218,62 +219,7 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 	}
 
 	@Override
-	public HashSet<IHawkMetaModelResource> getStaticMetamodels() {
-
-		// System.out.println("insertRegisteredMetamodels() called");
-
-		HashSet<IHawkMetaModelResource> set = new HashSet<>();
-
-		// Registry globalRegistry = EPackage.Registry.INSTANCE;
-		//
-		// HashSet<String> keys = new HashSet<>();
-		//
-		// keys.addAll(globalRegistry.keySet());
-		//
-		// for (String e : keys)
-		// if (notDefaultPackage(e)) {
-		// // System.out.println(">" + e);
-		// Object ep = globalRegistry.get(e);
-		// if (ep instanceof EPackage)
-		// set.add(new EMFMetaModelResource(((EPackage) ep)
-		// .eResource(), this));
-		// else if (ep instanceof EPackage.Descriptor)
-		// set.add(new EMFMetaModelResource(((EPackage.Descriptor) ep)
-		// .getEPackage().eResource(), this));
-		// }
-		//
-		// System.err.println(set);
-
-		// if (set.size() > 0)
-		// new GraphMetaModelResourceInjector(graph, set);
-
-		// return graph;
-		// System.out.println("insertRegisteredMetamodels() finished");
-
-		// removing any static (global registry resident) metamodels in emf
-		// as we treat it as file-based only for now
-		set.clear();
-		return set;
+	public Set<IHawkMetaModelResource> getStaticMetamodels() {
+		return Collections.emptySet();
 	}
-
-	// private boolean notDefaultPackage(String e) {
-	// // System.err.println(">" + e);
-	//
-	// // new eclipse populates the registry with MANY random metamodels so no
-	// // way to pre-populate this in emf without ignoring www.eclipse
-	//
-	// // http://www.eclipse.org/emf/2003/XMLType,
-	// // http://www.eclipse.org/emf/2002/Ecore,
-	// // http://www.w3.org/XML/1998/namespace
-	//
-	// // if (e.contains("www.eclipse.org/emf/") && e.contains("XMLType")
-	// // || e.contains("www.eclipse.org/emf/") && e.contains("Ecore")
-	// // || e.contains("www.w3.org/XML") && e.contains("namespace"))
-	// if (e.contains("http://www.eclipse.org/")
-	// || e.contains("http:///org/eclipse/")
-	// || e.contains("www.w3.org/XML") && e.contains("namespace"))
-	// return false;
-	// else
-	// return true;
-	// }
 }
