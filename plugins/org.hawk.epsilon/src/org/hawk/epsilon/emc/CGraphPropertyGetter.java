@@ -303,25 +303,23 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 	}
 
 	private Object retainScoped(GraphNodeWrapper ret) {
-
-		if (!engine.enableTraversalScoping)
+		if (!engine.isTraversalScopingEnabled())
 			return ret;
 
 		// capture multiple file containment (ie for singleton nodes)
 		for (IGraphEdge e : graph.getNodeById(ret.getId()).getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 
-			if (engine.files.contains(e.getEndNode())) {
+			if (engine.getFiles().contains(e.getEndNode())) {
 				return ret;
 			}
 		}
 
 		return null;
-
 	}
 
 	private GraphNodeWrapper addIfInScope(IGraphNode node) {
 
-		if (!engine.enableTraversalScoping)
+		if (!engine.isTraversalScopingEnabled())
 			return new GraphNodeWrapper(node, m);
 
 		// System.out.println("addIfInScope used...");
@@ -331,7 +329,7 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 		// capture multiple file containment (ie for singleton nodes)
 		for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 
-			if (engine.files.contains(e.getEndNode())) {
+			if (engine.getFiles().contains(e.getEndNode())) {
 				ret = new GraphNodeWrapper(node, m);
 				break;
 			}

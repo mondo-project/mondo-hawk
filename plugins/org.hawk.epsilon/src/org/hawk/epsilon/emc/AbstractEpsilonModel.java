@@ -204,13 +204,11 @@ public abstract class AbstractEpsilonModel extends Model {
 
 	abstract public Object getBackend();
 
-	public void dumpModelConfig() {
-
+	protected void dumpModelConfig() {
 		for (Object c : config.keySet())
 			System.out.println(c + " = " + config.get(c));
-
 	}
 
-	abstract public void dumpDatabaseConfig();
+	abstract protected void dumpDatabaseConfig();
 
 }

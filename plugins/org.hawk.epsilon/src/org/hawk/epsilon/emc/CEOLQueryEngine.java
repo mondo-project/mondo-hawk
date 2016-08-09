@@ -27,8 +27,8 @@ import org.hawk.graph.ModelElementNode;
 
 public class CEOLQueryEngine extends EOLQueryEngine {
 
-	Set<IGraphNode> files = null;
-	protected boolean enableTraversalScoping = true;
+	private Set<IGraphNode> files = null;
+	private boolean isTraversalScopingEnabled = true;
 
 	public void setContext(Map<String, Object> context) {
 
@@ -42,7 +42,7 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 			setDefaultNamespaces((String) context.get(PROPERTY_DEFAULTNAMESPACES));
 			String etss = (String)context.get(PROPERTY_ENABLE_TRAVERSAL_SCOPING);
 			if (etss != null)
-				enableTraversalScoping = Boolean.parseBoolean(etss);
+				isTraversalScopingEnabled = Boolean.parseBoolean(etss);
 		}
 
 		System.err.println(sFilePatterns);
@@ -68,7 +68,7 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 			}
 
 			System.out.println("running CEOLQueryEngine with files: " + fileNodes);
-			if (enableTraversalScoping)
+			if (isTraversalScopingEnabled)
 				System.out.println("Full Traversal Scoping ENABLED");
 
 			if (propertygetter == null)
@@ -130,5 +130,13 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 			}
 		}
 		return nodes;
+	}
+
+	public Set<IGraphNode> getFiles() {
+		return files;
+	}
+
+	public boolean isTraversalScopingEnabled() {
+		return isTraversalScopingEnabled;
 	}
 }

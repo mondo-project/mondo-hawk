@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2016 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,14 +7,13 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - cleanup and bug fixes, refactor into two levels
  ******************************************************************************/
 package org.hawk.epsilon.emc;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,6 +28,7 @@ import java.util.Set;
 import org.eclipse.epsilon.common.parse.problem.ParseProblem;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.eol.EolModule;
+import org.eclipse.epsilon.eol.IEolExecutableModule;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
@@ -57,47 +57,35 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 	public static final String TYPE = "org.hawk.epsilon.emc.EOLQueryEngine";
 
-	protected HashSet<String> cachedTypes = new HashSet<String>();
-	protected StringProperties config = null;
+	protected final Set<String> cachedTypes = new HashSet<String>();
+	protected final Map<String, OptimisableCollection> typeContents = new HashMap<>();
+	protected final Map<String, OptimisableCollection> superTypeContents = new HashMap<>();
 
-	// TODO try re-enable the use of a cache
-	// protected boolean enableCache = true;
-
+	/* TODO: these two should not have to be static.*/
 	protected static IModelIndexer indexer = null;
 	protected static IGraphDatabase graph = null;
 
-	// TODO memory management should these get too big
-	protected Collection<Object> allContents = null;
-	// if cache enabled
-	protected HashMap<String, OptimisableCollection> typeContents = new HashMap<>();
-	protected HashMap<String, OptimisableCollection> superTypeContents = new HashMap<>();
-
 	protected IGraphNodeIndex metamodeldictionary;
 
+	protected StringProperties config = null;
 	protected Set<String> defaultnamespaces = null;
 
 	protected GraphPropertyGetter propertygetter;
 
-	public static long time = 0L; // total time taken in specific methods for
-									// debugging
-
 	/**
 	 * Returns all of the contents of the database in the form of lightweight
-	 * GraphNodeWrapper objects
+	 * {@link GraphNodeWrapper} objects.
 	 */
 	@Override
 	public Collection<?> allContents() {
-		// if (!enableCache || (enableCache && allContents == null)) {
-		allContents = new HashSet<Object>();
-		// GlobalGraphOperations ops = GlobalGraphOperations.at(graph);
+		final Set<Object> allContents = new HashSet<Object>();
 
 		for (IGraphNode node : graph.allNodes("eobject")) {
 			GraphNodeWrapper wrapper = new GraphNodeWrapper(node, this);
 			allContents.add(wrapper);
 		}
-
-		// }
 		broadcastAllOfXAccess(allContents);
+
 		return allContents;
 	}
 
@@ -485,66 +473,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 	}
 
-	@SuppressWarnings("unused")
-	private void fullLog() throws IOException {
-
-		int count = 1;
-
-		File file = new File("D:/workspace/Neo4Jstore-v2/" + "eol-graph-log-" + count + ".txt");
-
-		while (file.exists()) {
-			count++;
-			file = new File("D:/workspace/Neo4Jstore-v2/" + "eol-graph-log-" + count + ".txt");
-		}
-
-		FileWriter w = new FileWriter(file);
-		String id = null;
-
-		try {
-			// operations on the graph
-			// ...
-
-			for (IGraphNode n : graph.allNodes(null)) {
-
-				String refs = "\n--> ";
-
-				for (IGraphEdge r : n.getOutgoing()) {
-
-					id = "";
-
-					try {
-						id = r.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
-					} catch (Exception e) {
-						id = "NO ID FOUND";
-					}
-
-					String x = "->";
-					if (!r.getStartNode().equals(n))
-						x = "<-";
-
-					refs += "[" + r.getType() + " " + x + " "
-							+ r.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY) + "" + "]";
-
-				}
-
-				String props = "";
-
-				for (String s : n.getPropertyKeys()) {
-
-					props += "[" + s + " : " + n.getProperty(s) + "]";
-
-				}
-
-				w.append(n + " : " + props + refs + "\n");
-
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		w.close();
-
-	}
-
 	@Override
 	public boolean owns(Object arg0) {
 		if (arg0 instanceof GraphNodeWrapper) {
@@ -671,188 +599,13 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		return graph;
 	}
 
-	public void dumpDatabaseConfig() {
-
+	protected void dumpDatabaseConfig() {
 		for (Object c : config.keySet())
 			System.out.println(">" + c + " = " + config.get(c));
-
 	}
 
-	@Override
-	public Object query(IModelIndexer m, String query, Map<String, Object> context)
-			throws InvalidQueryException, QueryExecutionException {
-		/*
-		 * Check if we're in the right state: we should not use {@link
-		 * IModelIndexer#waitFor} here, as that would introduce unwanted
-		 * synchronisation (reducing peak throughput for some cases).
-		 */
-		final HawkState currentState = m.getCompositeStateListener().getCurrentState();
-		if (currentState != HawkState.RUNNING) {
-			throw new QueryExecutionException(
-					String.format("Cannot run the query, as the indexer is not in the RUNNING state: it is %s instead.",
-							currentState));
-		}
-
-		if (context == null)
-			return contextlessQuery(m, query, context);
-
-		final Object repo = context.get(PROPERTY_REPOSITORYCONTEXT);
-		final Object file = context.get(PROPERTY_FILECONTEXT);
-		if (repo == null && file == null) // no scope
-			return contextlessQuery(m, query, context);
-		else
-			// scoped
-			return contextfulQuery(m, query, context);
-	}
-
-	@Override
-	public Object query(IModelIndexer m, File query, Map<String, Object> context)
-			throws InvalidQueryException, QueryExecutionException {
-
-		String code = "";
-		try {
-			BufferedReader r = new BufferedReader(new FileReader(query));
-			String line;
-			while ((line = r.readLine()) != null)
-				code = code + "\r\n" + line;
-			r.close();
-		} catch (Exception e) {
-			System.err.println("error reading eol code file:");
-			e.printStackTrace();
-		}
-		return query(m, code, context);
-
-	}
-
-	private Object contextlessQuery(IModelIndexer m, String query, Map<String, Object> context)
-			throws QueryExecutionException, InvalidQueryException {
-
-		final long truestart = System.currentTimeMillis();
-
-		String defaultnamespaces = null;
-		if (context != null)
-			defaultnamespaces = (String) context.get(PROPERTY_DEFAULTNAMESPACES);
-
-		/*
-		 * Always create a new engine for every query (reusing the same engine
-		 * would not be thread-safe).
-		 */
-		final EOLQueryEngine q = new EOLQueryEngine();
-		try {
-			q.load(m);
-			q.setDefaultNamespaces(defaultnamespaces);
-		} catch (EolModelLoadingException e) {
-			throw new QueryExecutionException("Loading of EOLQueryEngine failed");
-		}
-
-		final EolModule module = new EolModule();
-
-		Object ret = null;
-
-		try {
-			module.parse(query);
-		} catch (Exception ex) {
-			throw new InvalidQueryException(ex);
-		}
-
-		if (enableDebugOutput) {
-			System.out.println("PARSING:\n----------\n" + name == null ? "QUERY" : name + "\n----------");
-			System.out.println("Graph path: " + graph.getPath() + "\n----------");
-		}
-
-		module.getContext().getModelRepository().addModel(q);
-		addQueryArguments(context, module);
-
-		long init = System.currentTimeMillis();
-
-		try (IGraphTransaction tx = graph.beginTransaction()) {
-			ret = module.execute();
-			if (ret == null)
-				ret = "no result returned (maybe it directly printed the result to console?)";
-			tx.success();
-		} catch (Exception e) {
-			throw new QueryExecutionException(e);
-		}
-
-		if (enableDebugOutput) {
-			System.err.println("time variable = " + EOLQueryEngine.time + "ms");
-
-			System.out.println("QUERY TOOK " + (System.currentTimeMillis() - init) / 1000 + "s"
-					+ (System.currentTimeMillis() - init) % 1000 + "ms, to run");
-
-			System.out.println("total time taken " + (System.currentTimeMillis() - truestart) / 1000 + "s"
-					+ (System.currentTimeMillis() - truestart) % 1000 + "ms, to run");
-		}
-
-		return ret;
-
-	}
-
-	@SuppressWarnings("unchecked")
-	protected void addQueryArguments(Map<String, Object> context, final EolModule module) {
-		if (context != null) {
-			final Map<String, Object> args = (Map<String, Object>) context.get(PROPERTY_ARGUMENTS);
-			if (args != null) {
-				for (Entry<String, Object> entry : args.entrySet()) {
-					module.getContext().getFrameStack().putGlobal(new Variable(entry.getKey(), entry.getValue(), null));
-				}
-			}
-		}
-	}
-
-	private Object contextfulQuery(IModelIndexer m, String query, Map<String, Object> context)
-			throws QueryExecutionException, InvalidQueryException {
-
-		Object ret = null;
-		final long truestart = System.currentTimeMillis();
-		EolModule module = new EolModule();
-
-		try {
-			module.parse(query);
-		} catch (Exception ex) {
-			throw new InvalidQueryException(ex);
-		}
-
-		if (enableDebugOutput) {
-			System.out.println("PARSING:\n----------\n" + name == null ? "QUERY" : name + "\n----------");
-		}
-
-		CEOLQueryEngine q = new CEOLQueryEngine();
-		try {
-			q.load(m);
-		} catch (EolModelLoadingException e) {
-			throw new QueryExecutionException("Loading of EOLQueryEngine failed");
-		}
-		q.setContext(context);
-
-		if (enableDebugOutput)
-			System.out.println("Graph path: " + graph.getPath() + "\n----------");
-
-		module.getContext().getModelRepository().addModel(q);
-		addQueryArguments(context, module);
-
-		final long init = System.currentTimeMillis();
-
-		try (IGraphTransaction tx = graph.beginTransaction()) {
-			ret = module.execute();
-			if (ret == null)
-				ret = "no result returned (maybe it directly printed the result to console?)";
-			tx.success();
-		} catch (Exception ex) {
-			throw new QueryExecutionException(ex);
-		}
-
-		if (enableDebugOutput) {
-			System.err.println("time variable = " + EOLQueryEngine.time + "ms");
-
-			System.out.println("QUERY TOOK " + (System.currentTimeMillis() - init) / 1000 + "s"
-					+ (System.currentTimeMillis() - init) % 1000 + "ms, to run");
-
-			System.out.println("total time taken " + (System.currentTimeMillis() - truestart) / 1000 + "s"
-					+ (System.currentTimeMillis() - truestart) % 1000 + "ms, to run");
-		}
-		return ret;
-
+	protected IEolExecutableModule createModule() {
+		return new EolModule();
 	}
 
 	// deriving attributes
@@ -995,15 +748,147 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		return nodes;
 	}
 
-	public void setDefaultNamespaces(String namespaces) {
+	@Override
+	public Object query(IModelIndexer m, String query, Map<String, Object> context) throws InvalidQueryException, QueryExecutionException {
+		/*
+		 * Check if we're in the right state: we should not use {@link
+		 * IModelIndexer#waitFor} here, as that would introduce unwanted
+		 * synchronisation (reducing peak throughput for some cases).
+		 */
+		final HawkState currentState = m.getCompositeStateListener().getCurrentState();
+		if (currentState != HawkState.RUNNING) {
+			throw new QueryExecutionException(
+					String.format("Cannot run the query, as the indexer is not in the RUNNING state: it is %s instead.",
+							currentState));
+		}
 
+		if (context == null)
+			return contextlessQuery(m, query, context);
+
+		final Object repo = context.get(PROPERTY_REPOSITORYCONTEXT);
+		final Object file = context.get(PROPERTY_FILECONTEXT);
+		if (repo == null && file == null) // no scope
+			return contextlessQuery(m, query, context);
+		else
+			// scoped
+			return contextfulQuery(m, query, context);
+	}
+
+	@Override
+	public Object query(IModelIndexer m, File query, Map<String, Object> context) throws InvalidQueryException, QueryExecutionException {
+	
+		String code = "";
+		try {
+			BufferedReader r = new BufferedReader(new FileReader(query));
+			String line;
+			while ((line = r.readLine()) != null)
+				code = code + "\r\n" + line;
+			r.close();
+		} catch (Exception e) {
+			System.err.println("error reading eol code file:");
+			e.printStackTrace();
+		}
+		return query(m, code, context);
+	
+	}
+
+	protected Object contextlessQuery(IModelIndexer m, String query, Map<String, Object> context)
+			throws QueryExecutionException, InvalidQueryException {
+				final long trueStart = System.currentTimeMillis();
+				String defaultnamespaces = null;
+				if (context != null)
+					defaultnamespaces = (String) context.get(PROPERTY_DEFAULTNAMESPACES);
+
+				/*
+				 * We need to always create a new engine for every query: reusing the
+				 * same engine would be thread-unsafe.
+				 */
+				final EOLQueryEngine q = new EOLQueryEngine();
+				try {
+					q.load(m);
+					q.setDefaultNamespaces(defaultnamespaces);
+				} catch (EolModelLoadingException e) {
+					throw new QueryExecutionException("Loading of EOLQueryEngine failed");
+				}
+
+				final IEolExecutableModule module = createModule();
+				parseQuery(query, context, q, module);
+				return runQuery(trueStart, module);
+			}
+
+	protected Object contextfulQuery(IModelIndexer m, String query, Map<String, Object> context)
+			throws QueryExecutionException, InvalidQueryException {
+				final long trueStart = System.currentTimeMillis();
+			
+				CEOLQueryEngine q = new CEOLQueryEngine();
+				try {
+					q.load(m);
+				} catch (EolModelLoadingException e) {
+					throw new QueryExecutionException("Loading of EOLQueryEngine failed");
+				}
+				q.setContext(context);
+				if (enableDebugOutput)
+					System.out.println("Graph path: " + graph.getPath() + "\n----------");
+
+				final IEolExecutableModule module = createModule();
+				parseQuery(query, context, q, module);
+				return runQuery(trueStart, module);
+			}
+
+	protected void parseQuery(String query, Map<String, Object> context, final EOLQueryEngine model, final IEolExecutableModule module) throws InvalidQueryException {
+		try {
+			if (enableDebugOutput) {
+				System.out.println("PARSING:\n----------\n" + name == null ? "QUERY" : name + "\n----------");
+				System.out.println("Graph path: " + graph.getPath() + "\n----------");
+			}
+			module.parse(query);
+		} catch (Exception ex) {
+			throw new InvalidQueryException(ex);
+		}
+		module.getContext().getModelRepository().addModel(model);
+		addQueryArguments(context, module);
+	}
+
+	protected Object runQuery(final long trueStart, final IEolExecutableModule module) throws QueryExecutionException {
+		final long init = System.currentTimeMillis();
+		Object ret = null;
+		try (IGraphTransaction tx = graph.beginTransaction()) {
+			ret = module.execute();
+			if (ret == null)
+				ret = "no result returned (maybe it directly printed the result to console?)";
+			tx.success();
+		} catch (Exception e) {
+			throw new QueryExecutionException(e);
+		}
+		if (enableDebugOutput) {
+			System.out.println("QUERY TOOK " + (System.currentTimeMillis() - init) / 1000 + "s"
+					+ (System.currentTimeMillis() - init) % 1000 + "ms, to run");
+	
+			System.out.println("total time taken " + (System.currentTimeMillis() - trueStart) / 1000 + "s"
+					+ (System.currentTimeMillis() - trueStart) % 1000 + "ms, to run");
+		}
+	
+		return ret;
+	}
+
+	@SuppressWarnings("unchecked")
+	protected void addQueryArguments(Map<String, Object> context, final IEolExecutableModule module) {
+		if (context != null) {
+			final Map<String, Object> args = (Map<String, Object>) context.get(PROPERTY_ARGUMENTS);
+			if (args != null) {
+				for (Entry<String, Object> entry : args.entrySet()) {
+					module.getContext().getFrameStack().putGlobal(new Variable(entry.getKey(), entry.getValue(), null));
+				}
+			}
+		}
+	}
+
+	public void setDefaultNamespaces(String namespaces) {
 		// set default packages if applicable
 		try {
-			if (namespaces != null && !namespaces.equals("")) {
+			if (namespaces != null && !namespaces.trim().equals("")) {
 				String[] eps = ((String) namespaces).split(",");
-
 				defaultnamespaces = new HashSet<String>();
-
 				for (String s : eps) {
 					// System.err.println(s);
 					defaultnamespaces.add(s.trim());
@@ -1014,7 +899,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			System.err.println("setting of default namespaces failed, malformed property: " + namespaces);
 			t.printStackTrace();
 		}
-
 	}
 
 }
