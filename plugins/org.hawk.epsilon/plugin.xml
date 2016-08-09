@@ -9,5 +9,11 @@
                   
          
    </extension>
+   <extension
+         point="org.hawk.core.QueryExtensionPoint">
+      <query
+            query_language="org.hawk.epsilon.emc.EPLQueryEngine">
+      </query>
+   </extension>
 
 </plugin>

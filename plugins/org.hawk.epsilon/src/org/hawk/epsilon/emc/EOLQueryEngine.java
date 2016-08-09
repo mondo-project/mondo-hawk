@@ -53,6 +53,15 @@ import org.hawk.graph.MetamodelNode;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.TypeNode;
 
+/**
+ * Exposes a Hawk instance as an Epsilon model and adds support for EOL queries to Hawk.
+ * Other Epsilon languages may inherit from this class, redefining the {@link #createModule()}
+ * method and being careful with derived attributes (if they support them at all).
+ *
+ * TODO: investigate how this class could be broken up into model + proper query engine.
+ * Right now the two seem to be deeply intertwined and separating them would break backwards
+ * compatibility.
+ */
 public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine {
 
 	public static final String TYPE = "org.hawk.epsilon.emc.EOLQueryEngine";
@@ -436,9 +445,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		if (config == null)
 			config = getDatabaseConfig();
 
-		if (m != null
-		// && graph == null
-		) {
+		if (m != null) {
 			indexer = m;
 			graph = m.getGraph();
 			aliases.add(m.getName());
@@ -539,9 +546,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		}
 	}
 
+	/*
+	 * TODO: move this to the Neo4j backend.
+	 */
 	protected StringProperties getDefaultDatabaseConfig() {
-
-		long x = Runtime.getRuntime().maxMemory() / 1000000 / 60;
+		final long x = Runtime.getRuntime().maxMemory() / 1000000 / 60;
 		StringProperties defaultConfig = new StringProperties();
 		defaultConfig.put("neostore.nodestore.db.mapped_memory", 5 * x + "M");
 		defaultConfig.put("neostore.relationshipstore.db.mapped_memory", 15 * x + "M");
@@ -604,8 +613,25 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			System.out.println(">" + c + " = " + config.get(c));
 	}
 
-	protected IEolExecutableModule createModule() {
-		return new EolModule();
+
+	public List<TypeNodeWrapper> getTypes() {
+		final List<TypeNodeWrapper> nodes = new ArrayList<>();
+		for (IGraphNode n : graph.getMetamodelIndex().query("*", "*")) {
+			final MetamodelNode pn = new MetamodelNode(n);
+			for (TypeNode tn : pn.getTypes()) {
+				nodes.add(new TypeNodeWrapper(tn, this));
+			}
+		}
+		return nodes;
+	}
+
+	public List<MetamodelNodeWrapper> getMetamodels() {
+		final List<MetamodelNodeWrapper> nodes = new ArrayList<>();
+		for (IGraphNode n : graph.getMetamodelIndex().query("*", "*")) {
+			final MetamodelNode pn = new MetamodelNode(n);
+			nodes.add(new MetamodelNodeWrapper(pn, this));
+		}
+		return nodes;
 	}
 
 	// deriving attributes
@@ -667,8 +693,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 					if (enablecaching != null && (enablecaching.equals("true") || enablecaching.equals(true))) {
 						derived = new DeriveFeature().deriveFeature(cachedModules, indexer, n, this, s, prop);
 					} else {
-						derived = new DeriveFeature().deriveFeature(new HashMap<String, EolModule>(), indexer,
-								n, this, s, prop);
+						derived = new DeriveFeature().deriveFeature(new HashMap<String, EolModule>(), indexer, n, this,
+								s, prop);
 					}
 				} catch (Exception e1) {
 					System.err.println("Exception in deriving attribute");
@@ -679,14 +705,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 				IGraphNode elementnode = n.getIncoming().iterator().next().getStartNode();
 
-				IGraphNode typeNode = elementnode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)
-						.iterator().next().getEndNode();
-				IGraphNodeIndex derivedFeature = graph
-						.getOrCreateNodeIndex(typeNode.getOutgoingWithType("epackage").iterator().next()
-								.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString()
-								+ "##"
-								+ typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString()
-								+ "##" + s);
+				IGraphNode typeNode = elementnode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator()
+						.next().getEndNode();
+				IGraphNodeIndex derivedFeature = graph.getOrCreateNodeIndex(typeNode.getOutgoingWithType("epackage")
+						.iterator().next().getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString() + "##"
+						+ typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString() + "##" + s);
 
 				// flatten multi-valued derived features for indexing
 				if (derived.getClass().getComponentType() != null || derived instanceof Collection<?>)
@@ -707,14 +730,9 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 	@Override
 	public List<String> validate(String derivationlogic) {
+		final IEolExecutableModule module = createModule();
 
-		// System.err.println("validating:");
-		// System.err.println(derivationlogic);
-
-		EolModule module = new EolModule();
-
-		List<String> ret = new LinkedList<>();
-
+		final List<String> ret = new LinkedList<>();
 		try {
 			module.parse(derivationlogic);
 			for (ParseProblem p : module.getParseProblems())
@@ -722,34 +740,12 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		// System.err.println(ret);
-
 		return ret;
 	}
 
-	public List<TypeNodeWrapper> getTypes() {
-		final List<TypeNodeWrapper> nodes = new ArrayList<>();
-		for (IGraphNode n : graph.getMetamodelIndex().query("*", "*")) {
-			final MetamodelNode pn = new MetamodelNode(n);
-			for (TypeNode tn : pn.getTypes()) {
-				nodes.add(new TypeNodeWrapper(tn, this));
-			}
-		}
-		return nodes;
-	}
-
-	public List<MetamodelNodeWrapper> getMetamodels() {
-		final List<MetamodelNodeWrapper> nodes = new ArrayList<>();
-		for (IGraphNode n : graph.getMetamodelIndex().query("*", "*")) {
-			final MetamodelNode pn = new MetamodelNode(n);
-			nodes.add(new MetamodelNodeWrapper(pn, this));
-		}
-		return nodes;
-	}
-
 	@Override
-	public Object query(IModelIndexer m, String query, Map<String, Object> context) throws InvalidQueryException, QueryExecutionException {
+	public Object query(IModelIndexer m, String query, Map<String, Object> context)
+			throws InvalidQueryException, QueryExecutionException {
 		/*
 		 * Check if we're in the right state: we should not use {@link
 		 * IModelIndexer#waitFor} here, as that would introduce unwanted
@@ -775,8 +771,9 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	}
 
 	@Override
-	public Object query(IModelIndexer m, File query, Map<String, Object> context) throws InvalidQueryException, QueryExecutionException {
-	
+	public Object query(IModelIndexer m, File query, Map<String, Object> context)
+			throws InvalidQueryException, QueryExecutionException {
+
 		String code = "";
 		try {
 			BufferedReader r = new BufferedReader(new FileReader(query));
@@ -789,53 +786,63 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			e.printStackTrace();
 		}
 		return query(m, code, context);
-	
+
 	}
 
 	protected Object contextlessQuery(IModelIndexer m, String query, Map<String, Object> context)
 			throws QueryExecutionException, InvalidQueryException {
-				final long trueStart = System.currentTimeMillis();
-				String defaultnamespaces = null;
-				if (context != null)
-					defaultnamespaces = (String) context.get(PROPERTY_DEFAULTNAMESPACES);
+		final long trueStart = System.currentTimeMillis();
+		String defaultnamespaces = null;
+		if (context != null)
+			defaultnamespaces = (String) context.get(PROPERTY_DEFAULTNAMESPACES);
 
-				/*
-				 * We need to always create a new engine for every query: reusing the
-				 * same engine would be thread-unsafe.
-				 */
-				final EOLQueryEngine q = new EOLQueryEngine();
-				try {
-					q.load(m);
-					q.setDefaultNamespaces(defaultnamespaces);
-				} catch (EolModelLoadingException e) {
-					throw new QueryExecutionException("Loading of EOLQueryEngine failed");
-				}
+		/*
+		 * We need to always create a new engine for every query: reusing the
+		 * same engine would be thread-unsafe.
+		 */
+		final EOLQueryEngine q = new EOLQueryEngine();
+		try {
+			q.load(m);
+			q.setDefaultNamespaces(defaultnamespaces);
+		} catch (EolModelLoadingException e) {
+			throw new QueryExecutionException("Loading of EOLQueryEngine failed");
+		}
 
-				final IEolExecutableModule module = createModule();
-				parseQuery(query, context, q, module);
-				return runQuery(trueStart, module);
-			}
+		final IEolExecutableModule module = createModule();
+		parseQuery(query, context, q, module);
+		return runQuery(trueStart, module);
+	}
 
 	protected Object contextfulQuery(IModelIndexer m, String query, Map<String, Object> context)
 			throws QueryExecutionException, InvalidQueryException {
-				final long trueStart = System.currentTimeMillis();
-			
-				CEOLQueryEngine q = new CEOLQueryEngine();
-				try {
-					q.load(m);
-				} catch (EolModelLoadingException e) {
-					throw new QueryExecutionException("Loading of EOLQueryEngine failed");
-				}
-				q.setContext(context);
-				if (enableDebugOutput)
-					System.out.println("Graph path: " + graph.getPath() + "\n----------");
+		final long trueStart = System.currentTimeMillis();
 
-				final IEolExecutableModule module = createModule();
-				parseQuery(query, context, q, module);
-				return runQuery(trueStart, module);
-			}
+		CEOLQueryEngine q = new CEOLQueryEngine();
+		try {
+			q.load(m);
+		} catch (EolModelLoadingException e) {
+			throw new QueryExecutionException("Loading of EOLQueryEngine failed");
+		}
+		q.setContext(context);
+		if (enableDebugOutput)
+			System.out.println("Graph path: " + graph.getPath() + "\n----------");
 
-	protected void parseQuery(String query, Map<String, Object> context, final EOLQueryEngine model, final IEolExecutableModule module) throws InvalidQueryException {
+		final IEolExecutableModule module = createModule();
+		parseQuery(query, context, q, module);
+		return runQuery(trueStart, module);
+	}
+
+	// IQueryEngine part //////////////////////////////////////////////////////
+	
+	/**
+	 * Query engines that add support for other Epsilon languages should redefine this method.
+	 */
+	protected IEolExecutableModule createModule() {
+		return new EolModule();
+	}
+
+	protected void parseQuery(String query, Map<String, Object> context, final EOLQueryEngine model,
+			final IEolExecutableModule module) throws InvalidQueryException {
 		try {
 			if (enableDebugOutput) {
 				System.out.println("PARSING:\n----------\n" + name == null ? "QUERY" : name + "\n----------");
@@ -863,11 +870,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		if (enableDebugOutput) {
 			System.out.println("QUERY TOOK " + (System.currentTimeMillis() - init) / 1000 + "s"
 					+ (System.currentTimeMillis() - init) % 1000 + "ms, to run");
-	
+
 			System.out.println("total time taken " + (System.currentTimeMillis() - trueStart) / 1000 + "s"
 					+ (System.currentTimeMillis() - trueStart) % 1000 + "ms, to run");
 		}
-	
+
 		return ret;
 	}
 
@@ -883,6 +890,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		}
 	}
 
+	@Override
 	public void setDefaultNamespaces(String namespaces) {
 		// set default packages if applicable
 		try {
