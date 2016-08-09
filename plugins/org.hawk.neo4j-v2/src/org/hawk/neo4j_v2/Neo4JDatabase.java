@@ -119,19 +119,21 @@ public class Neo4JDatabase implements IGraphDatabase {
 	@Override
 	public void exitBatchMode() {
 
-		try {
-			batchindexer.shutdown();
-		} catch (Exception e) {
-		}
-		try {
-			batch.shutdown();
-		} catch (Exception e) {
+		if (batchindexer != null) {
+			try {
+				batchindexer.shutdown();
+			} catch (Exception e) {
+			}
+			batchindexer = null;
 		}
 
-		batch = null;
-		batchindexer = null;
-
-		//
+		if (batch != null) {
+			try {
+				batch.shutdown();
+			} catch (Exception e) {
+			}
+			batch = null;
+		}
 
 		if (graph == null) {
 
