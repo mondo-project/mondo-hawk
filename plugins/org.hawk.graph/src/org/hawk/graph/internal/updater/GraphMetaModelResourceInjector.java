@@ -60,14 +60,11 @@ public class GraphMetaModelResourceInjector {
 		this.graph = hawk.getGraph();
 		this.listener = listener;
 
-		// try {
 		System.out.println("ADDING METAMODELS: ");
 		System.out.print("ADDING: ");
-		System.out.println(parseResource(set) + " METAMODEL NODES! (took ~"
+		final int resource = parseResource(set);
+		System.out.println(resource + " METAMODEL NODES! (took ~"
 				+ (System.nanoTime() - startTime) / 1000000000 + "sec)");
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
 	}
 
 	public GraphMetaModelResourceInjector(IModelIndexer hawk, CompositeGraphChangeListener listener) {
