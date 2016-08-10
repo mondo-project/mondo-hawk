@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.ValueListIterator;
@@ -85,13 +86,16 @@ public class EMFObject implements IHawkObject {
 
 	@Override
 	public IHawkClassifier getType() {
-
 		return new EMFClass(eob.eClass());
 	}
 
 	@Override
 	public boolean isSet(IHawkStructuralFeature hsf) {
-		return eob.eIsSet(eob.eClass().getEStructuralFeature(hsf.getName()));
+		final EStructuralFeature sf = eob.eClass().getEStructuralFeature(hsf.getName());
+
+		// NOTE: we need to say 'yes' for default values in order to handle
+		// cases like Segment#length = 0 in the Train Benchmark queries.
+		return eob.eIsSet(sf) || sf.getDefaultValue() != null;
 	}
 
 	@Override
