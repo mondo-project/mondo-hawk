@@ -231,32 +231,36 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 
 	private void remove(final Class<?> keyClass, String field, final OrientNode n) {
 		OIndex<?> keyIdx = getKeyIndex(keyClass);
-		if (keyIdx != null) {
-			OCompositeKey keyFrom, keyTo;
+		if (keyIdx == null) {
+			return;
+		}
+
+		OCompositeKey keyFrom = null, keyTo = null;
+		if (n.getId().isPersistent()) {
+			keyFrom = new OCompositeKey(n.getId(), field, AbstractOrientIndex.getMinValue(keyClass));
+			keyTo = new OCompositeKey(n.getId(), field, AbstractOrientIndex.getMaxValue(keyClass));
+		} else if (n.getDocument() != null) {
+			keyFrom = new OCompositeKey(n.getDocument(), field, AbstractOrientIndex.getMinValue(keyClass));
+			keyTo = new OCompositeKey(n.getDocument(), field, AbstractOrientIndex.getMaxValue(keyClass));
+		} else {
+			return;
+		}
+
+		final List<Object> keysToRemove = new ArrayList<>();
+		final OIndexCursor keyCursor = iterateEntriesBetween(keyFrom, true, keyTo, true, keyIdx, graph.getGraph());
+		for (Entry<Object, OIdentifiable> entry = keyCursor.nextEntry(); entry != null; entry = keyCursor.nextEntry()) {
+			Object key = ((OCompositeKey) entry.getKey()).getKeys().get(2);
+			keysToRemove.add(key);
+		}
+
+		final OIndex<?> idx = getIndex(keyClass);
+		for (Object key : keysToRemove) {
 			if (n.getId().isPersistent()) {
-				keyFrom = new OCompositeKey(n.getId(), field, AbstractOrientIndex.getMinValue(keyClass));
-				keyTo = new OCompositeKey(n.getId(), field, AbstractOrientIndex.getMaxValue(keyClass));
+				idx.remove(new OCompositeKey(field, key), n.getId());
+				keyIdx.remove(new OCompositeKey(n.getId(), field, key), n.getId());
 			} else {
-				keyFrom = new OCompositeKey(n.getDocument(), field, AbstractOrientIndex.getMinValue(keyClass));
-				keyTo = new OCompositeKey(n.getDocument(), field, AbstractOrientIndex.getMaxValue(keyClass));
-			}
-
-			final List<Object> keysToRemove = new ArrayList<>();
-			final OIndexCursor keyCursor = iterateEntriesBetween(keyFrom, true, keyTo, true, keyIdx, graph.getGraph());
-			for (Entry<Object, OIdentifiable> entry = keyCursor.nextEntry(); entry != null; entry = keyCursor.nextEntry()) {
-				Object key = ((OCompositeKey)entry.getKey()).getKeys().get(2);
-				keysToRemove.add(key);
-			}
-
-			final OIndex<?> idx = getIndex(keyClass);
-			for (Object key : keysToRemove) {
-				if (n.getId().isPersistent()) {
-					idx.remove(new OCompositeKey(field, key), n.getId());
-					keyIdx.remove(new OCompositeKey(n.getId(), field, key), n.getId());
-				} else {
-					idx.remove(new OCompositeKey(field, key), n.getDocument());
-					keyIdx.remove(new OCompositeKey(n.getDocument(), field, key), n.getDocument());
-				}
+				idx.remove(new OCompositeKey(field, key), n.getDocument());
+				keyIdx.remove(new OCompositeKey(n.getDocument(), field, key), n.getDocument());
 			}
 		}
 	}

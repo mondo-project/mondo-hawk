@@ -287,11 +287,13 @@ public class OrientNode implements IGraphNode {
 		}
 
 		final ODocument loaded = graph.getGraph().load(getId());
-		if (loaded == null) {
+		if (loaded != null) {
+			loaded.deserializeFields();
+		}
+		/*else {
 			graph.getConsole().printerrln("Loading node with id " + getId() + " from OrientDB produced null value");
 			Thread.dumpStack();
-		}
-		loaded.deserializeFields();
+		}*/
 		return loaded;
 	}
 

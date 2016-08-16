@@ -33,6 +33,8 @@ public final class OrientNameCleaner {
 		INVALID_FIELD_CHAR_REPLACEMENTS.put("%", "!hpct!");
 		INVALID_FIELD_CHAR_REPLACEMENTS.put("=", "!hequ!");
 		INVALID_FIELD_CHAR_REPLACEMENTS.put(".", "!hdot!");
+		INVALID_FIELD_CHAR_REPLACEMENTS.put("/", "!hfsl!");
+		INVALID_FIELD_CHAR_REPLACEMENTS.put("\\", "!hbsl!");
 	}
 
 	private OrientNameCleaner() {}

@@ -223,9 +223,9 @@ public class IndexTest {
 	@Test
 	public void invalidIndexNames() throws Exception {
 		// OIndexManagerShared#createIndex checks for these
-		char[] invalidChars = ":,; %=".toCharArray();
-
+		final char[] invalidChars = ":,; %=/\\".toCharArray();
 		setup("invalidIndexNames");
+
 		OrientNode n;
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			n = db.createNode(null, "eobject");
@@ -233,10 +233,20 @@ public class IndexTest {
 		}
 		for (char invalidChar : invalidChars) {
 			final String name = "my" + invalidChar + "index";
-			IGraphNodeIndex idx = db.getOrCreateNodeIndex(name);
-			idx.add(n, "id", 1);
+			try (IGraphTransaction tx = db.beginTransaction()) {
+				IGraphNodeIndex idx = db.getOrCreateNodeIndex(name);
+				idx.add(n, "id", 1);
+				tx.success();
+			}
+
 			assertTrue(db.getNodeIndexNames().contains(name));
 			assertTrue(db.getIndexStore().getNodeFieldIndexNames(name).contains("id"));
+			IGraphNodeIndex idx = db.getOrCreateNodeIndex(name);
+
+			IGraphIterable<IGraphNode> results = idx.query("id", 1);
+			assertEquals(1, results.size());
+			results = idx.query("id", 0, 1, true, true);
+			assertEquals(1, results.size());
 		}
 		for (char invalidChar : invalidChars) {
 			final String name = "my" + invalidChar + "index";

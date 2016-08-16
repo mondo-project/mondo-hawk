@@ -151,7 +151,7 @@ public class OrientIndexStore {
 		} else if (oNames instanceof String[]) {
 			return new HashSet<String>(Arrays.asList((String[])oNames));
 		} else {
-			return Collections.emptySet();
+			return new HashSet<String>();
 		}
 	}
 
