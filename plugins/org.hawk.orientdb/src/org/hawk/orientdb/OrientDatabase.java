@@ -82,7 +82,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	private IGraphNodeIndex metamodelIndex;
 	private IGraphNodeIndex fileIndex;
-	protected ODatabaseDocumentTx db;
+
 	private Mode currentMode;
 
 	private Map<String, OrientNode> dirtyNodes = new HashMap<>(100_000);
@@ -90,7 +90,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	private OrientIndexStore indexStore;
 
-	private String dbURL;
+	protected String dbURL;
 
 	private Set<OrientNodeIndex> postponedIndexes = new HashSet<>();
 
@@ -123,23 +123,11 @@ public class OrientDatabase implements IGraphDatabase {
 
 		console.println("Starting database " + iURL);
 		this.dbURL = iURL;
-		this.db = new ODatabaseDocumentTx(iURL);
-
-		openDatabase();
-
 		metamodelIndex = getOrCreateNodeIndex(METAMODEL_IDX_NAME);
 		fileIndex = getOrCreateNodeIndex(FILE_IDX_NAME);
 
 		// By default, we're on transactional mode
 		exitBatchMode();
-	}
-
-	protected void openDatabase() throws IOException {
-		if (db.exists()) {
-			db.open("admin", "admin");
-		} else {
-			db.create();
-		}
 	}
 
 	@Override
@@ -159,16 +147,17 @@ public class OrientDatabase implements IGraphDatabase {
 			saveDirty();
 		}
 
-		if (!getGraph().isClosed()) {
+		ODatabaseDocumentTx db = getGraphAsIs();
+		if (!db.isClosed()) {
 			/*
 			 * We want to completely close the database (e.g. so we can
 			 * delete the directory later from the Hawk UI).
 			 */
-			final OStorage storage = getGraph().getStorage();
+			final OStorage storage = db.getStorage();
 			if (delete) {
-				getGraph().drop();
+				db.drop();
 			} else {
-				getGraph().close();
+				db.close();
 			}
 			storage.close(true, false);
 			Orient.instance().unregisterStorage(storage);
@@ -208,8 +197,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public OrientTransaction beginTransaction() {
-		getGraph(); // make sure the thread local to the OrientDB instance is set
-		if (!db.getTransaction().isActive()) {
+		if (!getGraph().getTransaction().isActive()) {
 			exitBatchMode();
 		}
 		return new OrientTransaction(this);
@@ -222,24 +210,25 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public void enterBatchMode() {
+		ODatabaseDocumentTx db = getGraph();
 		if (db.getTransaction().isActive()) {
 			saveDirty();
 			db.commit();
 		}
 		ensureWALSetTo(false);
-		ODatabaseRecordThreadLocal.INSTANCE.set(db);
+		db = getGraph();
 		db.declareIntent(new OIntentMassiveInsert());
 		currentMode = Mode.NO_TX_MODE;
 	}
 
 	private void ensureWALSetTo(final boolean useWAL) {
+		ODatabaseDocumentTx db = getGraph();
 		if (useWAL != OGlobalConfiguration.USE_WAL.getValueAsBoolean()) {
 			final OStorage storage = db.getStorage();
 			db.close();
 			storage.close(true, false);
 			OGlobalConfiguration.USE_WAL.setValue(useWAL);
-			db = new ODatabaseDocumentTx(dbURL);
-			db.open("admin", "admin");
+			db = getGraph();
 		}
 	}
 
@@ -258,11 +247,12 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public void exitBatchMode() {
+		final ODatabaseDocumentTx db = getGraph();
 		if (!db.getTransaction().isActive()) {
 			saveDirty();
+			db.commit();
 			ensureWALSetTo(true); // this reopens the DB, so it *must* go before db.begin()
 		}
-		ODatabaseRecordThreadLocal.INSTANCE.set(db);
 		currentMode = Mode.TX_MODE;
 	}
 
@@ -292,6 +282,7 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	private void ensureClassExists(final String vertexTypeName) {
+		final ODatabaseDocumentTx db = getGraph();
 		final OSchemaProxy schema = db.getMetadata().getSchema();
 		if (!schema.existsClass(vertexTypeName)) {
 			final boolean wasInTX = db.getTransaction().isActive();
@@ -376,7 +367,25 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public ODatabaseDocumentTx getGraph() {
-		ODatabaseRecordThreadLocal.INSTANCE.set(db);
+		ODatabaseDocumentTx db = getGraphAsIs();
+		if (db.exists()) {
+			if (db.isClosed()) {
+				db.open("admin", "admin");
+			}
+		} else {
+			db.create();
+		}
+		return db;
+	}
+
+	protected ODatabaseDocumentTx getGraphAsIs() {
+		ODatabaseDocumentTx db;
+		if (ODatabaseRecordThreadLocal.INSTANCE.isDefined()) {
+			db = (ODatabaseDocumentTx) ODatabaseRecordThreadLocal.INSTANCE.get();
+		} else {
+			db = new ODatabaseDocumentTx(dbURL);
+			System.out.println("connected db " + db + " in thread " + Thread.currentThread().getId());
+		}
 		return db;
 	}
 

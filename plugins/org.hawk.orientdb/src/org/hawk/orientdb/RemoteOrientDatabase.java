@@ -7,6 +7,8 @@ import org.hawk.core.IConsole;
 
 import com.orientechnologies.orient.client.remote.OServerAdmin;
 import com.orientechnologies.orient.client.remote.OStorageRemote;
+import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.storage.OStorage;
 
 /**
@@ -36,19 +38,34 @@ public class RemoteOrientDatabase extends OrientDatabase {
 
 	@Override
 	public void delete() throws Exception {
-		getServerAdmin().dropDatabase(storageType);
+		getServerAdmin(getGraphAsIs()).dropDatabase(storageType);
 	}
 
 	@Override
-	protected void openDatabase() throws IOException {
-		final OServerAdmin admin = getServerAdmin();
-		if (!admin.existsDatabase(storageType)) {
-			admin.createDatabase(DBTYPE_DOC, storageType);
+	public ODatabaseDocumentTx getGraph() {
+		ODatabaseDocumentTx db = getGraphAsIs();
+
+		if (db.isClosed()) {
+			try {
+				final OServerAdmin admin = getServerAdmin(db);
+				if (!admin.existsDatabase(storageType)) {
+					admin.createDatabase(DBTYPE_DOC, storageType);
+				}
+				admin.close();
+
+				// need to reconnect - otherwise isClosed flag is not updated
+				db = new ODatabaseDocumentTx(dbURL);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				return null;
+			}
+
+			db.open(dbUsername, dbPassword);
 		}
-		db.open(dbUsername, dbPassword);
+		return db;
 	}
 
-	protected OServerAdmin getServerAdmin() throws IOException {
+	protected OServerAdmin getServerAdmin(ODatabaseDocumentTx db) throws Exception {
 		OStorage underlying = getUnderlyingStorage(db.getStorage());
 		OServerAdmin admin = new OServerAdmin((OStorageRemote)underlying);
 
