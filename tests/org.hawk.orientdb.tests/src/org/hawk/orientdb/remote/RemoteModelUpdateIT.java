@@ -11,7 +11,6 @@
 package org.hawk.orientdb.remote;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.hawk.core.util.DefaultConsole;
 import org.hawk.orientdb.ModelUpdateTest;
@@ -20,7 +19,7 @@ import org.hawk.orientdb.RemoteOrientDatabase;
 public class RemoteModelUpdateIT extends ModelUpdateTest {
 
 	@Override
-	protected void createDB(File dbFolder) throws IOException {
+	protected void createDB(File dbFolder) throws Exception {
 		final RemoteOrientDatabase remoteDB = new RemoteOrientDatabase();
 		db = remoteDB;
 		remoteDB.setStorageType(RemoteOrientDatabase.DBSTORAGE_MEMORY);

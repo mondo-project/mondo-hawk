@@ -109,7 +109,7 @@ public class ModelUpdateTest {
 		});
 	}
 
-	protected void createDB(final File dbFolder) throws IOException {
+	protected void createDB(final File dbFolder) throws Exception {
 		db = new OrientDatabase();
 		db.run("plocal:" + dbFolder.getAbsolutePath(), dbFolder, console);
 	}

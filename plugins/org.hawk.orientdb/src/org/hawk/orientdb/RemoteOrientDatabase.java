@@ -31,38 +31,29 @@ public class RemoteOrientDatabase extends OrientDatabase {
 	public void run(File parentfolder, IConsole c) {
 		try {
 			run("remote:localhost/" + parentfolder.getName(), parentfolder, c);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			c.printerrln(e);
 		}
 	}
 
 	@Override
-	public void delete() throws Exception {
-		getServerAdmin(getGraphAsIs()).dropDatabase(storageType);
+	public void run(String iURL, File parentfolder, IConsole c) throws Exception {
+		final ODatabaseDocumentTx db = new ODatabaseDocumentTx(iURL);
+		final OServerAdmin admin = getServerAdmin(db);
+		if (!admin.existsDatabase(storageType)) {
+			admin.createDatabase(DBTYPE_DOC, storageType);
+		}
+		admin.close();
+		db.close();
+
+		super.run(iURL, parentfolder, c);
 	}
 
+
+
 	@Override
-	public ODatabaseDocumentTx getGraph() {
-		ODatabaseDocumentTx db = getGraphAsIs();
-
-		if (db.isClosed()) {
-			try {
-				final OServerAdmin admin = getServerAdmin(db);
-				if (!admin.existsDatabase(storageType)) {
-					admin.createDatabase(DBTYPE_DOC, storageType);
-				}
-				admin.close();
-
-				// need to reconnect - otherwise isClosed flag is not updated
-				db = new ODatabaseDocumentTx(dbURL);
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				return null;
-			}
-
-			db.open(dbUsername, dbPassword);
-		}
-		return db;
+	public void delete() throws Exception {
+		getServerAdmin(getGraphAsIs()).dropDatabase(storageType);
 	}
 
 	protected OServerAdmin getServerAdmin(ODatabaseDocumentTx db) throws Exception {

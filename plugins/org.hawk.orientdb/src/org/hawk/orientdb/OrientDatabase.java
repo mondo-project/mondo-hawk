@@ -39,7 +39,7 @@ import org.hawk.orientdb.util.OrientNameCleaner;
 
 import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.config.OGlobalConfiguration;
-import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
+import com.orientechnologies.orient.core.db.OPartitionedDatabasePool;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
@@ -88,6 +88,7 @@ public class OrientDatabase implements IGraphDatabase {
 	private Map<String, OrientNode> dirtyNodes = new HashMap<>(100_000);
 	private Map<String, OrientEdge> dirtyEdges = new HashMap<>(100_000);
 
+	private OPartitionedDatabasePool dbPool;
 	private OrientIndexStore indexStore;
 
 	protected String dbURL;
@@ -107,12 +108,12 @@ public class OrientDatabase implements IGraphDatabase {
 	public void run(File parentfolder, IConsole c) {
 		try {
 			run("plocal:" + parentfolder.getAbsolutePath(), parentfolder, c);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			c.printerrln(e);
 		}
 	}
 
-	public void run(String iURL, File parentfolder, IConsole c) throws IOException {
+	public void run(String iURL, File parentfolder, IConsole c) throws Exception {
 		this.storageFolder = parentfolder;
 		this.tempFolder = new File(storageFolder, "temp");
 		this.console = c;
@@ -123,6 +124,8 @@ public class OrientDatabase implements IGraphDatabase {
 
 		console.println("Starting database " + iURL);
 		this.dbURL = iURL;
+		dbPool = new OPartitionedDatabasePool(dbURL, "admin", "admin");
+
 		metamodelIndex = getOrCreateNodeIndex(METAMODEL_IDX_NAME);
 		fileIndex = getOrCreateNodeIndex(FILE_IDX_NAME);
 
@@ -159,6 +162,9 @@ public class OrientDatabase implements IGraphDatabase {
 			} else {
 				db.close();
 			}
+			if (dbPool != null) {
+				dbPool.close();
+			}
 			storage.close(true, false);
 			Orient.instance().unregisterStorage(storage);
 		}
@@ -173,6 +179,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 		metamodelIndex = fileIndex = null;
 		storageFolder = tempFolder = null;
+		dbPool = null;
 	}
 
 	@Override
@@ -228,7 +235,7 @@ public class OrientDatabase implements IGraphDatabase {
 			db.close();
 			storage.close(true, false);
 			OGlobalConfiguration.USE_WAL.setValue(useWAL);
-			db = getGraph();
+			dbPool = new OPartitionedDatabasePool(dbURL, "admin", "admin");
 		}
 	}
 
@@ -368,25 +375,20 @@ public class OrientDatabase implements IGraphDatabase {
 	@Override
 	public ODatabaseDocumentTx getGraph() {
 		ODatabaseDocumentTx db = getGraphAsIs();
-		if (db.exists()) {
-			if (db.isClosed()) {
-				db.open("admin", "admin");
-			}
-		} else {
+		if (!db.exists()) {
 			db.create();
 		}
 		return db;
 	}
 
 	protected ODatabaseDocumentTx getGraphAsIs() {
-		ODatabaseDocumentTx db;
-		if (ODatabaseRecordThreadLocal.INSTANCE.isDefined()) {
-			db = (ODatabaseDocumentTx) ODatabaseRecordThreadLocal.INSTANCE.get();
+		if (dbPool != null) {
+			return dbPool.acquire();
 		} else {
-			db = new ODatabaseDocumentTx(dbURL);
-			System.out.println("connected db " + db + " in thread " + Thread.currentThread().getId());
+			// Only needed for quick reconnections after a shutdown
+			// (e.g. delete() after a shutdown of Hawk in some tests)
+			return new ODatabaseDocumentTx(dbURL);
 		}
-		return db;
 	}
 
 	@Override

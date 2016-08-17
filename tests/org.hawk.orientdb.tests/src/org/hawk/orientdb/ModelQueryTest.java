@@ -13,7 +13,6 @@ package org.hawk.orientdb;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,7 +77,7 @@ public class ModelQueryTest {
 		validationListener.setModelIndexer(indexer);
 	}
 
-	protected void createDB(final File dbFolder) throws IOException {
+	protected void createDB(final File dbFolder) throws Exception {
 		db = new OrientDatabase();
 		db.run("plocal:" + dbFolder.getAbsolutePath(), dbFolder, console);
 	}
