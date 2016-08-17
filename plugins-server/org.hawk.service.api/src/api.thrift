@@ -309,6 +309,7 @@ struct HawkQueryOptions {
 	 /* Whether to include all the child elements of the model element results (true) or not (false). */ 7: optional bool includeContained = true,
 	 /* If set and not empty, only the specified metamodels, types and features will be fetched. Otherwise, everything that is not excluded will be fetched. The string '*' can be used to refer to all types within a metamodel or all fields within a type. */ 8: optional map<string,map<string,set<string>>> effectiveMetamodelIncludes,
 	 /* If set and not empty, the mentioned metamodels, types and features will not be fetched. The string '*' can be used to refer to all types within a metamodel or all fields within a type. */ 9: optional map<string,map<string,set<string>>> effectiveMetamodelExcludes,
+	 /* Whether to include derived attributes (true) or not (false) in model element results. */ 10: optional bool includeDerived = true,
 }
 
 struct IFCExportOptions {

@@ -287,6 +287,9 @@ class HawkQueryOptions {
 
   @doc(d="If set and not empty, the mentioned metamodels, types and features will not be fetched. The string '*' can be used to refer to all types within a metamodel or all fields within a type.", optional="true")
   val EffectiveMetamodelMap effectiveMetamodelExcludes;
+
+  @doc(d="Whether to include derived attributes (true) or not (false) in model element results", optional="true", default="true")
+  attr Boolean includeDerived;
 }
 
 @doc(d="Entity that represents a model repository")

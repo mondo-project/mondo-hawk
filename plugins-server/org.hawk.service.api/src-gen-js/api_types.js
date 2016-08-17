@@ -4158,6 +4158,7 @@ HawkQueryOptions = function(args) {
   this.includeContained = true;
   this.effectiveMetamodelIncludes = null;
   this.effectiveMetamodelExcludes = null;
+  this.includeDerived = true;
   if (args) {
     if (args.repositoryPattern !== undefined && args.repositoryPattern !== null) {
       this.repositoryPattern = args.repositoryPattern;
@@ -4185,6 +4186,9 @@ HawkQueryOptions = function(args) {
     }
     if (args.effectiveMetamodelExcludes !== undefined && args.effectiveMetamodelExcludes !== null) {
       this.effectiveMetamodelExcludes = Thrift.copyMap(args.effectiveMetamodelExcludes, [Thrift.copyMap, Thrift.copyList, null]);
+    }
+    if (args.includeDerived !== undefined && args.includeDerived !== null) {
+      this.includeDerived = args.includeDerived;
     }
   }
 };
@@ -4392,6 +4396,13 @@ HawkQueryOptions.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 10:
+      if (ftype == Thrift.Type.BOOL) {
+        this.includeDerived = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -4513,6 +4524,11 @@ HawkQueryOptions.prototype.write = function(output) {
       }
     }
     output.writeMapEnd();
+    output.writeFieldEnd();
+  }
+  if (this.includeDerived !== null && this.includeDerived !== undefined) {
+    output.writeFieldBegin('includeDerived', Thrift.Type.BOOL, 10);
+    output.writeBool(this.includeDerived);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

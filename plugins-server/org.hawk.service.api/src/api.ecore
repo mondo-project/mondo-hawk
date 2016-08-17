@@ -675,6 +675,13 @@
         <details key="optional" value="true"/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="includeDerived" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBooleanObject">
+      <eAnnotations source="doc">
+        <details key="d" value="Whether to include derived attributes (true) or not (false) in model element results"/>
+        <details key="optional" value="true"/>
+        <details key="default" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Repository">
     <eAnnotations source="doc">

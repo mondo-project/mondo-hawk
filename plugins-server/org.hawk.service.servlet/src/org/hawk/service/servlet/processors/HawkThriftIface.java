@@ -245,6 +245,7 @@ public final class HawkThriftIface implements Hawk.Iface {
 			enc.setIncludeNodeIDs(opts.includeNodeIDs);
 			enc.setIncludeAttributes(opts.includeAttributes);
 			enc.setIncludeReferences(opts.includeReferences);
+			enc.setIncludeDerived(opts.includeDerived);
 			final EffectiveMetamodelRuleset emm = new EffectiveMetamodelRuleset(
 					opts.getEffectiveMetamodelIncludes(), opts.getEffectiveMetamodelExcludes());
 			if (!emm.isEverythingIncluded()) {
@@ -345,6 +346,7 @@ public final class HawkThriftIface implements Hawk.Iface {
 			encoder.setUseContainment(false);
 			encoder.setIncludeAttributes(options.isIncludeAttributes());
 			encoder.setIncludeReferences(options.isIncludeReferences());
+			encoder.setIncludeDerived(options.isIncludeDerived());
 			final EffectiveMetamodelRuleset emm = new EffectiveMetamodelRuleset(
 					options.getEffectiveMetamodelIncludes(),
 					options.getEffectiveMetamodelExcludes());
@@ -549,6 +551,7 @@ public final class HawkThriftIface implements Hawk.Iface {
 			final HawkModelElementEncoder encoder = new HawkModelElementEncoder(gw);
 			encoder.setIncludeAttributes(opts.includeAttributes);
 			encoder.setIncludeReferences(opts.includeReferences);
+			encoder.setIncludeDerived(opts.includeDerived);
 			encoder.setIncludeNodeIDs(opts.includeNodeIDs);
 			encoder.setUseContainment(opts.includeContained);
 
