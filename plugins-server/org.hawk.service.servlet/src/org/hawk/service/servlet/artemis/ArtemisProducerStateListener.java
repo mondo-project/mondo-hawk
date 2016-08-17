@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2016 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,8 +27,8 @@ import org.apache.thrift.transport.TTransport;
 import org.hawk.core.IStateListener;
 import org.hawk.osgiserver.HModel;
 import org.hawk.service.api.HawkStateEvent;
-import org.hawk.service.api.utils.ActiveMQBufferTransport;
 import org.hawk.service.api.utils.APIUtils.ThriftProtocol;
+import org.hawk.service.api.utils.ActiveMQBufferTransport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,8 +44,19 @@ public class ArtemisProducerStateListener implements IStateListener {
 	private final String queueAddress;
 	private final TProtocolFactory protocolFactory;
 
-	private ClientSession session;
-	private ClientProducer producer;
+	/*
+	 * Using a ThreadLocal is required by Artemis: otherwise, warnings are produced.
+	 */
+	protected final class ClientState {
+		protected ClientSession session;
+		protected ClientProducer producer;
+	}
+	private ThreadLocal<ClientState> clientState = new ThreadLocal<ClientState>() {
+		@Override
+		protected ClientState initialValue() {
+			return new ClientState();
+		}
+	};
 
 	public ArtemisProducerStateListener(HModel model, String queueAddress) throws Exception {
 		this.model = model;
@@ -86,12 +97,12 @@ public class ArtemisProducerStateListener implements IStateListener {
 
 	private void sendEvent(HawkStateEvent change) {
 		try {
-			final ClientMessage msg = session.createMessage(Message.BYTES_TYPE, false);
+			final ClientMessage msg = clientState.get().session.createMessage(Message.BYTES_TYPE, false);
 			final TTransport trans = new ActiveMQBufferTransport(msg.getBodyBuffer());
 			final TProtocol proto = protocolFactory.getProtocol(trans);
 			change.write(proto);
 
-			producer.send(msg);
+			clientState.get().producer.send(msg);
 		} catch (TException ex) {
 			LOGGER.error("Serialization error", ex);
 		} catch (ActiveMQException ex) {
@@ -100,10 +111,11 @@ public class ArtemisProducerStateListener implements IStateListener {
 	}
 
 	private void openSession() {
-		if (session == null || session.isClosed()) {
+		ClientState state = clientState.get();
+		if (state.session == null || state.session.isClosed()) {
 			try {
-				this.session = sessionFactory.createSession();
-				this.producer = session.createProducer(queueAddress);
+				state.session = sessionFactory.createSession();
+				state.producer = state.session.createProducer(queueAddress);
 			} catch (ActiveMQException e) {
 				LOGGER.error("Could not start a new Artemis session", e);
 			}
@@ -111,17 +123,18 @@ public class ArtemisProducerStateListener implements IStateListener {
 	}
 
 	private void closeSession() {
+		ClientState state = clientState.get();
 		try {
-			if (producer != null) {
-				producer.close();
+			if (state.producer != null) {
+				state.producer.close();
 			}
-			if (session != null) {
-				session.close();
+			if (state.session != null) {
+				state.session.close();
 			}
 		} catch (ActiveMQException e) {
 			LOGGER.error("Could not close the session", e);
 		} finally {
-			session = null;
+			state.session = null;
 		}
 	}
 
