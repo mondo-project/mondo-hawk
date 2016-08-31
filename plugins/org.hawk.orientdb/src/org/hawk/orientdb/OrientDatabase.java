@@ -38,6 +38,7 @@ import org.hawk.orientdb.util.OrientClusterDocumentIterable;
 import org.hawk.orientdb.util.OrientNameCleaner;
 
 import com.orientechnologies.orient.core.Orient;
+import com.orientechnologies.orient.core.cache.ORecordCacheSoftRefs;
 import com.orientechnologies.orient.core.config.OGlobalConfiguration;
 import com.orientechnologies.orient.core.db.OPartitionedDatabasePool;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
@@ -121,6 +122,7 @@ public class OrientDatabase implements IGraphDatabase {
 		OGlobalConfiguration.WAL_CACHE_SIZE.setValue(10000);
 		OGlobalConfiguration.OBJECT_SAVE_ONLY_DIRTY.setValue(true);
 		OGlobalConfiguration.SBTREE_MAX_KEY_SIZE.setValue(102_400);
+		OGlobalConfiguration.CACHE_LOCAL_IMPL.setValue(ORecordCacheSoftRefs.class.getName());
 
 		console.println("Starting database " + iURL);
 		this.dbURL = iURL;
