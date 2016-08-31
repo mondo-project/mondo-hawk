@@ -44,18 +44,18 @@ public class OrientEdge implements IGraphEdge {
 
 	/** Should be used when the ID is persistent, to save memory. */
 	public OrientEdge(ORID id, OrientDatabase graph) {
-		if (!id.isPersistent()) {
-			graph.getConsole().printerrln("Warning, unsafe: OrientEdge(ORID) used with non-persistent ID " + id);
-		}
+//		if (!id.isPersistent()) {
+//			graph.getConsole().printerrln("Warning, unsafe: OrientEdge(ORID) used with non-persistent ID " + id);
+//		}
 		this.id = id;
 		this.db = graph;
 	}
 
 	/** Should only be used when the ID is not persistent. */
 	public OrientEdge(ODocument newDoc, OrientDatabase graph) {
-		if (newDoc.getIdentity().isPersistent()) {
-			graph.getConsole().printerrln("Warning, inefficient: OrientEdge(ODocument) used with persistent ID " + newDoc.getIdentity());
-		}
+//		if (newDoc.getIdentity().isPersistent()) {
+//			graph.getConsole().printerrln("Warning, inefficient: OrientEdge(ODocument) used with persistent ID " + newDoc.getIdentity());
+//		}
 		this.db = graph;
 		this.changedEdge = newDoc;
 		this.id = changedEdge.getIdentity();
@@ -107,6 +107,10 @@ public class OrientEdge implements IGraphEdge {
 
 	private OrientNode getNode(final String property) {
 		final ODocument tmpEdge = getDocument();
+
+		// We don't modify edge documents - we just create or delete them.
+		// Disabling tracking speeds up warm queries noticeably.
+		tmpEdge.setTrackingChanges(false);
 		final Object value = tmpEdge.field(property);
 		if (value instanceof ODocument) {
 			ODocument doc = (ODocument) value;

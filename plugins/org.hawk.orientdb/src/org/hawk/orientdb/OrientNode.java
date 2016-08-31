@@ -58,9 +58,9 @@ public class OrientNode implements IGraphNode {
 
 	/** Should only be used with non-persistent IDs. */
 	public OrientNode(ODocument doc, OrientDatabase graph) {
-		if (doc.getIdentity().isPersistent()) {
-			graph.getConsole().println("Warning, inefficient: OrientNode(ODocument) being used with persistent ID " + doc.getIdentity());
-		}
+//		if (doc.getIdentity().isPersistent()) {
+//			graph.getConsole().println("Warning, inefficient: OrientNode(ODocument) being used with persistent ID " + doc.getIdentity());
+//		}
 		this.graph = graph;
 		this.changedVertex = doc;
 		this.id = doc.getIdentity();
