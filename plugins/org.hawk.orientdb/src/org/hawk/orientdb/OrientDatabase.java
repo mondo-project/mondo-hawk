@@ -342,6 +342,7 @@ public class OrientDatabase implements IGraphDatabase {
 			// TODO: should we still do this in tx mode? OrientDB
 			// might keep its own copies for the tx anyway.
 			saveDirty();
+			getGraph().getLocalCache().invalidate();
 		}
 	}
 
