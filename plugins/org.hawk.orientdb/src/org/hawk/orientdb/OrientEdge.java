@@ -110,7 +110,7 @@ public class OrientEdge implements IGraphEdge {
 		final Object value = tmpEdge.field(property);
 		if (value instanceof ODocument) {
 			ODocument doc = (ODocument) value;
-			return db.getNodeById(doc.getIdentity());
+			return db.getNodeById(doc);
 		} else if (value != null) {
 			ORecordId id = (ORecordId) value;
 			return db.getNodeById(id);

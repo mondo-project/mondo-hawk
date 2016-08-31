@@ -311,7 +311,7 @@ public class OrientDatabase implements IGraphDatabase {
 				if (baseVertexClass == null) {
 					baseVertexClass = schema.createClass("V");
 				}
-				newVertexClass.setSuperClass(baseVertexClass);
+				newVertexClass.addSuperClass(baseVertexClass);
 			}
 
 			if (wasInTX) {
@@ -398,23 +398,32 @@ public class OrientDatabase implements IGraphDatabase {
 		if (id instanceof String) {
 			id = new ORecordId(id.toString());
 		}
-		OrientNode dirtyNode = dirtyNodes.get(id.toString());
+
+		String sID = id instanceof ODocument ? ((ODocument)id).getIdentity().toString() : id.toString();
+		OrientNode dirtyNode = dirtyNodes.get(sID);
 		if (dirtyNode != null) {
 			return dirtyNode;
+		} else if (id instanceof ODocument) {
+			return new OrientNode((ODocument)id, this);
+		} else {
+			return new OrientNode((ORID)id, this);
 		}
-
-		return new OrientNode((ORID)id, this);
 	}
 
 	public OrientEdge getEdgeById(Object id) {
 		if (id instanceof String) {
 			id = new ORecordId(id.toString());
 		}
-		OrientEdge dirtyEdge = dirtyEdges.get(id.toString());
+
+		String sID = id instanceof ODocument ? ((ODocument)id).getIdentity().toString() : id.toString();
+		OrientEdge dirtyEdge = dirtyEdges.get(sID);
 		if (dirtyEdge != null) {
 			return dirtyEdge;
+		} else if (id instanceof ODocument) {
+			return new OrientEdge((ODocument)id, this);
+		} else {
+			return new OrientEdge((ORID)id, this);
 		}
-		return new OrientEdge((ORID)id, this);
 	}
 
 	@Override
