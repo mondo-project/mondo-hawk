@@ -374,6 +374,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public ODatabaseDocumentTx getGraph() {
+		dbPool.setAutoCreate(true);
 		ODatabaseDocumentTx db = getGraphAsIs();
 		if (!db.exists()) {
 			db.create();

@@ -9,7 +9,7 @@ Require-Bundle: org.hawk.core
 Bundle-ClassPath: .,
  lib/bundles/snappy-java-1.1.0.1.jar,
  lib/jars/concurrentlinkedhashmap-lru-1.4.1.jar,
- lib/jars/orientdb-client-2.2.0.jar,
- lib/jars/orientdb-core-2.2.0.jar
+ lib/jars/orientdb-client-2.2.8.jar,
+ lib/jars/orientdb-core-2.2.8.jar
 Export-Package: org.hawk.orientdb,
  org.hawk.orientdb.indexes

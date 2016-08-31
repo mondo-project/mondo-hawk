@@ -7,6 +7,6 @@
         status="integration">
 	</info>
 	<dependencies>
-		<dependency org="com.orientechnologies" name="orientdb-client" rev="2.2.0"/>
+		<dependency org="com.orientechnologies" name="orientdb-client" rev="2.2.8"/>
 	</dependencies>
 </ivy-module>
