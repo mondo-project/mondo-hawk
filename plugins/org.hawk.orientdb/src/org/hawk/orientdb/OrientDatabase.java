@@ -119,7 +119,7 @@ public class OrientDatabase implements IGraphDatabase {
 		this.tempFolder = new File(storageFolder, "temp");
 		this.console = c;
 
-		OGlobalConfiguration.WAL_CACHE_SIZE.setValue(10000);
+		//OGlobalConfiguration.WAL_CACHE_SIZE.setValue(10000);
 		OGlobalConfiguration.OBJECT_SAVE_ONLY_DIRTY.setValue(true);
 		OGlobalConfiguration.SBTREE_MAX_KEY_SIZE.setValue(102_400);
 		OGlobalConfiguration.CACHE_LOCAL_IMPL.setValue(ORecordCacheSoftRefs.class.getName());
