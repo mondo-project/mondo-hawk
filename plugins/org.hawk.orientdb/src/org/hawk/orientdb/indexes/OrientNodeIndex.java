@@ -237,11 +237,11 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 
 		OCompositeKey keyFrom = null, keyTo = null;
 		if (n.getId().isPersistent()) {
-			keyFrom = new OCompositeKey(n.getId(), field, AbstractOrientIndex.getMinValue(keyClass));
-			keyTo = new OCompositeKey(n.getId(), field, AbstractOrientIndex.getMaxValue(keyClass));
+			keyFrom = new OCompositeKey(n.getId(), field);
+			keyTo = new OCompositeKey(n.getId(), field);
 		} else if (n.getDocument() != null) {
-			keyFrom = new OCompositeKey(n.getDocument(), field, AbstractOrientIndex.getMinValue(keyClass));
-			keyTo = new OCompositeKey(n.getDocument(), field, AbstractOrientIndex.getMaxValue(keyClass));
+			keyFrom = new OCompositeKey(n.getDocument(), field);
+			keyTo = new OCompositeKey(n.getDocument(), field);
 		} else {
 			return;
 		}
