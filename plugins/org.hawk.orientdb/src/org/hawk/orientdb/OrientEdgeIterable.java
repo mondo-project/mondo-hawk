@@ -27,13 +27,13 @@ public class OrientEdgeIterable extends OrientIterable<IGraphEdge, OIdentifiable
 		if (o instanceof ORID) {
 			return new OrientEdge((ORID)o, getGraph());
 		} else {
-			final ODocument oDoc = (ODocument)o;
-			final ORID id = oDoc.getIdentity();
-			if (id.isPersistent()) {
-				return new OrientEdge(id, getGraph());
-			} else {
-				return new OrientEdge(oDoc, getGraph());
-			}
+			return new OrientEdge((ODocument)o, getGraph());
+//			final ORID id = oDoc.getIdentity();
+//			if (id.isPersistent()) {
+//				return new OrientEdge(id, getGraph());
+//			} else {
+//				return new OrientEdge(oDoc, getGraph());
+//			}
 		}
 	}
 
