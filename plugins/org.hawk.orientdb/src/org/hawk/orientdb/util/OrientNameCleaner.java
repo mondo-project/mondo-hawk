@@ -42,7 +42,7 @@ public final class OrientNameCleaner {
 		INVALID_FIELD_CHAR_REPLACEMENTS.put("/", "!hfsl!");
 		INVALID_FIELD_CHAR_REPLACEMENTS.put("\\", "!hbsl!");
 
-		PATTERN_FIELD_CHAR_REPLACEMENT = Pattern.compile("(:|,|<| |%|=|[.]|/|\\\\)");
+		PATTERN_FIELD_CHAR_REPLACEMENT = Pattern.compile("(:|,|;| |%|=|[.]|/|\\\\)");
 	}
 
 	private OrientNameCleaner() {}
