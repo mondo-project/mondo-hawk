@@ -127,6 +127,7 @@ public class OrientDatabase implements IGraphDatabase {
 		console.println("Starting database " + iURL);
 		this.dbURL = iURL;
 		dbPool = new OPartitionedDatabasePool(dbURL, "admin", "admin");
+		dbPool.setAutoCreate(true);
 
 		metamodelIndex = getOrCreateNodeIndex(METAMODEL_IDX_NAME);
 		fileIndex = getOrCreateNodeIndex(FILE_IDX_NAME);
@@ -238,6 +239,7 @@ public class OrientDatabase implements IGraphDatabase {
 			storage.close(true, false);
 			OGlobalConfiguration.USE_WAL.setValue(useWAL);
 			dbPool = new OPartitionedDatabasePool(dbURL, "admin", "admin");
+			dbPool.setAutoCreate(true);
 		}
 	}
 
@@ -377,7 +379,6 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public ODatabaseDocumentTx getGraph() {
-		dbPool.setAutoCreate(true);
 		ODatabaseDocumentTx db = getGraphAsIs();
 		if (!db.exists()) {
 			db.create();
