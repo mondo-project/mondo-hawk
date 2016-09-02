@@ -37,8 +37,6 @@ import com.orientechnologies.orient.core.sql.OCommandSQL;
 
 public class AbstractOrientIndex {
 
-	private static final String KEY_IDX_SUFFIX = "_keys";
-
 	protected static final class DocumentCollectionOIndexCursor extends OIndexAbstractCursor {
 		private final Iterator<ODocument> documentIterator;
 
@@ -120,12 +118,12 @@ public class AbstractOrientIndex {
 			// We need to fetch again the index: using the one that was just
 			// created will result in multithreading exceptions from OrientDB
 			idx = indexManager.getIndex(idxName);
-		}
 
-		if (type == IndexType.NODE) {
-			graph.getIndexStore().addNodeFieldIndex(name, field);
-		} else {
-			graph.getIndexStore().addEdgeFieldIndex(name, field);
+			if (type == IndexType.NODE) {
+				graph.getIndexStore().addNodeFieldIndex(name, field);
+			} else {
+				graph.getIndexStore().addEdgeFieldIndex(name, field);
+			}
 		}
 
 		return idx;
@@ -161,8 +159,6 @@ public class AbstractOrientIndex {
 		
 		final OSimpleKeyIndexDefinition indexDef = new OSimpleKeyIndexDefinition(factory.getLastVersion(), OType.STRING, keyType);
 		indexManager.createIndex(idxName, OClass.INDEX_TYPE.NOTUNIQUE.toString(), indexDef, null, null, null, null);
-		final OSimpleKeyIndexDefinition keyIndexDef = new OSimpleKeyIndexDefinition(factory.getLastVersion(), OType.LINK, OType.STRING, keyType);
-		indexManager.createIndex(idxName + KEY_IDX_SUFFIX, OClass.INDEX_TYPE.NOTUNIQUE.toString(), keyIndexDef, null, null, null, null);
 
 		if (txWasOpen) {
 			graph.getGraph().begin();
@@ -178,10 +174,6 @@ public class AbstractOrientIndex {
 		}
 
 		return escapedName + SEPARATOR_SBTREE + keyType.name();
-	}
-
-	protected OIndex<?> getKeyIndex(Class<?> keyClass) {
-		return getIndexManager().getIndex(getSBTreeIndexName(keyClass) + KEY_IDX_SUFFIX);
 	}
 
 	protected OIndexManager getIndexManager() {

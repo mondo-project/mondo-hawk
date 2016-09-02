@@ -32,7 +32,6 @@ import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.index.OCompositeKey;
 import com.orientechnologies.orient.core.index.OIndex;
-import com.orientechnologies.orient.core.index.OIndexCursor;
 import com.orientechnologies.orient.core.index.OIndexManager;
 import com.orientechnologies.orient.core.index.OIndexRemote;
 
@@ -157,26 +156,18 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 			final Object valueExpr = normalizeValue(rawValue);
 			final Class<?> valueClass = valueExpr.getClass();
 			final OIndex<?> idx = getOrCreateFieldIndex(field, valueClass);
-			final OIndex<?> keyIdx = getKeyIndex(valueClass);
 
 			final ORID identity = orientNode.getId();
-			OCompositeKey idxKey = new OCompositeKey(field, valueExpr);
-			OCompositeKey keyIdxKey;
-			if (identity.isPersistent()) {
-				keyIdxKey = new OCompositeKey(identity, field, valueExpr);
-			} else {
-				keyIdxKey = new OCompositeKey(orientNode.getDocument(), field, valueExpr);
-			}
+			final OCompositeKey idxKey = new OCompositeKey(field, valueExpr);
 
 			if (idx instanceof OIndexRemote && identity.isNew()) {
 				// To avoid "Temporary RID cannot be managed at server side", we need to postpone the put
 				postponed.add(new PostponedIndexAdd(idx, idxKey, identity));
-				postponed.add(new PostponedIndexAdd(keyIdx, keyIdxKey, identity));
 				graph.addPostponedIndex(this);
 			} else {
 				idx.put(idxKey, identity);
-				keyIdx.put(keyIdxKey, identity);
 			}
+			orientNode.addIndexKey(idx.getName(), field, valueExpr);
 		}
 	}
 
@@ -188,9 +179,18 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 	@Override
 	public void remove(IGraphNode n) {
 		final OrientNode oNode = (OrientNode)n;
-		final OrientIndexStore store = graph.getIndexStore();
-		for (String fieldName : store.getNodeFieldIndexNames(name)) {
-			remove(fieldName, oNode);
+
+		final OIdentifiable toRemove = oNode.getId().isPersistent() ? oNode.getId() : oNode.getDocument();
+		List<Entry<String, Map<String, List<Object>>>> indices = oNode.removeIndexFields(escapedName);
+		for (Entry<String, Map<String, List<Object>>> index : indices) {
+			final String indexName = index.getKey();
+			OIndex<?> oIndex = getIndexManager().getIndex(indexName);
+			for (Entry<String, List<Object>> idxEntry : index.getValue().entrySet()) {
+				final String field = idxEntry.getKey();
+				for (Object key : idxEntry.getValue()) {
+					oIndex.remove(new OCompositeKey(field, key), toRemove);
+				}
+			}
 		}
 	}
 
@@ -211,14 +211,9 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 			value = normalizeValue(value);
 
 			final OIndex<?> idx = getIndex(value.getClass());
-			final OIndex<?> keyIdx = getKeyIndex(value.getClass());
 			if (idx != null) {
 				idx.remove(new OCompositeKey(field, value), oNode.getDocument());
-				if (oNode.getId().isPersistent()) {
-					keyIdx.remove(new OCompositeKey(oNode.getId(), field, value), oNode.getId());
-				} else {
-					keyIdx.remove(new OCompositeKey(oNode.getDocument(), field, value), oNode.getDocument());
-				}
+				oNode.removeIndexKey(getSBTreeIndexName(value.getClass()), field, value);
 			}
 		}
 	}
@@ -230,38 +225,11 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 	}
 
 	private void remove(final Class<?> keyClass, String field, final OrientNode n) {
-		OIndex<?> keyIdx = getKeyIndex(keyClass);
-		if (keyIdx == null) {
-			return;
-		}
-
-		OCompositeKey keyFrom = null, keyTo = null;
-		if (n.getId().isPersistent()) {
-			keyFrom = new OCompositeKey(n.getId(), field);
-			keyTo = new OCompositeKey(n.getId(), field);
-		} else if (n.getDocument() != null) {
-			keyFrom = new OCompositeKey(n.getDocument(), field);
-			keyTo = new OCompositeKey(n.getDocument(), field);
-		} else {
-			return;
-		}
-
-		final List<Object> keysToRemove = new ArrayList<>();
-		final OIndexCursor keyCursor = iterateEntriesBetween(keyFrom, true, keyTo, true, keyIdx, graph.getGraph());
-		for (Entry<Object, OIdentifiable> entry = keyCursor.nextEntry(); entry != null; entry = keyCursor.nextEntry()) {
-			Object key = ((OCompositeKey) entry.getKey()).getKeys().get(2);
-			keysToRemove.add(key);
-		}
-
+		final Collection<Object> keys = n.removeIndexField(getSBTreeIndexName(keyClass), field);
 		final OIndex<?> idx = getIndex(keyClass);
-		for (Object key : keysToRemove) {
-			if (n.getId().isPersistent()) {
-				idx.remove(new OCompositeKey(field, key), n.getId());
-				keyIdx.remove(new OCompositeKey(n.getId(), field, key), n.getId());
-			} else {
-				idx.remove(new OCompositeKey(field, key), n.getDocument());
-				keyIdx.remove(new OCompositeKey(n.getDocument(), field, key), n.getDocument());
-			}
+		final OIdentifiable toRemove = n.getId().isPersistent() ? n.getId() : n.getDocument();
+		for (Object key : keys) {
+			idx.remove(new OCompositeKey(field, key), toRemove);
 		}
 	}
 

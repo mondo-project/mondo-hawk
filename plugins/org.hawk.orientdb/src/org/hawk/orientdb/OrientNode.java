@@ -13,8 +13,10 @@ package org.hawk.orientdb;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -26,12 +28,20 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.orientdb.util.OrientNameCleaner;
 
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
+import com.orientechnologies.orient.core.db.record.ORecordLazyMultiValue;
 import com.orientechnologies.orient.core.db.record.OTrackedList;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class OrientNode implements IGraphNode {
 	private static final String PREFIX_PROPERTY = "_hp_";
+
+	/**
+	 * Name of the property that stores a index name -> field -> keys map, for
+	 * faster removal of nodes from the index (needed for efficient derived
+	 * attribute computation).
+	 */
+	private static final String ATTR_INDEX_KEYS = "_hIndexKeys";
 
 	// These are the same prefixes used by OrientDB's Graph API
 	private static final String PREFIX_INCOMING = "in_";
@@ -58,9 +68,6 @@ public class OrientNode implements IGraphNode {
 
 	/** Should only be used with non-persistent IDs. */
 	public OrientNode(ODocument doc, OrientDatabase graph) {
-//		if (doc.getIdentity().isPersistent()) {
-//			graph.getConsole().println("Warning, inefficient: OrientNode(ODocument) being used with persistent ID " + doc.getIdentity());
-//		}
 		this.graph = graph;
 		this.changedVertex = doc;
 		this.id = doc.getIdentity();
@@ -349,5 +356,94 @@ public class OrientNode implements IGraphNode {
 		if (getId().isPersistent()) {
 			changedVertex = null;
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void addIndexKey(String idxName, String field, Object key) {
+		changedVertex = getDocument();
+
+		Map<String, Map<String, List<Object>>> fieldsByIndex = (Map<String, Map<String, List<Object>>>) changedVertex.field(ATTR_INDEX_KEYS);
+		if (fieldsByIndex == null) {
+			fieldsByIndex = new HashMap<>();
+		}
+
+		Map<String, List<Object>> keysByField = fieldsByIndex.get(idxName);
+		if (keysByField == null) {
+			keysByField = new HashMap<>();
+			fieldsByIndex.put(idxName, keysByField);
+		}
+
+		List<Object> keys = keysByField.get(field);
+		if (keys == null) {
+			keys = new ArrayList<>();
+			keysByField.put(field, keys);
+		}
+
+		keys.add(key);
+		changedVertex.field(ATTR_INDEX_KEYS, fieldsByIndex);
+		graph.markNodeAsDirty(this);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void removeIndexKey(String idxName, String field, Object key) {
+		changedVertex = getDocument();
+
+		Map<String, Map<String, List<Object>>> fieldsByIndex = (Map<String, Map<String, List<Object>>>) changedVertex.field(ATTR_INDEX_KEYS);
+		if (fieldsByIndex != null) {
+			Map<String, List<Object>> keysByField = fieldsByIndex.get(idxName);
+			if (keysByField != null) {
+				List<Object> keys = keysByField.get(field);
+				if (keys != null && keys.remove(key)) {
+					changedVertex.field(ATTR_INDEX_KEYS, fieldsByIndex);
+					graph.markNodeAsDirty(this);
+				}
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public Collection<Object> removeIndexField(String idxName, String field) {
+		changedVertex = getDocument();
+
+		Map<String, Map<String, List<Object>>> fieldsByIndex = (Map<String, Map<String, List<Object>>>) changedVertex.field(ATTR_INDEX_KEYS);
+		if (fieldsByIndex != null) {
+			Map<String, List<Object>> keysByField = fieldsByIndex.get(idxName);
+			if (keysByField != null) {
+				List<Object> keys = keysByField.remove(field);
+				if (keys != null) {
+					changedVertex.field(ATTR_INDEX_KEYS, fieldsByIndex);
+					graph.markNodeAsDirty(this);
+					return keys;
+				}
+			}
+		}
+
+		return Collections.emptyList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Entry<String, Map<String, List<Object>>>> removeIndexFields(String commonPrefix) {
+		changedVertex = getDocument();
+
+		boolean changed = false;
+		List<Map.Entry<String, Map<String, List<Object>>>> removedEntries = new ArrayList<>();
+		Map<String, Map<String, List<Object>>> fieldsByIndex = (Map<String, Map<String, List<Object>>>) changedVertex.field(ATTR_INDEX_KEYS);
+		if (fieldsByIndex != null) {
+			for (Iterator<Entry<String, Map<String, List<Object>>>> itEntry = fieldsByIndex.entrySet().iterator(); itEntry.hasNext(); ) {
+				Entry<String, Map<String, List<Object>>> entry = itEntry.next();
+				String key = entry.getKey();
+				if (key.startsWith(commonPrefix)) {
+					itEntry.remove();
+					removedEntries.add(entry);
+					changed = true;
+				}
+			}
+		}
+
+		if (changed) {
+			changedVertex.field(ATTR_INDEX_KEYS, fieldsByIndex);
+			graph.markNodeAsDirty(this);
+		}
+		return removedEntries;
 	}
 }
