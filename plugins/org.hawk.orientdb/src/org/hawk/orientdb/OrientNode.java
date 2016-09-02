@@ -167,7 +167,13 @@ public class OrientNode implements IGraphNode {
 	}
 
 	private void addAllOIdentifiable(final List<OIdentifiable> edges, Iterable<Object> odocs) {
-		if (odocs != null) {
+		if (odocs instanceof ORecordLazyMultiValue) {
+			// Use a raw iterator that doesn't try to convert values on the fly
+			// *and* mark things around as dirty (why?).
+			for (Iterator<OIdentifiable> it = ((ORecordLazyMultiValue)odocs).rawIterator(); it.hasNext(); ) {
+				edges.add(it.next());
+			}
+		} else if (odocs != null) {
 			for (Object odoc : odocs) {
 				if (odoc instanceof OIdentifiable) {
 					edges.add((OIdentifiable)odoc);
