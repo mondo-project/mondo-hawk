@@ -75,7 +75,7 @@ public class AbstractOrientIndex {
 	public enum IndexType { NODE, EDGE };
 	private static final String SEPARATOR_SBTREE = "_@sbtree@_";
 
-	protected final String name;
+	protected final String name, escapedName;
 	protected final OrientDatabase graph;
 	protected final IndexType type;
 
@@ -106,6 +106,7 @@ public class AbstractOrientIndex {
 		this.name = name;
 		this.graph = graph;
 		this.type = type;
+		this.escapedName = OrientNameCleaner.escapeToField(name);
 	}
 
 	protected OIndex<?> getOrCreateFieldIndex(final String field, final Class<?> valueClass) {
@@ -176,7 +177,7 @@ public class AbstractOrientIndex {
 			keyType = OType.DOUBLE;
 		}
 
-		return OrientNameCleaner.escapeToField(name + SEPARATOR_SBTREE + keyType.name());
+		return escapedName + SEPARATOR_SBTREE + keyType.name();
 	}
 
 	protected OIndex<?> getKeyIndex(Class<?> keyClass) {
@@ -245,7 +246,7 @@ public class AbstractOrientIndex {
 		    return new DocumentCollectionOIndexCursor(result);
 
 		} else {
-			return idx.iterateEntriesBetween(cmpFrom, fromInclusive, cmpTo, toInclusive, false);
+			return idx.iterateEntriesBetween(cmpFrom, fromInclusive, cmpTo, toInclusive, true);
 		}
 	}
 }
