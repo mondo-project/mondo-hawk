@@ -49,7 +49,7 @@ public final class OrientNameCleaner {
 
 	public static String escapeClass(final String unescaped) {
 		final Matcher m = PATTERN_CLASS_CHAR_REPLACEMENT.matcher(unescaped);
-		final StringBuffer sb = new StringBuffer();
+		final StringBuffer sb = new StringBuffer(unescaped.length());
 		while (m.find()) {
 			m.appendReplacement(sb, INVALID_CLASS_CHAR_REPLACEMENTS.get(m.group(1)));
 		}
@@ -67,7 +67,7 @@ public final class OrientNameCleaner {
 
 	public static String escapeToField(final String unescapedFieldName) {
 		final Matcher m = PATTERN_FIELD_CHAR_REPLACEMENT.matcher(unescapedFieldName);
-		final StringBuffer sb = new StringBuffer();
+		final StringBuffer sb = new StringBuffer(unescapedFieldName.length());
 		while (m.find()) {
 			m.appendReplacement(sb, INVALID_FIELD_CHAR_REPLACEMENTS.get(m.group(1)));
 		}
