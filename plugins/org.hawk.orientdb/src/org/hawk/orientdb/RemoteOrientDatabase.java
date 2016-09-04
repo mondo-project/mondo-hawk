@@ -1,14 +1,10 @@
 package org.hawk.orientdb;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.hawk.core.IConsole;
 
 import com.orientechnologies.orient.client.remote.OServerAdmin;
-import com.orientechnologies.orient.client.remote.OStorageRemote;
-import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
-import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.storage.OStorage;
 
 /**
@@ -38,27 +34,28 @@ public class RemoteOrientDatabase extends OrientDatabase {
 
 	@Override
 	public void run(String iURL, File parentfolder, IConsole c) throws Exception {
-		final ODatabaseDocumentTx db = new ODatabaseDocumentTx(iURL);
-		final OServerAdmin admin = getServerAdmin(db);
+		this.dbURL = iURL;
+
+		final OServerAdmin admin = getServerAdmin();
 		if (!admin.existsDatabase(storageType)) {
 			admin.createDatabase(DBTYPE_DOC, storageType);
 		}
 		admin.close();
-		db.close();
 
 		super.run(iURL, parentfolder, c);
 	}
 
-
-
 	@Override
 	public void delete() throws Exception {
-		getServerAdmin(getGraphAsIs()).dropDatabase(storageType);
+		shutdown();
+
+		final OServerAdmin admin = getServerAdmin();
+		admin.dropDatabase(storageType);
+		admin.close();
 	}
 
-	protected OServerAdmin getServerAdmin(ODatabaseDocumentTx db) throws Exception {
-		OStorage underlying = getUnderlyingStorage(db.getStorage());
-		OServerAdmin admin = new OServerAdmin((OStorageRemote)underlying);
+	protected OServerAdmin getServerAdmin() throws Exception {
+		OServerAdmin admin = new OServerAdmin(dbURL);
 
 		// TODO: add options for dbUsername/pw (and a specific remote: URL)
 		admin.connect(rootUsername, rootPassword);

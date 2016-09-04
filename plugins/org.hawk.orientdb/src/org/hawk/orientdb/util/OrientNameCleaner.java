@@ -16,14 +16,14 @@ public final class OrientNameCleaner {
 	private static final Pattern PATTERN_CLASS_CHAR_REPLACEMENT;
 	static {
 		INVALID_CLASS_CHAR_REPLACEMENTS = new HashMap<String, String>();
-		INVALID_CLASS_CHAR_REPLACEMENTS.put(":", "!hcol!");
-		INVALID_CLASS_CHAR_REPLACEMENTS.put(",", "!hcom!");
-		INVALID_CLASS_CHAR_REPLACEMENTS.put(";", "!hsco!");
-		INVALID_CLASS_CHAR_REPLACEMENTS.put(" ", "!hspa!");
-		INVALID_CLASS_CHAR_REPLACEMENTS.put("%", "!hpct!");
-		INVALID_CLASS_CHAR_REPLACEMENTS.put("=", "!hequ!");
-		INVALID_CLASS_CHAR_REPLACEMENTS.put("@", "!hats!");
-		INVALID_CLASS_CHAR_REPLACEMENTS.put(".", "!hdot!");
+		INVALID_CLASS_CHAR_REPLACEMENTS.put(":", "_hcol_");
+		INVALID_CLASS_CHAR_REPLACEMENTS.put(",", "_hcom_");
+		INVALID_CLASS_CHAR_REPLACEMENTS.put(";", "_hsco_");
+		INVALID_CLASS_CHAR_REPLACEMENTS.put(" ", "_hspa_");
+		INVALID_CLASS_CHAR_REPLACEMENTS.put("%", "_hpct_");
+		INVALID_CLASS_CHAR_REPLACEMENTS.put("=", "_hequ_");
+		INVALID_CLASS_CHAR_REPLACEMENTS.put("@", "_hats_");
+		INVALID_CLASS_CHAR_REPLACEMENTS.put(".", "_hdot_");
 
 		PATTERN_CLASS_CHAR_REPLACEMENT = Pattern.compile("(:|,|;| |%|=|@|[.])");
 	}
@@ -32,15 +32,15 @@ public final class OrientNameCleaner {
 	private static final Pattern PATTERN_FIELD_CHAR_REPLACEMENT;
 	static {
 		INVALID_FIELD_CHAR_REPLACEMENTS = new HashMap<String, String>();
-		INVALID_FIELD_CHAR_REPLACEMENTS.put(":", "!hcol!");
-		INVALID_FIELD_CHAR_REPLACEMENTS.put(",", "!hcom!");
-		INVALID_FIELD_CHAR_REPLACEMENTS.put(";", "!hsco!");
-		INVALID_FIELD_CHAR_REPLACEMENTS.put(" ", "!hspa!");
-		INVALID_FIELD_CHAR_REPLACEMENTS.put("%", "!hpct!");
-		INVALID_FIELD_CHAR_REPLACEMENTS.put("=", "!hequ!");
-		INVALID_FIELD_CHAR_REPLACEMENTS.put(".", "!hdot!");
-		INVALID_FIELD_CHAR_REPLACEMENTS.put("/", "!hfsl!");
-		INVALID_FIELD_CHAR_REPLACEMENTS.put("\\", "!hbsl!");
+		INVALID_FIELD_CHAR_REPLACEMENTS.put(":", "_hcol_");
+		INVALID_FIELD_CHAR_REPLACEMENTS.put(",", "_hcom_");
+		INVALID_FIELD_CHAR_REPLACEMENTS.put(";", "_hsco_");
+		INVALID_FIELD_CHAR_REPLACEMENTS.put(" ", "_hspa_");
+		INVALID_FIELD_CHAR_REPLACEMENTS.put("%", "_hpct_");
+		INVALID_FIELD_CHAR_REPLACEMENTS.put("=", "_hequ_");
+		INVALID_FIELD_CHAR_REPLACEMENTS.put(".", "_hdot_");
+		INVALID_FIELD_CHAR_REPLACEMENTS.put("/", "_hfsl_");
+		INVALID_FIELD_CHAR_REPLACEMENTS.put("\\", "_hbsl_");
 
 		PATTERN_FIELD_CHAR_REPLACEMENT = Pattern.compile("(:|,|;| |%|=|[.]|/|\\\\)");
 	}

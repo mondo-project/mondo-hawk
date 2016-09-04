@@ -10,26 +10,35 @@
  ******************************************************************************/
 package org.hawk.orientdb.indexes;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.orientechnologies.orient.core.command.OCommandRequest;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.index.OCompositeKey;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.index.OIndexCursor;
-import com.orientechnologies.orient.core.index.OIndexRemote;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.sql.OCommandSQL;
 
 final class SingleKeyOIndexCursorFactory implements OIndexCursorFactory {
 	private final Object valueExpr;
 	private final AbstractOrientIndex idx;
 	private final String fieldName;
+	private final boolean isRemote;
 
 	SingleKeyOIndexCursorFactory(Object valueExpr, AbstractOrientIndex idx, String fieldName) {
 		this.valueExpr = valueExpr;
 		this.idx = idx;
 		this.fieldName = fieldName;
+
+		/*
+		 * See note in {@link AbstractOrientIndex#iterateEntriesBetween} for why
+		 * we use a URL check instead of an instanceOf check later on.
+		 */
+		this.isRemote = idx.getDatabase().getGraph().getURL().startsWith("remote:");
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -55,8 +64,8 @@ final class SingleKeyOIndexCursorFactory implements OIndexCursorFactory {
 			// value expr starts with "*"
 			if (sValueExpr.length() == 1) {
 				// value expr is "*": iterate over everything
-				if (index instanceof OIndexRemote) {
-					return ((OIndexRemote)index).cursor();
+				if (isRemote) {
+					return ((OIndex)index).cursor();
 				} else {
 					final Object minValue = AbstractOrientIndex.getMinValue(valueExpr.getClass());
 					final Object maxValue = AbstractOrientIndex.getMaxValue(valueExpr.getClass());
@@ -81,12 +90,25 @@ final class SingleKeyOIndexCursorFactory implements OIndexCursorFactory {
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked" })
 	protected Iterator<OIdentifiable> iterateEntries(final OIndex<?> index, final Set<OCompositeKey> keys) {
 		// Not a string: go straight to the value
-		if (index instanceof OIndexRemote) {
-			// OIndexRemote does not support iterateEntries in 2.0.16
-			final Iterator<ODocument> itEntries = ((OIndexRemote)index).getEntries(keys).iterator();
+		if (isRemote) {
+			// OIndexRemote does not support iterateEntries, and since 2.2 it's hidden behind a delegate
+			// that doesn't expose getEntries(...), so we had to essentially bring some of its code here.
+			final StringBuilder params = new StringBuilder(128);
+		    if (!keys.isEmpty()) {
+		      params.append("?");
+		      for (int i = 1; i < keys.size(); i++) {
+		        params.append(", ?");
+		      }
+		    }
+
+		    final String text = String.format("select from index:%s where key in [%s]", index.getName(), params.toString());
+		    final OCommandRequest cmd = new OCommandSQL(text);
+		    Collection<ODocument> entries = (Collection<ODocument>) idx.getDatabase().getGraph().command(cmd).execute(keys.toArray());
+
+			final Iterator<ODocument> itEntries = entries.iterator();
 			return new Iterator<OIdentifiable>() {
 				@Override
 				public boolean hasNext() {

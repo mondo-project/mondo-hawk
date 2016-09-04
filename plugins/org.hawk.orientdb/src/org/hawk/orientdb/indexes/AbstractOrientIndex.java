@@ -71,7 +71,7 @@ public class AbstractOrientIndex {
 	}
 
 	public enum IndexType { NODE, EDGE };
-	private static final String SEPARATOR_SBTREE = "_@sbtree@_";
+	private static final String SEPARATOR_SBTREE = "_sbtree_";
 
 	protected final String name, escapedName;
 	protected final OrientDatabase graph;
@@ -141,9 +141,9 @@ public class AbstractOrientIndex {
 		if (txWasOpen) {
 			graph.getConsole().println("Warning: prematurely committing a transaction so we can create index " + idxName);
 			graph.saveDirty();
-			graph.getGraph().commit();
-			// OrientDB needs to explicitly close tx
-			graph.getGraph().getTransaction().close();
+			graph.commit();
+			// reconnect after full commit + release
+			graph.getGraph();
 		}
 
 		// Index key type
@@ -159,10 +159,6 @@ public class AbstractOrientIndex {
 		
 		final OSimpleKeyIndexDefinition indexDef = new OSimpleKeyIndexDefinition(factory.getLastVersion(), OType.STRING, keyType);
 		indexManager.createIndex(idxName, OClass.INDEX_TYPE.NOTUNIQUE.toString(), indexDef, null, null, null, null);
-
-		if (txWasOpen) {
-			graph.getGraph().begin();
-		}
 	}
 
 	protected String getSBTreeIndexName(final Class<?> keyClass) {
@@ -216,7 +212,9 @@ public class AbstractOrientIndex {
 
 	public static OIndexCursor iterateEntriesBetween(final OCompositeKey cmpFrom, final boolean fromInclusive,
 			final OCompositeKey cmpTo, final boolean toInclusive, final OIndex<?> idx, final ODatabase<?> db) {
-		if (idx instanceof OIndexRemote) {
+		// Normally we'd do an instanceof check against OIndexRemote, but Orient since 2.2
+		// uses wrapped instances and there's no way to get at the wrapped instance.
+		if (db.getURL().startsWith("remote:")) {
 		    final StringBuilder query = new StringBuilder(OIndexRemote.QUERY_GET_VALUES_BEETWEN_SELECT);
 
 		    if (fromInclusive)

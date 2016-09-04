@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015-2016 The University of York.
+ * Copyright (c) 2015-2016 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,9 @@ import org.hawk.core.util.DefaultConsole;
 import org.hawk.orientdb.ModelUpdateTest;
 import org.hawk.orientdb.RemoteOrientDatabase;
 
+/**
+ * Remote version of {@link ModelUpdateTest}. Assumes root user has "root" as password.
+ */
 public class RemoteModelUpdateIT extends ModelUpdateTest {
 
 	@Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015-2016 The University of York.
+ * Copyright (c) 2015-2016 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,10 @@ import org.hawk.core.util.DefaultConsole;
 import org.hawk.orientdb.GraphPopulationTest;
 import org.hawk.orientdb.RemoteOrientDatabase;
 
+/**
+ * Remote version of {@link GraphPopulationTest}. Relies on the server using
+ * "root" as the password for its root user.
+ */
 public class RemoteGraphPopulationIT extends GraphPopulationTest {
 
 	@Override

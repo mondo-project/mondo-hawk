@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015-2016 The University of York.
+ * Copyright (c) 2015-2016 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import org.hawk.orientdb.IndexTest;
 import org.hawk.orientdb.RemoteOrientDatabase;
 
 /**
- * Manually run integration test for remote indexes.
+ * Manually run integration test for remote indexes. Root user is assumed to have "root" as password.
  */
 public class RemoteIndexIT extends IndexTest {
 

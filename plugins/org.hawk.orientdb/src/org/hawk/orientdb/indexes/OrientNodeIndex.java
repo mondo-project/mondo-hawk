@@ -27,13 +27,11 @@ import org.hawk.orientdb.OrientIndexStore;
 import org.hawk.orientdb.OrientNode;
 import org.hawk.orientdb.util.EmptyIGraphIterable;
 
-import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.index.OCompositeKey;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.index.OIndexManager;
-import com.orientechnologies.orient.core.index.OIndexRemote;
 
 /**
  * Logical index for nodes, which uses a set of SBTree indexes. We can't use the
@@ -160,7 +158,7 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 			final ORID identity = orientNode.getId();
 			final OCompositeKey idxKey = new OCompositeKey(field, valueExpr);
 
-			if (idx instanceof OIndexRemote && identity.isNew()) {
+			if (graph.getGraph().getURL().startsWith("remote:") && identity.isNew()) {
 				// To avoid "Temporary RID cannot be managed at server side", we need to postpone the put
 				postponed.add(new PostponedIndexAdd(idx, idxKey, identity));
 				graph.addPostponedIndex(this);
@@ -235,10 +233,7 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 
 	@Override
 	public void flush() {
-		final ODatabaseDocumentTx orientGraph = graph.getGraph();
-		if (orientGraph != null) {
-			orientGraph.commit();
-		}
+		graph.commit();
 	}
 
 	@Override

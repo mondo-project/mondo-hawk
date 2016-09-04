@@ -167,6 +167,7 @@ public class OrientDatabase implements IGraphDatabase {
 			}
 			if (dbPool != null) {
 				dbPool.close();
+				dbPool = null;
 			}
 			storage.close(true, false);
 			Orient.instance().unregisterStorage(storage);
@@ -223,7 +224,7 @@ public class OrientDatabase implements IGraphDatabase {
 		ODatabaseDocumentTx db = getGraph();
 		if (db.getTransaction().isActive()) {
 			saveDirty();
-			db.commit();
+			commit();
 		}
 		ensureWALSetTo(false);
 		db = getGraph();
@@ -231,12 +232,38 @@ public class OrientDatabase implements IGraphDatabase {
 		currentMode = Mode.NO_TX_MODE;
 	}
 
+	/**
+	 * Does a commit through the database connection active in the current thread and releases the connection to the pool.
+	 */
+	public void commit() {
+		ODatabaseDocumentTx db = getGraph();
+		db.commit();
+		db.getTransaction().close();
+		dbConn.get().close();
+		dbConn.set(null);
+	}
+
+	/**
+	 * Does a rollback through the database connection active in the current thread and releases the connection to the pool.
+	 */
+	public void rollback() {
+		ODatabaseDocumentTx db = getGraph();
+		db.rollback();
+		db.getTransaction().close();
+		dbConn.get().close();
+		dbConn.set(null);
+	}
+	
 	private void ensureWALSetTo(final boolean useWAL) {
 		ODatabaseDocumentTx db = getGraph();
 		if (useWAL != OGlobalConfiguration.USE_WAL.getValueAsBoolean()) {
 			final OStorage storage = db.getStorage();
-			db.close();
+
+			dbConn.get().close();
+			dbConn.set(null);
+			dbPool.close();
 			storage.close(true, false);
+
 			OGlobalConfiguration.USE_WAL.setValue(useWAL);
 			dbPool = new OPartitionedDatabasePool(dbURL, "admin", "admin");
 			dbPool.setAutoCreate(true);
@@ -261,7 +288,7 @@ public class OrientDatabase implements IGraphDatabase {
 		final ODatabaseDocumentTx db = getGraph();
 		if (!db.getTransaction().isActive()) {
 			saveDirty();
-			db.commit();
+			commit();
 			ensureWALSetTo(true); // this reopens the DB, so it *must* go before db.begin()
 		}
 		currentMode = Mode.TX_MODE;
@@ -293,14 +320,16 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	private void ensureClassExists(final String vertexTypeName) {
-		final ODatabaseDocumentTx db = getGraph();
+		ODatabaseDocumentTx db = getGraph();
 		final OSchemaProxy schema = db.getMetadata().getSchema();
 		if (!schema.existsClass(vertexTypeName)) {
 			final boolean wasInTX = db.getTransaction().isActive();
 			if (wasInTX) {
 				console.printerrln("Warning: premature commit needed to create class " + vertexTypeName);
 				saveDirty();
-				db.commit();
+				commit();
+				// reconnect after commmit
+				db = getGraph();
 			}
 
 			/*
@@ -386,9 +415,13 @@ public class OrientDatabase implements IGraphDatabase {
 		return db;
 	}
 
+	private final ThreadLocal<ODatabaseDocumentTx> dbConn = new ThreadLocal<>();
 	protected ODatabaseDocumentTx getGraphAsIs() {
-		if (dbPool != null) {
-			return dbPool.acquire();
+		if (dbConn.get() != null) {
+			return dbConn.get();
+		} else if (dbPool != null && !dbPool.isClosed()) {
+			dbConn.set(dbPool.acquire());
+			return dbConn.get();
 		} else {
 			// Only needed for quick reconnections after a shutdown
 			// (e.g. delete() after a shutdown of Hawk in some tests)
@@ -584,7 +617,5 @@ public class OrientDatabase implements IGraphDatabase {
 			}
 			idx.getPostponedIndexAdditions().clear();
 		}
-		postponedIndexes.clear();
-		getGraph().commit();
 	}
 }
