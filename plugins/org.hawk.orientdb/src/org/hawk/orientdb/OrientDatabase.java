@@ -330,8 +330,19 @@ public class OrientDatabase implements IGraphDatabase {
 				OClass baseVertexClass = schema.getClass("V");
 				if (baseVertexClass == null) {
 					baseVertexClass = schema.createClass("V");
+					// Oversize leaves some extra space in the record, to reduce the
+					// frequency in which we need to defragment. Orient sets the oversize
+					// of class V at 2 by default, so we do the same.
+					baseVertexClass.setOverSize(2);
 				}
 				newVertexClass.addSuperClass(baseVertexClass);
+				if ("V_eclass".equals(newVertexClass.getName())) {
+					// Type nodes will usually have many edges going into them, so might
+					// as well boost the oversize a bit just in case.
+					newVertexClass.setOverSize(4);
+				} else {
+					newVertexClass.setOverSize(2);
+				}
 			}
 
 			if (wasInTX) {
