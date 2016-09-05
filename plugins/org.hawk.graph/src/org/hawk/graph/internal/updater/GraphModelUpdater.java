@@ -74,7 +74,9 @@ public class GraphModelUpdater implements IModelUpdater {
 		 */
 		final IGraphDatabase g = indexer.getGraph();
 		final DirtyDerivedAttributesListener l = new DirtyDerivedAttributesListener(g);
-		indexer.addGraphChangeListener(l);
+		if (!indexer.getDerivedAttributes().isEmpty()) {
+			indexer.addGraphChangeListener(l);
+		}
 
 		/*
 		 * Print more information when we have few commit items: normally this
