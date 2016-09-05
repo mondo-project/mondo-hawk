@@ -141,9 +141,7 @@ public class AbstractOrientIndex {
 		if (txWasOpen) {
 			graph.getConsole().println("Warning: prematurely committing a transaction so we can create index " + idxName);
 			graph.saveDirty();
-			graph.commit();
-			// reconnect after full commit + release
-			graph.getGraph();
+			graph.getGraph().commit();
 		}
 
 		// Index key type

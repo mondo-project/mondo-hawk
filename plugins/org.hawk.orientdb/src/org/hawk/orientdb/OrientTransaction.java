@@ -28,19 +28,19 @@ public class OrientTransaction implements IGraphTransaction {
 	public void success() {
 		graph.saveDirty();
 		graph.processPostponedIndexes();
-		graph.commit();
+		graph.getGraph().commit();
 	}
 
 	@Override
 	public void failure() {
 		graph.discardDirty();
 		graph.clearPostponedIndexes();
-		graph.rollback();
+		graph.getGraph().rollback();
 	}
 
 	@Override
 	public void close() {
-		// graph.shutdown();
+		graph.closeConnection();
 	}
 
 	public ODatabaseDocumentTx getOrientGraph() {
