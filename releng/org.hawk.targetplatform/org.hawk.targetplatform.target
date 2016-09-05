@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Hawk Target Platform" sequenceNumber="96">
+<?pde version="3.8"?><target name="Hawk Target Platform" sequenceNumber="97">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.apache.httpcomponents.httpcore" version="4.3.3.v201411290715"/>
@@ -125,13 +125,6 @@
 <repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.2.13.v20150730"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.epsilon.core.dt.feature.feature.group" version="1.4.0.201608081018"/>
-<unit id="org.eclipse.epsilon.core.feature.feature.group" version="1.4.0.201608081018"/>
-<unit id="org.eclipse.epsilon.emf.dt.feature.feature.group" version="1.4.0.201608081018"/>
-<unit id="org.eclipse.epsilon.emf.feature.feature.group" version="1.4.0.201608081018"/>
-<repository location="http://download.eclipse.org/epsilon/interim/"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.core.runtime.feature.feature.group" version="1.1.102.v20160128-1558"/>
 <unit id="org.eclipse.ecf.filetransfer.httpclient4.feature.feature.group" version="3.12.0.v20151130-0157"/>
 <unit id="org.eclipse.jdt.feature.group" version="3.11.2.v20160212-1500"/>
@@ -150,6 +143,13 @@
 <unit id="org.eclipse.gef.sdk.feature.group" version="3.10.1.201508170204"/>
 <unit id="org.eclipse.platform.sdk" version="4.5.2.M20160212-1500"/>
 <repository location="http://download.eclipse.org/releases/mars/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.epsilon.emf.feature.feature.group" version="1.4.0.201608231353"/>
+<unit id="org.eclipse.epsilon.emf.dt.feature.feature.group" version="1.4.0.201608231353"/>
+<unit id="org.eclipse.epsilon.core.feature.feature.group" version="1.4.0.201608231353"/>
+<unit id="org.eclipse.epsilon.core.dt.feature.feature.group" version="1.4.0.201608231353"/>
+<repository location="http://download.eclipse.org/epsilon/interim/"/>
 </location>
 </locations>
 </target>
