@@ -46,7 +46,7 @@ public class ModelQueryTest {
 	private EOLQueryEngine queryEngine;
 	private SyncValidationListener validationListener;
 
-	public void setup(String testCaseName) throws Exception {
+	public void setup(String testCaseName, boolean doValidation) throws Exception {
 		final File dbFolder = new File("testdb" + testCaseName);
 		FileUtils.deleteRecursively(dbFolder);
 		dbFolder.mkdir();
@@ -72,9 +72,12 @@ public class ModelQueryTest {
 		indexer.setDB(db, true);
 		indexer.init(0, 0);
 		queryEngine.load(indexer);
-		validationListener = new SyncValidationListener();
-		indexer.addGraphChangeListener(validationListener);
-		validationListener.setModelIndexer(indexer);
+
+		if (doValidation) {
+			validationListener = new SyncValidationListener();
+			indexer.addGraphChangeListener(validationListener);
+			validationListener.setModelIndexer(indexer);
+		}
 	}
 
 	protected void createDB(final File dbFolder) throws Exception {
@@ -91,7 +94,7 @@ public class ModelQueryTest {
 
 	@Test
 	public void tree() throws Throwable {
-		setup("tree");
+		setup("tree", true);
 		indexer.registerMetamodels(new File("resources/metamodels/Ecore.ecore"),
 				new File("resources/metamodels/Tree.ecore"));
 
@@ -115,7 +118,7 @@ public class ModelQueryTest {
 
 	@Test
 	public void set0() throws Throwable {
-		setup("set0");
+		setup("set0", true);
 		indexer.registerMetamodels(new File("resources/metamodels/Ecore.ecore"),
 				new File("resources/metamodels/JDTAST.ecore"));
 
@@ -171,7 +174,7 @@ public class ModelQueryTest {
 	}
 
 	public void performanceIntegrationTest(final String name, final String folder) throws Exception, Throwable {
-		setup(name);
+		setup(name, false);
 		indexer.registerMetamodels(new File("resources/metamodels/Ecore.ecore"),
 				new File("resources/metamodels/JDTAST.ecore"));
 
@@ -184,7 +187,6 @@ public class ModelQueryTest {
 		SyncEndListener.waitForSync(indexer, 2000, new Callable<Object>() {
 			@Override
 			public Object call() throws Exception {
-				assertEquals(0, validationListener.getTotalErrors());
 				return null;
 			}
 		});
