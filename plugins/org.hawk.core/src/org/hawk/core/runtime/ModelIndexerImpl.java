@@ -150,239 +150,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 			latestUpdateFoundChanges = false;
 
 			if (monitors.size() > 0) {
-
 				for (IVcsManager m : monitors) {
-
 					if (!m.isFrozen()) {
 						if (m.isActive()) {
-
-							try {
-								currReposTopRevisions.put(m.getLocation(), m.getCurrentRevision());
-							} catch (Exception e1) {
-								// if
-								// (e1.getMessage().contains("Authentication"))
-								// {syserr(Eclipse_VCS_NoSQL_UI_view.indexers.remove(this)+"");
-								// syserr("Incorrect authentication to version
-								// control, removing this indexer, please add it
-								// again with the correct credentials");}
-								// else
-								e1.printStackTrace();
-								allSync = false;
-							}
-
-							if (!currReposTopRevisions.get(m.getLocation())
-									.equals(currLocalTopRevisions.get(m.getLocation()))) {
-
-								boolean success = true;
-
-								latestUpdateFoundChanges = true;
-
-								String monitorTempDir = graph.getTempDir();
-
-								File temp = new File(
-										// context.getBundle().getLocation()
-										monitorTempDir);
-								temp.mkdir();
-
-								Set<VcsCommitItem> deleteditems = new HashSet<VcsCommitItem>();
-
-								// limit to "interesting" files
-								Collection<VcsCommitItem> files = m.getDelta(currLocalTopRevisions.get(m.getLocation()));
-
-								// System.err.println(files);
-
-								HashSet<VcsCommitItem> interestingfiles = new HashSet<VcsCommitItem>();
-
-								stateListener.info("Calculating relevant changed model files...");
-
-								for (VcsCommitItem r : files) {
-									for (String p : getKnownModelParserTypes()) {
-										IModelResourceFactory parser = getModelParser(p);
-										for (String ext : parser.getModelExtensions()) {
-											if (r.getPath().toLowerCase().endsWith(ext)) {
-												interestingfiles.add(r);
-											}
-										}
-									}
-								}
-
-								Iterator<VcsCommitItem> it = interestingfiles.iterator();
-
-								while (it.hasNext()) {
-									VcsCommitItem c = it.next();
-
-									if (c.getChangeType().equals(VcsChangeType.DELETED)) {
-
-										if (VERBOSE)
-											console.println("-->" + c.getPath() + " HAS CHANGED (" + c.getChangeType()
-													+ "), PROPAGATING CHANGES");
-
-										deleteditems.add(c);
-										it.remove();
-									}
-								}
-
-								// metadata about synchronise
-								deletedFiles = deletedFiles + deleteditems.size();
-								interestingFiles = interestingFiles + interestingfiles.size();
-
-								// for each registered updater
-								for (IModelUpdater u : getUpdaters()) {
-
-									// enters transaction mode!
-									Set<VcsCommitItem> currreposchangeditems = u
-											.compareWithLocalFiles(interestingfiles);
-
-									// metadata about synchronise
-									final int totalFiles = currreposchangeditems.size();
-									currchangeditems = currchangeditems + totalFiles;
-
-									// create temp files with changed repos
-									// files
-									final Map<String, File> pathToImported = new HashMap<>();
-									for (VcsCommitItem s : currreposchangeditems) {
-
-										String commitPath = s.getPath();
-
-										if (VERBOSE)
-											console.println("-->" + commitPath + " HAS CHANGED (" + s.getChangeType()
-													+ "), PROPAGATING CHANGES");
-
-										String[] commitPathSplit = commitPath.split("/");
-
-										if (commitPathSplit.length > 1) {
-											String path = monitorTempDir;
-											for (int ii = 0; ii < commitPathSplit.length - 1; ii++) {
-
-												File dir = new File(path + "/" + commitPathSplit[ii]);
-												dir.mkdir();
-												path = path + "/" + commitPathSplit[ii];
-
-											}
-											temp = new File(path + "/" + commitPathSplit[commitPathSplit.length - 1]);
-										} else
-											temp = new File(monitorTempDir + "/" + commitPath);
-
-										if (!pathToImported.containsKey(commitPath)) {
-											final File imported = m.importFiles(commitPath, temp);
-											pathToImported.put(commitPath, imported);
-										}
-									}
-
-									// delete all removed files
-
-									stateListener.info("Deleting models removed from repository...");
-
-									try {
-										listener.changeStart();
-										for (VcsCommitItem c : deleteditems) {
-											success = success && u.deleteAll(c);
-										}
-									} catch (Exception e) {
-										success = false;
-										System.err.println("error in deleting removed files from store:");
-										e.printStackTrace();
-										listener.changeFailure();
-									} finally {
-										listener.changeSuccess();
-									}
-
-									stateListener.info("Updating models to the new version...");
-
-									// prepare for mass inserts if needed
-									graph.enterBatchMode();
-
-									final boolean fileCountProgress = totalFiles > FILECOUNT_PROGRESS_THRESHOLD;
-									final long millisSinceStart = System.currentTimeMillis();
-									int totalProcessedFiles = 0, filesProcessedSinceLastPrint = 0;
-									long millisSinceLastPrint = millisSinceStart;
-
-									for (VcsCommitItem v : currreposchangeditems) {
-										try {
-											// Place before the actual update so we print the 0/X message as well
-											if (fileCountProgress && (totalProcessedFiles == 0 && filesProcessedSinceLastPrint == 0 || filesProcessedSinceLastPrint == FILECOUNT_PROGRESS_THRESHOLD)) {
-												totalProcessedFiles += filesProcessedSinceLastPrint;
-
-												final long millisPrint = System.currentTimeMillis();
-												stateListener.info(String.format(
-														"Processed %d/%d files in repo %s (%s sec, %s sec total)",
-														totalProcessedFiles, totalFiles, m.getLocation(),
-														(millisPrint - millisSinceLastPrint) / 1000,
-														(millisPrint - millisSinceStart) / 1000));
-
-												filesProcessedSinceLastPrint = 0;
-												millisSinceLastPrint = millisPrint;
-											}
-
-											IHawkModelResource r = null;
-
-											if (u.caresAboutResources()) {
-												final File file = pathToImported.get(v.getPath());
-												if (file == null || !file.exists()) {
-													console.printerrln("warning, cannot find file: " + file
-															+ ", ignoring changes");
-												} else {
-													IModelResourceFactory mrf = getModelParserFromFilename(
-															file.getName().toLowerCase());
-													if (mrf.canParse(file))
-														r = mrf.parse(file);
-												}
-											}
-
-											success = u.updateStore(v, r) && success;
-
-											if (r != null) {
-												if (!isSyncMetricsEnabled)
-													r.unload();
-												else {
-													fileToResourceMap.put(v, r);
-
-												}
-												loadedResources++;
-											}
-
-											filesProcessedSinceLastPrint++;
-
-										} catch (Exception e) {
-											console.printerrln("updater: " + u + "failed to update store");
-											console.printerrln(e);
-											success = false;
-										}
-									}
-
-									// Print the final message
-									if (fileCountProgress) {
-										totalProcessedFiles += filesProcessedSinceLastPrint;
-										final long millisPrint = System.currentTimeMillis();
-										stateListener.info(String.format(
-												"Processed %d/%d files in repo %s (%s sec, %s sec total)",
-												totalProcessedFiles, totalFiles, m.getLocation(),
-												(millisPrint - millisSinceLastPrint) / 1000,
-												(millisPrint - millisSinceStart) / 1000));
-									}
-
-									stateListener.info("Updating proxies...");
-
-									// update proxies
-									u.updateProxies();
-
-									stateListener.info("Updated proxies.");
-
-								}
-
-								// delete temporary files
-								if (!FileOperations.deleteFiles(new File(monitorTempDir), true))
-									console.printerrln("error in deleting temporary local vcs files");
-
-								if (success) {
-									currLocalTopRevisions.put(m.getLocation(),
-											currReposTopRevisions.get(m.getLocation()));
-								} else {
-									allSync = false;
-									currLocalTopRevisions.put(m.getLocation(), "-3");
-								}
-							}
-
+							allSync = internalSynchronise(allSync, m);
 						} else {
 							console.printerrln("Warning, monitor is inactive, synchronisation failed!");
 							allSync = false;
@@ -402,6 +173,241 @@ public class ModelIndexerImpl implements IModelIndexer {
 			stateListener.info("Performing optional post-sync operations.");
 			stateListener.state(HawkState.RUNNING);
 			listener.synchroniseEnd();
+		}
+	}
+
+	private boolean internalSynchronise(boolean allSync, IVcsManager m) throws Exception {
+		try {
+			currReposTopRevisions.put(m.getLocation(), m.getCurrentRevision());
+		} catch (Exception e1) {
+			// if
+			// (e1.getMessage().contains("Authentication"))
+			// {syserr(Eclipse_VCS_NoSQL_UI_view.indexers.remove(this)+"");
+			// syserr("Incorrect authentication to version
+			// control, removing this indexer, please add it
+			// again with the correct credentials");}
+			// else
+			e1.printStackTrace();
+			allSync = false;
+		}
+
+		if (!currReposTopRevisions.get(m.getLocation()).equals(currLocalTopRevisions.get(m.getLocation()))) {
+
+			boolean success = true;
+			latestUpdateFoundChanges = true;
+
+			final Set<VcsCommitItem> deleteditems = new HashSet<VcsCommitItem>();
+			final Set<VcsCommitItem> interestingfiles = new HashSet<VcsCommitItem>();
+			inspectChanges(m, deleteditems, interestingfiles);
+			deletedFiles = deletedFiles + deleteditems.size();
+			interestingFiles = interestingFiles + interestingfiles.size();
+
+			final String monitorTempDir = graph.getTempDir();
+			File temp = new File(monitorTempDir);
+			temp.mkdir();
+			
+			// for each registered updater
+			for (IModelUpdater u : getUpdaters()) {
+				success = internalSynchronise(success, m, u, deleteditems, interestingfiles, monitorTempDir);
+			}
+
+			// delete temporary files
+			if (!FileOperations.deleteFiles(new File(monitorTempDir), true))
+				console.printerrln("error in deleting temporary local vcs files");
+
+			if (success) {
+				currLocalTopRevisions.put(m.getLocation(),
+						currReposTopRevisions.get(m.getLocation()));
+			} else {
+				allSync = false;
+				currLocalTopRevisions.put(m.getLocation(), "-3");
+			}
+		}
+
+		return allSync;
+	}
+
+	private boolean internalSynchronise(boolean success, final IVcsManager m, final IModelUpdater u,
+			final Set<VcsCommitItem> deletedItems, final Set<VcsCommitItem> interestingfiles,
+			final String monitorTempDir) {
+
+		// enters transaction mode!
+		Set<VcsCommitItem> currReposChangedItems = u.compareWithLocalFiles(interestingfiles);
+
+		// metadata about synchronise
+		final int totalFiles = currReposChangedItems.size();
+		currchangeditems = currchangeditems + totalFiles;
+
+		// create temp files with changed repos files
+		final Map<String, File> pathToImported = new HashMap<>();
+		importFiles(m, monitorTempDir, currReposChangedItems, pathToImported);
+
+		// delete all removed files
+		success = deleteRemovedModels(success, u, deletedItems);
+
+		stateListener.info("Updating models to the new version...");
+
+		// prepare for mass inserts if needed
+		graph.enterBatchMode();
+
+		final boolean fileCountProgress = totalFiles > FILECOUNT_PROGRESS_THRESHOLD;
+		final long millisSinceStart = System.currentTimeMillis();
+		int totalProcessedFiles = 0, filesProcessedSinceLastPrint = 0;
+		long millisSinceLastPrint = millisSinceStart;
+
+		for (VcsCommitItem v : currReposChangedItems) {
+			try {
+				// Place before the actual update so we print the 0/X message as well
+				if (fileCountProgress && (totalProcessedFiles == 0 && filesProcessedSinceLastPrint == 0 || filesProcessedSinceLastPrint == FILECOUNT_PROGRESS_THRESHOLD)) {
+					totalProcessedFiles += filesProcessedSinceLastPrint;
+
+					final long millisPrint = System.currentTimeMillis();
+					stateListener.info(String.format(
+							"Processed %d/%d files in repo %s (%s sec, %s sec total)",
+							totalProcessedFiles, totalFiles, m.getLocation(),
+							(millisPrint - millisSinceLastPrint) / 1000,
+							(millisPrint - millisSinceStart) / 1000));
+
+					filesProcessedSinceLastPrint = 0;
+					millisSinceLastPrint = millisPrint;
+				}
+
+				IHawkModelResource r = null;
+				if (u.caresAboutResources()) {
+					final File file = pathToImported.get(v.getPath());
+					if (file == null || !file.exists()) {
+						console.printerrln("warning, cannot find file: " + file + ", ignoring changes");
+					} else {
+						IModelResourceFactory mrf = getModelParserFromFilename(
+								file.getName().toLowerCase());
+						if (mrf.canParse(file))
+							r = mrf.parse(file);
+					}
+				}
+				success = u.updateStore(v, r) && success;
+
+				if (r != null) {
+					if (!isSyncMetricsEnabled) {
+						r.unload();
+					} else {
+						fileToResourceMap.put(v, r);
+					}
+					loadedResources++;
+				}
+
+				filesProcessedSinceLastPrint++;
+
+			} catch (Exception e) {
+				console.printerrln("updater: " + u + "failed to update store");
+				console.printerrln(e);
+				success = false;
+			}
+		}
+
+		// Print the final message
+		if (fileCountProgress) {
+			totalProcessedFiles += filesProcessedSinceLastPrint;
+			final long millisPrint = System.currentTimeMillis();
+			stateListener.info(String.format(
+					"Processed %d/%d files in repo %s (%s sec, %s sec total)",
+					totalProcessedFiles, totalFiles, m.getLocation(),
+					(millisPrint - millisSinceLastPrint) / 1000,
+					(millisPrint - millisSinceStart) / 1000));
+		}
+
+		stateListener.info("Updating proxies...");
+
+		// update proxies
+		u.updateProxies();
+
+		// leave batch mode
+		graph.exitBatchMode();
+		
+		stateListener.info("Updated proxies.");
+		return success;
+	}
+
+	private boolean deleteRemovedModels(boolean success, IModelUpdater u, final Set<VcsCommitItem> deleteditems) {
+		stateListener.info("Deleting models removed from repository...");
+		try {
+			listener.changeStart();
+			for (VcsCommitItem c : deleteditems) {
+				success = success && u.deleteAll(c);
+			}
+		} catch (Exception e) {
+			success = false;
+			System.err.println("error in deleting removed files from store:");
+			e.printStackTrace();
+			listener.changeFailure();
+		} finally {
+			listener.changeSuccess();
+		}
+		return success;
+	}
+
+	private void importFiles(IVcsManager m, final String monitorTempDir, Set<VcsCommitItem> currreposchangeditems,
+			final Map<String, File> pathToImported) {
+		for (VcsCommitItem s : currreposchangeditems) {
+			String commitPath = s.getPath();
+
+			if (VERBOSE)
+				console.println("-->" + commitPath + " HAS CHANGED (" + s.getChangeType()
+						+ "), PROPAGATING CHANGES");
+
+			String[] commitPathSplit = commitPath.split("/");
+
+			File temp;
+			if (commitPathSplit.length > 1) {
+				String path = monitorTempDir;
+				for (int ii = 0; ii < commitPathSplit.length - 1; ii++) {
+
+					File dir = new File(path + "/" + commitPathSplit[ii]);
+					dir.mkdir();
+					path = path + "/" + commitPathSplit[ii];
+
+				}
+				temp = new File(path + "/" + commitPathSplit[commitPathSplit.length - 1]);
+			} else
+				temp = new File(monitorTempDir + "/" + commitPath);
+
+			if (!pathToImported.containsKey(commitPath)) {
+				final File imported = m.importFiles(commitPath, temp);
+				pathToImported.put(commitPath, imported);
+			}
+		}
+	}
+
+	private void inspectChanges(IVcsManager m, Set<VcsCommitItem> deleteditems, Set<VcsCommitItem> interestingfiles)
+			throws Exception {
+		Collection<VcsCommitItem> files = m.getDelta(currLocalTopRevisions.get(m.getLocation()));
+
+		stateListener.info("Calculating relevant changed model files...");
+
+		for (VcsCommitItem r : files) {
+			for (String p : getKnownModelParserTypes()) {
+				IModelResourceFactory parser = getModelParser(p);
+				for (String ext : parser.getModelExtensions()) {
+					if (r.getPath().toLowerCase().endsWith(ext)) {
+						interestingfiles.add(r);
+					}
+				}
+			}
+		}
+
+		Iterator<VcsCommitItem> it = interestingfiles.iterator();
+
+		while (it.hasNext()) {
+			VcsCommitItem c = it.next();
+
+			if (c.getChangeType().equals(VcsChangeType.DELETED)) {
+
+				if (VERBOSE)
+					console.println("-->" + c.getPath() + " HAS CHANGED (" + c.getChangeType()
+							+ "), PROPAGATING CHANGES");
+
+				deleteditems.add(c);
+				it.remove();
+			}
 		}
 	}
 
