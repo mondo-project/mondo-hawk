@@ -101,7 +101,7 @@ public class ModelQueryTest {
 		indexer.addVCSManager(vcs, true);
 		indexer.requestImmediateSync();
 
-		SyncEndListener.waitForSync(indexer, new Callable<Object>() {
+		SyncEndListener.waitForSync(indexer, 200, new Callable<Object>() {
 			@Override
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
@@ -125,7 +125,7 @@ public class ModelQueryTest {
 		indexer.addVCSManager(vcs, true);
 		indexer.requestImmediateSync();
 
-		SyncEndListener.waitForSync(indexer, new Callable<Object>() {
+		SyncEndListener.waitForSync(indexer, 200, new Callable<Object>() {
 			@Override
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
@@ -152,22 +152,36 @@ public class ModelQueryTest {
 
 	/**
 	 * Only for manual stress testing: replace with path to folder with only the
+	 * GraBaTs 2009 set1 .xmi.
+	 */
+	@Ignore
+	@Test
+	public void set1() throws Throwable {
+		performanceIntegrationTest("set1", "/home/antonio/Desktop/grabats2009/set1");
+	}
+
+	/**
+	 * Only for manual stress testing: replace with path to folder with only the
 	 * GraBaTs 2009 set2 .xmi.
 	 */
 	@Ignore
 	@Test
 	public void set2() throws Throwable {
-		setup("set2");
+		performanceIntegrationTest("set2", "/home/antonio/Desktop/grabats2009/set2");
+	}
+
+	public void performanceIntegrationTest(final String name, final String folder) throws Exception, Throwable {
+		setup(name);
 		indexer.registerMetamodels(new File("resources/metamodels/Ecore.ecore"),
 				new File("resources/metamodels/JDTAST.ecore"));
 
 		final LocalFolder vcs = new LocalFolder();
-		vcs.init("/home/antonio/Desktop/grabats2009/set2", indexer);
+		vcs.init(folder, indexer);
 		vcs.run();
 		indexer.addVCSManager(vcs, true);
 		indexer.requestImmediateSync();
 
-		SyncEndListener.waitForSync(indexer, new Callable<Object>() {
+		SyncEndListener.waitForSync(indexer, 2000, new Callable<Object>() {
 			@Override
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());

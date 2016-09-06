@@ -33,11 +33,11 @@ public class SyncEndListener extends GraphChangeAdapter {
 		return ex;
 	}
 
-	public static void waitForSync(IModelIndexer indexer, final Callable<?> r) throws Throwable {
+	public static void waitForSync(IModelIndexer indexer, int timeoutSecs, final Callable<?> r) throws Throwable {
 		final Semaphore sem = new Semaphore(0);
 		final SyncEndListener changeListener = new SyncEndListener(r, sem);
 		indexer.addGraphChangeListener(changeListener);
-		if (!sem.tryAcquire(200, TimeUnit.SECONDS)) {
+		if (!sem.tryAcquire(timeoutSecs, TimeUnit.SECONDS)) {
 			fail("Synchronization timed out");
 		} else {
 			indexer.removeGraphChangeListener(changeListener);

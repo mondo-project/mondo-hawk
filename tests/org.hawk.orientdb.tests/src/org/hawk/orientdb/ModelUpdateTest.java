@@ -100,7 +100,7 @@ public class ModelUpdateTest {
 		vcs.run();
 		indexer.addVCSManager(vcs, true);
 		indexer.requestImmediateSync();
-		SyncEndListener.waitForSync(indexer, new Callable<Object>() {
+		SyncEndListener.waitForSync(indexer, 200, new Callable<Object>() {
 			@Override
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
@@ -126,7 +126,7 @@ public class ModelUpdateTest {
 		setup("addChild", "tree/tree.model");
 		replaceWith("changed-trees/add-child.model");
 		indexer.requestImmediateSync();
-		SyncEndListener.waitForSync(indexer, new Callable<Object>() {
+		SyncEndListener.waitForSync(indexer, 200, new Callable<Object>() {
 			@Override
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
@@ -153,7 +153,7 @@ public class ModelUpdateTest {
 		for (int i = 1; i <= 8; i++) {
 			replaceWith("bpmn/v" + i + "-B.2.0.bpmn");
 			indexer.requestImmediateSync();
-			SyncEndListener.waitForSync(indexer, noErrors);
+			SyncEndListener.waitForSync(indexer, 200, noErrors);
 		}
 	}
 
@@ -162,7 +162,7 @@ public class ModelUpdateTest {
 		setup("removeChild", "tree/tree.model");
 		replaceWith("changed-trees/remove-child.model");
 		indexer.requestImmediateSync();
-		SyncEndListener.waitForSync(indexer, new Callable<Object>() {
+		SyncEndListener.waitForSync(indexer, 200, new Callable<Object>() {
 			@Override
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
@@ -180,7 +180,7 @@ public class ModelUpdateTest {
 		setup("renameChild", "tree/tree.model");
 		replaceWith("changed-trees/rename-child.model");
 		indexer.requestImmediateSync();
-		SyncEndListener.waitForSync(indexer, new Callable<Object>() {
+		SyncEndListener.waitForSync(indexer, 200, new Callable<Object>() {
 			@Override
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
@@ -201,7 +201,7 @@ public class ModelUpdateTest {
 		setup("renameRoot", "tree/tree.model");
 		replaceWith("changed-trees/rename-root.model");
 		indexer.requestImmediateSync();
-		SyncEndListener.waitForSync(indexer, new Callable<Object>() {
+		SyncEndListener.waitForSync(indexer, 200, new Callable<Object>() {
 			@Override
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
