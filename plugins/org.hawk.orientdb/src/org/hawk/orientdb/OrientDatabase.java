@@ -77,8 +77,8 @@ public class OrientDatabase implements IGraphDatabase {
 	/** Name of the file index. */
 	static final String FILE_IDX_NAME = "hawkFileIndex";
 
-	/** Size threshold for doing a periodic save (needed for huge models). */
-	private static final int SIZE_THRESHOLD = 200_000;
+	/** Size threshold for doing a periodic save (needed to avoid hitting disk with constant writes in batch mode). */
+	private static final int SIZE_THRESHOLD = 10_000;
 
 	private File storageFolder;
 	private File tempFolder;
@@ -89,8 +89,8 @@ public class OrientDatabase implements IGraphDatabase {
 
 	private Mode currentMode;
 
-	private Map<String, OrientNode> dirtyNodes = new HashMap<>(100_000);
-	private Map<String, OrientEdge> dirtyEdges = new HashMap<>(100_000);
+	private Map<String, OrientNode> dirtyNodes = new HashMap<>(SIZE_THRESHOLD);
+	private Map<String, OrientEdge> dirtyEdges = new HashMap<>(SIZE_THRESHOLD);
 
 	private OPartitionedDatabasePool dbPool;
 	private OrientIndexStore indexStore;
@@ -283,6 +283,7 @@ public class OrientDatabase implements IGraphDatabase {
 			getGraph().commit();
 			ensureWALSetTo(true); // this reopens the DB, so it *must* go before db.begin()
 		}
+		getGraph().declareIntent(null);
 		currentMode = Mode.TX_MODE;
 	}
 
@@ -302,7 +303,7 @@ public class OrientDatabase implements IGraphDatabase {
 		if (properties != null) {
 			OrientNode.setProperties(newDoc, properties);
 		}
-		newDoc.save(vertexTypeName);
+		newDoc.save();
 
 		if (newDoc.getIdentity().isPersistent()) {
 			return new OrientNode(newDoc.getIdentity(), this);
