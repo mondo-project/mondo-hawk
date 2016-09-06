@@ -12,6 +12,7 @@ package org.hawk.emf.model;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.TreeIterator;
@@ -24,6 +25,51 @@ import org.hawk.core.model.IHawkObject;
 import org.hawk.emf.EMFObject;
 
 public class EMFModelResource implements IHawkModelResource {
+
+	/**
+	 * Goes through an EMF resource, mapping each non-proxy object within the
+	 * resource to an EMFObject.
+	 */
+	private final class EMFObjectIterable implements Iterable<IHawkObject> {
+		@Override
+		public Iterator<IHawkObject> iterator() {
+			final TreeIterator<EObject> it = EcoreUtil.getAllContents(res, false);
+
+			return new Iterator<IHawkObject>() {
+				EObject next = null;
+
+				@Override
+				public boolean hasNext() {
+					while (next == null && it.hasNext()) {
+						final EObject rawNext = it.next();
+						if (!rawNext.eIsProxy()) {
+							if (rawNext.eResource() == res) {
+								next = rawNext;
+							} else {
+								it.prune();
+							}
+						}
+					}
+					return next != null;
+				}
+
+				@Override
+				public IHawkObject next() {
+					if (hasNext()) {
+						EObject ret = next;
+						next = null;
+						return new EMFObject(ret);
+					}
+					throw new NoSuchElementException();
+				}
+
+				@Override
+				public void remove() {
+					throw new UnsupportedOperationException();
+				}
+			};
+		}
+	}
 
 	private Resource res;
 	private IModelResourceFactory parser;
@@ -38,61 +84,26 @@ public class EMFModelResource implements IHawkModelResource {
 		allContents = null;
 	}
 
-	// @Override
-	// public Resource getEMFResource() {
-	// return res;
-	//
-	// }
-
-	// @Override
-	// public ResourceSet getEMFResourceSet() {
-	// return set;
-	//
-	// }
-
 	public EMFModelResource(Resource r, IModelResourceFactory p) {
-
-		// System.err.println(r);
-
 		parser = p;
 		res = r;
-
 	}
 
 	@Override
 	public Iterable<IHawkObject> getAllContents() {
-		return getAllContentsSet();
+		return new EMFObjectIterable();
 	}
 
 	@Override
 	public Set<IHawkObject> getAllContentsSet() {
-
 		if (allContents == null) {
-
 			allContents = new HashSet<>();
-
-			TreeIterator<EObject> it = EcoreUtil.getAllContents(res, false);
-
-			while (it.hasNext()) {
-				EObject next = it.next();
-				if (!next.eIsProxy()) {
-					// Ensure the element is from the same resource -- even if
-					// EMF says its not a proxy!
-					if (next.eResource() == res) {
-						// same resource - add the object
-						allContents.add(new EMFObject(next));
-					} else {
-						// this is from a different resource - don't go into its
-						// children
-						it.prune();
-					}
-				} else {
-					// ignore it as it will resolve later - FIXED!
-				}
+			for (IHawkObject eob : getAllContents()) {
+				allContents.add(eob);
 			}
 		}
-		return allContents;
 
+		return allContents;
 	}
 
 	@Override
