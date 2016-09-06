@@ -27,10 +27,13 @@ import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.orientdb.util.OrientNameCleaner;
 
+import com.orientechnologies.common.collection.OCollection;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.db.record.ORecordLazyMultiValue;
 import com.orientechnologies.orient.core.db.record.OTrackedList;
 import com.orientechnologies.orient.core.id.ORID;
+import com.orientechnologies.orient.core.metadata.schema.OClass;
+import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class OrientNode implements IGraphNode {
@@ -314,21 +317,24 @@ public class OrientNode implements IGraphNode {
 		addToList(newEdge, OrientNameCleaner.escapeToField(PREFIX_OUTGOING + newEdge.getType()));
 	}
 
+	@SuppressWarnings("unchecked")
 	private void addToList(OrientEdge newEdge, final String fldName) {
 		changedVertex = getDocument();
-		Collection<OIdentifiable> out = changedVertex.field(fldName);
+
+		Object out = changedVertex.field(fldName);
 		if (out == null) {
 			out = new ArrayList<OIdentifiable>();
+			changedVertex.field(fldName, out);
 		}
 
 		final ODocument edgeDoc = newEdge.getDocument();
-		final ORID edgeId = edgeDoc.getIdentity();
-		if (edgeId.isPersistent()) {
-			out.add(edgeId);
-		} else {
-			out.add(edgeDoc);
+		if (out instanceof Collection) {
+			Collection<OIdentifiable> col = (Collection<OIdentifiable>) out;
+			col.add(edgeDoc);
+		} else if (out instanceof OCollection) {
+			OCollection<OIdentifiable> bag = (OCollection<OIdentifiable>)out;
+			bag.add(edgeDoc);
 		}
-		changedVertex.field(fldName, out);
 	}
 
 	public void addIncoming(OrientEdge newEdge) {
@@ -340,12 +346,14 @@ public class OrientNode implements IGraphNode {
 		removeFromList(orientEdge, OrientNameCleaner.escapeToField(PREFIX_OUTGOING_OLD + orientEdge.getType()));
 	}
 
+	@SuppressWarnings("unchecked")
 	private void removeFromList(OrientEdge orientEdge, final String fldName) {
 		changedVertex = getDocument();
-		Collection<ORID> out = changedVertex.field(fldName);
-		if (out != null) {
-			out.remove(orientEdge.getDocument().getIdentity());
-			changedVertex.field(fldName, out);
+		Object out = changedVertex.field(fldName);
+		if (out instanceof Collection) {
+			((Collection<OIdentifiable>)out).remove(orientEdge.getDocument());
+		} else if (out instanceof OCollection) {
+			((OCollection<OIdentifiable>) out).remove(orientEdge.getDocument());
 		}
 	}
 
@@ -451,5 +459,32 @@ public class OrientNode implements IGraphNode {
 			graph.markNodeAsDirty(this);
 		}
 		return removedEntries;
+	}
+
+	protected static void setupDocumentClass(OClass oClass) {
+		// Oversize leaves some extra space in the record, to reduce the
+		// frequency in which we need to defragment. Orient sets the oversize
+		// of class V at 2 by default, so we do the same.
+		oClass.setOverSize(2);
+
+		// TODO: should use constants from .graph, or there should be a way for
+		// graph to tell the DB certain things so it can optimize for them.
+		switch (oClass.getName()) {
+		case "V_eclass":
+			oClass.setOverSize(4);
+			oClass.createProperty(PREFIX_INCOMING + "ofType", OType.LINKBAG);
+			oClass.createProperty(PREFIX_INCOMING + "ofKind", OType.LINKBAG);
+			break;
+		case "V_eobject":
+			oClass.createProperty(PREFIX_OUTGOING + "file", OType.LINKBAG);
+			oClass.createProperty(PREFIX_OUTGOING + "ofType", OType.LINKLIST);
+			oClass.createProperty(PREFIX_OUTGOING + "ofKind", OType.LINKLIST);
+			break;
+		case "V_file":
+			oClass.createProperty(PREFIX_INCOMING + "file", OType.LINKBAG);
+			break;
+		}
+
+		System.out.println("set up properties for " + oClass.getName() + ": "+ oClass.declaredProperties());
 	}
 }

@@ -18,6 +18,8 @@ import org.hawk.core.graph.IGraphEdge;
 
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
+import com.orientechnologies.orient.core.metadata.schema.OClass;
+import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class OrientEdge implements IGraphEdge {
@@ -232,6 +234,12 @@ public class OrientEdge implements IGraphEdge {
 		if (getId().isPersistent()) {
 			changedEdge = null;
 		}
+	}
+
+	protected static void setupDocumentClass(OClass docClass) {
+		docClass.createProperty(FROM_PROPERTY, OType.LINK);
+		docClass.createProperty(TO_PROPERTY, OType.LINK);
+		docClass.createProperty(TYPE_PROPERTY, OType.STRING);
 	}
 
 }

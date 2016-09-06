@@ -62,6 +62,9 @@ import com.orientechnologies.orient.core.storage.OStorage;
  */
 public class OrientDatabase implements IGraphDatabase {
 
+	/** Name of the Orient document class for edges. */
+	private static final String EDGE_TYPE = "E";
+
 	/** Vertex class for the Hawk index store. */
 	private static final String VCLASS = "hawkIndexStore";
 
@@ -308,13 +311,13 @@ public class OrientDatabase implements IGraphDatabase {
 		}
 	}
 
-	private void ensureClassExists(final String vertexTypeName) {
+	private void ensureClassExists(final String className) {
 		ODatabaseDocumentTx db = getGraph();
 		final OSchemaProxy schema = db.getMetadata().getSchema();
-		if (!schema.existsClass(vertexTypeName)) {
+		if (!schema.existsClass(className)) {
 			final boolean wasInTX = db.getTransaction().isActive();
 			if (wasInTX) {
-				console.printerrln("Warning: premature commit needed to create class " + vertexTypeName);
+				console.printerrln("Warning: premature commit needed to create class " + className);
 				saveDirty();
 				getGraph().commit();
 			}
@@ -325,24 +328,17 @@ public class OrientDatabase implements IGraphDatabase {
 			 * to outgoing edges as out_X and incoming edges as in_X. All edge documents must then
 			 * belong to E or a subclass of and use out and in for the source and target of the edge.
 			 */
-			final OClass newVertexClass = schema.createClass(vertexTypeName);
-			if (vertexTypeName.startsWith(VERTEX_TYPE_PREFIX)) {
+			final OClass oClass = schema.createClass(className);
+			if (className.startsWith(VERTEX_TYPE_PREFIX)) {
 				OClass baseVertexClass = schema.getClass("V");
 				if (baseVertexClass == null) {
 					baseVertexClass = schema.createClass("V");
-					// Oversize leaves some extra space in the record, to reduce the
-					// frequency in which we need to defragment. Orient sets the oversize
-					// of class V at 2 by default, so we do the same.
 					baseVertexClass.setOverSize(2);
 				}
-				newVertexClass.addSuperClass(baseVertexClass);
-				if ("V_eclass".equals(newVertexClass.getName())) {
-					// Type nodes will usually have many edges going into them, so might
-					// as well boost the oversize a bit just in case.
-					newVertexClass.setOverSize(4);
-				} else {
-					newVertexClass.setOverSize(2);
-				}
+				oClass.addSuperClass(baseVertexClass);
+				OrientNode.setupDocumentClass(oClass);
+			} else if (EDGE_TYPE.equals(className)) {
+				OrientEdge.setupDocumentClass(oClass);
 			}
 
 			if (wasInTX) {
@@ -401,7 +397,7 @@ public class OrientDatabase implements IGraphDatabase {
 		// batch mode if we need to add a new edge type (very common during
 		// proxy resolving).
 
-		return "E";
+		return EDGE_TYPE;
 	}
 
 	@Override
