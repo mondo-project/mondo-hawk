@@ -41,6 +41,7 @@ import org.hawk.core.model.IHawkReference;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.internal.util.GraphUtil;
+import org.hawk.graph.internal.util.Pair;
 
 public class GraphModelBatchInjector {
 
@@ -66,9 +67,11 @@ public class GraphModelBatchInjector {
 	private IGraphDatabase graph;
 
 	/*
-	 * We don't keep the original objects, only the URIs, which saves on memory.
+	 * We don't keep the original objects, only the URIs. We split the URIs into path + fragment so
+	 * we can use -XX:+UseStringDeduplication (new in Java 8u20) to save memory, and the underlying
+	 * IGraphNodes only have identifiers (for further memory savings).
 	 */
-	private final Map<String, IGraphNode> hash = new HashMap<String, IGraphNode>(8192);
+	private final Map<Pair<String, String>, IGraphNode> hash = new HashMap<>();
 
 	IGraphNodeIndex fileDictionary, proxyDictionary, rootDictionary, fragmentIdx,
 			derivedProxyDictionary;
@@ -588,7 +591,7 @@ public class GraphModelBatchInjector {
 			if (node == null) {
 				System.err.println(String.format("The node for (%s) is null", eObject));
 			} else {
-				hash.put(eObject.getUri(), node);
+				hash.put(splitURI(eObject.getUri()), node);
 
 				final HashMap<String, Object> emptyMap = new HashMap<String, Object>();
 				createReference(ModelElementNode.EDGE_LABEL_OFTYPE, node, eClass, emptyMap, true);
@@ -617,6 +620,16 @@ public class GraphModelBatchInjector {
 		return node;
 	}
 
+	private Pair<String, String> splitURI(String uri) {
+		final String[] parts = uri.split("#", 1);
+
+		if (parts.length == 1) {
+			return new Pair<>(parts[0], "");
+		} else {
+			return new Pair<>(parts[0], parts[1]);
+		}
+	}
+
 	protected IGraphNode getFromFragmentIndex(IHawkObject eObject) {
 		IGraphNode node = null;
 
@@ -636,7 +649,7 @@ public class GraphModelBatchInjector {
 
 	/**
 	 * Creates an edge with the parameters given and links it to the appropriate
-	 * nodes
+	 * nodes. Both nodes are contained in the same resource.
 	 * 
 	 * @param from
 	 * @param to
@@ -649,8 +662,9 @@ public class GraphModelBatchInjector {
 		IGraphNode source = null;
 		IGraphNode destination = null;
 
-		source = hash.get(from.getUri());
-		destination = hash.get(to.getUri());
+
+		source = hash.get(splitURI(from.getUri()));
+		destination = hash.get(splitURI(to.getUri()));
 
 		if (source == null && destination == null) {
 
@@ -804,7 +818,7 @@ public class GraphModelBatchInjector {
 	 */
 	private boolean addEReferences(IHawkObject source, boolean resourceCanProvideSingletons) throws Exception {
 		boolean atLeastOneSetReference = false;
-		if (source.isFragmentUnique() && resourceCanProvideSingletons && hash.get(source.getUri()) == null) {
+		if (source.isFragmentUnique() && resourceCanProvideSingletons && hash.get(splitURI(source.getUri())) == null) {
 			// Avoid trying to add references from a singleton object we already had
 			return atLeastOneSetReference;
 		}
@@ -855,7 +869,7 @@ public class GraphModelBatchInjector {
 
 	private boolean addProxyRef(IHawkObject from, IHawkObject destinationObject, String edgelabel,
 			boolean isContainment, boolean isContainer) {
-		IGraphNode withProxy = hash.get(from.getUri());
+		IGraphNode withProxy = hash.get(splitURI(from.getUri()));
 		return addProxyRef(withProxy, destinationObject, edgelabel, isContainment, isContainer);
 	}
 

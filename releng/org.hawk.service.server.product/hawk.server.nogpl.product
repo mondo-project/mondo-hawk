@@ -10,21 +10,13 @@
       <programArgs>-console -consoleLog
       </programArgs>
       <vmArgs>-Dorg.osgi.service.http.port=8080 -Dorg.osgi.service.http.port.secure=8443
--Dosgi.noShutdown=true -Xmx4g -Xms2g -XX:+UseG1GC
+-Dosgi.noShutdown=true  -Xmx4g -Xms2g -XX:+UseG1GC -XX:+UseStringDeduplication
 -Dorg.eclipse.equinox.http.jetty.customizer.class=org.hawk.service.server.gzip.Customizer -Dorg.eclipse.update.reconcile=false
 -Dartemis.security.enabled=false
 -Dhawk.artemis.host=localhost
 -Dhawk.artemis.listenAll=false
 -Dhawk.artemis.sslEnabled=false
 -Dhawk.tcp.port=2080 -Dhawk.tcp.thriftProtocol=TUPLE
-
--Dmondo.repository.gold=http://localhost/svn/wt-demo
--Dmondo.extensions=wtspec4m
--Dmondo.workspace.folder=/home/mondo/Desktop/mondo-server-product/workspace
--Dmondo.eiq=http://localhost/svn/wt-demo/macl.project/src/macl/project/queries.eiq
--Dmondo.macl=http://localhost/svn/wt-demo/macl.project/src/macl/project/rules.macl
--Dmondo.mpbl=http://localhost/svn/wt-demo/macl.project/src/macl/project/lock.mpbl
--Dmondo.scripts.folder=/home/mondo/Desktop/mondo-offline-scripts/scripts
       </vmArgs>
       <vmArgsLin>-Dsvnkit.library.gnome-keyring.enabled=false
       </vmArgsLin>
