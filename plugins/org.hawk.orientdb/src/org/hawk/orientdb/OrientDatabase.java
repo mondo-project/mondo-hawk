@@ -129,7 +129,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 		console.println("Starting database " + iURL);
 		this.dbURL = iURL;
-		dbPool = new OPartitionedDatabasePool(dbURL, "admin", "admin");
+		dbPool = new OPartitionedDatabasePool(dbURL, "admin", "admin", Runtime.getRuntime().availableProcessors() << 1, 0);
 		dbPool.setAutoCreate(true);
 
 		metamodelIndex = getOrCreateNodeIndex(METAMODEL_IDX_NAME);
@@ -231,33 +231,32 @@ public class OrientDatabase implements IGraphDatabase {
 		}
 		ensureWALSetTo(false);
 		db = getGraph();
-		db.declareIntent(new OIntentMassiveInsert());
 		currentMode = Mode.NO_TX_MODE;
 	}
 
 	/**
-	 * Closes the connection currently open to the DB.
+	 * Closes the connection currently open to the DB in the current thread.
 	 */
-	protected void closeConnection() {
+	protected void closeTransaction() {
 		final ODatabaseDocumentTx db = getGraph();
 		if (db.getTransaction().isActive()) {
 			db.getTransaction().close();
 		}
-		dbConn.get().close();
+		//dbConn.get().close(); // this clears thread-level cache as well - better to leave one conn per Orient thread open all the time
 		dbConn.set(null);
 	}
-	
+
 	private void ensureWALSetTo(final boolean useWAL) {
 		if (useWAL != OGlobalConfiguration.USE_WAL.getValueAsBoolean()) {
 			final ODatabaseDocumentTx db = getGraph();
 			final OStorage storage = db.getStorage();
 
-			closeConnection();
+			closeTransaction();
 			dbPool.close();
 			storage.close(true, false);
 
 			OGlobalConfiguration.USE_WAL.setValue(useWAL);
-			dbPool = new OPartitionedDatabasePool(dbURL, "admin", "admin");
+			dbPool = new OPartitionedDatabasePool(dbURL, "admin", "admin", Runtime.getRuntime().availableProcessors() << 1, 0);
 			dbPool.setAutoCreate(true);
 		}
 	}
@@ -283,7 +282,7 @@ public class OrientDatabase implements IGraphDatabase {
 			getGraph().commit();
 			ensureWALSetTo(true); // this reopens the DB, so it *must* go before db.begin()
 		}
-		getGraph().declareIntent(null);
+		//getGraph().declareIntent(null);
 		currentMode = Mode.TX_MODE;
 	}
 
@@ -415,7 +414,9 @@ public class OrientDatabase implements IGraphDatabase {
 		if (dbConn.get() != null) {
 			return dbConn.get();
 		} else if (dbPool != null && !dbPool.isClosed()) {
-			dbConn.set(dbPool.acquire());
+			final ODatabaseDocumentTx db = dbPool.acquire();
+			db.declareIntent(new OIntentMassiveInsert());
+			dbConn.set(db);
 			return dbConn.get();
 		} else {
 			// Only needed for quick reconnections after a shutdown
