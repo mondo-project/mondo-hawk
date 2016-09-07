@@ -28,6 +28,7 @@ import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.core.model.IHawkClass;
 import org.hawk.core.util.FileOperations;
 import org.hawk.neo4j_v2.util.Neo4JBatchUtil;
 import org.hawk.neo4j_v2.util.Neo4JEdge;
@@ -563,6 +564,17 @@ public class Neo4JDatabase implements IGraphDatabase {
 		}
 
 		return ret;
+	}
+
+	@Override
+	public void registerNodeClass(String label, IHawkClass schema) {
+		// do nothing - Neo4j is schemaless
+	}
+
+	@Override
+	public IGraphNode createNode(Map<String, Object> properties, String label, IHawkClass schema) {
+		// no effect - Neo4j is schemaless
+		return createNode(properties, label);
 	}
 
 }

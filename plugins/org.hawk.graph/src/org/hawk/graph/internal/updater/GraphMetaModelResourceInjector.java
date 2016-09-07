@@ -645,7 +645,11 @@ public class GraphMetaModelResourceInjector {
 	private boolean addMetaClass(IHawkClass eClass) {
 		String id = (eClass).getName();
 		objectCount++;
-		return createEClassNode(eClass, id);
+
+		final boolean eClassNode = createEClassNode(eClass, id);
+		graph.registerNodeClass(ModelElementNode.OBJECT_VERTEX_LABEL, eClass);
+
+		return eClassNode;
 	}
 
 	public int getUnset() {

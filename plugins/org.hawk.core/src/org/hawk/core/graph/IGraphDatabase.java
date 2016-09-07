@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hawk.core.IConsole;
+import org.hawk.core.model.IHawkClass;
 
 /**
  * Assumes all iterators returned will provide a consistent ordering of results
@@ -63,6 +64,17 @@ public interface IGraphDatabase {
 	IGraphEdge createRelationship(IGraphNode start, IGraphNode end, String type);
 
 	IGraphEdge createRelationship(IGraphNode start, IGraphNode end, String type, Map<String, Object> props);
+
+	/**
+	 * Prepares the graph to store a certain type of object within the vertices of a certain label.
+	 */
+	void registerNodeClass(String label, IHawkClass schema);
+
+	/**
+	 * Creates a node tied to a certain type of object. Useful for stores that can take advantage of schemas,
+	 * e.g. OrientDB.
+	 */
+	IGraphNode createNode(Map<String, Object> properties, String label, IHawkClass schema);
 
 	Object getGraph();
 

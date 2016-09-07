@@ -25,14 +25,19 @@ import java.util.Set;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.model.IHawkAttribute;
+import org.hawk.core.model.IHawkClass;
+import org.hawk.core.model.IHawkReference;
 import org.hawk.orientdb.util.OrientNameCleaner;
 
 import com.orientechnologies.common.collection.OCollection;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.db.record.ORecordLazyMultiValue;
 import com.orientechnologies.orient.core.db.record.OTrackedList;
+import com.orientechnologies.orient.core.db.record.ridbag.ORidBag;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
+import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
@@ -310,7 +315,23 @@ public class OrientNode implements IGraphNode {
 	}
 
 	public void addOutgoing(OrientEdge newEdge) {
-		addToList(newEdge, OrientNameCleaner.escapeToField(PREFIX_OUTGOING + newEdge.getType()));
+		final String edgePropName = OrientNameCleaner.escapeToField(PREFIX_OUTGOING + newEdge.getType());
+		if (!graph.getGraph().getTransaction().isActive()) {
+			changedVertex = getDocument();
+
+			final OClass oClass = changedVertex.getSchemaClass();
+			if (!oClass.existsProperty(edgePropName)) {
+				/**
+				 * Outgoing edges that haven't been created in
+				 * OrientDatabase#registerNodeClass are from the inner workings
+				 * of Hawk itself, and therefore don't really require any
+				 * explicit ordering. This is the case for file, ofKind, and
+				 * ofType.
+				 */
+				oClass.createProperty(edgePropName, OType.LINKBAG, (OType)null, true);
+			}
+		}
+		addToList(newEdge, edgePropName);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -319,7 +340,12 @@ public class OrientNode implements IGraphNode {
 
 		Object out = changedVertex.field(fldName);
 		if (out == null) {
-			out = new ArrayList<OIdentifiable>();
+			OProperty prop = changedVertex.getSchemaClass().getProperty(fldName);
+			if (prop != null && prop.getType() == OType.LINKBAG) {
+				out = new ORidBag();
+			} else {
+				out = new ArrayList<OIdentifiable>();
+			}
 			changedVertex.field(fldName, out);
 		}
 
@@ -334,7 +360,19 @@ public class OrientNode implements IGraphNode {
 	}
 
 	public void addIncoming(OrientEdge newEdge) {
-		addToList(newEdge, OrientNameCleaner.escapeToField(PREFIX_INCOMING + newEdge.getType()));
+		final String edgePropName = OrientNameCleaner.escapeToField(PREFIX_INCOMING + newEdge.getType());
+		if (!graph.getGraph().getTransaction().isActive()) {
+			changedVertex = getDocument();
+
+			final OClass oClass = changedVertex.getSchemaClass();
+			if (!oClass.existsProperty(edgePropName)) {
+				// Incoming edges are always linkbags - there's no specific order to them.
+				// The property didn't exist before, so we shouldn't be rechecking all
+				// records for that either.
+				oClass.createProperty(edgePropName, OType.LINKBAG, (OType)null, true);
+			}
+		}
+		addToList(newEdge, edgePropName);
 	}
 
 	public void removeOutgoing(OrientEdge orientEdge) {
@@ -457,30 +495,65 @@ public class OrientNode implements IGraphNode {
 		return removedEntries;
 	}
 
-	protected static void setupDocumentClass(OClass oClass) {
+	protected static void setupDocumentClass(OClass oClass, IHawkClass hClass) {
 		// Oversize leaves some extra space in the record, to reduce the
 		// frequency in which we need to defragment. Orient sets the oversize
 		// of class V at 2 by default, so we do the same.
 		oClass.setOverSize(2);
 
-		// TODO: should use constants from .graph, or there should be a way for
-		// graph to tell the DB certain things so it can optimize for them.
-		switch (oClass.getName()) {
-		case "V_eclass":
-			oClass.setOverSize(4);
-			oClass.createProperty(PREFIX_INCOMING + "ofType", OType.LINKBAG);
-			oClass.createProperty(PREFIX_INCOMING + "ofKind", OType.LINKBAG);
-			break;
-		case "V_eobject":
-			oClass.createProperty(PREFIX_OUTGOING + "file", OType.LINKBAG);
-			oClass.createProperty(PREFIX_OUTGOING + "ofType", OType.LINKLIST);
-			oClass.createProperty(PREFIX_OUTGOING + "ofKind", OType.LINKLIST);
-			break;
-		case "V_file":
-			oClass.createProperty(PREFIX_INCOMING + "file", OType.LINKBAG);
-			break;
+		if (hClass != null) {
+			for (IHawkAttribute attr : hClass.getAllAttributes()) {
+				OType type = OType.ANY;
+
+				switch (attr.getType().getInstanceType()) {
+				case "java.lang.Long":
+				case "Long":
+					type = OType.LONG;
+					break;
+				case "java.lang.Integer":
+				case "Integer":
+					type = OType.INTEGER;
+					break;
+				case "java.lang.Short":
+				case "Short":
+					type = OType.SHORT;
+					break;
+				case "java.lang.Byte":
+				case "Byte":
+					type = OType.BYTE;
+					break;
+				case "java.lang.Float":
+				case "Float":
+					type = OType.FLOAT;
+					break;
+				case "java.lang.Double":
+				case "Double":
+					type = OType.DOUBLE;
+					break;
+				case "java.lang.Boolean":
+				case "Boolean":
+					type = OType.BOOLEAN;
+					break;
+				case "java.lang.String":
+				case "String":
+					type = OType.STRING;
+					break;
+				default:
+					System.err.println("Unknown instance type " + attr.getType().getInstanceType()
+							+ ", falling back to OType.ANY");
+				}
+				oClass.createProperty(PREFIX_PROPERTY + attr.getName(), type);
+			}
+
+			for (IHawkReference ref : hClass.getAllReferences()) {
+				if (ref.isOrdered()) {
+					oClass.createProperty(PREFIX_OUTGOING + ref.getName(), OType.LINKLIST);
+				} else {
+					oClass.createProperty(PREFIX_OUTGOING + ref.getName(), OType.LINKBAG);
+				}
+			}
 		}
 
-		System.out.println("set up properties for " + oClass.getName() + ": "+ oClass.declaredProperties());
+		System.out.println("set up properties for " + oClass.getName() + ": " + oClass.declaredProperties());
 	}
 }
