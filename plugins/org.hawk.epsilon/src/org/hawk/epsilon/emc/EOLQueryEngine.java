@@ -89,7 +89,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	public Collection<?> allContents() {
 		final Set<Object> allContents = new HashSet<Object>();
 
-		for (IGraphNode node : graph.allNodes("eobject")) {
+		for (IGraphNode node : graph.allNodes(ModelElementNode.OBJECT_VERTEX_LABEL)) {
 			GraphNodeWrapper wrapper = new GraphNodeWrapper(node, this);
 			allContents.add(wrapper);
 		}

@@ -29,6 +29,8 @@ import org.hawk.core.graph.IGraphNode;
  */
 public class ModelElementNode {
 
+	public static final String OBJECT_VERTEX_LABEL = "eobject";
+
 	public static final String EDGE_PROPERTY_CONTAINER = "isContainer";
 
 	public static final String EDGE_PROPERTY_CONTAINMENT = "isContainment";
