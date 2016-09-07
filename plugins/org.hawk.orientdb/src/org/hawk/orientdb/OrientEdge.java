@@ -114,6 +114,7 @@ public class OrientEdge implements IGraphEdge {
 		// Disabling tracking speeds up warm queries noticeably.
 		tmpEdge.setTrackingChanges(false);
 		final Object value = tmpEdge.field(property);
+		tmpEdge.setTrackingChanges(true);
 		if (value instanceof ODocument) {
 			ODocument doc = (ODocument) value;
 			return db.getNodeById(doc);
