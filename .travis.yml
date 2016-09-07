@@ -1,4 +1,5 @@
 script: bash ./deploy.sh
+sudo: required
 env:
   global:
   - GH_REF: github.com/mondo-project/mondo-hawk.git
