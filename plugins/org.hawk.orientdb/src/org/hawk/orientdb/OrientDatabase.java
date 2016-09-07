@@ -302,7 +302,7 @@ public class OrientDatabase implements IGraphDatabase {
 		if (properties != null) {
 			OrientNode.setProperties(newDoc, properties);
 		}
-		newDoc.save();
+		newDoc.save(vertexTypeName);
 
 		if (newDoc.getIdentity().isPersistent()) {
 			return new OrientNode(newDoc.getIdentity(), this);

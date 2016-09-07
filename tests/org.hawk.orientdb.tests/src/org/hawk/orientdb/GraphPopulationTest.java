@@ -120,6 +120,7 @@ public class GraphPopulationTest {
 	public void oneNodeRollback() throws Exception {
 		setup("oneNodeRollback");
 		try (OrientTransaction tx = db.beginTransaction()) {
+			assertEquals(0, db.allNodes("metamodel").size());
 			db.createNode(new HashMap<String, Object>(), "metamodel");
 			assertEquals(1, db.allNodes("metamodel").size());
 			tx.failure();
