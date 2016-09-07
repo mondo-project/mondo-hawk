@@ -113,7 +113,7 @@
 	<artifactId>tycho-surefire-plugin</artifactId>
 	<version>${tycho-version}</version>
 	<configuration>
-          <argLine>-Xms1024m -Xmx2048m</argLine>
+          <argLine>-Xms2g -Xmx2g -XX:MaxDirectMemorySize=4g -XX:+UseG1GC -XX:+UseStringDeduplication -XX:MaxDirectMemorySize=8g -Dstorage.diskCache.bufferSize=2000</argLine>
 	</configuration>
       </plugin>
       <plugin>
