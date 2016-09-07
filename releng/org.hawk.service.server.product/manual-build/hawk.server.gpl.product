@@ -11,7 +11,7 @@
       </programArgs>
       <vmArgs>-Dorg.osgi.service.http.port=8080 -Dorg.osgi.service.http.port.secure=8443
 -Dosgi.noShutdown=true -Xmx4g -Xms2g -XX:+UseG1GC -XX:+UseStringDeduplication
--XX:MaxDirectMemorySize=8g -Dstorage.buffer.size=4000
+-XX:MaxDirectMemorySize=8g -Dstorage.diskCache.bufferSize=4000
 -Dorg.eclipse.equinox.http.jetty.customizer.class=org.hawk.service.server.gzip.Customizer -Dorg.eclipse.update.reconcile=false
 -Dartemis.security.enabled=false
 -Dhawk.artemis.host=localhost
