@@ -20,6 +20,10 @@
       <product
             application="org.hawk.service.server.application.serverapp"
             name="Server Product">
+         <property
+               name="appName"
+               value="Server Product">
+         </property>
       </product>
    </extension>
 

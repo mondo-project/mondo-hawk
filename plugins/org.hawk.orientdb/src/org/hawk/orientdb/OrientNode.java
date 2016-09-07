@@ -306,10 +306,6 @@ public class OrientNode implements IGraphNode {
 		if (loaded != null) {
 			loaded.deserializeFields();
 		}
-		/*else {
-			graph.getConsole().printerrln("Loading node with id " + getId() + " from OrientDB produced null value");
-			Thread.dumpStack();
-		}*/
 		return loaded;
 	}
 
