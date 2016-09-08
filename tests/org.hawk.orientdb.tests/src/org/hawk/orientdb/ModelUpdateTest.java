@@ -52,7 +52,7 @@ public class ModelUpdateTest {
 	private File modelFolder;
 	private Path modelPath;
 
-	public void setup(String testCaseName, String baseModel) throws Throwable {
+	public void setup(String testCaseName, String baseModel, boolean includeBPMN) throws Throwable {
 		final File dbFolder = new File("testdb" + testCaseName);
 		FileUtils.deleteRecursively(dbFolder);
 		dbFolder.mkdir();
@@ -75,12 +75,14 @@ public class ModelUpdateTest {
 		final FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(
 				new File("keystore"), "admin".toCharArray());
 
-		indexer = new ModelIndexerImpl("test", indexerFolder, credStore,
-				console);
+		indexer = new ModelIndexerImpl("test", indexerFolder, credStore, console);
 		indexer.addMetaModelResourceFactory(new EMFMetaModelResourceFactory());
-		indexer.addMetaModelResourceFactory(new BPMNMetaModelResourceFactory());
 		indexer.addModelResourceFactory(new EMFModelResourceFactory());
-		indexer.addModelResourceFactory(new BPMNModelResourceFactory());
+		if (includeBPMN) {
+			indexer.addMetaModelResourceFactory(new BPMNMetaModelResourceFactory());
+			indexer.addModelResourceFactory(new BPMNModelResourceFactory());
+		}
+
 		queryEngine = new EOLQueryEngine();
 		indexer.addQueryEngine(queryEngine);
 		indexer.setMetaModelUpdater(new GraphMetaModelUpdater());
@@ -123,7 +125,7 @@ public class ModelUpdateTest {
 
 	@Test
 	public void addChild() throws Throwable {
-		setup("addChild", "tree/tree.model");
+		setup("addChild", "tree/tree.model", false);
 		replaceWith("changed-trees/add-child.model");
 		indexer.requestImmediateSync();
 		SyncEndListener.waitForSync(indexer, 200, new Callable<Object>() {
@@ -141,7 +143,7 @@ public class ModelUpdateTest {
 
 	@Test
 	public void bpmn() throws Throwable {
-		setup("bpmn", "bpmn/v0-B.2.0.bpmn");
+		setup("bpmn", "bpmn/v0-B.2.0.bpmn", true);
 		final Callable<Object> noErrors = new Callable<Object>() {
 			@Override
 			public Object call() throws Exception {
@@ -159,7 +161,7 @@ public class ModelUpdateTest {
 
 	@Test
 	public void removeChild() throws Throwable {
-		setup("removeChild", "tree/tree.model");
+		setup("removeChild", "tree/tree.model", false);
 		replaceWith("changed-trees/remove-child.model");
 		indexer.requestImmediateSync();
 		SyncEndListener.waitForSync(indexer, 200, new Callable<Object>() {
@@ -177,7 +179,7 @@ public class ModelUpdateTest {
 
 	@Test
 	public void renameChild() throws Throwable {
-		setup("renameChild", "tree/tree.model");
+		setup("renameChild", "tree/tree.model", false);
 		replaceWith("changed-trees/rename-child.model");
 		indexer.requestImmediateSync();
 		SyncEndListener.waitForSync(indexer, 200, new Callable<Object>() {
@@ -198,7 +200,7 @@ public class ModelUpdateTest {
 
 	@Test
 	public void renameRoot() throws Throwable {
-		setup("renameRoot", "tree/tree.model");
+		setup("renameRoot", "tree/tree.model", false);
 		replaceWith("changed-trees/rename-root.model");
 		indexer.requestImmediateSync();
 		SyncEndListener.waitForSync(indexer, 200, new Callable<Object>() {
@@ -219,9 +221,9 @@ public class ModelUpdateTest {
 	@Test
 	public void reuseDeleted() throws Throwable {
 		// Test case for issue #25
-		setup("reuse", "tree/tree.model");
+		setup("reuse", "tree/tree.model", false);
 		teardown();
-		setup("reuse", "tree/tree.model");
+		setup("reuse", "tree/tree.model", false);
 		assertFalse("The deleted directory should be reusable", db.getGraph()
 				.isClosed());
 	}
