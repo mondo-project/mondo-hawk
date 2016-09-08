@@ -322,7 +322,13 @@ public class GraphMetaModelResourceInjector {
 				listener.changeFailure();
 			}
 
-			if (!success) {
+			if (success) {
+				for (IHawkClassifier cls : epackage.getClasses()) {
+					if (cls instanceof IHawkClass) {
+						graph.registerNodeClass(ModelElementNode.OBJECT_VERTEX_LABEL, (IHawkClass)cls);
+					}
+				}
+			} else {
 				try (IGraphTransaction t2 = graph.beginTransaction()) {
 					IGraphNode ePackageNode = epackagedictionary.get("id", epackage.getNsURI()).iterator().next();
 					new DeletionUtils(graph).delete(ePackageNode);
@@ -645,11 +651,7 @@ public class GraphMetaModelResourceInjector {
 	private boolean addMetaClass(IHawkClass eClass) {
 		String id = (eClass).getName();
 		objectCount++;
-
-		final boolean eClassNode = createEClassNode(eClass, id);
-		graph.registerNodeClass(ModelElementNode.OBJECT_VERTEX_LABEL, eClass);
-
-		return eClassNode;
+		return createEClassNode(eClass, id);
 	}
 
 	public int getUnset() {
