@@ -272,13 +272,14 @@ public class GraphModelInserter {
 								dest = addedNodesHash.get(s);
 							if (dest != null) {
 								// add new reference
-								IGraphEdge e = graph.createRelationship(node, dest, refname);
+								final Map<String, Object> props = new HashMap<>();
 								if (isContainment) {
-									e.setProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT, "true");
+									props.put(ModelElementNode.EDGE_PROPERTY_CONTAINMENT, "true");
 								}
 								if (isContainer) {
-									e.setProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER, "true");
+									props.put(ModelElementNode.EDGE_PROPERTY_CONTAINER, "true");
 								}
+								graph.createRelationship(node, dest, refname, props);
 
 								// track change new reference
 								listener.referenceAddition(this.s, node, dest, refname, false);

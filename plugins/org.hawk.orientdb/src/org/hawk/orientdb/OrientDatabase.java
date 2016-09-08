@@ -17,11 +17,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.hawk.core.IConsole;
@@ -40,7 +40,6 @@ import org.hawk.orientdb.util.OrientClusterDocumentIterable;
 import org.hawk.orientdb.util.OrientNameCleaner;
 
 import com.orientechnologies.orient.core.Orient;
-import com.orientechnologies.orient.core.cache.ORecordCacheSoftRefs;
 import com.orientechnologies.orient.core.config.OGlobalConfiguration;
 import com.orientechnologies.orient.core.db.OPartitionedDatabasePool;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
@@ -75,8 +74,30 @@ public class OrientDatabase implements IGraphDatabase {
 	/** Name of the file index. */
 	static final String FILE_IDX_NAME = "hawkFileIndex";
 
-	/** Size threshold for doing a periodic save (needed to avoid hitting disk with constant writes in batch mode). */
-	private static final int SIZE_THRESHOLD = 10_000;
+	private static final String SIZE_THRESHOLD_PROPERTY = "hawk.orient.periodicSaveThreshold";
+	private static final int DEFAULT_SIZE_THRESHOLD = 200_000;
+
+	/**
+	 * Size threshold for doing a periodic save (needed to avoid hitting disk
+	 * with constant writes in non-transactional mode). Higher increases
+	 * performance, at the cost of using more memory.
+	 */
+	private static final int SIZE_THRESHOLD;
+	static {
+		final String sPropThreshold = System.getProperty(SIZE_THRESHOLD_PROPERTY);
+		int threshold = DEFAULT_SIZE_THRESHOLD;
+		if (sPropThreshold != null) {
+			try {
+				threshold = Integer.valueOf(sPropThreshold);
+			} catch (NumberFormatException ex) {
+				System.err.println(String.format(
+					"Invalid value for -D%s: '%s' is not an integer",
+					SIZE_THRESHOLD_PROPERTY, sPropThreshold));
+			}
+		}
+
+		SIZE_THRESHOLD = threshold;
+	}
 
 	private File storageFolder;
 	private File tempFolder;
@@ -120,10 +141,9 @@ public class OrientDatabase implements IGraphDatabase {
 		this.tempFolder = new File(storageFolder, "temp");
 		this.console = c;
 
-		//OGlobalConfiguration.WAL_CACHE_SIZE.setValue(10000);
 		OGlobalConfiguration.OBJECT_SAVE_ONLY_DIRTY.setValue(true);
 		OGlobalConfiguration.SBTREE_MAX_KEY_SIZE.setValue(102_400);
-		OGlobalConfiguration.CACHE_LOCAL_IMPL.setValue(ORecordCacheSoftRefs.class.getName());
+		//OGlobalConfiguration.CACHE_LOCAL_IMPL.setValue(ORecordCacheSoftRefs.class.getName());
 
 		console.println("Starting database " + iURL);
 		this.dbURL = iURL;
@@ -229,18 +249,19 @@ public class OrientDatabase implements IGraphDatabase {
 		}
 		ensureWALSetTo(false);
 		db = getGraph();
+		db.declareIntent(new OIntentMassiveInsert());
 		currentMode = Mode.NO_TX_MODE;
 	}
 
 	/**
 	 * Closes the connection currently open to the DB in the current thread.
 	 */
-	protected void closeTransaction() {
+	protected void closeConnection() {
 		final ODatabaseDocumentTx db = getGraph();
 		if (db.getTransaction().isActive()) {
 			db.getTransaction().close();
 		}
-		//dbConn.get().close(); // this clears thread-level cache as well - better to leave one conn per Orient thread open all the time
+		dbConn.get().close();
 		dbConn.set(null);
 	}
 
@@ -249,7 +270,7 @@ public class OrientDatabase implements IGraphDatabase {
 			final ODatabaseDocumentTx db = getGraph();
 			final OStorage storage = db.getStorage();
 
-			closeTransaction();
+			closeConnection();
 			dbPool.close();
 			storage.close(true, false);
 
@@ -280,7 +301,6 @@ public class OrientDatabase implements IGraphDatabase {
 			getGraph().commit();
 			ensureWALSetTo(true); // this reopens the DB, so it *must* go before db.begin()
 		}
-		//getGraph().declareIntent(null);
 		currentMode = Mode.TX_MODE;
 	}
 
@@ -362,10 +382,12 @@ public class OrientDatabase implements IGraphDatabase {
 				OrientNode.setupDocumentClass(oClass, hClass);
 				if (hClass != null) {
 					for (IHawkReference ref : hClass.getAllReferences()) {
-						String edgeClassName = getEdgeTypeName(ref.getName());
-						if (!schema.existsClass(edgeClassName)) {
-							OClass edgeClass = schema.createClass(edgeClassName);
-							OrientEdge.setupDocumentClass(edgeClass);
+						if (ref.isContainer() || ref.isContainment()) {
+							String edgeClassName = getEdgeTypeName(ref.getName());
+							if (!schema.existsClass(edgeClassName)) {
+								OClass edgeClass = schema.createClass(edgeClassName);
+								OrientEdge.setupDocumentClass(edgeClass);
+							}
 						}
 					}
 				}
@@ -380,16 +402,22 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	@Override
-	public OrientEdge createRelationship(IGraphNode start, IGraphNode end, String type) {
+	public IGraphEdge createRelationship(IGraphNode start, IGraphNode end, String type) {
+		Map<String, Object> props = Collections.emptyMap();
+		return createRelationship(start, end, type, props);
+	}
+
+	@Override
+	public IGraphEdge createRelationship(IGraphNode start, IGraphNode end, String type, Map<String, Object> props) {
 		final OrientNode oStart = (OrientNode)start;
 		final OrientNode oEnd = (OrientNode)end;
 		final String edgeTypeName = getEdgeTypeName(type);
 
-		ensureClassExists(edgeTypeName, "E", null);
-
-		OrientEdge newEdge = OrientEdge.create(this, oStart, oEnd, type, edgeTypeName);
-		dirtyNodes.put(oStart.getId().toString(), oStart);
-		dirtyNodes.put(oEnd.getId().toString(), oEnd);
+		if (!props.isEmpty()) {
+			// Edges with properties are stored as actual documents, so they need a doc class
+			ensureClassExists(edgeTypeName, "E", null);
+		}
+		IGraphEdge newEdge = OrientEdge.create(this, oStart, oEnd, type, edgeTypeName, props);
 		saveIfBig();
 
 		return newEdge;
@@ -398,29 +426,18 @@ public class OrientDatabase implements IGraphDatabase {
 	private void saveIfBig() {
 		final int totalSize = dirtyNodes.size() + dirtyEdges.size();
 		if (totalSize > SIZE_THRESHOLD) {
-			// TODO: should we still do this in tx mode? OrientDB
-			// might keep its own copies for the tx anyway.
+			// TODO: should we still do this in tx mode? OrientDB might keep its own copies for the tx anyway.
 			saveDirty();
 			getGraph().getLocalCache().invalidate();
 		}
 	}
 
-	@Override
-	public OrientEdge createRelationship(IGraphNode start, IGraphNode end, String type, Map<String, Object> props) {
-		OrientEdge e = createRelationship(start, end, type);
-		if (props != null) {
-			for (Entry<String, Object> entry : props.entrySet()) {
-				e.setProperty(entry.getKey(), entry.getValue());
-			}
-		}
-		dirtyEdges.put(e.getId().toString(), e);
-		saveIfBig();
-
-		return e;
-	}
-
 	private String getVertexTypeName(String prefix, IHawkClass klass) {
-		return prefix + "_" + klass.getPackageNSURI().hashCode() + "_" + OrientNameCleaner.escapeClass(klass.getName());
+		if (klass == null) {
+			return prefix;
+		} else {
+			return prefix + "_" + klass.getPackageNSURI().hashCode() + "_" + OrientNameCleaner.escapeClass(klass.getName());
+		}
 	}
 
 	private String getVertexTypeName(String label) {
@@ -433,7 +450,7 @@ public class OrientDatabase implements IGraphDatabase {
 		// batch mode if we need to add a new edge type (very common during
 		// proxy resolving).
 
-		return EDGE_TYPE_PREFIX + label;
+		return EDGE_TYPE_PREFIX + OrientNameCleaner.escapeClass(label);
 	}
 
 	@Override
@@ -448,10 +465,14 @@ public class OrientDatabase implements IGraphDatabase {
 	private final ThreadLocal<ODatabaseDocumentTx> dbConn = new ThreadLocal<>();
 	protected ODatabaseDocumentTx getGraphNoCreate() {
 		if (dbConn.get() != null) {
-			return dbConn.get();
+			ODatabaseDocumentTx db = dbConn.get();
+			if (db.getStorage().isClosed()) {
+				db = dbPool.acquire();
+				dbConn.set(db);
+			}
+			return db;
 		} else if (dbPool != null && !dbPool.isClosed()) {
 			final ODatabaseDocumentTx db = dbPool.acquire();
-			db.declareIntent(new OIntentMassiveInsert());
 			dbConn.set(db);
 			return dbConn.get();
 		} else {

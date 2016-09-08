@@ -21,7 +21,7 @@ public class OrientTransaction implements IGraphTransaction {
 	public OrientTransaction(OrientDatabase orientDatabase) {
 		this.graph = orientDatabase;
 		graph.clearPostponedIndexes();
-		graph.getGraph().begin();
+		ODatabaseDocumentTx db = graph.getGraph().begin();
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class OrientTransaction implements IGraphTransaction {
 
 	@Override
 	public void close() {
-		graph.closeTransaction();
+		graph.closeConnection();
 	}
 
 	public ODatabaseDocumentTx getOrientGraph() {

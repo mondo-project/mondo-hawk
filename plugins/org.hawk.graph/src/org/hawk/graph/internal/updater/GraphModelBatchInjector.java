@@ -947,12 +947,13 @@ public class GraphModelBatchInjector {
 		if (found)
 			return false;
 		else {
-			IGraphEdge rel = graph.createRelationship(source, target, edgeLabel, new HashMap<String, Object>());
+			final HashMap<String, Object> props = new HashMap<String, Object>();
 			if (isContainment) {
-				rel.setProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT, "true");
+				props.put(ModelElementNode.EDGE_PROPERTY_CONTAINMENT, "true");
 			} else if (isContainer) {
-				rel.setProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER, "true");
+				props.put(ModelElementNode.EDGE_PROPERTY_CONTAINER, "true");
 			}
+			graph.createRelationship(source, target, edgeLabel, props);
 			return true;
 		}
 	}

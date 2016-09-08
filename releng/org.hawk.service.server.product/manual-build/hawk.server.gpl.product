@@ -18,6 +18,7 @@
 -Dhawk.artemis.listenAll=false
 -Dhawk.artemis.sslEnabled=false
 -Dhawk.tcp.port=2080 -Dhawk.tcp.thriftProtocol=TUPLE
+-Dhawk.orient.periodicSaveThreshold=200000
       </vmArgs>
       <vmArgsLin>-Dsvnkit.library.gnome-keyring.enabled=false
       </vmArgsLin>

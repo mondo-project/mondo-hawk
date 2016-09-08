@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 The University of York.
+ * Copyright (c) 2015-2016 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@ package org.hawk.orientdb;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.hawk.core.graph.IGraphEdge;
@@ -22,12 +24,14 @@ import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+/**
+ * Heavyweight edge, represented as a standalone document. Needed to set properties on an edge.
+ */
 public class OrientEdge implements IGraphEdge {
 
 	private static final String TYPE_PROPERTY = "_hp_type";
 
 	// We use the same names as OrientDB's GraphDB implementation, so the Graph viewer in Studio works as usual.
-	// We only use one E class however, but at least we can traverse through the graph with the usual facilities.
 	private static final String FROM_PROPERTY = "out";
 	private static final String TO_PROPERTY = "in";
 
@@ -46,18 +50,12 @@ public class OrientEdge implements IGraphEdge {
 
 	/** Should be used when the ID is persistent, to save memory. */
 	public OrientEdge(ORID id, OrientDatabase graph) {
-//		if (!id.isPersistent()) {
-//			graph.getConsole().printerrln("Warning, unsafe: OrientEdge(ORID) used with non-persistent ID " + id);
-//		}
 		this.id = id;
 		this.db = graph;
 	}
 
 	/** Should only be used when the ID is not persistent. */
 	public OrientEdge(ODocument newDoc, OrientDatabase graph) {
-//		if (newDoc.getIdentity().isPersistent()) {
-//			graph.getConsole().printerrln("Warning, inefficient: OrientEdge(ODocument) used with persistent ID " + newDoc.getIdentity());
-//		}
 		this.db = graph;
 		this.changedEdge = newDoc;
 		this.id = changedEdge.getIdentity();
@@ -129,8 +127,11 @@ public class OrientEdge implements IGraphEdge {
 	public void delete() {
 		final OrientNode startNode = getStartNode();
 		final OrientNode endNode = getEndNode();
-		startNode.removeOutgoing(this);
-		endNode.removeIncoming(this);
+
+		final ODocument doc = getDocument();
+		final String edgeType = (String) doc.field(TYPE_PROPERTY);
+		startNode.removeOutgoing(doc, edgeType);
+		endNode.removeIncoming(doc, edgeType);
 
 		db.markNodeAsDirty(startNode);
 		db.markNodeAsDirty(endNode);
@@ -186,46 +187,54 @@ public class OrientEdge implements IGraphEdge {
 			return dirtyEdge;
 		}
 
-		final ODocument loaded = db.getGraph().load(getId());
-		if (loaded == null) {
-			db.getConsole().printerrln("Loading edge with id " + getId() + " from OrientDB produced null value");
-			Thread.dumpStack();
-		}
-		loaded.deserializeFields();
-		return loaded;
+		return db.getGraph().<ODocument>load(getId());
 	}
 
-	public static OrientEdge create(OrientDatabase graph, OrientNode start, OrientNode end, String type, String edgeTypeName) {
-		ODocument newDoc = new ODocument(edgeTypeName);
-		newDoc.field(TYPE_PROPERTY, type);
+	public static IGraphEdge create(OrientDatabase graph, OrientNode start, OrientNode end, String type, String edgeTypeName, Map<String, Object> props) {
+		if (props != null && !props.isEmpty()) {
+			// Has properties - heavyweight edge
+			ODocument newDoc = new ODocument(edgeTypeName);
+			newDoc.field(TYPE_PROPERTY, type);
 
-		final ODocument startDoc = start.getDocument();
-		final ORID startId = startDoc.getIdentity();
-		if (startId.isPersistent()) {
-			newDoc.field(FROM_PROPERTY, startId);
+			final ODocument startDoc = start.getDocument();
+			final ORID startId = startDoc.getIdentity();
+			if (startId.isPersistent()) {
+				newDoc.field(FROM_PROPERTY, startId);
+			} else {
+				newDoc.field(FROM_PROPERTY, startDoc);
+			}
+
+			final ODocument endDoc = end.getDocument();
+			final ORID endId = endDoc.getIdentity();
+			if (endId.isPersistent()) {
+				newDoc.field(TO_PROPERTY, endId);
+			} else {
+				newDoc.field(TO_PROPERTY, endDoc);
+			}
+
+			if (props != null) {
+				for (Entry<String, Object> entry : props.entrySet()) {
+					newDoc.field(entry.getKey(), entry.getValue());
+				}
+			}
+			newDoc.save(edgeTypeName);
+
+			OrientEdge newEdge;
+			if (newDoc.getIdentity().isPersistent()) {
+				newEdge = new OrientEdge(newDoc.getIdentity(), graph);
+			} else {
+				newEdge = new OrientEdge(newDoc, graph);
+			}
+			start.addOutgoing(newDoc, type);
+			end.addIncoming(newDoc, type);
+
+			return newEdge;
 		} else {
-			newDoc.field(FROM_PROPERTY, startDoc);
+			// No properties - lightweight edge
+			start.addOutgoing(end.getDocument(), type);
+			end.addIncoming(start.getDocument(), type);
+			return new OrientLightEdge(start, end, type);
 		}
-
-		final ODocument endDoc = end.getDocument();
-		final ORID endId = endDoc.getIdentity();
-		if (endId.isPersistent()) {
-			newDoc.field(TO_PROPERTY, endId);
-		} else {
-			newDoc.field(TO_PROPERTY, endDoc);
-		}
-		newDoc.save();
-
-		OrientEdge newEdge;
-		if (newDoc.getIdentity().isPersistent()) {
-			newEdge = new OrientEdge(newDoc.getIdentity(), graph);
-		} else {
-			newEdge = new OrientEdge(newDoc, graph);
-		}
-		start.addOutgoing(newEdge);
-		end.addIncoming(newEdge);
-
-		return newEdge;
 	}
 
 	public void save() {

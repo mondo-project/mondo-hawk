@@ -154,95 +154,115 @@ public class OrientNode implements IGraphNode {
 
 	@Override
 	public Iterable<IGraphEdge> getEdges() {
-		final List<OIdentifiable> edges = getEdgeDocuments(Direction.BOTH);
-		return new OrientEdgeIterable(edges, graph);
+		return getEdges(Direction.BOTH);
 	}
 
-	private List<OIdentifiable> getEdgeDocuments(final Direction dir) {
-		final List<OIdentifiable> edges = new ArrayList<>();
+	private List<IGraphEdge> getEdges(final Direction dir) {
+		final List<IGraphEdge> edges = new ArrayList<>();
 		final ODocument tmpVertex = getDocument();
 		for (String propName : tmpVertex.fieldNames()) {
-			if (propName.startsWith(PREFIX_INCOMING) && dir != Direction.OUT || propName.startsWith(PREFIX_OUTGOING) && dir != Direction.IN) {
-				Iterable<Object> odocs = tmpVertex.field(propName);
-				addAllOIdentifiable(edges, odocs);
+			String edgeLabel = null;
+			Direction propDir = null;
+			if (propName.startsWith(PREFIX_INCOMING) && dir != Direction.OUT) {
+				edgeLabel = OrientNameCleaner.unescapeFromField(propName.substring(PREFIX_INCOMING.length()));
+				propDir = Direction.IN;
+			} else if (propName.startsWith(PREFIX_OUTGOING) && dir != Direction.IN) {
+				edgeLabel = OrientNameCleaner.unescapeFromField(propName.substring(PREFIX_OUTGOING.length()));
+				propDir = Direction.OUT;
+			} else if (propName.startsWith(PREFIX_INCOMING_OLD) && dir != Direction.OUT) {
+				edgeLabel = OrientNameCleaner.unescapeFromField(propName.substring(PREFIX_INCOMING_OLD.length()));
+				propDir = Direction.IN;
+			} else if (propName.startsWith(PREFIX_OUTGOING_OLD) && dir != Direction.IN) {
+				edgeLabel = OrientNameCleaner.unescapeFromField(propName.substring(PREFIX_OUTGOING_OLD.length()));
+				propDir = Direction.OUT;
 			}
-			if (propName.startsWith(PREFIX_INCOMING_OLD) && dir != Direction.OUT || propName.startsWith(PREFIX_OUTGOING_OLD) && dir != Direction.IN) {
+
+			if (edgeLabel != null) {
 				Iterable<Object> odocs = tmpVertex.field(propName);
-				addAllOIdentifiable(edges, odocs);
+				addAllOIdentifiable(edges, odocs, propDir, edgeLabel);
 			}
 		}
 		return edges;
 	}
 
-	private void addAllOIdentifiable(final List<OIdentifiable> edges, Iterable<Object> odocs) {
+	private void addAllOIdentifiable(final List<IGraphEdge> edges, Iterable<Object> odocs, Direction dir, String edgeLabel) {
 		if (odocs instanceof ORecordLazyMultiValue) {
 			// Use a raw iterator that doesn't try to convert values on the fly
 			// *and* mark things around as dirty (why?).
 			for (Iterator<OIdentifiable> it = ((ORecordLazyMultiValue)odocs).rawIterator(); it.hasNext(); ) {
-				edges.add(it.next());
+				edges.add(convertToEdge(it.next(), dir, edgeLabel));
 			}
 		} else if (odocs != null) {
 			for (Object odoc : odocs) {
 				if (odoc instanceof OIdentifiable) {
-					edges.add((OIdentifiable)odoc);
+					edges.add(convertToEdge((OIdentifiable)odoc, dir, edgeLabel));
 				}
 			}
 		}
 	}
 
-	@Override
-	public Iterable<IGraphEdge> getEdgesWithType(String type) {
-		final List<OIdentifiable> edges = getEdgeDocuments(type, Direction.BOTH);
-		return new OrientEdgeIterable(edges, graph);
+	private IGraphEdge convertToEdge(OIdentifiable odoc, Direction dir, String edgeLabel) {
+		final OrientNode n = graph.getNodeById(odoc);
+		final ODocument doc = n.getDocument();
+		if (doc.getSchemaClass().getName().startsWith(OrientDatabase.VERTEX_TYPE_PREFIX)) {
+			if (dir == Direction.OUT) {
+				return new OrientLightEdge(this, n, edgeLabel);
+			} else {
+				return new OrientLightEdge(n, this, edgeLabel);
+			}
+		} else {
+			return new OrientEdge(doc, graph);
+		}
 	}
 
-	private List<OIdentifiable> getEdgeDocuments(String type, Direction direction) {
-		final List<OIdentifiable> edges = new ArrayList<>();
+	@Override
+	public Iterable<IGraphEdge> getEdgesWithType(String type) {
+		return getEdges(type, Direction.BOTH);
+	}
+
+	private List<IGraphEdge> getEdges(String type, Direction direction) {
+		final List<IGraphEdge> edges = new ArrayList<>();
 		final ODocument tmpVertex = getDocument();
 		if (direction == Direction.IN || direction == Direction.BOTH) {
 			final String fldName = OrientNameCleaner.escapeToField(PREFIX_INCOMING + type);
 			final Iterable<Object> inODocs = tmpVertex.field(fldName);
-			addAllOIdentifiable(edges, inODocs);
+			addAllOIdentifiable(edges, inODocs, Direction.IN, type);
 
 			final String fldNameOld = OrientNameCleaner.escapeToField(PREFIX_INCOMING_OLD + type);
 			final Iterable<Object> inODocsOld = tmpVertex.field(fldNameOld);
-			addAllOIdentifiable(edges, inODocsOld);
+			addAllOIdentifiable(edges, inODocsOld, Direction.IN, type);
 		}
 
 		if (direction == Direction.OUT || direction == Direction.BOTH) {
 			final String fldName = OrientNameCleaner.escapeToField(PREFIX_OUTGOING + type);
 			final Iterable<Object> outODocs = tmpVertex.field(fldName);
-			addAllOIdentifiable(edges, outODocs);
+			addAllOIdentifiable(edges, outODocs, Direction.OUT, type);
 
 			final String fldNameOld = OrientNameCleaner.escapeToField(PREFIX_OUTGOING_OLD + type);
 			final Iterable<Object> outODocsOld = tmpVertex.field(fldNameOld);
-			addAllOIdentifiable(edges, outODocsOld);
+			addAllOIdentifiable(edges, outODocsOld, Direction.OUT, type);
 		}
 		return edges;
 	}
 
 	@Override
 	public Iterable<IGraphEdge> getOutgoingWithType(String type) {
-		final List<OIdentifiable> edges = getEdgeDocuments(type, Direction.OUT);
-		return new OrientEdgeIterable(edges, graph);
+		return getEdges(type, Direction.OUT);
 	}
 
 	@Override
 	public Iterable<IGraphEdge> getIncomingWithType(String type) {
-		final List<OIdentifiable> edges = getEdgeDocuments(type, Direction.IN);
-		return new OrientEdgeIterable(edges, graph);
+		return getEdges(type, Direction.IN);
 	}
 
 	@Override
 	public Iterable<IGraphEdge> getIncoming() {
-		final List<OIdentifiable> edges = getEdgeDocuments(Direction.IN);
-		return new OrientEdgeIterable(edges, graph);
+		return getEdges(Direction.IN);
 	}
 
 	@Override
 	public Iterable<IGraphEdge> getOutgoing() {
-		final List<OIdentifiable> edges = getEdgeDocuments(Direction.OUT);
-		return new OrientEdgeIterable(edges, graph);
+		return getEdges(Direction.OUT);
 	}
 
 	@Override
@@ -307,15 +327,11 @@ public class OrientNode implements IGraphNode {
 			return vertex;
 		}
 
-		final ODocument loaded = graph.getGraph().load(getId());
-		if (loaded != null) {
-			loaded.deserializeFields();
-		}
-		return loaded;
+		return graph.getGraph().<ODocument>load(getId());
 	}
 
-	public void addOutgoing(OrientEdge newEdge) {
-		final String edgePropName = OrientNameCleaner.escapeToField(PREFIX_OUTGOING + newEdge.getType());
+	public void addOutgoing(ODocument newEdge, String edgeLabel) {
+		final String edgePropName = OrientNameCleaner.escapeToField(PREFIX_OUTGOING + edgeLabel);
 		if (!graph.getGraph().getTransaction().isActive()) {
 			changedVertex = getDocument();
 
@@ -332,10 +348,11 @@ public class OrientNode implements IGraphNode {
 			}
 		}
 		addToList(newEdge, edgePropName);
+		graph.markNodeAsDirty(this);
 	}
 
 	@SuppressWarnings("unchecked")
-	private void addToList(OrientEdge newEdge, final String fldName) {
+	private void addToList(ODocument edgeDoc, final String fldName) {
 		changedVertex = getDocument();
 
 		Object out = changedVertex.field(fldName);
@@ -346,21 +363,22 @@ public class OrientNode implements IGraphNode {
 			} else {
 				out = new ArrayList<OIdentifiable>();
 			}
-			changedVertex.field(fldName, out);
 		}
 
-		final ODocument edgeDoc = newEdge.getDocument();
+		changedVertex.setTrackingChanges(false);
 		if (out instanceof Collection) {
-			Collection<OIdentifiable> col = (Collection<OIdentifiable>) out;
+			Collection<OIdentifiable> col = (Collection<OIdentifiable>)out;
 			col.add(edgeDoc);
 		} else if (out instanceof OCollection) {
 			OCollection<OIdentifiable> bag = (OCollection<OIdentifiable>)out;
 			bag.add(edgeDoc);
 		}
+		changedVertex.field(fldName, out);
+		changedVertex.setTrackingChanges(true);
 	}
 
-	public void addIncoming(OrientEdge newEdge) {
-		final String edgePropName = OrientNameCleaner.escapeToField(PREFIX_INCOMING + newEdge.getType());
+	public void addIncoming(ODocument newEdge, String edgeLabel) {
+		final String edgePropName = OrientNameCleaner.escapeToField(PREFIX_INCOMING + edgeLabel);
 		if (!graph.getGraph().getTransaction().isActive()) {
 			changedVertex = getDocument();
 
@@ -373,27 +391,34 @@ public class OrientNode implements IGraphNode {
 			}
 		}
 		addToList(newEdge, edgePropName);
+		graph.markNodeAsDirty(this);
 	}
 
-	public void removeOutgoing(OrientEdge orientEdge) {
-		removeFromList(orientEdge, OrientNameCleaner.escapeToField(PREFIX_OUTGOING + orientEdge.getType()));
-		removeFromList(orientEdge, OrientNameCleaner.escapeToField(PREFIX_OUTGOING_OLD + orientEdge.getType()));
+	public void removeOutgoing(ODocument orientEdge, String edgeLabel) {
+		removeFromList(orientEdge, OrientNameCleaner.escapeToField(PREFIX_OUTGOING + edgeLabel));
+		removeFromList(orientEdge, OrientNameCleaner.escapeToField(PREFIX_OUTGOING_OLD + edgeLabel));
+		graph.markNodeAsDirty(this);
 	}
 
 	@SuppressWarnings("unchecked")
-	private void removeFromList(OrientEdge orientEdge, final String fldName) {
+	private void removeFromList(ODocument orientEdge, final String fldName) {
 		changedVertex = getDocument();
 		Object out = changedVertex.field(fldName);
+
+		changedVertex.setTrackingChanges(false);
 		if (out instanceof Collection) {
-			((Collection<OIdentifiable>)out).remove(orientEdge.getDocument());
+			((Collection<OIdentifiable>)out).remove(orientEdge);
 		} else if (out instanceof OCollection) {
-			((OCollection<OIdentifiable>) out).remove(orientEdge.getDocument());
+			((OCollection<OIdentifiable>) out).remove(orientEdge);
 		}
+		changedVertex.field(fldName, out);
+		changedVertex.setTrackingChanges(true);
 	}
 
-	public void removeIncoming(OrientEdge orientEdge) {
-		removeFromList(orientEdge, OrientNameCleaner.escapeToField(PREFIX_INCOMING + orientEdge.getType()));
-		removeFromList(orientEdge, OrientNameCleaner.escapeToField(PREFIX_INCOMING_OLD + orientEdge.getType()));
+	public void removeIncoming(ODocument orientEdge, String edgeLabel) {
+		removeFromList(orientEdge, OrientNameCleaner.escapeToField(PREFIX_INCOMING + edgeLabel));
+		removeFromList(orientEdge, OrientNameCleaner.escapeToField(PREFIX_INCOMING_OLD + edgeLabel));
+		graph.markNodeAsDirty(this);
 	}
 
 	public void save() {
@@ -505,42 +530,50 @@ public class OrientNode implements IGraphNode {
 			for (IHawkAttribute attr : hClass.getAllAttributes()) {
 				OType type = OType.ANY;
 
-				switch (attr.getType().getInstanceType()) {
-				case "java.lang.Long":
-				case "Long":
-					type = OType.LONG;
-					break;
-				case "java.lang.Integer":
-				case "Integer":
-					type = OType.INTEGER;
-					break;
-				case "java.lang.Short":
-				case "Short":
-					type = OType.SHORT;
-					break;
-				case "java.lang.Byte":
-				case "Byte":
-					type = OType.BYTE;
-					break;
-				case "java.lang.Float":
-				case "Float":
-					type = OType.FLOAT;
-					break;
-				case "java.lang.Double":
-				case "Double":
-					type = OType.DOUBLE;
-					break;
-				case "java.lang.Boolean":
-				case "Boolean":
-					type = OType.BOOLEAN;
-					break;
-				case "java.lang.String":
-				case "String":
-					type = OType.STRING;
-					break;
-				default:
-					System.err.println("Unknown instance type " + attr.getType().getInstanceType()
-							+ ", falling back to OType.ANY");
+				if (attr.isMany()) {
+					if (attr.isOrdered() || !attr.isUnique()) {
+						type = OType.EMBEDDEDLIST;
+					} else {
+						type = OType.EMBEDDEDSET;
+					}
+				} else {
+					switch (attr.getType().getInstanceType()) {
+					case "java.lang.Long":
+					case "Long":
+						type = OType.LONG;
+						break;
+					case "java.lang.Integer":
+					case "Integer":
+						type = OType.INTEGER;
+						break;
+					case "java.lang.Short":
+					case "Short":
+						type = OType.SHORT;
+						break;
+					case "java.lang.Byte":
+					case "Byte":
+						type = OType.BYTE;
+						break;
+					case "java.lang.Float":
+					case "Float":
+						type = OType.FLOAT;
+						break;
+					case "java.lang.Double":
+					case "Double":
+						type = OType.DOUBLE;
+						break;
+					case "java.lang.Boolean":
+					case "Boolean":
+						type = OType.BOOLEAN;
+						break;
+					case "java.lang.String":
+					case "String":
+						type = OType.STRING;
+						break;
+					default:
+						System.err.println("Unknown instance type " + attr.getType().getInstanceType()
+								+ ", falling back to OType.ANY");
+					}
 				}
 				oClass.createProperty(PREFIX_PROPERTY + attr.getName(), type);
 			}

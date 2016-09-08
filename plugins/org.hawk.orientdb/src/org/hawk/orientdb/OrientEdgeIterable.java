@@ -13,27 +13,27 @@ package org.hawk.orientdb;
 import org.hawk.core.graph.IGraphEdge;
 
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
-import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class OrientEdgeIterable extends OrientIterable<IGraphEdge, OIdentifiable> {
 
-	public OrientEdgeIterable(Iterable<OIdentifiable> ret, OrientDatabase graph) {
+	private final OrientNode start;
+	private final String edgeLabel;
+
+	public OrientEdgeIterable(OrientNode start, String edgeLabel, Iterable<OIdentifiable> ret, OrientDatabase graph) {
 		super(ret, graph);
+		this.start = start;
+		this.edgeLabel = edgeLabel;
 	}
 
 	@Override
-	protected OrientEdge convert(OIdentifiable o) {
-		if (o instanceof ORID) {
-			return new OrientEdge((ORID)o, getGraph());
+	protected IGraphEdge convert(OIdentifiable o) {
+		final OrientNode n = graph.getNodeById(o);
+		final ODocument doc = n.getDocument();
+		if (doc.getSchemaClass().getName().startsWith(OrientDatabase.VERTEX_TYPE_PREFIX)) {
+			return new OrientLightEdge(start, n, edgeLabel);
 		} else {
-			return new OrientEdge((ODocument)o, getGraph());
-//			final ORID id = oDoc.getIdentity();
-//			if (id.isPersistent()) {
-//				return new OrientEdge(id, getGraph());
-//			} else {
-//				return new OrientEdge(oDoc, getGraph());
-//			}
+			return new OrientEdge(doc, getGraph());
 		}
 	}
 
