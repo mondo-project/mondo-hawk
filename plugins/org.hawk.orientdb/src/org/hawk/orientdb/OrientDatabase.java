@@ -465,12 +465,7 @@ public class OrientDatabase implements IGraphDatabase {
 	private final ThreadLocal<ODatabaseDocumentTx> dbConn = new ThreadLocal<>();
 	protected ODatabaseDocumentTx getGraphNoCreate() {
 		if (dbConn.get() != null) {
-			ODatabaseDocumentTx db = dbConn.get();
-			if (db.getStorage().isClosed()) {
-				db = dbPool.acquire();
-				dbConn.set(db);
-			}
-			return db;
+			return dbConn.get();
 		} else if (dbPool != null && !dbPool.isClosed()) {
 			final ODatabaseDocumentTx db = dbPool.acquire();
 			dbConn.set(db);
