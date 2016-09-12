@@ -244,13 +244,14 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 		final OIndex<?> stringIdx = indexManager.getIndex(getSBTreeIndexName(String.class));
 		final OIndex<?> doubleIdx = indexManager.getIndex(getSBTreeIndexName(Double.class));
 		final OIndex<?> intIdx = indexManager.getIndex(getSBTreeIndexName(Integer.class));
-		if (stringIdx != null) {
+
+		if (stringIdx != null && stringIdx.getIndexId() >= 0) {
 			stringIdx.delete();
 		}
-		if (doubleIdx != null) {
+		if (doubleIdx != null && doubleIdx.getIndexId() >= 0) {
 			doubleIdx.delete();
 		}
-		if (intIdx != null) {
+		if (intIdx != null && intIdx.getIndexId() >= 0) {
 			intIdx.delete();
 		}
 
