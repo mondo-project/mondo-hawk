@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -212,21 +213,26 @@ public class GraphPopulationTest {
 			tx.success();
 		}
 
-		assertEquals(0, size(left.getIncoming()));
-		assertEquals(1, size(left.getOutgoing()));
-		assertEquals(1, size(middle.getIncoming()));
-		assertEquals(1, size(middle.getOutgoing()));
-		assertEquals(1, size(right.getIncoming()));
-		assertEquals(0, size(right.getOutgoing()));
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(0, size(left.getIncoming()));
+			assertEquals(1, size(left.getOutgoing()));
+			assertEquals(1, size(middle.getIncoming()));
+			assertEquals(1, size(middle.getOutgoing()));
+			assertEquals(1, size(right.getIncoming()));
+			assertEquals(0, size(right.getOutgoing()));
+		}
+
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			middle.delete();
 			tx.success();
 		}
 
-		assertEquals(0, size(left.getIncoming()));
-		assertEquals(0, size(left.getOutgoing()));
-		assertEquals(0, size(right.getIncoming()));
-		assertEquals(0, size(right.getOutgoing()));
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(0, size(left.getIncoming()));
+			assertEquals(0, size(left.getOutgoing()));
+			assertEquals(0, size(right.getIncoming()));
+			assertEquals(0, size(right.getOutgoing()));
+		}
 	}
 
 	@Test
@@ -244,7 +250,7 @@ public class GraphPopulationTest {
 	}
 
 	@Test
-	public void escapeInvalidClassCharactersEdges() throws Exception {
+	public void escapeInvalidCharactersEdges() throws Exception {
 		setup("invalidClassCharactersEdges");
 
 		db.enterBatchMode();
@@ -256,9 +262,27 @@ public class GraphPopulationTest {
 		for (char invalidChar : invalidClassChars) {
 			final String type = "link" + invalidChar + "type";
 			db.enterBatchMode();
-			db.createRelationship(n1, n2, type);
+			db.createRelationship(n1, n2, type, Collections.<String,Object>singletonMap("test", "t"));
 			assertEquals("There should be one outgoing " + type + " edge for n1", 1, size(n1.getOutgoingWithType(type)));
 			assertEquals("There should be one incoming " + type + " edge for n2", 1, size(n2.getIncomingWithType(type)));
+			db.exitBatchMode();
+		}
+	}
+
+	@Test
+	public void escapeInvalidFieldCharacters() throws Exception {
+		setup("invalidFieldCharactersEdges");
+
+		db.enterBatchMode();
+		OrientNode n1 = db.createNode(null, "eobject");
+		db.exitBatchMode();
+
+		char[] invalidClassChars = ":,; %@=.".toCharArray();
+		for (char invalidChar : invalidClassChars) {
+			db.enterBatchMode();
+			final String propName = "x" + invalidChar + "a";
+			n1.setProperty(propName, 1);
+			assertEquals("Property " + propName + " should have been set", 1, n1.getProperty(propName));
 			db.exitBatchMode();
 		}
 	}

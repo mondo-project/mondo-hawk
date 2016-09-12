@@ -413,7 +413,7 @@ public class OrientDatabase implements IGraphDatabase {
 		final OrientNode oEnd = (OrientNode)end;
 		final String edgeTypeName = getEdgeTypeName(type);
 
-		if (!props.isEmpty()) {
+		if (props != null && !props.isEmpty()) {
 			// Edges with properties are stored as actual documents, so they need a doc class
 			ensureClassExists(edgeTypeName, "E", null);
 		}

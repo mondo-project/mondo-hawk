@@ -35,12 +35,19 @@ import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.db.record.ORecordLazyMultiValue;
 import com.orientechnologies.orient.core.db.record.OTrackedList;
 import com.orientechnologies.orient.core.db.record.ridbag.ORidBag;
+import com.orientechnologies.orient.core.exception.OSchemaException;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+/**
+ * Represents a single node in the graph. Field names are escaped on an
+ * optimistic basis - first we try to go through without any escaping, and
+ * if that fails we escape normally. Most field names are "sane" and the
+ * overhead of escaping is not required.
+ */
 public class OrientNode implements IGraphNode {
 	private static final String PREFIX_PROPERTY = "_hp_";
 
@@ -113,7 +120,19 @@ public class OrientNode implements IGraphNode {
 
 	@Override
 	public Object getProperty(String name) {
-		final String fieldName = OrientNameCleaner.escapeToField(PREFIX_PROPERTY + name);
+		final String fieldName = PREFIX_PROPERTY + name;
+		try {
+			Object val = internalGetProperty(fieldName);
+			if (val != null) {
+				return val;
+			}
+		} catch (IllegalArgumentException ex) {
+			// Field name might need to be escaped (OrientDB only checks on set)
+		}
+		return internalGetProperty(PREFIX_PROPERTY + OrientNameCleaner.escapeToField(name));
+	}
+
+	public Object internalGetProperty(final String fieldName) {
 		ODocument tmpVertex = getDocument();
 		final Object value = tmpVertex.field(fieldName);
 		if (value instanceof OTrackedList<?>) {
@@ -136,7 +155,7 @@ public class OrientNode implements IGraphNode {
 		final Map<String, Object> mappedProps = new HashMap<>();
 		for (Entry<String, Object> entry : props.entrySet()) {
 			String fieldName = entry.getKey();
-			mappedProps.put(OrientNameCleaner.escapeToField(PREFIX_PROPERTY + fieldName), entry.getValue());
+			mappedProps.put(PREFIX_PROPERTY + OrientNameCleaner.escapeToField(fieldName), entry.getValue());
 		}
 		doc.fromMap(mappedProps);
 	}
@@ -147,7 +166,11 @@ public class OrientNode implements IGraphNode {
 			removeProperty(name);
 		} else {
 			changedVertex = getDocument();
-			changedVertex.field(OrientNameCleaner.escapeToField(PREFIX_PROPERTY + name), value);
+			try {
+				changedVertex.field(PREFIX_PROPERTY + name, value);
+			} catch (IllegalArgumentException ex) {
+				changedVertex.field(PREFIX_PROPERTY + OrientNameCleaner.escapeToField(name), value);
+			}
 			graph.markNodeAsDirty(this);
 		}
 	}
@@ -221,24 +244,36 @@ public class OrientNode implements IGraphNode {
 	}
 
 	private List<IGraphEdge> getEdges(String type, Direction direction) {
+		try {
+			List<IGraphEdge> l = internalGetEdges(type, direction);
+			if (l != null && !l.isEmpty()) {
+				return l;
+			}
+		} catch (IllegalArgumentException ex) {
+			// fall back to the escaped version
+		}
+		return internalGetEdges(OrientNameCleaner.escapeToField(type), direction);
+	}
+
+	public List<IGraphEdge> internalGetEdges(String type, Direction direction) {
 		final List<IGraphEdge> edges = new ArrayList<>();
 		final ODocument tmpVertex = getDocument();
 		if (direction == Direction.IN || direction == Direction.BOTH) {
-			final String fldName = OrientNameCleaner.escapeToField(PREFIX_INCOMING + type);
+			final String fldName = PREFIX_INCOMING + type;
 			final Iterable<Object> inODocs = tmpVertex.field(fldName);
 			addAllOIdentifiable(edges, inODocs, Direction.IN, type);
 
-			final String fldNameOld = OrientNameCleaner.escapeToField(PREFIX_INCOMING_OLD + type);
+			final String fldNameOld = PREFIX_INCOMING_OLD + type;
 			final Iterable<Object> inODocsOld = tmpVertex.field(fldNameOld);
 			addAllOIdentifiable(edges, inODocsOld, Direction.IN, type);
 		}
 
 		if (direction == Direction.OUT || direction == Direction.BOTH) {
-			final String fldName = OrientNameCleaner.escapeToField(PREFIX_OUTGOING + type);
+			final String fldName = PREFIX_OUTGOING + type;
 			final Iterable<Object> outODocs = tmpVertex.field(fldName);
 			addAllOIdentifiable(edges, outODocs, Direction.OUT, type);
 
-			final String fldNameOld = OrientNameCleaner.escapeToField(PREFIX_OUTGOING_OLD + type);
+			final String fldNameOld = PREFIX_OUTGOING_OLD + type;
 			final Iterable<Object> outODocsOld = tmpVertex.field(fldNameOld);
 			addAllOIdentifiable(edges, outODocsOld, Direction.OUT, type);
 		}
@@ -283,7 +318,11 @@ public class OrientNode implements IGraphNode {
 	@Override
 	public void removeProperty(String name) {
 		changedVertex = getDocument();
-		changedVertex.removeField(OrientNameCleaner.escapeToField(PREFIX_PROPERTY + name));
+		try {
+			changedVertex.removeField(PREFIX_PROPERTY + name);
+		} catch (IllegalArgumentException ex) {
+			changedVertex.removeField(PREFIX_PROPERTY + OrientNameCleaner.escapeToField(name));
+		}
 		graph.markNodeAsDirty(this);
 	}
 
@@ -331,23 +370,11 @@ public class OrientNode implements IGraphNode {
 	}
 
 	public void addOutgoing(ODocument newEdge, String edgeLabel) {
-		final String edgePropName = OrientNameCleaner.escapeToField(PREFIX_OUTGOING + edgeLabel);
-		if (!graph.getGraph().getTransaction().isActive()) {
-			changedVertex = getDocument();
-
-			final OClass oClass = changedVertex.getSchemaClass();
-			if (!oClass.existsProperty(edgePropName)) {
-				/**
-				 * Outgoing edges that haven't been created in
-				 * OrientDatabase#registerNodeClass are from the inner workings
-				 * of Hawk itself, and therefore don't really require any
-				 * explicit ordering. This is the case for file, ofKind, and
-				 * ofType.
-				 */
-				oClass.createProperty(edgePropName, OType.LINKBAG, (OType)null, true);
-			}
+		try {
+			addToList(newEdge, PREFIX_OUTGOING + edgeLabel);
+		} catch (IllegalArgumentException|OSchemaException ex) {
+			addToList(newEdge, PREFIX_OUTGOING + OrientNameCleaner.escapeToField(edgeLabel));
 		}
-		addToList(newEdge, edgePropName);
 		graph.markNodeAsDirty(this);
 	}
 
@@ -355,7 +382,29 @@ public class OrientNode implements IGraphNode {
 	private void addToList(ODocument edgeDoc, final String fldName) {
 		changedVertex = getDocument();
 
+		// Check field name with OrientDB
 		Object out = changedVertex.field(fldName);
+
+		// Create property if needed
+		if (out == null && !graph.getGraph().getTransaction().isActive()) {
+			final OClass oClass = changedVertex.getSchemaClass();
+			if (!oClass.existsProperty(fldName)) {
+				/*
+				 * Incoming edges do not have any specific orderings, so they
+				 * can all be ridbags.
+				 *
+				 * On the other hand, outgoing edges that weren't created
+				 * already in OrientDatabase#registerNodeClass are from the
+				 * inner workings of Hawk itself, and therefore don't really
+				 * require any explicit ordering. This is the case for file,
+				 * ofKind, and ofType.
+				 */
+
+				oClass.createProperty(fldName, OType.LINKBAG, (OType)null, true);
+			}
+		}
+
+		// Set initial value
 		if (out == null) {
 			OProperty prop = changedVertex.getSchemaClass().getProperty(fldName);
 			if (prop != null && prop.getType() == OType.LINKBAG) {
@@ -365,6 +414,7 @@ public class OrientNode implements IGraphNode {
 			}
 		}
 
+		// Change value (tracking disabled temporarily for performance)
 		changedVertex.setTrackingChanges(false);
 		if (out instanceof Collection) {
 			Collection<OIdentifiable> col = (Collection<OIdentifiable>)out;
@@ -378,25 +428,23 @@ public class OrientNode implements IGraphNode {
 	}
 
 	public void addIncoming(ODocument newEdge, String edgeLabel) {
-		final String edgePropName = OrientNameCleaner.escapeToField(PREFIX_INCOMING + edgeLabel);
-		if (!graph.getGraph().getTransaction().isActive()) {
-			changedVertex = getDocument();
-
-			final OClass oClass = changedVertex.getSchemaClass();
-			if (!oClass.existsProperty(edgePropName)) {
-				// Incoming edges are always linkbags - there's no specific order to them.
-				// The property didn't exist before, so we shouldn't be rechecking all
-				// records for that either.
-				oClass.createProperty(edgePropName, OType.LINKBAG, (OType)null, true);
-			}
+		try {
+			addToList(newEdge, PREFIX_INCOMING + edgeLabel);
+		} catch (IllegalArgumentException | OSchemaException ex) {
+			addToList(newEdge, PREFIX_INCOMING + OrientNameCleaner.escapeToField(edgeLabel));
 		}
-		addToList(newEdge, edgePropName);
 		graph.markNodeAsDirty(this);
 	}
 
 	public void removeOutgoing(ODocument orientEdge, String edgeLabel) {
-		removeFromList(orientEdge, OrientNameCleaner.escapeToField(PREFIX_OUTGOING + edgeLabel));
-		removeFromList(orientEdge, OrientNameCleaner.escapeToField(PREFIX_OUTGOING_OLD + edgeLabel));
+		try {
+			removeFromList(orientEdge, PREFIX_OUTGOING + edgeLabel);
+			removeFromList(orientEdge, PREFIX_OUTGOING_OLD + edgeLabel);
+		} catch (IllegalArgumentException ex) {
+			final String escapedEdgeLabel = OrientNameCleaner.escapeToField(edgeLabel);
+			removeFromList(orientEdge, PREFIX_OUTGOING + escapedEdgeLabel);
+			removeFromList(orientEdge, PREFIX_OUTGOING_OLD + escapedEdgeLabel);
+		}
 		graph.markNodeAsDirty(this);
 	}
 
@@ -416,8 +464,14 @@ public class OrientNode implements IGraphNode {
 	}
 
 	public void removeIncoming(ODocument orientEdge, String edgeLabel) {
-		removeFromList(orientEdge, OrientNameCleaner.escapeToField(PREFIX_INCOMING + edgeLabel));
-		removeFromList(orientEdge, OrientNameCleaner.escapeToField(PREFIX_INCOMING_OLD + edgeLabel));
+		try {
+			removeFromList(orientEdge, PREFIX_INCOMING + edgeLabel);
+			removeFromList(orientEdge, PREFIX_INCOMING_OLD + edgeLabel);
+		} catch (IllegalArgumentException ex) {
+			final String escapedEdgeLabel = OrientNameCleaner.escapeToField(edgeLabel);
+			removeFromList(orientEdge, PREFIX_INCOMING + escapedEdgeLabel);
+			removeFromList(orientEdge, PREFIX_INCOMING_OLD + escapedEdgeLabel);
+		}
 		graph.markNodeAsDirty(this);
 	}
 
