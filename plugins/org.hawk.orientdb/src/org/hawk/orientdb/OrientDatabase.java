@@ -453,9 +453,14 @@ public class OrientDatabase implements IGraphDatabase {
 	private void saveIfBig() {
 		final int totalSize = dirtyNodes.size() + dirtyEdges.size();
 		if (totalSize > SIZE_THRESHOLD) {
-			// TODO: should we still do this in tx mode? OrientDB might keep its own copies for the tx anyway.
 			saveDirty();
-			getGraph().getLocalCache().invalidate();
+
+			// We did a big save - invalidate all the other caches
+			for (ODatabaseDocumentTx conn : allConns) {
+				conn.activateOnCurrentThread();
+				conn.getLocalCache().invalidate();
+			}
+			dbConn.get().activateOnCurrentThread();
 		}
 	}
 
@@ -651,7 +656,9 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	public void markNodeAsDirty(OrientNode orientNode) {
-		dirtyNodes.put(orientNode.getId().toString(), orientNode);
+		final ORID id = orientNode.getId();
+		dirtyNodes.put(id.toString(), orientNode);
+		deleteFromAllCaches(id);
 		saveIfBig();
 	}
 
@@ -660,7 +667,9 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	public void markEdgeAsDirty(OrientEdge orientEdge) {
-		dirtyEdges.put(orientEdge.getId().toString(), orientEdge);
+		final ORID id = orientEdge.getId();
+		dirtyEdges.put(id.toString(), orientEdge);
+		deleteFromAllCaches(id);
 		saveIfBig();
 	}
 
@@ -671,6 +680,14 @@ public class OrientDatabase implements IGraphDatabase {
 	public void discardDirty() {
 		dirtyNodes.clear();
 		dirtyEdges.clear();
+	}
+
+	protected void deleteFromAllCaches(final ORID id) {
+		for (ODatabaseDocumentTx conn : allConns) {
+			conn.activateOnCurrentThread();
+			conn.getLocalCache().deleteRecord(id);
+		}
+		dbConn.get().activateOnCurrentThread();
 	}
 
 	public IConsole getConsole() {

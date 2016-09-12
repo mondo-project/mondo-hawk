@@ -109,6 +109,8 @@ public class OrientIndexStore {
 		Set<String> nodeIndexNames = getNodeIndexNames();
 		nodeIndexNames.remove(indexName);
 		vIndexStore.setProperty(NODEIDX_PROP, nodeIndexNames.toArray(new String[nodeIndexNames.size()]));
+
+		vIndexStore.save();
 	}
 
 	private void addIndex(String indexName, final String property) {
@@ -116,6 +118,7 @@ public class OrientIndexStore {
 		if (setNames.add(indexName)) {
 			final String[] extendedNames = setNames.toArray(new String[setNames.size()]);
 			vIndexStore.setProperty(property, extendedNames);
+			vIndexStore.save();
 		}
 	}
 
@@ -125,6 +128,7 @@ public class OrientIndexStore {
 		if (setNames.add(field)) {
 			final String[] extNames = setNames.toArray(new String[setNames.size()]);
 			vIndexStore.setProperty(propName, extNames);
+			vIndexStore.save();
 		}
 	}
 
