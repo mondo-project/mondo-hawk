@@ -127,6 +127,8 @@ public class OrientDatabase implements IGraphDatabase {
 
 	private Set<OrientNodeIndex> postponedIndexes = new HashSet<>();
 
+	private OrientIndexStore indexStore;
+
 	public OrientDatabase() {
 		// nothing to do
 	}
