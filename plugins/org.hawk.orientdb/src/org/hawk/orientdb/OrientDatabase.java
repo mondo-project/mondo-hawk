@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.hawk.core.IConsole;
 import org.hawk.core.IModelIndexer;
@@ -33,15 +34,17 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkReference;
+import org.hawk.orientdb.cache.ORecordCacheSoftRefsV2;
 import org.hawk.orientdb.indexes.OrientEdgeIndex;
 import org.hawk.orientdb.indexes.OrientNodeIndex;
 import org.hawk.orientdb.indexes.OrientNodeIndex.PostponedIndexAdd;
 import org.hawk.orientdb.util.OrientClusterDocumentIterable;
 import org.hawk.orientdb.util.OrientNameCleaner;
 
+import com.orientechnologies.common.factory.OConfigurableStatefulFactory;
 import com.orientechnologies.orient.core.Orient;
+import com.orientechnologies.orient.core.cache.ORecordCache;
 import com.orientechnologies.orient.core.config.OGlobalConfiguration;
-import com.orientechnologies.orient.core.db.OPartitionedDatabasePool;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
@@ -56,6 +59,11 @@ import com.orientechnologies.orient.core.storage.OStorage;
  * performance than their GraphDB implementation (probably because it tries to
  * mimic Blueprints too much), but it follows the same conventions as their
  * GraphDB, so graphs can be queried and viewed as usual.
+ *
+ * This backend uses exactly 1 connection per thread: we advise using this
+ * backend from a bounded number of threads, to avoid having too many
+ * connections. The default Orient connection pools have issues when reusing
+ * instances across queries.
  */
 public class OrientDatabase implements IGraphDatabase {
 
@@ -111,8 +119,9 @@ public class OrientDatabase implements IGraphDatabase {
 	private Map<String, OrientNode> dirtyNodes = new HashMap<>(SIZE_THRESHOLD);
 	private Map<String, OrientEdge> dirtyEdges = new HashMap<>(SIZE_THRESHOLD);
 
-	private OPartitionedDatabasePool dbPool;
-	private OrientIndexStore indexStore;
+	private final ThreadLocal<ODatabaseDocumentTx> dbConn = new ThreadLocal<>();
+	private final Set<ODatabaseDocumentTx> allConns = Collections.newSetFromMap(
+		new ConcurrentHashMap<ODatabaseDocumentTx, Boolean>(Runtime.getRuntime().availableProcessors() * 2, 0.9f, 1));
 
 	protected String dbURL;
 
@@ -153,8 +162,6 @@ public class OrientDatabase implements IGraphDatabase {
 
 		console.println("Starting database " + iURL);
 		this.dbURL = iURL;
-		dbPool = new OPartitionedDatabasePool(dbURL, "admin", "admin", Runtime.getRuntime().availableProcessors() << 1, 0);
-		dbPool.setAutoCreate(true);
 
 		metamodelIndex = getOrCreateNodeIndex(METAMODEL_IDX_NAME);
 		fileIndex = getOrCreateNodeIndex(FILE_IDX_NAME);
@@ -174,17 +181,31 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	private void shutdown(boolean delete) {
+		ODatabaseDocumentTx db = getGraphNoCreate();
+		if (db.isClosed()) {
+			return;
+		}
+
 		if (delete) {
 			discardDirty();
 		} else {
 			saveDirty();
 		}
 
-		ODatabaseDocumentTx db = getGraphNoCreate();
-		if (!db.isClosed()) {
+		synchronized (allConns) {
+			// Close all other connections
+			for (ODatabaseDocumentTx conn : allConns) {
+				if (conn != dbConn.get()) {
+					conn.activateOnCurrentThread();
+					conn.close();
+				}
+			}
+			allConns.clear();
+			dbConn.get().activateOnCurrentThread();
+
 			/*
-			 * We want to completely close the database (e.g. so we can
-			 * delete the directory later from the Hawk UI).
+			 * We want to completely close the database (e.g. so we can delete
+			 * the directory later from the Hawk UI).
 			 */
 			final OStorage storage = db.getStorage();
 			if (delete) {
@@ -192,25 +213,22 @@ public class OrientDatabase implements IGraphDatabase {
 			} else {
 				db.close();
 			}
-			if (dbPool != null) {
-				dbPool.close();
-				dbPool = null;
-			}
 			storage.close(true, false);
 			Orient.instance().unregisterStorage(storage);
-		}
 
-		if (delete && storageFolder != null) {
-			try {
-				deleteRecursively(storageFolder);
-			} catch (IOException e) {
-				console.printerrln(e);
+			if (delete && storageFolder != null) {
+				try {
+					deleteRecursively(storageFolder);
+				} catch (IOException e) {
+					console.printerrln(e);
+				}
 			}
+
+			dbConn.set(null);
 		}
 
 		metamodelIndex = fileIndex = null;
 		storageFolder = tempFolder = null;
-		dbPool = null;
 	}
 
 	@Override
@@ -255,20 +273,17 @@ public class OrientDatabase implements IGraphDatabase {
 		}
 		ensureWALSetTo(false);
 		db = getGraph();
-		db.declareIntent(new OIntentMassiveInsert());
 		currentMode = Mode.NO_TX_MODE;
 	}
 
 	/**
 	 * Closes the connection currently open to the DB in the current thread.
 	 */
-	protected void closeConnection() {
+	protected void closeTransaction() {
 		final ODatabaseDocumentTx db = getGraph();
 		if (db.getTransaction().isActive()) {
 			db.getTransaction().close();
 		}
-		dbConn.get().close();
-		dbConn.set(null);
 	}
 
 	private void ensureWALSetTo(final boolean useWAL) {
@@ -276,13 +291,17 @@ public class OrientDatabase implements IGraphDatabase {
 			final ODatabaseDocumentTx db = getGraph();
 			final OStorage storage = db.getStorage();
 
-			closeConnection();
-			dbPool.close();
+			closeTransaction();
+			synchronized (allConns) {
+				for (ODatabaseDocumentTx conn : allConns) {
+					conn.activateOnCurrentThread();
+					conn.close();
+				}
+				dbConn.set(null);
+			}
 			storage.close(true, false);
 
 			OGlobalConfiguration.USE_WAL.setValue(useWAL);
-			dbPool = new OPartitionedDatabasePool(dbURL, "admin", "admin", Runtime.getRuntime().availableProcessors() << 1, 0);
-			dbPool.setAutoCreate(true);
 		}
 	}
 
@@ -468,19 +487,26 @@ public class OrientDatabase implements IGraphDatabase {
 		return db;
 	}
 
-	private final ThreadLocal<ODatabaseDocumentTx> dbConn = new ThreadLocal<>();
 	protected ODatabaseDocumentTx getGraphNoCreate() {
-		if (dbConn.get() != null) {
-			return dbConn.get();
-		} else if (dbPool != null && !dbPool.isClosed()) {
-			final ODatabaseDocumentTx db = dbPool.acquire();
-			dbConn.set(db);
-			return dbConn.get();
-		} else {
-			// Only needed for quick reconnections after a shutdown
-			// (e.g. delete() after a shutdown of Hawk in some tests)
-			return new ODatabaseDocumentTx(dbURL);
+		final ODatabaseDocumentTx conn = dbConn.get();
+		if (conn != null) {
+			conn.activateOnCurrentThread();
+			if (!conn.isClosed()) {
+				return conn;
+			}
 		}
+
+		final ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbURL);
+		if (!db.exists()) {
+			db.create();
+		} else {
+			db.open("admin", "admin");
+		}
+		allConns.add(db);
+		dbConn.set(db);
+		db.declareIntent(new OIntentMassiveInsert());
+
+		return db;
 	}
 
 	@Override

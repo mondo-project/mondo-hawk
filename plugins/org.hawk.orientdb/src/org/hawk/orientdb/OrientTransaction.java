@@ -40,7 +40,7 @@ public class OrientTransaction implements IGraphTransaction {
 
 	@Override
 	public void close() {
-		graph.closeConnection();
+		graph.closeTransaction();
 	}
 
 	public ODatabaseDocumentTx getOrientGraph() {
