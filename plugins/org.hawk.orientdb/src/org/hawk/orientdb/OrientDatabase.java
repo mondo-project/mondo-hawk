@@ -143,7 +143,13 @@ public class OrientDatabase implements IGraphDatabase {
 
 		OGlobalConfiguration.OBJECT_SAVE_ONLY_DIRTY.setValue(true);
 		OGlobalConfiguration.SBTREE_MAX_KEY_SIZE.setValue(102_400);
-		//OGlobalConfiguration.CACHE_LOCAL_IMPL.setValue(ORecordCacheSoftRefs.class.getName());
+
+		// Add a patched version of the OrientDB soft refs cache
+		@SuppressWarnings("unchecked")
+		OConfigurableStatefulFactory<String, ORecordCache> factory =
+			(OConfigurableStatefulFactory<String, ORecordCache>) Orient.instance().getLocalRecordCache();
+		factory.register(ORecordCacheSoftRefsV2.class.getName(), ORecordCacheSoftRefsV2.class);
+		OGlobalConfiguration.CACHE_LOCAL_IMPL.setValue(ORecordCacheSoftRefsV2.class.getName());
 
 		console.println("Starting database " + iURL);
 		this.dbURL = iURL;
