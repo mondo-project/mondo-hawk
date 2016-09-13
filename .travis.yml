@@ -1,5 +1,8 @@
 script: bash ./deploy.sh
 sudo: required
+language: java
+jdk:
+  - oraclejdk8
 env:
   global:
   - GH_REF: github.com/mondo-project/mondo-hawk.git
