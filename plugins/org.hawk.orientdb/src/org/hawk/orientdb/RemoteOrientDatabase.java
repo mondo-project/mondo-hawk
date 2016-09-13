@@ -5,6 +5,7 @@ import java.io.File;
 import org.hawk.core.IConsole;
 
 import com.orientechnologies.orient.client.remote.OServerAdmin;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.storage.OStorage;
 
 /**
@@ -117,4 +118,15 @@ public class RemoteOrientDatabase extends OrientDatabase {
 	public void setStorageType(String storageType) {
 		this.storageType = storageType;
 	}
+
+	@Override
+	protected boolean exists(ODatabaseDocumentTx db) {
+		/*
+		 * The database is always created during the {@link #run(File, IConsole)}
+		 * method, and if we throw an exception during {@link #getGraph()} we'll
+		 * needlessly complicate matters, so we just return <code>true</code> here.
+		 */
+		return true;
+	}
+
 }

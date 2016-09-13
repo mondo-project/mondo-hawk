@@ -488,10 +488,18 @@ public class OrientDatabase implements IGraphDatabase {
 	@Override
 	public ODatabaseDocumentTx getGraph() {
 		ODatabaseDocumentTx db = getGraphNoCreate();
-		if (!db.exists()) {
+		if (!exists(db)) {
 			db.create();
 		}
 		return db;
+	}
+
+	/**
+	 * Returns <code>true</code> if the database exists, <code>false</code>
+	 * otherwise.
+	 */
+	protected boolean exists(ODatabaseDocumentTx db) {
+		return db.exists();
 	}
 
 	protected ODatabaseDocumentTx getGraphNoCreate() {
@@ -504,9 +512,7 @@ public class OrientDatabase implements IGraphDatabase {
 		}
 
 		final ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbURL);
-		if (!db.exists()) {
-			db.create();
-		} else {
+		if (exists(db)) {
 			db.open("admin", "admin");
 		}
 		allConns.add(db);
