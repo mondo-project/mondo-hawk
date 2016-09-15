@@ -25,6 +25,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.pool2.BasePooledObjectFactory;
+import org.apache.commons.pool2.PooledObject;
+import org.apache.commons.pool2.impl.DefaultPooledObject;
+import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.hawk.core.IConsole;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
@@ -66,6 +70,48 @@ import com.orientechnologies.orient.core.storage.OStorage;
  * instances across queries.
  */
 public class OrientDatabase implements IGraphDatabase {
+
+	private final class OrientConnectionFactory extends BasePooledObjectFactory<ODatabaseDocumentTx> {
+		@Override
+		public void destroyObject(PooledObject<ODatabaseDocumentTx> pooled) throws Exception {
+			final ODatabaseDocumentTx db = pooled.getObject();
+			allConns.remove(db);
+			db.activateOnCurrentThread();
+			db.close();
+		}
+
+		@Override
+		public void passivateObject(PooledObject<ODatabaseDocumentTx> p) throws Exception {
+			super.passivateObject(p);
+			allConns.remove(p.getObject());
+			dbConn.set(null);
+		}
+
+		@Override
+		public void activateObject(PooledObject<ODatabaseDocumentTx> p) throws Exception {
+			super.activateObject(p);
+
+			final ODatabaseDocumentTx db = p.getObject();
+			allConns.add(db);
+			dbConn.set(db);
+			db.activateOnCurrentThread();
+		}
+
+		@Override
+		public ODatabaseDocumentTx create() throws Exception {
+			ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbURL);
+			if (exists(db)) {
+				db.open("admin", "admin");
+			}
+			db.declareIntent(new OIntentMassiveInsert());
+			return db;
+		}
+
+		@Override
+		public PooledObject<ODatabaseDocumentTx> wrap(ODatabaseDocumentTx db) {
+			return new DefaultPooledObject<>(db);
+		}
+	}
 
 	/** Name of the Orient document class for edges. */
 	private static final String EDGE_TYPE_PREFIX = "E_";
@@ -119,19 +165,24 @@ public class OrientDatabase implements IGraphDatabase {
 	private Map<String, OrientNode> dirtyNodes = new HashMap<>(SIZE_THRESHOLD);
 	private Map<String, OrientEdge> dirtyEdges = new HashMap<>(SIZE_THRESHOLD);
 
+	// Currently held database connection in this thread (may be released)
 	private final ThreadLocal<ODatabaseDocumentTx> dbConn = new ThreadLocal<>();
+
+	// Database connection pool (to limit memory usage by concurrent threads)
+	// - semaphore blocks threads until connections are released
+	// - the pool is a simple concurrent queue
+	// - allConns keeps a list of all the connections available, e.g. for global shutdown/cache invalidation
+	// - system property allows for limiting the number of connections per Orient backend (default is processors*2)
+	private GenericObjectPool<ODatabaseDocumentTx> pool;
 	private final Set<ODatabaseDocumentTx> allConns = Collections.newSetFromMap(
 		new ConcurrentHashMap<ODatabaseDocumentTx, Boolean>(Runtime.getRuntime().availableProcessors() * 2, 0.9f, 1));
+	private static final String POOL_SIZE_PROPERTY = "hawk.orient.maxConnections";
 
 	protected String dbURL;
 
 	private Set<OrientNodeIndex> postponedIndexes = new HashSet<>();
 
 	private OrientIndexStore indexStore;
-
-	public OrientDatabase() {
-		// nothing to do
-	}
 
 	@Override
 	public String getPath() {
@@ -155,21 +206,46 @@ public class OrientDatabase implements IGraphDatabase {
 		OGlobalConfiguration.OBJECT_SAVE_ONLY_DIRTY.setValue(true);
 		OGlobalConfiguration.SBTREE_MAX_KEY_SIZE.setValue(102_400);
 
-		// Add a patched version of the OrientDB soft refs cache
+		// Add a Guava-based Orient cache as default unless user specified something else
 		@SuppressWarnings("unchecked")
 		OConfigurableStatefulFactory<String, ORecordCache> factory =
 			(OConfigurableStatefulFactory<String, ORecordCache>) Orient.instance().getLocalRecordCache();
 		factory.register(ORecordCacheGuava.class.getName(), ORecordCacheGuava.class);
-		OGlobalConfiguration.CACHE_LOCAL_IMPL.setValue(ORecordCacheGuava.class.getName());
+		if (System.getProperty(OGlobalConfiguration.CACHE_LOCAL_IMPL.getKey()) == null) {
+			OGlobalConfiguration.CACHE_LOCAL_IMPL.setValue(ORecordCacheGuava.class.getName());
+		}
 
 		console.println("Starting database " + iURL);
 		this.dbURL = iURL;
 
+		initializePool();
 		metamodelIndex = getOrCreateNodeIndex(METAMODEL_IDX_NAME);
 		fileIndex = getOrCreateNodeIndex(FILE_IDX_NAME);
 
 		// By default, we're on transactional mode
 		exitBatchMode();
+	}
+
+	protected void initializePool() {
+		pool = new GenericObjectPool<>(new OrientConnectionFactory());
+		pool.setMinIdle(0);
+		pool.setMaxIdle(2);
+		pool.setMaxTotal(getPoolSize());
+		pool.setMinEvictableIdleTimeMillis(20_000);
+		pool.setBlockWhenExhausted(true);
+	}
+
+	protected int getPoolSize() {
+		int poolSize = Runtime.getRuntime().availableProcessors() * 2;
+		String sPoolSize = System.getProperty(POOL_SIZE_PROPERTY);
+		if (sPoolSize != null) {
+			try {
+				poolSize = Math.max(1, Integer.valueOf(sPoolSize));
+			} catch (NumberFormatException ex) {
+				System.err.println(String.format("%s has invalid value '%s': falling back to %d", POOL_SIZE_PROPERTY, sPoolSize, poolSize));
+			}
+		}
+		return poolSize;
 	}
 
 	@Override
@@ -182,12 +258,12 @@ public class OrientDatabase implements IGraphDatabase {
 		shutdown(true);
 	}
 
-	private void shutdown(boolean delete) {
-		ODatabaseDocumentTx db = getGraphNoCreate();
-		if (db.isClosed()) {
+	private void shutdown(boolean delete) throws Exception {
+		if (pool.isClosed()) {
 			return;
 		}
 
+		ODatabaseDocumentTx db = getGraphNoCreate();
 		if (delete) {
 			discardDirty();
 		} else {
@@ -197,12 +273,10 @@ public class OrientDatabase implements IGraphDatabase {
 		synchronized (allConns) {
 			// Close all other connections
 			for (ODatabaseDocumentTx conn : allConns) {
-				if (conn != dbConn.get()) {
-					conn.activateOnCurrentThread();
-					conn.close();
+				if (conn != db) {
+					pool.invalidateObject(conn);
 				}
 			}
-			allConns.clear();
 			dbConn.get().activateOnCurrentThread();
 
 			/*
@@ -217,6 +291,7 @@ public class OrientDatabase implements IGraphDatabase {
 			}
 			storage.close(true, false);
 			Orient.instance().unregisterStorage(storage);
+			pool.invalidateObject(db);
 
 			if (delete && storageFolder != null) {
 				try {
@@ -226,7 +301,8 @@ public class OrientDatabase implements IGraphDatabase {
 				}
 			}
 
-			dbConn.set(null);
+			pool.clear();
+			pool.close();
 		}
 
 		metamodelIndex = fileIndex = null;
@@ -281,10 +357,13 @@ public class OrientDatabase implements IGraphDatabase {
 	/**
 	 * Closes the connection currently open to the DB in the current thread.
 	 */
-	protected void closeTransaction() {
-		final ODatabaseDocumentTx db = getGraph();
-		if (db.getTransaction().isActive()) {
-			db.getTransaction().close();
+	protected void releaseConnection() {
+		final ODatabaseDocumentTx db = dbConn.get();
+		if (db != null) {
+			if (db.getTransaction().isActive()) {
+				db.getTransaction().close();
+			}
+			pool.returnObject(db);
 		}
 	}
 
@@ -293,17 +372,22 @@ public class OrientDatabase implements IGraphDatabase {
 			final ODatabaseDocumentTx db = getGraph();
 			final OStorage storage = db.getStorage();
 
-			closeTransaction();
+			releaseConnection();
 			synchronized (allConns) {
 				for (ODatabaseDocumentTx conn : allConns) {
-					conn.activateOnCurrentThread();
-					conn.close();
+					try {
+						pool.invalidateObject(conn);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
-				dbConn.set(null);
+				pool.clear();
 			}
 			storage.close(true, false);
+			pool.close();
 
 			OGlobalConfiguration.USE_WAL.setValue(useWAL);
+			initializePool();
 		}
 	}
 
@@ -511,15 +595,12 @@ public class OrientDatabase implements IGraphDatabase {
 			}
 		}
 
-		final ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbURL);
-		if (exists(db)) {
-			db.open("admin", "admin");
+		try {
+			return pool.borrowObject();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
-		allConns.add(db);
-		dbConn.set(db);
-		db.declareIntent(new OIntentMassiveInsert());
-
-		return db;
 	}
 
 	@Override

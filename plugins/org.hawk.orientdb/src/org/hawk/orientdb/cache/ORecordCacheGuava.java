@@ -20,7 +20,6 @@ public class ORecordCacheGuava implements ORecordCache {
 	public ORecord get(final ORID rid) {
 		if (!isEnabled())
 			return null;
-
 		return cache.getIfPresent(rid);
 	}
 
