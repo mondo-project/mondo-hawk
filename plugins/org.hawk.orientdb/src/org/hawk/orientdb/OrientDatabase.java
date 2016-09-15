@@ -34,7 +34,7 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkReference;
-import org.hawk.orientdb.cache.ORecordCacheSoftRefsV2;
+import org.hawk.orientdb.cache.ORecordCacheGuava;
 import org.hawk.orientdb.indexes.OrientEdgeIndex;
 import org.hawk.orientdb.indexes.OrientNodeIndex;
 import org.hawk.orientdb.indexes.OrientNodeIndex.PostponedIndexAdd;
@@ -159,8 +159,8 @@ public class OrientDatabase implements IGraphDatabase {
 		@SuppressWarnings("unchecked")
 		OConfigurableStatefulFactory<String, ORecordCache> factory =
 			(OConfigurableStatefulFactory<String, ORecordCache>) Orient.instance().getLocalRecordCache();
-		factory.register(ORecordCacheSoftRefsV2.class.getName(), ORecordCacheSoftRefsV2.class);
-		OGlobalConfiguration.CACHE_LOCAL_IMPL.setValue(ORecordCacheSoftRefsV2.class.getName());
+		factory.register(ORecordCacheGuava.class.getName(), ORecordCacheGuava.class);
+		OGlobalConfiguration.CACHE_LOCAL_IMPL.setValue(ORecordCacheGuava.class.getName());
 
 		console.println("Starting database " + iURL);
 		this.dbURL = iURL;

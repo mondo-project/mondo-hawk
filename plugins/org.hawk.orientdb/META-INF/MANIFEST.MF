@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.hawk.orientdb;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Vendor: University of York
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.hawk.core
+Require-Bundle: org.hawk.core,
+ com.google.guava;bundle-version="15.0.0"
 Bundle-ClassPath: .,
  lib/bundles/snappy-java-1.1.0.1.jar,
  lib/jars/concurrentlinkedhashmap-lru-1.4.1.jar,
