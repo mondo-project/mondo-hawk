@@ -238,24 +238,21 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 
 	@Override
 	public void delete() {
-		OrientIndexStore store = graph.getIndexStore();
+		final boolean txWasOpen = graph.getGraph().getTransaction().isActive();
+		if (txWasOpen) {
+			graph.getConsole().println("Warning: prematurely committing a transaction so we can delete index " + name);
+			graph.saveDirty();
+			graph.getGraph().commit();
+		}
 
+		final OrientIndexStore store = graph.getIndexStore();
 		final OIndexManager indexManager = getIndexManager();
-		final OIndex<?> stringIdx = indexManager.getIndex(getSBTreeIndexName(String.class));
-		final OIndex<?> doubleIdx = indexManager.getIndex(getSBTreeIndexName(Double.class));
-		final OIndex<?> intIdx = indexManager.getIndex(getSBTreeIndexName(Integer.class));
-
-		if (stringIdx != null && stringIdx.getIndexId() >= 0) {
-			stringIdx.delete();
-		}
-		if (doubleIdx != null && doubleIdx.getIndexId() >= 0) {
-			doubleIdx.delete();
-		}
-		if (intIdx != null && intIdx.getIndexId() >= 0) {
-			intIdx.delete();
-		}
-
+		indexManager.dropIndex(getSBTreeIndexName(String.class));
+		indexManager.dropIndex(getSBTreeIndexName(Double.class));
+		indexManager.dropIndex(getSBTreeIndexName(Integer.class));
 		store.removeNodeIndex(name);
+		indexManager.flush();
+		graph.getGraph().getMetadata().getIndexManager().getConfiguration().save();
 	}
 
 	/**

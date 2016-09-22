@@ -323,6 +323,29 @@ public class IndexTest {
 		}
 	}
 
+	@Test
+	public void deleteRecreate() throws Exception {
+		setup("deleteRecreate");
+
+		IGraphNodeIndex idxRoots = db.getOrCreateNodeIndex("roots");
+		OrientNode x;
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			x = db.createNode(null, "eobject");
+			idxRoots.add(x, "a", "1");
+			tx.success();
+		}
+		assertEquals(1, idxRoots.query("a", "1").size());
+		idxRoots.delete();
+
+		idxRoots = db.getOrCreateNodeIndex("roots");
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			idxRoots.add(x, "a", "2");
+			tx.success();
+		}
+		assertEquals(0, idxRoots.query("a", "1").size());
+		assertEquals(1, idxRoots.query("a", "2").size());
+	}
+
 	private String populateForRemove() {
 		final String mmBarURI = "http://foo/bar";
 		final FluidMap mmBarNodeProps = FluidMap.create().add(IModelIndexer.IDENTIFIER_PROPERTY, mmBarURI);

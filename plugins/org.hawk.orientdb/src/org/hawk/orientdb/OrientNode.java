@@ -318,10 +318,10 @@ public class OrientNode implements IGraphNode {
 	@Override
 	public void removeProperty(String name) {
 		changedVertex = getDocument();
-		try {
+
+		Object oldValue = changedVertex.removeField(PREFIX_PROPERTY + OrientNameCleaner.escapeToField(name));
+		if (oldValue != null) {
 			changedVertex.removeField(PREFIX_PROPERTY + name);
-		} catch (IllegalArgumentException ex) {
-			changedVertex.removeField(PREFIX_PROPERTY + OrientNameCleaner.escapeToField(name));
 		}
 		graph.markNodeAsDirty(this);
 	}

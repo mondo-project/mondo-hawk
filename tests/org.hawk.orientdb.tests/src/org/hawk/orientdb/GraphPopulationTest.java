@@ -11,6 +11,7 @@
 package org.hawk.orientdb;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -283,6 +284,9 @@ public class GraphPopulationTest {
 			final String propName = "x" + invalidChar + "a";
 			n1.setProperty(propName, 1);
 			assertEquals("Property " + propName + " should have been set", 1, n1.getProperty(propName));
+			assertTrue("Property " + propName + " should be one of the keys", n1.getPropertyKeys().contains(propName));
+			n1.removeProperty(propName);
+			assertFalse("Property " + propName + " should not be one of the keys", n1.getPropertyKeys().contains(propName));
 			db.exitBatchMode();
 		}
 	}

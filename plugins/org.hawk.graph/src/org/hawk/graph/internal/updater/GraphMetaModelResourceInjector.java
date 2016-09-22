@@ -809,7 +809,7 @@ public class GraphMetaModelResourceInjector {
 						requiresPropagationToInstances = true;
 
 					if (metadata.length == 6) {
-						if (metadata[5] == "t") {
+						if ("t".equals(metadata[5])) {
 							System.err.println("attribute already indexed, nothing happened!");
 							requiresPropagationToInstances = false;
 						} else {
@@ -940,7 +940,7 @@ public class GraphMetaModelResourceInjector {
 				} else {
 
 					if (metadata.length == 6) {
-						if (metadata[5] == "t") {
+						if ("t".equals(metadata[5])) {
 							metadata[5] = "f";
 							typenode.setProperty(attributename, metadata);
 							//
