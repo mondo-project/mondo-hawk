@@ -53,11 +53,7 @@ public class BPMNObject implements IHawkObject {
 
 	@Override
 	public String getUri() {
-		String uri = EcoreUtil.getURI(eob).toString();
-		if (uri == null || uri == "" || uri == "/" || uri == "//")
-			System.err.println("URI error on: " + eob);
-		return uri;
-
+		return EcoreUtil.getURI(eob).toString();
 	}
 
 	@Override
@@ -172,6 +168,7 @@ public class BPMNObject implements IHawkObject {
 		return eob.hashCode();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public byte[] signature() {
 

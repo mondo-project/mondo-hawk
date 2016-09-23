@@ -40,11 +40,7 @@ public class IFCObject implements IHawkObject {
 
 	@Override
 	public String getUri() {
-		String uri = EcoreUtil.getURI(eob).toString();
-		if (uri == null || uri == "" || uri == "/" || uri == "//")
-			System.err.println("URI error on: " + eob);
-		return uri;
-
+		return EcoreUtil.getURI(eob).toString();
 	}
 
 	@Override
@@ -112,6 +108,7 @@ public class IFCObject implements IHawkObject {
 
 	byte[] signature = null;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public byte[] signature() {
 

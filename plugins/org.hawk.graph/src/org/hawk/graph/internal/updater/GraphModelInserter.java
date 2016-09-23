@@ -1236,7 +1236,7 @@ public class GraphModelInserter {
 
 				Map<String, Object> m = new HashMap<>();
 
-				if (!(metadata[1] == "t")) {
+				if (!"t".equals(metadata[1])) {
 
 					if (isPrimitiveOrWrapperType)
 						m.put(attributename, node.getProperty(attributename));
@@ -1250,7 +1250,7 @@ public class GraphModelInserter {
 
 					Collection<Object> collection = null;
 
-					if (metadata[3] == "t")
+					if ("t".equals(metadata[3]))
 						collection = new LinkedHashSet<Object>();
 					else
 						collection = new LinkedList<Object>();

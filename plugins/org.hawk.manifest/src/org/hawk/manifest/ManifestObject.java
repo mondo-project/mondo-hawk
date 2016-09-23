@@ -88,7 +88,7 @@ public abstract class ManifestObject implements IHawkObject {
 						if (!eAttribute.isDerived())
 							// NOTE: using toString for hashcode of
 							// attribute values as primitives in java have
-							// different hashcodes each time, not fullproof
+							// different hashcodes each time, not foolproof
 							// true == "true" here
 							md.update(get(eAttribute).toString().getBytes());
 						else {
