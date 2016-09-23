@@ -218,21 +218,18 @@ public class OrientDatabase implements IGraphDatabase {
 		console.println("Starting database " + iURL);
 		this.dbURL = iURL;
 
-		initializePool();
-		metamodelIndex = getOrCreateNodeIndex(METAMODEL_IDX_NAME);
-		fileIndex = getOrCreateNodeIndex(FILE_IDX_NAME);
-
-		// By default, we're on transactional mode
-		exitBatchMode();
-	}
-
-	protected void initializePool() {
 		pool = new GenericObjectPool<>(new OrientConnectionFactory());
 		pool.setMinIdle(0);
 		pool.setMaxIdle(2);
 		pool.setMaxTotal(getPoolSize());
 		pool.setMinEvictableIdleTimeMillis(20_000);
 		pool.setBlockWhenExhausted(true);
+
+		metamodelIndex = getOrCreateNodeIndex(METAMODEL_IDX_NAME);
+		fileIndex = getOrCreateNodeIndex(FILE_IDX_NAME);
+
+		// By default, we're on transactional mode
+		exitBatchMode();
 	}
 
 	protected int getPoolSize() {
@@ -302,7 +299,6 @@ public class OrientDatabase implements IGraphDatabase {
 			}
 
 			pool.clear();
-			pool.close();
 		}
 
 		metamodelIndex = fileIndex = null;
@@ -384,10 +380,7 @@ public class OrientDatabase implements IGraphDatabase {
 				pool.clear();
 			}
 			storage.close(true, false);
-			pool.close();
-
 			OGlobalConfiguration.USE_WAL.setValue(useWAL);
-			initializePool();
 		}
 	}
 
