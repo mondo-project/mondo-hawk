@@ -1,4 +1,5 @@
 script: bash ./deploy.sh
+sudo: required
 language: java
 jdk:
   - oraclejdk8
