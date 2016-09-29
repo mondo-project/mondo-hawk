@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Hawk Target Platform" sequenceNumber="99">
+<?pde version="3.8"?><target name="Hawk Target Platform" sequenceNumber="101">
 <locations>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.jetty.bundles.f.feature.group" version="9.2.13.201508192117"/>
+<unit id="org.eclipse.jetty.bundles.f.source.feature.group" version="9.2.13.201508192117"/>
+<repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.2.13.v20150730"/>
+</location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.apache.httpcomponents.httpcore" version="4.3.3.v201411290715"/>
 <unit id="org.apache.httpcomponents.httpclient" version="4.3.6.v201411290715"/>
@@ -120,11 +125,6 @@
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150124073747/repository/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.jetty.bundles.f.feature.group" version="9.2.13.201508192117"/>
-<unit id="org.eclipse.jetty.bundles.f.source.feature.group" version="9.2.13.201508192117"/>
-<repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.2.13.v20150730"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.core.runtime.feature.feature.group" version="1.1.102.v20160128-1558"/>
 <unit id="org.eclipse.ecf.filetransfer.httpclient4.feature.feature.group" version="3.12.0.v20151130-0157"/>
 <unit id="org.eclipse.jdt.feature.group" version="3.11.2.v20160212-1500"/>
@@ -145,10 +145,10 @@
 <repository location="http://download.eclipse.org/releases/mars/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.epsilon.core.feature.feature.group" version="1.4.0.201609221543"/>
-<unit id="org.eclipse.epsilon.emf.feature.feature.group" version="1.4.0.201609221543"/>
-<unit id="org.eclipse.epsilon.core.dt.feature.feature.group" version="1.4.0.201609221543"/>
-<unit id="org.eclipse.epsilon.emf.dt.feature.feature.group" version="1.4.0.201609221543"/>
+<unit id="org.eclipse.epsilon.core.dt.feature.feature.group" version="1.4.0.201609281558"/>
+<unit id="org.eclipse.epsilon.core.feature.feature.group" version="1.4.0.201609281558"/>
+<unit id="org.eclipse.epsilon.emf.dt.feature.feature.group" version="1.4.0.201609281558"/>
+<unit id="org.eclipse.epsilon.emf.feature.feature.group" version="1.4.0.201609281558"/>
 <repository location="http://download.eclipse.org/epsilon/interim/"/>
 </location>
 </locations>
