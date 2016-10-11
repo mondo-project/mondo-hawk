@@ -590,7 +590,7 @@ public class OrientNode implements IGraphNode {
 					} else {
 						type = OType.EMBEDDEDSET;
 					}
-				} else {
+				} else if (attr.getType() != null) {
 					switch (attr.getType().getInstanceType()) {
 					case "java.lang.Long":
 					case "Long":

@@ -56,6 +56,7 @@ import com.orientechnologies.orient.core.intent.OIntentMassiveInsert;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchemaProxy;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.orientechnologies.orient.core.storage.OStorage;
 
 /**
@@ -567,6 +568,9 @@ public class OrientDatabase implements IGraphDatabase {
 		ODatabaseDocumentTx db = getGraphNoCreate();
 		if (!exists(db)) {
 			db.create();
+
+			// Enable lightweight edges by default
+			db.command(new OCommandSQL("ALTER DATABASE CUSTOM useLightweightEdges = true")).execute();
 		}
 		return db;
 	}

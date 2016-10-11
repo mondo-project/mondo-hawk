@@ -503,21 +503,17 @@ public class ModelIndexerImpl implements IModelIndexer {
 		try (IGraphTransaction t = graph.beginTransaction()) {
 
 			for (IGraphNode epackage : graph.getMetamodelIndex().query("id", "*")) {
+				final String s = epackage.getProperty(IModelIndexer.METAMODEL_RESOURCE_PROPERTY) + "";
+				final String ep = epackage.getProperty(IModelIndexer.IDENTIFIER_PROPERTY) + "";
+				final String type = epackage.getProperty(IModelIndexer.METAMODEL_TYPE_PROPERTY) + "";
 
-				final String s = epackage.getProperty(IModelIndexer.METAMODEL_RESOURCE_PROPERTY).toString();
-				final String ep = epackage.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
-				final String type = epackage.getProperty(IModelIndexer.METAMODEL_TYPE_PROPERTY).toString();
-
-				IMetaModelResourceFactory p = getMetaModelParser(type);
-
-				if (p != null)
-					// registeredMetamodels.put(p.getType(),
-					p.parseFromString("resource_from_epackage_" + ep, s)
-					// )
-					;
-				else
+				final IMetaModelResourceFactory p = getMetaModelParser(type);
+				if (p != null) {
+					p.parseFromString("resource_from_epackage_" + ep, s);
+				} else {
 					console.printerrln("cannot register metamodel in graph, named: " + ep + ", with type: " + type
 							+ ", as no relevant parser is registered");
+				}
 
 			}
 

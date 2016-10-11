@@ -28,19 +28,11 @@ public class GraphMetaModelUpdater implements IMetaModelUpdater {
 							.getCompositeGraphChangeListener());
 			return true;
 		} catch (Exception e) {
-			System.err.println("metamodel insertion failed: " + e.getMessage());
+			System.err.println("metamodel insertion failed");
+			e.printStackTrace();
 			return false;
 		}
 	}
-
-	// @Override
-	// public void removeMetamodels(Set<IHawkMetaModelResource> set,
-	// IModelIndexer indexer) {
-	// GraphMetaModelResourceInjector ret = new
-	// GraphMetaModelResourceInjector(indexer.getGraph(),
-	// indexer.getCompositeGraphChangeListener());
-	// ret.removeMetamodels(set);
-	// }
 
 	@Override
 	public Set<String> removeMetamodels(IModelIndexer indexer, String[] mmuri) {
