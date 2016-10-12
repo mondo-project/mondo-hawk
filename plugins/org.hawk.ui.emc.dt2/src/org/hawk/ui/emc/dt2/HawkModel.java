@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2016 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,11 +7,13 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - code cleanup
  ******************************************************************************/
 package org.hawk.ui.emc.dt2;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
@@ -31,8 +33,10 @@ import org.hawk.ui2.util.HUIManager;
 public class HawkModel extends ModelReference {
 
 	public static String PROPERTY_INDEXER_NAME = "databaseName";
-	protected IGraphDatabase database = null;
-	IGraphTransaction t;
+
+	private IGraphDatabase database;
+	private IGraphTransaction t;
+	private List<String> repoPatterns, filePatterns;
 
 	public HawkModel() {
 		super(new JavaModel(Collections.emptyList(), new ArrayList<Class<?>>()));
@@ -43,76 +47,60 @@ public class HawkModel extends ModelReference {
 			throws EolModelLoadingException {
 
 		this.name = properties.getProperty(Model.PROPERTY_NAME);
-		String aliasString = properties.getProperty(Model.PROPERTY_ALIASES);
-		boolean aliasStringIsValid = aliasString != null
-				&& aliasString.trim().length() > 0;
-		String[] aliasArray = aliasStringIsValid ? aliasString.split(",")
-				: new String[0];
-		for (int i = 0; i < aliasArray.length; i++) {
-			this.aliases.add(aliasArray[i].trim());
+		final String aliasString = properties.getProperty(Model.PROPERTY_ALIASES);
+		if (aliasString != null && aliasString.trim().length() > 0) {
+			for (String elem : aliasString.split(",")) {
+				this.aliases.add(elem.trim());
+			}
 		}
 
+		this.repoPatterns = splitBy(properties.getProperty(IQueryEngine.PROPERTY_REPOSITORYCONTEXT), ",");
+		this.filePatterns = splitBy(properties.getProperty(IQueryEngine.PROPERTY_FILECONTEXT), ",");
 		EOLQueryEngine eolQueryEngine;
-
-		String rip = properties
-				.getProperty(IQueryEngine.PROPERTY_REPOSITORYCONTEXT);
-
-		String fip = properties.getProperty(IQueryEngine.PROPERTY_FILECONTEXT);
-
-		// System.err.println(rip);
-		// System.err.println(fip);
-
-		if (rip != null && fip != null && rip.equals("") && fip.equals(""))
+		if (repoPatterns.isEmpty() && filePatterns.isEmpty()) {
 			eolQueryEngine = new EOLQueryEngine();
-		else
+		} else {
 			eolQueryEngine = new CEOLQueryEngine();
+		}
 
-		String namespaces = properties
-				.getProperty(IQueryEngine.PROPERTY_DEFAULTNAMESPACES);
-
-		if (namespaces != null && !namespaces.equals(""))
+		final String namespaces = (properties.getProperty(IQueryEngine.PROPERTY_DEFAULTNAMESPACES) + "").trim();
+		if (namespaces.length() > 0) {
 			eolQueryEngine.setDefaultNamespaces(namespaces);
-
-		target = eolQueryEngine;
+		}
+		this.target = eolQueryEngine;
 		eolQueryEngine.setDatabaseConfig(properties);
 
-		HUIManager m = HUIManager.getInstance();
-
-		String hn = properties.getProperty(PROPERTY_INDEXER_NAME);
-
-		if (hn == null)
+		final HUIManager m = HUIManager.getInstance();
+		final String hn = properties.getProperty(PROPERTY_INDEXER_NAME);
+		if (hn == null) {
 			throw new EolModelLoadingException(
 					new Exception(
-							"The selected Hawk has a null name property (PROPERTY_INDEXER_NAME)"),
+						"The launch configuration lacks the name of the Hawk instance (PROPERTY_INDEXER_NAME)"),
 					this);
+		}
 
-		HModel hm = m.getHawkByName(hn);
+		final HModel hawkModel = m.getHawkByName(hn);
+		if (hawkModel == null) {
+			throw new EolModelLoadingException(new Exception("The selected Hawk (" + hn + ") cannot be found"), this);
+		}
 
-		if (hm == null)
+		final HawkState s = hawkModel.getStatus();
+		switch (s) {
+		case UPDATING:
 			throw new EolModelLoadingException(new Exception(
-					"The selected Hawk (" + hn
-							+ ") cannot be found [HModel == null]"), this);
-
-		database = hm.getGraph();
-
-		HawkState s = hm.getStatus();
-
-		if (s.equals(HawkState.UPDATING))
-			throw new EolModelLoadingException(
-					new Exception(
-							"The selected Hawk cannot be currently queried as it is updating, please try again later"),
-					this);
-		else if (s.equals(HawkState.STOPPED))
-			throw new EolModelLoadingException(
-					new Exception(
-							"The selected Hawk cannot be currently queried as it is stopped, please start it first"),
-					this);
-		// catching other new states which may be added
-		else if (!s.equals(HawkState.RUNNING))
+				"The selected Hawk cannot be currently queried as it is updating, please try again later"), this);
+		case STOPPED:
 			throw new EolModelLoadingException(new Exception(
-					"The selected Hawk cannot be currently queried (state=" + s
-							+ ")"), this);
+				"The selected Hawk cannot be currently queried as it is stopped, please start it first"), this);
+		case RUNNING:
+			// nothing to do
+			break;
+		default:
+			throw new EolModelLoadingException(new Exception(
+				String.format("The selected Hawk cannot be currently queried (state=%s)", s)), this);
+		}
 
+		database = hawkModel.getGraph();
 		if (database != null) {
 			try {
 				t = database.beginTransaction();
@@ -122,7 +110,7 @@ public class HawkModel extends ModelReference {
 								"The selected Hawk cannot connect to its back-end (transaction error)"),
 						this);
 			}
-			eolQueryEngine.load(hm.getIndexer());
+			eolQueryEngine.load(hawkModel.getIndexer());
 		} else
 			throw new EolModelLoadingException(
 					new Exception(
@@ -139,15 +127,16 @@ public class HawkModel extends ModelReference {
 		super.dispose();
 	}
 
-	// @Override
-	// public void dispose() {
-	// System.out.println("disposed connection to db");
-	// super.dispose();
-	// try {
-	// database.shutdown(false);
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// }
+	private static List<String> splitBy(String haystack, String separator) {
+		// normalize null values and trailing whitespace
+		haystack = (haystack + "").trim();
 
+		final List<String> l = new ArrayList<String>();
+		if (haystack.length() > 0) {
+			for (String elem : haystack.split(separator)) {
+				l.add(elem);
+			}
+		}
+		return l;
+	}
 }

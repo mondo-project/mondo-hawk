@@ -13,7 +13,6 @@ package org.hawk.graph;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -54,7 +53,7 @@ public class GraphWrapper {
 	 *            or passing a null or empty {@link Iterable} will return all
 	 *            files in the selected repository or repositories.
 	 */
-	public Set<FileNode> getFileNodes(List<String> repoPatterns, Iterable<String> filePatterns) {
+	public Set<FileNode> getFileNodes(Iterable<String> repoPatterns, Iterable<String> filePatterns) {
 		if (repoPatterns == null || !repoPatterns.iterator().hasNext()) {
 			repoPatterns = Arrays.asList("*");
 		}
