@@ -902,7 +902,42 @@ public class ModelIndexerImpl implements IModelIndexer {
 				u.updateDerivedAttribute(metamodeluri, typename, attributename, attributetype, isMany, isOrdered,
 						isUnique, derivationlanguage, derivationlogic);
 
+		cachedDerivedAttributes = null;
 		stateListener.info(String.format("Added derived attribute %s::%s::%s.", metamodeluri, typename, attributename));
+	}
+
+	/**
+	 * We cache the list of derived attributes to avoid switching back and forth between
+	 * batch and transactional mode when inserting large numbers of files (since we check
+	 * if there are any derived attrs before we insert the derived attribute listener).
+	 *
+	 * Every method that changes the derived attributes in some form should set this to
+	 * null, so it is recomputed in the next call to {@link #getDerivedAttributes()}.
+	 */
+	private Collection<String> cachedDerivedAttributes = null;
+
+	@Override
+	public Collection<String> getDerivedAttributes() {
+		if (cachedDerivedAttributes == null) {
+			cachedDerivedAttributes = getExtraAttributes(IS_DERIVED);
+		}
+		return cachedDerivedAttributes;
+	}
+
+	@Override
+	public boolean removeDerivedAttribute(String metamodelUri, String typeName, String attributeName) {
+		stateListener
+				.info(String.format("Removing derived attribute %s::%s::%s...", metamodelUri, typeName, attributeName));
+
+		final boolean removed = metamodelupdater.removeDerivedAttribute(metamodelUri, typeName, attributeName, this);
+		cachedDerivedAttributes = null;
+
+		stateListener.info(
+				removed ? String.format("Removed derived attribute %s::%s::%s.", metamodelUri, typeName, attributeName)
+						: String.format("Derived attribute %s::%s::%s did not exist so nothing happened.", metamodelUri,
+								typeName, attributeName));
+
+		return removed;
 	}
 
 	@Override
@@ -919,13 +954,25 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public Collection<String> getDerivedAttributes() {
-		return getExtraAttributes(IS_DERIVED);
+	public Collection<String> getIndexedAttributes() {
+		return getExtraAttributes(IS_INDEXED);
 	}
 
 	@Override
-	public Collection<String> getIndexedAttributes() {
-		return getExtraAttributes(IS_INDEXED);
+	public boolean removeIndexedAttribute(String metamodelUri, String typename, String attributename) {
+	
+		stateListener
+				.info(String.format("Removing indexed attribute %s::%s::%s...", metamodelUri, typename, attributename));
+	
+		boolean removed = metamodelupdater.removeIndexedAttribute(metamodelUri, typename, attributename, this);
+	
+		stateListener.info(
+				removed ? String.format("Removed indexed attribute %s::%s::%s.", metamodelUri, typename, attributename)
+						: String.format("Indexed attribute %s::%s::%s did not exist so nothing happened.", metamodelUri,
+								typename, attributename));
+	
+		return removed;
+	
 	}
 
 	/**
@@ -1111,40 +1158,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 	public void setPolling(int base, int max) {
 		minDelay = base;
 		maxDelay = max;
-	}
-
-	@Override
-	public boolean removeIndexedAttribute(String metamodelUri, String typename, String attributename) {
-
-		stateListener
-				.info(String.format("Removing indexed attribute %s::%s::%s...", metamodelUri, typename, attributename));
-
-		boolean removed = metamodelupdater.removeIndexedAttribute(metamodelUri, typename, attributename, this);
-
-		stateListener.info(
-				removed ? String.format("Removed indexed attribute %s::%s::%s.", metamodelUri, typename, attributename)
-						: String.format("Indexed attribute %s::%s::%s did not exist so nothing happened.", metamodelUri,
-								typename, attributename));
-
-		return removed;
-
-	}
-
-	@Override
-	public boolean removeDerivedAttribute(String metamodelUri, String typeName, String attributeName) {
-
-		stateListener
-				.info(String.format("Removing derived attribute %s::%s::%s...", metamodelUri, typeName, attributeName));
-
-		boolean removed = metamodelupdater.removeDerivedAttribute(metamodelUri, typeName, attributeName, this);
-
-		stateListener.info(
-				removed ? String.format("Removed derived attribute %s::%s::%s.", metamodelUri, typeName, attributeName)
-						: String.format("Derived attribute %s::%s::%s did not exist so nothing happened.", metamodelUri,
-								typeName, attributeName));
-
-		return removed;
-
 	}
 
 	@Override

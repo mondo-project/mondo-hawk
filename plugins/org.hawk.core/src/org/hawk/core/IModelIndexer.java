@@ -62,13 +62,6 @@ public interface IModelIndexer {
 	 */
 	void requestImmediateSync() throws Exception;
 
-	// /**
-	// * shuts down, not persisting any metadata
-	// *
-	// * @throws Exception
-	// */
-	// void shutdown() throws Exception;
-
 	/**
 	 * Shuts down, persisting metadata.
 	 */
@@ -104,9 +97,6 @@ public interface IModelIndexer {
 	void removeMetamodels(String... metamodelURI) throws Exception;
 
 	IConsole getConsole();
-
-	// deprecated -- internal method now
-	// void saveIndexer(File f);
 
 	void addVCSManager(IVcsManager vcs, boolean persist);
 
@@ -174,14 +164,6 @@ public interface IModelIndexer {
 	 */
 	boolean isRunning();
 
-	// /**
-	// * NOTE: do not call this method before setting all the required factories
-	// * and parsers you wish to use in this hawk!
-	// *
-	// * @throws Exception
-	// */
-	// void init() throws Exception;
-
 	IModelResourceFactory getModelParser(String type);
 
 	IMetaModelResourceFactory getMetaModelParser(String metaModelType);
@@ -193,13 +175,6 @@ public interface IModelIndexer {
 	 * @return the folder the entire hawk structure is stored in
 	 */
 	File getParentFolder();
-
-	// deprecated -- use IQueryEngine.contextlessQuery(IGraphDatabase g, String
-	// query) with a specific query engine (such as epsilon's eol) to run a
-	// query on hawk -- to find them use getKnownQueryLanguages() -- keyset
-	// gives their identifiers and get() the runtime classes
-
-	// void runEOL();
 
 	/**
 	 * creates a comprehensive log of the entire contents of hawk -- use
