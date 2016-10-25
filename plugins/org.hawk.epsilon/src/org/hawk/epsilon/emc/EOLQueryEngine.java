@@ -37,6 +37,7 @@ import org.eclipse.epsilon.eol.execute.context.Variable;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertyGetter;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertySetter;
 import org.eclipse.epsilon.eol.models.Model;
+import org.eclipse.epsilon.eol.types.EolAnyType;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.graph.IGraphDatabase;
@@ -65,6 +66,7 @@ import org.hawk.graph.TypeNode;
 public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine {
 
 	public static final String TYPE = "org.hawk.epsilon.emc.EOLQueryEngine";
+	private static final String ANY_TYPE = new EolAnyType().getName();
 
 	protected final Set<String> cachedTypes = new HashSet<String>();
 	protected final Map<String, OptimisableCollection> typeContents = new HashMap<>();
@@ -500,6 +502,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		if (!(instance instanceof GraphNodeWrapper)) {
 			return false;
 		}
+		if (ANY_TYPE.equals(metaClass)) {
+			// Needed to support the 'Any' supertype in Epsilon (useful in EPL)
+			return true;
+		}
+
 		final GraphNodeWrapper gnw = (GraphNodeWrapper) instance;
 		final ModelElementNode men = new ModelElementNode(gnw.getNode());
 		return men.isOfKind(metaClass);
