@@ -43,5 +43,66 @@
             name="Exeed Editor">
       </editor>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.hawk.ui.emfresource.handlers.SaveXMICommand"
+            id="org.hawk.ui.emfresource.dumpxmi"
+            name="Save to XMI">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
+         <command
+               commandId="org.hawk.ui.emfresource.dumpxmi"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <reference
+                     definitionId="org.hawk.ui.emfresource.isHawkLocalModel">
+               </reference>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu">
+         <command
+               commandId="org.hawk.ui.emfresource.dumpxmi"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <reference
+                     definitionId="org.hawk.ui.emfresource.isHawkLocalModel">
+               </reference>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="org.hawk.ui.emfresource.isHawkLocalModel">
+         <and>
+            <count
+                  value="1">
+            </count>
+            <iterate
+                  ifEmpty="false"
+                  operator="and">
+               <adapt
+                     type="org.eclipse.core.resources.IFile">
+                  <test
+                        property="org.eclipse.core.resources.extension"
+                        value="localhawkmodel">
+                  </test>
+               </adapt>
+            </iterate>
+         </and>
+      </definition>
+   </extension>
 
 </plugin>
