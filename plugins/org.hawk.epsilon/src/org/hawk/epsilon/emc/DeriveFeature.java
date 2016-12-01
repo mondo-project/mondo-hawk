@@ -24,21 +24,21 @@ import org.eclipse.epsilon.eol.EolModule;
 import org.eclipse.epsilon.eol.execute.context.Variable;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.graph.internal.updater.DirtyDerivedAttributesListener;
 import org.hawk.graph.internal.util.GraphUtil;
 
 public class DeriveFeature {
 
 	// TODO move to core (it's used from LocalHawkResourceImpl in org.hawk.emfresource)
-	public final static String REFERENCETARGETPREFIX = "GNW::";
-
-	public DeriveFeature() throws Exception {
-	}
+	public static final String REFERENCETARGETPREFIX = "GNW::";
 
 	public Object deriveFeature(Map<String, EolModule> cachedModules, IModelIndexer indexer, IGraphNode n,
 			EOLQueryEngine containerModel, String propertyName, String EOLScript) throws Exception {
 
 		// remove prefix (_NYD)
-		String actualEOLScript = EOLScript.startsWith("_NYD##") ? EOLScript.substring(6) : EOLScript;
+		final String actualEOLScript = EOLScript.startsWith(DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX)
+				? EOLScript.substring(DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX.length())
+				: EOLScript;
 
 		EolModule currentModule = null;
 
@@ -116,22 +116,20 @@ public class DeriveFeature {
 				final Collection<?> srcCollection = (Collection<?>) ret;
 				Class<?> elemClass = null;
 				boolean primitiveOrWrapperClass = false;
-				if (!srcCollection.isEmpty()) {
-					final Object first = srcCollection.iterator().next();
-					elemClass = first.getClass();
-					primitiveOrWrapperClass = new GraphUtil().isPrimitiveOrWrapperType(elemClass);
-					for (Object o : srcCollection)
-						collection.add(toPrimitive(o));
+				for (Object o : srcCollection) {
+					Object converted = toPrimitive(o);
+					collection.add(converted);
+					if (elemClass == null) {
+						elemClass = converted.getClass();
+						primitiveOrWrapperClass = GraphUtil.isPrimitiveOrWrapperType(elemClass);
+					}
+				}
+				if (elemClass == null) {
+					elemClass = String.class;
 				}
 
-				Object r = null;
-				if (primitiveOrWrapperClass && elemClass != null) {
-					r = Array.newInstance(elemClass, collection.size());
-				} else {
-					r = Array.newInstance(String.class, collection.size());
-				}
+				Object r = Array.newInstance(elemClass, collection.size());
 				return collection.toArray((Object[]) r);
-
 			}
 
 		} catch (Exception e) {
@@ -149,10 +147,10 @@ public class DeriveFeature {
 	protected static Object toPrimitive(Object ret) {
 		if (ret instanceof Collection<?>)
 			return "Hawk collection error: nested collections are not supported for derived/indexed attributes";
-		if (new GraphUtil().isPrimitiveOrWrapperType(ret.getClass()))
+		if (GraphUtil.isPrimitiveOrWrapperType(ret.getClass()))
 			return ret;
 		else if (ret instanceof GraphNodeWrapper)
-			return REFERENCETARGETPREFIX + ((GraphNodeWrapper) ret).getId();
+			return ret;
 		else
 			return ret.toString();
 	}

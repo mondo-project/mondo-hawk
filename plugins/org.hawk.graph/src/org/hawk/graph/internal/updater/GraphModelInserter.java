@@ -455,7 +455,7 @@ public class GraphModelInserter {
 
 			if (!a.isMany()) {
 				Object newValue = newproperty;
-				if (!new GraphUtil().isPrimitiveOrWrapperType(newproperty.getClass())) {
+				if (!GraphUtil.isPrimitiveOrWrapperType(newproperty.getClass())) {
 					newValue = newValue.toString();
 				}
 
@@ -479,7 +479,7 @@ public class GraphModelInserter {
 				if (!srcCollection.isEmpty()) {
 					final Object first = srcCollection.iterator().next();
 					elemClass = first.getClass();
-					primitiveOrWrapperClass = new GraphUtil().isPrimitiveOrWrapperType(elemClass);
+					primitiveOrWrapperClass = GraphUtil.isPrimitiveOrWrapperType(elemClass);
 					if (primitiveOrWrapperClass) {
 						for (Object o : srcCollection) {
 							collection.add(o);
@@ -515,17 +515,12 @@ public class GraphModelInserter {
 			Object v = eObject.get(a);
 
 			if (!a.isMany()) {
-
-				if (new GraphUtil().isPrimitiveOrWrapperType(v.getClass()))
+				if (GraphUtil.isPrimitiveOrWrapperType(v.getClass())) {
 					i.add(node, a.getName(), v);
-
-				else
+				} else {
 					i.add(node, a.getName(), v.toString());
-
-			}
-
-			else {
-
+				}
+			} else {
 				Collection<Object> collection = null;
 
 				if (a.isUnique())
@@ -539,7 +534,7 @@ public class GraphModelInserter {
 				if (!srcCollection.isEmpty()) {
 					final Object first = srcCollection.iterator().next();
 					elemClass = first.getClass();
-					primitiveOrWrapperClass = new GraphUtil().isPrimitiveOrWrapperType(elemClass);
+					primitiveOrWrapperClass = GraphUtil.isPrimitiveOrWrapperType(elemClass);
 					if (primitiveOrWrapperClass) {
 						for (Object o : srcCollection) {
 							collection.add(o);
@@ -1140,7 +1135,7 @@ public class GraphModelInserter {
 				m.put("attributetype", attributetype);
 				m.put("derivationlanguage", derivationlanguage);
 				m.put("derivationlogic", derivationlogic);
-				m.put(attributename, "_NYD##" + derivationlogic);
+				m.put(attributename, DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX + derivationlogic);
 
 				// derived node exists -- update derived property
 				if (derived.hasNext()) {
@@ -1218,7 +1213,7 @@ public class GraphModelInserter {
 
 			try {
 				c = Class.forName(metadata[4]);
-				isPrimitiveOrWrapperType = new GraphUtil().isPrimitiveOrWrapperType(c);
+				isPrimitiveOrWrapperType = GraphUtil.isPrimitiveOrWrapperType(c);
 			} catch (Exception e) {
 				//
 				e.printStackTrace();

@@ -14,11 +14,12 @@ import java.util.HashSet;
 
 public class GraphUtil {
 
+	private GraphUtil() {}
+
 	// made static to avoid repeated error messages about unknown types
 	private static HashSet<String> unknownTypes = new HashSet<>();
 
-	public boolean isPrimitiveOrWrapperType(final Class<?> valueClass) {
-
+	public static boolean isPrimitiveOrWrapperType(final Class<?> valueClass) {
 		boolean ret = String.class.isAssignableFrom(valueClass)
 				|| Boolean.class.isAssignableFrom(valueClass)
 				|| Character.class.isAssignableFrom(valueClass)
@@ -38,12 +39,9 @@ public class GraphUtil {
 				|| double.class.isAssignableFrom(valueClass);
 
 		if (!ret) {
-			String type = valueClass.getName();
-			if (!unknownTypes.contains(type)) {
-				System.err
-						.println("warning, unknown type found, casting to String: "
-								+ type);
-				unknownTypes.add(type);
+			final String type = valueClass.getName();
+			if (unknownTypes.add(type)) {
+				System.err.println("warning, unknown type found, converting to String: " + type);
 			}
 		}
 

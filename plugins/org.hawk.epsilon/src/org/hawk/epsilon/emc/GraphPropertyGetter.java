@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.hawk.epsilon.emc;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,8 +31,11 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.util.Utils;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.ModelElementNode;
+import org.hawk.graph.internal.updater.DirtyDerivedAttributesListener;
 
 public class GraphPropertyGetter extends AbstractPropertyGetter {
+
+	public static final String REVERSE_REFNAV_PREFIX = "revRefNav_";
 
 	protected static final int IDX_FLAG_MANY = 1;
 	protected static final int IDX_FLAG_ORDERED = 2;
@@ -106,22 +108,33 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		case DERIVED:
 			Object derivedValue = null;
 			for (IGraphEdge r : node.getOutgoingWithType(property)) {
+				if (derivedValue != null) {
+					throw new EolRuntimeException(String.format(
+						"WARNING: a derived property node (arity 1) -- (%s) has more than 1 links in store!", property));
+				}
+
+				final IGraphNode nDerived = r.getEndNode();
+				derivedValue = nDerived.getProperty(property);
 				if (derivedValue == null) {
-					derivedValue = r.getEndNode().getProperty(property);
-				} else {
-					throw new EolRuntimeException("WARNING: a derived property node (arity 1) -- ( " + property
-							+ " ) has more than 1 links in store!");
+					List<GraphNodeWrapper> derivedTargets = null;
+					for (IGraphEdge edge : nDerived.getOutgoingWithType(EOLQueryEngine.DERIVED_EDGE_PREFIX + property)) {
+						if (derivedTargets == null) {
+							derivedTargets = new EolSequence<>();
+							derivedValue = derivedTargets;
+						}
+						derivedTargets.add(new GraphNodeWrapper(edge.getEndNode(), m));
+					}
 				}
 			}
 
 			if (derivedValue == null) {
 				throw new EolRuntimeException("derived attribute lookup failed for: " + node + " # " + property);
-			} else if (derivedValue instanceof String && ((String) derivedValue).startsWith("_NYD##")) {
+			} else if (derivedValue instanceof String && ((String) derivedValue).startsWith(DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX)) {
 				// XXX IDEA: dynamically derive on the spot on access
 				System.err.println("attribute: " + property + " is NYD for node: " + node.getId());
 			}
-			return resolvePossibleReferences(property, derivedValue);
 
+			return derivedValue;
 		case MIXED:
 			final Collection<Object> retCollection = getCollectionForProperty(property);
 			if (node.getProperty(property) != null) {
@@ -157,38 +170,6 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		default:
 			throw new EolIllegalPropertyException(obj, property, ast, context);
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	protected Object resolvePossibleReferences(String property, Object derivedValue) {
-
-		Object ret = null;
-
-		Class<?> cType = derivedValue.getClass().getComponentType();
-		if (cType != null) {
-			derivedValue = new Utils().asList(derivedValue);
-		}
-
-		if (derivedValue instanceof Iterable<?>) {
-			ret = getCollectionForProperty(property);
-			for (Object o : (Iterable<?>) derivedValue)
-				((Collection<Object>) ret).add(containsReferenceTarget(o) ? resolveReferenceTarget((String) o) : o);
-		} else if (containsReferenceTarget(derivedValue))
-			ret = resolveReferenceTarget((String) derivedValue);
-		else
-			ret = derivedValue;
-		return ret;
-
-	}
-
-	private boolean containsReferenceTarget(Object derivedValue) {
-		return derivedValue instanceof String
-				&& ((String) derivedValue).startsWith(DeriveFeature.REFERENCETARGETPREFIX);
-	}
-
-	private GraphNodeWrapper resolveReferenceTarget(String derivedValue) {
-		return new GraphNodeWrapper(
-				graph.getNodeById(derivedValue.substring(DeriveFeature.REFERENCETARGETPREFIX.length())), m);
 	}
 
 	protected Object invokePredefined(final String property, IGraphNode node) throws EolRuntimeException {
@@ -234,16 +215,18 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 			return repos;
 
-		} else if (property.startsWith("revRefNav_")) {
+		} else if (property.startsWith(REVERSE_REFNAV_PREFIX)) {
+			final String referenceName = property.substring(REVERSE_REFNAV_PREFIX.length());
 
-			// LinkedList<?> otherNodes = new LinkedList<>();
-
-			String property2 = property.substring(10);
-
-			EolSequence<GraphNodeWrapper> ret = new EolSequence<GraphNodeWrapper>();
-
-			for (IGraphEdge r : node.getIncomingWithType(property2))
+			final EolSequence<GraphNodeWrapper> ret = new EolSequence<GraphNodeWrapper>();
+			for (IGraphEdge r : node.getIncomingWithType(referenceName)) {
 				ret.add(new GraphNodeWrapper(r.getStartNode(), m));
+			}
+			for (IGraphEdge r : node.getIncomingWithType(EOLQueryEngine.DERIVED_EDGE_PREFIX + referenceName)) {
+				IGraphNode derivedNode = r.getStartNode();
+				IGraphNode elementNode = derivedNode.getIncoming().iterator().next().getStartNode();
+				ret.add(new GraphNodeWrapper(elementNode, m));
+			}
 
 			return ret;
 		} else if (property.equals("eContainer")) {
@@ -267,7 +250,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 			return ret;
 		} else if (property.equals("eContents")) {
-			final List<GraphNodeWrapper> results = new ArrayList<>();
+			final List<GraphNodeWrapper> results = new EolSequence<>();
 			for (IGraphEdge r : node.getOutgoing()) {
 				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
 					results.add(new GraphNodeWrapper(r.getEndNode(), m));
@@ -281,7 +264,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 			return results;
 		} else if (property.equals("hawkIn") || property.equals("hawkOut")) {
 			final boolean isIncoming = property.equals("hawkIn");
-			final List<GraphNodeWrapper> results = new ArrayList<>();
+			final List<GraphNodeWrapper> results = new EolSequence<>();
 			final Iterable<IGraphEdge> edges = isIncoming ? node.getIncoming() : node.getOutgoing();
 			for (IGraphEdge r : edges) {
 				if (ModelElementNode.TRANSIENT_EDGE_LABELS.contains(r.getType())) {

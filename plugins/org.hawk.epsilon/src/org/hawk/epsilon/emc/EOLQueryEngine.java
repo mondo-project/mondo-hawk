@@ -53,6 +53,7 @@ import org.hawk.graph.FileNode;
 import org.hawk.graph.MetamodelNode;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.TypeNode;
+import org.hawk.graph.internal.updater.DirtyDerivedAttributesListener;
 
 /**
  * Exposes a Hawk instance as an Epsilon model and adds support for EOL queries to Hawk.
@@ -66,6 +67,8 @@ import org.hawk.graph.TypeNode;
 public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine {
 
 	public static final String TYPE = "org.hawk.epsilon.emc.EOLQueryEngine";
+	public static final String DERIVED_EDGE_PREFIX = "de";
+
 	private static final String ANY_TYPE = new EolAnyType().getName();
 
 	protected final Set<String> cachedTypes = new HashSet<String>();
@@ -693,7 +696,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		for (String s : n.getPropertyKeys()) {
 			String prop = n.getProperty(s).toString();
 
-			if (prop.startsWith("_NYD##")) {
+			if (prop.startsWith(DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX)) {
 				Object derived = "DERIVATION_EXCEPTION";
 				try {
 					Object enablecaching = getDatabaseConfig().get(EOLQueryEngine.PROPERTY_ENABLE_CACHING);
@@ -708,13 +711,31 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 					e1.printStackTrace();
 				}
 
-				n.setProperty(s, derived);
+				// Unset the current value (if there is any)
+				final String derivedEdgeLabel = DERIVED_EDGE_PREFIX + s;
+				for (IGraphEdge edge : n.getOutgoingWithType(derivedEdgeLabel)) {
+					System.out.println("clearing edge " + edge.getType());
+					edge.delete();
+				}
+				n.removeProperty(s);
+
+				// Set the new value
+				if (derived instanceof Object[] && ((Object[])derived).length > 0 && ((Object[])derived)[0] instanceof GraphNodeWrapper) {
+					GraphNodeWrapper[] nodes = (GraphNodeWrapper[])derived;
+
+					// Replace existing edges with new ones
+					for (GraphNodeWrapper gw : nodes) {
+						graph.createRelationship(n, gw.getNode(), derivedEdgeLabel);
+					}
+				} else {
+					n.setProperty(s, derived);
+				}
 
 				IGraphNode elementnode = n.getIncoming().iterator().next().getStartNode();
 
 				IGraphNode typeNode = elementnode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator()
 						.next().getEndNode();
-				IGraphNodeIndex derivedFeature = graph.getOrCreateNodeIndex(typeNode.getOutgoingWithType("epackage")
+				IGraphNodeIndex idxNodeByDerivedValue = graph.getOrCreateNodeIndex(typeNode.getOutgoingWithType("epackage")
 						.iterator().next().getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString() + "##"
 						+ typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString() + "##" + s);
 
@@ -722,7 +743,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 				if (derived.getClass().getComponentType() != null || derived instanceof Collection<?>)
 					derived = new Utils().toString(derived);
 
-				derivedFeature.add(elementnode, s, derived);
+				// TODO: need to test how this works with derived edges
+				idxNodeByDerivedValue.add(elementnode, s, derived);
 			}
 		}
 

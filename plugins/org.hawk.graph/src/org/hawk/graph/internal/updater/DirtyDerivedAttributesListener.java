@@ -31,10 +31,11 @@ import org.hawk.core.model.IHawkPackage;
 
 /**
  * Graph change listener that collects the graph nodes whose derived attributes
- * should be updated, and marks them as dirty on the fly with
- * <code>_NYD##...</code> properties.
+ * should be updated, and marks them as dirty on the fly with special properties.
  */
 public class DirtyDerivedAttributesListener implements IGraphChangeListener {
+
+	public static final String NOT_YET_DERIVED_PREFIX = "_NYD##";
 
 	private final class PendingEntry implements Entry<String, String> {
 		String key;
@@ -272,7 +273,7 @@ public class DirtyDerivedAttributesListener implements IGraphChangeListener {
 
 		if (node.getPropertyKeys().contains(derivedPropertyName)) {
 			node.setProperty(derivedPropertyName,
-					"_NYD##" + node.getProperty("derivationlogic"));
+					NOT_YET_DERIVED_PREFIX + node.getProperty("derivationlogic"));
 			nodesToBeUpdated.add(node);
 		} else {
 			System.err

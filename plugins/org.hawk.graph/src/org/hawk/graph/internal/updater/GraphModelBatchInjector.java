@@ -364,7 +364,7 @@ public class GraphModelBatchInjector {
 
 				if (!a.isMany()) {
 					final Class<?> valueClass = value.getClass();
-					if (new GraphUtil().isPrimitiveOrWrapperType(valueClass)) {
+					if (GraphUtil.isPrimitiveOrWrapperType(valueClass)) {
 						m.put(a.getName(), value);
 					} else {
 						m.put(a.getName(), value.toString());
@@ -383,7 +383,7 @@ public class GraphModelBatchInjector {
 					if (!srcCollection.isEmpty()) {
 						final Object first = srcCollection.iterator().next();
 						elemClass = first.getClass();
-						primitiveOrWrapperClass = new GraphUtil().isPrimitiveOrWrapperType(elemClass);
+						primitiveOrWrapperClass = GraphUtil.isPrimitiveOrWrapperType(elemClass);
 						if (primitiveOrWrapperClass) {
 							for (Object o : srcCollection) {
 								collection.add(o);
@@ -446,7 +446,7 @@ public class GraphModelBatchInjector {
 						m.put("attributetype", metadata[4]);
 						m.put("derivationlanguage", metadata[5]);
 						m.put("derivationlogic", metadata[6]);
-						m.put(attributekey, "_NYD##" + metadata[6]);
+						m.put(attributekey, DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX + metadata[6]);
 
 						IGraphNode derivedattributenode = graph.createNode(m, "derivedattribute");
 
@@ -474,7 +474,7 @@ public class GraphModelBatchInjector {
 
 				if (!a.isMany()) {
 
-					if (new GraphUtil().isPrimitiveOrWrapperType(v.getClass()))
+					if (GraphUtil.isPrimitiveOrWrapperType(v.getClass()))
 						m.put(a.getName(), v);
 
 					else
@@ -497,7 +497,7 @@ public class GraphModelBatchInjector {
 					if (!srcCollection.isEmpty()) {
 						final Object first = srcCollection.iterator().next();
 						elemClass = first.getClass();
-						primitiveOrWrapperClass = new GraphUtil().isPrimitiveOrWrapperType(elemClass);
+						primitiveOrWrapperClass = GraphUtil.isPrimitiveOrWrapperType(elemClass);
 						if (primitiveOrWrapperClass) {
 							for (Object o : srcCollection) {
 								collection.add(o);
