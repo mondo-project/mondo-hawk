@@ -6,8 +6,8 @@ Bundle-Version: 1.2.0.qualifier
 Require-Bundle: org.eclipse.epsilon.common.dt,
  org.hawk.core,
  org.hawk.epsilon,
- org.hawk.ui2
+ org.hawk.ui2,
+ org.hawk.osgiserver
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: University of York
 Export-Package: org.hawk.ui.emc.dt2
-Import-Package: org.hawk.osgiserver
