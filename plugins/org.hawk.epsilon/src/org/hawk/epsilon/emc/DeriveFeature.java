@@ -115,13 +115,13 @@ public class DeriveFeature {
 
 				final Collection<?> srcCollection = (Collection<?>) ret;
 				Class<?> elemClass = null;
-				boolean primitiveOrWrapperClass = false;
 				for (Object o : srcCollection) {
 					Object converted = toPrimitive(o);
-					collection.add(converted);
+					if (converted != null) {
+						collection.add(converted);
+					}
 					if (elemClass == null) {
 						elemClass = converted.getClass();
-						primitiveOrWrapperClass = GraphUtil.isPrimitiveOrWrapperType(elemClass);
 					}
 				}
 				if (elemClass == null) {
@@ -145,14 +145,17 @@ public class DeriveFeature {
 	}
 
 	protected static Object toPrimitive(Object ret) {
-		if (ret instanceof Collection<?>)
+		if (ret == null) {
+			return null;
+		} else if (ret instanceof Collection<?>) {
 			return "Hawk collection error: nested collections are not supported for derived/indexed attributes";
-		if (GraphUtil.isPrimitiveOrWrapperType(ret.getClass()))
+		} else if (GraphUtil.isPrimitiveOrWrapperType(ret.getClass())) {
 			return ret;
-		else if (ret instanceof GraphNodeWrapper)
+		} else if (ret instanceof GraphNodeWrapper) {
 			return ret;
-		else
+		} else {
 			return ret.toString();
+		}
 	}
 
 	private EolModule initModule(IModelIndexer m, EOLQueryEngine model) throws Exception {

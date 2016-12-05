@@ -727,8 +727,13 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 					for (GraphNodeWrapper gw : nodes) {
 						graph.createRelationship(n, gw.getNode(), derivedEdgeLabel);
 					}
-				} else {
+				} else if (derived instanceof GraphNodeWrapper) {
+					GraphNodeWrapper gw = (GraphNodeWrapper) derived;
+					graph.createRelationship(n, gw.getNode(), derivedEdgeLabel);
+				} else if (derived != null) {
 					n.setProperty(s, derived);
+				} else {
+					n.setProperty(s, new String[0]);
 				}
 
 				IGraphNode elementnode = n.getIncoming().iterator().next().getStartNode();
@@ -740,11 +745,14 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 						+ typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString() + "##" + s);
 
 				// flatten multi-valued derived features for indexing
-				if (derived.getClass().getComponentType() != null || derived instanceof Collection<?>)
-					derived = new Utils().toString(derived);
+				if (derived != null) {
+					if (derived.getClass().getComponentType() != null || derived instanceof Collection<?>) {
+						derived = new Utils().toString(derived);
+					}
 
-				// TODO: need to test how this works with derived edges
-				idxNodeByDerivedValue.add(elementnode, s, derived);
+					// TODO: need to test how this works with derived edges
+					idxNodeByDerivedValue.add(elementnode, s, derived);
+				}
 			}
 		}
 
