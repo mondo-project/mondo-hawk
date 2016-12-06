@@ -45,10 +45,9 @@ public class ManifestModelResourceFactory implements IModelResourceFactory {
 	}
 
 	@Override
-	public IHawkModelResource parse(File f) {
-
-		Map<String, String> map = getManifestContents(f);
-		IHawkModelResource ret = null;
+	public ManifestModelResource parse(File f) {
+		final Map<String, String> map = getManifestContents(f);
+		ManifestModelResource ret = null;
 		try {
 			ret = new ManifestModelResource(f.toURI().toString(), this, map);
 		} catch (Exception e) {
@@ -56,7 +55,6 @@ public class ManifestModelResourceFactory implements IModelResourceFactory {
 		}
 
 		return ret;
-
 	}
 
 	@Override

@@ -11,4 +11,6 @@ Require-Bundle: org.junit;bundle-version="4.11.0",
  org.hawk.localfolder,
  org.hawk.epsilon,
  org.hawk.graph.syncValidationListener,
- org.hawk.graph
+ org.hawk.graph,
+ org.hawk.manifest,
+ org.eclipse.jface.text

@@ -110,29 +110,32 @@ public class ManifestModelResource implements IHawkModelResource {
 		allContents.add(bundleInstance);
 
 		// add reference targets
+		int iRequires = 0;
 		for (RequireBundleObject o : requires) {
 			ManifestBundleObject rBundle = new ManifestBundleObject(o.getId(), this);
 			allContents.add(rBundle);
 			ManifestRequiresObject req = new ManifestRequiresObject(o.getAttributes("bundle-version"),
-					o.getDirective("resolution"), o.getDirective("visibility"), this, rBundle);
+					o.getDirective("resolution"), o.getDirective("visibility"), this, rBundle, iRequires++);
 			allContents.add(req);
 			bundleInstance.addRequires(req);
 		}
 
+		int iImport = 0;
 		for (ImportPackageObject o : imports) {
 			ManifestPackageObject iPackage = new ManifestPackageObject(o.getName(), this);
 			allContents.add(iPackage);
 			ManifestImportObject imp = new ManifestImportObject(o.getAttributes("version"),
-					o.getDirective("resolution"), this, iPackage);
+					o.getDirective("resolution"), this, iPackage, iImport++);
 			allContents.add(imp);
 			bundleInstance.addImport(imp);
 		}
 
+		int iExport = 0;
 		for (ExportPackageObject o : exports) {
 			ManifestPackageObject ePackage = new ManifestPackageObject(o.getName(), this);
 			allContents.add(ePackage);
-			ManifestPackageInstanceObject pe = new ManifestPackageInstanceObject(o.getAttribute("version"), this,
-					ePackage);
+			ManifestPackageInstanceObject pe = new ManifestPackageInstanceObject(
+					o.getAttribute("version"), this, ePackage, iExport++);
 			allContents.add(pe);
 			bundleInstance.addExport(pe);
 		}

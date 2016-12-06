@@ -48,7 +48,7 @@ public class ManifestBundleInstanceObject extends ManifestObject {
 
 	@Override
 	public String getUriFragment() {
-		return bundle.getUriFragment() + ":" + version;
+		return "bundleinstance";
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public class ManifestBundleInstanceObject extends ManifestObject {
 
 	@Override
 	public String getUri() {
-		return bundle.getUri() + ":" + version;
+		return res.getUri() + "#" + getUriFragment();
 	}
 
 	public void addRequires(ManifestRequiresObject req) {

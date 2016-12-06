@@ -20,20 +20,21 @@ public class ManifestPackageInstanceObject extends ManifestObject {
 
 	private String version;
 	private ManifestPackageObject ePackage;
+	private int position;
 
 	public ManifestPackageInstanceObject(String version,
 			ManifestModelResource manifestModelResource,
-			ManifestPackageObject ePackage) {
+			ManifestPackageObject ePackage, int iExport) {
 
 		this.version = version;
 		this.res = manifestModelResource;
 		this.ePackage = ePackage;
-
+		this.position = iExport;
 	}
 
 	@Override
 	public String getUri() {
-		return ePackage.getUri() + ": " + version;
+		return res.getUri() + "#" + getUriFragment();
 	}
 
 	@Override
@@ -43,7 +44,7 @@ public class ManifestPackageInstanceObject extends ManifestObject {
 
 	@Override
 	public String getUriFragment() {
-		return ePackage.getUriFragment() + ": " + version;
+		return "exports/" + position;
 	}
 
 	@Override

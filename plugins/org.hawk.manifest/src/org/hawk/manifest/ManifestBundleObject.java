@@ -76,7 +76,6 @@ public class ManifestBundleObject extends ManifestObject {
 
 	@Override
 	public String getUri() {
-		return res.getUri() + "#" + symbolicName;
+		return res.getUri() + "#" + getUriFragment();
 	}
-
 }

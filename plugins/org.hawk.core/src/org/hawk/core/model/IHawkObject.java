@@ -56,7 +56,7 @@ public interface IHawkObject {
 
 	// gets the value of reference ref of this object, with boolean b for
 	// resolving proxies (if needed)
-	Object get(IHawkReference ref, boolean b);
+	Object get(IHawkReference ref, boolean resolveProxies);
 
 	// sha1 identifier of state:
 	// use the following identifying features to calculate this signature:

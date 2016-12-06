@@ -30,7 +30,7 @@ public class ManifestRequires extends ManifestClass {
 	private IHawkAttribute optionalResolution;
 	private IHawkAttribute reExport;
 
-	private HashSet<IHawkReference> references;
+	private Set<IHawkReference> references;
 
 	public ManifestRequires(ManifestMetamodel p) {
 		ep = p;

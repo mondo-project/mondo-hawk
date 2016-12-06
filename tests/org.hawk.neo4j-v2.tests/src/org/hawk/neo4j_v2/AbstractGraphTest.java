@@ -71,15 +71,20 @@ public class AbstractGraphTest {
 				"admin".toCharArray());
 
 		indexer = new ModelIndexerImpl("test", indexerFolder, credStore, console);
-		indexer.addMetaModelResourceFactory(new EMFMetaModelResourceFactory());
-		indexer.addModelResourceFactory(new EMFModelResourceFactory());
+		setupIndexerFactories();
+
 		queryEngine = new CEOLQueryEngine();
 		indexer.addQueryEngine(queryEngine);
 		indexer.setMetaModelUpdater(new GraphMetaModelUpdater());
 		indexer.addModelUpdater(new GraphModelUpdater());
 		indexer.setDB(db, true);
-		indexer.init(0, 0);
 
+		indexer.init(0, 0);
+	}
+
+	protected void setupIndexerFactories() {
+		indexer.addMetaModelResourceFactory(new EMFMetaModelResourceFactory());
+		indexer.addModelResourceFactory(new EMFModelResourceFactory());
 	}
 
 	@After

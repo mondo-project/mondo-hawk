@@ -15,7 +15,6 @@ import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
 import org.hawk.manifest.model.ManifestModelResource;
-import org.hawk.manifest.utils.Utils;
 
 public class ManifestImportObject extends ManifestObject {
 
@@ -26,23 +25,23 @@ public class ManifestImportObject extends ManifestObject {
 	private Boolean optionalResolution = null;
 
 	private ManifestPackageObject p;
+	private int position;
 
 	public ManifestImportObject(String[] versionRange, String optional, ManifestModelResource manifestModelResource,
-			ManifestPackageObject p) {
+			ManifestPackageObject p, int iImport) {
 
 		optionalResolution = optional != null ? optional.equals("optional") : false;
 
 		this.res = manifestModelResource;
+		this.p = p;
+		this.position = iImport;
 
 		parseVersionRange(versionRange);
-
-		this.p = p;
 	}
 
 	@Override
 	public String getUri() {
-		return p.getUri() + ": " + new Utils().generateVersionRangeIdentifier(minVersion, maxVersion,
-				isMinVersionInclusive, isMaxVersionInclusive);
+		return res.getUri() + "#" + getUriFragment();
 	}
 
 	@Override
@@ -52,8 +51,7 @@ public class ManifestImportObject extends ManifestObject {
 
 	@Override
 	public String getUriFragment() {
-		return p.getUriFragment() + ": " + new Utils().generateVersionRangeIdentifier(minVersion, maxVersion,
-				isMinVersionInclusive, isMaxVersionInclusive);
+		return "imports/" + position;
 	}
 
 	@Override

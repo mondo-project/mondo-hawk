@@ -15,7 +15,6 @@ import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
 import org.hawk.manifest.model.ManifestModelResource;
-import org.hawk.manifest.utils.Utils;
 
 public class ManifestRequiresObject extends ManifestObject {
 
@@ -25,33 +24,29 @@ public class ManifestRequiresObject extends ManifestObject {
 	private Boolean isMaxVersionInclusive = null;
 	private Boolean optionalResolution = null;
 	private Boolean reExport = null;
-
 	private ManifestBundleObject bundle;
+	private int position;
 
 	public ManifestRequiresObject(String[] versionRange, String optional, String visibility,
-			ManifestModelResource manifestModelResource, ManifestBundleObject bundle) {
+			ManifestModelResource manifestModelResource, ManifestBundleObject bundle, int iRequires) {
 
 		optionalResolution = optional != null ? optional.equals("optional") : false;
-
 		reExport = visibility != null ? visibility.equals("reexport") : false;
-
 		this.res = manifestModelResource;
+		this.bundle = bundle;
+		this.position = iRequires;
 
 		parseVersionRange(versionRange);
-
-		this.bundle = bundle;
 	}
 
 	@Override
 	public String getUri() {
-		return bundle.getUri() + ": " + new Utils().generateVersionRangeIdentifier(minVersion, maxVersion,
-				isMinVersionInclusive, isMaxVersionInclusive);
+		return res.getUri() + "#" + getUriFragment();
 	}
 
 	@Override
 	public String getUriFragment() {
-		return bundle.getUriFragment() + ": " + new Utils().generateVersionRangeIdentifier(minVersion, maxVersion,
-				isMinVersionInclusive, isMaxVersionInclusive);
+		return "requires/" + position;
 	}
 
 	@Override
@@ -109,7 +104,7 @@ public class ManifestRequiresObject extends ManifestObject {
 	}
 
 	@Override
-	public Object get(IHawkReference ref, boolean b) {
+	public Object get(IHawkReference ref, boolean resolveProxies) {
 		String name = ref.getName();
 		switch (name) {
 		case "bundle":

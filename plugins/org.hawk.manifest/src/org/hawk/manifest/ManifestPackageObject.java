@@ -30,7 +30,7 @@ public class ManifestPackageObject extends ManifestObject {
 
 	@Override
 	public String getUri() {
-		return res.getUri() + "#" + name;
+		return res.getUri() + "#" + getUriFragment();
 	}
 
 	@Override
