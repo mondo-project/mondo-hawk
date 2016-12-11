@@ -28,6 +28,8 @@ import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.runtime.ModelIndexerImpl;
+import org.hawk.graph.FileNode;
+import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.internal.updater.GraphModelUpdater;
 
 public class SyncChangeListener implements IGraphChangeListener {
@@ -155,8 +157,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 							continue;
 						}
 
-						Iterable<IGraphEdge> instancesEdges = filenode
-								.getIncomingWithType("file");
+						Iterable<IGraphEdge> instancesEdges = filenode.getIncomingWithType(FileNode.FILE_NODE_LABEL);
 
 						// cache model elements in current resource
 						HashMap<String, IHawkObject> eobjectCache = new HashMap<>();
@@ -352,13 +353,10 @@ public class SyncChangeListener implements IGraphChangeListener {
 									for (IGraphEdge reference : instance
 											.getOutgoing()) {
 
-										if (reference.getType().equals("file")
-												|| reference.getType().equals(
-														"ofType")
-												|| reference.getType().equals(
-														"ofKind")
-												|| reference.getPropertyKeys()
-														.contains("isDerived")) {
+										if (reference.getType().equals(FileNode.FILE_NODE_LABEL)
+												|| reference.getType().equals(ModelElementNode.EDGE_LABEL_OFTYPE)
+												|| reference.getType().equals(ModelElementNode.EDGE_LABEL_OFKIND)
+												|| reference.getPropertyKeys().contains("isDerived")) {
 											// ignore
 										} else {
 											//
@@ -376,7 +374,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 													+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
 													+ refEndNode
 															.getOutgoingWithType(
-																	"file")
+																	FileNode.FILE_NODE_LABEL)
 															.iterator()
 															.next()
 															.getEndNode()
@@ -448,7 +446,7 @@ public class SyncChangeListener implements IGraphChangeListener {
 																+ "\nlocated: "
 																+ instance
 																		.getOutgoingWithType(
-																				"file")
+																				FileNode.FILE_NODE_LABEL)
 																		.iterator()
 																		.next()
 																		.getEndNode()

@@ -644,6 +644,17 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		return nodes;
 	}
 
+	/**
+	 * Returns the collection of all the files indexed in the graph.
+	 */
+	public Set<FileNodeWrapper> getFiles() {
+		Set<FileNodeWrapper> allFNW = new HashSet<>();
+		for (IGraphNode n : graph.allNodes(FileNode.FILE_NODE_LABEL)) {
+			allFNW.add(new FileNodeWrapper(new FileNode(n), this));
+		}
+		return allFNW;
+	}
+
 	// deriving attributes
 	@Override
 	public AccessListener calculateDerivedAttributes(IModelIndexer m, Iterable<IGraphNode> nodes) {

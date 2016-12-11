@@ -46,7 +46,7 @@ import org.hawk.graph.internal.util.Pair;
 public class GraphModelBatchInjector {
 
 	public static final String FRAGMENT_DICT_NAME = "fragmentdictionary";
-	public static final String ROOT_DICT_FILE_KEY = "file";
+	public static final String ROOT_DICT_FILE_KEY = FileNode.FILE_NODE_LABEL;
 	public static final String ROOT_DICT_NAME = "rootdictionary";
 
 	public static final String PROXY_DICT_NAME = "proxydictionary";
@@ -245,7 +245,7 @@ public class GraphModelBatchInjector {
 		mapForFileNode.put(FileNode.PROP_REPOSITORY, repoURL);
 
 		// System.err.println("creating file node: "+s.getPath());
-		fileNode = graph.createNode(mapForFileNode, "file");
+		fileNode = graph.createNode(mapForFileNode, FileNode.FILE_NODE_LABEL);
 
 		Map<String, Object> mapForDictionary = new HashMap<>();
 		mapForDictionary.put("id", repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + s.getPath());

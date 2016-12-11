@@ -307,7 +307,7 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 		// capture multiple file containment (ie for singleton nodes)
 		for (IGraphEdge e : graph.getNodeById(ret.getId()).getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 
-			if (engine.getFiles().contains(e.getEndNode())) {
+			if (engine.getRawFileNodes().contains(e.getEndNode())) {
 				return ret;
 			}
 		}
@@ -321,7 +321,7 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 
 		// capture multiple file containment (ie for singleton nodes)
 		for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
-			if (engine.getFiles().contains(e.getEndNode())) {
+			if (engine.getRawFileNodes().contains(e.getEndNode())) {
 				return new GraphNodeWrapper(node, m);
 			}
 		}

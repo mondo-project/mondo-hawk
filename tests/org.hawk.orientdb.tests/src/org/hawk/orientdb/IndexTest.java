@@ -27,6 +27,7 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.util.DefaultConsole;
+import org.hawk.graph.FileNode;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.orientdb.util.FluidMap;
 import org.junit.After;
@@ -262,11 +263,11 @@ public class IndexTest {
 
 		IGraphNodeIndex idxRoots = db.getOrCreateNodeIndex("roots");
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			OrientNode n1 = db.createNode(null, "eobject");
-			OrientNode n2 = db.createNode(null, "eobject");
-			OrientNode n3 = db.createNode(null, "eobject");
-			OrientNode f1 = db.createNode(null, "file");
-			OrientNode f2 = db.createNode(null, "file");
+			OrientNode n1 = db.createNode(null, ModelElementNode.OBJECT_VERTEX_LABEL);
+			OrientNode n2 = db.createNode(null, ModelElementNode.OBJECT_VERTEX_LABEL);
+			OrientNode n3 = db.createNode(null, ModelElementNode.OBJECT_VERTEX_LABEL);
+			OrientNode f1 = db.createNode(null, FileNode.FILE_NODE_LABEL);
+			OrientNode f2 = db.createNode(null, FileNode.FILE_NODE_LABEL);
 
 			db.createRelationship(n1, f1, ModelElementNode.EDGE_LABEL_FILE);
 			db.createRelationship(n2, f1, ModelElementNode.EDGE_LABEL_FILE);

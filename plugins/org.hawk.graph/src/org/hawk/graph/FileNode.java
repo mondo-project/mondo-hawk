@@ -22,9 +22,10 @@ import org.hawk.graph.internal.updater.GraphModelBatchInjector;
  * Read-only abstraction of a file within the graph populated by this updater.
  */
 public class FileNode {
-	private final IGraphNode node;
-
+	public static final String FILE_NODE_LABEL = "file";
 	public static final String PROP_REPOSITORY = "repository";
+
+	private final IGraphNode node;
 
 	public FileNode(IGraphNode node) {
 		this.node = node;

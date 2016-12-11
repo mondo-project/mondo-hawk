@@ -90,7 +90,7 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 
 	/**
 	 * Returns all of the contents of the database in the form of lightweight
-	 * NeoIdWrapper objects, limited by the files in scope.
+	 * objects, limited by the files in scope.
 	 */
 	@Override
 	public Collection<?> allContents() {
@@ -132,7 +132,16 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 		return nodes;
 	}
 
-	public Set<IGraphNode> getFiles() {
+	@Override
+	public Set<FileNodeWrapper> getFiles() {
+		Set<FileNodeWrapper> allFNW = new HashSet<>();
+		for (IGraphNode rawNode : getRawFileNodes()) {
+			allFNW.add(new FileNodeWrapper(new FileNode(rawNode), this));
+		}
+		return allFNW;
+	}
+
+	protected Set<IGraphNode> getRawFileNodes() {
 		return files;
 	}
 
