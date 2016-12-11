@@ -47,7 +47,11 @@ import org.hawk.core.VcsRepositoryDelta;
 public class Workspace implements IVcsManager {
 
 	private final class WorkspaceDeltaVisitor implements IResourceDeltaVisitor {
-		boolean anyChanges = false;
+		private static final int CHANGE_MASK =
+				IResourceDelta.CONTENT | IResourceDelta.MOVED_FROM | IResourceDelta.MOVED_TO |
+				IResourceDelta.COPIED_FROM | IResourceDelta.TYPE | IResourceDelta.SYNC |
+				IResourceDelta.REPLACED;
+		private boolean anyChanges = false;
 
 		@Override
 		public boolean visit(IResourceDelta delta) throws CoreException {
@@ -55,7 +59,9 @@ public class Workspace implements IVcsManager {
 				// not a file: not interested
 				return true;
 			}
-			anyChanges = true;
+			if ((delta.getFlags() & CHANGE_MASK) != 0) {
+				anyChanges = true;
+			}
 			return false;
 		}
 	}
