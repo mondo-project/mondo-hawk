@@ -173,49 +173,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 	}
 
 	protected Object invokePredefined(final String property, IGraphNode node) throws EolRuntimeException {
-		// avoid using switch (in the outer-most structure) to allow partial
-		// matches and method calls in alternatives
-		if (property.equals("hawkFile")) {
-
-			String sep = "";
-			StringBuilder buff = new StringBuilder(32);
-			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
-				buff.append(sep);
-				buff.append(e.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
-				sep = ";";
-
-			}
-			return buff.toString();
-
-		} else if (property.equals("hawkRepo")) {
-
-			String sep = "";
-			StringBuilder buff = new StringBuilder(32);
-			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
-				buff.append(sep);
-				buff.append(e.getEndNode().getProperty(FileNode.PROP_REPOSITORY).toString());
-				sep = ";";
-
-			}
-			return buff.toString();
-
-		} else if (property.equals("hawkFiles")) {
-
-			Set<String> files = new HashSet<>();
-			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
-				files.add(e.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
-
-			return files;
-
-		} else if (property.equals("hawkRepos")) {
-
-			Set<String> repos = new HashSet<>();
-			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
-				repos.add(e.getEndNode().getProperty(FileNode.PROP_REPOSITORY).toString());
-
-			return repos;
-
-		} else if (property.startsWith(REVERSE_REFNAV_PREFIX)) {
+		if (property.startsWith(REVERSE_REFNAV_PREFIX)) {
 			final String referenceName = property.substring(REVERSE_REFNAV_PREFIX.length());
 
 			final EolSequence<GraphNodeWrapper> ret = new EolSequence<GraphNodeWrapper>();
@@ -229,7 +187,46 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 			}
 
 			return ret;
-		} else if (property.equals("eContainer")) {
+		}
+
+		switch (property) {
+		case "hawkFile": {
+			String sep = "";
+			StringBuilder buff = new StringBuilder(32);
+			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+				buff.append(sep);
+				buff.append(e.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
+				sep = ";";
+
+			}
+			return buff.toString();
+		}
+		case "hawkRepo": {
+			String sep = "";
+			StringBuilder buff = new StringBuilder(32);
+			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+				buff.append(sep);
+				buff.append(e.getEndNode().getProperty(FileNode.PROP_REPOSITORY).toString());
+				sep = ";";
+
+			}
+			return buff.toString();
+		}
+		case "hawkFiles": {
+			Set<String> files = new HashSet<>();
+			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
+				files.add(e.getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
+
+			return files;
+		}
+		case "hawkRepos": {
+			Set<String> repos = new HashSet<>();
+			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE))
+				repos.add(e.getEndNode().getProperty(FileNode.PROP_REPOSITORY).toString());
+
+			return repos;
+		}
+		case "eContainer": {
 			GraphNodeWrapper ret = null;
 			for (IGraphEdge r : node.getIncoming()) {
 				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
@@ -249,7 +246,8 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				throw new EolRuntimeException("eContainer failed,\n" + node + "\nis not contained");
 
 			return ret;
-		} else if (property.equals("eContents")) {
+		}
+		case "eContents": {
 			final List<GraphNodeWrapper> results = new EolSequence<>();
 			for (IGraphEdge r : node.getOutgoing()) {
 				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
@@ -262,7 +260,9 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				}
 			}
 			return results;
-		} else if (property.equals("hawkIn") || property.equals("hawkOut")) {
+		}
+		case "hawkIn":
+		case "hawkOut": {
 			final boolean isIncoming = property.equals("hawkIn");
 			final List<GraphNodeWrapper> results = new EolSequence<>();
 			final Iterable<IGraphEdge> edges = isIncoming ? node.getIncoming() : node.getOutgoing();
@@ -275,10 +275,23 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				results.add(edgeNodeWrapper);
 			}
 			return results;
-		} else if (property.equals("hawkURIFragment")) {
-			return node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
 		}
-		else {
+		case "hawkInEdges":
+		case "hawkOutEdges": {
+			final boolean isIncoming = property.equals("hawkInEdges");
+			final List<GraphEdgeWrapper> results = new EolSequence<>();
+			final Iterable<IGraphEdge> edges = isIncoming ? node.getIncoming() : node.getOutgoing();
+			for (IGraphEdge r : edges) {
+				if (ModelElementNode.TRANSIENT_EDGE_LABELS.contains(r.getType())) {
+					continue;
+				}
+				results.add(new GraphEdgeWrapper(r, m));
+			}
+			return results;
+		}
+		case "hawkURIFragment":
+			return node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
+		default:
 			return null;
 		}
 	}
