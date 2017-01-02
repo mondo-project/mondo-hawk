@@ -11,6 +11,7 @@
 package org.hawk.modelio.exml.model;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.hawk.core.model.IHawkAttribute;
@@ -70,6 +71,25 @@ public class ModelioObject extends AbstractModelioObject {
 		return mc;
 	}
 
+	public ModelioClass getRootType() {
+		LinkedList<ModelioClass> typeQueue = new LinkedList<>();
+		typeQueue.add(getType());
+
+		while (!typeQueue.isEmpty()) {
+			ModelioClass current = typeQueue.removeFirst();
+			if (current.getSuperTypes().isEmpty()) {
+				return current;
+			} else {
+				for (ModelioClass st : current.getSuperTypes()) {
+					typeQueue.addLast(st);
+				}
+			}
+		}
+
+		// This should never happen: we will always have at least one root supertype
+		return null;
+	}
+
 	@Override
 	public boolean isSet(IHawkStructuralFeature hsf) {
 		if (hsf instanceof ModelioAttribute) {
@@ -109,7 +129,7 @@ public class ModelioObject extends AbstractModelioObject {
 		if (ref.getName().equals(ModelioClass.REF_PARENT) && exml.getParentUID() != null) {
 			ExmlReference parentRef = new ExmlReference(exml.getFile());
 			parentRef.setName(ModelioClass.REF_PARENT);
-			parentRef.setMClassName(ModelioClass.REF_PARENT_MCLASS);
+			parentRef.setMClassName(getRootType().getName());
 			parentRef.setUID(exml.getParentUID());
 			return new ModelioProxy((ModelioClass) ref.getType(), parentRef);
 		}

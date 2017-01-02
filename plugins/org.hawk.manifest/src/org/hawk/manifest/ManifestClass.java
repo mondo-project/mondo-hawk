@@ -62,7 +62,7 @@ public abstract class ManifestClass extends ManifestObject implements
 	}
 
 	@Override
-	public Set<IHawkClass> getSuperTypes() {
+	public Set<? extends IHawkClass> getSuperTypes() {
 		return getAllSuperTypes();
 	}
 

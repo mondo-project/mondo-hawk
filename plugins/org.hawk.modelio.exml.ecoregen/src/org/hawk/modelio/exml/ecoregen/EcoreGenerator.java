@@ -12,7 +12,9 @@ package org.hawk.modelio.exml.ecoregen;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +37,7 @@ import org.hawk.modelio.exml.metamodel.ModelioAttribute;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
 import org.hawk.modelio.exml.metamodel.ModelioPackage;
+import org.hawk.modelio.exml.metamodel.ModelioReference;
 import org.modelio.metamodel.MMetamodel;
 import org.modelio.metamodel.MPackage;
 
@@ -47,6 +50,13 @@ import org.modelio.metamodel.MPackage;
  * included automatically in the default EMF EPackage registry.
  */
 public class EcoreGenerator {
+
+	protected static final class ClassifierNameComparator implements Comparator<IHawkClassifier> {
+		@Override
+		public int compare(IHawkClassifier o1, IHawkClassifier o2) {
+			return o1.getName().compareTo(o2.getName());
+		}
+	}
 
 	private final class Tuple<L, R> {
 		private final L left;
@@ -68,13 +78,13 @@ public class EcoreGenerator {
 
 	private final EcoreFactory factory;
 	private final List<EPackage> packages = new ArrayList<>();
-	private final Map<String, Tuple<EClass, ModelioClass>> mClasses = new HashMap<>();
+	private final Map<String, Tuple<EClass, ModelioClass>> mClasses = new LinkedHashMap<>();
 	private int nPackage = 0;
 
 	public static void main(String[] args) {
 		try {
 			final EcoreGenerator generator = new EcoreGenerator();
-			final File f = new File("model/modelio-v2.ecore");
+			final File f = new File("model/modelio-v3.ecore");
 			final Resource r = generator.generate(f);
 			System.out.println("plugin.xml fragment:\n\n" + generator.generatePluginXml(r));
 		} catch (Exception e) {
@@ -109,23 +119,33 @@ public class EcoreGenerator {
 		final MMetamodel metamodel = new MMetamodel();
 
 		// Do a first pass to create the structure
-		for (MPackage mp : metamodel.getMPackages()) {
+		final List<MPackage> mps = metamodel.getMPackages();
+		for (MPackage mp : mps) {
 			final ModelioPackage wrapped = new ModelioPackage(mr, mp);
 			addPackageContents(r, wrapped);
 		}
 
-		// On the second pass, create features and references
+		// On the second pass, create features and references (sorted by names, to avoid unwanted diffs when regenerating)
 		for (Tuple<EClass, ModelioClass> entry : mClasses.values()) {
 			final EcorePackage ecorePkg = EcorePackage.eINSTANCE;
 			final EClass ec = entry.getLeft();
 			final ModelioClass mc = entry.getRight();
 
-			for (IHawkClass superMClass : mc.getOwnSuperTypes()) {
+			final List<IHawkClass> superMClasses = new ArrayList<>(mc.getOwnSuperTypes());
+			Collections.sort(superMClasses, new ClassifierNameComparator());
+			for (IHawkClass superMClass : superMClasses) {
 				EClass eSuper = mClasses.get(superMClass.getName()).getLeft();
 				ec.getESuperTypes().add(eSuper);
 			}
 
-			for (IHawkAttribute mattr : mc.getOwnAttributesMap().values()) {
+			final List<ModelioAttribute> mattrs = new ArrayList<>(mc.getOwnAttributesMap().values());
+			Collections.sort(mattrs, new Comparator<IHawkAttribute>(){
+				@Override
+				public int compare(IHawkAttribute o1, IHawkAttribute o2) {
+					return o1.getName().compareTo(o2.getName());
+				}
+			});
+			for (IHawkAttribute mattr : mattrs) {
 				EDataType edt = ecorePkg.getEString();
 				switch (((ModelioAttribute)mattr).getRawAttribute().getMDataType().getJavaEquivalent()) {
 				case "Short":
@@ -163,7 +183,14 @@ public class EcoreGenerator {
 				ec.getEStructuralFeatures().add(eattr);
 			}
 
-			for (IHawkReference mdep : mc.getOwnReferencesMap().values()) {
+			final List<ModelioReference> mdeps = new ArrayList<>(mc.getOwnReferencesMap().values());
+			Collections.sort(mdeps, new Comparator<IHawkReference>(){
+				@Override
+				public int compare(IHawkReference o1, IHawkReference o2) {
+					return o1.getName().compareTo(o2.getName());
+				}
+			});
+			for (IHawkReference mdep : mdeps) {
 				final EClass targetEClass = mClasses.get(mdep.getType().getName()).getLeft();
 
 				final EReference eref = factory.createEReference();
@@ -177,15 +204,18 @@ public class EcoreGenerator {
 			}
 
 			if (mc.getAllSuperTypes().isEmpty()) {
+				final EReference eRefParent = (EReference) ec.getEStructuralFeature(ModelioClass.REF_PARENT);
+
 				final EReference eRefChildren = factory.createEReference();
 				eRefChildren.setName(ModelioClass.REF_CHILDREN);
 				eRefChildren.setOrdered(true);
 				eRefChildren.setUnique(true);
 				eRefChildren.setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
-				eRefChildren.setEType(ec);
+
+				// The hawkParent reference's eType should be the root class that defines the reference itself
+				eRefChildren.setEType(eRefParent.getEType());
 				eRefChildren.setContainment(true);
 
-				final EReference eRefParent = (EReference) ec.getEStructuralFeature(ModelioClass.REF_PARENT);
 				eRefChildren.setEOpposite(eRefParent);
 				eRefParent.setEOpposite(eRefChildren);
 
@@ -205,11 +235,17 @@ public class EcoreGenerator {
 		r.getContents().add(ep);
 		this.packages.add(ep);
 
-		for (final IHawkClassifier mc : pkg.getClasses()) {
+		// Sort by name (getClasses returns a set, not a list)
+		List<IHawkClassifier> classes = new ArrayList<>(pkg.getClasses());
+		Collections.sort(classes, new ClassifierNameComparator());
+
+		for (final IHawkClassifier mc : classes) {
 			final EClass ec = factory.createEClass();
 			ec.setName(mc.getName());
 			ep.getEClassifiers().add(ec);
-			if (mClasses.put(mc.getName(), new Tuple<>(ec, (ModelioClass) mc)) != null) {
+
+			final Tuple<EClass, ModelioClass> previousEntry = mClasses.put(mc.getName(), new Tuple<>(ec, (ModelioClass) mc));
+			if (previousEntry != null) {
 				throw new Exception("More than one class named " + mc.getName() + ": aborting");
 			}
 		}

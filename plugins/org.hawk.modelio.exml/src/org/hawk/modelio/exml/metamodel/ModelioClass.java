@@ -44,12 +44,6 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 	 */
 	public static final String REF_CHILDREN = "hawkChildren";
 
-	/**
-	 * MClass that represents the type of the synthetic {@link #REF_PARENT}
-	 * reference.
-	 */
-	public static final String REF_PARENT_MCLASS = "Element";
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioClass.class);
 
 
@@ -193,8 +187,7 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 			}
 			if (rawClass.getMSuperType().isEmpty()) {
 				// Add synthetic container/containment references to root Modelio classes
-				MClass refTypeClass = mPackage.getResource().getModelioClass(REF_PARENT_MCLASS).rawClass;
-				MDependency mContainmentDep = new MDependency("HP", REF_PARENT, "hawk.exml", refTypeClass, false, false, true, false);
+				MDependency mContainmentDep = new MDependency("HP", REF_PARENT, "hawk.exml", rawClass, false, false, true, false);
 				ownReferences.put(mContainmentDep.getName(), new AlwaysContainerModelioReference(this, mContainmentDep));
 			}
 		}
@@ -203,8 +196,8 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 	}
 
 	@Override
-	public Set<IHawkClass> getAllSuperTypes() {
-		final Set<IHawkClass> superClasses = new HashSet<>();
+	public Set<ModelioClass> getAllSuperTypes() {
+		final Set<ModelioClass> superClasses = new HashSet<>();
 		for (MClass superRawClass : rawClass.getMSuperType()) {
 			ModelioClass superClass = mPackage.getResource().getModelioClass(superRawClass.getName());
 			if (superClasses.add(superClass)) {
@@ -215,7 +208,7 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 	}
 
 	@Override
-	public Set<IHawkClass> getSuperTypes() {
+	public Set<ModelioClass> getSuperTypes() {
 		return getAllSuperTypes();
 	}
 
