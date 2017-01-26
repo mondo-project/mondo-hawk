@@ -740,6 +740,9 @@ public class GraphMetaModelResourceInjector {
 									? derivationlogic.substring(0, 100) + "\n[! long script, snipped !]"
 									: derivationlogic));
 				}
+
+				/** Must create the empty index so it will be known by the {@link ModelIndexerImpl} */
+				graph.getOrCreateNodeIndex(metamodeluri + "##" + typename + "##" + attributename);
 			}
 			t.success();
 			listener.changeSuccess();
