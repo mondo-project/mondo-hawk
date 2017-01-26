@@ -99,7 +99,7 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 				if (n != null)
 					nodes.add(n);
 			}
-			for (IGraphEdge r : node.getIncomingWithType(EOLQueryEngine.DERIVED_EDGE_PREFIX + referenceName)) {
+			for (IGraphEdge r : node.getIncomingWithType(ModelElementNode.DERIVED_EDGE_PREFIX + referenceName)) {
 				IGraphNode derivedNode = r.getStartNode();
 				IGraphNode elementNode = derivedNode.getIncoming().iterator().next().getStartNode();
 				GraphNodeWrapper n = wrapIfInScope(elementNode);
@@ -174,7 +174,7 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 					ret = derivedNode.getProperty(property);
 					if (ret == null) {
 						List<GraphNodeWrapper> derivedTargets = new EolSequence<>();
-						for (IGraphEdge edge : derivedNode.getOutgoingWithType(EOLQueryEngine.DERIVED_EDGE_PREFIX + property)) {
+						for (IGraphEdge edge : derivedNode.getOutgoingWithType(ModelElementNode.DERIVED_EDGE_PREFIX + property)) {
 							derivedTargets.add(new GraphNodeWrapper(edge.getEndNode(), m));
 							ret = derivedTargets;
 						}

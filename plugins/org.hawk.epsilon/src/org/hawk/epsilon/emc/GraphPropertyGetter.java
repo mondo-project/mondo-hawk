@@ -117,7 +117,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				derivedValue = nDerived.getProperty(property);
 				if (derivedValue == null) {
 					List<GraphNodeWrapper> derivedTargets = null;
-					for (IGraphEdge edge : nDerived.getOutgoingWithType(EOLQueryEngine.DERIVED_EDGE_PREFIX + property)) {
+					for (IGraphEdge edge : nDerived.getOutgoingWithType(ModelElementNode.DERIVED_EDGE_PREFIX + property)) {
 						if (derivedTargets == null) {
 							derivedTargets = new EolSequence<>();
 							derivedValue = derivedTargets;
@@ -180,7 +180,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 			for (IGraphEdge r : node.getIncomingWithType(referenceName)) {
 				ret.add(new GraphNodeWrapper(r.getStartNode(), m));
 			}
-			for (IGraphEdge r : node.getIncomingWithType(EOLQueryEngine.DERIVED_EDGE_PREFIX + referenceName)) {
+			for (IGraphEdge r : node.getIncomingWithType(ModelElementNode.DERIVED_EDGE_PREFIX + referenceName)) {
 				IGraphNode derivedNode = r.getStartNode();
 				IGraphNode elementNode = derivedNode.getIncoming().iterator().next().getStartNode();
 				ret.add(new GraphNodeWrapper(elementNode, m));

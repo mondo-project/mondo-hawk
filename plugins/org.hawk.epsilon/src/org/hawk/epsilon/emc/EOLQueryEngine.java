@@ -67,8 +67,6 @@ import org.hawk.graph.internal.updater.DirtyDerivedAttributesListener;
 public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine {
 
 	public static final String TYPE = "org.hawk.epsilon.emc.EOLQueryEngine";
-	public static final String DERIVED_EDGE_PREFIX = "de";
-
 	private static final String ANY_TYPE = new EolAnyType().getName();
 
 	protected final Set<String> cachedTypes = new HashSet<String>();
@@ -723,7 +721,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 				}
 
 				// Unset the current value (if there is any)
-				final String derivedEdgeLabel = DERIVED_EDGE_PREFIX + s;
+				final String derivedEdgeLabel = ModelElementNode.DERIVED_EDGE_PREFIX + s;
 				for (IGraphEdge edge : n.getOutgoingWithType(derivedEdgeLabel)) {
 					System.out.println("clearing edge " + edge.getType());
 					edge.delete();

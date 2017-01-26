@@ -790,10 +790,10 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			} else if (value instanceof Iterable<?>) {
 				final Iterable<?> iterableValue = (Iterable<?>)value;
 				final Iterator<?> itValue = iterableValue.iterator();
-				if (itValue.hasNext() && itValue.next().toString().startsWith(deriveFeaturePrefix)) {
+				if (itValue.hasNext() && itValue.next() instanceof IGraphNode) {
 					final EList<Object> ids = new BasicEList<>();
 					for (Object element : iterableValue) {
-						ids.add(element.toString().substring(deriveFeaturePrefix.length()));
+						ids.add(((IGraphNode)element).getId());
 					}
 
 					referenceValues.put(derivedEntry.getKey(), ids);

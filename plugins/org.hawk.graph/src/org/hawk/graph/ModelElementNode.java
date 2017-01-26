@@ -10,9 +10,11 @@
  ******************************************************************************/
 package org.hawk.graph;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -57,6 +59,9 @@ public class ModelElementNode {
 	// as we use lazy initialization.
 	private TypeNode typeNode;
 	private FileNode fileNode;
+
+	/** Prefix for any derived edges (e.g. computed through EOL). */
+	public static final String DERIVED_EDGE_PREFIX = "de";
 
 	public ModelElementNode(IGraphNode node) {
 		this.node = node;
@@ -125,11 +130,28 @@ public class ModelElementNode {
 	public Object getSlotValue(Slot slot) {
 		Object rawValue = null;
 		if (slot.isDerived()) {
+
+			// It's a regular derived property
 			for (IGraphEdge r : node.getOutgoingWithType(slot.getName())) {
 				if (rawValue == null) {
-					rawValue = r.getEndNode().getProperty(slot.getName());
+					final IGraphNode dpNode = r.getEndNode();
+					rawValue = dpNode.getProperty(slot.getName());
+
+					if (rawValue == null) {
+						// Derived edges are not stored as a property, but rather
+						// as actual edges from the derived property node to the target
+						Iterator<IGraphEdge> dEdges = dpNode.getOutgoingWithType(DERIVED_EDGE_PREFIX + slot.getName()).iterator();
+						if (dEdges.hasNext()) {
+							List<IGraphNode> targets = new ArrayList<>();
+							while (dEdges.hasNext()) {
+								targets.add(dEdges.next().getEndNode());
+							}
+							return targets;
+						}
+					}
 				} else {
-					throw new IllegalStateException("WARNING: a derived property node (arity 1) -- ( " + slot.getName() + " ) has more than 1 links in store!");
+					throw new IllegalStateException("WARNING: a derived property node (arity 1) -- ( " + slot.getName()
+							+ " ) has more than 1 links in store!");
 				}
 			}
 		} else {
