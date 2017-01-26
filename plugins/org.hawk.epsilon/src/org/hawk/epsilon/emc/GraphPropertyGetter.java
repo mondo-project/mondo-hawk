@@ -24,6 +24,7 @@ import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.execute.introspection.AbstractPropertyGetter;
 import org.eclipse.epsilon.eol.types.EolOrderedSet;
 import org.eclipse.epsilon.eol.types.EolSequence;
+import org.eclipse.epsilon.eol.types.EolSet;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
@@ -110,14 +111,16 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 			for (IGraphEdge r : node.getOutgoingWithType(property)) {
 				if (derivedValue != null) {
 					throw new EolRuntimeException(String.format(
-						"WARNING: a derived property node (arity 1) -- (%s) has more than 1 links in store!", property));
+							"WARNING: a derived property node (arity 1) -- (%s) has more than 1 links in store!",
+							property));
 				}
 
 				final IGraphNode nDerived = r.getEndNode();
 				derivedValue = nDerived.getProperty(property);
 				if (derivedValue == null) {
 					List<GraphNodeWrapper> derivedTargets = null;
-					for (IGraphEdge edge : nDerived.getOutgoingWithType(ModelElementNode.DERIVED_EDGE_PREFIX + property)) {
+					for (IGraphEdge edge : nDerived
+							.getOutgoingWithType(ModelElementNode.DERIVED_EDGE_PREFIX + property)) {
 						if (derivedTargets == null) {
 							derivedTargets = new EolSequence<>();
 							derivedValue = derivedTargets;
@@ -129,7 +132,8 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 			if (derivedValue == null) {
 				throw new EolRuntimeException("derived attribute lookup failed for: " + node + " # " + property);
-			} else if (derivedValue instanceof String && ((String) derivedValue).startsWith(DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX)) {
+			} else if (derivedValue instanceof String
+					&& ((String) derivedValue).startsWith(DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX)) {
 				// XXX IDEA: dynamically derive on the spot on access
 				System.err.println("attribute: " + property + " is NYD for node: " + node.getId());
 			}
@@ -248,9 +252,17 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 			return ret;
 		}
 		case "eContents": {
-			final List<GraphNodeWrapper> results = new EolSequence<>();
+			final Set<GraphNodeWrapper> results = new EolSet<>();
 			for (IGraphEdge r : node.getOutgoing()) {
 				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
+
+					// TODO add ability to mark derived edges as containments to
+					// be able to use them here
+					// if(r.getProperty("isDerived")!=null){
+					// System.err.println("entered eContents containment
+					// references...");
+					// }
+
 					results.add(new GraphNodeWrapper(r.getEndNode(), m));
 				}
 			}
@@ -271,8 +283,18 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 					continue;
 				}
 				final IGraphNode edgeNode = isIncoming ? r.getStartNode() : r.getEndNode();
-				final GraphNodeWrapper edgeNodeWrapper = new GraphNodeWrapper(edgeNode, m);
-				results.add(edgeNodeWrapper);
+				if (r.getProperty("isDerived") != null) {
+					final Iterable<IGraphEdge> it = isIncoming ? edgeNode.getIncoming() : edgeNode.getOutgoing();
+					for (IGraphEdge derivedEdge : it) {
+						final IGraphNode derivedEdgeNode = isIncoming ? derivedEdge.getStartNode()
+								: derivedEdge.getEndNode();
+						final GraphNodeWrapper edgeNodeWrapper = new GraphNodeWrapper(derivedEdgeNode, m);
+						results.add(edgeNodeWrapper);
+					}
+				} else {
+					final GraphNodeWrapper edgeNodeWrapper = new GraphNodeWrapper(edgeNode, m);
+					results.add(edgeNodeWrapper);
+				}
 			}
 			return results;
 		}
@@ -285,7 +307,14 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				if (ModelElementNode.TRANSIENT_EDGE_LABELS.contains(r.getType())) {
 					continue;
 				}
-				results.add(new GraphEdgeWrapper(r, m));
+				if (r.getProperty("isDerived") != null) {
+					final IGraphNode derivedNode = isIncoming ? r.getStartNode() : r.getEndNode();
+					final Iterable<IGraphEdge> it = isIncoming ? derivedNode.getIncoming() : derivedNode.getOutgoing();
+					for (IGraphEdge derivedEdge : it) {
+					results.add(new GraphEdgeWrapper(derivedEdge, m));
+					}
+				} else
+					results.add(new GraphEdgeWrapper(r, m));
 			}
 			return results;
 		}
