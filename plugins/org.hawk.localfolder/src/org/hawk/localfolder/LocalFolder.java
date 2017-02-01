@@ -23,7 +23,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -122,7 +121,7 @@ public class LocalFolder implements IVcsManager {
 		try {
 			path = Paths.get(new URI(vcsloc));
 		} catch (URISyntaxException | IllegalArgumentException ex) {
-			//ex.printStackTrace();
+			// ex.printStackTrace();
 			path = Paths.get(vcsloc);
 		}
 
@@ -376,7 +375,13 @@ public class LocalFolder implements IVcsManager {
 
 	@Override
 	public Set<String> getPrefixesToBeStripped() {
-		return Collections.emptySet();
+		Set<String> ret = new HashSet<>();
+		ret.add(normalizeToEMFUri(getLocation()));
+		return ret;
+	}
+
+	private String normalizeToEMFUri(String location) {
+		return location.replaceFirst("file:///", "file:/");
 	}
 
 	@Override
