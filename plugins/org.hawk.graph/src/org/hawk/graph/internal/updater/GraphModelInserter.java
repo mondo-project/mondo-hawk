@@ -664,7 +664,7 @@ public class GraphModelInserter {
 				currentDeltaRatio = (addedn + retypedn + updatedn + deletedn) / ((double) nodes.size());
 				if (verbose) {
 					System.err.println("update contains | a:" + (addedn + retypedn) + " + u:" + updatedn + " + d:"
-						+ deletedn + " ratio:" + currentDeltaRatio);
+							+ deletedn + " ratio:" + currentDeltaRatio);
 				}
 
 				return addedn + retypedn + updatedn + deletedn;
@@ -856,9 +856,19 @@ public class GraphModelInserter {
 
 		for (String[] proxies : allProxies) {
 			final String fullPathURI = proxies[0].substring(0, proxies[0].indexOf("#"));
-			final String[] repoFile = fullPathURI.split(GraphModelUpdater.FILEINDEX_REPO_SEPARATOR, 2);
+
+			// final String[] repoFile =
+			// fullPathURI.split(GraphModelUpdater.FILEINDEX_REPO_SEPARATOR, 2);
+
+			int seploc = fullPathURI.lastIndexOf(GraphModelUpdater.FILEINDEX_REPO_SEPARATOR);
+			String[] repoFile = { fullPathURI.substring(0, seploc),
+					fullPathURI.substring(seploc + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR.length()) };
+
 			final String repoURL = repoFile[0];
-			final String filePath = repoFile[1];
+			String filePath = repoFile[1];
+			//NB: we forced file paths to start with a slash
+			if(!filePath.startsWith("/"))
+				filePath = "/"+filePath;
 
 			final Set<IGraphNode> nodes = new HashSet<IGraphNode>();
 			final IGraphNode fileNode = getFileNode(graph, repoURL, filePath);
@@ -976,7 +986,7 @@ public class GraphModelInserter {
 	}
 
 	protected void processDerivedFeatureNodes(final String type, final Iterable<IGraphNode> derivedFeatureNodes, final int nNodes)
-					throws InvalidQueryException, QueryExecutionException, Exception {
+			throws InvalidQueryException, QueryExecutionException, Exception {
 		final long startMillis = System.currentTimeMillis();
 		final IQueryEngine q = indexer.getKnownQueryLanguages().get(type);
 
@@ -1023,7 +1033,7 @@ public class GraphModelInserter {
 				final long totalMillis = now - startMillis;
 				indexer.getCompositeStateListener().info(String.format(
 						"Processed %d/%d derived feature nodes of type '%s' (%d s, %d s total)",
-						count, nNodes, type, chunkMillis/1000, totalMillis/1000));
+								count, nNodes, type, chunkMillis / 1000, totalMillis / 1000));
 			}
 		}
 	}
@@ -1088,8 +1098,9 @@ public class GraphModelInserter {
 					.getSingle();
 
 		} catch (Exception e) {
-			//
+			//e.printStackTrace();
 		}
+
 		return fileNode;
 	}
 
