@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: MONDO User Management Servlet
+Bundle-Name: User Management Servlet
 Bundle-SymbolicName: org.hawk.service.server.users.servlet;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: org.hawk.service.server.users.servlet.UsersPlugin
-Bundle-Vendor: University of York
+Bundle-Vendor: University of York, Aston University
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.equinox.http.registry;bundle-version="1.1.300",
  org.slf4j.api;bundle-version="1.7.2",

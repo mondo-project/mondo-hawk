@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: MONDO Integration - Hawk Servlet
+Bundle-Name: Hawk Servlet
 Bundle-SymbolicName: org.hawk.service.servlet;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: org.hawk.service.servlet.Activator
-Bundle-Vendor: University of York
+Bundle-Vendor: University of York, Aston University
 Require-Bundle: org.eclipse.core.runtime,
  org.hawk.service.api;bundle-version="1.0.0",
  org.eclipse.equinox.http.registry;bundle-version="1.1.300",

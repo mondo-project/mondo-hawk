@@ -9,7 +9,7 @@ ssl.enabled = false
 # Toggle to enable/disable authentication completely: should be true in production!
 authcBasic.enabled = false
 
-# Use MONDO realm
+# Use Hawk realm
 mondoRealm = org.hawk.service.server.users.servlet.shiro.UsersRealm
 securityManager.realms = $mondoRealm
 

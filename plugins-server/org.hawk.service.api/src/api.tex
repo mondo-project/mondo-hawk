@@ -16,72 +16,6 @@
 \label{sec:services}
 
 
-The present section lists the services offered by the current version
-of the MONDO platform. For each service, the available operations are
-presented, along with the parameters they take, their return type and
-the exceptions they can throw. Readers familiar with Thrift may notice
-that some types inherit from others, which is not supported by Thrift
-itself: this is implemented through the
-Ecore2Thrift~\cite{ecore2thrift} model-to-text transformation
-developed in WP6, which takes into account inherited fields when
-transforming an \class{EClass} into a Thrift data type.
-
-In addition to their explicitly listed exceptions, operations
-requiring authentication may produce replies with HTTP 4xx status
-codes if the user fails to provide valid credentials or does not have
-the required permissions. In its current version, the MONDO platform
-assumes that authenticated users will have the necessary permissions.
-
-\subsubsection{CloudATL}
-\label{sec:CloudATL}
-The following service operations expose the capabilities of the cloud-enabled
-version of the ATL transformation language which is presented in D3.3~\cite{D3.3}.
-
-\begin{longtable} {|p{2cm}|p{3.5cm}|p{2.5cm}|p{6.5cm}|}
-	\caption{Operation CloudATL.launch}
-	\label{tab:cloudATL-launch}\\
-	\cline{2-4}%
-	\multicolumn{1}{c|}{} & \textbf{Name} & \textbf{Type} & \textbf{Documentation} \\\hline 
-	\textbf{Operation} & \camelcase{launch} & \camelcase{string} & Invokes a cloud-based transformation in a batch non-blocking mode.
-	                                                               			Returns a token that can be used to check the status of the transformation. \\\hline
-	\textbf{Parameters} & \multicolumn{3}{l|}{} \\\hline
-	 & transformation & \camelcase{string} & The ATL source-code of the transformation. \\\hline 
-	 & source & \camelcase{ModelSpec} & The input models of the transformation. \\\hline 
-	 & target & \camelcase{ModelSpec} & The target models of the transformation. \\\hline 
-	\textbf{Exceptions} & \multicolumn{3}{l|}{} \\\hline
-	 & \camelcase{InvalidTransformation} & \multicolumn{2}{p{8.5cm}|}{The transformation is not valid: it is unparsable or inconsistent.} \\\hline 
-	 & \camelcase{InvalidModelSpec} & \multicolumn{2}{p{8.5cm}|}{The model specification is not valid: the model or the metamodels are inaccessible or invalid.} \\\hline 
-\end{longtable}
-\begin{longtable} {|p{2cm}|p{3.5cm}|p{2.5cm}|p{6.5cm}|}
-	\caption{Operation CloudATL.getJobs}
-	\label{tab:cloudATL-getJobs}\\
-	\cline{2-4}%
-	\multicolumn{1}{c|}{} & \textbf{Name} & \textbf{Type} & \textbf{Documentation} \\\hline 
-	\textbf{Operation} & \camelcase{getJobs} & \camelcase{list<string>} & Lists the identifiers of the transformation jobs tracked by this server. \\\hline
-	\textbf{Parameters} & \multicolumn{3}{l|}{None.} \\\hline
-\end{longtable}
-\begin{longtable} {|p{2cm}|p{3.5cm}|p{2.5cm}|p{6.5cm}|}
-	\caption{Operation CloudATL.getStatus}
-	\label{tab:cloudATL-getStatus}\\
-	\cline{2-4}%
-	\multicolumn{1}{c|}{} & \textbf{Name} & \textbf{Type} & \textbf{Documentation} \\\hline 
-	\textbf{Operation} & \camelcase{getStatus} & \camelcase{TransformationStatus} & Returns the status of a previously invoked transformation. \\\hline
-	\textbf{Parameters} & \multicolumn{3}{l|}{} \\\hline
-	 & token & \camelcase{string} & A valid token returned by a previous call to launch(). \\\hline 
-	\textbf{Exceptions} & \multicolumn{3}{l|}{} \\\hline
-	 & \camelcase{TransformationTokenNotFound} & \multicolumn{2}{p{8.5cm}|}{The specified transformation token does not exist within the invokved MONDO instance.} \\\hline 
-\end{longtable}
-\begin{longtable} {|p{2cm}|p{3.5cm}|p{2.5cm}|p{6.5cm}|}
-	\caption{Operation CloudATL.kill}
-	\label{tab:cloudATL-kill}\\
-	\cline{2-4}%
-	\multicolumn{1}{c|}{} & \textbf{Name} & \textbf{Type} & \textbf{Documentation} \\\hline 
-	\textbf{Operation} & \camelcase{kill} & \camelcase{void} & Kills a previously invoked transformation. \\\hline
-	\textbf{Parameters} & \multicolumn{3}{l|}{} \\\hline
-	 & token & \camelcase{string} & A valid token returned by a previous call to launch(). \\\hline 
-	\textbf{Exceptions} & \multicolumn{3}{l|}{} \\\hline
-	 & \camelcase{TransformationTokenNotFound} & \multicolumn{2}{p{8.5cm}|}{The specified transformation token does not exist within the invokved MONDO instance.} \\\hline 
-\end{longtable}
 
 \subsubsection{Hawk}
 \label{sec:Hawk}
@@ -227,7 +161,7 @@ framework developed in Work Package 5. The framework is discussed in detail in D
 	\label{tab:hawk-query}\\
 	\cline{2-4}%
 	\multicolumn{1}{c|}{} & \textbf{Name} & \textbf{Type} & \textbf{Documentation} \\\hline 
-	\textbf{Operation} & \camelcase{query} & \camelcase{list<QueryResult>} & Runs a query on a Hawk instance and returns a sequence of scalar values and/or model elements. \\\hline
+	\textbf{Operation} & \camelcase{query} & \camelcase{QueryResult} & Runs a query on a Hawk instance and returns a sequence of scalar values and/or model elements. \\\hline
 	\textbf{Parameters} & \multicolumn{3}{l|}{} \\\hline
 	 & name & \camelcase{string} & The name of the Hawk instance. \\\hline 
 	 & query & \camelcase{string} & The query to be executed. \\\hline 
@@ -505,75 +439,51 @@ framework developed in Work Package 5. The framework is discussed in detail in D
 	 & \camelcase{HawkInstanceNotRunning} & \multicolumn{2}{p{8.5cm}|}{The selected Hawk instance is not running.} \\\hline 
 \end{longtable}
 
-\subsubsection{OfflineCollaboration}
-\label{sec:OfflineCollaboration}
-The offline collaboration tool is realized in the MONDO platform through the
-MONDO Offline Collaboration Server, as mentioned in D4.4~\cite{D4.4}. It extends an
-off-the-shelf version control server with ``hooks'' that enforce access control and
-maintain the lens relationship between the ``gold'' repository and the ``front'' repositories.
-This allows users to continue using their preferred tools for interacting with the version
-control systems in their day-to-day modelling activities. The access control rules to be used 
-by the security lens are themselves described in the repository.
-
-Nevertheless, managing the operation of the hooks and the lens relationship requires
-its own API, as this is not covered by traditional VCS protocols. The rest of the section
-describes an API for managing these access rules.
+\subsubsection{IFCExport}
+\label{sec:IFCExport}
+IFC export facility for getting IFC models from the Hawk server.
 
 \begin{longtable} {|p{2cm}|p{3.5cm}|p{2.5cm}|p{6.5cm}|}
-	\caption{Operation OfflineCollaboration.listGoldRepositories}
-	\label{tab:offlineCollaboration-listGoldRepositories}\\
+	\caption{Operation IFCExport.exportAsSTEP}
+	\label{tab:iFCExport-exportAsSTEP}\\
 	\cline{2-4}%
 	\multicolumn{1}{c|}{} & \textbf{Name} & \textbf{Type} & \textbf{Documentation} \\\hline 
-	\textbf{Operation} & \camelcase{listGoldRepositories} & \camelcase{list<string>} & Retrieve the list of all managed gold repositories. \\\hline
+	\textbf{Operation} & \camelcase{exportAsSTEP} & \camelcase{IFCExportJob} & Export part of a Hawk index in IFC STEP format. \\\hline
+	\textbf{Parameters} & \multicolumn{3}{l|}{} \\\hline
+	 & hawkInstance & \camelcase{string} &  \\\hline 
+	 & options & \camelcase{IFCExportOptions} &  \\\hline 
+\end{longtable}
+\begin{longtable} {|p{2cm}|p{3.5cm}|p{2.5cm}|p{6.5cm}|}
+	\caption{Operation IFCExport.getJobs}
+	\label{tab:iFCExport-getJobs}\\
+	\cline{2-4}%
+	\multicolumn{1}{c|}{} & \textbf{Name} & \textbf{Type} & \textbf{Documentation} \\\hline 
+	\textbf{Operation} & \camelcase{getJobs} & \camelcase{list<IFCExportJob>} & List all the previously scheduled IFC export jobs. \\\hline
 	\textbf{Parameters} & \multicolumn{3}{l|}{None.} \\\hline
-	\textbf{Exceptions} & \multicolumn{3}{l|}{} \\\hline
-	 & \camelcase{UnauthorizedRepositoryOperation} & \multicolumn{2}{p{8.5cm}|}{Authenticated user is not permitted to carry out the requested operation on the specified repository.} \\\hline 
-	 & \camelcase{OfflineCollaborationInternalError} & \multicolumn{2}{p{8.5cm}|}{An internal error occurred on the collaboration server. See details in server log.} \\\hline 
 \end{longtable}
 \begin{longtable} {|p{2cm}|p{3.5cm}|p{2.5cm}|p{6.5cm}|}
-	\caption{Operation OfflineCollaboration.regenerateFrontRepositories}
-	\label{tab:offlineCollaboration-regenerateFrontRepositories}\\
+	\caption{Operation IFCExport.getJobStatus}
+	\label{tab:iFCExport-getJobStatus}\\
 	\cline{2-4}%
 	\multicolumn{1}{c|}{} & \textbf{Name} & \textbf{Type} & \textbf{Documentation} \\\hline 
-	\textbf{Operation} & \camelcase{regenerateFrontRepositories} & \camelcase{void} & Regenerate all front repositories based on the gold repository. Requires superuser privileges. \\\hline
+	\textbf{Operation} & \camelcase{getJobStatus} & \camelcase{IFCExportJob} & Retrieve the current status of the job with the specified ID. \\\hline
 	\textbf{Parameters} & \multicolumn{3}{l|}{} \\\hline
-	 & goldRepoURL & \camelcase{string} & URL of the gold repository. \\\hline 
-	\textbf{Exceptions} & \multicolumn{3}{l|}{} \\\hline
-	 & \camelcase{GoldRepoNotFound} & \multicolumn{2}{p{8.5cm}|}{No gold repository is configured at the specified URL.} \\\hline 
-	 & \camelcase{UnauthorizedRepositoryOperation} & \multicolumn{2}{p{8.5cm}|}{Authenticated user is not permitted to carry out the requested operation on the specified repository.} \\\hline 
-	 & \camelcase{OfflineCollaborationInternalError} & \multicolumn{2}{p{8.5cm}|}{An internal error occurred on the collaboration server. See details in server log.} \\\hline 
+	 & jobID & \camelcase{string} &  \\\hline 
 \end{longtable}
 \begin{longtable} {|p{2cm}|p{3.5cm}|p{2.5cm}|p{6.5cm}|}
-	\caption{Operation OfflineCollaboration.getMyFrontRepositoryURL}
-	\label{tab:offlineCollaboration-getMyFrontRepositoryURL}\\
+	\caption{Operation IFCExport.killJob}
+	\label{tab:iFCExport-killJob}\\
 	\cline{2-4}%
 	\multicolumn{1}{c|}{} & \textbf{Name} & \textbf{Type} & \textbf{Documentation} \\\hline 
-	\textbf{Operation} & \camelcase{getMyFrontRepositoryURL} & \camelcase{string} & Retrieve the front repository URL for the current user. \\\hline
+	\textbf{Operation} & \camelcase{killJob} & \camelcase{bool} & Cancel the job with the specified ID. \\\hline
 	\textbf{Parameters} & \multicolumn{3}{l|}{} \\\hline
-	 & goldRepoURL & \camelcase{string} & URL of the gold repository. \\\hline 
-	\textbf{Exceptions} & \multicolumn{3}{l|}{} \\\hline
-	 & \camelcase{GoldRepoNotFound} & \multicolumn{2}{p{8.5cm}|}{No gold repository is configured at the specified URL.} \\\hline 
-	 & \camelcase{UnauthorizedRepositoryOperation} & \multicolumn{2}{p{8.5cm}|}{Authenticated user is not permitted to carry out the requested operation on the specified repository.} \\\hline 
-	 & \camelcase{OfflineCollaborationInternalError} & \multicolumn{2}{p{8.5cm}|}{An internal error occurred on the collaboration server. See details in server log.} \\\hline 
-\end{longtable}
-\begin{longtable} {|p{2cm}|p{3.5cm}|p{2.5cm}|p{6.5cm}|}
-	\caption{Operation OfflineCollaboration.getOnlineCollaborationURL}
-	\label{tab:offlineCollaboration-getOnlineCollaborationURL}\\
-	\cline{2-4}%
-	\multicolumn{1}{c|}{} & \textbf{Name} & \textbf{Type} & \textbf{Documentation} \\\hline 
-	\textbf{Operation} & \camelcase{getOnlineCollaborationURL} & \camelcase{string} & Retrieve the online collaboration access point URL for the current user. \\\hline
-	\textbf{Parameters} & \multicolumn{3}{l|}{} \\\hline
-	 & goldRepoURL & \camelcase{string} & URL of the gold repository. \\\hline 
-	\textbf{Exceptions} & \multicolumn{3}{l|}{} \\\hline
-	 & \camelcase{GoldRepoNotFound} & \multicolumn{2}{p{8.5cm}|}{No gold repository is configured at the specified URL.} \\\hline 
-	 & \camelcase{UnauthorizedRepositoryOperation} & \multicolumn{2}{p{8.5cm}|}{Authenticated user is not permitted to carry out the requested operation on the specified repository.} \\\hline 
-	 & \camelcase{OfflineCollaborationInternalError} & \multicolumn{2}{p{8.5cm}|}{An internal error occurred on the collaboration server. See details in server log.} \\\hline 
+	 & jobID & \camelcase{string} &  \\\hline 
 \end{longtable}
 
 \subsubsection{Users}
 \label{sec:Users}
-The majority of service operations provided by the MONDO
-		platform require user authentication (indicated in the top-left
+The majority of service operations provided by the server
+        require user authentication (indicated in the top-left
 		cell of each operation table) to prevent unaccountable use.
 		As such, the platform needs to provide basic user management service operations
 		for creating, updating and deleting user accounts.
@@ -894,6 +804,7 @@ Options for a Hawk query.
 		  \camelcase{filePatterns}  & \camelcase{list<string>}  (optional) & The file patterns for the query (e.g. *.uml). \\\hline
 		  \camelcase{includeAttributes}  & \camelcase{bool}  (optional) & Whether to include attributes (true) or not (false) in model element results. \\\hline
 		  \camelcase{includeContained}  & \camelcase{bool}  (optional) & Whether to include all the child elements of the model element results (true) or not (false). \\\hline
+		  \camelcase{includeDerived}  & \camelcase{bool}  (optional) & Whether to include derived attributes (true) or not (false) in model element results. \\\hline
 		  \camelcase{includeNodeIDs}  & \camelcase{bool}  (optional) & Whether to include node IDs (true) or not (false) in model element results. \\\hline
 		  \camelcase{includeReferences}  & \camelcase{bool}  (optional) & Whether to include references (true) or not (false) in model element results. \\\hline
 		  \camelcase{repositoryPattern}  & \camelcase{string}  (optional) & The repository for the query (or * for all repositories). \\\hline
@@ -973,6 +884,37 @@ Serialized form of a sync start event.
    \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} HawkChangeEvent} \\\hline
 \end{longtable}
 
+\subsubsection{IFCExportJob}
+
+Information about a server-side IFC export job.
+
+\begin{longtable} {|p{4cm}|p{4cm}|p{7.25cm}|}
+	\caption{Structure IFCExportJob}
+	\label{tab:iFCExportJob}\\
+	\hline%
+	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
+		  \camelcase{jobID}  & \camelcase{string}  &  \\\hline
+		  \camelcase{message}  & \camelcase{string}  &  \\\hline
+		  \camelcase{status}  & \camelcase{IFCExportStatus}  &  \\\hline
+   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} IFCExport.exportAsSTEP, IFCExport.getJobs, IFCExport.getJobStatus} \\\hline
+\end{longtable}
+
+\subsubsection{IFCExportOptions}
+
+Options for a server-side IFC export.
+
+\begin{longtable} {|p{4cm}|p{4cm}|p{7.25cm}|}
+	\caption{Structure IFCExportOptions}
+	\label{tab:iFCExportOptions}\\
+	\hline%
+	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
+		  \camelcase{excludeRules}  & \camelcase{map<string,map<string,set<string>>>}  (optional) & If set and not empty, the mentioned metamodels, types and features will not be fetched. The string '*' can be used to refer to all types within a metamodel or all fields within a type. \\\hline
+		  \camelcase{filePatterns}  & \camelcase{list<string>}  (optional) & The file patterns for the query (e.g. *.uml). \\\hline
+		  \camelcase{includeRules}  & \camelcase{map<string,map<string,set<string>>>}  (optional) & If set and not empty, only the specified metamodels, types and features will be fetched. Otherwise, everything that is not excluded will be fetched. The string '*' can be used to refer to all types within a metamodel or all fields within a type. \\\hline
+		  \camelcase{repositoryPattern}  & \camelcase{string}  (optional) & The repository for the query (or * for all repositories). \\\hline
+   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} IFCExport.exportAsSTEP} \\\hline
+\end{longtable}
+
 \subsubsection{IndexedAttributeSpec}
 
 Used to configure Hawk's indexed attributes (discussed in D5.3).
@@ -986,6 +928,34 @@ Used to configure Hawk's indexed attributes (discussed in D5.3).
 		  \camelcase{metamodelUri}  & \camelcase{string}  & The URI of the metamodel to which the indexed attribute belongs. \\\hline
 		  \camelcase{typeName}  & \camelcase{string}  & The name of the type to which the indexed attribute belongs. \\\hline
    \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.addIndexedAttribute, Hawk.removeIndexedAttribute, Hawk.listIndexedAttributes} \\\hline
+\end{longtable}
+
+\subsubsection{InvalidModelSpec}
+
+The model specification is not valid: the model or the metamodels are inaccessible or invalid.
+
+\begin{longtable} {|p{4cm}|p{4cm}|p{7.25cm}|}
+	\caption{Structure InvalidModelSpec}
+	\label{tab:invalidModelSpec}\\
+	\hline%
+	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
+		  \camelcase{reason}  & \camelcase{string}  & Reason for the spec not being valid. \\\hline
+		  \camelcase{spec}  & \camelcase{ModelSpec}  & A copy of the invalid model specification. \\\hline
+   
+\end{longtable}
+
+\subsubsection{InvalidTransformation}
+
+The transformation is not valid: it is unparsable or inconsistent.
+
+\begin{longtable} {|p{4cm}|p{4cm}|p{7.25cm}|}
+	\caption{Structure InvalidTransformation}
+	\label{tab:invalidTransformation}\\
+	\hline%
+	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
+		  \camelcase{location}  & \camelcase{string}  & Location of the problem, if applicable. Usually a combination of line and column numbers. \\\hline
+		  \camelcase{reason}  & \camelcase{string}  & Reason for the transformation not being valid. \\\hline
+   
 \end{longtable}
 
 \subsubsection{MixedReference}
@@ -1053,12 +1023,14 @@ Captures information about source/target models of ATL transformations.
 	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
 		  \camelcase{metamodelUris}  & \camelcase{list<string>}  & The URIs of the metamodels to which elements of the model conform. \\\hline
 		  \camelcase{uri}  & \camelcase{string}  & The URI from which the model will be loaded or to which it will be persisted. \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} CloudATL.launch, InvalidModelSpec} \\\hline
+   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} InvalidModelSpec} \\\hline
 \end{longtable}
 
 \subsubsection{QueryResult}
 
-Union type for a scalar value or a reference to a model element. Useful for heterogeneous collections.
+Union type for a scalar value, a reference to a model element, a heterogeneous
+list or a string/value map. Query results may return all types of results, so we need
+to stay flexible.
 
 \emph{Inherits from}: Value.
 
@@ -1071,12 +1043,28 @@ Union type for a scalar value or a reference to a model element. Useful for hete
 		  \camelcase{vByte}  (\nohyphens{inherited}) & \camelcase{byte}  & 8-bit signed integer value. \\\hline
 		  \camelcase{vDouble}  (\nohyphens{inherited}) & \camelcase{double}  & 64-bit floating point value. \\\hline
 		  \camelcase{vInteger}  (\nohyphens{inherited}) & \camelcase{i32}  & 32-bit signed integer value. \\\hline
+		  \camelcase{vList}  & \camelcase{list<QueryResult>}  & Nested list of query results. \\\hline
 		  \camelcase{vLong}  (\nohyphens{inherited}) & \camelcase{i64}  & 64-bit signed integer value. \\\hline
+		  \camelcase{vMap}  & \camelcase{map<string,QueryResult>}  & Map between query results. \\\hline
 		  \camelcase{vModelElement}  & \camelcase{ModelElement}  & Encoded model element. \\\hline
 		  \camelcase{vModelElementType}  & \camelcase{ModelElementType}  & Encoded model element type. \\\hline
 		  \camelcase{vShort}  (\nohyphens{inherited}) & \camelcase{i16}  & 16-bit signed integer value. \\\hline
 		  \camelcase{vString}  (\nohyphens{inherited}) & \camelcase{string}  & Sequence of UTF8 characters. \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.query} \\\hline
+   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.query, QueryResult, QueryResultMap} \\\hline
+\end{longtable}
+
+\subsubsection{QueryResultMap}
+
+
+
+\begin{longtable} {|p{4cm}|p{4cm}|p{7.25cm}|}
+	\caption{Structure QueryResultMap}
+	\label{tab:queryResultMap}\\
+	\hline%
+	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
+		  \camelcase{name}  & \camelcase{string}  &  \\\hline
+		  \camelcase{value}  & \camelcase{QueryResult}  &  \\\hline
+   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} QueryResult} \\\hline
 \end{longtable}
 
 \subsubsection{ReferenceSlot}
@@ -1194,21 +1182,6 @@ Details about a subscription to a topic queue.
    \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.watchStateChanges, Hawk.watchModelChanges} \\\hline
 \end{longtable}
 
-\subsubsection{TransformationStatus}
-
-Used to report the status of a long-running transformation by CloudATL.
-
-\begin{longtable} {|p{4cm}|p{4cm}|p{7.25cm}|}
-	\caption{Structure TransformationStatus}
-	\label{tab:transformationStatus}\\
-	\hline%
-	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
-		  \camelcase{elapsed}  & \camelcase{i64}  & Time passed since the start of execution, in milliseconds. \\\hline
-		  \camelcase{error}  & \camelcase{string}  & Description of the error that caused the transformation to fail. \\\hline
-		  \camelcase{state}  & \camelcase{TransformationState}  & State of the tranformation. \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} CloudATL.getStatus} \\\hline
-\end{longtable}
-
 \subsubsection{UserProfile}
 
 Minimal details about registered users.
@@ -1276,6 +1249,21 @@ Union type for a single scalar value.
 	\multicolumn{2}{|p{.95\linewidth}|}{\textbf{Used in:} HawkStateEvent, HawkInstance} \\\hline
 \end{longtable}
 
+\subsubsection{IFCExportStatus}
+
+\begin{longtable} {|p{4cm}|p{10.5cm}|}
+	\caption{Enumeration IFCExportStatus}
+	\label{tab:iFCExportStatus}\\
+	\hline%
+	\textbf{Name} & \textbf{Documentation} \\\hline 
+		CANCELLED & The job has been cancelled. \\\hline 
+		DONE & The job is completed. \\\hline 
+		FAILED & The job has failed. \\\hline 
+		RUNNING & The job is currently running. \\\hline 
+		SCHEDULED & The job has been scheduled but has not started yet. \\\hline 
+	\multicolumn{2}{|p{.95\linewidth}|}{\textbf{Used in:} IFCExportJob} \\\hline
+\end{longtable}
+
 \subsubsection{SubscriptionDurability}
 
 \begin{longtable} {|p{4cm}|p{10.5cm}|}
@@ -1287,21 +1275,6 @@ Union type for a single scalar value.
 		DURABLE & Subscription survives client disconnections and server restarts. \\\hline 
 		TEMPORARY & Subscription removed after disconnecting. \\\hline 
 	\multicolumn{2}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.watchModelChanges} \\\hline
-\end{longtable}
-
-\subsubsection{TransformationState}
-
-\begin{longtable} {|p{4cm}|p{10.5cm}|}
-	\caption{Enumeration TransformationState}
-	\label{tab:transformationState}\\
-	\hline%
-	\textbf{Name} & \textbf{Documentation} \\\hline 
-		FAILED & The transformation has failed. \\\hline 
-		KILLED & The transformation was interrupted by a user (i.e. killed). \\\hline 
-		PREP & The transformation is in preparation. \\\hline 
-		RUNNING & The transformation is running. \\\hline 
-		SUCCEEDED & The transformation has completed successfully. \\\hline 
-	\multicolumn{2}{|p{.95\linewidth}|}{\textbf{Used in:} TransformationStatus} \\\hline
 \end{longtable}
 
 \subsection{Exceptions}
@@ -1316,17 +1289,6 @@ The specified query failed to complete its execution.
 	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
 		  \camelcase{reason}  & \camelcase{string}  & Reason for the query failing to complete its execution. \\\hline
    \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.query} \\\hline
-\end{longtable}
-\subsubsection{GoldRepoNotFound}
-No gold repository is configured at the specified URL.
-
-\begin{longtable} {|p{4cm}|p{4cm}|p{7.25cm}|}
-	\caption{Exception GoldRepoNotFound}
-	\label{tab:goldRepoNotFound}\\
-	\hline%
-	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
-	    --- & --- & --- \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} OfflineCollaboration.regenerateFrontRepositories, OfflineCollaboration.getMyFrontRepositoryURL, OfflineCollaboration.getOnlineCollaborationURL} \\\hline
 \end{longtable}
 \subsubsection{HawkInstanceNotFound}
 No Hawk instance exists with that name.
@@ -1383,18 +1345,6 @@ The provided metamodel is not valid (e.g. unparsable or inconsistent).
 		  \camelcase{reason}  & \camelcase{string}  & Reason for the metamodel not being valid. \\\hline
    \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.registerMetamodels} \\\hline
 \end{longtable}
-\subsubsection{InvalidModelSpec}
-The model specification is not valid: the model or the metamodels are inaccessible or invalid.
-
-\begin{longtable} {|p{4cm}|p{4cm}|p{7.25cm}|}
-	\caption{Exception InvalidModelSpec}
-	\label{tab:invalidModelSpec}\\
-	\hline%
-	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
-		  \camelcase{reason}  & \camelcase{string}  & Reason for the spec not being valid. \\\hline
-		  \camelcase{spec}  & \camelcase{ModelSpec}  & A copy of the invalid model specification. \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} CloudATL.launch} \\\hline
-\end{longtable}
 \subsubsection{InvalidPollingConfiguration}
 The polling configuration is not valid.
 
@@ -1416,51 +1366,6 @@ The specified query is not valid.
 	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
 		  \camelcase{reason}  & \camelcase{string}  & Reason for the query not being valid. \\\hline
    \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.query} \\\hline
-\end{longtable}
-\subsubsection{InvalidTransformation}
-The transformation is not valid: it is unparsable or inconsistent.
-
-\begin{longtable} {|p{4cm}|p{4cm}|p{7.25cm}|}
-	\caption{Exception InvalidTransformation}
-	\label{tab:invalidTransformation}\\
-	\hline%
-	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
-		  \camelcase{location}  & \camelcase{string}  & Location of the problem, if applicable. Usually a combination of line and column numbers. \\\hline
-		  \camelcase{reason}  & \camelcase{string}  & Reason for the transformation not being valid. \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} CloudATL.launch} \\\hline
-\end{longtable}
-\subsubsection{OfflineCollaborationInternalError}
-An internal error occurred on the collaboration server. See details in server log.
-
-\begin{longtable} {|p{4cm}|p{4cm}|p{7.25cm}|}
-	\caption{Exception OfflineCollaborationInternalError}
-	\label{tab:offlineCollaborationInternalError}\\
-	\hline%
-	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
-		  \camelcase{errorMessage}  & \camelcase{string}  & Summary description of the error. See details in server log. \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} OfflineCollaboration.listGoldRepositories, OfflineCollaboration.regenerateFrontRepositories, OfflineCollaboration.getMyFrontRepositoryURL, OfflineCollaboration.getOnlineCollaborationURL} \\\hline
-\end{longtable}
-\subsubsection{TransformationTokenNotFound}
-The specified transformation token does not exist within the invokved MONDO instance.
-
-\begin{longtable} {|p{4cm}|p{4cm}|p{7.25cm}|}
-	\caption{Exception TransformationTokenNotFound}
-	\label{tab:transformationTokenNotFound}\\
-	\hline%
-	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
-		  \camelcase{token}  & \camelcase{string}  & Transformation token which was not found within the invoked MONDO instance. \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} CloudATL.getStatus, CloudATL.kill} \\\hline
-\end{longtable}
-\subsubsection{UnauthorizedRepositoryOperation}
-Authenticated user is not permitted to carry out the requested operation on the specified repository.
-
-\begin{longtable} {|p{4cm}|p{4cm}|p{7.25cm}|}
-	\caption{Exception UnauthorizedRepositoryOperation}
-	\label{tab:unauthorizedRepositoryOperation}\\
-	\hline%
-	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
-	    --- & --- & --- \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} OfflineCollaboration.listGoldRepositories, OfflineCollaboration.regenerateFrontRepositories, OfflineCollaboration.getMyFrontRepositoryURL, OfflineCollaboration.getOnlineCollaborationURL} \\\hline
 \end{longtable}
 \subsubsection{UnknownQueryLanguage}
 The specified query language is not supported by the operation.

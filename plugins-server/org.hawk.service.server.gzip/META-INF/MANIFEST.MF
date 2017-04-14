@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: MONDO Jetty Customizer Fragment
+Bundle-Name: Jetty Customizer Fragment
 Bundle-SymbolicName: org.hawk.service.server.gzip
 Bundle-Version: 1.1.0.qualifier
-Bundle-Vendor: University of York
+Bundle-Vendor: University of York, Aston University
 Fragment-Host: org.eclipse.equinox.http.jetty;bundle-version="3.0.200"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.hawk.service.server.gzip

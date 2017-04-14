@@ -20,7 +20,7 @@ import org.hawk.osgiserver.HModel;
 
 public class ServerCommandProvider implements CommandProvider {
 
-	public static final String MSERVER_HELP_CMD = "mserverHelp";
+	public static final String HSERVER_HELP_CMD = "hserverHelp";
 	private HManager hawkManager;
 
 	public Object _mserverHelp(CommandInterpreter intp) throws Exception {
@@ -111,8 +111,8 @@ public class ServerCommandProvider implements CommandProvider {
 	@Override
 	public String getHelp() {
 		StringBuffer sbuf = new StringBuffer();
-		sbuf.append("---MONDO SERVER (commands are case insensitive, <> means required, [] means optional)---\n\t");
-		sbuf.append(MSERVER_HELP_CMD + " - lists all the available commands for the MONDO Server\n");
+		sbuf.append("---HAWK SERVER (commands are case insensitive, <> means required, [] means optional)---\n\t");
+		sbuf.append(HSERVER_HELP_CMD + " - lists all the available commands for the server\n");
 		sbuf.append("--Instances--\n\t");
 		sbuf.append("hawkListInstances - lists the available Hawk instances\n\t");
 		sbuf.append("hawkRemoveInstance soft|hard <name> - removes an instance with the provided name, if it exists (soft deletion deregisters, hard deletion also removes storage folder)\n\t");

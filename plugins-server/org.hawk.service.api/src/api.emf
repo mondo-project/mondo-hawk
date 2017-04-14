@@ -2,14 +2,14 @@
 @namespace(uri="hawk_api", prefix="")
 package hawk_api;
 
-// MONDO credentials (Hawk/ReactiveATL/CloudATL): implied in the "auth" @doc attribute.
-// VCSAuthenticationFailed, VCSAuthorizationFailed: for VCS credentials (Hawk/Collaboration).
+// Credentials: implied in the "auth" @doc attribute.
+// VCSAuthenticationFailed, VCSAuthorizationFailed: for VCS credentials.
 //
 // AG: to simplify the API, auth="true" (the default) should imply that both authorization
 // and authentication exceptions could happen.
 
-@doc(d="The majority of service operations provided by the MONDO
-		platform require user authentication (indicated in the top-left
+@doc(d="The majority of service operations provided by the server
+        require user authentication (indicated in the top-left
 		cell of each operation table) to prevent unaccountable use.
 		As such, the platform needs to provide basic user management service operations
 		for creating, updating and deleting user accounts.")
@@ -700,11 +700,6 @@ class InvalidModelSpec {
 	@doc(d="Reason for the spec not being valid.") attr String reason;
 }
 
-@doc(d="The specified transformation token does not exist within the invokved MONDO instance.")
-class TransformationTokenNotFound {
-	@doc(d="Transformation token which was not found within the invoked MONDO instance.") attr String token;
-}
-
 @doc(d="Details about a subscription to a topic queue")
 class Subscription {
 	@doc(d="Host name of the message queue server") attr String host;
@@ -754,7 +749,7 @@ class IFCExportJob {
 	attr String message;
 }
 
-@doc(d="IFC export facility for getting IFC models from MONDO server")
+@doc(d="IFC export facility for getting IFC models from the Hawk server")
 class IFCExport {
 	@doc(d="Export part of a Hawk index in IFC STEP format")
 	op IFCExportJob exportAsSTEP(String hawkInstance, IFCExportOptions options);

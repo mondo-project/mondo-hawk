@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: MONDO Integration API
+Bundle-Name: Hawk Server API
 Bundle-SymbolicName: org.hawk.service.api
 Bundle-Version: 1.1.0.qualifier
-Bundle-Vendor: University of York
+Bundle-Vendor: University of York, Aston University
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.apache.thrift;bundle-version="0.9.2",
  org.slf4j.api;bundle-version="1.7.2",

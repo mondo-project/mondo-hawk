@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: MONDO Server IFC Export Servlet
+Bundle-Name: Server IFC Export Servlet
 Bundle-SymbolicName: org.hawk.service.server.ifcexport.servlet;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: org.hawk.service.server.ifcexport.servlet.Activator
@@ -19,3 +19,4 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.11.1",
  org.eclipse.emf.ecore,
  org.hawk.service.emf;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
+Bundle-Vendor: University of York, Aston University

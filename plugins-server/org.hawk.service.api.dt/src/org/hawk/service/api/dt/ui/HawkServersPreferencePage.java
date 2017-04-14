@@ -42,7 +42,7 @@ import org.hawk.service.api.dt.prefs.Server;
 import org.hawk.service.api.dt.prefs.ServerStore;
 import org.hawk.service.api.dt.prefs.CredentialsStore.Credentials;
 
-public class MONDOServersPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+public class HawkServersPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
 	private static final class ServerLabelProvider extends LabelProvider {
 		@Override
@@ -76,15 +76,15 @@ public class MONDOServersPreferencePage extends PreferencePage implements IWorkb
 	private List<Server> servers;
 	private CredentialsStore credsStore;
 
-	public MONDOServersPreferencePage() {
+	public HawkServersPreferencePage() {
 		// nothing to do
 	}
 
-	public MONDOServersPreferencePage(String title) {
+	public HawkServersPreferencePage(String title) {
 		super(title);
 	}
 
-	public MONDOServersPreferencePage(String title, ImageDescriptor image) {
+	public HawkServersPreferencePage(String title, ImageDescriptor image) {
 		super(title, image);
 	}
 

@@ -4,9 +4,9 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="org.hawk.service.api.dt.ui.MONDOServersPreferencePage"
+            class="org.hawk.service.api.dt.ui.HawkServersPreferencePage"
             id="org.hawk.service.api.dt.page"
-            name="MONDO Servers">
+            name="Hawk Servers">
       </page>
    </extension>
 

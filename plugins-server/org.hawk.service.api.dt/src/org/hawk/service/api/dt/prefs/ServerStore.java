@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 public class ServerStore {
-	private static final String MONDO_SERVERS_PREFERENCE = "serverURLs";
+	private static final String HAWK_SERVERS_PREFERENCE = "hawkServerURLs";
 	private static final String URL_SEPARATOR = ",";
 
 	private final IPreferenceStore prefStore;
@@ -26,7 +26,7 @@ public class ServerStore {
 	}
 
 	public List<Server> readAllServers() {
-		final String sValue = prefStore.getString(MONDO_SERVERS_PREFERENCE);
+		final String sValue = prefStore.getString(HAWK_SERVERS_PREFERENCE);
 
 		final ArrayList<Server> servers = new ArrayList<>();
 		if (!IPreferenceStore.STRING_DEFAULT_DEFAULT.equals(sValue)) {
@@ -50,6 +50,6 @@ public class ServerStore {
 			}
 			sbuf.append(server.getBaseURL());
 		}
-		prefStore.putValue(MONDO_SERVERS_PREFERENCE, sbuf.toString());
+		prefStore.putValue(HAWK_SERVERS_PREFERENCE, sbuf.toString());
 	}
 }

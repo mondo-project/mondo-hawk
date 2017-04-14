@@ -29,8 +29,8 @@ public class Application implements IApplication {
 		factory.flush();
 
 		System.out.println("\n"
-				+ "Welcome to the MONDO Server!\n"
-				+ "List available commands with '" + ServerCommandProvider.MSERVER_HELP_CMD + "'.\n"
+				+ "Welcome to the Hawk Server!\n"
+				+ "List available commands with '" + ServerCommandProvider.HSERVER_HELP_CMD + "'.\n"
 				+ "Stop the server with 'shutdown' and then 'close'.\n");
 
 		// We don't really do anything at the moment for the application:

@@ -6,7 +6,7 @@
   </eAnnotations>
   <eClassifiers xsi:type="ecore:EClass" name="Users">
     <eAnnotations source="doc">
-      <details key="d" value="The majority of service operations provided by the MONDO&#xA;&#x9;&#x9;platform require user authentication (indicated in the top-left&#xA;&#x9;&#x9;cell of each operation table) to prevent unaccountable use.&#xA;&#x9;&#x9;As such, the platform needs to provide basic user management service operations&#xA;&#x9;&#x9;for creating, updating and deleting user accounts."/>
+      <details key="d" value="The majority of service operations provided by the server&#xA;        require user authentication (indicated in the top-left&#xA;&#x9;&#x9;cell of each operation table) to prevent unaccountable use.&#xA;&#x9;&#x9;As such, the platform needs to provide basic user management service operations&#xA;&#x9;&#x9;for creating, updating and deleting user accounts."/>
     </eAnnotations>
     <eOperations name="createUser" eExceptions="#//UserExists">
       <eAnnotations source="doc">
@@ -1701,16 +1701,6 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TransformationTokenNotFound">
-    <eAnnotations source="doc">
-      <details key="d" value="The specified transformation token does not exist within the invokved MONDO instance."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="token" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="doc">
-        <details key="d" value="Transformation token which was not found within the invoked MONDO instance."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Subscription">
     <eAnnotations source="doc">
       <details key="d" value="Details about a subscription to a topic queue"/>
@@ -1835,7 +1825,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IFCExport">
     <eAnnotations source="doc">
-      <details key="d" value="IFC export facility for getting IFC models from MONDO server"/>
+      <details key="d" value="IFC export facility for getting IFC models from the Hawk server"/>
     </eAnnotations>
     <eOperations name="exportAsSTEP" eType="#//IFCExportJob">
       <eAnnotations source="doc">

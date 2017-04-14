@@ -178,10 +178,6 @@ struct Subscription {
 	 /* Whether SSL is required or not. */ 5: required bool sslRequired = false,
 }
 
-struct TransformationTokenNotFound {
-	 /* Transformation token which was not found within the invoked MONDO instance. */ 1: required string token,
-}
-
 exception UnknownQueryLanguage {
 }
 
@@ -349,8 +345,8 @@ union QueryResult {
 	 /* Nested list of query results. */ 11: optional list<QueryResult> vList,
 }
 
-/* The majority of service operations provided by the MONDO
-   		platform require user authentication (indicated in the top-left
+/* The majority of service operations provided by the server
+           require user authentication (indicated in the top-left
    		cell of each operation table) to prevent unaccountable use.
    		As such, the platform needs to provide basic user management service operations
    		for creating, updating and deleting user accounts. */
@@ -708,7 +704,7 @@ service Hawk {
 	
 }
 
-/* IFC export facility for getting IFC models from MONDO server. */
+/* IFC export facility for getting IFC models from the Hawk server. */
 service IFCExport {
   /* Export part of a Hawk index in IFC STEP format. Auth needed: Yes */
   IFCExportJob exportAsSTEP(

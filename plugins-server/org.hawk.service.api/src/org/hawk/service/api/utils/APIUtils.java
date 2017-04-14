@@ -43,7 +43,7 @@ import org.hawk.service.artemis.consumer.Consumer;
 import org.hawk.service.artemis.consumer.Consumer.QueueType;
 
 /**
- * Utility methods for connecting to the MONDO APIs. These use the optional
+ * Utility methods for connecting to the Hawk APIs. These use the optional
  * dependency on Apache HTTP Components.
  */
 public class APIUtils {

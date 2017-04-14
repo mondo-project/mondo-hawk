@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Eclipse UI for MONDO API
+Bundle-Name: Eclipse UI for Hawk API
 Bundle-SymbolicName: org.hawk.service.api.dt;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: org.hawk.service.api.dt.Activator
-Bundle-Vendor: University of York
+Bundle-Vendor: University of York, Aston University
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.equinox.security,

@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: MONDO Remote Hawk EMF Driver UI
+Bundle-Name: Remote Hawk EMF Driver UI
 Bundle-SymbolicName: org.hawk.service.emf.dt;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: org.hawk.service.emf.dt.Activator
-Bundle-Vendor: University of York
+Bundle-Vendor: University of York, Aston University
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface.text,

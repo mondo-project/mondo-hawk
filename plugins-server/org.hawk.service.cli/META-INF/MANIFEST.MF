@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: MONDO CLI Hawk Client
+Bundle-Name: CLI Hawk Client
 Bundle-SymbolicName: org.hawk.service.cli;singleton:=true
 Bundle-Version: 1.1.0.qualifier
-Bundle-Vendor: University of York
+Bundle-Vendor: University of York, Aston University
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.equinox.console,
  org.slf4j.api;bundle-version="1.7.2",
