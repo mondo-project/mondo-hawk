@@ -12,7 +12,7 @@ package hawk_api;
         require user authentication (indicated in the top-left
 		cell of each operation table) to prevent unaccountable use.
 		As such, the platform needs to provide basic user management service operations
-		for creating, updating and deleting user accounts.")
+		for creating, updating and deleting user accounts. When handling passwords, only SSL should be used, as otherwise they could be intercepted. ")
 class Users {
 	@doc(d="Creates a new platform user")
 	op void createUser (
@@ -39,10 +39,7 @@ class Users {
 	) throws UserNotFound;
 }
 
-@doc(d="
-The following service operations expose the capabilities of the Hawk heterogeneous model indexing
-framework developed in Work Package 5. The framework is discussed in detail in D5.2 and D5.3
-")
+@doc(d="The following service operations expose the capabilities of the Hawk heterogeneous model indexing framework.")
 class Hawk {
 	@doc(d="Creates a new Hawk instance (stopped).")
 	op void createInstance(

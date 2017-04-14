@@ -6,7 +6,7 @@
   </eAnnotations>
   <eClassifiers xsi:type="ecore:EClass" name="Users">
     <eAnnotations source="doc">
-      <details key="d" value="The majority of service operations provided by the server&#xA;        require user authentication (indicated in the top-left&#xA;&#x9;&#x9;cell of each operation table) to prevent unaccountable use.&#xA;&#x9;&#x9;As such, the platform needs to provide basic user management service operations&#xA;&#x9;&#x9;for creating, updating and deleting user accounts."/>
+      <details key="d" value="The majority of service operations provided by the server&#xA;        require user authentication (indicated in the top-left&#xA;&#x9;&#x9;cell of each operation table) to prevent unaccountable use.&#xA;&#x9;&#x9;As such, the platform needs to provide basic user management service operations&#xA;&#x9;&#x9;for creating, updating and deleting user accounts. When handling passwords, only SSL should be used, as otherwise they could be intercepted. "/>
     </eAnnotations>
     <eOperations name="createUser" eExceptions="#//UserExists">
       <eAnnotations source="doc">
@@ -71,7 +71,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Hawk">
     <eAnnotations source="doc">
-      <details key="d" value="&#xA;The following service operations expose the capabilities of the Hawk heterogeneous model indexing&#xA;framework developed in Work Package 5. The framework is discussed in detail in D5.2 and D5.3&#xA;"/>
+      <details key="d" value="The following service operations expose the capabilities of the Hawk heterogeneous model indexing framework."/>
     </eAnnotations>
     <eOperations name="createInstance">
       <eAnnotations source="doc">
