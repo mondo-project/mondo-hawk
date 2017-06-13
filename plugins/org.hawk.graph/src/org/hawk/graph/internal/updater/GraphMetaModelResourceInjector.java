@@ -322,13 +322,7 @@ public class GraphMetaModelResourceInjector {
 				listener.changeFailure();
 			}
 
-			if (success) {
-				for (IHawkClassifier cls : epackage.getClasses()) {
-					if (cls instanceof IHawkClass) {
-						graph.registerNodeClass(ModelElementNode.OBJECT_VERTEX_LABEL, (IHawkClass)cls);
-					}
-				}
-			} else {
+			if (!success) {
 				try (IGraphTransaction t2 = graph.beginTransaction()) {
 					IGraphNode ePackageNode = epackagedictionary.get("id", epackage.getNsURI()).iterator().next();
 					new DeletionUtils(graph).delete(ePackageNode);

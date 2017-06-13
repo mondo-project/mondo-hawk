@@ -31,6 +31,7 @@ import com.orientechnologies.common.collection.OCollection;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.db.record.ORecordLazyMultiValue;
 import com.orientechnologies.orient.core.db.record.OTrackedList;
+import com.orientechnologies.orient.core.db.record.ridbag.ORidBag;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OType;
@@ -364,11 +365,7 @@ public class OrientNode implements IGraphNode {
 	}
 
 	public void addOutgoing(ODocument newEdge, String edgeLabel) {
-		try {
-			addToList(newEdge, PREFIX_OUTGOING + edgeLabel);
-		} catch (IllegalArgumentException|OSchemaException ex) {
-			addToList(newEdge, PREFIX_OUTGOING + OrientNameCleaner.escapeToField(edgeLabel));
-		}
+		addToList(newEdge, PREFIX_OUTGOING + OrientNameCleaner.escapeToField(edgeLabel));
 		graph.markNodeAsDirty(this);
 	}
 
@@ -400,7 +397,7 @@ public class OrientNode implements IGraphNode {
 
 		// Set initial value
 		if (out == null) {
-			out = new ArrayList<OIdentifiable>();
+			out = new ORidBag();
 			changedVertex.field(fldName, out);
 		}
 
@@ -412,13 +409,15 @@ public class OrientNode implements IGraphNode {
 		} else if (out instanceof OCollection) {
 			OCollection<OIdentifiable> bag = (OCollection<OIdentifiable>)out;
 			bag.add(edgeDoc);
+		} else {
+			System.out.println("BUG");
 		}
 		changedVertex.field(fldName, out);
 		changedVertex.setTrackingChanges(true);
 	}
 
-	public void addIncoming(OrientEdge newEdge) {
-		addToList(newEdge, OrientNameCleaner.escapeToField(PREFIX_INCOMING + newEdge.getType()));
+	public void addIncoming(ODocument newEdge, String edgeLabel) {
+		addToList(newEdge, OrientNameCleaner.escapeToField(PREFIX_INCOMING + edgeLabel));
 	}
 
 	public void removeOutgoing(ODocument orientEdge, String edgeLabel) {

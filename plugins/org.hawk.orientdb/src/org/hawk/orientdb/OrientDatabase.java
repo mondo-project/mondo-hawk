@@ -36,6 +36,8 @@ import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphEdgeIndex;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
+import org.hawk.core.model.IHawkClass;
+import org.hawk.orientdb.cache.ORecordCacheGuava;
 import org.hawk.orientdb.indexes.OrientEdgeIndex;
 import org.hawk.orientdb.indexes.OrientNodeIndex;
 import org.hawk.orientdb.indexes.OrientNodeIndex.PostponedIndexAdd;
@@ -480,7 +482,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 		ensureClassExists(edgeTypeName);
 
-		OrientEdge newEdge = OrientEdge.create(this, oStart, oEnd, type, edgeTypeName);
+		IGraphEdge newEdge = OrientEdge.create(this, oStart, oEnd, type, edgeTypeName, props);
 		dirtyNodes.put(oStart.getId().toString(), oStart);
 		dirtyNodes.put(oEnd.getId().toString(), oEnd);
 		saveIfBig();
@@ -499,14 +501,6 @@ public class OrientDatabase implements IGraphDatabase {
 				conn.getLocalCache().invalidate();
 			}
 			dbConn.get().activateOnCurrentThread();
-		}
-	}
-
-	private String getVertexTypeName(String prefix, IHawkClass klass) {
-		if (klass == null) {
-			return prefix;
-		} else {
-			return prefix + "_" + klass.getPackageNSURI().hashCode() + "_" + OrientNameCleaner.escapeClass(klass.getName());
 		}
 	}
 
