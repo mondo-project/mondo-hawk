@@ -15,6 +15,7 @@ public class MFragmentReference {
 
 	private String name;
 	private String version;
+	private MFragment fragment;
 
 	public MFragmentReference() {
 	}
@@ -38,6 +39,14 @@ public class MFragmentReference {
 
 	public void setVersion(String version) {
 		this.version = version;
+	}
+
+	public MFragment getFragment() {
+		return fragment;
+	}
+
+	public void setFragment(MFragment fragment) {
+		this.fragment = fragment;
 	}
 
 }

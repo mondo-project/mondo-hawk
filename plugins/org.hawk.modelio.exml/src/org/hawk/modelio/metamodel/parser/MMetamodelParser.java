@@ -12,6 +12,7 @@
 package org.hawk.modelio.metamodel.parser;
 
 import java.io.File;
+import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -63,6 +64,8 @@ public class MMetamodelParser {
 				addFragment(childNodes.item(i));
 			}
 		}
+		
+		resolveReferences();
 	}
 
 	private void addFragment(Node node) {
@@ -199,8 +202,8 @@ public class MMetamodelParser {
 			if (isElement(childNodes.item(i), "target")) {
 
 				MMetaclassReference target = new MMetaclassReference(
-						getNodeNamedAttribute(childNodes.item(i), "name"),
-						getNodeNamedAttribute(childNodes.item(i), "fragment"));
+						getNodeNamedAttribute(childNodes.item(i), "fragment"),
+						getNodeNamedAttribute(childNodes.item(i), "name"));
 
 				dependency.setTarget(target);
 
@@ -235,7 +238,46 @@ public class MMetamodelParser {
 			parseMetaclassChildren(metaclass, node);
 		}
 	}
+	
+	private void resolveReferences() {
+		
+		for (Entry<String, MFragment> entry : this.metamodelDescriptor.getFragments().entrySet()) {
+			// resolve fragment references
+			for(int i = 0; i < entry.getValue().getDependecies().size(); i++) {
+				resolveFragmentRef(entry.getValue().getDependecies().get(i));
+			}
 
+			// resolve metaclasses
+			for (Entry<String, MMetaclass> metaclassEntry : entry.getValue().getMetaclasses().entrySet()) {
+
+				// resolve parent
+				resolveMetaclassRef(metaclassEntry.getValue().getParent());
+
+				// resolve dependencies.target
+				for(int i = 0; i < metaclassEntry.getValue().getDependecies().size(); i++) {
+					
+					resolveMetaclassRef(metaclassEntry.getValue().getDependecies().get(i).getTarget());
+				}
+			}
+		}
+	}
+
+	void resolveMetaclassRef(MMetaclassReference ref) {
+		if(ref != null) {
+			MFragment targetFragment = this.metamodelDescriptor.getFragment(ref.getFragmentName());
+			MMetaclass targetMetaclass = targetFragment.getMetaclass(ref.getName());
+			ref.setMetaclass(targetMetaclass);
+		}
+	}
+	
+	
+	void resolveFragmentRef(MFragmentReference ref) {
+		if(ref != null) {
+			MFragment targetFragment = this.metamodelDescriptor.getFragment(ref.getName());
+			ref.setFragment(targetFragment);
+		}
+	}
+	
 	private String getNodeNamedAttribute(Node node, String attributeName) {
 		if (node.hasAttributes()) {
 			

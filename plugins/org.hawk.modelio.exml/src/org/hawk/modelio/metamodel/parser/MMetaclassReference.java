@@ -13,15 +13,16 @@ package org.hawk.modelio.metamodel.parser;
 
 public class MMetaclassReference {
 	private String name;
-	private String fragment;
-
+	private String fragmentName;
+	private MMetaclass metaclass;
+	
 	public MMetaclassReference() {
 
 	}
 
-	public MMetaclassReference(String name, String fragment) {
+	public MMetaclassReference(String fragment, String name) {
 		this.name = name;
-		this.fragment = fragment;
+		this.fragmentName = fragment;
 	}
 
 	public String getName() {
@@ -32,12 +33,20 @@ public class MMetaclassReference {
 		this.name = name;
 	}
 
-	public String getFragment() {
-		return fragment;
+	public String getFragmentName() {
+		return fragmentName;
 	}
 
-	public void setFragment(String fragment) {
-		this.fragment = fragment;
+	public void setFragmentName(String fragment) {
+		this.fragmentName = fragment;
+	}
+
+	public MMetaclass getMetaclass() {
+		return metaclass;
+	}
+
+	public void setMetaclass(MMetaclass metaclass) {
+		this.metaclass = metaclass;
 	}
 
 }
