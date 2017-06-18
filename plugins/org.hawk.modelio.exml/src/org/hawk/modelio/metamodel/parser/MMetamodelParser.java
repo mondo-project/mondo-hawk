@@ -161,7 +161,7 @@ public class MMetamodelParser {
 		return metaclass;
 	}
 
-	void parseMetaclassAttributes(MMetaclass metaclass, Node node) {
+	private void parseMetaclassAttributes(MMetaclass metaclass, Node node) {
 		metaclass.setName(getNodeNamedAttribute(node, "name"));
 		metaclass.setVersion(getNodeNamedAttribute(node, "version"));
 		metaclass.setAbstract(getBoolean(getNodeNamedAttribute(node, "abstract")));
@@ -262,7 +262,7 @@ public class MMetamodelParser {
 		}
 	}
 
-	void resolveMetaclassRef(MMetaclassReference ref) {
+	private void resolveMetaclassRef(MMetaclassReference ref) {
 		if(ref != null) {
 			MFragment targetFragment = this.metamodelDescriptor.getFragment(ref.getFragmentName());
 			MMetaclass targetMetaclass = targetFragment.getMetaclass(ref.getName());
@@ -271,7 +271,7 @@ public class MMetamodelParser {
 	}
 	
 	
-	void resolveFragmentRef(MFragmentReference ref) {
+	private void resolveFragmentRef(MFragmentReference ref) {
 		if(ref != null) {
 			MFragment targetFragment = this.metamodelDescriptor.getFragment(ref.getName());
 			ref.setFragment(targetFragment);
