@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Orjuwan Al-Wadeai - 
+ *     Orjuwan Al-Wadeai - Modelio XML metamodel parser Test
  ******************************************************************************/
 
 package org.hawk.modelio.metamodel.parser;
