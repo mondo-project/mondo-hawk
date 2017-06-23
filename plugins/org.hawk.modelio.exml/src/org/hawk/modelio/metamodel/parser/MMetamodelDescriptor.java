@@ -19,13 +19,11 @@ public class MMetamodelDescriptor {
 	private String metamodelDescriptorFormat;
 
 	private HashMap<String, MFragment> fragments;
+	private HashMap<String, MDataType> dataTypes;
 
 	public MMetamodelDescriptor() {
 		this.fragments = new HashMap<String, MFragment>();
-	}
-
-	public HashMap<String, MFragment> getFragments() {
-		return fragments;
+		dataTypes = new HashMap<String, MDataType>();
 	}
 
 	public String getMetamodelFormat() {
@@ -36,10 +34,6 @@ public class MMetamodelDescriptor {
 		this.metamodelDescriptorFormat = metamodelDescriptorFormat;
 	}
 
-	public void setFragments(HashMap<String, MFragment> fragments) {
-		this.fragments = fragments;
-	}
-
 	public String getMetamodelDescriptorFormat() {
 		return metamodelDescriptorFormat;
 	}
@@ -47,9 +41,13 @@ public class MMetamodelDescriptor {
 	public void setMetamodelFormat(String metamodelFormat) {
 		this.metamodelFormat = metamodelFormat;
 	}
-
-	public void clearFragments() {
-		this.fragments.clear();
+	
+	public void setFragments(HashMap<String, MFragment> fragments) {
+		this.fragments = fragments;
+	}
+	
+	public HashMap<String, MFragment> getFragments() {
+		return fragments;
 	}
 
 	public void addFragment(MFragment fragment) {
@@ -58,6 +56,27 @@ public class MMetamodelDescriptor {
 
 	public MFragment getFragment(String name) {
 		return this.fragments.get(name);
+	}
+
+	public void setDataTypes(HashMap<String, MDataType> dataTypes) {
+		this.dataTypes = dataTypes;
+	}
+	
+	public MDataType getDataType(String name) {
+		return this.dataTypes.get(name);
+	}
+	
+	public void addDataType(MDataType dataType) {
+		this.dataTypes.put(dataType.getName(), dataType);
+	}
+	
+	public HashMap<String, MDataType> getDataTypes() {
+		return dataTypes;
+	}
+	
+	public void reset() {
+		this.fragments.clear();
+		this.dataTypes.clear();
 	}
 
 }

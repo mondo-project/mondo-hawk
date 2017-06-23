@@ -18,7 +18,11 @@ public class MMetaclassDependency {
 	private int max;
 	private String aggregation;
 	private boolean navigate;
+	private boolean  cascadeDelete;
+	private boolean  weakReference;
+
 	private String oppositeName;
+	private MMetaclassDependency oppositeDependency;
 
 	private MMetaclassReference target;
 
@@ -62,6 +66,22 @@ public class MMetaclassDependency {
 		this.navigate = navigate;
 	}
 
+	public boolean isCascadeDelete() {
+		return cascadeDelete;
+	}
+
+	public void setCascadeDelete(boolean cascadeDelete) {
+		this.cascadeDelete = cascadeDelete;
+	}
+
+	public boolean isWeakReference() {
+		return weakReference;
+	}
+
+	public void setWeakReference(boolean weakReference) {
+		this.weakReference = weakReference;
+	}
+	
 	public String getOppositeName() {
 		return oppositeName;
 	}
@@ -76,6 +96,14 @@ public class MMetaclassDependency {
 
 	public void setTarget(MMetaclassReference target) {
 		this.target = target;
+	}
+	
+	public MMetaclassDependency getOppositeDependency() {
+		return oppositeDependency;
+	}
+
+	public void setOppositeDependency(MMetaclassDependency oppositeDependency) {
+		this.oppositeDependency = oppositeDependency;
 	}
 
 }

@@ -14,26 +14,13 @@ package org.hawk.modelio.metamodel.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MEnumeration {
+public class MEnumeration extends MDataType {
 
-	private String name;
 	private List<String> values;
 
-	public MEnumeration() {
-		values = new ArrayList<String>();
-	}
-
 	public MEnumeration(String name) {
-		this();
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+		super(name);
+		values = new ArrayList<String>();
 	}
 
 	public List<String> getValues() {

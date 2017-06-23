@@ -11,6 +11,7 @@
 package org.hawk.modelio.metamodel.parser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MMetaclass {
@@ -21,14 +22,17 @@ public class MMetaclass {
 
 	private MMetaclassReference parent;
 
-	private String opposite;
-
 	private List<MAttribute> attributes;
-	private List<MMetaclassDependency> dependecies;
+	private HashMap<String, MMetaclassDependency> dependencies;
 
 	public MMetaclass() {
 		attributes = new ArrayList<MAttribute>();
-		dependecies = new ArrayList<MMetaclassDependency>();
+		dependencies = new HashMap<String, MMetaclassDependency>();
+	}
+
+	public MMetaclass(String name) {
+		this();
+		this.name = name;
 	}
 
 	public String getName() {
@@ -71,14 +75,6 @@ public class MMetaclass {
 		this.parent = parent;
 	}
 
-	public String getOpposite() {
-		return opposite;
-	}
-
-	public void setOpposite(String opposite) {
-		this.opposite = opposite;
-	}
-
 	public List<MAttribute> getAttributes() {
 		return attributes;
 	}
@@ -87,12 +83,12 @@ public class MMetaclass {
 		this.attributes = attributes;
 	}
 
-	public List<MMetaclassDependency> getDependecies() {
-		return dependecies;
+	public HashMap<String, MMetaclassDependency> getDependencies() {
+		return dependencies;
 	}
 
-	public void setDependecies(List<MMetaclassDependency> dependecies) {
-		this.dependecies = dependecies;
+	public void setDependencies(HashMap<String, MMetaclassDependency> dependencies) {
+		this.dependencies = dependencies;
 	}
 
 	public void addAttribute(MAttribute attribute) {
@@ -100,7 +96,11 @@ public class MMetaclass {
 	}
 
 	public void addDependency(MMetaclassDependency dependency) {
-		dependecies.add(dependency);
+		dependencies.put(dependency.getName(), dependency);
+	}
+
+	public MMetaclassDependency getDependency(String name) {
+		return dependencies.get(name);
 	}
 
 }

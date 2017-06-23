@@ -6,22 +6,16 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Orjuwan Al-Wadeai - Modelio XML metamodel parser 
+ *     Orjuwan Al-Wadeai - 
  ******************************************************************************/
-
 package org.hawk.modelio.metamodel.parser;
 
-public class MAttribute {
-
+public class MDataType {
+	
 	private String name;
-	private MDataType type;
 
-	public MAttribute() {
-	}
-
-	public MAttribute(String name, MDataType type) {
+	public MDataType(String name) {
 		this.name = name;
-		this.type = type;
 	}
 
 	public String getName() {
@@ -32,12 +26,5 @@ public class MAttribute {
 		this.name = name;
 	}
 
-	public MDataType getType() {
-		return type;
-	}
-
-	public void setType(MDataType type) {
-		this.type = type;
-	}
-
 }
+

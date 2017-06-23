@@ -24,12 +24,12 @@ public class MFragment {
 
 	private List<MFragmentReference> dependencies;
 
-	private List<MEnumeration> enumerations;
+	private HashMap<String, MEnumeration> enumerations;
 	private HashMap<String, MMetaclass> metaclasses;
 
 	public MFragment() {
 		dependencies = new ArrayList<MFragmentReference>();
-		enumerations = new ArrayList<MEnumeration>();
+		enumerations = new HashMap<String, MEnumeration>();
 		metaclasses = new HashMap<String, MMetaclass>();
 
 	}
@@ -41,6 +41,11 @@ public class MFragment {
 		this.version = version;
 		this.provider = provider;
 		this.providerVersion = providerVersion;
+	}
+
+	public MFragment(String name) {
+		this();
+		this.name = name;
 	}
 
 	public String getName() {
@@ -75,19 +80,19 @@ public class MFragment {
 		this.providerVersion = providerVersion;
 	}
 
-	public List<MFragmentReference> getDependecies() {
+	public List<MFragmentReference> getDependencies() {
 		return dependencies;
 	}
 
-	public void setDependecies(List<MFragmentReference> dependencies) {
+	public void setDependencies(List<MFragmentReference> dependencies) {
 		this.dependencies = dependencies;
 	}
 
-	public List<MEnumeration> getEnumerations() {
+	public HashMap<String, MEnumeration> getEnumerations() {
 		return enumerations;
 	}
 
-	public void setEnumerations(List<MEnumeration> enumerations) {
+	public void setEnumerations(HashMap<String, MEnumeration> enumerations) {
 		this.enumerations = enumerations;
 	}
 
@@ -100,7 +105,20 @@ public class MFragment {
 	}
 
 	public void addEnumeration(MEnumeration enumeration) {
-		this.enumerations.add(enumeration);
+		this.enumerations.put(enumeration.getName(), enumeration);
+	}
+	
+	public void updateEnumeration(MEnumeration enumeration) {
+		if(this.getEnumeration(enumeration.getName()) == null) {
+			this.addEnumeration(enumeration);
+		} else {
+			// if already present, just update values
+			this.getEnumeration(enumeration.getName()).setValues(enumeration.getValues());
+		}
+	}
+	
+	public MEnumeration getEnumeration(String enumerationName) {
+		return this.enumerations.get(enumerationName);
 	}
 
 	public void addDependency(MFragmentReference fragmentRef) {
@@ -114,4 +132,5 @@ public class MFragment {
 	public MMetaclass getMetaclass(String name) {
 		return this.metaclasses.get(name);
 	}
+
 }

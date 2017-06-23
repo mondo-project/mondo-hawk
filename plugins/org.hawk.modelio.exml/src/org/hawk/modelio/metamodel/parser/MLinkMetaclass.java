@@ -11,41 +11,40 @@
 
 package org.hawk.modelio.metamodel.parser;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
-public class MLinkMetaclass extends MMetaclass { // might extend Metaclass
+public class MLinkMetaclass extends MMetaclass { 
 
-	private List<String> targetsDeps;
-	private List<String> sourcesDeps;
+	private HashMap<String, MMetaclassDependency> targetsDeps;
+	private HashMap<String, MMetaclassDependency> sourcesDeps;
 
 	public MLinkMetaclass() {
-		targetsDeps = new ArrayList<String>();
-		sourcesDeps = new ArrayList<String>();
+		targetsDeps = new HashMap<String, MMetaclassDependency>();
+		sourcesDeps = new HashMap<String, MMetaclassDependency>();
 	}
 
-	public List<String> getTargetsDeps() {
+	public HashMap<String, MMetaclassDependency> getTargetsDeps() {
 		return targetsDeps;
 	}
 
-	public void setTargetsDeps(List<String> targetsDeps) {
+	public void setTargetsDeps(HashMap<String, MMetaclassDependency> targetsDeps) {
 		this.targetsDeps = targetsDeps;
 	}
 
-	public List<String> getSourcesDeps() {
+	public HashMap<String, MMetaclassDependency> getSourcesDeps() {
 		return sourcesDeps;
 	}
 
-	public void setSourcesDeps(List<String> sourcesDeps) {
+	public void setSourcesDeps(HashMap<String, MMetaclassDependency> sourcesDeps) {
 		this.sourcesDeps = sourcesDeps;
 	}
 
 	public void addSource(String name) {
-		sourcesDeps.add(name);
+		sourcesDeps.put(name, null);
 	}
 
 	public void addTarget(String name) {
-		targetsDeps.add(name);
+		targetsDeps.put(name, null);
 	}
 
 }
