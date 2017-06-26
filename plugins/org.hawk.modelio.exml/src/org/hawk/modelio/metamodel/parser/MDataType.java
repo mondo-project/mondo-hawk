@@ -26,5 +26,8 @@ public class MDataType {
 		this.name = name;
 	}
 
+	public boolean isEnum() {
+		return false;
+	}
 }
 

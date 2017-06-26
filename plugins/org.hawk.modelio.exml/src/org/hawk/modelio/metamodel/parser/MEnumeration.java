@@ -34,4 +34,8 @@ public class MEnumeration extends MDataType {
 	public void addValue(String valueName) {
 		values.add(valueName);
 	}
+	
+	public boolean isEnum() {
+		return true;
+	}
 }

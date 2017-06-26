@@ -14,6 +14,7 @@ package org.hawk.modelio.metamodel.parser;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MFragment {
 
@@ -24,8 +25,8 @@ public class MFragment {
 
 	private List<MFragmentReference> dependencies;
 
-	private HashMap<String, MEnumeration> enumerations;
-	private HashMap<String, MMetaclass> metaclasses;
+	private Map<String, MEnumeration> enumerations;
+	private Map<String, MMetaclass> metaclasses;
 
 	public MFragment() {
 		dependencies = new ArrayList<MFragmentReference>();
@@ -88,33 +89,24 @@ public class MFragment {
 		this.dependencies = dependencies;
 	}
 
-	public HashMap<String, MEnumeration> getEnumerations() {
+	public Map<String, MEnumeration> getEnumerations() {
 		return enumerations;
 	}
 
-	public void setEnumerations(HashMap<String, MEnumeration> enumerations) {
+	public void setEnumerations(Map<String, MEnumeration> enumerations) {
 		this.enumerations = enumerations;
 	}
 
-	public HashMap<String, MMetaclass> getMetaclasses() {
+	public Map<String, MMetaclass> getMetaclasses() {
 		return metaclasses;
 	}
 
-	public void setMetaclasses(HashMap<String, MMetaclass> metaclasses) {
+	public void setMetaclasses(Map<String, MMetaclass> metaclasses) {
 		this.metaclasses = metaclasses;
 	}
 
 	public void addEnumeration(MEnumeration enumeration) {
 		this.enumerations.put(enumeration.getName(), enumeration);
-	}
-	
-	public void updateEnumeration(MEnumeration enumeration) {
-		if(this.getEnumeration(enumeration.getName()) == null) {
-			this.addEnumeration(enumeration);
-		} else {
-			// if already present, just update values
-			this.getEnumeration(enumeration.getName()).setValues(enumeration.getValues());
-		}
 	}
 	
 	public MEnumeration getEnumeration(String enumerationName) {

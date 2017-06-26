@@ -12,30 +12,31 @@
 package org.hawk.modelio.metamodel.parser;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class MLinkMetaclass extends MMetaclass { 
 
-	private HashMap<String, MMetaclassDependency> targetsDeps;
-	private HashMap<String, MMetaclassDependency> sourcesDeps;
+	private Map<String, MMetaclassDependency> targetsDeps;
+	private Map<String, MMetaclassDependency> sourcesDeps;
 
 	public MLinkMetaclass() {
 		targetsDeps = new HashMap<String, MMetaclassDependency>();
 		sourcesDeps = new HashMap<String, MMetaclassDependency>();
 	}
 
-	public HashMap<String, MMetaclassDependency> getTargetsDeps() {
+	public Map<String, MMetaclassDependency> getTargetsDeps() {
 		return targetsDeps;
 	}
 
-	public void setTargetsDeps(HashMap<String, MMetaclassDependency> targetsDeps) {
+	public void setTargetsDeps(Map<String, MMetaclassDependency> targetsDeps) {
 		this.targetsDeps = targetsDeps;
 	}
 
-	public HashMap<String, MMetaclassDependency> getSourcesDeps() {
+	public Map<String, MMetaclassDependency> getSourcesDeps() {
 		return sourcesDeps;
 	}
 
-	public void setSourcesDeps(HashMap<String, MMetaclassDependency> sourcesDeps) {
+	public void setSourcesDeps(Map<String, MMetaclassDependency> sourcesDeps) {
 		this.sourcesDeps = sourcesDeps;
 	}
 

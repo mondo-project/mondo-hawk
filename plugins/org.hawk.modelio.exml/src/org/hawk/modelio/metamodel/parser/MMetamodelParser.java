@@ -12,7 +12,9 @@
 package org.hawk.modelio.metamodel.parser;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -59,11 +61,10 @@ public class MMetamodelParser {
 			this.metamodelDescriptor.setMetamodelFormat(getNodeNamedAttribute(node, "format"));
 			this.metamodelDescriptor.setMetamodelDescriptorFormat(getNodeNamedAttribute(node, "MetamodelDescriptor.format"));
 
-			NodeList childNodes = ((Element) node).getElementsByTagName("fragment");
-			
-			for (int i = 0; i < childNodes.getLength(); i++) {
-				addFragment(childNodes.item(i));
+			for(Node childNode :  NodeListIterable(((Element) node).getElementsByTagName("fragment"))) {
+				addFragment(childNode);
 			}
+			
 		}
 		
 		resolveReferences();
@@ -77,42 +78,28 @@ public class MMetamodelParser {
 		currentFragment.setProvider(getNodeNamedAttribute(node, "provider"));
 		currentFragment.setProviderVersion(getNodeNamedAttribute(node, "providerVersion"));
 
-		NodeList childNodes = node.getChildNodes();
+		for(Node childNode :  NodeListIterable(node.getChildNodes())) {
+			if (isElement(childNode, "metaclasses")) {
 
-		for (int i = 0; i < childNodes.getLength(); i++) {
-
-			if (isElement(childNodes.item(i), "metaclasses")) {
-
-				NodeList metaclasses = ((Element) childNodes.item(i)).getElementsByTagName("metaclass");
-
-				for (int j = 0; j < metaclasses.getLength(); j++) {
-					currentFragment.addMetaclass(parseMetaclass(metaclasses.item(j)));
+				for(Node metaclassNode :  NodeListIterable(((Element) childNode).getElementsByTagName("metaclass"))) {
+					currentFragment.addMetaclass(parseMetaclass(metaclassNode));
 				}
 
-				metaclasses = ((Element) childNodes.item(i)).getElementsByTagName("link_metaclass");
-
-				for (int j = 0; j < metaclasses.getLength(); j++) {
-					currentFragment.addMetaclass(parseLinkMetaclass(metaclasses.item(j)));
+				for(Node metaclassNode :  NodeListIterable(((Element) childNode).getElementsByTagName("link_metaclass"))) {
+					currentFragment.addMetaclass(parseLinkMetaclass(metaclassNode));
 				}
-			} else if (isElement(childNodes.item(i), "dependencies")) {
-
-				NodeList dependencies = ((Element) childNodes.item(i)).getElementsByTagName("metamodel_fragment");
-
-				for (int j = 0; j < dependencies.getLength(); j++) {
-
+			} else if (isElement( childNode, "dependencies")) {
+				for(Node dependencyNode :  NodeListIterable(((Element) childNode).getElementsByTagName("metamodel_fragment"))) {
 					MFragmentReference fragmentRef = new MFragmentReference(
-							getNodeNamedAttribute(dependencies.item(j), "name"),
-							getNodeNamedAttribute(dependencies.item(j), "version"));
+							getNodeNamedAttribute(dependencyNode, "name"),
+							getNodeNamedAttribute(dependencyNode, "version"));
 
 					currentFragment.addDependency(fragmentRef);
 				}
 
-			} else if (isElement(childNodes.item(i), "enumerations")) {
-
-				NodeList enumerations = ((Element) childNodes.item(i)).getElementsByTagName("enumeration");
-
-				for (int j = 0; j < enumerations.getLength(); j++) {
-					currentFragment.updateEnumeration(parseEnumeration(enumerations.item(j)));
+			} else if (isElement(childNode, "enumerations")) {
+				for(Node enumerationNode :  NodeListIterable(((Element) childNode).getElementsByTagName("enumeration"))) {
+					currentFragment.addEnumeration(parseEnumeration(enumerationNode));
 				}
 			}
 		}
@@ -125,9 +112,8 @@ public class MMetamodelParser {
 	private MEnumeration parseEnumeration(Node node) {
 		MEnumeration enumeration = new MEnumeration(getNodeNamedAttribute(node, "name"));
 
-		NodeList values = ((Element) node).getElementsByTagName("value");
-		for (int i = 0; i < values.getLength(); i++) {
-			enumeration.addValue(getNodeNamedAttribute(values.item(i), "name"));
+		for(Node valueNode :  NodeListIterable(((Element) node).getElementsByTagName("value"))) {
+			enumeration.addValue(getNodeNamedAttribute(valueNode, "name"));
 		}
 
 		return enumeration;
@@ -138,11 +124,9 @@ public class MMetamodelParser {
 
 		parseMetaclassAttributes(metaclass, node);
 
-		NodeList childNodes = node.getChildNodes();
+		for(Node childNode :  NodeListIterable( node.getChildNodes())) {
 
-		for (int i = 0; i < childNodes.getLength(); i++) {
-
-			parseMetaclassChildren(metaclass, childNodes.item(i));
+			parseMetaclassChildren(metaclass, childNode);
 		}
 
 		return metaclass;
@@ -153,10 +137,8 @@ public class MMetamodelParser {
 
 		parseMetaclassAttributes(metaclass, node);
 
-		NodeList childNodes = node.getChildNodes();
-
-		for (int i = 0; i < childNodes.getLength(); i++) {
-			parseLinkMetaclassChildren(metaclass, childNodes.item(i));
+		for(Node childNode :  NodeListIterable( node.getChildNodes())) {
+			parseLinkMetaclassChildren(metaclass, childNode);
 		}
 
 		return metaclass;
@@ -177,7 +159,8 @@ public class MMetamodelParser {
 			MDataType type;
 
 			if(typeName.equals("java.lang.Enum")) {
-				type = resolveAttributeEnumType(enumTypeName); 
+				type = new MEnumeration(enumTypeName);
+
 			} else {
 				type = resolveAttributeBasicType(typeName); 
 			}
@@ -196,18 +179,6 @@ public class MMetamodelParser {
 		} else if (isElement(node, "dependency")) {
 			metaclass.addDependency(parseMetaclassDependency(node));
 		}
-	}
-
-	private MDataType resolveAttributeEnumType(String enumTypeName) {
-		MDataType type = currentFragment.getEnumeration(enumTypeName);
-		
-		// add enumeration if not present in current fragment
-		if(type == null) {
-			type  = new MEnumeration(enumTypeName);
-			currentFragment.addEnumeration((MEnumeration) type);
-		}
-		
-		return type;
 	}
 
 	private MDataType resolveAttributeBasicType(String typeName) {
@@ -234,20 +205,18 @@ public class MMetamodelParser {
 		dependency.setMin(getInt(getNodeNamedAttribute(node, "min")));
 		dependency.setMax(getInt(getNodeNamedAttribute(node, "max")));
 
-		NodeList childNodes = node.getChildNodes();
-
-		for (int i = 0; i < childNodes.getLength(); i++) {
+		for(Node childNode :  NodeListIterable( node.getChildNodes())) {
 			
-			if (isElement(childNodes.item(i), "target")) {
+			if (isElement(childNode, "target")) {
 
 				MMetaclassReference target = new MMetaclassReference(
-						getNodeNamedAttribute(childNodes.item(i), "fragment"),
-						getNodeNamedAttribute(childNodes.item(i), "name"));
+						getNodeNamedAttribute(childNode, "fragment"),
+						getNodeNamedAttribute(childNode, "name"));
 
 				dependency.setTarget(target);
 
-			} else if (isElement(childNodes.item(i), "opposite")) {
-				dependency.setOppositeName(getNodeNamedAttribute(childNodes.item(i), "name"));
+			} else if (isElement(childNode, "opposite")) {
+				dependency.setOppositeName(getNodeNamedAttribute(childNode, "name"));
 			}
 		}
 
@@ -257,20 +226,14 @@ public class MMetamodelParser {
 	private void parseLinkMetaclassChildren(MLinkMetaclass metaclass, Node node) {
 		if (isElement(node, "targets")) {
 
-			NodeList deps = ((Element) node).getElementsByTagName("dep");
-			
-			for (int j = 0; j < deps.getLength(); j++) {
-				
-				((MLinkMetaclass) metaclass).addTarget(getNodeNamedAttribute(deps.item(j), "name"));
+			for(Node depNode : NodeListIterable(((Element) node).getElementsByTagName("dep"))) {
+				((MLinkMetaclass) metaclass).addTarget(getNodeNamedAttribute(depNode, "name"));
 			}
 
 		} else if (isElement(node, "sources")) {
 			
-			NodeList deps = ((Element) node).getElementsByTagName("dep");
-			
-			for (int j = 0; j < deps.getLength(); j++) {
-				
-				((MLinkMetaclass) metaclass).addSource(getNodeNamedAttribute(deps.item(j), "name"));
+			for(Node depNode : NodeListIterable(((Element) node).getElementsByTagName("dep"))) {
+				((MLinkMetaclass) metaclass).addSource(getNodeNamedAttribute(depNode, "name"));
 			}
 
 		} else {
@@ -282,8 +245,8 @@ public class MMetamodelParser {
 		
 		for (Entry<String, MFragment> fragmentEntry : this.metamodelDescriptor.getFragments().entrySet()) {
 			// resolve fragment references
-			for(int i = 0; i < fragmentEntry.getValue().getDependencies().size(); i++) {
-				resolveFragmentReference(fragmentEntry.getValue().getDependencies().get(i));
+			for (MFragmentReference fragmentDependencyEntry : fragmentEntry.getValue().getDependencies()) {
+				resolveFragmentReference(fragmentDependencyEntry);
 			}
 
 			// resolve metaclasses
@@ -292,6 +255,13 @@ public class MMetamodelParser {
 				// resolve parent
 				resolveMetaclassReference(metaclassEntry.getValue().getParent());
 
+				// resolve enumerations
+				for(MAttribute attribute : metaclassEntry.getValue().getAttributes()) {
+					if(attribute.getType().isEnum()) {
+						attribute.setType(fragmentEntry.getValue().getEnumeration(attribute.getType().getName()));
+					}
+				}
+				
 				// resolve dependencies.target
 				for(Entry<String, MMetaclassDependency> dependencyEntry : metaclassEntry.getValue().getDependencies().entrySet()) {	
 					resolveMetaclassReference(dependencyEntry.getValue().getTarget());
@@ -302,6 +272,7 @@ public class MMetamodelParser {
 			}
 		}
 	}
+
 
 	private void resolveMetaclassReference(MMetaclassReference ref) {
 		if(ref != null) {
@@ -314,6 +285,7 @@ public class MMetamodelParser {
 	private void resolveFragmentReference(MFragmentReference ref) {
 		if(ref != null) {
 			MFragment targetFragment = this.metamodelDescriptor.getFragment(ref.getName());
+			// @todo: what about version, check version if it is not equal issue a warning
 			ref.setFragment(targetFragment);
 		}
 	}
@@ -366,5 +338,39 @@ public class MMetamodelParser {
 
 		return false;
 	}
+
+
+	public static Iterable<Node> NodeListIterable(final NodeList n) {
+		  return new Iterable<Node>() {
+
+		    @Override
+		    public Iterator<Node> iterator() {
+
+		      return new Iterator<Node>() {
+
+		        int index = 0;
+
+		        @Override
+		        public boolean hasNext() {
+		          return index < n.getLength();
+		        }
+
+		        @Override
+		        public Node next() {
+		          if (hasNext()) {
+		            return n.item(index++);
+		          } else {
+		            throw new NoSuchElementException();
+		          }  
+		        }
+
+		        @Override
+		        public void remove() {
+		          throw new UnsupportedOperationException();
+		        }
+		      };
+		    }
+		  };
+		}
 
 }

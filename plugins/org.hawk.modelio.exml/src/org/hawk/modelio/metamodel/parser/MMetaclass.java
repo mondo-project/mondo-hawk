@@ -13,6 +13,7 @@ package org.hawk.modelio.metamodel.parser;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MMetaclass {
 	private String name;
@@ -23,7 +24,7 @@ public class MMetaclass {
 	private MMetaclassReference parent;
 
 	private List<MAttribute> attributes;
-	private HashMap<String, MMetaclassDependency> dependencies;
+	private Map<String, MMetaclassDependency> dependencies;
 
 	public MMetaclass() {
 		attributes = new ArrayList<MAttribute>();
@@ -83,11 +84,11 @@ public class MMetaclass {
 		this.attributes = attributes;
 	}
 
-	public HashMap<String, MMetaclassDependency> getDependencies() {
+	public Map<String, MMetaclassDependency> getDependencies() {
 		return dependencies;
 	}
 
-	public void setDependencies(HashMap<String, MMetaclassDependency> dependencies) {
+	public void setDependencies(Map<String, MMetaclassDependency> dependencies) {
 		this.dependencies = dependencies;
 	}
 

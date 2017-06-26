@@ -12,14 +12,15 @@
 package org.hawk.modelio.metamodel.parser;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class MMetamodelDescriptor {
 
 	private String metamodelFormat;
 	private String metamodelDescriptorFormat;
 
-	private HashMap<String, MFragment> fragments;
-	private HashMap<String, MDataType> dataTypes;
+	private Map<String, MFragment> fragments;
+	private Map<String, MDataType> dataTypes;
 
 	public MMetamodelDescriptor() {
 		this.fragments = new HashMap<String, MFragment>();
@@ -42,11 +43,11 @@ public class MMetamodelDescriptor {
 		this.metamodelFormat = metamodelFormat;
 	}
 	
-	public void setFragments(HashMap<String, MFragment> fragments) {
+	public void setFragments(Map<String, MFragment> fragments) {
 		this.fragments = fragments;
 	}
 	
-	public HashMap<String, MFragment> getFragments() {
+	public Map<String, MFragment> getFragments() {
 		return fragments;
 	}
 
@@ -58,7 +59,7 @@ public class MMetamodelDescriptor {
 		return this.fragments.get(name);
 	}
 
-	public void setDataTypes(HashMap<String, MDataType> dataTypes) {
+	public void setDataTypes(Map<String, MDataType> dataTypes) {
 		this.dataTypes = dataTypes;
 	}
 	
@@ -70,7 +71,7 @@ public class MMetamodelDescriptor {
 		this.dataTypes.put(dataType.getName(), dataType);
 	}
 	
-	public HashMap<String, MDataType> getDataTypes() {
+	public Map<String, MDataType> getDataTypes() {
 		return dataTypes;
 	}
 	
