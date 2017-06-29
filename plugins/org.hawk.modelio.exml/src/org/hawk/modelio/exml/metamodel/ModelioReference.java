@@ -4,8 +4,6 @@ import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
-import org.modelio.metamodel.MClass;
-import org.modelio.metamodel.MDependency;
 
 public class ModelioReference extends AbstractModelioObject implements IHawkReference {
 

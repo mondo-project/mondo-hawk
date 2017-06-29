@@ -21,10 +21,7 @@ import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkObject;
-import org.modelio.metamodel.MAttribute;
-import org.modelio.metamodel.MClass;
-import org.modelio.metamodel.MMetamodel;
-import org.modelio.metamodel.MPackage;
+import org.hawk.modelio.metamodel.parser.MMetamodelDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,12 +29,13 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioMetaModelResource.class);
 
 	protected static final String META_TYPE_NAME = "ModelioType";
-	protected static final String STRING_TYPE = "string";
+	protected static final String STRING_TYPE = "java.lang.String";//"string";
 
 	private final ModelioMetaModelResourceFactory factory;
 	private final ModelioPackage metaPackage;
 
-	private MMetamodel metamodel = new MMetamodel();
+	private ModelioMetamodel metamodel ;//= new MMetamodel();
+	//private MMetamodelDescriptor metamodelDescriptor;
 	private Set<IHawkObject> contents;
 	private Map<String, ModelioClass> classesByName;
 
@@ -45,10 +43,22 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 		this.factory = factory;
 		this.metaPackage = new ModelioPackage(this, createMetaPackage());
 		this.classesByName = new HashMap<>();
+		
+	}
+
+	public ModelioMetaModelResource(MMetamodelDescriptor metamodelDescriptor,
+			ModelioMetaModelResourceFactory factory) {
+		metamodel = new ModelioMetamodel(metamodelDescriptor);
+		
+		//this.metamodelDescriptor = metamodelDescriptor;
+		this.factory = factory;
+		this.metaPackage = new ModelioPackage(this, createMetaPackage());
+		this.classesByName = new HashMap<>();	
 	}
 
 	private MPackage createMetaPackage() {
-		MPackage mpkg = new MPackage("ModelioMetaPackage", "ModelioMetaPackage", "root-meta.exml");
+		String pkgId = "ModelioMetaPackage";//_format_" + metamodel.GetFormat();
+		MPackage mpkg = new MPackage(pkgId, pkgId, ""/*"root-meta.exml"*/);
 		final MClass mt = new MClass(META_TYPE_NAME, META_TYPE_NAME, mpkg.getExml());
 		mt.getMAttributes().add(createStringAttribute(mpkg, mt.getName(), "name"));
 		mpkg.getMClass().add(mt);

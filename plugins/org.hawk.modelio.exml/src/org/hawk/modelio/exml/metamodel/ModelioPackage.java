@@ -23,8 +23,6 @@ import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
-import org.modelio.metamodel.MClass;
-import org.modelio.metamodel.MPackage;
 
 public class ModelioPackage extends AbstractModelioObject implements IHawkPackage {
 
@@ -113,7 +111,7 @@ public class ModelioPackage extends AbstractModelioObject implements IHawkPackag
 	public String getNsURI() {
 		// v2: new design based on hawkParent/hawkChildren
 		// v3: fix issues with eOpposites and unwanted diffs between regenerations
-		return "modelio://" + getUnprefixedNsURI() + "/v3";
+		return "modelio://" /*+ getUnprefixedNsURI() +*/ + rawPackage.getId();//"/v3";
 	}
 
 	@Override

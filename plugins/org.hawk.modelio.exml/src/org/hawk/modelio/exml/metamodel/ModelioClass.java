@@ -21,9 +21,6 @@ import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
 import org.hawk.modelio.exml.listeners.ModelioGraphChangeListener;
-import org.modelio.metamodel.MAttribute;
-import org.modelio.metamodel.MClass;
-import org.modelio.metamodel.MDependency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

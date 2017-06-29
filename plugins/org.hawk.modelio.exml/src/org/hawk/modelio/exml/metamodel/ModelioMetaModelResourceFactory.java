@@ -13,21 +13,38 @@ package org.hawk.modelio.exml.metamodel;
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkPackage;
+import org.hawk.modelio.metamodel.parser.MMetamodelParser;
 
 public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 	private ModelioMetaModelResource modelioMetamodel;
+	private final Set<String> metamodelExtensions;
+	
+	public static  ModelioMetaModelResource staticMetamodel;
 
-	private ModelioMetaModelResource getMetamodel() {
+
+	private ModelioMetaModelResource getMetamodel(File f) {
+		
 		if (modelioMetamodel == null) {
-			modelioMetamodel = new ModelioMetaModelResource(this);
+			MMetamodelParser  parser = new MMetamodelParser();
+			
+			modelioMetamodel = new ModelioMetaModelResource(parser.parse(f), this);
+			staticMetamodel = modelioMetamodel;
 		}
 		return modelioMetamodel;
+	}
+
+	public ModelioMetaModelResourceFactory() {
+		super();
+		metamodelExtensions = new HashSet<String>();
+		metamodelExtensions.add(".xml");
+		
 	}
 
 	@Override
@@ -37,17 +54,17 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 
 	@Override
 	public String getHumanReadableName() {
-		return "Modelio static metamodel factory";
+		return "Modelio metamodel resource factory";
 	}
 
 	@Override
 	public IHawkMetaModelResource parse(File f) throws Exception {
-		return getMetamodel();
+		return getMetamodel(f);
 	}
 
 	@Override
 	public Set<IHawkMetaModelResource> getStaticMetamodels() {
-		return Collections.singleton((IHawkMetaModelResource) getMetamodel());
+		return Collections.emptySet();
 	}
 
 	@Override
@@ -56,23 +73,33 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 	}
 
 	@Override
-	public boolean canParse(File f) {
-		return false;
+	public boolean canParse(File f) {		
+		String[] split = f.getPath().split("\\.");
+		String extension = split[split.length - 1];
+		return getMetamodelExtensions().contains("." + extension);
+	}
+	
+	public Set<String> getMetamodelExtensions() {
+		return metamodelExtensions;
 	}
 
 	@Override
 	public Collection<String> getMetaModelExtensions() {
-		return Collections.emptySet();
+		return metamodelExtensions;
 	}
 
 	@Override
 	public IHawkMetaModelResource parseFromString(String name, String contents) throws Exception {
-		return getMetamodel();
+		// @todo: need to check 
+		return null;//getMetamodel();
 	}
 
 	@Override
 	public void removeMetamodel(String property) {
 		// ignore
+		System.err
+		.println("ModelioMetaModelResourceFactory cannot remove metamodels, for now. need to be changed");
+		
 	}
 
 	@Override

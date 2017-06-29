@@ -15,7 +15,6 @@ import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkDataType;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
-import org.modelio.metamodel.MDataType;
 
 public class ModelioDataType extends AbstractModelioObject implements IHawkDataType {
 
