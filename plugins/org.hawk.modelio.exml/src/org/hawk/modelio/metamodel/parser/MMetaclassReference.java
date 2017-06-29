@@ -49,4 +49,5 @@ public class MMetaclassReference {
 		this.metaclass = metaclass;
 	}
 
+	
 }

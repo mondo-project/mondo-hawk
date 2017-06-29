@@ -11,15 +11,15 @@
 
 package org.hawk.modelio.metamodel.parser;
 
-public class MAttribute {
+public class MMetaclassAttribute {
 
 	private String name;
-	private MDataType type;
+	private MAttributeType type;
 
-	public MAttribute() {
+	public MMetaclassAttribute() {
 	}
 
-	public MAttribute(String name, MDataType type) {
+	public MMetaclassAttribute(String name, MAttributeType type) {
 		this.name = name;
 		this.type = type;
 	}
@@ -32,11 +32,11 @@ public class MAttribute {
 		this.name = name;
 	}
 
-	public MDataType getType() {
+	public MAttributeType getType() {
 		return type;
 	}
 
-	public void setType(MDataType type) {
+	public void setType(MAttributeType type) {
 		this.type = type;
 	}
 

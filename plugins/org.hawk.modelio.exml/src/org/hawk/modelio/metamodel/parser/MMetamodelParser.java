@@ -99,7 +99,10 @@ public class MMetamodelParser {
 
 			} else if (isElement(childNode, "enumerations")) {
 				for(Node enumerationNode :  NodeListIterable(((Element) childNode).getElementsByTagName("enumeration"))) {
-					currentFragment.addEnumeration(parseEnumeration(enumerationNode));
+					MEnumeration enumeration = parseEnumeration(enumerationNode);
+					currentFragment.addEnumeration(enumeration);
+					// also add to dataTypes
+					//this.metamodelDescriptor.addDataType(enumeration);
 				}
 			}
 		}
@@ -156,7 +159,7 @@ public class MMetamodelParser {
 			
 			String enumTypeName = getNodeNamedAttribute(node, "enumType");
 			String typeName = getNodeNamedAttribute(node, "type");
-			MDataType type;
+			MAttributeType type;
 
 			if(typeName.equals("java.lang.Enum")) {
 				type = new MEnumeration(enumTypeName);
@@ -165,7 +168,7 @@ public class MMetamodelParser {
 				type = resolveAttributeBasicType(typeName); 
 			}
 			
-			MAttribute attribute = new MAttribute(getNodeNamedAttribute(node, "name"), type);
+			MMetaclassAttribute attribute = new MMetaclassAttribute(getNodeNamedAttribute(node, "name"), type);
 			metaclass.addAttribute(attribute);
 
 		} else if (isElement(node, "parent")) {
@@ -181,11 +184,11 @@ public class MMetamodelParser {
 		}
 	}
 
-	private MDataType resolveAttributeBasicType(String typeName) {
-		MDataType type = metamodelDescriptor.getDataType(typeName);
+	private MAttributeType resolveAttributeBasicType(String typeName) {
+		MAttributeType type = metamodelDescriptor.getDataType(typeName);
 
 		if(type == null) {
-			type  = new MDataType(typeName);
+			type  = new MAttributeType(typeName);
 			metamodelDescriptor.addDataType(type);
 		}
 		return type;
@@ -196,7 +199,21 @@ public class MMetamodelParser {
 
 		dependency.setName(getNodeNamedAttribute(node, "name"));
 		
-		dependency.setAggregation(getNodeNamedAttribute(node, "aggregation"));
+		String aggregationString = getNodeNamedAttribute(node, "aggregation");
+		if(aggregationString == null) {
+		
+			dependency.setAggregation(MAggregationType.None);
+		
+		} else if(aggregationString.equals(MAggregationType.Composition.toString())) {
+			
+			dependency.setAggregation(MAggregationType.Composition);
+
+		} else if(aggregationString.equals(MAggregationType.SharedAggregation.toString())) {
+			
+			dependency.setAggregation(MAggregationType.SharedAggregation);
+
+		}
+
 		dependency.setNavigate(getBoolean(getNodeNamedAttribute(node, "navigate")));
 		
 		dependency.setCascadeDelete(getBoolean(getNodeNamedAttribute(node, "cascadeDelete")));
@@ -255,12 +272,25 @@ public class MMetamodelParser {
 				// resolve parent
 				resolveMetaclassReference(metaclassEntry.getValue().getParent());
 
+				
+				// add this metaclass to Parent Children
+				if(metaclassEntry.getValue().getParent() != null) {
+					MMetaclassReference childRef = new MMetaclassReference(fragmentEntry.getValue().getName(), metaclassEntry.getValue().getName());
+					childRef.setMetaclass(metaclassEntry.getValue());
+					metaclassEntry.getValue().getParent().getMetaclass().addChild(childRef);
+					
+				}
+				
+				
 				// resolve enumerations
-				for(MAttribute attribute : metaclassEntry.getValue().getAttributes()) {
+				for(MMetaclassAttribute attribute : metaclassEntry.getValue().getAttributes()) {
 					if(attribute.getType().isEnum()) {
 						attribute.setType(fragmentEntry.getValue().getEnumeration(attribute.getType().getName()));
 					}
 				}
+				
+				
+				
 				
 				// resolve dependencies.target
 				for(Entry<String, MMetaclassDependency> dependencyEntry : metaclassEntry.getValue().getDependencies().entrySet()) {	

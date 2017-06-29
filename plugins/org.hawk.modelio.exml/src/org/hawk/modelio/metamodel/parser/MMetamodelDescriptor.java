@@ -20,11 +20,11 @@ public class MMetamodelDescriptor {
 	private String metamodelDescriptorFormat;
 
 	private Map<String, MFragment> fragments;
-	private Map<String, MDataType> dataTypes;
+	private Map<String, MAttributeType> dataTypes;
 
 	public MMetamodelDescriptor() {
 		this.fragments = new HashMap<String, MFragment>();
-		dataTypes = new HashMap<String, MDataType>();
+		dataTypes = new HashMap<String, MAttributeType>();
 	}
 
 	public String getMetamodelFormat() {
@@ -59,19 +59,19 @@ public class MMetamodelDescriptor {
 		return this.fragments.get(name);
 	}
 
-	public void setDataTypes(Map<String, MDataType> dataTypes) {
+	public void setDataTypes(Map<String, MAttributeType> dataTypes) {
 		this.dataTypes = dataTypes;
 	}
 	
-	public MDataType getDataType(String name) {
+	public MAttributeType getDataType(String name) {
 		return this.dataTypes.get(name);
 	}
 	
-	public void addDataType(MDataType dataType) {
+	public void addDataType(MAttributeType dataType) {
 		this.dataTypes.put(dataType.getName(), dataType);
 	}
 	
-	public Map<String, MDataType> getDataTypes() {
+	public Map<String, MAttributeType> getDataTypes() {
 		return dataTypes;
 	}
 	

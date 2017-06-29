@@ -14,7 +14,7 @@ package org.hawk.modelio.metamodel.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MEnumeration extends MDataType {
+public class MEnumeration extends MAttributeType {
 
 	private List<String> values;
 

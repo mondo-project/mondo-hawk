@@ -16,7 +16,7 @@ public class MMetaclassDependency {
 	private String name;
 	private int min;
 	private int max;
-	private String aggregation;
+	private MAggregationType aggregation;
 	private boolean navigate;
 	private boolean  cascadeDelete;
 	private boolean  weakReference;
@@ -50,11 +50,11 @@ public class MMetaclassDependency {
 		this.max = max;
 	}
 
-	public String getAggregation() {
+	public MAggregationType getAggregation() {
 		return aggregation;
 	}
 
-	public void setAggregation(String aggregation) {
+	public void setAggregation(MAggregationType aggregation) {
 		this.aggregation = aggregation;
 	}
 

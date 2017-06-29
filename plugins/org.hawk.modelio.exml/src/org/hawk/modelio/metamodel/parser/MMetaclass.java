@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MMetaclass {
+
 	private String name;
 	private String version;
 	private boolean isAbstract;
@@ -23,12 +24,16 @@ public class MMetaclass {
 
 	private MMetaclassReference parent;
 
-	private List<MAttribute> attributes;
+	private List<MMetaclassAttribute> attributes;
+	private List<MMetaclassReference> children;
+
 	private Map<String, MMetaclassDependency> dependencies;
 
 	public MMetaclass() {
-		attributes = new ArrayList<MAttribute>();
+		attributes = new ArrayList<MMetaclassAttribute>();
 		dependencies = new HashMap<String, MMetaclassDependency>();
+		children = new ArrayList<MMetaclassReference>();
+				
 	}
 
 	public MMetaclass(String name) {
@@ -76,11 +81,11 @@ public class MMetaclass {
 		this.parent = parent;
 	}
 
-	public List<MAttribute> getAttributes() {
+	public List<MMetaclassAttribute> getAttributes() {
 		return attributes;
 	}
 
-	public void setAttributes(List<MAttribute> attributes) {
+	public void setAttributes(List<MMetaclassAttribute> attributes) {
 		this.attributes = attributes;
 	}
 
@@ -92,7 +97,7 @@ public class MMetaclass {
 		this.dependencies = dependencies;
 	}
 
-	public void addAttribute(MAttribute attribute) {
+	public void addAttribute(MMetaclassAttribute attribute) {
 		attributes.add(attribute);
 	}
 
@@ -102,6 +107,18 @@ public class MMetaclass {
 
 	public MMetaclassDependency getDependency(String name) {
 		return dependencies.get(name);
+	}
+
+	public void addChild(MMetaclassReference metaclassRef) {
+		this.children.add(metaclassRef);		
+	}
+
+	public List<MMetaclassReference> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<MMetaclassReference> children) {
+		this.children = children;
 	}
 
 }
