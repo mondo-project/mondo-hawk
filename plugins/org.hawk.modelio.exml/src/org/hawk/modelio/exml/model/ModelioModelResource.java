@@ -23,6 +23,7 @@ import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
+import org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory;
 import org.hawk.modelio.exml.parser.ExmlObject;
 import org.hawk.modelio.exml.parser.ExmlReference;
 import org.slf4j.Logger;
@@ -104,7 +105,11 @@ public class ModelioModelResource implements IHawkModelResource {
 	}
 
 	private void addObjectToContents(ExmlObject exml, Collection<IHawkObject> contents) {
-		ModelioClass mc = metamodel.getModelioClass(exml.getMClassName());
+
+		
+		//ModelioClass mc = metamodel.getModelioClass(exml.getMClassName());
+		// @todo Orjuwan Temp till figure out how it works
+		ModelioClass mc = ModelioMetaModelResourceFactory.staticMetamodel.getModelioClass(exml.getMClassName());
 		if (mc == null) {
 			LOGGER.warn("Could not find class '{}', skipping", exml.getMClassName());
 		} else {

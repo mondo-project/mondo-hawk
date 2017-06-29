@@ -47,9 +47,12 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 
 	@Override
 	public IHawkModelResource parse(File f) throws Exception {
-		if (metamodel == null) {
-			this.metamodel = new ModelioMetaModelResource(null);
-		}
+//		String METAMODEL_PATH = "C:\\Users\\yaser And Orjuwan\\Documents\\msc\\Dissertation\\OneDrive_1_5-19-2017\\";
+//		File file = new File( METAMODEL_PATH + "metamodel_descriptor.xml");
+//
+//		ModelioMetaModelResourceFactory metamodelParser = new ModelioMetaModelResourceFactory();
+//		metamodel =  (ModelioMetaModelResource) metamodelParser.parse(file);
+
 
 		if (f.getName().toLowerCase().endsWith(EXML_EXT)) {
 			try (final FileInputStream fIS = new FileInputStream(f)) {
