@@ -33,13 +33,13 @@ import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkReference;
+import org.hawk.modelio.exml.metamodel.MPackage;
 import org.hawk.modelio.exml.metamodel.ModelioAttribute;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
+import org.hawk.modelio.exml.metamodel.ModelioMetamodel;
 import org.hawk.modelio.exml.metamodel.ModelioPackage;
 import org.hawk.modelio.exml.metamodel.ModelioReference;
-import org.modelio.metamodel.MMetamodel;
-import org.modelio.metamodel.MPackage;
 
 /**
  * Generates an <code>.ecore</code> file that mimics the Modelio metamodel, in
@@ -116,7 +116,8 @@ public class EcoreGenerator {
 		Resource r = new XMIResourceImpl(URI.createFileURI(file.getPath()));
 
 		final ModelioMetaModelResource mr = new ModelioMetaModelResource(null);
-		final MMetamodel metamodel = new MMetamodel();
+		// todo need to change this and get model from registry
+		final ModelioMetamodel metamodel = new ModelioMetamodel();
 
 		// Do a first pass to create the structure
 		final List<MPackage> mps = metamodel.getMPackages();

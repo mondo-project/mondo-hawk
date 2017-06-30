@@ -106,7 +106,7 @@ public class MetamodelDescriptorTest {
 	}
 	
 	private void testAttributeValuesEnum(MFragment fragment,
-			MAttribute mAttribute, String name,
+			MMetaclassAttribute mAttribute, String name,
 			String typeName) {
 		assertEquals("Check Attribute Values", name, mAttribute.getName());
 		assertEquals("Check Attribute Values", fragment.getEnumeration(typeName), mAttribute.getType());		
@@ -229,7 +229,7 @@ public class MetamodelDescriptorTest {
 		assertEquals("Check cmsNode", cmsNode, currentMetaclass.isCmsNode());
 	}
 
-	private void testAttributeValues(MAttribute mAttribute, String name,
+	private void testAttributeValues(MMetaclassAttribute mAttribute, String name,
 			String typeName) {
 		assertEquals("Check Attribute Values", name, mAttribute.getName());
 		assertEquals("Check Attribute Values", metamodeldescriptor.getDataType(typeName), mAttribute.getType());
