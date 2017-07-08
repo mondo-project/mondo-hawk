@@ -29,28 +29,37 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioMetaModelResource.class);
 
 	protected static final String META_TYPE_NAME = "ModelioType";
-	protected static final String STRING_TYPE = "java.lang.String";//"string";
+	protected static final String STRING_TYPE = "java.lang.String";
 
 	private final ModelioMetaModelResourceFactory factory;
 	private final ModelioPackage metaPackage;
 
-	private ModelioMetamodel metamodel ;//= new MMetamodel();
-	//private MMetamodelDescriptor metamodelDescriptor;
+	private ModelioMetamodel metamodel;
+
 	private Set<IHawkObject> contents;
 	private Map<String, ModelioClass> classesByName;
+
+	
+	public void setMetamodel(MMetamodelDescriptor metamodelDescriptor) {
+		this.metamodel = new ModelioMetamodel(metamodelDescriptor);
+	}
+
+	public ModelioMetamodel getMetamodel() {
+		return metamodel;
+	}
 
 	public ModelioMetaModelResource(ModelioMetaModelResourceFactory factory) {
 		this.factory = factory;
 		this.metaPackage = new ModelioPackage(this, createMetaPackage());
 		this.classesByName = new HashMap<>();
-		
+
 	}
 
 	public ModelioMetaModelResource(MMetamodelDescriptor metamodelDescriptor,
 			ModelioMetaModelResourceFactory factory) {
+
 		metamodel = new ModelioMetamodel(metamodelDescriptor);
-		
-		//this.metamodelDescriptor = metamodelDescriptor;
+
 		this.factory = factory;
 		this.metaPackage = new ModelioPackage(this, createMetaPackage());
 		this.classesByName = new HashMap<>();	
@@ -58,7 +67,7 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 
 	private MPackage createMetaPackage() {
 		String pkgId = "ModelioMetaPackage";//_format_" + metamodel.GetFormat();
-		MPackage mpkg = new MPackage(pkgId, pkgId, ""/*"root-meta.exml"*/);
+		MPackage mpkg = new MPackage(pkgId, pkgId, "");
 		final MClass mt = new MClass(META_TYPE_NAME, META_TYPE_NAME, mpkg.getExml());
 		mt.getMAttributes().add(createStringAttribute(mpkg, mt.getName(), "name"));
 		mpkg.getMClass().add(mt);
@@ -88,7 +97,7 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 		contents.add(pkg);
 		for (IHawkClassifier cl : pkg.getClasses()) {
 			contents.add(cl);
-			if (classesByName.put(cl.getName(), (ModelioClass)cl) != null) {
+			if (classesByName.put(getClassName((ModelioClass)cl), (ModelioClass)cl) != null) {
 				LOGGER.error("Class name '{}' is not unique", cl.getName());
 			}
 		}
@@ -115,17 +124,15 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 		return metaPackage;
 	}
 
-	public ModelioClass getModelioClass(String className) {
+	private String getClassName(ModelioClass mc) {
+		return mc.rawClass.getId();
+	}
+
+	public ModelioClass getModelioClass(String classId) {
 		getAllContents();
-		final ModelioClass mc = classesByName.get(className);
+		final ModelioClass mc = classesByName.get(classId);
 		if (mc != null) {
 			return mc;
-		}
-
-		final int idxDot = className.indexOf(".");
-		if (idxDot != -1) {
-			// Strip away Standard. prefix
-			return getModelioClass(className.substring(idxDot + 1));
 		}
 
 		return null;
@@ -136,9 +143,9 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 		final boolean isUnique = false;
 		final boolean isOrdered = false;
 		return new MAttribute(className + "_" + attrName, attrName,
-			rawPackage.getExml(),
-			metamodel.getDataTypeByName(STRING_TYPE),
-			isMany, isUnique, isOrdered);
+				rawPackage.getExml(),
+				metamodel.getDataTypeByName(STRING_TYPE),
+				isMany, isUnique, isOrdered);
 	}
 
 	public ModelioDataType getStringDataType() {

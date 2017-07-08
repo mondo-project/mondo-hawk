@@ -11,6 +11,8 @@
 package org.hawk.modelio.exml.metamodel;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.StringReader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -20,31 +22,21 @@ import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.modelio.metamodel.parser.MMetamodelParser;
+import org.hawk.modelio.model.util.RegisterMeta;
+import org.xml.sax.InputSource;
 
 public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 	private ModelioMetaModelResource modelioMetamodel;
 	private final Set<String> metamodelExtensions;
-	
-	public static  ModelioMetaModelResource staticMetamodel;
-
-
-	private ModelioMetaModelResource getMetamodel(File f) {
-		
-		if (modelioMetamodel == null) {
-			MMetamodelParser  parser = new MMetamodelParser();
-			
-			modelioMetamodel = new ModelioMetaModelResource(parser.parse(f), this);
-			staticMetamodel = modelioMetamodel;
-		}
-		return modelioMetamodel;
-	}
+	MMetamodelParser  parser;
 
 	public ModelioMetaModelResourceFactory() {
 		super();
+		parser = new MMetamodelParser();
+
 		metamodelExtensions = new HashSet<String>();
 		metamodelExtensions.add(".xml");
-		
 	}
 
 	@Override
@@ -59,7 +51,7 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 
 	@Override
 	public IHawkMetaModelResource parse(File f) throws Exception {
-		return getMetamodel(f);
+		return getMetamodelResource(new InputSource(new FileReader(f)));
 	}
 
 	@Override
@@ -90,8 +82,7 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 
 	@Override
 	public IHawkMetaModelResource parseFromString(String name, String contents) throws Exception {
-		// @todo: need to check 
-		return null;//getMetamodel();
+		return getMetamodelResource(new InputSource(new StringReader(contents)));
 	}
 
 	@Override
@@ -99,13 +90,22 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 		// ignore
 		System.err
 		.println("ModelioMetaModelResourceFactory cannot remove metamodels, for now. need to be changed");
-		
 	}
 
 	@Override
 	public String dumpPackageToString(IHawkPackage ePackage) throws Exception {
-		// unsupported
-		return "";
+		return ((ModelioPackage) ePackage).rawPackage.getXml();
 	}
 
+	private ModelioMetaModelResource getMetamodelResource(InputSource is) {
+		if (modelioMetamodel == null) {
+			modelioMetamodel = new ModelioMetaModelResource(parser.parse(is), this);
+		} else {
+			modelioMetamodel.setMetamodel(parser.parse(is));
+		}
+		
+		RegisterMeta.registerPackages(modelioMetamodel);
+
+		return modelioMetamodel;
+	}
 }

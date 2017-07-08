@@ -34,7 +34,16 @@ public class MClass {
         this.exml = exml;
     }
 
-    public String getId() {
+    public MClass(String id, String name) {
+        this.mSuperType = new ArrayList<>();
+        this.mSubTypes = new ArrayList<>();
+        this.mDependencys = new ArrayList<>();
+        this.mAttributes = new ArrayList<>();
+        this.id = id;
+        this.name = name;
+   }
+
+	public String getId() {
         return id;
     }
 

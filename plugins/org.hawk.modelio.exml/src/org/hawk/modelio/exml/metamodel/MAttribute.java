@@ -46,7 +46,16 @@ public class MAttribute {
         this.isOrdered = isOrdered;
     }
 
-    public String getId() {
+    public MAttribute(String id, String name, MDataType mBaseType, Boolean isMany, Boolean isUnique, Boolean isOrdered) {
+        this.id = id;
+        this.name = name;
+        this.mBaseType = mBaseType;
+        this.isMany = isMany;
+        this.isUnique = isUnique;
+        this.isOrdered = isOrdered;
+    }
+
+	public String getId() {
         return id;
     }
 

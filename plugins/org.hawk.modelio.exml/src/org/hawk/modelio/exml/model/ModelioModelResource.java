@@ -22,27 +22,23 @@ import java.util.Set;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
-import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
-import org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory;
 import org.hawk.modelio.exml.parser.ExmlObject;
 import org.hawk.modelio.exml.parser.ExmlReference;
+import org.hawk.modelio.model.util.RegisterMeta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ModelioModelResource implements IHawkModelResource {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioModelResource.class);
-	private final ModelioMetaModelResource metamodel;
 	private Iterable<ExmlObject> exmls;
 	private Set<IHawkObject> contents;
 
-	public ModelioModelResource(ModelioMetaModelResource metamodel, ExmlObject exml) {
-		this.metamodel = metamodel;
+	public ModelioModelResource(ExmlObject exml) {
 		this.exmls = Collections.singletonList(exml);
 	}
 
-	public ModelioModelResource(ModelioMetaModelResource metamodel, Iterable<ExmlObject> objects) {
-		this.metamodel = metamodel;
+	public ModelioModelResource(Iterable<ExmlObject> objects) {
 		this.exmls = objects;
 	}
 
@@ -105,11 +101,8 @@ public class ModelioModelResource implements IHawkModelResource {
 	}
 
 	private void addObjectToContents(ExmlObject exml, Collection<IHawkObject> contents) {
-
+		ModelioClass mc = RegisterMeta.getModelioClass(exml.getMClassName());
 		
-		//ModelioClass mc = metamodel.getModelioClass(exml.getMClassName());
-		// @todo Orjuwan Temp till figure out how it works
-		ModelioClass mc = ModelioMetaModelResourceFactory.staticMetamodel.getModelioClass(exml.getMClassName());
 		if (mc == null) {
 			LOGGER.warn("Could not find class '{}', skipping", exml.getMClassName());
 		} else {

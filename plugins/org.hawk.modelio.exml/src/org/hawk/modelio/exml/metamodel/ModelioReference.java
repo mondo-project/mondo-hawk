@@ -107,7 +107,7 @@ public class ModelioReference extends AbstractModelioObject implements IHawkRefe
 	@Override
 	public IHawkClassifier getType() {
 		final MClass mDepClass = mDependency.getMClass();
-		return mClass.getPackage().getResource().getModelioClass(mDepClass.getName());
+		return mClass.getPackage().getResource().getModelioClass(mDepClass.getId());
 	}
 
 	@Override

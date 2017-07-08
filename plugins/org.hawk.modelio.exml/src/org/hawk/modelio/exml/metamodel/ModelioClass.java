@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.hawk.modelio.exml.metamodel;
 
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -196,7 +197,7 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 	public Set<ModelioClass> getAllSuperTypes() {
 		final Set<ModelioClass> superClasses = new HashSet<>();
 		for (MClass superRawClass : rawClass.getMSuperType()) {
-			ModelioClass superClass = mPackage.getResource().getModelioClass(superRawClass.getName());
+			ModelioClass superClass = mPackage.getResource().getModelioClass(superRawClass.getId());
 			if (superClasses.add(superClass)) {
 				superClasses.addAll(superClass.getAllSuperTypes());
 			}
@@ -215,7 +216,7 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 	public Set<IHawkClass> getOwnSuperTypes() {
 		final Set<IHawkClass> superClasses = new HashSet<>();
 		for (MClass superRawClass : rawClass.getMSuperType()) {
-			ModelioClass superClass = mPackage.getResource().getModelioClass(superRawClass.getName());
+			ModelioClass superClass =  mPackage.getResource().getModelioClass(superRawClass.getId());
 			superClasses.add(superClass);
 		}
 		return superClasses;

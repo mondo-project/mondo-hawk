@@ -19,7 +19,6 @@ import java.util.zip.ZipFile;
 
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
-import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
 import org.hawk.modelio.exml.parser.ExmlObject;
 import org.hawk.modelio.exml.parser.ExmlParser;
 
@@ -33,8 +32,6 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 		MODEL_EXTS.add(".modelio.zip");
 	}
 
-	private ModelioMetaModelResource metamodel;
-
 	@Override
 	public String getType() {
 		return getClass().getName();
@@ -47,31 +44,24 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 
 	@Override
 	public IHawkModelResource parse(File f) throws Exception {
-//		String METAMODEL_PATH = "C:\\Users\\yaser And Orjuwan\\Documents\\msc\\Dissertation\\OneDrive_1_5-19-2017\\";
-//		File file = new File( METAMODEL_PATH + "metamodel_descriptor.xml");
-//
-//		ModelioMetaModelResourceFactory metamodelParser = new ModelioMetaModelResourceFactory();
-//		metamodel =  (ModelioMetaModelResource) metamodelParser.parse(file);
-
 
 		if (f.getName().toLowerCase().endsWith(EXML_EXT)) {
 			try (final FileInputStream fIS = new FileInputStream(f)) {
 				final ExmlParser parser = new ExmlParser();
 				final ExmlObject object = parser.getObject(f, fIS);
-				return new ModelioModelResource(metamodel, object);
+				return new ModelioModelResource(object);
 			}
 		} else {
 			try (final ZipFile zf = new ZipFile(f)) {
 				final ExmlParser parser = new ExmlParser();
 				final Iterable<ExmlObject> objects = parser.getObjects(f);
-				return new ModelioModelResource(metamodel, objects);
+				return new ModelioModelResource(objects);
 			}
 		}
 	}
 
 	@Override
 	public void shutdown() {
-		metamodel = null;
 	}
 
 	@Override

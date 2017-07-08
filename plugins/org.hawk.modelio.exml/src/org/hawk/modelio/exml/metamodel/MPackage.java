@@ -15,17 +15,20 @@ public class MPackage {
     private String name;
 
     private String exml;
+    
+    private String xml;
+
 
     private List<MPackage> mPackages;
 
     private List<MClass> mClass;
 
-    public MPackage(String id, String name, String exml) {
+    public MPackage(String id, String name, String xml) {
         this.mPackages = new ArrayList<>();
         this.mClass = new ArrayList<>();
         this.id = id;
         this.name = name;
-        this.exml = exml;
+        this.xml = xml;
     }
 
     public String getId() {
@@ -47,5 +50,13 @@ public class MPackage {
     public List<MClass> getMClass() {
         return mClass;
     }
+
+	public String getXml() {
+		return xml;
+	}
+
+	public void setXml(String xml) {
+		this.xml = xml;
+	}
 
 }

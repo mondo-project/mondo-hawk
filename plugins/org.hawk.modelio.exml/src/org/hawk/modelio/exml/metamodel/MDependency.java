@@ -34,7 +34,17 @@ public class MDependency {
         this.isComposition = isComposition;
     }
 
-    public String getId() {
+    public MDependency(String id, String name, MClass mClass, Boolean isMany, Boolean isUnique, Boolean isOrdered, Boolean isComposition) {
+        this.id = id;
+        this.name = name;
+        this.mClass = mClass;
+        this.isMany = isMany;
+        this.isUnique = isUnique;
+        this.isOrdered = isOrdered;
+        this.isComposition = isComposition;
+	}
+
+	public String getId() {
         return id;
     }
 
