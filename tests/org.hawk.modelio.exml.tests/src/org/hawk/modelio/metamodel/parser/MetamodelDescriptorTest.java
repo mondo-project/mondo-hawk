@@ -14,12 +14,15 @@ package org.hawk.modelio.metamodel.parser;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.List;
 
 import org.hawk.modelio.metamodel.parser.MMetamodelDescriptor;
 import org.hawk.modelio.metamodel.parser.MMetamodelParser;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.xml.sax.InputSource;
 
 public class MetamodelDescriptorTest {
 
@@ -31,8 +34,15 @@ public class MetamodelDescriptorTest {
 	public static void setup() {
 		metamodelParser = new MMetamodelParser();
 		File file = new File( METAMODEL_PATH + "metamodel_descriptor.xml");
+		InputSource is = null;
+		try {
+			is = new InputSource(new FileReader(file));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		metamodeldescriptor = metamodelParser.parse(file);	
+		metamodeldescriptor = metamodelParser.parse(is);	
 	}
 
 	@Test
@@ -84,18 +94,18 @@ public class MetamodelDescriptorTest {
 		testMetaclassRef(currentMetaclass.getParent(), "Infrastructure", "ModelElement");
 		
 		assertEquals("Check attributes", 1, currentMetaclass.getAttributes().size());
-		testAttributeValues(currentMetaclass.getAttributes().get(0), "Definition", "java.lang.String");
+		testAttributeValues(currentMetaclass.getAttributes().get(0), "Definition", "java.lang.String", fragment);
 			
 		assertEquals("Check dependencies", 1, currentMetaclass.getDependencies().size());
-		testMetaclassDependencies(currentMetaclass.getDependencies().get("AnalystProperties"), "AnalystProperties", 1, 1, "Composition", true, "Analyst", "AnalystPropertyTable", "AnalystOwner");
+		testMetaclassDependencies(currentMetaclass.getDependencies().get("AnalystProperties"), "AnalystProperties", 1, 1, MAggregationType.Composition, true, "Analyst", "AnalystPropertyTable", "AnalystOwner");
 		
 		// GoalContainer dependencies
 		currentMetaclass = fragment.getMetaclasses().get("GoalContainer");
 		assertEquals("Check dependencies", 4, currentMetaclass.getDependencies().size());
-		testMetaclassDependencies(currentMetaclass.getDependencies().get("OwnedGoal"), "OwnedGoal", 0, -1, "Composition", true, "Analyst", "Goal", "OwnerContainer");
-		testMetaclassDependencies(currentMetaclass.getDependencies().get("OwnerContainer"), "OwnerContainer", 0, 1, null, false, "Analyst", "GoalContainer", "OwnedContainer");
-		testMetaclassDependencies(currentMetaclass.getDependencies().get("OwnedContainer"), "OwnedContainer", 0, -1, "Composition", true, "Analyst", "GoalContainer", "OwnerContainer");
-		testMetaclassDependencies(currentMetaclass.getDependencies().get("OwnerProject"), "OwnerProject", 0, 1, null, false, "Analyst", "AnalystProject", "GoalRoot");
+		testMetaclassDependencies(currentMetaclass.getDependencies().get("OwnedGoal"), "OwnedGoal", 0, -1, MAggregationType.Composition, true, "Analyst", "Goal", "OwnerContainer");
+		testMetaclassDependencies(currentMetaclass.getDependencies().get("OwnerContainer"), "OwnerContainer", 0, 1, MAggregationType.None, false, "Analyst", "GoalContainer", "OwnedContainer");
+		testMetaclassDependencies(currentMetaclass.getDependencies().get("OwnedContainer"), "OwnedContainer", 0, -1, MAggregationType.Composition, true, "Analyst", "GoalContainer", "OwnerContainer");
+		testMetaclassDependencies(currentMetaclass.getDependencies().get("OwnerProject"), "OwnerProject", 0, 1, MAggregationType.None, false, "Analyst", "AnalystProject", "GoalRoot");
 	}
 
 	@Test
@@ -109,7 +119,7 @@ public class MetamodelDescriptorTest {
 			MMetaclassAttribute mAttribute, String name,
 			String typeName) {
 		assertEquals("Check Attribute Values", name, mAttribute.getName());
-		assertEquals("Check Attribute Values", fragment.getEnumeration(typeName), mAttribute.getType());		
+		assertEquals("Check Attribute Values", fragment.getDataType(typeName), mAttribute.getType());		
 	}
 
 	@Test
@@ -124,13 +134,13 @@ public class MetamodelDescriptorTest {
 		
 		MFragment fragment = metamodeldescriptor.getFragments().get("Standard");
 
-		assertEquals("Check num metaclasses", 25, fragment.getEnumerations().size());
+		//assertEquals("Check num metaclasses", 25, fragment.getDataTypes().size());
 
-		testEnumeration(fragment.getEnumeration("org.modelio.metamodel.bpmn.activities.AdHocOrdering"), "org.modelio.metamodel.bpmn.activities.AdHocOrdering", java.util.Arrays.asList("PARALLELORDERING", "SEQUENTIALORDERING"));
+		testEnumeration(fragment.getDataType("org.modelio.metamodel.bpmn.activities.AdHocOrdering"), "org.modelio.metamodel.bpmn.activities.AdHocOrdering", java.util.Arrays.asList("PARALLELORDERING", "SEQUENTIALORDERING"));
 		
-		testEnumeration(fragment.getEnumeration("org.modelio.metamodel.bpmn.activities.MultiInstanceBehavior"), "org.modelio.metamodel.bpmn.activities.MultiInstanceBehavior", java.util.Arrays.asList("NONEBEHAVIOR", "ONEBEHAVIOR", "ALLBEHAVIOR", "COMPLEXBEHAVIOR"));
+		testEnumeration(fragment.getDataType("org.modelio.metamodel.bpmn.activities.MultiInstanceBehavior"), "org.modelio.metamodel.bpmn.activities.MultiInstanceBehavior", java.util.Arrays.asList("NONEBEHAVIOR", "ONEBEHAVIOR", "ALLBEHAVIOR", "COMPLEXBEHAVIOR"));
 		
-		testEnumeration(fragment.getEnumeration("org.modelio.metamodel.bpmn.activities.TransactionMethod"), "org.modelio.metamodel.bpmn.activities.TransactionMethod", java.util.Arrays.asList("COMPENSATETRANSACTION", "STORETRANSACTION", "IMAGETRANSACTION"));
+		testEnumeration(fragment.getDataType("org.modelio.metamodel.bpmn.activities.TransactionMethod"), "org.modelio.metamodel.bpmn.activities.TransactionMethod", java.util.Arrays.asList("COMPENSATETRANSACTION", "STORETRANSACTION", "IMAGETRANSACTION"));
 	}
 
 	@Test
@@ -173,19 +183,19 @@ public class MetamodelDescriptorTest {
 		//assertEquals("Check num metaclasses", numEnums, fragment.getEnumerations().size());
 	}
  
-	private void testEnumeration(MEnumeration mEnumeration, String name,
+	private void testEnumeration(MAttributeType mAttributeType, String name,
 			List<String> list) {
-		assertEquals("Check name", name, mEnumeration.getName());
-		assertEquals("Check name", list.size(), mEnumeration.getValues().size());
+		assertEquals("Check name", name, mAttributeType.getName());
+		assertEquals("Check name", list.size(), ((MEnumeration) mAttributeType).getValues().size());
 		
 		for(int i = 0; i < list.size(); i++) {
-			assertEquals("Check values", list.get(i), mEnumeration.getValues().get(i));
+			assertEquals("Check values", list.get(i), ((MEnumeration) mAttributeType).getValues().get(i));
 		}
 	}
 
 	private void testMetaclassDependencies(
 			MMetaclassDependency mMetaclassDependency, String name, int min,
-			int max, String aggregation, boolean navigate, String targetFragment, String targetName,
+			int max, MAggregationType aggregation, boolean navigate, String targetFragment, String targetName,
 			String opposite) {
 		
 		assertEquals("Check name", name, mMetaclassDependency.getName());
@@ -230,9 +240,9 @@ public class MetamodelDescriptorTest {
 	}
 
 	private void testAttributeValues(MMetaclassAttribute mAttribute, String name,
-			String typeName) {
+			String typeName, MFragment fragment) {
 		assertEquals("Check Attribute Values", name, mAttribute.getName());
-		assertEquals("Check Attribute Values", metamodeldescriptor.getDataType(typeName), mAttribute.getType());
+		assertEquals("Check Attribute Values", fragment.getDataType(typeName), mAttribute.getType());
 	}
 
 }
