@@ -26,8 +26,5 @@ public class MAttributeType {
 		this.name = name;
 	}
 
-	public boolean isEnum() {
-		return false;
-	}
 }
 

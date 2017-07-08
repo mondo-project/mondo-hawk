@@ -35,7 +35,4 @@ public class MEnumeration extends MAttributeType {
 		values.add(valueName);
 	}
 	
-	public boolean isEnum() {
-		return true;
-	}
 }

@@ -11,9 +11,7 @@
 
 package org.hawk.modelio.metamodel.parser;
 
-import java.io.File;
 import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -23,6 +21,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.bootstrap.DOMImplementationRegistry;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
+import org.xml.sax.InputSource;
 
 public class MMetamodelParser {
 	private MMetamodelDescriptor metamodelDescriptor;
@@ -32,42 +34,41 @@ public class MMetamodelParser {
 		metamodelDescriptor = new MMetamodelDescriptor();
 	}
 
-	public MMetamodelDescriptor parse(File file) {
-
-		this.metamodelDescriptor.reset();
-
+	public MMetamodelDescriptor parse(InputSource is) {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document document;
-			document = builder.parse(file);
+			Document document = builder.parse(is);
 			Element element = document.getDocumentElement();
 
-			parseMetamodel(element);
+			if(isElement(element, "metamodel")) {
+				parseMetamodel(element);
+			} else if(isElement(element, "fragment")) {
+				addFragment(element);
+			} else {
+				System.err.print("error in parse(File f): ");
+			}
 
+			resolveReferences();
+			
+			
 		} catch (Exception e) {
 			System.err.print("error in parse(File f): ");
 			System.err.println(e.getCause());
 			e.printStackTrace();
-			return null;
+			//return null;
 		}
 
 		return this.metamodelDescriptor;
 	}
 
 	private void parseMetamodel(Node node) {
+		this.metamodelDescriptor.setMetamodelFormat(getNodeNamedAttribute(node, "format"));
+		this.metamodelDescriptor.setMetamodelDescriptorFormat(getNodeNamedAttribute(node, "MetamodelDescriptor.format"));
 
-		if (isElement(node, "metamodel")) {
-			this.metamodelDescriptor.setMetamodelFormat(getNodeNamedAttribute(node, "format"));
-			this.metamodelDescriptor.setMetamodelDescriptorFormat(getNodeNamedAttribute(node, "MetamodelDescriptor.format"));
-
-			for(Node childNode :  NodeListIterable(((Element) node).getElementsByTagName("fragment"))) {
-				addFragment(childNode);
-			}
-			
+		for(Node childNode :  NodeListIterable(((Element) node).getElementsByTagName("fragment"))) {
+			addFragment(childNode);
 		}
-		
-		resolveReferences();
 	}
 
 	private void addFragment(Node node) {
@@ -78,38 +79,59 @@ public class MMetamodelParser {
 		currentFragment.setProvider(getNodeNamedAttribute(node, "provider"));
 		currentFragment.setProviderVersion(getNodeNamedAttribute(node, "providerVersion"));
 
-		for(Node childNode :  NodeListIterable(node.getChildNodes())) {
-			if (isElement(childNode, "metaclasses")) {
+		currentFragment.setXmlString(getXmlString(node));
+		
+		// parse enumerations first thing
+		for(Node enumerationsNode :  NodeListIterable(((Element) node).getElementsByTagName("enumerations"))) {
+			for(Node enumerationNode :  NodeListIterable(((Element) enumerationsNode).getElementsByTagName("enumeration"))) {
+				MEnumeration enumeration = parseEnumeration(enumerationNode);
+				currentFragment.addDataType(enumeration);
+			}
+		}
+		
+		// parse the rest 
+		for(Node metaclassesNode :  NodeListIterable(((Element) node).getElementsByTagName("metaclasses"))) {
+			for(Node metaclassNode :  NodeListIterable(((Element) metaclassesNode).getElementsByTagName("metaclass"))) {
+				currentFragment.addMetaclass(parseMetaclass(metaclassNode));
+			}
 
-				for(Node metaclassNode :  NodeListIterable(((Element) childNode).getElementsByTagName("metaclass"))) {
-					currentFragment.addMetaclass(parseMetaclass(metaclassNode));
-				}
+			for(Node metaclassNode :  NodeListIterable(((Element) metaclassesNode).getElementsByTagName("link_metaclass"))) {
+				currentFragment.addMetaclass(parseLinkMetaclass(metaclassNode));
+			}
+		}
+		
+		for(Node dependenciesNode :  NodeListIterable(((Element) node).getElementsByTagName("dependencies"))) {
+			for(Node dependencyNode :  NodeListIterable(((Element) dependenciesNode).getElementsByTagName("metamodel_fragment"))) {
+				MFragmentReference fragmentRef = new MFragmentReference(
+						getNodeNamedAttribute(dependencyNode, "name"),
+						getNodeNamedAttribute(dependencyNode, "version"));
 
-				for(Node metaclassNode :  NodeListIterable(((Element) childNode).getElementsByTagName("link_metaclass"))) {
-					currentFragment.addMetaclass(parseLinkMetaclass(metaclassNode));
-				}
-			} else if (isElement( childNode, "dependencies")) {
-				for(Node dependencyNode :  NodeListIterable(((Element) childNode).getElementsByTagName("metamodel_fragment"))) {
-					MFragmentReference fragmentRef = new MFragmentReference(
-							getNodeNamedAttribute(dependencyNode, "name"),
-							getNodeNamedAttribute(dependencyNode, "version"));
-
-					currentFragment.addDependency(fragmentRef);
-				}
-
-			} else if (isElement(childNode, "enumerations")) {
-				for(Node enumerationNode :  NodeListIterable(((Element) childNode).getElementsByTagName("enumeration"))) {
-					MEnumeration enumeration = parseEnumeration(enumerationNode);
-					currentFragment.addEnumeration(enumeration);
-					// also add to dataTypes
-					//this.metamodelDescriptor.addDataType(enumeration);
-				}
+				currentFragment.addDependency(fragmentRef);
 			}
 		}
 
-		if (currentFragment != null) {
-			this.metamodelDescriptor.addFragment(currentFragment);
+		this.metamodelDescriptor.addFragment(currentFragment);
+	}
+
+
+
+	private String getXmlString(Node node) {
+		DOMImplementationRegistry registry = null;
+		
+		try {
+			registry = DOMImplementationRegistry.newInstance();
+		} catch (ClassNotFoundException | InstantiationException
+				| IllegalAccessException | ClassCastException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
+		DOMImplementationLS impl = 
+				(DOMImplementationLS)registry.getDOMImplementation("LS");
+
+		LSSerializer writer = impl.createLSSerializer();
+		String str = writer.writeToString(node);		
+		return str;
 	}
 
 	private MEnumeration parseEnumeration(Node node) {
@@ -162,7 +184,7 @@ public class MMetamodelParser {
 			MAttributeType type;
 
 			if(typeName.equals("java.lang.Enum")) {
-				type = new MEnumeration(enumTypeName);
+				type = currentFragment.getDataType(enumTypeName);
 
 			} else {
 				type = resolveAttributeBasicType(typeName); 
@@ -185,11 +207,10 @@ public class MMetamodelParser {
 	}
 
 	private MAttributeType resolveAttributeBasicType(String typeName) {
-		MAttributeType type = metamodelDescriptor.getDataType(typeName);
-
+		MAttributeType type = currentFragment.getDataType(typeName);
 		if(type == null) {
 			type  = new MAttributeType(typeName);
-			metamodelDescriptor.addDataType(type);
+			currentFragment.addDataType(type);
 		}
 		return type;
 	}
@@ -260,44 +281,38 @@ public class MMetamodelParser {
 	
 	private void resolveReferences() {
 		
-		for (Entry<String, MFragment> fragmentEntry : this.metamodelDescriptor.getFragments().entrySet()) {
+		for (MFragment fragment : this.metamodelDescriptor.getFragments().values()) {
 			// resolve fragment references
-			for (MFragmentReference fragmentDependencyEntry : fragmentEntry.getValue().getDependencies()) {
+			for (MFragmentReference fragmentDependencyEntry : fragment.getDependencies()) {
 				resolveFragmentReference(fragmentDependencyEntry);
 			}
 
 			// resolve metaclasses
-			for (Entry<String, MMetaclass> metaclassEntry : fragmentEntry.getValue().getMetaclasses().entrySet()) {
+			for (MMetaclass metaclass : fragment.getMetaclasses().values()) {
 
 				// resolve parent
-				resolveMetaclassReference(metaclassEntry.getValue().getParent());
+				resolveMetaclassReference(metaclass.getParent());
 
 				
 				// add this metaclass to Parent Children
-				if(metaclassEntry.getValue().getParent() != null) {
-					MMetaclassReference childRef = new MMetaclassReference(fragmentEntry.getValue().getName(), metaclassEntry.getValue().getName());
-					childRef.setMetaclass(metaclassEntry.getValue());
-					metaclassEntry.getValue().getParent().getMetaclass().addChild(childRef);
+				if(metaclass.getParent() != null) {
+					MMetaclassReference childRef = new MMetaclassReference(fragment.getName(), metaclass.getName());
 					
-				}
-				
-				
-				// resolve enumerations
-				for(MMetaclassAttribute attribute : metaclassEntry.getValue().getAttributes()) {
-					if(attribute.getType().isEnum()) {
-						attribute.setType(fragmentEntry.getValue().getEnumeration(attribute.getType().getName()));
+					childRef.setMetaclass(metaclass);
+					
+					// if parent is resolved 
+					if(metaclass.getParent().getMetaclass() != null) {
+						metaclass.getParent().getMetaclass().addChild(childRef);
 					}
+
 				}
-				
-				
-				
-				
+
 				// resolve dependencies.target
-				for(Entry<String, MMetaclassDependency> dependencyEntry : metaclassEntry.getValue().getDependencies().entrySet()) {	
-					resolveMetaclassReference(dependencyEntry.getValue().getTarget());
-					resolveOppositeDependency(dependencyEntry.getValue());
-					
-					// @todo: if link_class, resolve sources and targets
+				for(MMetaclassDependency dependency : metaclass.getDependencies().values()) {	
+					resolveMetaclassReference(dependency.getTarget());
+					resolveOppositeDependency(dependency);
+
+					// TODO: if link_class, resolve sources and targets
 				}
 			}
 		}
@@ -307,15 +322,19 @@ public class MMetamodelParser {
 	private void resolveMetaclassReference(MMetaclassReference ref) {
 		if(ref != null) {
 			MFragment targetFragment = this.metamodelDescriptor.getFragment(ref.getFragmentName());
-			MMetaclass targetMetaclass = targetFragment.getMetaclass(ref.getName());
-			ref.setMetaclass(targetMetaclass);
+			if(targetFragment != null) {
+				MMetaclass targetMetaclass = targetFragment.getMetaclass(ref.getName());
+				ref.setMetaclass(targetMetaclass);
+			} else {
+				// Error
+			}
 		}
 	}
 	
 	private void resolveFragmentReference(MFragmentReference ref) {
 		if(ref != null) {
 			MFragment targetFragment = this.metamodelDescriptor.getFragment(ref.getName());
-			// @todo: what about version, check version if it is not equal issue a warning
+			// TODO: what about version, check version if it is not equal issue a warning
 			ref.setFragment(targetFragment);
 		}
 	}

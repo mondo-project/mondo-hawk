@@ -23,16 +23,18 @@ public class MFragment {
 	private String provider;
 	private String providerVersion;
 
-	private List<MFragmentReference> dependencies;
-
-	private Map<String, MEnumeration> enumerations;
 	private Map<String, MMetaclass> metaclasses;
 
+	private List<MFragmentReference> dependencies;
+
+	private Map<String, MAttributeType> dataTypes;
+
+	private String xmlString;
+	
 	public MFragment() {
 		dependencies = new ArrayList<MFragmentReference>();
-		enumerations = new HashMap<String, MEnumeration>();
 		metaclasses = new HashMap<String, MMetaclass>();
-
+		dataTypes = new HashMap<String, MAttributeType>();
 	}
 
 	public MFragment(String name, String version, String provider,
@@ -89,28 +91,12 @@ public class MFragment {
 		this.dependencies = dependencies;
 	}
 
-	public Map<String, MEnumeration> getEnumerations() {
-		return enumerations;
-	}
-
-	public void setEnumerations(Map<String, MEnumeration> enumerations) {
-		this.enumerations = enumerations;
-	}
-
 	public Map<String, MMetaclass> getMetaclasses() {
 		return metaclasses;
 	}
 
 	public void setMetaclasses(Map<String, MMetaclass> metaclasses) {
 		this.metaclasses = metaclasses;
-	}
-
-	public void addEnumeration(MEnumeration enumeration) {
-		this.enumerations.put(enumeration.getName(), enumeration);
-	}
-	
-	public MEnumeration getEnumeration(String enumerationName) {
-		return this.enumerations.get(enumerationName);
 	}
 
 	public void addDependency(MFragmentReference fragmentRef) {
@@ -125,4 +111,27 @@ public class MFragment {
 		return this.metaclasses.get(name);
 	}
 
+	public Map<String, MAttributeType> getDataTypes() {
+		return dataTypes;
+	}
+
+	public void setDataTypes(Map<String, MAttributeType> dataTypes) {
+		this.dataTypes = dataTypes;
+	}
+	
+	public void addDataType(MAttributeType dataType) {
+		this.dataTypes.put(dataType.getName(), dataType);
+	}
+	
+	public MAttributeType getDataType(String dataTypeName) {
+		return this.dataTypes.get(dataTypeName);
+	}
+
+	public String getXmlString() {
+		return xmlString;
+	}
+
+	public void setXmlString(String fragmentXmlString) {
+		this.xmlString = fragmentXmlString;
+	}
 }
