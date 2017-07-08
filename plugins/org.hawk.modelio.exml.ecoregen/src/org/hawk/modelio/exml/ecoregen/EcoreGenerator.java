@@ -12,6 +12,7 @@ package org.hawk.modelio.exml.ecoregen;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -33,13 +34,11 @@ import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkReference;
-import org.hawk.modelio.exml.metamodel.MPackage;
 import org.hawk.modelio.exml.metamodel.ModelioAttribute;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
-import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
-import org.hawk.modelio.exml.metamodel.ModelioMetamodel;
 import org.hawk.modelio.exml.metamodel.ModelioPackage;
 import org.hawk.modelio.exml.metamodel.ModelioReference;
+import org.hawk.modelio.model.util.RegisterMeta;
 
 /**
  * Generates an <code>.ecore</code> file that mimics the Modelio metamodel, in
@@ -115,15 +114,10 @@ public class EcoreGenerator {
 	public Resource generate(File file) throws Exception {
 		Resource r = new XMIResourceImpl(URI.createFileURI(file.getPath()));
 
-		final ModelioMetaModelResource mr = new ModelioMetaModelResource(null);
-		// todo need to change this and get model from registry
-		final ModelioMetamodel metamodel = new ModelioMetamodel();
-
 		// Do a first pass to create the structure
-		final List<MPackage> mps = metamodel.getMPackages();
-		for (MPackage mp : mps) {
-			final ModelioPackage wrapped = new ModelioPackage(mr, mp);
-			addPackageContents(r, wrapped);
+		final Collection<ModelioPackage> mps = RegisterMeta.getRegisteredPackages();//metamodel.getMPackages();
+		for (ModelioPackage mp : mps) {
+			addPackageContents(r, mp);
 		}
 
 		// On the second pass, create features and references (sorted by names, to avoid unwanted diffs when regenerating)
