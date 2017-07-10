@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -23,7 +24,8 @@ import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.core.model.IHawkReference;
-import org.junit.Before;
+import org.hawk.modelio.model.util.RegisterMeta;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -31,12 +33,23 @@ import org.junit.Test;
  */
 public class ModelioMetaModelResourceTest {
 
-	private ModelioMetaModelResource r;
+	private static ModelioMetaModelResource r;
 
-	@Before
-	public void setup() {
-		r = new ModelioMetaModelResource(new ModelioMetaModelResourceFactory());
+	private static final String METAMODEL_PATH = "resources/metamodel/";
+
+	@BeforeClass
+	public static void setup() {
+		File file = new File( METAMODEL_PATH + "metamodel_descriptor.xml");
+		try {
+			ModelioMetaModelResourceFactory factory = new ModelioMetaModelResourceFactory();
+			
+			r = (ModelioMetaModelResource) factory.parse(file);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
+
 
 	@Test
 	public void countPackages() {
@@ -81,20 +94,25 @@ public class ModelioMetaModelResourceTest {
 				}
 			}
 		}
-		assertTrue("Should contain the Element root MClass", rootClasses.contains("Element"));
-		assertTrue("Should contain the InteractionNavigationServices MClass", rootClasses.contains("InteractionNavigationServices"));
+		//assertTrue("Should contain the Element root MClass", rootClasses.contains("Element"));
+		//assertTrue("Should contain the InteractionNavigationServices MClass", rootClasses.contains("InteractionNavigationServices"));
 		assertTrue("Should contain the meta type", rootClasses.contains(ModelioMetaModelResource.META_TYPE_NAME));
-		assertEquals("There should be exactly three root ModelioClasses", 3, rootClasses.size());
+		assertTrue("Should contain the meta type", rootClasses.contains("SmObject"));
+		assertEquals("There should be exactly three root ModelioClasses", 2, rootClasses.size());
 	}
 
 	@Test
 	public void checkModuleComponentHierarchy() {
 		final Set<String> names = new HashSet<>();
-		for (IHawkClass hc : r.getModelioClass("ModuleComponent").getAllSuperTypes()) {
+		for (IHawkClass hc : RegisterMeta.getModelioClass("ModuleComponent").getAllSuperTypes()) {
 			names.add(hc.getName());
 		}
-		assertTrue(names.contains("Class"));
-		assertTrue(names.contains("Component"));
+	//	assertTrue(names.contains("Class"));
+	//	assertTrue(names.contains("Component"));
+		assertTrue(names.contains("AbstractProject"));
+		assertTrue(names.contains("ModelElement"));
+		assertTrue(names.contains("Element"));
+		assertTrue(names.contains("SmObject"));
 	}
 
 }

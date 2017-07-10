@@ -43,7 +43,7 @@
             </LINK>
             <COMP relation="Descriptor">
               <OBJECT>
-                <ID name="" mc="Standard.Note" uid="e1ab9487-9530-41ce-a7f3-2a99c0f693a3"/>
+                <ID name="" mc="Infrastructure.Note" uid="e1ab9487-9530-41ce-a7f3-2a99c0f693a3"/>
                 <ATTRIBUTES>
                   <ATT name="Content"><![CDATA[This means that there are multiple triggers required before the events triggers outcoming sequence flows. All of the types of triggers that are listed in the catcht Event MUST be triggered before the processing continues.  ]]></ATT>
                   <ATT name="MimeType"></ATT>
@@ -52,7 +52,7 @@
                 </ATTRIBUTES>
                 <DEPENDENCIES>
                   <LINK relation="Model">
-                    <FOREIGNID name="description" mc="Standard.NoteType" uid="00000000-0000-3e81-0000-000000000000"/>
+                    <FOREIGNID name="description" mc="Infrastructure.NoteType" uid="00000000-0000-3e81-0000-000000000000"/>
                   </LINK>
                 </DEPENDENCIES>
               </OBJECT>
@@ -88,7 +88,7 @@
       </LINK>
       <COMP relation="Descriptor">
         <OBJECT>
-          <ID name="" mc="Standard.Note" uid="7d71600c-b815-4f9e-943a-77c338f85719"/>
+          <ID name="" mc="Infrastructure.Note" uid="7d71600c-b815-4f9e-943a-77c338f85719"/>
           <ATTRIBUTES>
             <ATT name="Content"><![CDATA[Events catching some sort of signal or condition (message, condition, timer, etc.).
 Initial events are always catch events. Intermediate events may catch events.]]></ATT>
@@ -98,7 +98,7 @@ Initial events are always catch events. Intermediate events may catch events.]]>
           </ATTRIBUTES>
           <DEPENDENCIES>
             <LINK relation="Model">
-              <FOREIGNID name="description" mc="Standard.NoteType" uid="00000000-0000-3e81-0000-000000000000"/>
+              <FOREIGNID name="description" mc="Infrastructure.NoteType" uid="00000000-0000-3e81-0000-000000000000"/>
             </LINK>
           </DEPENDENCIES>
         </OBJECT>

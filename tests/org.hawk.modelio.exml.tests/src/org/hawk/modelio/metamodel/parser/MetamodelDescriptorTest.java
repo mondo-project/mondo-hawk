@@ -125,16 +125,7 @@ public class MetamodelDescriptorTest {
 	@Test
 	public void testEnumerationsInStandardFragment() {
 
-//		testEnumeration((MEnumeration)metamodeldescriptor.getDataType("org.modelio.metamodel.bpmn.activities.AdHocOrdering"), "org.modelio.metamodel.bpmn.activities.AdHocOrdering", java.util.Arrays.asList("PARALLELORDERING", "SEQUENTIALORDERING"));
-//		
-//		testEnumeration((MEnumeration)metamodeldescriptor.getDataType("org.modelio.metamodel.bpmn.activities.MultiInstanceBehavior"), "org.modelio.metamodel.bpmn.activities.MultiInstanceBehavior", java.util.Arrays.asList("NONEBEHAVIOR", "ONEBEHAVIOR", "ALLBEHAVIOR", "COMPLEXBEHAVIOR"));
-//		
-//		testEnumeration((MEnumeration)metamodeldescriptor.getDataType("org.modelio.metamodel.bpmn.activities.TransactionMethod"), "org.modelio.metamodel.bpmn.activities.TransactionMethod", java.util.Arrays.asList("COMPENSATETRANSACTION", "STORETRANSACTION", "IMAGETRANSACTION"));
-
-		
 		MFragment fragment = metamodeldescriptor.getFragments().get("Standard");
-
-		//assertEquals("Check num metaclasses", 25, fragment.getDataTypes().size());
 
 		testEnumeration(fragment.getDataType("org.modelio.metamodel.bpmn.activities.AdHocOrdering"), "org.modelio.metamodel.bpmn.activities.AdHocOrdering", java.util.Arrays.asList("PARALLELORDERING", "SEQUENTIALORDERING"));
 		
@@ -168,9 +159,6 @@ public class MetamodelDescriptorTest {
 		assertEquals("", currentMetaclass.getSourcesDeps().containsKey("ImportingOperation"), true);
 	}
 
-	
-	
-	
 	private void testFragmentAttributes(String fragmentName, String version,
 			String provider, String providerVersion, int numDeps, int numMetaclasses, int numEnums) {
 		MFragment fragment = metamodeldescriptor.getFragments().get(fragmentName);
