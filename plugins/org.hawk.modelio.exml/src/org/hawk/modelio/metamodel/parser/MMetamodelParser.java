@@ -167,6 +167,8 @@ public class MMetamodelParser {
 						attributeElement.setAttribute("type", attr.getType().getName());
 					}
 				}
+				
+				// TODO dependencies
 
 				return getXmlString(element);
 			}
