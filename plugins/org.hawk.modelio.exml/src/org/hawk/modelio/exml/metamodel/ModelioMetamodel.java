@@ -29,40 +29,32 @@ public class ModelioMetamodel {
 
 	private Map<String, MClass> mClass;
 
-	public ModelioMetamodel() {
-		this.mBaseTypes = new HashMap<>();
-		this.mPackages = new ArrayList<MPackage>();
-		this.mClass = new HashMap<>();
-
-	}
-
 	public ModelioMetamodel(MMetamodelDescriptor metamodelDescriptor) {
 		this.mBaseTypes = new HashMap<>();
 		this.mPackages = new ArrayList<MPackage>();
 		this.mClass = new HashMap<>();
 
-		initMetamodel(metamodelDescriptor);
+		if(metamodelDescriptor != null) {
+			this.mDescriptor = metamodelDescriptor;
+			initMetamodel(this.mDescriptor);
+		}
 	}
 
 	public void initMetamodel(MMetamodelDescriptor mDescriptor) {
-		if(mDescriptor == null)
-			return;
-
-		this.mDescriptor = mDescriptor;
 
 		//	 Step 1: populate Data types 
 		for ( MFragment fragment : mDescriptor.getFragments().values()) {
 			for(MAttributeType attributeType : fragment.getDataTypes().values()) {
 				MDataType dataType = null;
-				
+
 				if(attributeType instanceof MEnumeration) {
 					dataType =  new MEnum(attributeType.getName(), attributeType.getName(), "enum", ((MEnumeration)attributeType).getValues());
 				} 
-				
+
 				if(attributeType instanceof MAttributeType) {
 					dataType = new MDataType(attributeType.getName(), attributeType.getName(), attributeType.getName());
 				}
-				
+
 				this.mBaseTypes.put(dataType.getName(), dataType);
 			}
 		}
@@ -75,11 +67,11 @@ public class ModelioMetamodel {
 			// get classes
 			for (MMetaclass metaclass : fragment.getMetaclasses().values()) {
 				String mcId = getMClassId(fragment.getName(), metaclass.getName());
-				
+
 				MClass mc = new MClass(mcId, metaclass.getName());
-				
+
 				pkg.getMClass().add(mc);
-				
+
 				this.mClass.put(mcId, mc);
 
 				// attributes
@@ -104,7 +96,7 @@ public class ModelioMetamodel {
 
 				// dependencies
 				for( MMetaclassDependency dependency  : metaclass.getDependencies().values()) {
- 					MDependency dep = new MDependency(dependency.getName(), dependency.getName(), getMClass(dependency.getTarget()), !(dependency.getMax() == 1), true, true, (dependency.getAggregation() == MAggregationType.Composition));
+					MDependency dep = new MDependency(dependency.getName(), dependency.getName(), getMClass(dependency.getTarget()), !(dependency.getMax() == 1), true, true, (dependency.getAggregation() == MAggregationType.Composition));
 					currentClass.getMDependencys().add(dep);
 				}
 
@@ -117,38 +109,33 @@ public class ModelioMetamodel {
 	}
 
 	private String getMPackageId(MFragment fragment) {
-		
-		String pkgId = fragment.getProvider() 
-				+ "." 
-				+ fragment.getProviderVersion() 
-				+ "." 
-				+ fragment.getName()
-				+ "." 
-				+ fragment.getVersion();
-		
+
+		String pkgId = fragment.getProvider() + "." + fragment.getName();
+		//+ fragment.getProviderVersion() 
+		//+ fragment.getVersion();
+
 		return pkgId;
 	}
 
 	private MClass getMClass(String fragment, String metaclass) {
 		return this.mClass.get(getMClassId(fragment, metaclass));		
 	}
-	
+
 	private MClass getMClass(MMetaclassReference ref) {
 		return getMClass(ref.getFragmentName(), ref.getName());		
 	}
 
 	private String getMClassId(String fragment, String metaclass) {
 		return fragment + "." + metaclass;
-
 	}
-	
-	public List<MPackage> getMPackages() {
-        return mPackages;
-    }
 
-    public MDataType getDataTypeByName(String name) {
-        return this.mBaseTypes.get(name);
-    }
+	public List<MPackage> getMPackages() {
+		return mPackages;
+	}
+
+	public MDataType getDataTypeByName(String name) {
+		return this.mBaseTypes.get(name);
+	}
 
 	public String GetFormat() {
 		return mDescriptor.getMetamodelFormat();

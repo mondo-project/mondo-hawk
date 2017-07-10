@@ -94,7 +94,10 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 
 	@Override
 	public String dumpPackageToString(IHawkPackage ePackage) throws Exception {
-		return ((ModelioPackage) ePackage).rawPackage.getXml();
+		if(((ModelioPackage) ePackage).getXml().isEmpty()) {
+			((ModelioPackage) ePackage).setXml(parser.dumpPackageToXmlString((ModelioPackage) ePackage));
+		} 
+		return ((ModelioPackage) ePackage).getXml();
 	}
 
 	private ModelioMetaModelResource getMetamodelResource(InputSource is) {

@@ -37,7 +37,7 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 	private ModelioMetamodel metamodel;
 
 	private Set<IHawkObject> contents;
-	private Map<String, ModelioClass> classesByName;
+	private Map<String, ModelioClass> classesById;
 
 	
 	public void setMetamodel(MMetamodelDescriptor metamodelDescriptor) {
@@ -48,13 +48,6 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 		return metamodel;
 	}
 
-	public ModelioMetaModelResource(ModelioMetaModelResourceFactory factory) {
-		this.factory = factory;
-		this.metaPackage = new ModelioPackage(this, createMetaPackage());
-		this.classesByName = new HashMap<>();
-
-	}
-
 	public ModelioMetaModelResource(MMetamodelDescriptor metamodelDescriptor,
 			ModelioMetaModelResourceFactory factory) {
 
@@ -62,11 +55,11 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 
 		this.factory = factory;
 		this.metaPackage = new ModelioPackage(this, createMetaPackage());
-		this.classesByName = new HashMap<>();	
+		this.classesById = new HashMap<>();	
 	}
 
 	private MPackage createMetaPackage() {
-		String pkgId = "ModelioMetaPackage";//_format_" + metamodel.GetFormat();
+		String pkgId = "ModelioMetaPackage"; //_format_" + metamodel.GetFormat();
 		MPackage mpkg = new MPackage(pkgId, pkgId, "");
 		final MClass mt = new MClass(META_TYPE_NAME, META_TYPE_NAME, mpkg.getExml());
 		mt.getMAttributes().add(createStringAttribute(mpkg, mt.getName(), "name"));
@@ -78,7 +71,7 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 	public void unload() {
 		metamodel = null;
 		contents = null;
-		classesByName = null;
+		classesById = null;
 	}
 
 	@Override
@@ -97,7 +90,7 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 		contents.add(pkg);
 		for (IHawkClassifier cl : pkg.getClasses()) {
 			contents.add(cl);
-			if (classesByName.put(getClassName((ModelioClass)cl), (ModelioClass)cl) != null) {
+			if (classesById.put(((ModelioClass)cl).getId(), (ModelioClass)cl) != null) {
 				LOGGER.error("Class name '{}' is not unique", cl.getName());
 			}
 		}
@@ -124,13 +117,13 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 		return metaPackage;
 	}
 
-	private String getClassName(ModelioClass mc) {
+	/*private String getClassId(ModelioClass mc) {
 		return mc.rawClass.getId();
-	}
+	}*/
 
-	public ModelioClass getModelioClass(String classId) {
+	public ModelioClass getModelioClassById(String classId) {
 		getAllContents();
-		final ModelioClass mc = classesByName.get(classId);
+		final ModelioClass mc = classesById.get(classId);
 		if (mc != null) {
 			return mc;
 		}

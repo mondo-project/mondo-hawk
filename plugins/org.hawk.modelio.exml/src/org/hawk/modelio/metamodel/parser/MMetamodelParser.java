@@ -11,27 +11,39 @@
 
 package org.hawk.modelio.metamodel.parser;
 
+import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
+import org.hawk.core.model.IHawkClassifier;
+import org.hawk.modelio.exml.metamodel.MEnum;
+import org.hawk.modelio.exml.metamodel.ModelioAttribute;
+import org.hawk.modelio.exml.metamodel.ModelioClass;
+import org.hawk.modelio.exml.metamodel.ModelioPackage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSOutput;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.InputSource;
 
 public class MMetamodelParser {
 	private MMetamodelDescriptor metamodelDescriptor;
+	private String xmlVerison;
+	private String xmlEncoding;
 	private MFragment currentFragment;
 
 	public MMetamodelParser() {
 		metamodelDescriptor = new MMetamodelDescriptor();
+		xmlVerison = "1.0";
+		xmlEncoding = "UTF-8";
 	}
 
 	public MMetamodelDescriptor parse(InputSource is) {
@@ -40,6 +52,9 @@ public class MMetamodelParser {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			Document document = builder.parse(is);
 			Element element = document.getDocumentElement();
+
+			xmlVerison = document.getXmlVersion();
+			xmlEncoding = document.getXmlEncoding();
 
 			if(isElement(element, "metamodel")) {
 				parseMetamodel(element);
@@ -50,16 +65,116 @@ public class MMetamodelParser {
 			}
 
 			resolveReferences();
-			
-			
+
 		} catch (Exception e) {
 			System.err.print("error in parse(File f): ");
 			System.err.println(e.getCause());
 			e.printStackTrace();
-			//return null;
 		}
 
 		return this.metamodelDescriptor;
+	}
+
+	/*public String dumpFragmentToXml(MFragment fragment) {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+		DocumentBuilder builder;
+		try {
+			builder = factory.newDocumentBuilder();
+
+		Document document = builder.newDocument();
+
+		Element element = document.createElement("fragment");
+		document.appendChild(element);
+
+		element.setAttribute("name", fragment.getName());
+		element.setAttribute("version" , fragment.getVersion());
+		element.setAttribute("provider" ,fragment.getProvider());
+		element.setAttribute("providerVersion" ,fragment.getProviderVersion());
+
+		for(MMetaclass metaclass : fragment.getMetaclasses().values()) {
+			Element metaclassElement = document.createElement("metaclass");
+			element.appendChild(metaclassElement);
+
+			metaclassElement.setAttribute("name", metaclass.getName());
+			metaclassElement.setAttribute("version", metaclass.getVersion());
+			metaclassElement.setAttribute("abstract", getStringFromBoolean(metaclass.isAbstract()));
+			metaclassElement.setAttribute("cmsNode", getStringFromBoolean(metaclass.isCmsNode()));
+
+
+			/// attributes
+			for(MMetaclassAttribute attr : metaclass.getAttributes()) {
+				Element attributeElement = document.createElement("attribute");
+				metaclassElement.appendChild(attributeElement);
+
+				attributeElement.setAttribute("name", attr.getName());
+
+				if(attr.getType() instanceof MEnumeration) {
+					attributeElement.setAttribute("type", "java.lang.Enum");
+					attributeElement.setAttribute("enumType", attr.getType().getName());
+				} else {
+					attributeElement.setAttribute("type", attr.getType().getName());
+				}
+			}
+			return getXmlString(element);
+
+		}
+
+
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+
+	}*/
+
+	public String dumpPackageToXmlString(ModelioPackage pkg) {
+
+		try {
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+
+			Document document = builder.newDocument();
+
+			Element element = document.createElement("fragment");
+			document.appendChild(element);
+
+			element.setAttribute("name", pkg.getName());
+			element.setAttribute("version" , "");
+			element.setAttribute("provider" , "");
+			element.setAttribute("providerVersion" , "");
+
+			for(IHawkClassifier metaclass : pkg.getClasses()) {
+				Element metaclassElement = document.createElement("metaclass");
+				element.appendChild(metaclassElement);
+
+				metaclassElement.setAttribute("name", metaclass.getName());
+				metaclassElement.setAttribute("version", "");
+				metaclassElement.setAttribute("abstract", String.valueOf(((ModelioClass)metaclass).isAbstract()));
+
+				/// attributes
+				for(ModelioAttribute attr : ((ModelioClass)metaclass).getOwnAttributesMap().values()) {
+					Element attributeElement = document.createElement("attribute");
+					metaclassElement.appendChild(attributeElement);
+
+					attributeElement.setAttribute("name", attr.getName());
+
+					if(attr.getType() instanceof MEnum) {
+						attributeElement.setAttribute("type", "java.lang.Enum");
+						attributeElement.setAttribute("enumType", attr.getType().getName());
+					} else {
+						attributeElement.setAttribute("type", attr.getType().getName());
+					}
+				}
+
+				return getXmlString(element);
+			}
+
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	private void parseMetamodel(Node node) {
@@ -79,8 +194,7 @@ public class MMetamodelParser {
 		currentFragment.setProvider(getNodeNamedAttribute(node, "provider"));
 		currentFragment.setProviderVersion(getNodeNamedAttribute(node, "providerVersion"));
 
-		currentFragment.setXmlString(getXmlString(node));
-		
+
 		// parse enumerations first thing
 		for(Node enumerationsNode :  NodeListIterable(((Element) node).getElementsByTagName("enumerations"))) {
 			for(Node enumerationNode :  NodeListIterable(((Element) enumerationsNode).getElementsByTagName("enumeration"))) {
@@ -88,7 +202,7 @@ public class MMetamodelParser {
 				currentFragment.addDataType(enumeration);
 			}
 		}
-		
+
 		// parse the rest 
 		for(Node metaclassesNode :  NodeListIterable(((Element) node).getElementsByTagName("metaclasses"))) {
 			for(Node metaclassNode :  NodeListIterable(((Element) metaclassesNode).getElementsByTagName("metaclass"))) {
@@ -99,7 +213,7 @@ public class MMetamodelParser {
 				currentFragment.addMetaclass(parseLinkMetaclass(metaclassNode));
 			}
 		}
-		
+
 		for(Node dependenciesNode :  NodeListIterable(((Element) node).getElementsByTagName("dependencies"))) {
 			for(Node dependencyNode :  NodeListIterable(((Element) dependenciesNode).getElementsByTagName("metamodel_fragment"))) {
 				MFragmentReference fragmentRef = new MFragmentReference(
@@ -110,28 +224,34 @@ public class MMetamodelParser {
 			}
 		}
 
+		// do it at the end when all populated
+		currentFragment.setXmlString(getXmlString(node));
+
 		this.metamodelDescriptor.addFragment(currentFragment);
 	}
 
 
 
 	private String getXmlString(Node node) {
-		DOMImplementationRegistry registry = null;
-		
 		try {
-			registry = DOMImplementationRegistry.newInstance();
-		} catch (ClassNotFoundException | InstantiationException
-				| IllegalAccessException | ClassCastException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
+			DOMImplementationLS implementationLS = 	(DOMImplementationLS)registry.getDOMImplementation("LS");
+
+			LSOutput output = implementationLS.createLSOutput();
+			output.setEncoding(this.xmlEncoding);
+			output.setCharacterStream(new StringWriter());
+
+			LSSerializer serializer = implementationLS.createLSSerializer();
+			serializer.write(node, output);
+
+			return output.getCharacterStream().toString();
+
+		} catch (Exception e1) {
+			e1.printStackTrace();
 		}
 
-		DOMImplementationLS impl = 
-				(DOMImplementationLS)registry.getDOMImplementation("LS");
-
-		LSSerializer writer = impl.createLSSerializer();
-		String str = writer.writeToString(node);		
-		return str;
+		return null;
 	}
 
 	private MEnumeration parseEnumeration(Node node) {
@@ -172,13 +292,13 @@ public class MMetamodelParser {
 	private void parseMetaclassAttributes(MMetaclass metaclass, Node node) {
 		metaclass.setName(getNodeNamedAttribute(node, "name"));
 		metaclass.setVersion(getNodeNamedAttribute(node, "version"));
-		metaclass.setAbstract(getBoolean(getNodeNamedAttribute(node, "abstract")));
-		metaclass.setCmsNode(getBoolean(getNodeNamedAttribute(node, "cmsNode")));
+		metaclass.setAbstract(Boolean.valueOf(getNodeNamedAttribute(node, "abstract")));
+		metaclass.setCmsNode(Boolean.valueOf(getNodeNamedAttribute(node, "cmsNode")));
 	}
 
 	private void parseMetaclassChildren(MMetaclass metaclass, Node node) {
 		if (isElement(node, "attribute")) {
-			
+
 			String enumTypeName = getNodeNamedAttribute(node, "enumType");
 			String typeName = getNodeNamedAttribute(node, "type");
 			MAttributeType type;
@@ -189,7 +309,7 @@ public class MMetamodelParser {
 			} else {
 				type = resolveAttributeBasicType(typeName); 
 			}
-			
+
 			MMetaclassAttribute attribute = new MMetaclassAttribute(getNodeNamedAttribute(node, "name"), type);
 			metaclass.addAttribute(attribute);
 
@@ -219,32 +339,32 @@ public class MMetamodelParser {
 		MMetaclassDependency dependency = new MMetaclassDependency();
 
 		dependency.setName(getNodeNamedAttribute(node, "name"));
-		
+
 		String aggregationString = getNodeNamedAttribute(node, "aggregation");
 		if(aggregationString == null) {
-		
+
 			dependency.setAggregation(MAggregationType.None);
-		
+
 		} else if(aggregationString.equals(MAggregationType.Composition.toString())) {
-			
+
 			dependency.setAggregation(MAggregationType.Composition);
 
 		} else if(aggregationString.equals(MAggregationType.SharedAggregation.toString())) {
-			
+
 			dependency.setAggregation(MAggregationType.SharedAggregation);
 
 		}
 
-		dependency.setNavigate(getBoolean(getNodeNamedAttribute(node, "navigate")));
-		
-		dependency.setCascadeDelete(getBoolean(getNodeNamedAttribute(node, "cascadeDelete")));
-		dependency.setWeakReference(getBoolean(getNodeNamedAttribute(node, "weakReference")));
-		
-		dependency.setMin(getInt(getNodeNamedAttribute(node, "min")));
-		dependency.setMax(getInt(getNodeNamedAttribute(node, "max")));
+		dependency.setNavigate(Boolean.valueOf(getNodeNamedAttribute(node, "navigate")));
+
+		dependency.setCascadeDelete(Boolean.valueOf(getNodeNamedAttribute(node, "cascadeDelete")));
+		dependency.setWeakReference(Boolean.valueOf(getNodeNamedAttribute(node, "weakReference")));
+
+		dependency.setMin(Integer.valueOf(getNodeNamedAttribute(node, "min")));
+		dependency.setMax(Integer.valueOf(getNodeNamedAttribute(node, "max")));
 
 		for(Node childNode :  NodeListIterable( node.getChildNodes())) {
-			
+
 			if (isElement(childNode, "target")) {
 
 				MMetaclassReference target = new MMetaclassReference(
@@ -269,7 +389,7 @@ public class MMetamodelParser {
 			}
 
 		} else if (isElement(node, "sources")) {
-			
+
 			for(Node depNode : NodeListIterable(((Element) node).getElementsByTagName("dep"))) {
 				((MLinkMetaclass) metaclass).addSource(getNodeNamedAttribute(depNode, "name"));
 			}
@@ -278,9 +398,9 @@ public class MMetamodelParser {
 			parseMetaclassChildren(metaclass, node);
 		}
 	}
-	
+
 	private void resolveReferences() {
-		
+
 		for (MFragment fragment : this.metamodelDescriptor.getFragments().values()) {
 			// resolve fragment references
 			for (MFragmentReference fragmentDependencyEntry : fragment.getDependencies()) {
@@ -293,13 +413,12 @@ public class MMetamodelParser {
 				// resolve parent
 				resolveMetaclassReference(metaclass.getParent());
 
-				
 				// add this metaclass to Parent Children
 				if(metaclass.getParent() != null) {
 					MMetaclassReference childRef = new MMetaclassReference(fragment.getName(), metaclass.getName());
-					
+
 					childRef.setMetaclass(metaclass);
-					
+
 					// if parent is resolved 
 					if(metaclass.getParent().getMetaclass() != null) {
 						metaclass.getParent().getMetaclass().addChild(childRef);
@@ -326,11 +445,11 @@ public class MMetamodelParser {
 				MMetaclass targetMetaclass = targetFragment.getMetaclass(ref.getName());
 				ref.setMetaclass(targetMetaclass);
 			} else {
-				// Error
+				// TODO Error
 			}
 		}
 	}
-	
+
 	private void resolveFragmentReference(MFragmentReference ref) {
 		if(ref != null) {
 			MFragment targetFragment = this.metamodelDescriptor.getFragment(ref.getName());
@@ -338,7 +457,7 @@ public class MMetamodelParser {
 			ref.setFragment(targetFragment);
 		}
 	}
-	
+
 	private void resolveOppositeDependency(MMetaclassDependency ref) {
 		if(ref != null) {
 			MFragment targetFragment = this.metamodelDescriptor.getFragment(ref.getTarget().getFragmentName());
@@ -347,34 +466,16 @@ public class MMetamodelParser {
 			ref.setOppositeDependency(dependency);
 		}
 	}
-	
+
 	private String getNodeNamedAttribute(Node node, String attributeName) {
 		if (node.hasAttributes()) {
-			
+
 			if (node.getAttributes().getNamedItem(attributeName) != null) {
 				return node.getAttributes().getNamedItem(attributeName).getNodeValue();
 			}
 		}
 
 		return null;
-	}
-
-	private boolean getBoolean(String nodeValue) {
-
-		if (nodeValue != null) {
-			if (nodeValue.equalsIgnoreCase("true")) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private int getInt(String nodeValue) {
-		int intValue = Integer.MAX_VALUE;
-		if (nodeValue != null) {
-			intValue = Integer.parseInt(nodeValue);
-		}
-		return intValue;
 	}
 
 	private boolean isElement(Node node, String name) {
@@ -388,38 +489,37 @@ public class MMetamodelParser {
 		return false;
 	}
 
-
 	public static Iterable<Node> NodeListIterable(final NodeList n) {
-		  return new Iterable<Node>() {
+		return new Iterable<Node>() {
 
-		    @Override
-		    public Iterator<Node> iterator() {
+			@Override
+			public Iterator<Node> iterator() {
 
-		      return new Iterator<Node>() {
+				return new Iterator<Node>() {
 
-		        int index = 0;
+					int index = 0;
 
-		        @Override
-		        public boolean hasNext() {
-		          return index < n.getLength();
-		        }
+					@Override
+					public boolean hasNext() {
+						return index < n.getLength();
+					}
 
-		        @Override
-		        public Node next() {
-		          if (hasNext()) {
-		            return n.item(index++);
-		          } else {
-		            throw new NoSuchElementException();
-		          }  
-		        }
+					@Override
+					public Node next() {
+						if (hasNext()) {
+							return n.item(index++);
+						} else {
+							throw new NoSuchElementException();
+						}  
+					}
 
-		        @Override
-		        public void remove() {
-		          throw new UnsupportedOperationException();
-		        }
-		      };
-		    }
-		  };
-		}
+					@Override
+					public void remove() {
+						throw new UnsupportedOperationException();
+					}
+				};
+			}
+		};
+	}
 
 }

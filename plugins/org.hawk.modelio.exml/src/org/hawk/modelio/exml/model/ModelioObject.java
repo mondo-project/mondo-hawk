@@ -26,6 +26,7 @@ import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
 import org.hawk.modelio.exml.metamodel.ModelioReference;
 import org.hawk.modelio.exml.parser.ExmlObject;
 import org.hawk.modelio.exml.parser.ExmlReference;
+import org.hawk.modelio.model.util.RegisterMeta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,11 +135,10 @@ public class ModelioObject extends AbstractModelioObject {
 			return new ModelioProxy((ModelioClass) ref.getType(), parentRef);
 		}
 
-		final ModelioMetaModelResource metamodel = mc.getPackage().getResource();
 		final List<ExmlReference> links = exml.getLinks().get(ref.getName());
 		if (links != null) {
 			for (ExmlReference r : links) {
-				ModelioClass rMC = metamodel.getModelioClass(r.getMClassName());
+				ModelioClass rMC = RegisterMeta.getModelioClass(r.getMClassName());
 				if (rMC == null) {
 					LOGGER.warn("Could not find class with name '{}', ignoring instance", r.getMClassName());
 				} else {
@@ -149,7 +149,7 @@ public class ModelioObject extends AbstractModelioObject {
 			List<ExmlReference> cmp = exml.getCompositions().get(ref.getName());
 			if (cmp != null) {
 				for (ExmlReference r : cmp) {
-					ModelioClass rMC = metamodel.getModelioClass(r.getMClassName());
+					ModelioClass rMC = RegisterMeta.getModelioClass(r.getMClassName());
 					if (rMC == null) {
 						LOGGER.warn("Could not find class with name '{}', ignoring instance", r.getMClassName());
 					} else if (r instanceof ExmlObject) {

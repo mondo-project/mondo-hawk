@@ -111,6 +111,10 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 	public String getName() {
 		return rawClass.getName();
 	}
+	
+	public String getId() {
+		return rawClass.getId();
+	}
 
 	public ModelioPackage getPackage() {
 		return mPackage;
@@ -197,7 +201,7 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 	public Set<ModelioClass> getAllSuperTypes() {
 		final Set<ModelioClass> superClasses = new HashSet<>();
 		for (MClass superRawClass : rawClass.getMSuperType()) {
-			ModelioClass superClass = mPackage.getResource().getModelioClass(superRawClass.getId());
+			ModelioClass superClass = mPackage.getResource().getModelioClassById(superRawClass.getId());
 			if (superClasses.add(superClass)) {
 				superClasses.addAll(superClass.getAllSuperTypes());
 			}
@@ -216,7 +220,7 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 	public Set<IHawkClass> getOwnSuperTypes() {
 		final Set<IHawkClass> superClasses = new HashSet<>();
 		for (MClass superRawClass : rawClass.getMSuperType()) {
-			ModelioClass superClass =  mPackage.getResource().getModelioClass(superRawClass.getId());
+			ModelioClass superClass =  mPackage.getResource().getModelioClassById(superRawClass.getId());
 			superClasses.add(superClass);
 		}
 		return superClasses;

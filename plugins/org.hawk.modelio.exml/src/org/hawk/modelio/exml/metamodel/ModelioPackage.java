@@ -130,6 +130,13 @@ public class ModelioPackage extends AbstractModelioObject implements IHawkPackag
 		return rawPackage.getExml();
 	}
 
+	public String getXml() {
+		return rawPackage.getXml();
+	}
+
+	public void setXml(String xmlString) {
+		rawPackage.setXml(xmlString);
+	}
 	public Collection<ModelioPackage> getPackages() {
 		if (packages == null) {
 			packages = new ArrayList<>();
