@@ -28,7 +28,7 @@ public class RegisterMeta {
 		return registeredMetamodels.values();
 	}
 
-	public void clean() {
+	public static void clean() {
 		registeredMetamodels.clear();
 	}
 
