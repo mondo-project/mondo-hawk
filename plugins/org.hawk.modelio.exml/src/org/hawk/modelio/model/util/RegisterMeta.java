@@ -40,7 +40,7 @@ public class RegisterMeta {
 	 */
 	public static int registerPackages(ModelioPackage pkg) {
 
-		if (registeredMetamodels.put(pkg.getNsURI(), pkg) == null) {
+		if (registeredMetamodels.put(pkg.getName(), pkg) == null) {
 			System.err.println("registering package: " + pkg.getName()
 					+ "(" + pkg.getNsURI() + ")");
 			registered++;
@@ -56,11 +56,6 @@ public class RegisterMeta {
 			} 
 		}
 	}
-
-	public static ModelioPackage getPackage(String  uri) {
-		return registeredMetamodels.get(uri);
-	}
-
 	
 	public static ModelioClass getModelioClass(String  className) {
 		String pkgName;
@@ -91,10 +86,9 @@ public class RegisterMeta {
 	}
 	
 	private static ModelioClass getMClass(String pkgName, String className) {
-		for( ModelioPackage pkg : registeredMetamodels.values()) {
-			if( pkg.getName().equals(pkgName)) {
-				return pkg.getClassifier(className);
-			}
+		ModelioPackage pkg = registeredMetamodels.get(pkgName);
+		if(pkg != null) {	
+			return pkg.getClassifier(className);
 		}
 		return null;
 	}
