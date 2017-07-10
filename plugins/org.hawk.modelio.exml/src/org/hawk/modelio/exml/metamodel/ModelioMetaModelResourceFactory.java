@@ -87,9 +87,11 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 
 	@Override
 	public void removeMetamodel(String property) {
-		// ignore
+		// clear registry
+		RegisterMeta.clean();
+		
 		System.err
-		.println("ModelioMetaModelResourceFactory cannot remove metamodels, for now. need to be changed");
+		.println("ModelioMetaModelResourceFactory doesnot support remove metamodels, TODO Implement removeMetamodel");
 	}
 
 	@Override
