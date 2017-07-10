@@ -28,7 +28,17 @@ public class ModelioDataType extends AbstractModelioObject implements IHawkDataT
 
 	@Override
 	public String getInstanceType() {
-		return mDataType.getJavaEquivalent();
+		String it = mDataType.getJavaEquivalent();
+
+		// remove java.lang for java.lang.X 
+		String[] arrayString = it.split("\\.");
+		if(arrayString.length > 0) {
+			it = arrayString[arrayString.length - 1];
+		}
+
+		it = it == null ? "NULL_INSTANCE_TYPE" : it;
+
+		return it;
 	}
 
 	@Override
