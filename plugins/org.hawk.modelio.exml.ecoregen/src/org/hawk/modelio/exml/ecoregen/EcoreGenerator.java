@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
+ *     Orjuwan Al-Wadeai -  Integrate Modelio Metamodel 3.6
  ******************************************************************************/
 package org.hawk.modelio.exml.ecoregen;
 
@@ -115,7 +116,10 @@ public class EcoreGenerator {
 		Resource r = new XMIResourceImpl(URI.createFileURI(file.getPath()));
 
 		// Do a first pass to create the structure
-		final Collection<ModelioPackage> mps = RegisterMeta.getRegisteredPackages();//metamodel.getMPackages();
+		
+		// FIXME this is not going to work, since we don't have a running hawk 
+		// instance RegisterMeta will will empty need to instead add a metamodel and then use this generator
+		final Collection<ModelioPackage> mps = RegisterMeta.getRegisteredPackages();
 		for (ModelioPackage mp : mps) {
 			addPackageContents(r, mp);
 		}
