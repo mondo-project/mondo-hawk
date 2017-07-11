@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
+ *     Orjuwan Al-Wadeai -  Integrate Modelio Metamodel 3.6
  ******************************************************************************/
 package org.hawk.modelio.exml.metamodel;
 
