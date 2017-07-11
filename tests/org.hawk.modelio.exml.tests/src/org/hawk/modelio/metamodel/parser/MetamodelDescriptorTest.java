@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Orjuwan Al-Wadeai - Modelio XML metamodel parser Test
+ *     Orjuwan Al-Wadeai - Modelio XML metamodel parser Test 
  ******************************************************************************/
 
 package org.hawk.modelio.metamodel.parser;
@@ -38,7 +38,6 @@ public class MetamodelDescriptorTest {
 		try {
 			is = new InputSource(new FileReader(file));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -48,7 +47,7 @@ public class MetamodelDescriptorTest {
 	@Test
 	public void testNumberOfFragments() {
 		// asserts
-		assertEquals("5 Fragments", 5, metamodeldescriptor.getFragments().size());
+		assertEquals("Check metamodel has 5 fragments", 5, metamodeldescriptor.getFragments().size());
 	}
 	
 	@Test
@@ -57,7 +56,7 @@ public class MetamodelDescriptorTest {
 	}
 	
 	@Test
-	public void testDependenciesInAnalystFragment() {
+	public void testFragmentDependenciesInAnalystFragment() {
 		MFragment fragment = metamodeldescriptor.getFragments().get("Analyst");
 		assertEquals("Check 2 Dependencies", 2, fragment.getDependencies().size());
 		
@@ -81,8 +80,8 @@ public class MetamodelDescriptorTest {
 		
 		// Check class "AnalystContainer" 
 		MMetaclass currentMetaclass = fragment.getMetaclasses().get("AnalystContainer");
-		assertNotEquals("", currentMetaclass.getClass().getName(), (MLinkMetaclass.class.getName()));
-		assertEquals("", currentMetaclass.getClass().getName(), (MMetaclass.class.getName()));
+		assertNotEquals("AnalystContainer is not of Type LinkMetaclass", currentMetaclass.getClass().getName(), (MLinkMetaclass.class.getName()));
+		assertEquals("AnalystContainer is of Type MMetaclass", currentMetaclass.getClass().getName(), (MMetaclass.class.getName()));
 		
 		testMetaClassAttributes(currentMetaclass, "AnalystContainer", "0.0.9054", true, false);
 		testMetaclassRef(currentMetaclass.getParent(), "Analyst", "AnalystItem");
@@ -93,15 +92,15 @@ public class MetamodelDescriptorTest {
 		testMetaClassAttributes(currentMetaclass, "AnalystItem", "0.0.9054", true, false);
 		testMetaclassRef(currentMetaclass.getParent(), "Infrastructure", "ModelElement");
 		
-		assertEquals("Check attributes", 1, currentMetaclass.getAttributes().size());
+		assertEquals("Check number of attributes", 1, currentMetaclass.getAttributes().size());
 		testAttributeValues(currentMetaclass.getAttributes().get(0), "Definition", "java.lang.String", fragment);
 			
-		assertEquals("Check dependencies", 1, currentMetaclass.getDependencies().size());
+		assertEquals("Check number of dependencies", 1, currentMetaclass.getDependencies().size());
 		testMetaclassDependencies(currentMetaclass.getDependencies().get("AnalystProperties"), "AnalystProperties", 1, 1, MAggregationType.Composition, true, "Analyst", "AnalystPropertyTable", "AnalystOwner");
 		
 		// GoalContainer dependencies
 		currentMetaclass = fragment.getMetaclasses().get("GoalContainer");
-		assertEquals("Check dependencies", 4, currentMetaclass.getDependencies().size());
+		assertEquals("Check Number of dependencies of GoalContainer", 4, currentMetaclass.getDependencies().size());
 		testMetaclassDependencies(currentMetaclass.getDependencies().get("OwnedGoal"), "OwnedGoal", 0, -1, MAggregationType.Composition, true, "Analyst", "Goal", "OwnerContainer");
 		testMetaclassDependencies(currentMetaclass.getDependencies().get("OwnerContainer"), "OwnerContainer", 0, 1, MAggregationType.None, false, "Analyst", "GoalContainer", "OwnedContainer");
 		testMetaclassDependencies(currentMetaclass.getDependencies().get("OwnedContainer"), "OwnedContainer", 0, -1, MAggregationType.Composition, true, "Analyst", "GoalContainer", "OwnerContainer");
@@ -112,16 +111,9 @@ public class MetamodelDescriptorTest {
 	public void testAttributeWithEnumType() {
 		MFragment fragment = metamodeldescriptor.getFragments().get("Archimate");
 		MLinkMetaclass currentMetaclass = (MLinkMetaclass)fragment.getMetaclasses().get("Access");
-		testAttributeValuesEnum(fragment, currentMetaclass.getAttributes().get(0), "Mode", "org.modelio.archimate.metamodel.relationships.dependency.AccessMode");	
+		testAttributeValues(currentMetaclass.getAttributes().get(0), "Mode", "org.modelio.archimate.metamodel.relationships.dependency.AccessMode", fragment);	
 	}
 	
-	private void testAttributeValuesEnum(MFragment fragment,
-			MMetaclassAttribute mAttribute, String name,
-			String typeName) {
-		assertEquals("Check Attribute Values", name, mAttribute.getName());
-		assertEquals("Check Attribute Values", fragment.getDataType(typeName), mAttribute.getType());		
-	}
-
 	@Test
 	public void testEnumerationsInStandardFragment() {
 
@@ -162,22 +154,20 @@ public class MetamodelDescriptorTest {
 	private void testFragmentAttributes(String fragmentName, String version,
 			String provider, String providerVersion, int numDeps, int numMetaclasses, int numEnums) {
 		MFragment fragment = metamodeldescriptor.getFragments().get(fragmentName);
-		assertEquals("Check Version", version, fragment.getVersion());
-		assertEquals("Check provider", provider, fragment.getProvider());
-		assertEquals("Check providerVersion", providerVersion, fragment.getProviderVersion());
+		assertEquals("Check fragment version", version, fragment.getVersion());
+		assertEquals("Check fragment provider", provider, fragment.getProvider());
+		assertEquals("Check fragment providerVersion", providerVersion, fragment.getProviderVersion());
 
-		assertEquals("Check num Dependencies", numDeps, fragment.getDependencies().size());
-		assertEquals("Check num metaclasses", numMetaclasses, fragment.getMetaclasses().size());
-		//assertEquals("Check num metaclasses", numEnums, fragment.getEnumerations().size());
+		assertEquals("Check fragment number of Dependencies", numDeps, fragment.getDependencies().size());
+		assertEquals("Check fragment number of metaclasses", numMetaclasses, fragment.getMetaclasses().size());
 	}
  
 	private void testEnumeration(MAttributeType mAttributeType, String name,
 			List<String> list) {
-		assertEquals("Check name", name, mAttributeType.getName());
-		assertEquals("Check name", list.size(), ((MEnumeration) mAttributeType).getValues().size());
-		
+		assertEquals("Check attribute name", name, mAttributeType.getName());
+		assertEquals("Check eumeration values size", list.size(), ((MEnumeration) mAttributeType).getValues().size());
 		for(int i = 0; i < list.size(); i++) {
-			assertEquals("Check values", list.get(i), ((MEnumeration) mAttributeType).getValues().get(i));
+			assertEquals("Check enumeration value", list.get(i), ((MEnumeration) mAttributeType).getValues().get(i));
 		}
 	}
 
@@ -186,12 +176,12 @@ public class MetamodelDescriptorTest {
 			int max, MAggregationType aggregation, boolean navigate, String targetFragment, String targetName,
 			String opposite) {
 		
-		assertEquals("Check name", name, mMetaclassDependency.getName());
-		assertEquals("Check name", min, mMetaclassDependency.getMin());	
-		assertEquals("Check name", max, mMetaclassDependency.getMax());	
-		assertEquals("Check name", aggregation, mMetaclassDependency.getAggregation());
-		assertEquals("Check name", navigate, mMetaclassDependency.isNavigate());	
-		assertEquals("Check name", opposite, mMetaclassDependency.getOppositeName());	
+		assertEquals("Check Metaclass Dependency name", name, mMetaclassDependency.getName());
+		assertEquals("Check Metaclass Dependency min", min, mMetaclassDependency.getMin());	
+		assertEquals("Check Metaclass Dependency max", max, mMetaclassDependency.getMax());	
+		assertEquals("Check Metaclass Dependency aggregation", aggregation, mMetaclassDependency.getAggregation());
+		assertEquals("Check Metaclass Dependency navigate", navigate, mMetaclassDependency.isNavigate());	
+		assertEquals("Check Metaclass Dependency opposite name", opposite, mMetaclassDependency.getOppositeName());	
 		
 		// check target
 		testMetaclassRef(mMetaclassDependency.getTarget(), targetFragment, targetName);
@@ -221,16 +211,16 @@ public class MetamodelDescriptorTest {
 	private void testMetaClassAttributes(MMetaclass currentMetaclass, String name, String version,
 			boolean isAbstract, boolean cmsNode) {
 		
-		assertEquals("Check name", name, currentMetaclass.getName());
-		assertEquals("Check version", version, currentMetaclass.getVersion());
-		assertEquals("Check abstract", isAbstract, currentMetaclass.isAbstract());
-		assertEquals("Check cmsNode", cmsNode, currentMetaclass.isCmsNode());
+		assertEquals("Check attribute name", name, currentMetaclass.getName());
+		assertEquals("Check attribute version", version, currentMetaclass.getVersion());
+		assertEquals("Check attribute abstract", isAbstract, currentMetaclass.isAbstract());
+		assertEquals("Check attribute cmsNode", cmsNode, currentMetaclass.isCmsNode());
 	}
 
 	private void testAttributeValues(MMetaclassAttribute mAttribute, String name,
 			String typeName, MFragment fragment) {
-		assertEquals("Check Attribute Values", name, mAttribute.getName());
-		assertEquals("Check Attribute Values", fragment.getDataType(typeName), mAttribute.getType());
+		assertEquals("Check attribute name", name, mAttribute.getName());
+		assertEquals("Check attribute type", fragment.getDataType(typeName), mAttribute.getType());
 	}
 
 }
