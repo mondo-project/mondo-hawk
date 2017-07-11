@@ -87,15 +87,6 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 	}
 
 	@Override
-	public void removeMetamodel(String property) {
-		// clear registry
-		RegisterMeta.clean();
-		
-		System.err
-		.println("ModelioMetaModelResourceFactory doesnot support remove metamodels, TODO Implement removeMetamodel");
-	}
-
-	@Override
 	public String dumpPackageToString(IHawkPackage ePackage) throws Exception {
 		if(((ModelioPackage) ePackage).getXml().isEmpty()) {
 			((ModelioPackage) ePackage).setXml(parser.dumpPackageToXmlString((ModelioPackage) ePackage));

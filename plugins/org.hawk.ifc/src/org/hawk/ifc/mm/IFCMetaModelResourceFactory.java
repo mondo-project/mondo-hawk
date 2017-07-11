@@ -118,23 +118,6 @@ public class IFCMetaModelResourceFactory implements IMetaModelResourceFactory {
 	}
 
 	@Override
-	public void removeMetamodel(String property) {
-		for (Resource r : resourceSet.getResources()) {
-			if (r.getURI().toString().contains(property)) {
-				try {
-					r.delete(null);
-					System.err.println("removed: " + property);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				break;
-			}
-		}
-
-		System.err.println(property + " not present in this EMF parser");
-	}
-
-	@Override
 	public boolean canParse(File f) {
 		return false;
 	}
