@@ -22,14 +22,14 @@ import org.hawk.modelio.exml.metamodel.ModelioPackage;
 public class RegisterMeta {
 
 	private static int registered = 0;
-	private final static Map<String, ModelioPackage> registeredMetamodels = new HashMap<String, ModelioPackage>();
+	private final static Map<String, ModelioPackage> registeredMetamodelsByName = new HashMap<String, ModelioPackage>();
 
 	public static Collection<ModelioPackage> getRegisteredPackages() {
-		return registeredMetamodels.values();
+		return registeredMetamodelsByName.values();
 	}
 
 	public static void clean() {
-		registeredMetamodels.clear();
+		registeredMetamodelsByName.clear();
 	}
 
 	// registers metamodel
@@ -40,7 +40,7 @@ public class RegisterMeta {
 	 */
 	public static int registerPackages(ModelioPackage pkg) {
 
-		if (registeredMetamodels.put(pkg.getName(), pkg) == null) {
+		if (registeredMetamodelsByName.put(pkg.getName(), pkg) == null) {
 			System.err.println("registering package: " + pkg.getName()
 					+ "(" + pkg.getNsURI() + ")");
 			registered++;
@@ -76,7 +76,7 @@ public class RegisterMeta {
 	}
 	
 	private static ModelioClass getMClass(String  className) {
-		for( ModelioPackage pkg : registeredMetamodels.values()) {
+		for( ModelioPackage pkg : registeredMetamodelsByName.values()) {
 			ModelioClass mc = pkg.getClassifier(className);
 			if( mc != null) {
 				return mc;
@@ -86,7 +86,7 @@ public class RegisterMeta {
 	}
 	
 	private static ModelioClass getMClass(String pkgName, String className) {
-		ModelioPackage pkg = registeredMetamodels.get(pkgName);
+		ModelioPackage pkg = registeredMetamodelsByName.get(pkgName);
 		if(pkg != null) {	
 			return pkg.getClassifier(className);
 		}
