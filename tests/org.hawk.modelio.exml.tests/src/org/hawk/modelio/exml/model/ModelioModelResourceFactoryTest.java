@@ -17,7 +17,9 @@ import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
+import org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory;
 import org.hawk.modelio.exml.metamodel.ModelioReference;
+import org.junit.Before;
 import org.junit.Test;
 
 public class ModelioModelResourceFactoryTest {
@@ -26,6 +28,19 @@ public class ModelioModelResourceFactoryTest {
 	private static final String ICONTAINMENT_PATH = "resources/implicitContainment/example.exml";
 	private static final String BPMNCATCH_PATH = "resources/bpmn/bpmnCatchEvent.exml";
 
+	private final String METAMODEL_PATH = "resources/metamodel/";
+		
+	@Before
+	public void setup() {
+		File file = new File( METAMODEL_PATH + "metamodel_descriptor.xml");
+		try {
+			ModelioMetaModelResourceFactory factory = new ModelioMetaModelResourceFactory();
+			factory.parse(file);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Test
 	public void ramc() throws Exception {

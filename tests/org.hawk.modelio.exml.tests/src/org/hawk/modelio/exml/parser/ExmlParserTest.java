@@ -22,8 +22,9 @@ import java.util.NoSuchElementException;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
+import org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory;
 import org.hawk.modelio.exml.model.ModelioModelResource;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -38,6 +39,21 @@ public class ExmlParserTest {
 	private static final String ELEPHANT_CLASS_EXML = CLASS_PATH + "2d7b2cba-e694-4b33-bd9e-4d2f1db4cc7b.exml";
 	private static final String PACKAGE_CLASS_EXML = FRAGMENT_PATH + "Zoo/model/Package/ea878bd2-7ef9-4ce1-a11e-35fa129981bb.exml";
 
+	private final String METAMODEL_PATH = "resources/metamodel/";
+
+	@Before
+	public void setup() {
+		File file = new File( METAMODEL_PATH + "metamodel_descriptor.xml");
+		try {
+			ModelioMetaModelResourceFactory factory;
+			factory = new ModelioMetaModelResourceFactory();
+			factory.parse(file);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@Test
 	public void parseClass() throws Exception {
 		final File f = new File(AREA_CLASS_EXML);
@@ -90,7 +106,7 @@ public class ExmlParserTest {
 			final List<ExmlReference> parent = object.getCompositions().get("Parent");
 			assertNotNull(parent);
 
-			final ModelioModelResource elephantModel = new ModelioModelResource(new ModelioMetaModelResource(null), object);
+			final ModelioModelResource elephantModel = new ModelioModelResource(object);
 			assertEquals(3, elephantModel.getAllContentsSet().size());
 		}
 	}

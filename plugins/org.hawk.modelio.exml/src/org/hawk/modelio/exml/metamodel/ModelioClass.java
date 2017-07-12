@@ -7,8 +7,10 @@
  * 
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
+ *     Orjuwan Al-Wadeai -  Integrate Modelio Metamodel 3.6
  ******************************************************************************/
 package org.hawk.modelio.exml.metamodel;
+
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,9 +23,6 @@ import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
 import org.hawk.modelio.exml.listeners.ModelioGraphChangeListener;
-import org.modelio.metamodel.MAttribute;
-import org.modelio.metamodel.MClass;
-import org.modelio.metamodel.MDependency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,6 +112,10 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 	public String getName() {
 		return rawClass.getName();
 	}
+	
+	public String getId() {
+		return rawClass.getId();
+	}
 
 	public ModelioPackage getPackage() {
 		return mPackage;
@@ -199,7 +202,7 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 	public Set<ModelioClass> getAllSuperTypes() {
 		final Set<ModelioClass> superClasses = new HashSet<>();
 		for (MClass superRawClass : rawClass.getMSuperType()) {
-			ModelioClass superClass = mPackage.getResource().getModelioClass(superRawClass.getName());
+			ModelioClass superClass = mPackage.getResource().getModelioClassById(superRawClass.getId());
 			if (superClasses.add(superClass)) {
 				superClasses.addAll(superClass.getAllSuperTypes());
 			}
@@ -218,7 +221,7 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 	public Set<IHawkClass> getOwnSuperTypes() {
 		final Set<IHawkClass> superClasses = new HashSet<>();
 		for (MClass superRawClass : rawClass.getMSuperType()) {
-			ModelioClass superClass = mPackage.getResource().getModelioClass(superRawClass.getName());
+			ModelioClass superClass =  mPackage.getResource().getModelioClassById(superRawClass.getId());
 			superClasses.add(superClass);
 		}
 		return superClasses;

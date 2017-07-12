@@ -7,11 +7,13 @@
  * 
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
+ *     Orjuwan Al-Wadeai -  Integrate Modelio Metamodel 3.6
  ******************************************************************************/
 package org.hawk.modelio.exml.ecoregen;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -36,10 +38,10 @@ import org.hawk.core.model.IHawkReference;
 import org.hawk.modelio.exml.metamodel.ModelioAttribute;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
+import org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory;
 import org.hawk.modelio.exml.metamodel.ModelioPackage;
 import org.hawk.modelio.exml.metamodel.ModelioReference;
-import org.modelio.metamodel.MMetamodel;
-import org.modelio.metamodel.MPackage;
+import org.hawk.modelio.model.util.RegisterMeta;
 
 /**
  * Generates an <code>.ecore</code> file that mimics the Modelio metamodel, in
@@ -78,13 +80,20 @@ public class EcoreGenerator {
 
 	private final EcoreFactory factory;
 	private final List<EPackage> packages = new ArrayList<>();
-	private final Map<String, Tuple<EClass, ModelioClass>> mClasses = new LinkedHashMap<>();
+	private final Map<String, Tuple<EClass, ModelioClass>> mClasses = new LinkedHashMap<>(); // classesById
 	private int nPackage = 0;
 
 	public static void main(String[] args) {
 		try {
+			// add modelio metamodel
+			final File metamodelFile = new File("metamodel/metamodel_descriptor.xml");
+			ModelioMetaModelResourceFactory factory;
+			factory = new ModelioMetaModelResourceFactory();
+			ModelioMetaModelResource metamodelResource = (ModelioMetaModelResource) factory.parse(metamodelFile);
+			
+			
 			final EcoreGenerator generator = new EcoreGenerator();
-			final File f = new File("model/modelio-v3.ecore");
+			final File f = new File("model/modelioMetamodel_format_" + metamodelResource.getMetamodel().getFormat() + ".ecore");
 			final Resource r = generator.generate(f);
 			System.out.println("plugin.xml fragment:\n\n" + generator.generatePluginXml(r));
 		} catch (Exception e) {
@@ -115,14 +124,11 @@ public class EcoreGenerator {
 	public Resource generate(File file) throws Exception {
 		Resource r = new XMIResourceImpl(URI.createFileURI(file.getPath()));
 
-		final ModelioMetaModelResource mr = new ModelioMetaModelResource(null);
-		final MMetamodel metamodel = new MMetamodel();
-
 		// Do a first pass to create the structure
-		final List<MPackage> mps = metamodel.getMPackages();
-		for (MPackage mp : mps) {
-			final ModelioPackage wrapped = new ModelioPackage(mr, mp);
-			addPackageContents(r, wrapped);
+		
+		final Collection<ModelioPackage> mps = RegisterMeta.getRegisteredPackages();
+		for (ModelioPackage mp : mps) {
+			addPackageContents(r, mp);
 		}
 
 		// On the second pass, create features and references (sorted by names, to avoid unwanted diffs when regenerating)
@@ -134,7 +140,7 @@ public class EcoreGenerator {
 			final List<IHawkClass> superMClasses = new ArrayList<>(mc.getOwnSuperTypes());
 			Collections.sort(superMClasses, new ClassifierNameComparator());
 			for (IHawkClass superMClass : superMClasses) {
-				EClass eSuper = mClasses.get(superMClass.getName()).getLeft();
+				EClass eSuper = mClasses.get(((ModelioClass)superMClass).getId()).getLeft();
 				ec.getESuperTypes().add(eSuper);
 			}
 
@@ -191,7 +197,7 @@ public class EcoreGenerator {
 				}
 			});
 			for (IHawkReference mdep : mdeps) {
-				final EClass targetEClass = mClasses.get(mdep.getType().getName()).getLeft();
+				final EClass targetEClass = mClasses.get(((ModelioClass)mdep.getType()).getId()).getLeft();
 
 				final EReference eref = factory.createEReference();
 				eref.setName(mdep.getName());
@@ -244,7 +250,7 @@ public class EcoreGenerator {
 			ec.setName(mc.getName());
 			ep.getEClassifiers().add(ec);
 
-			final Tuple<EClass, ModelioClass> previousEntry = mClasses.put(mc.getName(), new Tuple<>(ec, (ModelioClass) mc));
+			final Tuple<EClass, ModelioClass> previousEntry = mClasses.put(((ModelioClass)mc).getId(), new Tuple<>(ec, (ModelioClass) mc));
 			if (previousEntry != null) {
 				throw new Exception("More than one class named " + mc.getName() + ": aborting");
 			}

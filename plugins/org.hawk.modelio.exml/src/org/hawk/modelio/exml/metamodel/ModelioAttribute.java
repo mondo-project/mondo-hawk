@@ -18,7 +18,6 @@ import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
-import org.modelio.metamodel.MAttribute;
 
 public class ModelioAttribute extends AbstractModelioObject implements IHawkAttribute {
 

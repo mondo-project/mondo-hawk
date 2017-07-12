@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
+ *     Orjuwan Al-Wadeai -  Integrate Modelio Metamodel 3.6
  ******************************************************************************/
 package org.hawk.modelio.exml.metamodel;
 
@@ -15,7 +16,6 @@ import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkDataType;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
-import org.modelio.metamodel.MDataType;
 
 public class ModelioDataType extends AbstractModelioObject implements IHawkDataType {
 
@@ -29,7 +29,17 @@ public class ModelioDataType extends AbstractModelioObject implements IHawkDataT
 
 	@Override
 	public String getInstanceType() {
-		return mDataType.getJavaEquivalent();
+		String it = mDataType.getJavaEquivalent();
+
+		// remove java.lang for java.lang.X 
+		String[] arrayString = it.split("\\.");
+		if(arrayString.length > 0) {
+			it = arrayString[arrayString.length - 1];
+		}
+
+		it = it == null ? "NULL_INSTANCE_TYPE" : it;
+
+		return it;
 	}
 
 	@Override

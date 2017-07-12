@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
+ *     Orjuwan Al-Wadeai - Changes to Integrate Modelio Metamodel 3.6
  ******************************************************************************/
 package org.hawk.modelio.exml.model;
 
@@ -19,7 +20,6 @@ import java.util.zip.ZipFile;
 
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
-import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
 import org.hawk.modelio.exml.parser.ExmlObject;
 import org.hawk.modelio.exml.parser.ExmlParser;
 
@@ -33,8 +33,6 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 		MODEL_EXTS.add(".modelio.zip");
 	}
 
-	private ModelioMetaModelResource metamodel;
-
 	@Override
 	public String getType() {
 		return getClass().getName();
@@ -47,28 +45,24 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 
 	@Override
 	public IHawkModelResource parse(File f) throws Exception {
-		if (metamodel == null) {
-			this.metamodel = new ModelioMetaModelResource(null);
-		}
 
 		if (f.getName().toLowerCase().endsWith(EXML_EXT)) {
 			try (final FileInputStream fIS = new FileInputStream(f)) {
 				final ExmlParser parser = new ExmlParser();
 				final ExmlObject object = parser.getObject(f, fIS);
-				return new ModelioModelResource(metamodel, object);
+				return new ModelioModelResource(object);
 			}
 		} else {
 			try (final ZipFile zf = new ZipFile(f)) {
 				final ExmlParser parser = new ExmlParser();
 				final Iterable<ExmlObject> objects = parser.getObjects(f);
-				return new ModelioModelResource(metamodel, objects);
+				return new ModelioModelResource(objects);
 			}
 		}
 	}
 
 	@Override
 	public void shutdown() {
-		metamodel = null;
 	}
 
 	@Override

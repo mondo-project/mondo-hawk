@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
+ *     Orjuwan Al-Wadeai - Changes to Integrate Modelio Metamodel 3.6
  ******************************************************************************/
 package org.hawk.modelio.exml.metamodel;
 
@@ -23,8 +24,6 @@ import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
-import org.modelio.metamodel.MClass;
-import org.modelio.metamodel.MPackage;
 
 public class ModelioPackage extends AbstractModelioObject implements IHawkPackage {
 
@@ -113,7 +112,8 @@ public class ModelioPackage extends AbstractModelioObject implements IHawkPackag
 	public String getNsURI() {
 		// v2: new design based on hawkParent/hawkChildren
 		// v3: fix issues with eOpposites and unwanted diffs between regenerations
-		return "modelio://" + getUnprefixedNsURI() + "/v3";
+		// 3.6 Modelio Metamodel : use pkgId (modelio://provider.name/version)
+		return "modelio://" + rawPackage.getId();
 	}
 
 	@Override
@@ -131,6 +131,13 @@ public class ModelioPackage extends AbstractModelioObject implements IHawkPackag
 		return rawPackage.getExml();
 	}
 
+	public String getXml() {
+		return rawPackage.getXml();
+	}
+
+	public void setXml(String xmlString) {
+		rawPackage.setXml(xmlString);
+	}
 	public Collection<ModelioPackage> getPackages() {
 		if (packages == null) {
 			packages = new ArrayList<>();
