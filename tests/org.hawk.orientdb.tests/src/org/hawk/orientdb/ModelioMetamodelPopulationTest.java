@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -99,20 +100,36 @@ public class ModelioMetamodelPopulationTest {
 	public void metamodel() throws Exception {
 		setup("modeliomm", true);
 
+		int nTypes = 0;
 		MMetamodel mm = new MMetamodel();
-		for (MPackage mpkg : mm.getMPackages()) {
-			GraphWrapper gw = new GraphWrapper(db);
-			MetamodelNode mmNode = gw.getMetamodelNodeByNsURI("modelio://" + mpkg.getName() + "/v3");
+		final List<MPackage> pkgs = mm.getMPackages();
+		nTypes = visitPackages(nTypes, pkgs, "modelio://");
+
+		// From 'grep -c MClass MMetamodel.java' on modelio-metamodel-lib
+		assertEquals(289, nTypes);
+	}
+
+	protected int visitPackages(int nTypes, final List<MPackage> pkgs, final String prefix) {
+		final GraphWrapper gw = new GraphWrapper(db);
+
+		for (MPackage mpkg : pkgs) {
+			final String mpkgPrefix = prefix + mpkg.getName() + "/";
+			MetamodelNode mmNode = gw.getMetamodelNodeByNsURI(mpkgPrefix + "v3");
 
 			final Set<String> types = new HashSet<>();
 			for (TypeNode typeNode : mmNode.getTypes()) {
 				types.add(typeNode.getTypeName());
+				++nTypes;
 			}
 
 			for (MClass mc : mpkg.getMClass()) {
 				assertTrue(types.contains(mc.getName()));
 			}
+
+			nTypes = visitPackages(nTypes, mpkg.getMPackages(), mpkgPrefix);
 		}
+
+		return nTypes;
 	}
 
 	@Test

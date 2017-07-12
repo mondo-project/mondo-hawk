@@ -1032,7 +1032,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 			t.success();
 		} catch (Exception e) {
 			System.err.println("error in getExtraAttributes");
-			System.err.println(e.getCause());
+			e.printStackTrace();
 		}
 		return ret;
 	}

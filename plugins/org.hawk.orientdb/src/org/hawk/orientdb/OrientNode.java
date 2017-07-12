@@ -204,13 +204,7 @@ public class OrientNode implements IGraphNode {
 	}
 
 	private void addAllOIdentifiable(final List<IGraphEdge> edges, Iterable<Object> odocs, Direction dir, String edgeLabel) {
-		if (odocs instanceof ORecordLazyMultiValue) {
-			// Use a raw iterator that doesn't try to convert values on the fly
-			// *and* mark things around as dirty (why?).
-			for (Iterator<OIdentifiable> it = ((ORecordLazyMultiValue)odocs).rawIterator(); it.hasNext(); ) {
-				edges.add(convertToEdge(it.next(), dir, edgeLabel));
-			}
-		} else if (odocs != null) {
+		if (odocs != null) {
 			for (Object odoc : odocs) {
 				if (odoc instanceof OIdentifiable) {
 					edges.add(convertToEdge((OIdentifiable)odoc, dir, edgeLabel));
@@ -435,16 +429,18 @@ public class OrientNode implements IGraphNode {
 	@SuppressWarnings("unchecked")
 	private void removeFromList(ODocument orientEdge, final String fldName) {
 		changedVertex = getDocument();
-		Object out = changedVertex.field(fldName);
+		if (changedVertex != null) {
+			Object out = changedVertex.field(fldName);
 
-		changedVertex.setTrackingChanges(false);
-		if (out instanceof Collection) {
-			((Collection<OIdentifiable>)out).remove(orientEdge);
-		} else if (out instanceof OCollection) {
-			((OCollection<OIdentifiable>) out).remove(orientEdge);
+			changedVertex.setTrackingChanges(false);
+			if (out instanceof Collection) {
+				((Collection<OIdentifiable>) out).remove(orientEdge);
+			} else if (out instanceof OCollection) {
+				((OCollection<OIdentifiable>) out).remove(orientEdge);
+			}
+			changedVertex.field(fldName, out);
+			changedVertex.setTrackingChanges(true);
 		}
-		changedVertex.field(fldName, out);
-		changedVertex.setTrackingChanges(true);
 	}
 
 	public void removeIncoming(ODocument orientEdge, String edgeLabel) {
