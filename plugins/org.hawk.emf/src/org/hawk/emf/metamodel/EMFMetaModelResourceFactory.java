@@ -186,31 +186,6 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 	}
 
 	@Override
-	public void removeMetamodel(String property) {
-
-		boolean found = false;
-		Resource rem = null;
-
-		for (Resource r : resourceSet.getResources())
-			if (r.getURI().toString().contains(property)) {
-				rem = r;
-				found = true;
-				break;
-			}
-
-		if (found)
-			try {
-				rem.delete(null);
-				// EPackage.Registry.INSTANCE.remove(property);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-		System.err.println(found ? "removed: " + property : property + " not present in this EMF parser");
-
-	}
-
-	@Override
 	public boolean canParse(File f) {
 		String[] split = f.getPath().split("\\.");
 		String extension = split[split.length - 1];

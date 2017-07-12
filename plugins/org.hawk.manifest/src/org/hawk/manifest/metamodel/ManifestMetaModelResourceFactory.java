@@ -74,12 +74,6 @@ public class ManifestMetaModelResourceFactory implements
 	}
 
 	@Override
-	public void removeMetamodel(String property) {
-		System.err
-				.println("ManifestMetaModelResourceFactory cannot remove metamodels, as it only provides its own single static metamodel");
-	}
-
-	@Override
 	public boolean canParse(File f) {
 		return false;
 	}

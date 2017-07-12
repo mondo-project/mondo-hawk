@@ -23,10 +23,10 @@ public interface IMetaModelResourceFactory {
 
 	String getHumanReadableName();
 
-	// adds a new metamodel resource to hawk, from a file
+	/** adds a new metamodel resource to hawk, from a file */
 	IHawkMetaModelResource parse(File f) throws Exception;
 
-	// provides any static metamodel resources to hawk
+	/** provides any static metamodel resources to hawk */
 	Set<IHawkMetaModelResource> getStaticMetamodels();
 
 	void shutdown();
@@ -35,14 +35,11 @@ public interface IMetaModelResourceFactory {
 
 	Collection<String> getMetaModelExtensions();
 
-	// adds a new metamodel resource to hawk, given a string representation
+	/** adds a new metamodel resource to hawk, given a string representation */
 	IHawkMetaModelResource parseFromString(String name, String contents)
 			throws Exception;
 
-	// removes a metamodel from this factory's static metamodels
-	void removeMetamodel(String property);
-
-	// saves a package into string format, so it can be loaded by parseFromString
+	/** saves a package into string format, so it can be loaded by parseFromString */
 	String dumpPackageToString(IHawkPackage ePackage) throws Exception;
 
 }
