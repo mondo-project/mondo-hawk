@@ -60,7 +60,7 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 	}
 
 	private MPackage createMetaPackage() {
-		String pkgId = "ModelioMetaPackage"; //_format_" + metamodel.GetFormat();
+		String pkgId = "ModelioMetaPackage"; // + "/" + metamodel.GetFormat();
 		MPackage mpkg = new MPackage(pkgId, pkgId, "");
 		final MClass mt = new MClass(META_TYPE_NAME, META_TYPE_NAME, mpkg.getExml());
 		mt.getMAttributes().add(createStringAttribute(mpkg, mt.getName(), "name"));

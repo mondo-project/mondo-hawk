@@ -22,6 +22,12 @@ import org.hawk.modelio.exml.metamodel.ModelioPackage;
 public class RegisterMeta {
 
 	private static int registered = 0;
+	
+	// TODO needs to be changed to support different metamodel versions
+	// - different metamodel versions will have same name , but different id (thus URI)
+	// - retrieve classes by Package Name, Class Name and Package version
+	
+	// TODO change to registeredMetamodelsByUri or ById
 	private final static Map<String, ModelioPackage> registeredMetamodelsByName = new HashMap<String, ModelioPackage>();
 
 	public static Collection<ModelioPackage> getRegisteredPackages() {
@@ -57,6 +63,7 @@ public class RegisterMeta {
 		}
 	}
 	
+	// TODO should be changed to public static ModelioClass getModelioClass(String  className, String pkgVersion)
 	public static ModelioClass getModelioClass(String  className) {
 		String pkgName;
 		String mcName;
@@ -66,7 +73,7 @@ public class RegisterMeta {
 		if(idxDot > -1) {
 			pkgName = className.substring(0, idxDot);
 			mcName = className.substring(idxDot + 1);
-			mc = getMClass(pkgName, mcName);
+			mc = getMClass(pkgName, mcName); 
 		} else {
 
 			mc = getMClass(className);
@@ -85,6 +92,7 @@ public class RegisterMeta {
 		return null;
 	}
 	
+	// TODO private static ModelioClass getMClass(String pkgName, String pkgVersion, String className)
 	private static ModelioClass getMClass(String pkgName, String className) {
 		ModelioPackage pkg = registeredMetamodelsByName.get(pkgName);
 		if(pkg != null) {	

@@ -112,7 +112,7 @@ public class ModelioPackage extends AbstractModelioObject implements IHawkPackag
 	public String getNsURI() {
 		// v2: new design based on hawkParent/hawkChildren
 		// v3: fix issues with eOpposites and unwanted diffs between regenerations
-		// 3.6 Modelio Metamodel : use pkgId (name + version)
+		// 3.6 Modelio Metamodel : use pkgId (modelio://provider.name/version)
 		return "modelio://" + rawPackage.getId();
 	}
 

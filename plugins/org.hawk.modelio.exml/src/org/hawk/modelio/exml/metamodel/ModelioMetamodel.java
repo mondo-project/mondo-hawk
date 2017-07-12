@@ -110,9 +110,7 @@ public class ModelioMetamodel {
 
 	private String getMPackageId(MFragment fragment) {
 
-		String pkgId = fragment.getProvider() + "." + fragment.getName();
-		//+ fragment.getProviderVersion() 
-		//+ fragment.getVersion();
+		String pkgId = fragment.getProvider() + "." + fragment.getName() + "/" + fragment.getVersion();
 
 		return pkgId;
 	}
@@ -137,7 +135,7 @@ public class ModelioMetamodel {
 		return this.mBaseTypes.get(name);
 	}
 
-	public String GetFormat() {
+	public String getFormat() {
 		return mDescriptor.getMetamodelFormat();
 	}
 
