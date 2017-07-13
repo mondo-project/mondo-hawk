@@ -11,7 +11,8 @@ Require-Bundle: org.slf4j.api;bundle-version="1.7.2",
  org.hawk.core,
  org.eclipse.emf.ecore;bundle-version="2.10.2",
  org.hawk.epsilon
-Export-Package: org.hawk.modelio.exml.metamodel,
+Export-Package: org.hawk.modelio.exml.listeners,
+ org.hawk.modelio.exml.metamodel,
  org.hawk.modelio.exml.model,
  org.hawk.modelio.exml.parser,
  org.modelio.metamodel

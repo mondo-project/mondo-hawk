@@ -31,6 +31,7 @@ import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
 import org.hawk.graph.internal.updater.GraphModelUpdater;
 import org.hawk.graph.syncValidationListener.SyncValidationListener;
 import org.hawk.localfolder.LocalFolder;
+import org.hawk.modelio.exml.listeners.ModelioGraphChangeListener;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory;
 import org.hawk.modelio.exml.model.ModelioModelResourceFactory;
 import org.hawk.orientdb.util.FileUtils;
@@ -74,6 +75,7 @@ public class ModelioMetamodelPopulationTest {
 		indexer.addQueryEngine(queryEngine);
 		indexer.setMetaModelUpdater(new GraphMetaModelUpdater());
 		indexer.addModelUpdater(new GraphModelUpdater());
+		indexer.addGraphChangeListener(new ModelioGraphChangeListener(indexer));
 		indexer.setDB(db, true);
 		indexer.init(0, 0);
 		queryEngine.load(indexer);

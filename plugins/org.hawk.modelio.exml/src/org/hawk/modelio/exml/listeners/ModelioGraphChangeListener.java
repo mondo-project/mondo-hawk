@@ -14,6 +14,14 @@ public class ModelioGraphChangeListener implements IGraphChangeListener {
 
 	private IModelIndexer modelIndexer;
 
+	public ModelioGraphChangeListener() {
+		// indexer will be set later
+	}
+
+	public ModelioGraphChangeListener(IModelIndexer m) {
+		setModelIndexer(m);
+	}
+
 	@Override
 	public String getName() {
 		return getClass().getName();
@@ -58,8 +66,9 @@ public class ModelioGraphChangeListener implements IGraphChangeListener {
 	public void classAddition(IHawkClass cls, IGraphNode clsNode) {
 		if (cls instanceof ModelioClass) {
 			// Used to get back an EMF-compatible containment reference based on .exml PID container references
-			modelIndexer.addDerivedAttribute(cls.getPackageNSURI(), cls.getName(), ModelioClass.REF_CHILDREN,
-				((ModelioClass)cls).getName(), true, true, false, EOLQueryEngine.TYPE,
+			final String name = cls.getName();
+			modelIndexer.addDerivedAttribute(cls.getPackageNSURI(), name, ModelioClass.REF_CHILDREN,
+				name, true, true, false, EOLQueryEngine.TYPE,
 				"return self.revRefNav_hawkParent;");
 		}
 	}
