@@ -45,8 +45,6 @@ public class Slot {
 	 * this slot.
 	 */
 	protected Collection<Object> getCollection() {
-		assert isMany : "A collection cannot be produced for an attribute with isMany = false";
-
 		if (isOrdered && isUnique) {
 			return new LinkedHashSet<Object>(); // ordered set
 		} else if (isOrdered) {
