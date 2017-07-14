@@ -37,7 +37,7 @@ public class GraphModelUpdater implements IModelUpdater {
 	private TypeCache typeCache = new TypeCache();
 
 	private boolean isActive = false;
-	public static final String FILEINDEX_REPO_SEPARATOR = "////";
+	public static final String FILEINDEX_REPO_SEPARATOR = "||||";
 	public static final String PROXY_REFERENCE_PREFIX = "hawkProxyRef:";
 
 	/**
