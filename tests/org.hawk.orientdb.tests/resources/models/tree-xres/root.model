@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="ASCII"?>
+<Tree:Tree xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:Tree="Tree" xmi:id="_81n9IGjAEee8-on3BEZ1LQ" label="root">
+  <children href="child.model#/" />
+  <children label="abc"/>
+</Tree:Tree>
