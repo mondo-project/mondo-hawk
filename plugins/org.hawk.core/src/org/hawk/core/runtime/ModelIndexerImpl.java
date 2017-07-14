@@ -896,11 +896,13 @@ public class ModelIndexerImpl implements IModelIndexer {
 		stateListener
 				.info(String.format("Adding derived attribute %s::%s::%s...", metamodeluri, typename, attributename));
 
-		if (metamodelupdater.addDerivedAttribute(metamodeluri, typename, attributename, attributetype, isMany,
-				isOrdered, isUnique, derivationlanguage, derivationlogic, this))
+		final boolean success = metamodelupdater.addDerivedAttribute(metamodeluri, typename, attributename, attributetype, isMany,
+				isOrdered, isUnique, derivationlanguage, derivationlogic, this);
+		if (success) {
 			for (IModelUpdater u : getUpdaters())
 				u.updateDerivedAttribute(metamodeluri, typename, attributename, attributetype, isMany, isOrdered,
 						isUnique, derivationlanguage, derivationlogic);
+		}
 
 		cachedDerivedAttributes = null;
 		stateListener.info(String.format("Added derived attribute %s::%s::%s.", metamodeluri, typename, attributename));
@@ -1032,7 +1034,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 			t.success();
 		} catch (Exception e) {
 			System.err.println("error in getExtraAttributes");
-			System.err.println(e.getCause());
+			e.printStackTrace();
 		}
 		return ret;
 	}

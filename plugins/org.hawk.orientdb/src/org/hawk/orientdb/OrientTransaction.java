@@ -20,8 +20,12 @@ public class OrientTransaction implements IGraphTransaction {
 
 	public OrientTransaction(OrientDatabase orientDatabase) {
 		this.graph = orientDatabase;
-		graph.clearPostponedIndexes();
-		graph.getGraph().begin();
+		if (!graph.getGraph().getTransaction().isActive()) {
+			// OrientDB does not support nested transactions: a begin() will
+			// *roll back* any transaction that we had from before!
+			graph.clearPostponedIndexes();
+			graph.getGraph().begin();
+		}
 	}
 
 	@Override

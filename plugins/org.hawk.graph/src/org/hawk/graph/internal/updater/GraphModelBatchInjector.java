@@ -408,7 +408,7 @@ public class GraphModelBatchInjector {
 			}
 
 			try {
-				node = graph.createNode(m, ModelElementNode.OBJECT_VERTEX_LABEL, (IHawkClass) eObject.getType());
+				node = graph.createNode(m, ModelElementNode.OBJECT_VERTEX_LABEL);
 				if (eObject.isFragmentUnique()) {
 					fragmentIdx.add(node, "id", eObject.getUriFragment());
 					fragmentIdx.flush();
