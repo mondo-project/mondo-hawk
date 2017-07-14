@@ -255,7 +255,7 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	private void shutdown(boolean delete) throws Exception {
-		if (pool.isClosed()) {
+		if (pool == null || pool.isClosed()) {
 			return;
 		}
 
