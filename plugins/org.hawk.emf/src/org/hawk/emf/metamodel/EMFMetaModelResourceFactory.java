@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.hawk.core.IMetaModelResourceFactory;
@@ -118,7 +119,7 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 		final Resource newResource = resourceSet
 				.createResource(URI.createURI("resource_from_epackage_" + ePackage.getNsURI()));
 		final EObject eob = ePackage.getEObject();
-		newResource.getContents().add(eob);
+		newResource.getContents().add(EcoreUtil.copy(eob));
 
 		/*
 		 * Separate the other EPackages that may reside in the old resource in
@@ -133,10 +134,9 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 				final Resource auxResource = resourceSet
 						.createResource(URI.createURI("resource_from_epackage_" + otherEPackage.getNsURI()));
 				auxResources.add(auxResource);
-				auxResource.getContents().add(otherEPackage);
+				auxResource.getContents().add(EcoreUtil.copy(otherEPackage));
 			}
 		}
-		assert oldResource.getContents().isEmpty() : "The old resource should be empty before the dump";
 
 		final ByteArrayOutputStream bOS = new ByteArrayOutputStream();
 		try {
@@ -145,21 +145,12 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 			return contents;
 		} finally {
 			/*
-			 * Move back all EPackages into the original resource, to avoid
-			 * inconsistencies across restarts.
-			 */
-			oldResource.getContents().add(eob);
-			oldResource.getContents().addAll(otherContents);
-
-			/*
 			 * Unload and remove all the auxiliary resources we've created
 			 * during the dumping.
 			 */
-			assert newResource.getContents().isEmpty() : "The new resource should be empty after the dump";
 			newResource.unload();
 			resourceSet.getResources().remove(newResource);
 			for (Resource auxResource : auxResources) {
-				assert auxResource.getContents().isEmpty() : "The aux resource should be empty after the dump";
 				auxResource.unload();
 				resourceSet.getResources().remove(auxResource);
 			}
