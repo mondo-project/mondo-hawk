@@ -4,5 +4,6 @@ Bundle-Name: SampleListener
 Bundle-SymbolicName: org.hawk.graph.syncValidationListener;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.hawk.core
+Require-Bundle: org.hawk.core,
+ org.hawk.graph
 Export-Package: org.hawk.graph.syncValidationListener
