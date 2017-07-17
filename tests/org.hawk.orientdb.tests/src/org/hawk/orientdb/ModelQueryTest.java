@@ -157,7 +157,7 @@ public class ModelQueryTest {
 		indexer.addVCSManager(vcs, true);
 		indexer.requestImmediateSync();
 
-		SyncEndListener.waitForSync(indexer, 200, new Callable<Object>() {
+		SyncEndListener.waitForSync(indexer, 400, new Callable<Object>() {
 			@Override
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
