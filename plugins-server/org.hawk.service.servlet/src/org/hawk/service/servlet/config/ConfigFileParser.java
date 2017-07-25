@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
@@ -39,7 +38,6 @@ import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSOutput;
 import org.w3c.dom.ls.LSSerializer;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 
@@ -363,30 +361,27 @@ public class ConfigFileParser {
 	private void readDerivedAttributes(NodeList nodes, HawkInstanceConfig config) {
 		for(Node derivedAttributesElement : NodeListIterable(nodes)) {
 			for(Node derivedAttributeElement : NodeListIterable(((Element) derivedAttributesElement).getElementsByTagName(DERIVED_ATTRIBUTE))) {
-				DerivedAttributeParameters params = new DerivedAttributeParameters();
-
-				params.metamodelUri = ((Element)derivedAttributeElement).getAttribute(METAMODEL_URI);
-				params.typeName = ((Element)derivedAttributeElement).getAttribute(TYPE_NAME);
-				params.attributeName = ((Element)derivedAttributeElement).getAttribute(ATTRIBUTE_NAME);
-				params.attributeType = ((Element)derivedAttributeElement).getAttribute(ATTRIBUTE_TYPE);
-
-				params.isMany = Boolean.valueOf(((Element)derivedAttributeElement).getAttribute(IS_MANY));
-				params.isOrdered = Boolean.valueOf(((Element)derivedAttributeElement).getAttribute(IS_ORDERED));
-				params.isUnique = Boolean.valueOf(((Element)derivedAttributeElement).getAttribute(IS_UNIQUE));
-
+				DerivedAttributeParameters params = new DerivedAttributeParameters(
+				((Element)derivedAttributeElement).getAttribute(METAMODEL_URI),
+				((Element)derivedAttributeElement).getAttribute(TYPE_NAME),
+				((Element)derivedAttributeElement).getAttribute(ATTRIBUTE_NAME),
+				((Element)derivedAttributeElement).getAttribute(ATTRIBUTE_TYPE),
+				Boolean.valueOf(((Element)derivedAttributeElement).getAttribute(IS_MANY)),
+				Boolean.valueOf(((Element)derivedAttributeElement).getAttribute(IS_UNIQUE)),
+				Boolean.valueOf(((Element)derivedAttributeElement).getAttribute(IS_ORDERED)));
 				// get derivation
 				NodeList derivations = ((Element)derivedAttributeElement).getElementsByTagName(DERIVATION);
 
 				// only one element is expected
 				if(derivations.getLength() >= 1) {
 					// get derivation language
-					params.derivationLanguage = ((Element) derivations.item(0)).getAttribute(LANGUAGE);
+					params.setDerivationLanguage(((Element) derivations.item(0)).getAttribute(LANGUAGE));
 
 					// get logic
 					NodeList logics = ((Element)derivations.item(0)).getElementsByTagName(LOGIC);
 					// only one element is expected
 					if(logics.getLength() >= 1) {
-						params.derivationLogic = getElementCDataValue(logics.item(0));
+						params.setDerivationLogic(getElementCDataValue(logics.item(0)));
 					}
 				}
 
@@ -424,13 +419,12 @@ public class ConfigFileParser {
 	private void readRepositories(NodeList nodes, HawkInstanceConfig config) {
 		for(Node repoElements : NodeListIterable(nodes)) {
 			for(Node repoElement : NodeListIterable(((Element) repoElements).getElementsByTagName(REPOSITORY))) {
-				RepositoryParameters params = new RepositoryParameters();
-
-				params.type = ((Element)repoElement).getAttribute(TYPE);
-				params.location = ((Element)repoElement).getAttribute(LOCATION);
-				params.user = ((Element)repoElement).getAttribute(USER);
-				params.pass = ((Element)repoElement).getAttribute(PASS);
-				params.isFrozen = Boolean.valueOf(((Element)repoElement).getAttribute(FROZEN));
+				RepositoryParameters params = new RepositoryParameters(
+						((Element)repoElement).getAttribute(TYPE),
+						((Element)repoElement).getAttribute(LOCATION),
+						((Element)repoElement).getAttribute(USER),
+						((Element)repoElement).getAttribute(PASS),
+						Boolean.valueOf(((Element)repoElement).getAttribute(FROZEN)));
 
 				config.getRepositories().add(params);
 			}

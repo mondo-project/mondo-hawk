@@ -29,6 +29,17 @@ public class DerivedAttributeParameters extends IndexedAttributeParameters{
 		
 	}
 	
+	public DerivedAttributeParameters(String metamodelUri, String typeName,
+			String attributeName, String attributeType, boolean isMany,
+			boolean isOrdered, boolean isUnique) {
+		super(metamodelUri, typeName, attributeName);
+		this.attributeType = attributeType;
+		this.isMany = isMany;
+		this.isOrdered = isOrdered;
+		this.isUnique = isUnique;
+
+	}
+	
 
 	public String getAttributeType() {
 		return attributeType;
