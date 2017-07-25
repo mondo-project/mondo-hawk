@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.thrift.TException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.hawk.core.IVcsManager;
@@ -124,11 +125,7 @@ public class HawkServerConfigurator  {
 			// create a new instance it is not present
 			if (hawkInstance == null) {
 				// create new instance
-				iface.createInstance(config.getName(), config.getBackend(),
-						config.getDelayMin(), config.getDelayMax(),
-						config.getPlugins());
-				hawkInstance = manager.getHawkByName(
-						config.getName());
+				hawkInstance = createHawkInstance(config);
 			}
 
 			// apply configuration
@@ -172,6 +169,16 @@ public class HawkServerConfigurator  {
 			e.printStackTrace();
 		}
 
+	}
+
+	private HModel createHawkInstance(HawkInstanceConfig config) throws TException {
+		HModel hawkInstance;
+		iface.createInstance(config.getName(), config.getBackend(),
+				config.getDelayMin(), config.getDelayMax(),
+				config.getPlugins());
+		hawkInstance = manager.getHawkByName(
+				config.getName());
+		return hawkInstance;
 	}
 
 	private void addMissingDerivedAttributes(HModel hawkInstance,
