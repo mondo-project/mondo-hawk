@@ -160,6 +160,14 @@ public class DeletionUtils {
 
 				final IGraphNode referencingNode = rel.getStartNode();
 				final IGraphNode endNode = rel.getEndNode();
+				
+				// handle incoming edges from derived references
+				if (referencingNode.getProperty("derivationlanguage") != null
+						&& referencingNode.getProperty("derivationlogic") != null) {
+					rel.delete();
+					return;
+				}
+								
 				String referencingNodeFileID = referencingNode
 						.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)
 						.iterator().next().getEndNode()
@@ -250,6 +258,12 @@ public class DeletionUtils {
 					IGraphNode n = rel.getEndNode();
 					l.modelElementRemoval(s, n, true);
 					removeFromIndexes(n);
+
+					// remove outgoing edges (would exist if this is a derived
+					// reference node)
+					for (IGraphEdge e : n.getOutgoing())
+						e.delete();
+					
 					n.delete();
 				}
 
