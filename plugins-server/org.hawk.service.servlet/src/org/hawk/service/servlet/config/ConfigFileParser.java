@@ -355,9 +355,6 @@ public class ConfigFileParser {
 		}
 	}
 
-
-	
-
 	private void readDerivedAttributes(NodeList nodes, HawkInstanceConfig config) {
 		for(Node derivedAttributesElement : NodeListIterable(nodes)) {
 			for(Node derivedAttributeElement : NodeListIterable(((Element) derivedAttributesElement).getElementsByTagName(DERIVED_ATTRIBUTE))) {
@@ -381,7 +378,7 @@ public class ConfigFileParser {
 					NodeList logics = ((Element)derivations.item(0)).getElementsByTagName(LOGIC);
 					// only one element is expected
 					if(logics.getLength() >= 1) {
-						params.setDerivationLogic(getElementCDataValue(logics.item(0)));
+						params.setDerivationLogic(readElementCDataValue(logics.item(0)));
 					}
 				}
 
@@ -391,7 +388,7 @@ public class ConfigFileParser {
 
 	}
 
-	private String getElementCDataValue(Node node) {
+	private String readElementCDataValue(Node node) {
 		String value = "";
 
 		NodeList cdataSections = node.getChildNodes();
@@ -450,7 +447,7 @@ public class ConfigFileParser {
 		}
 	}
 
-	
+	/** Utility methods */
 	private void writeXmlDocumentToFile(Node node, String filename) {
 		try {
 			File file = new File(filename);
