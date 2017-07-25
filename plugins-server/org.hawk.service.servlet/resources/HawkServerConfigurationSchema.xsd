@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:element name="HawkServerConfiguration">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="hawk">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element maxOccurs="1" minOccurs="0" name="delay">
+								<xs:complexType>
+									<xs:attribute name="min" type="xs:positiveInteger" use="required"/>
+									<xs:attribute name="max" type="xs:positiveInteger" use="required"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="plugins">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element maxOccurs="unbounded" minOccurs="0" name="plugin">
+											<xs:complexType>
+												<xs:attribute name="name" type="xs:string" use="required"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="metamodels">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element maxOccurs="unbounded" minOccurs="0" name="metamodel">
+											<xs:complexType>
+												<xs:attribute name="location" type="xs:anyURI" use="required"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="repositories">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element maxOccurs="unbounded" minOccurs="0" name="repository">
+											<xs:complexType>
+												<xs:attribute name="type" type="xs:string" use="optional"/>
+												<xs:attribute name="location" type="xs:anyURI" use="required"/>
+												<xs:attribute name="user" type="xs:string" use="optional"/>
+												<xs:attribute name="pass" type="xs:string" use="optional"/>
+												<xs:attribute name="frozen" type="xs:boolean" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="derivedAttributes">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element maxOccurs="unbounded" minOccurs="0" name="derivedAttribute">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="derivation">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element maxOccurs="1" minOccurs="0" name="logic" type="xs:string"/>
+															</xs:sequence>
+															<xs:attribute name="language" type="xs:string" use="required"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="metamodelUri" type="xs:string" use="required"/>
+												<xs:attribute name="typeName" type="xs:string" use="required"/>
+												<xs:attribute name="attributeName" type="xs:string" use="required"/>
+												<xs:attribute default="String" name="attributeType" type="xs:string" use="optional"/>
+												<xs:attribute default="false" name="isMany" type="xs:string" use="optional"/>
+												<xs:attribute default="false" name="isOrdered" type="xs:string" use="optional"/>
+												<xs:attribute default="false" name="isUnique" type="xs:string" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="indexedAttributes">			 
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element maxOccurs="unbounded" minOccurs="0" name="indexedAttribute">
+											<xs:complexType>
+												<xs:attribute name="metamodelUri" type="xs:string" use="required"/>
+												<xs:attribute name="typeName" type="xs:string" use="required"/>
+												<xs:attribute name="attributeName" type="xs:string" use="required"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="name" type="xs:string"/>
+						<xs:attribute name="backend" type="xs:string"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

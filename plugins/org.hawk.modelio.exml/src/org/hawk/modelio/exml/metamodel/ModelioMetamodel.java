@@ -49,9 +49,7 @@ public class ModelioMetamodel {
 
 				if(attributeType instanceof MEnumeration) {
 					dataType =  new MEnum(attributeType.getName(), attributeType.getName(), "enum", ((MEnumeration)attributeType).getValues());
-				} 
-
-				if(attributeType instanceof MAttributeType) {
+				} else {
 					dataType = new MDataType(attributeType.getName(), attributeType.getName(), attributeType.getName());
 				}
 

@@ -37,6 +37,7 @@ import org.hawk.service.api.Hawk.Iface;
 import org.hawk.service.api.Hawk.Processor;
 import org.hawk.service.api.utils.APIUtils.ThriftProtocol;
 import org.hawk.service.artemis.server.Server;
+import org.hawk.service.servlet.config.HawkServerConfigurator;
 import org.hawk.service.servlet.processors.HawkThriftIface;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -63,7 +64,7 @@ public class Activator implements BundleActivator {
 
 	private static BundleContext context;
 	private static Activator instance;
-
+	private static HawkServerConfigurator serverConfig;
 	public static Activator getInstance() {
 		return instance;
 	}
@@ -100,6 +101,7 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
+
 		Activator.context = bundleContext;
 		HManager.getInstance();
 
@@ -136,42 +138,55 @@ public class Activator implements BundleActivator {
 			final String sThriftProtocol = System.getProperty(TCP_TPROTOCOL_PROPERTY);
 			final ThriftProtocol thriftProtocol = (sThriftProtocol != null)
 					? ThriftProtocol.valueOf(sThriftProtocol)
-					: ThriftProtocol.TUPLE;
+							: ThriftProtocol.TUPLE;
 
-			final TServerSocket tcpServerSocket = new TServerSocket(Integer.valueOf(sTCPPort));
-			final HawkThriftIface hawkIface = new HawkThriftIface(ThriftProtocol.TUPLE, null, artemis);
-			final Processor<Iface> hawkTCPProcessor = new Hawk.Processor<Hawk.Iface>(hawkIface);
-			final Args tcpServerArgs = new TThreadPoolServer.Args(tcpServerSocket)
-				.maxWorkerThreads(10_000)
-				.protocolFactory(new TProtocolFactory() {
-					private static final long serialVersionUID = 1L;
+					final TServerSocket tcpServerSocket = new TServerSocket(Integer.valueOf(sTCPPort));
+					final HawkThriftIface hawkIface = new HawkThriftIface(ThriftProtocol.TUPLE, null, artemis);
+					final Processor<Iface> hawkTCPProcessor = new Hawk.Processor<Hawk.Iface>(hawkIface);
+					serverConfig = new HawkServerConfigurator(hawkIface);
+					serverConfig.loadConfig();
 
-					@Override
-					public TProtocol getProtocol(TTransport arg0) {
-						return thriftProtocol.getProtocolFactory().getProtocol(new TZlibTransport(arg0));
-					}
-				})
-				.processor(hawkTCPProcessor);
+					final Args tcpServerArgs = new TThreadPoolServer.Args(tcpServerSocket)
+					.maxWorkerThreads(10_000)
+					.protocolFactory(new TProtocolFactory() {
+						private static final long serialVersionUID = 1L;
 
-			tcpServer = new TThreadPoolServer(tcpServerArgs);
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					final Bundle bundle = context.getBundle();
-					Platform.getLog(bundle).log(new Status(IStatus.INFO, bundle.getSymbolicName(),
-							"Starting Hawk TCP server on port " + sTCPPort + " with Thrift protocol " + thriftProtocol.name()));
-					tcpServer.serve();
-				}
-			}).start();
+						@Override
+						public TProtocol getProtocol(TTransport arg0) {
+							return thriftProtocol.getProtocolFactory().getProtocol(new TZlibTransport(arg0));
+						}
+					})
+					.processor(hawkTCPProcessor);
+
+					tcpServer = new TThreadPoolServer(tcpServerArgs);
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+
+
+
+							final Bundle bundle = context.getBundle();
+							Platform.getLog(bundle).log(new Status(IStatus.INFO, bundle.getSymbolicName(),
+									"Starting Hawk TCP server on port " + sTCPPort + " with Thrift protocol " + thriftProtocol.name()));
+							tcpServer.serve();
+
+
+						}
+					}).start();
 		}
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		Activator.context = null;
+		
 		HManager.getInstance().stopAllRunningInstances(
 				ShutdownRequestType.ONLY_LOCAL);
-
+		
+		if(serverConfig != null) {
+			serverConfig.saveConfig();
+		}
+		
 		if (artemis != null) {
 			artemis.stop();
 			artemis = null;
