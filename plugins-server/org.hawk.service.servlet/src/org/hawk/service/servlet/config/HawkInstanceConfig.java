@@ -29,7 +29,8 @@ public class HawkInstanceConfig {
 	
 	private List<String> plugins;
 	
-	private List<String> metamodels;
+	//private List<String> metamodels;
+	private List<MetamodelParameters> metamodels;
 
 	private List<RepositoryParameters> repositories;
 
@@ -40,7 +41,7 @@ public class HawkInstanceConfig {
 	
 	public HawkInstanceConfig() {
 		this.plugins = new ArrayList<String>();
-		this.metamodels = new ArrayList<String>();
+		this.metamodels = new ArrayList<MetamodelParameters>();
 		this.repositories = new ArrayList<RepositoryParameters>();
 		this.derivedAttributes = new ArrayList<DerivedAttributeParameters>();
 		this.indexedAttributes = new ArrayList<IndexedAttributeParameters>();
@@ -102,12 +103,12 @@ public class HawkInstanceConfig {
 	}
 
 
-	public List<String> getMetamodels() {
+	public List<MetamodelParameters> getMetamodels() {
 		return metamodels;
 	}
 
 
-	public void setMetamodels(List<String> metamodels) {
+	public void setMetamodels(List<MetamodelParameters> metamodels) {
 		this.metamodels = metamodels;
 	}
 

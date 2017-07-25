@@ -12,11 +12,11 @@ package org.hawk.service.servlet.config;
 
 public class RepositoryParameters {
 	
-	String type;
-	String location;
-	String user;
-	String pass;
-	boolean isFrozen;
+	private String type;
+	private String location;
+	private String user;
+	private String pass;
+	private boolean isFrozen;
 	
 	public RepositoryParameters(String type, String location, String user,
 			String pass, boolean isFrozen) {

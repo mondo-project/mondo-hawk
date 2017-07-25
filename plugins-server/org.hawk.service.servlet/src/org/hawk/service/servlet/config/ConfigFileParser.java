@@ -11,8 +11,10 @@
 package org.hawk.service.servlet.config;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
@@ -28,10 +30,15 @@ import javax.xml.validation.Schema;
 import javax.xml.XMLConstants;
 
 import org.w3c.dom.Attr;
+import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.bootstrap.DOMImplementationRegistry;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSOutput;
+import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -58,6 +65,8 @@ public class ConfigFileParser {
 	private static final String METAMODEL = "metamodel";
 
 	private static final String LOCATION = "location";
+
+	private static final String URI = "uri";
 
 	private static final String DERIVED_ATTRIBUTES = "derivedAttributes";
 	private static final String DERIVED_ATTRIBUTE = "derivedAttribute";
@@ -86,24 +95,18 @@ public class ConfigFileParser {
 	private static final String PASS = "pass";
 	private static final String FROZEN = "frozen";
 
-	//private HawkInstanceConfig currentConfig;
 
-	Document document;
 	public ConfigFileParser() {
-
 	}
 
 	public HawkInstanceConfig parse(File file) {
 		HawkInstanceConfig config = null;
 		try {
-			
 			Element element = getXmlDocumentRootElement(file);
 			config = new HawkInstanceConfig(file.getAbsolutePath());
 			parseConfig(element, config);
-
 		} catch (Exception e) {
-			System.err.print("error in parse(InputStream  in): ");
-			System.err.println(e.getCause());
+			System.err.print("error in parse(File file): ");
 			e.printStackTrace();
 		}
 
@@ -134,116 +137,230 @@ public class ConfigFileParser {
 		builder.setErrorHandler(new SchemaErrorHandler());
 
 		// start parsing
-		document  = builder.parse(file);
+		Document document  = builder.parse(file);
 		Element element  = document.getDocumentElement();
 		return element;
 	}
 
-	Node createNewElement(String tagName) {
-		return document.createElement(tagName);
-	}
-	
-	Attr createNewAttribute(String tagName) {
-		return document.createAttribute(tagName);
-	}
-	
-	
-	private boolean isElement(Node node, String name) {
-
-		if (node.getNodeType() == Node.ELEMENT_NODE) {
-			if (node.getNodeName().equals(name)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	private void parseConfig(Element element , HawkInstanceConfig config) {
-		if(isElement(element, HAWK_SERVER_CONFIGURATION)) {
-
+		if(element.getNodeName().equals(HAWK_SERVER_CONFIGURATION)) {
 			// get hawk, usually one element per file
+			// FIXME if there is more than one, only the last one will be returned
 			for(Node hawkElement : NodeListIterable(element.getElementsByTagName(HAWK))) {
-				// get name
+
 				config.setName(((Element)hawkElement).getAttribute(NAME));
-				// get back-end
+
 				config.setBackend(((Element)hawkElement).getAttribute(BACKEND));
 
-				// get delay
-				setDelay(((Element)hawkElement).getElementsByTagName(DELAY),  config);
+				readDelay(((Element)hawkElement).getElementsByTagName(DELAY),  config);
 
-				// get plug ins 
-				setPlugins(((Element)hawkElement).getElementsByTagName(PLUGINS),  config);
+				readPlugins(((Element)hawkElement).getElementsByTagName(PLUGINS),  config);
 
-				// get meta-models
-				setMetamodels(((Element)hawkElement).getElementsByTagName(METAMODELS),  config);
+				readMetamodels(((Element)hawkElement).getElementsByTagName(METAMODELS),  config);
 
-				// get repositories
-				setRepositories(((Element)hawkElement).getElementsByTagName(REPOSITORIES),  config);
+				readRepositories(((Element)hawkElement).getElementsByTagName(REPOSITORIES),  config);
 
-				// get indexed attributes
-				setIndexedAttributes(((Element)hawkElement).getElementsByTagName(INDEXED_ATTRIBUTES),  config);
+				readIndexedAttributes(((Element)hawkElement).getElementsByTagName(INDEXED_ATTRIBUTES),  config);
 
-				// get derived attributes
-				setDerivedAttributes(((Element)hawkElement).getElementsByTagName(DERIVED_ATTRIBUTES),  config);
+				readDerivedAttributes(((Element)hawkElement).getElementsByTagName(DERIVED_ATTRIBUTES),  config);
 			}
 		}  
 	}
 
 
-	public String saveConfigAsXml(HawkInstanceConfig config) {
-//		try {
-//
-//			Element element = getXmlDocumentRootElement(new File(config.getFileName()));
-//			
-//			for(Node hawkElement : NodeListIterable(element.getElementsByTagName(HAWK))) {
-//				// get name
-//				((Element)hawkElement).setAttribute(NAME, config.getName());
-//				
-//				// get back-end
-//				//config.setBackend(((Element)hawkElement).getAttribute(BACKEND));
-//				((Element)hawkElement).setAttribute(BACKEND, config.getBackend());
-//				
-//				// get delay
-//				setDelay(((Element)hawkElement).getElementsByTagName(DELAY),  config);
-//
-//				
-//				// get plug ins 
-//				setPlugins(((Element)hawkElement).getElementsByTagName(PLUGINS),  config);
-//
-//				// get meta-models
-//				setMetamodels(((Element)hawkElement).getElementsByTagName(METAMODELS),  config);
-//
-//				// get repositories
-//				setRepositories(((Element)hawkElement).getElementsByTagName(REPOSITORIES),  config);
-//
-//				// get indexed attributes
-//				setIndexedAttributes(((Element)hawkElement).getElementsByTagName(INDEXED_ATTRIBUTES),  config);
-//
-//				// get derived attributes
-//				setDerivedAttributes(((Element)hawkElement).getElementsByTagName(DERIVED_ATTRIBUTES),  config);
-//			}
-//
-//
-//
-//		} catch (IOException | SAXException | ParserConfigurationException e) {
-//			e.printStackTrace();
-//		}
+	public void saveConfigAsXml(HawkInstanceConfig config) {
+		try {
 
+			DocumentBuilderFactory factory  = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder;
+			builder = factory.newDocumentBuilder();
 
+			Document document  = builder.newDocument();
 
-		return null;
+			/** <HawkServerConfiguration> */
+			Element root = document.createElement(HAWK_SERVER_CONFIGURATION);
+
+			/** <hawk> */
+			Element hawkElement = document.createElement(HAWK);
+			createAndAddAttribute(document, hawkElement, NAME, config.getName());
+			createAndAddAttribute(document, hawkElement, BACKEND, config.getBackend());
+
+			/** <delay> */
+			writeDelay(config, document, hawkElement);
+			/** </delay> */
+
+			/** <plugins> */
+			writePlugins(config, document, hawkElement);
+			/** </plugins> */
+
+			/** <metamodels> */
+			writeMetamodels(config, document, hawkElement);
+			/** </metamodels> */
+
+			/** <derivedAttributes> */
+			writeDerivedAttributes(config, document, hawkElement);
+			/** </derivedAttributes> */
+
+			/** <indexedAttributes> */
+			writeIndexedAttributes(config, document, hawkElement);
+			/** </indexedAttributes> */
+
+			/** <repositories> */
+			writeRepositories(config, document, hawkElement);
+			/** </repositories> */
+
+			/** </hawk> */
+			root.appendChild(hawkElement);
+
+			/** </HawkServerConfiguration> */
+			document.appendChild(root);
+
+			writeXmlDocumentToFile(document, config.getFileName());
+
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		}
 	}
 
-	private void setPlugins(NodeList nodes, HawkInstanceConfig config) {
-		for(Node pluginsElement : NodeListIterable(nodes)) {
-			for(Node pluginElement : NodeListIterable(((Element) pluginsElement).getElementsByTagName(PLUGIN))) {
-				config.getPlugins().add(((Element)pluginElement).getAttribute(NAME));
+	private void writeDelay(HawkInstanceConfig config, Document document, Element hawkElement) {
+		
+		Element delayElement = document.createElement(DELAY);
+		
+		createAndAddAttribute(document, delayElement, MAX, config.getDelayMax());
+		createAndAddAttribute(document, delayElement, MIN, config.getDelayMin());
+		
+		hawkElement.appendChild(delayElement); // add to tree
+	}
+
+	private void writePlugins(HawkInstanceConfig config, Document document, Element hawkElement) {
+		if(config.getPlugins() != null && !config.getPlugins().isEmpty()) {
+			Element pluginsElement = document.createElement(PLUGINS);
+			for(String plugin : config.getPlugins()) {
+				
+				/** <plugins> */
+				Element pluginElement = document.createElement(PLUGIN);
+				createAndAddAttribute(document, pluginElement, NAME, plugin);
+				
+				pluginsElement.appendChild(pluginElement); // add to tree
+				/** </plugins> */
 			}
-		}			
+
+			hawkElement.appendChild(pluginsElement); // add to tree
+		}
 	}
 
-	private void setDerivedAttributes(NodeList nodes, HawkInstanceConfig config) {
+	private void writeRepositories(HawkInstanceConfig config, Document document, Element hawkElement) {
+
+		if(config.getRepositories() != null && !config.getRepositories().isEmpty()) {
+
+			Element repositoriesElement = document.createElement(REPOSITORIES);
+			for(RepositoryParameters params : config.getRepositories()) {
+				
+				/**	<repository> */
+				Element repositoryElement = document.createElement(REPOSITORY);
+
+				createAndAddAttribute(document, repositoryElement, TYPE, params.getType());
+				createAndAddAttribute(document, repositoryElement, LOCATION, params.getLocation());
+				createAndAddAttribute(document, repositoryElement, USER, params.getUser());
+				createAndAddAttribute(document, repositoryElement, PASS, params.getPass());
+				createAndAddAttribute(document, repositoryElement, FROZEN, params.isFrozen());
+
+				repositoriesElement.appendChild(repositoryElement); // add to tree
+				
+				/**	</repository> */
+			}
+
+			// build tree
+			hawkElement.appendChild(repositoriesElement);
+		}
+	}
+
+	private void writeIndexedAttributes(HawkInstanceConfig config, Document document, Element hawkElement) {
+
+		if(config.getIndexedAttributes() != null && !config.getIndexedAttributes().isEmpty()) {
+
+			Element indexedAttributesElement = document.createElement(INDEXED_ATTRIBUTES);
+			
+			for(IndexedAttributeParameters params : config.getIndexedAttributes()) {
+				/** <indexedAttribute> */
+				Element indexedAttributeElement = document.createElement(INDEXED_ATTRIBUTE);
+
+				createAndAddAttribute(document, indexedAttributeElement, METAMODEL_URI, params.getMetamodelUri());
+				createAndAddAttribute(document, indexedAttributeElement, TYPE_NAME, params.getTypeName());
+				createAndAddAttribute(document, indexedAttributeElement, NAME, params.getAttributeName());
+
+				indexedAttributesElement.appendChild(indexedAttributeElement); // add to tree
+				/** </indexedAttribute> */
+			}
+
+			hawkElement.appendChild(indexedAttributesElement); // add to tree
+		}
+	}
+
+	private void writeDerivedAttributes(HawkInstanceConfig config,
+			Document document, Element hawkElement) {
+		if(config.getDerivedAttributes() != null && !config.getDerivedAttributes().isEmpty()) {
+			Element derivedAttributesElement = document.createElement(DERIVED_ATTRIBUTES);
+			for(DerivedAttributeParameters params : config.getDerivedAttributes()) {
+				/** <derivedAttribute> */
+				Element derivedAttributeElement = document.createElement(DERIVED_ATTRIBUTE);
+
+				createAndAddAttribute(document, derivedAttributeElement, METAMODEL_URI, params.getMetamodelUri());
+				createAndAddAttribute(document, derivedAttributeElement, TYPE_NAME, params.getTypeName());
+				createAndAddAttribute(document, derivedAttributeElement, NAME, params.getAttributeName());
+				createAndAddAttribute(document, derivedAttributeElement, TYPE, params.getAttributeType());
+				createAndAddAttribute(document, derivedAttributeElement, IS_MANY, params.isMany());
+				createAndAddAttribute(document, derivedAttributeElement, IS_UNIQUE, params.isUnique());
+				createAndAddAttribute(document, derivedAttributeElement, IS_ORDERED, params.isOrdered());
+
+				/** <derivation> */
+				Element derivationElement = document.createElement(DERIVATION);
+				createAndAddAttribute(document, derivationElement, LANGUAGE, params.getDerivationLanguage());
+
+				/** <logic> */
+				Element derivationLogicElement = document.createElement(LOGIC);
+				/** ![CDATA[ */
+				CDATASection derivationLogicCDATA = document.createCDATASection(params.getDerivationLogic());
+
+				derivationLogicElement.appendChild(derivationLogicCDATA); // add to tree
+				/** ]]> */
+				
+				derivedAttributeElement.appendChild(derivationLogicElement); // add to tree
+				/** </logic> */
+				
+				derivedAttributeElement.appendChild(derivationElement); // add to tree
+				/** <derivation> */
+				
+				derivedAttributesElement.appendChild(derivedAttributeElement); // add to tree
+				/** </derivedAttribute> */
+			}
+
+			hawkElement.appendChild(derivedAttributesElement); // add to tree
+		}
+	}
+
+	private void writeMetamodels(HawkInstanceConfig config, Document document, Element hawkElement) {
+		if(config.getMetamodels() != null && !config.getMetamodels().isEmpty()) {
+			Element metamodelsElement = document.createElement(METAMODELS);
+
+			for(MetamodelParameters metamodel : config.getMetamodels()) {
+				/** <metamodel> */
+				Element metamodelElement = document.createElement(METAMODEL);
+				createAndAddAttribute(document, metamodelElement, LOCATION, metamodel.getLocation());
+				createAndAddAttribute(document, metamodelElement, URI, metamodel.getUri());
+
+				metamodelsElement.appendChild(metamodelElement); // add to tree
+				/** </metamodel> */
+			}
+
+			hawkElement.appendChild(metamodelsElement); // add to tree
+		}
+	}
+
+
+	
+
+	private void readDerivedAttributes(NodeList nodes, HawkInstanceConfig config) {
 		for(Node derivedAttributesElement : NodeListIterable(nodes)) {
 			for(Node derivedAttributeElement : NodeListIterable(((Element) derivedAttributesElement).getElementsByTagName(DERIVED_ATTRIBUTE))) {
 				DerivedAttributeParameters params = new DerivedAttributeParameters();
@@ -291,7 +408,7 @@ public class ConfigFileParser {
 		return value;
 	}
 
-	private void setIndexedAttributes(NodeList nodes, HawkInstanceConfig config) {
+	private void readIndexedAttributes(NodeList nodes, HawkInstanceConfig config) {
 		for(Node indexedAttributeElements : NodeListIterable(nodes)) {
 			for(Node indexedAttributeElement : NodeListIterable(((Element) indexedAttributeElements).getElementsByTagName(INDEXED_ATTRIBUTE))) {
 				IndexedAttributeParameters params = new IndexedAttributeParameters(((Element)indexedAttributeElement).getAttribute(METAMODEL_URI), 
@@ -304,7 +421,7 @@ public class ConfigFileParser {
 
 	}
 
-	private void setRepositories(NodeList nodes, HawkInstanceConfig config) {
+	private void readRepositories(NodeList nodes, HawkInstanceConfig config) {
 		for(Node repoElements : NodeListIterable(nodes)) {
 			for(Node repoElement : NodeListIterable(((Element) repoElements).getElementsByTagName(REPOSITORY))) {
 				RepositoryParameters params = new RepositoryParameters();
@@ -320,38 +437,79 @@ public class ConfigFileParser {
 		}		
 	}
 
-
-
-	private void setMetamodels(NodeList nodes, HawkInstanceConfig config) {
+	private void readMetamodels(NodeList nodes, HawkInstanceConfig config) {
 		for(Node metamodelElements : NodeListIterable(nodes)) {
 			for(Node metamodelElement : NodeListIterable(((Element) metamodelElements).getElementsByTagName(METAMODEL))) {
-				config.getMetamodels().add(((Element)metamodelElement).getAttribute(LOCATION));
+				MetamodelParameters params = new MetamodelParameters(((Element)metamodelElement).getAttribute(URI),
+						((Element)metamodelElement).getAttribute(LOCATION));
+
+				config.getMetamodels().add(params);
 			}
 		}		
 	}
 
-	private void setDelay(NodeList nodes, HawkInstanceConfig config) {
+	private void readDelay(NodeList nodes, HawkInstanceConfig config) {
 		// only one element is expected
 		if(nodes.getLength() >= 1) {
 			config.setDelayMax(Integer.valueOf(((Element) nodes.item(0)).getAttribute(MAX)));
 			config.setDelayMin(Integer.valueOf(((Element) nodes.item(0)).getAttribute(MIN)));
 		}
 	}
+
 	
-	
-	private void writeDelay(Element parent, HawkInstanceConfig config) {
-		// only one element is expected
-		NodeList nodes = ((Element)parent).getElementsByTagName(DELAY);
-		if(nodes.getLength() >= 1) {
-			((Element) nodes.item(0)).setAttribute(MAX, String.valueOf(config.getDelayMax()));
-			((Element) nodes.item(0)).setAttribute(MIN, String.valueOf(config.getDelayMin()));
-		} else {
-			// add new child
-//			Node delayNode = 
-//			parent.appendChild(newChild);
+	private void writeXmlDocumentToFile(Node node, String filename) {
+		try {
+			File file = new File(filename);
+			if(!file.exists()) {
+				file.createNewFile();
+			}
+
+			DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
+			DOMImplementationLS implementationLS = 	(DOMImplementationLS)registry.getDOMImplementation("LS");
+
+			LSOutput output = implementationLS.createLSOutput();
+			output.setEncoding("UTF-8");
+			output.setCharacterStream(new FileWriter(file));
+
+			LSSerializer serializer = implementationLS.createLSSerializer();
+			serializer.getDomConfig().setParameter("format-pretty-print",true);
+
+			serializer.write(node, output);
+
+		} catch (Exception e1) {
+			e1.printStackTrace();
 		}
 	}
 
+
+	private void createAndAddAttribute(Document document, Element element, String tagName,
+			boolean value) {
+		createAndAddAttribute(document, element, tagName, String.valueOf(value));
+
+	}
+
+	private void createAndAddAttribute(Document document, Element element, String tagName,
+			String value) {
+		if(value != null) {
+			Attr attr = document.createAttribute(tagName);
+			attr.setValue(value);
+			element.setAttributeNode(attr);
+		}
+	}
+
+	private void createAndAddAttribute(Document document, Element element, String tagName,
+			int value) {
+		createAndAddAttribute(document, element, tagName, String.valueOf(value));
+	}
+
+	private void readPlugins(NodeList nodes, HawkInstanceConfig config) {
+		for(Node pluginsElement : NodeListIterable(nodes)) {
+			for(Node pluginElement : NodeListIterable(((Element) pluginsElement).getElementsByTagName(PLUGIN))) {
+				config.getPlugins().add(((Element)pluginElement).getAttribute(NAME));
+			}
+		}			
+	}
+	
 	public static Iterable<Node> NodeListIterable(final NodeList n) {
 		return new Iterable<Node>() {
 

@@ -12,9 +12,9 @@ package org.hawk.service.servlet.config;
 
 public class IndexedAttributeParameters {
 
-	String metamodelUri;
-	String typeName;
-	String attributeName;
+	private String metamodelUri;
+	private String typeName;
+	private String attributeName;
 
 	public IndexedAttributeParameters(String metamodelUri, String typeName,
 			String attributeName) {

@@ -64,7 +64,7 @@ public class Activator implements BundleActivator {
 
 	private static BundleContext context;
 	private static Activator instance;
-	private static HawkServerConfigurator serverConfig;
+	private static HawkServerConfigurator serverConfigurator;
 	public static Activator getInstance() {
 		return instance;
 	}
@@ -143,8 +143,8 @@ public class Activator implements BundleActivator {
 					final TServerSocket tcpServerSocket = new TServerSocket(Integer.valueOf(sTCPPort));
 					final HawkThriftIface hawkIface = new HawkThriftIface(ThriftProtocol.TUPLE, null, artemis);
 					final Processor<Iface> hawkTCPProcessor = new Hawk.Processor<Hawk.Iface>(hawkIface);
-					serverConfig = new HawkServerConfigurator(hawkIface);
-					serverConfig.loadConfig();
+					serverConfigurator = new HawkServerConfigurator(hawkIface);
+					serverConfigurator.loadHawkServerConfigurations();
 
 					final Args tcpServerArgs = new TThreadPoolServer.Args(tcpServerSocket)
 					.maxWorkerThreads(10_000)
@@ -178,14 +178,17 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
+
+		if(serverConfigurator != null) {
+			serverConfigurator.saveHawkServerConfigurations();
+		}
+
+		
 		Activator.context = null;
 		
 		HManager.getInstance().stopAllRunningInstances(
 				ShutdownRequestType.ONLY_LOCAL);
 		
-		if(serverConfig != null) {
-			serverConfig.saveConfig();
-		}
 		
 		if (artemis != null) {
 			artemis.stop();

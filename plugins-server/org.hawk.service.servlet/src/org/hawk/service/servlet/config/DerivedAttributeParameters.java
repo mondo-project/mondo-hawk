@@ -12,12 +12,12 @@ package org.hawk.service.servlet.config;
 
 public class DerivedAttributeParameters extends IndexedAttributeParameters{
 	
-	String attributeType;
-	boolean isMany;
-	boolean isOrdered;
-	boolean isUnique;
-	String derivationLanguage;
-	String derivationLogic;
+	private String attributeType;
+	private boolean isMany;
+	private boolean isOrdered;
+	private boolean isUnique;
+	private String derivationLanguage;
+	private String derivationLogic;
 	
 	public DerivedAttributeParameters() {
 		super();
