@@ -117,6 +117,35 @@ public class ModelQueryTest {
 	}
 
 	@Test
+	public void treeCrossResourceContainment() throws Throwable {
+		setup("tree", true);
+		indexer.registerMetamodels(new File("resources/metamodels/Ecore.ecore"),
+				new File("resources/metamodels/Tree.ecore"));
+
+		final LocalFolder vcs = new LocalFolder();
+		final String uri = new File("resources/models/tree-xres").toURI().toASCIIString();
+		vcs.init(uri, indexer);
+		vcs.run();
+		indexer.addVCSManager(vcs, true);
+		indexer.requestImmediateSync();
+
+		SyncEndListener.waitForSync(indexer, 200, new Callable<Object>() {
+			@Override
+			public Object call() throws Exception {
+				assertEquals(0, validationListener.getTotalErrors());
+				assertEquals(3, queryEngine.getAllOfType("Tree").size());
+				assertEquals(2, queryEngine.query(indexer,
+						"return Tree.all.selectOne(t|t.label='root').children.size;", null));
+				assertEquals("root", queryEngine.query(indexer,
+						"return Tree.all.selectOne(t|t.label='xyz').eContainer.label;", null));
+				assertEquals("root", queryEngine.query(indexer,
+						"return Tree.all.selectOne(t|t.label='abc').eContainer.label;", null));
+				return null;
+			}
+		});
+	}
+
+	@Test
 	public void set0() throws Throwable {
 		setup("set0", true);
 		indexer.registerMetamodels(new File("resources/metamodels/Ecore.ecore"),
@@ -128,7 +157,7 @@ public class ModelQueryTest {
 		indexer.addVCSManager(vcs, true);
 		indexer.requestImmediateSync();
 
-		SyncEndListener.waitForSync(indexer, 200, new Callable<Object>() {
+		SyncEndListener.waitForSync(indexer, 400, new Callable<Object>() {
 			@Override
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
