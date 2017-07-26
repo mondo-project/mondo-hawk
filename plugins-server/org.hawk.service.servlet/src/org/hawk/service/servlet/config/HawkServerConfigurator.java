@@ -100,7 +100,6 @@ public class HawkServerConfigurator  {
 				configurationFolder.mkdir();
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return Collections.emptyList();
@@ -108,13 +107,14 @@ public class HawkServerConfigurator  {
 
 	private void configureHawkInstance(File file) {
 		try {
-			//InputSource inputSource = new InputSource(new FileReader(file));
-			HawkInstanceConfig config = parser.parse(file);
+			
+			File xsdFile = Platform.getBundle("org.hawk.service.servlet").getDataFile("HawkServerConfigurationSchema.xsd");
+			
+			HawkInstanceConfig config = parser.parse(xsdFile, file);
 
 			if(config == null) {
 				return;
 			}
-
 
 			// add to list
 			hawkInstanceConfigs.add(config);
@@ -161,8 +161,6 @@ public class HawkServerConfigurator  {
 
 				// indexed Attributes
 				addMissingIndexedAttributes(hawkInstance, config);
-
-
 
 			}
 		} catch (Exception e) {
