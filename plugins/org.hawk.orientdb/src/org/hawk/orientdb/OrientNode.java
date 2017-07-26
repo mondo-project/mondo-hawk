@@ -25,9 +25,6 @@ import java.util.Set;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
-import org.hawk.core.model.IHawkAttribute;
-import org.hawk.core.model.IHawkClass;
-import org.hawk.core.model.IHawkReference;
 import org.hawk.orientdb.util.OrientNameCleaner;
 
 import com.orientechnologies.common.collection.OCollection;
@@ -35,10 +32,8 @@ import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.db.record.ORecordLazyMultiValue;
 import com.orientechnologies.orient.core.db.record.OTrackedList;
 import com.orientechnologies.orient.core.db.record.ridbag.ORidBag;
-import com.orientechnologies.orient.core.exception.OSchemaException;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
-import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
@@ -209,13 +204,7 @@ public class OrientNode implements IGraphNode {
 	}
 
 	private void addAllOIdentifiable(final List<IGraphEdge> edges, Iterable<Object> odocs, Direction dir, String edgeLabel) {
-		if (odocs instanceof ORecordLazyMultiValue) {
-			// Use a raw iterator that doesn't try to convert values on the fly
-			// *and* mark things around as dirty (why?).
-			for (Iterator<OIdentifiable> it = ((ORecordLazyMultiValue)odocs).rawIterator(); it.hasNext(); ) {
-				edges.add(convertToEdge(it.next(), dir, edgeLabel));
-			}
-		} else if (odocs != null) {
+		if (odocs != null) {
 			for (Object odoc : odocs) {
 				if (odoc instanceof OIdentifiable) {
 					edges.add(convertToEdge((OIdentifiable)odoc, dir, edgeLabel));
@@ -370,11 +359,7 @@ public class OrientNode implements IGraphNode {
 	}
 
 	public void addOutgoing(ODocument newEdge, String edgeLabel) {
-		try {
-			addToList(newEdge, PREFIX_OUTGOING + edgeLabel);
-		} catch (IllegalArgumentException|OSchemaException ex) {
-			addToList(newEdge, PREFIX_OUTGOING + OrientNameCleaner.escapeToField(edgeLabel));
-		}
+		addToList(newEdge, PREFIX_OUTGOING + OrientNameCleaner.escapeToField(edgeLabel));
 		graph.markNodeAsDirty(this);
 	}
 
@@ -406,12 +391,8 @@ public class OrientNode implements IGraphNode {
 
 		// Set initial value
 		if (out == null) {
-			OProperty prop = changedVertex.getSchemaClass().getProperty(fldName);
-			if (prop != null && prop.getType() == OType.LINKBAG) {
-				out = new ORidBag();
-			} else {
-				out = new ArrayList<OIdentifiable>();
-			}
+			out = new ORidBag();
+			changedVertex.field(fldName, out);
 		}
 
 		// Change value (tracking disabled temporarily for performance)
@@ -422,18 +403,15 @@ public class OrientNode implements IGraphNode {
 		} else if (out instanceof OCollection) {
 			OCollection<OIdentifiable> bag = (OCollection<OIdentifiable>)out;
 			bag.add(edgeDoc);
+		} else {
+			System.out.println("BUG");
 		}
 		changedVertex.field(fldName, out);
 		changedVertex.setTrackingChanges(true);
 	}
 
 	public void addIncoming(ODocument newEdge, String edgeLabel) {
-		try {
-			addToList(newEdge, PREFIX_INCOMING + edgeLabel);
-		} catch (IllegalArgumentException | OSchemaException ex) {
-			addToList(newEdge, PREFIX_INCOMING + OrientNameCleaner.escapeToField(edgeLabel));
-		}
-		graph.markNodeAsDirty(this);
+		addToList(newEdge, OrientNameCleaner.escapeToField(PREFIX_INCOMING + edgeLabel));
 	}
 
 	public void removeOutgoing(ODocument orientEdge, String edgeLabel) {
@@ -451,16 +429,18 @@ public class OrientNode implements IGraphNode {
 	@SuppressWarnings("unchecked")
 	private void removeFromList(ODocument orientEdge, final String fldName) {
 		changedVertex = getDocument();
-		Object out = changedVertex.field(fldName);
+		if (changedVertex != null) {
+			Object out = changedVertex.field(fldName);
 
-		changedVertex.setTrackingChanges(false);
-		if (out instanceof Collection) {
-			((Collection<OIdentifiable>)out).remove(orientEdge);
-		} else if (out instanceof OCollection) {
-			((OCollection<OIdentifiable>) out).remove(orientEdge);
+			changedVertex.setTrackingChanges(false);
+			if (out instanceof Collection) {
+				((Collection<OIdentifiable>) out).remove(orientEdge);
+			} else if (out instanceof OCollection) {
+				((OCollection<OIdentifiable>) out).remove(orientEdge);
+			}
+			changedVertex.field(fldName, out);
+			changedVertex.setTrackingChanges(true);
 		}
-		changedVertex.field(fldName, out);
-		changedVertex.setTrackingChanges(true);
 	}
 
 	public void removeIncoming(ODocument orientEdge, String edgeLabel) {
@@ -574,73 +554,30 @@ public class OrientNode implements IGraphNode {
 		return removedEntries;
 	}
 
-	protected static void setupDocumentClass(OClass oClass, IHawkClass hClass) {
+	protected static void setupDocumentClass(OClass oClass) {
 		// Oversize leaves some extra space in the record, to reduce the
 		// frequency in which we need to defragment. Orient sets the oversize
 		// of class V at 2 by default, so we do the same.
 		oClass.setOverSize(2);
 
-		if (hClass != null) {
-			for (IHawkAttribute attr : hClass.getAllAttributes()) {
-				OType type = OType.ANY;
-
-				if (attr.isMany()) {
-					if (attr.isOrdered() || !attr.isUnique()) {
-						type = OType.EMBEDDEDLIST;
-					} else {
-						type = OType.EMBEDDEDSET;
-					}
-				} else if (attr.getType() != null) {
-					switch (attr.getType().getInstanceType()) {
-					case "java.lang.Long":
-					case "Long":
-						type = OType.LONG;
-						break;
-					case "java.lang.Integer":
-					case "Integer":
-						type = OType.INTEGER;
-						break;
-					case "java.lang.Short":
-					case "Short":
-						type = OType.SHORT;
-						break;
-					case "java.lang.Byte":
-					case "Byte":
-						type = OType.BYTE;
-						break;
-					case "java.lang.Float":
-					case "Float":
-						type = OType.FLOAT;
-						break;
-					case "java.lang.Double":
-					case "Double":
-						type = OType.DOUBLE;
-						break;
-					case "java.lang.Boolean":
-					case "Boolean":
-						type = OType.BOOLEAN;
-						break;
-					case "java.lang.String":
-					case "String":
-						type = OType.STRING;
-						break;
-					default:
-						System.err.println("Unknown instance type " + attr.getType().getInstanceType()
-								+ ", falling back to OType.ANY");
-					}
-				}
-				oClass.createProperty(PREFIX_PROPERTY + attr.getName(), type);
-			}
-
-			for (IHawkReference ref : hClass.getAllReferences()) {
-				if (ref.isOrdered()) {
-					oClass.createProperty(PREFIX_OUTGOING + ref.getName(), OType.LINKLIST);
-				} else {
-					oClass.createProperty(PREFIX_OUTGOING + ref.getName(), OType.LINKBAG);
-				}
-			}
+		// TODO: should use constants from .graph, or there should be a way for
+		// graph to tell the DB certain things so it can optimize for them.
+		switch (oClass.getName()) {
+		case "V_eclass":
+			oClass.setOverSize(4);
+			oClass.createProperty(PREFIX_INCOMING + "ofType", OType.LINKBAG);
+			oClass.createProperty(PREFIX_INCOMING + "ofKind", OType.LINKBAG);
+			break;
+		case "V_eobject":
+			oClass.createProperty(PREFIX_OUTGOING + "file", OType.LINKBAG);
+			oClass.createProperty(PREFIX_OUTGOING + "ofType", OType.LINKLIST);
+			oClass.createProperty(PREFIX_OUTGOING + "ofKind", OType.LINKLIST);
+			break;
+		case "V_file":
+			oClass.createProperty(PREFIX_INCOMING + "file", OType.LINKBAG);
+			break;
 		}
 
-		System.out.println("set up properties for " + oClass.getName() + ": " + oClass.declaredProperties());
+		System.out.println("set up properties for " + oClass.getName() + ": "+ oClass.declaredProperties());
 	}
 }

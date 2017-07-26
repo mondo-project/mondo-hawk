@@ -37,7 +37,6 @@ import org.hawk.core.graph.IGraphEdgeIndex;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.model.IHawkClass;
-import org.hawk.core.model.IHawkReference;
 import org.hawk.orientdb.cache.ORecordCacheGuava;
 import org.hawk.orientdb.indexes.OrientEdgeIndex;
 import org.hawk.orientdb.indexes.OrientNodeIndex;
@@ -65,10 +64,9 @@ import com.orientechnologies.orient.core.storage.OStorage;
  * mimic Blueprints too much), but it follows the same conventions as their
  * GraphDB, so graphs can be queried and viewed as usual.
  *
- * This backend uses exactly 1 connection per thread: we advise using this
- * backend from a bounded number of threads, to avoid having too many
- * connections. The default Orient connection pools have issues when reusing
- * instances across queries.
+ * NOTE: it is recommended to set the {@link OGlobalConfiguration#WAL_LOCATION}
+ * system property to a different filesystem, to avoid delaying regular I/O due
+ * to WAL I/O. This can be done with something like "-Dstorage.wal.path=...".
  */
 public class OrientDatabase implements IGraphDatabase {
 
@@ -115,7 +113,7 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	/** Name of the Orient document class for edges. */
-	private static final String EDGE_TYPE_PREFIX = "E_";
+	private static final String EDGE_TYPE = "E";
 
 	/** Vertex class for the Hawk index store. */
 	private static final String VCLASS = "hawkIndexStore";
@@ -257,7 +255,7 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	private void shutdown(boolean delete) throws Exception {
-		if (pool.isClosed()) {
+		if (pool == null || pool.isClosed()) {
 			return;
 		}
 
@@ -419,20 +417,8 @@ public class OrientDatabase implements IGraphDatabase {
 	@Override
 	public OrientNode createNode(Map<String, Object> properties, String label) {
 		final String vertexTypeName = getVertexTypeName(label);
-		ensureClassExists(vertexTypeName, "V", null);
-		return createDocument(properties, vertexTypeName);
-	}
 
-	@Override
-	public OrientNode createNode(Map<String, Object> properties, String label, IHawkClass schema) {
-		final String midVertexTypeName = getVertexTypeName(label);
-		final String vertexTypeName = getVertexTypeName(midVertexTypeName, schema);
-		ensureClassExists(midVertexTypeName, "V", null);
-		ensureClassExists(vertexTypeName, midVertexTypeName, schema);
-		return createDocument(properties, vertexTypeName);
-	}
-
-	protected OrientNode createDocument(Map<String, Object> properties, final String vertexTypeName) {
+		ensureClassExists(vertexTypeName);
 		ODocument newDoc = new ODocument(vertexTypeName);
 		if (properties != null) {
 			OrientNode.setProperties(newDoc, properties);
@@ -446,23 +432,13 @@ public class OrientDatabase implements IGraphDatabase {
 		}
 	}
 
-	@Override
-	public void registerNodeClass(String label, IHawkClass hClass) {
-		final String midVertexTypeName = getVertexTypeName(label);
-		final String vertexTypeName = getVertexTypeName(midVertexTypeName, hClass);
-		ensureClassExists(midVertexTypeName, "V", null);
-		ensureClassExists(vertexTypeName, midVertexTypeName, hClass);
-	}
-
-	private void ensureClassExists(final String className, final String baseClass, final IHawkClass hClass) {
+	private void ensureClassExists(final String className) {
 		ODatabaseDocumentTx db = getGraph();
 		final OSchemaProxy schema = db.getMetadata().getSchema();
-
-		OClass oClass = schema.getClass(className);
-		if (oClass == null) {
+		if (!schema.existsClass(className)) {
 			final boolean wasInTX = db.getTransaction().isActive();
 			if (wasInTX) {
-				console.printerrln("Warning: premature commit needed to create/alter class " + className);
+				console.printerrln("Warning: premature commit needed to create class " + className);
 				saveDirty();
 				getGraph().commit();
 			}
@@ -473,30 +449,16 @@ public class OrientDatabase implements IGraphDatabase {
 			 * to outgoing edges as out_X and incoming edges as in_X. All edge documents must then
 			 * belong to E or a subclass of and use out and in for the source and target of the edge.
 			 */
-			if (oClass == null) {
-				oClass = schema.createClass(className);
-			}
+			final OClass oClass = schema.createClass(className);
 			if (className.startsWith(VERTEX_TYPE_PREFIX)) {
-				OClass baseVertexClass = schema.getClass(baseClass);
+				OClass baseVertexClass = schema.getClass("V");
 				if (baseVertexClass == null) {
-					baseVertexClass = schema.createClass(baseClass);
+					baseVertexClass = schema.createClass("V");
 					baseVertexClass.setOverSize(2);
 				}
 				oClass.addSuperClass(baseVertexClass);
-
-				OrientNode.setupDocumentClass(oClass, hClass);
-				if (hClass != null) {
-					for (IHawkReference ref : hClass.getAllReferences()) {
-						if (ref.isContainer() || ref.isContainment()) {
-							String edgeClassName = getEdgeTypeName(ref.getName());
-							if (!schema.existsClass(edgeClassName)) {
-								OClass edgeClass = schema.createClass(edgeClassName);
-								OrientEdge.setupDocumentClass(edgeClass);
-							}
-						}
-					}
-				}
-			} else if (EDGE_TYPE_PREFIX.equals(className)) {
+				OrientNode.setupDocumentClass(oClass);
+			} else if (EDGE_TYPE.equals(className)) {
 				OrientEdge.setupDocumentClass(oClass);
 			}
 
@@ -518,11 +480,11 @@ public class OrientDatabase implements IGraphDatabase {
 		final OrientNode oEnd = (OrientNode)end;
 		final String edgeTypeName = getEdgeTypeName(type);
 
-		if (props != null && !props.isEmpty()) {
-			// Edges with properties are stored as actual documents, so they need a doc class
-			ensureClassExists(edgeTypeName, "E", null);
-		}
+		ensureClassExists(edgeTypeName);
+
 		IGraphEdge newEdge = OrientEdge.create(this, oStart, oEnd, type, edgeTypeName, props);
+		dirtyNodes.put(oStart.getId().toString(), oStart);
+		dirtyNodes.put(oEnd.getId().toString(), oEnd);
 		saveIfBig();
 
 		return newEdge;
@@ -542,16 +504,8 @@ public class OrientDatabase implements IGraphDatabase {
 		}
 	}
 
-	private String getVertexTypeName(String prefix, IHawkClass klass) {
-		if (klass == null) {
-			return prefix;
-		} else {
-			return prefix + "_" + klass.getPackageNSURI().hashCode() + "_" + OrientNameCleaner.escapeClass(klass.getName());
-		}
-	}
-
 	private String getVertexTypeName(String label) {
-		return VERTEX_TYPE_PREFIX + OrientNameCleaner.escapeClass(label);
+		return OrientNameCleaner.escapeClass(VERTEX_TYPE_PREFIX + label);
 	}
 
 	private String getEdgeTypeName(String label) {
@@ -560,7 +514,7 @@ public class OrientDatabase implements IGraphDatabase {
 		// batch mode if we need to add a new edge type (very common during
 		// proxy resolving).
 
-		return EDGE_TYPE_PREFIX + OrientNameCleaner.escapeClass(label);
+		return EDGE_TYPE;
 	}
 
 	@Override

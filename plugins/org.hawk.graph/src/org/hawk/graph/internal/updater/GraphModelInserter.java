@@ -860,7 +860,7 @@ public class GraphModelInserter {
 			// final String[] repoFile =
 			// fullPathURI.split(GraphModelUpdater.FILEINDEX_REPO_SEPARATOR, 2);
 
-			int seploc = fullPathURI.lastIndexOf(GraphModelUpdater.FILEINDEX_REPO_SEPARATOR);
+			int seploc = fullPathURI.indexOf(GraphModelUpdater.FILEINDEX_REPO_SEPARATOR);
 			String[] repoFile = { fullPathURI.substring(0, seploc),
 					fullPathURI.substring(seploc + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR.length()) };
 

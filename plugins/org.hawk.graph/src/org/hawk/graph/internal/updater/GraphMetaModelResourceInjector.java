@@ -322,13 +322,7 @@ public class GraphMetaModelResourceInjector {
 				listener.changeFailure();
 			}
 
-			if (success) {
-				for (IHawkClassifier cls : epackage.getClasses()) {
-					if (cls instanceof IHawkClass) {
-						graph.registerNodeClass(ModelElementNode.OBJECT_VERTEX_LABEL, (IHawkClass)cls);
-					}
-				}
-			} else {
+			if (!success) {
 				try (IGraphTransaction t2 = graph.beginTransaction()) {
 					IGraphNode ePackageNode = epackagedictionary.get("id", epackage.getNsURI()).iterator().next();
 					new DeletionUtils(graph).delete(ePackageNode);
@@ -709,12 +703,12 @@ public class GraphMetaModelResourceInjector {
 				System.err.println("type: " + typename + " in: " + metamodeluri
 						+ " does not exist, aborting operation: addDerivedAttribute");
 			} else {
-				// at least one instance already present so derived attribute
-				// needs
-				// to be reconfigured for each element already present (whether
-				// the
-				// derived attribute is new or existed already and is being
-				// updated)
+				/*
+				 * at least one instance already present so derived attribute
+				 * needs to be reconfigured for each element already present
+				 * (whether the derived attribute is new or existed already and
+				 * is being updated)
+				 */
 				if (typenode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().hasNext()
 						|| typenode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFKIND).iterator().hasNext())
 					requiresPropagationToInstances = true;

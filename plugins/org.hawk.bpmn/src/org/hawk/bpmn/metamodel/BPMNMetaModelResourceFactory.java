@@ -32,6 +32,7 @@ import org.eclipse.emf.ecore.impl.EcorePackageImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.emf.ecore.xml.type.impl.XMLTypePackageImpl;
@@ -123,25 +124,14 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 	@Override
 	public String dumpPackageToString(IHawkPackage pkg) throws Exception {
 		final BPMNPackage ePackage = (BPMNPackage) pkg;
-		final BPMNMetaModelResource eResource = (BPMNMetaModelResource)ePackage.getResource();
-
-		final Resource oldResource = eResource.res;
 		final Resource newResource = resourceSet.createResource(URI.createURI("resource_from_epackage_" + ePackage.getNsURI()));
 		final EObject eob = ePackage.getEObject();
-		newResource.getContents().add(eob);
+		newResource.getContents().add(EcoreUtil.copy(eob));
 
 		final ByteArrayOutputStream bOS = new ByteArrayOutputStream();
-		try {
-			newResource.save(bOS, null);
-			final String contents = new String(bOS.toByteArray());
-			return contents;
-		} finally {
-			/*
-			 * Move back the EPackage into its original resource, to avoid
-			 * inconsistencies across restarts.
-			 */
-			oldResource.getContents().add(eob);
-		}
+		newResource.save(bOS, null);
+		final String contents = new String(bOS.toByteArray());
+		return contents;
 	}
 
 	@Override

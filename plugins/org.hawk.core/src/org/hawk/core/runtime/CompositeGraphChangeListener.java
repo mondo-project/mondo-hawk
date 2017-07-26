@@ -118,7 +118,7 @@ public class CompositeGraphChangeListener extends LinkedHashSet<IGraphChangeList
 			try {
 				l.classAddition(cls, clsNode);
 			} catch (Exception e) {
-				//
+				e.printStackTrace();
 			}
 
 		}

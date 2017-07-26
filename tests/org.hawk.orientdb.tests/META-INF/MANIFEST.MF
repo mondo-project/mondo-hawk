@@ -15,4 +15,5 @@ Require-Bundle: org.junit;bundle-version="4.11.0",
  org.hawk.graph.syncValidationListener,
  org.eclipse.emf.ecore;bundle-version="2.10.2",
  org.eclipse.emf.ecore.xmi;bundle-version="2.10.2",
- org.hawk.bpmn
+ org.hawk.bpmn,
+ org.hawk.modelio.exml

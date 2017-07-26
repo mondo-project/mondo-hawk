@@ -26,6 +26,8 @@ import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.runtime.ModelIndexerImpl;
+import org.hawk.graph.internal.updater.GraphModelBatchInjector;
+import org.hawk.graph.internal.updater.GraphModelUpdater;
 
 public class SyncValidationListener implements IGraphChangeListener {
 
@@ -76,17 +78,6 @@ public class SyncValidationListener implements IGraphChangeListener {
 	public int getTotalErrors() {
 		return totalErrors;
 	}
-
-	// clone from GraphModelUpdater.FILEINDEX_REPO_SEPARATOR as it is not
-	// exported
-	public static final String FILEINDEX_REPO_SEPARATOR = "////";
-	// clone from GraphModelUpdater.PROXY_REFERENCE_PREFIX as it is not
-	// exported
-	public static final String PROXY_REFERENCE_PREFIX = "hawkProxyRef:";
-
-	// clone fromGraphModelBatchInjector.FRAGMENT_DICT_NAME as it is not
-	// exported
-	public static final String FRAGMENT_DICT_NAME = "fragmentdictionary";
 
 	IGraphNodeIndex singletonIndex;
 	boolean singletonIndexIsEmpty;
@@ -140,7 +131,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 					try (IGraphTransaction t = graph.beginTransaction()) {
 
 						singletonIndex = graph
-								.getOrCreateNodeIndex(FRAGMENT_DICT_NAME);
+								.getOrCreateNodeIndex(GraphModelBatchInjector.FRAGMENT_DICT_NAME);
 						singletonIndexIsEmpty = !singletonIndex.query("*", "*")
 								.iterator().hasNext();
 
@@ -150,7 +141,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 
 							file = c.getCommit().getDelta().getManager()
 									.getLocation()
-									+ FILEINDEX_REPO_SEPARATOR + c.getPath();
+									+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + c.getPath();
 
 							filenode = graph.getFileIndex().get("id", file)
 									.getSingle();
@@ -293,7 +284,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 												&& !propertykey
 														.equals(IModelIndexer.IDENTIFIER_PROPERTY)
 												&& !propertykey
-														.startsWith(PROXY_REFERENCE_PREFIX)) {
+														.startsWith(GraphModelUpdater.PROXY_REFERENCE_PREFIX)) {
 											//
 											Object dbattr = instance
 													.getProperty(propertykey);
@@ -397,7 +388,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 											} else {
 
 												refvals.add(repoURL
-														+ FILEINDEX_REPO_SEPARATOR
+														+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
 														+ refEndNode
 																.getOutgoingWithType(
 																		"file")
@@ -472,8 +463,8 @@ public class SyncValidationListener implements IGraphChangeListener {
 														.indexOf("#");
 												final String path = modelref
 														.substring(
-																modelref.indexOf(FILEINDEX_REPO_SEPARATOR)
-																		+ FILEINDEX_REPO_SEPARATOR
+																modelref.indexOf(GraphModelUpdater.FILEINDEX_REPO_SEPARATOR)
+																		+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
 																				.length(),
 																idxHash);
 												if (path.equals("/*")) {
@@ -634,7 +625,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 				// '#//%Objing%')
 			}
 
-			ret = (repo + FILEINDEX_REPO_SEPARATOR + ret);
+			ret = (repo + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + ret);
 
 		}
 
@@ -664,7 +655,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 
 		for (String propertykey : instance.getPropertyKeys()) {
 
-			if (propertykey.startsWith(PROXY_REFERENCE_PREFIX)) {
+			if (propertykey.startsWith(GraphModelUpdater.PROXY_REFERENCE_PREFIX)) {
 
 				String[] proxies = (String[]) instance.getProperty(propertykey);
 
