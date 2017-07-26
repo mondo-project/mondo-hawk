@@ -12,16 +12,11 @@ package org.hawk.service.servlet.config;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
@@ -38,11 +33,9 @@ import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSOutput;
 import org.w3c.dom.ls.LSSerializer;
-import org.xml.sax.SAXException;
 
 
 public class ConfigFileParser {
-	private static final String SCHEMA_URL = "platform:/plugin/org.hawk.service.servlet/resources/HawkServerConfigurationSchema.xsd";
 
 	private static final String HAWK_SERVER_CONFIGURATION  = "HawkServerConfiguration";
 	private static final String HAWK  = "hawk";
@@ -97,37 +90,39 @@ public class ConfigFileParser {
 	public ConfigFileParser() {
 	}
 
-	public HawkInstanceConfig parse(File file) {
+	public HawkInstanceConfig parse(File xsdFile, File xmlFile) {
 		HawkInstanceConfig config = null;
-		try {
-			Element element = getXmlDocumentRootElement(file);
-			config = new HawkInstanceConfig(file.getAbsolutePath());
-			parseConfig(element, config);
-		} catch (Exception e) {
-			System.err.print("error in parse(File file): ");
-			e.printStackTrace();
+		if(xmlFile != null && xmlFile.exists()) {
+		
+			try {
+				Element element = getXmlDocumentRootElement(xsdFile, xmlFile);
+				config = new HawkInstanceConfig(xmlFile.getAbsolutePath());
+				parseConfig(element, config);
+			} catch (Exception e) {
+				System.err.print("error in parse(File file): ");
+				e.printStackTrace();
+			}
 		}
-
 		return config;
 	}
 
-	private Element getXmlDocumentRootElement(File file)
-			throws MalformedURLException, IOException, SAXException,
-			ParserConfigurationException {
+	private Element getXmlDocumentRootElement(File xsdFile, File xmlFile) throws Exception {
+
 		DocumentBuilderFactory factory  = DocumentBuilderFactory.newInstance();
-		factory.setValidating(false);
-		factory.setNamespaceAware(true);
-		URL url = new URL(SCHEMA_URL);
-		InputStream inputStream = url.openConnection().getInputStream();
+		
+		if(xsdFile != null && xsdFile.exists()) {
+		
+			factory.setValidating(false);
+			factory.setNamespaceAware(true);
 
-		// create Schema for validation
-		Source schemaSource = new StreamSource(inputStream);
-		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		Schema schema = schemaFactory.newSchema(schemaSource);
+			// create Schema for validation
+			Source schemaSource = new StreamSource(xsdFile);
+			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			Schema schema = schemaFactory.newSchema(schemaSource);
 
-		// set schema in Document Builder Factory
-		factory.setSchema(schema);
-
+			// set schema in Document Builder Factory
+			factory.setSchema(schema);
+		}
 		// parse document
 		DocumentBuilder builder  = factory.newDocumentBuilder();
 
@@ -135,7 +130,7 @@ public class ConfigFileParser {
 		builder.setErrorHandler(new SchemaErrorHandler());
 
 		// start parsing
-		Document document  = builder.parse(file);
+		Document document  = builder.parse(xmlFile);
 		Element element  = document.getDocumentElement();
 		return element;
 	}
@@ -215,7 +210,7 @@ public class ConfigFileParser {
 
 			writeXmlDocumentToFile(document, config.getFileName());
 
-		} catch (ParserConfigurationException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -285,7 +280,7 @@ public class ConfigFileParser {
 
 				createAndAddAttribute(document, indexedAttributeElement, METAMODEL_URI, params.getMetamodelUri());
 				createAndAddAttribute(document, indexedAttributeElement, TYPE_NAME, params.getTypeName());
-				createAndAddAttribute(document, indexedAttributeElement, NAME, params.getAttributeName());
+				createAndAddAttribute(document, indexedAttributeElement, ATTRIBUTE_NAME, params.getAttributeName());
 
 				indexedAttributesElement.appendChild(indexedAttributeElement); // add to tree
 				/** </indexedAttribute> */
@@ -295,8 +290,7 @@ public class ConfigFileParser {
 		}
 	}
 
-	private void writeDerivedAttributes(HawkInstanceConfig config,
-			Document document, Element hawkElement) {
+	private void writeDerivedAttributes(HawkInstanceConfig config, Document document, Element hawkElement) {
 		if(config.getDerivedAttributes() != null && !config.getDerivedAttributes().isEmpty()) {
 			Element derivedAttributesElement = document.createElement(DERIVED_ATTRIBUTES);
 			for(DerivedAttributeParameters params : config.getDerivedAttributes()) {
@@ -305,8 +299,8 @@ public class ConfigFileParser {
 
 				createAndAddAttribute(document, derivedAttributeElement, METAMODEL_URI, params.getMetamodelUri());
 				createAndAddAttribute(document, derivedAttributeElement, TYPE_NAME, params.getTypeName());
-				createAndAddAttribute(document, derivedAttributeElement, NAME, params.getAttributeName());
-				createAndAddAttribute(document, derivedAttributeElement, TYPE, params.getAttributeType());
+				createAndAddAttribute(document, derivedAttributeElement, ATTRIBUTE_NAME, params.getAttributeName());
+				createAndAddAttribute(document, derivedAttributeElement, ATTRIBUTE_TYPE, params.getAttributeType());
 				createAndAddAttribute(document, derivedAttributeElement, IS_MANY, params.isMany());
 				createAndAddAttribute(document, derivedAttributeElement, IS_UNIQUE, params.isUnique());
 				createAndAddAttribute(document, derivedAttributeElement, IS_ORDERED, params.isOrdered());
@@ -323,7 +317,7 @@ public class ConfigFileParser {
 				derivationLogicElement.appendChild(derivationLogicCDATA); // add to tree
 				/** ]]> */
 				
-				derivedAttributeElement.appendChild(derivationLogicElement); // add to tree
+				derivationElement.appendChild(derivationLogicElement); // add to tree
 				/** </logic> */
 				
 				derivedAttributeElement.appendChild(derivationElement); // add to tree
