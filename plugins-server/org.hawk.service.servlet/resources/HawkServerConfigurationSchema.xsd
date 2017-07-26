@@ -3,9 +3,11 @@
 	<xs:element name="HawkServerConfiguration">
 		<xs:complexType>
 			<xs:sequence>
+			
 				<xs:element name="hawk">
 					<xs:complexType>
 						<xs:sequence>
+						<xs:choice maxOccurs="unbounded" minOccurs="0">
 							<xs:element maxOccurs="1" minOccurs="0" name="delay">
 								<xs:complexType>
 									<xs:attribute name="min" type="xs:positiveInteger" use="required"/>
@@ -28,7 +30,8 @@
 									<xs:sequence>
 										<xs:element maxOccurs="unbounded" minOccurs="0" name="metamodel">
 											<xs:complexType>
-												<xs:attribute name="location" type="xs:anyURI" use="required"/>
+												<xs:attribute name="location" type="xs:anyURI" use="optional"/>
+												<xs:attribute name="uri" type="xs:anyURI" use="optional"/>
 											</xs:complexType>
 										</xs:element>
 									</xs:sequence>
@@ -89,6 +92,7 @@
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
+							</xs:choice>
 						</xs:sequence>
 						<xs:attribute name="name" type="xs:string"/>
 						<xs:attribute name="backend" type="xs:string"/>
