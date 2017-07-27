@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="Analyst" version="4">
+  <OBJECT>
+    <ID name="Analyst" mc="Infrastructure.Profile" uid="edd955bd-d22c-4017-8f8a-7590a3a186c2"/>
+    <PID name="LocalModule" mc="Infrastructure.ModuleComponent" uid="bd19f944-d41b-42ef-94a1-9e5ba663883b"/>
+    <ATTRIBUTES>
+      <ATT name="Name"><![CDATA[Analyst]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="OwnedReference">
+        <COMPID name="" mc="Infrastructure.MetaclassReference" uid="ab241507-a18e-4711-8acd-db5abd8b525f"/>
+        <COMPID name="" mc="Infrastructure.MetaclassReference" uid="64df4d1e-3663-4950-95fc-29204f9981e7"/>
+        <COMPID name="" mc="Infrastructure.MetaclassReference" uid="fec357b7-2501-4c75-8cdb-8b4da1836074"/>
+        <COMPID name="" mc="Infrastructure.MetaclassReference" uid="775f3bc6-d812-4f77-8253-6852bcede18b"/>
+        <COMPID name="" mc="Infrastructure.MetaclassReference" uid="75cb05db-044e-485f-9e6d-8b57b4f3ecb2"/>
+        <COMPID name="" mc="Infrastructure.MetaclassReference" uid="55bdd09f-86d4-40c2-8487-c288a8af4ec3"/>
+        <COMPID name="" mc="Infrastructure.MetaclassReference" uid="f572af01-e116-41d3-aa90-4cef567d721e"/>
+        <COMPID name="" mc="Infrastructure.MetaclassReference" uid="c9323813-e442-4925-94f6-d0f19c562420"/>
+        <COMPID name="" mc="Infrastructure.MetaclassReference" uid="0c8bec5b-24e6-4492-9350-b45d95f4b369"/>
+        <COMPID name="" mc="Infrastructure.MetaclassReference" uid="2da1b4b3-afe9-42b1-af6f-03914e859140"/>
+        <COMPID name="" mc="Infrastructure.MetaclassReference" uid="142e9641-ca78-441c-9933-c13b113e2e69"/>
+        <COMPID name="" mc="Infrastructure.MetaclassReference" uid="dfcbc301-c510-44b4-9164-0480e77740d2"/>
+        <COMPID name="" mc="Infrastructure.MetaclassReference" uid="3afb2822-6518-4c74-9e9a-404317519061"/>
+        <COMPID name="" mc="Infrastructure.MetaclassReference" uid="e84f38cb-2400-4ecd-81b0-eb8734c0e20b"/>
+        <COMPID name="" mc="Infrastructure.MetaclassReference" uid="8d83b757-7de2-47ea-8b3c-f593a48aa05c"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

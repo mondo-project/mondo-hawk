@@ -14,12 +14,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
+import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.runtime.ModelIndexerImpl;
 import org.hawk.core.security.FileBasedCredentialsStore;
 import org.hawk.core.util.DefaultConsole;
@@ -33,14 +34,13 @@ import org.hawk.graph.syncValidationListener.SyncValidationListener;
 import org.hawk.localfolder.LocalFolder;
 import org.hawk.modelio.exml.listeners.ModelioGraphChangeListener;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory;
+import org.hawk.modelio.exml.metamodel.ModelioPackage;
 import org.hawk.modelio.exml.model.ModelioModelResourceFactory;
+import org.hawk.modelio.model.util.RegisterMeta;
 import org.hawk.orientdb.util.FileUtils;
 import org.hawk.orientdb.util.SyncEndListener;
 import org.junit.After;
 import org.junit.Test;
-import org.modelio.metamodel.MClass;
-import org.modelio.metamodel.MMetamodel;
-import org.modelio.metamodel.MPackage;
 
 /**
  * Integration test case that indexes a simple model and performs a query.
@@ -53,6 +53,9 @@ public class ModelioMetamodelPopulationTest {
 	private EOLQueryEngine queryEngine;
 	private SyncValidationListener validationListener;
 
+	private final String METAMODEL_PATH = "resources/metamodels/";
+
+	
 	public void setup(String testCaseName, boolean doValidation) throws Exception {
 		final File dbFolder = new File("testdb" + testCaseName);
 		FileUtils.deleteRecursively(dbFolder);
@@ -80,6 +83,9 @@ public class ModelioMetamodelPopulationTest {
 		indexer.init(0, 0);
 		queryEngine.load(indexer);
 
+		File file = new File( METAMODEL_PATH ,"metamodel_descriptor.xml");
+		indexer.registerMetamodels(file);
+		
 		if (doValidation) {
 			validationListener = new SyncValidationListener();
 			indexer.addGraphChangeListener(validationListener);
@@ -103,20 +109,18 @@ public class ModelioMetamodelPopulationTest {
 		setup("modeliomm", true);
 
 		int nTypes = 0;
-		MMetamodel mm = new MMetamodel();
-		final List<MPackage> pkgs = mm.getMPackages();
-		nTypes = visitPackages(nTypes, pkgs, "modelio://");
+		final Collection<ModelioPackage> pkgs = RegisterMeta.getRegisteredPackages();
+		nTypes = visitPackages(nTypes, pkgs);
 
 		// From 'grep -c MClass MMetamodel.java' on modelio-metamodel-lib
-		assertEquals(289, nTypes);
+		assertEquals(409, nTypes);
 	}
 
-	protected int visitPackages(int nTypes, final List<MPackage> pkgs, final String prefix) {
+	protected int visitPackages(int nTypes, final Collection<ModelioPackage> pkgs) {
 		final GraphWrapper gw = new GraphWrapper(db);
 
-		for (MPackage mpkg : pkgs) {
-			final String mpkgPrefix = prefix + mpkg.getName() + "/";
-			MetamodelNode mmNode = gw.getMetamodelNodeByNsURI(mpkgPrefix + "v3");
+		for (ModelioPackage mpkg : pkgs) {
+			MetamodelNode mmNode = gw.getMetamodelNodeByNsURI(mpkg.getNsURI());
 
 			final Set<String> types = new HashSet<>();
 			for (TypeNode typeNode : mmNode.getTypes()) {
@@ -124,11 +128,9 @@ public class ModelioMetamodelPopulationTest {
 				++nTypes;
 			}
 
-			for (MClass mc : mpkg.getMClass()) {
+			for (IHawkClassifier mc : mpkg.getClasses()) {
 				assertTrue(types.contains(mc.getName()));
 			}
-
-			nTypes = visitPackages(nTypes, mpkg.getMPackages(), mpkgPrefix);
 		}
 
 		return nTypes;
@@ -148,8 +150,8 @@ public class ModelioMetamodelPopulationTest {
 			@Override
 			public Object call() throws Exception {
 				assertEquals(0, validationListener.getTotalErrors());
-				assertEquals(8, queryEngine.getAllOfKind("Class").size());
-				assertEquals(8, queryEngine.query(indexer, "return Class.all.size;", null));
+				assertEquals(6, queryEngine.getAllOfKind("Class").size());
+				assertEquals(6, queryEngine.query(indexer, "return Class.all.size;", null));
 				return null;
 			}
 		});

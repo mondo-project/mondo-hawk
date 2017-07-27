@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="No Properties" version="4">
+  <OBJECT>
+    <ID name="No Properties" mc="Infrastructure.PropertyTableDefinition" uid="7649b5c8-8733-4a02-959c-a269422402b8"/>
+    <PID name="" mc="Infrastructure.MetaclassReference" uid="ab241507-a18e-4711-8acd-db5abd8b525f"/>
+    <ATTRIBUTES>
+      <ATT name="Name"><![CDATA[No Properties]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES></DEPENDENCIES>
+  </OBJECT>
+</EXT>
