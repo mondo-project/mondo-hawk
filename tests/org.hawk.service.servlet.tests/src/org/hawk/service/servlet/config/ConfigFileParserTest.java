@@ -25,9 +25,7 @@ public class ConfigFileParserTest {
 	
 	@Test
 	public void testParseFile() {
-		ConfigFileParser parser = new ConfigFileParser();
-		
-		config = parser.parse(new File(xsdFilePath), new File(xmlFilePath));
+		parseXml();
 		
 		// config config values
 		assertEquals("Instance Name:", "instance_1", config.getName());
@@ -79,14 +77,24 @@ public class ConfigFileParserTest {
 	}
 
 
+	private void parseXml() {
+		parser = new ConfigFileParser();
+		
+		try {
+			parser.setSchemaFile(xsdFilePath);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		config = parser.parse(new File(xmlFilePath));
+	}
+
+
 	@Test
 	public void testSaveConfigToFile() {
-		ConfigFileParser parser = new ConfigFileParser();
-		
-		config = parser.parse(new File(xsdFilePath), new File(xmlFilePath));
-		
+		parseXml();	
 		parser.saveConfigAsXml(config);
-		
 		testParseFile();
 	}
 

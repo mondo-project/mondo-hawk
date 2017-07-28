@@ -29,7 +29,6 @@ public class HawkInstanceConfig {
 	
 	private List<String> plugins;
 	
-	//private List<String> metamodels;
 	private List<MetamodelParameters> metamodels;
 
 	private List<RepositoryParameters> repositories;

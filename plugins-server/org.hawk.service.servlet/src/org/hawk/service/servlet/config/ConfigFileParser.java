@@ -11,6 +11,8 @@
 package org.hawk.service.servlet.config;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -91,8 +93,17 @@ public class ConfigFileParser {
 	private static final String PASS = "pass";
 	private static final String FROZEN = "frozen";
 
+	private InputStream xsd;
 
 	public ConfigFileParser() {
+		this.xsd = ConfigFileParser.class.getResourceAsStream("/resources/HawkServerConfigurationSchema.xsd");
+	}
+	
+	public void setSchemaFile(String filePath) throws Exception {
+		InputStream is = new FileInputStream(filePath);
+		if(is != null) {
+			this.xsd = is;
+		}
 	}
 
 	public HawkInstanceConfig parse(File xmlFile) {
@@ -115,13 +126,12 @@ public class ConfigFileParser {
 
 		DocumentBuilderFactory factory  = DocumentBuilderFactory.newInstance();
 		
-		InputStream xsdFile = ConfigFileParser.class.getResourceAsStream("/resources/HawkServerConfigurationSchema.xsd");
-		if(xsdFile != null ) {
+		if(this.xsd != null ) {
 			factory.setValidating(false);
 			factory.setNamespaceAware(true);
 			
 			// create Schema for validation
-			Source schemaSource = new StreamSource(xsdFile);
+			Source schemaSource = new StreamSource(this.xsd);
 			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			Schema schema = schemaFactory.newSchema(schemaSource);
 
