@@ -12,7 +12,13 @@ package org.hawk.service.servlet.config;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -37,7 +43,6 @@ import org.w3c.dom.ls.LSSerializer;
 
 public class ConfigFileParser {
 
-	private static final String HAWK_SERVER_CONFIGURATION  = "HawkServerConfiguration";
 	private static final String HAWK  = "hawk";
 
 	private static final String NAME = "name";
@@ -90,12 +95,12 @@ public class ConfigFileParser {
 	public ConfigFileParser() {
 	}
 
-	public HawkInstanceConfig parse(File xsdFile, File xmlFile) {
+	public HawkInstanceConfig parse(File xmlFile) {
 		HawkInstanceConfig config = null;
 		if(xmlFile != null && xmlFile.exists()) {
 		
 			try {
-				Element element = getXmlDocumentRootElement(xsdFile, xmlFile);
+				Element element = getXmlDocumentRootElement(xmlFile);
 				config = new HawkInstanceConfig(xmlFile.getAbsolutePath());
 				parseConfig(element, config);
 			} catch (Exception e) {
@@ -106,15 +111,15 @@ public class ConfigFileParser {
 		return config;
 	}
 
-	private Element getXmlDocumentRootElement(File xsdFile, File xmlFile) throws Exception {
+	private Element getXmlDocumentRootElement(File xmlFile) throws Exception {
 
 		DocumentBuilderFactory factory  = DocumentBuilderFactory.newInstance();
 		
-		if(xsdFile != null && xsdFile.exists()) {
-		
+		InputStream xsdFile = ConfigFileParser.class.getResourceAsStream("/resources/HawkServerConfigurationSchema.xsd");
+		if(xsdFile != null ) {
 			factory.setValidating(false);
 			factory.setNamespaceAware(true);
-
+			
 			// create Schema for validation
 			Source schemaSource = new StreamSource(xsdFile);
 			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -135,29 +140,24 @@ public class ConfigFileParser {
 		return element;
 	}
 
-	private void parseConfig(Element element , HawkInstanceConfig config) {
-		if(element.getNodeName().equals(HAWK_SERVER_CONFIGURATION)) {
-			// get hawk, usually one element per file
-			// FIXME if there is more than one, only the last one will be returned
-			for(Node hawkElement : NodeListIterable(element.getElementsByTagName(HAWK))) {
+	private void parseConfig(Element hawkElement , HawkInstanceConfig config) {
+		if(hawkElement.getNodeName().equals(HAWK)) {
+			config.setName(hawkElement.getAttribute(NAME));
 
-				config.setName(((Element)hawkElement).getAttribute(NAME));
+			config.setBackend(hawkElement.getAttribute(BACKEND));
 
-				config.setBackend(((Element)hawkElement).getAttribute(BACKEND));
+			readDelay(hawkElement.getElementsByTagName(DELAY),  config);
 
-				readDelay(((Element)hawkElement).getElementsByTagName(DELAY),  config);
+			readPlugins(hawkElement.getElementsByTagName(PLUGINS),  config);
 
-				readPlugins(((Element)hawkElement).getElementsByTagName(PLUGINS),  config);
+			readMetamodels(hawkElement.getElementsByTagName(METAMODELS),  config);
 
-				readMetamodels(((Element)hawkElement).getElementsByTagName(METAMODELS),  config);
+			readRepositories(hawkElement.getElementsByTagName(REPOSITORIES),  config);
 
-				readRepositories(((Element)hawkElement).getElementsByTagName(REPOSITORIES),  config);
+			readIndexedAttributes(hawkElement.getElementsByTagName(INDEXED_ATTRIBUTES),  config);
 
-				readIndexedAttributes(((Element)hawkElement).getElementsByTagName(INDEXED_ATTRIBUTES),  config);
-
-				readDerivedAttributes(((Element)hawkElement).getElementsByTagName(DERIVED_ATTRIBUTES),  config);
-			}
-		}  
+			readDerivedAttributes(hawkElement.getElementsByTagName(DERIVED_ATTRIBUTES),  config);
+		}
 	}
 
 
@@ -169,9 +169,6 @@ public class ConfigFileParser {
 			builder = factory.newDocumentBuilder();
 
 			Document document  = builder.newDocument();
-
-			/** <HawkServerConfiguration> */
-			Element root = document.createElement(HAWK_SERVER_CONFIGURATION);
 
 			/** <hawk> */
 			Element hawkElement = document.createElement(HAWK);
@@ -203,10 +200,7 @@ public class ConfigFileParser {
 			/** </repositories> */
 
 			/** </hawk> */
-			root.appendChild(hawkElement);
-
-			/** </HawkServerConfiguration> */
-			document.appendChild(root);
+			document.appendChild(hawkElement);
 
 			writeXmlDocumentToFile(document, config.getFileName());
 
@@ -312,9 +306,9 @@ public class ConfigFileParser {
 				/** <logic> */
 				Element derivationLogicElement = document.createElement(LOGIC);
 				/** ![CDATA[ */
-				CDATASection derivationLogicCDATA = document.createCDATASection(params.getDerivationLogic());
+				CDATASection derivationLogicCData = document.createCDATASection(params.getDerivationLogic());
 
-				derivationLogicElement.appendChild(derivationLogicCDATA); // add to tree
+				derivationLogicElement.appendChild(derivationLogicCData); // add to tree
 				/** ]]> */
 				
 				derivationElement.appendChild(derivationLogicElement); // add to tree
@@ -350,29 +344,27 @@ public class ConfigFileParser {
 	}
 
 	private void readDerivedAttributes(NodeList nodes, HawkInstanceConfig config) {
-		for(Node derivedAttributesElement : NodeListIterable(nodes)) {
-			for(Node derivedAttributeElement : NodeListIterable(((Element) derivedAttributesElement).getElementsByTagName(DERIVED_ATTRIBUTE))) {
+		for(Element derivedAttributesElement : ElementListIterable(nodes)) {
+			for(Element derivedAttributeElement : ElementListIterable(derivedAttributesElement.getElementsByTagName(DERIVED_ATTRIBUTE))) {
 				DerivedAttributeParameters params = new DerivedAttributeParameters(
-				((Element)derivedAttributeElement).getAttribute(METAMODEL_URI),
-				((Element)derivedAttributeElement).getAttribute(TYPE_NAME),
-				((Element)derivedAttributeElement).getAttribute(ATTRIBUTE_NAME),
-				((Element)derivedAttributeElement).getAttribute(ATTRIBUTE_TYPE),
-				Boolean.valueOf(((Element)derivedAttributeElement).getAttribute(IS_MANY)),
-				Boolean.valueOf(((Element)derivedAttributeElement).getAttribute(IS_UNIQUE)),
-				Boolean.valueOf(((Element)derivedAttributeElement).getAttribute(IS_ORDERED)));
+				derivedAttributeElement.getAttribute(METAMODEL_URI),
+				derivedAttributeElement.getAttribute(TYPE_NAME),
+				derivedAttributeElement.getAttribute(ATTRIBUTE_NAME),
+				derivedAttributeElement.getAttribute(ATTRIBUTE_TYPE),
+				Boolean.valueOf(derivedAttributeElement.getAttribute(IS_MANY)),
+				Boolean.valueOf(derivedAttributeElement.getAttribute(IS_UNIQUE)),
+				Boolean.valueOf(derivedAttributeElement.getAttribute(IS_ORDERED)));
 				// get derivation
-				NodeList derivations = ((Element)derivedAttributeElement).getElementsByTagName(DERIVATION);
 
-				// only one element is expected
-				if(derivations.getLength() >= 1) {
+				Element derivationElement = getFirstElement(derivedAttributeElement.getElementsByTagName(DERIVATION));
+				if(derivationElement != null) {
 					// get derivation language
-					params.setDerivationLanguage(((Element) derivations.item(0)).getAttribute(LANGUAGE));
+					params.setDerivationLanguage(derivationElement.getAttribute(LANGUAGE));
 
 					// get logic
-					NodeList logics = ((Element)derivations.item(0)).getElementsByTagName(LOGIC);
-					// only one element is expected
-					if(logics.getLength() >= 1) {
-						params.setDerivationLogic(readElementCDataValue(logics.item(0)));
+					Element logic = getFirstElement(derivationElement.getElementsByTagName(LOGIC));
+					if(logic != null) {
+						params.setDerivationLogic(readElementCDataValue(logic));
 					}
 				}
 
@@ -383,23 +375,24 @@ public class ConfigFileParser {
 	}
 
 	private String readElementCDataValue(Node node) {
-		String value = "";
+		StringBuffer buffer = new StringBuffer();
 
-		NodeList cdataSections = node.getChildNodes();
-
-		for(Node cdata : NodeListIterable(cdataSections)) {
-			value += cdata.getNodeValue();
+		NodeList cDataElements = node.getChildNodes();
+		// CDATA sections , we cannot use ElementListIterable
+		
+		for(Node cDataElement : NodeListIterable(cDataElements)) {
+			buffer.append(cDataElement.getNodeValue());
 		}
 
-		return value;
+		return buffer.toString();
 	}
 
 	private void readIndexedAttributes(NodeList nodes, HawkInstanceConfig config) {
-		for(Node indexedAttributeElements : NodeListIterable(nodes)) {
-			for(Node indexedAttributeElement : NodeListIterable(((Element) indexedAttributeElements).getElementsByTagName(INDEXED_ATTRIBUTE))) {
-				IndexedAttributeParameters params = new IndexedAttributeParameters(((Element)indexedAttributeElement).getAttribute(METAMODEL_URI), 
-						((Element)indexedAttributeElement).getAttribute(TYPE_NAME), 
-						((Element)indexedAttributeElement).getAttribute(ATTRIBUTE_NAME));
+		for(Element indexedAttributeElements : ElementListIterable(nodes)) {
+			for(Element indexedAttributeElement : ElementListIterable(indexedAttributeElements.getElementsByTagName(INDEXED_ATTRIBUTE))) {
+				IndexedAttributeParameters params = new IndexedAttributeParameters(indexedAttributeElement.getAttribute(METAMODEL_URI), 
+						indexedAttributeElement.getAttribute(TYPE_NAME), 
+						indexedAttributeElement.getAttribute(ATTRIBUTE_NAME));
 
 				config.getIndexedAttributes().add(params);
 			}
@@ -408,14 +401,14 @@ public class ConfigFileParser {
 	}
 
 	private void readRepositories(NodeList nodes, HawkInstanceConfig config) {
-		for(Node repoElements : NodeListIterable(nodes)) {
-			for(Node repoElement : NodeListIterable(((Element) repoElements).getElementsByTagName(REPOSITORY))) {
+		for(Element repoElements : ElementListIterable(nodes)) {
+			for(Element repoElement : ElementListIterable( repoElements.getElementsByTagName(REPOSITORY))) {
 				RepositoryParameters params = new RepositoryParameters(
-						((Element)repoElement).getAttribute(TYPE),
-						((Element)repoElement).getAttribute(LOCATION),
-						((Element)repoElement).getAttribute(USER),
-						((Element)repoElement).getAttribute(PASS),
-						Boolean.valueOf(((Element)repoElement).getAttribute(FROZEN)));
+						repoElement.getAttribute(TYPE),
+						repoElement.getAttribute(LOCATION),
+						repoElement.getAttribute(USER),
+						repoElement.getAttribute(PASS),
+						Boolean.valueOf(repoElement.getAttribute(FROZEN)));
 
 				config.getRepositories().add(params);
 			}
@@ -423,10 +416,10 @@ public class ConfigFileParser {
 	}
 
 	private void readMetamodels(NodeList nodes, HawkInstanceConfig config) {
-		for(Node metamodelElements : NodeListIterable(nodes)) {
-			for(Node metamodelElement : NodeListIterable(((Element) metamodelElements).getElementsByTagName(METAMODEL))) {
-				MetamodelParameters params = new MetamodelParameters(((Element)metamodelElement).getAttribute(URI),
-						((Element)metamodelElement).getAttribute(LOCATION));
+		for(Element metamodelElements : ElementListIterable(nodes)) {
+			for(Element metamodelElement : ElementListIterable(( metamodelElements).getElementsByTagName(METAMODEL))) {
+				MetamodelParameters params = new MetamodelParameters(metamodelElement.getAttribute(URI),
+						metamodelElement.getAttribute(LOCATION));
 
 				config.getMetamodels().add(params);
 			}
@@ -435,12 +428,21 @@ public class ConfigFileParser {
 
 	private void readDelay(NodeList nodes, HawkInstanceConfig config) {
 		// only one element is expected
-		if(nodes.getLength() >= 1) {
-			config.setDelayMax(Integer.valueOf(((Element) nodes.item(0)).getAttribute(MAX)));
-			config.setDelayMin(Integer.valueOf(((Element) nodes.item(0)).getAttribute(MIN)));
+		Element element = getFirstElement(nodes);
+		if(element != null) {
+			config.setDelayMax(Integer.valueOf(element.getAttribute(MAX)));
+			config.setDelayMin(Integer.valueOf(element.getAttribute(MIN)));
 		}
 	}
-
+	
+	private void readPlugins(NodeList nodes, HawkInstanceConfig config) {
+		for(Element pluginsElement : ElementListIterable(nodes)) {
+			for(Element pluginElement : ElementListIterable(pluginsElement.getElementsByTagName(PLUGIN))) {
+				config.getPlugins().add(pluginElement.getAttribute(NAME));
+			}
+		}			
+	}
+	
 	/** Utility methods */
 	private void writeXmlDocumentToFile(Node node, String filename) {
 		try {
@@ -466,7 +468,6 @@ public class ConfigFileParser {
 		}
 	}
 
-
 	private void createAndAddAttribute(Document document, Element element, String tagName,
 			boolean value) {
 		createAndAddAttribute(document, element, tagName, String.valueOf(value));
@@ -482,18 +483,54 @@ public class ConfigFileParser {
 		}
 	}
 
-	private void createAndAddAttribute(Document document, Element element, String tagName,
-			int value) {
+	private void createAndAddAttribute(Document document, Element element, String tagName, int value) {
 		createAndAddAttribute(document, element, tagName, String.valueOf(value));
 	}
 
-	private void readPlugins(NodeList nodes, HawkInstanceConfig config) {
-		for(Node pluginsElement : NodeListIterable(nodes)) {
-			for(Node pluginElement : NodeListIterable(((Element) pluginsElement).getElementsByTagName(PLUGIN))) {
-				config.getPlugins().add(((Element)pluginElement).getAttribute(NAME));
-			}
-		}			
+	private Element getFirstElement(NodeList n) {
+		if (n.getLength() > 0)
+			return (Element) n.item(0);
+		return null;
 	}
+
+
+	public static Iterable<Element> ElementListIterable(final NodeList n) {
+		return new Iterable<Element>() {
+
+			@Override
+			public Iterator<Element> iterator() {
+
+				return new Iterator<Element>() {
+
+					int index = 0;
+
+					@Override
+					public boolean hasNext() {
+						return index < n.getLength();
+					}
+
+					@Override
+					public Element next() {
+						if (hasNext()) {
+							return (Element) n.item(index++);
+						} else {
+							throw new NoSuchElementException();
+						}  
+					}
+
+					@Override
+					public void remove() {
+						throw new UnsupportedOperationException();
+					}
+					
+					
+					
+				};
+			}
+		};
+	}
+	
+	
 	
 	public static Iterable<Node> NodeListIterable(final NodeList n) {
 		return new Iterable<Node>() {
@@ -523,6 +560,9 @@ public class ConfigFileParser {
 					public void remove() {
 						throw new UnsupportedOperationException();
 					}
+					
+					
+					
 				};
 			}
 		};

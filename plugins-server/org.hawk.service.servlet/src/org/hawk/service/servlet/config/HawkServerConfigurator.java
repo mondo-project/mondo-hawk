@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,16 +69,14 @@ public class HawkServerConfigurator  {
 
 	private List<File> getHawkServerConfigurationFiles() {
 		URL installURL = Platform.getConfigurationLocation().getURL();
-		// installURL = Platform.getInstallLocation().getURL();
-		// installURL = Platform.getInstanceLocation().getURL();
-		// installURL = Platform.g().getURL();
+
 		String protocol;
 		try {
 			protocol = FileLocator.toFileURL(installURL).getProtocol();
 
 			String path = FileLocator.toFileURL(installURL).getPath();
 			System.err.println(path + "   " + protocol);
-			File configurationFolder = new File(path + "\\configuration");
+			File configurationFolder = new File(path, "configuration");
 			FilenameFilter filter = new FilenameFilter() {
 
 				@Override
@@ -108,10 +107,7 @@ public class HawkServerConfigurator  {
 	private void configureHawkInstance(File file) {
 		try {
 			
-			File xsdFile = Platform.getBundle("org.hawk.service.servlet").getDataFile("HawkServerConfigurationSchema.xsd");
-			
-			HawkInstanceConfig config = parser.parse(xsdFile, file);
-
+			HawkInstanceConfig config = parser.parse(file);
 			if(config == null) {
 				return;
 			}
@@ -130,7 +126,6 @@ public class HawkServerConfigurator  {
 
 			// apply configuration
 			if (hawkInstance != null) {
-
 
 				// check parameters and if different change
 				hawkInstance.configurePolling(config.getDelayMin(),
@@ -240,14 +235,23 @@ public class HawkServerConfigurator  {
 	}
 
 	private String attributeToString(IndexedAttributeParameters params) {
-		String indexedParameterString = String.format("%s::%s::%s", params.getMetamodelUri(), params.getTypeName(), params.getAttributeName());
+		String indexedParameterString = String.format("%s##%s##%s", params.getMetamodelUri(), params.getTypeName(), params.getAttributeName());
 		return indexedParameterString;
 	}
 
 	private IndexedAttributeParameters stringToAttribute(String string) {
-		String[] data = string.split("::");
+		String[] data = string.split("##");
 		if(data.length == 3) {
 			return (new IndexedAttributeParameters(data[0], data[1], data[2]));
+		}
+		return null; 
+	}
+	
+	
+	private DerivedAttributeParameters stringToDerivedAttribute(String string) {
+		String[] data = string.split("##");
+		if(data.length == 3) {
+			return (new DerivedAttributeParameters(data[0], data[1], data[2]));
 		}
 		return null; 
 	}
@@ -333,7 +337,7 @@ public class HawkServerConfigurator  {
 
 
 		// save all derived attributes, cannot get derivation language and logic
-		addNewDerivedAttributesToConfig(hawkInstance.getDerivedAttributes(), config.getDerivedAttributes());
+		addNewDerivedAttributesToConfig(hawkInstance.getDerivedAttributes_new(), config.getDerivedAttributes());
 
 		// save all indexed attributes
 		addNewIndexedAttributesToConfig(hawkInstance.getIndexedAttributes(), config.getIndexedAttributes());
@@ -383,7 +387,7 @@ public class HawkServerConfigurator  {
 				}
 
 				if(isNew) {
-					DerivedAttributeParameters params = (DerivedAttributeParameters) stringToAttribute(indexedAttribute);
+					DerivedAttributeParameters params = stringToDerivedAttribute(indexedAttribute);
 					if(params != null) 
 						newAttrs.add(params);
 				}
