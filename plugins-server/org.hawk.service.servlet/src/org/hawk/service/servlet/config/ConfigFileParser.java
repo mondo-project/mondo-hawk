@@ -99,6 +99,7 @@ public class ConfigFileParser {
 		this.xsd = ConfigFileParser.class.getResourceAsStream("/resources/HawkServerConfigurationSchema.xsd");
 	}
 	
+	/** method used by test to set xsd file */
 	public void setSchemaFile(String filePath) throws Exception {
 		InputStream is = new FileInputStream(filePath);
 		if(is != null) {
