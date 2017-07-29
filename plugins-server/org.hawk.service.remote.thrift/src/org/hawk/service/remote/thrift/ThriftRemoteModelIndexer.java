@@ -52,6 +52,8 @@ import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
 import org.hawk.core.runtime.CompositeGraphChangeListener;
 import org.hawk.core.runtime.CompositeStateListener;
+import org.hawk.core.util.DerivedAttributeParameters;
+import org.hawk.core.util.IndexedAttributeParameters;
 import org.hawk.core.util.HawkProperties;
 import org.hawk.osgiserver.HManager;
 import org.hawk.service.api.Credentials;
@@ -724,7 +726,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	}
 
 	@Override
-	public Collection<String> getDerivedAttributes() {
+	public Collection<String> getDerivedAttributeNames() {
 		final List<String> attrs = new ArrayList<>();
 		try {
 			for (DerivedAttributeSpec spec : client.listDerivedAttributes(name)) {
@@ -738,7 +740,26 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	}
 
 	@Override
-	public Collection<String> getIndexedAttributes() {
+	public Collection<IndexedAttributeParameters> getDerivedAttributes() {
+		final List<IndexedAttributeParameters> attrs = new ArrayList<>();
+		try {
+			for (DerivedAttributeSpec spec : client.listDerivedAttributes(name)) {
+				DerivedAttributeParameters params = new DerivedAttributeParameters(
+						spec.metamodelUri, spec.typeName, spec.attributeName,
+						spec.attributeType, spec.isMany, spec.isOrdered,
+						spec.isUnique, spec.derivationLanguage, spec.derivationLogic
+						);
+				attrs.add(params);
+			}
+		} catch (TException e) {
+			console.printerrln("Could not list the derived attributes");
+			console.printerrln(e);
+		}
+		return attrs;		
+	}
+
+	@Override
+	public Collection<String> getIndexedAttributeNames() {
 		final List<String> attrs = new ArrayList<>();
 		try {
 			for (IndexedAttributeSpec spec : client.listIndexedAttributes(name)) {
@@ -749,6 +770,23 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 			console.printerrln(e);
 		}
 		return attrs;
+	}
+
+	@Override
+	public Collection<IndexedAttributeParameters> getIndexedAttributes() {
+		final List<IndexedAttributeParameters> attrs = new ArrayList<>();
+		try {
+			for (DerivedAttributeSpec spec : client.listDerivedAttributes(name)) {
+				IndexedAttributeParameters params = new IndexedAttributeParameters(
+						spec.metamodelUri, spec.typeName, spec.attributeName
+						);
+				attrs.add(params);
+			}
+		} catch (TException e) {
+			console.printerrln("Could not list the derived attributes");
+			console.printerrln(e);
+		}
+		return attrs;	
 	}
 
 	@Override
@@ -915,4 +953,8 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 			}
 		}
 	}
+
+	
+
+
 }

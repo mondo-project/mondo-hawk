@@ -12,15 +12,9 @@ package org.hawk.service.servlet.config;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -31,6 +25,8 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Schema;
 import javax.xml.XMLConstants;
 
+import org.hawk.core.util.DerivedAttributeParameters;
+import org.hawk.core.util.IndexedAttributeParameters;
 import org.w3c.dom.Attr;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
@@ -170,7 +166,6 @@ public class ConfigFileParser {
 			readDerivedAttributes(hawkElement.getElementsByTagName(DERIVED_ATTRIBUTES),  config);
 		}
 	}
-
 
 	public void saveConfigAsXml(HawkInstanceConfig config) {
 		try {

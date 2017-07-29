@@ -23,6 +23,7 @@ import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.runtime.CompositeGraphChangeListener;
 import org.hawk.core.runtime.CompositeStateListener;
+import org.hawk.core.util.IndexedAttributeParameters;
 
 public interface IModelIndexer {
 
@@ -194,8 +195,9 @@ public interface IModelIndexer {
 	void addIndexedAttribute(String metamodeluri, String typename,
 			String attributename);
 
-	Collection<String> getDerivedAttributes();
+	Collection<String> getDerivedAttributeNames();
 
+	Collection<IndexedAttributeParameters> getDerivedAttributes();
 	/**
 	 * Returns a collection of strings of the form
 	 * <code>mmuri##typename##attrname</code>, where <code>mmuri</code> is the
@@ -203,7 +205,9 @@ public interface IModelIndexer {
 	 * type, and <code>attrname</code> is the name of the attribute being
 	 * indexed.
 	 */
-	Collection<String> getIndexedAttributes();
+	Collection<String> getIndexedAttributeNames();
+
+	Collection<IndexedAttributeParameters> getIndexedAttributes();
 
 	Collection<String> getIndexes();
 

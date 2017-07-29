@@ -49,6 +49,8 @@ import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.query.IQueryEngine;
+import org.hawk.core.util.DerivedAttributeParameters;
+import org.hawk.core.util.IndexedAttributeParameters;
 import org.hawk.core.util.FileOperations;
 import org.hawk.core.util.HawkProperties;
 
@@ -916,12 +918,21 @@ public class ModelIndexerImpl implements IModelIndexer {
 	 * Every method that changes the derived attributes in some form should set this to
 	 * null, so it is recomputed in the next call to {@link #getDerivedAttributes()}.
 	 */
-	private Collection<String> cachedDerivedAttributes = null;
+	private Collection<String> cachedDerivedAttributeNames = null;
+	private Collection<IndexedAttributeParameters> cachedDerivedAttributes = null;
 
 	@Override
-	public Collection<String> getDerivedAttributes() {
+	public Collection<String> getDerivedAttributeNames() {
+		if (cachedDerivedAttributeNames == null) {
+			cachedDerivedAttributeNames = getExtraAttributeNames(IS_DERIVED);
+		}
+		return cachedDerivedAttributeNames;
+	}
+
+	@Override
+	public Collection<IndexedAttributeParameters> getDerivedAttributes() {
 		if (cachedDerivedAttributes == null) {
-			cachedDerivedAttributes = getExtraAttributes(IS_DERIVED);
+			cachedDerivedAttributes  = getExtraAttributes(IS_DERIVED);
 		}
 		return cachedDerivedAttributes;
 	}
@@ -956,8 +967,13 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public Collection<String> getIndexedAttributes() {
-		return getExtraAttributes(IS_INDEXED);
+	public Collection<String> getIndexedAttributeNames() {
+		return getExtraAttributeNames(IS_INDEXED);
+	}
+
+	@Override
+	public Collection<IndexedAttributeParameters> getIndexedAttributes() {
+		return  getExtraAttributes(IS_INDEXED);
 	}
 
 	@Override
@@ -991,41 +1007,24 @@ public class ModelIndexerImpl implements IModelIndexer {
 	 * derived attributes. If it is {@link #IS_INDEXED}, it will list all the
 	 * indexed attributes.
 	 */
-	private Collection<String> getExtraAttributes(final boolean isDerived) {
+	private Collection<String> getExtraAttributeNames(final boolean isDerived) {
 		Set<String> ret = new HashSet<String>();
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
-			ret.addAll(graph.getNodeIndexNames());
-
+			ret = getAttributeIndexNames();
+			
 			Iterator<String> it = ret.iterator();
 			while (it.hasNext()) {
-				String s = it.next();
-				if (!s.matches("(.*)##(.*)##(.*)"))
-					it.remove();
-			}
 
-			it = ret.iterator();
-			while (it.hasNext()) {
 				String s = it.next();
-				String[] split = s.split("##");
+				String[] split = s.split("##"); 
+
 				final String mmURI = split[0];
-
-				IGraphNode epackagenode = graph.getMetamodelIndex().get("id", mmURI).iterator().next();
-
-				IGraphNode typenode = null;
-				for (IGraphEdge e : epackagenode.getIncomingWithType("epackage")) {
-					IGraphNode temp = e.getStartNode();
-					final String typeName = split[1];
-					if (temp.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(typeName)) {
-						if (typenode == null) {
-							typenode = temp;
-						} else {
-							System.err.println("error in getExtraAttributes, typenode had more than 1 type found");
-						}
-					}
-				}
-
+				final String typeName = split[1];
 				final String attrName = split[2];
+
+				IGraphNode typenode = getTypeNode(mmURI, typeName);
+
 				if (isDerivedAttribute(typenode, attrName) != isDerived) {
 					it.remove();
 				}
@@ -1037,6 +1036,92 @@ public class ModelIndexerImpl implements IModelIndexer {
 			e.printStackTrace();
 		}
 		return ret;
+	}
+	
+
+
+	private Collection<IndexedAttributeParameters> getExtraAttributes(final boolean isDerived) {
+
+		Set<IndexedAttributeParameters> paramsSet = new HashSet<IndexedAttributeParameters>();
+
+		try (IGraphTransaction t = graph.beginTransaction()) {
+
+			Set<String> ret = getAttributeIndexNames();
+
+			Iterator<String> it = ret.iterator();
+			while (it.hasNext()) {
+
+				String s = it.next();
+				String[] split = s.split("##"); 
+				
+				final String mmURI = split[0];
+				final String typeName = split[1];
+				final String attrName = split[2];
+				
+				IGraphNode typenode = getTypeNode(mmURI, typeName);
+
+				if (isDerivedAttribute(typenode, attrName) == isDerived) {
+					String[] metadata = (String[]) typenode.getProperty(attrName);
+					IndexedAttributeParameters params = getAttributeParametersfromMetadata(mmURI, typeName ,attrName, metadata);
+					paramsSet.add(params);
+				}
+			}
+
+			t.success();
+		} catch (Exception e) {
+			System.err.println("error in getExtraAttributes");
+			e.printStackTrace();
+		}
+		return paramsSet;
+	}
+
+	private IGraphNode getTypeNode(String mmURI, String typeName) {
+		
+		IGraphNode epackagenode = graph.getMetamodelIndex().get("id", mmURI).iterator().next();
+		IGraphNode typenode = null;
+
+		for (IGraphEdge e : epackagenode.getIncomingWithType("epackage")) {
+			IGraphNode temp = e.getStartNode();
+			if (temp.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(typeName)) {
+				if (typenode == null) {
+					typenode = temp;
+				} else {
+					System.err.println("error in getExtraAttributes, typenode had more than 1 type found");
+				}
+			}
+		}
+
+		return typenode;
+	}
+
+	private Set<String> getAttributeIndexNames() {
+		Set<String> ret = new HashSet<String>();
+
+		ret.addAll(graph.getNodeIndexNames());
+		Iterator<String> it = ret.iterator();
+		while (it.hasNext()) {
+			String s = it.next();
+			if (!s.matches("(.*)##(.*)##(.*)"))
+				it.remove();
+		}
+		
+		return ret;
+	}
+
+	private IndexedAttributeParameters getAttributeParametersfromMetadata(String mmURI, String typeName, String attrName, String[] metadata) {
+		IndexedAttributeParameters params;
+
+		if (metadata[0].equals("d")) {
+			params = new DerivedAttributeParameters(mmURI, typeName,  attrName, metadata[4],
+					metadata[1].equals("t"), 
+					metadata[2].equals("t"), 
+					metadata[3].equals("t"),
+					metadata[5], metadata[6]);
+		} else {
+			params = new IndexedAttributeParameters(mmURI, typeName, attrName);
+		}
+
+		return params;
 	}
 
 	@Override
@@ -1191,4 +1276,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 			}
 		}
 	}
+
+	
 }

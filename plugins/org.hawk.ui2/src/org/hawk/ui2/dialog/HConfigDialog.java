@@ -384,7 +384,7 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 
 	private void updateDerivedAttributeList() {
 		derivedAttributeList.removeAll();
-		for (String da : hawkModel.getDerivedAttributes()) {
+		for (String da : hawkModel.getDerivedAttributeNames()) {
 			derivedAttributeList.add(da);
 		}
 		String[] items = derivedAttributeList.getItems();
@@ -394,7 +394,7 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 
 	private void updateIndexedAttributeList() {
 		indexedAttributeList.removeAll();
-		for (String ia : hawkModel.getIndexedAttributes()) {
+		for (String ia : hawkModel.getIndexedAttributeNames()) {
 			indexedAttributeList.add(ia);
 		}
 		String[] items = indexedAttributeList.getItems();

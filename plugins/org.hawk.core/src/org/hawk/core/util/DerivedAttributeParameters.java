@@ -8,7 +8,7 @@
  * Contributors:
  *     Orjuwan Al-Wadeai - Initial Implementation of Hawk Server Configuration
  ******************************************************************************/
-package org.hawk.service.servlet.config;
+package org.hawk.core.util;
 
 public class DerivedAttributeParameters extends IndexedAttributeParameters{
 	
@@ -37,9 +37,21 @@ public class DerivedAttributeParameters extends IndexedAttributeParameters{
 		this.isMany = isMany;
 		this.isOrdered = isOrdered;
 		this.isUnique = isUnique;
-
 	}
 	
+
+	public DerivedAttributeParameters(String metamodelUri, String typeName,
+			String attributeName, String attributeType, boolean isMany,
+			boolean isOrdered, boolean isUnique, String derivationLanguage,
+			String derivationLogic) {
+		super(metamodelUri, typeName, attributeName);
+		this.attributeType = attributeType;
+		this.isMany = isMany;
+		this.isOrdered = isOrdered;
+		this.isUnique = isUnique;
+		this.derivationLanguage = derivationLanguage;
+		this.derivationLogic = derivationLogic;
+	}
 
 	public String getAttributeType() {
 		return attributeType;
@@ -77,7 +89,5 @@ public class DerivedAttributeParameters extends IndexedAttributeParameters{
 	public void setDerivationLogic(String derivationLogic) {
 		this.derivationLogic = derivationLogic;
 	}
-	
-	
 }
 

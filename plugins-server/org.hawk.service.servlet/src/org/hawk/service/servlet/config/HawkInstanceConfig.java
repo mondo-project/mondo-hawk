@@ -13,6 +13,9 @@ package org.hawk.service.servlet.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hawk.core.util.DerivedAttributeParameters;
+import org.hawk.core.util.IndexedAttributeParameters;
+
 public class HawkInstanceConfig {
 
 	private String fileName;

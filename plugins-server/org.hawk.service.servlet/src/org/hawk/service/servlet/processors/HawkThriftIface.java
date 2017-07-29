@@ -49,6 +49,7 @@ import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
 import org.hawk.core.runtime.LocalHawkFactory;
 import org.hawk.core.util.GraphChangeAdapter;
+import org.hawk.core.util.IndexedAttributeParameters;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.MetamodelNode;
@@ -479,17 +480,10 @@ public final class HawkThriftIface implements Hawk.Iface {
 		final HModel model = getRunningHawkByName(name);
 
 		final List<DerivedAttributeSpec> specs = new ArrayList<>();
-		for (String sIndexedAttr : model.getDerivedAttributes()) {
-			String[] parts = sIndexedAttr.split("##", 3);
-			if (parts.length != 3) {
-				LOGGER.warn("Expected {} to have 3 parts, but had {} instead: skipping", sIndexedAttr, parts.length);
-				continue;
-			}
-
-			final DerivedAttributeSpec spec = new DerivedAttributeSpec();
-			spec.metamodelUri = parts[0];
-			spec.typeName = parts[1];
-			spec.attributeName = parts[2];
+		for (IndexedAttributeParameters sIndexedAttr : model.getDerivedAttributes()) {
+			final DerivedAttributeSpec spec = new DerivedAttributeSpec(sIndexedAttr.getMetamodelUri(),
+					sIndexedAttr.getTypeName(),
+					sIndexedAttr.getAttributeName());
 			specs.add(spec);
 		}
 		return specs;
@@ -517,14 +511,11 @@ public final class HawkThriftIface implements Hawk.Iface {
 		final HModel model = getRunningHawkByName(name);
 
 		final List<IndexedAttributeSpec> specs = new ArrayList<>();
-		for (String sIndexedAttr : model.getIndexedAttributes()) {
-			String[] parts = sIndexedAttr.split("##", 3);
-			if (parts.length != 3) {
-				LOGGER.warn("Expected {} to have 3 parts, but had {} instead: skipping", sIndexedAttr, parts.length);
-				continue;
-			}
+		for (IndexedAttributeParameters sIndexedAttr : model.getIndexedAttributes()) {
 
-			final IndexedAttributeSpec spec = new IndexedAttributeSpec(parts[0], parts[1], parts[2]);
+			final IndexedAttributeSpec spec = new IndexedAttributeSpec(sIndexedAttr.getMetamodelUri(), 
+					sIndexedAttr.getTypeName(),
+					sIndexedAttr.getAttributeName());
 			specs.add(spec);
 		}
 		return specs;

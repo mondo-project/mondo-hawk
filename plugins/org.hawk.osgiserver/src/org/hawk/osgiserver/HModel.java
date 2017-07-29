@@ -38,9 +38,11 @@ import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
+import org.hawk.core.util.DerivedAttributeParameters;
 import org.hawk.core.util.HawkConfig;
 import org.hawk.core.util.HawkProperties;
 import org.hawk.core.util.HawksConfig;
+import org.hawk.core.util.IndexedAttributeParameters;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.thoughtworks.xstream.XStream;
@@ -444,7 +446,11 @@ public class HModel implements IStateListener {
 		return enabledPlugins;
 	}
 
-	public Collection<String> getDerivedAttributes() {
+	public Collection<String> getDerivedAttributeNames() {
+		return hawk.getModelIndexer().getDerivedAttributeNames();
+	}
+
+	public Collection<IndexedAttributeParameters> getDerivedAttributes() {
 		return hawk.getModelIndexer().getDerivedAttributes();
 	}
 
@@ -456,9 +462,14 @@ public class HModel implements IStateListener {
 		return hawk.getModelIndexer().getGraph();
 	}
 
-	public Collection<String> getIndexedAttributes() {
+	public Collection<String> getIndexedAttributeNames() {
+		return hawk.getModelIndexer().getIndexedAttributeNames();
+	}
+
+	public Collection<IndexedAttributeParameters> getIndexedAttributes() {
 		return hawk.getModelIndexer().getIndexedAttributes();
 	}
+	
 
 	public Collection<String> getIndexes() {
 		return hawk.getModelIndexer().getIndexes();
@@ -683,6 +694,5 @@ public class HModel implements IStateListener {
 		return allSuccess;
 
 	}
-
 
 }
