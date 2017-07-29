@@ -94,7 +94,7 @@ public class ConfigFileParser {
 	public ConfigFileParser() {
 		this.xsd = ConfigFileParser.class.getResourceAsStream("/resources/HawkServerConfigurationSchema.xsd");
 	}
-	
+
 	/** method used by test to set xsd file */
 	public void setSchemaFile(String filePath) throws Exception {
 		InputStream is = new FileInputStream(filePath);
@@ -106,7 +106,6 @@ public class ConfigFileParser {
 	public HawkInstanceConfig parse(File xmlFile) {
 		HawkInstanceConfig config = null;
 		if(xmlFile != null && xmlFile.exists()) {
-		
 			try {
 				Element element = getXmlDocumentRootElement(xmlFile);
 				config = new HawkInstanceConfig(xmlFile.getAbsolutePath());
@@ -119,9 +118,53 @@ public class ConfigFileParser {
 		return config;
 	}
 
-	private Element getXmlDocumentRootElement(File xmlFile) throws Exception {
+	public void saveConfigAsXml(HawkInstanceConfig config) {
+		try {
+			DocumentBuilderFactory factory  = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder;
+			builder = factory.newDocumentBuilder();
+			Document document  = builder.newDocument();
 
-		DocumentBuilderFactory factory  = DocumentBuilderFactory.newInstance();
+			/** <hawk> */
+			Element hawkElement = document.createElement(HAWK);
+			createAndAddAttribute(document, hawkElement, NAME, config.getName());
+			createAndAddAttribute(document, hawkElement, BACKEND, config.getBackend());
+
+			/** <delay> */
+			writeDelay(config, document, hawkElement);
+			/** </delay> */
+
+			/** <plugins> */
+			writePlugins(config, document, hawkElement);
+			/** </plugins> */
+
+			/** <metamodels> */
+			writeMetamodels(config, document, hawkElement);
+			/** </metamodels> */
+
+			/** <derivedAttributes> */
+			writeDerivedAttributes(config, document, hawkElement);
+			/** </derivedAttributes> */
+
+			/** <indexedAttributes> */
+			writeIndexedAttributes(config, document, hawkElement);
+			/** </indexedAttributes> */
+
+			/** <repositories> */
+			writeRepositories(config, document, hawkElement);
+			/** </repositories> */
+
+			/** </hawk> */
+			document.appendChild(hawkElement);
+
+			writeXmlDocumentToFile(document, config.getFileName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private Element getXmlDocumentRootElement(File xmlFile) throws Exception {
+ 		DocumentBuilderFactory factory  = DocumentBuilderFactory.newInstance();
 		
 		if(this.xsd != null ) {
 			factory.setValidating(false);
@@ -164,54 +207,6 @@ public class ConfigFileParser {
 			readIndexedAttributes(hawkElement.getElementsByTagName(INDEXED_ATTRIBUTES),  config);
 
 			readDerivedAttributes(hawkElement.getElementsByTagName(DERIVED_ATTRIBUTES),  config);
-		}
-	}
-
-	public void saveConfigAsXml(HawkInstanceConfig config) {
-		try {
-
-			DocumentBuilderFactory factory  = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder;
-			builder = factory.newDocumentBuilder();
-
-			Document document  = builder.newDocument();
-
-			/** <hawk> */
-			Element hawkElement = document.createElement(HAWK);
-			createAndAddAttribute(document, hawkElement, NAME, config.getName());
-			createAndAddAttribute(document, hawkElement, BACKEND, config.getBackend());
-
-			/** <delay> */
-			writeDelay(config, document, hawkElement);
-			/** </delay> */
-
-			/** <plugins> */
-			writePlugins(config, document, hawkElement);
-			/** </plugins> */
-
-			/** <metamodels> */
-			writeMetamodels(config, document, hawkElement);
-			/** </metamodels> */
-
-			/** <derivedAttributes> */
-			writeDerivedAttributes(config, document, hawkElement);
-			/** </derivedAttributes> */
-
-			/** <indexedAttributes> */
-			writeIndexedAttributes(config, document, hawkElement);
-			/** </indexedAttributes> */
-
-			/** <repositories> */
-			writeRepositories(config, document, hawkElement);
-			/** </repositories> */
-
-			/** </hawk> */
-			document.appendChild(hawkElement);
-
-			writeXmlDocumentToFile(document, config.getFileName());
-
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -350,8 +345,8 @@ public class ConfigFileParser {
 	}
 
 	private void readDerivedAttributes(NodeList nodes, HawkInstanceConfig config) {
-		for(Element derivedAttributesElement : ElementListIterable(nodes)) {
-			for(Element derivedAttributeElement : ElementListIterable(derivedAttributesElement.getElementsByTagName(DERIVED_ATTRIBUTE))) {
+		for(Element derivedAttributesElement : elementListIterable(nodes)) {
+			for(Element derivedAttributeElement : elementListIterable(derivedAttributesElement.getElementsByTagName(DERIVED_ATTRIBUTE))) {
 				DerivedAttributeParameters params = new DerivedAttributeParameters(
 				derivedAttributeElement.getAttribute(METAMODEL_URI),
 				derivedAttributeElement.getAttribute(TYPE_NAME),
@@ -384,9 +379,9 @@ public class ConfigFileParser {
 		StringBuffer buffer = new StringBuffer();
 
 		NodeList cDataElements = node.getChildNodes();
-		// CDATA sections , we cannot use ElementListIterable
+		// CDATA sections , we cannot use elementListIterable
 		
-		for(Node cDataElement : NodeListIterable(cDataElements)) {
+		for(Node cDataElement : nodeListIterable(cDataElements)) {
 			buffer.append(cDataElement.getNodeValue());
 		}
 
@@ -394,8 +389,8 @@ public class ConfigFileParser {
 	}
 
 	private void readIndexedAttributes(NodeList nodes, HawkInstanceConfig config) {
-		for(Element indexedAttributeElements : ElementListIterable(nodes)) {
-			for(Element indexedAttributeElement : ElementListIterable(indexedAttributeElements.getElementsByTagName(INDEXED_ATTRIBUTE))) {
+		for(Element indexedAttributeElements : elementListIterable(nodes)) {
+			for(Element indexedAttributeElement : elementListIterable(indexedAttributeElements.getElementsByTagName(INDEXED_ATTRIBUTE))) {
 				IndexedAttributeParameters params = new IndexedAttributeParameters(indexedAttributeElement.getAttribute(METAMODEL_URI), 
 						indexedAttributeElement.getAttribute(TYPE_NAME), 
 						indexedAttributeElement.getAttribute(ATTRIBUTE_NAME));
@@ -407,8 +402,8 @@ public class ConfigFileParser {
 	}
 
 	private void readRepositories(NodeList nodes, HawkInstanceConfig config) {
-		for(Element repoElements : ElementListIterable(nodes)) {
-			for(Element repoElement : ElementListIterable( repoElements.getElementsByTagName(REPOSITORY))) {
+		for(Element repoElements : elementListIterable(nodes)) {
+			for(Element repoElement : elementListIterable( repoElements.getElementsByTagName(REPOSITORY))) {
 				RepositoryParameters params = new RepositoryParameters(
 						repoElement.getAttribute(TYPE),
 						repoElement.getAttribute(LOCATION),
@@ -422,8 +417,8 @@ public class ConfigFileParser {
 	}
 
 	private void readMetamodels(NodeList nodes, HawkInstanceConfig config) {
-		for(Element metamodelElements : ElementListIterable(nodes)) {
-			for(Element metamodelElement : ElementListIterable(( metamodelElements).getElementsByTagName(METAMODEL))) {
+		for(Element metamodelElements : elementListIterable(nodes)) {
+			for(Element metamodelElement : elementListIterable(( metamodelElements).getElementsByTagName(METAMODEL))) {
 				MetamodelParameters params = new MetamodelParameters(metamodelElement.getAttribute(URI),
 						metamodelElement.getAttribute(LOCATION));
 
@@ -440,15 +435,15 @@ public class ConfigFileParser {
 			config.setDelayMin(Integer.valueOf(element.getAttribute(MIN)));
 		}
 	}
-	
+
 	private void readPlugins(NodeList nodes, HawkInstanceConfig config) {
-		for(Element pluginsElement : ElementListIterable(nodes)) {
-			for(Element pluginElement : ElementListIterable(pluginsElement.getElementsByTagName(PLUGIN))) {
+		for(Element pluginsElement : elementListIterable(nodes)) {
+			for(Element pluginElement : elementListIterable(pluginsElement.getElementsByTagName(PLUGIN))) {
 				config.getPlugins().add(pluginElement.getAttribute(NAME));
 			}
 		}			
 	}
-	
+
 	/** Utility methods */
 	private void writeXmlDocumentToFile(Node node, String filename) {
 		try {
@@ -499,8 +494,7 @@ public class ConfigFileParser {
 		return null;
 	}
 
-
-	public static Iterable<Element> ElementListIterable(final NodeList n) {
+	public static Iterable<Element> elementListIterable(final NodeList n) {
 		return new Iterable<Element>() {
 
 			@Override
@@ -535,10 +529,8 @@ public class ConfigFileParser {
 			}
 		};
 	}
-	
-	
-	
-	public static Iterable<Node> NodeListIterable(final NodeList n) {
+
+	public static Iterable<Node> nodeListIterable(final NodeList n) {
 		return new Iterable<Node>() {
 
 			@Override
