@@ -439,6 +439,10 @@ public class HManager {
 	}
 
 	public void saveHawkToMetadata(HModel e) throws BackingStoreException {
+		saveHawkToMetadata(e, false);
+	}
+	
+	public void saveHawkToMetadata(HModel e, boolean replace) throws BackingStoreException {
 		final IEclipsePreferences preferences = getPreferences();
 		final String oldXML = preferences.get("config", null);
 
@@ -458,6 +462,10 @@ public class HManager {
 				locs.addAll(hc.getConfigs());
 			}
 
+			if(replace && locs.contains(e.getHawkConfig())) {
+				locs.remove(e.getHawkConfig());
+			}
+			
 			locs.add(e.getHawkConfig());
 			final String xml = stream.toXML(new HawksConfig(locs));
 			preferences.put("config", xml);

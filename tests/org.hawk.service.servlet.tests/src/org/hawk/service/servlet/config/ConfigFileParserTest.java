@@ -13,16 +13,16 @@ import org.junit.Test;
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Orjuwan Al-Wadeai - 
+ *     Orjuwan Al-Wadeai - Test For ConfigFileParser
  ******************************************************************************/
 
 public class ConfigFileParserTest {
-	private static final String XML_PATH = "resources/ServerConfig/";
+	private static final String SERVERCONFIG_PATH = "resources/ServerConfig/";
 	ConfigFileParser parser;
 	HawkInstanceConfig config;
-	final String xmlFilePath = XML_PATH + "instance_1.xml";
-	final String xsdFilePath = XML_PATH + "HawkServerConfigurationSchema.xsd";
-	
+	final String xmlFilePath = SERVERCONFIG_PATH + "instance_1.xml";
+	final String xsdFilePath = SERVERCONFIG_PATH + "HawkServerConfigurationSchema.xsd";
+
 	@Test
 	public void testParseFile() {
 		parseXml();
@@ -71,19 +71,15 @@ public class ConfigFileParserTest {
 		assertEquals("", config.getRepositories().get(0).getUser());
 		assertEquals("", config.getRepositories().get(0).getPass());
 		assertEquals(false, config.getRepositories().get(0).isFrozen());
-		
-
-		
 	}
 
 
 	private void parseXml() {
 		parser = new ConfigFileParser();
-		
+
 		try {
 			parser.setSchemaFile(xsdFilePath);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

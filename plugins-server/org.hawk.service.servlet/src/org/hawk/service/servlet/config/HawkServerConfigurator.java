@@ -49,12 +49,15 @@ public class HawkServerConfigurator  {
 
 	public void loadHawkServerConfigurations() {
 		for (File file : getHawkServerConfigurationFiles()) {
-			configureHawkInstance(file);
+			HawkInstanceConfig config = parser.parse(file);
+			if(config != null) {
+				hawkInstanceConfigs.add(config); // add to list
+				configureHawkInstance(config);
+			}
 		}
 
-
-		// test
-		//saveHawkServerConfigurations();
+		// save to configuration file (some new attributes and metamodels might be added to instance)
+		saveHawkServerConfigurations();
 	}
 
 	public void saveHawkServerConfigurations() {
@@ -99,73 +102,53 @@ public class HawkServerConfigurator  {
 		};
 	}
 
-	private void configureHawkInstance(File file) {
+	private void configureHawkInstance(HawkInstanceConfig config) {
+		HModel hawkInstance = manager.getHawkByName(config.getName());
+
 		try {
-
-			HawkInstanceConfig config = parser.parse(file);
-			if(config == null) {
-				return;
-			}
-
-			// add to list
-			hawkInstanceConfigs.add(config);
-
-			HModel hawkInstance = manager.getHawkByName(config.getName());
-
 			if (hawkInstance == null) {
-				// create new instance
-				hawkInstance = createHawkInstance(config);
-			} else {
-				//HawkConfig hawkConfig = hawkInstance.getHawkConfig();
-				//hawkInstance = HModel.load(hawkConfig, manager);
-			}
+				hawkInstance = createHawkInstance(config); // create new instance
+			} 
 
-			// apply configuration
-			if (hawkInstance != null) {
+			/** apply configuration */
+			// TODO set db, need to check if changed 
+			// hawkInstance.setDbType(config.getBackend());
+			
+			addMissingPlugins(hawkInstance, config);	
 
-				// check parameters and if different change
-				hawkInstance.configurePolling(config.getDelayMin(),
-						config.getDelayMax());
+			hawkInstance.configurePolling(config.getDelayMin(), config.getDelayMax());
 
-				// add new plugins, don't delete
-				addMissingPlugins(hawkInstance, config);
+			// start instance
+			hawkInstance.start(manager);
 
-				// set Db
-				//hawkInstance.getHawk().setDbtype(config.getBackend());
+			while(!hawkInstance.isRunning());
 
-				manager.saveHawkToMetadata(hawkInstance);
-				//manager.getHawks();
+			// add metamodels, Do it first before adding attributes or repositories
+			addMetamodels(hawkInstance, config);
 
-				// start instance
-				hawkInstance.start(manager);
+			// add repositories, don't delete any
+			addMissingRepositories(hawkInstance, config);
 
-				while(!hawkInstance.isRunning());
+			// derived Attributes
+			addMissingDerivedAttributes(hawkInstance, config);
 
-				// add metamodels, Do it first before adding attributes or repositories
-				addMetamodels(hawkInstance, config);
+			// indexed Attributes
+			addMissingIndexedAttributes(hawkInstance, config);
 
-				// add repositories, don't delete any
-				addMissingRepositories(hawkInstance, config);
-
-				// derived Attributes
-				addMissingDerivedAttributes(hawkInstance, config);
-
-				// indexed Attributes
-				addMissingIndexedAttributes(hawkInstance, config);
-
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	private HModel createHawkInstance(HawkInstanceConfig config) throws TException {
-		HModel hawkInstance;
+		
+		/** use iface.createInstance (instead of HModel.create) to set the right storage folder */
 		iface.createInstance(config.getName(), config.getBackend(),
 				config.getDelayMin(), config.getDelayMax(),
 				config.getPlugins());
-		hawkInstance = manager.getHawkByName(
-				config.getName());
+		
+		HModel hawkInstance = manager.getHawkByName(config.getName());
+		
 		return hawkInstance;
 	}
 
@@ -196,106 +179,82 @@ public class HawkServerConfigurator  {
 
 		for (IndexedAttributeParameters params : config.getIndexedAttributes()) {
 			if (!existingIndexedAttributes.contains(params)) {
-
 				if(metamodels.contains(params.getMetamodelUri())) {
 					hawkInstance.addIndexedAttribute(params.getMetamodelUri(), params.getTypeName(), params.getAttributeName());
 				} else {
 					System.err.println("HawkServerConfigurator.addMissingIndexedAttributes: metamodel " + params.getMetamodelUri() + " is not registered!");
-
 				}
 			}
 		}
 	}
 
-	private void addMissingRepositories(HModel hawkInstance,
-			HawkInstanceConfig config) {
+	private void addMissingRepositories(HModel hawkInstance, HawkInstanceConfig config) {
 		Collection<String> existingLocations = hawkInstance.getLocations();
 
 		for (RepositoryParameters params : config.getRepositories()) {
 			if (!existingLocations.contains(params.getLocation())) {
-				hawkInstance.addVCS(params.getLocation(), params.getType(),
-						params.getUser(), params.getPass(), params.isFrozen());
+				hawkInstance.addVCS(params.getLocation(), params.getType(), params.getUser(), params.getPass(), params.isFrozen());
 			}
 		}
 	}
 
 	private void addMetamodels(HModel hawkInstance, HawkInstanceConfig config) {
-
 		for (MetamodelParameters params : config.getMetamodels()) {
 			if(params.getLocation() != null && !params.getLocation().isEmpty()) {
 				File file = new File(params.getLocation());
-				try {
-					hawkInstance.registerMeta(file);
-				} catch (Exception e) {
-					System.err.println("HawkServerConfigurator.addMetamodels: metamodel " + params.getLocation() + " failed!");
-
-					e.printStackTrace();
-				}
+				hawkInstance.registerMeta(file);
 			}
 		}
 	}
 
-	private void addMissingPlugins(HModel hawkInstance, HawkInstanceConfig config)  {
+	private void addMissingPlugins(HModel hawkInstance, HawkInstanceConfig config) throws Exception {
 		List<String> availableplugins = manager.getAvailablePlugins();
 		List<String> existingplugins = hawkInstance.getEnabledPlugins();
 		List<String> missingPlugins = new ArrayList<String>();
 
 		for (String plugin : config.getPlugins()) {
-
-			// check plugin is available
 			if(availableplugins.contains(plugin)) {
 				if (!existingplugins.contains(plugin)) {
 					missingPlugins.add(plugin);
 				}
 			} else {
 				System.err.println("HawkServerConfigurator.addMissingPlugins: plugin " + plugin + " is not available!");
-				// TODO list available plugins
 			}
 		}
 
 		if (!missingPlugins.isEmpty()) {
-			try {
-				hawkInstance.addPlugins(missingPlugins);
-			} catch (Exception e) {
-				System.err.println("HawkServerConfigurator.addMissingPlugins: plugin Failed!");
-				e.printStackTrace();
-			}
+			hawkInstance.addPlugins(missingPlugins);
+			manager.saveHawkToMetadata(hawkInstance, true);
 		}
 	}
 
 	private void saveHawkInstanceConfig(HawkInstanceConfig config) {
-		// find file or create one and save all info
 		HModel hawkInstance =  	manager.getHawkByName(config.getName());
 
-		// there are no way to change delay backend and plugins, but save it anyway
+		/** delay, backend and plugins don't change during running of an instance, set it anyway */
 		config.setBackend(hawkInstance.getDbType());
 
+		/** Only successfully-added plugins are saved */ 
 		if(hawkInstance.getEnabledPlugins() != null) {
-			// overwrite all
 			config.setPlugins(hawkInstance.getEnabledPlugins());
 		}
-
-		// what is the point of saving these values , they are saved in the instance anyways and no need to store
-		// save registered metamodels
-		if(hawkInstance.getRegisteredMetamodels() != null) {
-			addNewMetaodelsUriToConfig(hawkInstance, config);
-			//config.getMetamodels().addAll(hawkInstance.getRegisteredMetamodels());
-		}
-
-		// save all derived attributes, cannot get derivation language and logic
+		
+		/**  
+		 * 	The following Elements are saved (the ones originally in the file(even if was unsuccessful), and the ones added during hawk instance running:
+		 *  - Metamodels
+		 *  - Derived Attributes
+		 * 	- Indexed Attributes
+		 * 	- Repositories
+		 * */
+		addNewMetamodelsUriToConfig(hawkInstance, config);
 		addNewDerivedAttributesToConfig(hawkInstance, config);
-
-		// save all indexed attributes
 		addNewIndexedAttributesToConfig(hawkInstance, config);
-
-		// save all Repositories
 		addNewRepositoriesToConfig(hawkInstance, config);
 
 		parser.saveConfigAsXml(config);
 	}
 
-	private void addNewMetaodelsUriToConfig(HModel hawkInstance,
-			HawkInstanceConfig config) {
+	private void addNewMetamodelsUriToConfig(HModel hawkInstance, HawkInstanceConfig config) {
 		List<MetamodelParameters> newMetamodels = new ArrayList<MetamodelParameters>();
 
 		for (String metamodelUri : hawkInstance.getRegisteredMetamodels()) {
@@ -320,7 +279,6 @@ public class HawkServerConfigurator  {
 	private void addNewDerivedAttributesToConfig(HModel hawkInstance, HawkInstanceConfig config) {
 
 		Collection<IndexedAttributeParameters> instanceAttributes = hawkInstance.getDerivedAttributes();
-
 		List<DerivedAttributeParameters> configAttributes= config.getDerivedAttributes();		
 		List<DerivedAttributeParameters> newAttrs = new ArrayList<DerivedAttributeParameters>();
 
@@ -347,10 +305,8 @@ public class HawkServerConfigurator  {
 
 	private void addNewIndexedAttributesToConfig(HModel hawkInstance, HawkInstanceConfig config) {
 
-		Collection<IndexedAttributeParameters> instanceAttributes = hawkInstance.getDerivedAttributes();
-
+		Collection<IndexedAttributeParameters> instanceAttributes = hawkInstance.getIndexedAttributes();
 		List<IndexedAttributeParameters> configAttributes= config.getIndexedAttributes();		
-
 		List<IndexedAttributeParameters> newAttrs = new ArrayList<IndexedAttributeParameters>();
 
 		for(IndexedAttributeParameters indexedAttribute : instanceAttributes) {
@@ -373,8 +329,7 @@ public class HawkServerConfigurator  {
 
 	}
 
-	private void addNewRepositoriesToConfig(HModel hawkInstance,
-			HawkInstanceConfig config) {
+	private void addNewRepositoriesToConfig(HModel hawkInstance, HawkInstanceConfig config) {
 
 		List<RepositoryParameters> newRepos = new ArrayList<RepositoryParameters>();
 

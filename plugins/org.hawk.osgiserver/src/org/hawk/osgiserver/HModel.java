@@ -38,7 +38,6 @@ import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.IQueryEngine;
-import org.hawk.core.util.DerivedAttributeParameters;
 import org.hawk.core.util.HawkConfig;
 import org.hawk.core.util.HawkProperties;
 import org.hawk.core.util.HawksConfig;
@@ -178,7 +177,6 @@ public class HModel implements IStateListener {
 			System.err.println("Adding of indexer aborted, please try again");
 			return null;
 		}
-
 	}
 
 	public boolean isLocal() {
@@ -191,6 +189,15 @@ public class HModel implements IStateListener {
 	
 	public String getDbType() {
 		return this.hawk.getDbtype();
+	}
+
+	public void setDbType(String dbType) throws Exception {
+		hawk.setDbtype(dbType);
+		if (hawkFactory.instancesCreateGraph()) {
+			IGraphDatabase db = manager.createGraph(this.hawk);
+			db.run(new File(this.getHawkConfig().getStorageFolder()), getConsole());
+			this.hawk.getModelIndexer().setDB(db, true);
+		}
 	}
 
 	/**
@@ -215,6 +222,20 @@ public class HModel implements IStateListener {
 		this.hawkLocation = location;
 		this.enabledPlugins = plugins;
 
+		enablePlugins();
+		hawk.getModelIndexer().addStateListener(this);
+	}
+
+	public void addPlugins(List<String> plugins) throws Exception {
+		if(this.enabledPlugins == null) {
+			this.enabledPlugins = plugins;
+		} else {
+			this.enabledPlugins.addAll(plugins);
+		}
+		enablePlugins();
+	}
+	
+	private void enablePlugins() throws Exception {
 		if (hawkFactory.instancesAreExtensible()) {
 			final IConsole console = getConsole();
 			// set up plugins
@@ -261,66 +282,6 @@ public class HModel implements IStateListener {
 			for (IConfigurationElement listener : manager.getGraphChangeListeners()) {
 				IGraphChangeListener l = (IGraphChangeListener) listener.createExecutableExtension(HManager.GCHANGEL_CLASS_ATTRIBUTE);
 				if (enabledPlugins == null || enabledPlugins.contains(l.getClass().getName())) {
-					l.setModelIndexer(this.hawk.getModelIndexer());
-					this.hawk.getModelIndexer().addGraphChangeListener(l);
-					console.println(l.getName());
-				}
-			}
-		}
-		hawk.getModelIndexer().addStateListener(this);
-	}
-
-	
-	public void addPlugins(List<String> plugins) throws Exception {
-		if (plugins != null && hawkFactory.instancesAreExtensible()) {
-			final IConsole console = getConsole();
-			
-			if(this.enabledPlugins == null) {
-				this.enabledPlugins = plugins;
-			} else {
-				this.enabledPlugins.addAll(plugins);
-			}
-			
-			console.println("adding metamodel resource factories:");
-			for (IConfigurationElement mmparse : manager.getMmps()) {
-				IMetaModelResourceFactory f = (IMetaModelResourceFactory) mmparse
-						.createExecutableExtension(HManager.MMPARSER_CLASS_ATTRIBUTE);
-				if (plugins.contains(f.getClass().getName())) {
-					this.hawk.getModelIndexer().addMetaModelResourceFactory(f);
-					console.println(f.getHumanReadableName());
-				}
-			}
-			console.println("adding model resource factories:");
-			for (IConfigurationElement mparse : manager.getMps()) {
-				IModelResourceFactory f = (IModelResourceFactory) mparse.createExecutableExtension(HManager.MPARSER_CLASS_ATTRIBUTE);
-				if (plugins.contains(f.getClass().getName())) {
-					this.hawk.getModelIndexer().addModelResourceFactory(f);
-					console.println(f.getHumanReadableName());
-				}
-			}
-			console.println("adding query engines:");
-			for (IConfigurationElement ql : manager.getLanguages()) {
-				IQueryEngine q = (IQueryEngine) ql.createExecutableExtension(HManager.QUERYLANG_CLASS_ATTRIBUTE);
-				// So far we only have one choice (EOL) and it doesn't make sense to disable it - see HManager#getAvailablePlugins()
-				if (plugins.contains(q.getClass().getName())) {
-					this.hawk.getModelIndexer().addQueryEngine(q);
-					console.println(q.getType());
-				}
-			}
-			console.println("adding model updaters:");
-			for (IConfigurationElement updater : manager.getUps()) {
-				IModelUpdater u = (IModelUpdater) updater.createExecutableExtension(HManager.MUPDATER_CLASS_ATTRIBUTE);
-				// So far we only have one choice (graph updater) and it doesn't make sense to disable it - see HManager#getAvailablePlugins()
-				if (plugins.contains(u.getClass().getName())) {
-					this.hawk.getModelIndexer().addModelUpdater(u);
-					console.println(u.getName());
-				}
-			}
-			
-			console.println("adding graph change listeners:");
-			for (IConfigurationElement listener : manager.getGraphChangeListeners()) {
-				IGraphChangeListener l = (IGraphChangeListener) listener.createExecutableExtension(HManager.GCHANGEL_CLASS_ATTRIBUTE);
-				if (plugins.contains(l.getClass().getName())) {
 					l.setModelIndexer(this.hawk.getModelIndexer());
 					this.hawk.getModelIndexer().addGraphChangeListener(l);
 					console.println(l.getName());

@@ -90,9 +90,11 @@ public class ConfigFileParser {
 	private static final String FROZEN = "frozen";
 
 	private InputStream xsd;
+	private Schema schema;
 
 	public ConfigFileParser() {
 		this.xsd = ConfigFileParser.class.getResourceAsStream("/resources/HawkServerConfigurationSchema.xsd");
+		this.schema = null;
 	}
 
 	/** method used by test to set xsd file */
@@ -158,6 +160,7 @@ public class ConfigFileParser {
 			document.appendChild(hawkElement);
 
 			writeXmlDocumentToFile(document, config.getFileName());
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -166,18 +169,21 @@ public class ConfigFileParser {
 	private Element getXmlDocumentRootElement(File xmlFile) throws Exception {
  		DocumentBuilderFactory factory  = DocumentBuilderFactory.newInstance();
 		
-		if(this.xsd != null ) {
+		if(schema == null && this.xsd != null) {
 			factory.setValidating(false);
 			factory.setNamespaceAware(true);
 			
 			// create Schema for validation
 			Source schemaSource = new StreamSource(this.xsd);
 			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			Schema schema = schemaFactory.newSchema(schemaSource);
-
+			schema = schemaFactory.newSchema(schemaSource);
+		}
+		
+		if(schema != null) {
 			// set schema in Document Builder Factory
 			factory.setSchema(schema);
 		}
+		
 		// parse document
 		DocumentBuilder builder  = factory.newDocumentBuilder();
 
@@ -196,17 +202,17 @@ public class ConfigFileParser {
 
 			config.setBackend(hawkElement.getAttribute(BACKEND));
 
-			readDelay(hawkElement.getElementsByTagName(DELAY),  config);
+			readDelay(hawkElement.getElementsByTagName(DELAY), config);
 
-			readPlugins(hawkElement.getElementsByTagName(PLUGINS),  config);
+			readPlugins(hawkElement.getElementsByTagName(PLUGINS), config);
 
-			readMetamodels(hawkElement.getElementsByTagName(METAMODELS),  config);
+			readMetamodels(hawkElement.getElementsByTagName(METAMODELS), config);
 
-			readRepositories(hawkElement.getElementsByTagName(REPOSITORIES),  config);
+			readRepositories(hawkElement.getElementsByTagName(REPOSITORIES), config);
 
-			readIndexedAttributes(hawkElement.getElementsByTagName(INDEXED_ATTRIBUTES),  config);
+			readIndexedAttributes(hawkElement.getElementsByTagName(INDEXED_ATTRIBUTES), config);
 
-			readDerivedAttributes(hawkElement.getElementsByTagName(DERIVED_ATTRIBUTES),  config);
+			readDerivedAttributes(hawkElement.getElementsByTagName(DERIVED_ATTRIBUTES), config);
 		}
 	}
 
@@ -371,7 +377,7 @@ public class ConfigFileParser {
 
 				config.getDerivedAttributes().add(params);
 			}
-		}			
+		}
 
 	}
 
@@ -379,8 +385,6 @@ public class ConfigFileParser {
 		StringBuffer buffer = new StringBuffer();
 
 		NodeList cDataElements = node.getChildNodes();
-		// CDATA sections , we cannot use elementListIterable
-		
 		for(Node cDataElement : nodeListIterable(cDataElements)) {
 			buffer.append(cDataElement.getNodeValue());
 		}
@@ -397,8 +401,7 @@ public class ConfigFileParser {
 
 				config.getIndexedAttributes().add(params);
 			}
-		}		
-
+		}
 	}
 
 	private void readRepositories(NodeList nodes, HawkInstanceConfig config) {
@@ -447,6 +450,7 @@ public class ConfigFileParser {
 	/** Utility methods */
 	private void writeXmlDocumentToFile(Node node, String filename) {
 		try {
+			// find file or create one and save all info
 			File file = new File(filename);
 			if(!file.exists()) {
 				file.createNewFile();
@@ -460,7 +464,7 @@ public class ConfigFileParser {
 			output.setCharacterStream(new FileWriter(file));
 
 			LSSerializer serializer = implementationLS.createLSSerializer();
-			serializer.getDomConfig().setParameter("format-pretty-print",true);
+			serializer.getDomConfig().setParameter("format-pretty-print", true);
 
 			serializer.write(node, output);
 
@@ -469,14 +473,11 @@ public class ConfigFileParser {
 		}
 	}
 
-	private void createAndAddAttribute(Document document, Element element, String tagName,
-			boolean value) {
+	private void createAndAddAttribute(Document document, Element element, String tagName, boolean value) {
 		createAndAddAttribute(document, element, tagName, String.valueOf(value));
-
 	}
 
-	private void createAndAddAttribute(Document document, Element element, String tagName,
-			String value) {
+	private void createAndAddAttribute(Document document, Element element, String tagName, String value) {
 		if(value != null) {
 			Attr attr = document.createAttribute(tagName);
 			attr.setValue(value);
@@ -501,7 +502,6 @@ public class ConfigFileParser {
 			public Iterator<Element> iterator() {
 
 				return new Iterator<Element>() {
-
 					int index = 0;
 
 					@Override
@@ -522,9 +522,6 @@ public class ConfigFileParser {
 					public void remove() {
 						throw new UnsupportedOperationException();
 					}
-					
-					
-					
 				};
 			}
 		};
@@ -558,9 +555,6 @@ public class ConfigFileParser {
 					public void remove() {
 						throw new UnsupportedOperationException();
 					}
-					
-					
-					
 				};
 			}
 		};

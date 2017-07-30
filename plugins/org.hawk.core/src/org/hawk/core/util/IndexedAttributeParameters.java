@@ -18,7 +18,6 @@ public class IndexedAttributeParameters {
 
 	public IndexedAttributeParameters(String metamodelUri, String typeName,
 			String attributeName) {
-		super();
 		this.metamodelUri = metamodelUri;
 		this.typeName = typeName;
 		this.attributeName = attributeName;
