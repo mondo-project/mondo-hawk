@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<hawk backend="org.hawk.orientdb.OrientDatabase" name="instance_1">
-    <delay max="512000" min="5000"/>
+<hawk backend="org.hawk.orientdb.OrientDatabase" name="instance_2">
+    <delay max="0" min="0"/>
     <plugins>
-        <plugin name="org.hawk.emf.metamodel.EMFMetaModelResourceFactory"/>
-        <plugin name="org.hawk.emf.model.EMFModelResourceFactory"/>
-        <plugin name="org.hawk.graph.syncValidationListener.SyncValidationListener"/>
         <plugin name="org.hawk.modelio.exml.listeners.ModelioGraphChangeListener"/>
         <plugin name="org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory"/>
         <plugin name="org.hawk.modelio.exml.model.ModelioModelResourceFactory"/>
