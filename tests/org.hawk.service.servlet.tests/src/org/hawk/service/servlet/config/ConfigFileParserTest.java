@@ -66,7 +66,7 @@ public class ConfigFileParserTest {
 		assertEquals("Name", config.getIndexedAttributes().get(0).getAttributeName());
 		
 		assertEquals("Instance Number of :Repositories", 1, config.getRepositories().size());
-		assertEquals("C:/Users/yaser And Orjuwan/Desktop/Hawk/Zoo", config.getRepositories().get(0).getLocation());
+		assertEquals("file:///C:/Users/yaser%20And%20Orjuwan/Desktop/Hawk/Zoo/", config.getRepositories().get(0).getLocation());
 		assertEquals("org.hawk.localfolder.LocalFolder", config.getRepositories().get(0).getType());
 		assertEquals("", config.getRepositories().get(0).getUser());
 		assertEquals("", config.getRepositories().get(0).getPass());
@@ -76,13 +76,6 @@ public class ConfigFileParserTest {
 
 	private void parseXml() {
 		parser = new ConfigFileParser();
-
-		try {
-			parser.setSchemaFile(xsdFilePath);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
 		config = parser.parse(new File(xmlFilePath));
 	}
 
