@@ -13,26 +13,16 @@ package org.hawk.service.servlet.config;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-
-import org.apache.activemq.artemis.utils.FileUtil;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IVcsManager;
 import org.hawk.osgiserver.HManager;
 import org.hawk.osgiserver.HModel;
-import org.hawk.service.api.Hawk;
-import org.hawk.service.api.Hawk.Iface;
-import org.hawk.service.api.Hawk.Processor;
 import org.hawk.service.api.utils.APIUtils.ThriftProtocol;
 import org.hawk.service.servlet.processors.HawkThriftIface;
 import org.junit.BeforeClass;
@@ -56,10 +46,8 @@ public class HawkServerConfiguratorTest {
 		addFilesToConfigurationFolder();
 		hawkIface = new HawkThriftIface(ThriftProtocol.TUPLE, null, null);
 		serverConfigurator = new HawkServerConfigurator(hawkIface);
-		
 	}
 
-	
 	@Test
 	public void testHawkServerConfigurator() throws BackingStoreException {
 		serverConfigurator.loadHawkServerConfigurations();
@@ -73,7 +61,6 @@ public class HawkServerConfiguratorTest {
 		ConfigFileParser parser = new ConfigFileParser();
 		HawkInstanceConfig config = parser.parse(new File(SERVERCONFIG_PATH, xmlFileName));
 		
-		
 		// check first instance
 		HModel instance = manager.getHawkByName(config.getName());
 		
@@ -84,7 +71,6 @@ public class HawkServerConfiguratorTest {
 		assertArrayEquals(config.getPlugins().toArray(), instance.getEnabledPlugins().toArray());
 		
 		assertTrue(compareRepositories(config.getRepositories(), instance.getRunningVCSManagers()));
-
 		
 		// metamodels
 		assertTrue(instance.getRegisteredMetamodels().contains("modelio://ModelioMetaPackage"));
@@ -94,15 +80,11 @@ public class HawkServerConfiguratorTest {
 		assertTrue(instance.getRegisteredMetamodels().contains("modelio://Modeliosoft.Standard/2.0.00"));
 		assertTrue(instance.getRegisteredMetamodels().contains("modelio://Modeliosoft.Infrastructure/2.1.00"));
 		 
-		
 		// derived attributes
 		assertTrue(instance.getDerivedAttributes().containsAll(config.getDerivedAttributes()));
 		
-		
 		// indexed attributes
 		assertTrue(instance.getIndexedAttributes().containsAll(config.getIndexedAttributes()));
-		
-		
 	}
 
 	private boolean compareRepositories(List<RepositoryParameters> repositories, Collection<IVcsManager> collection) {
@@ -143,7 +125,6 @@ public class HawkServerConfiguratorTest {
 		}
 
 		return allEqual;
-
 	}
 
 
@@ -158,35 +139,11 @@ public class HawkServerConfiguratorTest {
 				configurationFolder.mkdir(); // make directory
 			}
 
-			
 			Files.copy(new File(SERVERCONFIG_PATH, xmlFileName_1), new File(configurationFolder, xmlFileName_1));
 			Files.copy(new File(SERVERCONFIG_PATH, xmlFileName_2), new File(configurationFolder, xmlFileName_2));
-			
-
-			
-			
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
-	
-	
-//	public List<File> getHawkServerConfigurationFiles() {
-//		List files = new ArrayList<File>();
-//		files.add(new File(xmlFilePath));
-//		return files;
-//	}
-	
-	
-	@Test
-	public void testLoadHawkServerConfigurations() {
-	}
-
-	@Test
-	public void testSaveHawkServerConfigurations() {
-	}
-
 }
 
