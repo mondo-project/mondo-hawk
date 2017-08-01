@@ -24,6 +24,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory;
 import org.hawk.modelio.exml.model.ModelioModelResource;
+import org.hawk.modelio.exml.model.ModelioModelResourceFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -105,8 +106,8 @@ public class ExmlParserTest {
 
 			final List<ExmlReference> parent = object.getCompositions().get("Parent");
 			assertNotNull(parent);
-
-			final ModelioModelResource elephantModel = new ModelioModelResource(object);
+			
+			final ModelioModelResource elephantModel = new ModelioModelResource(object, new ModelioModelResourceFactory());
 			assertEquals(3, elephantModel.getAllContentsSet().size());
 		}
 	}

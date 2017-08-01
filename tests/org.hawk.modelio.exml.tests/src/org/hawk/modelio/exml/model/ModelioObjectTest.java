@@ -44,8 +44,8 @@ public class ModelioObjectTest {
 			final ExmlParser parser = new ExmlParser();
 			final ExmlObject object = parser.getObject(f, fIS);
 
-			final ModelioClass mC = RegisterMeta.getModelioClass(object.getMClassName());/*metamodel.getModelioClass(object.getMClassName());*/
-			final ModelioObject mO = new ModelioObject(mC, object);
+			final ModelioClass mC = RegisterMeta.getModelioClass(object.getMClassName(), null);/*metamodel.getModelioClass(object.getMClassName());*/
+			final ModelioObject mO = new ModelioObject(mC, object, null);
 
 			final Map<String, ModelioAttribute> attrs = mC.getAllAttributesMap();
 			assertTrue(((String)mO.get(attrs.get("UiData"))).startsWith("eJztXWtz27"));

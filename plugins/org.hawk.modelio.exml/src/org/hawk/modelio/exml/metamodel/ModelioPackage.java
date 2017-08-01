@@ -166,4 +166,8 @@ public class ModelioPackage extends AbstractModelioObject implements IHawkPackag
 	public MPackage getRawPackage() {
 		return rawPackage;
 	}
+	
+	public String getVersion() {
+		return rawPackage.getVersion();
+	}
 }

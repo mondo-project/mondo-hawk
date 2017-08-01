@@ -34,6 +34,7 @@ import org.junit.Test;
 public class ModelioMetaModelResourceTest {
 
 	private static ModelioMetaModelResource r;
+	static ModelioMetaModelResourceFactory factory;
 
 	private static final String METAMODEL_PATH = "resources/metamodel/";
 
@@ -41,7 +42,7 @@ public class ModelioMetaModelResourceTest {
 	public static void setup() {
 		File file = new File( METAMODEL_PATH + "metamodel_descriptor.xml");
 		try {
-			ModelioMetaModelResourceFactory factory = new ModelioMetaModelResourceFactory();
+			factory = new ModelioMetaModelResourceFactory();
 			
 			r = (ModelioMetaModelResource) factory.parse(file);
 
@@ -104,7 +105,7 @@ public class ModelioMetaModelResourceTest {
 	@Test
 	public void checkModuleComponentHierarchy() {
 		final Set<String> names = new HashSet<>();
-		for (IHawkClass hc : RegisterMeta.getModelioClass("ModuleComponent").getAllSuperTypes()) {
+		for (IHawkClass hc : RegisterMeta.getModelioClass("ModuleComponent", null).getAllSuperTypes()) {
 			names.add(hc.getName());
 		}
 	//	assertTrue(names.contains("Class"));

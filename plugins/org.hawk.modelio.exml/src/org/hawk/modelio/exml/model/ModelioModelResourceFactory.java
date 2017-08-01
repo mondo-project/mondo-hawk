@@ -13,8 +13,13 @@ package org.hawk.modelio.exml.model;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.zip.ZipFile;
 
@@ -24,10 +29,17 @@ import org.hawk.modelio.exml.parser.ExmlObject;
 import org.hawk.modelio.exml.parser.ExmlParser;
 
 public class ModelioModelResourceFactory implements IModelResourceFactory {
+	Map<String, String> mmPackageVersions;
+	
+	public Map<String, String> getMmPackageVersions() {
+		return mmPackageVersions;
+	}
 
 	private static final String EXML_EXT = ".exml";
+	private static final String MMVERSION_DAT = "mmversion.dat";
 	private static final Set<String> MODEL_EXTS = new HashSet<String>();
 	static {
+		MODEL_EXTS.add(MMVERSION_DAT);
 		MODEL_EXTS.add(EXML_EXT);
 		MODEL_EXTS.add(".ramc");
 		MODEL_EXTS.add(".modelio.zip");
@@ -46,17 +58,22 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 	@Override
 	public IHawkModelResource parse(File f) throws Exception {
 
-		if (f.getName().toLowerCase().endsWith(EXML_EXT)) {
+		if (f.getName().toLowerCase().endsWith(MMVERSION_DAT)) {
+			readMMVersionDat(f);
+			Iterable<ExmlObject> emptyList = new ArrayList<ExmlObject>();
+			// add empty list 
+			return new ModelioModelResource(emptyList , this);
+		} else if (f.getName().toLowerCase().endsWith(EXML_EXT)) {
 			try (final FileInputStream fIS = new FileInputStream(f)) {
 				final ExmlParser parser = new ExmlParser();
 				final ExmlObject object = parser.getObject(f, fIS);
-				return new ModelioModelResource(object);
+				return new ModelioModelResource(object, this);
 			}
 		} else {
 			try (final ZipFile zf = new ZipFile(f)) {
 				final ExmlParser parser = new ExmlParser();
 				final Iterable<ExmlObject> objects = parser.getObjects(f);
-				return new ModelioModelResource(objects);
+				return new ModelioModelResource(objects, this);
 			}
 		}
 	}
@@ -79,5 +96,40 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 	public Collection<String> getModelExtensions() {
 		return MODEL_EXTS;
 	}
+	
+	public String getPackgeVersion(String pkgName) {
+		if(mmPackageVersions == null) {
+			return null;
+		}
+		
+		return mmPackageVersions.get(pkgName);
+	}
+	
+	private void readMMVersionDat(File f) throws IOException{
+		if(mmPackageVersions == null) {
+			mmPackageVersions = new HashMap<String, String>();
+		} else {
+			mmPackageVersions.clear();
+		}
+		
+		Scanner sc = new Scanner(f);
+		
+        while (sc.hasNextLine()) {
+            String pkgName = sc.nextLine();
+            String version = "";
+            
+            if(sc.hasNextLine()) {
+            	version = sc.nextLine();
+            }
+    		
+            if(version.matches("^\\d+(\\.\\d+){2}$")) {
+            	mmPackageVersions.put(pkgName, version);
+            }
+            
+            System.out.println(pkgName + ": verison " + version);
+            
+        }
+        sc.close();
+    }
 
 }

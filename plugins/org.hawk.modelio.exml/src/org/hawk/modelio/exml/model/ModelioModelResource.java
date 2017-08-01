@@ -17,9 +17,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.eclipse.emf.ecore.resource.Resource;
+import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
@@ -34,12 +37,15 @@ public class ModelioModelResource implements IHawkModelResource {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioModelResource.class);
 	private Iterable<ExmlObject> exmls;
 	private Set<IHawkObject> contents;
+	private IModelResourceFactory parser;
 
-	public ModelioModelResource(ExmlObject exml) {
+	public ModelioModelResource(ExmlObject exml, IModelResourceFactory p) {
+		parser = p;
 		this.exmls = Collections.singletonList(exml);
 	}
 
-	public ModelioModelResource(Iterable<ExmlObject> objects) {
+	public ModelioModelResource(Iterable<ExmlObject> objects, IModelResourceFactory p) {
+		parser = p;
 		this.exmls = objects;
 	}
 
@@ -102,12 +108,14 @@ public class ModelioModelResource implements IHawkModelResource {
 	}
 
 	private void addObjectToContents(ExmlObject exml, Collection<IHawkObject> contents) {
-		ModelioClass mc = RegisterMeta.getModelioClass(exml.getMClassName());
+
+		Map<String, String> mmversions = ((ModelioModelResourceFactory) this.parser).getMmPackageVersions();
+		ModelioClass mc = RegisterMeta.getModelioClass(exml.getMClassName(), mmversions);
 		
 		if (mc == null) {
 			LOGGER.warn("Could not find class '{}', skipping", exml.getMClassName());
 		} else {
-			contents.add(new ModelioObject(mc, exml));
+			contents.add(new ModelioObject(mc, exml, mmversions));
 			for (Entry<String, List<ExmlReference>> composition : exml.getCompositions().entrySet()) {
 				for (ExmlReference r : composition.getValue()) {
 					if (r instanceof ExmlObject) {
