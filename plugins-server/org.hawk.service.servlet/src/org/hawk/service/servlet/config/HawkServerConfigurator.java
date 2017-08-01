@@ -36,6 +36,8 @@ import org.hawk.service.servlet.config.RepositoryParameters;
 public class HawkServerConfigurator  {
 	List<HawkInstanceConfig> hawkInstanceConfigs;
 	Iface iface;
+	
+
 	HManager manager;
 	ConfigFileParser parser;
 
@@ -46,11 +48,14 @@ public class HawkServerConfigurator  {
 		manager = HManager.getInstance();
 		parser = new ConfigFileParser();
 	}
-
+	
 	public void loadHawkServerConfigurations() {
-		for (File file : getHawkServerConfigurationFiles()) {
+		for (File file : this.getHawkServerConfigurationFiles()) {
+			System.out.println("configuring hawk instances:");
+			System.out.println("prasing file: " + file.getName());
 			HawkInstanceConfig config = parser.parse(file);
 			if(config != null) {
+				System.out.println("configuring hawk instance: " + config.getName());
 				hawkInstanceConfigs.add(config); // add to list
 				configureHawkInstance(config);
 			}
@@ -62,6 +67,8 @@ public class HawkServerConfigurator  {
 
 	public void saveHawkServerConfigurations() {
 		for(HawkInstanceConfig config : hawkInstanceConfigs) {
+			System.out.println("saving config for hawk instance: " + config.getName());
+
 			saveHawkInstanceConfig(config);
 		}
 	}
