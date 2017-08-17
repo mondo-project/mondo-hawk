@@ -133,7 +133,7 @@ public class HawkServerConfiguratorTest {
 			URL installURL = Platform.getConfigurationLocation().getURL();
 			String path = FileLocator.toFileURL(installURL).getPath();
 
-			File configurationFolder = new File(path, "configuration");
+			File configurationFolder = new File(path);
 
 			if (!configurationFolder.exists() || !configurationFolder.isDirectory()) {
 				configurationFolder.mkdir(); // make directory
