@@ -6,7 +6,7 @@
     <groupId>org.hawk.service</groupId>
     <artifactId>parent-plain</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../pom-plain.xml</relativePath>
+    <relativePath>../../pom-server-plain.xml</relativePath>
   </parent>
 
   <groupId>org.hawk.service</groupId>

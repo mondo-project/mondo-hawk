@@ -20,9 +20,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+
+
 import org.apache.thrift.TException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osgi.service.datalocation.Location;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.util.DerivedAttributeParameters;
 import org.hawk.core.util.IndexedAttributeParameters;
@@ -50,7 +53,7 @@ public class HawkServerConfigurator  {
 	}
 	
 	public void loadHawkServerConfigurations() {
-		for (File file : this.getHawkServerConfigurationFiles()) {
+		for (File file : getHawkServerConfigurationFiles()) {
 			System.out.println("configuring hawk instances:");
 			System.out.println("prasing file: " + file.getName());
 			HawkInstanceConfig config = parser.parse(file);
@@ -75,19 +78,22 @@ public class HawkServerConfigurator  {
 
 	private List<File> getHawkServerConfigurationFiles() {
 		try {
-			URL installURL = Platform.getConfigurationLocation().getURL();
-			String path = FileLocator.toFileURL(installURL).getPath();
-
-			File configurationFolder = new File(path, "configuration");
-
+			File configurationFolder = null;
+			Location configurationLocation = Platform.getConfigurationLocation();
+			if(configurationLocation == null) {
+				// create a configuration folder
+				configurationFolder = new File("configuration");
+			} else {
+				URL configurationURL = configurationLocation.getURL();
+				String path = FileLocator.toFileURL(configurationURL).getPath();
+				configurationFolder = new File(path);
+			}
 			FilenameFilter filter = getXmlFilenameFilter();
-
 			if (configurationFolder.exists() && configurationFolder.isDirectory()) {
 				return new ArrayList<File>(Arrays.asList(configurationFolder.listFiles(filter)));
 			} else {
 				configurationFolder.mkdir(); // make directory
 			}
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -20,7 +20,7 @@ public class ConfigFileParserTest {
 	private static final String SERVERCONFIG_PATH = "resources/ServerConfig/";
 	ConfigFileParser parser;
 	HawkInstanceConfig config;
-	final String xmlFilePath = SERVERCONFIG_PATH + "instance_1.xml";
+	final String xmlFilePath = SERVERCONFIG_PATH + "instance_3.xml";
 	final String xsdFilePath = SERVERCONFIG_PATH + "HawkServerConfigurationSchema.xsd";
 
 	@Test
@@ -28,7 +28,7 @@ public class ConfigFileParserTest {
 		parseXml();
 		
 		// config config values
-		assertEquals("Instance Name:", "instance_1", config.getName());
+		assertEquals("Instance Name:", "instance_3", config.getName());
 		assertEquals("Instance Backend:", "org.hawk.orientdb.OrientDatabase", config.getBackend());
 		assertEquals("Instance Delay Max:", 512000, config.getDelayMax());
 		assertEquals("Instance Delay Min:", 5000, config.getDelayMin());
@@ -42,7 +42,7 @@ public class ConfigFileParserTest {
 		assertTrue(config.getPlugins().contains("org.hawk.modelio.exml.model.ModelioModelResourceFactory"));
 		
 		assertEquals("Instance Number of Metamodels:", 1, config.getMetamodels().size());
-		assertEquals("C:/Users/yaser And Orjuwan/Desktop/Hawk/metamodel_descriptor.xml",config.getMetamodels().get(0).getLocation());
+		assertEquals("C:/resources/metamodel/metamodel_descriptor.xml",config.getMetamodels().get(0).getLocation());
 		assertEquals("",config.getMetamodels().get(0).getUri());
 		
 		assertEquals("Instance Number of Derived Attributes:", 1, config.getDerivedAttributes().size());
@@ -66,7 +66,7 @@ public class ConfigFileParserTest {
 		assertEquals("Name", config.getIndexedAttributes().get(0).getAttributeName());
 		
 		assertEquals("Instance Number of :Repositories", 1, config.getRepositories().size());
-		assertEquals("file:///C:/Users/yaser%20And%20Orjuwan/Desktop/Hawk/Zoo/", config.getRepositories().get(0).getLocation());
+		assertEquals("file:///C:/Desktop/Hawk/Zoo/", config.getRepositories().get(0).getLocation());
 		assertEquals("org.hawk.localfolder.LocalFolder", config.getRepositories().get(0).getType());
 		assertEquals("", config.getRepositories().get(0).getUser());
 		assertEquals("", config.getRepositories().get(0).getPass());

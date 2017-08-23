@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hawk backend="org.hawk.orientdb.OrientDatabase" name="instance_3">
+    <delay max="512000" min="5000"/>
+    <plugins>
+        <plugin name="org.hawk.emf.metamodel.EMFMetaModelResourceFactory"/>
+        <plugin name="org.hawk.emf.model.EMFModelResourceFactory"/>
+        <plugin name="org.hawk.graph.syncValidationListener.SyncValidationListener"/>
+        <plugin name="org.hawk.modelio.exml.listeners.ModelioGraphChangeListener"/>
+        <plugin name="org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory"/>
+        <plugin name="org.hawk.modelio.exml.model.ModelioModelResourceFactory"/>
+    </plugins>
+    <metamodels>
+        <metamodel
+            location="C:/resources/metamodel/metamodel_descriptor.xml" uri=""/>
+    </metamodels>
+    <derivedAttributes>
+        <derivedAttribute attributeName="ownedOperationCount"
+            attributeType="Integer" isMany="false" isOrdered="false"
+            isUnique="false"
+            metamodelUri="modelio://Modeliosoft.Standard/2.0.00" typeName="Class">
+            <derivation language="EOLQueryEngine">
+                <logic><![CDATA[
+						return Class.all.select(c|c.ownedOperationCount > 0).Name;
+					]]></logic>
+            </derivation>
+        </derivedAttribute>
+    </derivedAttributes>
+    <indexedAttributes>
+        <indexedAttribute attributeName="Name"
+            metamodelUri="modelio://Modeliosoft.Standard/2.0.00" typeName="Class"/>
+    </indexedAttributes>
+    <repositories>
+        <repository frozen="false"
+            location="file:///C:/Desktop/Hawk/Zoo/" pass=""
+            type="org.hawk.localfolder.LocalFolder" user=""/>
+    </repositories>
+</hawk>

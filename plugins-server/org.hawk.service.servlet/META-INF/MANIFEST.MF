@@ -17,8 +17,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.hawk.service.artemis;bundle-version="1.0.0",
  org.hawk.service.artemis.server;bundle-version="1.0.0",
  com.google.guava;bundle-version="15.0.0",
- org.hawk.epsilon;bundle-version="1.0.0",
- org.junit
+ org.hawk.epsilon;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.servlet;version="2.6.0",
