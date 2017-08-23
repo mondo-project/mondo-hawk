@@ -34,6 +34,8 @@ public interface IVcsManager {
 	 * implementation must return the file that should be read in the end.
 	 * Implementations should be careful to preserve relative paths between the
 	 * files in the same repository when implementing this method.
+	 *
+	 * Returns <code>null</code> if the file could not be found.
 	 */
 	File importFiles(String path, File optionalTemp);
 

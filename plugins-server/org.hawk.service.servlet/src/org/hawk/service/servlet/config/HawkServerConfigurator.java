@@ -37,12 +37,11 @@ import org.hawk.service.servlet.config.HawkInstanceConfig;
 import org.hawk.service.servlet.config.RepositoryParameters;
 
 public class HawkServerConfigurator  {
-	List<HawkInstanceConfig> hawkInstanceConfigs;
-	Iface iface;
-	
 
-	HManager manager;
-	ConfigFileParser parser;
+	private List<HawkInstanceConfig> hawkInstanceConfigs;
+	private Iface iface;
+	private HManager manager;
+	private ConfigFileParser parser;
 
 	public HawkServerConfigurator(Iface iface) {
 		this.iface = iface;
