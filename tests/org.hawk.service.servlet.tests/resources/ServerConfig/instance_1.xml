@@ -11,7 +11,7 @@
     </plugins>
     <metamodels>
         <metamodel
-            location="C:/Users/yaser And Orjuwan/Desktop/Hawk/metamodel_descriptor.xml" uri=""/>
+            location="C:\Users\yaser And Orjuwan\git\mondo-hawk\tests\org.hawk.service.servlet.tests\resources\metamodel\metamodel_descriptor.xml" uri=""/>
     </metamodels>
     <derivedAttributes>
         <derivedAttribute attributeName="ownedOperationCount"
@@ -31,7 +31,7 @@
     </indexedAttributes>
     <repositories>
         <repository frozen="false"
-            location="file:///C:/Users/yaser%20And%20Orjuwan/Desktop/Hawk/Zoo/"
+            location="file:///C:/Users/yaser%20And%20Orjuwan/git/mondo-hawk/tests/org.hawk.service.servlet.tests/resources/Zoo/"
             pass="" type="org.hawk.localfolder.LocalFolder" user=""/>
     </repositories>
 </hawk>
