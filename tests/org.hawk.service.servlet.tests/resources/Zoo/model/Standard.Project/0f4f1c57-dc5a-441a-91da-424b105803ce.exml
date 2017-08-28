@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="Zoo" version="4">
+  <OBJECT>
+    <ID name="Zoo" mc="Standard.Project" uid="0f4f1c57-dc5a-441a-91da-424b105803ce"/>
+    <ATTRIBUTES>
+      <ATT name="ProjectContext"></ATT>
+      <ATT name="ProjectDescr"></ATT>
+      <ATT name="Name"><![CDATA[Zoo]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="Model">
+        <COMPID name="zoo" mc="Standard.Package" uid="ea878bd2-7ef9-4ce1-a11e-35fa129981bb"/>
+      </COMP>
+      <COMP relation="DiagramRoot">
+        <COMPID name="Zoo" mc="Infrastructure.DiagramSet" uid="d00fb552-1f56-43fd-9776-f78355c9cb77"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>
