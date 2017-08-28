@@ -37,6 +37,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import org.hawk.core.IFileImporter;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
 import org.slf4j.Logger;
@@ -83,7 +84,7 @@ public class IFCModelFactory implements IModelResourceFactory {
 	}
 
 	@Override
-	public IHawkModelResource parse(File f) {
+	public IHawkModelResource parse(IFileImporter importer, File f) {
 		try {
 			final ZipFile zf = new ZipFile(f);
 			final List<ZipEntry> candidates = getIFCFilesInZIP(zf);

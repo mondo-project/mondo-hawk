@@ -23,6 +23,7 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.zip.ZipFile;
 
+import org.hawk.core.IFileImporter;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.modelio.exml.parser.ExmlObject;
@@ -56,7 +57,9 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 	}
 
 	@Override
-	public IHawkModelResource parse(File f) throws Exception {
+	public IHawkModelResource parse(IFileImporter importer, File f) throws Exception {
+
+		// TODO use importer to grab MMVERSION_DAT instead of assuming it'll appear here.
 
 		if (f.getName().toLowerCase().endsWith(MMVERSION_DAT)) {
 			readMMVersionDat(f);

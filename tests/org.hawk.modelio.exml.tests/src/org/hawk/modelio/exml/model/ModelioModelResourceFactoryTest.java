@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.hawk.core.IFileImporter;
 import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkModelResource;
@@ -23,6 +24,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ModelioModelResourceFactoryTest {
+
+	protected static final class DummyFileImporter implements IFileImporter {
+		@Override
+		public File importFile(String path) {
+			return new File("resources", path);
+		}
+	}
 
 	private static final String RAMC_PATH = "resources/jenkins/jenkins_1.540.0.ramc";
 	private static final String ICONTAINMENT_PATH = "resources/implicitContainment/example.exml";
@@ -44,8 +52,10 @@ public class ModelioModelResourceFactoryTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void ramc() throws Exception {
-		ModelioModelResourceFactory factory = new ModelioModelResourceFactory();
-		IHawkModelResource resource = factory.parse(new File(RAMC_PATH));
+		final ModelioModelResourceFactory factory = new ModelioModelResourceFactory();
+		IHawkModelResource resource = factory.parse(
+				new DummyFileImporter(),
+				new File(RAMC_PATH));
 
 		final Map<String, IHawkObject> elements = new HashMap<>();
 		final Set<String> rootOrContained = new HashSet<>();
@@ -97,7 +107,7 @@ public class ModelioModelResourceFactoryTest {
 		final String childUID = "00d011d0-0000-041f-0000-000000000000";
 
 		ModelioModelResourceFactory factory = new ModelioModelResourceFactory();
-		IHawkModelResource resource = factory.parse(new File(ICONTAINMENT_PATH));
+		IHawkModelResource resource = factory.parse(new DummyFileImporter(), new File(ICONTAINMENT_PATH));
 
 		for (IHawkObject ob : resource.getAllContents()) {
 			final ModelioObject mob = (ModelioObject)ob;
@@ -122,7 +132,7 @@ public class ModelioModelResourceFactoryTest {
 	@Test
 	public void bpmnCatchEvent() throws Exception {
 		ModelioModelResourceFactory factory = new ModelioModelResourceFactory();
-		IHawkModelResource resource = factory.parse(new File(BPMNCATCH_PATH));
+		IHawkModelResource resource = factory.parse(new DummyFileImporter(), new File(BPMNCATCH_PATH));
 		assertEquals(5, resource.getAllContentsSet().size());
 
 		boolean found = false;

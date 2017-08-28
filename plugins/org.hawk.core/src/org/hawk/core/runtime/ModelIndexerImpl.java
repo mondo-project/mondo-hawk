@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2017 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - extract import to interface
  ******************************************************************************/
 package org.hawk.core.runtime;
 
@@ -31,6 +32,7 @@ import javax.swing.JFrame;
 
 import org.hawk.core.IConsole;
 import org.hawk.core.ICredentialsStore;
+import org.hawk.core.IFileImporter;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.IMetaModelUpdater;
 import org.hawk.core.IModelIndexer;
@@ -50,14 +52,43 @@ import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.util.DerivedAttributeParameters;
-import org.hawk.core.util.IndexedAttributeParameters;
 import org.hawk.core.util.FileOperations;
 import org.hawk.core.util.HawkProperties;
+import org.hawk.core.util.IndexedAttributeParameters;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class ModelIndexerImpl implements IModelIndexer {
+
+	public static class DefaultFileImporter implements IFileImporter {
+
+		private IVcsManager vcs;
+		private File tempDir;
+
+		public DefaultFileImporter(IVcsManager vcs, File tempDir) {
+			this.vcs = vcs;
+			this.tempDir = tempDir;
+		}
+
+		@Override
+		public File importFile(String commitPath) {
+			String[] commitPathSplit = commitPath.split("/");
+
+			// Resolves the commit path as a relative path from the temporary directory
+			File destination = tempDir;
+			if (commitPathSplit.length > 1) {
+				for (String pathComponent : commitPathSplit) {
+					destination = new File(destination, pathComponent);
+				}
+				destination.mkdirs();
+			} else {
+				destination = new File(destination, commitPath);
+			}
+
+			return vcs.importFiles(commitPath, destination);
+		}
+	}
 
 	private static final int FILECOUNT_PROGRESS_THRESHOLD = 100;
 	// validation metrics and data
@@ -242,7 +273,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		// create temp files with changed repos files
 		final Map<String, File> pathToImported = new HashMap<>();
-		importFiles(m, monitorTempDir, currReposChangedItems, pathToImported);
+		final IFileImporter importer = new DefaultFileImporter(m, new File(monitorTempDir));
+		importFiles(importer, currReposChangedItems, pathToImported);
 
 		// delete all removed files
 		success = deleteRemovedModels(success, u, deletedItems);
@@ -283,7 +315,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 						IModelResourceFactory mrf = getModelParserFromFilename(
 								file.getName().toLowerCase());
 						if (mrf.canParse(file))
-							r = mrf.parse(file);
+							r = mrf.parse(importer, file);
 					}
 				}
 				success = u.updateStore(v, r) && success;
@@ -347,33 +379,17 @@ public class ModelIndexerImpl implements IModelIndexer {
 		return success;
 	}
 
-	private void importFiles(IVcsManager m, final String monitorTempDir, Set<VcsCommitItem> currreposchangeditems,
-			final Map<String, File> pathToImported) {
-		for (VcsCommitItem s : currreposchangeditems) {
-			String commitPath = s.getPath();
+	private void importFiles(IFileImporter importer, final Set<VcsCommitItem> changedItems, final Map<String, File> pathToImported) {
+		for (VcsCommitItem s : changedItems) {
+			final String commitPath = s.getPath();
 
-			if (VERBOSE)
+			if (VERBOSE) {
 				console.println("-->" + commitPath + " HAS CHANGED (" + s.getChangeType()
 						+ "), PROPAGATING CHANGES");
-
-			String[] commitPathSplit = commitPath.split("/");
-
-			File temp;
-			if (commitPathSplit.length > 1) {
-				String path = monitorTempDir;
-				for (int ii = 0; ii < commitPathSplit.length - 1; ii++) {
-
-					File dir = new File(path + "/" + commitPathSplit[ii]);
-					dir.mkdir();
-					path = path + "/" + commitPathSplit[ii];
-
-				}
-				temp = new File(path + "/" + commitPathSplit[commitPathSplit.length - 1]);
-			} else
-				temp = new File(monitorTempDir + "/" + commitPath);
+			}
 
 			if (!pathToImported.containsKey(commitPath)) {
-				final File imported = m.importFiles(commitPath, temp);
+				final File imported = importer.importFile(commitPath);
 				pathToImported.put(commitPath, imported);
 			}
 		}

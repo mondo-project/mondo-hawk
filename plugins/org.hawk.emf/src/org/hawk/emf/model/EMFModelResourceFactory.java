@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.hawk.core.IFileImporter;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.emf.metamodel.EMFMetaModelResourceFactory;
@@ -39,7 +40,7 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 		EMFMetaModelResourceFactory mf = new EMFMetaModelResourceFactory();
 		mf.parse(new File(
 				"C:\\Users\\kb\\Desktop\\workspace\\org.hawk.emf\\src\\org\\hawk\\emf\\metamodel\\examples\\single\\JDTAST.ecore"));
-		f.parse(new File(
+		f.parse(null, new File(
 				"C:/Users/kb/Desktop/workspace/org.hawk.emf/src/org/hawk/emf/model/examples/single/0/set0.xmi"));
 	}
 
@@ -74,7 +75,7 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 	}
 
 	@Override
-	public IHawkModelResource parse(File f) {
+	public IHawkModelResource parse(IFileImporter importer, File f) {
 
 		// useUUIDs()
 		// assignIDsWhileLoading()
