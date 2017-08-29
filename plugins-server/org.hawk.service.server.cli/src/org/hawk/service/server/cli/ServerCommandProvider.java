@@ -23,7 +23,7 @@ public class ServerCommandProvider implements CommandProvider {
 	public static final String HSERVER_HELP_CMD = "hserverHelp";
 	private HManager hawkManager;
 
-	public Object _mserverHelp(CommandInterpreter intp) throws Exception {
+	public Object _hserverHelp(CommandInterpreter intp) throws Exception {
 		return getHelp();
 	}
 
