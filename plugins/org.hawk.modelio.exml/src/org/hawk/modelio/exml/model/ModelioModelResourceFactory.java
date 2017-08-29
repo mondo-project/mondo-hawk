@@ -40,7 +40,6 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 	private static final String MMVERSION_DAT = "mmversion.dat";
 	private static final Set<String> MODEL_EXTS = new HashSet<String>();
 	static {
-		MODEL_EXTS.add(MMVERSION_DAT);
 		MODEL_EXTS.add(EXML_EXT);
 		MODEL_EXTS.add(".ramc");
 		MODEL_EXTS.add(".modelio.zip");
@@ -60,13 +59,9 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 	public IHawkModelResource parse(IFileImporter importer, File f) throws Exception {
 
 		// TODO use importer to grab MMVERSION_DAT instead of assuming it'll appear here.
+		extracVersionsForModel(importer, f);
 
-		if (f.getName().toLowerCase().endsWith(MMVERSION_DAT)) {
-			readMMVersionDat(f);
-			Iterable<ExmlObject> emptyList = new ArrayList<ExmlObject>();
-			// add empty list 
-			return new ModelioModelResource(emptyList , this);
-		} else if (f.getName().toLowerCase().endsWith(EXML_EXT)) {
+		if (f.getName().toLowerCase().endsWith(EXML_EXT)) {
 			try (final FileInputStream fIS = new FileInputStream(f)) {
 				final ExmlParser parser = new ExmlParser();
 				final ExmlObject object = parser.getObject(f, fIS);
@@ -106,6 +101,36 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 		}
 		
 		return mmPackageVersions.get(pkgName);
+	}
+	
+	private void extracVersionsForModel(IFileImporter importer, File f) throws IOException {
+		
+		int maxSearchDepth = 4;
+		String parentName = "";
+		Boolean lastTry = false;
+		
+		File parentFile = f.getParentFile(); // get parent folder name
+		
+		for(int i = 0; i < maxSearchDepth; i++) {
+			if(parentFile != null) {
+				parentName = parentFile.getName();
+				parentFile = parentFile.getParentFile();
+			} else {
+				parentName = "";
+				lastTry = true;
+			}
+			
+			String versionPath = (parentName +  "/admin2/mmversion.dat");
+			File versionFile = importer.importFile(versionPath);
+			if(versionFile.exists()) {
+				readMMVersionDat(versionFile);
+				break;
+			}
+			
+			if(lastTry) {
+				break;
+			}
+		}
 	}
 	
 	private void readMMVersionDat(File f) throws IOException{

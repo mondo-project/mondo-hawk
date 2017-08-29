@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkClassifier;
@@ -61,7 +62,7 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 
 	private MPackage createMetaPackage() {
 		String pkgId = "ModelioMetaPackage"; // + "/" + metamodel.GetFormat();
-		MPackage mpkg = new MPackage(pkgId, pkgId, "00.00.00", "");
+		MPackage mpkg = new MPackage(pkgId + "." + UUID.randomUUID(), pkgId, "00.00.00", "");
 		final MClass mt = new MClass(META_TYPE_NAME, META_TYPE_NAME, mpkg.getExml());
 		mt.getMAttributes().add(createStringAttribute(mpkg, mt.getName(), "name"));
 		mpkg.getMClass().add(mt);

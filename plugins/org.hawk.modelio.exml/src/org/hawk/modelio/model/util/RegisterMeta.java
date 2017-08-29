@@ -112,7 +112,11 @@ public class RegisterMeta {
 		}
 		if(requiredVersion != null) {
 			// check if he required version can be found
-			tmpmc = versions.get(requiredVersion).getClassifier(className);
+			ModelioPackage tmpPkg = versions.get(requiredVersion);
+			
+			if(tmpPkg != null) {
+				tmpmc = tmpPkg.getClassifier(className);
+			}
 		}
 		return tmpmc;
 	}
@@ -122,7 +126,11 @@ public class RegisterMeta {
 		ModelioClass tmpmc = null;
 		String latestVerison = getLatestVersion(pkgName);
 		if(latestVerison != null) {
-			tmpmc = versions.get(latestVerison).getClassifier(className);
+			ModelioPackage tmpPkg = versions.get(latestVerison);
+			
+			if(tmpPkg != null) {
+				tmpmc = tmpPkg.getClassifier(className);
+			}
 		}
 		return tmpmc;
 	}
@@ -155,7 +163,7 @@ public class RegisterMeta {
 		
 		SortedMap<String, ModelioPackage> versions = registeredMetamodelsByName.get(pkgName);
 		if(versions != null) {
-			return versions.firstKey();
+			return versions.lastKey();
 		}
 		
 		return null;
