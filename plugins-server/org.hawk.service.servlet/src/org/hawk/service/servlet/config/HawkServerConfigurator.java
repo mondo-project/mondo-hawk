@@ -86,6 +86,8 @@ public class HawkServerConfigurator  {
 				String path = FileLocator.toFileURL(configurationURL).getPath();
 				configurationFolder = new File(path);
 			}
+
+			System.out.println("Looking for configuration files in " + configurationFolder.getAbsolutePath());
 			FilenameFilter filter = getXmlFilenameFilter();
 			if (configurationFolder.exists() && configurationFolder.isDirectory()) {
 				return new ArrayList<File>(Arrays.asList(configurationFolder.listFiles(filter)));
