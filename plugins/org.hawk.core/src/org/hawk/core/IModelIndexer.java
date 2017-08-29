@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimerTask;
 
 import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.graph.IGraphChangeListener;
@@ -120,7 +121,8 @@ public interface IModelIndexer {
 	CompositeStateListener getCompositeStateListener();
 
 	/**
-	 * Convenience method for {@link #waitFor(HawkState)} that waits indefinitely.
+	 * Convenience method for {@link #waitFor(HawkState)} that waits
+	 * indefinitely.
 	 */
 	void waitFor(HawkState targetState) throws InterruptedException;
 
@@ -187,17 +189,15 @@ public interface IModelIndexer {
 
 	void setMetaModelUpdater(IMetaModelUpdater metaModelUpdater);
 
-	void addDerivedAttribute(String metamodeluri, String typename,
-			String attributename, String attributetype, boolean isMany,
-			boolean isOrdered, boolean isUnique, String derivationlanguage,
-			String derivationlogic);
+	void addDerivedAttribute(String metamodeluri, String typename, String attributename, String attributetype,
+			boolean isMany, boolean isOrdered, boolean isUnique, String derivationlanguage, String derivationlogic);
 
-	void addIndexedAttribute(String metamodeluri, String typename,
-			String attributename);
+	void addIndexedAttribute(String metamodeluri, String typename, String attributename);
 
 	Collection<String> getDerivedAttributeNames();
 
 	Collection<IndexedAttributeParameters> getDerivedAttributes();
+
 	/**
 	 * Returns a collection of strings of the form
 	 * <code>mmuri##typename##attrname</code>, where <code>mmuri</code> is the
@@ -211,8 +211,7 @@ public interface IModelIndexer {
 
 	Collection<String> getIndexes();
 
-	List<String> validateExpression(String derivationlanguage,
-			String derivationlogic);
+	List<String> validateExpression(String derivationlanguage, String derivationlogic);
 
 	public String getName();
 
@@ -242,10 +241,16 @@ public interface IModelIndexer {
 	 */
 	void setPolling(int base, int max);
 
-	boolean removeIndexedAttribute(String metamodelUri, String typename,
-			String attributename);
+	boolean removeIndexedAttribute(String metamodelUri, String typename, String attributename);
 
-	boolean removeDerivedAttribute(String metamodelUri, String typeName,
-			String attributeName);
+	boolean removeDerivedAttribute(String metamodelUri, String typeName, String attributeName);
 
+	// TODO Remove if this does not solve server startup issues
+	/**
+	 * Schedules a task on the Hawk update thread. This avoids unwanted
+	 * concurrent accesses on an instance of Hawk. Clients are suggested to make
+	 * any changes on a Hawk configuration through tasks scheduled this way. Hawk
+	 * is not designed to be thread safe.
+	 */
+	void scheduleTask(TimerTask task, long delayMillis);
 }

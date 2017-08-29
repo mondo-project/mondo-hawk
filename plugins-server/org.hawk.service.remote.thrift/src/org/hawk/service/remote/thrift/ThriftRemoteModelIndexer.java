@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimerTask;
 
 import org.apache.activemq.artemis.api.core.client.ClientMessage;
 import org.apache.activemq.artemis.api.core.client.MessageHandler;
@@ -954,7 +955,11 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 		}
 	}
 
-	
-
+	@Override
+	public void scheduleTask(TimerTask task, long delayMillis) {
+		// TODO If this works to fix server configuration issues,
+		// reevaluate.
+		throw new UnsupportedOperationException();
+	}
 
 }

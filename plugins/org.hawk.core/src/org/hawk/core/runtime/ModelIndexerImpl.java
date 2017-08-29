@@ -1293,5 +1293,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 		}
 	}
 
+	@Override
+	public void scheduleTask(TimerTask task, long delayMillis) {
+		// TODO See if this solves the concurrency issues, otherwise backtrack
+		updateTimer.schedule(task, delayMillis);
+	}
+
 	
 }

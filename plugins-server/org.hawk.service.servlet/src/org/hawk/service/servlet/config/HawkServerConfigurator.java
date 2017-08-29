@@ -19,8 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-
+import java.util.TimerTask;
 
 import org.apache.thrift.TException;
 import org.eclipse.core.runtime.FileLocator;
@@ -114,7 +113,7 @@ public class HawkServerConfigurator  {
 		};
 	}
 
-	private void configureHawkInstance(HawkInstanceConfig config) {
+	private void configureHawkInstance(final HawkInstanceConfig config) {
 		HModel hawkInstance = manager.getHawkByName(config.getName());
 
 		try {
@@ -132,20 +131,29 @@ public class HawkServerConfigurator  {
 
 			// start instance
 			hawkInstance.start(manager);
-
 			while(!hawkInstance.isRunning());
 
-			// add metamodels, Do it first before adding attributes or repositories
-			addMetamodels(hawkInstance, config);
+			final HModel hModel = hawkInstance;
+			hawkInstance.getHawk().getModelIndexer().scheduleTask(new TimerTask(){
+				@Override
+				public void run() {
+					// add metamodels, Do it first before adding attributes or repositories
+					addMetamodels(hModel, config);
 
-			// add repositories, don't delete any
-			addMissingRepositories(hawkInstance, config);
+					// add repositories, don't delete any
+					addMissingRepositories(hModel, config);
 
-			// derived Attributes
-			addMissingDerivedAttributes(hawkInstance, config);
+					// derived Attributes
+					try {
+						addMissingDerivedAttributes(hModel, config);
 
-			// indexed Attributes
-			addMissingIndexedAttributes(hawkInstance, config);
+						// indexed Attributes
+						addMissingIndexedAttributes(hModel, config);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}, 0);
 
 		} catch (Exception e) {
 			e.printStackTrace();
