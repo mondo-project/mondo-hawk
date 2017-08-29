@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.osgi.util.ManifestElement;
+import org.hawk.core.IFileImporter;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
 import org.osgi.framework.Constants;
@@ -45,7 +46,7 @@ public class ManifestModelResourceFactory implements IModelResourceFactory {
 	}
 
 	@Override
-	public ManifestModelResource parse(File f) {
+	public ManifestModelResource parse(IFileImporter importer, File f) {
 		final Map<String, String> map = getManifestContents(f);
 		ManifestModelResource ret = null;
 		try {

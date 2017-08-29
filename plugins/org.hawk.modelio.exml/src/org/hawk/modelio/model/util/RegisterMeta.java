@@ -10,28 +10,38 @@
  ******************************************************************************/
 package org.hawk.modelio.model.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
+import javax.swing.event.ListSelectionEvent;
+
+import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
 import org.hawk.modelio.exml.metamodel.ModelioPackage;
+import org.hawk.modelio.exml.model.ModelioModelResourceFactory;
 
 public class RegisterMeta {
 
 	private static int registered = 0;
-	
-	// TODO needs to be changed to support different metamodel versions
-	// - different metamodel versions will have same name , but different id (thus URI)
-	// - retrieve classes by Package Name, Class Name and Package version
-	
-	// TODO change to registeredMetamodelsByUri or ById
-	private final static Map<String, ModelioPackage> registeredMetamodelsByName = new HashMap<String, ModelioPackage>();
+
+	private static Map<String, SortedMap<String, ModelioPackage>> registeredMetamodelsByName = new HashMap<String, SortedMap<String,ModelioPackage>>();
 
 	public static Collection<ModelioPackage> getRegisteredPackages() {
-		return registeredMetamodelsByName.values();
+		Collection<ModelioPackage> registeredPackages = new ArrayList<ModelioPackage>();
+		for (Map<String, ModelioPackage> versions : registeredMetamodelsByName.values()) {
+			for(ModelioPackage pkg: versions.values()) {
+				registeredPackages.add(pkg);
+			}
+		}
+		return registeredPackages;
 	}
 
 	public static void clean() {
@@ -40,15 +50,20 @@ public class RegisterMeta {
 
 	// registers metamodel
 	/**
-	 * register Modelio package 
+	 * register Modelio package
 	 * 
 	 * @param pkg
 	 */
 	public static int registerPackages(ModelioPackage pkg) {
 
-		if (registeredMetamodelsByName.put(pkg.getName(), pkg) == null) {
-			System.err.println("registering package: " + pkg.getName()
-					+ "(" + pkg.getNsURI() + ")");
+		SortedMap<String, ModelioPackage> versions = registeredMetamodelsByName.get(pkg.getName());
+		if(versions == null) {
+			versions = new TreeMap<String, ModelioPackage>();
+			registeredMetamodelsByName.put(pkg.getName(), versions);
+		} 
+		
+		if(versions.put(pkg.getVersion(), pkg) == null) {
+			System.out.println("registering package: " + pkg.getName() + "(" + pkg.getNsURI() + ")");
 			registered++;
 		}
 
@@ -59,45 +74,113 @@ public class RegisterMeta {
 		for (IHawkObject e : r.getAllContents()) {
 			if (e instanceof ModelioPackage) {
 				registerPackages((ModelioPackage) e);
-			} 
+			}
 		}
 	}
-	
-	// TODO should be changed to public static ModelioClass getModelioClass(String  className, String pkgVersion)
-	public static ModelioClass getModelioClass(String  className) {
-		String pkgName;
-		String mcName;
-		ModelioClass mc = null;
 
-		final int idxDot = className.indexOf(".");
-		if(idxDot > -1) {
-			pkgName = className.substring(0, idxDot);
-			mcName = className.substring(idxDot + 1);
-			mc = getMClass(pkgName, mcName); 
-		} else {
+	private static ModelioClass getMClass(String className, Map<String, String> mmPackageVersions) {
+		for (SortedMap<String, ModelioPackage> versions : registeredMetamodelsByName.values()) {
+			for(ModelioPackage pkg: versions.values()) {
+				ModelioClass mc = pkg.getClassifier(className);
 
-			mc = getMClass(className);
-		}
-
-		return mc;
-	}
-	
-	private static ModelioClass getMClass(String  className) {
-		for( ModelioPackage pkg : registeredMetamodelsByName.values()) {
-			ModelioClass mc = pkg.getClassifier(className);
-			if( mc != null) {
-				return mc;
+				if (mc != null) {
+					ModelioClass tmpMc = findRequiredVersion(versions, className, pkg.getName(), mmPackageVersions);
+					if(tmpMc != null) {
+						mc = tmpMc; //set to required
+					} else {
+						tmpMc = findLatestVersion(versions, className, pkg.getName());
+						if(tmpMc != null) {
+							mc = tmpMc; // set to latest
+						}
+					}
+				}
+				
+				if (mc != null) {
+					return mc;
+				}
 			}
 		}
 		return null;
 	}
+
 	
-	// TODO private static ModelioClass getMClass(String pkgName, String pkgVersion, String className)
-	private static ModelioClass getMClass(String pkgName, String className) {
-		ModelioPackage pkg = registeredMetamodelsByName.get(pkgName);
-		if(pkg != null) {	
-			return pkg.getClassifier(className);
+	private static ModelioClass findRequiredVersion(SortedMap<String, ModelioPackage> versions,  String className, String pkgName, Map<String, String> mmPackageVersions) {
+		String requiredVersion = null;
+		ModelioClass tmpmc = null;
+		if(mmPackageVersions != null) {
+			requiredVersion = mmPackageVersions.get(pkgName);
 		}
+		if(requiredVersion != null) {
+			// check if he required version can be found
+			tmpmc = versions.get(requiredVersion).getClassifier(className);
+		}
+		return tmpmc;
+	}
+
+
+	private static ModelioClass findLatestVersion(SortedMap<String, ModelioPackage> versions,  String className, String pkgName) {
+		ModelioClass tmpmc = null;
+		String latestVerison = getLatestVersion(pkgName);
+		if(latestVerison != null) {
+			tmpmc = versions.get(latestVerison).getClassifier(className);
+		}
+		return tmpmc;
+	}
+
+	private static ModelioClass getMClass(String pkgName, String className, String requiredVersion) {
+		Map<String, ModelioPackage> versions = registeredMetamodelsByName.get(pkgName);
+		
+		if (versions != null) {
+			ModelioPackage pkg = null;
+			
+			// try to get the right required version
+			if(requiredVersion != null) {
+				pkg = versions.get(requiredVersion);
+			}
+			
+			if(pkg == null) {
+				// get latest version
+				pkg = versions.get(getLatestVersion(pkgName));
+			}
+			
+			if(pkg != null) {
+				return pkg.getClassifier(className);
+			}
+		}
+		
 		return null;
+	}
+
+	private static String getLatestVersion(String pkgName) {
+		
+		SortedMap<String, ModelioPackage> versions = registeredMetamodelsByName.get(pkgName);
+		if(versions != null) {
+			return versions.firstKey();
+		}
+		
+		return null;
+	}
+	
+	public static ModelioClass getModelioClass(String className, Map<String, String> mmPackageVersions) {
+		String pkgName;
+		String mcName;
+		ModelioClass mc = null;
+		String version= null;
+		final int idxDot = className.indexOf(".");
+		if (idxDot > -1) {
+			pkgName = className.substring(0, idxDot);
+			mcName = className.substring(idxDot + 1);
+			
+			if(mmPackageVersions != null) {
+				version = mmPackageVersions.get(pkgName);
+			}
+			
+			mc = getMClass(pkgName, mcName, version);
+			
+		} else {
+			mc = getMClass(className, mmPackageVersions);
+		}
+		
+		return mc;
 	}
 }

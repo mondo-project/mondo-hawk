@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.hawk.bpmn.metamodel.BPMNMetaModelResourceFactory;
+import org.hawk.core.IFileImporter;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
 
@@ -31,7 +32,7 @@ public class BPMNModelResourceFactory implements IModelResourceFactory {
 		BPMNMetaModelResourceFactory mf = new BPMNMetaModelResourceFactory();
 		mf.parse(new File(
 				"C:\\Users\\kb\\Desktop\\workspace\\org.hawk.emf\\src\\org\\hawk\\emf\\metamodel\\examples\\single\\JDTAST.ecore"));
-		f.parse(new File(
+		f.parse(null, new File(
 				"C:/Users/kb/Desktop/workspace/org.hawk.emf/src/org/hawk/emf/model/examples/single/0/set0.xmi"));
 
 	}
@@ -58,7 +59,7 @@ public class BPMNModelResourceFactory implements IModelResourceFactory {
 	}
 
 	@Override
-	public IHawkModelResource parse(File f) {
+	public IHawkModelResource parse(IFileImporter importer, File f) {
 
 		IHawkModelResource ret;
 		Resource r = null;

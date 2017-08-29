@@ -59,7 +59,7 @@ public class ModelioMetamodel {
 
 		//	 Step 2:  add Classes and Attributes
 		for ( MFragment fragment : mDescriptor.getFragments().values()) {
-			MPackage pkg = new MPackage(getMPackageId(fragment), fragment.getName(), fragment.getXmlString());
+			MPackage pkg = new MPackage(getMPackageId(fragment), fragment.getName(), fragment.getVersion(), fragment.getXmlString());
 			mPackages.add(pkg);
 
 			// get classes

@@ -98,7 +98,7 @@ public class IFCModelFactoryTests {
 	public void fullParseIsSuccessful() {
 		final File f = filePath.toFile();
 		if (factory.canParse(f)) {
-			final Set<IHawkObject> contents = factory.parse(f).getAllContentsSet();
+			final Set<IHawkObject> contents = factory.parse(null, f).getAllContentsSet();
 			assertFalse("The model contents should not be empty for " + f.getName(), contents.isEmpty());
 		}
 	}

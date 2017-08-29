@@ -14,6 +14,7 @@ package org.hawk.modelio.exml.model;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkObject;
@@ -23,7 +24,6 @@ import org.hawk.modelio.exml.metamodel.AbstractModelioObject;
 import org.hawk.modelio.exml.metamodel.ModelioAttribute;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
 import org.hawk.modelio.exml.metamodel.ModelioDataType;
-import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
 import org.hawk.modelio.exml.metamodel.ModelioReference;
 import org.hawk.modelio.exml.parser.ExmlObject;
 import org.hawk.modelio.exml.parser.ExmlReference;
@@ -40,12 +40,16 @@ public class ModelioObject extends AbstractModelioObject {
 	private final ModelioClass mc;
 	private final ExmlObject exml;
 
-	public ModelioObject(ModelioClass mc, ExmlObject exml) {
+	private Map<String, String> mmPackageVersions;
+
+	public ModelioObject(ModelioClass mc, ExmlObject exml,  Map<String, String> mmPackageVersions) {
 		assert mc != null;
 		assert exml != null;
 
 		this.mc = mc;
 		this.exml = exml;
+		
+		this.mmPackageVersions = mmPackageVersions;
 	}
 
 	@Override
@@ -139,7 +143,7 @@ public class ModelioObject extends AbstractModelioObject {
 		final List<ExmlReference> links = exml.getLinks().get(ref.getName());
 		if (links != null) {
 			for (ExmlReference r : links) {
-				ModelioClass rMC = RegisterMeta.getModelioClass(r.getMClassName());
+				ModelioClass rMC = RegisterMeta.getModelioClass(r.getMClassName(), mmPackageVersions);
 				if (rMC == null) {
 					LOGGER.warn("Could not find class with name '{}', ignoring instance", r.getMClassName());
 				} else {
@@ -150,11 +154,11 @@ public class ModelioObject extends AbstractModelioObject {
 			List<ExmlReference> cmp = exml.getCompositions().get(ref.getName());
 			if (cmp != null) {
 				for (ExmlReference r : cmp) {
-					ModelioClass rMC = RegisterMeta.getModelioClass(r.getMClassName());
+					ModelioClass rMC = RegisterMeta.getModelioClass(r.getMClassName(), mmPackageVersions);
 					if (rMC == null) {
 						LOGGER.warn("Could not find class with name '{}', ignoring instance", r.getMClassName());
 					} else if (r instanceof ExmlObject) {
-						linked.add(new ModelioObject(rMC, (ExmlObject)r));
+						linked.add(new ModelioObject(rMC, (ExmlObject)r, mmPackageVersions));
 					} else {
 						linked.add(new ModelioProxy(rMC, r));
 					}

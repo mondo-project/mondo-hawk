@@ -19,8 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-
+import java.util.TimerTask;
 
 import org.apache.thrift.TException;
 import org.eclipse.core.runtime.FileLocator;
@@ -37,12 +36,11 @@ import org.hawk.service.servlet.config.HawkInstanceConfig;
 import org.hawk.service.servlet.config.RepositoryParameters;
 
 public class HawkServerConfigurator  {
-	List<HawkInstanceConfig> hawkInstanceConfigs;
-	Iface iface;
-	
 
-	HManager manager;
-	ConfigFileParser parser;
+	private List<HawkInstanceConfig> hawkInstanceConfigs;
+	private Iface iface;
+	private HManager manager;
+	private ConfigFileParser parser;
 
 	public HawkServerConfigurator(Iface iface) {
 		this.iface = iface;
@@ -88,6 +86,8 @@ public class HawkServerConfigurator  {
 				String path = FileLocator.toFileURL(configurationURL).getPath();
 				configurationFolder = new File(path);
 			}
+
+			System.out.println("Looking for configuration files in " + configurationFolder.getAbsolutePath());
 			FilenameFilter filter = getXmlFilenameFilter();
 			if (configurationFolder.exists() && configurationFolder.isDirectory()) {
 				return new ArrayList<File>(Arrays.asList(configurationFolder.listFiles(filter)));
@@ -115,7 +115,7 @@ public class HawkServerConfigurator  {
 		};
 	}
 
-	private void configureHawkInstance(HawkInstanceConfig config) {
+	private void configureHawkInstance(final HawkInstanceConfig config) {
 		HModel hawkInstance = manager.getHawkByName(config.getName());
 
 		try {
@@ -133,20 +133,29 @@ public class HawkServerConfigurator  {
 
 			// start instance
 			hawkInstance.start(manager);
-
 			while(!hawkInstance.isRunning());
 
-			// add metamodels, Do it first before adding attributes or repositories
-			addMetamodels(hawkInstance, config);
+			final HModel hModel = hawkInstance;
+			hawkInstance.getHawk().getModelIndexer().scheduleTask(new TimerTask(){
+				@Override
+				public void run() {
+					// add metamodels, Do it first before adding attributes or repositories
+					addMetamodels(hModel, config);
 
-			// add repositories, don't delete any
-			addMissingRepositories(hawkInstance, config);
+					// add repositories, don't delete any
+					addMissingRepositories(hModel, config);
 
-			// derived Attributes
-			addMissingDerivedAttributes(hawkInstance, config);
+					// derived Attributes
+					try {
+						addMissingDerivedAttributes(hModel, config);
 
-			// indexed Attributes
-			addMissingIndexedAttributes(hawkInstance, config);
+						// indexed Attributes
+						addMissingIndexedAttributes(hModel, config);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}, 0);
 
 		} catch (Exception e) {
 			e.printStackTrace();

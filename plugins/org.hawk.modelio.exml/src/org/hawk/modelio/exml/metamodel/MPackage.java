@@ -17,17 +17,20 @@ public class MPackage {
     private String exml;
     
     private String xml;
+    
+    private String version;
 
 
     private List<MPackage> mPackages;
 
     private List<MClass> mClass;
 
-    public MPackage(String id, String name, String xml) {
+    public MPackage(String id, String name, String version, String xml) {
         this.mPackages = new ArrayList<>();
         this.mClass = new ArrayList<>();
         this.id = id;
         this.name = name;
+		this.version = version;
         this.xml = xml;
     }
 
@@ -57,6 +60,15 @@ public class MPackage {
 
 	public void setXml(String xml) {
 		this.xml = xml;
+	}
+	
+	
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
 	}
 
 }

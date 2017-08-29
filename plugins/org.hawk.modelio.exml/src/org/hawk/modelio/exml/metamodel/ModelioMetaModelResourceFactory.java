@@ -28,7 +28,7 @@ import org.xml.sax.InputSource;
 
 public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactory {
 
-	private ModelioMetaModelResource modelioMetamodel;
+	
 	private final Set<String> metamodelExtensions;
 	MMetamodelParser  parser;
 
@@ -62,7 +62,6 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 
 	@Override
 	public void shutdown() {
-		modelioMetamodel = null; 
 	}
 
 	@Override
@@ -95,11 +94,7 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 	}
 
 	private ModelioMetaModelResource getMetamodelResource(InputSource is) {
-		if (modelioMetamodel == null) {
-			modelioMetamodel = new ModelioMetaModelResource(parser.parse(is), this);
-		} else {
-			modelioMetamodel.setMetamodel(parser.parse(is));
-		}
+		ModelioMetaModelResource modelioMetamodel = new ModelioMetaModelResource(parser.parse(is), this);
 		
 		RegisterMeta.registerPackages(modelioMetamodel);
 
