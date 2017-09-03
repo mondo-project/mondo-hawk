@@ -131,7 +131,7 @@ public class GraphNodeWrapper implements IGraphNodeReference {
 
 			t.success();
 		} catch (Exception e) {
-			System.err.println("error in tostring of GraphNodeWrapper");
+			System.err.println("error in toString of GraphNodeWrapper");
 			e.printStackTrace();
 		}
 

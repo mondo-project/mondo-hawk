@@ -36,7 +36,6 @@ import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphEdgeIndex;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
-import org.hawk.core.model.IHawkClass;
 import org.hawk.orientdb.cache.ORecordCacheGuava;
 import org.hawk.orientdb.indexes.OrientEdgeIndex;
 import org.hawk.orientdb.indexes.OrientNodeIndex;
@@ -49,11 +48,13 @@ import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.cache.ORecordCache;
 import com.orientechnologies.orient.core.config.OGlobalConfiguration;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import com.orientechnologies.orient.core.exception.OConcurrentModificationException;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
 import com.orientechnologies.orient.core.intent.OIntentMassiveInsert;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchemaProxy;
+import com.orientechnologies.orient.core.record.ORecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.orientechnologies.orient.core.storage.OStorage;
@@ -561,14 +562,24 @@ public class OrientDatabase implements IGraphDatabase {
 		}
 
 		String sID = id instanceof ODocument ? ((ODocument)id).getIdentity().toString() : id.toString();
-		OrientNode dirtyNode = dirtyNodes.get(sID);
-		if (dirtyNode != null) {
-			return dirtyNode;
-		} else if (id instanceof ODocument) {
-			return new OrientNode((ODocument)id, this);
-		} else {
-			return new OrientNode((ORID)id, this);
+		OrientNode result = dirtyNodes.get(sID);
+
+		if (result == null) {
+			if (id instanceof ODocument) {
+				/*
+				 * Do not reuse existing documents - for instance, if someone
+				 * fetches a node and manipulates it, and then someone retrieves
+				 * the same node through some other path (e.g. following an
+				 * edge), we should always work with the most recent version to
+				 * avoid MVCC exceptions.
+				 */
+				result = new OrientNode(((ODocument)id).getIdentity(), this);
+			} else {
+				result = new OrientNode((ORID)id, this);
+			}
 		}
+
+		return result;
 	}
 
 	public OrientEdge getEdgeById(Object id) {
