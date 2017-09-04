@@ -25,7 +25,9 @@ import org.apache.thrift.TException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osgi.service.datalocation.Location;
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.IVcsManager;
+import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.util.DerivedAttributeParameters;
 import org.hawk.core.util.IndexedAttributeParameters;
 import org.hawk.osgiserver.HManager;
@@ -41,38 +43,70 @@ public class HawkServerConfigurator  {
 	private Iface iface;
 	private HManager manager;
 	private ConfigFileParser parser;
-
+	
+	private int numberOfConfiguredInstances = 0;
+	
 	public HawkServerConfigurator(Iface iface) {
 		this.iface = iface;
 
 		hawkInstanceConfigs = new ArrayList<HawkInstanceConfig>();
 		manager = HManager.getInstance();
 		parser = new ConfigFileParser();
+		numberOfConfiguredInstances = 0;
+	}
+	
+	public int getNumberOfConfiguredInstances() {
+		return numberOfConfiguredInstances;
 	}
 	
 	public void loadHawkServerConfigurations() {
+		numberOfConfiguredInstances = 0;
+		int configCount = 0;
 		for (File file : getHawkServerConfigurationFiles()) {
 			System.out.println("configuring hawk instances:");
 			System.out.println("prasing file: " + file.getName());
 			HawkInstanceConfig config = parser.parse(file);
 			if(config != null) {
-				System.out.println("configuring hawk instance: " + config.getName());
+				System.out.println("configuring Hawk instance: " + config.getName());
 				hawkInstanceConfigs.add(config); // add to list
 				configureHawkInstance(config);
 			}
+			
+			configCount++;
+			while(numberOfConfiguredInstances < configCount) {
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
 		}
 
-		// save to configuration file (some new attributes and metamodels might be added to instance)
-		saveHawkServerConfigurations();
+		// start hawk instances
+		for(HawkInstanceConfig config : hawkInstanceConfigs) {
+			System.out.println("Starting Hawk instance: " + config.getName());
+			HModel hawkInstance = manager.getHawkByName(config.getName());
+			hawkInstance.configurePolling(config.getDelayMin(), config.getDelayMax());
+			hawkInstance.start(manager);
+			try {
+				hawkInstance.getIndexer().waitFor(HawkState.RUNNING , 3000);
+			} catch (InterruptedException e) {
+				System.err.println("hawkInstance.getIndexer().waitFor: " + e.getMessage());
+			}
+
+			
+			
+		}
 	}
 
-	public void saveHawkServerConfigurations() {
+	/*public void saveHawkServerConfigurations() {
 		for(HawkInstanceConfig config : hawkInstanceConfigs) {
 			System.out.println("saving config for hawk instance: " + config.getName());
 
 			saveHawkInstanceConfig(config);
 		}
-	}
+	}*/
 
 	private List<File> getHawkServerConfigurationFiles() {
 		try {
@@ -127,13 +161,15 @@ public class HawkServerConfigurator  {
 			// TODO set db, need to check if changed 
 			// hawkInstance.setDbType(config.getBackend());
 			
-			addMissingPlugins(hawkInstance, config);	
 
-			hawkInstance.configurePolling(config.getDelayMin(), config.getDelayMax());
+			addMissingPlugins(hawkInstance, config);	
+			
+			// set polling to 0,0, set to required polling later when config is done
+			hawkInstance.configurePolling(0, 0);
 
 			// start instance
 			hawkInstance.start(manager);
-			while(!hawkInstance.isRunning());
+			hawkInstance.getIndexer().waitFor(HawkState.RUNNING , 3000);
 
 			final HModel hModel = hawkInstance;
 			hawkInstance.getHawk().getModelIndexer().scheduleTask(new TimerTask(){
@@ -152,8 +188,14 @@ public class HawkServerConfigurator  {
 						// indexed Attributes
 						addMissingIndexedAttributes(hModel, config);
 					} catch (Exception e) {
+						System.out.println("Configuring Hawk instance: Exception when adding derived/indexed attributes");
 						e.printStackTrace();
 					}
+					
+					// stop instance, will be started later when config is done
+					hModel.stop(IModelIndexer.ShutdownRequestType.ALWAYS);
+	
+					numberOfConfiguredInstances++;
 				}
 			}, 0);
 
@@ -165,8 +207,9 @@ public class HawkServerConfigurator  {
 	private HModel createHawkInstance(HawkInstanceConfig config) throws TException {
 		
 		/** use iface.createInstance (instead of HModel.create) to set the right storage folder */
+		// set polling to 0,0, set to required polling later when config is done
 		iface.createInstance(config.getName(), config.getBackend(),
-				config.getDelayMin(), config.getDelayMax(),
+				0, 0,
 				config.getPlugins());
 		
 		HModel hawkInstance = manager.getHawkByName(config.getName());
@@ -216,8 +259,8 @@ public class HawkServerConfigurator  {
 		for (RepositoryParameters params : config.getRepositories()) {
 			if (!existingLocations.contains(params.getLocation())) {
 				hawkInstance.addVCS(params.getLocation(), params.getType(), params.getUser(), params.getPass(), params.isFrozen());
-			}
 		}
+	}
 	}
 
 	private void addMetamodels(HModel hawkInstance, HawkInstanceConfig config) {
@@ -250,33 +293,33 @@ public class HawkServerConfigurator  {
 		}
 	}
 
-	private void saveHawkInstanceConfig(HawkInstanceConfig config) {
+	/*private void saveHawkInstanceConfig(HawkInstanceConfig config) {
 		HModel hawkInstance =  	manager.getHawkByName(config.getName());
 
-		/** delay, backend and plugins don't change during running of an instance, set it anyway */
+		*//** delay, backend and plugins don't change during running of an instance, set it anyway *//*
 		config.setBackend(hawkInstance.getDbType());
 
-		/** Only successfully-added plugins are saved */ 
+		*//** Only successfully-added plugins are saved *//* 
 		if(hawkInstance.getEnabledPlugins() != null) {
 			config.setPlugins(hawkInstance.getEnabledPlugins());
 		}
 		
-		/**  
+		*//**  
 		 * 	The following Elements are saved (the ones originally in the file(even if was unsuccessful), and the ones added during hawk instance running:
 		 *  - Metamodels
 		 *  - Derived Attributes
 		 * 	- Indexed Attributes
 		 * 	- Repositories
-		 * */
+		 * *//*
 		addNewMetamodelsUriToConfig(hawkInstance, config);
 		addNewDerivedAttributesToConfig(hawkInstance, config);
 		addNewIndexedAttributesToConfig(hawkInstance, config);
 		addNewRepositoriesToConfig(hawkInstance, config);
 
 		parser.saveConfigAsXml(config);
-	}
+	}*/
 
-	private void addNewMetamodelsUriToConfig(HModel hawkInstance, HawkInstanceConfig config) {
+	/*private void addNewMetamodelsUriToConfig(HModel hawkInstance, HawkInstanceConfig config) {
 		List<MetamodelParameters> newMetamodels = new ArrayList<MetamodelParameters>();
 
 		for (String metamodelUri : hawkInstance.getRegisteredMetamodels()) {
@@ -382,6 +425,6 @@ public class HawkServerConfigurator  {
 		if(!newRepos.isEmpty()) {
 			config.getRepositories().addAll(newRepos);
 		}
-	}
+	}*/
 
 }

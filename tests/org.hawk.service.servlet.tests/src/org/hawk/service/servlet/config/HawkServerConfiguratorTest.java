@@ -16,35 +16,24 @@ import org.hawk.core.IModelIndexer;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.hawk.service.servlet.Activator;
 
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
-import org.hawk.core.IModelIndexer;
 import org.hawk.core.IVcsManager;
-import org.hawk.core.util.DerivedAttributeParameters;
-import org.hawk.core.util.IndexedAttributeParameters;
 import org.hawk.osgiserver.HManager;
 import org.hawk.osgiserver.HModel;
 import org.hawk.service.api.utils.APIUtils.ThriftProtocol;
 import org.hawk.service.servlet.processors.HawkThriftIface;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.io.Files;
 
@@ -70,8 +59,7 @@ public class HawkServerConfiguratorTest {
 		manager = HManager.getInstance();
 		hawkIface = new HawkThriftIface(ThriftProtocol.TUPLE, null, null);
 		serverConfigurator = new HawkServerConfigurator(hawkIface);
-		serverConfigurator.loadHawkServerConfigurations();
-
+		serverConfigurator.loadHawkServerConfigurations();		
 	}
 
 	@AfterClass
@@ -81,9 +69,18 @@ public class HawkServerConfiguratorTest {
 
 	@Test
 	public void testHawkServerConfigurator_instance1() {
+		while(serverConfigurator.getNumberOfConfiguredInstances() < 1) {
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		
 		testhawkInstance(xmlFileName_1);
+		
 	}
-
 
 	private void testhawkInstance(String xmlFileName) {
 		ConfigFileParser parser = new ConfigFileParser();
@@ -91,7 +88,6 @@ public class HawkServerConfiguratorTest {
 
 		// check first instance
 		HModel instance = manager.getHawkByName(config.getName());
-		
 
 		assertTrue(instance.isRunning());
 
@@ -118,7 +114,7 @@ public class HawkServerConfiguratorTest {
 		//assertEquals(instance.getIndexedAttributes().size(), config.getIndexedAttributes().size());
 		//assertTrue(instance.getIndexedAttributes().contains(config.getIndexedAttributes().get(0)));
 		
-		instance.stop(IModelIndexer.ShutdownRequestType.ALWAYS);
+		//instance.stop(IModelIndexer.ShutdownRequestType.ALWAYS);
 
 	}
 	

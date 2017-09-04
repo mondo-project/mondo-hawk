@@ -179,9 +179,9 @@ public class Activator implements BundleActivator {
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 
-		if(serverConfigurator != null) {
+		/*if(serverConfigurator != null) {
 			serverConfigurator.saveHawkServerConfigurations();
-		}
+		}*/
 
 		
 		Activator.context = null;
