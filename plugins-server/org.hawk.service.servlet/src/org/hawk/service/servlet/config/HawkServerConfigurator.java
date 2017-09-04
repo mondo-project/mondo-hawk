@@ -87,16 +87,13 @@ public class HawkServerConfigurator  {
 		for(HawkInstanceConfig config : hawkInstanceConfigs) {
 			System.out.println("Starting Hawk instance: " + config.getName());
 			HModel hawkInstance = manager.getHawkByName(config.getName());
-			hawkInstance.configurePolling(config.getDelayMin(), config.getDelayMax());
-			hawkInstance.start(manager);
+			//hawkInstance.configurePolling(config.getDelayMin(), config.getDelayMax());
+			//hawkInstance.start(manager);
 			try {
 				hawkInstance.getIndexer().waitFor(HawkState.RUNNING , 3000);
 			} catch (InterruptedException e) {
 				System.err.println("hawkInstance.getIndexer().waitFor: " + e.getMessage());
 			}
-
-			
-			
 		}
 	}
 
@@ -193,7 +190,8 @@ public class HawkServerConfigurator  {
 					}
 					
 					// stop instance, will be started later when config is done
-					hModel.stop(IModelIndexer.ShutdownRequestType.ALWAYS);
+					hModel.configurePolling(config.getDelayMin(), config.getDelayMax());
+					//hModel.stop(IModelIndexer.ShutdownRequestType.ALWAYS);
 	
 					numberOfConfiguredInstances++;
 				}
