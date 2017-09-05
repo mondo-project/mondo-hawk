@@ -14,7 +14,6 @@ package org.hawk.modelio.exml.model;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,7 +36,6 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 	}
 
 	private static final String EXML_EXT = ".exml";
-	private static final String MMVERSION_DAT = "mmversion.dat";
 	private static final Set<String> MODEL_EXTS = new HashSet<String>();
 	static {
 		MODEL_EXTS.add(EXML_EXT);
@@ -58,8 +56,8 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 	@Override
 	public IHawkModelResource parse(IFileImporter importer, File f) throws Exception {
 
-		// TODO use importer to grab MMVERSION_DAT instead of assuming it'll appear here.
-		extracVersionsForModel(importer, f);
+		// use importer to grab mversion.dat
+		extractVersionsForModel(importer, f);
 
 		if (f.getName().toLowerCase().endsWith(EXML_EXT)) {
 			try (final FileInputStream fIS = new FileInputStream(f)) {
@@ -103,12 +101,16 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 		return mmPackageVersions.get(pkgName);
 	}
 	
-	private void extracVersionsForModel(IFileImporter importer, File f) throws IOException {
-		
+	private void extractVersionsForModel(IFileImporter importer, File f) throws IOException {
+		/***
+		 * mmversion.dat file exists in each Modelio Model Fragment to inform about 
+		 * the version of metamodel supported by this fragment.
+		 * Hawk searched for mmversion.dat and parse it to determine which version 
+		 * to use for the current model
+		 */
 		int maxSearchDepth = 4;
 		String parentName = "";
 		Boolean lastTry = false;
-		
 		File parentFile = f.getParentFile(); // get parent folder name
 		
 		for(int i = 0; i < maxSearchDepth; i++) {
@@ -120,7 +122,7 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 				lastTry = true;
 			}
 			
-			String versionPath = (parentName +  "/admin2/mmversion.dat");
+			String versionPath = (parentName +  "/admin/mmversion.dat");
 			File versionFile = importer.importFile(versionPath);
 			if(versionFile.exists()) {
 				readMMVersionDat(versionFile);
