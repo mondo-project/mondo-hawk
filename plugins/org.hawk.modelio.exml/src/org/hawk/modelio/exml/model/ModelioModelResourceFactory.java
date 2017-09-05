@@ -143,7 +143,7 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 		}
 		
 		Scanner sc = new Scanner(f);
-		
+		System.out.println("Reading metamodel version supported in model,  from file: " + f.getAbsolutePath());
         while (sc.hasNextLine()) {
             String pkgName = sc.nextLine();
             String version = "";
@@ -156,7 +156,7 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
             	mmPackageVersions.put(pkgName, version);
             }
             
-            System.out.println(pkgName + ": verison " + version);
+            System.out.println(pkgName + ": version " + version);
             
         }
         sc.close();
