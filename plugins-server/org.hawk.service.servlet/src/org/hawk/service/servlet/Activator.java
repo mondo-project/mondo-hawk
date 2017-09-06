@@ -42,8 +42,6 @@ import org.hawk.service.servlet.processors.HawkThriftIface;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Activator for the Hawk servlet plugin. The plugin starts an embedded Apache
@@ -179,11 +177,6 @@ public class Activator implements BundleActivator {
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 
-		/*if(serverConfigurator != null) {
-			serverConfigurator.saveHawkServerConfigurations();
-		}*/
-
-		
 		Activator.context = null;
 		
 		HManager.getInstance().stopAllRunningInstances(

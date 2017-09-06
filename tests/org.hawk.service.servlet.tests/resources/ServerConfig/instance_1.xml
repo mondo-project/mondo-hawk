@@ -20,7 +20,7 @@
             metamodelUri="modelio://Modeliosoft.Standard/2.0.00" typeName="Class">
             <derivation language="EOLQueryEngine">
                 <logic><![CDATA[
-						return Class.all.select(c|c.ownedOperationCount > 0).Name;
+						return self.OwnedOperation.size;
 					]]></logic>
             </derivation>
         </derivedAttribute>

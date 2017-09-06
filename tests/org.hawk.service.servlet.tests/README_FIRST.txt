@@ -1,3 +1,6 @@
+Running HawkServerConfiguratorTest
+-----------------------------------
+
 1. Copy The following to Debug/Run Configuration-->Arguments-->VM Arguments
 "
 -Dorg.osgi.service.http.port=8080 

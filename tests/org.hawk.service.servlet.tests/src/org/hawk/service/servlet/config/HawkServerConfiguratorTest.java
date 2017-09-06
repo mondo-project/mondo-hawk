@@ -12,8 +12,6 @@ package org.hawk.service.servlet.config;
 
 import static org.junit.Assert.*;
 
-import org.hawk.core.IModelIndexer;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -21,17 +19,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.TimerTask;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.hawk.core.IVcsManager;
+import org.hawk.core.util.IndexedAttributeParameters;
 import org.hawk.osgiserver.HManager;
 import org.hawk.osgiserver.HModel;
 import org.hawk.service.api.utils.APIUtils.ThriftProtocol;
 import org.hawk.service.servlet.processors.HawkThriftIface;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -44,6 +44,7 @@ public class HawkServerConfiguratorTest {
 	private static final String modelsZoo = "resources/Zoo";
 
 	static final String xmlFileName_1 = "instance_1.xml";
+	static final String xmlFileName_2 = "instance_2.xml";
 
 	static HManager manager;
 	static File configurationFolder;
@@ -52,42 +53,40 @@ public class HawkServerConfiguratorTest {
 
 	private static HawkServerConfigurator serverConfigurator;
 
+	private boolean finishedRetrievingInstanceInfo;
+	
+	Collection<IVcsManager> repos;
+	Collection<IndexedAttributeParameters> derivedAttributes;
+	Collection<IndexedAttributeParameters> indexedAttributes;
+	ArrayList<String> metamodels;
+	
 	@BeforeClass
 	static public void setup() {
 		initConfigurationFolder();
 		setupAndCopyPathsInXmlFile(xmlFileName_1);
+		setupAndCopyPathsInXmlFile(xmlFileName_2);
 		manager = HManager.getInstance();
 		hawkIface = new HawkThriftIface(ThriftProtocol.TUPLE, null, null);
 		serverConfigurator = new HawkServerConfigurator(hawkIface);
 		serverConfigurator.loadHawkServerConfigurations();		
 	}
 
-	@AfterClass
-	static public void teardown() {
-		manager.stopAllRunningInstances(IModelIndexer.ShutdownRequestType.ALWAYS);
-	}
-
 	@Test
-	public void testHawkServerConfigurator_instance1() {
-		while(serverConfigurator.getNumberOfConfiguredInstances() < 1) {
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		}
-		
+	public void testHawkServerConfigurator_instance1() {		
 		testhawkInstance(xmlFileName_1);
 		
+	}
+	
+	@Test
+	public void testHawkServerConfigurator_instance2() {
+		testhawkInstance(xmlFileName_2);
 	}
 
 	private void testhawkInstance(String xmlFileName) {
 		ConfigFileParser parser = new ConfigFileParser();
 		HawkInstanceConfig config = parser.parse(new File(SERVERCONFIG_PATH, xmlFileName));
 
-		// check first instance
-		HModel instance = manager.getHawkByName(config.getName());
+		final HModel instance = manager.getHawkByName(config.getName());
 
 		assertTrue(instance.isRunning());
 
@@ -97,25 +96,49 @@ public class HawkServerConfiguratorTest {
 
 		assertArrayEquals(config.getPlugins().toArray(), instance.getEnabledPlugins().toArray());
 
-		assertTrue(compareRepositories(config.getRepositories(), instance.getRunningVCSManagers()));
+		finishedRetrievingInstanceInfo = false;
+		instance.configurePolling(0, 0);
+		
+
+		instance.getHawk().getModelIndexer().scheduleTask(new TimerTask(){
+			@Override
+			public void run() {
+				metamodels = instance.getRegisteredMetamodels();
+				repos = instance.getRunningVCSManagers();
+				derivedAttributes = instance.getDerivedAttributes();
+				indexedAttributes = instance.getIndexedAttributes();
+				finishedRetrievingInstanceInfo = true;
+			}
+		}, 0);;
+		
+		while(!finishedRetrievingInstanceInfo) {
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		// repositories
+		assertTrue(compareRepositories(config.getRepositories(), repos));
 
 		//		 metamodels
-		assertTrue(instance.getRegisteredMetamodels().contains("modelio://ModelioMetaPackage"));
-		assertTrue(instance.getRegisteredMetamodels().contains("modelio://Modeliosoft.Archimate/1.0.03"));
-		assertTrue(instance.getRegisteredMetamodels().contains("modelio://Modeliosoft.Analyst/2.0.00"));
-		assertTrue(instance.getRegisteredMetamodels().contains("modelio://Modeliosoft.modelio.kernel/1.0.00"));
-		assertTrue(instance.getRegisteredMetamodels().contains("modelio://Modeliosoft.Standard/2.0.00"));
-		assertTrue(instance.getRegisteredMetamodels().contains("modelio://Modeliosoft.Infrastructure/2.1.00"));
-
-
-		//System.out.println("***********getDerivedAttributes size: " + instance.getDerivedAttributes().size());
-		//assertTrue(instance.getDerivedAttributes().size() > 0);
-		//System.out.println("***********getIndexedAttributes size: " + instance.getIndexedAttributes().size());
-		//assertEquals(instance.getIndexedAttributes().size(), config.getIndexedAttributes().size());
-		//assertTrue(instance.getIndexedAttributes().contains(config.getIndexedAttributes().get(0)));
+		assertTrue(metamodels.contains("modelio://ModelioMetaPackage"));
+		assertTrue(metamodels.contains("modelio://Modeliosoft.Archimate/1.0.03"));
+		assertTrue(metamodels.contains("modelio://Modeliosoft.Analyst/2.0.00"));
+		assertTrue(metamodels.contains("modelio://Modeliosoft.modelio.kernel/1.0.00"));
+		assertTrue(metamodels.contains("modelio://Modeliosoft.Standard/2.0.00"));
+		assertTrue(metamodels.contains("modelio://Modeliosoft.Infrastructure/2.1.00"));
 		
-		//instance.stop(IModelIndexer.ShutdownRequestType.ALWAYS);
+		// derived attributes
+		System.out.println("***********getDerivedAttributes size: " + derivedAttributes.size());
+		assertTrue(derivedAttributes.size() > 0);
+		assertTrue(derivedAttributes.contains(config.getDerivedAttributes().get(0)));
 
+		// indexed attributes
+		System.out.println("***********getIndexedAttributes size: " + indexedAttributes.size());
+		assertEquals(indexedAttributes.size(), config.getIndexedAttributes().size());
+		assertTrue(indexedAttributes.contains(config.getIndexedAttributes().get(0)));
 	}
 	
 	private boolean compareRepositories(List<RepositoryParameters> repositories, Collection<IVcsManager> collection) {
@@ -158,8 +181,6 @@ public class HawkServerConfiguratorTest {
 		return allEqual;
 	}
 
-
-
 	static public void setupAndCopyPathsInXmlFile(String xmlFileName) {
 		ConfigFileParser parser = new ConfigFileParser();
 		HawkInstanceConfig config = parser.parse(new File(SERVERCONFIG_PATH, xmlFileName));
@@ -196,27 +217,6 @@ public class HawkServerConfiguratorTest {
 
 		return repositoryURI;
 	}
-
-
-/*	static public void deleteConfigurationFolder() {
-		URL installURL = Platform.getConfigurationLocation().getURL();
-		String path = null;
-		try {
-			path = FileLocator.toFileURL(installURL).getPath();
-
-
-			File configurationFolder = new File(path);
-
-			if (configurationFolder.exists() && configurationFolder.isDirectory()) {
-				configurationFolder.delete();
-			}
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-	}*/
-
-
 
 	static public void initConfigurationFolder() {
 		try {

@@ -56,7 +56,7 @@ public class ConfigFileParserTest {
 		assertEquals(false, config.getDerivedAttributes().get(0).isUnique());
 		
 		assertEquals("EOLQueryEngine", config.getDerivedAttributes().get(0).getDerivationLanguage());
-		assertEquals("\n\t\t\t\t\t\treturn Class.all.select(c|c.ownedOperationCount > 0).Name;\n\t\t\t\t\t", config.getDerivedAttributes().get(0).getDerivationLogic());
+		assertEquals("\n\t\t\t\t\t\treturn self.OwnedOperation.size;\n\t\t\t\t\t", config.getDerivedAttributes().get(0).getDerivationLogic());
 
 		
 	
