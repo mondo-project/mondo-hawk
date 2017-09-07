@@ -11,23 +11,13 @@
 package org.hawk.modelio.exml.model;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.util.Map;
 
 import org.hawk.core.IFileImporter;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
-import org.hawk.modelio.exml.metamodel.ModelioAttribute;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory;
-import org.hawk.modelio.exml.metamodel.ModelioReference;
-import org.hawk.modelio.exml.parser.ExmlObject;
-import org.hawk.modelio.exml.parser.ExmlParser;
-import org.hawk.modelio.model.util.RegisterMeta;
 import org.junit.Before;
 import org.junit.Test;
 
