@@ -128,7 +128,7 @@ public class ModelioPackage extends AbstractModelioObject implements IHawkPackag
 
 	@Override
 	public String getExml() {
-		return rawPackage.getExml();
+		return null; // exml is not used for Modelio metamodels anymore
 	}
 
 	public String getXml() {

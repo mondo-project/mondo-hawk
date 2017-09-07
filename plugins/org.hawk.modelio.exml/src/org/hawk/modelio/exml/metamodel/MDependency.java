@@ -1,17 +1,22 @@
+/**
+ * Copyright (c) 2017 Aston University
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Orjuwan Al-Wadeai - Modelio XML metamodel parser. This file is modified 
+ *     from original code modelio-metamodel-lib by Softeam at 
+ *     https://github.com/aabherve/modelio-metamodel-lib.git
+ * */
+
 package org.hawk.modelio.exml.metamodel;
 
-/**
- * Dependency of Modleio 3.4.1 metamodel
- * Class generated with  ModelioMetaGenerator 1.0.0 Tool
- * 
- * @author Antonin Abherv?
- */
 public class MDependency {
     private String id;
 
     private String name;
-
-    private String exml;
 
     private Boolean isMany;
 
@@ -22,17 +27,6 @@ public class MDependency {
     private Boolean isComposition;
 
     private MClass mClass;
-
-    public MDependency(String id, String name, String exml, MClass mClass, Boolean isMany, Boolean isUnique, Boolean isOrdered, Boolean isComposition) {
-        this.id = id;
-        this.name = name;
-        this.exml = exml;
-        this.mClass = mClass;
-        this.isMany = isMany;
-        this.isUnique = isUnique;
-        this.isOrdered = isOrdered;
-        this.isComposition = isComposition;
-    }
 
     public MDependency(String id, String name, MClass mClass, Boolean isMany, Boolean isUnique, Boolean isOrdered, Boolean isComposition) {
         this.id = id;
@@ -50,10 +44,6 @@ public class MDependency {
 
     public String getName() {
         return name;
-    }
-
-    public String getExml() {
-        return exml;
     }
 
     public MClass getMClass() {

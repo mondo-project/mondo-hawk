@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkClassifier;
@@ -63,7 +62,7 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 	private MPackage createMetaPackage() {
 		String pkgId = "ModelioMetaPackage";
 		MPackage mpkg = new MPackage(pkgId, pkgId, "00.00.00", "");		
-		final MClass mt = new MClass(META_TYPE_NAME, META_TYPE_NAME, mpkg.getExml());
+		final MClass mt = new MClass(META_TYPE_NAME, META_TYPE_NAME);
 		mt.getMAttributes().add(createStringAttribute(mpkg, mt.getName(), "name"));
 		mpkg.getMClass().add(mt);
 		return mpkg;
@@ -119,10 +118,6 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 		return metaPackage;
 	}
 
-	/*private String getClassId(ModelioClass mc) {
-		return mc.rawClass.getId();
-	}*/
-
 	public ModelioClass getModelioClassById(String classId) {
 		getAllContents();
 		final ModelioClass mc = classesById.get(classId);
@@ -138,7 +133,6 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 		final boolean isUnique = false;
 		final boolean isOrdered = false;
 		return new MAttribute(className + "_" + attrName, attrName,
-				rawPackage.getExml(),
 				metamodel.getDataTypeByName(STRING_TYPE),
 				isMany, isUnique, isOrdered);
 	}

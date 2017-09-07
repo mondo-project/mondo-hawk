@@ -1,20 +1,26 @@
+/**
+ * Copyright (c) 2017 Aston University
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Orjuwan Al-Wadeai - Modelio XML metamodel parser. This file is modified 
+ *     from original code modelio-metamodel-lib by Softeam at 
+ *     https://github.com/aabherve/modelio-metamodel-lib.git
+ * */
+
 package org.hawk.modelio.exml.metamodel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Class of Modleio 3.4.1 metamodel
- * Class generated with  ModelioMetaGenerator 1.0.0 Tool
- * 
- * @author Antonin Abherv?
- */
+
 public class MClass {
     private String id;
 
     private String name;
-
-    private String exml;
 
     private List<MClass> mSuperType;
 
@@ -23,16 +29,6 @@ public class MClass {
     private List<MDependency> mDependencys;
 
     private ArrayList<MAttribute> mAttributes;
-
-    public MClass(String id, String name, String exml) {
-        this.mSuperType = new ArrayList<>();
-        this.mSubTypes = new ArrayList<>();
-        this.mDependencys = new ArrayList<>();
-        this.mAttributes = new ArrayList<>();
-        this.id = id;
-        this.name = name;
-        this.exml = exml;
-    }
 
     public MClass(String id, String name) {
         this.mSuperType = new ArrayList<>();
@@ -49,10 +45,6 @@ public class MClass {
 
     public String getName() {
         return name;
-    }
-
-    public String getExml() {
-        return exml;
     }
 
     public List<MClass> getMSuperType() {

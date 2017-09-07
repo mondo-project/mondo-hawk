@@ -112,7 +112,7 @@ public class ModelioReference extends AbstractModelioObject implements IHawkRefe
 
 	@Override
 	public String getExml() {
-		return mDependency.getExml();
+		return null; // exml is not used for Modelio metamodels anymore
 	}
 
 	@Override

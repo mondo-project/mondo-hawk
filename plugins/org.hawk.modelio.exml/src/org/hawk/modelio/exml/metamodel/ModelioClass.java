@@ -190,7 +190,7 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 			}
 			if (rawClass.getMSuperType().isEmpty()) {
 				// Add synthetic container/containment references to root Modelio classes
-				MDependency mContainmentDep = new MDependency("HP", REF_PARENT, "hawk.exml", rawClass, false, false, true, false);
+				MDependency mContainmentDep = new MDependency("HP", REF_PARENT, rawClass, false, false, true, false);
 				ownReferences.put(mContainmentDep.getName(), new AlwaysContainerModelioReference(this, mContainmentDep));
 			}
 		}
@@ -250,7 +250,7 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 
 	@Override
 	public String getExml() {
-		return rawClass.getExml();
+		return null; // exml is not used for Modelio metamodels anymore 
 	}
 
 	@Override
