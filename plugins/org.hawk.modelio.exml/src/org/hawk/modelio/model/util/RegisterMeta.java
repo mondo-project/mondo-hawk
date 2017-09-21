@@ -11,7 +11,6 @@
 package org.hawk.modelio.model.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,20 +18,17 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import javax.swing.event.ListSelectionEvent;
-
-import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
 import org.hawk.modelio.exml.metamodel.ModelioPackage;
-import org.hawk.modelio.exml.model.ModelioModelResourceFactory;
 
 public class RegisterMeta {
 
 	private static int registered = 0;
 
-	private static Map<String, SortedMap<String, ModelioPackage>> registeredMetamodelsByName = new HashMap<String, SortedMap<String,ModelioPackage>>();
+	// First by name, then by version
+	private static Map<String, SortedMap<String, ModelioPackage>> registeredMetamodelsByName = new HashMap<String, SortedMap<String, ModelioPackage>>();
 
 	public static Collection<ModelioPackage> getRegisteredPackages() {
 		Collection<ModelioPackage> registeredPackages = new ArrayList<ModelioPackage>();
@@ -79,27 +75,43 @@ public class RegisterMeta {
 	}
 
 	private static ModelioClass getMClass(String className, Map<String, String> mmPackageVersions) {
-		for (SortedMap<String, ModelioPackage> versions : registeredMetamodelsByName.values()) {
-			for(ModelioPackage pkg: versions.values()) {
-				ModelioClass mc = pkg.getClassifier(className);
+		// Always limit the packages to those in the .dat file if provided
+		Set<String> pkgNames;
+		if (mmPackageVersions == null) {
+			pkgNames = registeredMetamodelsByName.keySet();
+		} else {
+			pkgNames = mmPackageVersions.keySet();
+		}
+
+		for (String pkgName : pkgNames) {
+			final SortedMap<String, ModelioPackage> versions = registeredMetamodelsByName.get(pkgName);
+			if (versions == null) {
+				continue;
+			}
+
+			for (ModelioPackage pkg : versions.values()) {
+				final ModelioClass mc = pkg.getClassifier(className);
 
 				if (mc != null) {
-					ModelioClass tmpMc = findRequiredVersion(versions, className, pkg.getName(), mmPackageVersions);
-					if(tmpMc != null) {
-						mc = tmpMc; //set to required
-					} else {
-						tmpMc = findLatestVersion(versions, className, pkg.getName());
-						if(tmpMc != null) {
-							mc = tmpMc; // set to latest
-						}
+					// Try to find exact match
+					final ModelioClass requiredMClass = findRequiredVersion(versions, className, pkg.getName(), mmPackageVersions);
+					if (requiredMClass != null) {
+						return requiredMClass;
 					}
-				}
-				
-				if (mc != null) {
+
+					// If not, try to find the latest version
+					// FIXME shouldn't this be "closest match" instead?
+					final ModelioClass latestMClass = findLatestVersion(versions, className, pkg.getName());
+					if (latestMClass != null) {
+						return latestMClass;
+					}
+
+					// Fall back on the first metaclass found
 					return mc;
 				}
 			}
 		}
+		
 		return null;
 	}
 
