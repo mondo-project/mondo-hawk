@@ -28,52 +28,34 @@ public class ModelioMultiplePackageVersionsTest {
 	private final String METAMODEL_PATH = "resources/metamodel/";
 	private final static String MMVERSION_PATH = "/admin/mmversion.dat";
 
-	protected static final class DummyFileImporter1 implements IFileImporter {
-		@Override
-		public File importFile(String path) {
-			return new File("resources/mmversionFiles/mmversion_1", MMVERSION_PATH);
-		}
-	}
+	protected static final class DummyFileImporter implements IFileImporter {
+		private final String basePath;
 
-	protected static final class DummyFileImporter2 implements IFileImporter {
-		@Override
-		public File importFile(String path) {
-			return new File("resources/mmversionFiles/mmversion_2", MMVERSION_PATH);
+		public DummyFileImporter(String basePath) {
+			this.basePath = basePath;
 		}
-	}
 
-	protected static final class DummyFileImporter3 implements IFileImporter {
 		@Override
 		public File importFile(String path) {
-			return new File("resources/mmversionFiles/mmversion_3", MMVERSION_PATH);
-		}
-	}
-	
-	
-	protected static final class DummyFileImporter4 implements IFileImporter {
-		@Override
-		public File importFile(String path) {
-			return new File("resources/mmversionFiles/mmversion_4", MMVERSION_PATH);
+			return new File(basePath, MMVERSION_PATH);
 		}
 	}
 
 	@Before
 	public void setup() {
-		File file = new File( METAMODEL_PATH + "metamodel_descriptor.xml");
-		File file2 = new File( METAMODEL_PATH + "metamodel_descriptor_2.xml");
+		File file = new File(METAMODEL_PATH, "metamodel_descriptor.xml");
+		File file2 = new File(METAMODEL_PATH, "metamodel_descriptor_2.xml");
 
 		try {
 			ModelioMetaModelResourceFactory factory;
 			factory = new ModelioMetaModelResourceFactory();
 
-			/*	metamodel with Standard 2.0.00*/
+			/* metamodel with Standard 2.0.00 */
 			factory.parse(file);
 
-
 			factory = new ModelioMetaModelResourceFactory();
-			/*	metamodel with Standard 1.0.00*/
+			/* metamodel with Standard 1.0.00 */
 			factory.parse(file2);
-
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -81,54 +63,42 @@ public class ModelioMultiplePackageVersionsTest {
 	}
 
 	@Test
-	public void TestPackageVersion1() throws Exception {
-		/* mmversion.dat == modelio.kernel 1.0.00 ,  Standard 2.0.00*/
-		checkVersion(
-				"Required version is  2.0.00, expected to use  2.0.00",
-				"2.0.00",  new DummyFileImporter1());
+	public void testPackageVersion1() throws Exception {
+		/* mmversion.dat == modelio.kernel 1.0.00 , Standard 2.0.00 */
+		checkVersion("2.0.00",
+				new DummyFileImporter("resources/mmversionFiles/mmversion_1"));
 	}
 
 	@Test
-	public void TestPackageVersion2() throws Exception {
+	public void testPackageVersion2() throws Exception {
 		/* mmversion.dat == modelio.kernel 0.1.00, Standard 1.0.00 */
-		checkVersion(
-				"Required version is 1.0.00, expected to use 1.0.00",
-				"1.0.00",  new DummyFileImporter2());
+		checkVersion("1.0.00",
+				new DummyFileImporter("resources/mmversionFiles/mmversion_2"));
 	}
 
 	@Test
-	public void TestPackageVersion3() throws Exception {
+	public void testPackageVersion3() throws Exception {
 		/* mmversion.dat == modelio.kernel 4.0.00, Standard 4.0.00 */
-		checkVersion(
-				"Required version is 4.0.00 (Not Available), expected to use Latest (2.0.00)",
-				"2.0.00",  new DummyFileImporter3());
+		checkVersion("2.0.00",
+				new DummyFileImporter("resources/mmversionFiles/mmversion_3"));
 	}
 
-	
-	
 	@Test
-	public void TestPackageVersion4() throws Exception {
+	public void testPackageVersion4() throws Exception {
 		/* mmversion.dat not present */
-		checkVersion(
-				"Required version is None, expected to use Latest (2.0.00)",
-				"2.0.00",  new DummyFileImporter4());
+		checkVersion("2.0.00",
+				new DummyFileImporter("resources/mmversionFiles/mmversion_4"));
 	}
-	public void checkVersion(String msg, String expectedVersion, IFileImporter importer) throws Exception {
 
+	public void checkVersion(String expectedVersion, IFileImporter importer) throws Exception {
 		final ModelioModelResourceFactory factory = new ModelioModelResourceFactory();
-		IHawkModelResource resource = factory.parse(
-				importer,
-				new File(CLASS_EXML));
+		IHawkModelResource resource = factory.parse(importer, new File(CLASS_EXML));
 
-		for( IHawkObject obj : resource.getAllContents()) {
+		for (IHawkObject obj : resource.getAllContents()) {
 			final ModelioClass mC = ((ModelioObject) obj).getType();
 			String version = mC.getPackage().getVersion();
-			// assert Version
-			System.out.println("## Test :  " +  msg);
-			assertEquals(msg, expectedVersion, version);
+			assertEquals("Package version for " + mC.getPackage().getName() + "::" + mC.getName() + " should be the expected one", expectedVersion, version);
 		}
-
 	}
 
 }
-
