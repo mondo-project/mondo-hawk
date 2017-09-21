@@ -11,6 +11,7 @@
 package org.hawk.modelio.exml.model;
 
 import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 
 import org.hawk.core.IFileImporter;
@@ -19,6 +20,7 @@ import org.hawk.core.model.IHawkObject;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ModelioMultiplePackageVersionsTest {
@@ -83,9 +85,10 @@ public class ModelioMultiplePackageVersionsTest {
 				new DummyFileImporter("resources/mmversionFiles/mmversion_3"));
 	}
 
+	@Ignore
 	@Test
 	public void testPackageVersion4() throws Exception {
-		/* mmversion.dat not present */
+		/* mmversion.dat not present - ambiguous at the moment, need to check with Softeam. */
 		checkVersion("2.0.00",
 				new DummyFileImporter("resources/mmversionFiles/mmversion_4"));
 	}
