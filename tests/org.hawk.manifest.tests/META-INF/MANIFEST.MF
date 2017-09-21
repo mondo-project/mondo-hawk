@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hawk MANIFEST Driver Tests
+Bundle-SymbolicName: org.hawk.manifest.tests
+Bundle-Version: 1.1.0.qualifier
+Bundle-Vendor: Aston University
+Fragment-Host: org.hawk.manifest
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.junit;bundle-version="4.10.0",
+ org.eclipse.jface.text;bundle-version="3.10.0"

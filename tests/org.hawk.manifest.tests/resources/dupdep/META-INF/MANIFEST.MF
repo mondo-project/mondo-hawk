@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: PluginWithDuplicateDependency
+Bundle-SymbolicName: PluginWithDuplicateDependency;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle:  EmptyPlugin;bundle-version="1.0.0",
+ EmptyPlugin;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
