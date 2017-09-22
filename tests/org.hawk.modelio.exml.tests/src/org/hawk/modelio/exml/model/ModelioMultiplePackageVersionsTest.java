@@ -88,7 +88,7 @@ public class ModelioMultiplePackageVersionsTest {
 	@Ignore
 	@Test
 	public void testPackageVersion4() throws Exception {
-		/* mmversion.dat not present - ambiguous at the moment, need to check with Softeam. */
+		/* mmversion.dat not present - ambiguous at the moment, not sure it's useful to test against - need to check with Softeam. */
 		checkVersion("2.0.00",
 				new DummyFileImporter("resources/mmversionFiles/mmversion_4"));
 	}
