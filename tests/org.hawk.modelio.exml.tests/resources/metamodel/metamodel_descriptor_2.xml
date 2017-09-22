@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Alternative copy of metamodel_descriptor.xml with some versions changed, for testing. -->
 <metamodel format="1" MetamodelDescriptor.format="1">
   <fragment name="Analyst" version="1.0.00" provider="Modeliosoft" providerVersion="3.6.00">
     <dependencies>
