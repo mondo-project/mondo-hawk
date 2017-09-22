@@ -25,7 +25,7 @@ import org.junit.Test;
 
 public class ModelioMultiplePackageVersionsTest {
 	private final String FRAGMENT_PATH = "resources/Zoo/data/fragments/";
-	private final String CLASS_EXML = FRAGMENT_PATH + "Zoo/model/Class/0a4ac84f-75a3-4b5b-bbad-d0e67857b4cf.exml";
+	private final String CLASS34_EXML = FRAGMENT_PATH + "Zoo/model/Class/0a4ac84f-75a3-4b5b-bbad-d0e67857b4cf.exml";
 
 	private final String METAMODEL_PATH = "resources/metamodel/";
 	private final static String MMVERSION_PATH = "/admin/mmversion.dat";
@@ -95,7 +95,7 @@ public class ModelioMultiplePackageVersionsTest {
 
 	public void checkVersion(String expectedVersion, IFileImporter importer) throws Exception {
 		final ModelioModelResourceFactory factory = new ModelioModelResourceFactory();
-		IHawkModelResource resource = factory.parse(importer, new File(CLASS_EXML));
+		IHawkModelResource resource = factory.parse(importer, new File(CLASS34_EXML));
 
 		for (IHawkObject obj : resource.getAllContents()) {
 			final ModelioClass mC = ((ModelioObject) obj).getType();

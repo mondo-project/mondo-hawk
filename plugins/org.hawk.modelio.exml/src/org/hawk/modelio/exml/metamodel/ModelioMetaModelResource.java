@@ -39,7 +39,6 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 
 	private Set<IHawkObject> contents;
 	private Map<String, ModelioClass> classesById;
-
 	
 	public void setMetamodel(MMetamodelDescriptor metamodelDescriptor) {
 		this.metamodel = new ModelioMetamodel(metamodelDescriptor);
@@ -85,6 +84,23 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 			}
 		}
 		return contents;
+	}
+
+	/**
+	 * Returns the {@link ModelioPackage} with the specified name,
+	 * or <code>null</code> if not found.
+	 */
+	public ModelioPackage getModelioPackage(String name) {
+		for (IHawkObject o : getAllContents()) {
+			if (o instanceof ModelioPackage) {
+				ModelioPackage pkg = (ModelioPackage)o;
+				if (name.equals(pkg.getName())) {
+					return pkg;
+				}
+			}
+		}
+
+		return null;
 	}
 
 	private void addMPackageToContents(ModelioPackage pkg) {

@@ -22,10 +22,12 @@ import org.hawk.core.model.IHawkObject;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
 import org.hawk.modelio.exml.metamodel.ModelioPackage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RegisterMeta {
 
-	private static int registered = 0;
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioClass.class);
 
 	// First by name, then by version
 	private static Map<String, SortedMap<String, ModelioPackage>> registeredMetamodelsByName = new HashMap<String, SortedMap<String, ModelioPackage>>();
@@ -50,20 +52,16 @@ public class RegisterMeta {
 	 * 
 	 * @param pkg
 	 */
-	public static int registerPackages(ModelioPackage pkg) {
-
+	public static void registerPackages(ModelioPackage pkg) {
 		SortedMap<String, ModelioPackage> versions = registeredMetamodelsByName.get(pkg.getName());
 		if(versions == null) {
 			versions = new TreeMap<String, ModelioPackage>();
 			registeredMetamodelsByName.put(pkg.getName(), versions);
-		} 
-		
-		if(versions.put(pkg.getVersion(), pkg) == null) {
-			System.out.println("registering package: " + pkg.getName() + "(" + pkg.getNsURI() + ")");
-			registered++;
 		}
 
-		return registered;
+		if(versions.put(pkg.getVersion(), pkg) == null) {
+			LOGGER.info("registered package: " + pkg.getName() + "(" + pkg.getNsURI() + ")");
+		}
 	}
 
 	public static void registerPackages(ModelioMetaModelResource r) {

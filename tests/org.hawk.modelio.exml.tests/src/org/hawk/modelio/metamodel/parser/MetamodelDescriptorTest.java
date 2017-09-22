@@ -11,15 +11,14 @@
 
 package org.hawk.modelio.metamodel.parser;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.List;
 
-import org.hawk.modelio.metamodel.parser.MMetamodelDescriptor;
-import org.hawk.modelio.metamodel.parser.MMetamodelParser;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.InputSource;
@@ -27,8 +26,8 @@ import org.xml.sax.InputSource;
 public class MetamodelDescriptorTest {
 
 	private static final String METAMODEL_PATH = "resources/metamodel/";
-	static MMetamodelDescriptor metamodeldescriptor;
-	static MMetamodelParser metamodelParser;
+	private static MMetamodelDescriptor metamodelDescriptor;
+	private static MMetamodelParser metamodelParser;
 		
 	@BeforeClass
 	public static void setup() {
@@ -41,13 +40,13 @@ public class MetamodelDescriptorTest {
 			e.printStackTrace();
 		}
 
-		metamodeldescriptor = metamodelParser.parse(is);	
+		metamodelDescriptor = metamodelParser.parse(is);	
 	}
 
 	@Test
 	public void testNumberOfFragments() {
 		// asserts
-		assertEquals("Check metamodel has 5 fragments", 5, metamodeldescriptor.getFragments().size());
+		assertEquals("Check metamodel has 5 fragments", 5, metamodelDescriptor.getFragments().size());
 	}
 	
 	@Test
@@ -57,25 +56,25 @@ public class MetamodelDescriptorTest {
 	
 	@Test
 	public void testFragmentDependenciesInAnalystFragment() {
-		MFragment fragment = metamodeldescriptor.getFragments().get("Analyst");
+		MFragment fragment = metamodelDescriptor.getFragments().get("Analyst");
 		assertEquals("Check 2 Dependencies", 2, fragment.getDependencies().size());
 		
 		// Check First 
 		assertEquals("Check name", "modelio.kernel", fragment.getDependencies().get(0).getName());
 		assertEquals("Check version", "1.0.00", fragment.getDependencies().get(0).getVersion());
 		
-		assertEquals("Check fragment ref", metamodeldescriptor.getFragments().get("modelio.kernel"), fragment.getDependencies().get(0).getFragment());
+		assertEquals("Check fragment ref", metamodelDescriptor.getFragments().get("modelio.kernel"), fragment.getDependencies().get(0).getFragment());
 		
 		// Check Second 
 		assertEquals("Check name", "Infrastructure", fragment.getDependencies().get(1).getName());
 		assertEquals("Check version", "2.0.00", fragment.getDependencies().get(1).getVersion());
 		
-		assertEquals("Check fragment ref", metamodeldescriptor.getFragments().get("Infrastructure"), fragment.getDependencies().get(1).getFragment());
+		assertEquals("Check fragment ref", metamodelDescriptor.getFragments().get("Infrastructure"), fragment.getDependencies().get(1).getFragment());
 	}
 	
 	@Test
 	public void testMetaclassesInAnalystFragment() {
-		MFragment fragment = metamodeldescriptor.getFragments().get("Analyst");
+		MFragment fragment = metamodelDescriptor.getFragments().get("Analyst");
 		assertEquals("Check 19 metaclasses", 19, fragment.getMetaclasses().size());
 		
 		// Check class "AnalystContainer" 
@@ -109,7 +108,7 @@ public class MetamodelDescriptorTest {
 
 	@Test
 	public void testAttributeWithEnumType() {
-		MFragment fragment = metamodeldescriptor.getFragments().get("Archimate");
+		MFragment fragment = metamodelDescriptor.getFragments().get("Archimate");
 		MLinkMetaclass currentMetaclass = (MLinkMetaclass)fragment.getMetaclasses().get("Access");
 		testAttributeValues(currentMetaclass.getAttributes().get(0), "Mode", "org.modelio.archimate.metamodel.relationships.dependency.AccessMode", fragment);	
 	}
@@ -117,7 +116,7 @@ public class MetamodelDescriptorTest {
 	@Test
 	public void testEnumerationsInStandardFragment() {
 
-		MFragment fragment = metamodeldescriptor.getFragments().get("Standard");
+		MFragment fragment = metamodelDescriptor.getFragments().get("Standard");
 
 		testEnumeration(fragment.getDataType("org.modelio.metamodel.bpmn.activities.AdHocOrdering"), "org.modelio.metamodel.bpmn.activities.AdHocOrdering", java.util.Arrays.asList("PARALLELORDERING", "SEQUENTIALORDERING"));
 		
@@ -129,7 +128,7 @@ public class MetamodelDescriptorTest {
 	@Test
 	public void testMetaclassesInStandardFragment() {
 		
-		MFragment fragment = metamodeldescriptor.getFragments().get("Standard");
+		MFragment fragment = metamodelDescriptor.getFragments().get("Standard");
 		
 		// link_metaclass Abstraction
 		MLinkMetaclass currentMetaclass = (MLinkMetaclass)fragment.getMetaclasses().get("Abstraction");
@@ -153,7 +152,7 @@ public class MetamodelDescriptorTest {
 
 	private void testFragmentAttributes(String fragmentName, String version,
 			String provider, String providerVersion, int numDeps, int numMetaclasses, int numEnums) {
-		MFragment fragment = metamodeldescriptor.getFragments().get(fragmentName);
+		MFragment fragment = metamodelDescriptor.getFragments().get(fragmentName);
 		assertEquals("Check fragment version", version, fragment.getVersion());
 		assertEquals("Check fragment provider", provider, fragment.getProvider());
 		assertEquals("Check fragment providerVersion", providerVersion, fragment.getProviderVersion());
@@ -191,7 +190,7 @@ public class MetamodelDescriptorTest {
 	}
 
 	private void testOppsiteDependency(MMetaclassDependency mMetaclassDependency) {
-		MFragment fragment = metamodeldescriptor.getFragments().get(mMetaclassDependency.getTarget().getFragmentName());
+		MFragment fragment = metamodelDescriptor.getFragments().get(mMetaclassDependency.getTarget().getFragmentName());
 		MMetaclass currentMetaclass = fragment.getMetaclasses().get(mMetaclassDependency.getTarget().getName());
 		
 		MMetaclassDependency dependency = currentMetaclass.getDependency(mMetaclassDependency.getOppositeName());
@@ -204,7 +203,7 @@ public class MetamodelDescriptorTest {
 		assertEquals("check metaclass ref name", name, ref.getName());
 		assertEquals("check metaclass ref fragment name", fragment, ref.getFragmentName());
 		
-		MMetaclass metaclass = metamodeldescriptor.getFragments().get(fragment).getMetaclasses().get(name);
+		MMetaclass metaclass = metamodelDescriptor.getFragments().get(fragment).getMetaclasses().get(name);
 		assertEquals("check metaclass ref metaclass", metaclass, ref.getMetaclass());
 	}
 
@@ -222,5 +221,4 @@ public class MetamodelDescriptorTest {
 		assertEquals("Check attribute name", name, mAttribute.getName());
 		assertEquals("Check attribute type", fragment.getDataType(typeName), mAttribute.getType());
 	}
-
 }

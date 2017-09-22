@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 The University of York.
+ * Copyright (c) 2015-2017 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
+ *     Orjuwan Al-Wadeai - move to Modelio metamodel descriptors
  ******************************************************************************/
 package org.hawk.modelio.exml.metamodel;
 
@@ -24,6 +25,7 @@ import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.core.model.IHawkReference;
+import org.hawk.modelio.metamodel.parser.MMetamodelParser;
 import org.hawk.modelio.model.util.RegisterMeta;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,23 +36,16 @@ import org.junit.Test;
 public class ModelioMetaModelResourceTest {
 
 	private static ModelioMetaModelResource r;
-	static ModelioMetaModelResourceFactory factory;
+	private static ModelioMetaModelResourceFactory factory;
 
 	private static final String METAMODEL_PATH = "resources/metamodel/";
 
 	@BeforeClass
-	public static void setup() {
-		File file = new File( METAMODEL_PATH + "metamodel_descriptor.xml");
-		try {
-			factory = new ModelioMetaModelResourceFactory();
-			
-			r = (ModelioMetaModelResource) factory.parse(file);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public static void setup() throws Exception {
+		File file = new File(METAMODEL_PATH + "metamodel_descriptor.xml");
+		factory = new ModelioMetaModelResourceFactory();
+		r = (ModelioMetaModelResource) factory.parse(file);
 	}
-
 
 	@Test
 	public void countPackages() {
@@ -95,8 +90,6 @@ public class ModelioMetaModelResourceTest {
 				}
 			}
 		}
-		//assertTrue("Should contain the Element root MClass", rootClasses.contains("Element"));
-		//assertTrue("Should contain the InteractionNavigationServices MClass", rootClasses.contains("InteractionNavigationServices"));
 		assertTrue("Should contain the meta type", rootClasses.contains(ModelioMetaModelResource.META_TYPE_NAME));
 		assertTrue("Should contain the meta type", rootClasses.contains("SmObject"));
 		assertEquals("There should be exactly three root ModelioClasses", 2, rootClasses.size());
@@ -108,12 +101,21 @@ public class ModelioMetaModelResourceTest {
 		for (IHawkClass hc : RegisterMeta.getModelioClass("ModuleComponent", null).getAllSuperTypes()) {
 			names.add(hc.getName());
 		}
-	//	assertTrue(names.contains("Class"));
-	//	assertTrue(names.contains("Component"));
 		assertTrue(names.contains("AbstractProject"));
 		assertTrue(names.contains("ModelElement"));
 		assertTrue(names.contains("Element"));
 		assertTrue(names.contains("SmObject"));
+	}
+
+	@Test
+	public void dumpAndParse() throws Exception {
+		final ModelioPackage pkg = r.getModelioPackage("Standard");
+		final String sPkgXML = new MMetamodelParser().dumpPackageToXmlString(pkg);
+
+		final ModelioMetaModelResource rFromXML = factory.parseFromString("resource_from_string_Standard", sPkgXML);
+		final ModelioPackage pkgReparsed = rFromXML.getModelioPackage("Standard");
+
+		assertEquals(pkg, pkgReparsed);
 	}
 
 }

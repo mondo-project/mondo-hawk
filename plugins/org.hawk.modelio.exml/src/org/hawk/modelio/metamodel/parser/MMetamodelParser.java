@@ -36,13 +36,11 @@ import org.xml.sax.InputSource;
 
 public class MMetamodelParser {
 	private MMetamodelDescriptor metamodelDescriptor;
-	private String xmlVerison;
 	private String xmlEncoding;
 	private MFragment currentFragment;
 
 	public MMetamodelParser() {
 		metamodelDescriptor = new MMetamodelDescriptor();
-		xmlVerison = "1.0";
 		xmlEncoding = "UTF-8";
 	}
 
@@ -52,8 +50,6 @@ public class MMetamodelParser {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			Document document = builder.parse(is);
 			Element element = document.getDocumentElement();
-
-			xmlVerison = document.getXmlVersion();
 			xmlEncoding = document.getXmlEncoding();
 
 			if(isElement(element, "metamodel")) {
@@ -75,60 +71,6 @@ public class MMetamodelParser {
 		return this.metamodelDescriptor;
 	}
 
-	/*public String dumpFragmentToXml(MFragment fragment) {
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-
-		DocumentBuilder builder;
-		try {
-			builder = factory.newDocumentBuilder();
-
-		Document document = builder.newDocument();
-
-		Element element = document.createElement("fragment");
-		document.appendChild(element);
-
-		element.setAttribute("name", fragment.getName());
-		element.setAttribute("version" , fragment.getVersion());
-		element.setAttribute("provider" ,fragment.getProvider());
-		element.setAttribute("providerVersion" ,fragment.getProviderVersion());
-
-		for(MMetaclass metaclass : fragment.getMetaclasses().values()) {
-			Element metaclassElement = document.createElement("metaclass");
-			element.appendChild(metaclassElement);
-
-			metaclassElement.setAttribute("name", metaclass.getName());
-			metaclassElement.setAttribute("version", metaclass.getVersion());
-			metaclassElement.setAttribute("abstract", getStringFromBoolean(metaclass.isAbstract()));
-			metaclassElement.setAttribute("cmsNode", getStringFromBoolean(metaclass.isCmsNode()));
-
-
-			/// attributes
-			for(MMetaclassAttribute attr : metaclass.getAttributes()) {
-				Element attributeElement = document.createElement("attribute");
-				metaclassElement.appendChild(attributeElement);
-
-				attributeElement.setAttribute("name", attr.getName());
-
-				if(attr.getType() instanceof MEnumeration) {
-					attributeElement.setAttribute("type", "java.lang.Enum");
-					attributeElement.setAttribute("enumType", attr.getType().getName());
-				} else {
-					attributeElement.setAttribute("type", attr.getType().getName());
-				}
-			}
-			return getXmlString(element);
-
-		}
-
-
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-
-	}*/
-
 	public String dumpPackageToXmlString(ModelioPackage pkg) {
 
 		try {
@@ -141,11 +83,11 @@ public class MMetamodelParser {
 			document.appendChild(element);
 
 			element.setAttribute("name", pkg.getName());
-			element.setAttribute("version" , "");
+			element.setAttribute("version" , pkg.getVersion());
 			element.setAttribute("provider" , "");
 			element.setAttribute("providerVersion" , "");
 
-			for(IHawkClassifier metaclass : pkg.getClasses()) {
+			for (IHawkClassifier metaclass : pkg.getClasses()) {
 				Element metaclassElement = document.createElement("metaclass");
 				element.appendChild(metaclassElement);
 
@@ -154,7 +96,7 @@ public class MMetamodelParser {
 				metaclassElement.setAttribute("abstract", String.valueOf(((ModelioClass)metaclass).isAbstract()));
 
 				/// attributes
-				for(ModelioAttribute attr : ((ModelioClass)metaclass).getOwnAttributesMap().values()) {
+				for (ModelioAttribute attr : ((ModelioClass)metaclass).getOwnAttributesMap().values()) {
 					Element attributeElement = document.createElement("attribute");
 					metaclassElement.appendChild(attributeElement);
 
@@ -167,7 +109,7 @@ public class MMetamodelParser {
 						attributeElement.setAttribute("type", attr.getType().getName());
 					}
 				}
-				
+
 				// TODO dependencies
 
 				return getXmlString(element);

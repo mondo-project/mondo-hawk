@@ -36,6 +36,7 @@ public class ExmlParserTest {
 	private static final String FRAGMENT_PATH = "resources/Zoo/data/fragments/";
 	private static final String CLASS_PATH = FRAGMENT_PATH + "Zoo/model/Class/";
 	private static final String AREA_CLASS_EXML = CLASS_PATH + "0a4ac84f-75a3-4b5b-bbad-d0e67857b4cf.exml";
+	private static final String AREA_CLASS35_EXML = "resources/Zoo35/data/fragments/Zoo/model/Class/09864fe3-abc6-4de6-89c3-dd84c76ea535.exml";
 	private static final String ANIMAL_CLASS_EXML = CLASS_PATH + "4ed7f59f-f723-4f88-b6fc-ea6b83eb3108.exml";
 	private static final String ELEPHANT_CLASS_EXML = CLASS_PATH + "2d7b2cba-e694-4b33-bd9e-4d2f1db4cc7b.exml";
 	private static final String PACKAGE_CLASS_EXML = FRAGMENT_PATH + "Zoo/model/Package/ea878bd2-7ef9-4ce1-a11e-35fa129981bb.exml";
@@ -80,6 +81,20 @@ public class ExmlParserTest {
 			final ExmlObject ownedEnd = (ExmlObject)object.getCompositions().get("OwnedEnd").get(0);
 			final List<ExmlReference> ownedEndAssociation = ownedEnd.getCompositions().get("Association");
 			assertEquals("263b2747-a54c-49e6-9b9d-ee3a5968766a", ownedEndAssociation.get(0).getUID());
+		}
+	}
+
+	@Test
+	public void parseClass35() throws Exception {
+		final File f = new File(AREA_CLASS35_EXML);
+		try (final FileInputStream fIS = new FileInputStream(f)) {
+			final ExmlParser parser = new ExmlParser();
+			final ExmlObject object = parser.getObject(f, fIS);
+
+			assertEquals("Area", object.getName());
+			assertEquals("Standard.Class", object.getMClassName());
+			assertEquals("zoo", object.getParentName());
+			assertEquals("Standard.Package", object.getParentMClassName());
 		}
 	}
 

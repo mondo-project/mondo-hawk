@@ -20,8 +20,6 @@ import java.util.Map;
 import org.hawk.modelio.metamodel.parser.*;
 
 public class ModelioMetamodel {
-	//private static final Logger LOGGER = LoggerFactory.getLogger(ModelioMetaModelResource.class);
-
 	private List<MPackage> mPackages;
 	private MMetamodelDescriptor mDescriptor;    
 
@@ -40,9 +38,8 @@ public class ModelioMetamodel {
 		}
 	}
 
-	public void initMetamodel(MMetamodelDescriptor mDescriptor) {
-
-		//	 Step 1: populate Data types 
+	private void initMetamodel(MMetamodelDescriptor mDescriptor) {
+		// Step 1: populate Data types 
 		for ( MFragment fragment : mDescriptor.getFragments().values()) {
 			for(MAttributeType attributeType : fragment.getDataTypes().values()) {
 				MDataType dataType = null;
@@ -88,18 +85,18 @@ public class ModelioMetamodel {
 				MClass currentClass = this.getMClass(fragment.getName(), metaclass.getName());
 
 				// get parent
-				if(metaclass.getParent() != null) {
+				if (metaclass.getParent() != null) {
 					currentClass.getMSuperType().add(getMClass(metaclass.getParent()));
 				}
 
 				// dependencies
-				for( MMetaclassDependency dependency  : metaclass.getDependencies().values()) {
+				for (MMetaclassDependency dependency  : metaclass.getDependencies().values()) {
 					MDependency dep = new MDependency(dependency.getName(), dependency.getName(), getMClass(dependency.getTarget()), !(dependency.getMax() == 1), true, true, (dependency.getAggregation() == MAggregationType.Composition));
 					currentClass.getMDependencys().add(dep);
 				}
 
 				// get children
-				for(MMetaclassReference childMetaclassRef : metaclass.getChildren()) {
+				for (MMetaclassReference childMetaclassRef : metaclass.getChildren()) {
 					currentClass.getMSubTypes().add(getMClass(childMetaclassRef));
 				}				
 			}
@@ -138,5 +135,3 @@ public class ModelioMetamodel {
 	}
 
 }
-
-

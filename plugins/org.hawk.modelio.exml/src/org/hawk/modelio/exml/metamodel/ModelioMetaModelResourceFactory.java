@@ -81,13 +81,13 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 	}
 
 	@Override
-	public IHawkMetaModelResource parseFromString(String name, String contents) throws Exception {
+	public ModelioMetaModelResource parseFromString(String name, String contents) throws Exception {
 		return getMetamodelResource(new InputSource(new StringReader(contents)));
 	}
 
 	@Override
 	public String dumpPackageToString(IHawkPackage ePackage) throws Exception {
-		if(((ModelioPackage) ePackage).getXml().isEmpty()) {
+		if (((ModelioPackage) ePackage).getXml().isEmpty()) {
 			((ModelioPackage) ePackage).setXml(parser.dumpPackageToXmlString((ModelioPackage) ePackage));
 		} 
 		return ((ModelioPackage) ePackage).getXml();
