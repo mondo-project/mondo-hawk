@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="zoo" version="4">
+  <OBJECT>
+    <ID name="zoo" mc="Standard.Package" uid="ce9c8328-513f-4527-a34f-8784a1bc32db"/>
+    <PID name="Zoo" mc="Standard.Project" uid="f3575586-9d8a-41d7-a53e-2f2b06c18a10"/>
+    <ATTRIBUTES>
+      <ATT name="IsInstantiable">false</ATT>
+      <ATT name="IsAbstract">false</ATT>
+      <ATT name="IsLeaf">false</ATT>
+      <ATT name="IsRoot">false</ATT>
+      <ATT name="Visibility">Public</ATT>
+      <ATT name="Name"><![CDATA[zoo]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="OwnedElement">
+        <COMPID name="Animal" mc="Standard.Class" uid="2dcf4432-0f60-44c4-8aeb-e83ded7b7266"/>
+        <COMPID name="Area" mc="Standard.Class" uid="09864fe3-abc6-4de6-89c3-dd84c76ea535"/>
+        <COMPID name="Elephant" mc="Standard.Class" uid="9fe1e80a-262d-4c54-9241-826a2d8d3bcc"/>
+        <COMPID name="Lion" mc="Standard.Class" uid="4be81a17-8e0b-4fb1-8425-39af2e9b9ca7"/>
+        <COMPID name="Zoo" mc="Standard.Class" uid="5c240be2-876a-4671-9baf-625bff6ee788"/>
+        <COMPID name="Zebra" mc="Standard.Class" uid="00e44920-aa6c-446b-b8a5-48f43955944e"/>
+      </COMP>
+      <COMP relation="Product">
+        <COMPID name="overview diagram" mc="Standard.ClassDiagram" uid="f6f45fe1-2c53-46e6-8442-f93312726081"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

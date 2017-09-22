@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="Zoo" version="4">
+  <OBJECT>
+    <ID name="Zoo" mc="Standard.DiagramSet" uid="ea2488e7-7dda-4734-b016-0c150ab4489c"/>
+    <PID name="Zoo" mc="Standard.Project" uid="f3575586-9d8a-41d7-a53e-2f2b06c18a10"/>
+    <ATTRIBUTES>
+      <ATT name="Name"><![CDATA[Zoo]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES></DEPENDENCIES>
+  </OBJECT>
+</EXT>
