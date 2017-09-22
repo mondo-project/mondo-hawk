@@ -1,3 +1,9 @@
 .index
 .config
 .runtime
+*.jmdac
+*.dbr.*
+*.dbf.*
+*.idr.*
+*.idf.*
+*.blob
