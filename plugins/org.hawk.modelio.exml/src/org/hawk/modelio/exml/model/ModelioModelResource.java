@@ -73,16 +73,15 @@ public class ModelioModelResource implements IHawkModelResource {
 				return new Iterator<IHawkObject>() {
 					@Override
 					public boolean hasNext() {
-						return itExmls.hasNext() || !currentFragment.isEmpty();
+						while (currentFragment.isEmpty() && itExmls.hasNext()) {
+							ExmlObject nextRoot = itExmls.next();
+							addObjectToContents(nextRoot, currentFragment);
+						}
+						return !currentFragment.isEmpty();
 					}
 
 					@Override
 					public IHawkObject next() {
-						if (currentFragment.isEmpty()) {
-							// Reads the next fragment
-							ExmlObject nextRoot = itExmls.next();
-							addObjectToContents(nextRoot, currentFragment);
-						}
 						return currentFragment.remove(0);
 					}
 

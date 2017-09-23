@@ -124,7 +124,7 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 			
 			String versionPath = (parentName +  "/admin/mmversion.dat");
 			File versionFile = importer.importFile(versionPath);
-			if(versionFile.exists()) {
+			if(versionFile != null && versionFile.exists()) {
 				readMMVersionDat(versionFile);
 				break;
 			}
