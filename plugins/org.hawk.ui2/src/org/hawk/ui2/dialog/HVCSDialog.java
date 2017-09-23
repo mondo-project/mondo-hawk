@@ -12,6 +12,8 @@ package org.hawk.ui2.dialog;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
@@ -218,7 +220,7 @@ final class HVCSDialog extends TitleAreaDialog {
 	private boolean isLocationValid() {
 		IVcsManager vcsManager = getSelectedVCSManager();
 		return vcsManager.isPathLocationAccepted() && isLocationValidPath()
-				|| vcsManager.isURLLocationAccepted() && isLocationValidURL();
+				|| vcsManager.isURLLocationAccepted() && isLocationValidURI();
 	}
 
 	private void updateDialog() {
@@ -257,11 +259,11 @@ final class HVCSDialog extends TitleAreaDialog {
 		return false;
 	}
 
-	private boolean isLocationValidURL() {
+	private boolean isLocationValidURI() {
 		try {
-			new URL(txtVCSLocation.getText());
-			return true;
-		} catch (MalformedURLException e) {
+			URI uri = new URI(txtVCSLocation.getText());
+			return uri.getScheme() != null && uri.getPath() != null && uri.getHost() != null;
+		} catch (URISyntaxException e) {
 			return false;
 		}
 	}
