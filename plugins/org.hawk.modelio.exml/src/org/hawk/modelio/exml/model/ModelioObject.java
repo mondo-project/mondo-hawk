@@ -25,9 +25,9 @@ import org.hawk.modelio.exml.metamodel.ModelioAttribute;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
 import org.hawk.modelio.exml.metamodel.ModelioDataType;
 import org.hawk.modelio.exml.metamodel.ModelioReference;
-import org.hawk.modelio.exml.parser.ExmlObject;
-import org.hawk.modelio.exml.parser.ExmlReference;
-import org.hawk.modelio.model.util.RegisterMeta;
+import org.hawk.modelio.exml.metamodel.register.MetamodelRegister;
+import org.hawk.modelio.exml.model.parser.ExmlObject;
+import org.hawk.modelio.exml.model.parser.ExmlReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,7 +143,7 @@ public class ModelioObject extends AbstractModelioObject {
 		final List<ExmlReference> links = exml.getLinks().get(ref.getName());
 		if (links != null) {
 			for (ExmlReference r : links) {
-				ModelioClass rMC = RegisterMeta.getModelioClass(r.getMClassName(), mmPackageVersions);
+				ModelioClass rMC = MetamodelRegister.INSTANCE.getModelioClass(r.getMClassName(), mmPackageVersions);
 				if (rMC == null) {
 					LOGGER.warn("Could not find class with name '{}', ignoring instance", r.getMClassName());
 				} else {
@@ -154,7 +154,7 @@ public class ModelioObject extends AbstractModelioObject {
 			List<ExmlReference> cmp = exml.getCompositions().get(ref.getName());
 			if (cmp != null) {
 				for (ExmlReference r : cmp) {
-					ModelioClass rMC = RegisterMeta.getModelioClass(r.getMClassName(), mmPackageVersions);
+					ModelioClass rMC = MetamodelRegister.INSTANCE.getModelioClass(r.getMClassName(), mmPackageVersions);
 					if (rMC == null) {
 						LOGGER.warn("Could not find class with name '{}', ignoring instance", r.getMClassName());
 					} else if (r instanceof ExmlObject) {

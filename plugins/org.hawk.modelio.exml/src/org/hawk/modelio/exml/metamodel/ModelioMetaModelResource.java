@@ -22,7 +22,11 @@ import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkObject;
-import org.hawk.modelio.metamodel.parser.MMetamodelDescriptor;
+import org.hawk.modelio.exml.metamodel.mlib.MAttribute;
+import org.hawk.modelio.exml.metamodel.mlib.MClass;
+import org.hawk.modelio.exml.metamodel.mlib.MMetamodel;
+import org.hawk.modelio.exml.metamodel.mlib.MPackage;
+import org.hawk.modelio.exml.metamodel.parser.MMetamodelDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,27 +39,22 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 	private final ModelioMetaModelResourceFactory factory;
 	private final ModelioPackage metaPackage;
 
-	private ModelioMetamodel metamodel;
-
+	private MMetamodel metamodel;
 	private Set<IHawkObject> contents;
 	private Map<String, ModelioClass> classesById;
-	
-	public void setMetamodel(MMetamodelDescriptor metamodelDescriptor) {
-		this.metamodel = new ModelioMetamodel(metamodelDescriptor);
-	}
-
-	public ModelioMetamodel getMetamodel() {
-		return metamodel;
-	}
 
 	public ModelioMetaModelResource(MMetamodelDescriptor metamodelDescriptor,
 			ModelioMetaModelResourceFactory factory) {
 
-		metamodel = new ModelioMetamodel(metamodelDescriptor);
+		metamodel = new MMetamodel(metamodelDescriptor);
 
 		this.factory = factory;
 		this.metaPackage = new ModelioPackage(this, createMetaPackage());
 		this.classesById = new HashMap<>();	
+	}
+
+	public MMetamodel getMetamodel() {
+		return metamodel;
 	}
 
 	private MPackage createMetaPackage() {

@@ -22,8 +22,8 @@ import java.util.Set;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkPackage;
-import org.hawk.modelio.metamodel.parser.MMetamodelParser;
-import org.hawk.modelio.model.util.RegisterMeta;
+import org.hawk.modelio.exml.metamodel.parser.MMetamodelParser;
+import org.hawk.modelio.exml.metamodel.register.MetamodelRegister;
 import org.xml.sax.InputSource;
 
 public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactory {
@@ -87,17 +87,12 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 
 	@Override
 	public String dumpPackageToString(IHawkPackage ePackage) throws Exception {
-		if (((ModelioPackage) ePackage).getXml().isEmpty()) {
-			((ModelioPackage) ePackage).setXml(parser.dumpPackageToXmlString((ModelioPackage) ePackage));
-		} 
 		return ((ModelioPackage) ePackage).getXml();
 	}
 
 	private ModelioMetaModelResource getMetamodelResource(InputSource is) {
 		ModelioMetaModelResource modelioMetamodel = new ModelioMetaModelResource(parser.parse(is), this);
-		
-		RegisterMeta.registerPackages(modelioMetamodel);
-
+		MetamodelRegister.INSTANCE.registerPackages(modelioMetamodel);
 		return modelioMetamodel;
 	}
 }

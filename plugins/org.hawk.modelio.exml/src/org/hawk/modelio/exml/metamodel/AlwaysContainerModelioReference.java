@@ -1,5 +1,6 @@
 package org.hawk.modelio.exml.metamodel;
 
+import org.hawk.modelio.exml.metamodel.mlib.MDependency;
 
 /**
  * Variant of {@link ModelioReference} that always reports itself to be a

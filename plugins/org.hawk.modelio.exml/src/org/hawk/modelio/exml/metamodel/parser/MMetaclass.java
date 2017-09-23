@@ -8,7 +8,7 @@
  * Contributors:
  *     Orjuwan Al-Wadeai - Modelio XML metamodel parser 
  ******************************************************************************/
-package org.hawk.modelio.metamodel.parser;
+package org.hawk.modelio.exml.metamodel.parser;
 
 import java.util.ArrayList;
 import java.util.HashMap;

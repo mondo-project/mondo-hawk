@@ -35,8 +35,8 @@ import org.hawk.localfolder.LocalFolder;
 import org.hawk.modelio.exml.listeners.ModelioGraphChangeListener;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory;
 import org.hawk.modelio.exml.metamodel.ModelioPackage;
+import org.hawk.modelio.exml.metamodel.register.MetamodelRegister;
 import org.hawk.modelio.exml.model.ModelioModelResourceFactory;
-import org.hawk.modelio.model.util.RegisterMeta;
 import org.hawk.orientdb.util.FileUtils;
 import org.hawk.orientdb.util.SyncEndListener;
 import org.junit.After;
@@ -109,7 +109,7 @@ public class ModelioMetamodelPopulationTest {
 		setup("modeliomm", true);
 
 		int nTypes = 0;
-		final Collection<ModelioPackage> pkgs = RegisterMeta.getRegisteredPackages();
+		final Collection<ModelioPackage> pkgs = MetamodelRegister.INSTANCE.getRegisteredPackages();
 		nTypes = visitPackages(nTypes, pkgs);
 
 		// From 'grep -c MClass MMetamodel.java' on modelio-metamodel-lib

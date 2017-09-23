@@ -12,9 +12,9 @@ import org.hawk.modelio.exml.metamodel.ModelioAttribute;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory;
 import org.hawk.modelio.exml.metamodel.ModelioReference;
-import org.hawk.modelio.exml.parser.ExmlObject;
-import org.hawk.modelio.exml.parser.ExmlParser;
-import org.hawk.modelio.model.util.RegisterMeta;
+import org.hawk.modelio.exml.metamodel.register.MetamodelRegister;
+import org.hawk.modelio.exml.model.parser.ExmlObject;
+import org.hawk.modelio.exml.model.parser.ExmlParser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -67,7 +67,7 @@ public class ModelioObjectTest {
 			final ExmlParser parser = new ExmlParser();
 			final ExmlObject object = parser.getObject(f, fIS);
 
-			final ModelioClass mC = RegisterMeta.getModelioClass(object.getMClassName(), null);
+			final ModelioClass mC = MetamodelRegister.INSTANCE.getModelioClass(object.getMClassName(), null);
 			final ModelioObject mO = new ModelioObject(mC, object, null);
 
 			return mO;

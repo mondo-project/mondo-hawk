@@ -25,8 +25,7 @@ import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.core.model.IHawkReference;
-import org.hawk.modelio.metamodel.parser.MMetamodelParser;
-import org.hawk.modelio.model.util.RegisterMeta;
+import org.hawk.modelio.exml.metamodel.register.MetamodelRegister;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -98,7 +97,7 @@ public class ModelioMetaModelResourceTest {
 	@Test
 	public void checkModuleComponentHierarchy() {
 		final Set<String> names = new HashSet<>();
-		for (IHawkClass hc : RegisterMeta.getModelioClass("ModuleComponent", null).getAllSuperTypes()) {
+		for (IHawkClass hc : MetamodelRegister.INSTANCE.getModelioClass("ModuleComponent", null).getAllSuperTypes()) {
 			names.add(hc.getName());
 		}
 		assertTrue(names.contains("AbstractProject"));
@@ -110,11 +109,10 @@ public class ModelioMetaModelResourceTest {
 	@Test
 	public void dumpAndParse() throws Exception {
 		final ModelioPackage pkg = r.getModelioPackage("Standard");
-		final String sPkgXML = new MMetamodelParser().dumpPackageToXmlString(pkg);
+		final String sPkgXML = factory.dumpPackageToString(pkg);
 
 		final ModelioMetaModelResource rFromXML = factory.parseFromString("resource_from_string_Standard", sPkgXML);
 		final ModelioPackage pkgReparsed = rFromXML.getModelioPackage("Standard");
-
 		assertEquals(pkg, pkgReparsed);
 	}
 

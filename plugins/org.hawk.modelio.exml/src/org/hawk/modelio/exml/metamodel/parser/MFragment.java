@@ -9,7 +9,7 @@
  *     Orjuwan Al-Wadeai - Modelio XML metamodel parser 
  ******************************************************************************/
 
-package org.hawk.modelio.metamodel.parser;
+package org.hawk.modelio.exml.metamodel.parser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,20 +35,6 @@ public class MFragment {
 		dependencies = new ArrayList<MFragmentReference>();
 		metaclasses = new HashMap<String, MMetaclass>();
 		dataTypes = new HashMap<String, MAttributeType>();
-	}
-
-	public MFragment(String name, String version, String provider,
-			String providerVersion) {
-		this();
-		this.name = name;
-		this.version = version;
-		this.provider = provider;
-		this.providerVersion = providerVersion;
-	}
-
-	public MFragment(String name) {
-		this();
-		this.name = name;
 	}
 
 	public String getName() {

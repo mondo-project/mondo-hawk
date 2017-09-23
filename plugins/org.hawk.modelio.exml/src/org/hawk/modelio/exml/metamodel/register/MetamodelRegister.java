@@ -6,9 +6,10 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Orjuwan Al-Wadeai - Modelio Metamodels Registry
+ *     Orjuwan Al-Wadeai - initial API and implementation
+ *     Antonio Garcia-Dominguez - use Singleton pattern, rename from RegisterMeta
  ******************************************************************************/
-package org.hawk.modelio.model.util;
+package org.hawk.modelio.exml.metamodel.register;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,14 +26,17 @@ import org.hawk.modelio.exml.metamodel.ModelioPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RegisterMeta {
+public class MetamodelRegister {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioClass.class);
 
-	// First by name, then by version
-	private static Map<String, SortedMap<String, ModelioPackage>> registeredMetamodelsByName = new HashMap<String, SortedMap<String, ModelioPackage>>();
+	// Here we follow the same approach as the Ecore package registry
+	public static final MetamodelRegister INSTANCE = new MetamodelRegister();
 
-	public static Collection<ModelioPackage> getRegisteredPackages() {
+	// First by name, then by version
+	private Map<String, SortedMap<String, ModelioPackage>> registeredMetamodelsByName = new HashMap<String, SortedMap<String, ModelioPackage>>();
+
+	public Collection<ModelioPackage> getRegisteredPackages() {
 		Collection<ModelioPackage> registeredPackages = new ArrayList<ModelioPackage>();
 		for (Map<String, ModelioPackage> versions : registeredMetamodelsByName.values()) {
 			for(ModelioPackage pkg: versions.values()) {
@@ -42,7 +46,7 @@ public class RegisterMeta {
 		return registeredPackages;
 	}
 
-	public static void clean() {
+	public void clean() {
 		registeredMetamodelsByName.clear();
 	}
 
@@ -52,7 +56,7 @@ public class RegisterMeta {
 	 * 
 	 * @param pkg
 	 */
-	public static void registerPackages(ModelioPackage pkg) {
+	public void registerPackages(ModelioPackage pkg) {
 		SortedMap<String, ModelioPackage> versions = registeredMetamodelsByName.get(pkg.getName());
 		if(versions == null) {
 			versions = new TreeMap<String, ModelioPackage>();
@@ -64,7 +68,7 @@ public class RegisterMeta {
 		}
 	}
 
-	public static void registerPackages(ModelioMetaModelResource r) {
+	public void registerPackages(ModelioMetaModelResource r) {
 		for (IHawkObject e : r.getAllContents()) {
 			if (e instanceof ModelioPackage) {
 				registerPackages((ModelioPackage) e);
@@ -72,7 +76,7 @@ public class RegisterMeta {
 		}
 	}
 
-	private static ModelioClass getMClass(String className, Map<String, String> mmPackageVersions) {
+	private ModelioClass getMClass(String className, Map<String, String> mmPackageVersions) {
 		// Always limit the packages to those in the .dat file if provided
 		Set<String> pkgNames;
 		if (mmPackageVersions == null) {
@@ -114,7 +118,7 @@ public class RegisterMeta {
 	}
 
 	
-	private static ModelioClass findRequiredVersion(SortedMap<String, ModelioPackage> versions,  String className, String pkgName, Map<String, String> mmPackageVersions) {
+	private ModelioClass findRequiredVersion(SortedMap<String, ModelioPackage> versions,  String className, String pkgName, Map<String, String> mmPackageVersions) {
 		String requiredVersion = null;
 		ModelioClass tmpmc = null;
 		if(mmPackageVersions != null) {
@@ -132,7 +136,7 @@ public class RegisterMeta {
 	}
 
 
-	private static ModelioClass findLatestVersion(SortedMap<String, ModelioPackage> versions,  String className, String pkgName) {
+	private ModelioClass findLatestVersion(SortedMap<String, ModelioPackage> versions,  String className, String pkgName) {
 		ModelioClass tmpmc = null;
 		String latestVerison = getLatestVersion(pkgName);
 		if(latestVerison != null) {
@@ -145,7 +149,7 @@ public class RegisterMeta {
 		return tmpmc;
 	}
 
-	private static ModelioClass getMClass(String pkgName, String className, String requiredVersion) {
+	private ModelioClass getMClass(String pkgName, String className, String requiredVersion) {
 		Map<String, ModelioPackage> versions = registeredMetamodelsByName.get(pkgName);
 		
 		if (versions != null) {
@@ -169,8 +173,7 @@ public class RegisterMeta {
 		return null;
 	}
 
-	private static String getLatestVersion(String pkgName) {
-		
+	private String getLatestVersion(String pkgName) {
 		SortedMap<String, ModelioPackage> versions = registeredMetamodelsByName.get(pkgName);
 		if(versions != null) {
 			return versions.lastKey();
@@ -179,22 +182,18 @@ public class RegisterMeta {
 		return null;
 	}
 	
-	public static ModelioClass getModelioClass(String className, Map<String, String> mmPackageVersions) {
-		String pkgName;
-		String mcName;
+	public ModelioClass getModelioClass(String className, Map<String, String> mmPackageVersions) {
 		ModelioClass mc = null;
-		String version= null;
+		String version = null;
 		final int idxDot = className.indexOf(".");
 		if (idxDot > -1) {
-			pkgName = className.substring(0, idxDot);
-			mcName = className.substring(idxDot + 1);
-			
+			String pkgName = className.substring(0, idxDot);
+			String mcName = className.substring(idxDot + 1);
 			if(mmPackageVersions != null) {
 				version = mmPackageVersions.get(pkgName);
 			}
 			
 			mc = getMClass(pkgName, mcName, version);
-			
 		} else {
 			mc = getMClass(className, mmPackageVersions);
 		}

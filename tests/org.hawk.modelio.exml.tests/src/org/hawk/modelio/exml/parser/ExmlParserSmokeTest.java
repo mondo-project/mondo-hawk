@@ -24,6 +24,8 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
+import org.hawk.modelio.exml.model.parser.ExmlObject;
+import org.hawk.modelio.exml.model.parser.ExmlParser;
 import org.junit.Test;
 
 /**

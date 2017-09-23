@@ -8,31 +8,23 @@
  * Contributors:
  *     Orjuwan Al-Wadeai - Modelio XML metamodel parser 
  ******************************************************************************/
+package org.hawk.modelio.exml.metamodel.parser;
 
-package org.hawk.modelio.metamodel.parser;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class MEnumeration extends MAttributeType {
-
-	private List<String> values;
-
-	public MEnumeration(String name) {
-		super(name);
-		values = new ArrayList<String>();
-	}
-
-	public List<String> getValues() {
-		return values;
-	}
-
-	public void setValues(List<String> values) {
-		this.values = values;
-	}
-
-	public void addValue(String valueName) {
-		values.add(valueName);
-	}
+public class MAttributeType {
 	
+	private String name;
+
+	public MAttributeType(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 }
+

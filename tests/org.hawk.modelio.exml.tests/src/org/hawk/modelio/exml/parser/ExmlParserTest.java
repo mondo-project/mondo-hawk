@@ -25,6 +25,9 @@ import javax.xml.stream.XMLStreamException;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory;
 import org.hawk.modelio.exml.model.ModelioModelResource;
 import org.hawk.modelio.exml.model.ModelioModelResourceFactory;
+import org.hawk.modelio.exml.model.parser.ExmlObject;
+import org.hawk.modelio.exml.model.parser.ExmlParser;
+import org.hawk.modelio.exml.model.parser.ExmlReference;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,16 +47,11 @@ public class ExmlParserTest {
 	private final String METAMODEL_PATH = "resources/metamodel/";
 
 	@Before
-	public void setup() {
+	public void setup() throws Exception {
 		File file = new File( METAMODEL_PATH + "metamodel_descriptor.xml");
-		try {
-			ModelioMetaModelResourceFactory factory;
-			factory = new ModelioMetaModelResourceFactory();
-			factory.parse(file);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		ModelioMetaModelResourceFactory factory;
+		factory = new ModelioMetaModelResourceFactory();
+		factory.parse(file);
 	}
 	
 	@Test

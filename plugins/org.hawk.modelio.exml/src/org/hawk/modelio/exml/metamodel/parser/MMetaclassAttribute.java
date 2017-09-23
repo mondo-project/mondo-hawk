@@ -9,20 +9,19 @@
  *     Orjuwan Al-Wadeai - Modelio XML metamodel parser 
  ******************************************************************************/
 
-package org.hawk.modelio.metamodel.parser;
+package org.hawk.modelio.exml.metamodel.parser;
 
-public class MMetaclassReference {
+public class MMetaclassAttribute {
+
 	private String name;
-	private String fragmentName;
-	private MMetaclass metaclass;
-	
-	public MMetaclassReference() {
+	private MAttributeType type;
 
+	public MMetaclassAttribute() {
 	}
 
-	public MMetaclassReference(String fragment, String name) {
+	public MMetaclassAttribute(String name, MAttributeType type) {
 		this.name = name;
-		this.fragmentName = fragment;
+		this.type = type;
 	}
 
 	public String getName() {
@@ -33,21 +32,12 @@ public class MMetaclassReference {
 		this.name = name;
 	}
 
-	public String getFragmentName() {
-		return fragmentName;
+	public MAttributeType getType() {
+		return type;
 	}
 
-	public void setFragmentName(String fragment) {
-		this.fragmentName = fragment;
+	public void setType(MAttributeType type) {
+		this.type = type;
 	}
 
-	public MMetaclass getMetaclass() {
-		return metaclass;
-	}
-
-	public void setMetaclass(MMetaclass metaclass) {
-		this.metaclass = metaclass;
-	}
-
-	
 }

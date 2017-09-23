@@ -41,7 +41,7 @@ import org.hawk.modelio.exml.metamodel.ModelioMetaModelResource;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory;
 import org.hawk.modelio.exml.metamodel.ModelioPackage;
 import org.hawk.modelio.exml.metamodel.ModelioReference;
-import org.hawk.modelio.model.util.RegisterMeta;
+import org.hawk.modelio.exml.metamodel.register.MetamodelRegister;
 
 /**
  * Generates an <code>.ecore</code> file that mimics the Modelio metamodel, in
@@ -126,7 +126,7 @@ public class EcoreGenerator {
 
 		// Do a first pass to create the structure
 		
-		final Collection<ModelioPackage> mps = RegisterMeta.getRegisteredPackages();
+		final Collection<ModelioPackage> mps = MetamodelRegister.INSTANCE.getRegisteredPackages();
 		for (ModelioPackage mp : mps) {
 			addPackageContents(r, mp);
 		}

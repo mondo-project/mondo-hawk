@@ -25,8 +25,8 @@ import java.util.zip.ZipFile;
 import org.hawk.core.IFileImporter;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
-import org.hawk.modelio.exml.parser.ExmlObject;
-import org.hawk.modelio.exml.parser.ExmlParser;
+import org.hawk.modelio.exml.model.parser.ExmlObject;
+import org.hawk.modelio.exml.model.parser.ExmlParser;
 
 public class ModelioModelResourceFactory implements IModelResourceFactory {
 	Map<String, String> mmPackageVersions;

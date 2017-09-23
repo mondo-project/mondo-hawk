@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2015 The University of York.
+ * Copyright (c) 2015-2017 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Antonio Garcia-Dominguez - initial API and implementation
+ *     Antonio Garcia-Dominguez - initial API and implementation, equals/hashCode
  *     Orjuwan Al-Wadeai -  Integrate Modelio Metamodel 3.6
  ******************************************************************************/
 package org.hawk.modelio.exml.metamodel;
@@ -23,6 +23,9 @@ import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
 import org.hawk.modelio.exml.listeners.ModelioGraphChangeListener;
+import org.hawk.modelio.exml.metamodel.mlib.MAttribute;
+import org.hawk.modelio.exml.metamodel.mlib.MClass;
+import org.hawk.modelio.exml.metamodel.mlib.MDependency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -258,5 +261,29 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 		return "ModelioClass [name=" + getName() + "]";
 	}
 
-	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((rawClass == null) ? 0 : rawClass.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ModelioClass other = (ModelioClass) obj;
+		if (rawClass == null) {
+			if (other.rawClass != null)
+				return false;
+		} else if (!rawClass.equals(other.rawClass))
+			return false;
+		return true;
+	}
+
 }

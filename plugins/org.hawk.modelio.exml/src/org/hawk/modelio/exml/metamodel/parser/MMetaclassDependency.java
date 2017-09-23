@@ -9,7 +9,7 @@
  *     Orjuwan Al-Wadeai - Modelio XML metamodel parser 
  ******************************************************************************/
 
-package org.hawk.modelio.metamodel.parser;
+package org.hawk.modelio.exml.metamodel.parser;
 
 public class MMetaclassDependency {
 

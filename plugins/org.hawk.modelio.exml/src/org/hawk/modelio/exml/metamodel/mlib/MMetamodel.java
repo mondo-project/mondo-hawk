@@ -7,27 +7,24 @@
  * 
  * Contributors:
  *     Orjuwan Al-Wadeai -  Integrate Modelio Metamodel 3.6
+ *     Antonio Garcia-Dominguez - extract into .mlib, rename into MMetamodel
  ******************************************************************************/
-package org.hawk.modelio.exml.metamodel;
+package org.hawk.modelio.exml.metamodel.mlib;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hawk.modelio.exml.metamodel.parser.*;
 
-
-import org.hawk.modelio.metamodel.parser.*;
-
-public class ModelioMetamodel {
+public class MMetamodel {
 	private List<MPackage> mPackages;
 	private MMetamodelDescriptor mDescriptor;    
-
 	private Map<String, MDataType> mBaseTypes;
-
 	private Map<String, MClass> mClass;
 
-	public ModelioMetamodel(MMetamodelDescriptor metamodelDescriptor) {
+	public MMetamodel(MMetamodelDescriptor metamodelDescriptor) {
 		this.mBaseTypes = new HashMap<>();
 		this.mPackages = new ArrayList<MPackage>();
 		this.mClass = new HashMap<>();
@@ -55,7 +52,7 @@ public class ModelioMetamodel {
 		}
 
 		//	 Step 2:  add Classes and Attributes
-		for ( MFragment fragment : mDescriptor.getFragments().values()) {
+		for (MFragment fragment : mDescriptor.getFragments().values()) {
 			MPackage pkg = new MPackage(getMPackageId(fragment), fragment.getName(), fragment.getVersion(), fragment.getXmlString());
 			mPackages.add(pkg);
 

@@ -8,7 +8,7 @@
  * Contributors:
  *     Orjuwan Al-Wadeai - 
  ******************************************************************************/
-package org.hawk.modelio.metamodel.parser;
+package org.hawk.modelio.exml.metamodel.parser;
 
 public enum MAggregationType {
 	None,

@@ -9,7 +9,7 @@
  *     Orjuwan Al-Wadeai - Modelio XML metamodel parser
  ******************************************************************************/
 
-package org.hawk.modelio.metamodel.parser;
+package org.hawk.modelio.exml.metamodel.parser;
 
 import java.io.StringWriter;
 import java.util.Iterator;
@@ -20,10 +20,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.hawk.core.model.IHawkClassifier;
-import org.hawk.modelio.exml.metamodel.MEnum;
 import org.hawk.modelio.exml.metamodel.ModelioAttribute;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
 import org.hawk.modelio.exml.metamodel.ModelioPackage;
+import org.hawk.modelio.exml.metamodel.mlib.MEnum;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -71,56 +71,6 @@ public class MMetamodelParser {
 		return this.metamodelDescriptor;
 	}
 
-	public String dumpPackageToXmlString(ModelioPackage pkg) {
-
-		try {
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = factory.newDocumentBuilder();
-
-			Document document = builder.newDocument();
-
-			Element element = document.createElement("fragment");
-			document.appendChild(element);
-
-			element.setAttribute("name", pkg.getName());
-			element.setAttribute("version" , pkg.getVersion());
-			element.setAttribute("provider" , "");
-			element.setAttribute("providerVersion" , "");
-
-			for (IHawkClassifier metaclass : pkg.getClasses()) {
-				Element metaclassElement = document.createElement("metaclass");
-				element.appendChild(metaclassElement);
-
-				metaclassElement.setAttribute("name", metaclass.getName());
-				metaclassElement.setAttribute("version", "");
-				metaclassElement.setAttribute("abstract", String.valueOf(((ModelioClass)metaclass).isAbstract()));
-
-				/// attributes
-				for (ModelioAttribute attr : ((ModelioClass)metaclass).getOwnAttributesMap().values()) {
-					Element attributeElement = document.createElement("attribute");
-					metaclassElement.appendChild(attributeElement);
-
-					attributeElement.setAttribute("name", attr.getName());
-
-					if(attr.getType() instanceof MEnum) {
-						attributeElement.setAttribute("type", "java.lang.Enum");
-						attributeElement.setAttribute("enumType", attr.getType().getName());
-					} else {
-						attributeElement.setAttribute("type", attr.getType().getName());
-					}
-				}
-
-				// TODO dependencies
-
-				return getXmlString(element);
-			}
-
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
 	private void parseMetamodel(Node node) {
 		this.metamodelDescriptor.setMetamodelFormat(getNodeNamedAttribute(node, "format"));
 		this.metamodelDescriptor.setMetamodelDescriptorFormat(getNodeNamedAttribute(node, "MetamodelDescriptor.format"));
@@ -137,7 +87,6 @@ public class MMetamodelParser {
 		currentFragment.setVersion(getNodeNamedAttribute(node, "version"));
 		currentFragment.setProvider(getNodeNamedAttribute(node, "provider"));
 		currentFragment.setProviderVersion(getNodeNamedAttribute(node, "providerVersion"));
-
 
 		// parse enumerations first thing
 		for(Node enumerationsNode :  NodeListIterable(((Element) node).getElementsByTagName("enumerations"))) {

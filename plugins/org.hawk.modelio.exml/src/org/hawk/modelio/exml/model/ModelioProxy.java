@@ -16,7 +16,7 @@ import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
 import org.hawk.modelio.exml.metamodel.AbstractModelioObject;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
-import org.hawk.modelio.exml.parser.ExmlReference;
+import org.hawk.modelio.exml.model.parser.ExmlReference;
 
 public class ModelioProxy extends AbstractModelioObject {
 

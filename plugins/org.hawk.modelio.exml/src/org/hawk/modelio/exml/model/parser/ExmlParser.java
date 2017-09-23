@@ -8,7 +8,7 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.modelio.exml.parser;
+package org.hawk.modelio.exml.model.parser;
 
 import java.io.File;
 import java.io.IOException;

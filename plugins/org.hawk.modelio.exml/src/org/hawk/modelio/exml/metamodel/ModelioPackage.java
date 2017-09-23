@@ -24,6 +24,8 @@ import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
+import org.hawk.modelio.exml.metamodel.mlib.MClass;
+import org.hawk.modelio.exml.metamodel.mlib.MPackage;
 
 public class ModelioPackage extends AbstractModelioObject implements IHawkPackage {
 
@@ -76,6 +78,8 @@ public class ModelioPackage extends AbstractModelioObject implements IHawkPackag
 		switch (hsf.getName()) {
 		case "name":
 			return true;
+		case "version":
+			return true;
 		default:
 			return false;
 		}
@@ -85,6 +89,7 @@ public class ModelioPackage extends AbstractModelioObject implements IHawkPackag
 	public Object get(IHawkAttribute attr) {
 		switch (attr.getName()) {
 		case "name": return rawPackage.getName();
+		case "version": return rawPackage.getVersion();
 		default: return null;
 		}
 	}
@@ -135,9 +140,6 @@ public class ModelioPackage extends AbstractModelioObject implements IHawkPackag
 		return rawPackage.getXml();
 	}
 
-	public void setXml(String xmlString) {
-		rawPackage.setXml(xmlString);
-	}
 	public Collection<ModelioPackage> getPackages() {
 		if (packages == null) {
 			packages = new ArrayList<>();
@@ -170,4 +172,30 @@ public class ModelioPackage extends AbstractModelioObject implements IHawkPackag
 	public String getVersion() {
 		return rawPackage.getVersion();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((rawPackage == null) ? 0 : rawPackage.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ModelioPackage other = (ModelioPackage) obj;
+		if (rawPackage == null) {
+			if (other.rawPackage != null)
+				return false;
+		} else if (!rawPackage.equals(other.rawPackage))
+			return false;
+		return true;
+	}
+
 }

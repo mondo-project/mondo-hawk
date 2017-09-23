@@ -19,6 +19,17 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.List;
 
+import org.hawk.modelio.exml.metamodel.parser.MAggregationType;
+import org.hawk.modelio.exml.metamodel.parser.MAttributeType;
+import org.hawk.modelio.exml.metamodel.parser.MEnumeration;
+import org.hawk.modelio.exml.metamodel.parser.MFragment;
+import org.hawk.modelio.exml.metamodel.parser.MLinkMetaclass;
+import org.hawk.modelio.exml.metamodel.parser.MMetaclass;
+import org.hawk.modelio.exml.metamodel.parser.MMetaclassAttribute;
+import org.hawk.modelio.exml.metamodel.parser.MMetaclassDependency;
+import org.hawk.modelio.exml.metamodel.parser.MMetaclassReference;
+import org.hawk.modelio.exml.metamodel.parser.MMetamodelDescriptor;
+import org.hawk.modelio.exml.metamodel.parser.MMetamodelParser;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.InputSource;
