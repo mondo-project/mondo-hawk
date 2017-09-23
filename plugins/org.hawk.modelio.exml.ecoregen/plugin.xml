@@ -89,5 +89,11 @@
     <resource uri="modelio://uml/behavior/usecaseModel/v3" location="model/modelio-v3.ecore#/25"/>
     <resource uri="modelio://uml/behavior/communicationModel/v3" location="model/modelio-v3.ecore#/26"/>
     <resource uri="modelio://uml/informationFlow/v3" location="model/modelio-v3.ecore#/27"/>
+    <resource uri="modelio://Modeliosoft.Analyst/2.0.00" location="model/modelioMetamodel_format_1.ecore#/0"/>
+    <resource uri="modelio://Modeliosoft.Infrastructure/2.1.00" location="model/modelioMetamodel_format_1.ecore#/1"/>
+    <resource uri="modelio://Modeliosoft.Archimate/1.0.03" location="model/modelioMetamodel_format_1.ecore#/2"/>
+    <resource uri="modelio://Modeliosoft.Standard/2.0.00" location="model/modelioMetamodel_format_1.ecore#/3"/>
+    <resource uri="modelio://Modeliosoft.modelio.kernel/1.0.00" location="model/modelioMetamodel_format_1.ecore#/4"/>
+    <resource uri="modelio://ModelioMetaPackage" location="model/modelioMetamodel_format_1.ecore#/5"/>
    </extension>
 </plugin>
