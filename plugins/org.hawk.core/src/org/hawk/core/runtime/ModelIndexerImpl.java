@@ -63,6 +63,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	public static class DefaultFileImporter implements IFileImporter {
 
+		private Map<String, File> cachedImports = new HashMap<>();
 		private IVcsManager vcs;
 		private File tempDir;
 
@@ -73,20 +74,31 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		@Override
 		public File importFile(String commitPath) {
-			String[] commitPathSplit = commitPath.split("/");
+			/*
+			 * We cache the results as some files may get imported repeatedly
+			 * (e.g. mmversion.dat for Modelio).
+			 */
+			if (!cachedImports.containsKey(commitPath)) {
+				String[] commitPathSplit = commitPath.split("/");
 
-			// Resolves the commit path as a relative path from the temporary directory
-			File destination = tempDir;
-			if (commitPathSplit.length > 1) {
-				for (String pathComponent : commitPathSplit) {
-					destination = new File(destination, pathComponent);
+				// Resolves the commit path as a relative path from the
+				// temporary directory
+				File destination = tempDir;
+				if (commitPathSplit.length > 1) {
+					for (String pathComponent : commitPathSplit) {
+						destination = new File(destination, pathComponent);
+					}
+					destination.getParentFile().mkdirs();
+				} else {
+					destination = new File(destination, commitPath);
 				}
-				destination.mkdirs();
-			} else {
-				destination = new File(destination, commitPath);
-			}
 
-			return vcs.importFiles(commitPath, destination);
+				File result = vcs.importFiles(commitPath, destination);
+				cachedImports.put(commitPath, result);
+				return result;
+			} else {
+				return cachedImports.get(commitPath);
+			}
 		}
 	}
 
