@@ -103,10 +103,10 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-compiler-plugin</artifactId>
         <version>${tycho-version}</version>
-	<configuration>
-	  <source>1.7</source>
-	  <target>1.7</target>
-	</configuration>
+	      <configuration>
+	        <source>1.7</source>
+	        <target>1.7</target>
+	      </configuration>
       </plugin>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
@@ -122,20 +122,20 @@
 	      <version>${tycho-version}</version>
 	      <configuration>
           <argLine>-Xms2g -Xmx2g -XX:MaxDirectMemorySize=4g -XX:+UseG1GC -XX:+UseStringDeduplication -XX:MaxDirectMemorySize=8g -Dstorage.diskCache.bufferSize=2000</argLine>
-	</configuration>
+	      </configuration>
       </plugin>
       <plugin>
-	<groupId>org.eclipse.tycho</groupId>
-	<artifactId>target-platform-configuration</artifactId>
-	<version>${tycho-version}</version>
-	<configuration>
-	  <target>
-	    <artifact>
-	      <groupId>org.hawk</groupId>
-	      <artifactId>org.hawk.targetplatform</artifactId>
-	      <version>1.2.0-SNAPSHOT</version>
-	    </artifact>
-	  </target>
+	      <groupId>org.eclipse.tycho</groupId>
+	      <artifactId>target-platform-configuration</artifactId>
+	      <version>${tycho-version}</version>
+	      <configuration>
+	        <target>
+	          <artifact>
+	            <groupId>org.hawk</groupId>
+	            <artifactId>org.hawk.targetplatform</artifactId>
+	            <version>1.2.0-SNAPSHOT</version>
+	          </artifact>
+	        </target>
           <environments>
             <environment>
               <os>win32</os>
@@ -153,26 +153,26 @@
               <arch>x86_64</arch>
             </environment>
           </environments>
-	</configuration>
+	      </configuration>
       </plugin>
       <plugin>
-	<groupId>org.eclipse.tycho</groupId>
-	<artifactId>tycho-source-plugin</artifactId>
-	<version>${tycho-version}</version>
-	<executions>
-	  <execution>
-	    <id>attach-source</id>
-	    <goals>
-	      <goal>plugin-source</goal>
-	    </goals>
-	  </execution>
-	</executions>
+	      <groupId>org.eclipse.tycho</groupId>
+	      <artifactId>tycho-source-plugin</artifactId>
+	      <version>${tycho-version}</version>
+	      <executions>
+	        <execution>
+	          <id>attach-source</id>
+	          <goals>
+	            <goal>plugin-source</goal>
+	          </goals>
+	        </execution>
+	      </executions>
       </plugin>
       <plugin>
-	<groupId>org.eclipse.tycho.extras</groupId>
-	<artifactId>tycho-source-feature-plugin</artifactId>
-	<version>${tycho-version}</version>
-	<executions>
+	      <groupId>org.eclipse.tycho.extras</groupId>
+	      <artifactId>tycho-source-feature-plugin</artifactId>
+	      <version>${tycho-version}</version>
+	      <executions>
           <execution>
             <id>source-feature</id>
             <phase>package</phase>
@@ -180,13 +180,13 @@
               <goal>source-feature</goal>
             </goals>
           </execution>
-	</executions>
+	      </executions>
       </plugin>
       <plugin>
-	<groupId>org.eclipse.tycho</groupId>
-	<artifactId>tycho-p2-plugin</artifactId>
-	<version>${tycho-version}</version>
-	<executions>
+	      <groupId>org.eclipse.tycho</groupId>
+	      <artifactId>tycho-p2-plugin</artifactId>
+	      <version>${tycho-version}</version>
+	      <executions>
           <execution>
             <id>attach-p2-metadata</id>
             <phase>package</phase>
@@ -194,7 +194,7 @@
               <goal>p2-metadata</goal>
             </goals>
           </execution>
-	</executions>
+	      </executions>
       </plugin>
     </plugins>
   </build>
