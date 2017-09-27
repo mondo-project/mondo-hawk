@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Hawk Neo4j-v2 Plugin
 Bundle-SymbolicName: org.hawk.neo4j-v2;singleton:=true
-Bundle-Version: 1.1.0.qualifier
+Bundle-Version: 1.2.0.qualifier
 Require-Bundle: org.hawk.neo4j-v2.dependencies,
  org.hawk.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

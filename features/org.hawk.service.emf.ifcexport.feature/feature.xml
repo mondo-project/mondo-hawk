@@ -2,7 +2,7 @@
 <feature
       id="org.hawk.service.emf.ifcexport.feature"
       label="IFC Export for Remote Hawk EMF Resources Feature"
-      version="1.1.0.qualifier"
+      version="1.2.0.qualifier"
       provider-name="University of York">
 
    <description url="http://www.example.com/description">

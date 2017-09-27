@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Hawk Servlet
 Bundle-SymbolicName: org.hawk.service.servlet;singleton:=true
-Bundle-Version: 1.1.0.qualifier
+Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: org.hawk.service.servlet.Activator
 Bundle-Vendor: University of York, Aston University
 Require-Bundle: org.eclipse.core.runtime,
