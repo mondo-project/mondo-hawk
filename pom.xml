@@ -9,7 +9,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <tycho-version>0.24.0</tycho-version>
+    <tycho-version>0.25.0</tycho-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
   </properties>
@@ -109,10 +109,18 @@
 	</configuration>
       </plugin>
       <plugin>
-	<groupId>org.eclipse.tycho</groupId>
-	<artifactId>tycho-surefire-plugin</artifactId>
-	<version>${tycho-version}</version>
-	<configuration>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-packaging-plugin</artifactId>
+        <version>${tycho-version}</version>
+	      <configuration>
+          <strictVersions>false</strictVersions>
+	      </configuration>
+      </plugin>
+      <plugin>
+	      <groupId>org.eclipse.tycho</groupId>
+	      <artifactId>tycho-surefire-plugin</artifactId>
+	      <version>${tycho-version}</version>
+	      <configuration>
           <argLine>-Xms2g -Xmx2g -XX:MaxDirectMemorySize=4g -XX:+UseG1GC -XX:+UseStringDeduplication -XX:MaxDirectMemorySize=8g -Dstorage.diskCache.bufferSize=2000</argLine>
 	</configuration>
       </plugin>
