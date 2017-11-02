@@ -28,7 +28,7 @@ import java.util.Set;
 import org.eclipse.epsilon.common.parse.problem.ParseProblem;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.eol.EolModule;
-import org.eclipse.epsilon.eol.IEolExecutableModule;
+import org.eclipse.epsilon.eol.IEolModule;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
@@ -776,7 +776,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 	@Override
 	public List<String> validate(String derivationlogic) {
-		final IEolExecutableModule module = createModule();
+		final IEolModule module = createModule();
 
 		final List<String> ret = new LinkedList<>();
 		try {
@@ -854,7 +854,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			throw new QueryExecutionException("Loading of EOLQueryEngine failed");
 		}
 
-		final IEolExecutableModule module = createModule();
+		final IEolModule module = createModule();
 		parseQuery(query, context, q, module);
 		return runQuery(trueStart, module);
 	}
@@ -873,7 +873,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		if (enableDebugOutput)
 			System.out.println("Graph path: " + graph.getPath() + "\n----------");
 
-		final IEolExecutableModule module = createModule();
+		final IEolModule module = createModule();
 		parseQuery(query, context, q, module);
 		return runQuery(trueStart, module);
 	}
@@ -883,12 +883,12 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	/**
 	 * Query engines that add support for other Epsilon languages should redefine this method.
 	 */
-	protected IEolExecutableModule createModule() {
+	protected IEolModule createModule() {
 		return new EolModule();
 	}
 
 	protected void parseQuery(String query, Map<String, Object> context, final EOLQueryEngine model,
-			final IEolExecutableModule module) throws InvalidQueryException {
+			final IEolModule module) throws InvalidQueryException {
 		try {
 			if (enableDebugOutput) {
 				System.out.println("PARSING:\n----------\n" + name == null ? "QUERY" : name + "\n----------");
@@ -902,7 +902,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		addQueryArguments(context, module);
 	}
 
-	protected Object runQuery(final long trueStart, final IEolExecutableModule module) throws QueryExecutionException {
+	protected Object runQuery(final long trueStart, final IEolModule module) throws QueryExecutionException {
 		final long init = System.currentTimeMillis();
 		Object ret = null;
 		try (IGraphTransaction tx = graph.beginTransaction()) {
@@ -925,7 +925,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void addQueryArguments(Map<String, Object> context, final IEolExecutableModule module) {
+	protected void addQueryArguments(Map<String, Object> context, final IEolModule module) {
 		if (context != null) {
 			final Map<String, Object> args = (Map<String, Object>) context.get(PROPERTY_ARGUMENTS);
 			if (args != null) {

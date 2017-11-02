@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.epsilon.eol.IEolExecutableModule;
+import org.eclipse.epsilon.eol.IEolModule;
 import org.eclipse.epsilon.epl.EplModule;
 import org.eclipse.epsilon.epl.execute.PatternMatch;
 import org.eclipse.epsilon.epl.execute.PatternMatchModel;
@@ -43,12 +43,12 @@ public class EPLQueryEngine extends EOLQueryEngine {
 	}
 
 	@Override
-	protected IEolExecutableModule createModule() {
+	protected IEolModule createModule() {
 		return new EplModule();
 	}
 
 	@Override
-	protected Object runQuery(long trueStart, IEolExecutableModule module) throws QueryExecutionException {
+	protected Object runQuery(long trueStart, IEolModule module) throws QueryExecutionException {
 		final Object ret = super.runQuery(trueStart, module);
 		if (ret instanceof PatternMatchModel) {
 			final PatternMatchModel matchModel = (PatternMatchModel) ret;
