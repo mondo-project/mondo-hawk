@@ -8,7 +8,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Fragment-Host: org.hawk.orientdb
 Require-Bundle: org.junit;bundle-version="4.11.0",
  org.hawk.emf,
- org.hawk.epsilon,
+ org.hawk.epsilon;bundle-version="[0.0.0,1.5.0)",
  org.hawk.graph,
  org.hawk.localfolder,
  org.eclipse.epsilon.eol.engine;bundle-version="1.3.0",

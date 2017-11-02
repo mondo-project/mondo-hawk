@@ -30,6 +30,7 @@
     <module>features/org.hawk.ui.feature</module>
     <module>features/org.hawk.workspace.feature</module>
     <module>features/org.hawk.service.api.feature</module>
+    <module>features/org.hawk.service.api.dt.feature</module>
     <module>features/org.hawk.service.clients.cli.feature</module>
     <module>features/org.hawk.service.cli.feature</module>
     <module>features/org.hawk.service.emf.feature</module>
