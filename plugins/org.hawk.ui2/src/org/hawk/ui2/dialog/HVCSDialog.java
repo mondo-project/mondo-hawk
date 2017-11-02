@@ -262,7 +262,7 @@ final class HVCSDialog extends TitleAreaDialog {
 	private boolean isLocationValidURI() {
 		try {
 			URI uri = new URI(txtVCSLocation.getText());
-			return uri.getScheme() != null && uri.getPath() != null && uri.getHost() != null;
+			return uri.getScheme() != null && uri.getPath() != null;
 		} catch (URISyntaxException e) {
 			return false;
 		}
