@@ -11,19 +11,19 @@
 
   <groupId>org.hawk</groupId>
   <artifactId>org.hawk.modelio.exml</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
   <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
       <groupId>org.hawk</groupId>
       <artifactId>org.hawk.core</artifactId>
-      <version>1.1.0</version>
+      <version>1.1.1</version>
     </dependency>
     <dependency>
       <groupId>org.hawk</groupId>
       <artifactId>org.hawk.epsilon</artifactId>
-      <version>1.1.0</version>
+      <version>1.1.1</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

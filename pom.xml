@@ -134,7 +134,7 @@
 	    <artifact>
 	      <groupId>org.hawk</groupId>
 	      <artifactId>org.hawk.targetplatform</artifactId>
-	      <version>1.1.0</version>
+	      <version>1.1.1</version>
 	    </artifact>
 	  </target>
           <environments>

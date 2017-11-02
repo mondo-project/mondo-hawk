@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Hawk Manifest Plugin
 Bundle-SymbolicName: org.hawk.manifest;singleton:=true
-Bundle-Version: 1.1.0.qualifier
+Bundle-Version: 1.1.1.qualifier
 Bundle-Vendor: University of York
 Require-Bundle: org.hawk.core,
  org.eclipse.pde.core,

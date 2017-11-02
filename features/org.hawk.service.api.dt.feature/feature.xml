@@ -2,7 +2,7 @@
 <feature
       id="org.hawk.service.api.dt.feature"
       label="Hawk Service API Developer Tools Feature"
-      version="1.1.0.qualifier"
+      version="1.1.1.qualifier"
       provider-name="Aston University">
 
    <description url="http://www.example.com/description">

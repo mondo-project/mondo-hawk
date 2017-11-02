@@ -11,7 +11,7 @@
 
   <groupId>org.hawk</groupId>
   <artifactId>org.hawk.modelio.exml.tests</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
   <packaging>eclipse-test-plugin</packaging>
 
 </project>

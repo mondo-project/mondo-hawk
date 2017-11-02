@@ -10,6 +10,6 @@
   </parent>
 
   <artifactId>org.hawk.targetplatform</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
   <packaging>eclipse-target-definition</packaging>
 </project>

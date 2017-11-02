@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Hawk Server -- Logback Configuration
 Bundle-SymbolicName: org.hawk.service.server.logback
-Bundle-Version: 1.1.0.qualifier
+Bundle-Version: 1.1.1.qualifier
 Bundle-Vendor: University of York, Aston University
 Fragment-Host: ch.qos.logback.classic;bundle-version="1.0.7.v20121108-1250"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

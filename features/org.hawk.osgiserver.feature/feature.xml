@@ -2,7 +2,7 @@
 <feature
       id="org.hawk.osgiserver.feature"
       label="Hawk OSGi-based Server Feature"
-      version="1.1.0.qualifier"
+      version="1.1.1.qualifier"
       provider-name="University of York">
 
    <description url="http://www.example.com/description">
