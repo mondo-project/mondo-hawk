@@ -25,7 +25,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.hawk.core.graph.IGraphNode;
-import org.hawk.epsilon.emc.DeriveFeature;
 import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.TypeNode;

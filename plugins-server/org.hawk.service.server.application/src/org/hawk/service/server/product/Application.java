@@ -31,7 +31,7 @@ public class Application implements IApplication {
 		System.out.println("\n"
 				+ "Welcome to the Hawk Server!\n"
 				+ "List available commands with '" + ServerCommandProvider.HSERVER_HELP_CMD + "'.\n"
-				+ "Stop the server with 'shutdown' and then 'close'.\n");
+				+ "Stop the server with 'shutdown'.\n");
 
 		// We don't really do anything at the moment for the application:
 		// we just want a working Equinox instance for now		
