@@ -12,6 +12,7 @@
 package org.hawk.modelio.exml.metamodel;
 
 
+import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -48,11 +49,13 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioClass.class);
 
-
 	protected final ModelioPackage mPackage;
 	protected final MClass rawClass;
 	protected Map<String, ModelioAttribute> ownAttributes, allAttributes;
 	protected Map<String, ModelioReference> ownReferences, allReferences;
+
+	/** memory-sensitive cache of super types */
+	protected SoftReference<Set<ModelioClass>> cachedAllSuperTypes;
 
 	public ModelioClass(ModelioPackage pkg, MClass mc) {
 		this.mPackage = pkg;
@@ -203,13 +206,21 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 
 	@Override
 	public Set<ModelioClass> getAllSuperTypes() {
-		final Set<ModelioClass> superClasses = new HashSet<>();
-		for (MClass superRawClass : rawClass.getMSuperType()) {
-			ModelioClass superClass = mPackage.getResource().getModelioClassById(superRawClass.getId());
-			if (superClasses.add(superClass)) {
-				superClasses.addAll(superClass.getAllSuperTypes());
+		Set<ModelioClass> superClasses = cachedAllSuperTypes != null ? cachedAllSuperTypes.get() : null;
+
+		if (superClasses == null) {
+			superClasses = new HashSet<>();
+
+			for (MClass superRawClass : rawClass.getMSuperType()) {
+				ModelioClass superClass = mPackage.getResource().getModelioClassById(superRawClass.getId());
+				if (superClasses.add(superClass)) {
+					superClasses.addAll(superClass.getAllSuperTypes());
+				}
 			}
+
+			cachedAllSuperTypes = new SoftReference<Set<ModelioClass>>(superClasses);
 		}
+
 		return superClasses;
 	}
 

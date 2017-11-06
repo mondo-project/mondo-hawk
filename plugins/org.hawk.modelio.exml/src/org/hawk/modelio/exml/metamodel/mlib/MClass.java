@@ -68,12 +68,12 @@ public class MClass {
 
 	@Override
 	public int hashCode() {
+		// We use only identity-based equality to speed up lookups in HashMaps/HashSets:
+		// we assume that if id and name are equal, the rest will be equal within the
+		// metamodel
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((mAttributes == null) ? 0 : mAttributes.hashCode());
-		result = prime * result + ((mDependencies == null) ? 0 : mDependencies.hashCode());
-		result = prime * result + ((mSubTypes == null) ? 0 : mSubTypes.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -86,27 +86,14 @@ public class MClass {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
+
 		MClass other = (MClass) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (mAttributes == null) {
-			if (other.mAttributes != null)
-				return false;
-		} else if (!mAttributes.equals(other.mAttributes))
-			return false;
-		if (mDependencies == null) {
-			if (other.mDependencies != null)
-				return false;
-		} else if (!mDependencies.equals(other.mDependencies))
-			return false;
-		if (mSubTypes == null) {
-			if (other.mSubTypes != null)
-				return false;
-		} else if (!mSubTypes.equals(other.mSubTypes))
-			return false;
+
 		if (name == null) {
 			if (other.name != null)
 				return false;
