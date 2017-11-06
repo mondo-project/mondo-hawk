@@ -31,11 +31,12 @@ import org.hawk.core.util.IndexedAttributeParameters;
 import org.hawk.osgiserver.HManager;
 import org.hawk.osgiserver.HModel;
 import org.hawk.service.api.Hawk.Iface;
-import org.hawk.service.servlet.config.ConfigFileParser;
-import org.hawk.service.servlet.config.HawkInstanceConfig;
-import org.hawk.service.servlet.config.RepositoryParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HawkServerConfigurator  {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(HawkServerConfigurator.class);
 
 	private List<HawkInstanceConfig> hawkInstanceConfigs;
 	private Iface iface;
@@ -61,11 +62,10 @@ public class HawkServerConfigurator  {
 		numberOfConfiguredInstances = 0;
 		int configCount = 0;
 		for (File file : getHawkServerConfigurationFiles()) {
-			System.out.println("configuring hawk instances:");
-			System.out.println("prasing file: " + file.getName());
+			LOGGER.info("Configuring hawk instances from {}", file.getName());
 			HawkInstanceConfig config = parser.parse(file);
 			if(config != null) {
-				System.out.println("configuring Hawk instance: " + config.getName());
+				LOGGER.info("Configuring Hawk instance {}", config.getName());
 				hawkInstanceConfigs.add(config); // add to list
 				configureHawkInstance(config);
 			}
@@ -94,7 +94,7 @@ public class HawkServerConfigurator  {
 				configurationFolder = new File(path);
 			}
 
-			System.out.println("Looking for configuration files in " + configurationFolder.getAbsolutePath());
+			LOGGER.info("Looking for configuration files in {}", configurationFolder.getAbsolutePath());
 			FilenameFilter filter = getXmlFilenameFilter();
 			if (configurationFolder.exists() && configurationFolder.isDirectory()) {
 				return new ArrayList<File>(Arrays.asList(configurationFolder.listFiles(filter)));
@@ -102,7 +102,7 @@ public class HawkServerConfigurator  {
 				configurationFolder.mkdir(); // make directory
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		}
 		return Collections.emptyList();
 	}
@@ -160,13 +160,12 @@ public class HawkServerConfigurator  {
 						// indexed Attributes
 						addMissingIndexedAttributes(hModel, config);
 					} catch (Exception e) {
-						System.out.println("Configuring Hawk instance: Exception when adding derived/indexed attributes");
-						e.printStackTrace();
+						LOGGER.error("Configuring Hawk instance: Exception when adding derived/indexed attributes", e);
 					}
-					
+
 					// set the required polling values
 					hModel.configurePolling(config.getDelayMin(), config.getDelayMax());
-	
+
 					numberOfConfiguredInstances++;
 				}
 			}, 0);
@@ -204,7 +203,7 @@ public class HawkServerConfigurator  {
 							params.getDerivationLanguage(),
 							params.getDerivationLogic());
 				} else {
-					System.err.println("HawkServerConfigurator.addMissingDerivedAttributes: metamodel " + params.getMetamodelUri() + " is not registered!");
+					LOGGER.error("Metamodel {} is not registered!", params.getMetamodelUri());
 				}
 			}
 		}
@@ -219,7 +218,7 @@ public class HawkServerConfigurator  {
 				if(metamodels.contains(params.getMetamodelUri())) {
 					hawkInstance.addIndexedAttribute(params.getMetamodelUri(), params.getTypeName(), params.getAttributeName());
 				} else {
-					System.err.println("HawkServerConfigurator.addMissingIndexedAttributes: metamodel " + params.getMetamodelUri() + " is not registered!");
+					LOGGER.error("Metamodel {} is not registered!", params.getMetamodelUri());
 				}
 			}
 		}
@@ -255,7 +254,7 @@ public class HawkServerConfigurator  {
 					missingPlugins.add(plugin);
 				}
 			} else {
-				System.err.println("HawkServerConfigurator.addMissingPlugins: plugin " + plugin + " is not available!");
+				LOGGER.error("Plugin {} is not available!", plugin);
 			}
 		}
 

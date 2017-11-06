@@ -26,7 +26,7 @@ public class ServerCommandProvider implements CommandProvider {
 	public Object _hserverHelp(CommandInterpreter intp) throws Exception {
 		return getHelp();
 	}
-
+	
 	/* INSTANCE HANDLING */
 
 	public Object _hawkListInstances(CommandInterpreter intp) throws Exception {

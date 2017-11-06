@@ -501,11 +501,8 @@ public class HawkCommandProvider implements CommandProvider {
 					final HawkChangeEvent change = new HawkChangeEvent();
 					try {
 						change.read(proto);
-						System.out.println("Received message from Artemis: " + change);
 					} catch (TException e) {
-						// TODO Auto-generated catch block
-						System.err.println("Error while decoding incoming message");
-						e.printStackTrace();
+						LOGGER.error(e.getMessage(), e);
 					}
 					message.acknowledge();
 

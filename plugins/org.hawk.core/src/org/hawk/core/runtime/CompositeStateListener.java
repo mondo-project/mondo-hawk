@@ -13,9 +13,12 @@ package org.hawk.core.runtime;
 import java.util.LinkedHashSet;
 
 import org.hawk.core.IStateListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class CompositeStateListener extends LinkedHashSet<IStateListener>
-		implements IStateListener {
+public class CompositeStateListener extends LinkedHashSet<IStateListener> implements IStateListener {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(CompositeStateListener.class);
 	private static final long serialVersionUID = 6358455874909268099L;
 	private HawkState currentState = HawkState.STOPPED;
 
@@ -45,7 +48,7 @@ public class CompositeStateListener extends LinkedHashSet<IStateListener>
 		for (IStateListener l : this) {
 			l.info(s);
 		}
-		System.out.println(s);
+		LOGGER.info(s);
 	}
 
 	@Override
@@ -53,7 +56,7 @@ public class CompositeStateListener extends LinkedHashSet<IStateListener>
 		for (IStateListener l : this) {
 			l.error(s);
 		}
-		System.err.println(s);
+		LOGGER.error(s);
 	}
 
 	@Override

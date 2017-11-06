@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2017 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,11 +7,13 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - switch to logging through SLF4J
  ******************************************************************************/
 package org.hawk.graph.internal.updater;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
@@ -21,8 +23,11 @@ import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.graph.ModelElementNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DeletionUtils {
+	private static final Logger LOGGER = LoggerFactory.getLogger(DeletionUtils.class);
 
 	private IGraphDatabase graph;
 	private IGraphNodeIndex singletonIndex;
@@ -42,8 +47,7 @@ public class DeletionUtils {
 				modelElement.delete();
 				return true;
 			} catch (Exception e) {
-				System.err.println("DELETE NODE EXCEPTION:");
-				e.printStackTrace();
+				LOGGER.error(e.getMessage(), e);
 			}
 		return false;
 
@@ -57,77 +61,36 @@ public class DeletionUtils {
 		boolean success = true;
 
 		try {
-			final String repository = s.getCommit().getDelta().getManager()
-					.getLocation();
+			final String repository = s.getCommit().getDelta().getManager().getLocation();
+			LOGGER.debug("deleting nodes from file: {}", file.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
-			// IGraphNode file = itFile.next();
-
-			System.out.println("deleting nodes from file: "
-					+ file.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
-
-			HashSet<IGraphNode> modelElements = new HashSet<IGraphNode>();
-
+			Set<IGraphNode> modelElements = new HashSet<IGraphNode>();
 			for (IGraphEdge rel : file
 					.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 				modelElements.add(rel.getStartNode());
 				rel.delete();
 			}
 
-			// if (IModelIndexer.VERBOSE)
-			// System.out
-			// .println("cached elements and deleted file edges");
-
 			for (IGraphNode node : modelElements) {
 				dereference(node, changeListener, s);
 			}
-
-			// if (IModelIndexer.VERBOSE)
-			// System.out.println("dereferenced elements");
-
 			for (IGraphNode node : modelElements) {
 				makeProxyRefs(s, node, repository, file, changeListener);
 			}
-
-			// if (IModelIndexer.VERBOSE)
-			// System.out.println("made required proxy references");
-
-			// if (IModelIndexer.VERBOSE) {
-			// System.out.println("listeners registered:");
-			//
-			// for (Iterator<IGraphChangeListener> it =
-			// ((CompositeGraphChangeListener) changeListener)
-			// .iterator(); it.hasNext();) {
-			//
-			// IGraphChangeListener l = it.next();
-			// System.out.println(l);
-			//
-			// }
-			// }
-
 			for (IGraphNode node : modelElements) {
 				if (delete(node))
 					changeListener.modelElementRemoval(s, node, false);
 			}
 
-			// if (IModelIndexer.VERBOSE)
-			// System.out.println("deleted elements");
-
 			modelElements = null;
-
 			changeListener.fileRemoval(s, file);
 			delete(file);
-
-			// if (IModelIndexer.VERBOSE)
-			// System.out.println("ending deletion");
-
 		} catch (Exception e) {
 			success = false;
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		}
 
-		System.out.println("deleted all, took: "
-				+ (System.currentTimeMillis() - start) / 1000 + "s"
-				+ (System.currentTimeMillis() - start) / 1000 + "ms");
+		LOGGER.info("deleted all, took: {}s", (System.currentTimeMillis() - start) / 1000.0);
 		return success;
 	}
 
@@ -175,8 +138,6 @@ public class DeletionUtils {
 						.toString();
 				String referencedElementFileID = (String) referencedElementFileNode
 						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
-
-				// System.out.println(referencingNodeFileID+" ::: "+fileID);
 
 				String type = rel.getType();
 				if (!referencingNodeFileID.equals(referencedElementFileID)) {
@@ -251,8 +212,7 @@ public class DeletionUtils {
 				// delete derived attributes stored as nodes
 				if (rel.getProperty("isDerived") != null) {
 					if (l == null && s == null) {
-						System.err
-								.println("warning dereference has null listener/vcscommit -- this should only be used for non-model elements");
+						LOGGER.warn("warning dereference has null listener/vcscommit -- this should only be used for non-model elements");
 						break;
 					}
 					IGraphNode n = rel.getEndNode();
@@ -281,14 +241,11 @@ public class DeletionUtils {
 	}
 
 	public void delete(IGraphEdge rel) {
-
 		try {
 			rel.delete();
 		} catch (Exception e) {
-			System.err.println("DELETE NODE EXCEPTION:");
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		}
-
 	}
 
 	public void dereference(IGraphNode metaModelElement) {

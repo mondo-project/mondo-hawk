@@ -3,7 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Hawk Graph Plugin
 Bundle-SymbolicName: org.hawk.graph;singleton:=true
 Bundle-Version: 1.2.0.qualifier
-Require-Bundle: org.hawk.core
+Require-Bundle: org.hawk.core,
+ org.slf4j.api;bundle-version="1.7.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: University of York
 Export-Package: org.hawk.graph,

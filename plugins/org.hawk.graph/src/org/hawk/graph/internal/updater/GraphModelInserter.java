@@ -46,6 +46,8 @@ import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.internal.util.GraphUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * creates a database with the input xmi file (in args[0]) or reads it if the
@@ -53,6 +55,7 @@ import org.hawk.graph.internal.util.GraphUtil;
  * 
  */
 public class GraphModelInserter {
+	private static final Logger LOGGER = LoggerFactory.getLogger(GraphModelInserter.class);
 
 	// toggle to enabled detailed output of update process
 	private static final boolean enableDebug = false;
@@ -107,7 +110,7 @@ public class GraphModelInserter {
 			prefixesToStrip.addAll(manager.getPrefixesToBeStripped());
 
 			if (verbose) {
-				System.err.println("file already present, calculating deltas with respect to graph storage");
+				LOGGER.debug("File already present, calculating deltas with respect to graph storage");
 			}
 			if (currentDeltaRatio > maxTransactionalAcceptableLoadRatio) {
 				// System.err.print("[" + currentDeltaRatio + ">" +
@@ -138,7 +141,7 @@ public class GraphModelInserter {
 		if (verbose) {
 			indexer.getCompositeStateListener()
 					.info("Performing transactional update (delta:" + delta + ") on file: " + s.getPath() + "...");
-			System.err.println("transactional update called");
+			LOGGER.debug("transactional update called");
 		}
 
 		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
@@ -311,8 +314,7 @@ public class GraphModelInserter {
 			listener.changeSuccess();
 			return true;
 		} catch (Exception e) {
-			System.err.println("exception in transactionalUpdate()");
-			e.printStackTrace();
+			LOGGER.error("exception in transactionalUpdate()", e);
 			listener.changeFailure();
 			return false;
 		} finally {
@@ -418,8 +420,7 @@ public class GraphModelInserter {
 			proxyDictionary.add(node, m);
 
 		} catch (Exception e) {
-			System.err.println("proxydictionary error:");
-			e.printStackTrace();
+			LOGGER.error("proxydictionary error", e);
 			return false;
 		}
 		return true;
@@ -570,7 +571,6 @@ public class GraphModelInserter {
 
 	private boolean batchUpdate(final boolean verbose) throws Exception {
 		if (verbose) {
-			System.err.println("batch update called");
 			indexer.getCompositeStateListener().info("Performing batch update of file: " + s.getPath() + "...");
 		}
 		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
@@ -600,7 +600,7 @@ public class GraphModelInserter {
 
 	private int calculateModelDeltaSize(boolean verbose) throws Exception {
 		if (verbose) {
-			System.err.println("calculateModelDeltaSize() called:");
+			LOGGER.info("calculateModelDeltaSize() called");
 		}
 
 		if (new Utils().getFileNodeFromVCSCommitItem(graph, s) != null) {
@@ -623,7 +623,7 @@ public class GraphModelInserter {
 							(byte[]) n.getProperty(IModelIndexer.SIGNATURE_PROPERTY));
 				}
 				if (verbose) {
-					System.err.println("file contains: " + nodes.size() + " (" + signatures.size() + ") nodes in store");
+					LOGGER.info("File contains: {} ({}) nodes in store", nodes.size(), signatures.size());
 				}
 
 				// Get the model elements from the resource and use signatures
@@ -663,15 +663,15 @@ public class GraphModelInserter {
 				int deletedn = nodes.size() - unchanged.size() - updated.size() - retyped.size();
 				currentDeltaRatio = (addedn + retypedn + updatedn + deletedn) / ((double) nodes.size());
 				if (verbose) {
-					System.err.println("update contains | a:" + (addedn + retypedn) + " + u:" + updatedn + " + d:"
-							+ deletedn + " ratio:" + currentDeltaRatio);
+					LOGGER.info("Update contains | a:{} u:{} d:{} ratio: {}",
+						(addedn + retypedn), updatedn, deletedn, currentDeltaRatio);
 				}
 
 				return addedn + retypedn + updatedn + deletedn;
 			}
 		} else {
 			if (verbose) {
-				System.err.println("file not in store, performing initial batch file insertion");
+				LOGGER.info("File not in store, performing initial batch file insertion");
 			}
 			currentDeltaRatio = -1;
 			return -1;
@@ -697,11 +697,12 @@ public class GraphModelInserter {
 					indexer.getCompositeGraphChangeListener(), verbose);
 			unset = batch.getUnset();
 			success = batch.getSuccess();
-			if (!success)
-				System.err.println(
+			if (!success) {
+				LOGGER.error(
 						"model insertion aborted: see above error (maybe you need to register the metamodel?)");
+			}
 		} else {
-			System.err.println("model insertion aborted, see above error (maybe you need to register the metamodel?)");
+			LOGGER.error("model insertion aborted, see above error (maybe you need to register the metamodel?)");
 		}
 
 		if (verbose) {
@@ -833,15 +834,13 @@ public class GraphModelInserter {
 
 			proxiesLeft = proxyDictionary.query(GraphModelUpdater.PROXY_REFERENCE_PREFIX, "*").size();
 
-			System.out.println(proxiesLeft + " - sets of proxy references left in the store");
+			LOGGER.info("{} - sets of proxy references left in the store", proxiesLeft);
 			tx.success();
 
 		}
 
-		System.out.println("proxy resolution took: ~" + (System.currentTimeMillis() - start) / 1000 + "s");
-
+		LOGGER.info("proxy resolution took: ~{}s", (System.currentTimeMillis() - start) / 1000.0);
 		return proxiesLeft;
-
 	}
 
 	private void resolveProxies(IGraphDatabase graph, final IGraphChangeListener listener, IGraphNode n,
@@ -963,7 +962,7 @@ public class GraphModelInserter {
 		IGraphNodeIndex derivedProxyDictionary = null;
 		int size = 0;
 
-		System.err.println("deriving attributes...");
+		LOGGER.info("Deriving attributes...");
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			derivedProxyDictionary = graph.getOrCreateNodeIndex("derivedproxydictionary");
 			allUnresolved = derivedProxyDictionary.query("derived", "*");
@@ -980,7 +979,7 @@ public class GraphModelInserter {
 			derivedLeft = ((IGraphIterable<IGraphNode>) derivedProxyDictionary.query("derived", "*")).size();
 			tx.success();
 		}
-		System.out.println(derivedLeft + " - sets of proxy [derived] attributes left incomplete in the store");
+		LOGGER.info("{} - sets of proxy [derived] attributes left incomplete in the store", derivedLeft);
 
 		return derivedLeft;
 	}
@@ -1020,8 +1019,7 @@ public class GraphModelInserter {
 
 				if (enableDebug) {
 					/* high overhead in certain corner cases (modelio -- large workspace -- only enable for debugging) */
-					System.err.println("accesses: " + accessListener.getAccesses().size() + " ("
-							+ derivedAccessDictionary.query("*", "*").size() + " nodes)");
+					LOGGER.info("accesses: {} ({} nodes)", accessListener.getAccesses().size(), derivedAccessDictionary.query("*", "*").size());
 				}
 
 				accessListener.resetAccesses();
@@ -1104,24 +1102,24 @@ public class GraphModelInserter {
 		return fileNode;
 	}
 
-	public void updateDerivedAttribute(String metamodeluri, String typename, String attributename, String attributetype,
+	public void updateDerivedAttribute(String metamodelUri, String typeName, String attributeName, String attributeType,
 			boolean isMany, boolean isOrdered, boolean isUnique, String derivationlanguage, String derivationlogic) {
 
 		final long startMillis = System.currentTimeMillis();
-		System.err.println("creating/updating derived attribute...");
+		LOGGER.info("Creating / updating derived attribute {}::{}#{}", metamodelUri, typeName, attributeName);
 
 		// Add the new derived property nodes
 		Set<IGraphNode> derivedPropertyNodes = new HashSet<>();
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			// operations on the graph
 			// ...
-			IGraphNode metamodelNode = graph.getMetamodelIndex().get("id", metamodeluri).getSingle();
+			IGraphNode metamodelNode = graph.getMetamodelIndex().get("id", metamodelUri).getSingle();
 
 			IGraphNode typeNode = null;
 
 			for (IGraphEdge e : metamodelNode.getIncomingWithType("epackage")) {
 				IGraphNode othernode = e.getStartNode();
-				if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(typename)) {
+				if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(typeName)) {
 					typeNode = othernode;
 					break;
 				}
@@ -1137,16 +1135,16 @@ public class GraphModelInserter {
 
 			for (IGraphNode instanceNode : nodes) {
 
-				Iterator<IGraphEdge> derived = instanceNode.getOutgoingWithType(attributename).iterator();
+				Iterator<IGraphEdge> derived = instanceNode.getOutgoingWithType(attributeName).iterator();
 
 				HashMap<String, Object> m = new HashMap<>();
 				m.put("isMany", isMany);
 				m.put("isOrdered", isOrdered);
 				m.put("isUnique", isUnique);
-				m.put("attributetype", attributetype);
+				m.put("attributetype", attributeType);
 				m.put("derivationlanguage", derivationlanguage);
 				m.put("derivationlogic", derivationlogic);
-				m.put(attributename, DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX + derivationlogic);
+				m.put(attributeName, DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX + derivationlogic);
 
 				// derived node exists -- update derived property
 				if (derived.hasNext()) {
@@ -1166,7 +1164,7 @@ public class GraphModelInserter {
 					m.clear();
 					m.put("isDerived", true);
 
-					graph.createRelationship(instanceNode, derivedPropertyNode, attributename, m);
+					graph.createRelationship(instanceNode, derivedPropertyNode, attributeName, m);
 
 					derivedPropertyNodes.add(derivedPropertyNode);
 
@@ -1174,9 +1172,9 @@ public class GraphModelInserter {
 
 			}
 
-			if (enableDebug)
-				System.err.println(derivedPropertyNodes.size()
-						+ " instances found.\ncalculating derived attribute for instances...");
+			if (enableDebug) {
+				LOGGER.info("{} instances found.\ncalculating derived attribute for instances...", derivedPropertyNodes.size());
+			}
 
 			tx.success();
 		} catch (Exception e) {
@@ -1192,7 +1190,7 @@ public class GraphModelInserter {
 			return;
 		}
 
-		System.err.println("finished adding derived feature in " + (System.currentTimeMillis() - startMillis) + " ms");
+		LOGGER.info("Finished adding derived feature in {}s", (System.currentTimeMillis() - startMillis) / 1000.0);
 	}
 
 	public void updateIndexedAttribute(String metamodeluri, String typename, String attributename) {

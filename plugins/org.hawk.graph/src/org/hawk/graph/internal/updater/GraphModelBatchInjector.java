@@ -42,8 +42,11 @@ import org.hawk.graph.FileNode;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.internal.util.GraphUtil;
 import org.hawk.graph.internal.util.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GraphModelBatchInjector {
+	private static final Logger LOGGER = LoggerFactory.getLogger(GraphModelBatchInjector.class);
 
 	public static final String FRAGMENT_DICT_NAME = "fragmentdictionary";
 	public static final String ROOT_DICT_FILE_KEY = FileNode.FILE_NODE_LABEL;
@@ -174,41 +177,27 @@ public class GraphModelBatchInjector {
 
 					// add model elements
 					Iterable<IHawkObject> children = r.getAllContents();
-					if (verbose) {
-						startTime = System.nanoTime();
-						System.out.println("File: " + s.getPath());
-						System.out.print("ADDING: ");
-					}
-					int[] addedElements = parseResource(fileNode, ParseOptions.MODELELEMENTS, children, hawk,
-							r.providesSingletonElements());
-					if (verbose) {
-						System.out.println(addedElements[0] + "\nNODES AND " + addedElements[1] + " + " + addedElements[2]
-							+ " M->MM REFERENCES! (took ~" + (System.nanoTime() - startTime) / 1000000000 + "sec)");
-					}
+					startTime = System.nanoTime();
+					LOGGER.debug("Adding elements of file {}", s.getPath());
+
+					int[] addedElements = parseResource(fileNode, ParseOptions.MODELELEMENTS, children, hawk, r.providesSingletonElements());
+					LOGGER.debug("{} NODES AND {} M->MM REFERENCES! (took ~{}sec)",
+						addedElements[0], addedElements[1], addedElements[2],
+						(System.nanoTime() - startTime) / 1_000_000_000
+					);
 
 					// add references
-					if (verbose) {
-						startTime = System.nanoTime();
-						System.out.println("File: " + s.getPath());
-						System.out.print("ADDING: ");
-					}
+					startTime = System.nanoTime();
+					LOGGER.debug("Adding edges of file {}", s.getPath());
 					addedElements = parseResource(fileNode, ParseOptions.MODELREFERENCES, children, hawk,
 							r.providesSingletonElements());
 					setUnset(getUnset() + addedElements[3]);
-					if (verbose) {
-						System.out.println(addedElements[0] + "\nREFERENCES! (took ~"
-							+ (System.nanoTime() - startTime) / 1000000000 + "sec)");
-					}
+					LOGGER.debug("{} REFERENCES! (took ~{} sec)", addedElements[0], (System.nanoTime() - startTime) / 1_000_000_000);
 
 					listener.changeSuccess();
 					successState = true;
 				} catch (Exception e) {
-					e.printStackTrace();
-					System.err.println("ParseMResource Exception on file: " + s.getPath()
-							+ "\nReverting all changes on that file.");
-					//
-					// graph.exitBatchMode();
-					//
+					LOGGER.error(e.getMessage(), e);
 
 					IGraphNode n = new Utils().getFileNodeFromVCSCommitItem(graph, s);
 					if (n != null) {
@@ -218,21 +207,20 @@ public class GraphModelBatchInjector {
 							t.success();
 
 						} catch (Exception e2) {
-							System.err.println("error in reverting from erroneous batch insert: " + e2.getCause());
-
+							LOGGER.error("error in reverting from erroneous batch insert", e2);
 						}
 					}
 					listener.changeFailure();
 					successState = false;
 				}
 			} else /* if not new */ {
-				System.err.println("warning: GraphModelBatchInjector used with a model already in Hawk.");
+				LOGGER.warn("GraphModelBatchInjector used with a model already in Hawk.");
 				listener.changeSuccess();
 				successState = true;
 			}
 		} catch (Exception ex) {
 			successState = false;
-			ex.printStackTrace();
+			LOGGER.error(ex.getMessage(), ex);
 			listener.changeFailure();
 		}
 	}
@@ -244,7 +232,6 @@ public class GraphModelBatchInjector {
 		mapForFileNode.put("revision", s.getCommit().getRevision());
 		mapForFileNode.put(FileNode.PROP_REPOSITORY, repoURL);
 
-		// System.err.println("creating file node: "+s.getPath());
 		fileNode = graph.createNode(mapForFileNode, FileNode.FILE_NODE_LABEL);
 
 		Map<String, Object> mapForDictionary = new HashMap<>();
@@ -290,7 +277,7 @@ public class GraphModelBatchInjector {
 				addEReferences(child, resourceCanProvideSingletons);
 				break;
 			default:
-				System.err.println("parse option: " + parseOption + " not recognised!");
+				LOGGER.error("parse option {} not recognised!", parseOption);
 			}
 
 			if (lastprint < objectCount[0] - 50000) {
@@ -414,7 +401,7 @@ public class GraphModelBatchInjector {
 					fragmentIdx.flush();
 				}
 			} catch (IllegalArgumentException ex) {
-				System.err.println("here be dragons!");
+				LOGGER.error(ex.getMessage(), ex);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
@@ -524,11 +511,8 @@ public class GraphModelBatchInjector {
 				i.add(node, m);
 			}
 
-		}
-
-		catch (Exception e) {
-			System.err.println("GraphModelBatchInjector: createEobjectNode: error in inserting attributes: ");
-			e.printStackTrace();
+		} catch (Exception e) {
+			LOGGER.error("Error in inserting attributes", e);
 		}
 
 		return node;
@@ -589,7 +573,7 @@ public class GraphModelBatchInjector {
 			node = createEObjectNode(eObject, eClass);
 
 			if (node == null) {
-				System.err.println(String.format("The node for (%s) is null", eObject));
+				LOGGER.error("The node for {} is null", eObject);
 			} else {
 				hash.put(splitURI(eObject.getUri()), node);
 
@@ -638,8 +622,7 @@ public class GraphModelBatchInjector {
 			if (node == null)
 				node = itr.next();
 			else {
-				System.err.println(
-						"WARNING: GraphModelBatchInjector: addEObject: isFragmentUnique returned more than one node, keeping first one.");
+				LOGGER.warn("isFragmentUnique returned more than one node, keeping first one.");
 				break;
 			}
 		}
@@ -667,19 +650,15 @@ public class GraphModelBatchInjector {
 		destination = hash.get(splitURI(to.getUri()));
 
 		if (source == null && destination == null) {
-
-			System.err.println("hash error 1, not found from (class: " + (from).getType().getName()
-					+ ") and to (class: " + ((IHawkObject) to).getType().getName() + ") on reference: " + edgelabel
-					+ " source = " + source + " destination = " + destination);
-
-		}
-
-		else if (source == null) {
-
-			System.err.println("hash error 2, not found from (class: " + (from).getType().getName()
-					+ ") and to (class: " + ((IHawkObject) to).getType().getName() + ") on reference: " + edgelabel
-					+ " source = " + source + " destination = " + destination);
-
+			LOGGER.warn(
+				"hash error 1, not found from (class: {}) and to (class: {}) on reference: {}, source = {}, destination = {}",
+				from.getType().getName(), ((IHawkObject) to).getType().getName(), edgelabel, source, destination
+			);
+		} else if (source == null) {
+			LOGGER.warn(
+				"hash error 2, not found from (class: {}) and to (class: {}) on reference: {}, source = {}, destination = {}",
+				from.getType().getName(), ((IHawkObject) to).getType().getName(), edgelabel, source, destination
+			);
 		} else if (destination == null) {
 			// the modelling technology managed to resolve a cross-file proxy
 			// early (before it was inserted into hawk -- handle it like any
@@ -687,8 +666,7 @@ public class GraphModelBatchInjector {
 
 			addProxyRef(from, to, edgelabel, isContainment, isContainer);
 		} else {
-
-			HashMap<String, Object> props = new HashMap<String, Object>();
+			Map<String, Object> props = new HashMap<String, Object>();
 
 			if (isContainment)
 				props.put(ModelElementNode.EDGE_PROPERTY_CONTAINMENT, "true");
@@ -757,15 +735,6 @@ public class GraphModelBatchInjector {
 							} else {
 								addProxyRef(node, destinationHawkObject, edgelabel, eReference.isContainment(),
 										eReference.isContainer());
-
-								// System.err
-								// .println("adding proxy [iterable] reference
-								// ("
-								// + edgelabel
-								// + " | "
-								// + destinationHawkObject.getUri()
-								// + ")... "
-								// + (addProxyRef ? "done" : "failed"));
 							}
 						}
 
@@ -797,9 +766,7 @@ public class GraphModelBatchInjector {
 
 			}
 		} catch (Exception e) {
-			System.err.println(
-					"Error in: addEReference(IGraphNode node, IHawkObject object,	HashMap<String, IGraphNode> nodes):");
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 			ret = false;
 		}
 
@@ -839,13 +806,6 @@ public class GraphModelBatchInjector {
 						} else {
 							addProxyRef(source, destinationHawkObject, edgelabel, eReference.isContainment(),
 									eReference.isContainer());
-							// System.err
-							// .println("adding proxy [iterable] reference ("
-							// + edgelabel
-							// + " | "
-							// + ((IHawkObject) destinationHawkObject).getUri()
-							// + ")... "
-							// + (added ? "done" : "failed"));
 						}
 					}
 				} else /* if destination is not iterable */ {
@@ -924,8 +884,7 @@ public class GraphModelBatchInjector {
 			proxyDictionary.add(node, m);
 
 		} catch (Exception e) {
-			System.err.println("proxydictionary error:");
-			e.printStackTrace();
+			LOGGER.error("proxydictionary error", e);
 			return false;
 		}
 		return true;

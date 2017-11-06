@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
- 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<Pattern>
-				%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+				%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} -
+				%msg%n
 			</Pattern>
 		</layout>
 	</appender>
- 
+
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>hawk.log</file>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>
+				%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+			</Pattern>
+		</encoder>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>mylog-%d{yyyy-MM-dd}.%i.txt</fileNamePattern>
+			<maxHistory>60</maxHistory>
+		</rollingPolicy>
+	</appender>
+
 	<logger name="org.eclipse.jetty" level="warn" additivity="false">
 		<appender-ref ref="STDOUT" />
 	</logger>
@@ -21,8 +38,14 @@
 		<appender-ref ref="STDOUT" />
 	</logger>
 
+	<!-- Change to "error" if Hawk produces too many messages for you -->
+	<logger name="org.hawk" level="debug" additivity="false">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+	</logger>
+
 	<root level="debug">
 		<appender-ref ref="STDOUT" />
 	</root>
- 
+
 </configuration>

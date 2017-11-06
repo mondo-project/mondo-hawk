@@ -103,6 +103,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	private static final int FILECOUNT_PROGRESS_THRESHOLD = 100;
+
 	// validation metrics and data
 	private boolean isSyncMetricsEnabled = false;
 	private Map<VcsCommitItem, IHawkModelResource> fileToResourceMap = new HashMap<>();
@@ -671,13 +672,13 @@ public class ModelIndexerImpl implements IModelIndexer {
 					// + mm.getCanonicalPath()));
 
 					if (previousParserType != null && !previousParserType.equals(parserType)) {
-						System.err.println(
+						console.printerrln(
 								"cannot add heterogeneous metamodels concurrently, plase add one metamodel type at a time");
 						set.clear();
 						break;
 					} else {
 						if (metamodelResource != null) {
-							System.out.println("Adding metamodels in: " + mm + " to store");
+							console.println("Adding metamodels in: " + mm + " to store");
 							set.add(metamodelResource);
 							previousParserType = parserType;
 						}
@@ -798,7 +799,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 		HashSet<String[]> set = new HashSet<String[]>();
 		for (IVcsManager s : getRunningVCSManagers()) {
 			String[] meta = new String[] { s.getLocation(), s.getType(), s.isFrozen() + "" };
-			System.out.println("adding: " + meta[0] + ":" + meta[1] + ":" + meta[2]);
+			console.println("adding: " + meta[0] + ":" + meta[1] + ":" + meta[2]);
 			set.add(meta);
 		}
 		HawkProperties hp = new HawkProperties(graph.getType(), set, minDelay, maxDelay);
@@ -850,13 +851,13 @@ public class ModelIndexerImpl implements IModelIndexer {
 		this.currentDelay = minDelay;
 
 		// register all static metamodels to graph
-		System.out.println("inserting static metamodels of registered metamodel factories to graph:");
+		console.println("inserting static metamodels of registered metamodel factories to graph:");
 		for (String factoryNames : metamodelparsers.keySet()) {
 			IMetaModelResourceFactory f = metamodelparsers.get(factoryNames);
-			System.out.println(f.getType());
+			console.println(f.getType());
 			metamodelupdater.insertMetamodels(f.getStaticMetamodels(), this);
 		}
-		System.out.println("inserting static metamodels complete");
+		console.println("inserting static metamodels complete");
 
 		// register all metamodels in graph to their factories
 		registerMetamodelFiles();

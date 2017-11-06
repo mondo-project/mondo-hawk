@@ -606,6 +606,7 @@ public class HawkModelElementEncoder {
 
 	@SuppressWarnings("unchecked")
 	private static void encodeNonEmptyListAttributeSlot(SlotValue value, final Object rawValue, final Collection<?> cValue) {
+		// TODO support for nested lists of lists (error with Archimate)
 		final Iterator<?> it = cValue.iterator();
 		final Object o = it.next();
 		if (o instanceof Byte) {
