@@ -1468,7 +1468,7 @@
       <details key="union" value="true"/>
     </eAnnotations>
     <eAnnotations source="doc">
-      <details key="d" value="Union type for a single scalar value or a homogeneous collection of scalar values."/>
+      <details key="d" value="Union type for a single scalar value, a homogeneous collection of scalar values, or a collection of collections."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="vBooleans" upperBound="-1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
@@ -1509,6 +1509,12 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="doc">
         <details key="d" value="List of sequences of UTF8 characters."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vLists" upperBound="-1"
+        eType="#//SlotValue" containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="List of lists."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

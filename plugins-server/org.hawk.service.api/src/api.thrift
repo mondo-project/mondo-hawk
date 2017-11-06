@@ -29,6 +29,24 @@ enum SubscriptionDurability {
 }
 
 
+union SlotValue {
+	 /* Boolean (true/false) value. */ 1: optional bool vBoolean,
+	 /* 8-bit signed integer value. */ 2: optional byte vByte,
+	 /* 16-bit signed integer value. */ 3: optional i16 vShort,
+	 /* 32-bit signed integer value. */ 4: optional i32 vInteger,
+	 /* 64-bit signed integer value. */ 5: optional i64 vLong,
+	 /* 64-bit floating point value. */ 6: optional double vDouble,
+	 /* Sequence of UTF8 characters. */ 7: optional string vString,
+	 /* List of true/false values. */ 8: optional list<bool> vBooleans,
+	 /* List of 8-bit signed integers. */ 9: optional binary vBytes,
+	 /* List of 16-bit signed integers. */ 10: optional list<i16> vShorts,
+	 /* List of 32-bit signed integers. */ 11: optional list<i32> vIntegers,
+	 /* List of 64-bit signed integers. */ 12: optional list<i64> vLongs,
+	 /* List of 64-bit floating point values. */ 13: optional list<double> vDoubles,
+	 /* List of sequences of UTF8 characters. */ 14: optional list<string> vStrings,
+	 /* List of lists. */ 15: optional list<SlotValue> vLists,
+}
+
 struct CommitItem {
 	 /* URL of the repository. */ 1: required string repoURL,
 	 /* Unique identifier of the revision of the repository. */ 2: required string revision,
@@ -151,23 +169,6 @@ struct SlotMetadata {
 	 /* True if this slot holds a collection of values instead of a single value. */ 3: required bool isMany,
 	 /* True if the values in this slot are ordered. */ 4: required bool isOrdered,
 	 /* True if the value of this slot must be unique within its containing model. */ 5: required bool isUnique,
-}
-
-union SlotValue {
-	 /* Boolean (true/false) value. */ 1: optional bool vBoolean,
-	 /* 8-bit signed integer value. */ 2: optional byte vByte,
-	 /* 16-bit signed integer value. */ 3: optional i16 vShort,
-	 /* 32-bit signed integer value. */ 4: optional i32 vInteger,
-	 /* 64-bit signed integer value. */ 5: optional i64 vLong,
-	 /* 64-bit floating point value. */ 6: optional double vDouble,
-	 /* Sequence of UTF8 characters. */ 7: optional string vString,
-	 /* List of true/false values. */ 8: optional list<bool> vBooleans,
-	 /* List of 8-bit signed integers. */ 9: optional binary vBytes,
-	 /* List of 16-bit signed integers. */ 10: optional list<i16> vShorts,
-	 /* List of 32-bit signed integers. */ 11: optional list<i32> vIntegers,
-	 /* List of 64-bit signed integers. */ 12: optional list<i64> vLongs,
-	 /* List of 64-bit floating point values. */ 13: optional list<double> vDoubles,
-	 /* List of sequences of UTF8 characters. */ 14: optional list<string> vStrings,
 }
 
 struct Subscription {
@@ -349,7 +350,7 @@ union QueryResult {
            require user authentication (indicated in the top-left
    		cell of each operation table) to prevent unaccountable use.
    		As such, the platform needs to provide basic user management service operations
-   		for creating, updating and deleting user accounts. */
+   		for creating, updating and deleting user accounts. When handling passwords, only SSL should be used, as otherwise they could be intercepted. */
 service Users {
   /* Creates a new platform user. Auth needed: Yes */
   void createUser(
@@ -389,8 +390,7 @@ service Users {
 	
 }
 
-/* The following service operations expose the capabilities of the Hawk heterogeneous model indexing
-   framework developed in Work Package 5. The framework is discussed in detail in D5.2 and D5.3. */
+/* The following service operations expose the capabilities of the Hawk heterogeneous model indexing framework. */
 service Hawk {
   /* Creates a new Hawk instance (stopped). Auth needed: Yes */
   void createInstance(

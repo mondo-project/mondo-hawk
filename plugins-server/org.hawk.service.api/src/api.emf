@@ -598,7 +598,7 @@ class Value {
 }
 
 @thrift(union="true")
-@doc(d="Union type for a single scalar value or a homogeneous collection of scalar values.")
+@doc(d="Union type for a single scalar value, a homogeneous collection of scalar values, or a collection of collections.")
 class SlotValue extends Value {
 	// Only for when we have 2 or more values!
 	@doc(d="List of true/false values.") attr boolean[*] vBooleans;
@@ -608,6 +608,7 @@ class SlotValue extends Value {
 	@doc(d="List of 64-bit signed integers.") attr long[*] vLongs;
 	@doc(d="List of 64-bit floating point values.") attr double[*] vDoubles;
 	@doc(d="List of sequences of UTF8 characters.") attr String[*] vStrings;
+	@doc(d="List of lists.") val SlotValue[*] vLists;
 }
 
 @doc(d="Captures information about source/target models of ATL transformations")

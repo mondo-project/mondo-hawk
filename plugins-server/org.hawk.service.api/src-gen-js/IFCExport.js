@@ -184,19 +184,19 @@ IFCExport_getJobs_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size434 = 0;
-        var _rtmp3438;
+        var _size442 = 0;
+        var _rtmp3446;
         this.success = [];
-        var _etype437 = 0;
-        _rtmp3438 = input.readListBegin();
-        _etype437 = _rtmp3438.etype;
-        _size434 = _rtmp3438.size;
-        for (var _i439 = 0; _i439 < _size434; ++_i439)
+        var _etype445 = 0;
+        _rtmp3446 = input.readListBegin();
+        _etype445 = _rtmp3446.etype;
+        _size442 = _rtmp3446.size;
+        for (var _i447 = 0; _i447 < _size442; ++_i447)
         {
-          var elem440 = null;
-          elem440 = new IFCExportJob();
-          elem440.read(input);
-          this.success.push(elem440);
+          var elem448 = null;
+          elem448 = new IFCExportJob();
+          elem448.read(input);
+          this.success.push(elem448);
         }
         input.readListEnd();
       } else {
@@ -220,12 +220,12 @@ IFCExport_getJobs_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter441 in this.success)
+    for (var iter449 in this.success)
     {
-      if (this.success.hasOwnProperty(iter441))
+      if (this.success.hasOwnProperty(iter449))
       {
-        iter441 = this.success[iter441];
-        iter441.write(output);
+        iter449 = this.success[iter449];
+        iter449.write(output);
       }
     }
     output.writeListEnd();

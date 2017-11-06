@@ -19,8 +19,7 @@
 
 \subsubsection{Hawk}
 \label{sec:Hawk}
-The following service operations expose the capabilities of the Hawk heterogeneous model indexing
-framework developed in Work Package 5. The framework is discussed in detail in D5.2 and D5.3.
+The following service operations expose the capabilities of the Hawk heterogeneous model indexing framework.
 
 \begin{longtable} {|p{2cm}|p{3.5cm}|p{2.5cm}|p{6.5cm}|}
 	\caption{Operation Hawk.createInstance}
@@ -486,7 +485,7 @@ The majority of service operations provided by the server
         require user authentication (indicated in the top-left
 		cell of each operation table) to prevent unaccountable use.
 		As such, the platform needs to provide basic user management service operations
-		for creating, updating and deleting user accounts.
+		for creating, updating and deleting user accounts. When handling passwords, only SSL should be used, as otherwise they could be intercepted.
 
 \begin{longtable} {|p{2cm}|p{3.5cm}|p{2.5cm}|p{6.5cm}|}
 	\caption{Operation Users.createUser}
@@ -1139,7 +1138,7 @@ Represents the metadata of a slot in a model element type.
 
 \subsubsection{SlotValue}
 
-Union type for a single scalar value or a homogeneous collection of scalar values.
+Union type for a single scalar value, a homogeneous collection of scalar values, or a collection of collections.
 
 \emph{Inherits from}: Value.
 
@@ -1156,13 +1155,14 @@ Union type for a single scalar value or a homogeneous collection of scalar value
 		  \camelcase{vDoubles}  & \camelcase{list<double>}  & List of 64-bit floating point values. \\\hline
 		  \camelcase{vInteger}  (\nohyphens{inherited}) & \camelcase{i32}  & 32-bit signed integer value. \\\hline
 		  \camelcase{vIntegers}  & \camelcase{list<i32>}  & List of 32-bit signed integers. \\\hline
+		  \camelcase{vList}  & \camelcase{list<SlotValue>}  & List of lists. \\\hline
 		  \camelcase{vLong}  (\nohyphens{inherited}) & \camelcase{i64}  & 64-bit signed integer value. \\\hline
 		  \camelcase{vLongs}  & \camelcase{list<i64>}  & List of 64-bit signed integers. \\\hline
 		  \camelcase{vShort}  (\nohyphens{inherited}) & \camelcase{i16}  & 16-bit signed integer value. \\\hline
 		  \camelcase{vShorts}  & \camelcase{list<i16>}  & List of 16-bit signed integers. \\\hline
 		  \camelcase{vString}  (\nohyphens{inherited}) & \camelcase{string}  & Sequence of UTF8 characters. \\\hline
 		  \camelcase{vStrings}  & \camelcase{list<string>}  & List of sequences of UTF8 characters. \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} HawkAttributeUpdateEvent, AttributeSlot} \\\hline
+   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} HawkAttributeUpdateEvent, AttributeSlot, SlotValue} \\\hline
 \end{longtable}
 
 \subsubsection{Subscription}
