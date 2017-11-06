@@ -22,6 +22,7 @@ import java.util.Set;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkPackage;
+import org.hawk.modelio.exml.metamodel.parser.MMetamodelDescriptor;
 import org.hawk.modelio.exml.metamodel.parser.MMetamodelParser;
 import org.hawk.modelio.exml.metamodel.register.MetamodelRegister;
 import org.xml.sax.InputSource;
@@ -82,6 +83,10 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 
 	@Override
 	public ModelioMetaModelResource parseFromString(String name, String contents) throws Exception {
+		if ("".equals(contents)) {
+			// Empty metamodel resource - this is the case for the meta package
+			return new ModelioMetaModelResource(new MMetamodelDescriptor(), this);
+		}
 		return getMetamodelResource(new InputSource(new StringReader(contents)));
 	}
 
