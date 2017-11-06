@@ -33,10 +33,10 @@ import org.hawk.service.api.AttributeSlot;
 import org.hawk.service.api.ContainerSlot;
 import org.hawk.service.api.EffectiveMetamodelRuleset;
 import org.hawk.service.api.MixedReference;
+import org.hawk.service.api.MixedReference._Fields;
 import org.hawk.service.api.ModelElement;
 import org.hawk.service.api.ReferenceSlot;
 import org.hawk.service.api.SlotValue;
-import org.hawk.service.api.MixedReference._Fields;
 
 /**
  * Encodes a graph of Hawk {@link ModelElementNode}s into Thrift
@@ -549,6 +549,16 @@ public class HawkModelElementEncoder {
 	public static AttributeSlot encodeAttributeSlot(final String name, Object rawValue) {
 		assert rawValue != null;
 
+		final SlotValue value = encodeSlotValue(rawValue);
+		final AttributeSlot slot = new AttributeSlot(name);
+		if (value != null) {
+			slot.setValue(value);
+		}
+
+		return slot;
+	}
+
+	protected static SlotValue encodeSlotValue(Object rawValue) {
 		SlotValue value = new SlotValue();
 		if (rawValue instanceof Object[]) {
 			rawValue = Arrays.asList((Object[])rawValue);
@@ -570,18 +580,12 @@ public class HawkModelElementEncoder {
 		} else {
 			encodeSingleValueAttributeSlot(value, rawValue);
 		}
-
 		if (value != null && !value.isSet()) {
 			throw new IllegalArgumentException(String.format(
 					"Unsupported value type '%s'", rawValue.getClass()
 							.getName()));
 		}
-
-		final AttributeSlot slot = new AttributeSlot(name);
-		if (value != null) {
-			slot.setValue(value);
-		}
-		return slot;
+		return value;
 	}
 
 	private static void encodeSingleValueAttributeSlot(SlotValue value, final Object rawValue) {
@@ -636,6 +640,13 @@ public class HawkModelElementEncoder {
 			value.setVStrings(new ArrayList<String>((Collection<String>)cValue));
 		} else if (o instanceof Boolean) {
 			value.setVBooleans(new ArrayList<Boolean>((Collection<Boolean>)cValue));
+		} else if (o instanceof Collection) {
+			final List<SlotValue> values = new ArrayList<>();
+			for (Object e : (Collection<Object>)o) {
+				value = encodeSlotValue(e);
+				values.add(value);
+			}
+			value.setVLists(values);
 		} else if (o != null) {
 			throw new IllegalArgumentException(String.format("Unsupported element type '%s'", rawValue.getClass().getName()));
 		} else {
