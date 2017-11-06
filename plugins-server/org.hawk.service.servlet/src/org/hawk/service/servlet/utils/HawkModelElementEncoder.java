@@ -438,13 +438,13 @@ public class HawkModelElementEncoder {
 
 				// Whether it's an attribute or not is not known until we have the value
 				boolean isDerivedReference = false;
-				if (value instanceof String && ((String)value).startsWith(DeriveFeature.REFERENCETARGETPREFIX)) {
+				if (value instanceof IGraphNode) {
 					isDerivedReference = true;
 				} else if (value instanceof Iterable<?>) {
 					final Iterator<?> itValues = ((Iterable<?>) value).iterator();
 					if (!itValues.hasNext()) {
 						continue;
-					} else if (itValues.next().toString().startsWith(DeriveFeature.REFERENCETARGETPREFIX)) {
+					} else if (itValues.next() instanceof IGraphNode) {
 						isDerivedReference = true;
 					}
 				}
@@ -488,8 +488,6 @@ public class HawkModelElementEncoder {
 		Object value = slotEntry.getValue();
 		if (value instanceof Collection) {
 			for (Object o : (Collection<?>)value) {
-				o = stripDerivedReferencePrefix(o);
-
 				final ModelElementNode meNode = graph.getModelElementNodeById(o);
 				final ModelElement me = encode(meNode);
 				if (me != null) {
@@ -498,8 +496,6 @@ public class HawkModelElementEncoder {
 				}
 			}
 		} else {
-			value = stripDerivedReferencePrefix(value);
-
 			final ModelElementNode meNode = graph.getModelElementNodeById(value);
 			final ModelElement me = encode(meNode);
 			if (me != null) {
@@ -521,25 +517,23 @@ public class HawkModelElementEncoder {
 		s.ids = new ArrayList<>();
 		if (value instanceof Collection) {
 			for (Object o : (Collection<?>)value) {
-				addToReferenceIds(stripDerivedReferencePrefix(o), s);
+				addToReferenceIds(o, s);
 			}
 		} else {
-			addToReferenceIds(stripDerivedReferencePrefix(value), s);
+			addToReferenceIds(value, s);
 		}
 
 		return s;
 	}
 
-	protected Object stripDerivedReferencePrefix(Object o) {
-		if (o.toString().startsWith(DeriveFeature.REFERENCETARGETPREFIX)) {
-			o = o.toString().substring(DeriveFeature.REFERENCETARGETPREFIX.length());
-		}
-		return o;
-	}
-
 	private void addToReferenceIds(Object o, ReferenceSlot s) throws Exception {
-		final String referencedId = o.toString();
-		final ModelElementNode meNode = graph.getModelElementNodeById(referencedId);
+		ModelElementNode meNode;
+		if (o instanceof IGraphNode) {
+			meNode = new ModelElementNode((IGraphNode)o);
+		} else {
+			final String referenceId = o.toString();
+			meNode = graph.getModelElementNodeById(referenceId);
+		}
 
 		if (isEncodable(meNode)) {
 			s.addToIds(meNode.getNodeId());

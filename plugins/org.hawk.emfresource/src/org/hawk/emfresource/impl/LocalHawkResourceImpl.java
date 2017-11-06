@@ -780,13 +780,9 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		for (final Iterator<Entry<String, Object>> itDerived = derivedValues.entrySet().iterator(); itDerived.hasNext(); ) {
 			final Entry<String, Object> derivedEntry = itDerived.next();
 
-			// Refer to DeriveFeature#REFERENCETARGETPREFIX in org.hawk.epsilon
-			// TODO revise after the above has been moved
-			final String deriveFeaturePrefix = "GNW::";
-
 			final Object value = derivedEntry.getValue();
-			if (value instanceof String && ((String)value).startsWith(deriveFeaturePrefix)) {
-				referenceValues.put(derivedEntry.getKey(), value.toString().substring(deriveFeaturePrefix.length()));
+			if (value instanceof IGraphNode) {
+				referenceValues.put(derivedEntry.getKey(), ((IGraphNode)value).getId());
 			} else if (value instanceof Iterable<?>) {
 				final Iterable<?> iterableValue = (Iterable<?>)value;
 				final Iterator<?> itValue = iterableValue.iterator();

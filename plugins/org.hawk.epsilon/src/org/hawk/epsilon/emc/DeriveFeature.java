@@ -26,11 +26,12 @@ import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.graph.internal.updater.DirtyDerivedAttributesListener;
 import org.hawk.graph.internal.util.GraphUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DeriveFeature {
 
-	// TODO move to core (it's used from LocalHawkResourceImpl in org.hawk.emfresource)
-	public static final String REFERENCETARGETPREFIX = "GNW::";
+	private static final Logger LOGGER = LoggerFactory.getLogger(DeriveFeature.class);
 
 	public Object deriveFeature(Map<String, EolModule> cachedModules, IModelIndexer indexer, IGraphNode n,
 			EOLQueryEngine containerModel, String propertyName, String EOLScript) throws Exception {
@@ -51,27 +52,30 @@ public class DeriveFeature {
 			if (!cachedModules.containsKey(actualEOLScript)) {
 				// if (cashedModules == null) {
 				// bodyDeclarations.exists(md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public=='true'))
-				System.err.println("adding new module to cache, key:" + (actualEOLScript.length() > 100
-						? actualEOLScript.substring(0, 100) + "\n[! long script, snipped !]" : actualEOLScript));
+				LOGGER.debug("adding new module to cache, key: {}",
+					actualEOLScript.length() > 100
+						? actualEOLScript.substring(0, 100) + "\n[! long script, snipped !]"
+						: actualEOLScript
+				);
 				currentModule = initModule(indexer, containerModel);
 
 				currentModule.parse(actualEOLScript);
 
 				List<ParseProblem> pps = currentModule.getParseProblems();
-				for (ParseProblem p : pps)
-					System.err.println("PARSE PROBLEM: " + p);
+				for (ParseProblem p : pps) {
+					LOGGER.error("Parsing problem: {}", p);
+				}
 
 				if (pps.size() > 0) {
-					System.err.println("There were parse problems, returning \"DERIVATION_PARSE_ERROR\" as value\n");
+					LOGGER.error("There were parse problems, returning \"DERIVATION_PARSE_ERROR\" as value\n");
 					return "DERIVATION_PARSE_ERROR";
-				} else
+				} else {
 					cachedModules.put(actualEOLScript, currentModule);
+				}
 
 			} else {
-
 				// already parsed
 				currentModule = cachedModules.get(actualEOLScript);
-
 			}
 
 			GraphNodeWrapper gnw = new GraphNodeWrapper(n.getIncoming().iterator().next().getStartNode(),
@@ -82,25 +86,16 @@ public class DeriveFeature {
 			((GraphPropertyGetter) containerModel.getPropertyGetter()).getAccessListener()
 					.setSourceObject(n.getId() + "");
 
-			// System.out.println("-\n" + actualEOLScript + "\n-");
-			// printAST(module.getAst());
-			// System.out.println("-");
 			Object ret = null;
 			try {
 
 				ret = currentModule.execute();
 
 			} catch (Exception e) {
-				System.err.println("----------------\nerror in derive feature on: " + n.getId()
-				// + "\n" + n.getPropertyKeys()
-				// + "\n" + containerModel + "\n" + EOLScript
-						+ "\n------------\nreturning \"DERIVATION_EXECUTION_ERROR\" as value\n");
-				// e.printStackTrace();
+				LOGGER.error("error in derive feature on {}, returning derivation execution error", n.getId());
+				LOGGER.error(e.getMessage(), e);
 				return "DERIVATION_EXECUTION_ERROR";
 			}
-
-			// System.out.println(ret.getClass());
-			// System.out.println(ret);
 
 			if (!(ret instanceof Collection<?>)) {
 				return toPrimitive(ret);
@@ -133,15 +128,10 @@ public class DeriveFeature {
 			}
 
 		} catch (Exception e) {
-			System.err.println("ERROR IN DERIVING ATTRIBUTE, returning \"DERIVATION_OTHER_ERROR\" as value:");
-			e.printStackTrace();
+			LOGGER.error("ERROR IN DERIVING ATTRIBUTE, returning \"DERIVATION_OTHER_ERROR\" as value", e);
 		}
 
-		// System.out.println("DERIVATION_ERROR");
 		return "DERIVATION_OTHER_ERROR";
-		// ...parse like:
-		// this.bodyDeclarations.exists(md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public=='true'))
-
 	}
 
 	protected static Object toPrimitive(Object ret) {

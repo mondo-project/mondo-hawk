@@ -85,12 +85,13 @@ public class DeletionUtils {
 			modelElements = null;
 			changeListener.fileRemoval(s, file);
 			delete(file);
+
+			LOGGER.debug("deleted all, took: {}s", (System.currentTimeMillis() - start) / 1000.0);
 		} catch (Exception e) {
 			success = false;
 			LOGGER.error(e.getMessage(), e);
 		}
 
-		LOGGER.info("deleted all, took: {}s", (System.currentTimeMillis() - start) / 1000.0);
 		return success;
 	}
 

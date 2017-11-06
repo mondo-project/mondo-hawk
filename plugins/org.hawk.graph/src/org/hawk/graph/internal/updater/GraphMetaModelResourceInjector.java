@@ -65,8 +65,8 @@ public class GraphMetaModelResourceInjector {
 
 		LOGGER.info("ADDING METAMODELS: ");
 		LOGGER.info("ADDING: ");
-		parseResource(set);
-		LOGGER.info("{} METAMODEL NODES! (took ~{} sec)", (System.nanoTime() - startTime) / 1_000_000_000);
+		int nodes = parseResource(set);
+		LOGGER.info("{} METAMODEL NODES! (took ~{} sec)", nodes, (System.nanoTime() - startTime) / 1_000_000_000);
 	}
 
 	public GraphMetaModelResourceInjector(IModelIndexer hawk, CompositeGraphChangeListener listener) {

@@ -178,21 +178,29 @@ public class GraphModelBatchInjector {
 					// add model elements
 					Iterable<IHawkObject> children = r.getAllContents();
 					startTime = System.nanoTime();
-					LOGGER.debug("Adding elements of file {}", s.getPath());
+					if (verbose) {
+						LOGGER.debug("Adding elements of file {}", s.getPath());
+					}
 
 					int[] addedElements = parseResource(fileNode, ParseOptions.MODELELEMENTS, children, hawk, r.providesSingletonElements());
-					LOGGER.debug("{} NODES AND {} M->MM REFERENCES! (took ~{}sec)",
-						addedElements[0], addedElements[1], addedElements[2],
-						(System.nanoTime() - startTime) / 1_000_000_000
-					);
+					if (verbose) {
+						LOGGER.debug("{} NODES AND {} M->MM REFERENCES! (took ~{}sec)",
+							addedElements[0], addedElements[1], addedElements[2],
+							(System.nanoTime() - startTime) / 1_000_000_000
+						);
+					}
 
 					// add references
 					startTime = System.nanoTime();
-					LOGGER.debug("Adding edges of file {}", s.getPath());
+					if (verbose) {
+						LOGGER.debug("Adding edges of file {}", s.getPath());
+					}
 					addedElements = parseResource(fileNode, ParseOptions.MODELREFERENCES, children, hawk,
 							r.providesSingletonElements());
 					setUnset(getUnset() + addedElements[3]);
-					LOGGER.debug("{} REFERENCES! (took ~{} sec)", addedElements[0], (System.nanoTime() - startTime) / 1_000_000_000);
+					if (verbose) {
+						LOGGER.debug("{} REFERENCES! (took ~{} sec)", addedElements[0], (System.nanoTime() - startTime) / 1_000_000_000);
+					}
 
 					listener.changeSuccess();
 					successState = true;
