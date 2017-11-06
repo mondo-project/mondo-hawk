@@ -19,8 +19,11 @@ import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkDataType;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractModelioObject implements IHawkObject {
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractModelioObject.class);
 
 	public abstract String getExml();
 
@@ -92,7 +95,6 @@ public abstract class AbstractModelioObject implements IHawkObject {
 
 				for (IHawkReference eRef : ((IHawkClass) type).getAllReferences()) {
 					if (isSet(eRef)) {
-
 						md.update(eRef.getName().getBytes());
 
 						Object destinationObjects = get(eRef, false);
@@ -100,8 +102,10 @@ public abstract class AbstractModelioObject implements IHawkObject {
 							for (IHawkObject o : ((Iterable<IHawkObject>) destinationObjects)) {
 								md.update(o.getUriFragment().getBytes());
 							}
-						} else {
+						} else if (destinationObjects != null) {
 							md.update(((IHawkObject) destinationObjects).getUriFragment().getBytes());
+						} else {
+							LOGGER.warn("Destination object for feature {} of {} is null", eRef.getName(), this);
 						}
 					}
 				}

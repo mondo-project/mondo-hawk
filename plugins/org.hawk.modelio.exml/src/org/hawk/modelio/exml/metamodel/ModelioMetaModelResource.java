@@ -33,7 +33,10 @@ import org.slf4j.LoggerFactory;
 public class ModelioMetaModelResource implements IHawkMetaModelResource {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelioMetaModelResource.class);
 
-	protected static final String META_TYPE_NAME = "ModelioType";
+	public static final String META_PKG_NAME = "ModelioMetaPackage";
+	public static final String META_TYPE_NAME = "ModelioType";
+	public static final String META_PKG_VERSION = "00.00.00";
+
 	protected static final String STRING_TYPE = "java.lang.String";
 
 	private final ModelioMetaModelResourceFactory factory;
@@ -58,8 +61,7 @@ public class ModelioMetaModelResource implements IHawkMetaModelResource {
 	}
 
 	private MPackage createMetaPackage() {
-		String pkgId = "ModelioMetaPackage";
-		MPackage mpkg = new MPackage(pkgId, pkgId, "00.00.00", "");		
+		MPackage mpkg = new MPackage(META_PKG_NAME, META_PKG_NAME, META_PKG_VERSION, "");
 		final MClass mt = new MClass(META_TYPE_NAME, META_TYPE_NAME);
 		mt.getMAttributes().add(createStringAttribute(mpkg, mt.getName(), "name"));
 		mpkg.getMClass().add(mt);

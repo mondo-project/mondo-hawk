@@ -101,9 +101,14 @@ public class ModelioObject extends AbstractModelioObject {
 		if (hsf instanceof ModelioAttribute) {
 			return exml.getAttributes().containsKey(hsf.getName());
 		} else if (hsf instanceof ModelioReference) {
-			return exml.getLinks().containsKey(hsf.getName())
-				|| exml.getCompositions().containsKey(hsf.getName())
-				|| hsf.getName().equals(ModelioClass.REF_PARENT) && exml.getParentUID() != null;
+			if (hsf.getName().equals(ModelioClass.REF_PARENT) && exml.getParentUID() != null) {
+				return true;
+			}
+
+			if (exml.getLinks().containsKey(hsf.getName()) || exml.getCompositions().containsKey(hsf.getName())) {
+				// Protect against "instance ignored" for single-valued references
+				return hsf.isMany() ? true : get((ModelioReference)hsf, false) != null;
+			}
 		}
 		return false;
 	}
