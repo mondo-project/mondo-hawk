@@ -911,7 +911,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 		}
 
 		final long time = (System.currentTimeMillis() - start);
-		stateListener.info("Updated Hawk " + (synchronised ? "(success)." : "(failure).") + " " + time / 1000 + "s"
+		stateListener.info("Updated Hawk instance " + getName() + " " + (synchronised ? "(success)." : "(failure).") + " " + time / 1000 + "s"
 				+ time % 1000 + "ms");
 	}
 
