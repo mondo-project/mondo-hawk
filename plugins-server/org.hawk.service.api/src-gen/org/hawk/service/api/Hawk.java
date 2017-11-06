@@ -65,6 +65,8 @@ public class Hawk {
 
     public QueryResult query(String name, String query, String language, HawkQueryOptions options) throws HawkInstanceNotFound, HawkInstanceNotRunning, UnknownQueryLanguage, InvalidQuery, FailedQuery, org.apache.thrift.TException;
 
+    public QueryReport timedQuery(String name, String query, String language, HawkQueryOptions options) throws HawkInstanceNotFound, HawkInstanceNotRunning, UnknownQueryLanguage, InvalidQuery, FailedQuery, org.apache.thrift.TException;
+
     public List<ModelElement> resolveProxies(String name, List<String> ids, HawkQueryOptions options) throws HawkInstanceNotFound, HawkInstanceNotRunning, org.apache.thrift.TException;
 
     public void addRepository(String name, Repository repo, Credentials credentials) throws HawkInstanceNotFound, HawkInstanceNotRunning, UnknownRepositoryType, VCSAuthenticationFailed, org.apache.thrift.TException;
@@ -134,6 +136,8 @@ public class Hawk {
     public void listQueryLanguages(String name, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void query(String name, String query, String language, HawkQueryOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+
+    public void timedQuery(String name, String query, String language, HawkQueryOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void resolveProxies(String name, List<String> ids, HawkQueryOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -534,6 +538,47 @@ public class Hawk {
         throw result.err5;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "query failed: unknown result");
+    }
+
+    public QueryReport timedQuery(String name, String query, String language, HawkQueryOptions options) throws HawkInstanceNotFound, HawkInstanceNotRunning, UnknownQueryLanguage, InvalidQuery, FailedQuery, org.apache.thrift.TException
+    {
+      send_timedQuery(name, query, language, options);
+      return recv_timedQuery();
+    }
+
+    public void send_timedQuery(String name, String query, String language, HawkQueryOptions options) throws org.apache.thrift.TException
+    {
+      timedQuery_args args = new timedQuery_args();
+      args.setName(name);
+      args.setQuery(query);
+      args.setLanguage(language);
+      args.setOptions(options);
+      sendBase("timedQuery", args);
+    }
+
+    public QueryReport recv_timedQuery() throws HawkInstanceNotFound, HawkInstanceNotRunning, UnknownQueryLanguage, InvalidQuery, FailedQuery, org.apache.thrift.TException
+    {
+      timedQuery_result result = new timedQuery_result();
+      receiveBase(result, "timedQuery");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      if (result.err1 != null) {
+        throw result.err1;
+      }
+      if (result.err2 != null) {
+        throw result.err2;
+      }
+      if (result.err3 != null) {
+        throw result.err3;
+      }
+      if (result.err4 != null) {
+        throw result.err4;
+      }
+      if (result.err5 != null) {
+        throw result.err5;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "timedQuery failed: unknown result");
     }
 
     public List<ModelElement> resolveProxies(String name, List<String> ids, HawkQueryOptions options) throws HawkInstanceNotFound, HawkInstanceNotRunning, org.apache.thrift.TException
@@ -1570,6 +1615,47 @@ public class Hawk {
       }
     }
 
+    public void timedQuery(String name, String query, String language, HawkQueryOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      timedQuery_call method_call = new timedQuery_call(name, query, language, options, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class timedQuery_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private String name;
+      private String query;
+      private String language;
+      private HawkQueryOptions options;
+      public timedQuery_call(String name, String query, String language, HawkQueryOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.name = name;
+        this.query = query;
+        this.language = language;
+        this.options = options;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("timedQuery", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        timedQuery_args args = new timedQuery_args();
+        args.setName(name);
+        args.setQuery(query);
+        args.setLanguage(language);
+        args.setOptions(options);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public QueryReport getResult() throws HawkInstanceNotFound, HawkInstanceNotRunning, UnknownQueryLanguage, InvalidQuery, FailedQuery, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_timedQuery();
+      }
+    }
+
     public void resolveProxies(String name, List<String> ids, HawkQueryOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       resolveProxies_call method_call = new resolveProxies_call(name, ids, options, resultHandler, this, ___protocolFactory, ___transport);
@@ -2305,6 +2391,7 @@ public class Hawk {
       processMap.put("listMetamodels", new listMetamodels());
       processMap.put("listQueryLanguages", new listQueryLanguages());
       processMap.put("query", new query());
+      processMap.put("timedQuery", new timedQuery());
       processMap.put("resolveProxies", new resolveProxies());
       processMap.put("addRepository", new addRepository());
       processMap.put("isFrozen", new isFrozen());
@@ -2625,6 +2712,38 @@ public class Hawk {
         query_result result = new query_result();
         try {
           result.success = iface.query(args.name, args.query, args.language, args.options);
+        } catch (HawkInstanceNotFound err1) {
+          result.err1 = err1;
+        } catch (HawkInstanceNotRunning err2) {
+          result.err2 = err2;
+        } catch (UnknownQueryLanguage err3) {
+          result.err3 = err3;
+        } catch (InvalidQuery err4) {
+          result.err4 = err4;
+        } catch (FailedQuery err5) {
+          result.err5 = err5;
+        }
+        return result;
+      }
+    }
+
+    public static class timedQuery<I extends Iface> extends org.apache.thrift.ProcessFunction<I, timedQuery_args> {
+      public timedQuery() {
+        super("timedQuery");
+      }
+
+      public timedQuery_args getEmptyArgsInstance() {
+        return new timedQuery_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public timedQuery_result getResult(I iface, timedQuery_args args) throws org.apache.thrift.TException {
+        timedQuery_result result = new timedQuery_result();
+        try {
+          result.success = iface.timedQuery(args.name, args.query, args.language, args.options);
         } catch (HawkInstanceNotFound err1) {
           result.err1 = err1;
         } catch (HawkInstanceNotRunning err2) {
@@ -3185,6 +3304,7 @@ public class Hawk {
       processMap.put("listMetamodels", new listMetamodels());
       processMap.put("listQueryLanguages", new listQueryLanguages());
       processMap.put("query", new query());
+      processMap.put("timedQuery", new timedQuery());
       processMap.put("resolveProxies", new resolveProxies());
       processMap.put("addRepository", new addRepository());
       processMap.put("isFrozen", new isFrozen());
@@ -3959,6 +4079,83 @@ public class Hawk {
 
       public void start(I iface, query_args args, org.apache.thrift.async.AsyncMethodCallback<QueryResult> resultHandler) throws TException {
         iface.query(args.name, args.query, args.language, args.options,resultHandler);
+      }
+    }
+
+    public static class timedQuery<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, timedQuery_args, QueryReport> {
+      public timedQuery() {
+        super("timedQuery");
+      }
+
+      public timedQuery_args getEmptyArgsInstance() {
+        return new timedQuery_args();
+      }
+
+      public AsyncMethodCallback<QueryReport> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new AsyncMethodCallback<QueryReport>() { 
+          public void onComplete(QueryReport o) {
+            timedQuery_result result = new timedQuery_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+              return;
+            } catch (Exception e) {
+              LOGGER.error("Exception writing to internal frame buffer", e);
+            }
+            fb.close();
+          }
+          public void onError(Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TBase msg;
+            timedQuery_result result = new timedQuery_result();
+            if (e instanceof HawkInstanceNotFound) {
+                        result.err1 = (HawkInstanceNotFound) e;
+                        result.setErr1IsSet(true);
+                        msg = result;
+            }
+            else             if (e instanceof HawkInstanceNotRunning) {
+                        result.err2 = (HawkInstanceNotRunning) e;
+                        result.setErr2IsSet(true);
+                        msg = result;
+            }
+            else             if (e instanceof UnknownQueryLanguage) {
+                        result.err3 = (UnknownQueryLanguage) e;
+                        result.setErr3IsSet(true);
+                        msg = result;
+            }
+            else             if (e instanceof InvalidQuery) {
+                        result.err4 = (InvalidQuery) e;
+                        result.setErr4IsSet(true);
+                        msg = result;
+            }
+            else             if (e instanceof FailedQuery) {
+                        result.err5 = (FailedQuery) e;
+                        result.setErr5IsSet(true);
+                        msg = result;
+            }
+             else 
+            {
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+              return;
+            } catch (Exception ex) {
+              LOGGER.error("Exception writing to internal frame buffer", ex);
+            }
+            fb.close();
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, timedQuery_args args, org.apache.thrift.async.AsyncMethodCallback<QueryReport> resultHandler) throws TException {
+        iface.timedQuery(args.name, args.query, args.language, args.options,resultHandler);
       }
     }
 
@@ -16753,6 +16950,1569 @@ public class Hawk {
         BitSet incoming = iprot.readBitSet(6);
         if (incoming.get(0)) {
           struct.success = new QueryResult();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.err1 = new HawkInstanceNotFound();
+          struct.err1.read(iprot);
+          struct.setErr1IsSet(true);
+        }
+        if (incoming.get(2)) {
+          struct.err2 = new HawkInstanceNotRunning();
+          struct.err2.read(iprot);
+          struct.setErr2IsSet(true);
+        }
+        if (incoming.get(3)) {
+          struct.err3 = new UnknownQueryLanguage();
+          struct.err3.read(iprot);
+          struct.setErr3IsSet(true);
+        }
+        if (incoming.get(4)) {
+          struct.err4 = new InvalidQuery();
+          struct.err4.read(iprot);
+          struct.setErr4IsSet(true);
+        }
+        if (incoming.get(5)) {
+          struct.err5 = new FailedQuery();
+          struct.err5.read(iprot);
+          struct.setErr5IsSet(true);
+        }
+      }
+    }
+
+  }
+
+  public static class timedQuery_args implements org.apache.thrift.TBase<timedQuery_args, timedQuery_args._Fields>, java.io.Serializable, Cloneable, Comparable<timedQuery_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("timedQuery_args");
+
+    private static final org.apache.thrift.protocol.TField NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("name", org.apache.thrift.protocol.TType.STRING, (short)1);
+    private static final org.apache.thrift.protocol.TField QUERY_FIELD_DESC = new org.apache.thrift.protocol.TField("query", org.apache.thrift.protocol.TType.STRING, (short)2);
+    private static final org.apache.thrift.protocol.TField LANGUAGE_FIELD_DESC = new org.apache.thrift.protocol.TField("language", org.apache.thrift.protocol.TType.STRING, (short)3);
+    private static final org.apache.thrift.protocol.TField OPTIONS_FIELD_DESC = new org.apache.thrift.protocol.TField("options", org.apache.thrift.protocol.TType.STRUCT, (short)4);
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new timedQuery_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new timedQuery_argsTupleSchemeFactory());
+    }
+
+    public String name; // required
+    public String query; // required
+    public String language; // required
+    public HawkQueryOptions options; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      NAME((short)1, "name"),
+      QUERY((short)2, "query"),
+      LANGUAGE((short)3, "language"),
+      OPTIONS((short)4, "options");
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // NAME
+            return NAME;
+          case 2: // QUERY
+            return QUERY;
+          case 3: // LANGUAGE
+            return LANGUAGE;
+          case 4: // OPTIONS
+            return OPTIONS;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.NAME, new org.apache.thrift.meta_data.FieldMetaData("name", org.apache.thrift.TFieldRequirementType.REQUIRED, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.REQUIRED, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.LANGUAGE, new org.apache.thrift.meta_data.FieldMetaData("language", org.apache.thrift.TFieldRequirementType.REQUIRED, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.OPTIONS, new org.apache.thrift.meta_data.FieldMetaData("options", org.apache.thrift.TFieldRequirementType.REQUIRED, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, HawkQueryOptions.class)));
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(timedQuery_args.class, metaDataMap);
+    }
+
+    public timedQuery_args() {
+    }
+
+    public timedQuery_args(
+      String name,
+      String query,
+      String language,
+      HawkQueryOptions options)
+    {
+      this();
+      this.name = name;
+      this.query = query;
+      this.language = language;
+      this.options = options;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public timedQuery_args(timedQuery_args other) {
+      if (other.isSetName()) {
+        this.name = other.name;
+      }
+      if (other.isSetQuery()) {
+        this.query = other.query;
+      }
+      if (other.isSetLanguage()) {
+        this.language = other.language;
+      }
+      if (other.isSetOptions()) {
+        this.options = new HawkQueryOptions(other.options);
+      }
+    }
+
+    public timedQuery_args deepCopy() {
+      return new timedQuery_args(this);
+    }
+
+    @Override
+    public void clear() {
+      this.name = null;
+      this.query = null;
+      this.language = null;
+      this.options = null;
+    }
+
+    public String getName() {
+      return this.name;
+    }
+
+    public timedQuery_args setName(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public void unsetName() {
+      this.name = null;
+    }
+
+    /** Returns true if field name is set (has been assigned a value) and false otherwise */
+    public boolean isSetName() {
+      return this.name != null;
+    }
+
+    public void setNameIsSet(boolean value) {
+      if (!value) {
+        this.name = null;
+      }
+    }
+
+    public String getQuery() {
+      return this.query;
+    }
+
+    public timedQuery_args setQuery(String query) {
+      this.query = query;
+      return this;
+    }
+
+    public void unsetQuery() {
+      this.query = null;
+    }
+
+    /** Returns true if field query is set (has been assigned a value) and false otherwise */
+    public boolean isSetQuery() {
+      return this.query != null;
+    }
+
+    public void setQueryIsSet(boolean value) {
+      if (!value) {
+        this.query = null;
+      }
+    }
+
+    public String getLanguage() {
+      return this.language;
+    }
+
+    public timedQuery_args setLanguage(String language) {
+      this.language = language;
+      return this;
+    }
+
+    public void unsetLanguage() {
+      this.language = null;
+    }
+
+    /** Returns true if field language is set (has been assigned a value) and false otherwise */
+    public boolean isSetLanguage() {
+      return this.language != null;
+    }
+
+    public void setLanguageIsSet(boolean value) {
+      if (!value) {
+        this.language = null;
+      }
+    }
+
+    public HawkQueryOptions getOptions() {
+      return this.options;
+    }
+
+    public timedQuery_args setOptions(HawkQueryOptions options) {
+      this.options = options;
+      return this;
+    }
+
+    public void unsetOptions() {
+      this.options = null;
+    }
+
+    /** Returns true if field options is set (has been assigned a value) and false otherwise */
+    public boolean isSetOptions() {
+      return this.options != null;
+    }
+
+    public void setOptionsIsSet(boolean value) {
+      if (!value) {
+        this.options = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case NAME:
+        if (value == null) {
+          unsetName();
+        } else {
+          setName((String)value);
+        }
+        break;
+
+      case QUERY:
+        if (value == null) {
+          unsetQuery();
+        } else {
+          setQuery((String)value);
+        }
+        break;
+
+      case LANGUAGE:
+        if (value == null) {
+          unsetLanguage();
+        } else {
+          setLanguage((String)value);
+        }
+        break;
+
+      case OPTIONS:
+        if (value == null) {
+          unsetOptions();
+        } else {
+          setOptions((HawkQueryOptions)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case NAME:
+        return getName();
+
+      case QUERY:
+        return getQuery();
+
+      case LANGUAGE:
+        return getLanguage();
+
+      case OPTIONS:
+        return getOptions();
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case NAME:
+        return isSetName();
+      case QUERY:
+        return isSetQuery();
+      case LANGUAGE:
+        return isSetLanguage();
+      case OPTIONS:
+        return isSetOptions();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof timedQuery_args)
+        return this.equals((timedQuery_args)that);
+      return false;
+    }
+
+    public boolean equals(timedQuery_args that) {
+      if (that == null)
+        return false;
+
+      boolean this_present_name = true && this.isSetName();
+      boolean that_present_name = true && that.isSetName();
+      if (this_present_name || that_present_name) {
+        if (!(this_present_name && that_present_name))
+          return false;
+        if (!this.name.equals(that.name))
+          return false;
+      }
+
+      boolean this_present_query = true && this.isSetQuery();
+      boolean that_present_query = true && that.isSetQuery();
+      if (this_present_query || that_present_query) {
+        if (!(this_present_query && that_present_query))
+          return false;
+        if (!this.query.equals(that.query))
+          return false;
+      }
+
+      boolean this_present_language = true && this.isSetLanguage();
+      boolean that_present_language = true && that.isSetLanguage();
+      if (this_present_language || that_present_language) {
+        if (!(this_present_language && that_present_language))
+          return false;
+        if (!this.language.equals(that.language))
+          return false;
+      }
+
+      boolean this_present_options = true && this.isSetOptions();
+      boolean that_present_options = true && that.isSetOptions();
+      if (this_present_options || that_present_options) {
+        if (!(this_present_options && that_present_options))
+          return false;
+        if (!this.options.equals(that.options))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      List<Object> list = new ArrayList<Object>();
+
+      boolean present_name = true && (isSetName());
+      list.add(present_name);
+      if (present_name)
+        list.add(name);
+
+      boolean present_query = true && (isSetQuery());
+      list.add(present_query);
+      if (present_query)
+        list.add(query);
+
+      boolean present_language = true && (isSetLanguage());
+      list.add(present_language);
+      if (present_language)
+        list.add(language);
+
+      boolean present_options = true && (isSetOptions());
+      list.add(present_options);
+      if (present_options)
+        list.add(options);
+
+      return list.hashCode();
+    }
+
+    @Override
+    public int compareTo(timedQuery_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = Boolean.valueOf(isSetName()).compareTo(other.isSetName());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetName()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.name, other.name);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetQuery()).compareTo(other.isSetQuery());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetQuery()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.query, other.query);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetLanguage()).compareTo(other.isSetLanguage());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetLanguage()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.language, other.language);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetOptions()).compareTo(other.isSetOptions());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetOptions()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.options, other.options);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("timedQuery_args(");
+      boolean first = true;
+
+      sb.append("name:");
+      if (this.name == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.name);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("query:");
+      if (this.query == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.query);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("language:");
+      if (this.language == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.language);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("options:");
+      if (this.options == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.options);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      if (name == null) {
+        throw new org.apache.thrift.protocol.TProtocolException("Required field 'name' was not present! Struct: " + toString());
+      }
+      if (query == null) {
+        throw new org.apache.thrift.protocol.TProtocolException("Required field 'query' was not present! Struct: " + toString());
+      }
+      if (language == null) {
+        throw new org.apache.thrift.protocol.TProtocolException("Required field 'language' was not present! Struct: " + toString());
+      }
+      if (options == null) {
+        throw new org.apache.thrift.protocol.TProtocolException("Required field 'options' was not present! Struct: " + toString());
+      }
+      // check for sub-struct validity
+      if (options != null) {
+        options.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class timedQuery_argsStandardSchemeFactory implements SchemeFactory {
+      public timedQuery_argsStandardScheme getScheme() {
+        return new timedQuery_argsStandardScheme();
+      }
+    }
+
+    private static class timedQuery_argsStandardScheme extends StandardScheme<timedQuery_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, timedQuery_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // NAME
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.name = iprot.readString();
+                struct.setNameIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // QUERY
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.query = iprot.readString();
+                struct.setQueryIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // LANGUAGE
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.language = iprot.readString();
+                struct.setLanguageIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 4: // OPTIONS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.options = new HawkQueryOptions();
+                struct.options.read(iprot);
+                struct.setOptionsIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, timedQuery_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.name != null) {
+          oprot.writeFieldBegin(NAME_FIELD_DESC);
+          oprot.writeString(struct.name);
+          oprot.writeFieldEnd();
+        }
+        if (struct.query != null) {
+          oprot.writeFieldBegin(QUERY_FIELD_DESC);
+          oprot.writeString(struct.query);
+          oprot.writeFieldEnd();
+        }
+        if (struct.language != null) {
+          oprot.writeFieldBegin(LANGUAGE_FIELD_DESC);
+          oprot.writeString(struct.language);
+          oprot.writeFieldEnd();
+        }
+        if (struct.options != null) {
+          oprot.writeFieldBegin(OPTIONS_FIELD_DESC);
+          struct.options.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class timedQuery_argsTupleSchemeFactory implements SchemeFactory {
+      public timedQuery_argsTupleScheme getScheme() {
+        return new timedQuery_argsTupleScheme();
+      }
+    }
+
+    private static class timedQuery_argsTupleScheme extends TupleScheme<timedQuery_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, timedQuery_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+        oprot.writeString(struct.name);
+        oprot.writeString(struct.query);
+        oprot.writeString(struct.language);
+        struct.options.write(oprot);
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, timedQuery_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
+        struct.name = iprot.readString();
+        struct.setNameIsSet(true);
+        struct.query = iprot.readString();
+        struct.setQueryIsSet(true);
+        struct.language = iprot.readString();
+        struct.setLanguageIsSet(true);
+        struct.options = new HawkQueryOptions();
+        struct.options.read(iprot);
+        struct.setOptionsIsSet(true);
+      }
+    }
+
+  }
+
+  public static class timedQuery_result implements org.apache.thrift.TBase<timedQuery_result, timedQuery_result._Fields>, java.io.Serializable, Cloneable, Comparable<timedQuery_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("timedQuery_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField ERR1_FIELD_DESC = new org.apache.thrift.protocol.TField("err1", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+    private static final org.apache.thrift.protocol.TField ERR2_FIELD_DESC = new org.apache.thrift.protocol.TField("err2", org.apache.thrift.protocol.TType.STRUCT, (short)2);
+    private static final org.apache.thrift.protocol.TField ERR3_FIELD_DESC = new org.apache.thrift.protocol.TField("err3", org.apache.thrift.protocol.TType.STRUCT, (short)3);
+    private static final org.apache.thrift.protocol.TField ERR4_FIELD_DESC = new org.apache.thrift.protocol.TField("err4", org.apache.thrift.protocol.TType.STRUCT, (short)4);
+    private static final org.apache.thrift.protocol.TField ERR5_FIELD_DESC = new org.apache.thrift.protocol.TField("err5", org.apache.thrift.protocol.TType.STRUCT, (short)5);
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new timedQuery_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new timedQuery_resultTupleSchemeFactory());
+    }
+
+    public QueryReport success; // required
+    public HawkInstanceNotFound err1; // required
+    public HawkInstanceNotRunning err2; // required
+    public UnknownQueryLanguage err3; // required
+    public InvalidQuery err4; // required
+    public FailedQuery err5; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success"),
+      ERR1((short)1, "err1"),
+      ERR2((short)2, "err2"),
+      ERR3((short)3, "err3"),
+      ERR4((short)4, "err4"),
+      ERR5((short)5, "err5");
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          case 1: // ERR1
+            return ERR1;
+          case 2: // ERR2
+            return ERR2;
+          case 3: // ERR3
+            return ERR3;
+          case 4: // ERR4
+            return ERR4;
+          case 5: // ERR5
+            return ERR5;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, QueryReport.class)));
+      tmpMap.put(_Fields.ERR1, new org.apache.thrift.meta_data.FieldMetaData("err1", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
+      tmpMap.put(_Fields.ERR2, new org.apache.thrift.meta_data.FieldMetaData("err2", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
+      tmpMap.put(_Fields.ERR3, new org.apache.thrift.meta_data.FieldMetaData("err3", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
+      tmpMap.put(_Fields.ERR4, new org.apache.thrift.meta_data.FieldMetaData("err4", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
+      tmpMap.put(_Fields.ERR5, new org.apache.thrift.meta_data.FieldMetaData("err5", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(timedQuery_result.class, metaDataMap);
+    }
+
+    public timedQuery_result() {
+    }
+
+    public timedQuery_result(
+      QueryReport success,
+      HawkInstanceNotFound err1,
+      HawkInstanceNotRunning err2,
+      UnknownQueryLanguage err3,
+      InvalidQuery err4,
+      FailedQuery err5)
+    {
+      this();
+      this.success = success;
+      this.err1 = err1;
+      this.err2 = err2;
+      this.err3 = err3;
+      this.err4 = err4;
+      this.err5 = err5;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public timedQuery_result(timedQuery_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new QueryReport(other.success);
+      }
+      if (other.isSetErr1()) {
+        this.err1 = new HawkInstanceNotFound(other.err1);
+      }
+      if (other.isSetErr2()) {
+        this.err2 = new HawkInstanceNotRunning(other.err2);
+      }
+      if (other.isSetErr3()) {
+        this.err3 = new UnknownQueryLanguage(other.err3);
+      }
+      if (other.isSetErr4()) {
+        this.err4 = new InvalidQuery(other.err4);
+      }
+      if (other.isSetErr5()) {
+        this.err5 = new FailedQuery(other.err5);
+      }
+    }
+
+    public timedQuery_result deepCopy() {
+      return new timedQuery_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+      this.err1 = null;
+      this.err2 = null;
+      this.err3 = null;
+      this.err4 = null;
+      this.err5 = null;
+    }
+
+    public QueryReport getSuccess() {
+      return this.success;
+    }
+
+    public timedQuery_result setSuccess(QueryReport success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public HawkInstanceNotFound getErr1() {
+      return this.err1;
+    }
+
+    public timedQuery_result setErr1(HawkInstanceNotFound err1) {
+      this.err1 = err1;
+      return this;
+    }
+
+    public void unsetErr1() {
+      this.err1 = null;
+    }
+
+    /** Returns true if field err1 is set (has been assigned a value) and false otherwise */
+    public boolean isSetErr1() {
+      return this.err1 != null;
+    }
+
+    public void setErr1IsSet(boolean value) {
+      if (!value) {
+        this.err1 = null;
+      }
+    }
+
+    public HawkInstanceNotRunning getErr2() {
+      return this.err2;
+    }
+
+    public timedQuery_result setErr2(HawkInstanceNotRunning err2) {
+      this.err2 = err2;
+      return this;
+    }
+
+    public void unsetErr2() {
+      this.err2 = null;
+    }
+
+    /** Returns true if field err2 is set (has been assigned a value) and false otherwise */
+    public boolean isSetErr2() {
+      return this.err2 != null;
+    }
+
+    public void setErr2IsSet(boolean value) {
+      if (!value) {
+        this.err2 = null;
+      }
+    }
+
+    public UnknownQueryLanguage getErr3() {
+      return this.err3;
+    }
+
+    public timedQuery_result setErr3(UnknownQueryLanguage err3) {
+      this.err3 = err3;
+      return this;
+    }
+
+    public void unsetErr3() {
+      this.err3 = null;
+    }
+
+    /** Returns true if field err3 is set (has been assigned a value) and false otherwise */
+    public boolean isSetErr3() {
+      return this.err3 != null;
+    }
+
+    public void setErr3IsSet(boolean value) {
+      if (!value) {
+        this.err3 = null;
+      }
+    }
+
+    public InvalidQuery getErr4() {
+      return this.err4;
+    }
+
+    public timedQuery_result setErr4(InvalidQuery err4) {
+      this.err4 = err4;
+      return this;
+    }
+
+    public void unsetErr4() {
+      this.err4 = null;
+    }
+
+    /** Returns true if field err4 is set (has been assigned a value) and false otherwise */
+    public boolean isSetErr4() {
+      return this.err4 != null;
+    }
+
+    public void setErr4IsSet(boolean value) {
+      if (!value) {
+        this.err4 = null;
+      }
+    }
+
+    public FailedQuery getErr5() {
+      return this.err5;
+    }
+
+    public timedQuery_result setErr5(FailedQuery err5) {
+      this.err5 = err5;
+      return this;
+    }
+
+    public void unsetErr5() {
+      this.err5 = null;
+    }
+
+    /** Returns true if field err5 is set (has been assigned a value) and false otherwise */
+    public boolean isSetErr5() {
+      return this.err5 != null;
+    }
+
+    public void setErr5IsSet(boolean value) {
+      if (!value) {
+        this.err5 = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((QueryReport)value);
+        }
+        break;
+
+      case ERR1:
+        if (value == null) {
+          unsetErr1();
+        } else {
+          setErr1((HawkInstanceNotFound)value);
+        }
+        break;
+
+      case ERR2:
+        if (value == null) {
+          unsetErr2();
+        } else {
+          setErr2((HawkInstanceNotRunning)value);
+        }
+        break;
+
+      case ERR3:
+        if (value == null) {
+          unsetErr3();
+        } else {
+          setErr3((UnknownQueryLanguage)value);
+        }
+        break;
+
+      case ERR4:
+        if (value == null) {
+          unsetErr4();
+        } else {
+          setErr4((InvalidQuery)value);
+        }
+        break;
+
+      case ERR5:
+        if (value == null) {
+          unsetErr5();
+        } else {
+          setErr5((FailedQuery)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      case ERR1:
+        return getErr1();
+
+      case ERR2:
+        return getErr2();
+
+      case ERR3:
+        return getErr3();
+
+      case ERR4:
+        return getErr4();
+
+      case ERR5:
+        return getErr5();
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      case ERR1:
+        return isSetErr1();
+      case ERR2:
+        return isSetErr2();
+      case ERR3:
+        return isSetErr3();
+      case ERR4:
+        return isSetErr4();
+      case ERR5:
+        return isSetErr5();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof timedQuery_result)
+        return this.equals((timedQuery_result)that);
+      return false;
+    }
+
+    public boolean equals(timedQuery_result that) {
+      if (that == null)
+        return false;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      boolean this_present_err1 = true && this.isSetErr1();
+      boolean that_present_err1 = true && that.isSetErr1();
+      if (this_present_err1 || that_present_err1) {
+        if (!(this_present_err1 && that_present_err1))
+          return false;
+        if (!this.err1.equals(that.err1))
+          return false;
+      }
+
+      boolean this_present_err2 = true && this.isSetErr2();
+      boolean that_present_err2 = true && that.isSetErr2();
+      if (this_present_err2 || that_present_err2) {
+        if (!(this_present_err2 && that_present_err2))
+          return false;
+        if (!this.err2.equals(that.err2))
+          return false;
+      }
+
+      boolean this_present_err3 = true && this.isSetErr3();
+      boolean that_present_err3 = true && that.isSetErr3();
+      if (this_present_err3 || that_present_err3) {
+        if (!(this_present_err3 && that_present_err3))
+          return false;
+        if (!this.err3.equals(that.err3))
+          return false;
+      }
+
+      boolean this_present_err4 = true && this.isSetErr4();
+      boolean that_present_err4 = true && that.isSetErr4();
+      if (this_present_err4 || that_present_err4) {
+        if (!(this_present_err4 && that_present_err4))
+          return false;
+        if (!this.err4.equals(that.err4))
+          return false;
+      }
+
+      boolean this_present_err5 = true && this.isSetErr5();
+      boolean that_present_err5 = true && that.isSetErr5();
+      if (this_present_err5 || that_present_err5) {
+        if (!(this_present_err5 && that_present_err5))
+          return false;
+        if (!this.err5.equals(that.err5))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      List<Object> list = new ArrayList<Object>();
+
+      boolean present_success = true && (isSetSuccess());
+      list.add(present_success);
+      if (present_success)
+        list.add(success);
+
+      boolean present_err1 = true && (isSetErr1());
+      list.add(present_err1);
+      if (present_err1)
+        list.add(err1);
+
+      boolean present_err2 = true && (isSetErr2());
+      list.add(present_err2);
+      if (present_err2)
+        list.add(err2);
+
+      boolean present_err3 = true && (isSetErr3());
+      list.add(present_err3);
+      if (present_err3)
+        list.add(err3);
+
+      boolean present_err4 = true && (isSetErr4());
+      list.add(present_err4);
+      if (present_err4)
+        list.add(err4);
+
+      boolean present_err5 = true && (isSetErr5());
+      list.add(present_err5);
+      if (present_err5)
+        list.add(err5);
+
+      return list.hashCode();
+    }
+
+    @Override
+    public int compareTo(timedQuery_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetErr1()).compareTo(other.isSetErr1());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetErr1()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.err1, other.err1);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetErr2()).compareTo(other.isSetErr2());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetErr2()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.err2, other.err2);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetErr3()).compareTo(other.isSetErr3());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetErr3()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.err3, other.err3);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetErr4()).compareTo(other.isSetErr4());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetErr4()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.err4, other.err4);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetErr5()).compareTo(other.isSetErr5());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetErr5()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.err5, other.err5);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+      }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("timedQuery_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("err1:");
+      if (this.err1 == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.err1);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("err2:");
+      if (this.err2 == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.err2);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("err3:");
+      if (this.err3 == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.err3);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("err4:");
+      if (this.err4 == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.err4);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("err5:");
+      if (this.err5 == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.err5);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class timedQuery_resultStandardSchemeFactory implements SchemeFactory {
+      public timedQuery_resultStandardScheme getScheme() {
+        return new timedQuery_resultStandardScheme();
+      }
+    }
+
+    private static class timedQuery_resultStandardScheme extends StandardScheme<timedQuery_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, timedQuery_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new QueryReport();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 1: // ERR1
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.err1 = new HawkInstanceNotFound();
+                struct.err1.read(iprot);
+                struct.setErr1IsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // ERR2
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.err2 = new HawkInstanceNotRunning();
+                struct.err2.read(iprot);
+                struct.setErr2IsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // ERR3
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.err3 = new UnknownQueryLanguage();
+                struct.err3.read(iprot);
+                struct.setErr3IsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 4: // ERR4
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.err4 = new InvalidQuery();
+                struct.err4.read(iprot);
+                struct.setErr4IsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 5: // ERR5
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.err5 = new FailedQuery();
+                struct.err5.read(iprot);
+                struct.setErr5IsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, timedQuery_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.err1 != null) {
+          oprot.writeFieldBegin(ERR1_FIELD_DESC);
+          struct.err1.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.err2 != null) {
+          oprot.writeFieldBegin(ERR2_FIELD_DESC);
+          struct.err2.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.err3 != null) {
+          oprot.writeFieldBegin(ERR3_FIELD_DESC);
+          struct.err3.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.err4 != null) {
+          oprot.writeFieldBegin(ERR4_FIELD_DESC);
+          struct.err4.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.err5 != null) {
+          oprot.writeFieldBegin(ERR5_FIELD_DESC);
+          struct.err5.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class timedQuery_resultTupleSchemeFactory implements SchemeFactory {
+      public timedQuery_resultTupleScheme getScheme() {
+        return new timedQuery_resultTupleScheme();
+      }
+    }
+
+    private static class timedQuery_resultTupleScheme extends TupleScheme<timedQuery_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, timedQuery_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        if (struct.isSetErr1()) {
+          optionals.set(1);
+        }
+        if (struct.isSetErr2()) {
+          optionals.set(2);
+        }
+        if (struct.isSetErr3()) {
+          optionals.set(3);
+        }
+        if (struct.isSetErr4()) {
+          optionals.set(4);
+        }
+        if (struct.isSetErr5()) {
+          optionals.set(5);
+        }
+        oprot.writeBitSet(optionals, 6);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+        if (struct.isSetErr1()) {
+          struct.err1.write(oprot);
+        }
+        if (struct.isSetErr2()) {
+          struct.err2.write(oprot);
+        }
+        if (struct.isSetErr3()) {
+          struct.err3.write(oprot);
+        }
+        if (struct.isSetErr4()) {
+          struct.err4.write(oprot);
+        }
+        if (struct.isSetErr5()) {
+          struct.err5.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, timedQuery_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(6);
+        if (incoming.get(0)) {
+          struct.success = new QueryReport();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
         }

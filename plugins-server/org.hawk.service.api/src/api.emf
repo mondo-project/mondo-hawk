@@ -112,6 +112,14 @@ class Hawk {
 		@doc(d="Options for the query") HawkQueryOptions options
 	) throws HawkInstanceNotFound, HawkInstanceNotRunning, UnknownQueryLanguage, InvalidQuery, FailedQuery;
 
+	@doc(d="Runs a query on a Hawk instance and returns a sequence of scalar values and/or model elements.")
+	op QueryReport timedQuery (
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="The query to be executed") String query,
+		@doc(d="The name of the query language used (e.g. EOL, OCL)") String language,
+		@doc(d="Options for the query") HawkQueryOptions options
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning, UnknownQueryLanguage, InvalidQuery, FailedQuery;
+
 	@doc(d="Returns populated model elements for the provided proxies")
 	op ModelElement[*] resolveProxies (
 		@doc(d="The name of the Hawk instance") String name,
@@ -575,6 +583,15 @@ class QueryResult extends Value {
 	val QueryResultMap vMap;
 	@doc(d="Nested list of query results.")
 	val QueryResult[*] vList;
+}
+
+@doc(d="Report from a query, including execution time and any other information we may consider later")
+class QueryReport {
+	@doc(d="Result of the query")
+	val QueryResult result;
+
+	@doc(d="Wall time on the server in milliseconds")
+	attr long wallMillis;
 }
 
 @thrift.map(key="name", value="value")

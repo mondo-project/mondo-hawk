@@ -75,6 +75,7 @@ import org.hawk.service.api.InvalidMetamodel;
 import org.hawk.service.api.InvalidPollingConfiguration;
 import org.hawk.service.api.InvalidQuery;
 import org.hawk.service.api.ModelElement;
+import org.hawk.service.api.QueryReport;
 import org.hawk.service.api.QueryResult;
 import org.hawk.service.api.QueryResult._Fields;
 import org.hawk.service.api.Repository;
@@ -265,6 +266,22 @@ public final class HawkThriftIface implements Hawk.Iface {
 		} catch (Exception ex) {
 			throw new TException(ex);
 		}
+	}
+
+	@Override
+	public QueryReport timedQuery(String name, String query, String language, HawkQueryOptions opts)
+			throws HawkInstanceNotFound, UnknownQueryLanguage, InvalidQuery,
+			FailedQuery, TException {
+
+		final long startMillis = System.currentTimeMillis();
+		final QueryResult result = query(name, query, language, opts);
+		final long endMillis = System.currentTimeMillis();
+
+		final QueryReport queryReport = new QueryReport();
+		queryReport.setResult(result);
+		queryReport.setWallMillis(endMillis - startMillis);
+
+		return queryReport;
 	}
 
 	private String join(List<String> strings, String separator) {

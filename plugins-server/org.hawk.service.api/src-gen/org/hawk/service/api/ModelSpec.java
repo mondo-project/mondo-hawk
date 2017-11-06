@@ -444,13 +444,13 @@ public class ModelSpec implements org.apache.thrift.TBase<ModelSpec, ModelSpec._
           case 2: // METAMODEL_URIS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list56 = iprot.readListBegin();
-                struct.metamodelUris = new ArrayList<String>(_list56.size);
-                String _elem57;
-                for (int _i58 = 0; _i58 < _list56.size; ++_i58)
+                org.apache.thrift.protocol.TList _list74 = iprot.readListBegin();
+                struct.metamodelUris = new ArrayList<String>(_list74.size);
+                String _elem75;
+                for (int _i76 = 0; _i76 < _list74.size; ++_i76)
                 {
-                  _elem57 = iprot.readString();
-                  struct.metamodelUris.add(_elem57);
+                  _elem75 = iprot.readString();
+                  struct.metamodelUris.add(_elem75);
                 }
                 iprot.readListEnd();
               }
@@ -483,9 +483,9 @@ public class ModelSpec implements org.apache.thrift.TBase<ModelSpec, ModelSpec._
         oprot.writeFieldBegin(METAMODEL_URIS_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, struct.metamodelUris.size()));
-          for (String _iter59 : struct.metamodelUris)
+          for (String _iter77 : struct.metamodelUris)
           {
-            oprot.writeString(_iter59);
+            oprot.writeString(_iter77);
           }
           oprot.writeListEnd();
         }
@@ -511,9 +511,9 @@ public class ModelSpec implements org.apache.thrift.TBase<ModelSpec, ModelSpec._
       oprot.writeString(struct.uri);
       {
         oprot.writeI32(struct.metamodelUris.size());
-        for (String _iter60 : struct.metamodelUris)
+        for (String _iter78 : struct.metamodelUris)
         {
-          oprot.writeString(_iter60);
+          oprot.writeString(_iter78);
         }
       }
     }
@@ -524,13 +524,13 @@ public class ModelSpec implements org.apache.thrift.TBase<ModelSpec, ModelSpec._
       struct.uri = iprot.readString();
       struct.setUriIsSet(true);
       {
-        org.apache.thrift.protocol.TList _list61 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-        struct.metamodelUris = new ArrayList<String>(_list61.size);
-        String _elem62;
-        for (int _i63 = 0; _i63 < _list61.size; ++_i63)
+        org.apache.thrift.protocol.TList _list79 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+        struct.metamodelUris = new ArrayList<String>(_list79.size);
+        String _elem80;
+        for (int _i81 = 0; _i81 < _list79.size; ++_i81)
         {
-          _elem62 = iprot.readString();
-          struct.metamodelUris.add(_elem62);
+          _elem80 = iprot.readString();
+          struct.metamodelUris.add(_elem80);
         }
       }
       struct.setMetamodelUrisIsSet(true);

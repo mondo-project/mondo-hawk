@@ -447,14 +447,14 @@ public class ContainerSlot implements org.apache.thrift.TBase<ContainerSlot, Con
           case 2: // ELEMENTS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list256 = iprot.readListBegin();
-                struct.elements = new ArrayList<ModelElement>(_list256.size);
-                ModelElement _elem257;
-                for (int _i258 = 0; _i258 < _list256.size; ++_i258)
+                org.apache.thrift.protocol.TList _list274 = iprot.readListBegin();
+                struct.elements = new ArrayList<ModelElement>(_list274.size);
+                ModelElement _elem275;
+                for (int _i276 = 0; _i276 < _list274.size; ++_i276)
                 {
-                  _elem257 = new ModelElement();
-                  _elem257.read(iprot);
-                  struct.elements.add(_elem257);
+                  _elem275 = new ModelElement();
+                  _elem275.read(iprot);
+                  struct.elements.add(_elem275);
                 }
                 iprot.readListEnd();
               }
@@ -487,9 +487,9 @@ public class ContainerSlot implements org.apache.thrift.TBase<ContainerSlot, Con
         oprot.writeFieldBegin(ELEMENTS_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.elements.size()));
-          for (ModelElement _iter259 : struct.elements)
+          for (ModelElement _iter277 : struct.elements)
           {
-            _iter259.write(oprot);
+            _iter277.write(oprot);
           }
           oprot.writeListEnd();
         }
@@ -515,9 +515,9 @@ public class ContainerSlot implements org.apache.thrift.TBase<ContainerSlot, Con
       oprot.writeString(struct.name);
       {
         oprot.writeI32(struct.elements.size());
-        for (ModelElement _iter260 : struct.elements)
+        for (ModelElement _iter278 : struct.elements)
         {
-          _iter260.write(oprot);
+          _iter278.write(oprot);
         }
       }
     }
@@ -528,14 +528,14 @@ public class ContainerSlot implements org.apache.thrift.TBase<ContainerSlot, Con
       struct.name = iprot.readString();
       struct.setNameIsSet(true);
       {
-        org.apache.thrift.protocol.TList _list261 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-        struct.elements = new ArrayList<ModelElement>(_list261.size);
-        ModelElement _elem262;
-        for (int _i263 = 0; _i263 < _list261.size; ++_i263)
+        org.apache.thrift.protocol.TList _list279 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+        struct.elements = new ArrayList<ModelElement>(_list279.size);
+        ModelElement _elem280;
+        for (int _i281 = 0; _i281 < _list279.size; ++_i281)
         {
-          _elem262 = new ModelElement();
-          _elem262.read(iprot);
-          struct.elements.add(_elem262);
+          _elem280 = new ModelElement();
+          _elem280.read(iprot);
+          struct.elements.add(_elem280);
         }
       }
       struct.setElementsIsSet(true);

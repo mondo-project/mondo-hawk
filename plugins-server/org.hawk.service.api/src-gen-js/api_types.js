@@ -29,6 +29,274 @@ SubscriptionDurability = {
   'DURABLE' : 1,
   'TEMPORARY' : 2
 };
+QueryResult = function(args) {
+  this.vBoolean = null;
+  this.vByte = null;
+  this.vShort = null;
+  this.vInteger = null;
+  this.vLong = null;
+  this.vDouble = null;
+  this.vString = null;
+  this.vModelElement = null;
+  this.vModelElementType = null;
+  this.vMap = null;
+  this.vList = null;
+  if (args) {
+    if (args.vBoolean !== undefined && args.vBoolean !== null) {
+      this.vBoolean = args.vBoolean;
+    }
+    if (args.vByte !== undefined && args.vByte !== null) {
+      this.vByte = args.vByte;
+    }
+    if (args.vShort !== undefined && args.vShort !== null) {
+      this.vShort = args.vShort;
+    }
+    if (args.vInteger !== undefined && args.vInteger !== null) {
+      this.vInteger = args.vInteger;
+    }
+    if (args.vLong !== undefined && args.vLong !== null) {
+      this.vLong = args.vLong;
+    }
+    if (args.vDouble !== undefined && args.vDouble !== null) {
+      this.vDouble = args.vDouble;
+    }
+    if (args.vString !== undefined && args.vString !== null) {
+      this.vString = args.vString;
+    }
+    if (args.vModelElement !== undefined && args.vModelElement !== null) {
+      this.vModelElement = new ModelElement(args.vModelElement);
+    }
+    if (args.vModelElementType !== undefined && args.vModelElementType !== null) {
+      this.vModelElementType = new ModelElementType(args.vModelElementType);
+    }
+    if (args.vMap !== undefined && args.vMap !== null) {
+      this.vMap = Thrift.copyMap(args.vMap, [null]);
+    }
+    if (args.vList !== undefined && args.vList !== null) {
+      this.vList = Thrift.copyList(args.vList, [null]);
+    }
+  }
+};
+QueryResult.prototype = {};
+QueryResult.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.BOOL) {
+        this.vBoolean = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.BYTE) {
+        this.vByte = input.readByte().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.I16) {
+        this.vShort = input.readI16().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.I32) {
+        this.vInteger = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.I64) {
+        this.vLong = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 6:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.vDouble = input.readDouble().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 7:
+      if (ftype == Thrift.Type.STRING) {
+        this.vString = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 8:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.vModelElement = new ModelElement();
+        this.vModelElement.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 9:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.vModelElementType = new ModelElementType();
+        this.vModelElementType.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 10:
+      if (ftype == Thrift.Type.MAP) {
+        var _size0 = 0;
+        var _rtmp34;
+        this.vMap = {};
+        var _ktype1 = 0;
+        var _vtype2 = 0;
+        _rtmp34 = input.readMapBegin();
+        _ktype1 = _rtmp34.ktype;
+        _vtype2 = _rtmp34.vtype;
+        _size0 = _rtmp34.size;
+        for (var _i5 = 0; _i5 < _size0; ++_i5)
+        {
+          if (_i5 > 0 ) {
+            if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
+              input.rstack.pop();
+            }
+          }
+          var key6 = null;
+          var val7 = null;
+          key6 = input.readString().value;
+          val7 = new QueryResult();
+          val7.read(input);
+          this.vMap[key6] = val7;
+        }
+        input.readMapEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 11:
+      if (ftype == Thrift.Type.LIST) {
+        var _size8 = 0;
+        var _rtmp312;
+        this.vList = [];
+        var _etype11 = 0;
+        _rtmp312 = input.readListBegin();
+        _etype11 = _rtmp312.etype;
+        _size8 = _rtmp312.size;
+        for (var _i13 = 0; _i13 < _size8; ++_i13)
+        {
+          var elem14 = null;
+          elem14 = new QueryResult();
+          elem14.read(input);
+          this.vList.push(elem14);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+QueryResult.prototype.write = function(output) {
+  output.writeStructBegin('QueryResult');
+  if (this.vBoolean !== null && this.vBoolean !== undefined) {
+    output.writeFieldBegin('vBoolean', Thrift.Type.BOOL, 1);
+    output.writeBool(this.vBoolean);
+    output.writeFieldEnd();
+  }
+  if (this.vByte !== null && this.vByte !== undefined) {
+    output.writeFieldBegin('vByte', Thrift.Type.BYTE, 2);
+    output.writeByte(this.vByte);
+    output.writeFieldEnd();
+  }
+  if (this.vShort !== null && this.vShort !== undefined) {
+    output.writeFieldBegin('vShort', Thrift.Type.I16, 3);
+    output.writeI16(this.vShort);
+    output.writeFieldEnd();
+  }
+  if (this.vInteger !== null && this.vInteger !== undefined) {
+    output.writeFieldBegin('vInteger', Thrift.Type.I32, 4);
+    output.writeI32(this.vInteger);
+    output.writeFieldEnd();
+  }
+  if (this.vLong !== null && this.vLong !== undefined) {
+    output.writeFieldBegin('vLong', Thrift.Type.I64, 5);
+    output.writeI64(this.vLong);
+    output.writeFieldEnd();
+  }
+  if (this.vDouble !== null && this.vDouble !== undefined) {
+    output.writeFieldBegin('vDouble', Thrift.Type.DOUBLE, 6);
+    output.writeDouble(this.vDouble);
+    output.writeFieldEnd();
+  }
+  if (this.vString !== null && this.vString !== undefined) {
+    output.writeFieldBegin('vString', Thrift.Type.STRING, 7);
+    output.writeString(this.vString);
+    output.writeFieldEnd();
+  }
+  if (this.vModelElement !== null && this.vModelElement !== undefined) {
+    output.writeFieldBegin('vModelElement', Thrift.Type.STRUCT, 8);
+    this.vModelElement.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.vModelElementType !== null && this.vModelElementType !== undefined) {
+    output.writeFieldBegin('vModelElementType', Thrift.Type.STRUCT, 9);
+    this.vModelElementType.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.vMap !== null && this.vMap !== undefined) {
+    output.writeFieldBegin('vMap', Thrift.Type.MAP, 10);
+    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.vMap));
+    for (var kiter15 in this.vMap)
+    {
+      if (this.vMap.hasOwnProperty(kiter15))
+      {
+        var viter16 = this.vMap[kiter15];
+        output.writeString(kiter15);
+        viter16.write(output);
+      }
+    }
+    output.writeMapEnd();
+    output.writeFieldEnd();
+  }
+  if (this.vList !== null && this.vList !== undefined) {
+    output.writeFieldBegin('vList', Thrift.Type.LIST, 11);
+    output.writeListBegin(Thrift.Type.STRUCT, this.vList.length);
+    for (var iter17 in this.vList)
+    {
+      if (this.vList.hasOwnProperty(iter17))
+      {
+        iter17 = this.vList[iter17];
+        iter17.write(output);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 SlotValue = function(args) {
   this.vBoolean = null;
   this.vByte = null;
@@ -158,18 +426,18 @@ SlotValue.prototype.read = function(input) {
       break;
       case 8:
       if (ftype == Thrift.Type.LIST) {
-        var _size0 = 0;
-        var _rtmp34;
+        var _size18 = 0;
+        var _rtmp322;
         this.vBooleans = [];
-        var _etype3 = 0;
-        _rtmp34 = input.readListBegin();
-        _etype3 = _rtmp34.etype;
-        _size0 = _rtmp34.size;
-        for (var _i5 = 0; _i5 < _size0; ++_i5)
+        var _etype21 = 0;
+        _rtmp322 = input.readListBegin();
+        _etype21 = _rtmp322.etype;
+        _size18 = _rtmp322.size;
+        for (var _i23 = 0; _i23 < _size18; ++_i23)
         {
-          var elem6 = null;
-          elem6 = input.readBool().value;
-          this.vBooleans.push(elem6);
+          var elem24 = null;
+          elem24 = input.readBool().value;
+          this.vBooleans.push(elem24);
         }
         input.readListEnd();
       } else {
@@ -185,18 +453,18 @@ SlotValue.prototype.read = function(input) {
       break;
       case 10:
       if (ftype == Thrift.Type.LIST) {
-        var _size7 = 0;
-        var _rtmp311;
+        var _size25 = 0;
+        var _rtmp329;
         this.vShorts = [];
-        var _etype10 = 0;
-        _rtmp311 = input.readListBegin();
-        _etype10 = _rtmp311.etype;
-        _size7 = _rtmp311.size;
-        for (var _i12 = 0; _i12 < _size7; ++_i12)
+        var _etype28 = 0;
+        _rtmp329 = input.readListBegin();
+        _etype28 = _rtmp329.etype;
+        _size25 = _rtmp329.size;
+        for (var _i30 = 0; _i30 < _size25; ++_i30)
         {
-          var elem13 = null;
-          elem13 = input.readI16().value;
-          this.vShorts.push(elem13);
+          var elem31 = null;
+          elem31 = input.readI16().value;
+          this.vShorts.push(elem31);
         }
         input.readListEnd();
       } else {
@@ -205,18 +473,18 @@ SlotValue.prototype.read = function(input) {
       break;
       case 11:
       if (ftype == Thrift.Type.LIST) {
-        var _size14 = 0;
-        var _rtmp318;
+        var _size32 = 0;
+        var _rtmp336;
         this.vIntegers = [];
-        var _etype17 = 0;
-        _rtmp318 = input.readListBegin();
-        _etype17 = _rtmp318.etype;
-        _size14 = _rtmp318.size;
-        for (var _i19 = 0; _i19 < _size14; ++_i19)
+        var _etype35 = 0;
+        _rtmp336 = input.readListBegin();
+        _etype35 = _rtmp336.etype;
+        _size32 = _rtmp336.size;
+        for (var _i37 = 0; _i37 < _size32; ++_i37)
         {
-          var elem20 = null;
-          elem20 = input.readI32().value;
-          this.vIntegers.push(elem20);
+          var elem38 = null;
+          elem38 = input.readI32().value;
+          this.vIntegers.push(elem38);
         }
         input.readListEnd();
       } else {
@@ -225,18 +493,18 @@ SlotValue.prototype.read = function(input) {
       break;
       case 12:
       if (ftype == Thrift.Type.LIST) {
-        var _size21 = 0;
-        var _rtmp325;
+        var _size39 = 0;
+        var _rtmp343;
         this.vLongs = [];
-        var _etype24 = 0;
-        _rtmp325 = input.readListBegin();
-        _etype24 = _rtmp325.etype;
-        _size21 = _rtmp325.size;
-        for (var _i26 = 0; _i26 < _size21; ++_i26)
+        var _etype42 = 0;
+        _rtmp343 = input.readListBegin();
+        _etype42 = _rtmp343.etype;
+        _size39 = _rtmp343.size;
+        for (var _i44 = 0; _i44 < _size39; ++_i44)
         {
-          var elem27 = null;
-          elem27 = input.readI64().value;
-          this.vLongs.push(elem27);
+          var elem45 = null;
+          elem45 = input.readI64().value;
+          this.vLongs.push(elem45);
         }
         input.readListEnd();
       } else {
@@ -245,18 +513,18 @@ SlotValue.prototype.read = function(input) {
       break;
       case 13:
       if (ftype == Thrift.Type.LIST) {
-        var _size28 = 0;
-        var _rtmp332;
+        var _size46 = 0;
+        var _rtmp350;
         this.vDoubles = [];
-        var _etype31 = 0;
-        _rtmp332 = input.readListBegin();
-        _etype31 = _rtmp332.etype;
-        _size28 = _rtmp332.size;
-        for (var _i33 = 0; _i33 < _size28; ++_i33)
+        var _etype49 = 0;
+        _rtmp350 = input.readListBegin();
+        _etype49 = _rtmp350.etype;
+        _size46 = _rtmp350.size;
+        for (var _i51 = 0; _i51 < _size46; ++_i51)
         {
-          var elem34 = null;
-          elem34 = input.readDouble().value;
-          this.vDoubles.push(elem34);
+          var elem52 = null;
+          elem52 = input.readDouble().value;
+          this.vDoubles.push(elem52);
         }
         input.readListEnd();
       } else {
@@ -265,18 +533,18 @@ SlotValue.prototype.read = function(input) {
       break;
       case 14:
       if (ftype == Thrift.Type.LIST) {
-        var _size35 = 0;
-        var _rtmp339;
+        var _size53 = 0;
+        var _rtmp357;
         this.vStrings = [];
-        var _etype38 = 0;
-        _rtmp339 = input.readListBegin();
-        _etype38 = _rtmp339.etype;
-        _size35 = _rtmp339.size;
-        for (var _i40 = 0; _i40 < _size35; ++_i40)
+        var _etype56 = 0;
+        _rtmp357 = input.readListBegin();
+        _etype56 = _rtmp357.etype;
+        _size53 = _rtmp357.size;
+        for (var _i58 = 0; _i58 < _size53; ++_i58)
         {
-          var elem41 = null;
-          elem41 = input.readString().value;
-          this.vStrings.push(elem41);
+          var elem59 = null;
+          elem59 = input.readString().value;
+          this.vStrings.push(elem59);
         }
         input.readListEnd();
       } else {
@@ -285,19 +553,19 @@ SlotValue.prototype.read = function(input) {
       break;
       case 15:
       if (ftype == Thrift.Type.LIST) {
-        var _size42 = 0;
-        var _rtmp346;
+        var _size60 = 0;
+        var _rtmp364;
         this.vLists = [];
-        var _etype45 = 0;
-        _rtmp346 = input.readListBegin();
-        _etype45 = _rtmp346.etype;
-        _size42 = _rtmp346.size;
-        for (var _i47 = 0; _i47 < _size42; ++_i47)
+        var _etype63 = 0;
+        _rtmp364 = input.readListBegin();
+        _etype63 = _rtmp364.etype;
+        _size60 = _rtmp364.size;
+        for (var _i65 = 0; _i65 < _size60; ++_i65)
         {
-          var elem48 = null;
-          elem48 = new SlotValue();
-          elem48.read(input);
-          this.vLists.push(elem48);
+          var elem66 = null;
+          elem66 = new SlotValue();
+          elem66.read(input);
+          this.vLists.push(elem66);
         }
         input.readListEnd();
       } else {
@@ -353,12 +621,12 @@ SlotValue.prototype.write = function(output) {
   if (this.vBooleans !== null && this.vBooleans !== undefined) {
     output.writeFieldBegin('vBooleans', Thrift.Type.LIST, 8);
     output.writeListBegin(Thrift.Type.BOOL, this.vBooleans.length);
-    for (var iter49 in this.vBooleans)
+    for (var iter67 in this.vBooleans)
     {
-      if (this.vBooleans.hasOwnProperty(iter49))
+      if (this.vBooleans.hasOwnProperty(iter67))
       {
-        iter49 = this.vBooleans[iter49];
-        output.writeBool(iter49);
+        iter67 = this.vBooleans[iter67];
+        output.writeBool(iter67);
       }
     }
     output.writeListEnd();
@@ -372,12 +640,12 @@ SlotValue.prototype.write = function(output) {
   if (this.vShorts !== null && this.vShorts !== undefined) {
     output.writeFieldBegin('vShorts', Thrift.Type.LIST, 10);
     output.writeListBegin(Thrift.Type.I16, this.vShorts.length);
-    for (var iter50 in this.vShorts)
+    for (var iter68 in this.vShorts)
     {
-      if (this.vShorts.hasOwnProperty(iter50))
+      if (this.vShorts.hasOwnProperty(iter68))
       {
-        iter50 = this.vShorts[iter50];
-        output.writeI16(iter50);
+        iter68 = this.vShorts[iter68];
+        output.writeI16(iter68);
       }
     }
     output.writeListEnd();
@@ -386,12 +654,12 @@ SlotValue.prototype.write = function(output) {
   if (this.vIntegers !== null && this.vIntegers !== undefined) {
     output.writeFieldBegin('vIntegers', Thrift.Type.LIST, 11);
     output.writeListBegin(Thrift.Type.I32, this.vIntegers.length);
-    for (var iter51 in this.vIntegers)
+    for (var iter69 in this.vIntegers)
     {
-      if (this.vIntegers.hasOwnProperty(iter51))
+      if (this.vIntegers.hasOwnProperty(iter69))
       {
-        iter51 = this.vIntegers[iter51];
-        output.writeI32(iter51);
+        iter69 = this.vIntegers[iter69];
+        output.writeI32(iter69);
       }
     }
     output.writeListEnd();
@@ -400,12 +668,12 @@ SlotValue.prototype.write = function(output) {
   if (this.vLongs !== null && this.vLongs !== undefined) {
     output.writeFieldBegin('vLongs', Thrift.Type.LIST, 12);
     output.writeListBegin(Thrift.Type.I64, this.vLongs.length);
-    for (var iter52 in this.vLongs)
+    for (var iter70 in this.vLongs)
     {
-      if (this.vLongs.hasOwnProperty(iter52))
+      if (this.vLongs.hasOwnProperty(iter70))
       {
-        iter52 = this.vLongs[iter52];
-        output.writeI64(iter52);
+        iter70 = this.vLongs[iter70];
+        output.writeI64(iter70);
       }
     }
     output.writeListEnd();
@@ -414,12 +682,12 @@ SlotValue.prototype.write = function(output) {
   if (this.vDoubles !== null && this.vDoubles !== undefined) {
     output.writeFieldBegin('vDoubles', Thrift.Type.LIST, 13);
     output.writeListBegin(Thrift.Type.DOUBLE, this.vDoubles.length);
-    for (var iter53 in this.vDoubles)
+    for (var iter71 in this.vDoubles)
     {
-      if (this.vDoubles.hasOwnProperty(iter53))
+      if (this.vDoubles.hasOwnProperty(iter71))
       {
-        iter53 = this.vDoubles[iter53];
-        output.writeDouble(iter53);
+        iter71 = this.vDoubles[iter71];
+        output.writeDouble(iter71);
       }
     }
     output.writeListEnd();
@@ -428,12 +696,12 @@ SlotValue.prototype.write = function(output) {
   if (this.vStrings !== null && this.vStrings !== undefined) {
     output.writeFieldBegin('vStrings', Thrift.Type.LIST, 14);
     output.writeListBegin(Thrift.Type.STRING, this.vStrings.length);
-    for (var iter54 in this.vStrings)
+    for (var iter72 in this.vStrings)
     {
-      if (this.vStrings.hasOwnProperty(iter54))
+      if (this.vStrings.hasOwnProperty(iter72))
       {
-        iter54 = this.vStrings[iter54];
-        output.writeString(iter54);
+        iter72 = this.vStrings[iter72];
+        output.writeString(iter72);
       }
     }
     output.writeListEnd();
@@ -442,12 +710,12 @@ SlotValue.prototype.write = function(output) {
   if (this.vLists !== null && this.vLists !== undefined) {
     output.writeFieldBegin('vLists', Thrift.Type.LIST, 15);
     output.writeListBegin(Thrift.Type.STRUCT, this.vLists.length);
-    for (var iter55 in this.vLists)
+    for (var iter73 in this.vLists)
     {
-      if (this.vLists.hasOwnProperty(iter55))
+      if (this.vLists.hasOwnProperty(iter73))
       {
-        iter55 = this.vLists[iter55];
-        iter55.write(output);
+        iter73 = this.vLists[iter73];
+        iter73.write(output);
       }
     }
     output.writeListEnd();
@@ -1919,18 +2187,18 @@ ModelSpec.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.LIST) {
-        var _size56 = 0;
-        var _rtmp360;
+        var _size74 = 0;
+        var _rtmp378;
         this.metamodelUris = [];
-        var _etype59 = 0;
-        _rtmp360 = input.readListBegin();
-        _etype59 = _rtmp360.etype;
-        _size56 = _rtmp360.size;
-        for (var _i61 = 0; _i61 < _size56; ++_i61)
+        var _etype77 = 0;
+        _rtmp378 = input.readListBegin();
+        _etype77 = _rtmp378.etype;
+        _size74 = _rtmp378.size;
+        for (var _i79 = 0; _i79 < _size74; ++_i79)
         {
-          var elem62 = null;
-          elem62 = input.readString().value;
-          this.metamodelUris.push(elem62);
+          var elem80 = null;
+          elem80 = input.readString().value;
+          this.metamodelUris.push(elem80);
         }
         input.readListEnd();
       } else {
@@ -1956,12 +2224,12 @@ ModelSpec.prototype.write = function(output) {
   if (this.metamodelUris !== null && this.metamodelUris !== undefined) {
     output.writeFieldBegin('metamodelUris', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.STRING, this.metamodelUris.length);
-    for (var iter63 in this.metamodelUris)
+    for (var iter81 in this.metamodelUris)
     {
-      if (this.metamodelUris.hasOwnProperty(iter63))
+      if (this.metamodelUris.hasOwnProperty(iter81))
       {
-        iter63 = this.metamodelUris[iter63];
-        output.writeString(iter63);
+        iter81 = this.metamodelUris[iter81];
+        output.writeString(iter81);
       }
     }
     output.writeListEnd();
@@ -3630,19 +3898,19 @@ ModelElementType.prototype.read = function(input) {
       break;
       case 4:
       if (ftype == Thrift.Type.LIST) {
-        var _size64 = 0;
-        var _rtmp368;
+        var _size82 = 0;
+        var _rtmp386;
         this.attributes = [];
-        var _etype67 = 0;
-        _rtmp368 = input.readListBegin();
-        _etype67 = _rtmp368.etype;
-        _size64 = _rtmp368.size;
-        for (var _i69 = 0; _i69 < _size64; ++_i69)
+        var _etype85 = 0;
+        _rtmp386 = input.readListBegin();
+        _etype85 = _rtmp386.etype;
+        _size82 = _rtmp386.size;
+        for (var _i87 = 0; _i87 < _size82; ++_i87)
         {
-          var elem70 = null;
-          elem70 = new SlotMetadata();
-          elem70.read(input);
-          this.attributes.push(elem70);
+          var elem88 = null;
+          elem88 = new SlotMetadata();
+          elem88.read(input);
+          this.attributes.push(elem88);
         }
         input.readListEnd();
       } else {
@@ -3651,19 +3919,19 @@ ModelElementType.prototype.read = function(input) {
       break;
       case 5:
       if (ftype == Thrift.Type.LIST) {
-        var _size71 = 0;
-        var _rtmp375;
+        var _size89 = 0;
+        var _rtmp393;
         this.references = [];
-        var _etype74 = 0;
-        _rtmp375 = input.readListBegin();
-        _etype74 = _rtmp375.etype;
-        _size71 = _rtmp375.size;
-        for (var _i76 = 0; _i76 < _size71; ++_i76)
+        var _etype92 = 0;
+        _rtmp393 = input.readListBegin();
+        _etype92 = _rtmp393.etype;
+        _size89 = _rtmp393.size;
+        for (var _i94 = 0; _i94 < _size89; ++_i94)
         {
-          var elem77 = null;
-          elem77 = new SlotMetadata();
-          elem77.read(input);
-          this.references.push(elem77);
+          var elem95 = null;
+          elem95 = new SlotMetadata();
+          elem95.read(input);
+          this.references.push(elem95);
         }
         input.readListEnd();
       } else {
@@ -3699,12 +3967,12 @@ ModelElementType.prototype.write = function(output) {
   if (this.attributes !== null && this.attributes !== undefined) {
     output.writeFieldBegin('attributes', Thrift.Type.LIST, 4);
     output.writeListBegin(Thrift.Type.STRUCT, this.attributes.length);
-    for (var iter78 in this.attributes)
+    for (var iter96 in this.attributes)
     {
-      if (this.attributes.hasOwnProperty(iter78))
+      if (this.attributes.hasOwnProperty(iter96))
       {
-        iter78 = this.attributes[iter78];
-        iter78.write(output);
+        iter96 = this.attributes[iter96];
+        iter96.write(output);
       }
     }
     output.writeListEnd();
@@ -3713,12 +3981,12 @@ ModelElementType.prototype.write = function(output) {
   if (this.references !== null && this.references !== undefined) {
     output.writeFieldBegin('references', Thrift.Type.LIST, 5);
     output.writeListBegin(Thrift.Type.STRUCT, this.references.length);
-    for (var iter79 in this.references)
+    for (var iter97 in this.references)
     {
-      if (this.references.hasOwnProperty(iter79))
+      if (this.references.hasOwnProperty(iter97))
       {
-        iter79 = this.references[iter79];
-        iter79.write(output);
+        iter97 = this.references[iter97];
+        iter97.write(output);
       }
     }
     output.writeListEnd();
@@ -3789,18 +4057,18 @@ ReferenceSlot.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
-        var _size80 = 0;
-        var _rtmp384;
+        var _size98 = 0;
+        var _rtmp3102;
         this.positions = [];
-        var _etype83 = 0;
-        _rtmp384 = input.readListBegin();
-        _etype83 = _rtmp384.etype;
-        _size80 = _rtmp384.size;
-        for (var _i85 = 0; _i85 < _size80; ++_i85)
+        var _etype101 = 0;
+        _rtmp3102 = input.readListBegin();
+        _etype101 = _rtmp3102.etype;
+        _size98 = _rtmp3102.size;
+        for (var _i103 = 0; _i103 < _size98; ++_i103)
         {
-          var elem86 = null;
-          elem86 = input.readI32().value;
-          this.positions.push(elem86);
+          var elem104 = null;
+          elem104 = input.readI32().value;
+          this.positions.push(elem104);
         }
         input.readListEnd();
       } else {
@@ -3816,18 +4084,18 @@ ReferenceSlot.prototype.read = function(input) {
       break;
       case 5:
       if (ftype == Thrift.Type.LIST) {
-        var _size87 = 0;
-        var _rtmp391;
+        var _size105 = 0;
+        var _rtmp3109;
         this.ids = [];
-        var _etype90 = 0;
-        _rtmp391 = input.readListBegin();
-        _etype90 = _rtmp391.etype;
-        _size87 = _rtmp391.size;
-        for (var _i92 = 0; _i92 < _size87; ++_i92)
+        var _etype108 = 0;
+        _rtmp3109 = input.readListBegin();
+        _etype108 = _rtmp3109.etype;
+        _size105 = _rtmp3109.size;
+        for (var _i110 = 0; _i110 < _size105; ++_i110)
         {
-          var elem93 = null;
-          elem93 = input.readString().value;
-          this.ids.push(elem93);
+          var elem111 = null;
+          elem111 = input.readString().value;
+          this.ids.push(elem111);
         }
         input.readListEnd();
       } else {
@@ -3836,19 +4104,19 @@ ReferenceSlot.prototype.read = function(input) {
       break;
       case 6:
       if (ftype == Thrift.Type.LIST) {
-        var _size94 = 0;
-        var _rtmp398;
+        var _size112 = 0;
+        var _rtmp3116;
         this.mixed = [];
-        var _etype97 = 0;
-        _rtmp398 = input.readListBegin();
-        _etype97 = _rtmp398.etype;
-        _size94 = _rtmp398.size;
-        for (var _i99 = 0; _i99 < _size94; ++_i99)
+        var _etype115 = 0;
+        _rtmp3116 = input.readListBegin();
+        _etype115 = _rtmp3116.etype;
+        _size112 = _rtmp3116.size;
+        for (var _i117 = 0; _i117 < _size112; ++_i117)
         {
-          var elem100 = null;
-          elem100 = new MixedReference();
-          elem100.read(input);
-          this.mixed.push(elem100);
+          var elem118 = null;
+          elem118 = new MixedReference();
+          elem118.read(input);
+          this.mixed.push(elem118);
         }
         input.readListEnd();
       } else {
@@ -3879,12 +4147,12 @@ ReferenceSlot.prototype.write = function(output) {
   if (this.positions !== null && this.positions !== undefined) {
     output.writeFieldBegin('positions', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.I32, this.positions.length);
-    for (var iter101 in this.positions)
+    for (var iter119 in this.positions)
     {
-      if (this.positions.hasOwnProperty(iter101))
+      if (this.positions.hasOwnProperty(iter119))
       {
-        iter101 = this.positions[iter101];
-        output.writeI32(iter101);
+        iter119 = this.positions[iter119];
+        output.writeI32(iter119);
       }
     }
     output.writeListEnd();
@@ -3898,12 +4166,12 @@ ReferenceSlot.prototype.write = function(output) {
   if (this.ids !== null && this.ids !== undefined) {
     output.writeFieldBegin('ids', Thrift.Type.LIST, 5);
     output.writeListBegin(Thrift.Type.STRING, this.ids.length);
-    for (var iter102 in this.ids)
+    for (var iter120 in this.ids)
     {
-      if (this.ids.hasOwnProperty(iter102))
+      if (this.ids.hasOwnProperty(iter120))
       {
-        iter102 = this.ids[iter102];
-        output.writeString(iter102);
+        iter120 = this.ids[iter120];
+        output.writeString(iter120);
       }
     }
     output.writeListEnd();
@@ -3912,12 +4180,12 @@ ReferenceSlot.prototype.write = function(output) {
   if (this.mixed !== null && this.mixed !== undefined) {
     output.writeFieldBegin('mixed', Thrift.Type.LIST, 6);
     output.writeListBegin(Thrift.Type.STRUCT, this.mixed.length);
-    for (var iter103 in this.mixed)
+    for (var iter121 in this.mixed)
     {
-      if (this.mixed.hasOwnProperty(iter103))
+      if (this.mixed.hasOwnProperty(iter121))
       {
-        iter103 = this.mixed[iter103];
-        iter103.write(output);
+        iter121 = this.mixed[iter121];
+        iter121.write(output);
       }
     }
     output.writeListEnd();
@@ -4199,18 +4467,18 @@ HawkQueryOptions.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.LIST) {
-        var _size104 = 0;
-        var _rtmp3108;
+        var _size122 = 0;
+        var _rtmp3126;
         this.filePatterns = [];
-        var _etype107 = 0;
-        _rtmp3108 = input.readListBegin();
-        _etype107 = _rtmp3108.etype;
-        _size104 = _rtmp3108.size;
-        for (var _i109 = 0; _i109 < _size104; ++_i109)
+        var _etype125 = 0;
+        _rtmp3126 = input.readListBegin();
+        _etype125 = _rtmp3126.etype;
+        _size122 = _rtmp3126.size;
+        for (var _i127 = 0; _i127 < _size122; ++_i127)
         {
-          var elem110 = null;
-          elem110 = input.readString().value;
-          this.filePatterns.push(elem110);
+          var elem128 = null;
+          elem128 = input.readString().value;
+          this.filePatterns.push(elem128);
         }
         input.readListEnd();
       } else {
@@ -4254,62 +4522,62 @@ HawkQueryOptions.prototype.read = function(input) {
       break;
       case 8:
       if (ftype == Thrift.Type.MAP) {
-        var _size111 = 0;
-        var _rtmp3115;
+        var _size129 = 0;
+        var _rtmp3133;
         this.effectiveMetamodelIncludes = {};
-        var _ktype112 = 0;
-        var _vtype113 = 0;
-        _rtmp3115 = input.readMapBegin();
-        _ktype112 = _rtmp3115.ktype;
-        _vtype113 = _rtmp3115.vtype;
-        _size111 = _rtmp3115.size;
-        for (var _i116 = 0; _i116 < _size111; ++_i116)
+        var _ktype130 = 0;
+        var _vtype131 = 0;
+        _rtmp3133 = input.readMapBegin();
+        _ktype130 = _rtmp3133.ktype;
+        _vtype131 = _rtmp3133.vtype;
+        _size129 = _rtmp3133.size;
+        for (var _i134 = 0; _i134 < _size129; ++_i134)
         {
-          if (_i116 > 0 ) {
+          if (_i134 > 0 ) {
             if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
               input.rstack.pop();
             }
           }
-          var key117 = null;
-          var val118 = null;
-          key117 = input.readString().value;
-          var _size119 = 0;
-          var _rtmp3123;
-          val118 = {};
-          var _ktype120 = 0;
-          var _vtype121 = 0;
-          _rtmp3123 = input.readMapBegin();
-          _ktype120 = _rtmp3123.ktype;
-          _vtype121 = _rtmp3123.vtype;
-          _size119 = _rtmp3123.size;
-          for (var _i124 = 0; _i124 < _size119; ++_i124)
+          var key135 = null;
+          var val136 = null;
+          key135 = input.readString().value;
+          var _size137 = 0;
+          var _rtmp3141;
+          val136 = {};
+          var _ktype138 = 0;
+          var _vtype139 = 0;
+          _rtmp3141 = input.readMapBegin();
+          _ktype138 = _rtmp3141.ktype;
+          _vtype139 = _rtmp3141.vtype;
+          _size137 = _rtmp3141.size;
+          for (var _i142 = 0; _i142 < _size137; ++_i142)
           {
-            if (_i124 > 0 ) {
+            if (_i142 > 0 ) {
               if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
                 input.rstack.pop();
               }
             }
-            var key125 = null;
-            var val126 = null;
-            key125 = input.readString().value;
-            var _size127 = 0;
-            var _rtmp3131;
-            val126 = [];
-            var _etype130 = 0;
-            _rtmp3131 = input.readSetBegin();
-            _etype130 = _rtmp3131.etype;
-            _size127 = _rtmp3131.size;
-            for (var _i132 = 0; _i132 < _size127; ++_i132)
+            var key143 = null;
+            var val144 = null;
+            key143 = input.readString().value;
+            var _size145 = 0;
+            var _rtmp3149;
+            val144 = [];
+            var _etype148 = 0;
+            _rtmp3149 = input.readSetBegin();
+            _etype148 = _rtmp3149.etype;
+            _size145 = _rtmp3149.size;
+            for (var _i150 = 0; _i150 < _size145; ++_i150)
             {
-              var elem133 = null;
-              elem133 = input.readString().value;
-              val126.push(elem133);
+              var elem151 = null;
+              elem151 = input.readString().value;
+              val144.push(elem151);
             }
             input.readSetEnd();
-            val118[key125] = val126;
+            val136[key143] = val144;
           }
           input.readMapEnd();
-          this.effectiveMetamodelIncludes[key117] = val118;
+          this.effectiveMetamodelIncludes[key135] = val136;
         }
         input.readMapEnd();
       } else {
@@ -4318,62 +4586,62 @@ HawkQueryOptions.prototype.read = function(input) {
       break;
       case 9:
       if (ftype == Thrift.Type.MAP) {
-        var _size134 = 0;
-        var _rtmp3138;
+        var _size152 = 0;
+        var _rtmp3156;
         this.effectiveMetamodelExcludes = {};
-        var _ktype135 = 0;
-        var _vtype136 = 0;
-        _rtmp3138 = input.readMapBegin();
-        _ktype135 = _rtmp3138.ktype;
-        _vtype136 = _rtmp3138.vtype;
-        _size134 = _rtmp3138.size;
-        for (var _i139 = 0; _i139 < _size134; ++_i139)
+        var _ktype153 = 0;
+        var _vtype154 = 0;
+        _rtmp3156 = input.readMapBegin();
+        _ktype153 = _rtmp3156.ktype;
+        _vtype154 = _rtmp3156.vtype;
+        _size152 = _rtmp3156.size;
+        for (var _i157 = 0; _i157 < _size152; ++_i157)
         {
-          if (_i139 > 0 ) {
+          if (_i157 > 0 ) {
             if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
               input.rstack.pop();
             }
           }
-          var key140 = null;
-          var val141 = null;
-          key140 = input.readString().value;
-          var _size142 = 0;
-          var _rtmp3146;
-          val141 = {};
-          var _ktype143 = 0;
-          var _vtype144 = 0;
-          _rtmp3146 = input.readMapBegin();
-          _ktype143 = _rtmp3146.ktype;
-          _vtype144 = _rtmp3146.vtype;
-          _size142 = _rtmp3146.size;
-          for (var _i147 = 0; _i147 < _size142; ++_i147)
+          var key158 = null;
+          var val159 = null;
+          key158 = input.readString().value;
+          var _size160 = 0;
+          var _rtmp3164;
+          val159 = {};
+          var _ktype161 = 0;
+          var _vtype162 = 0;
+          _rtmp3164 = input.readMapBegin();
+          _ktype161 = _rtmp3164.ktype;
+          _vtype162 = _rtmp3164.vtype;
+          _size160 = _rtmp3164.size;
+          for (var _i165 = 0; _i165 < _size160; ++_i165)
           {
-            if (_i147 > 0 ) {
+            if (_i165 > 0 ) {
               if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
                 input.rstack.pop();
               }
             }
-            var key148 = null;
-            var val149 = null;
-            key148 = input.readString().value;
-            var _size150 = 0;
-            var _rtmp3154;
-            val149 = [];
-            var _etype153 = 0;
-            _rtmp3154 = input.readSetBegin();
-            _etype153 = _rtmp3154.etype;
-            _size150 = _rtmp3154.size;
-            for (var _i155 = 0; _i155 < _size150; ++_i155)
+            var key166 = null;
+            var val167 = null;
+            key166 = input.readString().value;
+            var _size168 = 0;
+            var _rtmp3172;
+            val167 = [];
+            var _etype171 = 0;
+            _rtmp3172 = input.readSetBegin();
+            _etype171 = _rtmp3172.etype;
+            _size168 = _rtmp3172.size;
+            for (var _i173 = 0; _i173 < _size168; ++_i173)
             {
-              var elem156 = null;
-              elem156 = input.readString().value;
-              val149.push(elem156);
+              var elem174 = null;
+              elem174 = input.readString().value;
+              val167.push(elem174);
             }
             input.readSetEnd();
-            val141[key148] = val149;
+            val159[key166] = val167;
           }
           input.readMapEnd();
-          this.effectiveMetamodelExcludes[key140] = val141;
+          this.effectiveMetamodelExcludes[key158] = val159;
         }
         input.readMapEnd();
       } else {
@@ -4406,12 +4674,12 @@ HawkQueryOptions.prototype.write = function(output) {
   if (this.filePatterns !== null && this.filePatterns !== undefined) {
     output.writeFieldBegin('filePatterns', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.STRING, this.filePatterns.length);
-    for (var iter157 in this.filePatterns)
+    for (var iter175 in this.filePatterns)
     {
-      if (this.filePatterns.hasOwnProperty(iter157))
+      if (this.filePatterns.hasOwnProperty(iter175))
       {
-        iter157 = this.filePatterns[iter157];
-        output.writeString(iter157);
+        iter175 = this.filePatterns[iter175];
+        output.writeString(iter175);
       }
     }
     output.writeListEnd();
@@ -4445,26 +4713,26 @@ HawkQueryOptions.prototype.write = function(output) {
   if (this.effectiveMetamodelIncludes !== null && this.effectiveMetamodelIncludes !== undefined) {
     output.writeFieldBegin('effectiveMetamodelIncludes', Thrift.Type.MAP, 8);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(this.effectiveMetamodelIncludes));
-    for (var kiter158 in this.effectiveMetamodelIncludes)
+    for (var kiter176 in this.effectiveMetamodelIncludes)
     {
-      if (this.effectiveMetamodelIncludes.hasOwnProperty(kiter158))
+      if (this.effectiveMetamodelIncludes.hasOwnProperty(kiter176))
       {
-        var viter159 = this.effectiveMetamodelIncludes[kiter158];
-        output.writeString(kiter158);
-        output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.SET, Thrift.objectLength(viter159));
-        for (var kiter160 in viter159)
+        var viter177 = this.effectiveMetamodelIncludes[kiter176];
+        output.writeString(kiter176);
+        output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.SET, Thrift.objectLength(viter177));
+        for (var kiter178 in viter177)
         {
-          if (viter159.hasOwnProperty(kiter160))
+          if (viter177.hasOwnProperty(kiter178))
           {
-            var viter161 = viter159[kiter160];
-            output.writeString(kiter160);
-            output.writeSetBegin(Thrift.Type.STRING, viter161.length);
-            for (var iter162 in viter161)
+            var viter179 = viter177[kiter178];
+            output.writeString(kiter178);
+            output.writeSetBegin(Thrift.Type.STRING, viter179.length);
+            for (var iter180 in viter179)
             {
-              if (viter161.hasOwnProperty(iter162))
+              if (viter179.hasOwnProperty(iter180))
               {
-                iter162 = viter161[iter162];
-                output.writeString(iter162);
+                iter180 = viter179[iter180];
+                output.writeString(iter180);
               }
             }
             output.writeSetEnd();
@@ -4479,26 +4747,26 @@ HawkQueryOptions.prototype.write = function(output) {
   if (this.effectiveMetamodelExcludes !== null && this.effectiveMetamodelExcludes !== undefined) {
     output.writeFieldBegin('effectiveMetamodelExcludes', Thrift.Type.MAP, 9);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(this.effectiveMetamodelExcludes));
-    for (var kiter163 in this.effectiveMetamodelExcludes)
+    for (var kiter181 in this.effectiveMetamodelExcludes)
     {
-      if (this.effectiveMetamodelExcludes.hasOwnProperty(kiter163))
+      if (this.effectiveMetamodelExcludes.hasOwnProperty(kiter181))
       {
-        var viter164 = this.effectiveMetamodelExcludes[kiter163];
-        output.writeString(kiter163);
-        output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.SET, Thrift.objectLength(viter164));
-        for (var kiter165 in viter164)
+        var viter182 = this.effectiveMetamodelExcludes[kiter181];
+        output.writeString(kiter181);
+        output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.SET, Thrift.objectLength(viter182));
+        for (var kiter183 in viter182)
         {
-          if (viter164.hasOwnProperty(kiter165))
+          if (viter182.hasOwnProperty(kiter183))
           {
-            var viter166 = viter164[kiter165];
-            output.writeString(kiter165);
-            output.writeSetBegin(Thrift.Type.STRING, viter166.length);
-            for (var iter167 in viter166)
+            var viter184 = viter182[kiter183];
+            output.writeString(kiter183);
+            output.writeSetBegin(Thrift.Type.STRING, viter184.length);
+            for (var iter185 in viter184)
             {
-              if (viter166.hasOwnProperty(iter167))
+              if (viter184.hasOwnProperty(iter185))
               {
-                iter167 = viter166[iter167];
-                output.writeString(iter167);
+                iter185 = viter184[iter185];
+                output.writeString(iter185);
               }
             }
             output.writeSetEnd();
@@ -4563,18 +4831,18 @@ IFCExportOptions.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.LIST) {
-        var _size168 = 0;
-        var _rtmp3172;
+        var _size186 = 0;
+        var _rtmp3190;
         this.filePatterns = [];
-        var _etype171 = 0;
-        _rtmp3172 = input.readListBegin();
-        _etype171 = _rtmp3172.etype;
-        _size168 = _rtmp3172.size;
-        for (var _i173 = 0; _i173 < _size168; ++_i173)
+        var _etype189 = 0;
+        _rtmp3190 = input.readListBegin();
+        _etype189 = _rtmp3190.etype;
+        _size186 = _rtmp3190.size;
+        for (var _i191 = 0; _i191 < _size186; ++_i191)
         {
-          var elem174 = null;
-          elem174 = input.readString().value;
-          this.filePatterns.push(elem174);
+          var elem192 = null;
+          elem192 = input.readString().value;
+          this.filePatterns.push(elem192);
         }
         input.readListEnd();
       } else {
@@ -4583,62 +4851,62 @@ IFCExportOptions.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.MAP) {
-        var _size175 = 0;
-        var _rtmp3179;
+        var _size193 = 0;
+        var _rtmp3197;
         this.includeRules = {};
-        var _ktype176 = 0;
-        var _vtype177 = 0;
-        _rtmp3179 = input.readMapBegin();
-        _ktype176 = _rtmp3179.ktype;
-        _vtype177 = _rtmp3179.vtype;
-        _size175 = _rtmp3179.size;
-        for (var _i180 = 0; _i180 < _size175; ++_i180)
+        var _ktype194 = 0;
+        var _vtype195 = 0;
+        _rtmp3197 = input.readMapBegin();
+        _ktype194 = _rtmp3197.ktype;
+        _vtype195 = _rtmp3197.vtype;
+        _size193 = _rtmp3197.size;
+        for (var _i198 = 0; _i198 < _size193; ++_i198)
         {
-          if (_i180 > 0 ) {
+          if (_i198 > 0 ) {
             if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
               input.rstack.pop();
             }
           }
-          var key181 = null;
-          var val182 = null;
-          key181 = input.readString().value;
-          var _size183 = 0;
-          var _rtmp3187;
-          val182 = {};
-          var _ktype184 = 0;
-          var _vtype185 = 0;
-          _rtmp3187 = input.readMapBegin();
-          _ktype184 = _rtmp3187.ktype;
-          _vtype185 = _rtmp3187.vtype;
-          _size183 = _rtmp3187.size;
-          for (var _i188 = 0; _i188 < _size183; ++_i188)
+          var key199 = null;
+          var val200 = null;
+          key199 = input.readString().value;
+          var _size201 = 0;
+          var _rtmp3205;
+          val200 = {};
+          var _ktype202 = 0;
+          var _vtype203 = 0;
+          _rtmp3205 = input.readMapBegin();
+          _ktype202 = _rtmp3205.ktype;
+          _vtype203 = _rtmp3205.vtype;
+          _size201 = _rtmp3205.size;
+          for (var _i206 = 0; _i206 < _size201; ++_i206)
           {
-            if (_i188 > 0 ) {
+            if (_i206 > 0 ) {
               if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
                 input.rstack.pop();
               }
             }
-            var key189 = null;
-            var val190 = null;
-            key189 = input.readString().value;
-            var _size191 = 0;
-            var _rtmp3195;
-            val190 = [];
-            var _etype194 = 0;
-            _rtmp3195 = input.readSetBegin();
-            _etype194 = _rtmp3195.etype;
-            _size191 = _rtmp3195.size;
-            for (var _i196 = 0; _i196 < _size191; ++_i196)
+            var key207 = null;
+            var val208 = null;
+            key207 = input.readString().value;
+            var _size209 = 0;
+            var _rtmp3213;
+            val208 = [];
+            var _etype212 = 0;
+            _rtmp3213 = input.readSetBegin();
+            _etype212 = _rtmp3213.etype;
+            _size209 = _rtmp3213.size;
+            for (var _i214 = 0; _i214 < _size209; ++_i214)
             {
-              var elem197 = null;
-              elem197 = input.readString().value;
-              val190.push(elem197);
+              var elem215 = null;
+              elem215 = input.readString().value;
+              val208.push(elem215);
             }
             input.readSetEnd();
-            val182[key189] = val190;
+            val200[key207] = val208;
           }
           input.readMapEnd();
-          this.includeRules[key181] = val182;
+          this.includeRules[key199] = val200;
         }
         input.readMapEnd();
       } else {
@@ -4647,62 +4915,62 @@ IFCExportOptions.prototype.read = function(input) {
       break;
       case 4:
       if (ftype == Thrift.Type.MAP) {
-        var _size198 = 0;
-        var _rtmp3202;
+        var _size216 = 0;
+        var _rtmp3220;
         this.excludeRules = {};
-        var _ktype199 = 0;
-        var _vtype200 = 0;
-        _rtmp3202 = input.readMapBegin();
-        _ktype199 = _rtmp3202.ktype;
-        _vtype200 = _rtmp3202.vtype;
-        _size198 = _rtmp3202.size;
-        for (var _i203 = 0; _i203 < _size198; ++_i203)
+        var _ktype217 = 0;
+        var _vtype218 = 0;
+        _rtmp3220 = input.readMapBegin();
+        _ktype217 = _rtmp3220.ktype;
+        _vtype218 = _rtmp3220.vtype;
+        _size216 = _rtmp3220.size;
+        for (var _i221 = 0; _i221 < _size216; ++_i221)
         {
-          if (_i203 > 0 ) {
+          if (_i221 > 0 ) {
             if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
               input.rstack.pop();
             }
           }
-          var key204 = null;
-          var val205 = null;
-          key204 = input.readString().value;
-          var _size206 = 0;
-          var _rtmp3210;
-          val205 = {};
-          var _ktype207 = 0;
-          var _vtype208 = 0;
-          _rtmp3210 = input.readMapBegin();
-          _ktype207 = _rtmp3210.ktype;
-          _vtype208 = _rtmp3210.vtype;
-          _size206 = _rtmp3210.size;
-          for (var _i211 = 0; _i211 < _size206; ++_i211)
+          var key222 = null;
+          var val223 = null;
+          key222 = input.readString().value;
+          var _size224 = 0;
+          var _rtmp3228;
+          val223 = {};
+          var _ktype225 = 0;
+          var _vtype226 = 0;
+          _rtmp3228 = input.readMapBegin();
+          _ktype225 = _rtmp3228.ktype;
+          _vtype226 = _rtmp3228.vtype;
+          _size224 = _rtmp3228.size;
+          for (var _i229 = 0; _i229 < _size224; ++_i229)
           {
-            if (_i211 > 0 ) {
+            if (_i229 > 0 ) {
               if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
                 input.rstack.pop();
               }
             }
-            var key212 = null;
-            var val213 = null;
-            key212 = input.readString().value;
-            var _size214 = 0;
-            var _rtmp3218;
-            val213 = [];
-            var _etype217 = 0;
-            _rtmp3218 = input.readSetBegin();
-            _etype217 = _rtmp3218.etype;
-            _size214 = _rtmp3218.size;
-            for (var _i219 = 0; _i219 < _size214; ++_i219)
+            var key230 = null;
+            var val231 = null;
+            key230 = input.readString().value;
+            var _size232 = 0;
+            var _rtmp3236;
+            val231 = [];
+            var _etype235 = 0;
+            _rtmp3236 = input.readSetBegin();
+            _etype235 = _rtmp3236.etype;
+            _size232 = _rtmp3236.size;
+            for (var _i237 = 0; _i237 < _size232; ++_i237)
             {
-              var elem220 = null;
-              elem220 = input.readString().value;
-              val213.push(elem220);
+              var elem238 = null;
+              elem238 = input.readString().value;
+              val231.push(elem238);
             }
             input.readSetEnd();
-            val205[key212] = val213;
+            val223[key230] = val231;
           }
           input.readMapEnd();
-          this.excludeRules[key204] = val205;
+          this.excludeRules[key222] = val223;
         }
         input.readMapEnd();
       } else {
@@ -4728,12 +4996,12 @@ IFCExportOptions.prototype.write = function(output) {
   if (this.filePatterns !== null && this.filePatterns !== undefined) {
     output.writeFieldBegin('filePatterns', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.STRING, this.filePatterns.length);
-    for (var iter221 in this.filePatterns)
+    for (var iter239 in this.filePatterns)
     {
-      if (this.filePatterns.hasOwnProperty(iter221))
+      if (this.filePatterns.hasOwnProperty(iter239))
       {
-        iter221 = this.filePatterns[iter221];
-        output.writeString(iter221);
+        iter239 = this.filePatterns[iter239];
+        output.writeString(iter239);
       }
     }
     output.writeListEnd();
@@ -4742,26 +5010,26 @@ IFCExportOptions.prototype.write = function(output) {
   if (this.includeRules !== null && this.includeRules !== undefined) {
     output.writeFieldBegin('includeRules', Thrift.Type.MAP, 3);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(this.includeRules));
-    for (var kiter222 in this.includeRules)
+    for (var kiter240 in this.includeRules)
     {
-      if (this.includeRules.hasOwnProperty(kiter222))
+      if (this.includeRules.hasOwnProperty(kiter240))
       {
-        var viter223 = this.includeRules[kiter222];
-        output.writeString(kiter222);
-        output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.SET, Thrift.objectLength(viter223));
-        for (var kiter224 in viter223)
+        var viter241 = this.includeRules[kiter240];
+        output.writeString(kiter240);
+        output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.SET, Thrift.objectLength(viter241));
+        for (var kiter242 in viter241)
         {
-          if (viter223.hasOwnProperty(kiter224))
+          if (viter241.hasOwnProperty(kiter242))
           {
-            var viter225 = viter223[kiter224];
-            output.writeString(kiter224);
-            output.writeSetBegin(Thrift.Type.STRING, viter225.length);
-            for (var iter226 in viter225)
+            var viter243 = viter241[kiter242];
+            output.writeString(kiter242);
+            output.writeSetBegin(Thrift.Type.STRING, viter243.length);
+            for (var iter244 in viter243)
             {
-              if (viter225.hasOwnProperty(iter226))
+              if (viter243.hasOwnProperty(iter244))
               {
-                iter226 = viter225[iter226];
-                output.writeString(iter226);
+                iter244 = viter243[iter244];
+                output.writeString(iter244);
               }
             }
             output.writeSetEnd();
@@ -4776,26 +5044,26 @@ IFCExportOptions.prototype.write = function(output) {
   if (this.excludeRules !== null && this.excludeRules !== undefined) {
     output.writeFieldBegin('excludeRules', Thrift.Type.MAP, 4);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(this.excludeRules));
-    for (var kiter227 in this.excludeRules)
+    for (var kiter245 in this.excludeRules)
     {
-      if (this.excludeRules.hasOwnProperty(kiter227))
+      if (this.excludeRules.hasOwnProperty(kiter245))
       {
-        var viter228 = this.excludeRules[kiter227];
-        output.writeString(kiter227);
-        output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.SET, Thrift.objectLength(viter228));
-        for (var kiter229 in viter228)
+        var viter246 = this.excludeRules[kiter245];
+        output.writeString(kiter245);
+        output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.SET, Thrift.objectLength(viter246));
+        for (var kiter247 in viter246)
         {
-          if (viter228.hasOwnProperty(kiter229))
+          if (viter246.hasOwnProperty(kiter247))
           {
-            var viter230 = viter228[kiter229];
-            output.writeString(kiter229);
-            output.writeSetBegin(Thrift.Type.STRING, viter230.length);
-            for (var iter231 in viter230)
+            var viter248 = viter246[kiter247];
+            output.writeString(kiter247);
+            output.writeSetBegin(Thrift.Type.STRING, viter248.length);
+            for (var iter249 in viter248)
             {
-              if (viter230.hasOwnProperty(iter231))
+              if (viter248.hasOwnProperty(iter249))
               {
-                iter231 = viter230[iter231];
-                output.writeString(iter231);
+                iter249 = viter248[iter249];
+                output.writeString(iter249);
               }
             }
             output.writeSetEnd();
@@ -4899,19 +5167,19 @@ ModelElement.prototype.read = function(input) {
       break;
       case 6:
       if (ftype == Thrift.Type.LIST) {
-        var _size232 = 0;
-        var _rtmp3236;
+        var _size250 = 0;
+        var _rtmp3254;
         this.attributes = [];
-        var _etype235 = 0;
-        _rtmp3236 = input.readListBegin();
-        _etype235 = _rtmp3236.etype;
-        _size232 = _rtmp3236.size;
-        for (var _i237 = 0; _i237 < _size232; ++_i237)
+        var _etype253 = 0;
+        _rtmp3254 = input.readListBegin();
+        _etype253 = _rtmp3254.etype;
+        _size250 = _rtmp3254.size;
+        for (var _i255 = 0; _i255 < _size250; ++_i255)
         {
-          var elem238 = null;
-          elem238 = new AttributeSlot();
-          elem238.read(input);
-          this.attributes.push(elem238);
+          var elem256 = null;
+          elem256 = new AttributeSlot();
+          elem256.read(input);
+          this.attributes.push(elem256);
         }
         input.readListEnd();
       } else {
@@ -4920,19 +5188,19 @@ ModelElement.prototype.read = function(input) {
       break;
       case 7:
       if (ftype == Thrift.Type.LIST) {
-        var _size239 = 0;
-        var _rtmp3243;
+        var _size257 = 0;
+        var _rtmp3261;
         this.references = [];
-        var _etype242 = 0;
-        _rtmp3243 = input.readListBegin();
-        _etype242 = _rtmp3243.etype;
-        _size239 = _rtmp3243.size;
-        for (var _i244 = 0; _i244 < _size239; ++_i244)
+        var _etype260 = 0;
+        _rtmp3261 = input.readListBegin();
+        _etype260 = _rtmp3261.etype;
+        _size257 = _rtmp3261.size;
+        for (var _i262 = 0; _i262 < _size257; ++_i262)
         {
-          var elem245 = null;
-          elem245 = new ReferenceSlot();
-          elem245.read(input);
-          this.references.push(elem245);
+          var elem263 = null;
+          elem263 = new ReferenceSlot();
+          elem263.read(input);
+          this.references.push(elem263);
         }
         input.readListEnd();
       } else {
@@ -4941,19 +5209,19 @@ ModelElement.prototype.read = function(input) {
       break;
       case 8:
       if (ftype == Thrift.Type.LIST) {
-        var _size246 = 0;
-        var _rtmp3250;
+        var _size264 = 0;
+        var _rtmp3268;
         this.containers = [];
-        var _etype249 = 0;
-        _rtmp3250 = input.readListBegin();
-        _etype249 = _rtmp3250.etype;
-        _size246 = _rtmp3250.size;
-        for (var _i251 = 0; _i251 < _size246; ++_i251)
+        var _etype267 = 0;
+        _rtmp3268 = input.readListBegin();
+        _etype267 = _rtmp3268.etype;
+        _size264 = _rtmp3268.size;
+        for (var _i269 = 0; _i269 < _size264; ++_i269)
         {
-          var elem252 = null;
-          elem252 = new ContainerSlot();
-          elem252.read(input);
-          this.containers.push(elem252);
+          var elem270 = null;
+          elem270 = new ContainerSlot();
+          elem270.read(input);
+          this.containers.push(elem270);
         }
         input.readListEnd();
       } else {
@@ -4999,12 +5267,12 @@ ModelElement.prototype.write = function(output) {
   if (this.attributes !== null && this.attributes !== undefined) {
     output.writeFieldBegin('attributes', Thrift.Type.LIST, 6);
     output.writeListBegin(Thrift.Type.STRUCT, this.attributes.length);
-    for (var iter253 in this.attributes)
+    for (var iter271 in this.attributes)
     {
-      if (this.attributes.hasOwnProperty(iter253))
+      if (this.attributes.hasOwnProperty(iter271))
       {
-        iter253 = this.attributes[iter253];
-        iter253.write(output);
+        iter271 = this.attributes[iter271];
+        iter271.write(output);
       }
     }
     output.writeListEnd();
@@ -5013,12 +5281,12 @@ ModelElement.prototype.write = function(output) {
   if (this.references !== null && this.references !== undefined) {
     output.writeFieldBegin('references', Thrift.Type.LIST, 7);
     output.writeListBegin(Thrift.Type.STRUCT, this.references.length);
-    for (var iter254 in this.references)
+    for (var iter272 in this.references)
     {
-      if (this.references.hasOwnProperty(iter254))
+      if (this.references.hasOwnProperty(iter272))
       {
-        iter254 = this.references[iter254];
-        iter254.write(output);
+        iter272 = this.references[iter272];
+        iter272.write(output);
       }
     }
     output.writeListEnd();
@@ -5027,12 +5295,12 @@ ModelElement.prototype.write = function(output) {
   if (this.containers !== null && this.containers !== undefined) {
     output.writeFieldBegin('containers', Thrift.Type.LIST, 8);
     output.writeListBegin(Thrift.Type.STRUCT, this.containers.length);
-    for (var iter255 in this.containers)
+    for (var iter273 in this.containers)
     {
-      if (this.containers.hasOwnProperty(iter255))
+      if (this.containers.hasOwnProperty(iter273))
       {
-        iter255 = this.containers[iter255];
-        iter255.write(output);
+        iter273 = this.containers[iter273];
+        iter273.write(output);
       }
     }
     output.writeListEnd();
@@ -5082,19 +5350,19 @@ ContainerSlot.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.LIST) {
-        var _size256 = 0;
-        var _rtmp3260;
+        var _size274 = 0;
+        var _rtmp3278;
         this.elements = [];
-        var _etype259 = 0;
-        _rtmp3260 = input.readListBegin();
-        _etype259 = _rtmp3260.etype;
-        _size256 = _rtmp3260.size;
-        for (var _i261 = 0; _i261 < _size256; ++_i261)
+        var _etype277 = 0;
+        _rtmp3278 = input.readListBegin();
+        _etype277 = _rtmp3278.etype;
+        _size274 = _rtmp3278.size;
+        for (var _i279 = 0; _i279 < _size274; ++_i279)
         {
-          var elem262 = null;
-          elem262 = new ModelElement();
-          elem262.read(input);
-          this.elements.push(elem262);
+          var elem280 = null;
+          elem280 = new ModelElement();
+          elem280.read(input);
+          this.elements.push(elem280);
         }
         input.readListEnd();
       } else {
@@ -5120,12 +5388,12 @@ ContainerSlot.prototype.write = function(output) {
   if (this.elements !== null && this.elements !== undefined) {
     output.writeFieldBegin('elements', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.STRUCT, this.elements.length);
-    for (var iter263 in this.elements)
+    for (var iter281 in this.elements)
     {
-      if (this.elements.hasOwnProperty(iter263))
+      if (this.elements.hasOwnProperty(iter281))
       {
-        iter263 = this.elements[iter263];
-        iter263.write(output);
+        iter281 = this.elements[iter281];
+        iter281.write(output);
       }
     }
     output.writeListEnd();
@@ -5136,56 +5404,24 @@ ContainerSlot.prototype.write = function(output) {
   return;
 };
 
-QueryResult = function(args) {
-  this.vBoolean = null;
-  this.vByte = null;
-  this.vShort = null;
-  this.vInteger = null;
-  this.vLong = null;
-  this.vDouble = null;
-  this.vString = null;
-  this.vModelElement = null;
-  this.vModelElementType = null;
-  this.vMap = null;
-  this.vList = null;
+QueryReport = function(args) {
+  this.result = null;
+  this.wallMillis = null;
   if (args) {
-    if (args.vBoolean !== undefined && args.vBoolean !== null) {
-      this.vBoolean = args.vBoolean;
+    if (args.result !== undefined && args.result !== null) {
+      this.result = new QueryResult(args.result);
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field result is unset!');
     }
-    if (args.vByte !== undefined && args.vByte !== null) {
-      this.vByte = args.vByte;
-    }
-    if (args.vShort !== undefined && args.vShort !== null) {
-      this.vShort = args.vShort;
-    }
-    if (args.vInteger !== undefined && args.vInteger !== null) {
-      this.vInteger = args.vInteger;
-    }
-    if (args.vLong !== undefined && args.vLong !== null) {
-      this.vLong = args.vLong;
-    }
-    if (args.vDouble !== undefined && args.vDouble !== null) {
-      this.vDouble = args.vDouble;
-    }
-    if (args.vString !== undefined && args.vString !== null) {
-      this.vString = args.vString;
-    }
-    if (args.vModelElement !== undefined && args.vModelElement !== null) {
-      this.vModelElement = new ModelElement(args.vModelElement);
-    }
-    if (args.vModelElementType !== undefined && args.vModelElementType !== null) {
-      this.vModelElementType = new ModelElementType(args.vModelElementType);
-    }
-    if (args.vMap !== undefined && args.vMap !== null) {
-      this.vMap = Thrift.copyMap(args.vMap, [null]);
-    }
-    if (args.vList !== undefined && args.vList !== null) {
-      this.vList = Thrift.copyList(args.vList, [null]);
+    if (args.wallMillis !== undefined && args.wallMillis !== null) {
+      this.wallMillis = args.wallMillis;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field wallMillis is unset!');
     }
   }
 };
-QueryResult.prototype = {};
-QueryResult.prototype.read = function(input) {
+QueryReport.prototype = {};
+QueryReport.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -5199,117 +5435,16 @@ QueryResult.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.BOOL) {
-        this.vBoolean = input.readBool().value;
+      if (ftype == Thrift.Type.STRUCT) {
+        this.result = new QueryResult();
+        this.result.read(input);
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
-      if (ftype == Thrift.Type.BYTE) {
-        this.vByte = input.readByte().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.I16) {
-        this.vShort = input.readI16().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
-      if (ftype == Thrift.Type.I32) {
-        this.vInteger = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 5:
       if (ftype == Thrift.Type.I64) {
-        this.vLong = input.readI64().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 6:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.vDouble = input.readDouble().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 7:
-      if (ftype == Thrift.Type.STRING) {
-        this.vString = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 8:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.vModelElement = new ModelElement();
-        this.vModelElement.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 9:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.vModelElementType = new ModelElementType();
-        this.vModelElementType.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 10:
-      if (ftype == Thrift.Type.MAP) {
-        var _size264 = 0;
-        var _rtmp3268;
-        this.vMap = {};
-        var _ktype265 = 0;
-        var _vtype266 = 0;
-        _rtmp3268 = input.readMapBegin();
-        _ktype265 = _rtmp3268.ktype;
-        _vtype266 = _rtmp3268.vtype;
-        _size264 = _rtmp3268.size;
-        for (var _i269 = 0; _i269 < _size264; ++_i269)
-        {
-          if (_i269 > 0 ) {
-            if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
-              input.rstack.pop();
-            }
-          }
-          var key270 = null;
-          var val271 = null;
-          key270 = input.readString().value;
-          val271 = new QueryResult();
-          val271.read(input);
-          this.vMap[key270] = val271;
-        }
-        input.readMapEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 11:
-      if (ftype == Thrift.Type.LIST) {
-        var _size272 = 0;
-        var _rtmp3276;
-        this.vList = [];
-        var _etype275 = 0;
-        _rtmp3276 = input.readListBegin();
-        _etype275 = _rtmp3276.etype;
-        _size272 = _rtmp3276.size;
-        for (var _i277 = 0; _i277 < _size272; ++_i277)
-        {
-          var elem278 = null;
-          elem278 = new QueryResult();
-          elem278.read(input);
-          this.vList.push(elem278);
-        }
-        input.readListEnd();
+        this.wallMillis = input.readI64().value;
       } else {
         input.skip(ftype);
       }
@@ -5323,80 +5458,16 @@ QueryResult.prototype.read = function(input) {
   return;
 };
 
-QueryResult.prototype.write = function(output) {
-  output.writeStructBegin('QueryResult');
-  if (this.vBoolean !== null && this.vBoolean !== undefined) {
-    output.writeFieldBegin('vBoolean', Thrift.Type.BOOL, 1);
-    output.writeBool(this.vBoolean);
+QueryReport.prototype.write = function(output) {
+  output.writeStructBegin('QueryReport');
+  if (this.result !== null && this.result !== undefined) {
+    output.writeFieldBegin('result', Thrift.Type.STRUCT, 1);
+    this.result.write(output);
     output.writeFieldEnd();
   }
-  if (this.vByte !== null && this.vByte !== undefined) {
-    output.writeFieldBegin('vByte', Thrift.Type.BYTE, 2);
-    output.writeByte(this.vByte);
-    output.writeFieldEnd();
-  }
-  if (this.vShort !== null && this.vShort !== undefined) {
-    output.writeFieldBegin('vShort', Thrift.Type.I16, 3);
-    output.writeI16(this.vShort);
-    output.writeFieldEnd();
-  }
-  if (this.vInteger !== null && this.vInteger !== undefined) {
-    output.writeFieldBegin('vInteger', Thrift.Type.I32, 4);
-    output.writeI32(this.vInteger);
-    output.writeFieldEnd();
-  }
-  if (this.vLong !== null && this.vLong !== undefined) {
-    output.writeFieldBegin('vLong', Thrift.Type.I64, 5);
-    output.writeI64(this.vLong);
-    output.writeFieldEnd();
-  }
-  if (this.vDouble !== null && this.vDouble !== undefined) {
-    output.writeFieldBegin('vDouble', Thrift.Type.DOUBLE, 6);
-    output.writeDouble(this.vDouble);
-    output.writeFieldEnd();
-  }
-  if (this.vString !== null && this.vString !== undefined) {
-    output.writeFieldBegin('vString', Thrift.Type.STRING, 7);
-    output.writeString(this.vString);
-    output.writeFieldEnd();
-  }
-  if (this.vModelElement !== null && this.vModelElement !== undefined) {
-    output.writeFieldBegin('vModelElement', Thrift.Type.STRUCT, 8);
-    this.vModelElement.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.vModelElementType !== null && this.vModelElementType !== undefined) {
-    output.writeFieldBegin('vModelElementType', Thrift.Type.STRUCT, 9);
-    this.vModelElementType.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.vMap !== null && this.vMap !== undefined) {
-    output.writeFieldBegin('vMap', Thrift.Type.MAP, 10);
-    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.vMap));
-    for (var kiter279 in this.vMap)
-    {
-      if (this.vMap.hasOwnProperty(kiter279))
-      {
-        var viter280 = this.vMap[kiter279];
-        output.writeString(kiter279);
-        viter280.write(output);
-      }
-    }
-    output.writeMapEnd();
-    output.writeFieldEnd();
-  }
-  if (this.vList !== null && this.vList !== undefined) {
-    output.writeFieldBegin('vList', Thrift.Type.LIST, 11);
-    output.writeListBegin(Thrift.Type.STRUCT, this.vList.length);
-    for (var iter281 in this.vList)
-    {
-      if (this.vList.hasOwnProperty(iter281))
-      {
-        iter281 = this.vList[iter281];
-        iter281.write(output);
-      }
-    }
-    output.writeListEnd();
+  if (this.wallMillis !== null && this.wallMillis !== undefined) {
+    output.writeFieldBegin('wallMillis', Thrift.Type.I64, 2);
+    output.writeI64(this.wallMillis);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

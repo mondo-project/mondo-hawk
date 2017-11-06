@@ -814,13 +814,13 @@ public class ReferenceSlot implements org.apache.thrift.TBase<ReferenceSlot, Ref
           case 3: // POSITIONS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list80 = iprot.readListBegin();
-                struct.positions = new ArrayList<Integer>(_list80.size);
-                int _elem81;
-                for (int _i82 = 0; _i82 < _list80.size; ++_i82)
+                org.apache.thrift.protocol.TList _list98 = iprot.readListBegin();
+                struct.positions = new ArrayList<Integer>(_list98.size);
+                int _elem99;
+                for (int _i100 = 0; _i100 < _list98.size; ++_i100)
                 {
-                  _elem81 = iprot.readI32();
-                  struct.positions.add(_elem81);
+                  _elem99 = iprot.readI32();
+                  struct.positions.add(_elem99);
                 }
                 iprot.readListEnd();
               }
@@ -840,13 +840,13 @@ public class ReferenceSlot implements org.apache.thrift.TBase<ReferenceSlot, Ref
           case 5: // IDS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list83 = iprot.readListBegin();
-                struct.ids = new ArrayList<String>(_list83.size);
-                String _elem84;
-                for (int _i85 = 0; _i85 < _list83.size; ++_i85)
+                org.apache.thrift.protocol.TList _list101 = iprot.readListBegin();
+                struct.ids = new ArrayList<String>(_list101.size);
+                String _elem102;
+                for (int _i103 = 0; _i103 < _list101.size; ++_i103)
                 {
-                  _elem84 = iprot.readString();
-                  struct.ids.add(_elem84);
+                  _elem102 = iprot.readString();
+                  struct.ids.add(_elem102);
                 }
                 iprot.readListEnd();
               }
@@ -858,14 +858,14 @@ public class ReferenceSlot implements org.apache.thrift.TBase<ReferenceSlot, Ref
           case 6: // MIXED
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list86 = iprot.readListBegin();
-                struct.mixed = new ArrayList<MixedReference>(_list86.size);
-                MixedReference _elem87;
-                for (int _i88 = 0; _i88 < _list86.size; ++_i88)
+                org.apache.thrift.protocol.TList _list104 = iprot.readListBegin();
+                struct.mixed = new ArrayList<MixedReference>(_list104.size);
+                MixedReference _elem105;
+                for (int _i106 = 0; _i106 < _list104.size; ++_i106)
                 {
-                  _elem87 = new MixedReference();
-                  _elem87.read(iprot);
-                  struct.mixed.add(_elem87);
+                  _elem105 = new MixedReference();
+                  _elem105.read(iprot);
+                  struct.mixed.add(_elem105);
                 }
                 iprot.readListEnd();
               }
@@ -904,9 +904,9 @@ public class ReferenceSlot implements org.apache.thrift.TBase<ReferenceSlot, Ref
           oprot.writeFieldBegin(POSITIONS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.positions.size()));
-            for (int _iter89 : struct.positions)
+            for (int _iter107 : struct.positions)
             {
-              oprot.writeI32(_iter89);
+              oprot.writeI32(_iter107);
             }
             oprot.writeListEnd();
           }
@@ -925,9 +925,9 @@ public class ReferenceSlot implements org.apache.thrift.TBase<ReferenceSlot, Ref
           oprot.writeFieldBegin(IDS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, struct.ids.size()));
-            for (String _iter90 : struct.ids)
+            for (String _iter108 : struct.ids)
             {
-              oprot.writeString(_iter90);
+              oprot.writeString(_iter108);
             }
             oprot.writeListEnd();
           }
@@ -939,9 +939,9 @@ public class ReferenceSlot implements org.apache.thrift.TBase<ReferenceSlot, Ref
           oprot.writeFieldBegin(MIXED_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.mixed.size()));
-            for (MixedReference _iter91 : struct.mixed)
+            for (MixedReference _iter109 : struct.mixed)
             {
-              _iter91.write(oprot);
+              _iter109.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -989,9 +989,9 @@ public class ReferenceSlot implements org.apache.thrift.TBase<ReferenceSlot, Ref
       if (struct.isSetPositions()) {
         {
           oprot.writeI32(struct.positions.size());
-          for (int _iter92 : struct.positions)
+          for (int _iter110 : struct.positions)
           {
-            oprot.writeI32(_iter92);
+            oprot.writeI32(_iter110);
           }
         }
       }
@@ -1001,18 +1001,18 @@ public class ReferenceSlot implements org.apache.thrift.TBase<ReferenceSlot, Ref
       if (struct.isSetIds()) {
         {
           oprot.writeI32(struct.ids.size());
-          for (String _iter93 : struct.ids)
+          for (String _iter111 : struct.ids)
           {
-            oprot.writeString(_iter93);
+            oprot.writeString(_iter111);
           }
         }
       }
       if (struct.isSetMixed()) {
         {
           oprot.writeI32(struct.mixed.size());
-          for (MixedReference _iter94 : struct.mixed)
+          for (MixedReference _iter112 : struct.mixed)
           {
-            _iter94.write(oprot);
+            _iter112.write(oprot);
           }
         }
       }
@@ -1030,13 +1030,13 @@ public class ReferenceSlot implements org.apache.thrift.TBase<ReferenceSlot, Ref
       }
       if (incoming.get(1)) {
         {
-          org.apache.thrift.protocol.TList _list95 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
-          struct.positions = new ArrayList<Integer>(_list95.size);
-          int _elem96;
-          for (int _i97 = 0; _i97 < _list95.size; ++_i97)
+          org.apache.thrift.protocol.TList _list113 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
+          struct.positions = new ArrayList<Integer>(_list113.size);
+          int _elem114;
+          for (int _i115 = 0; _i115 < _list113.size; ++_i115)
           {
-            _elem96 = iprot.readI32();
-            struct.positions.add(_elem96);
+            _elem114 = iprot.readI32();
+            struct.positions.add(_elem114);
           }
         }
         struct.setPositionsIsSet(true);
@@ -1047,27 +1047,27 @@ public class ReferenceSlot implements org.apache.thrift.TBase<ReferenceSlot, Ref
       }
       if (incoming.get(3)) {
         {
-          org.apache.thrift.protocol.TList _list98 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-          struct.ids = new ArrayList<String>(_list98.size);
-          String _elem99;
-          for (int _i100 = 0; _i100 < _list98.size; ++_i100)
+          org.apache.thrift.protocol.TList _list116 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+          struct.ids = new ArrayList<String>(_list116.size);
+          String _elem117;
+          for (int _i118 = 0; _i118 < _list116.size; ++_i118)
           {
-            _elem99 = iprot.readString();
-            struct.ids.add(_elem99);
+            _elem117 = iprot.readString();
+            struct.ids.add(_elem117);
           }
         }
         struct.setIdsIsSet(true);
       }
       if (incoming.get(4)) {
         {
-          org.apache.thrift.protocol.TList _list101 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.mixed = new ArrayList<MixedReference>(_list101.size);
-          MixedReference _elem102;
-          for (int _i103 = 0; _i103 < _list101.size; ++_i103)
+          org.apache.thrift.protocol.TList _list119 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.mixed = new ArrayList<MixedReference>(_list119.size);
+          MixedReference _elem120;
+          for (int _i121 = 0; _i121 < _list119.size; ++_i121)
           {
-            _elem102 = new MixedReference();
-            _elem102.read(iprot);
-            struct.mixed.add(_elem102);
+            _elem120 = new MixedReference();
+            _elem120.read(iprot);
+            struct.mixed.add(_elem120);
           }
         }
         struct.setMixedIsSet(true);

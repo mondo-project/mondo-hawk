@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -54,12 +53,13 @@ import org.hawk.core.query.QueryExecutionException;
 import org.hawk.core.runtime.CompositeGraphChangeListener;
 import org.hawk.core.runtime.CompositeStateListener;
 import org.hawk.core.util.DerivedAttributeParameters;
-import org.hawk.core.util.IndexedAttributeParameters;
 import org.hawk.core.util.HawkProperties;
+import org.hawk.core.util.IndexedAttributeParameters;
 import org.hawk.osgiserver.HManager;
 import org.hawk.service.api.Credentials;
 import org.hawk.service.api.DerivedAttributeSpec;
 import org.hawk.service.api.FailedQuery;
+import org.hawk.service.api.Hawk.Client;
 import org.hawk.service.api.HawkInstance;
 import org.hawk.service.api.HawkInstanceNotFound;
 import org.hawk.service.api.HawkQueryOptions;
@@ -71,10 +71,9 @@ import org.hawk.service.api.Repository;
 import org.hawk.service.api.Subscription;
 import org.hawk.service.api.SubscriptionDurability;
 import org.hawk.service.api.UnknownQueryLanguage;
-import org.hawk.service.api.Hawk.Client;
 import org.hawk.service.api.utils.APIUtils;
-import org.hawk.service.api.utils.ActiveMQBufferTransport;
 import org.hawk.service.api.utils.APIUtils.ThriftProtocol;
+import org.hawk.service.api.utils.ActiveMQBufferTransport;
 import org.hawk.service.artemis.consumer.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -207,7 +206,8 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 				opts.setIncludeReferences(true);
 				opts.setIncludeNodeIDs(true);
 				opts.setIncludeContained(false);
-				return client.query(name, query, language, opts);
+
+				return client.timedQuery(name, query, language, opts);
 			} catch (UnknownQueryLanguage|InvalidQuery ex) {
 				throw new InvalidQueryException(ex);
 			} catch (FailedQuery ex) {

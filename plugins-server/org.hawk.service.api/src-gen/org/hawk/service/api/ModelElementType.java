@@ -733,14 +733,14 @@ public class ModelElementType implements org.apache.thrift.TBase<ModelElementTyp
           case 4: // ATTRIBUTES
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list64 = iprot.readListBegin();
-                struct.attributes = new ArrayList<SlotMetadata>(_list64.size);
-                SlotMetadata _elem65;
-                for (int _i66 = 0; _i66 < _list64.size; ++_i66)
+                org.apache.thrift.protocol.TList _list82 = iprot.readListBegin();
+                struct.attributes = new ArrayList<SlotMetadata>(_list82.size);
+                SlotMetadata _elem83;
+                for (int _i84 = 0; _i84 < _list82.size; ++_i84)
                 {
-                  _elem65 = new SlotMetadata();
-                  _elem65.read(iprot);
-                  struct.attributes.add(_elem65);
+                  _elem83 = new SlotMetadata();
+                  _elem83.read(iprot);
+                  struct.attributes.add(_elem83);
                 }
                 iprot.readListEnd();
               }
@@ -752,14 +752,14 @@ public class ModelElementType implements org.apache.thrift.TBase<ModelElementTyp
           case 5: // REFERENCES
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list67 = iprot.readListBegin();
-                struct.references = new ArrayList<SlotMetadata>(_list67.size);
-                SlotMetadata _elem68;
-                for (int _i69 = 0; _i69 < _list67.size; ++_i69)
+                org.apache.thrift.protocol.TList _list85 = iprot.readListBegin();
+                struct.references = new ArrayList<SlotMetadata>(_list85.size);
+                SlotMetadata _elem86;
+                for (int _i87 = 0; _i87 < _list85.size; ++_i87)
                 {
-                  _elem68 = new SlotMetadata();
-                  _elem68.read(iprot);
-                  struct.references.add(_elem68);
+                  _elem86 = new SlotMetadata();
+                  _elem86.read(iprot);
+                  struct.references.add(_elem86);
                 }
                 iprot.readListEnd();
               }
@@ -803,9 +803,9 @@ public class ModelElementType implements org.apache.thrift.TBase<ModelElementTyp
           oprot.writeFieldBegin(ATTRIBUTES_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.attributes.size()));
-            for (SlotMetadata _iter70 : struct.attributes)
+            for (SlotMetadata _iter88 : struct.attributes)
             {
-              _iter70.write(oprot);
+              _iter88.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -817,9 +817,9 @@ public class ModelElementType implements org.apache.thrift.TBase<ModelElementTyp
           oprot.writeFieldBegin(REFERENCES_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.references.size()));
-            for (SlotMetadata _iter71 : struct.references)
+            for (SlotMetadata _iter89 : struct.references)
             {
-              _iter71.write(oprot);
+              _iter89.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -857,18 +857,18 @@ public class ModelElementType implements org.apache.thrift.TBase<ModelElementTyp
       if (struct.isSetAttributes()) {
         {
           oprot.writeI32(struct.attributes.size());
-          for (SlotMetadata _iter72 : struct.attributes)
+          for (SlotMetadata _iter90 : struct.attributes)
           {
-            _iter72.write(oprot);
+            _iter90.write(oprot);
           }
         }
       }
       if (struct.isSetReferences()) {
         {
           oprot.writeI32(struct.references.size());
-          for (SlotMetadata _iter73 : struct.references)
+          for (SlotMetadata _iter91 : struct.references)
           {
-            _iter73.write(oprot);
+            _iter91.write(oprot);
           }
         }
       }
@@ -886,28 +886,28 @@ public class ModelElementType implements org.apache.thrift.TBase<ModelElementTyp
       BitSet incoming = iprot.readBitSet(2);
       if (incoming.get(0)) {
         {
-          org.apache.thrift.protocol.TList _list74 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.attributes = new ArrayList<SlotMetadata>(_list74.size);
-          SlotMetadata _elem75;
-          for (int _i76 = 0; _i76 < _list74.size; ++_i76)
+          org.apache.thrift.protocol.TList _list92 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.attributes = new ArrayList<SlotMetadata>(_list92.size);
+          SlotMetadata _elem93;
+          for (int _i94 = 0; _i94 < _list92.size; ++_i94)
           {
-            _elem75 = new SlotMetadata();
-            _elem75.read(iprot);
-            struct.attributes.add(_elem75);
+            _elem93 = new SlotMetadata();
+            _elem93.read(iprot);
+            struct.attributes.add(_elem93);
           }
         }
         struct.setAttributesIsSet(true);
       }
       if (incoming.get(1)) {
         {
-          org.apache.thrift.protocol.TList _list77 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.references = new ArrayList<SlotMetadata>(_list77.size);
-          SlotMetadata _elem78;
-          for (int _i79 = 0; _i79 < _list77.size; ++_i79)
+          org.apache.thrift.protocol.TList _list95 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.references = new ArrayList<SlotMetadata>(_list95.size);
+          SlotMetadata _elem96;
+          for (int _i97 = 0; _i97 < _list95.size; ++_i97)
           {
-            _elem78 = new SlotMetadata();
-            _elem78.read(iprot);
-            struct.references.add(_elem78);
+            _elem96 = new SlotMetadata();
+            _elem96.read(iprot);
+            struct.references.add(_elem96);
           }
         }
         struct.setReferencesIsSet(true);

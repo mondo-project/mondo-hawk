@@ -29,6 +29,20 @@ enum SubscriptionDurability {
 }
 
 
+union QueryResult {
+	 /* Boolean (true/false) value. */ 1: optional bool vBoolean,
+	 /* 8-bit signed integer value. */ 2: optional byte vByte,
+	 /* 16-bit signed integer value. */ 3: optional i16 vShort,
+	 /* 32-bit signed integer value. */ 4: optional i32 vInteger,
+	 /* 64-bit signed integer value. */ 5: optional i64 vLong,
+	 /* 64-bit floating point value. */ 6: optional double vDouble,
+	 /* Sequence of UTF8 characters. */ 7: optional string vString,
+	 /* Encoded model element. */ 8: optional ModelElement vModelElement,
+	 /* Encoded model element type. */ 9: optional ModelElementType vModelElementType,
+	 /* Map between query results. */ 10: optional map<string,QueryResult> vMap,
+	 /* Nested list of query results. */ 11: optional list<QueryResult> vList,
+}
+
 union SlotValue {
 	 /* Boolean (true/false) value. */ 1: optional bool vBoolean,
 	 /* 8-bit signed integer value. */ 2: optional byte vByte,
@@ -332,18 +346,9 @@ struct ContainerSlot {
 	 /* Contained elements for this slot. */ 2: required list<ModelElement> elements,
 }
 
-union QueryResult {
-	 /* Boolean (true/false) value. */ 1: optional bool vBoolean,
-	 /* 8-bit signed integer value. */ 2: optional byte vByte,
-	 /* 16-bit signed integer value. */ 3: optional i16 vShort,
-	 /* 32-bit signed integer value. */ 4: optional i32 vInteger,
-	 /* 64-bit signed integer value. */ 5: optional i64 vLong,
-	 /* 64-bit floating point value. */ 6: optional double vDouble,
-	 /* Sequence of UTF8 characters. */ 7: optional string vString,
-	 /* Encoded model element. */ 8: optional ModelElement vModelElement,
-	 /* Encoded model element type. */ 9: optional ModelElementType vModelElementType,
-	 /* Map between query results. */ 10: optional map<string,QueryResult> vMap,
-	 /* Nested list of query results. */ 11: optional list<QueryResult> vList,
+struct QueryReport {
+	 /* Result of the query. */ 1: required QueryResult result,
+	 /* Wall time on the server in milliseconds. */ 2: required i64 wallMillis,
 }
 
 /* The majority of service operations provided by the server
@@ -487,6 +492,21 @@ service Hawk {
 	
   /* Runs a query on a Hawk instance and returns a sequence of scalar values and/or model elements. Auth needed: Yes */
   QueryResult query(
+	/* The name of the Hawk instance. */ 1: required string name,
+	/* The query to be executed. */ 2: required string query,
+	/* The name of the query language used (e.g. EOL, OCL). */ 3: required string language,
+	/* Options for the query. */ 4: required HawkQueryOptions options,
+  )
+  throws (
+	1: HawkInstanceNotFound err1 /* No Hawk instance exists with that name. */ 
+	2: HawkInstanceNotRunning err2 /* The selected Hawk instance is not running. */ 
+	3: UnknownQueryLanguage err3 /* The specified query language is not supported by the operation. */ 
+	4: InvalidQuery err4 /* The specified query is not valid. */ 
+	5: FailedQuery err5 /* The specified query failed to complete its execution. */ 
+	) 
+	
+  /* Runs a query on a Hawk instance and returns a sequence of scalar values and/or model elements. Auth needed: Yes */
+  QueryReport timedQuery(
 	/* The name of the Hawk instance. */ 1: required string name,
 	/* The query to be executed. */ 2: required string query,
 	/* The name of the query language used (e.g. EOL, OCL). */ 3: required string language,

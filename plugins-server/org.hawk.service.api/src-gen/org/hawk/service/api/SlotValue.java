@@ -463,13 +463,13 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
           if (field.type == V_BOOLEANS_FIELD_DESC.type) {
             List<Boolean> vBooleans;
             {
-              org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
-              vBooleans = new ArrayList<Boolean>(_list0.size);
-              boolean _elem1;
-              for (int _i2 = 0; _i2 < _list0.size; ++_i2)
+              org.apache.thrift.protocol.TList _list18 = iprot.readListBegin();
+              vBooleans = new ArrayList<Boolean>(_list18.size);
+              boolean _elem19;
+              for (int _i20 = 0; _i20 < _list18.size; ++_i20)
               {
-                _elem1 = iprot.readBool();
-                vBooleans.add(_elem1);
+                _elem19 = iprot.readBool();
+                vBooleans.add(_elem19);
               }
               iprot.readListEnd();
             }
@@ -491,13 +491,13 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
           if (field.type == V_SHORTS_FIELD_DESC.type) {
             List<Short> vShorts;
             {
-              org.apache.thrift.protocol.TList _list3 = iprot.readListBegin();
-              vShorts = new ArrayList<Short>(_list3.size);
-              short _elem4;
-              for (int _i5 = 0; _i5 < _list3.size; ++_i5)
+              org.apache.thrift.protocol.TList _list21 = iprot.readListBegin();
+              vShorts = new ArrayList<Short>(_list21.size);
+              short _elem22;
+              for (int _i23 = 0; _i23 < _list21.size; ++_i23)
               {
-                _elem4 = iprot.readI16();
-                vShorts.add(_elem4);
+                _elem22 = iprot.readI16();
+                vShorts.add(_elem22);
               }
               iprot.readListEnd();
             }
@@ -510,13 +510,13 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
           if (field.type == V_INTEGERS_FIELD_DESC.type) {
             List<Integer> vIntegers;
             {
-              org.apache.thrift.protocol.TList _list6 = iprot.readListBegin();
-              vIntegers = new ArrayList<Integer>(_list6.size);
-              int _elem7;
-              for (int _i8 = 0; _i8 < _list6.size; ++_i8)
+              org.apache.thrift.protocol.TList _list24 = iprot.readListBegin();
+              vIntegers = new ArrayList<Integer>(_list24.size);
+              int _elem25;
+              for (int _i26 = 0; _i26 < _list24.size; ++_i26)
               {
-                _elem7 = iprot.readI32();
-                vIntegers.add(_elem7);
+                _elem25 = iprot.readI32();
+                vIntegers.add(_elem25);
               }
               iprot.readListEnd();
             }
@@ -529,13 +529,13 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
           if (field.type == V_LONGS_FIELD_DESC.type) {
             List<Long> vLongs;
             {
-              org.apache.thrift.protocol.TList _list9 = iprot.readListBegin();
-              vLongs = new ArrayList<Long>(_list9.size);
-              long _elem10;
-              for (int _i11 = 0; _i11 < _list9.size; ++_i11)
+              org.apache.thrift.protocol.TList _list27 = iprot.readListBegin();
+              vLongs = new ArrayList<Long>(_list27.size);
+              long _elem28;
+              for (int _i29 = 0; _i29 < _list27.size; ++_i29)
               {
-                _elem10 = iprot.readI64();
-                vLongs.add(_elem10);
+                _elem28 = iprot.readI64();
+                vLongs.add(_elem28);
               }
               iprot.readListEnd();
             }
@@ -548,13 +548,13 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
           if (field.type == V_DOUBLES_FIELD_DESC.type) {
             List<Double> vDoubles;
             {
-              org.apache.thrift.protocol.TList _list12 = iprot.readListBegin();
-              vDoubles = new ArrayList<Double>(_list12.size);
-              double _elem13;
-              for (int _i14 = 0; _i14 < _list12.size; ++_i14)
+              org.apache.thrift.protocol.TList _list30 = iprot.readListBegin();
+              vDoubles = new ArrayList<Double>(_list30.size);
+              double _elem31;
+              for (int _i32 = 0; _i32 < _list30.size; ++_i32)
               {
-                _elem13 = iprot.readDouble();
-                vDoubles.add(_elem13);
+                _elem31 = iprot.readDouble();
+                vDoubles.add(_elem31);
               }
               iprot.readListEnd();
             }
@@ -567,13 +567,13 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
           if (field.type == V_STRINGS_FIELD_DESC.type) {
             List<String> vStrings;
             {
-              org.apache.thrift.protocol.TList _list15 = iprot.readListBegin();
-              vStrings = new ArrayList<String>(_list15.size);
-              String _elem16;
-              for (int _i17 = 0; _i17 < _list15.size; ++_i17)
+              org.apache.thrift.protocol.TList _list33 = iprot.readListBegin();
+              vStrings = new ArrayList<String>(_list33.size);
+              String _elem34;
+              for (int _i35 = 0; _i35 < _list33.size; ++_i35)
               {
-                _elem16 = iprot.readString();
-                vStrings.add(_elem16);
+                _elem34 = iprot.readString();
+                vStrings.add(_elem34);
               }
               iprot.readListEnd();
             }
@@ -586,14 +586,14 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
           if (field.type == V_LISTS_FIELD_DESC.type) {
             List<SlotValue> vLists;
             {
-              org.apache.thrift.protocol.TList _list18 = iprot.readListBegin();
-              vLists = new ArrayList<SlotValue>(_list18.size);
-              SlotValue _elem19;
-              for (int _i20 = 0; _i20 < _list18.size; ++_i20)
+              org.apache.thrift.protocol.TList _list36 = iprot.readListBegin();
+              vLists = new ArrayList<SlotValue>(_list36.size);
+              SlotValue _elem37;
+              for (int _i38 = 0; _i38 < _list36.size; ++_i38)
               {
-                _elem19 = new SlotValue();
-                _elem19.read(iprot);
-                vLists.add(_elem19);
+                _elem37 = new SlotValue();
+                _elem37.read(iprot);
+                vLists.add(_elem37);
               }
               iprot.readListEnd();
             }
@@ -646,9 +646,9 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         List<Boolean> vBooleans = (List<Boolean>)value_;
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.BOOL, vBooleans.size()));
-          for (boolean _iter21 : vBooleans)
+          for (boolean _iter39 : vBooleans)
           {
-            oprot.writeBool(_iter21);
+            oprot.writeBool(_iter39);
           }
           oprot.writeListEnd();
         }
@@ -661,9 +661,9 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         List<Short> vShorts = (List<Short>)value_;
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I16, vShorts.size()));
-          for (short _iter22 : vShorts)
+          for (short _iter40 : vShorts)
           {
-            oprot.writeI16(_iter22);
+            oprot.writeI16(_iter40);
           }
           oprot.writeListEnd();
         }
@@ -672,9 +672,9 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         List<Integer> vIntegers = (List<Integer>)value_;
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, vIntegers.size()));
-          for (int _iter23 : vIntegers)
+          for (int _iter41 : vIntegers)
           {
-            oprot.writeI32(_iter23);
+            oprot.writeI32(_iter41);
           }
           oprot.writeListEnd();
         }
@@ -683,9 +683,9 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         List<Long> vLongs = (List<Long>)value_;
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I64, vLongs.size()));
-          for (long _iter24 : vLongs)
+          for (long _iter42 : vLongs)
           {
-            oprot.writeI64(_iter24);
+            oprot.writeI64(_iter42);
           }
           oprot.writeListEnd();
         }
@@ -694,9 +694,9 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         List<Double> vDoubles = (List<Double>)value_;
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.DOUBLE, vDoubles.size()));
-          for (double _iter25 : vDoubles)
+          for (double _iter43 : vDoubles)
           {
-            oprot.writeDouble(_iter25);
+            oprot.writeDouble(_iter43);
           }
           oprot.writeListEnd();
         }
@@ -705,9 +705,9 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         List<String> vStrings = (List<String>)value_;
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, vStrings.size()));
-          for (String _iter26 : vStrings)
+          for (String _iter44 : vStrings)
           {
-            oprot.writeString(_iter26);
+            oprot.writeString(_iter44);
           }
           oprot.writeListEnd();
         }
@@ -716,9 +716,9 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         List<SlotValue> vLists = (List<SlotValue>)value_;
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, vLists.size()));
-          for (SlotValue _iter27 : vLists)
+          for (SlotValue _iter45 : vLists)
           {
-            _iter27.write(oprot);
+            _iter45.write(oprot);
           }
           oprot.writeListEnd();
         }
@@ -764,13 +764,13 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         case V_BOOLEANS:
           List<Boolean> vBooleans;
           {
-            org.apache.thrift.protocol.TList _list28 = iprot.readListBegin();
-            vBooleans = new ArrayList<Boolean>(_list28.size);
-            boolean _elem29;
-            for (int _i30 = 0; _i30 < _list28.size; ++_i30)
+            org.apache.thrift.protocol.TList _list46 = iprot.readListBegin();
+            vBooleans = new ArrayList<Boolean>(_list46.size);
+            boolean _elem47;
+            for (int _i48 = 0; _i48 < _list46.size; ++_i48)
             {
-              _elem29 = iprot.readBool();
-              vBooleans.add(_elem29);
+              _elem47 = iprot.readBool();
+              vBooleans.add(_elem47);
             }
             iprot.readListEnd();
           }
@@ -782,13 +782,13 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         case V_SHORTS:
           List<Short> vShorts;
           {
-            org.apache.thrift.protocol.TList _list31 = iprot.readListBegin();
-            vShorts = new ArrayList<Short>(_list31.size);
-            short _elem32;
-            for (int _i33 = 0; _i33 < _list31.size; ++_i33)
+            org.apache.thrift.protocol.TList _list49 = iprot.readListBegin();
+            vShorts = new ArrayList<Short>(_list49.size);
+            short _elem50;
+            for (int _i51 = 0; _i51 < _list49.size; ++_i51)
             {
-              _elem32 = iprot.readI16();
-              vShorts.add(_elem32);
+              _elem50 = iprot.readI16();
+              vShorts.add(_elem50);
             }
             iprot.readListEnd();
           }
@@ -796,13 +796,13 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         case V_INTEGERS:
           List<Integer> vIntegers;
           {
-            org.apache.thrift.protocol.TList _list34 = iprot.readListBegin();
-            vIntegers = new ArrayList<Integer>(_list34.size);
-            int _elem35;
-            for (int _i36 = 0; _i36 < _list34.size; ++_i36)
+            org.apache.thrift.protocol.TList _list52 = iprot.readListBegin();
+            vIntegers = new ArrayList<Integer>(_list52.size);
+            int _elem53;
+            for (int _i54 = 0; _i54 < _list52.size; ++_i54)
             {
-              _elem35 = iprot.readI32();
-              vIntegers.add(_elem35);
+              _elem53 = iprot.readI32();
+              vIntegers.add(_elem53);
             }
             iprot.readListEnd();
           }
@@ -810,13 +810,13 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         case V_LONGS:
           List<Long> vLongs;
           {
-            org.apache.thrift.protocol.TList _list37 = iprot.readListBegin();
-            vLongs = new ArrayList<Long>(_list37.size);
-            long _elem38;
-            for (int _i39 = 0; _i39 < _list37.size; ++_i39)
+            org.apache.thrift.protocol.TList _list55 = iprot.readListBegin();
+            vLongs = new ArrayList<Long>(_list55.size);
+            long _elem56;
+            for (int _i57 = 0; _i57 < _list55.size; ++_i57)
             {
-              _elem38 = iprot.readI64();
-              vLongs.add(_elem38);
+              _elem56 = iprot.readI64();
+              vLongs.add(_elem56);
             }
             iprot.readListEnd();
           }
@@ -824,13 +824,13 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         case V_DOUBLES:
           List<Double> vDoubles;
           {
-            org.apache.thrift.protocol.TList _list40 = iprot.readListBegin();
-            vDoubles = new ArrayList<Double>(_list40.size);
-            double _elem41;
-            for (int _i42 = 0; _i42 < _list40.size; ++_i42)
+            org.apache.thrift.protocol.TList _list58 = iprot.readListBegin();
+            vDoubles = new ArrayList<Double>(_list58.size);
+            double _elem59;
+            for (int _i60 = 0; _i60 < _list58.size; ++_i60)
             {
-              _elem41 = iprot.readDouble();
-              vDoubles.add(_elem41);
+              _elem59 = iprot.readDouble();
+              vDoubles.add(_elem59);
             }
             iprot.readListEnd();
           }
@@ -838,13 +838,13 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         case V_STRINGS:
           List<String> vStrings;
           {
-            org.apache.thrift.protocol.TList _list43 = iprot.readListBegin();
-            vStrings = new ArrayList<String>(_list43.size);
-            String _elem44;
-            for (int _i45 = 0; _i45 < _list43.size; ++_i45)
+            org.apache.thrift.protocol.TList _list61 = iprot.readListBegin();
+            vStrings = new ArrayList<String>(_list61.size);
+            String _elem62;
+            for (int _i63 = 0; _i63 < _list61.size; ++_i63)
             {
-              _elem44 = iprot.readString();
-              vStrings.add(_elem44);
+              _elem62 = iprot.readString();
+              vStrings.add(_elem62);
             }
             iprot.readListEnd();
           }
@@ -852,14 +852,14 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         case V_LISTS:
           List<SlotValue> vLists;
           {
-            org.apache.thrift.protocol.TList _list46 = iprot.readListBegin();
-            vLists = new ArrayList<SlotValue>(_list46.size);
-            SlotValue _elem47;
-            for (int _i48 = 0; _i48 < _list46.size; ++_i48)
+            org.apache.thrift.protocol.TList _list64 = iprot.readListBegin();
+            vLists = new ArrayList<SlotValue>(_list64.size);
+            SlotValue _elem65;
+            for (int _i66 = 0; _i66 < _list64.size; ++_i66)
             {
-              _elem47 = new SlotValue();
-              _elem47.read(iprot);
-              vLists.add(_elem47);
+              _elem65 = new SlotValue();
+              _elem65.read(iprot);
+              vLists.add(_elem65);
             }
             iprot.readListEnd();
           }
@@ -907,9 +907,9 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         List<Boolean> vBooleans = (List<Boolean>)value_;
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.BOOL, vBooleans.size()));
-          for (boolean _iter49 : vBooleans)
+          for (boolean _iter67 : vBooleans)
           {
-            oprot.writeBool(_iter49);
+            oprot.writeBool(_iter67);
           }
           oprot.writeListEnd();
         }
@@ -922,9 +922,9 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         List<Short> vShorts = (List<Short>)value_;
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I16, vShorts.size()));
-          for (short _iter50 : vShorts)
+          for (short _iter68 : vShorts)
           {
-            oprot.writeI16(_iter50);
+            oprot.writeI16(_iter68);
           }
           oprot.writeListEnd();
         }
@@ -933,9 +933,9 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         List<Integer> vIntegers = (List<Integer>)value_;
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, vIntegers.size()));
-          for (int _iter51 : vIntegers)
+          for (int _iter69 : vIntegers)
           {
-            oprot.writeI32(_iter51);
+            oprot.writeI32(_iter69);
           }
           oprot.writeListEnd();
         }
@@ -944,9 +944,9 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         List<Long> vLongs = (List<Long>)value_;
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I64, vLongs.size()));
-          for (long _iter52 : vLongs)
+          for (long _iter70 : vLongs)
           {
-            oprot.writeI64(_iter52);
+            oprot.writeI64(_iter70);
           }
           oprot.writeListEnd();
         }
@@ -955,9 +955,9 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         List<Double> vDoubles = (List<Double>)value_;
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.DOUBLE, vDoubles.size()));
-          for (double _iter53 : vDoubles)
+          for (double _iter71 : vDoubles)
           {
-            oprot.writeDouble(_iter53);
+            oprot.writeDouble(_iter71);
           }
           oprot.writeListEnd();
         }
@@ -966,9 +966,9 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         List<String> vStrings = (List<String>)value_;
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, vStrings.size()));
-          for (String _iter54 : vStrings)
+          for (String _iter72 : vStrings)
           {
-            oprot.writeString(_iter54);
+            oprot.writeString(_iter72);
           }
           oprot.writeListEnd();
         }
@@ -977,9 +977,9 @@ public class SlotValue extends org.apache.thrift.TUnion<SlotValue, SlotValue._Fi
         List<SlotValue> vLists = (List<SlotValue>)value_;
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, vLists.size()));
-          for (SlotValue _iter55 : vLists)
+          for (SlotValue _iter73 : vLists)
           {
-            _iter55.write(oprot);
+            _iter73.write(oprot);
           }
           oprot.writeListEnd();
         }

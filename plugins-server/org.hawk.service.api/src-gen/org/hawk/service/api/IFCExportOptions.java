@@ -679,13 +679,13 @@ public class IFCExportOptions implements org.apache.thrift.TBase<IFCExportOption
           case 2: // FILE_PATTERNS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list168 = iprot.readListBegin();
-                struct.filePatterns = new ArrayList<String>(_list168.size);
-                String _elem169;
-                for (int _i170 = 0; _i170 < _list168.size; ++_i170)
+                org.apache.thrift.protocol.TList _list186 = iprot.readListBegin();
+                struct.filePatterns = new ArrayList<String>(_list186.size);
+                String _elem187;
+                for (int _i188 = 0; _i188 < _list186.size; ++_i188)
                 {
-                  _elem169 = iprot.readString();
-                  struct.filePatterns.add(_elem169);
+                  _elem187 = iprot.readString();
+                  struct.filePatterns.add(_elem187);
                 }
                 iprot.readListEnd();
               }
@@ -697,37 +697,37 @@ public class IFCExportOptions implements org.apache.thrift.TBase<IFCExportOption
           case 3: // INCLUDE_RULES
             if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
               {
-                org.apache.thrift.protocol.TMap _map171 = iprot.readMapBegin();
-                struct.includeRules = new HashMap<String,Map<String,Set<String>>>(2*_map171.size);
-                String _key172;
-                Map<String,Set<String>> _val173;
-                for (int _i174 = 0; _i174 < _map171.size; ++_i174)
+                org.apache.thrift.protocol.TMap _map189 = iprot.readMapBegin();
+                struct.includeRules = new HashMap<String,Map<String,Set<String>>>(2*_map189.size);
+                String _key190;
+                Map<String,Set<String>> _val191;
+                for (int _i192 = 0; _i192 < _map189.size; ++_i192)
                 {
-                  _key172 = iprot.readString();
+                  _key190 = iprot.readString();
                   {
-                    org.apache.thrift.protocol.TMap _map175 = iprot.readMapBegin();
-                    _val173 = new HashMap<String,Set<String>>(2*_map175.size);
-                    String _key176;
-                    Set<String> _val177;
-                    for (int _i178 = 0; _i178 < _map175.size; ++_i178)
+                    org.apache.thrift.protocol.TMap _map193 = iprot.readMapBegin();
+                    _val191 = new HashMap<String,Set<String>>(2*_map193.size);
+                    String _key194;
+                    Set<String> _val195;
+                    for (int _i196 = 0; _i196 < _map193.size; ++_i196)
                     {
-                      _key176 = iprot.readString();
+                      _key194 = iprot.readString();
                       {
-                        org.apache.thrift.protocol.TSet _set179 = iprot.readSetBegin();
-                        _val177 = new HashSet<String>(2*_set179.size);
-                        String _elem180;
-                        for (int _i181 = 0; _i181 < _set179.size; ++_i181)
+                        org.apache.thrift.protocol.TSet _set197 = iprot.readSetBegin();
+                        _val195 = new HashSet<String>(2*_set197.size);
+                        String _elem198;
+                        for (int _i199 = 0; _i199 < _set197.size; ++_i199)
                         {
-                          _elem180 = iprot.readString();
-                          _val177.add(_elem180);
+                          _elem198 = iprot.readString();
+                          _val195.add(_elem198);
                         }
                         iprot.readSetEnd();
                       }
-                      _val173.put(_key176, _val177);
+                      _val191.put(_key194, _val195);
                     }
                     iprot.readMapEnd();
                   }
-                  struct.includeRules.put(_key172, _val173);
+                  struct.includeRules.put(_key190, _val191);
                 }
                 iprot.readMapEnd();
               }
@@ -739,37 +739,37 @@ public class IFCExportOptions implements org.apache.thrift.TBase<IFCExportOption
           case 4: // EXCLUDE_RULES
             if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
               {
-                org.apache.thrift.protocol.TMap _map182 = iprot.readMapBegin();
-                struct.excludeRules = new HashMap<String,Map<String,Set<String>>>(2*_map182.size);
-                String _key183;
-                Map<String,Set<String>> _val184;
-                for (int _i185 = 0; _i185 < _map182.size; ++_i185)
+                org.apache.thrift.protocol.TMap _map200 = iprot.readMapBegin();
+                struct.excludeRules = new HashMap<String,Map<String,Set<String>>>(2*_map200.size);
+                String _key201;
+                Map<String,Set<String>> _val202;
+                for (int _i203 = 0; _i203 < _map200.size; ++_i203)
                 {
-                  _key183 = iprot.readString();
+                  _key201 = iprot.readString();
                   {
-                    org.apache.thrift.protocol.TMap _map186 = iprot.readMapBegin();
-                    _val184 = new HashMap<String,Set<String>>(2*_map186.size);
-                    String _key187;
-                    Set<String> _val188;
-                    for (int _i189 = 0; _i189 < _map186.size; ++_i189)
+                    org.apache.thrift.protocol.TMap _map204 = iprot.readMapBegin();
+                    _val202 = new HashMap<String,Set<String>>(2*_map204.size);
+                    String _key205;
+                    Set<String> _val206;
+                    for (int _i207 = 0; _i207 < _map204.size; ++_i207)
                     {
-                      _key187 = iprot.readString();
+                      _key205 = iprot.readString();
                       {
-                        org.apache.thrift.protocol.TSet _set190 = iprot.readSetBegin();
-                        _val188 = new HashSet<String>(2*_set190.size);
-                        String _elem191;
-                        for (int _i192 = 0; _i192 < _set190.size; ++_i192)
+                        org.apache.thrift.protocol.TSet _set208 = iprot.readSetBegin();
+                        _val206 = new HashSet<String>(2*_set208.size);
+                        String _elem209;
+                        for (int _i210 = 0; _i210 < _set208.size; ++_i210)
                         {
-                          _elem191 = iprot.readString();
-                          _val188.add(_elem191);
+                          _elem209 = iprot.readString();
+                          _val206.add(_elem209);
                         }
                         iprot.readSetEnd();
                       }
-                      _val184.put(_key187, _val188);
+                      _val202.put(_key205, _val206);
                     }
                     iprot.readMapEnd();
                   }
-                  struct.excludeRules.put(_key183, _val184);
+                  struct.excludeRules.put(_key201, _val202);
                 }
                 iprot.readMapEnd();
               }
@@ -805,9 +805,9 @@ public class IFCExportOptions implements org.apache.thrift.TBase<IFCExportOption
           oprot.writeFieldBegin(FILE_PATTERNS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, struct.filePatterns.size()));
-            for (String _iter193 : struct.filePatterns)
+            for (String _iter211 : struct.filePatterns)
             {
-              oprot.writeString(_iter193);
+              oprot.writeString(_iter211);
             }
             oprot.writeListEnd();
           }
@@ -819,19 +819,19 @@ public class IFCExportOptions implements org.apache.thrift.TBase<IFCExportOption
           oprot.writeFieldBegin(INCLUDE_RULES_FIELD_DESC);
           {
             oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.MAP, struct.includeRules.size()));
-            for (Map.Entry<String, Map<String,Set<String>>> _iter194 : struct.includeRules.entrySet())
+            for (Map.Entry<String, Map<String,Set<String>>> _iter212 : struct.includeRules.entrySet())
             {
-              oprot.writeString(_iter194.getKey());
+              oprot.writeString(_iter212.getKey());
               {
-                oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.SET, _iter194.getValue().size()));
-                for (Map.Entry<String, Set<String>> _iter195 : _iter194.getValue().entrySet())
+                oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.SET, _iter212.getValue().size()));
+                for (Map.Entry<String, Set<String>> _iter213 : _iter212.getValue().entrySet())
                 {
-                  oprot.writeString(_iter195.getKey());
+                  oprot.writeString(_iter213.getKey());
                   {
-                    oprot.writeSetBegin(new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, _iter195.getValue().size()));
-                    for (String _iter196 : _iter195.getValue())
+                    oprot.writeSetBegin(new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, _iter213.getValue().size()));
+                    for (String _iter214 : _iter213.getValue())
                     {
-                      oprot.writeString(_iter196);
+                      oprot.writeString(_iter214);
                     }
                     oprot.writeSetEnd();
                   }
@@ -849,19 +849,19 @@ public class IFCExportOptions implements org.apache.thrift.TBase<IFCExportOption
           oprot.writeFieldBegin(EXCLUDE_RULES_FIELD_DESC);
           {
             oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.MAP, struct.excludeRules.size()));
-            for (Map.Entry<String, Map<String,Set<String>>> _iter197 : struct.excludeRules.entrySet())
+            for (Map.Entry<String, Map<String,Set<String>>> _iter215 : struct.excludeRules.entrySet())
             {
-              oprot.writeString(_iter197.getKey());
+              oprot.writeString(_iter215.getKey());
               {
-                oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.SET, _iter197.getValue().size()));
-                for (Map.Entry<String, Set<String>> _iter198 : _iter197.getValue().entrySet())
+                oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.SET, _iter215.getValue().size()));
+                for (Map.Entry<String, Set<String>> _iter216 : _iter215.getValue().entrySet())
                 {
-                  oprot.writeString(_iter198.getKey());
+                  oprot.writeString(_iter216.getKey());
                   {
-                    oprot.writeSetBegin(new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, _iter198.getValue().size()));
-                    for (String _iter199 : _iter198.getValue())
+                    oprot.writeSetBegin(new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, _iter216.getValue().size()));
+                    for (String _iter217 : _iter216.getValue())
                     {
-                      oprot.writeString(_iter199);
+                      oprot.writeString(_iter217);
                     }
                     oprot.writeSetEnd();
                   }
@@ -911,28 +911,28 @@ public class IFCExportOptions implements org.apache.thrift.TBase<IFCExportOption
       if (struct.isSetFilePatterns()) {
         {
           oprot.writeI32(struct.filePatterns.size());
-          for (String _iter200 : struct.filePatterns)
+          for (String _iter218 : struct.filePatterns)
           {
-            oprot.writeString(_iter200);
+            oprot.writeString(_iter218);
           }
         }
       }
       if (struct.isSetIncludeRules()) {
         {
           oprot.writeI32(struct.includeRules.size());
-          for (Map.Entry<String, Map<String,Set<String>>> _iter201 : struct.includeRules.entrySet())
+          for (Map.Entry<String, Map<String,Set<String>>> _iter219 : struct.includeRules.entrySet())
           {
-            oprot.writeString(_iter201.getKey());
+            oprot.writeString(_iter219.getKey());
             {
-              oprot.writeI32(_iter201.getValue().size());
-              for (Map.Entry<String, Set<String>> _iter202 : _iter201.getValue().entrySet())
+              oprot.writeI32(_iter219.getValue().size());
+              for (Map.Entry<String, Set<String>> _iter220 : _iter219.getValue().entrySet())
               {
-                oprot.writeString(_iter202.getKey());
+                oprot.writeString(_iter220.getKey());
                 {
-                  oprot.writeI32(_iter202.getValue().size());
-                  for (String _iter203 : _iter202.getValue())
+                  oprot.writeI32(_iter220.getValue().size());
+                  for (String _iter221 : _iter220.getValue())
                   {
-                    oprot.writeString(_iter203);
+                    oprot.writeString(_iter221);
                   }
                 }
               }
@@ -943,19 +943,19 @@ public class IFCExportOptions implements org.apache.thrift.TBase<IFCExportOption
       if (struct.isSetExcludeRules()) {
         {
           oprot.writeI32(struct.excludeRules.size());
-          for (Map.Entry<String, Map<String,Set<String>>> _iter204 : struct.excludeRules.entrySet())
+          for (Map.Entry<String, Map<String,Set<String>>> _iter222 : struct.excludeRules.entrySet())
           {
-            oprot.writeString(_iter204.getKey());
+            oprot.writeString(_iter222.getKey());
             {
-              oprot.writeI32(_iter204.getValue().size());
-              for (Map.Entry<String, Set<String>> _iter205 : _iter204.getValue().entrySet())
+              oprot.writeI32(_iter222.getValue().size());
+              for (Map.Entry<String, Set<String>> _iter223 : _iter222.getValue().entrySet())
               {
-                oprot.writeString(_iter205.getKey());
+                oprot.writeString(_iter223.getKey());
                 {
-                  oprot.writeI32(_iter205.getValue().size());
-                  for (String _iter206 : _iter205.getValue())
+                  oprot.writeI32(_iter223.getValue().size());
+                  for (String _iter224 : _iter223.getValue())
                   {
-                    oprot.writeString(_iter206);
+                    oprot.writeString(_iter224);
                   }
                 }
               }
@@ -975,83 +975,83 @@ public class IFCExportOptions implements org.apache.thrift.TBase<IFCExportOption
       }
       if (incoming.get(1)) {
         {
-          org.apache.thrift.protocol.TList _list207 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-          struct.filePatterns = new ArrayList<String>(_list207.size);
-          String _elem208;
-          for (int _i209 = 0; _i209 < _list207.size; ++_i209)
+          org.apache.thrift.protocol.TList _list225 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+          struct.filePatterns = new ArrayList<String>(_list225.size);
+          String _elem226;
+          for (int _i227 = 0; _i227 < _list225.size; ++_i227)
           {
-            _elem208 = iprot.readString();
-            struct.filePatterns.add(_elem208);
+            _elem226 = iprot.readString();
+            struct.filePatterns.add(_elem226);
           }
         }
         struct.setFilePatternsIsSet(true);
       }
       if (incoming.get(2)) {
         {
-          org.apache.thrift.protocol.TMap _map210 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.MAP, iprot.readI32());
-          struct.includeRules = new HashMap<String,Map<String,Set<String>>>(2*_map210.size);
-          String _key211;
-          Map<String,Set<String>> _val212;
-          for (int _i213 = 0; _i213 < _map210.size; ++_i213)
+          org.apache.thrift.protocol.TMap _map228 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.MAP, iprot.readI32());
+          struct.includeRules = new HashMap<String,Map<String,Set<String>>>(2*_map228.size);
+          String _key229;
+          Map<String,Set<String>> _val230;
+          for (int _i231 = 0; _i231 < _map228.size; ++_i231)
           {
-            _key211 = iprot.readString();
+            _key229 = iprot.readString();
             {
-              org.apache.thrift.protocol.TMap _map214 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.SET, iprot.readI32());
-              _val212 = new HashMap<String,Set<String>>(2*_map214.size);
-              String _key215;
-              Set<String> _val216;
-              for (int _i217 = 0; _i217 < _map214.size; ++_i217)
+              org.apache.thrift.protocol.TMap _map232 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.SET, iprot.readI32());
+              _val230 = new HashMap<String,Set<String>>(2*_map232.size);
+              String _key233;
+              Set<String> _val234;
+              for (int _i235 = 0; _i235 < _map232.size; ++_i235)
               {
-                _key215 = iprot.readString();
+                _key233 = iprot.readString();
                 {
-                  org.apache.thrift.protocol.TSet _set218 = new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-                  _val216 = new HashSet<String>(2*_set218.size);
-                  String _elem219;
-                  for (int _i220 = 0; _i220 < _set218.size; ++_i220)
+                  org.apache.thrift.protocol.TSet _set236 = new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+                  _val234 = new HashSet<String>(2*_set236.size);
+                  String _elem237;
+                  for (int _i238 = 0; _i238 < _set236.size; ++_i238)
                   {
-                    _elem219 = iprot.readString();
-                    _val216.add(_elem219);
+                    _elem237 = iprot.readString();
+                    _val234.add(_elem237);
                   }
                 }
-                _val212.put(_key215, _val216);
+                _val230.put(_key233, _val234);
               }
             }
-            struct.includeRules.put(_key211, _val212);
+            struct.includeRules.put(_key229, _val230);
           }
         }
         struct.setIncludeRulesIsSet(true);
       }
       if (incoming.get(3)) {
         {
-          org.apache.thrift.protocol.TMap _map221 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.MAP, iprot.readI32());
-          struct.excludeRules = new HashMap<String,Map<String,Set<String>>>(2*_map221.size);
-          String _key222;
-          Map<String,Set<String>> _val223;
-          for (int _i224 = 0; _i224 < _map221.size; ++_i224)
+          org.apache.thrift.protocol.TMap _map239 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.MAP, iprot.readI32());
+          struct.excludeRules = new HashMap<String,Map<String,Set<String>>>(2*_map239.size);
+          String _key240;
+          Map<String,Set<String>> _val241;
+          for (int _i242 = 0; _i242 < _map239.size; ++_i242)
           {
-            _key222 = iprot.readString();
+            _key240 = iprot.readString();
             {
-              org.apache.thrift.protocol.TMap _map225 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.SET, iprot.readI32());
-              _val223 = new HashMap<String,Set<String>>(2*_map225.size);
-              String _key226;
-              Set<String> _val227;
-              for (int _i228 = 0; _i228 < _map225.size; ++_i228)
+              org.apache.thrift.protocol.TMap _map243 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.SET, iprot.readI32());
+              _val241 = new HashMap<String,Set<String>>(2*_map243.size);
+              String _key244;
+              Set<String> _val245;
+              for (int _i246 = 0; _i246 < _map243.size; ++_i246)
               {
-                _key226 = iprot.readString();
+                _key244 = iprot.readString();
                 {
-                  org.apache.thrift.protocol.TSet _set229 = new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-                  _val227 = new HashSet<String>(2*_set229.size);
-                  String _elem230;
-                  for (int _i231 = 0; _i231 < _set229.size; ++_i231)
+                  org.apache.thrift.protocol.TSet _set247 = new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+                  _val245 = new HashSet<String>(2*_set247.size);
+                  String _elem248;
+                  for (int _i249 = 0; _i249 < _set247.size; ++_i249)
                   {
-                    _elem230 = iprot.readString();
-                    _val227.add(_elem230);
+                    _elem248 = iprot.readString();
+                    _val245.add(_elem248);
                   }
                 }
-                _val223.put(_key226, _val227);
+                _val241.put(_key244, _val245);
               }
             }
-            struct.excludeRules.put(_key222, _val223);
+            struct.excludeRules.put(_key240, _val241);
           }
         }
         struct.setExcludeRulesIsSet(true);

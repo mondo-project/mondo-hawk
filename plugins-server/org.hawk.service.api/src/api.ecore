@@ -242,6 +242,31 @@
         </eAnnotations>
       </eParameters>
     </eOperations>
+    <eOperations name="timedQuery" eType="#//QueryReport" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning #//UnknownQueryLanguage #//InvalidQuery #//FailedQuery">
+      <eAnnotations source="doc">
+        <details key="d" value="Runs a query on a Hawk instance and returns a sequence of scalar values and/or model elements."/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="query" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The query to be executed"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="language" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the query language used (e.g. EOL, OCL)"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="options" eType="#//HawkQueryOptions">
+        <eAnnotations source="doc">
+          <details key="d" value="Options for the query"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
     <eOperations name="resolveProxies" upperBound="-1" eType="#//ModelElement" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
       <eAnnotations source="doc">
         <details key="d" value="Returns populated model elements for the provided proxies"/>
@@ -1408,6 +1433,22 @@
         eType="#//QueryResult" containment="true">
       <eAnnotations source="doc">
         <details key="d" value="Nested list of query results."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="QueryReport">
+    <eAnnotations source="doc">
+      <details key="d" value="Report from a query, including execution time and any other information we may consider later"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="result" eType="#//QueryResult"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Result of the query"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="wallMillis" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong">
+      <eAnnotations source="doc">
+        <details key="d" value="Wall time on the server in milliseconds"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

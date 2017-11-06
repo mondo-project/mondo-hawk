@@ -1910,6 +1910,269 @@ Hawk_query_result.prototype.write = function(output) {
   return;
 };
 
+Hawk_timedQuery_args = function(args) {
+  this.name = null;
+  this.query = null;
+  this.language = null;
+  this.options = null;
+  if (args) {
+    if (args.name !== undefined && args.name !== null) {
+      this.name = args.name;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field name is unset!');
+    }
+    if (args.query !== undefined && args.query !== null) {
+      this.query = args.query;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field query is unset!');
+    }
+    if (args.language !== undefined && args.language !== null) {
+      this.language = args.language;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field language is unset!');
+    }
+    if (args.options !== undefined && args.options !== null) {
+      this.options = new HawkQueryOptions(args.options);
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field options is unset!');
+    }
+  }
+};
+Hawk_timedQuery_args.prototype = {};
+Hawk_timedQuery_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.query = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.language = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.options = new HawkQueryOptions();
+        this.options.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Hawk_timedQuery_args.prototype.write = function(output) {
+  output.writeStructBegin('Hawk_timedQuery_args');
+  if (this.name !== null && this.name !== undefined) {
+    output.writeFieldBegin('name', Thrift.Type.STRING, 1);
+    output.writeString(this.name);
+    output.writeFieldEnd();
+  }
+  if (this.query !== null && this.query !== undefined) {
+    output.writeFieldBegin('query', Thrift.Type.STRING, 2);
+    output.writeString(this.query);
+    output.writeFieldEnd();
+  }
+  if (this.language !== null && this.language !== undefined) {
+    output.writeFieldBegin('language', Thrift.Type.STRING, 3);
+    output.writeString(this.language);
+    output.writeFieldEnd();
+  }
+  if (this.options !== null && this.options !== undefined) {
+    output.writeFieldBegin('options', Thrift.Type.STRUCT, 4);
+    this.options.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Hawk_timedQuery_result = function(args) {
+  this.success = null;
+  this.err1 = null;
+  this.err2 = null;
+  this.err3 = null;
+  this.err4 = null;
+  this.err5 = null;
+  if (args instanceof HawkInstanceNotFound) {
+    this.err1 = args;
+    return;
+  }
+  if (args instanceof HawkInstanceNotRunning) {
+    this.err2 = args;
+    return;
+  }
+  if (args instanceof UnknownQueryLanguage) {
+    this.err3 = args;
+    return;
+  }
+  if (args instanceof InvalidQuery) {
+    this.err4 = args;
+    return;
+  }
+  if (args instanceof FailedQuery) {
+    this.err5 = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = new QueryReport(args.success);
+    }
+    if (args.err1 !== undefined && args.err1 !== null) {
+      this.err1 = args.err1;
+    }
+    if (args.err2 !== undefined && args.err2 !== null) {
+      this.err2 = args.err2;
+    }
+    if (args.err3 !== undefined && args.err3 !== null) {
+      this.err3 = args.err3;
+    }
+    if (args.err4 !== undefined && args.err4 !== null) {
+      this.err4 = args.err4;
+    }
+    if (args.err5 !== undefined && args.err5 !== null) {
+      this.err5 = args.err5;
+    }
+  }
+};
+Hawk_timedQuery_result.prototype = {};
+Hawk_timedQuery_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.success = new QueryReport();
+        this.success.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err1 = new HawkInstanceNotFound();
+        this.err1.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err2 = new HawkInstanceNotRunning();
+        this.err2.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err3 = new UnknownQueryLanguage();
+        this.err3.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err4 = new InvalidQuery();
+        this.err4.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err5 = new FailedQuery();
+        this.err5.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Hawk_timedQuery_result.prototype.write = function(output) {
+  output.writeStructBegin('Hawk_timedQuery_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
+    this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.err1 !== null && this.err1 !== undefined) {
+    output.writeFieldBegin('err1', Thrift.Type.STRUCT, 1);
+    this.err1.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.err2 !== null && this.err2 !== undefined) {
+    output.writeFieldBegin('err2', Thrift.Type.STRUCT, 2);
+    this.err2.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.err3 !== null && this.err3 !== undefined) {
+    output.writeFieldBegin('err3', Thrift.Type.STRUCT, 3);
+    this.err3.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.err4 !== null && this.err4 !== undefined) {
+    output.writeFieldBegin('err4', Thrift.Type.STRUCT, 4);
+    this.err4.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.err5 !== null && this.err5 !== undefined) {
+    output.writeFieldBegin('err5', Thrift.Type.STRUCT, 5);
+    this.err5.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 Hawk_resolveProxies_args = function(args) {
   this.name = null;
   this.ids = null;
@@ -6055,6 +6318,73 @@ HawkClient.prototype.recv_query = function() {
     return result.success;
   }
   throw 'query failed: unknown result';
+};
+HawkClient.prototype.timedQuery = function(name, query, language, options, callback) {
+  this.send_timedQuery(name, query, language, options, callback); 
+  if (!callback) {
+    return this.recv_timedQuery();
+  }
+};
+
+HawkClient.prototype.send_timedQuery = function(name, query, language, options, callback) {
+  this.output.writeMessageBegin('timedQuery', Thrift.MessageType.CALL, this.seqid);
+  var args = new Hawk_timedQuery_args();
+  args.name = name;
+  args.query = query;
+  args.language = language;
+  args.options = options;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_timedQuery();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+HawkClient.prototype.recv_timedQuery = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new Hawk_timedQuery_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.err1) {
+    throw result.err1;
+  }
+  if (null !== result.err2) {
+    throw result.err2;
+  }
+  if (null !== result.err3) {
+    throw result.err3;
+  }
+  if (null !== result.err4) {
+    throw result.err4;
+  }
+  if (null !== result.err5) {
+    throw result.err5;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'timedQuery failed: unknown result';
 };
 HawkClient.prototype.resolveProxies = function(name, ids, options, callback) {
   this.send_resolveProxies(name, ids, options, callback); 

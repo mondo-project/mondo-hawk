@@ -1001,14 +1001,14 @@ public class ModelElement implements org.apache.thrift.TBase<ModelElement, Model
           case 6: // ATTRIBUTES
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list232 = iprot.readListBegin();
-                struct.attributes = new ArrayList<AttributeSlot>(_list232.size);
-                AttributeSlot _elem233;
-                for (int _i234 = 0; _i234 < _list232.size; ++_i234)
+                org.apache.thrift.protocol.TList _list250 = iprot.readListBegin();
+                struct.attributes = new ArrayList<AttributeSlot>(_list250.size);
+                AttributeSlot _elem251;
+                for (int _i252 = 0; _i252 < _list250.size; ++_i252)
                 {
-                  _elem233 = new AttributeSlot();
-                  _elem233.read(iprot);
-                  struct.attributes.add(_elem233);
+                  _elem251 = new AttributeSlot();
+                  _elem251.read(iprot);
+                  struct.attributes.add(_elem251);
                 }
                 iprot.readListEnd();
               }
@@ -1020,14 +1020,14 @@ public class ModelElement implements org.apache.thrift.TBase<ModelElement, Model
           case 7: // REFERENCES
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list235 = iprot.readListBegin();
-                struct.references = new ArrayList<ReferenceSlot>(_list235.size);
-                ReferenceSlot _elem236;
-                for (int _i237 = 0; _i237 < _list235.size; ++_i237)
+                org.apache.thrift.protocol.TList _list253 = iprot.readListBegin();
+                struct.references = new ArrayList<ReferenceSlot>(_list253.size);
+                ReferenceSlot _elem254;
+                for (int _i255 = 0; _i255 < _list253.size; ++_i255)
                 {
-                  _elem236 = new ReferenceSlot();
-                  _elem236.read(iprot);
-                  struct.references.add(_elem236);
+                  _elem254 = new ReferenceSlot();
+                  _elem254.read(iprot);
+                  struct.references.add(_elem254);
                 }
                 iprot.readListEnd();
               }
@@ -1039,14 +1039,14 @@ public class ModelElement implements org.apache.thrift.TBase<ModelElement, Model
           case 8: // CONTAINERS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list238 = iprot.readListBegin();
-                struct.containers = new ArrayList<ContainerSlot>(_list238.size);
-                ContainerSlot _elem239;
-                for (int _i240 = 0; _i240 < _list238.size; ++_i240)
+                org.apache.thrift.protocol.TList _list256 = iprot.readListBegin();
+                struct.containers = new ArrayList<ContainerSlot>(_list256.size);
+                ContainerSlot _elem257;
+                for (int _i258 = 0; _i258 < _list256.size; ++_i258)
                 {
-                  _elem239 = new ContainerSlot();
-                  _elem239.read(iprot);
-                  struct.containers.add(_elem239);
+                  _elem257 = new ContainerSlot();
+                  _elem257.read(iprot);
+                  struct.containers.add(_elem257);
                 }
                 iprot.readListEnd();
               }
@@ -1110,9 +1110,9 @@ public class ModelElement implements org.apache.thrift.TBase<ModelElement, Model
           oprot.writeFieldBegin(ATTRIBUTES_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.attributes.size()));
-            for (AttributeSlot _iter241 : struct.attributes)
+            for (AttributeSlot _iter259 : struct.attributes)
             {
-              _iter241.write(oprot);
+              _iter259.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -1124,9 +1124,9 @@ public class ModelElement implements org.apache.thrift.TBase<ModelElement, Model
           oprot.writeFieldBegin(REFERENCES_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.references.size()));
-            for (ReferenceSlot _iter242 : struct.references)
+            for (ReferenceSlot _iter260 : struct.references)
             {
-              _iter242.write(oprot);
+              _iter260.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -1138,9 +1138,9 @@ public class ModelElement implements org.apache.thrift.TBase<ModelElement, Model
           oprot.writeFieldBegin(CONTAINERS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.containers.size()));
-            for (ContainerSlot _iter243 : struct.containers)
+            for (ContainerSlot _iter261 : struct.containers)
             {
-              _iter243.write(oprot);
+              _iter261.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -1208,27 +1208,27 @@ public class ModelElement implements org.apache.thrift.TBase<ModelElement, Model
       if (struct.isSetAttributes()) {
         {
           oprot.writeI32(struct.attributes.size());
-          for (AttributeSlot _iter244 : struct.attributes)
+          for (AttributeSlot _iter262 : struct.attributes)
           {
-            _iter244.write(oprot);
+            _iter262.write(oprot);
           }
         }
       }
       if (struct.isSetReferences()) {
         {
           oprot.writeI32(struct.references.size());
-          for (ReferenceSlot _iter245 : struct.references)
+          for (ReferenceSlot _iter263 : struct.references)
           {
-            _iter245.write(oprot);
+            _iter263.write(oprot);
           }
         }
       }
       if (struct.isSetContainers()) {
         {
           oprot.writeI32(struct.containers.size());
-          for (ContainerSlot _iter246 : struct.containers)
+          for (ContainerSlot _iter264 : struct.containers)
           {
-            _iter246.write(oprot);
+            _iter264.write(oprot);
           }
         }
       }
@@ -1260,42 +1260,42 @@ public class ModelElement implements org.apache.thrift.TBase<ModelElement, Model
       }
       if (incoming.get(5)) {
         {
-          org.apache.thrift.protocol.TList _list247 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.attributes = new ArrayList<AttributeSlot>(_list247.size);
-          AttributeSlot _elem248;
-          for (int _i249 = 0; _i249 < _list247.size; ++_i249)
+          org.apache.thrift.protocol.TList _list265 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.attributes = new ArrayList<AttributeSlot>(_list265.size);
+          AttributeSlot _elem266;
+          for (int _i267 = 0; _i267 < _list265.size; ++_i267)
           {
-            _elem248 = new AttributeSlot();
-            _elem248.read(iprot);
-            struct.attributes.add(_elem248);
+            _elem266 = new AttributeSlot();
+            _elem266.read(iprot);
+            struct.attributes.add(_elem266);
           }
         }
         struct.setAttributesIsSet(true);
       }
       if (incoming.get(6)) {
         {
-          org.apache.thrift.protocol.TList _list250 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.references = new ArrayList<ReferenceSlot>(_list250.size);
-          ReferenceSlot _elem251;
-          for (int _i252 = 0; _i252 < _list250.size; ++_i252)
+          org.apache.thrift.protocol.TList _list268 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.references = new ArrayList<ReferenceSlot>(_list268.size);
+          ReferenceSlot _elem269;
+          for (int _i270 = 0; _i270 < _list268.size; ++_i270)
           {
-            _elem251 = new ReferenceSlot();
-            _elem251.read(iprot);
-            struct.references.add(_elem251);
+            _elem269 = new ReferenceSlot();
+            _elem269.read(iprot);
+            struct.references.add(_elem269);
           }
         }
         struct.setReferencesIsSet(true);
       }
       if (incoming.get(7)) {
         {
-          org.apache.thrift.protocol.TList _list253 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.containers = new ArrayList<ContainerSlot>(_list253.size);
-          ContainerSlot _elem254;
-          for (int _i255 = 0; _i255 < _list253.size; ++_i255)
+          org.apache.thrift.protocol.TList _list271 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.containers = new ArrayList<ContainerSlot>(_list271.size);
+          ContainerSlot _elem272;
+          for (int _i273 = 0; _i273 < _list271.size; ++_i273)
           {
-            _elem254 = new ContainerSlot();
-            _elem254.read(iprot);
-            struct.containers.add(_elem254);
+            _elem272 = new ContainerSlot();
+            _elem272.read(iprot);
+            struct.containers.add(_elem272);
           }
         }
         struct.setContainersIsSet(true);

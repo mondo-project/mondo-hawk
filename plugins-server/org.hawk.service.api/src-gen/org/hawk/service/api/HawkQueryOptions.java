@@ -1160,13 +1160,13 @@ public class HawkQueryOptions implements org.apache.thrift.TBase<HawkQueryOption
           case 2: // FILE_PATTERNS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list104 = iprot.readListBegin();
-                struct.filePatterns = new ArrayList<String>(_list104.size);
-                String _elem105;
-                for (int _i106 = 0; _i106 < _list104.size; ++_i106)
+                org.apache.thrift.protocol.TList _list122 = iprot.readListBegin();
+                struct.filePatterns = new ArrayList<String>(_list122.size);
+                String _elem123;
+                for (int _i124 = 0; _i124 < _list122.size; ++_i124)
                 {
-                  _elem105 = iprot.readString();
-                  struct.filePatterns.add(_elem105);
+                  _elem123 = iprot.readString();
+                  struct.filePatterns.add(_elem123);
                 }
                 iprot.readListEnd();
               }
@@ -1218,37 +1218,37 @@ public class HawkQueryOptions implements org.apache.thrift.TBase<HawkQueryOption
           case 8: // EFFECTIVE_METAMODEL_INCLUDES
             if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
               {
-                org.apache.thrift.protocol.TMap _map107 = iprot.readMapBegin();
-                struct.effectiveMetamodelIncludes = new HashMap<String,Map<String,Set<String>>>(2*_map107.size);
-                String _key108;
-                Map<String,Set<String>> _val109;
-                for (int _i110 = 0; _i110 < _map107.size; ++_i110)
+                org.apache.thrift.protocol.TMap _map125 = iprot.readMapBegin();
+                struct.effectiveMetamodelIncludes = new HashMap<String,Map<String,Set<String>>>(2*_map125.size);
+                String _key126;
+                Map<String,Set<String>> _val127;
+                for (int _i128 = 0; _i128 < _map125.size; ++_i128)
                 {
-                  _key108 = iprot.readString();
+                  _key126 = iprot.readString();
                   {
-                    org.apache.thrift.protocol.TMap _map111 = iprot.readMapBegin();
-                    _val109 = new HashMap<String,Set<String>>(2*_map111.size);
-                    String _key112;
-                    Set<String> _val113;
-                    for (int _i114 = 0; _i114 < _map111.size; ++_i114)
+                    org.apache.thrift.protocol.TMap _map129 = iprot.readMapBegin();
+                    _val127 = new HashMap<String,Set<String>>(2*_map129.size);
+                    String _key130;
+                    Set<String> _val131;
+                    for (int _i132 = 0; _i132 < _map129.size; ++_i132)
                     {
-                      _key112 = iprot.readString();
+                      _key130 = iprot.readString();
                       {
-                        org.apache.thrift.protocol.TSet _set115 = iprot.readSetBegin();
-                        _val113 = new HashSet<String>(2*_set115.size);
-                        String _elem116;
-                        for (int _i117 = 0; _i117 < _set115.size; ++_i117)
+                        org.apache.thrift.protocol.TSet _set133 = iprot.readSetBegin();
+                        _val131 = new HashSet<String>(2*_set133.size);
+                        String _elem134;
+                        for (int _i135 = 0; _i135 < _set133.size; ++_i135)
                         {
-                          _elem116 = iprot.readString();
-                          _val113.add(_elem116);
+                          _elem134 = iprot.readString();
+                          _val131.add(_elem134);
                         }
                         iprot.readSetEnd();
                       }
-                      _val109.put(_key112, _val113);
+                      _val127.put(_key130, _val131);
                     }
                     iprot.readMapEnd();
                   }
-                  struct.effectiveMetamodelIncludes.put(_key108, _val109);
+                  struct.effectiveMetamodelIncludes.put(_key126, _val127);
                 }
                 iprot.readMapEnd();
               }
@@ -1260,37 +1260,37 @@ public class HawkQueryOptions implements org.apache.thrift.TBase<HawkQueryOption
           case 9: // EFFECTIVE_METAMODEL_EXCLUDES
             if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
               {
-                org.apache.thrift.protocol.TMap _map118 = iprot.readMapBegin();
-                struct.effectiveMetamodelExcludes = new HashMap<String,Map<String,Set<String>>>(2*_map118.size);
-                String _key119;
-                Map<String,Set<String>> _val120;
-                for (int _i121 = 0; _i121 < _map118.size; ++_i121)
+                org.apache.thrift.protocol.TMap _map136 = iprot.readMapBegin();
+                struct.effectiveMetamodelExcludes = new HashMap<String,Map<String,Set<String>>>(2*_map136.size);
+                String _key137;
+                Map<String,Set<String>> _val138;
+                for (int _i139 = 0; _i139 < _map136.size; ++_i139)
                 {
-                  _key119 = iprot.readString();
+                  _key137 = iprot.readString();
                   {
-                    org.apache.thrift.protocol.TMap _map122 = iprot.readMapBegin();
-                    _val120 = new HashMap<String,Set<String>>(2*_map122.size);
-                    String _key123;
-                    Set<String> _val124;
-                    for (int _i125 = 0; _i125 < _map122.size; ++_i125)
+                    org.apache.thrift.protocol.TMap _map140 = iprot.readMapBegin();
+                    _val138 = new HashMap<String,Set<String>>(2*_map140.size);
+                    String _key141;
+                    Set<String> _val142;
+                    for (int _i143 = 0; _i143 < _map140.size; ++_i143)
                     {
-                      _key123 = iprot.readString();
+                      _key141 = iprot.readString();
                       {
-                        org.apache.thrift.protocol.TSet _set126 = iprot.readSetBegin();
-                        _val124 = new HashSet<String>(2*_set126.size);
-                        String _elem127;
-                        for (int _i128 = 0; _i128 < _set126.size; ++_i128)
+                        org.apache.thrift.protocol.TSet _set144 = iprot.readSetBegin();
+                        _val142 = new HashSet<String>(2*_set144.size);
+                        String _elem145;
+                        for (int _i146 = 0; _i146 < _set144.size; ++_i146)
                         {
-                          _elem127 = iprot.readString();
-                          _val124.add(_elem127);
+                          _elem145 = iprot.readString();
+                          _val142.add(_elem145);
                         }
                         iprot.readSetEnd();
                       }
-                      _val120.put(_key123, _val124);
+                      _val138.put(_key141, _val142);
                     }
                     iprot.readMapEnd();
                   }
-                  struct.effectiveMetamodelExcludes.put(_key119, _val120);
+                  struct.effectiveMetamodelExcludes.put(_key137, _val138);
                 }
                 iprot.readMapEnd();
               }
@@ -1334,9 +1334,9 @@ public class HawkQueryOptions implements org.apache.thrift.TBase<HawkQueryOption
           oprot.writeFieldBegin(FILE_PATTERNS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, struct.filePatterns.size()));
-            for (String _iter129 : struct.filePatterns)
+            for (String _iter147 : struct.filePatterns)
             {
-              oprot.writeString(_iter129);
+              oprot.writeString(_iter147);
             }
             oprot.writeListEnd();
           }
@@ -1375,19 +1375,19 @@ public class HawkQueryOptions implements org.apache.thrift.TBase<HawkQueryOption
           oprot.writeFieldBegin(EFFECTIVE_METAMODEL_INCLUDES_FIELD_DESC);
           {
             oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.MAP, struct.effectiveMetamodelIncludes.size()));
-            for (Map.Entry<String, Map<String,Set<String>>> _iter130 : struct.effectiveMetamodelIncludes.entrySet())
+            for (Map.Entry<String, Map<String,Set<String>>> _iter148 : struct.effectiveMetamodelIncludes.entrySet())
             {
-              oprot.writeString(_iter130.getKey());
+              oprot.writeString(_iter148.getKey());
               {
-                oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.SET, _iter130.getValue().size()));
-                for (Map.Entry<String, Set<String>> _iter131 : _iter130.getValue().entrySet())
+                oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.SET, _iter148.getValue().size()));
+                for (Map.Entry<String, Set<String>> _iter149 : _iter148.getValue().entrySet())
                 {
-                  oprot.writeString(_iter131.getKey());
+                  oprot.writeString(_iter149.getKey());
                   {
-                    oprot.writeSetBegin(new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, _iter131.getValue().size()));
-                    for (String _iter132 : _iter131.getValue())
+                    oprot.writeSetBegin(new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, _iter149.getValue().size()));
+                    for (String _iter150 : _iter149.getValue())
                     {
-                      oprot.writeString(_iter132);
+                      oprot.writeString(_iter150);
                     }
                     oprot.writeSetEnd();
                   }
@@ -1405,19 +1405,19 @@ public class HawkQueryOptions implements org.apache.thrift.TBase<HawkQueryOption
           oprot.writeFieldBegin(EFFECTIVE_METAMODEL_EXCLUDES_FIELD_DESC);
           {
             oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.MAP, struct.effectiveMetamodelExcludes.size()));
-            for (Map.Entry<String, Map<String,Set<String>>> _iter133 : struct.effectiveMetamodelExcludes.entrySet())
+            for (Map.Entry<String, Map<String,Set<String>>> _iter151 : struct.effectiveMetamodelExcludes.entrySet())
             {
-              oprot.writeString(_iter133.getKey());
+              oprot.writeString(_iter151.getKey());
               {
-                oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.SET, _iter133.getValue().size()));
-                for (Map.Entry<String, Set<String>> _iter134 : _iter133.getValue().entrySet())
+                oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.SET, _iter151.getValue().size()));
+                for (Map.Entry<String, Set<String>> _iter152 : _iter151.getValue().entrySet())
                 {
-                  oprot.writeString(_iter134.getKey());
+                  oprot.writeString(_iter152.getKey());
                   {
-                    oprot.writeSetBegin(new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, _iter134.getValue().size()));
-                    for (String _iter135 : _iter134.getValue())
+                    oprot.writeSetBegin(new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, _iter152.getValue().size()));
+                    for (String _iter153 : _iter152.getValue())
                     {
-                      oprot.writeString(_iter135);
+                      oprot.writeString(_iter153);
                     }
                     oprot.writeSetEnd();
                   }
@@ -1490,9 +1490,9 @@ public class HawkQueryOptions implements org.apache.thrift.TBase<HawkQueryOption
       if (struct.isSetFilePatterns()) {
         {
           oprot.writeI32(struct.filePatterns.size());
-          for (String _iter136 : struct.filePatterns)
+          for (String _iter154 : struct.filePatterns)
           {
-            oprot.writeString(_iter136);
+            oprot.writeString(_iter154);
           }
         }
       }
@@ -1514,19 +1514,19 @@ public class HawkQueryOptions implements org.apache.thrift.TBase<HawkQueryOption
       if (struct.isSetEffectiveMetamodelIncludes()) {
         {
           oprot.writeI32(struct.effectiveMetamodelIncludes.size());
-          for (Map.Entry<String, Map<String,Set<String>>> _iter137 : struct.effectiveMetamodelIncludes.entrySet())
+          for (Map.Entry<String, Map<String,Set<String>>> _iter155 : struct.effectiveMetamodelIncludes.entrySet())
           {
-            oprot.writeString(_iter137.getKey());
+            oprot.writeString(_iter155.getKey());
             {
-              oprot.writeI32(_iter137.getValue().size());
-              for (Map.Entry<String, Set<String>> _iter138 : _iter137.getValue().entrySet())
+              oprot.writeI32(_iter155.getValue().size());
+              for (Map.Entry<String, Set<String>> _iter156 : _iter155.getValue().entrySet())
               {
-                oprot.writeString(_iter138.getKey());
+                oprot.writeString(_iter156.getKey());
                 {
-                  oprot.writeI32(_iter138.getValue().size());
-                  for (String _iter139 : _iter138.getValue())
+                  oprot.writeI32(_iter156.getValue().size());
+                  for (String _iter157 : _iter156.getValue())
                   {
-                    oprot.writeString(_iter139);
+                    oprot.writeString(_iter157);
                   }
                 }
               }
@@ -1537,19 +1537,19 @@ public class HawkQueryOptions implements org.apache.thrift.TBase<HawkQueryOption
       if (struct.isSetEffectiveMetamodelExcludes()) {
         {
           oprot.writeI32(struct.effectiveMetamodelExcludes.size());
-          for (Map.Entry<String, Map<String,Set<String>>> _iter140 : struct.effectiveMetamodelExcludes.entrySet())
+          for (Map.Entry<String, Map<String,Set<String>>> _iter158 : struct.effectiveMetamodelExcludes.entrySet())
           {
-            oprot.writeString(_iter140.getKey());
+            oprot.writeString(_iter158.getKey());
             {
-              oprot.writeI32(_iter140.getValue().size());
-              for (Map.Entry<String, Set<String>> _iter141 : _iter140.getValue().entrySet())
+              oprot.writeI32(_iter158.getValue().size());
+              for (Map.Entry<String, Set<String>> _iter159 : _iter158.getValue().entrySet())
               {
-                oprot.writeString(_iter141.getKey());
+                oprot.writeString(_iter159.getKey());
                 {
-                  oprot.writeI32(_iter141.getValue().size());
-                  for (String _iter142 : _iter141.getValue())
+                  oprot.writeI32(_iter159.getValue().size());
+                  for (String _iter160 : _iter159.getValue())
                   {
-                    oprot.writeString(_iter142);
+                    oprot.writeString(_iter160);
                   }
                 }
               }
@@ -1572,13 +1572,13 @@ public class HawkQueryOptions implements org.apache.thrift.TBase<HawkQueryOption
       }
       if (incoming.get(1)) {
         {
-          org.apache.thrift.protocol.TList _list143 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-          struct.filePatterns = new ArrayList<String>(_list143.size);
-          String _elem144;
-          for (int _i145 = 0; _i145 < _list143.size; ++_i145)
+          org.apache.thrift.protocol.TList _list161 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+          struct.filePatterns = new ArrayList<String>(_list161.size);
+          String _elem162;
+          for (int _i163 = 0; _i163 < _list161.size; ++_i163)
           {
-            _elem144 = iprot.readString();
-            struct.filePatterns.add(_elem144);
+            _elem162 = iprot.readString();
+            struct.filePatterns.add(_elem162);
           }
         }
         struct.setFilePatternsIsSet(true);
@@ -1605,70 +1605,70 @@ public class HawkQueryOptions implements org.apache.thrift.TBase<HawkQueryOption
       }
       if (incoming.get(7)) {
         {
-          org.apache.thrift.protocol.TMap _map146 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.MAP, iprot.readI32());
-          struct.effectiveMetamodelIncludes = new HashMap<String,Map<String,Set<String>>>(2*_map146.size);
-          String _key147;
-          Map<String,Set<String>> _val148;
-          for (int _i149 = 0; _i149 < _map146.size; ++_i149)
+          org.apache.thrift.protocol.TMap _map164 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.MAP, iprot.readI32());
+          struct.effectiveMetamodelIncludes = new HashMap<String,Map<String,Set<String>>>(2*_map164.size);
+          String _key165;
+          Map<String,Set<String>> _val166;
+          for (int _i167 = 0; _i167 < _map164.size; ++_i167)
           {
-            _key147 = iprot.readString();
+            _key165 = iprot.readString();
             {
-              org.apache.thrift.protocol.TMap _map150 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.SET, iprot.readI32());
-              _val148 = new HashMap<String,Set<String>>(2*_map150.size);
-              String _key151;
-              Set<String> _val152;
-              for (int _i153 = 0; _i153 < _map150.size; ++_i153)
+              org.apache.thrift.protocol.TMap _map168 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.SET, iprot.readI32());
+              _val166 = new HashMap<String,Set<String>>(2*_map168.size);
+              String _key169;
+              Set<String> _val170;
+              for (int _i171 = 0; _i171 < _map168.size; ++_i171)
               {
-                _key151 = iprot.readString();
+                _key169 = iprot.readString();
                 {
-                  org.apache.thrift.protocol.TSet _set154 = new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-                  _val152 = new HashSet<String>(2*_set154.size);
-                  String _elem155;
-                  for (int _i156 = 0; _i156 < _set154.size; ++_i156)
+                  org.apache.thrift.protocol.TSet _set172 = new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+                  _val170 = new HashSet<String>(2*_set172.size);
+                  String _elem173;
+                  for (int _i174 = 0; _i174 < _set172.size; ++_i174)
                   {
-                    _elem155 = iprot.readString();
-                    _val152.add(_elem155);
+                    _elem173 = iprot.readString();
+                    _val170.add(_elem173);
                   }
                 }
-                _val148.put(_key151, _val152);
+                _val166.put(_key169, _val170);
               }
             }
-            struct.effectiveMetamodelIncludes.put(_key147, _val148);
+            struct.effectiveMetamodelIncludes.put(_key165, _val166);
           }
         }
         struct.setEffectiveMetamodelIncludesIsSet(true);
       }
       if (incoming.get(8)) {
         {
-          org.apache.thrift.protocol.TMap _map157 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.MAP, iprot.readI32());
-          struct.effectiveMetamodelExcludes = new HashMap<String,Map<String,Set<String>>>(2*_map157.size);
-          String _key158;
-          Map<String,Set<String>> _val159;
-          for (int _i160 = 0; _i160 < _map157.size; ++_i160)
+          org.apache.thrift.protocol.TMap _map175 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.MAP, iprot.readI32());
+          struct.effectiveMetamodelExcludes = new HashMap<String,Map<String,Set<String>>>(2*_map175.size);
+          String _key176;
+          Map<String,Set<String>> _val177;
+          for (int _i178 = 0; _i178 < _map175.size; ++_i178)
           {
-            _key158 = iprot.readString();
+            _key176 = iprot.readString();
             {
-              org.apache.thrift.protocol.TMap _map161 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.SET, iprot.readI32());
-              _val159 = new HashMap<String,Set<String>>(2*_map161.size);
-              String _key162;
-              Set<String> _val163;
-              for (int _i164 = 0; _i164 < _map161.size; ++_i164)
+              org.apache.thrift.protocol.TMap _map179 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.SET, iprot.readI32());
+              _val177 = new HashMap<String,Set<String>>(2*_map179.size);
+              String _key180;
+              Set<String> _val181;
+              for (int _i182 = 0; _i182 < _map179.size; ++_i182)
               {
-                _key162 = iprot.readString();
+                _key180 = iprot.readString();
                 {
-                  org.apache.thrift.protocol.TSet _set165 = new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-                  _val163 = new HashSet<String>(2*_set165.size);
-                  String _elem166;
-                  for (int _i167 = 0; _i167 < _set165.size; ++_i167)
+                  org.apache.thrift.protocol.TSet _set183 = new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+                  _val181 = new HashSet<String>(2*_set183.size);
+                  String _elem184;
+                  for (int _i185 = 0; _i185 < _set183.size; ++_i185)
                   {
-                    _elem166 = iprot.readString();
-                    _val163.add(_elem166);
+                    _elem184 = iprot.readString();
+                    _val181.add(_elem184);
                   }
                 }
-                _val159.put(_key162, _val163);
+                _val177.put(_key180, _val181);
               }
             }
-            struct.effectiveMetamodelExcludes.put(_key158, _val159);
+            struct.effectiveMetamodelExcludes.put(_key176, _val177);
           }
         }
         struct.setEffectiveMetamodelExcludesIsSet(true);
