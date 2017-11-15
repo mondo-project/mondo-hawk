@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Map;
 
 import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphDatabase.Mode;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.neo4j_v2.Neo4JDatabase;
@@ -47,6 +48,7 @@ public class Neo4JEdge implements IGraphEdge {
 
 	@Override
 	public String getType() {
+		checkModeIsTx("getType");
 		if (type == null) {
 			type = rel.getType().name();
 		}
@@ -71,7 +73,6 @@ public class Neo4JEdge implements IGraphEdge {
 
 	@Override
 	public Object getProperty(String name) {
-
 		if (graph.getGraph() != null) {
 			if (rel == null)
 				rel = graph.getGraph().getRelationshipById(id);
@@ -83,15 +84,11 @@ public class Neo4JEdge implements IGraphEdge {
 
 	@Override
 	public void removeProperty(String name) {
+		checkModeIsTx("removeProperty");
 
-		if (graph.getGraph() != null) {
-			if (rel == null)
-				rel = graph.getGraph().getRelationshipById(id);
-			rel.removeProperty(name);
-		} else {
-			System.err.println("cannot remove property in batch mode!");
-		}
-
+		if (rel == null)
+			rel = graph.getGraph().getRelationshipById(id);
+		rel.removeProperty(name);
 	}
 
 	@Override
@@ -112,7 +109,6 @@ public class Neo4JEdge implements IGraphEdge {
 
 	@Override
 	public IGraphNode getStartNode() {
-
 		if (rel != null)
 			return new Neo4JNode(rel.getStartNode(), graph);
 		else
@@ -129,13 +125,14 @@ public class Neo4JEdge implements IGraphEdge {
 
 	@Override
 	public void delete() {
+		checkModeIsTx("delete");
+		rel.delete();
+	}
 
-		if (graph != null)
-			rel.delete();
-		else
-			System.err
-					.println("delete called on a batch connector to neo4j, exit batch mode first");
-
+	protected void checkModeIsTx(String operation) {
+		if (graph.currentMode() == Mode.NO_TX_MODE) {
+			throw new IllegalStateException(operation + " called on a batch connector to neo4j, exit batch mode first");
+		}
 	}
 
 	@Override
@@ -153,7 +150,6 @@ public class Neo4JEdge implements IGraphEdge {
 
 	@Override
 	public int hashCode() {
-
 		return id.hashCode() + graph.hashCode();
 	}
 

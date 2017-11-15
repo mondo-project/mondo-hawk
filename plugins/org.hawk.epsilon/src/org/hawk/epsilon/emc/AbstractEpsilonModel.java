@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.eclipse.epsilon.common.util.StringProperties;
+import org.eclipse.epsilon.eol.exceptions.EolInternalException;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolEnumerationValueNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
@@ -24,9 +25,12 @@ import org.eclipse.epsilon.eol.execute.introspection.IPropertyGetter;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertySetter;
 import org.eclipse.epsilon.eol.models.Model;
 import org.hawk.graph.ModelElementNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractEpsilonModel extends Model {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEpsilonModel.class);
 	protected boolean enableDebugOutput = false;
 
 	protected HashSet<String> cachedTypes = new HashSet<String>();
@@ -60,21 +64,29 @@ public abstract class AbstractEpsilonModel extends Model {
 	abstract public void deleteElement(Object arg0) throws EolRuntimeException;
 
 	abstract public Collection<Object> getAllOf(String arg0, final String typeorkind)
-			throws EolModelElementTypeNotFoundException;
+			throws EolModelElementTypeNotFoundException, EolInternalException;
 
 	@Override
-	public Collection<Object> getAllOfKind(String arg0) throws EolModelElementTypeNotFoundException {
-
-		Collection<Object> ofType = (Collection<Object>) getAllOf(arg0, ModelElementNode.EDGE_LABEL_OFTYPE);
-		Collection<Object> ofKind = (Collection<Object>) getAllOf(arg0, ModelElementNode.EDGE_LABEL_OFKIND);
-		ofKind.addAll(ofType);
-
-		return ofKind;
+	public Collection<Object> getAllOfKind(String metaclass) throws EolModelElementTypeNotFoundException {
+		try {
+			Collection<Object> ofType = (Collection<Object>) getAllOf(metaclass, ModelElementNode.EDGE_LABEL_OFTYPE);
+			Collection<Object> ofKind = (Collection<Object>) getAllOf(metaclass, ModelElementNode.EDGE_LABEL_OFKIND);
+			ofKind.addAll(ofType);
+			return ofKind;
+		} catch (EolInternalException ex) {
+			LOGGER.error(ex.getMessage(), ex);
+			throw new EolModelElementTypeNotFoundException(this.getName(), metaclass);
+		}
 	}
 
 	@Override
-	public Collection<Object> getAllOfType(String arg0) throws EolModelElementTypeNotFoundException {
-		return getAllOf(arg0, ModelElementNode.EDGE_LABEL_OFTYPE);
+	public Collection<Object> getAllOfType(String metaclass) throws EolModelElementTypeNotFoundException {
+		try {
+			return getAllOf(metaclass, ModelElementNode.EDGE_LABEL_OFTYPE);
+		} catch (EolInternalException e) {
+			LOGGER.error(e.getMessage(), e);
+			throw new EolModelElementTypeNotFoundException(this.getName(), metaclass);
+		}
 	}
 
 	@Override

@@ -13,6 +13,7 @@ package org.hawk.epsilon.emc;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -31,25 +32,19 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 	private boolean isTraversalScopingEnabled = true;
 
 	public void setContext(Map<String, Object> context) {
-
-		final GraphWrapper gw = new GraphWrapper(graph);
-		String sFilePatterns = null;
-		String sRepoPatterns = null;
-
-		if (context != null) {
-			sFilePatterns = (String) context.get(PROPERTY_FILECONTEXT);
-			sRepoPatterns = (String)context.get(PROPERTY_REPOSITORYCONTEXT);
-			setDefaultNamespaces((String) context.get(PROPERTY_DEFAULTNAMESPACES));
-			String etss = (String)context.get(PROPERTY_ENABLE_TRAVERSAL_SCOPING);
-			if (etss != null)
-				isTraversalScopingEnabled = Boolean.parseBoolean(etss);
+		if (context == null) {
+			context = Collections.emptyMap();
 		}
 
-		System.err.println(sFilePatterns);
-		System.err.println(sRepoPatterns);
-		System.err.println(defaultnamespaces);
+		final GraphWrapper gw = new GraphWrapper(graph);
+		String sFilePatterns = (String) context.get(PROPERTY_FILECONTEXT);
+		String sRepoPatterns = (String)context.get(PROPERTY_REPOSITORYCONTEXT);
+		setDefaultNamespaces((String) context.get(PROPERTY_DEFAULTNAMESPACES));
+		String etss = (String)context.get(PROPERTY_ENABLE_TRAVERSAL_SCOPING);
+		if (etss != null) {
+			isTraversalScopingEnabled = Boolean.parseBoolean(etss);
+		}
 
-		// if (sFilePatterns != null) {
 		final String[] filePatterns = (sFilePatterns != null && sFilePatterns.trim().length() != 0)
 				? sFilePatterns.split(",") : null;
 		final String[] repoPatterns = (sRepoPatterns != null && sRepoPatterns.trim().length() != 0)

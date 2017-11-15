@@ -18,10 +18,7 @@ public interface IGraphNodeIndex {
 
 	IGraphIterable<IGraphNode> query(String key, Object valueExpr);
 
-	IGraphIterable<IGraphNode> query(String key, int from, int to,
-			boolean fromInclusive, boolean toInclusive);
-
-	IGraphIterable<IGraphNode> query(String key, double from, double to,
+	IGraphIterable<IGraphNode> query(String key, Number from, Number to,
 			boolean fromInclusive, boolean toInclusive);
 
 	IGraphIterable<IGraphNode> get(String key, Object valueExpr);

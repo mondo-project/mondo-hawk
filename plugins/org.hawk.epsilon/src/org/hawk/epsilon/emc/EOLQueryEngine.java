@@ -29,6 +29,7 @@ import org.eclipse.epsilon.common.parse.problem.ParseProblem;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.eol.EolModule;
 import org.eclipse.epsilon.eol.IEolModule;
+import org.eclipse.epsilon.eol.exceptions.EolInternalException;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
@@ -113,36 +114,30 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	}
 
 	public Collection<Object> getAllOf(String typeName, final String typeorkind)
-			throws EolModelElementTypeNotFoundException {
+			throws EolModelElementTypeNotFoundException, EolInternalException {
 
 		try {
 			IGraphNode typeNode = null;
 
 			if (typeName.contains("::")) {
 				String ep = typeName.substring(0, typeName.indexOf("::"));
-
 				IGraphNode pack = null;
 
-				try {
-					// operations on the graph
-					// ...
+				// operations on the graph
+				// ...
 
-					pack = metamodeldictionary.get("id", ep).getSingle();
+				pack = metamodeldictionary.get("id", ep).getSingle();
 
-					for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
+				for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
 
-						IGraphNode othernode = r.getStartNode();
-						if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
-								.equals(typeName.substring(typeName.indexOf("::") + 2))) {
-							typeNode = othernode;
-							break;
-						}
-
+					IGraphNode othernode = r.getStartNode();
+					if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+							.equals(typeName.substring(typeName.indexOf("::") + 2))) {
+						typeNode = othernode;
+						break;
 					}
-				} catch (Exception e) {
-					throw new EolModelElementTypeNotFoundException(this.getName(), typeName);
-				}
 
+				}
 			} else {
 
 				Iterator<IGraphNode> packs = metamodeldictionary.query("id", "*").iterator();
@@ -153,18 +148,17 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 					IGraphNode pack = packs.next();
 					for (IGraphEdge n : pack.getIncomingWithType("epackage")) {
 
-						IGraphNode othernode = n.getStartNode();
-						if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(typeName)) {
-
+						final IGraphNode othernode = n.getStartNode();
+						final Object id = othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
+						if (id.equals(typeName)) {
 							possibletypenodes.add(othernode);
-
 						}
 					}
 				}
 
-				if (possibletypenodes.size() == 1)
+				if (possibletypenodes.size() == 1) {
 					typeNode = possibletypenodes.getFirst();
-				else if (possibletypenodes.size() > 1) {
+				} else if (possibletypenodes.size() > 1) {
 					// use default namespaces to limit types
 					LinkedList<String> ret = new LinkedList<>();
 					for (Iterator<IGraphNode> it = possibletypenodes.iterator(); it.hasNext();) {
@@ -191,10 +185,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 				return getAllOf(typeNode, typeorkind);
 			}
 
-			throw new EolModelElementTypeNotFoundException(this.getName(), typeName);
 		} catch (Exception e) {
-			throw new EolModelElementTypeNotFoundException(this.getName(), typeName);
+			throw new EolInternalException(e);
 		}
+
+		throw new EolModelElementTypeNotFoundException(this.getName(), typeName);
 	}
 
 	public Collection<Object> getAllOf(IGraphNode typeNode, final String typeorkind) {
@@ -940,9 +935,10 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	public void setDefaultNamespaces(String namespaces) {
 		// set default packages if applicable
 		try {
+			defaultnamespaces = new HashSet<String>();
+
 			if (namespaces != null && !namespaces.trim().equals("")) {
 				String[] eps = ((String) namespaces).split(",");
-				defaultnamespaces = new HashSet<String>();
 				for (String s : eps) {
 					// System.err.println(s);
 					defaultnamespaces.add(s.trim());

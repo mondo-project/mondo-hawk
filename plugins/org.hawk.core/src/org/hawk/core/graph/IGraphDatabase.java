@@ -56,7 +56,7 @@ public interface IGraphDatabase {
 
 	void exitBatchMode();
 
-	Iterable<IGraphNode> allNodes(String label);
+	IGraphIterable<IGraphNode> allNodes(String label);
 
 	IGraphNode createNode(Map<String, Object> props, String label);
 

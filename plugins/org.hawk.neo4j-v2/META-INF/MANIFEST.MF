@@ -4,7 +4,8 @@ Bundle-Name: Hawk Neo4j-v2 Plugin
 Bundle-SymbolicName: org.hawk.neo4j-v2;singleton:=true
 Bundle-Version: 1.2.0.qualifier
 Require-Bundle: org.hawk.neo4j-v2.dependencies,
- org.hawk.core
+ org.hawk.core,
+ org.slf4j.api;bundle-version="1.7.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.hawk.neo4j_v2,
  org.hawk.neo4j_v2.util

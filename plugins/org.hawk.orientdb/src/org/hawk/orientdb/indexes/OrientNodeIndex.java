@@ -96,32 +96,42 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 	}
 
 	@Override
-	public IGraphIterable<IGraphNode> query(final String key, final int from, final int to, final boolean fromInclusive, final boolean toInclusive) {
-		final OIndex<?> idx = getIndex(Integer.class);
-		if (idx == null) {
-			return new EmptyIGraphIterable<>();
-		}
-		return new IndexCursorFactoryNodeIterable<>(new OIndexCursorFactory() {
-			@Override
-			public Iterator<OIdentifiable> query() {
-				// Workaround for SQL-based approach: > seems to work like >= for composite keys (see RemoteIndexIT)
-				return iterateEntriesBetween(key, fromInclusive ? from : from + 1, toInclusive ? to : to - 1, true, true, idx, graph.getGraph());
-			}
-		}, graph, IGraphNode.class);
-	}
+	public IGraphIterable<IGraphNode> query(final String key, final Number nFrom, final Number nTo, final boolean fromInclusive, final boolean toInclusive) {
+		if (nFrom instanceof Float || nFrom instanceof Double) {
+			final double dFrom = (double)nFrom;
+			final double dTo = (double)nTo;
 
-	@Override
-	public IGraphIterable<IGraphNode> query(final String key, final double from, final double to, final boolean fromInclusive, final boolean toInclusive) {
-		final OIndex<?> idx = getIndex(Double.class);
-		if (idx == null) {
-			return new EmptyIGraphIterable<>();
-		}
-		return new IndexCursorFactoryNodeIterable<>(new OIndexCursorFactory() {
-			@Override
-			public Iterator<OIdentifiable> query() {
-				return iterateEntriesBetween(key, from, to, fromInclusive, toInclusive, idx, graph.getGraph());
+			final OIndex<?> idx = getIndex(Double.class);
+			if (idx == null) {
+				return new EmptyIGraphIterable<>();
 			}
-		}, graph, IGraphNode.class);
+	
+			return new IndexCursorFactoryNodeIterable<>(new OIndexCursorFactory() {
+				@Override
+				public Iterator<OIdentifiable> query() {
+					return iterateEntriesBetween(key, dFrom, dTo, fromInclusive, toInclusive, idx, graph.getGraph());
+				}
+			}, graph, IGraphNode.class);
+			
+		} else {
+			final int lFrom = (int) nFrom;
+			final int lTo = (int) nTo;
+
+			final OIndex<?> idx = getIndex(Integer.class);
+			if (idx == null) {
+				return new EmptyIGraphIterable<>();
+			}
+
+			return new IndexCursorFactoryNodeIterable<>(new OIndexCursorFactory() {
+				@Override
+				public Iterator<OIdentifiable> query() {
+					// Workaround for SQL-based approach: > seems to work like
+					// >= for composite keys (see RemoteIndexIT)
+					return iterateEntriesBetween(key, fromInclusive ? lFrom : lFrom + 1, toInclusive ? lTo : lTo - 1,
+							true, true, idx, graph.getGraph());
+				}
+			}, graph, IGraphNode.class);
+		}
 	}
 
 	@SuppressWarnings("unchecked")

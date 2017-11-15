@@ -14,6 +14,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -46,8 +47,12 @@ import org.neo4j.index.lucene.unsafe.batchinsert.LuceneBatchInserterIndexProvide
 import org.neo4j.tooling.GlobalGraphOperations;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Neo4JDatabase implements IGraphDatabase {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(Neo4JDatabase.class);
 
 	private String loc;
 	private String tempdir;
@@ -93,8 +98,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 			t.success();
 		} catch (Exception e) {
-			System.err.println("error initialising neo4j database: ");
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		}
 	}
 
@@ -147,7 +151,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 				t.success();
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOGGER.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -163,7 +167,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 			exitBatchMode();
 			graph.shutdown();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		}
 	}
 
@@ -173,32 +177,9 @@ public class Neo4JDatabase implements IGraphDatabase {
 		shutdown();
 		System.gc();
 
-		final boolean deleted = FileOperations.deleteFiles(
-				new File(getPath()).getParentFile(), true);
-		System.err.println("deleted store(" + databaseName + "): " + deleted);
-
+		final boolean deleted = FileOperations.deleteFiles(new File(getPath()).getParentFile(), true);
+		LOGGER.info(deleted ? "Successfully deleted store {}" : "Failed to delete store {}", databaseName);
 	}
-
-	// private void unregisterPackages() throws Exception {
-	//
-	// try (GraphTransaction t = beginTransaction()) {
-	//
-	// HawkIterable<GraphNode> it = metamodelindex.query("id", "*");
-	//
-	// for (GraphNode n : it) {
-	//
-	// unregister(n.getProperty(GraphWrapper.IDENTIFIER_PROPERTY).toString());
-	//
-	// }
-	// t.success();
-	// }
-	// }
-
-	// private void unregister(String property) {
-	//
-	// ix.getremovePackage(property);
-	//
-	// }
 
 	@Override
 	public Set<String> getNodeIndexNames() {
@@ -309,22 +290,11 @@ public class Neo4JDatabase implements IGraphDatabase {
 		return true;
 	}
 
-	// @Override
-	// public boolean currentTransactionalState() {
-	// return graph != null;
-	// }
-
 	@Override
 	public IGraphTransaction beginTransaction() throws Exception {
-
-		// System.err.println(graph);
-
 		if (graph == null) {
-
-			System.err
-					.println("cant make transactions outside transactional mode, entering it now");
+			LOGGER.warn("Cannot begin transactions outside transactional mode, entering it now");
 			exitBatchMode();
-
 		}
 		return new Neo4JTransaction(this);
 	}
@@ -335,11 +305,15 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 	@Override
 	public IGraphNode createNode(Map<String, Object> map, String type) {
+		if (map == null) {
+			map = Collections.emptyMap();
+		}
 
 		if (graph != null) {
 			Node n = graph.createNode(Neo4JBatchUtil.createLabel(type));
-			for (String s : map.keySet())
+			for (String s : map.keySet()) {
 				n.setProperty(s, map.get(s));
+			}
 			return new Neo4JNode(n, this);
 
 		} else {
@@ -373,10 +347,11 @@ public class Neo4JDatabase implements IGraphDatabase {
 	}
 
 	@Override
-	public IGraphEdge createRelationship(IGraphNode start, IGraphNode end,
-			String t, Map<String, Object> props) {
-
+	public IGraphEdge createRelationship(IGraphNode start, IGraphNode end, String t, Map<String, Object> props) {
 		RelationshipType type = DynamicRelationshipType.withName(t);
+		if (props == null) {
+			props = Collections.emptyMap();
+		}
 
 		final long startId = (long) start.getId();
 		final long endId = (long) end.getId();
@@ -410,7 +385,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 	}
 
 	@Override
-	public Iterable<IGraphNode> allNodes(String label) {
+	public IGraphIterable<IGraphNode> allNodes(String label) {
 
 		if (graph != null) {
 
@@ -422,8 +397,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 					this));
 
 		} else {
-			System.err
-					.println("allNodes called in a batch isert mode, please exit batch insert first, returning null");
+			LOGGER.warn("allNodes called in a batch isert mode, please exit batch insert first, returning null");
 			return null;
 		}
 	}
@@ -481,7 +455,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 		else if (graph == null && batch != null)
 			return Mode.NO_TX_MODE;
 		else {
-			System.err.println("WARNING: unknown database mode!");
+			LOGGER.warn("Unknown database mode!");
 			return Mode.UNKNOWN;
 		}
 	}
@@ -559,7 +533,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 			t.success();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		}
 
 		return ret;

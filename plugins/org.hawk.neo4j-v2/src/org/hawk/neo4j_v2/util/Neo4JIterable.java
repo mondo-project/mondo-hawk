@@ -10,49 +10,60 @@
  ******************************************************************************/
 package org.hawk.neo4j_v2.util;
 
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.concurrent.Callable;
 
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphIterable;
 import org.neo4j.graphdb.index.IndexHits;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Neo4JIterable<T> implements IGraphIterable<T> {
 
-	Iterable<?> parent;
+	private static final Logger LOGGER = LoggerFactory.getLogger(Neo4JIterable.class);
+
+	Callable<Iterable<?>> query;
 	IGraphDatabase graph;
 
-	public Neo4JIterable(IndexHits<?> query, IGraphDatabase graph) {
-		parent = query;
+	public Neo4JIterable(Callable<Iterable<?>> query, IGraphDatabase graph) {
+		this.query = query;
 		this.graph = graph;
 	}
 
-	public Neo4JIterable(Iterable<?> items, IGraphDatabase graph) {
-		parent = items;
-		this.graph = graph;
+	public Neo4JIterable(Iterable<?> query, IGraphDatabase graph) {
+		this(() -> query, graph);
 	}
 
 	@Override
 	public Iterator<T> iterator() {
-		return new Neo4JIterator<T>(parent.iterator(), graph);
+		try {
+			return new Neo4JIterator<T>(query.call().iterator(), graph);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
+			return Collections.emptyIterator();
+		}
 	}
 
+	@Override
 	public int size() {
-
-		if (parent instanceof IndexHits<?>)
-			return ((IndexHits<?>) parent).size();
-		else
-			return count();
-
+		try {
+			Iterable<?> iterable = query.call();
+			if (iterable instanceof IndexHits<?>) {
+				return ((IndexHits<?>) iterable).size();
+			} else {
+				return count(iterable);
+			}
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
+			return 0;
+		}
 	}
 
-	private int count() {
-
+	private int count(Iterable<?> iterable) {
 		int ret = 0;
-
-		Iterator<?> it = parent.iterator();
-
-		while (it.hasNext()) {
-			it.next();
+		for (Object e : iterable) {
 			ret++;
 		}
 

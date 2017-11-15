@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.hawk.orientdb.indexes;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -28,11 +29,22 @@ final class SingleKeyOIndexCursorFactory implements OIndexCursorFactory {
 	private final AbstractOrientIndex idx;
 	private final String fieldName;
 	private final boolean isRemote;
+	private final Class<? extends Object> valueClass;
 
 	SingleKeyOIndexCursorFactory(Object valueExpr, AbstractOrientIndex idx, String fieldName) {
 		this.valueExpr = valueExpr;
 		this.idx = idx;
 		this.fieldName = fieldName;
+
+		Class<? extends Object> tempValueClass = valueExpr.getClass();
+		if ("*".equals(valueExpr)) {
+			for (Class<?> klass : Arrays.asList(Integer.class, Double.class, String.class)) {
+				if (idx.getIndex(klass) != null) {
+					tempValueClass = klass;
+				}
+			}
+		}
+		this.valueClass = tempValueClass;
 
 		/*
 		 * See note in {@link AbstractOrientIndex#iterateEntriesBetween} for why
@@ -44,7 +56,7 @@ final class SingleKeyOIndexCursorFactory implements OIndexCursorFactory {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Iterator<OIdentifiable> query() {
-		final OIndex<?> index = idx.getIndex(valueExpr.getClass());
+		final OIndex<?> index = idx.getIndex(valueClass);
 		if (index == null) {
 			return Collections.emptyListIterator();
 		}
@@ -67,8 +79,8 @@ final class SingleKeyOIndexCursorFactory implements OIndexCursorFactory {
 				if (isRemote) {
 					return ((OIndex)index).cursor();
 				} else {
-					final Object minValue = AbstractOrientIndex.getMinValue(valueExpr.getClass());
-					final Object maxValue = AbstractOrientIndex.getMaxValue(valueExpr.getClass());
+					final Object minValue = AbstractOrientIndex.getMinValue(valueClass);
+					final Object maxValue = AbstractOrientIndex.getMaxValue(valueClass);
 					return AbstractOrientIndex.iterateEntriesBetween(fieldName, minValue, maxValue, true, true, index, idx.getDatabase().getGraph());
 				}
 			} else {

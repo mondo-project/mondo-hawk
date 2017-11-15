@@ -16,6 +16,7 @@ import java.util.Map;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.IGraphDatabase.Mode;
 import org.hawk.neo4j_v2.Neo4JDatabase;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.DynamicRelationshipType;
@@ -88,17 +89,19 @@ public class Neo4JNode implements IGraphNode {
 
 	@Override
 	public void setProperty(String name, Object value) {
-
-		if (graph.getGraph() != null) {
-			if (node == null)
+		if (value == null) {
+			// Neo4j does not allow null values in properties
+			removeProperty(name);
+		} else if (graph.getGraph() != null) {
+			if (node == null) {
 				node = graph.getGraph().getNodeById(id);
+			}
 			node.setProperty(name, value);
 		} else {
 			Map<String, Object> map = graph.getBatch().getNodeProperties(id);
 			map.put(name, value);
 			graph.getBatch().setNodeProperties(id, map);
 		}
-
 	}
 
 	@Override
@@ -107,9 +110,9 @@ public class Neo4JNode implements IGraphNode {
 		if (graph.getGraph() != null) {
 			if (node == null)
 				node = graph.getGraph().getNodeById(id);
-			return new Neo4JIterable<IGraphEdge>(node.getRelationships(), graph);
+			return new Neo4JIterable<IGraphEdge>(() -> node.getRelationships(), graph);
 		} else {
-			return new Neo4JIterable<IGraphEdge>(graph.getBatch().getRelationships(id), graph);
+			return new Neo4JIterable<IGraphEdge>(() -> graph.getBatch().getRelationships(id), graph);
 		}
 
 	}
@@ -120,12 +123,12 @@ public class Neo4JNode implements IGraphNode {
 		if (graph.getGraph() != null) {
 			if (node == null)
 				node = graph.getGraph().getNodeById(id);
-			return new Neo4JIterable<IGraphEdge>(node.getRelationships(getNewRelationshipType(type)), graph);
+			return new Neo4JIterable<IGraphEdge>(() -> node.getRelationships(getNewRelationshipType(type)), graph);
 		} else {
 			// System.err
 			// .println("warning batch neo4j does not support getting edges with
 			// type, returning all edges instead");
-			return new Neo4JIterable<IGraphEdge>(graph.getBatch().getRelationships(id), graph);
+			return new Neo4JIterable<IGraphEdge>(() -> graph.getBatch().getRelationships(id), graph);
 		}
 
 	}
@@ -192,12 +195,15 @@ public class Neo4JNode implements IGraphNode {
 
 	@Override
 	public void delete() {
+		if (graph.currentMode() == Mode.NO_TX_MODE) {
+			throw new IllegalStateException("delete called on a batch connector to neo4j, exit batch mode first");
+		}
 
-		if (graph.getGraph() != null)
-			node.delete();
-		else
-			System.err.println("delete called on a batch connector to neo4j, exit batch mode first");
-
+		// Neo4j will not let us delete the node without removing all its edges first
+		for (IGraphEdge edge : getEdges()) {
+			edge.delete();
+		}
+		node.delete();
 	}
 
 	@Override

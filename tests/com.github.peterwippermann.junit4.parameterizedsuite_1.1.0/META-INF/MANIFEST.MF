@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ParameterizedSuite for JUnit4
+Bundle-SymbolicName: com.github.peterwippermann.junit4.parameterizedsuite_1.1.0
+Bundle-Version: 1.1.0
+Bundle-ClassPath: parameterized-suite-1.1.0.jar
+Bundle-Vendor: Peter Wippermann
+Export-Package: com.github.peterwippermann.junit4.parameterizedsuite;version="1.1.0";
+  uses:="com.github.peterwippermann.junit4.parameterizedsuite.parameter,
+   org.junit.runners,
+   org.junit.runners.model,
+   org.junit.runner.notification,
+   org.junit.runner",
+ com.github.peterwippermann.junit4.parameterizedsuite.parameter;version="1.1.0",
+ com.github.peterwippermann.junit4.parameterizedsuite.util;version="1.1.0";uses:="org.junit.runners.model,org.junit.runner,org.junit.internal.runners.model"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

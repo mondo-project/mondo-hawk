@@ -54,11 +54,10 @@ public class Neo4JEdgeIndex implements IGraphEdgeIndex {
 	public IGraphIterable<IGraphEdge> query(String key, Object valueExpr) {
 
 		if (index != null) {
-			return new Neo4JIterable<IGraphEdge>(index.query(key, valueExpr),
+			return new Neo4JIterable<IGraphEdge>(() -> index.query(key, valueExpr),
 					graph);
 		} else {
-			return new Neo4JIterable<IGraphEdge>(batchIndex.query(key,
-					valueExpr), graph);
+			return new Neo4JIterable<IGraphEdge>(() -> batchIndex.query(key, valueExpr), graph);
 		}
 
 	}
@@ -66,11 +65,9 @@ public class Neo4JEdgeIndex implements IGraphEdgeIndex {
 	public IGraphIterable<IGraphEdge> get(String key, Object valueExpr) {
 
 		if (index != null) {
-			return new Neo4JIterable<IGraphEdge>(index.get(key, valueExpr),
-					graph);
+			return new Neo4JIterable<IGraphEdge>(() -> index.get(key, valueExpr), graph);
 		} else {
-			return new Neo4JIterable<IGraphEdge>(
-					batchIndex.get(key, valueExpr), graph);
+			return new Neo4JIterable<IGraphEdge>(() -> batchIndex.get(key, valueExpr), graph);
 		}
 
 	}

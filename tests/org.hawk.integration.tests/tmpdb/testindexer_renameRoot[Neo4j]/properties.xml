@@ -1,0 +1,6 @@
+<hawkProperties>
+  <dbType>org.hawk.neo4j_v2.Neo4JDatabase</dbType>
+  <monitoredVCS class="set"/>
+  <minDelay>0</minDelay>
+  <maxDelay>0</maxDelay>
+</hawkProperties>
