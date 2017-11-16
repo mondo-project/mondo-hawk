@@ -55,6 +55,8 @@ import org.hawk.graph.MetamodelNode;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.TypeNode;
 import org.hawk.graph.internal.updater.DirtyDerivedAttributesListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Exposes a Hawk instance as an Epsilon model and adds support for EOL queries to Hawk.
@@ -66,6 +68,8 @@ import org.hawk.graph.internal.updater.DirtyDerivedAttributesListener;
  * compatibility.
  */
 public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(EOLQueryEngine.class);
 
 	public static final String TYPE = "org.hawk.epsilon.emc.EOLQueryEngine";
 	private static final String ANY_TYPE = new EolAnyType().getName();
@@ -249,7 +253,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 			ret = typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		}
 
 		return ret;
@@ -272,11 +276,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			typeNode = objectNode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().next()
 					.getEndNode();
 		} catch (Exception e) {
-			// System.err
-			// .println("error in getTypeOf, returning new
-			// NeoIdWrapper(graph,0L, this);");
-			System.err.println("error in getTypeOf, returning null");
-			// return new NeoIdWrapper(graph,0L, this);
+			LOGGER.warn("Error in getTypeOf, returning null", e);
 		}
 
 		if (typeNode != null)
@@ -293,7 +293,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			IGraphNode objectNode = ((GraphNodeWrapper) arg0).getNode();
 			fileNode = objectNode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE).iterator().next().getEndNode();
 		} catch (Exception e) {
-			System.err.println("error in getFileOf, returning null");
+			LOGGER.warn("Error in getFileOf, returning null", e);
 		}
 
 		if (fileNode != null)
@@ -314,7 +314,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 				files.add(fileNodeWrapper);
 			}
 		} catch (Exception e) {
-			System.err.println("error in getFilesOf, returning null: " + e.getMessage());
+			LOGGER.warn("Error in getFilesOf, returning null", e);
 		}
 
 		return files;
@@ -361,7 +361,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 							}
 						}
 					} catch (Exception e) {
-						e.printStackTrace();
+						LOGGER.error("Error while searching for type node", e);
 					}
 
 				} else {
@@ -466,7 +466,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 				metamodeldictionary = graph.getMetamodelIndex();
 				tx.success();
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOGGER.error("Could not retrieve the metamodel index", e);
 			}
 
 		} else
@@ -520,28 +520,24 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 	public boolean isOf(Object instance, String metaClass, final String typeorkind)
 			throws EolModelElementTypeNotFoundException {
-
-		if (instance == null)
+		if (instance == null) {
 			return false;
-
-		if (!(instance instanceof GraphNodeWrapper))
+		}
+		if (!(instance instanceof GraphNodeWrapper)) {
 			return false;
+		}
 
 		String id = null;
-
 		try {
 			try {
 				id = ((GraphNodeWrapper) instance).getTypeName();
 			} catch (Exception e) {
-				// dont have a type - only if you are iterating all the
-				// nodes even the metanodes
-				if (enableDebugOutput)
-					System.err.println("warning: metaclass node asked for its type, ignored");
-				// e.printStackTrace();
+				LOGGER.debug("warning: metaclass node asked for its type, ignored");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Could not retrieve type name", e);
 		}
+
 		if (id != null) {
 			return metaClass.equals(id) || metaClass.equals(id.substring(id.lastIndexOf("/") + 1));
 		} else {
@@ -594,12 +590,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 	@Override
 	public IPropertyGetter getPropertyGetter() {
-
-		if (propertygetter == null)
-			System.err.println("null property getter, was load() called?");
+		if (propertygetter == null) {
+			LOGGER.warn("null property getter, was load() called?");
+		}
 
 		return propertygetter;
-
 	}
 
 	@Override
@@ -612,8 +607,9 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	}
 
 	protected void dumpDatabaseConfig() {
-		for (Object c : config.keySet())
-			System.out.println(">" + c + " = " + config.get(c));
+		for (Object c : config.keySet()) {
+			LOGGER.debug(">" + c + " = " + config.get(c));
+		}
 	}
 
 
@@ -686,7 +682,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			}
 			t.success();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Failed to compute the derived attributes", e);
 		}
 
 		if (!enableDebug) {
@@ -711,14 +707,13 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 								s, prop);
 					}
 				} catch (Exception e1) {
-					System.err.println("Exception in deriving attribute");
-					e1.printStackTrace();
+					LOGGER.error("Error while deriving feature " + prop, e1);
 				}
 
 				// Unset the current value (if there is any)
 				final String derivedEdgeLabel = ModelElementNode.DERIVED_EDGE_PREFIX + s;
 				for (IGraphEdge edge : n.getOutgoingWithType(derivedEdgeLabel)) {
-					System.out.println("clearing edge " + edge.getType());
+					LOGGER.debug("Clearing edge {}", edge.getType());
 					edge.delete();
 				}
 				n.removeProperty(s);
@@ -779,7 +774,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			for (ParseProblem p : module.getParseProblems())
 				ret.add(p.toString());
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Error while parsing EOL", e);
 		}
 		return ret;
 	}
@@ -823,8 +818,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 				code = code + "\r\n" + line;
 			r.close();
 		} catch (Exception e) {
-			System.err.println("error reading eol code file:");
-			e.printStackTrace();
+			LOGGER.error("Error reading the EOL file", e);
 		}
 		return query(m, code, context);
 
@@ -865,8 +859,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			throw new QueryExecutionException("Loading of EOLQueryEngine failed");
 		}
 		q.setContext(context);
-		if (enableDebugOutput)
-			System.out.println("Graph path: " + graph.getPath() + "\n----------");
+		LOGGER.debug("Graph path: {}", graph.getPath());
 
 		final IEolModule module = createModule();
 		parseQuery(query, context, q, module);
@@ -946,8 +939,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			}
 
 		} catch (Throwable t) {
-			System.err.println("setting of default namespaces failed, malformed property: " + namespaces);
-			t.printStackTrace();
+			LOGGER.error("Setting default namespaces failed, malformed property: " + namespaces, t);
 		}
 	}
 

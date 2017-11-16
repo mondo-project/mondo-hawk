@@ -42,6 +42,8 @@ import org.hawk.orientdb.indexes.OrientNodeIndex;
 import org.hawk.orientdb.indexes.OrientNodeIndex.PostponedIndexAdd;
 import org.hawk.orientdb.util.OrientClusterDocumentIterable;
 import org.hawk.orientdb.util.OrientNameCleaner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.orientechnologies.common.factory.OConfigurableStatefulFactory;
 import com.orientechnologies.orient.core.Orient;
@@ -68,6 +70,8 @@ import com.orientechnologies.orient.core.storage.OStorage;
  * to WAL I/O. This can be done with something like "-Dstorage.wal.path=...".
  */
 public class OrientDatabase implements IGraphDatabase {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(OrientDatabase.class);
 
 	private final class OrientConnectionFactory extends BasePooledObjectFactory<ODatabaseDocumentTx> {
 		@Override
@@ -142,7 +146,7 @@ public class OrientDatabase implements IGraphDatabase {
 			try {
 				threshold = Integer.valueOf(sPropThreshold);
 			} catch (NumberFormatException ex) {
-				System.err.println(String.format(
+				LOGGER.error(String.format(
 					"Invalid value for -D%s: '%s' is not an integer",
 					SIZE_THRESHOLD_PROPERTY, sPropThreshold));
 			}
@@ -237,7 +241,7 @@ public class OrientDatabase implements IGraphDatabase {
 			try {
 				poolSize = Math.max(1, Integer.valueOf(sPoolSize));
 			} catch (NumberFormatException ex) {
-				System.err.println(String.format("%s has invalid value '%s': falling back to %d", POOL_SIZE_PROPERTY, sPoolSize, poolSize));
+				LOGGER.error("{} has invalid value '{}': falling back to {}", POOL_SIZE_PROPERTY, sPoolSize, poolSize);
 			}
 		}
 		return poolSize;
@@ -437,7 +441,7 @@ public class OrientDatabase implements IGraphDatabase {
 		if (!schema.existsClass(className)) {
 			final boolean wasInTX = db.getTransaction().isActive();
 			if (wasInTX) {
-				console.printerrln("Warning: premature commit needed to create class " + className);
+				LOGGER.warn("Warning: premature commit needed to create class {}", className);
 				saveDirty();
 				getGraph().commit();
 			}
