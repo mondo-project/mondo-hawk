@@ -31,7 +31,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.*;
 
 public class DerivedFeatureTest extends ModelIndexingTest {
 
@@ -115,31 +115,31 @@ public class DerivedFeatureTest extends ModelIndexingTest {
 		waitForSync(new Callable<Object>() {
 			@Override
 			public Object call() throws Exception {
-				indexer.addDerivedAttribute("Tree", "Tree", "lastDescendant", "dummy", false, true, false,
-						EOLQueryEngine.TYPE, "return self.closure(c|c.children).flatten.last;");
+				indexer.addDerivedAttribute("Tree", "Tree", "maxDescendant", "dummy", false, true, false,
+						EOLQueryEngine.TYPE, "return self.closure(c|c.children).flatten.sortBy(t|t.label).last;");
 
 				// Forward derived edge
 				{
 					// TODO: isMany is not honored on queries - need to add first
-					Object result = eol("return Tree.all.selectOne(t|t.label='t3').lastDescendant.first.label;");
-					assertEquals("t4", result);
+					Object result = eol("return Tree.all.selectOne(t|t.label='t3').maxDescendant.first.label;");
+					assertThat(result, equalTo("t6"));
 				}
 
 				// Reverse derived edges
 				{
 					final Map<String, Integer> reverseExpected = new HashMap<>();
 					reverseExpected.put("t3", 0);
-					reverseExpected.put("t4", 1); // from t3 (t5, t6, t4)
+					reverseExpected.put("t4", 0);
 					reverseExpected.put("t5", 0);
-					reverseExpected.put("t6", 1); // from t4 (t6)
+					reverseExpected.put("t6", 2); // t6 is the descendant of t3 and t4 with the last label in dictionary order
 
 					for (Entry<String, Integer> entry : reverseExpected.entrySet()) {
 						final Map<String, Object> context = Collections.singletonMap(EOLQueryEngine.PROPERTY_ARGUMENTS,
 								(Object) Collections.singletonMap("nodeLabel", entry.getKey()));
 
-						Object result = eol("return Tree.all.selectOne(t|t.label=nodeLabel).revRefNav_lastDescendant.size;", context);
+						Object result = eol("return Tree.all.selectOne(t|t.label=nodeLabel).revRefNav_maxDescendant.size;", context);
 						assertEquals(
-							String.format("%s should have %d ancestors", entry.getKey(), entry.getValue()),
+							String.format("%s should have %d maxDescendant reverse refs", entry.getKey(), entry.getValue()),
 							entry.getValue(), result);
 					}
 				}

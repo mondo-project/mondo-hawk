@@ -1,0 +1,10 @@
+-- Reference query for the 'lastDescendant' derived'
+
+for (t in Tree.all) {
+  var lastDescendant = t.closure(c|c.children).flatten.last;
+  if (lastDescendant.isDefined()) {
+    lastDescendant.label.println('Last descendant of ' + t.label + ': ');
+  } else {
+    (t.label + ' has no descendants').println();
+  }
+}

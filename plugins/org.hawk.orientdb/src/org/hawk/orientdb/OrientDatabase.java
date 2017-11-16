@@ -738,7 +738,6 @@ public class OrientDatabase implements IGraphDatabase {
 			conn.activateOnCurrentThread();
 			conn.getLocalCache().deleteRecord(id);
 		}
-		dbConn.get().activateOnCurrentThread();
 	}
 
 	public IConsole getConsole() {
