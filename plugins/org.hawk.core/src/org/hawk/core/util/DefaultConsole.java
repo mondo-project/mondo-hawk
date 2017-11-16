@@ -24,17 +24,13 @@ public class DefaultConsole implements IConsole {
 	 * @param name
 	 */
 	public DefaultConsole() {
-
 		out = System.out;
 		err = System.err;
-
 	}
 
 	@Override
 	public void println(String s) {
-
 		out.println(s);
-
 	}
 
 	@Override
