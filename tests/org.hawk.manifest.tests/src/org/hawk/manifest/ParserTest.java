@@ -11,7 +11,7 @@ import org.hawk.manifest.model.ManifestModelResource;
 import org.hawk.manifest.model.ManifestModelResourceFactory;
 import org.junit.Test;
 
-public class ParserTests {
+public class ParserTest {
 
 	@Test
 	public void testDuplicateDependencies() {
