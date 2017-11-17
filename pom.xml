@@ -4,12 +4,12 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.hawk</groupId>
-  <artifactId>mondo-hawk</artifactId>
+  <artifactId>org.hawk.parent</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <properties>
-    <tycho-version>0.25.0</tycho-version>
+    <tycho-version>1.0.0</tycho-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
   </properties>
@@ -53,8 +53,11 @@
     <module>plugins/org.hawk.graph</module>
     <module>plugins/org.hawk.http</module>
     <module>plugins/org.hawk.localfolder</module>
+    <module>plugins/org.hawk.manifest</module>
     <module>plugins/org.hawk.modelio.exml.ecoregen</module>
     <module>plugins/org.hawk.modelio.exml</module>
+    <module>plugins/org.hawk.neo4j-v2</module>
+    <module>plugins/org.hawk.neo4j-v2.dependencies</module>
     <module>plugins/org.hawk.orientdb</module>
     <module>plugins/org.hawk.osgiserver</module>
     <module>plugins/org.hawk.svn</module>
@@ -87,9 +90,14 @@
     <module>releng/org.hawk.service.server.product</module>
     <module>releng/org.hawk.service.server.productdefs</module>
 
+    <module>tests/com.github.peterwippermann.junit4.parameterizedsuite_1.1.0</module>
+    <module>tests/org.hamcrest_1.3.0</module>
+    <module>tests/org.hawk.backend.tests</module>
+    <module>tests/org.hawk.integration.tests</module>
+    <module>tests/org.hawk.manifest.tests</module>
     <module>tests/org.hawk.modelio.exml.tests</module>
-    <module>tests/org.hawk.orientdb.tests</module>
     <module>tests/org.hawk.service.emf.tests</module>
+    <module>tests/org.hawk.service.servlet.tests</module>
   </modules>
 
   <build>
@@ -105,8 +113,8 @@
         <artifactId>tycho-compiler-plugin</artifactId>
         <version>${tycho-version}</version>
 	      <configuration>
-	        <source>1.7</source>
-	        <target>1.7</target>
+	        <source>1.8</source>
+	        <target>1.8</target>
 	      </configuration>
       </plugin>
       <plugin>
@@ -154,6 +162,15 @@
               <arch>x86_64</arch>
             </environment>
           </environments>
+          <dependency-resolution>
+            <extraRequirements>
+              <requirement>
+                <type>eclipse-plugin</type>
+                <id>ch.qos.logback.slf4j</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+            </extraRequirements>
+          </dependency-resolution>
 	      </configuration>
       </plugin>
       <plugin>
