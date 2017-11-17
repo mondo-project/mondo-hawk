@@ -24,8 +24,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -55,6 +57,8 @@ import org.hawk.core.util.DerivedAttributeParameters;
 import org.hawk.core.util.FileOperations;
 import org.hawk.core.util.HawkProperties;
 import org.hawk.core.util.IndexedAttributeParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -102,7 +106,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 		}
 	}
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModelIndexerImpl.class);
 	private static final int FILECOUNT_PROGRESS_THRESHOLD = 100;
+	private static final int SHUTDOWN_WAIT_SECONDS = 120;
 
 	// validation metrics and data
 	private boolean isSyncMetricsEnabled = false;
@@ -147,7 +153,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 	private int maxDelay = DEFAULT_MAXDELAY;
 	private int minDelay = DEFAULT_MINDELAY;
 	private int currentDelay = minDelay;
-	private Timer updateTimer = null;
+	private ScheduledExecutorService updateTimer = null;
 
 	public boolean permanentDelete = false;
 
@@ -172,7 +178,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 	@Override
 	public void requestImmediateSync() {
 		if (running) {
-			updateTimer.schedule(new RunUpdateTask(), 0);
+			updateTimer.submit(new RunUpdateTask());
 		}
 	}
 
@@ -477,14 +483,20 @@ public class ModelIndexerImpl implements IModelIndexer {
 		try {
 			saveIndexer();
 		} catch (Exception e) {
-			System.err.println("shutdown tried to saveIndexer but failed");
-			e.printStackTrace();
+			LOGGER.error("Error while saving the indexer during shut down", e);
 		}
 
-		updateTimer.cancel();
+		try {
+			LOGGER.info("Waiting {}s for all scheduled tasks to complete", SHUTDOWN_WAIT_SECONDS);
+			updateTimer.shutdown();
+			updateTimer.awaitTermination(SHUTDOWN_WAIT_SECONDS, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			LOGGER.error("Wait for scheduled tasks was interrupted", e);
+		}
 
-		for (IVcsManager monitor : monitors)
+		for (IVcsManager monitor : monitors) {
 			monitor.shutdown();
+		}
 		monitors = new ArrayList<>();
 		running = false;
 		stateListener.state(HawkState.STOPPED);
@@ -863,8 +875,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 		registerMetamodelFiles();
 
 		// begin scheduled updates from vcs
-		updateTimer = new Timer("t", false);
-		updateTimer.schedule(new RunUpdateTask(), 0);
+		updateTimer = new ScheduledThreadPoolExecutor(1);
+		updateTimer.submit(new RunUpdateTask());
 
 		running = true;
 		stateListener.state(HawkState.RUNNING);
@@ -900,14 +912,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 						+ currentDelay / 1000 + " (max: " + maxDelay / 1000 + ")");
 
 			} else {
-
-				// t.stop();
 				console.println("different revisions, resetting check timer and propagating changes!");
 				currentDelay = minDelay;
-
 			}
 
-			updateTimer.schedule(new RunUpdateTask(), currentDelay);
+			updateTimer.schedule(new RunUpdateTask(), currentDelay, TimeUnit.MILLISECONDS);
 		}
 
 		final long time = (System.currentTimeMillis() - start);
@@ -1309,7 +1318,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 	@Override
 	public void scheduleTask(TimerTask task, long delayMillis) {
 		// TODO See if this solves the concurrency issues, otherwise backtrack
-		updateTimer.schedule(task, delayMillis);
+		updateTimer.schedule(task, delayMillis, TimeUnit.MILLISECONDS);
 	}
 
 	
