@@ -67,10 +67,10 @@
 <repository location="http://mondo-project.github.io/mondo-hawk/thirdparty-nonp2/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.epsilon.core.dt.feature.feature.group" version="1.5.0.201711021408"/>
-<unit id="org.eclipse.epsilon.core.feature.feature.group" version="1.5.0.201711021408"/>
-<unit id="org.eclipse.epsilon.emf.dt.feature.feature.group" version="1.5.0.201711021408"/>
-<unit id="org.eclipse.epsilon.emf.feature.feature.group" version="1.5.0.201711021408"/>
+<unit id="org.eclipse.epsilon.core.dt.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.epsilon.core.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.epsilon.emf.dt.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.epsilon.emf.feature.feature.group" version="0.0.0"/>
 <repository location="http://download.eclipse.org/epsilon/interim/"/>
 </location>
 </locations>
