@@ -19,16 +19,17 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.factory.GraphDatabaseSettings;
-
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Neo4JBatchUtil {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(Neo4JBatchUtil.class);
+
 	public static Label createLabel(final String s) {
-
 		Label a = DynamicLabel.label(s);
-
 		return a;
 	}
 
@@ -65,7 +66,6 @@ public class Neo4JBatchUtil {
 	}
 
 	public static BatchInserter getGraph(String st, Map<String, String> config) {
-
 		File f = new File(st);
 
 		System.out.println("Opening: " + f.getPath() + "\nWITH: "
@@ -76,11 +76,8 @@ public class Neo4JBatchUtil {
 				+ " GB of Database VM (embedded in heap)");
 
 		BatchInserter i = BatchInserters.inserter(f.getPath(), config);
-
 		registerShutdownHook(i);
-
 		return i;
-
 	}
 
 	private static BatchInserter lastBatchGraph;
@@ -96,15 +93,11 @@ public class Neo4JBatchUtil {
 				@Override
 				public void run() {
 					try {
-						long l = System.nanoTime();
+						final long l = System.nanoTime();
 						lastBatchGraph.shutdown();
-						System.out.println("SHUTDOWN HOOK INVOKED: (took ~"
-								+ (System.nanoTime() - l) / 1000000000
-								+ "sec to commit changes)");
+						LOGGER.info("SHUTDOWN HOOK INVOKED: (took ~{}sec to commit changes", (System.nanoTime() - l) / 1_000_000_000);
 					} catch (Exception e) {
-						System.err
-								.println("error in registerShutdownHook(final BatchInserter graph2): "
-										+ e.getCause());
+						LOGGER.error("Error during shutdown hook", e);
 					}
 				}
 			});
@@ -200,15 +193,11 @@ public class Neo4JBatchUtil {
 				@Override
 				public void run() {
 					try {
-						long l = System.nanoTime();
+						final long l = System.nanoTime();
 						lastGraph.shutdown();
-						System.out.println("SHUTDOWN HOOK INVOKED: (took ~"
-								+ (System.nanoTime() - l) / 1000000000
-								+ "sec to commit changes)");
+						LOGGER.info("SHUTDOWN HOOK INVOKED: (took ~{}s to commit changes)", (System.nanoTime() - l) / 1_000_000_000);
 					} catch (Exception e) {
-						System.err
-								.println("error in registerShutdownHook(final GraphDatabaseService database): "
-										+ e.getCause());
+						LOGGER.error("Error during shutdown hook", e);
 					}
 				}
 			});
