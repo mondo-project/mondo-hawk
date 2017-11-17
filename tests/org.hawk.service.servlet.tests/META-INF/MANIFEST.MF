@@ -5,5 +5,9 @@ Bundle-SymbolicName: org.hawk.service.servlet.tests
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.hawk.service.servlet;bundle-version="1.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.hawk.osgiserver
-Require-Bundle: org.junit
+Require-Bundle: org.junit,
+ org.hawk.orientdb;bundle-version="1.2.0",
+ org.hawk.localfolder;bundle-version="1.2.0",
+ org.hawk.emf;bundle-version="1.2.0",
+ org.hawk.graph.syncValidationListener;bundle-version="1.2.0",
+ org.hawk.modelio.exml;bundle-version="1.2.0"

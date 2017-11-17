@@ -14,3 +14,4 @@ Export-Package: com.github.peterwippermann.junit4.parameterizedsuite;version="1.
  com.github.peterwippermann.junit4.parameterizedsuite.parameter;version="1.1.0",
  com.github.peterwippermann.junit4.parameterizedsuite.util;version="1.1.0";uses:="org.junit.runners.model,org.junit.runner,org.junit.internal.runners.model"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.junit;bundle-version="4.12.0"
