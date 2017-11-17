@@ -29,7 +29,6 @@ import org.hawk.orientdb.util.OrientNameCleaner;
 
 import com.orientechnologies.common.collection.OCollection;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
-import com.orientechnologies.orient.core.db.record.ORecordLazyMultiValue;
 import com.orientechnologies.orient.core.db.record.OTrackedList;
 import com.orientechnologies.orient.core.db.record.ridbag.ORidBag;
 import com.orientechnologies.orient.core.id.ORID;
@@ -355,7 +354,13 @@ public class OrientNode implements IGraphNode {
 			return vertex;
 		}
 
-		return graph.getGraph().<ODocument>load(getId());
+		final ODocument doc = graph.getGraph().<ODocument>load(getId());
+
+		// Disables the "undo" method in the ODocument, but greatly speeds up reads
+		// (SyncValidator becomes much faster, for instance).
+		doc.setTrackingChanges(false);
+
+		return doc;
 	}
 
 	public void addOutgoing(ODocument newEdge, String edgeLabel) {
