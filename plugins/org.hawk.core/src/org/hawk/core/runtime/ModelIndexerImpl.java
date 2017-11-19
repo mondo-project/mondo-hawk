@@ -726,10 +726,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	public IMetaModelResourceFactory getMetaModelParser(String type) {
-		if (type == null)
+		if (type == null) {
 			console.printerrln("null type given to getMetaModelParser(type), returning null");
-		else
+		} else {
 			return metamodelparsers.get(type);
+		}
 
 		return null;
 	}

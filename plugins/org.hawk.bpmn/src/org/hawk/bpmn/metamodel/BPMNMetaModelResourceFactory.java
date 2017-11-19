@@ -172,10 +172,6 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 					"http://www.eclipse.org/emf/2003/XMLType").eResource(),
 					this));
 
-//			set.add(new BPMNMetaModelResource(globalRegistry.getEPackage(
-//					"http://www.omg.org/spec/BPMN/20100524/MODEL").eResource(),
-//					this));
-
 			set.add(new BPMNMetaModelResource(globalRegistry.getEPackage(
 					"http://www.omg.org/spec/BPMN/20100524/MODEL-XMI")
 					.eResource(), this));
@@ -217,9 +213,6 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 		if (!globalRegistry
 				.containsKey("http://www.eclipse.org/emf/2003/XMLType"))
 			missingPackages.add("http://www.eclipse.org/emf/2003/XMLType");
-		// if (!globalRegistry
-		// .containsKey("http://www.omg.org/spec/BPMN/20100524/MODEL"))
-		// missingPackages.add("http://www.omg.org/spec/BPMN/20100524/MODEL");
 		if (!globalRegistry
 				.containsKey("http://www.omg.org/spec/BPMN/20100524/MODEL-XMI"))
 			missingPackages

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_8ZtBcM1uEeeAqawSlF6e4A" name="RootElement">
+  <packagedElement xmi:type="uml:Class" xmi:id="__FGQsM1uEeeAqawSlF6e4A" name="Animal">
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_COPy8M1vEeeAqawSlF6e4A" name="eat"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="___fcYM1uEeeAqawSlF6e4A" name="Zebra">
+    <generalization xmi:type="uml:Generalization" xmi:id="_GOZ1sM1vEeeAqawSlF6e4A" general="__FGQsM1uEeeAqawSlF6e4A"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_DC0DcM1vEeeAqawSlF6e4A" name="neigh"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_A-6SAM1vEeeAqawSlF6e4A" name="Elephant">
+    <generalization xmi:type="uml:Generalization" xmi:id="_GpX6cM1vEeeAqawSlF6e4A" general="__FGQsM1uEeeAqawSlF6e4A"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_DuFOAM1vEeeAqawSlF6e4A" name="tweet"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_Bk2QoM1vEeeAqawSlF6e4A" name="Lion">
+    <generalization xmi:type="uml:Generalization" xmi:id="_HClEoM1vEeeAqawSlF6e4A" general="__FGQsM1uEeeAqawSlF6e4A"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_ExB4wM1vEeeAqawSlF6e4A" name="roar"/>
+  </packagedElement>
+</uml:Model>

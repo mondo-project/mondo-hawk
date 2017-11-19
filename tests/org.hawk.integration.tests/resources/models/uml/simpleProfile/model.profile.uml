@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Profile xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_5kvKAM1vEeeAqawSlF6e4A" name="RootElement" metaclassReference="_84sOEM1vEeeAqawSlF6e4A">
+  <elementImport xmi:type="uml:ElementImport" xmi:id="_84sOEM1vEeeAqawSlF6e4A" alias="Class">
+    <importedElement xmi:type="uml:Class" href="pathmap://UML_METAMODELS/UML.metamodel.uml#Class"/>
+  </elementImport>
+  <packagedElement xmi:type="uml:Stereotype" xmi:id="_9mvm4M1vEeeAqawSlF6e4A" name="special">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_AUg0sM1wEeeAqawSlF6e4A" name="base_Class" association="_AUZf8M1wEeeAqawSlF6e4A">
+      <type xmi:type="uml:Class" href="pathmap://UML_METAMODELS/UML.metamodel.uml#Class"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Extension" xmi:id="_AUZf8M1wEeeAqawSlF6e4A" name="E_special_Class1" memberEnd="_AUfmkM1wEeeAqawSlF6e4A _AUg0sM1wEeeAqawSlF6e4A">
+    <ownedEnd xmi:type="uml:ExtensionEnd" xmi:id="_AUfmkM1wEeeAqawSlF6e4A" name="extension_special" type="_9mvm4M1vEeeAqawSlF6e4A" aggregation="composite" association="_AUZf8M1wEeeAqawSlF6e4A"/>
+  </packagedElement>
+</uml:Profile>
