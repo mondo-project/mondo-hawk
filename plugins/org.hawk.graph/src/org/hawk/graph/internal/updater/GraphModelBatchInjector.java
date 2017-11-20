@@ -653,7 +653,6 @@ public class GraphModelBatchInjector {
 		IGraphNode source = null;
 		IGraphNode destination = null;
 
-
 		source = hash.get(splitURI(from.getUri()));
 		destination = hash.get(splitURI(to.getUri()));
 
@@ -685,7 +684,6 @@ public class GraphModelBatchInjector {
 
 			objectCount[0]++;
 		}
-
 	}
 
 	private void createReference(final String edgelabel, IGraphNode source, IGraphNode destination,
@@ -871,15 +869,6 @@ public class GraphModelBatchInjector {
 					+ destinationObjectRelativeFileURI;
 
 			Object proxies = null;
-			// if
-			// (withProxy.hasProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX +
-			// relativeFileURI)) {
-			// proxies =
-			// withProxy.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX +
-			// relativeFileURI);
-			// }
-			// System.err.println(">>>>>>>"+relativeFileURI);
-
 			proxies = node.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + destinationObjectFullFileURI);
 			proxies = new Utils().addToElementProxies((String[]) proxies, destinationObjectFullPathURI, edgelabel,
 					isContainment, isContainer);

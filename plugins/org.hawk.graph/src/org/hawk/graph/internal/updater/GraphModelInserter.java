@@ -856,9 +856,6 @@ public class GraphModelInserter {
 		for (String[] proxies : allProxies) {
 			final String fullPathURI = proxies[0].substring(0, proxies[0].indexOf("#"));
 
-			// final String[] repoFile =
-			// fullPathURI.split(GraphModelUpdater.FILEINDEX_REPO_SEPARATOR, 2);
-
 			int seploc = fullPathURI.indexOf(GraphModelUpdater.FILEINDEX_REPO_SEPARATOR);
 			String[] repoFile = { fullPathURI.substring(0, seploc),
 					fullPathURI.substring(seploc + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR.length()) };
@@ -866,15 +863,17 @@ public class GraphModelInserter {
 			final String repoURL = repoFile[0];
 			String filePath = repoFile[1];
 			//NB: we forced file paths to start with a slash
-			if(!filePath.startsWith("/"))
-				filePath = "/"+filePath;
+			if (!filePath.startsWith("/")) {
+				filePath = "/" + filePath;
+			}
 
 			final Set<IGraphNode> nodes = new HashSet<IGraphNode>();
 			final IGraphNode fileNode = getFileNode(graph, repoURL, filePath);
 			Iterable<IGraphEdge> rels = allNodesWithFile(fileNode);
 			if (rels != null) {
-				for (IGraphEdge r : rels)
+				for (IGraphEdge r : rels) {
 					nodes.add(r.getStartNode());
+				}
 			}
 
 			final boolean isFragmentBased = filePath.equals("/" + GraphModelUpdater.PROXY_FILE_WILDCARD);
@@ -940,20 +939,10 @@ public class GraphModelInserter {
 				if (remainingProxies == null || remainingProxies.length == 0) {
 					n.removeProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + fullPathURI);
 					proxyDictionary.remove(GraphModelUpdater.PROXY_REFERENCE_PREFIX, fullPathURI, n);
-				} else
+				} else {
 					n.setProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + fullPathURI, remainingProxies);
+				}
 			}
-			// else
-			// System.err
-			// .println("[GraphModelInserter | resolveProxies]
-			// Warning: no nodes were found for file: "
-			// + filePath
-			// + " originating in repository "
-			// + repoURL
-			// + " "
-			// + proxies.length
-			// / 2
-			// + " proxies cannot be resolved");
 		}
 	}
 
