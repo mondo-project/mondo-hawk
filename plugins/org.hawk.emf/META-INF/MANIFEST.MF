@@ -10,8 +10,6 @@ Require-Bundle: org.eclipse.emf.ecore,
  org.eclipse.osgi,
  org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.eclipse.emf.common.util,
- org.eclipse.emf.ecore.util
 Export-Package: org.hawk.emf,
  org.hawk.emf.metamodel,
  org.hawk.emf.model,
