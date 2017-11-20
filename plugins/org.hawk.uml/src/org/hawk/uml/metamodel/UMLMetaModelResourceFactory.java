@@ -2,6 +2,7 @@ package org.hawk.uml.metamodel;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,12 +20,16 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.uml2.types.TypesPackage;
 import org.eclipse.uml2.uml.UMLPackage;
 import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl;
+import org.eclipse.uml2.uml.profile.standard.StandardPackage;
 import org.eclipse.uml2.uml.resource.UMLResource;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkMetaModelResource;
+import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.emf.metamodel.EMFMetaModelResource;
 import org.hawk.emf.metamodel.EMFMetaModelResourceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Adds support for the UML metamodel.
@@ -33,6 +38,8 @@ import org.hawk.emf.metamodel.EMFMetaModelResourceFactory;
  */
 @SuppressWarnings("restriction")
 public class UMLMetaModelResourceFactory implements IMetaModelResourceFactory {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(UMLMetaModelResourceFactory.class);
 
 	private static final String MM_EXTENSION = ".profile.uml";
 	private EMFMetaModelResourceFactory emfMMFactory = new EMFMetaModelResourceFactory();
@@ -76,6 +83,20 @@ public class UMLMetaModelResourceFactory implements IMetaModelResourceFactory {
 		resources.add(new EMFMetaModelResource(EcorePackage.eINSTANCE.eResource(), this));
 		resources.add(new EMFMetaModelResource(TypesPackage.eINSTANCE.eResource(), this));
 		resources.add(new EMFMetaModelResource(UMLPackage.eINSTANCE.eResource(), this));
+		resources.add(new EMFMetaModelResource(StandardPackage.eINSTANCE.eResource(), this));
+
+		try {
+			final Resource rEcoreProfile = resourceSet.createResource(URI.createURI(UMLResource.ECORE_PROFILE_URI));
+			rEcoreProfile.load(null);
+			resources.add(new EMFMetaModelResource(rEcoreProfile, this));
+
+			final Resource rUMLProfile = resourceSet.createResource(URI.createURI(UMLResource.UML2_PROFILE_URI));
+			rUMLProfile.load(null);
+			resources.add(new EMFMetaModelResource(rUMLProfile, this));
+		} catch (IOException e) {
+			LOGGER.error("Error while loading predefined profiles", e);
+		}
+
 		return resources;
 	}
 

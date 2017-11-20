@@ -55,7 +55,7 @@ public class ModelioMetamodelPopulationTest extends ModelIndexingTest {
 	}
 
 	@Override
-	public void setup() throws Exception {
+	public void setup() throws Throwable {
 		super.setup();
 		indexer.registerMetamodels(new File(METAMODEL_PATH, "metamodel_descriptor.xml"));
 	}

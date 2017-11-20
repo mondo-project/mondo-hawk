@@ -102,7 +102,7 @@ public class ModelIndexingTest {
 	}
 
 	@Before
-	public void setup() throws Exception {
+	public void setup() throws Throwable {
 		if (indexer != null) {
 			// Might have been invoked by a rule before
 			return;
@@ -157,7 +157,6 @@ public class ModelIndexingTest {
 		vcs.init(folder.getAbsolutePath(), indexer);
 		vcs.run();
 		indexer.addVCSManager(vcs, true);
-		indexer.requestImmediateSync();
 	}
 
 	protected Object eol(final String eolQuery) throws InvalidQueryException, QueryExecutionException {

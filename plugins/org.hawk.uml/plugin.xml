@@ -13,5 +13,11 @@
             ModelParser="org.hawk.uml.model.UMLModelResourceFactory">
       </ModelP>
    </extension>
+   <extension
+         point="org.hawk.core.VCSExtensionPoint">
+      <VCS
+            VCSManager="org.hawk.uml.vcs.UMLLibraries">
+      </VCS>
+   </extension>
 
 </plugin>
