@@ -956,7 +956,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	}
 
 	@Override
-	public void scheduleTask(TimerTask task, long delayMillis) {
+	public void scheduleTask(Runnable task, long delayMillis) {
 		// TODO If this works to fix server configuration issues,
 		// reevaluate.
 		throw new UnsupportedOperationException();
