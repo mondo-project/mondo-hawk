@@ -18,6 +18,7 @@ import org.hawk.integration.tests.emf.CountInstancesTest;
 import org.hawk.integration.tests.emf.TreeUpdateTest;
 import org.hawk.integration.tests.manifests.ManifestIndexQueryTest;
 import org.hawk.integration.tests.modelio.ModelioMetamodelPopulationTest;
+import org.hawk.integration.tests.uml.UMLIndexingTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
@@ -27,12 +28,13 @@ import com.github.peterwippermann.junit4.parameterizedsuite.ParameterizedSuite;
 
 @RunWith(ParameterizedSuite.class)
 @SuiteClasses({
-	ManifestIndexQueryTest.class,
-	DerivedFeatureTest.class,
 	CountInstancesTest.class,
+	DerivedFeatureTest.class,
+	ManifestIndexQueryTest.class,
 	ModelioMetamodelPopulationTest.class,
 	ModelVersioningTest.class,
 	TreeUpdateTest.class,
+	UMLIndexingTest.class,
 })
 public class IntegrationTestSuite {
 
