@@ -1072,20 +1072,32 @@ public class GraphModelInserter {
 			return null;
 	}
 
-	private static IGraphNode getFileNode(IGraphDatabase graph, String repositoryURL, String file) {
-		IGraphNodeIndex filedictionary = graph.getFileIndex();
-
-		// Path path = Paths.get(file);
-		// String relative = path.getFileName().toString();
+	private IGraphNode getFileNode(IGraphDatabase graph, String repositoryURL, String file) {
+		final IGraphNodeIndex filedictionary = graph.getFileIndex();
 		IGraphNode fileNode = null;
 
 		try {
+			final String idSameRepo = repositoryURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + file;
+			final IGraphIterable<IGraphNode> itNodes = filedictionary.get("id", idSameRepo);
+			if (itNodes.size() > 0) {
+				fileNode = itNodes.getSingle();
+			} else {
+				// TODO do this with just the graph - new index?
 
-			fileNode = filedictionary.get("id", repositoryURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + file)
-					.getSingle();
-
+				// Try looking in another repository
+				file = file.replaceFirst("^/", "");
+				for (IVcsManager vcs : indexer.getRunningVCSManagers()) {
+					if (file.startsWith(vcs.getLocation())) {
+						String subpath = file.substring(vcs.getLocation().length());
+						if (!subpath.startsWith("/")) {
+							subpath = "/" + subpath;
+						}
+						fileNode = getFileNode(graph, vcs.getLocation(), subpath);
+					}
+				}
+			}
 		} catch (Exception e) {
-			//e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		}
 
 		return fileNode;
