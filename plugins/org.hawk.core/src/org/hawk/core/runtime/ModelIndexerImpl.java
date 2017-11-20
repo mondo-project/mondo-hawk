@@ -834,11 +834,11 @@ public class ModelIndexerImpl implements IModelIndexer {
 		currReposTopRevisions.put(vcs.getLocation(), "-4");
 
 		try {
-			if (persist)
+			if (persist) {
 				saveIndexer();
+			}
 		} catch (Exception e) {
-			System.err.println("addVCSManager tried to saveIndexer but failed");
-			e.printStackTrace();
+			LOGGER.error("addVCSManager tried to saveIndexer but failed", e);
 		}
 
 		requestImmediateSync();
@@ -893,8 +893,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		try {
 			synchronised = internalSynchronise();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Throwable e) {
+			LOGGER.error("Error during synchronisation", e);
 		}
 
 		if (!synchronised) {

@@ -25,9 +25,12 @@ import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.ModelElementNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CEOLQueryEngine extends EOLQueryEngine {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(CEOLQueryEngine.class);
 	private Set<IGraphNode> files = null;
 	private boolean isTraversalScopingEnabled = true;
 
@@ -62,9 +65,9 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 				this.files.add(fn.getNode());
 			}
 
-			System.out.println("running CEOLQueryEngine with files: " + fileNodes);
-			if (isTraversalScopingEnabled)
-				System.out.println("Full Traversal Scoping ENABLED");
+			if (isTraversalScopingEnabled) {
+				LOGGER.debug("Full Traversal Scoping ENABLED");
+			}
 
 			if (propertygetter == null)
 				propertygetter = new CGraphPropertyGetter(graph, this);
