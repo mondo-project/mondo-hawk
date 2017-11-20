@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimerTask;
 
 import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.graph.IGraphChangeListener;
@@ -245,12 +244,11 @@ public interface IModelIndexer {
 
 	boolean removeDerivedAttribute(String metamodelUri, String typeName, String attributeName);
 
-	// TODO Remove if this does not solve server startup issues
 	/**
 	 * Schedules a task on the Hawk update thread. This avoids unwanted
 	 * concurrent accesses on an instance of Hawk. Clients are suggested to make
 	 * any changes on a Hawk configuration through tasks scheduled this way. Hawk
 	 * is not designed to be thread safe.
 	 */
-	void scheduleTask(TimerTask task, long delayMillis);
+	void scheduleTask(Runnable task, long delayMillis);
 }
