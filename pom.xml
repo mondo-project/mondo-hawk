@@ -64,6 +64,7 @@
     <module>plugins/org.hawk.ui.emc.dt2</module>
     <module>plugins/org.hawk.ui.emfresource</module>
     <module>plugins/org.hawk.ui2</module>
+    <module>plugins/org.hawk.uml</module>
     <module>plugins/org.hawk.workspace</module>
 
     <module>plugins-server/org.hawk.service.api.dt</module>
