@@ -21,7 +21,7 @@ public interface IVcsManager {
 
 	String getFirstRevision() throws Exception;
 
-	Collection<VcsCommitItem> getDelta(String startRevision) throws Exception;
+	Collection<VcsCommitItem> getDelta(String endRevision) throws Exception;
 
 	VcsRepositoryDelta getDelta(String startRevision, String endRevision)
 			throws Exception;
