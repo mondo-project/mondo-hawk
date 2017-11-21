@@ -328,7 +328,7 @@ public class GraphModelInserter {
 
 	private void cleanupNode(IGraphNode node) {
 
-		IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex("proxydictionary");
+		IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex(GraphModelBatchInjector.PROXY_DICT_NAME);
 		proxyDictionary.remove(node);
 
 		for (String propertyKey : node.getPropertyKeys()) {
@@ -416,7 +416,7 @@ public class GraphModelInserter {
 			HashMap<String, Object> m = new HashMap<>();
 			m.put(GraphModelUpdater.PROXY_REFERENCE_PREFIX, destinationObjectFullFileURI);
 
-			IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex("proxydictionary");
+			IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex(GraphModelBatchInjector.PROXY_DICT_NAME);
 			proxyDictionary.add(node, m);
 
 		} catch (Exception e) {
@@ -783,7 +783,7 @@ public class GraphModelInserter {
 		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
 		List<IGraphNode> proxiesToBeResolved = new LinkedList<>();
 		try (IGraphTransaction tx = graph.beginTransaction()) {
-			IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex("proxydictionary");
+			IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex(GraphModelBatchInjector.PROXY_DICT_NAME);
 			IGraphIterable<IGraphNode> proxies = proxyDictionary.query(GraphModelUpdater.PROXY_REFERENCE_PREFIX, "*");
 			for (IGraphNode n : proxies) {
 				proxiesToBeResolved.add(n);
@@ -806,7 +806,7 @@ public class GraphModelInserter {
 					while (itProxies.hasNext() && nBatch < PROXY_RESOLVE_TX_SIZE) {
 						IGraphNode n = itProxies.next();
 						itProxies.remove();
-						IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex("proxydictionary");
+						IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex(GraphModelBatchInjector.PROXY_DICT_NAME);
 						resolveProxies(graph, listener, n, proxyDictionary);
 						++nBatch;
 					}
@@ -830,7 +830,7 @@ public class GraphModelInserter {
 		}
 
 		try (IGraphTransaction tx = graph.beginTransaction()) {
-			IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex("proxydictionary");
+			IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex(GraphModelBatchInjector.PROXY_DICT_NAME);
 
 			proxiesLeft = proxyDictionary.query(GraphModelUpdater.PROXY_REFERENCE_PREFIX, "*").size();
 

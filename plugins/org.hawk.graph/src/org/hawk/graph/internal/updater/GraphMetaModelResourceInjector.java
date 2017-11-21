@@ -597,7 +597,7 @@ public class GraphMetaModelResourceInjector {
 	 * @param eClass
 	 */
 	private boolean addMetaClass(IHawkClass eClass) {
-		String id = (eClass).getName();
+		String id = eClass.getName();
 		objectCount++;
 		return createEClassNode(eClass, id);
 	}
