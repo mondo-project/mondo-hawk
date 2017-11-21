@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 import org.eclipse.uml2.types.TypesPackage;
 import org.eclipse.uml2.uml.UMLPackage;
 import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl;
@@ -82,6 +83,7 @@ public class UMLMetaModelResourceFactory implements IMetaModelResourceFactory {
 		Set<IHawkMetaModelResource> resources = new HashSet<>();
 		resources.add(new EMFMetaModelResource(EcorePackage.eINSTANCE.eResource(), this));
 		resources.add(new EMFMetaModelResource(TypesPackage.eINSTANCE.eResource(), this));
+		resources.add(new EMFMetaModelResource(XMLTypePackage.eINSTANCE.eResource(), this));
 		resources.add(new EMFMetaModelResource(UMLPackage.eINSTANCE.eResource(), this));
 		resources.add(new EMFMetaModelResource(StandardPackage.eINSTANCE.eResource(), this));
 

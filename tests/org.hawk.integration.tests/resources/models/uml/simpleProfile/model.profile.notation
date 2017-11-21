@@ -10,7 +10,7 @@
     </eAnnotations>
     <children xmi:type="notation:DecorationNode" xmi:id="_8430QM1vEeeAqawSlF6e4A" type="Class_MetaclassNameLabel"/>
     <element xmi:type="uml:Class" href="pathmap://UML_METAMODELS/UML.metamodel.uml#Class"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_844bUM1vEeeAqawSlF6e4A" x="332" y="193"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_844bUM1vEeeAqawSlF6e4A" x="397" y="167"/>
   </children>
   <children xmi:type="notation:Shape" xmi:id="_85_1oM1vEeeAqawSlF6e4A" type="StereotypeComment">
     <styles xmi:type="notation:TitleStyle" xmi:id="_85_1oc1vEeeAqawSlF6e4A"/>
@@ -23,6 +23,14 @@
   <children xmi:type="notation:Shape" xmi:id="_9myDIM1vEeeAqawSlF6e4A" type="Stereotype_Shape">
     <children xmi:type="notation:DecorationNode" xmi:id="_9myqMM1vEeeAqawSlF6e4A" type="Stereotype_NameLabel"/>
     <children xmi:type="notation:BasicCompartment" xmi:id="_9myqMc1vEeeAqawSlF6e4A" type="Stereotype_AttributeCompartment">
+      <children xmi:type="notation:Shape" xmi:id="_DUVEYM7nEeeDhYwXdKEW_w" type="Property_ClassAttributeLabel">
+        <element xmi:type="uml:Property" href="model.profile.uml#_DUFMwM7nEeeDhYwXdKEW_w"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_DUVEYc7nEeeDhYwXdKEW_w"/>
+      </children>
+      <children xmi:type="notation:Shape" xmi:id="_qNT_0M7qEeeDhYwXdKEW_w" type="Property_ClassAttributeLabel">
+        <element xmi:type="uml:Property" href="model.profile.uml#_qNDhIM7qEeeDhYwXdKEW_w"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_qNT_0c7qEeeDhYwXdKEW_w"/>
+      </children>
       <styles xmi:type="notation:TitleStyle" xmi:id="_9myqMs1vEeeAqawSlF6e4A"/>
       <styles xmi:type="notation:SortingStyle" xmi:id="_9myqM81vEeeAqawSlF6e4A"/>
       <styles xmi:type="notation:FilteringStyle" xmi:id="_9myqNM1vEeeAqawSlF6e4A"/>

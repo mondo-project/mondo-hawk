@@ -334,23 +334,22 @@ public class GraphModelBatchInjector {
 			final List<IHawkAttribute> normalattributes = new LinkedList<IHawkAttribute>();
 			final List<IHawkAttribute> indexedattributes = new LinkedList<IHawkAttribute>();
 
-			for (final IHawkAttribute eAttribute : ((IHawkClass) eObject.getType()).getAllAttributes()) {
+			final IHawkClass iHawkClass = (IHawkClass) eObject.getType();
+			for (final IHawkAttribute eAttribute : iHawkClass.getAllAttributes()) {
 				if (eObject.isSet(eAttribute)) {
 					final Map<String, Object> hashedProperties = typeCache.getEClassNodeProperties(graph, eObject.getType());
 					final String[] attributeProperties = (String[]) hashedProperties.get(eAttribute.getName());
 
-					final boolean isIndexed = attributeProperties[5].equals("t");
-					if (isIndexed) {
-						indexedattributes.add(eAttribute);
+					if (attributeProperties == null) {
+						LOGGER.error("Attribute {} is not within the properties of the node for type {}, skipping",
+								eAttribute.getName(), iHawkClass.getName());
+					} else {
+						final boolean isIndexed = attributeProperties[5].equals("t");
+						if (isIndexed) {
+							indexedattributes.add(eAttribute);
+						}
+						normalattributes.add(eAttribute);
 					}
-
-					normalattributes.add(eAttribute);
-
-				} else
-				// deprecatedTODO currently unset items are not included to may
-				// crash eol etc
-				{
-					// node.setProperty(eAttribute.getName(), "UNSET");
 				}
 			}
 

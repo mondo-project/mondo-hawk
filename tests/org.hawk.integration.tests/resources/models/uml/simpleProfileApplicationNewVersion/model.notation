@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<notation:Diagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:style="http://www.eclipse.org/papyrus/infra/viewpoints/policy/style" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_9esGsM7mEeeDhYwXdKEW_w" type="PapyrusUMLClassDiagram" name="ClassDiagram" measurementUnit="Pixel">
+  <children xmi:type="notation:Shape" xmi:id="_93DjYM7mEeeDhYwXdKEW_w" type="Class_Shape">
+    <children xmi:type="notation:DecorationNode" xmi:id="_93FYkM7mEeeDhYwXdKEW_w" type="Class_NameLabel"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_93F_oM7mEeeDhYwXdKEW_w" type="Class_FloatingNameLabel">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_93F_oc7mEeeDhYwXdKEW_w" y="5"/>
+    </children>
+    <children xmi:type="notation:BasicCompartment" xmi:id="_93F_os7mEeeDhYwXdKEW_w" type="Class_AttributeCompartment">
+      <styles xmi:type="notation:TitleStyle" xmi:id="_93F_o87mEeeDhYwXdKEW_w"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_93F_pM7mEeeDhYwXdKEW_w"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_93F_pc7mEeeDhYwXdKEW_w"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_93F_ps7mEeeDhYwXdKEW_w"/>
+    </children>
+    <children xmi:type="notation:BasicCompartment" xmi:id="_93F_p87mEeeDhYwXdKEW_w" type="Class_OperationCompartment">
+      <styles xmi:type="notation:TitleStyle" xmi:id="_93F_qM7mEeeDhYwXdKEW_w"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_93F_qc7mEeeDhYwXdKEW_w"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_93F_qs7mEeeDhYwXdKEW_w"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_93F_q87mEeeDhYwXdKEW_w"/>
+    </children>
+    <children xmi:type="notation:BasicCompartment" xmi:id="_93F_rM7mEeeDhYwXdKEW_w" type="Class_NestedClassifierCompartment">
+      <styles xmi:type="notation:TitleStyle" xmi:id="_93F_rc7mEeeDhYwXdKEW_w"/>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_93F_rs7mEeeDhYwXdKEW_w"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_93F_r87mEeeDhYwXdKEW_w"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_93F_sM7mEeeDhYwXdKEW_w"/>
+    </children>
+    <element xmi:type="uml:Class" href="model.uml#_928OoM7mEeeDhYwXdKEW_w"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_93DjYc7mEeeDhYwXdKEW_w" x="506" y="296"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_OJjhgs7nEeeDhYwXdKEW_w" type="StereotypeComment">
+    <styles xmi:type="notation:TitleStyle" xmi:id="_OJjhg87nEeeDhYwXdKEW_w"/>
+    <styles xmi:type="notation:EObjectValueStyle" xmi:id="_OJjhhc7nEeeDhYwXdKEW_w" name="BASE_ELEMENT">
+      <eObjectValue xmi:type="uml:Class" href="model.uml#_928OoM7mEeeDhYwXdKEW_w"/>
+    </styles>
+    <element xsi:nil="true"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_OJjhhM7nEeeDhYwXdKEW_w" x="706" y="296"/>
+  </children>
+  <styles xmi:type="notation:StringValueStyle" xmi:id="_9esGsc7mEeeDhYwXdKEW_w" name="diagram_compatibility_version" stringValue="1.2.0"/>
+  <styles xmi:type="notation:DiagramStyle" xmi:id="_9esGss7mEeeDhYwXdKEW_w"/>
+  <styles xmi:type="style:PapyrusViewStyle" xmi:id="_9esGs87mEeeDhYwXdKEW_w">
+    <owner xmi:type="uml:Model" href="model.uml#_4hhCEM7mEeeDhYwXdKEW_w"/>
+  </styles>
+  <element xmi:type="uml:Model" href="model.uml#_4hhCEM7mEeeDhYwXdKEW_w"/>
+  <edges xmi:type="notation:Connector" xmi:id="_OJkIkM7nEeeDhYwXdKEW_w" type="StereotypeCommentLink" source="_93DjYM7mEeeDhYwXdKEW_w" target="_OJjhgs7nEeeDhYwXdKEW_w">
+    <styles xmi:type="notation:FontStyle" xmi:id="_OJkIkc7nEeeDhYwXdKEW_w"/>
+    <styles xmi:type="notation:EObjectValueStyle" xmi:id="_OJkIlc7nEeeDhYwXdKEW_w" name="BASE_ELEMENT">
+      <eObjectValue xmi:type="uml:Class" href="model.uml#_928OoM7mEeeDhYwXdKEW_w"/>
+    </styles>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_OJkIks7nEeeDhYwXdKEW_w" points="[0, 0, 0, 0]$[0, 0, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_OJkIk87nEeeDhYwXdKEW_w"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_OJkIlM7nEeeDhYwXdKEW_w"/>
+  </edges>
+</notation:Diagram>
