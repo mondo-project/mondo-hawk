@@ -20,15 +20,14 @@ import java.util.concurrent.Callable;
 import org.eclipse.uml2.uml.resources.util.UMLResourcesUtil;
 import org.hawk.backend.tests.BackendTestSuite;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
-import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.epsilon.emc.CEOLQueryEngine;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.epsilon.emc.GraphNodeWrapper;
-import org.hawk.graph.internal.updater.GraphModelBatchInjector;
 import org.hawk.integration.tests.ModelIndexingTest;
 import org.hawk.uml.vcs.PredefinedUMLLibraries;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -144,6 +143,7 @@ public class UMLIndexingTest extends ModelIndexingTest {
 		}
 	}
 
+	@Ignore // TODO
 	@Test
 	public void customProfile() throws Throwable {
 		indexer.registerMetamodels(new File(BASE_DIRECTORY, "simpleProfile/model.profile.uml"));
