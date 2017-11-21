@@ -74,7 +74,7 @@ public class UMLMetaModelResourceFactory implements IMetaModelResourceFactory {
 	public IHawkMetaModelResource parse(File f) throws Exception {
 		UMLResource r = (UMLResource) resourceSet.createResource(URI.createFileURI(f.getAbsolutePath()));
 		r.load(null);
-		return new UMLProfileResource(r);
+		return new EMFMetaModelResource(r, this);
 	}
 
 	@Override
@@ -88,11 +88,13 @@ public class UMLMetaModelResourceFactory implements IMetaModelResourceFactory {
 		try {
 			final Resource rEcoreProfile = resourceSet.createResource(URI.createURI(UMLResource.ECORE_PROFILE_URI));
 			rEcoreProfile.load(null);
-			resources.add(new EMFMetaModelResource(rEcoreProfile, this));
+			final EMFMetaModelResource hrEcoreProfile = new EMFMetaModelResource(rEcoreProfile, this);
+			resources.add(hrEcoreProfile);
 
 			final Resource rUMLProfile = resourceSet.createResource(URI.createURI(UMLResource.UML2_PROFILE_URI));
 			rUMLProfile.load(null);
-			resources.add(new EMFMetaModelResource(rUMLProfile, this));
+			final EMFMetaModelResource hrUMLProfile = new EMFMetaModelResource(rUMLProfile, this);
+			resources.add(hrUMLProfile);
 		} catch (IOException e) {
 			LOGGER.error("Error while loading predefined profiles", e);
 		}
@@ -125,11 +127,7 @@ public class UMLMetaModelResourceFactory implements IMetaModelResourceFactory {
 		InputStream input = new ByteArrayInputStream(contents.getBytes("UTF-8"));
 		r.load(input, null);
 
-		if (r instanceof UMLResource) {
-			return new UMLProfileResource((UMLResource) r);
-		} else {
-			return new EMFMetaModelResource(r, this);
-		}
+		return new EMFMetaModelResource(r, this);
 	}
 
 	@Override

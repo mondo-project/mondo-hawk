@@ -138,6 +138,16 @@ public class ModelIndexingTest {
 		db.delete();
 	}
 
+	protected void waitForSync() throws Throwable {
+		waitForSync(new Callable<Object>(){
+			@Override
+			public Object call() throws Exception {
+				// nothing to do
+				return null;
+			}
+		});
+	}
+
 	protected void waitForSync(final Callable<?> r) throws Throwable {
 		final Semaphore sem = new Semaphore(0);
 		final SyncEndListener changeListener = new SyncEndListener(r, sem);

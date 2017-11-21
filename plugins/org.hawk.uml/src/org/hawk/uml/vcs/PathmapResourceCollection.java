@@ -1,10 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2017 Aston University.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Antonio Garcia-Dominguez - initial API and implementation
+ ******************************************************************************/
 package org.hawk.uml.vcs;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
@@ -15,10 +23,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.uml2.uml.resource.UMLResource;
-import org.eclipse.uml2.uml.resources.util.UMLResourcesUtil;
 import org.hawk.core.ICredentialsStore;
-import org.hawk.core.IModelIndexer;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommit;
@@ -28,31 +33,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Exposes all the libraries currently registered with UML, so they may be indexed by Hawk.
+ * Exposes a set of predefined UML resources as models, so Hawk may index them normally.
  */
-public class UMLLibraries implements IVcsManager {
+public abstract class PathmapResourceCollection implements IVcsManager {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(UMLLibraries.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PathmapResourceCollection.class);
+
+	protected ResourceSet rs = new ResourceSetImpl();
+
+	private String baseURI;
 	private static final String FIRST_REV = "0";
-
-	private ResourceSet rs;
 	private boolean isFrozen;
 
-	public UMLLibraries() throws IOException {
-		rs = new ResourceSetImpl();
-		for (String uri : Arrays.asList(
-			UMLResource.ECORE_PRIMITIVE_TYPES_LIBRARY_URI,
-			UMLResource.UML_PRIMITIVE_TYPES_LIBRARY_URI,
-			UMLResource.JAVA_PRIMITIVE_TYPES_LIBRARY_URI,
-			UMLResource.XML_PRIMITIVE_TYPES_LIBRARY_URI
-		)) {
-			rs.createResource(URI.createURI(uri)).load(null);
-		}
+	public PathmapResourceCollection(String baseURI) {
+		this.baseURI = baseURI;
 	}
 
-	@Override
-	public String getCurrentRevision() throws Exception {
-		final URI uri = URI.createURI(UMLResource.ECORE_PRIMITIVE_TYPES_LIBRARY_URI);
+	protected String getRootNsURI(final String referenceResourceURI) {
+		final URI uri = URI.createURI(referenceResourceURI);
 		final EList<EObject> eob = rs.getResource(uri, false).getContents();
 		final String revision = eob.get(0).eClass().getEPackage().getNsURI();
 		return revision;
@@ -83,16 +81,16 @@ public class UMLLibraries implements IVcsManager {
 		final String currentRevision = getCurrentRevision();
 		if (!currentRevision.equals(startRevision)) {
 			for (Resource r : rs.getResources()) {
-				if (!r.getURI().toString().startsWith(UMLResource.LIBRARIES_PATHMAP)) {
+				if (!r.getURI().toString().startsWith(baseURI)) {
 					// Skip over the profiles for now
 					continue;
 				}
 
 				VcsCommit commit = new VcsCommit();
-				commit.setAuthor("UML library driver - no authors recorded");
+				commit.setAuthor(getHumanReadableName() + " - no authors recorded");
 				commit.setDelta(delta);
 				commit.setJavaDate(null);
-				commit.setMessage("UML library driver - no messages recorded");
+				commit.setMessage(getHumanReadableName() + " - no messages recorded");
 				commit.setRevision(currentRevision);
 				delta.getCommits().add(commit);
 
@@ -111,7 +109,7 @@ public class UMLLibraries implements IVcsManager {
 
 	@Override
 	public File importFiles(String path, File optionalTemp) {
-		final URI uri = URI.createURI(UMLResource.LIBRARIES_PATHMAP + path.substring(1));
+		final URI uri = URI.createURI(baseURI + path.substring(1));
 		try {
 			final InputStream is = rs.getURIConverter().createInputStream(uri);
 			if (is == null) {
@@ -131,11 +129,6 @@ public class UMLLibraries implements IVcsManager {
 	}
 
 	@Override
-	public void init(String vcsloc, IModelIndexer hawk) throws Exception {
-		// TODO move constructor code here
-	}
-
-	@Override
 	public void run() throws Exception {
 		// nothing to do
 	}
@@ -150,7 +143,7 @@ public class UMLLibraries implements IVcsManager {
 
 	@Override
 	public String getLocation() {
-		return UMLResource.LIBRARIES_PATHMAP;
+		return baseURI;
 	}
 
 	@Override
@@ -173,11 +166,6 @@ public class UMLLibraries implements IVcsManager {
 	@Override
 	public String getType() {
 		return getClass().getName();
-	}
-
-	@Override
-	public String getHumanReadableName() {
-		return "UML Predefined Libraries";
 	}
 
 	@Override
