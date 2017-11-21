@@ -143,7 +143,6 @@ public class UMLIndexingTest extends ModelIndexingTest {
 		}
 	}
 
-	@Ignore // TODO
 	@Test
 	public void customProfile() throws Throwable {
 		indexer.registerMetamodels(new File(BASE_DIRECTORY, "simpleProfile/model.profile.uml"));
