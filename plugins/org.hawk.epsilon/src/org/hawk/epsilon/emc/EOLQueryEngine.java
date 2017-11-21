@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2016 The University of York, Aston University.
+ * Copyright (c) 2011-2017 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -85,7 +85,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	protected IGraphNodeIndex metamodeldictionary;
 
 	protected StringProperties config = null;
-	protected Set<String> defaultnamespaces = null;
+	protected Set<String> defaultNamespaces = null;
 
 	protected GraphPropertyGetter propertygetter;
 
@@ -117,78 +117,12 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		throw new EolRuntimeException("Hawk Model Index: this type of model cannot create/delete elements");
 	}
 
-	public Collection<Object> getAllOf(String typeName, final String typeorkind)
-			throws EolModelElementTypeNotFoundException, EolInternalException {
-
+	public Collection<Object> getAllOf(String typeName, final String typeorkind) throws EolModelElementTypeNotFoundException, EolInternalException {
 		try {
-			IGraphNode typeNode = null;
-
-			if (typeName.contains("::")) {
-				String ep = typeName.substring(0, typeName.indexOf("::"));
-				IGraphNode pack = null;
-
-				// operations on the graph
-				// ...
-
-				pack = metamodeldictionary.get("id", ep).getSingle();
-
-				for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
-
-					IGraphNode othernode = r.getStartNode();
-					if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
-							.equals(typeName.substring(typeName.indexOf("::") + 2))) {
-						typeNode = othernode;
-						break;
-					}
-
-				}
-			} else {
-
-				Iterator<IGraphNode> packs = metamodeldictionary.query("id", "*").iterator();
-				LinkedList<IGraphNode> possibletypenodes = new LinkedList<IGraphNode>();
-
-				while (packs.hasNext()) {
-
-					IGraphNode pack = packs.next();
-					for (IGraphEdge n : pack.getIncomingWithType("epackage")) {
-
-						final IGraphNode othernode = n.getStartNode();
-						final Object id = othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
-						if (id.equals(typeName)) {
-							possibletypenodes.add(othernode);
-						}
-					}
-				}
-
-				if (possibletypenodes.size() == 1) {
-					typeNode = possibletypenodes.getFirst();
-				} else if (possibletypenodes.size() > 1) {
-					// use default namespaces to limit types
-					LinkedList<String> ret = new LinkedList<>();
-					for (Iterator<IGraphNode> it = possibletypenodes.iterator(); it.hasNext();) {
-						IGraphNode n = it.next();
-						String metamodel = n.getOutgoingWithType("epackage").iterator().next().getEndNode()
-								.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
-						if (defaultnamespaces != null && !defaultnamespaces.contains(metamodel)) {
-							it.remove();
-						} else
-							ret.add(metamodel + "::" + n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
-					}
-
-					if (possibletypenodes.size() == 1) {
-						typeNode = possibletypenodes.getFirst();
-					} else {
-						System.err.println("types found:" + ret);
-						throw new EolModelElementTypeNotFoundException(this.getName(),
-								possibletypenodes.size() + " CLASSES FOUND FOR: " + typeName + "\ntypes found:" + ret);
-					}
-				}
-			}
-
+			final IGraphNode typeNode = getTypeNode(typeName);
 			if (typeNode != null) {
 				return getAllOf(typeNode, typeorkind);
 			}
-
 		} catch (Exception e) {
 			throw new EolInternalException(e);
 		}
@@ -204,6 +138,66 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		}
 		broadcastAllOfXAccess(nodes);
 		return nodes;
+	}
+
+	protected IGraphNode getTypeNode(String typeName) {
+		if (typeName.contains("::")) {
+			String ep = typeName.substring(0, typeName.indexOf("::"));
+			IGraphNode pack = null;
+	
+			// operations on the graph
+			// ...
+	
+			pack = metamodeldictionary.get("id", ep).getSingle();
+	
+			for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
+				IGraphNode othernode = r.getStartNode();
+				if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
+						.equals(typeName.substring(typeName.indexOf("::") + 2))) {
+					return othernode;
+				}
+			}
+		} else {
+	
+			Iterator<IGraphNode> packs = metamodeldictionary.query("id", "*").iterator();
+			LinkedList<IGraphNode> possibletypenodes = new LinkedList<IGraphNode>();
+	
+			while (packs.hasNext()) {
+				IGraphNode pack = packs.next();
+				for (IGraphEdge n : pack.getIncomingWithType("epackage")) {
+	
+					final IGraphNode othernode = n.getStartNode();
+					final Object id = othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
+					if (id.equals(typeName)) {
+						possibletypenodes.add(othernode);
+					}
+				}
+			}
+	
+			if (possibletypenodes.size() == 1) {
+				return possibletypenodes.getFirst();
+			} else if (possibletypenodes.size() > 1) {
+				// use default namespaces to limit types
+				LinkedList<String> ret = new LinkedList<>();
+				for (Iterator<IGraphNode> it = possibletypenodes.iterator(); it.hasNext();) {
+					IGraphNode n = it.next();
+					String metamodel = n.getOutgoingWithType("epackage").iterator().next().getEndNode()
+							.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+					if (defaultNamespaces != null && !defaultNamespaces.isEmpty() && !defaultNamespaces.contains(metamodel)) {
+						it.remove();
+					} else
+						ret.add(metamodel + "::" + n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
+				}
+	
+				if (possibletypenodes.size() == 1) {
+					return possibletypenodes.getFirst();
+				} else {
+					LOGGER.error("Ambiguous type reference {}: candidates are {}", typeName, ret);
+				}
+			}
+		}
+	
+		return null;
 	}
 
 	private void broadcastAllOfXAccess(Iterable<Object> ret) {
@@ -241,13 +235,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 	@Override
 	public String getTypeNameOf(Object arg0) {
-
 		String ret = null;
-
 		try {
-			// operations on the graph
-			// ...
-
 			Object type = getTypeOf(arg0);
 			IGraphNode typeNode = ((GraphNodeWrapper) type).getNode();
 
@@ -261,173 +250,44 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 	@Override
 	public TypeNodeWrapper getTypeOf(Object arg0) {
-		IGraphNode typeNode = null;
-
-		try {
-
-			IGraphNode objectNode = ((GraphNodeWrapper) arg0).getNode();
-
-			// operations on the graph
-			// ...
-
-			// returns the typeOf relationship of arg0 as a node id wrapper
-			// do we want the e-class instead?
-
-			typeNode = objectNode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().next()
-					.getEndNode();
-		} catch (Exception e) {
-			LOGGER.warn("Error in getTypeOf, returning null", e);
-		}
-
-		if (typeNode != null)
-			return new TypeNodeWrapper(new TypeNode(typeNode), this);
-		else
+		IGraphNode objectNode = ((GraphNodeWrapper) arg0).getNode();
+		TypeNode typeNode = new ModelElementNode(objectNode).getTypeNode();
+		if (typeNode != null) {
+			return new TypeNodeWrapper(typeNode, this);
+		} else {
 			return null;
+		}
 	}
 
 	@Override
 	public FileNodeWrapper getFileOf(Object arg0) {
-		IGraphNode fileNode = null;
-
-		try {
-			IGraphNode objectNode = ((GraphNodeWrapper) arg0).getNode();
-			fileNode = objectNode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE).iterator().next().getEndNode();
-		} catch (Exception e) {
-			LOGGER.warn("Error in getFileOf, returning null", e);
-		}
-
-		if (fileNode != null)
-			return new FileNodeWrapper(new FileNode(fileNode), this);
-		else
+		IGraphNode objectNode = ((GraphNodeWrapper) arg0).getNode();
+		FileNode fileNode = new ModelElementNode(objectNode).getFileNode();
+		if (fileNode != null) {
+			return new FileNodeWrapper(fileNode, this);
+		} else {
 			return null;
+		}
 	}
 
 	@Override
 	public List<FileNodeWrapper> getFilesOf(Object arg0) {
-		final List<FileNodeWrapper> files = new ArrayList<>();
-
-		try {
-			IGraphNode objectNode = ((GraphNodeWrapper) arg0).getNode();
-			for (IGraphEdge outFileEdge : objectNode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
-				final FileNode fileNode = new FileNode(outFileEdge.getEndNode());
-				final FileNodeWrapper fileNodeWrapper = new FileNodeWrapper(fileNode, this);
-				files.add(fileNodeWrapper);
-			}
-		} catch (Exception e) {
-			LOGGER.warn("Error in getFilesOf, returning null", e);
+		List<FileNodeWrapper> ret = new ArrayList<>();
+		IGraphNode objectNode = ((GraphNodeWrapper) arg0).getNode();
+		for (FileNode fn : new ModelElementNode(objectNode).getFileNodes()) {
+			ret.add(new FileNodeWrapper(fn, this));
 		}
-
-		return files;
+		return ret;
 	}
 
 	@Override
 	public boolean hasType(String type) {
-		// If conflict return false
-		// doneTODO Can receive both simple and fully-qualified name e.g.
-		// x::y::A -
-		// currently x::y/A
-
-		try {
-
-			boolean found = false;
-
-			if (type.equals("UNSET"))
-				return false;
-
-			if (cachedTypes.contains(type)) {
-				return true;
-			} else {
-
-				if (type.contains("::")) {
-
-					final String[] parts = type.split("::", 2);
-					final String ep = parts[0];
-					final String ec = parts[1];
-
-					IGraphNode pack = null;
-
-					try {
-						// operations on the graph
-						// ...
-
-						pack = metamodeldictionary.get("id", ep).getSingle();
-
-						for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
-							final IGraphNode otherNode = r.getStartNode();
-							final Object otherEClass = otherNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
-							if (otherEClass.equals(ec)) {
-								found = true;
-								break;
-							}
-						}
-					} catch (Exception e) {
-						LOGGER.error("Error while searching for type node", e);
-					}
-
-				} else {
-
-					LinkedList<IGraphNode> possibletypenodes = new LinkedList<IGraphNode>();
-
-					// operations on the graph
-					// ...
-
-					Iterator<IGraphNode> packs = metamodeldictionary.query("id", "*").iterator();
-
-					while (packs.hasNext()) {
-
-						IGraphNode pack = packs.next();
-						for (IGraphEdge n : pack.getIncomingWithType("epackage")) {
-
-							IGraphNode othernode = n.getStartNode();
-							final Object id = othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
-							if (id.equals(type)) {
-								possibletypenodes.add(othernode);
-							}
-						}
-					}
-					if (possibletypenodes.size() == 0)
-						return false;
-					else if (possibletypenodes.size() > 1) {
-						// use default namespaces to limit types
-						LinkedList<String> ret = new LinkedList<>();
-						for (Iterator<IGraphNode> it = possibletypenodes.iterator(); it.hasNext();) {
-							IGraphNode n = it.next();
-							String metamodel = n.getOutgoingWithType("epackage").iterator().next().getEndNode()
-									.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
-							if (defaultnamespaces != null && !defaultnamespaces.contains(metamodel)) {
-								it.remove();
-							} else
-								ret.add(metamodel + "::" + n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
-						}
-
-						if (possibletypenodes.size() == 1) {
-							cachedTypes.add(type);
-							return true;
-						} else {
-							System.err.println("ERROR IN hasType(String arg0). " + possibletypenodes.size()
-									+ " CLASSES FOUND FOR " + type + ", RETURNING FALSE");
-							System.err.println("types found:" + ret);
-							return false;
-						}
-					} else {
-						cachedTypes.add(type);
-						return true;
-					}
-
-				}
-			}
-			return found;
-
-		} catch (Exception e) {
-			System.err.println("Warning hasType failed, returning false: ");
-			e.printStackTrace();
-			return false;
-		}
+		return getTypeNode(type) != null;
 	}
 
 	@Override
 	public boolean isModelElement(Object arg0) {
-		return (arg0 instanceof GraphNodeWrapper);
+		return arg0 instanceof GraphNodeWrapper;
 	}
 
 	@Override
@@ -473,8 +333,9 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			throw new EolModelLoadingException(new Exception("Attempt to load a model from an invalid graph: " + graph),
 					this);
 
-		if (enableDebugOutput)
-			System.err.println("engine initialised with model named: " + name + ", with aliases: " + aliases);
+		if (enableDebugOutput) {
+			LOGGER.info("engine initialised with model named: {}, with alises: {}", name, aliases);
+		}
 
 	}
 
@@ -485,8 +346,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			if (gnw.getContainerModel() == null || gnw.getContainerModel() == this) {
 				return true;
 			} else {
-				System.err.println("warning owns failed on : " + arg0 + "\nwith getContainerModel() : "
-						+ gnw.getContainerModel() + "\nand 'this' : " + this);
+				LOGGER.warn("owns failed on {} with getContainerModel(): {} and 'this': {}", arg0, gnw.getContainerModel(), this);
 			}
 		}
 
@@ -928,13 +788,12 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	public void setDefaultNamespaces(String namespaces) {
 		// set default packages if applicable
 		try {
-			defaultnamespaces = new HashSet<String>();
+			defaultNamespaces = new HashSet<String>();
 
 			if (namespaces != null && !namespaces.trim().equals("")) {
 				String[] eps = ((String) namespaces).split(",");
 				for (String s : eps) {
-					// System.err.println(s);
-					defaultnamespaces.add(s.trim());
+					defaultNamespaces.add(s.trim());
 				}
 			}
 

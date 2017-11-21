@@ -90,6 +90,19 @@ public class ModelElementNode {
 	}
 
 	/**
+	 * Returns the file nodes for this model element node. Model element nodes
+	 * with more than one file node can happen with models based on global UUIDs
+	 * (e.g. Modelio models).
+	 */
+	public List<FileNode> getFileNodes() {
+		final List<FileNode> nodes = new ArrayList<>();
+		for (IGraphEdge outEdge : node.getOutgoingWithType(EDGE_LABEL_FILE)) {
+			nodes.add(new FileNode(outEdge.getEndNode()));
+		}
+		return nodes;
+	}
+
+	/**
 	 * Fills in the <code>attributeValues</code> and
 	 * <code>referenceValues</code> maps with the contents of the slots of the
 	 * <code>modelElementNode</code>. Derived attributes and reverse references
