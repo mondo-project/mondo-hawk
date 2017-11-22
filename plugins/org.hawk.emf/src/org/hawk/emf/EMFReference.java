@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2017 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - cleanup and use covariant return types
  ******************************************************************************/
 package org.hawk.emf;
 
@@ -17,14 +18,13 @@ import org.eclipse.emf.ecore.EReference;
 import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkReference;
 
-public class EMFReference extends EMFObject implements IHawkReference {
+public class EMFReference extends EMFModelElement implements IHawkReference {
 
 	EReference r;
 
-	public EMFReference(EReference re) {
-		super(re);
+	public EMFReference(EReference re, EMFWrapperFactory wf) {
+		super(re, wf);
 		r = re;
-
 	}
 
 	@Override
@@ -32,10 +32,10 @@ public class EMFReference extends EMFObject implements IHawkReference {
 		return r.getName();
 	}
 
-	// @Override
-	// public EStructuralFeature getEMFreference() {
-	// return r;
-	// }
+	@Override
+	public EReference getEObject() {
+		return r;
+	}
 
 	@Override
 	public boolean isContainment() {
@@ -49,27 +49,8 @@ public class EMFReference extends EMFObject implements IHawkReference {
 
 	@Override
 	public boolean isMany() {
-
 		return r.isMany();
 	}
-
-	// @Override
-	// public boolean isChangeable() {
-	//
-	// return r.isChangeable();
-	// }
-
-	// @Override
-	// public int getUpperBound() {
-	//
-	// return r.getUpperBound();
-	// }
-
-	// @Override
-	// public HawkClass getType() {
-	//
-	// return new EMFclass((EClass) r.getEType());
-	// }
 
 	@Override
 	public boolean isOrdered() {
@@ -85,9 +66,9 @@ public class EMFReference extends EMFObject implements IHawkReference {
 	public IHawkClassifier getType() {
 		EClassifier type = r.getEType();
 		if (type instanceof EClass)
-			return new EMFClass((EClass) r.getEType());
+			return wf.createClass((EClass) r.getEType());
 		else if (type instanceof EDataType)
-			return new EMFDataType((EDataType) r.getEType());
+			return wf.createDataType((EDataType) r.getEType());
 		else {
 			System.err.println("ref: " + r.getEType());
 			return null;

@@ -92,4 +92,8 @@ public class IFCAttribute extends IFCObject implements IHawkAttribute {
 		}
 	}
 
+	public EAttribute getEObject() {
+		return null;
+	}
+
 }

@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -23,10 +22,11 @@ import org.eclipse.uml2.uml.UMLPackage;
 import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl;
 import org.eclipse.uml2.uml.profile.standard.StandardPackage;
 import org.eclipse.uml2.uml.resource.UMLResource;
+import org.eclipse.uml2.uml.util.UMLUtil;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkMetaModelResource;
-import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
+import org.hawk.emf.EMFWrapperFactory;
 import org.hawk.emf.metamodel.EMFMetaModelResource;
 import org.hawk.emf.metamodel.EMFMetaModelResourceFactory;
 import org.slf4j.Logger;
@@ -46,13 +46,13 @@ public class UMLMetaModelResourceFactory implements IMetaModelResourceFactory {
 	private EMFMetaModelResourceFactory emfMMFactory = new EMFMetaModelResourceFactory();
 	private ResourceSet resourceSet;
 
-	public UMLMetaModelResourceFactory() {
-		if (EPackage.Registry.INSTANCE.getEPackage(EcorePackage.eNS_URI) == null) {
-			EPackage.Registry.INSTANCE.put(EcorePackage.eNS_URI,
-					EcorePackage.eINSTANCE);
-		}
+	private EMFWrapperFactory emfWFactory = new EMFWrapperFactory();
+	private UMLWrapperFactory umlWFactory = new UMLWrapperFactory();
 
+	public UMLMetaModelResourceFactory() {
 		resourceSet = new ResourceSetImpl();
+		UMLUtil.init(resourceSet);
+
 		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
 			.put("uml", new UMLResourceFactoryImpl());
 		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
@@ -75,27 +75,32 @@ public class UMLMetaModelResourceFactory implements IMetaModelResourceFactory {
 	public IHawkMetaModelResource parse(File f) throws Exception {
 		UMLResource r = (UMLResource) resourceSet.createResource(URI.createFileURI(f.getAbsolutePath()));
 		r.load(null);
-		return new EMFMetaModelResource(r, this);
+
+		if (f.getName().endsWith(MM_EXTENSION)) {
+			return new EMFMetaModelResource(r, umlWFactory, this);
+		} else {
+			return new EMFMetaModelResource(r, emfWFactory, this);
+		}
 	}
 
 	@Override
 	public Set<IHawkMetaModelResource> getStaticMetamodels() {
 		Set<IHawkMetaModelResource> resources = new HashSet<>();
-		resources.add(new EMFMetaModelResource(EcorePackage.eINSTANCE.eResource(), this));
-		resources.add(new EMFMetaModelResource(TypesPackage.eINSTANCE.eResource(), this));
-		resources.add(new EMFMetaModelResource(XMLTypePackage.eINSTANCE.eResource(), this));
-		resources.add(new EMFMetaModelResource(UMLPackage.eINSTANCE.eResource(), this));
-		resources.add(new EMFMetaModelResource(StandardPackage.eINSTANCE.eResource(), this));
+		resources.add(new EMFMetaModelResource(EcorePackage.eINSTANCE.eResource(), emfWFactory, this));
+		resources.add(new EMFMetaModelResource(TypesPackage.eINSTANCE.eResource(), emfWFactory, this));
+		resources.add(new EMFMetaModelResource(XMLTypePackage.eINSTANCE.eResource(), emfWFactory, this));
+		resources.add(new EMFMetaModelResource(UMLPackage.eINSTANCE.eResource(), emfWFactory, this));
+		resources.add(new EMFMetaModelResource(StandardPackage.eINSTANCE.eResource(), umlWFactory, this));
 
 		try {
 			final Resource rEcoreProfile = resourceSet.createResource(URI.createURI(UMLResource.ECORE_PROFILE_URI));
 			rEcoreProfile.load(null);
-			final EMFMetaModelResource hrEcoreProfile = new EMFMetaModelResource(rEcoreProfile, this);
+			final EMFMetaModelResource hrEcoreProfile = new EMFMetaModelResource(rEcoreProfile, umlWFactory, this);
 			resources.add(hrEcoreProfile);
 
 			final Resource rUMLProfile = resourceSet.createResource(URI.createURI(UMLResource.UML2_PROFILE_URI));
 			rUMLProfile.load(null);
-			final EMFMetaModelResource hrUMLProfile = new EMFMetaModelResource(rUMLProfile, this);
+			final EMFMetaModelResource hrUMLProfile = new EMFMetaModelResource(rUMLProfile, umlWFactory, this);
 			resources.add(hrUMLProfile);
 		} catch (IOException e) {
 			LOGGER.error("Error while loading predefined profiles", e);
@@ -129,7 +134,8 @@ public class UMLMetaModelResourceFactory implements IMetaModelResourceFactory {
 		InputStream input = new ByteArrayInputStream(contents.getBytes("UTF-8"));
 		r.load(input, null);
 
-		return new EMFMetaModelResource(r, this);
+		final EMFWrapperFactory wf = name.endsWith(MM_EXTENSION) ? umlWFactory : emfWFactory;
+		return new EMFMetaModelResource(r, wf, this);
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xmi:XMI xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:RootElement="http://github.com/mondo-project/mondo-hawk/simpleProfile" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xsi:schemaLocation="http://github.com/mondo-project/mondo-hawk/simpleProfile /org.hawk.integration.tests/resources/models/uml/simpleProfile/model.profile.uml#_KW7kcM7nEeeDhYwXdKEW_w">
+<xmi:XMI xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:RootElement="http://github.com/mondo-project/mondo-hawk/simpleProfile" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xsi:schemaLocation="http://github.com/mondo-project/mondo-hawk/simpleProfile ../simpleProfile/model.profile.uml#_KW7kcM7nEeeDhYwXdKEW_w">
   <uml:Model xmi:id="_4hhCEM7mEeeDhYwXdKEW_w" name="RootElement">
     <packagedElement xmi:type="uml:Class" xmi:id="_928OoM7mEeeDhYwXdKEW_w" name="Example"/>
     <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_4mb-UM7mEeeDhYwXdKEW_w">
@@ -11,9 +11,9 @@
         <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_O2eR5c7nEeeDhYwXdKEW_w" key="Author" value=""/>
       </eAnnotations>
       <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_4mdMcM7mEeeDhYwXdKEW_w" source="http://www.eclipse.org/uml2/2.0.0/UML">
-        <references xmi:type="ecore:EPackage" href="/org.hawk.integration.tests/resources/models/uml/simpleProfile/model.profile.uml#_KW7kcM7nEeeDhYwXdKEW_w"/>
+        <references xmi:type="ecore:EPackage" href="../simpleProfile/model.profile.uml#_KW7kcM7nEeeDhYwXdKEW_w"/>
       </eAnnotations>
-      <appliedProfile xmi:type="uml:Profile" href="/org.hawk.integration.tests/resources/models/uml/simpleProfile/model.profile.uml#_5kvKAM1vEeeAqawSlF6e4A"/>
+      <appliedProfile xmi:type="uml:Profile" href="../simpleProfile/model.profile.uml#_5kvKAM1vEeeAqawSlF6e4A"/>
     </profileApplication>
   </uml:Model>
   <RootElement:special xmi:id="_OJTC0M7nEeeDhYwXdKEW_w" base_Class="_928OoM7mEeeDhYwXdKEW_w" amount="9001"/>

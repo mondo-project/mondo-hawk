@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
-import org.hawk.emf.EMFObject;
+import org.hawk.emf.EMFWrapperFactory;
 
 public class EMFModelResource implements IHawkModelResource {
 
@@ -30,7 +30,7 @@ public class EMFModelResource implements IHawkModelResource {
 	 * Goes through an EMF resource, mapping each non-proxy object within the
 	 * resource to an EMFObject.
 	 */
-	private final class EMFObjectIterable implements Iterable<IHawkObject> {
+	protected class EMFObjectIterable implements Iterable<IHawkObject> {
 		@Override
 		public Iterator<IHawkObject> iterator() {
 			final TreeIterator<EObject> it = EcoreUtil.getAllContents(res, false);
@@ -58,7 +58,7 @@ public class EMFModelResource implements IHawkModelResource {
 					if (hasNext()) {
 						EObject ret = next;
 						next = null;
-						return new EMFObject(ret);
+						return wf.createObject(ret);
 					}
 					throw new NoSuchElementException();
 				}
@@ -71,6 +71,7 @@ public class EMFModelResource implements IHawkModelResource {
 		}
 	}
 
+	private EMFWrapperFactory wf;
 	private Resource res;
 	private IModelResourceFactory parser;
 	private Set<IHawkObject> allContents = null;
@@ -84,9 +85,10 @@ public class EMFModelResource implements IHawkModelResource {
 		allContents = null;
 	}
 
-	public EMFModelResource(Resource r, IModelResourceFactory p) {
-		parser = p;
-		res = r;
+	public EMFModelResource(Resource r, EMFWrapperFactory wf, IModelResourceFactory p) {
+		this.parser = p;
+		this.res = r;
+		this.wf = wf;
 	}
 
 	@Override

@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.uml2.uml.util.UMLUtil;
 import org.hawk.core.ICredentialsStore;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsChangeType;
@@ -47,6 +48,7 @@ public abstract class PathmapResourceCollection implements IVcsManager {
 
 	public PathmapResourceCollection(String baseURI) {
 		this.baseURI = baseURI;
+		UMLUtil.init(rs);
 	}
 
 	protected String getRootNsURI(final String referenceResourceURI) {

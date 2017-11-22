@@ -8,13 +8,13 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl;
+import org.eclipse.uml2.uml.resources.util.UMLResourcesUtil;
 import org.hawk.core.IFileImporter;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.emf.model.EMFModelResource;
+import org.hawk.uml.metamodel.UMLWrapperFactory;
 
-@SuppressWarnings("restriction")
 public class UMLModelResourceFactory implements IModelResourceFactory {
 
 	@Override
@@ -30,12 +30,11 @@ public class UMLModelResourceFactory implements IModelResourceFactory {
 	@Override
 	public IHawkModelResource parse(IFileImporter importer, File changedFile) throws Exception {
 		ResourceSet rset = new ResourceSetImpl();
-		rset.getResourceFactoryRegistry().getExtensionToFactoryMap()
-			.put("uml", new UMLResourceFactoryImpl());
-		Resource r = rset.createResource(URI.createFileURI(changedFile.getPath()));
+		UMLResourcesUtil.init(rset);
+		Resource r = rset.createResource(URI.createFileURI(changedFile.getAbsolutePath()));
 		r.load(null);
 
-		return new EMFModelResource(r, this);
+		return new EMFModelResource(r, new UMLWrapperFactory(), this);
 	}
 
 	@Override

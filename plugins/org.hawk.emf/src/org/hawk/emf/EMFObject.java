@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2017 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - cleanup and use covariant return types
  ******************************************************************************/
 package org.hawk.emf;
 
@@ -32,10 +33,12 @@ import org.hawk.core.model.IHawkStructuralFeature;
 
 public class EMFObject implements IHawkObject {
 
+	protected EMFWrapperFactory wf;
 	protected EObject eob;
 
-	public EMFObject(EObject o) {
-		eob = o;
+	public EMFObject(EObject o, EMFWrapperFactory wf) {
+		this.eob = o;
+		this.wf = wf;
 	}
 
 	public EObject getEObject() {
@@ -82,7 +85,7 @@ public class EMFObject implements IHawkObject {
 
 	@Override
 	public IHawkClassifier getType() {
-		return new EMFClass(eob.eClass());
+		return wf.createClass(eob.eClass());
 	}
 
 	@Override
@@ -135,20 +138,19 @@ public class EMFObject implements IHawkObject {
 						.valueListIterator(); it.hasNext();) {
 					final Object next = it.next();
 					if (next instanceof EObject)
-						((LinkedList<EMFObject>) ret).add(new EMFObject(
-								(EObject) next));
+						((LinkedList<EMFObject>) ret).add(wf.createObject((EObject) next));
 				}
 			}
 			// ordered ref retainment
 			else
 				for (EObject e : ((Iterable<EObject>) source)) {
-					((LinkedList<EMFObject>) ret).add(new EMFObject(e));
+					((LinkedList<EMFObject>) ret).add(wf.createObject(e));
 				}
-		} else
-			ret = new EMFObject((EObject) source);
+		} else {
+			ret = wf.createObject((EObject) source);
+		}
 
 		return ret;
-
 	}
 
 	@Override
@@ -163,102 +165,17 @@ public class EMFObject implements IHawkObject {
 
 	@Override
 	public int hashCode() {
-		// System.err.println("WARNING HASHCODE CALLED ON EMFOBJECT -- this is inaccuarate, use signature() instead!");
 		return eob.hashCode();
 	}
 
-	// @Override
-	// public int hashCode() {
-	// //
-	// // return eob.hashCode();
-	// //
-	// if (hashCode == 0) {
-	//
-	// if (isProxy()) {
-	//
-	// System.err.println("hashCode called on proxy object - 0");
-	// hashCode = 0;
-	// return 0;
-	//
-	// } else {
-	//
-	// hashCode = Integer.MIN_VALUE;
-	//
-	// hashCode += getUri().hashCode();
-	// hashCode += getUriFragment().hashCode();
-	//
-	// IHawkClassifier type = getType();
-	//
-	// hashCode += type.getName().hashCode();
-	// hashCode += type.getPackageNSURI().hashCode();
-	//
-	// if (type instanceof IHawkDataType) {
-	//
-	// //
-	//
-	// } else if (type instanceof IHawkClass) {
-	//
-	// for (IHawkAttribute eAttribute : ((IHawkClass) type)
-	// .getAllAttributes()) {
-	// if (eAttribute.isDerived() || isSet(eAttribute)) {
-	//
-	// hashCode += eAttribute.getName().hashCode();
-	//
-	// if (!eAttribute.isDerived())
-	// // NOTE: using toString for hashcode of
-	// // attribute values as primitives in java have
-	// // different hashcodes each time, not fullproof
-	// // true == "true" here
-	// hashCode += get(eAttribute).toString()
-	// .hashCode();
-	// else {
-	//
-	// // handle derived attributes for metamodel
-	// // evolution
-	//
-	// }
-	// }
-	// }
-	//
-	// // cyclic reference loop? -- no we only access the urifragment of
-	// references
-	// for (IHawkReference eRef : ((IHawkClass) type)
-	// .getAllReferences()) {
-	// if (isSet(eRef)) {
-	//
-	// hashCode += eRef.getName().hashCode();
-	//
-	// Object destinationObjects = get(eRef, false);
-	// if (destinationObjects instanceof Iterable<?>) {
-	// for (IHawkObject o : ((Iterable<IHawkObject>) destinationObjects)) {
-	// hashCode += o.getUriFragment().hashCode();
-	// }
-	// } else {
-	// hashCode += ((IHawkObject) destinationObjects)
-	// .getUriFragment().hashCode();
-	// }
-	// }
-	// }
-	// } else {
-	// System.err
-	// .println("warning emf object tried to create hashcode, but found type: "
-	// + type);
-	// }
-	// }
-	// }
-	// return hashCode;
-	//
-	// }
-
 	@Override
 	public String toString() {
-
 		String ret = "";
 
 		ret += "> " + eob + " :::with attributes::: ";
-
-		for (EAttribute e : eob.eClass().getEAllAttributes())
+		for (EAttribute e : eob.eClass().getEAllAttributes()) {
 			ret += e + " : " + eob.eGet(e);
+		}
 		ret += "";
 
 		return ret;

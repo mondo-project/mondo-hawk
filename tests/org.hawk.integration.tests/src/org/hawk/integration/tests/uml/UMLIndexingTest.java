@@ -27,7 +27,6 @@ import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.epsilon.emc.GraphNodeWrapper;
 import org.hawk.integration.tests.ModelIndexingTest;
 import org.hawk.uml.vcs.PredefinedUMLLibraries;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;

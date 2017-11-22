@@ -14,12 +14,6 @@ public interface IHawkReference extends IHawkStructuralFeature {
 
 	boolean isContainment();
 	boolean isContainer();
-
-	//boolean isChangeable();
-
-	//int getUpperBound();
-
-	//type of what it points to
 	IHawkClassifier getType();
 
 }

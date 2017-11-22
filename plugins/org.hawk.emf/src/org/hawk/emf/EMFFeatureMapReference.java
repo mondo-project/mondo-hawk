@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2017 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,22 +7,22 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - cleanup and use covariant return types
  ******************************************************************************/
 package org.hawk.emf;
 
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EAttribute;
 import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkReference;
 
-public class EMFFeatureMapReference extends EMFObject implements IHawkReference {
+public class EMFFeatureMapReference extends EMFModelElement implements IHawkReference {
+	private EAttribute r;
 
-	EAttribute r;
-
-	public EMFFeatureMapReference(EAttribute esf) {
-		super(esf);
+	public EMFFeatureMapReference(EAttribute esf, EMFWrapperFactory wf) {
+		super(esf, wf);
 		r = esf;
 	}
 
@@ -31,10 +31,10 @@ public class EMFFeatureMapReference extends EMFObject implements IHawkReference 
 		return r.getName();
 	}
 
-	// @Override
-	// public EStructuralFeature getEMFreference() {
-	// return r;
-	// }
+	@Override
+	public EAttribute getEObject() {
+		return r;
+	}
 
 	@Override
 	public boolean isContainment() {
@@ -66,9 +66,9 @@ public class EMFFeatureMapReference extends EMFObject implements IHawkReference 
 	public IHawkClassifier getType() {
 		EClassifier type = r.getEType();
 		if (type instanceof EClass)
-			return new EMFClass((EClass) r.getEType());
+			return wf.createClass((EClass) r.getEType());
 		else if (type instanceof EDataType)
-			return new EMFDataType((EDataType) r.getEType());
+			return wf.createDataType((EDataType) r.getEType());
 		else {
 			System.err.println("ref: " + r.getEType());
 			return null;

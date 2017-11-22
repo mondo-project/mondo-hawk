@@ -34,6 +34,7 @@ import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.emf.EMFPackage;
+import org.hawk.emf.EMFWrapperFactory;
 import org.hawk.emf.model.util.RegisterMeta;
 
 public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
@@ -89,19 +90,14 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 	@Override
 	public IHawkMetaModelResource parse(File f) throws Exception {
-
 		EMFMetaModelResource ret;
 
 		Resource r = resourceSet.createResource(URI.createFileURI(f.getAbsolutePath()));
 		r.load(null);
-
-		//
 		RegisterMeta.registerPackages(r);
 
-		ret = new EMFMetaModelResource(r, this);
-
+		ret = new EMFMetaModelResource(r, new EMFWrapperFactory(), this);
 		return ret;
-
 	}
 
 	@Override
@@ -113,7 +109,7 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 	public String dumpPackageToString(IHawkPackage pkg) throws Exception {
 		final EMFPackage ePackage = (EMFPackage) pkg;
 		final EMFMetaModelResource eResource = (EMFMetaModelResource) ePackage.getResource();
-		final Resource oldResource = eResource.res;
+		final Resource oldResource = eResource.getResource();
 
 		// Separate the EPackage to be saved to its own resource
 		final Resource newResource = resourceSet
@@ -159,19 +155,14 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 	@Override
 	public IHawkMetaModelResource parseFromString(String name, String contents) throws Exception {
-
 		if (name != null && contents != null) {
-
 			Resource r = resourceSet.createResource(URI.createURI(name));
-
 			InputStream input = new ByteArrayInputStream(contents.getBytes("UTF-8"));
-
 			r.load(input, null);
 
-			//
 			RegisterMeta.registerPackages(r);
 
-			return new EMFMetaModelResource(r, this);
+			return new EMFMetaModelResource(r, new EMFWrapperFactory(), this);
 		} else
 			return null;
 	}

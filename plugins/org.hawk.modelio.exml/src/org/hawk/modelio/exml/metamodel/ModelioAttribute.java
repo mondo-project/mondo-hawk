@@ -125,4 +125,9 @@ public class ModelioAttribute extends AbstractModelioObject implements IHawkAttr
 		return "ModelioAttribute [getName()=" + getName() + ", isMany()=" + isMany() + ", isUnique()=" + isUnique()
 				+ ", isOrdered()=" + isOrdered() + ", getType()=" + getType() + "]";
 	}
+
+	@Override
+	public Object getEObject() {
+		return null;
+	}
 }

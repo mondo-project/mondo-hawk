@@ -94,17 +94,13 @@ public class BPMNClass extends BPMNObject implements IHawkClass {
 
 	@Override
 	public Set<IHawkClass> getAllSuperTypes() {
-
-		HashSet<IHawkClass> c = new HashSet<IHawkClass>();
+		Set<IHawkClass> c = new HashSet<IHawkClass>();
 
 		for (EClass e : eclass.getEAllSuperTypes()) {
-
 			c.add(new BPMNClass(e));
-
 		}
 
 		return c;
-
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2017 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,42 +7,34 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - cleanup and use covariant return types
  ******************************************************************************/
 package org.hawk.emf;
 
 import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EObject;
-import org.hawk.core.model.*;
+import org.hawk.core.model.IHawkDataType;
 
-public class EMFDataType extends EMFObject implements IHawkDataType {
+public class EMFDataType extends EMFModelElement implements IHawkDataType {
+	private EDataType eDataType;
 
-	private EDataType edatatype;
-
-	// private String containingFeatureName = null;
-
-	// private static HashMap<EClass, Collection<EClass>> eAllSubTypes;
-
-	public EMFDataType(EDataType eDataType) {
-
-		super(eDataType);
-		edatatype = ((EDataType) eDataType);
-
+	public EMFDataType(EDataType eDataType, EMFWrapperFactory wf) {
+		super(eDataType, wf);
+		this.eDataType = ((EDataType) eDataType);
 	}
 
-	public EObject getEObject() {
-		return edatatype;
-
+	public EDataType getEObject() {
+		return eDataType;
 	}
 
 	@Override
 	public String getName() {
-		return edatatype.getName();
+		return eDataType.getName();
 	}
 
 	@Override
 	public String getInstanceType() {
 
-		String it = edatatype.getInstanceClassName();
+		String it = eDataType.getInstanceClassName();
 
 		it = it == null ? "NULL_INSTANCE_TYPE" : it;
 		
@@ -64,12 +56,12 @@ public class EMFDataType extends EMFObject implements IHawkDataType {
 
 	@Override
 	public String getPackageNSURI() {
-		return edatatype.getEPackage().getNsURI();
+		return eDataType.getEPackage().getNsURI();
 	}
 
 	@Override
 	public int hashCode() {
-		return edatatype.hashCode();
+		return eDataType.hashCode();
 
 	}
 

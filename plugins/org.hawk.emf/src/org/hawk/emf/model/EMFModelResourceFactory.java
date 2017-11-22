@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.hawk.core.IFileImporter;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
+import org.hawk.emf.EMFWrapperFactory;
 import org.hawk.emf.metamodel.EMFMetaModelResourceFactory;
 
 public class EMFModelResourceFactory implements IModelResourceFactory {
@@ -101,7 +102,7 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 			r = resourceSet.createResource(URI.createFileURI(f
 					.getAbsolutePath()));
 			r.load(null);
-			ret = new EMFModelResource(r, this);
+			ret = new EMFModelResource(r, new EMFWrapperFactory(), this);
 		} catch (Exception e) {
 			System.err.print("error in parse(File f): ");
 			System.err.println(e.getCause());

@@ -93,4 +93,9 @@ public class ManifestAttribute extends ManifestObject implements IHawkAttribute 
 		return null;
 	}
 
+	@Override
+	public Object getEObject() {
+		return null;
+	}
+
 }

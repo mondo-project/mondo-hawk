@@ -16,8 +16,6 @@ public interface IHawkClass extends IHawkClassifier, IHawkObject {
 
 	String getName();
 
-	String getPackageNSURI();
-
 	/**
 	 * Returns all directly defined and inherited attributes of this type.
 	 */

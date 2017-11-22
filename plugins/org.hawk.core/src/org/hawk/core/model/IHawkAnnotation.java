@@ -10,12 +10,12 @@
  ******************************************************************************/
 package org.hawk.core.model;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public interface IHawkAnnotation {
 
 	String getSource();
 
-	HashMap<String, String> getDetails();
+	Map<String, String> getDetails();
 
 }

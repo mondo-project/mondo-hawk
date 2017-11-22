@@ -10,14 +10,10 @@
  ******************************************************************************/
 package org.hawk.core.model;
 
-import java.util.Set;
-
 public interface IHawkAttribute extends IHawkStructuralFeature {
-
 	boolean isDerived();
 
-	Set<IHawkAnnotation> getAnnotations();
-
 	IHawkClassifier getType();
-	
+
+	Object getEObject();
 }

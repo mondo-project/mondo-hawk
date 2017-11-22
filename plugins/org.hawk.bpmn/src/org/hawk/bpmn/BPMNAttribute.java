@@ -95,5 +95,9 @@ public class BPMNAttribute extends BPMNObject implements IHawkAttribute {
 		return emfattribute.hashCode();
 
 	}
+
+	public EAttribute getEObject() {
+		return null;
+	}
 	
 }

@@ -10,6 +10,9 @@
  ******************************************************************************/
 package org.hawk.core.model;
 
+import java.util.Collections;
+import java.util.Set;
+
 public interface IHawkObject {
 
 	/**
@@ -64,4 +67,8 @@ public interface IHawkObject {
 	// eAttribute.getName(), eAttribute-value, forAll references eRef.getName(),
 	// ref-value.getUriFragment()
 	public byte[] signature();
+
+	default Set<IHawkAnnotation> getAnnotations() {
+		return Collections.emptySet();
+	}
 }

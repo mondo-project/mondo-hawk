@@ -13,9 +13,10 @@ package org.hawk.emf.metamodel;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
-import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -23,40 +24,37 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkObject;
-import org.hawk.emf.EMFClass;
-import org.hawk.emf.EMFPackage;
+import org.hawk.emf.EMFWrapperFactory;
 
 public class EMFMetaModelResource implements IHawkMetaModelResource {
 
-	Resource res;
-	IMetaModelResourceFactory p;
-	HashSet<IHawkObject> contents = new HashSet<>();
+	private EMFWrapperFactory wf;
+	private Resource res;
+	private IMetaModelResourceFactory p;
 
 	@Override
 	public void unload() {
 		res = null;
 	}
 
-	public EMFMetaModelResource(Resource r, IMetaModelResourceFactory pa) {
-		res = r;
-		p = pa;
+	public EMFMetaModelResource(Resource r, EMFWrapperFactory wf, IMetaModelResourceFactory pa) {
+		this.res = r;
+		this.p = pa;
+		this.wf = wf;
 	}
 
 	@Override
-	public HashSet<IHawkObject> getAllContents() {
-
-		TreeIterator<EObject> it = res.getAllContents();
-		HashSet<IHawkObject> ret = new HashSet<IHawkObject>();
-
+	public Set<IHawkObject> getAllContents() {
+		final Iterator<EObject> it = res.getAllContents();
+		final Set<IHawkObject> ret = new HashSet<IHawkObject>();
 		while (it.hasNext()) {
 			Object o = it.next();
 			if (o instanceof EClass)
-				ret.add(new EMFClass((EClass) o));
+				ret.add(wf.createClass((EClass) o));
 			else if (o instanceof EPackage)
-				ret.add(new EMFPackage((EPackage) o, this));
+				ret.add(wf.createPackage((EPackage) o, this));
 		}
 		return ret;
-
 	}
 
 	@Override
@@ -73,6 +71,10 @@ public class EMFMetaModelResource implements IHawkMetaModelResource {
 	@Override
 	public String toString() {
 		return res.getURI().toString();
+	}
+
+	public Resource getResource() {
+		return res;
 	}
 
 }

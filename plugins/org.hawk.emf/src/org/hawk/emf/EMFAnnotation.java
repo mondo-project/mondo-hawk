@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2017 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,10 +7,13 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - cleanup and use covariant return types
  ******************************************************************************/
 package org.hawk.emf;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.emf.ecore.EAnnotation;
 import org.hawk.core.model.IHawkAnnotation;
@@ -18,13 +21,10 @@ import org.hawk.core.model.IHawkAnnotation;
 
 
 public class EMFAnnotation implements IHawkAnnotation {
-
-	EAnnotation ann;
+	private EAnnotation ann;
 
 	public EMFAnnotation(EAnnotation a) {
-
 		ann = a;
-
 	}
 
 	@Override
@@ -33,14 +33,11 @@ public class EMFAnnotation implements IHawkAnnotation {
 	}
 
 	@Override
-	public HashMap<String, String> getDetails() {
-
-		HashMap<String, String> m = new HashMap<String, String>();
-
-		for (String s : ann.getDetails().keySet())
-			m.put(s, ann.getDetails().get(s));
-
+	public Map<String, String> getDetails() {
+		final Map<String, String> m = new HashMap<>();
+		for (Entry<String, String> entry : ann.getDetails().entrySet()) {
+			m.put(entry.getKey(), entry.getValue());
+		}
 		return m;
 	}
-
 }
