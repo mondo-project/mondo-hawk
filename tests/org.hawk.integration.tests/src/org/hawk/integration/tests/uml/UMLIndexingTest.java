@@ -143,7 +143,7 @@ public class UMLIndexingTest extends ModelIndexingTest {
 	}
 
 	@Test
-	public void customProfile() throws Throwable {
+	public void customProfileV4() throws Throwable {
 		indexer.registerMetamodels(new File(BASE_DIRECTORY, "simpleProfile/model.profile.uml"));
 		requestFolderIndex(new File(BASE_DIRECTORY, "simpleProfileApplication"));
 		waitForSync(new Callable<Object>(){
@@ -156,6 +156,27 @@ public class UMLIndexingTest extends ModelIndexingTest {
 
 				assertThat(eol("return special.all.size;", ctx), equalTo(1));
 				assertThat(eol("return special.all.first.amount;", ctx), equalTo(9001));
+				assertThat(eol("return special.all.first.base_Class.name;", ctx), equalTo("Example"));
+				return null;
+			}
+		});
+	}
+
+	@Test
+	public void customProfileV5() throws Throwable {
+		indexer.registerMetamodels(new File(BASE_DIRECTORY, "simpleProfile/model.profile.uml"));
+		requestFolderIndex(new File(BASE_DIRECTORY, "simpleProfileApplicationNewVersion"));
+		waitForSync(new Callable<Object>(){
+			@Override
+			public Object call() throws Exception {
+				// Check that we support Papyrus profile versioning
+				Map<String, Object> ctx = Collections.singletonMap(
+					EOLQueryEngine.PROPERTY_DEFAULTNAMESPACES,
+					SIMPLE_PROFILE_NSURI_PREFIX + "/0.0.5");
+
+				assertThat(eol("return special.all.size;", ctx), equalTo(1));
+				assertThat(eol("return special.all.first.amount;", ctx), equalTo(9002));
+				assertThat(eol("return special.all.first.name;", ctx), equalTo("example"));
 				assertThat(eol("return special.all.first.base_Class.name;", ctx), equalTo("Example"));
 				return null;
 			}
