@@ -114,6 +114,9 @@
    <feature url="features/org.hawk.service.api.dt.feature_1.2.0.qualifier.jar" id="org.hawk.service.api.dt.feature" version="1.2.0.qualifier">
       <category name="hawk.clients"/>
    </feature>
+   <feature url="features/org.hawk.uml.feature_1.2.0.qualifier.jar" id="org.hawk.uml.feature" version="1.2.0.qualifier">
+      <category name="hawk.drivers"/>
+   </feature>
    <category-def name="hawk.core" label="Hawk Core"/>
    <category-def name="hawk.connectors" label="Hawk Connectors"/>
    <category-def name="hawk.backends" label="Hawk Backends"/>

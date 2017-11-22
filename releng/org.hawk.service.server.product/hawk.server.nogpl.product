@@ -61,6 +61,7 @@
       <feature id="org.hawk.modelio.exml.feature" installMode="root"/>
       <feature id="org.hawk.git.feature" installMode="root"/>
       <feature id="org.hawk.http.feature" installMode="root"/>
+      <feature id="org.hawk.uml.feature"/>
       <feature id="org.tmatesoft.svnkit"/>
       <feature id="org.eclipse.platform"/>
       <feature id="org.eclipse.help"/>
@@ -84,6 +85,12 @@
       <feature id="org.eclipse.bpmn2.feature"/>
       <feature id="org.eclipse.emf.edit.ui"/>
       <feature id="org.eclipse.emf.common.ui"/>
+      <feature id="org.eclipse.uml2.common"/>
+      <feature id="org.eclipse.uml2.uml"/>
+      <feature id="org.eclipse.emf.mapping.ecore"/>
+      <feature id="org.eclipse.epsilon.core.dependencies.feature"/>
+      <feature id="org.eclipse.emf.ecore.edit"/>
+      <feature id="org.eclipse.emf.mapping"/>
    </features>
 
    <configurations>

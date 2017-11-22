@@ -26,20 +26,21 @@
     <module>features/org.hawk.modelio.exml.feature</module>
     <module>features/org.hawk.orientdb.feature</module>
     <module>features/org.hawk.osgiserver.feature</module>
-    <module>features/org.hawk.svn.feature</module>
-    <module>features/org.hawk.ui.feature</module>
-    <module>features/org.hawk.workspace.feature</module>
-    <module>features/org.hawk.service.api.feature</module>
     <module>features/org.hawk.service.api.dt.feature</module>
-    <module>features/org.hawk.service.clients.cli.feature</module>
+    <module>features/org.hawk.service.api.feature</module>
     <module>features/org.hawk.service.cli.feature</module>
-    <module>features/org.hawk.service.emf.feature</module>
+    <module>features/org.hawk.service.clients.cli.feature</module>
     <module>features/org.hawk.service.emf.dt.feature</module>
     <!-- <module>features/org.hawk.service.emf.ifcexport.feature</module> -->
+    <module>features/org.hawk.service.emf.feature</module>
     <module>features/org.hawk.service.remote.thrift.feature</module>
-    <module>features/org.hawk.service.servlet.feature</module>
     <module>features/org.hawk.service.server.feature</module>
     <module>features/org.hawk.service.server.users.cli.feature</module>
+    <module>features/org.hawk.service.servlet.feature</module>
+    <module>features/org.hawk.svn.feature</module>
+    <module>features/org.hawk.ui.feature</module>
+    <module>features/org.hawk.uml.feature</module>
+    <module>features/org.hawk.workspace.feature</module>
 
     <module>plugins/org.hawk.bpmn</module>
     <module>plugins/org.hawk.core.dependencies</module>
