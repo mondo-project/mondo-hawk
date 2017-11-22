@@ -8,7 +8,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.uml2.uml.resources.util.UMLResourcesUtil;
+import org.eclipse.uml2.uml.util.UMLUtil;
 import org.hawk.core.IFileImporter;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
@@ -30,7 +30,7 @@ public class UMLModelResourceFactory implements IModelResourceFactory {
 	@Override
 	public IHawkModelResource parse(IFileImporter importer, File changedFile) throws Exception {
 		ResourceSet rset = new ResourceSetImpl();
-		UMLResourcesUtil.init(rset);
+		UMLUtil.init(rset);
 		Resource r = rset.createResource(URI.createFileURI(changedFile.getAbsolutePath()));
 		r.load(null);
 
