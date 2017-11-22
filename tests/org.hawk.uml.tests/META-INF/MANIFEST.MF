@@ -5,5 +5,5 @@ Bundle-SymbolicName: org.hawk.uml.tests
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.hawk.uml;bundle-version="1.2.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.hamcrest_1.3.0;bundle-version="1.3.0",
+Require-Bundle: org.hamcrest.library_1.3.0;bundle-version="1.3.0",
  org.junit;bundle-version="4.12.0"
