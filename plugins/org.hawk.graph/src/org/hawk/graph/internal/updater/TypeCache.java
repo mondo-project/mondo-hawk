@@ -33,20 +33,19 @@ public class TypeCache {
 		IGraphNode classnode = hashedEClasses.get(eClass);
 
 		if (classnode == null) {
-
 			final String packageNSURI = eClass.getPackageNSURI();
 			IGraphNode epackagenode = null;
 			try {
 				epackagenode = graph.getMetamodelIndex().get("id", packageNSURI).getSingle();
 			} catch (NoSuchElementException ex) {
-				throw new Exception("Metamodel " + packageNSURI
-						+ " does not have a Node associated with it in the store, please make sure it has been inserted");
+				throw new Exception(String.format(
+						"Metamodel %s does not have a Node associated with it in the store, please make sure it has been inserted",
+						packageNSURI));
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}
 
 			for (IGraphEdge r : epackagenode.getEdges()) {
-
 				IGraphNode othernode = r.getStartNode();
 
 				if (!othernode.equals(epackagenode)
@@ -56,12 +55,12 @@ public class TypeCache {
 				}
 			}
 
-			if (classnode != null)
+			if (classnode != null) {
 				hashedEClasses.put(eClass, classnode);
-			else {
-				throw new Exception("eClass: " + eClass.getName() + "(" + eClass.getUri()
-						+ ") does not have a Node associated with it in the store, please make sure the relevant metamodel has been inserted");
-
+			} else {
+				throw new Exception(String.format(
+						"eClass: %s (%s) does not have a Node associated with it in the store, please make sure the metamodel %s has been inserted",
+						eClass.getName(), eClass.getUri(), packageNSURI));
 			}
 
 			// typeCache properties
