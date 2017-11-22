@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.TimerTask;
 
 import org.apache.thrift.TException;
 import org.eclipse.core.runtime.FileLocator;
@@ -144,7 +143,7 @@ public class HawkServerConfigurator  {
 			hawkInstance.getIndexer().waitFor(HawkState.RUNNING , 3000);
 
 			final HModel hModel = hawkInstance;
-			hawkInstance.getHawk().getModelIndexer().scheduleTask(new TimerTask(){
+			hawkInstance.getHawk().getModelIndexer().scheduleTask(new Runnable(){
 				@Override
 				public void run() {
 					// add metamodels, Do it first before adding attributes or repositories
