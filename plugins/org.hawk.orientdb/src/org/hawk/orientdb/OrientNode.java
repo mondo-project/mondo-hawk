@@ -308,7 +308,7 @@ public class OrientNode implements IGraphNode {
 		changedVertex = getDocument();
 
 		Object oldValue = changedVertex.removeField(PREFIX_PROPERTY + OrientNameCleaner.escapeToField(name));
-		if (oldValue != null) {
+		if (oldValue == null) {
 			changedVertex.removeField(PREFIX_PROPERTY + name);
 		}
 		graph.markNodeAsDirty(this);
