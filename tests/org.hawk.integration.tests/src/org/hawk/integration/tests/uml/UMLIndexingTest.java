@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.hawk.integration.tests.uml;
 
-import static org.hamcrest.collection.IsIterableWithSize.iterableWithSize;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.util.Collections;
@@ -20,6 +20,7 @@ import java.util.concurrent.Callable;
 import org.eclipse.uml2.uml.resources.util.UMLResourcesUtil;
 import org.hawk.backend.tests.BackendTestSuite;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
+import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.epsilon.emc.CEOLQueryEngine;
@@ -31,10 +32,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runners.Parameterized.Parameters;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.equalTo;
 
 /**
  * Tests for UML indexing. These *must* be run as JUnit plug-in tests, as we
@@ -72,9 +69,9 @@ public class UMLIndexingTest extends ModelIndexingTest {
 		waitForSync(new Callable<Object>(){
 			@Override
 			public Object call() throws Exception {
-				assertThat(eol("return Model.types.select(t|t.name='Profile').size;"), equalTo(1));
-				assertThat(eol("return Class.all.size;",
-					Collections.singletonMap(CEOLQueryEngine.PROPERTY_FILECONTEXT, "*model.uml")), equalTo(4));
+				assertEquals(1, eol("return Model.types.select(t|t.name='Profile').size;"));
+				assertEquals(4, eol("return Class.all.size;",
+					Collections.singletonMap(CEOLQueryEngine.PROPERTY_FILECONTEXT, "*model.uml")));
 
 				try (IGraphTransaction tx = db.beginTransaction()) {
 					GraphNodeWrapper attr = (GraphNodeWrapper) eol(
@@ -82,7 +79,12 @@ public class UMLIndexingTest extends ModelIndexingTest {
 
 					// Check cross-reference to UML predefined library
 					final IGraphNode node = attr.getNode();
-					assertThat(node.getOutgoingWithType("type"), iterableWithSize(1));
+					final Iterable<IGraphEdge> itOutgoing = node.getOutgoingWithType("type");
+					int size = 0;
+					for (IGraphEdge e : itOutgoing) {
+						size++;
+					}
+					assertEquals(1, size);
 
 					tx.success();
 				}
@@ -98,7 +100,7 @@ public class UMLIndexingTest extends ModelIndexingTest {
 		waitForSync(new Callable<Object>(){
 			@Override
 			public Object call() throws Exception {
-				assertThat(eol("return Stereotype.all.select(s|s.name='special').size;"), equalTo(1));
+				assertEquals(1, eol("return Stereotype.all.select(s|s.name='special').size;"));
 				return null;
 			}
 		});
@@ -107,8 +109,8 @@ public class UMLIndexingTest extends ModelIndexingTest {
 	@Test
 	public void indexLibraries() throws Throwable {
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			assertThat(eol("return Package.all.size;"), equalTo(4));
-			assertThat(eol("return ModelLibrary.all.size;"), equalTo(4));
+			assertEquals(4, eol("return Package.all.size;"));
+			assertEquals(4, eol("return ModelLibrary.all.size;"));
 
 			/*
 			 * A stereotype application is serialized in XMI like this:
@@ -119,13 +121,12 @@ public class UMLIndexingTest extends ModelIndexingTest {
 			 * Stereotype.all just fine, and then we can use base_X to see the
 			 * instance of the metaclass that was extended.
 			 */
-			assertThat(eol("return ModelLibrary.all.base_Package.flatten.size;"), equalTo(4));
+			assertEquals(4, eol("return ModelLibrary.all.base_Package.flatten.size;"));
 
 			// Try stereotypes from the Ecore profile (the libraries use a few of those)
-			assertThat(eol("return EDataType.all.size;",
+			assertEquals(5, eol("return EDataType.all.size;",
 					Collections.singletonMap(EOLQueryEngine.PROPERTY_DEFAULTNAMESPACES,
-							"http://www.eclipse.org/uml2/schemas/Ecore/5")),
-					equalTo(5));
+							"http://www.eclipse.org/uml2/schemas/Ecore/5")));
 
 			/*
 			 * Find all applications of a profile: profiles are equivalent to
@@ -154,9 +155,9 @@ public class UMLIndexingTest extends ModelIndexingTest {
 					EOLQueryEngine.PROPERTY_DEFAULTNAMESPACES,
 					SIMPLE_PROFILE_NSURI_PREFIX + "/0.0.4");
 
-				assertThat(eol("return special.all.size;", ctx), equalTo(1));
-				assertThat(eol("return special.all.first.amount;", ctx), equalTo(9001));
-				assertThat(eol("return special.all.first.base_Class.name;", ctx), equalTo("Example"));
+				assertEquals(1, eol("return special.all.size;", ctx));
+				assertEquals(9001, eol("return special.all.first.amount;", ctx));
+				assertEquals("Example", eol("return special.all.first.base_Class.name;", ctx));
 				return null;
 			}
 		});
@@ -174,10 +175,10 @@ public class UMLIndexingTest extends ModelIndexingTest {
 					EOLQueryEngine.PROPERTY_DEFAULTNAMESPACES,
 					SIMPLE_PROFILE_NSURI_PREFIX + "/0.0.5");
 
-				assertThat(eol("return special.all.size;", ctx), equalTo(1));
-				assertThat(eol("return special.all.first.amount;", ctx), equalTo(9002));
-				assertThat(eol("return special.all.first.name;", ctx), equalTo("example"));
-				assertThat(eol("return special.all.first.base_Class.name;", ctx), equalTo("Example"));
+				assertEquals(1, eol("return special.all.size;", ctx));
+				assertEquals(9002, eol("return special.all.first.amount;", ctx));
+				assertEquals("example", eol("return special.all.first.name;", ctx));
+				assertEquals("Example", eol("return special.all.first.base_Class.name;", ctx));
 				return null;
 			}
 		});

@@ -1,9 +1,7 @@
 package org.hawk.uml;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -54,17 +52,17 @@ public class UMLProfileParsingTest {
 			if (ob instanceof IHawkPackage) {
 				final EMFPackage pkg = (EMFPackage) ob;
 				packages.add(pkg);
-				assertThat(wf.isProfile(pkg.getEObject()), equalTo(true));
+				assertTrue(wf.isProfile(pkg.getEObject()));
 			}
 		}
 
-		assertThat(packages, hasSize(5));
+		assertEquals(5, packages.size());
 
 		final List<String> nsURIs = packages.stream().map(pkg -> pkg.getNsURI()).collect(Collectors.toList());
 
-		assertThat(nsURIs, hasItem(FIRST_PROFILE_NSURI + "/0.0.1"));
+		assertTrue(nsURIs.contains(FIRST_PROFILE_NSURI + "/0.0.1"));
 		for (int i = 2; i <= 5; i++) {
-			assertThat(nsURIs, hasItem(LATER_PROFILE_NSURI + "/0.0." + i));
+			assertTrue(nsURIs.contains(LATER_PROFILE_NSURI + "/0.0." + i));
 		}
 	}
 
@@ -75,7 +73,7 @@ public class UMLProfileParsingTest {
 		for (IHawkObject ob : model.getAllContents()) {
 			final EMFClass type = (EMFClass) ob.getType();
 			if ("special".equals(type.getName())) {
-				assertThat(type.getPackageNSURI(), equalTo(LATER_PROFILE_NSURI + "/0.0.4"));
+				assertEquals(LATER_PROFILE_NSURI + "/0.0.4", type.getPackageNSURI());
 				return;
 			}
 		}

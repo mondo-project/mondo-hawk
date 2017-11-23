@@ -93,7 +93,6 @@
     <module>releng/org.hawk.service.server.productdefs</module>
 
     <module>tests/com.github.peterwippermann.junit4.parameterizedsuite_1.1.0</module>
-    <module>tests/org.hamcrest.library_1.3.0</module>
     <module>tests/org.hawk.backend.tests</module>
     <module>tests/org.hawk.integration.tests</module>
     <module>tests/org.hawk.manifest.tests</module>

@@ -11,8 +11,10 @@
 package org.hawk.integration.tests.emf;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 
@@ -23,10 +25,6 @@ import org.hawk.integration.tests.ModelIndexingTest;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.containsInAnyOrder;
 
 /**
  * Indexes models and counts the instances of a certain type.
@@ -78,7 +76,12 @@ public class CountInstancesTest extends ModelIndexingTest {
 
 				// Test for bug #56: select(t:Type|xyz) does not work
 				assertEquals(3, eol("return Model.allContents.select(t:Tree|true).size;"));
-				assertThat((Collection<String>) eol("return Model.allContents.collect(t:Tree|t.label);"), containsInAnyOrder("xyz", "root", "abc"));
+
+				final Collection<String> labels = (Collection<String>) eol("return Model.allContents.collect(t:Tree|t.label);");
+				assertEquals(3, labels.size());
+				for (String e : Arrays.asList("xyz", "root", "abc")) {
+					assertTrue(labels.contains(e));
+				}
 
 				assertEquals(3, eol("return Tree.all.size;"));
 				assertEquals(2, eol("return Tree.all.selectOne(t|t.label='root').children.size;"));

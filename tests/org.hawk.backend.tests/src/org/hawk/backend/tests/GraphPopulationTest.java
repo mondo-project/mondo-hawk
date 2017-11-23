@@ -10,10 +10,6 @@
  ******************************************************************************/
 package org.hawk.backend.tests;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.*;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -91,7 +87,7 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			n.setProperty("x", null);
-			assertThat(n.getPropertyKeys(), not(contains("x")));
+			assertFalse(n.getPropertyKeys().stream().anyMatch(key -> "x".equals(key)));
 			tx.success();
 		}
 
@@ -330,7 +326,7 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 				assertTrue("Property " + propName + " should be one of the keys",
 						n1.getPropertyKeys().contains(propName));
 				n1.removeProperty(propName);
-				assertFalse("Property " + propName + " should not be one of the keys",
+				assertFalse("Property " + propName + " should have been removed",
 						n1.getPropertyKeys().contains(propName));
 				tx.success();
 			}

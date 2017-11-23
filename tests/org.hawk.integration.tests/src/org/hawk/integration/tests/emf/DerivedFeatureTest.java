@@ -11,6 +11,7 @@
 package org.hawk.integration.tests.emf;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
@@ -28,10 +29,6 @@ import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.integration.tests.ModelIndexingTest;
 import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.*;
 
 public class DerivedFeatureTest extends ModelIndexingTest {
 
@@ -98,8 +95,10 @@ public class DerivedFeatureTest extends ModelIndexingTest {
 				// Reverse reference navigation for the edges returns the element nodes and not just the derived value nodes
 				List<String> expected = Arrays.asList("t3", "t4");
 				Collection<String> result = (Collection<String>) eol("return Tree.all.selectOne(t|t.label='t6').revRefNav_descendants.label.flatten;");
-				System.err.println(result);
-				assertThat(result, containsInAnyOrder(expected.toArray()));
+				assertEquals(expected.size(), result.size());
+				for (String e: expected) {
+					assertTrue(result.contains(e));
+				}
 
 				return null;
 			}
@@ -122,7 +121,7 @@ public class DerivedFeatureTest extends ModelIndexingTest {
 				{
 					// TODO: isMany is not honored on queries - need to add first
 					Object result = eol("return Tree.all.selectOne(t|t.label='t3').maxDescendant.first.label;");
-					assertThat(result, equalTo("t6"));
+					assertEquals("t6", result);
 				}
 
 				// Reverse derived edges
