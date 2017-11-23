@@ -7,7 +7,7 @@
         status="integration">
 	</info>
 	<dependencies>
-		<dependency org="com.orientechnologies" name="orientdb-client" rev="2.2.8"/>
+		<dependency org="com.orientechnologies" name="orientdb-client" rev="2.2.30"/>
 		<dependency org="org.apache.commons" name="commons-pool2" rev="2.4.2" />
 	</dependencies>
 </ivy-module>
