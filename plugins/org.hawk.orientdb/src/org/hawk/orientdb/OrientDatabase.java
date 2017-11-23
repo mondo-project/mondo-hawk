@@ -347,7 +347,6 @@ public class OrientDatabase implements IGraphDatabase {
 			saveDirty();
 			getGraph().commit();
 		}
-		ensureWALSetTo(false);
 		db = getGraph();
 		currentMode = Mode.NO_TX_MODE;
 	}
@@ -362,27 +361,6 @@ public class OrientDatabase implements IGraphDatabase {
 				db.getTransaction().close();
 			}
 			pool.returnObject(db);
-		}
-	}
-
-	private void ensureWALSetTo(final boolean useWAL) {
-		if (useWAL != OGlobalConfiguration.USE_WAL.getValueAsBoolean()) {
-			final ODatabaseDocumentTx db = getGraph();
-			final OStorage storage = db.getStorage();
-
-			releaseConnection();
-			synchronized (allConns) {
-				for (ODatabaseDocumentTx conn : allConns) {
-					try {
-						pool.invalidateObject(conn);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-				pool.clear();
-			}
-			storage.close(true, false);
-			OGlobalConfiguration.USE_WAL.setValue(useWAL);
 		}
 	}
 
@@ -405,7 +383,6 @@ public class OrientDatabase implements IGraphDatabase {
 		if (!db.getTransaction().isActive()) {
 			saveDirty();
 			getGraph().commit();
-			ensureWALSetTo(true); // this reopens the DB, so it *must* go before db.begin()
 		}
 		currentMode = Mode.TX_MODE;
 	}
