@@ -53,6 +53,7 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
 import com.orientechnologies.orient.core.intent.OIntentMassiveInsert;
+import com.orientechnologies.orient.core.intent.OIntentMassiveRead;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchemaProxy;
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -105,7 +106,7 @@ public class OrientDatabase implements IGraphDatabase {
 			if (exists(db)) {
 				db.open("admin", "admin");
 			}
-			db.declareIntent(new OIntentMassiveInsert());
+			db.declareIntent(currentMode == Mode.NO_TX_MODE ? new OIntentMassiveInsert() : new OIntentMassiveRead());
 			return db;
 		}
 
@@ -186,6 +187,20 @@ public class OrientDatabase implements IGraphDatabase {
 
 	private OrientIndexStore indexStore;
 
+	static {
+		OGlobalConfiguration.OBJECT_SAVE_ONLY_DIRTY.setValue(true);
+		OGlobalConfiguration.SBTREE_MAX_KEY_SIZE.setValue(102_400);
+
+		// Add a Guava-based Orient cache as default unless user specified something else
+		@SuppressWarnings("unchecked")
+		OConfigurableStatefulFactory<String, ORecordCache> factory =
+			(OConfigurableStatefulFactory<String, ORecordCache>) Orient.instance().getLocalRecordCache();
+		factory.register(ORecordCacheGuava.class.getName(), ORecordCacheGuava.class);
+		if (System.getProperty(OGlobalConfiguration.CACHE_LOCAL_IMPL.getKey()) == null) {
+			OGlobalConfiguration.CACHE_LOCAL_IMPL.setValue(ORecordCacheGuava.class.getName());
+		}
+	}
+
 	@Override
 	public String getPath() {
 		return storageFolder.getPath();
@@ -204,18 +219,6 @@ public class OrientDatabase implements IGraphDatabase {
 		this.storageFolder = parentfolder;
 		this.tempFolder = new File(storageFolder, "temp");
 		this.console = c;
-
-		OGlobalConfiguration.OBJECT_SAVE_ONLY_DIRTY.setValue(true);
-		OGlobalConfiguration.SBTREE_MAX_KEY_SIZE.setValue(102_400);
-
-		// Add a Guava-based Orient cache as default unless user specified something else
-		@SuppressWarnings("unchecked")
-		OConfigurableStatefulFactory<String, ORecordCache> factory =
-			(OConfigurableStatefulFactory<String, ORecordCache>) Orient.instance().getLocalRecordCache();
-		factory.register(ORecordCacheGuava.class.getName(), ORecordCacheGuava.class);
-		if (System.getProperty(OGlobalConfiguration.CACHE_LOCAL_IMPL.getKey()) == null) {
-			OGlobalConfiguration.CACHE_LOCAL_IMPL.setValue(ORecordCacheGuava.class.getName());
-		}
 
 		console.println("Starting database " + iURL);
 		this.dbURL = iURL;
@@ -345,9 +348,9 @@ public class OrientDatabase implements IGraphDatabase {
 		ODatabaseDocumentTx db = getGraph();
 		if (db.getTransaction().isActive()) {
 			saveDirty();
-			getGraph().commit();
+			db.commit();
 		}
-		db = getGraph();
+
 		currentMode = Mode.NO_TX_MODE;
 	}
 
@@ -529,7 +532,7 @@ public class OrientDatabase implements IGraphDatabase {
 		try {
 			return pool.borrowObject();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Error opening connection to Orient", e);
 			return null;
 		}
 	}
