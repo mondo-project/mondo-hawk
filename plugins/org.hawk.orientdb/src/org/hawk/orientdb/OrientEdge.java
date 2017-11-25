@@ -240,6 +240,10 @@ public class OrientEdge implements IGraphEdge {
 	public void save() {
 		if (changedEdge != null && changedEdge.isDirty()) {
 			changedEdge.save();
+
+			// Reload document within Orient - needed for UMLIndexingTest
+			changedEdge = null;
+			changedEdge = getDocument();
 		}
 		if (getId().isPersistent()) {
 			changedEdge = null;

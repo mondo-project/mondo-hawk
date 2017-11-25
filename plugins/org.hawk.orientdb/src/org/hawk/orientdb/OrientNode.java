@@ -464,6 +464,10 @@ public class OrientNode implements IGraphNode {
 		if (changedVertex != null && changedVertex.isDirty()) {
 			changedVertex.save();
 			id = changedVertex.getIdentity();
+
+			// Reload document within Orient - needed for UMLIndexingTest
+			changedVertex = null;
+			changedVertex = getDocument();
 		}
 		if (getId().isPersistent()) {
 			changedVertex = null;
