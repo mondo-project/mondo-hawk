@@ -81,7 +81,7 @@ public class UMLIndexingTest extends ModelIndexingTest {
 					final IGraphNode node = attr.getNode();
 					final Iterable<IGraphEdge> itOutgoing = node.getOutgoingWithType("type");
 					int size = 0;
-					for (IGraphEdge e : itOutgoing) {
+					for (@SuppressWarnings("unused") IGraphEdge e : itOutgoing) {
 						size++;
 					}
 					assertEquals(1, size);
@@ -128,17 +128,6 @@ public class UMLIndexingTest extends ModelIndexingTest {
 					Collections.singletonMap(EOLQueryEngine.PROPERTY_DEFAULTNAMESPACES,
 							"http://www.eclipse.org/uml2/schemas/Ecore/5")));
 
-			/*
-			 * Find all applications of a profile: profiles are equivalent to
-			 * EPackages, and Hawk does not allow you to link from a model
-			 * element node to a metamodel node, only to a type node. For that
-			 * reason, profileApplication is mapped to a string, which we can
-			 * then use as part of meta-level queries to read the profile that
-			 * was applied.
-			 */
-			// TODO add support for this (perhaps use a listener to register an indexed attribute automatically?)
-			//assertThat(eol("return Package.all.select(s|s.profileApplication.contains('http://www.omg.org/spec/UML/20131001/StandardProfile')).size;"), equalTo(4));
-
 			tx.success();
 		}
 	}
@@ -158,6 +147,12 @@ public class UMLIndexingTest extends ModelIndexingTest {
 				assertEquals(1, eol("return special.all.size;", ctx));
 				assertEquals(9001, eol("return special.all.first.amount;", ctx));
 				assertEquals("Example", eol("return special.all.first.base_Class.name;", ctx));
+
+				// profileApplication is mapped as an ofType edge
+				assertEquals(1, eol("return RootElementApplication.all.size;", ctx));
+				assertEquals("Example", eol(
+					"return RootElementApplication.all.packagedElement.flatten.first.name;", ctx));
+
 				return null;
 			}
 		});
