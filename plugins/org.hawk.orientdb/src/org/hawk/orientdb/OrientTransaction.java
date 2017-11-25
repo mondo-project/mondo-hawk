@@ -15,16 +15,17 @@ import org.hawk.core.graph.IGraphTransaction;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 
 public class OrientTransaction implements IGraphTransaction {
-
 	private OrientDatabase graph;
 
 	public OrientTransaction(OrientDatabase orientDatabase) {
 		this.graph = orientDatabase;
-		if (!graph.getGraph().getTransaction().isActive()) {
+
+		final ODatabaseDocumentTx db = graph.getGraph();
+		if (!db.getTransaction().isActive()) {
 			// OrientDB does not support nested transactions: a begin() will
 			// *roll back* any transaction that we had from before!
 			graph.clearPostponedIndexes();
-			graph.getGraph().begin();
+			db.begin();
 		}
 	}
 
