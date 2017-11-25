@@ -65,7 +65,7 @@ public class GraphMetaModelResourceInjector {
 
 		LOGGER.info("ADDING METAMODELS: ");
 		LOGGER.info("ADDING: ");
-		int nodes = parseResource(set);
+		int nodes = insertMetamodels(set);
 		LOGGER.info("{} METAMODEL NODES! (took ~{} sec)", nodes, (System.nanoTime() - startTime) / 1_000_000_000);
 	}
 
@@ -261,7 +261,7 @@ public class GraphMetaModelResourceInjector {
 	 * @param graph
 	 * @return
 	 */
-	private int parseResource(Set<IHawkMetaModelResource> metamodels) throws Exception {
+	private int insertMetamodels(Set<IHawkMetaModelResource> metamodels) throws Exception {
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
 			listener.changeStart();
