@@ -11,6 +11,8 @@ import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkClassifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Cache that can be shared across multiple {@link GraphModelBatchInjector}
@@ -19,6 +21,7 @@ import org.hawk.core.model.IHawkClassifier;
  */
 public class TypeCache {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(TypeCache.class);
 	private Map<IHawkClass, IGraphNode> hashedEClasses = new HashMap<>();
 	private Map<IGraphNode, Map<String, Object>> hashedEClassProperties = new HashMap<>();
 
@@ -34,23 +37,26 @@ public class TypeCache {
 
 		if (classnode == null) {
 			final String packageNSURI = eClass.getPackageNSURI();
-			IGraphNode epackagenode = null;
+			IGraphNode ePackageNode = null;
 			try {
-				epackagenode = graph.getMetamodelIndex().get("id", packageNSURI).getSingle();
+				ePackageNode = graph.getMetamodelIndex().get("id", packageNSURI).getSingle();
 			} catch (NoSuchElementException ex) {
 				throw new Exception(String.format(
 						"Metamodel %s does not have a Node associated with it in the store, please make sure it has been inserted",
 						packageNSURI));
 			} catch (Exception e2) {
-				e2.printStackTrace();
+				LOGGER.error("Error while finding metamodel node", e2);
 			}
 
-			for (IGraphEdge r : epackagenode.getEdges()) {
-				IGraphNode othernode = r.getStartNode();
+			for (IGraphEdge r : ePackageNode.getEdges()) {
+				final IGraphNode otherNode = r.getStartNode();
+				if (otherNode.equals(ePackageNode)) {
+					continue;
+				}
 
-				if (!othernode.equals(epackagenode)
-						&& othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(eClass.getName())) {
-					classnode = othernode;
+				final Object id = otherNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
+				if (id.equals(eClass.getName())) {
+					classnode = otherNode;
 					break;
 				}
 			}

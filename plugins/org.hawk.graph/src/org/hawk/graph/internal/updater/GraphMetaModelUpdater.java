@@ -16,8 +16,12 @@ import org.hawk.core.IMetaModelUpdater;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.runtime.CompositeGraphChangeListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GraphMetaModelUpdater implements IMetaModelUpdater {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(GraphMetaModelUpdater.class);
 
 	@Override
 	public boolean insertMetamodels(Set<IHawkMetaModelResource> set,
@@ -28,8 +32,7 @@ public class GraphMetaModelUpdater implements IMetaModelUpdater {
 							.getCompositeGraphChangeListener());
 			return true;
 		} catch (Exception e) {
-			System.err.println("metamodel insertion failed");
-			e.printStackTrace();
+			LOGGER.error("Metamodel insertion failed", e);
 			return false;
 		}
 	}
