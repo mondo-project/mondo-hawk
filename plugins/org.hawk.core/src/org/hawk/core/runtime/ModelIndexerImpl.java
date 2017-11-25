@@ -629,80 +629,47 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public void registerMetamodels(File... f) throws Exception {
+	public void registerMetamodels(File... metamodel) throws Exception {
 		stateListener.info("Adding metamodel(s)...");
-		File[] metamodel = null;
+		HashSet<IHawkMetaModelResource> set = new HashSet<IHawkMetaModelResource>();
 
-		if (f != null) {
-			metamodel = f;
-		} else {
-			JFrame fileChoserWindow = null;
+		IMetaModelResourceFactory parser = null;
+		String previousParserType = null;
 
-			fileChoserWindow = new JFrame();
+		for (File mm : metamodel) {
+			parser = getMetaModelParserFromFilename(mm.getPath());
 
-			JFileChooser filechoser = new JFileChooser();
-			filechoser.setDialogTitle("Chose metamodel File to register:");
-			filechoser.setMultiSelectionEnabled(true);
-			File genericWorkspaceFile = new File("");
-			String parent = genericWorkspaceFile.getAbsolutePath().replaceAll("\\\\", "/");
+			if (parser == null) {
+				console.printerrln("metamodel regstration failed, no relevant factory found");
+			} else {
 
-			// change to workspace directory or a generic one on release
-			filechoser.setCurrentDirectory(
-					new File(new File(parent).getParentFile().getAbsolutePath().replaceAll("\\\\", "/")
-							+ "workspace/org.hawk.emf/src/org/hawk/emf/metamodel/examples/single"));
+				String parserType = parser.getType();
 
-			if (filechoser.showDialog(fileChoserWindow, "Select File") == JFileChooser.APPROVE_OPTION)
-				metamodel = filechoser.getSelectedFiles();
-			else {
-				System.err.println("Chosing of Metamodel file canceled");
-			}
+				IHawkMetaModelResource metamodelResource = parser.parse(mm);
+				// modelResourceSet.getResource(
+				// URI.createFileURI(mm.getAbsolutePath()), true);
+				// metamodelResource.setURI(URI.createURI("resource_from_file_"
+				// + mm.getCanonicalPath()));
 
-			fileChoserWindow.dispose();
-		}
-
-		if (metamodel != null) {
-
-			HashSet<IHawkMetaModelResource> set = new HashSet<IHawkMetaModelResource>();
-
-			IMetaModelResourceFactory parser = null;
-			String previousParserType = null;
-
-			for (File mm : metamodel) {
-
-				parser = getMetaModelParserFromFilename(mm.getPath());
-
-				if (parser == null) {
-					console.printerrln("metamodel regstration failed, no relevant factory found");
+				if (previousParserType != null && !previousParserType.equals(parserType)) {
+					console.printerrln(
+							"cannot add heterogeneous metamodels concurrently, plase add one metamodel type at a time");
+					set.clear();
+					break;
 				} else {
-
-					String parserType = parser.getType();
-
-					IHawkMetaModelResource metamodelResource = parser.parse(mm);
-					// modelResourceSet.getResource(
-					// URI.createFileURI(mm.getAbsolutePath()), true);
-					// metamodelResource.setURI(URI.createURI("resource_from_file_"
-					// + mm.getCanonicalPath()));
-
-					if (previousParserType != null && !previousParserType.equals(parserType)) {
-						console.printerrln(
-								"cannot add heterogeneous metamodels concurrently, plase add one metamodel type at a time");
-						set.clear();
-						break;
-					} else {
-						if (metamodelResource != null) {
-							console.println("Adding metamodels in: " + mm + " to store");
-							set.add(metamodelResource);
-							previousParserType = parserType;
-						}
+					if (metamodelResource != null) {
+						console.println("Adding metamodels in: " + mm + " to store");
+						set.add(metamodelResource);
+						previousParserType = parserType;
 					}
 				}
+			}
 
-			} // if metamodels added successfully
-			if (metamodelupdater.insertMetamodels(set, this)) {
-				// reset repositories as models may be parsable in them
-				for (IVcsManager s : monitors) {
-					resetRepositoy(s.getLocation());
-				}
+		} // if metamodels added successfully
+		if (metamodelupdater.insertMetamodels(set, this)) {
+			// reset repositories as models may be parsable in them
+			for (IVcsManager s : monitors) {
+				resetRepositoy(s.getLocation());
 			}
 		}
 		stateListener.info("Added metamodel(s).");
