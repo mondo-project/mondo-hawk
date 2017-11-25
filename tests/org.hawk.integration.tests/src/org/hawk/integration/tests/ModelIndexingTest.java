@@ -39,6 +39,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.TemporaryFolder;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -50,6 +51,9 @@ import org.junit.runners.Parameterized;
 public class ModelIndexingTest {
 	@Rule
 	public TemporaryFolder tempFolder = new TemporaryFolder();
+
+	@Rule
+	public TestName testName = new TestName();
 
 	/**
 	 * Rule that will attach a {@link SyncValidationListener} to the instance
@@ -109,7 +113,7 @@ public class ModelIndexingTest {
 		}
 
 		final File indexerFolder = tempFolder.getRoot();
-		final File dbFolder = new File(indexerFolder, "db");
+		final File dbFolder = new File(indexerFolder, "test_" + testName.getMethodName());
 		dbFolder.mkdir();
 
 		console = new DefaultConsole();
