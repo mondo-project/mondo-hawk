@@ -33,7 +33,7 @@ import com.github.peterwippermann.junit4.parameterizedsuite.ParameterizedSuite;
 })
 public class BackendTestSuite {
 
-	@Parameters(name="Parameters are {0}")
+	@Parameters(name="{0}")
 	public static Object[] params() {
 		return new Object[][] {
 			{new Neo4JDatabaseFactory()},
