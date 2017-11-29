@@ -488,7 +488,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		try {
 			LOGGER.info("Waiting {}s for all scheduled tasks to complete", SHUTDOWN_WAIT_SECONDS);
-			updateTimer.shutdown();
+			updateTimer.shutdownNow();
 			updateTimer.awaitTermination(SHUTDOWN_WAIT_SECONDS, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			LOGGER.error("Wait for scheduled tasks was interrupted", e);
