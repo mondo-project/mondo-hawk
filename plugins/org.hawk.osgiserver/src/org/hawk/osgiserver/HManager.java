@@ -127,8 +127,7 @@ public class HManager {
 			 * i.createExecutableExtension("query_language")); }
 			 */
 		} catch (Exception e) {
-			System.err.println("error in initialising osgi config:");
-			e.printStackTrace();
+			HModel.getConsole().printerrln(e);
 		}
 	}
 
@@ -257,8 +256,7 @@ public class HManager {
 			if (i == null) {
 				i = ii;
 			} else {
-				System.err
-						.println("more than one metamodel updater found, only one allowed");
+				HModel.getConsole().printerrln("more than one metamodel updater found, only one allowed");
 			}
 		}
 
@@ -374,11 +372,10 @@ public class HManager {
 	}
 
 	public boolean stopAllRunningInstances(ShutdownRequestType reqType) {
-		System.out.println("shutting down hawk:");
+		HModel.getConsole().println("Shutting down hawk:");
 		for (HModel hm : all) {
 			if (hm.isRunning()) {
-				System.out.println("stopping: " + hm.getName() + " : "
-						+ hm.getFolder());
+				HModel.getConsole().println(String.format("Stopping %s (%s)", hm.getName(), hm.getFolder()));
 				hm.stop(reqType);
 			}
 		}

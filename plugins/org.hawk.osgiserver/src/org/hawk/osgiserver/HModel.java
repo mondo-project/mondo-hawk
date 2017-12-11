@@ -171,10 +171,9 @@ public class HModel implements IStateListener {
 			hm.hawk.getModelIndexer().setMetaModelUpdater(metaModelUpdater);
 			return hm;
 		} catch (Throwable e) {
-			System.err.println("Exception in trying to add create Indexer from folder:");
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-			System.err.println("Adding of indexer aborted, please try again");
+			getConsole().printerrln("Exception in trying to add create Indexer from folder:");
+			getConsole().printerrln(e);
+			getConsole().printerrln("Adding of indexer aborted, please try again");
 			return null;
 		}
 	}
@@ -388,7 +387,7 @@ public class HModel implements IStateListener {
 		}
 
 		if (f.exists()) {
-			System.err.println("hawk removed from ui but persistence remains at: " + f);
+			getConsole().println("Hawk instance removed from ui but persistence remains at: " + f);
 		}
 	}
 
@@ -577,8 +576,7 @@ public class HModel implements IStateListener {
 		try {
 			hawk.getModelIndexer().removeVCS(manager);
 		} catch (Exception e) {
-			System.err.println("error in removerepository:");
-			e.printStackTrace();
+			getConsole().printerrln(e);
 		}
 	}
 
@@ -598,8 +596,7 @@ public class HModel implements IStateListener {
 		try {
 			hawk.getModelIndexer().removeMetamodels(selectedMetamodels);
 		} catch (Exception e) {
-			System.err.println("error in removemetamodel:");
-			e.printStackTrace();
+			getConsole().printerrln(e);
 		}
 	}
 
