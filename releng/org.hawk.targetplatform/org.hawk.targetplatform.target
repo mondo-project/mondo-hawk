@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Hawk Target Platform" sequenceNumber="126">
+<?pde version="3.8"?><target name="Hawk Target Platform" sequenceNumber="128">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.jetty.bundles.f.feature.group" version="9.2.13.201508192117"/>
@@ -7,19 +7,19 @@
 <repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.2.13.v20150730"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.apache.commons.collections.source" version="3.2.0.v2013030210310"/>
-<unit id="org.apache.commons.collections" version="3.2.0.v2013030210310"/>
-<unit id="org.apache.commons.beanutils.source" version="1.8.0.v201205091237"/>
 <unit id="com.google.guava" version="15.0.0.v201403281430"/>
-<unit id="org.apache.commons.beanutils" version="1.8.0.v201205091237"/>
 <unit id="com.google.guava.source" version="15.0.0.v201403281430"/>
+<unit id="org.apache.commons.beanutils" version="1.8.0.v201205091237"/>
+<unit id="org.apache.commons.beanutils.source" version="1.8.0.v201205091237"/>
+<unit id="org.apache.commons.collections" version="3.2.0.v2013030210310"/>
+<unit id="org.apache.commons.collections.source" version="3.2.0.v2013030210310"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150124073747/repository/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="net.java.dev.jna" version="4.1.0.v06022015_1911"/>
-<unit id="org.tmatesoft.svnkit" version="1.8.11.r10483_v20150925_0010"/>
-<unit id="org.tmatesoft.sqljet" version="1.1.10.r1317_v20140121_0107"/>
 <unit id="org.apache.thrift" version="0.9.3"/>
+<unit id="org.tmatesoft.sqljet" version="1.1.10.r1317_v20140121_0107"/>
+<unit id="org.tmatesoft.svnkit" version="1.8.11.r10483_v20150925_0010"/>
 <unit id="org.tmatesoft.svnkit.feature.group" version="1.8.11.r10483_v20150925_0010"/>
 <repository location="http://mondo-project.github.io/mondo-hawk/thirdparty-nonp2/"/>
 </location>
@@ -31,80 +31,80 @@
 <repository location="http://download.eclipse.org/epsilon/interim/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.apache.httpcomponents.httpclient" version="4.3.6.v201411290715"/>
-<unit id="org.apache.httpcomponents.httpcore.nio.source" version="4.1.0.v201101201700"/>
-<unit id="org.apache.commons.codec.source" version="1.6.0.v201305230611"/>
+<unit id="ch.qos.logback.classic" version="1.0.7.v20121108-1250"/>
 <unit id="ch.qos.logback.classic.source" version="1.0.7.v20121108-1250"/>
-<unit id="org.slf4j.api.source" version="1.7.2.v20121108-1250"/>
-<unit id="com.google.inject.multibindings" version="3.0.0.v201402270930"/>
+<unit id="ch.qos.logback.core" version="1.0.7.v20121108-1250"/>
 <unit id="ch.qos.logback.core.source" version="1.0.7.v20121108-1250"/>
-<unit id="org.apache.httpcomponents.httpclient.source" version="4.3.6.v201411290715"/>
-<unit id="org.slf4j.api" version="1.7.2.v20121108-1250"/>
-<unit id="org.apache.commons.lang" version="2.6.0.v201404270220"/>
-<unit id="com.google.inject.source" version="3.0.0.v201312141243"/>
-<unit id="org.apache.httpcomponents.httpcore.nio" version="4.1.0.v201101201700"/>
-<unit id="org.apache.httpcomponents.httpcore" version="4.3.3.v201411290715"/>
-<unit id="com.google.inject.assistedinject" version="3.0.0.v201402270930"/>
 <unit id="ch.qos.logback.slf4j" version="1.0.7.v20121108-1250"/>
 <unit id="ch.qos.logback.slf4j.source" version="1.0.7.v20121108-1250"/>
-<unit id="ch.qos.logback.core" version="1.0.7.v20121108-1250"/>
-<unit id="org.apache.httpcomponents.httpcore.source" version="4.3.3.v201411290715"/>
-<unit id="org.apache.commons.lang3" version="3.1.0.v201403281430"/>
-<unit id="com.google.inject.assistedinject.source" version="3.0.0.v201402270930"/>
-<unit id="org.apache.commons.lang3.source" version="3.1.0.v201403281430"/>
-<unit id="ch.qos.logback.classic" version="1.0.7.v20121108-1250"/>
-<unit id="org.apache.commons.codec" version="1.6.0.v201305230611"/>
 <unit id="com.google.inject" version="3.0.0.v201312141243"/>
+<unit id="com.google.inject.assistedinject" version="3.0.0.v201402270930"/>
+<unit id="com.google.inject.assistedinject.source" version="3.0.0.v201402270930"/>
+<unit id="com.google.inject.multibindings" version="3.0.0.v201402270930"/>
 <unit id="com.google.inject.multibindings.source" version="3.0.0.v201402270930"/>
+<unit id="com.google.inject.source" version="3.0.0.v201312141243"/>
+<unit id="org.apache.commons.codec" version="1.6.0.v201305230611"/>
+<unit id="org.apache.commons.codec.source" version="1.6.0.v201305230611"/>
+<unit id="org.apache.commons.lang" version="2.6.0.v201404270220"/>
 <unit id="org.apache.commons.lang.source" version="2.6.0.v201404270220"/>
+<unit id="org.apache.commons.lang3" version="3.1.0.v201403281430"/>
+<unit id="org.apache.commons.lang3.source" version="3.1.0.v201403281430"/>
+<unit id="org.apache.httpcomponents.httpclient" version="4.3.6.v201411290715"/>
+<unit id="org.apache.httpcomponents.httpclient.source" version="4.3.6.v201411290715"/>
+<unit id="org.apache.httpcomponents.httpcore" version="4.3.3.v201411290715"/>
+<unit id="org.apache.httpcomponents.httpcore.nio" version="4.1.0.v201101201700"/>
+<unit id="org.apache.httpcomponents.httpcore.nio.source" version="4.1.0.v201101201700"/>
+<unit id="org.apache.httpcomponents.httpcore.source" version="4.3.3.v201411290715"/>
+<unit id="org.slf4j.api" version="1.7.2.v20121108-1250"/>
+<unit id="org.slf4j.api.source" version="1.7.2.v20121108-1250"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150124073747/repository/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.core.runtime.feature.feature.group" version="1.1.102.v20160128-1558"/>
-<unit id="org.eclipse.uml2.common.edit.feature.group" version="2.1.0.v20160201-0816"/>
-<unit id="org.eclipse.ocl.unified.core.feature.group" version="1.0.2.v20160118-1848"/>
-<unit id="org.eclipse.ecf.filetransfer.httpclient4.feature.feature.group" version="3.12.0.v20151130-0157"/>
-<unit id="org.eclipse.ocl.unified.ui.feature.group" version="1.0.0.v20160118-1848"/>
-<unit id="org.eclipse.uml2.uml.feature.group" version="5.1.2.v20160201-0816"/>
-<unit id="org.eclipse.jdt.feature.group" version="3.11.2.v20160212-1500"/>
-<unit id="org.eclipse.ecf.core.ssl.feature.feature.group" version="1.1.0.v20151130-0157"/>
-<unit id="org.eclipse.ecf.core.feature.feature.group" version="1.2.0.v20151130-0157"/>
-<unit id="org.eclipse.pde.feature.group" version="3.11.2.v20160212-1500"/>
-<unit id="org.eclipse.ecf.filetransfer.ssl.feature.feature.group" version="1.1.0.v20151130-0157"/>
 <unit id="org.eclipse.bpmn2.feature.feature.group" version="1.2.1.Final-v20160119-1829"/>
-<unit id="org.eclipse.xsd.sdk.feature.group" version="2.11.0.v20160208-0841"/>
+<unit id="org.eclipse.core.runtime.feature.feature.group" version="1.1.102.v20160128-1558"/>
+<unit id="org.eclipse.ecf.core.feature.feature.group" version="1.2.0.v20151130-0157"/>
+<unit id="org.eclipse.ecf.core.ssl.feature.feature.group" version="1.1.0.v20151130-0157"/>
+<unit id="org.eclipse.ecf.filetransfer.feature.feature.group" version="3.12.0.v20151130-0157"/>
+<unit id="org.eclipse.ecf.filetransfer.httpclient4.feature.feature.group" version="3.12.0.v20151130-0157"/>
+<unit id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.feature.group" version="1.1.0.v20151130-0157"/>
+<unit id="org.eclipse.ecf.filetransfer.ssl.feature.feature.group" version="1.1.0.v20151130-0157"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.11.2.v20160208-0841"/>
 <unit id="org.eclipse.equinox.core.sdk.feature.group" version="3.11.2.v20160128-1406"/>
 <unit id="org.eclipse.equinox.executable.feature.group" version="3.6.200.v20150602-1417"/>
-<unit id="org.eclipse.uml2.feature.group" version="5.1.2.v20160201-0816"/>
-<unit id="org.eclipse.ecf.filetransfer.feature.feature.group" version="3.12.0.v20151130-0157"/>
-<unit id="org.eclipse.uml2.uml.edit.feature.group" version="5.1.1.v20160201-0816"/>
 <unit id="org.eclipse.equinox.server.jetty.feature.group" version="1.2.2.v20160202-2102"/>
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.11.2.v20160208-0841"/>
-<unit id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.feature.group" version="1.1.0.v20151130-0157"/>
-<unit id="org.eclipse.uml2.common.feature.group" version="2.1.0.v20160201-0816"/>
 <unit id="org.eclipse.gef.sdk.feature.group" version="3.10.1.201508170204"/>
+<unit id="org.eclipse.jdt.feature.group" version="3.11.2.v20160212-1500"/>
+<unit id="org.eclipse.ocl.unified.core.feature.group" version="1.0.2.v20160118-1848"/>
+<unit id="org.eclipse.ocl.unified.ui.feature.group" version="1.0.0.v20160118-1848"/>
+<unit id="org.eclipse.pde.feature.group" version="3.11.2.v20160212-1500"/>
 <unit id="org.eclipse.platform.sdk" version="4.5.2.M20160212-1500"/>
+<unit id="org.eclipse.uml2.common.edit.feature.group" version="2.1.0.v20160201-0816"/>
+<unit id="org.eclipse.uml2.common.feature.group" version="2.1.0.v20160201-0816"/>
+<unit id="org.eclipse.uml2.feature.group" version="5.1.2.v20160201-0816"/>
+<unit id="org.eclipse.uml2.uml.edit.feature.group" version="5.1.1.v20160201-0816"/>
+<unit id="org.eclipse.uml2.uml.feature.group" version="5.1.2.v20160201-0816"/>
+<unit id="org.eclipse.xsd.sdk.feature.group" version="2.11.0.v20160208-0841"/>
 <repository location="http://download.eclipse.org/releases/mars/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.8.3.v201512160634"/>
-<unit id="org.eclipse.xpand.sdk.feature.group" version="2.1.0.v201505260349"/>
 <unit id="org.eclipse.emf.mwe.sdk.feature.group" version="1.3.13.v201512160556"/>
-<unit id="org.eclipse.xwt.workbench.feature.feature.group" version="1.1.0.v20150608-1518"/>
-<unit id="org.eclipse.xtend.sdk.feature.group" version="2.9.1.v201512180746"/>
-<unit id="org.eclipse.ocl.all.sdk.feature.group" version="5.1.0.v20160118-1848"/>
-<unit id="org.eclipse.gmf.runtime.notation.sdk.feature.group" version="1.9.0.201505312221"/>
-<unit id="org.eclipse.papyrus.sdk.feature.feature.group" version="1.1.4.201602101200"/>
-<unit id="org.eclipse.gmf.feature.group" version="1.9.0.201506060219"/>
-<unit id="org.eclipse.gmf.sdk.feature.group" version="3.3.1.201509020853"/>
-<unit id="org.eclipse.gmf.tooling.runtime.feature.group" version="3.3.1.201509020853"/>
+<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.8.3.v201512160634"/>
 <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.8.3.v201512160556"/>
-<unit id="org.eclipse.m2m.qvt.oml.sdk.feature.group" version="3.5.0.v20150603-1058"/>
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.9.1.v201512180746"/>
-<unit id="org.eclipse.xwt.feature.feature.group" version="1.1.0.v20150608-1518"/>
 <unit id="org.eclipse.emf.transaction.sdk.feature.group" version="1.9.0.201506010221"/>
 <unit id="org.eclipse.emf.validation.sdk.feature.group" version="1.9.0.201505312255"/>
+<unit id="org.eclipse.gmf.feature.group" version="1.9.0.201506060219"/>
+<unit id="org.eclipse.gmf.runtime.notation.sdk.feature.group" version="1.9.0.201505312221"/>
+<unit id="org.eclipse.gmf.sdk.feature.group" version="3.3.1.201509020853"/>
 <unit id="org.eclipse.gmf.tooling.feature.group" version="3.3.1.201509020853"/>
+<unit id="org.eclipse.gmf.tooling.runtime.feature.group" version="3.3.1.201509020853"/>
+<unit id="org.eclipse.m2m.qvt.oml.sdk.feature.group" version="3.5.0.v20150603-1058"/>
+<unit id="org.eclipse.ocl.all.sdk.feature.group" version="5.1.0.v20160118-1848"/>
+<unit id="org.eclipse.papyrus.sdk.feature.feature.group" version="1.1.4.201602101200"/>
+<unit id="org.eclipse.xpand.sdk.feature.group" version="2.1.0.v201505260349"/>
+<unit id="org.eclipse.xtend.sdk.feature.group" version="2.9.1.v201512180746"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.9.1.v201512180746"/>
+<unit id="org.eclipse.xwt.feature.feature.group" version="1.1.0.v20150608-1518"/>
+<unit id="org.eclipse.xwt.workbench.feature.feature.group" version="1.1.0.v20150608-1518"/>
 <repository location="http://download.eclipse.org/releases/mars/"/>
 </location>
 </locations>

@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,6 +32,7 @@ import org.eclipse.epsilon.eol.EolModule;
 import org.eclipse.epsilon.eol.IEolModule;
 import org.eclipse.epsilon.eol.exceptions.EolInternalException;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
+import org.eclipse.epsilon.eol.exceptions.EolUndefinedVariableException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
@@ -119,9 +121,9 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 	public Collection<Object> getAllOf(String typeName, final String typeorkind) throws EolModelElementTypeNotFoundException, EolInternalException {
 		try {
-			final IGraphNode typeNode = getTypeNode(typeName);
-			if (typeNode != null) {
-				return getAllOf(typeNode, typeorkind);
+			final List<IGraphNode> typeNodes = getTypeNodes(typeName);
+			if (typeNodes.size() == 1) {
+				return getAllOf(typeNodes.get(0), typeorkind);
 			}
 		} catch (Exception e) {
 			throw new EolInternalException(e);
@@ -140,7 +142,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		return nodes;
 	}
 
-	protected IGraphNode getTypeNode(String typeName) {
+	protected List<IGraphNode> getTypeNodes(String typeName) {
 		if (typeName.contains("::")) {
 			String ep = typeName.substring(0, typeName.indexOf("::"));
 			IGraphNode pack = null;
@@ -154,13 +156,13 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 				IGraphNode othernode = r.getStartNode();
 				if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
 						.equals(typeName.substring(typeName.indexOf("::") + 2))) {
-					return othernode;
+					return Collections.singletonList(othernode);
 				}
 			}
 		} else {
 	
 			Iterator<IGraphNode> packs = metamodeldictionary.query("id", "*").iterator();
-			LinkedList<IGraphNode> possibletypenodes = new LinkedList<IGraphNode>();
+			LinkedList<IGraphNode> candidates = new LinkedList<IGraphNode>();
 	
 			while (packs.hasNext()) {
 				IGraphNode pack = packs.next();
@@ -169,35 +171,28 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 					final IGraphNode othernode = n.getStartNode();
 					final Object id = othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
 					if (id.equals(typeName)) {
-						possibletypenodes.add(othernode);
+						candidates.add(othernode);
 					}
 				}
 			}
 	
-			if (possibletypenodes.size() == 1) {
-				return possibletypenodes.getFirst();
-			} else if (possibletypenodes.size() > 1) {
+			if (candidates.size() == 1) {
+				return candidates;
+			} else if (candidates.size() > 1) {
 				// use default namespaces to limit types
-				LinkedList<String> ret = new LinkedList<>();
-				for (Iterator<IGraphNode> it = possibletypenodes.iterator(); it.hasNext();) {
+				for (Iterator<IGraphNode> it = candidates.iterator(); it.hasNext();) {
 					IGraphNode n = it.next();
-					String metamodel = n.getOutgoingWithType("epackage").iterator().next().getEndNode()
-							.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+					String metamodel = new TypeNode(n).getMetamodelURI();
 					if (defaultNamespaces != null && !defaultNamespaces.isEmpty() && !defaultNamespaces.contains(metamodel)) {
 						it.remove();
-					} else
-						ret.add(metamodel + "::" + n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString());
+					}
 				}
 	
-				if (possibletypenodes.size() == 1) {
-					return possibletypenodes.getFirst();
-				} else {
-					LOGGER.error("Ambiguous type reference {}: candidates are {}", typeName, ret);
-				}
+				return candidates;
 			}
 		}
-	
-		return null;
+
+		return Collections.emptyList();
 	}
 
 	private void broadcastAllOfXAccess(Iterable<Object> ret) {
@@ -282,7 +277,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 	@Override
 	public boolean hasType(String type) {
-		return getTypeNode(type) != null;
+		return getTypeNodes(type).size() == 1;
 	}
 
 	@Override
@@ -758,9 +753,32 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			if (ret == null)
 				ret = "no result returned (maybe it directly printed the result to console?)";
 			tx.success();
+		} catch (EolUndefinedVariableException ex) {
+			// Provide more details than Epsilon about ambiguous intra-model type references
+			try (IGraphTransaction tx = graph.beginTransaction()) {
+				final List<IGraphNode> typeNodes = getTypeNodes(ex.getVariableName());
+				final StringBuilder sb = new StringBuilder("Ambiguous type reference '" + ex.getVariableName() + "' across these metamodels:\n");
+				for (IGraphNode typeNode : typeNodes) {
+					sb.append("\n* ");
+					sb.append(new TypeNode(typeNode).getMetamodelURI());
+				}
+				sb.append("\n\nSpecify the desired one in the default namespaces to resolve the ambiguity.");
+				tx.success();
+
+				if (typeNodes.size() > 1) {
+					throw new QueryExecutionException(sb.toString());
+				} else {
+					throw new QueryExecutionException(ex);
+				}
+			} catch (QueryExecutionException e) {
+				throw e;
+			} catch (Exception e) {
+				throw new QueryExecutionException(e);
+			}
 		} catch (Exception e) {
 			throw new QueryExecutionException(e);
 		}
+
 		if (enableDebugOutput) {
 			System.out.println("QUERY TOOK " + (System.currentTimeMillis() - init) / 1000 + "s"
 					+ (System.currentTimeMillis() - init) % 1000 + "ms, to run");
