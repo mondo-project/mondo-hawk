@@ -13,10 +13,16 @@ package org.hawk.integration.tests.uml;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.uml2.uml.resources.util.UMLResourcesUtil;
 import org.hawk.backend.tests.BackendTestSuite;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
@@ -177,6 +183,49 @@ public class UMLIndexingTest extends ModelIndexingTest {
 				return null;
 			}
 		});
+	}
+
+	@Test
+	public void upgradeModelProfileVersion() throws Throwable {
+		indexer.registerMetamodels(new File(BASE_DIRECTORY, "simpleProfile/model.profile.uml"));
+
+		final URI destURI = URI.createFileURI(new File(modelFolder.getRoot(), "model.uml").getCanonicalFile().toString());
+		final File oldFile = new File(BASE_DIRECTORY, "simpleProfileApplication/model.uml").getCanonicalFile();
+		copyResource(destURI, oldFile);
+		requestFolderIndex(modelFolder.getRoot());
+
+		final Map<String, Object> ctxOldVersion = Collections.singletonMap(
+				EOLQueryEngine.PROPERTY_DEFAULTNAMESPACES,
+				SIMPLE_PROFILE_NSURI_PREFIX + "/0.0.4");
+		final Map<String, Object> ctxNewVersion = Collections.singletonMap(
+				EOLQueryEngine.PROPERTY_DEFAULTNAMESPACES,
+				SIMPLE_PROFILE_NSURI_PREFIX + "/0.0.5");
+		waitForSync(() -> {
+			assertEquals(1, eol("return special.all.size;", ctxOldVersion));
+			assertEquals(0, eol("return special.all.size;", ctxNewVersion));
+			return null;
+		});
+
+		final File newFile = new File(BASE_DIRECTORY, "simpleProfileApplicationNewVersion/model.uml").getCanonicalFile();
+		copyResource(destURI, newFile);
+		indexer.requestImmediateSync();
+		waitForSync(() -> {
+			assertEquals(0, eol("return special.all.size;", ctxOldVersion));
+			assertEquals(1, eol("return special.all.size;", ctxNewVersion));
+			return null;
+		});
+	}
+
+	protected void copyResource(final URI destURI, final File oldFile) throws IOException {
+		//! Have to replace this with re-saving the resource to the other location:
+		// simply copying breaks the path-based URL to the metamodel file
+		ResourceSetImpl rs = new ResourceSetImpl();
+		UMLResourcesUtil.init(rs);
+		final Resource oldResource = rs.createResource(URI.createFileURI(oldFile.toString()));
+		oldResource.load(null);
+		oldResource.setURI(destURI);
+		oldResource.save(null);
+		oldResource.unload();
 	}
 
 	protected void addUMLComponents() throws Throwable {
