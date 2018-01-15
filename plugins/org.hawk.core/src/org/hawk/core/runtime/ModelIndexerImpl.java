@@ -65,6 +65,8 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class ModelIndexerImpl implements IModelIndexer {
 
+	private static final int CEILING_DELAY_FAILED_UPDATES = 60_000;
+
 	public static class DefaultFileImporter implements IFileImporter {
 
 		private Map<String, File> cachedImports = new HashMap<>();
@@ -269,7 +271,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 			if (success) {
 				currLocalTopRevisions.put(m.getLocation(),
-						currReposTopRevisions.get(m.getLocation()));
+					currReposTopRevisions.get(m.getLocation()));
 			} else {
 				allSync = false;
 				currLocalTopRevisions.put(m.getLocation(), "-3");
@@ -872,13 +874,17 @@ public class ModelIndexerImpl implements IModelIndexer {
 		// Timer only enabled if the delay is non-zero
 		if (maxDelay > 0) {
 			if (!latestUpdateFoundChanges) {
-				int olddelay = currentDelay;
-				currentDelay = currentDelay * 2;
-				if (currentDelay > maxDelay)
-					currentDelay = maxDelay;
-				console.println("same revision, incrementing check timer: " + olddelay / 1000 + " -> "
-						+ currentDelay / 1000 + " (max: " + maxDelay / 1000 + ")");
-
+				final int oldDelay = currentDelay;
+				currentDelay = Math.min(currentDelay * 2, maxDelay);
+				console.println(
+					String.format("same revision, incrementing check timer: %s s -> %s s (max: %s s)",
+						oldDelay / 1000, currentDelay / 1000, maxDelay / 1000));
+			} else if (!synchronised) {
+				int oldDelay = currentDelay;
+				currentDelay = Math.min(currentDelay * 2, Math.min(CEILING_DELAY_FAILED_UPDATES, maxDelay));
+				console.println(
+					String.format("update failed, incrementing check timer: %s s -> %s s (max: %s s with %s s ceiling)",
+						oldDelay / 1000, currentDelay / 1000, maxDelay / 1000, CEILING_DELAY_FAILED_UPDATES / 1000));
 			} else {
 				console.println("different revisions, resetting check timer and propagating changes!");
 				currentDelay = minDelay;
