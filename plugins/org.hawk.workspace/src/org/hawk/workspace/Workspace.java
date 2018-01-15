@@ -11,9 +11,6 @@
 package org.hawk.workspace;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -185,15 +182,8 @@ public class Workspace implements IVcsManager {
 	@Override
 	public File importFiles(String path, File temp) {
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
-		try {
-			try (InputStream is = file.getContents()) {
-				Files.copy(is, temp.toPath());
-				return temp;
-			}
-		} catch (IOException | CoreException e) {
-			console.printerrln(e);
-			return null;
-		}
+		// Access directly the file (no need for copying - helps with links between workspace files)
+		return file.getRawLocation().toFile();
 	}
 
 	@Override
