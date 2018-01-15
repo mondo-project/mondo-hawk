@@ -20,9 +20,11 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.epsilon.common.util.FileUtil;
 import org.eclipse.uml2.uml.resources.util.UMLResourcesUtil;
 import org.hawk.backend.tests.BackendTestSuite;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
@@ -208,6 +210,35 @@ public class UMLIndexingTest extends ModelIndexingTest {
 
 		final File newFile = new File(BASE_DIRECTORY, "simpleProfileApplicationNewVersion/model.uml").getCanonicalFile();
 		copyResource(destURI, newFile);
+		indexer.requestImmediateSync();
+		waitForSync(() -> {
+			assertEquals(0, eol("return special.all.size;", ctxOldVersion));
+			assertEquals(1, eol("return special.all.size;", ctxNewVersion));
+			return null;
+		});
+	}
+
+	@Test
+	public void modelProfileInsideRepository() throws Throwable {
+		indexer.registerMetamodels(new File(BASE_DIRECTORY, "simpleProfile/model.profile.uml"));
+
+		FileUtils.copyDirectory(BASE_DIRECTORY, modelFolder.getRoot());
+		FileUtils.deleteDirectory(new File(modelFolder.getRoot(), "simpleProfileApplicationNewVersion"));
+		requestFolderIndex(modelFolder.getRoot());
+
+		final Map<String, Object> ctxOldVersion = Collections.singletonMap(
+				EOLQueryEngine.PROPERTY_DEFAULTNAMESPACES,
+				SIMPLE_PROFILE_NSURI_PREFIX + "/0.0.4");
+		final Map<String, Object> ctxNewVersion = Collections.singletonMap(
+				EOLQueryEngine.PROPERTY_DEFAULTNAMESPACES,
+				SIMPLE_PROFILE_NSURI_PREFIX + "/0.0.5");
+		waitForSync(() -> {
+			assertEquals(1, eol("return special.all.size;", ctxOldVersion));
+			assertEquals(0, eol("return special.all.size;", ctxNewVersion));
+			return null;
+		});
+
+		FileUtils.copyFile(new File(BASE_DIRECTORY, "simpleProfileApplicationNewVersion/model.uml"), new File(modelFolder.getRoot(), "simpleProfileApplication/model.uml"));
 		indexer.requestImmediateSync();
 		waitForSync(() -> {
 			assertEquals(0, eol("return special.all.size;", ctxOldVersion));
