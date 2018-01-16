@@ -99,6 +99,11 @@ class Hawk {
 		@doc(d="The name of the Hawk instance") String name
 	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
 
+	@doc(d="Lists the details of the metamodel parsers in a Hawk instance")
+    op MetamodelParserDetails[*] listMetamodelParsers(
+    	@doc(d="The name of the Hawk instance") String name
+    ) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+
     @doc(d="Lists the supported query languages and their status")
     op String[*] listQueryLanguages(
 	@doc(d="The name of the Hawk instance") String name
@@ -729,6 +734,16 @@ enum SubscriptionDurability {
 	@doc(d="Subscription removed after disconnecting.") TEMPORARY;
 	@doc(d="Subscription survives client disconnections but not server restarts.") DEFAULT;
 	@doc(d="Subscription survives client disconnections and server restarts.") DURABLE;
+}
+
+@doc(d="Details for a metamodel registered in a Hawk instance")
+class MetamodelParserDetails {
+	@doc(d="Recognised file extensions, starting with '.'")
+	@thrift.set
+	val String[*] fileExtensions;
+
+	@doc(d="Type identifier")
+	attr String identifier;	 
 }
 
 // Server-side IFC export ///////////////////////////////////////////////////////////

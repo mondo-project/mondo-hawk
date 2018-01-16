@@ -168,7 +168,15 @@ public interface IModelIndexer {
 
 	IModelResourceFactory getModelParser(String type);
 
+	Set<String> getKnownMetaModelParserTypes();
+
 	IMetaModelResourceFactory getMetaModelParser(String metaModelType);
+
+	/**
+	 * Returns a set with all the supported metamodel extensions, in the
+	 * format of ".ext". For instance, for Ecore we would return ".ecore".
+	 */
+	Set<String> getKnownMetamodelFileExtensions();
 
 	Map<String, IQueryEngine> getKnownQueryLanguages();
 

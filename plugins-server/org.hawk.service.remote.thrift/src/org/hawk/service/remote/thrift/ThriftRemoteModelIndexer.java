@@ -61,11 +61,13 @@ import org.hawk.service.api.FailedQuery;
 import org.hawk.service.api.Hawk.Client;
 import org.hawk.service.api.HawkInstance;
 import org.hawk.service.api.HawkInstanceNotFound;
+import org.hawk.service.api.HawkInstanceNotRunning;
 import org.hawk.service.api.HawkQueryOptions;
 import org.hawk.service.api.HawkState;
 import org.hawk.service.api.HawkStateEvent;
 import org.hawk.service.api.IndexedAttributeSpec;
 import org.hawk.service.api.InvalidQuery;
+import org.hawk.service.api.MetamodelParserDetails;
 import org.hawk.service.api.Repository;
 import org.hawk.service.api.Subscription;
 import org.hawk.service.api.SubscriptionDurability;
@@ -814,7 +816,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 				}
 			}
 		} catch (TException e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		}
 		return false;
 	}
@@ -890,7 +892,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 		try {
 			client.configurePolling(name, base, max);
 		} catch (TException e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		}
 	}
 
@@ -904,7 +906,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 			client.removeIndexedAttribute(name, spec);
 			return true;
 		} catch (TException e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 			return false;
 		}
 	}
@@ -919,7 +921,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 			client.removeDerivedAttribute(name, spec);
 			return true;
 		} catch (TException e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 			return false;
 		}
 	}
@@ -959,6 +961,36 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 		// TODO If this works to fix server configuration issues,
 		// reevaluate.
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Set<String> getKnownMetamodelFileExtensions() {
+		try {
+			List<MetamodelParserDetails> details = client.listMetamodelParsers(name);
+			Set<String> extensions = new HashSet<>();
+			for (MetamodelParserDetails e : details) {
+				extensions.addAll(e.getFileExtensions());
+			}
+			return extensions;
+		} catch (TException e) {
+			LOGGER.error(e.getMessage(), e);
+			return Collections.emptySet();
+		}
+	}
+
+	@Override
+	public Set<String> getKnownMetaModelParserTypes() {
+		try {
+			List<MetamodelParserDetails> details = client.listMetamodelParsers(name);
+			Set<String> types = new HashSet<>();
+			for (MetamodelParserDetails e : details) {
+				types.add(e.getIdentifier());
+			}
+			return types;
+		} catch (TException e) {
+			LOGGER.error(e.getMessage(), e);
+			return Collections.emptySet();
+		}
 	}
 
 }

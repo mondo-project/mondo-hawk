@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -35,6 +36,7 @@ import org.apache.activemq.artemis.api.core.client.ClientSessionFactory;
 import org.apache.activemq.artemis.api.core.client.ServerLocator;
 import org.apache.activemq.artemis.core.remoting.impl.invm.InVMConnectorFactory;
 import org.apache.thrift.TException;
+import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.IVcsManager;
@@ -74,6 +76,7 @@ import org.hawk.service.api.InvalidIndexedAttributeSpec;
 import org.hawk.service.api.InvalidMetamodel;
 import org.hawk.service.api.InvalidPollingConfiguration;
 import org.hawk.service.api.InvalidQuery;
+import org.hawk.service.api.MetamodelParserDetails;
 import org.hawk.service.api.ModelElement;
 import org.hawk.service.api.QueryReport;
 import org.hawk.service.api.QueryResult;
@@ -825,5 +828,20 @@ public final class HawkThriftIface implements Hawk.Iface {
 				break;
 			}
 		}
+	}
+
+	@Override
+	public List<MetamodelParserDetails> listMetamodelParsers(String name)
+			throws HawkInstanceNotFound, HawkInstanceNotRunning, TException {
+		final HModel model = getHawkByName(name);
+
+		final List<MetamodelParserDetails> results = new ArrayList<>();
+		for (IMetaModelResourceFactory parser : model.getMetamodelParsers()) {
+			MetamodelParserDetails details = new MetamodelParserDetails();
+			details.setIdentifier(parser.getType());
+			details.setFileExtensions(new HashSet<>(parser.getMetaModelExtensions()));
+		}
+
+		return results;
 	}
 }

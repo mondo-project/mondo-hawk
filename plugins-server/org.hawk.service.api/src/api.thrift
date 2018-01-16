@@ -157,6 +157,11 @@ struct InvalidTransformation {
 	 /* Location of the problem, if applicable. Usually a combination of line and column numbers. */ 2: required string location,
 }
 
+struct MetamodelParserDetails {
+	 /* Recognised file extensions, starting with '.'. */ 1: required set<string> fileExtensions,
+	 /* Type identifier. */ 2: required string identifier,
+}
+
 union MixedReference {
 	 /* Identifier-based reference to a model element. */ 1: optional string id,
 	 /* Position-based reference to a model element. */ 2: optional i32 position,
@@ -485,6 +490,15 @@ service Hawk {
 	2: HawkInstanceNotRunning err2 /* The selected Hawk instance is not running. */ 
 	) 
 	
+  /* Lists the details of the metamodel parsers in a Hawk instance. Auth needed: Yes */
+  list<MetamodelParserDetails> listMetamodelParsers(
+	/* The name of the Hawk instance. */ 1: required string name,
+  )
+  throws (
+	1: HawkInstanceNotFound err1 /* No Hawk instance exists with that name. */
+	2: HawkInstanceNotRunning err2 /* The selected Hawk instance is not running. */
+	)
+
   /* Lists the supported query languages and their status. Auth needed: Yes */
   list<string> listQueryLanguages(
 	/* The name of the Hawk instance. */ 1: required string name,

@@ -29,9 +29,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-
 import org.hawk.core.IConsole;
 import org.hawk.core.ICredentialsStore;
 import org.hawk.core.IFileImporter;
@@ -143,8 +140,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 	private Map<String, String> currLocalTopRevisions = new HashMap<>();
 	private Map<String, String> currReposTopRevisions = new HashMap<>();
 
-	private Map<String, IModelResourceFactory> modelparsers = new HashMap<>();
-	private Map<String, IMetaModelResourceFactory> metamodelparsers = new HashMap<>();
+	private Map<String, IModelResourceFactory> modelParsers = new HashMap<>();
+	private Map<String, IMetaModelResourceFactory> metamodelParsers = new HashMap<>();
 	private Map<String, IQueryEngine> knownQueryLanguages = new HashMap<>();
 	private List<IModelUpdater> updaters = new LinkedList<>();
 
@@ -683,32 +680,39 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	public void addModelResourceFactory(IModelResourceFactory p) {
-		modelparsers.put(p.getType(), p);
+		modelParsers.put(p.getType(), p);
 	}
 
 	public void addMetaModelResourceFactory(IMetaModelResourceFactory p) {
-		metamodelparsers.put(p.getType(), p);
+		metamodelParsers.put(p.getType(), p);
 	}
 
 	public void addQueryEngine(IQueryEngine q) {
 		knownQueryLanguages.put(q.getType(), q);
 	}
 
+	@Override
+	public Set<String> getKnownMetaModelParserTypes() {
+		return metamodelParsers.keySet();
+	}
+
+	@Override
 	public IMetaModelResourceFactory getMetaModelParser(String type) {
 		if (type == null) {
 			console.printerrln("null type given to getMetaModelParser(type), returning null");
 		} else {
-			return metamodelparsers.get(type);
+			return metamodelParsers.get(type);
 		}
 
 		return null;
 	}
 
+	@Override
 	public IModelResourceFactory getModelParser(String type) {
 		if (type == null)
 			console.printerrln("null type given to getModelParser(type), returning null");
 		else
-			return modelparsers.get(type);
+			return modelParsers.get(type);
 
 		return null;
 	}
@@ -717,8 +721,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 		if (name == null)
 			console.printerrln("null extension given to getMetaModelParserFromFilename(extension), returning null");
 		else
-			for (String p : metamodelparsers.keySet()) {
-				IMetaModelResourceFactory parser = metamodelparsers.get(p);
+			for (String p : metamodelParsers.keySet()) {
+				IMetaModelResourceFactory parser = metamodelParsers.get(p);
 				for (String ext : parser.getMetaModelExtensions()) {
 					if (name.endsWith(ext)) {
 						return parser;
@@ -732,8 +736,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 		if (name == null)
 			console.printerrln("null extension given to getModelParserFromFilename(extension), returning null");
 		else
-			for (String p : modelparsers.keySet()) {
-				IModelResourceFactory parser = modelparsers.get(p);
+			for (String p : modelParsers.keySet()) {
+				IModelResourceFactory parser = modelParsers.get(p);
 				for (String ext : parser.getModelExtensions()) {
 					if (name.endsWith(ext)) {
 						return parser;
@@ -743,14 +747,25 @@ public class ModelIndexerImpl implements IModelIndexer {
 		return null;
 	}
 
+	@Override
 	public Map<String, IQueryEngine> getKnownQueryLanguages() {
 		return knownQueryLanguages;
 	}
 
-	public Set<String> getKnownModelParserTypes() {
-		return modelparsers.keySet();
+	private Set<String> getKnownModelParserTypes() {
+		return modelParsers.keySet();
 	}
 
+	@Override
+	public Set<String> getKnownMetamodelFileExtensions() {
+		Set<String> exts = new HashSet<>();
+		for (IMetaModelResourceFactory mm : metamodelParsers.values()) {
+			exts.addAll(mm.getMetaModelExtensions());
+		}
+		return exts;
+	}
+
+	@Override
 	public void addModelUpdater(IModelUpdater u) {
 		try {
 			u.run(console, this);
@@ -834,8 +849,8 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		// register all static metamodels to graph
 		console.println("inserting static metamodels of registered metamodel factories to graph:");
-		for (String factoryNames : metamodelparsers.keySet()) {
-			IMetaModelResourceFactory f = metamodelparsers.get(factoryNames);
+		for (String factoryNames : metamodelParsers.keySet()) {
+			IMetaModelResourceFactory f = metamodelParsers.get(factoryNames);
 			console.println(f.getType());
 			metamodelupdater.insertMetamodels(f.getStaticMetamodels(), this);
 		}

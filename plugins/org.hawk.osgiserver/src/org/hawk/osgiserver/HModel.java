@@ -406,6 +406,15 @@ public class HModel implements IStateListener {
 		return enabledPlugins;
 	}
 
+	public Collection<IMetaModelResourceFactory> getMetamodelParsers() {
+		List<IMetaModelResourceFactory> parsers = new ArrayList<>();
+		for (String type : hawk.getModelIndexer().getKnownMetaModelParserTypes()) {
+			IMetaModelResourceFactory parser = hawk.getModelIndexer().getMetaModelParser(type);
+			parsers.add(parser);
+		}
+		return parsers;
+	}
+
 	public Collection<String> getDerivedAttributeNames() {
 		return hawk.getModelIndexer().getDerivedAttributeNames();
 	}

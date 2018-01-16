@@ -207,6 +207,17 @@
         </eAnnotations>
       </eParameters>
     </eOperations>
+    <eOperations name="listMetamodelParsers" upperBound="-1" eType="#//MetamodelParserDetails"
+        eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning">
+      <eAnnotations source="doc">
+        <details key="d" value="Lists the details of the metamodel parsers in a Hawk instance"/>
+      </eAnnotations>
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="The name of the Hawk instance"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
     <eOperations name="listQueryLanguages" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="doc">
         <details key="d" value="Lists the supported query languages and their status"/>
@@ -1798,6 +1809,23 @@
         <details key="d" value="Subscription survives client disconnections and server restarts."/>
       </eAnnotations>
     </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MetamodelParserDetails">
+    <eAnnotations source="doc">
+      <details key="d" value="Details for a metamodel registered in a Hawk instance"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fileExtensions" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Recognised file extensions, starting with '.'"/>
+      </eAnnotations>
+      <eAnnotations source="thrift.set"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="identifier" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Type identifier"/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IFCExportOptions">
     <eAnnotations source="doc">

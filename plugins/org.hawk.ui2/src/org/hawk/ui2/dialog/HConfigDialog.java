@@ -14,8 +14,11 @@ package org.hawk.ui2.dialog;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -277,12 +280,11 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 	}
 
 	private void metamodelBrowse() {
-		FileDialog fd = new FileDialog(getShell(), SWT.MULTI);
+		final FileDialog fd = new FileDialog(getShell(), SWT.MULTI);
 
-		fd.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation()
-				.toFile().toString());
-		// TODO: allow selection of only parse-able/known metamodels-file-types
-		fd.setFilterExtensions(new String[] { "*.ecore", "*.xml" , "*.*" });
+		final IPath workspaceRoot = ResourcesPlugin.getWorkspace().getRoot().getLocation();
+		fd.setFilterPath(workspaceRoot.toFile().toString());
+		fd.setFilterExtensions(getKnownMetamodelFilePatterns());
 		fd.setText("Select metamodels");
 		String result = fd.open();
 
@@ -309,6 +311,18 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 			}
 		}
 
+	}
+
+	protected String[] getKnownMetamodelFilePatterns() {
+		final Set<String> extensions = hawkModel.getIndexer().getKnownMetamodelFileExtensions();
+		final Set<String> patterns = new HashSet<>(extensions.size() + 1);
+		for (String ext : extensions) {
+			// NOTE: metamodel parsers always report metamodel file extensions with starting "."
+			patterns.add("*" + ext);
+		}
+		patterns.add("*.*");
+		final String[] aPatterns = patterns.toArray(new String[patterns.size()]);
+		return aPatterns;
 	}
 
 	private Composite metamodelsTab(TabFolder parent) {
