@@ -50,7 +50,7 @@ public class ORecordCacheGuava implements ORecordCache {
 
 	@Override
 	public void clear() {
-		cache.cleanUp();
+		cache.invalidateAll();
 	}
 
 	@Override
