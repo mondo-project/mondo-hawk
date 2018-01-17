@@ -86,7 +86,6 @@ public class OrientDatabase implements IGraphDatabase {
 		@Override
 		public void passivateObject(PooledObject<ODatabaseDocumentTx> p) throws Exception {
 			super.passivateObject(p);
-			allConns.remove(p.getObject());
 			dbConn.set(null);
 		}
 
@@ -95,7 +94,6 @@ public class OrientDatabase implements IGraphDatabase {
 			super.activateObject(p);
 
 			final ODatabaseDocumentTx db = p.getObject();
-			allConns.add(db);
 			dbConn.set(db);
 			db.activateOnCurrentThread();
 		}
@@ -107,6 +105,7 @@ public class OrientDatabase implements IGraphDatabase {
 				db.open("admin", "admin");
 			}
 			db.declareIntent(currentMode == Mode.NO_TX_MODE ? new OIntentMassiveInsert() : new OIntentMassiveRead());
+			allConns.add(db);
 			return db;
 		}
 
