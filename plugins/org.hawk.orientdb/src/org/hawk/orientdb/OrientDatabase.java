@@ -367,15 +367,28 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	public void saveDirty() {
-		for (Iterator<OrientNode> itNode = dirtyNodes.values().iterator(); itNode.hasNext(); ) {
+		final boolean hadDirty = !dirtyNodes.isEmpty() || !dirtyEdges.isEmpty();
+		for (Iterator<OrientNode> itNode = dirtyNodes.values().iterator(); itNode.hasNext();) {
 			OrientNode on = itNode.next();
 			on.save();
 			itNode.remove();
 		}
-		for (Iterator<OrientEdge> itEdge = dirtyEdges.values().iterator(); itEdge.hasNext(); ) {
+		for (Iterator<OrientEdge> itEdge = dirtyEdges.values().iterator(); itEdge.hasNext();) {
 			OrientEdge oe = itEdge.next();
 			oe.save();
 			itEdge.remove();
+		}
+
+		if (hadDirty) {
+			// We changed the database permanently - invalidate all the other caches
+			for (ODatabaseDocumentTx conn : allConns) {
+				conn.activateOnCurrentThread();
+				conn.getLocalCache().invalidate();
+			}
+			ODatabaseDocumentTx conn = dbConn.get();
+			if (conn != null) {
+				conn.activateOnCurrentThread();
+			}
 		}
 	}
 
@@ -476,13 +489,6 @@ public class OrientDatabase implements IGraphDatabase {
 		final int totalSize = dirtyNodes.size() + dirtyEdges.size();
 		if (totalSize > SIZE_THRESHOLD) {
 			saveDirty();
-
-			// We did a big save - invalidate all the other caches
-			for (ODatabaseDocumentTx conn : allConns) {
-				conn.activateOnCurrentThread();
-				conn.getLocalCache().invalidate();
-			}
-			dbConn.get().activateOnCurrentThread();
 		}
 	}
 
