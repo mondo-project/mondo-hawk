@@ -12,6 +12,7 @@ package org.hawk.backend.tests;
 
 import java.util.Collections;
 
+import org.hawk.backend.tests.factories.GreycatDatabaseFactory;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.backend.tests.factories.Neo4JDatabaseFactory;
 import org.hawk.backend.tests.factories.OrientDatabaseFactory;
@@ -39,6 +40,7 @@ public class BackendTestSuite {
 			{new Neo4JDatabaseFactory()},
 			{new OrientDatabaseFactory()},
 			//{new RemoteOrientDatabaseFactory()}, // TODO enable automatically when server available
+			{new GreycatDatabaseFactory()},
 		};
 	}
 
@@ -53,8 +55,9 @@ public class BackendTestSuite {
 	    } else {
 	    	return Collections.singletonList(new Object[]{
 	    		// Change uncommented line depending on which backend you want to test outside this suite
-	    		new Neo4JDatabaseFactory()
+	    		//new Neo4JDatabaseFactory()
 	    		//new OrientDatabaseFactory()
+	    		new GreycatDatabaseFactory()
 	    	});
 	    }
 	}

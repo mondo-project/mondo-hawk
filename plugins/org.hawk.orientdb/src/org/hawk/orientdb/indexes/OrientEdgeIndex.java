@@ -13,12 +13,12 @@ package org.hawk.orientdb.indexes;
 import java.util.Collection;
 import java.util.Set;
 
+import org.hawk.core.graph.EmptyIGraphIterable;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphEdgeIndex;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.orientdb.OrientDatabase;
 import org.hawk.orientdb.OrientIndexStore;
-import org.hawk.orientdb.util.EmptyIGraphIterable;
 
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.index.OIndex;

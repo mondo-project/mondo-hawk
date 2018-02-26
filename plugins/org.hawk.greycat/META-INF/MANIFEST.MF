@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Greycat Backend for Hawk
+Bundle-SymbolicName: org.hawk.greycat
+Bundle-Version: 1.2.0.qualifier
+Bundle-Vendor: Aston University
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.hawk.core;bundle-version="1.2.0",
+ org.slf4j.api;bundle-version="1.7.2"
+Bundle-ClassPath: lib/jars/greycat-10.jar,
+ lib/jars/greycat-rocksdb-10.jar,
+ lib/jars/rocksdbjni-5.5.5.jar,
+ .
+Export-Package: org.hawk.greycat

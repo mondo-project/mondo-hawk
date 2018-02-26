@@ -597,7 +597,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public String getType() {
-		return OrientDatabase.class.getCanonicalName();
+		return getClass().getCanonicalName();
 	}
 
 	@Override

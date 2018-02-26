@@ -116,8 +116,7 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 
 		final String idValue = "http://foo.bar";
 
-		// OSchemaShared#checkFieldNameIfValid refers to these invalid
-		// characters
+		// OSchemaShared#checkFieldNameIfValid refers to these invalid characters
 		char[] invalidChars = ":,; %=".toCharArray();
 		final Map<String, Object> props = new HashMap<String, Object>();
 		props.put("id", idValue);
@@ -278,7 +277,8 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 			try (IGraphTransaction tx = db.beginTransaction()) {
 				final String nodeType = "my" + invalidChar + "object";
 				db.createNode(null, nodeType);
-				assertEquals(1, db.allNodes(nodeType).size());
+				assertEquals("There should be one node of type " + nodeType,
+					1, db.allNodes(nodeType).size());
 				tx.success();
 			}
 		}

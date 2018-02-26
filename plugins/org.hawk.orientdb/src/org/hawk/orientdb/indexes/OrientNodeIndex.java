@@ -19,13 +19,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.hawk.core.graph.EmptyIGraphIterable;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.orientdb.OrientDatabase;
 import org.hawk.orientdb.OrientIndexStore;
 import org.hawk.orientdb.OrientNode;
-import org.hawk.orientdb.util.EmptyIGraphIterable;
 
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.id.ORID;
