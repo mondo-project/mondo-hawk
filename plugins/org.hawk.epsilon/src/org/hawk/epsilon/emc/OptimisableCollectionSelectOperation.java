@@ -57,16 +57,6 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 	IGraphNode metaclass;
 	IGraphDatabase graph = null;
 
-	// @Override
-	// public Object execute(Object target, Variable iterator, Expression ast,
-	// IEolContext context, boolean returnOnFirstMatch)
-	// throws EolRuntimeException {
-	//
-	// return super
-	// .execute(target, iterator, ast, context, returnOnFirstMatch);
-	//
-	// }
-
 	@Override
 	public Object execute(Object target, Variable iterator, Expression ast, IEolContext context,
 			boolean returnOnFirstMatch) throws EolRuntimeException {
@@ -80,7 +70,7 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 			// cannot guarantee correctness if returnOnFirstMatch is used
 			this.returnOnFirstMatch = false;
 			this.iterator = iterator;
-			model = (EOLQueryEngine) ((OptimisableCollection) target).getOwningModel();
+			model = (EOLQueryEngine) ((OptimisableCollection) target).getModel();
 
 			graph = model.getBackend();
 			try (IGraphTransaction ignored = graph.beginTransaction()) {

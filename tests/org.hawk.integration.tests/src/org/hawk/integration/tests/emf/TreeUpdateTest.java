@@ -82,7 +82,6 @@ public class TreeUpdateTest extends ModelIndexingTest {
 			public Object call() throws Exception {
 				assertEquals(0, syncValidation.getListener().getTotalErrors());
 				try (IGraphTransaction tx = db.beginTransaction()) {
-					queryEngine.setContext(null);
 					assertEquals(3, queryEngine.getAllOf("Tree", ModelElementNode.EDGE_LABEL_OFTYPE).size());
 					tx.success();
 				}
@@ -121,7 +120,6 @@ public class TreeUpdateTest extends ModelIndexingTest {
 			public Object call() throws Exception {
 				assertEquals(0, syncValidation.getListener().getTotalErrors());
 				try (IGraphTransaction tx = db.beginTransaction()) {
-					queryEngine.setContext(null);
 					assertEquals(1, queryEngine.getAllOf("Tree", ModelElementNode.EDGE_LABEL_OFTYPE).size());
 					tx.success();
 				}
@@ -156,7 +154,6 @@ public class TreeUpdateTest extends ModelIndexingTest {
 			public Object call() throws Exception {
 				assertEquals(0, syncValidation.getListener().getTotalErrors());
 				try (IGraphTransaction tx = db.beginTransaction()) {
-					queryEngine.setContext(null);
 					assertEquals(2, queryEngine.getAllOf("Tree", ModelElementNode.EDGE_LABEL_OFTYPE).size());
 					assertEquals(1, queryEngine.query(indexer,
 							"return Tree.all.select(t|t.label='t40').size;", null));

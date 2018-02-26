@@ -15,10 +15,9 @@ import java.util.HashSet;
 import org.eclipse.epsilon.eol.execute.operations.AbstractOperation;
 import org.eclipse.epsilon.eol.execute.operations.declarative.IAbstractOperationContributor;
 import org.eclipse.epsilon.eol.models.IModel;
-import org.eclipse.epsilon.eol.models.IModelElement;
 
 public class OptimisableCollection extends HashSet<Object> implements
-		IAbstractOperationContributor, IModelElement {
+		IAbstractOperationContributor {
 
 	protected EOLQueryEngine model;
 	protected GraphNodeWrapper type = null;
@@ -47,8 +46,7 @@ public class OptimisableCollection extends HashSet<Object> implements
 			return null;
 	}
 
-	@Override
-	public IModel getOwningModel() {
+	public IModel getModel() {
 		return model;
 	}
 

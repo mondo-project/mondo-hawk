@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xref:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xref="http://github.com/mondo-hawk/testing/xrefs" xmi:id="_KeYT8BbrEeiWtdM7WUVa-Q">
+  <elements xmi:id="_LC0dwBbrEeiWtdM7WUVa-Q" id="12">
+    <xrefs href="../root.model#_2ZIc8BbqEeiWtdM7WUVa-Q"/>
+  </elements>
+  <elements xmi:id="_LWC7wBbrEeiWtdM7WUVa-Q" id="15">
+    <xrefs href="#_LWC7wBbrEeiWtdM7WUVa-Q"/>
+    <xrefs href="../root.model#_2ZIc8BbqEeiWtdM7WUVa-Q"/>
+  </elements>
+</xref:Model>

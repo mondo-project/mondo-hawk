@@ -25,7 +25,6 @@ import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.query.IQueryEngine;
-import org.hawk.epsilon.emc.CEOLQueryEngine;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.util.HUIManager;
@@ -36,7 +35,6 @@ public class HawkModel extends ModelReference {
 
 	private IGraphDatabase database;
 	private IGraphTransaction t;
-	private List<String> repoPatterns, filePatterns;
 
 	public HawkModel() {
 		super(new JavaModel(Collections.emptyList(), new ArrayList<Class<?>>()));
@@ -54,14 +52,7 @@ public class HawkModel extends ModelReference {
 			}
 		}
 
-		this.repoPatterns = splitBy(properties.getProperty(IQueryEngine.PROPERTY_REPOSITORYCONTEXT), ",");
-		this.filePatterns = splitBy(properties.getProperty(IQueryEngine.PROPERTY_FILECONTEXT), ",");
-		EOLQueryEngine eolQueryEngine;
-		if (repoPatterns.isEmpty() && filePatterns.isEmpty()) {
-			eolQueryEngine = new EOLQueryEngine();
-		} else {
-			eolQueryEngine = new CEOLQueryEngine();
-		}
+		final EOLQueryEngine eolQueryEngine = new EOLQueryEngine();
 
 		final String namespaces = (properties.getProperty(IQueryEngine.PROPERTY_DEFAULTNAMESPACES) + "").trim();
 		if (namespaces.length() > 0) {

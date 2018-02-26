@@ -29,7 +29,7 @@ import org.hawk.core.query.QueryExecutionException;
 import org.hawk.core.runtime.ModelIndexerImpl;
 import org.hawk.core.security.FileBasedCredentialsStore;
 import org.hawk.core.util.DefaultConsole;
-import org.hawk.epsilon.emc.CEOLQueryEngine;
+import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
 import org.hawk.graph.internal.updater.GraphModelUpdater;
 import org.hawk.graph.syncValidationListener.SyncValidationListener;
@@ -94,7 +94,7 @@ public class ModelIndexingTest {
 	private DefaultConsole console;
 
 	protected ModelIndexerImpl indexer;
-	protected CEOLQueryEngine queryEngine;
+	protected EOLQueryEngine queryEngine;
 	protected IGraphDatabase db;
 
 	private IGraphDatabaseFactory dbFactory;
@@ -127,7 +127,7 @@ public class ModelIndexingTest {
 		indexer.addMetaModelResourceFactory(msFactory.createMetaModelResourceFactory());
 		indexer.addModelResourceFactory(msFactory.createModelResourceFactory());
 
-		queryEngine = new CEOLQueryEngine();
+		queryEngine = new EOLQueryEngine();
 		indexer.addQueryEngine(queryEngine);
 		indexer.setMetaModelUpdater(new GraphMetaModelUpdater());
 		indexer.addModelUpdater(new GraphModelUpdater());

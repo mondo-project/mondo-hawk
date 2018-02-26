@@ -34,6 +34,10 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 	private Set<IGraphNode> files = null;
 	private boolean isTraversalScopingEnabled = true;
 
+	CEOLQueryEngine() {
+		// objects of this type should only be created on-the-fly by EOLQueryEngine#contextfulQuery
+	}
+
 	public void setContext(Map<String, Object> context) {
 		if (context == null) {
 			context = Collections.emptyMap();
@@ -69,8 +73,8 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 				LOGGER.debug("Full Traversal Scoping ENABLED");
 			}
 
-			if (propertygetter == null)
-				propertygetter = new CGraphPropertyGetter(graph, this);
+			if (propertyGetter == null)
+				propertyGetter = new CGraphPropertyGetter(graph, this);
 
 			name = (String) context.get(EOLQueryEngine.PROPERTY_NAME);
 			if (name == null)

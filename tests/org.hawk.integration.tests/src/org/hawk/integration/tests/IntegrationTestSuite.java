@@ -14,6 +14,7 @@ import org.hawk.backend.tests.BackendTestSuite;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.integration.tests.bpmn.ModelVersioningTest;
 import org.hawk.integration.tests.emf.DerivedFeatureTest;
+import org.hawk.integration.tests.emf.ScopedQueryTest;
 import org.hawk.integration.tests.emf.CountInstancesTest;
 import org.hawk.integration.tests.emf.TreeUpdateTest;
 import org.hawk.integration.tests.manifests.ManifestIndexQueryTest;
@@ -33,6 +34,7 @@ import com.github.peterwippermann.junit4.parameterizedsuite.ParameterizedSuite;
 	ManifestIndexQueryTest.class,
 	ModelioMetamodelPopulationTest.class,
 	ModelVersioningTest.class,
+	ScopedQueryTest.class,
 	TreeUpdateTest.class,
 	UMLIndexingTest.class,
 })

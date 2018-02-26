@@ -89,7 +89,7 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	protected StringProperties config = null;
 	protected Set<String> defaultNamespaces = null;
 
-	protected GraphPropertyGetter propertygetter;
+	protected GraphPropertyGetter propertyGetter;
 
 	/**
 	 * Returns all of the contents of the database in the form of lightweight
@@ -201,10 +201,10 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		// concept of type/kind and only update the attr if a new node is added
 		// or one is removed
 
-		if (((GraphPropertyGetter) propertygetter).getBroadcastStatus()) {
+		if (((GraphPropertyGetter) propertyGetter).getBroadcastStatus()) {
 
 			for (Object n : ret)
-				((GraphPropertyGetter) propertygetter).getAccessListener().accessed(((GraphNodeWrapper) n).getId() + "",
+				((GraphPropertyGetter) propertyGetter).getAccessListener().accessed(((GraphNodeWrapper) n).getId() + "",
 						"property_unused_type_or_kind");
 
 		}
@@ -304,8 +304,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			aliases.add(m.getName());
 		}
 
-		if (propertygetter == null || propertygetter.getGraph() != graph)
-			propertygetter = new GraphPropertyGetter(graph, this);
+		if (propertyGetter == null || propertyGetter.getGraph() != graph)
+			propertyGetter = new GraphPropertyGetter(graph, this);
 
 		name = (String) config.get(EOLQueryEngine.PROPERTY_NAME);
 		String aliasString = config.getProperty(Model.PROPERTY_ALIASES);
@@ -426,13 +426,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 	@Override
 	public boolean knowsAboutProperty(Object instance, String property) {
-
-		// System.out.println("---");
-		// System.out.println(instance.getClass());
-		// System.out.println(property);
-		// System.out.println(owns(instance));
-		// System.out.println("---");
-
 		if (!owns(instance))
 			return false;
 
@@ -445,11 +438,11 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 	@Override
 	public IPropertyGetter getPropertyGetter() {
-		if (propertygetter == null) {
+		if (propertyGetter == null) {
 			LOGGER.warn("null property getter, was load() called?");
 		}
 
-		return propertygetter;
+		return propertyGetter;
 	}
 
 	@Override
@@ -510,8 +503,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		if (config == null)
 			config = getDatabaseConfig();
 
-		if (propertygetter == null)
-			propertygetter = new GraphPropertyGetter(graph, this);
+		if (propertyGetter == null)
+			propertyGetter = new GraphPropertyGetter(graph, this);
 
 		StringProperties configuration = new StringProperties();
 		configuration.put(EOLQueryEngine.PROPERTY_ENABLE_CACHING, true);
@@ -708,12 +701,12 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		final long trueStart = System.currentTimeMillis();
 
 		CEOLQueryEngine q = new CEOLQueryEngine();
+		q.setContext(context);
 		try {
 			q.load(m);
 		} catch (EolModelLoadingException e) {
 			throw new QueryExecutionException("Loading of EOLQueryEngine failed");
 		}
-		q.setContext(context);
 		LOGGER.debug("Graph path: {}", graph.getPath());
 
 		final IEolModule module = createModule();
