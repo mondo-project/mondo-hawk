@@ -71,7 +71,8 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 			tx.success();
 		}
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			assertTrue((double) eobs.getSingle().getProperty("x") > 1.3);
+			IGraphNode node = eobs.getSingle();
+			assertTrue((double) node.getProperty("x") > 1.3);
 			assertEquals(1, eobs.size());
 			tx.success();
 		}

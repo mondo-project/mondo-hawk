@@ -11,8 +11,8 @@
 package org.hawk.greycat;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -45,13 +45,18 @@ public class GreycatDatabase implements IGraphDatabase {
 	 * node as deleted, and all querying will ignore this node. After the next
 	 * proper save, we will go through the DB and do some garbage collection.
 	 */
-	protected static final String SOFT_SAFE_KEY = "_hawkSoftSaved";
+	protected static final String SOFT_DELETED_KEY = "h_softDeleted";
 
 	/**
 	 * Greycat doesn't seem to have node labels by itself, but we can easily emulate
 	 * this with a custom index.
 	 */
-	protected static final String NODE_LABEL_IDX = "_hawkNodeLabel";
+	protected static final String NODE_LABEL_IDX = "h_nodeLabel";
+
+	/**
+	 * Special node type for heavyweight edges.
+	 */
+	protected static final String HEAVYWEIGHT_EDGE_NODETYPE = "h_heavyEdge";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GreycatDatabase.class);
 
@@ -166,18 +171,17 @@ public class GreycatDatabase implements IGraphDatabase {
 	}
 
 	@Override
-	public IGraphNode createNode(Map<String, Object> props, String label) {
+	public GreycatNode createNode(Map<String, Object> props, String label) {
 		final Node node = graph.newNode(world, time);
-		final GreycatNode n = new GreycatNode(this, node);
-		n.setProperty(NODE_LABEL_IDX, label);
-		if (props != null) {
-			for (Entry<String, Object> entry : props.entrySet()) {
-				n.setProperty(entry.getKey(), entry.getValue());
-			}
-		}
+		node.set(NODE_LABEL_IDX, Type.STRING, label);
 
+		final GreycatNode n = new GreycatNode(this, node);
+		if (props != null) {
+			n.setProperties(props);
+		}
 		nodeLabelIndex.update(node);
 		saveOutsideTx(new CompletableFuture<>()).join();
+
 		return new GreycatNode(this, node);
 	}
 
@@ -195,7 +199,7 @@ public class GreycatDatabase implements IGraphDatabase {
 			softDeleteIndex.find(results -> {
 				Semaphore sem = new Semaphore(-results.length + 1);
 				for (Node n : results) {
-					hardDelete(n, dropped -> sem.release());
+					hardDelete(new GreycatNode(this, n), dropped -> sem.release());
 				}
 
 				// Wait until all nodes have been dropped
@@ -205,22 +209,20 @@ public class GreycatDatabase implements IGraphDatabase {
 					LOGGER.error(e.getMessage(), e);
 				}
 				result.complete(saved);
-
-				// TODO: specify time and world
 			}, world, time);
 		});
 	}
 
 	@Override
 	public IGraphEdge createRelationship(IGraphNode start, IGraphNode end, String type) {
-		// TODO Auto-generated method stub
-		return null;
+		return createRelationship(start, end, type, Collections.emptyMap());
 	}
 
 	@Override
 	public IGraphEdge createRelationship(IGraphNode start, IGraphNode end, String type, Map<String, Object> props) {
-		// TODO Auto-generated method stub
-		return null;
+		final GreycatNode gStart = (GreycatNode)start;
+		final GreycatNode gEnd = (GreycatNode)end;
+		return gStart.addEdge(type, gEnd, props);
 	}
 
 	@Override
@@ -229,9 +231,9 @@ public class GreycatDatabase implements IGraphDatabase {
 	}
 
 	@Override
-	public IGraphNode getNodeById(Object id) {
+	public GreycatNode getNodeById(Object id) {
 		// TODO: specify world and time
-		CompletableFuture<IGraphNode> result = new CompletableFuture<>();
+		CompletableFuture<GreycatNode> result = new CompletableFuture<>();
 		graph.lookup(world, time, (long) id, (node) -> {
 			result.complete(new GreycatNode(this, node));
 		});
@@ -332,10 +334,10 @@ public class GreycatDatabase implements IGraphDatabase {
 				console.println("Connected to Greycat DB at " + storageFolder);
 				graph.declareIndex(world, NODE_LABEL_IDX, nodeIndex -> {
 					this.nodeLabelIndex = nodeIndex;
-					graph.declareIndex(world, SOFT_SAFE_KEY, softDeleteIndex -> {
+					graph.declareIndex(world, SOFT_DELETED_KEY, softDeleteIndex -> {
 						this.softDeleteIndex = softDeleteIndex;
 						cConnected.complete(true);
-					}, SOFT_SAFE_KEY);
+					}, SOFT_DELETED_KEY);
 				}, NODE_LABEL_IDX);
 			} else {
 				LOGGER.error("Could not connect to Greycat DB");
@@ -344,7 +346,13 @@ public class GreycatDatabase implements IGraphDatabase {
 		});
 	}
 
-	protected void hardDelete(Node n, Callback<?> callback) {
+	protected void hardDelete(GreycatNode gn, Callback<?> callback) {
+		// Remove all edges (otherwise, future reads may fail)
+		final Node n = gn.getNode();
+		for (IGraphEdge e : gn.getEdges()) {
+			e.delete();
+		}
+
 		softDeleteIndex.unindex(n);
 		nodeLabelIndex.unindex(n);
 		n.drop(callback);
@@ -357,7 +365,7 @@ public class GreycatDatabase implements IGraphDatabase {
 	protected void softDelete(GreycatNode gn) {
 		// Soft delete, to make definitive after next save
 		final Node node = gn.getNode();
-		node.set(SOFT_SAFE_KEY, Type.BOOL, true);
+		node.set(SOFT_DELETED_KEY, Type.BOOL, true);
 		softDeleteIndex.update(node);
 	}
 
