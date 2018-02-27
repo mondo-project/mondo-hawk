@@ -11,6 +11,12 @@
 package org.hawk.greycat;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -60,7 +66,7 @@ public class GreycatDatabase implements IGraphDatabase {
 	private IConsole console;
 	private Graph graph;
 	private NodeIndex nodeLabelIndex, softDeleteIndex;
-	private Mode mode = Mode.NO_TX_MODE;
+	private Mode mode = Mode.TX_MODE;
 
 	private int world = 0;
 	private int time = 0;
@@ -104,32 +110,56 @@ public class GreycatDatabase implements IGraphDatabase {
 
 	@Override
 	public void delete() throws Exception {
-		// TODO Auto-generated method stub
+		CompletableFuture<Boolean> done = new CompletableFuture<>();
+		graph.disconnect(result -> {
+			try {
+				deleteRecursively(storageFolder);
+			} catch (IOException e) {
+				LOGGER.error("Error while deleting Greycat storage", e);
+			}
+			done.complete(true);
+		});
+		done.join();
+	}
 
+	private static void deleteRecursively(File f) throws IOException {
+		if (!f.exists()) return;
+
+		Files.walkFileTree(f.toPath(), new SimpleFileVisitor<Path>() {
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+				Files.delete(file);
+				return FileVisitResult.CONTINUE;
+			}
+
+			@Override
+			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+				Files.delete(dir);
+				return FileVisitResult.CONTINUE;
+			}
+
+		});
 	}
 
 	@Override
 	public IGraphNodeIndex getOrCreateNodeIndex(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return new GreycatNodeIndex(this, name);
 	}
 
 	@Override
 	public IGraphEdgeIndex getOrCreateEdgeIndex(String name) {
-		// TODO Auto-generated method stub
+		// TODO Edge indices are not used in Hawk - remove from API?
 		return null;
 	}
 
 	@Override
 	public IGraphNodeIndex getMetamodelIndex() {
-		// TODO Auto-generated method stub
-		return null;
+		return getOrCreateNodeIndex("_hawkMetamodelIndex");
 	}
 
 	@Override
 	public IGraphNodeIndex getFileIndex() {
-		// TODO Auto-generated method stub
-		return null;
+		return getOrCreateNodeIndex("_hawkFileIndex");
 	}
 
 	@Override
@@ -324,6 +354,7 @@ public class GreycatDatabase implements IGraphDatabase {
 	protected void connect(CompletableFuture<Boolean> cConnected) {
 		this.graph = new GraphBuilder().withStorage(new RocksDBStorage(storageFolder.getAbsolutePath())).build();
 
+		exitBatchMode();
 		graph.connect((connected) -> {
 			if (connected) {
 				console.println("Connected to Greycat DB at " + storageFolder);
