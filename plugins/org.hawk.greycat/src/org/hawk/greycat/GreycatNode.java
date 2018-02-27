@@ -24,7 +24,7 @@ import greycat.plugin.Resolver;
 import greycat.struct.Relation;
 
 public class GreycatNode implements IGraphNode {
-
+	
 	private enum Direction {
 		IN {
 			@Override
@@ -33,8 +33,8 @@ public class GreycatNode implements IGraphNode {
 			}
 	
 			public IGraphEdge convertToEdge(String type, GreycatNode current, GreycatNode other) {
-				if (GreycatDatabase.HEAVYWEIGHT_EDGE_NODETYPE.equals(other.getNodeLabel())) {
-					return new GreycatEdge(other);
+				if (GreycatHeavyEdge.NODETYPE.equals(other.getNodeLabel())) {
+					return new GreycatHeavyEdge(other);
 				}
 				return new GreycatLightEdge(other, current, type);
 			}
@@ -46,8 +46,8 @@ public class GreycatNode implements IGraphNode {
 	
 			@Override
 			public IGraphEdge convertToEdge(String type, GreycatNode current, GreycatNode other) {
-				if (GreycatDatabase.HEAVYWEIGHT_EDGE_NODETYPE.equals(other.getNodeLabel())) {
-					return new GreycatEdge(other);
+				if (GreycatHeavyEdge.NODETYPE.equals(other.getNodeLabel())) {
+					return new GreycatHeavyEdge(other);
 				}
 				return new GreycatLightEdge(current, other, type);
 			}
@@ -90,7 +90,7 @@ public class GreycatNode implements IGraphNode {
 	}
 
 	/** Prefix for all attribute names. Prevents clashes with reserved names. */
-	protected static final String ATTRIBUTE_PREFIX = "a_";
+	private static final String ATTRIBUTE_PREFIX = "a_";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GreycatNode.class);
 
@@ -289,48 +289,27 @@ public class GreycatNode implements IGraphNode {
 	}
 
 	protected IGraphEdge addEdge(String type, GreycatNode end, Map<String, Object> props) {
-		final Node startNode = getNode();
-		final Node endNode = end.getNode();
-
 		if (props == null || props.isEmpty()) {
-			startNode.addToRelation(Direction.OUT.getPrefix() + type, endNode);
-			endNode.addToRelation(Direction.IN.getPrefix() + type, startNode);
-			saveOutsideTx();
-
-			return new GreycatLightEdge(this, end, type);
+			return GreycatLightEdge.create(type, this, end);
 		} else {
-			final GreycatNode gHeavyEdgeNode = db.createNode(props, GreycatDatabase.HEAVYWEIGHT_EDGE_NODETYPE);
-
-			final Node heavyEdgeNode = gHeavyEdgeNode.getNode();
-			heavyEdgeNode.set(GreycatEdge.HEAVYEDGE_TYPE_PROP, Type.STRING, type);
-			heavyEdgeNode.addToRelation(GreycatEdge.HEAVYEDGE_START_REL, startNode);
-			heavyEdgeNode.addToRelation(GreycatEdge.HEAVYEDGE_END_REL, endNode);
-			startNode.addToRelation(Direction.OUT.getPrefix() + type, heavyEdgeNode);
-			endNode.addToRelation(Direction.IN.getPrefix() + type, heavyEdgeNode);
-			gHeavyEdgeNode.saveOutsideTx();
-
-			return new GreycatEdge(gHeavyEdgeNode);
+			return GreycatHeavyEdge.create(type, this, end, props);
 		}
 	}
 
-	protected void removeLightEdge(String type, GreycatNode end) {
-		final Node startNode = getNode();
-		final Node endNode = end.getNode();
-
-		startNode.removeFromRelation(Direction.OUT.getPrefix() + type, endNode);
-		endNode.removeFromRelation(Direction.IN.getPrefix() + type, startNode);
-		saveOutsideTx();
+	protected void addOutgoing(String type, final GreycatNode endNode) {
+		getNode().addToRelation(Direction.OUT.getPrefix() + type, endNode.getNode());
 	}
 
-	protected void removeHeavyEdge(GreycatEdge edge) {
-		final Node startNode = getNode();
-		final Node backingNode = edge.getBackingNode().getNode();
-		final Node endNode = edge.getEndNode().getNode();
-		final String type = edge.getType();
+	protected void addIncoming(String type, final GreycatNode endNode) {
+		getNode().addToRelation(Direction.IN.getPrefix() + type, endNode.getNode());
+	}
 
-		startNode.removeFromRelation(Direction.OUT.getPrefix() + type, backingNode);
-		endNode.removeFromRelation(Direction.IN.getPrefix() + type, backingNode);
-		saveOutsideTx();
+	protected void removeOutgoing(String type, final GreycatNode endNode) {
+		getNode().removeFromRelation(Direction.OUT.getPrefix() + type, endNode.getNode());
+	}
+
+	protected void removeIncoming(String type, final GreycatNode endNode) {
+		getNode().removeFromRelation(Direction.IN.getPrefix() + type, endNode.getNode());
 	}
 
 	@Override

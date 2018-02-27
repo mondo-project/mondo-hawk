@@ -12,6 +12,14 @@ import org.hawk.core.graph.IGraphNode;
  */
 public class GreycatLightEdge implements IGraphEdge {
 
+	public static GreycatLightEdge create(String type, GreycatNode from, GreycatNode to) {
+		from.addOutgoing(type, to);
+		to.addIncoming(type, from);
+		from.saveOutsideTx();
+
+		return new GreycatLightEdge(from, to, type);
+	}
+
 	private GreycatNode start, end;
 	private String type;
 
@@ -59,7 +67,9 @@ public class GreycatLightEdge implements IGraphEdge {
 
 	@Override
 	public void delete() {
-		start.removeLightEdge(type, end);
+		start.removeOutgoing(type, end);
+		end.removeIncoming(type, start);
+		start.saveOutsideTx();
 	}
 
 	@Override

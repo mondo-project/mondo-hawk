@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 public class GreycatTransaction implements IGraphTransaction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(GreycatTransaction.class);
 	private final GreycatDatabase db;
 
 	public GreycatTransaction(GreycatDatabase db) {

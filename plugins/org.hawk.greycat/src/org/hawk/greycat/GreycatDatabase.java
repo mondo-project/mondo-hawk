@@ -53,10 +53,6 @@ public class GreycatDatabase implements IGraphDatabase {
 	 */
 	protected static final String NODE_LABEL_IDX = "h_nodeLabel";
 
-	/**
-	 * Special node type for heavyweight edges.
-	 */
-	protected static final String HEAVYWEIGHT_EDGE_NODETYPE = "h_heavyEdge";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GreycatDatabase.class);
 
@@ -232,7 +228,6 @@ public class GreycatDatabase implements IGraphDatabase {
 
 	@Override
 	public GreycatNode getNodeById(Object id) {
-		// TODO: specify world and time
 		CompletableFuture<GreycatNode> result = new CompletableFuture<>();
 		graph.lookup(world, time, (long) id, (node) -> {
 			result.complete(new GreycatNode(this, node));
