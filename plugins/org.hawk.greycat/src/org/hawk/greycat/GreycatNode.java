@@ -134,6 +134,14 @@ public class GreycatNode implements IGraphNode {
 		return id;
 	}
 
+	public long getWorld() {
+		return getNode().world();
+	}
+
+	public long getTime() {
+		return getNode().time();
+	}
+
 	public String getNodeLabel() {
 		return getNode().get(GreycatDatabase.NODE_LABEL_IDX).toString();
 	}

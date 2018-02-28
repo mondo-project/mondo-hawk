@@ -9,6 +9,8 @@ Require-Bundle: org.hawk.core;bundle-version="1.2.0",
  org.slf4j.api;bundle-version="1.7.2"
 Bundle-ClassPath: lib/jars/greycat-10.jar,
  lib/jars/greycat-rocksdb-10.jar,
+ lib/jars/lucene-core-7.2.1.jar,
+ lib/jars/lucene-analyzers-common-7.2.1.jar,
  lib/jars/rocksdbjni-5.5.5.jar,
  .
 Export-Package: org.hawk.greycat

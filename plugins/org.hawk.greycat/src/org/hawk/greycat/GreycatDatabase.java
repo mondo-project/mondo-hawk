@@ -32,6 +32,7 @@ import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.greycat.lucene.GreycatLuceneIndexer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,9 +68,11 @@ public class GreycatDatabase implements IGraphDatabase {
 	private Graph graph;
 	private NodeIndex nodeLabelIndex, softDeleteIndex;
 	private Mode mode = Mode.TX_MODE;
+	private GreycatLuceneIndexer luceneIndexer;
 
 	private int world = 0;
 	private int time = 0;
+
 
 	public int getWorld() {
 		return world;
@@ -97,6 +100,11 @@ public class GreycatDatabase implements IGraphDatabase {
 		this.storageFolder = parentFolder;
 		this.tempFolder = new File(storageFolder, "temp");
 		this.console = c;
+		try {
+			this.luceneIndexer = new GreycatLuceneIndexer(this, new File(storageFolder, "lucene"));
+		} catch (IOException e) {
+			LOGGER.error("Could not set up Lucene indexing", e);
+		}
 
 		reconnect();
 	}
@@ -143,7 +151,7 @@ public class GreycatDatabase implements IGraphDatabase {
 
 	@Override
 	public IGraphNodeIndex getOrCreateNodeIndex(String name) {
-		return new GreycatNodeIndex(this, name);
+		return luceneIndexer.getIndex(name);
 	}
 
 	@Override
