@@ -17,6 +17,7 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.IndexSearcher;
@@ -103,8 +104,70 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public void remove(String key, Object value, IGraphNode n) {
-			// TODO Auto-generated method stub
-			
+			try (IndexWriter writer = createWriter()) {
+				final DirectoryReader reader = DirectoryReader.open(writer);
+				final IndexSearcher searcher = new IndexSearcher(reader);
+
+				final String docId = getDocumentId((GreycatNode) n);
+				final TopDocs results = searcher.search(findNodeQuery(docId), 1);
+				if (results.totalHits > 0) {
+					final Document document = searcher.doc(results.scoreDocs[0].doc);
+
+					if (key == null) {
+						removeValue(writer, document, docId, value);
+					} else {
+						removeKeyValue(writer, document, docId, key, value);
+					}
+				}
+			} catch (IOException e) {
+				LOGGER.error("Could not remove node from index", e);
+			}
+		}
+
+		protected void removeKeyValue(IndexWriter writer, final Document document, final String docId, String key,
+				Object value) throws IOException {
+			// TODO: handle other value types
+			final List<IndexableField> remainingFields = new ArrayList<>();
+			boolean matched = false;
+			for (IndexableField field : document.getFields(ATTRIBUTE_PREFIX + key)) {
+				final String existingValue = field.stringValue();
+				if (value == null || existingValue.equals(value)) {
+					matched = true;
+				} else {
+					remainingFields.add(field);
+				}
+			}
+
+			if (matched) {
+				document.removeFields(ATTRIBUTE_PREFIX + key);
+				for (IndexableField field : remainingFields) {
+					document.add(field);
+				}
+				writer.updateDocument(nodeTerm(docId), document);
+			}
+		}
+
+		protected void removeValue(IndexWriter writer, final Document document, final String docId, Object value)
+				throws IOException {
+			final Document copy = new Document();
+
+			boolean matched = false;
+			for (IndexableField field : document.getFields()) {
+				if (field.name().startsWith(ATTRIBUTE_PREFIX)) {
+					final String existingValue = field.stringValue();
+					if (value == null || existingValue.equals(value)) {
+						matched = true;
+					} else {
+						copy.add(field);
+					}
+				} else {
+					copy.add(field);
+				}
+			}
+
+			if (matched) {
+				writer.updateDocument(nodeTerm(docId), copy);
+			}
 		}
 
 		@Override
@@ -159,8 +222,17 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public IGraphIterable<IGraphNode> get(String key, Object valueExpr) {
-			// TODO Auto-generated method stub
-			return null;
+			try (IndexReader reader = DirectoryReader.open(indexDirectory)) {
+				IndexSearcher searcher = new IndexSearcher(reader);
+
+				// TODO: handle other types
+				List<IGraphNode> results = new ArrayList<>();
+				searcher.search(new TermQuery(new Term(ATTRIBUTE_PREFIX + key, valueExpr.toString())), new ListCollector(results, searcher));
+				return new ListIGraphIterable(results);
+			} catch (IOException e) {
+				LOGGER.error(e.getMessage(), e);
+				return new EmptyIGraphIterable<>();
+			}
 		}
 
 		@Override
@@ -176,15 +248,19 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public void add(IGraphNode n, String key, Object value) {
-			add(n, Collections.singletonMap(key, value));
+			if (value != null) {
+				add(n, Collections.singletonMap(key, value));
+			}
 		}
 
 		@Override
 		public void add(IGraphNode n, Map<String, Object> values) {
+			if (values == null) {
+				return;
+			}
 			final GreycatNode gn = (GreycatNode)n;
 
 			try (IndexWriter writer = createWriter()) {
-				// Find existing document first, if any
 				final DirectoryReader reader = DirectoryReader.open(writer);
 				final IndexSearcher searcher = new IndexSearcher(reader);
 
