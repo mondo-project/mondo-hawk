@@ -69,6 +69,7 @@ public class IndexTest extends TemporaryDatabaseTest {
 			final IGraphIterable<IGraphNode> iter = db.getMetamodelIndex().query("id", "http://*");
 			assertSame(db, iter.getSingle().getGraph());
 			assertEquals(1, iter.size());
+			assertTrue(iter.getSingle().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString().startsWith("http://"));
 			tx.success();
 		}
 
@@ -258,13 +259,14 @@ public class IndexTest extends TemporaryDatabaseTest {
 				assertTrue(db.getNodeIndexNames().contains(name));
 				IGraphNodeIndex idx = db.getOrCreateNodeIndex(name);
 
-				final IGraphIterable<IGraphNode> allID = idx.query("id", "*");
-				assertEquals("Should find exactly one match in " + name, 1, allID.size());
-
 				IGraphIterable<IGraphNode> results = idx.query("id", 1);
 				assertEquals(1, results.size());
 				results = idx.query("id", 0, 1, true, true);
 				assertEquals(1, results.size());
+
+				final IGraphIterable<IGraphNode> allID = idx.query("id", "*");
+				assertEquals("Should find exactly one match in " + name, 1, allID.size());
+
 				tx.success();
 			}
 		}

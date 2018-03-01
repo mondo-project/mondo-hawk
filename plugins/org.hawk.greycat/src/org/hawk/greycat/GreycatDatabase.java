@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -25,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 
 import org.hawk.core.IConsole;
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphEdgeIndex;
@@ -156,8 +158,7 @@ public class GreycatDatabase implements IGraphDatabase {
 
 	@Override
 	public IGraphEdgeIndex getOrCreateEdgeIndex(String name) {
-		// TODO Edge indices are not used in Hawk - remove from API?
-		return null;
+		throw new UnsupportedOperationException("Edge indices are not implemented for Greycat");
 	}
 
 	@Override
@@ -287,7 +288,6 @@ public class GreycatDatabase implements IGraphDatabase {
 
 	@Override
 	public boolean edgeIndexExists(String name) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -321,20 +321,22 @@ public class GreycatDatabase implements IGraphDatabase {
 
 	@Override
 	public Set<String> getNodeIndexNames() {
-		// TODO Auto-generated method stub
-		return null;
+		return luceneIndexer.getIndexNames();
 	}
 
 	@Override
 	public Set<String> getEdgeIndexNames() {
-		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptySet();
 	}
 
 	@Override
 	public Set<String> getKnownMMUris() {
-		// TODO Auto-generated method stub
-		return null;
+		final Set<String> mmURIs = new HashSet<>();
+		for (IGraphNode node : getMetamodelIndex().query("*", "*")) {
+			String mmURI = (String)node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
+			mmURIs.add(mmURI);
+		}
+		return mmURIs;
 	}
 
 	public boolean reconnect() {

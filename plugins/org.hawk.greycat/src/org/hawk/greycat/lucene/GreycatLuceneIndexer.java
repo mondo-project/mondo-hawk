@@ -4,22 +4,29 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.DoublePoint;
 import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexableField;
+import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.Collector;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.DocValuesFieldExistsQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
@@ -45,6 +52,11 @@ public class GreycatLuceneIndexer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GreycatLuceneNodeIndex.class);
 
+	private static final String ATTRIBUTE_PREFIX = "a_";
+	private static final String INDEX_FIELD   = "h_index";
+	private static final String DOCTYPE_FIELD = "h_doctype";
+	private static final String INDEX_DOCTYPE = "indexdecl";
+	
 	protected static final class ListIGraphIterable implements IGraphIterable<IGraphNode> {
 		private final List<IGraphNode> nodes;
 
@@ -68,38 +80,69 @@ public class GreycatLuceneIndexer {
 		}
 	}
 
+	protected class ListCollector extends SimpleCollector {
+		private final List<Integer> docIds = new ArrayList<>();
+		private final IndexSearcher searcher;
+		private int docBase;
+
+		protected ListCollector(IndexSearcher searcher) {
+			this.searcher = searcher;
+		}
+
+		@Override
+		protected void doSetNextReader(LeafReaderContext context) throws IOException {
+			this.docBase = context.docBase;
+		}
+
+		@Override
+		public boolean needsScores() {
+			return false;
+		}
+
+		@Override
+		public void collect(int doc) {
+			docIds.add(docBase + doc);
+		}
+
+		public List<Document> getDocuments() throws IOException {
+			List<Document> result = new ArrayList<>();
+			for (int docId : docIds) {
+				final Document document = searcher.doc(docId);
+				result.add(document);
+			}
+			return result;
+		}
+	}
+
+	/**
+	 * Implements a node index as a collection of documents, with a single document
+	 * representing the existence of the index itself.
+	 */
 	protected final class GreycatLuceneNodeIndex implements IGraphNodeIndex {
+		private final String name;
 
-		protected final class ListCollector extends SimpleCollector {
-			private final List<IGraphNode> nodes;
-			private final IndexSearcher searcher;
-
-			protected ListCollector(List<IGraphNode> nodes, IndexSearcher searcher) {
-				this.nodes = nodes;
-				this.searcher = searcher;
+		private static final String CMPID_FIELD   = "h_cmpid";
+		private static final String NODE_DOCTYPE = "node";
+		
+		protected class NodeListCollector extends ListCollector {
+			protected NodeListCollector(IndexSearcher searcher) {
+				super(searcher);
 			}
 
-			@Override
-			public boolean needsScores() {
-				return false;
-			}
-
-			@Override
-			public void collect(int doc) throws IOException {
-				final Document document = searcher.doc(doc);
-				final String compositeId = document.getField(CMPID_FIELD).stringValue();
-				final GreycatNode gn = getNodeByDocumentId(compositeId);
-				nodes.add(gn);
+			public List<IGraphNode> getNodes() throws IOException {
+				List<IGraphNode> result = new ArrayList<>();
+				for (Document document : getDocuments()) {
+					final String compositeId = document.getField(CMPID_FIELD).stringValue();
+					final GreycatNode gn = getNodeByDocumentId(compositeId);
+					result.add(gn);
+				}
+				return result;
 			}
 		}
-		
-		private static final String ATTRIBUTE_PREFIX = "a_";
-		private static final String CMPID_FIELD = "h_composite_id";
-
-		private final String name;
 
 		public GreycatLuceneNodeIndex(String name) {
 			this.name = name;
+
 		}
 
 		@Override
@@ -183,32 +226,70 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public IGraphIterable<IGraphNode> query(String key, Number from, Number to, boolean fromInclusive, boolean toInclusive) {
-			// TODO Auto-generated method stub
-			return null;
+			try (IndexReader reader = DirectoryReader.open(indexDirectory)) {
+				final IndexSearcher searcher = new IndexSearcher(reader);
+
+				Query query;
+				if (from instanceof Float || to instanceof Double) {
+					final double dFrom = from.doubleValue(), dTo = to.doubleValue();
+					query = DoublePoint.newRangeQuery(ATTRIBUTE_PREFIX + key, fromInclusive ? dFrom : DoublePoint.nextUp(dFrom), toInclusive ? dTo : DoublePoint.nextDown(dTo));
+				} else {
+					final long lFrom = from.longValue(), lTo = to.longValue();
+					query = LongPoint.newRangeQuery(ATTRIBUTE_PREFIX + key, fromInclusive ? lFrom : Math.addExact(lFrom, 1), toInclusive ? lTo : Math.addExact(lTo, -1));
+				}
+
+				final NodeListCollector c = new NodeListCollector(searcher);
+				searcher.search(query, c);
+				return new ListIGraphIterable(c.getNodes());
+
+			} catch (IOException e) {
+				LOGGER.error(e.getMessage(), e);
+				return new EmptyIGraphIterable<>();
+			}
 		}
 
 		@Override
 		public IGraphIterable<IGraphNode> query(String key, Object valueExpr) {
 			try (IndexReader reader = DirectoryReader.open(indexDirectory)) {
 				final IndexSearcher searcher = new IndexSearcher(reader);
-				final List<IGraphNode> nodes = new ArrayList<>();
-				final Collector c = new ListCollector(nodes, searcher);
-
 				final String sValueExpr = valueExpr.toString();
-				final int starIdx = sValueExpr.indexOf('*');
-				Query query;
-				if (starIdx == -1) {
-					query = new TermQuery(new Term(ATTRIBUTE_PREFIX + key, sValueExpr));
-				} else if (starIdx == sValueExpr.length() - 1) {
-					final String prefix = sValueExpr.substring(0, sValueExpr.length() - 1);
-					query = new PrefixQuery(new Term(ATTRIBUTE_PREFIX + key, prefix));
+
+				Query query = null;
+				if ("*".equals(key)) {
+					if (!"*".equals(valueExpr)) {
+						throw new UnsupportedOperationException("*:non-null not implemented yet for query");
+					}
+				} else if ("*".equals(valueExpr)) {
+					query = new DocValuesFieldExistsQuery(ATTRIBUTE_PREFIX + key);
+				} else if (valueExpr instanceof Float || valueExpr instanceof Double) {
+					query = DoublePoint.newExactQuery(ATTRIBUTE_PREFIX + key, ((Number)valueExpr).doubleValue());
+				} else if (valueExpr instanceof Number) {
+					query = LongPoint.newExactQuery(ATTRIBUTE_PREFIX + key, ((Number)valueExpr).longValue());
 				} else {
-					final String regex = sValueExpr.replaceAll("[*]", ".*");
-					query = new RegexpQuery(new Term(ATTRIBUTE_PREFIX + key, regex));
+					final int starIdx = sValueExpr.indexOf('*');
+					if (starIdx == -1) {
+						query = new TermQuery(new Term(ATTRIBUTE_PREFIX + key, sValueExpr));
+					} else if (starIdx > 0 && starIdx == sValueExpr.length() - 1) {
+						final String prefix = sValueExpr.substring(0, sValueExpr.length() - 1);
+						query = new PrefixQuery(new Term(ATTRIBUTE_PREFIX + key, prefix));
+					} else {
+						final String regex = sValueExpr.replaceAll("[*]", ".*");
+						query = new RegexpQuery(new Term(ATTRIBUTE_PREFIX + key, regex));
+					}
 				}
 
+				if (query == null) {
+					query = getIndexQuery();
+				} else {
+					query = new BooleanQuery.Builder()
+						.add(getIndexQuery(), Occur.FILTER)
+						.add(query, Occur.MUST)
+						.build();
+				}
+
+				final NodeListCollector c = new NodeListCollector(searcher);
 				searcher.search(query, c);
-				return new ListIGraphIterable(nodes);
+				return new ListIGraphIterable(c.getNodes());
 			} catch (IOException e) {
 				LOGGER.error(e.getMessage(), e);
 				return new EmptyIGraphIterable<>();
@@ -225,10 +306,24 @@ public class GreycatLuceneIndexer {
 			try (IndexReader reader = DirectoryReader.open(indexDirectory)) {
 				IndexSearcher searcher = new IndexSearcher(reader);
 
-				// TODO: handle other types
-				List<IGraphNode> results = new ArrayList<>();
-				searcher.search(new TermQuery(new Term(ATTRIBUTE_PREFIX + key, valueExpr.toString())), new ListCollector(results, searcher));
-				return new ListIGraphIterable(results);
+				Query valueQuery;
+				if (valueExpr instanceof Float || valueExpr instanceof Double) {
+					valueQuery = DoublePoint.newExactQuery(ATTRIBUTE_PREFIX + key, ((Number)valueExpr).doubleValue());
+				} else if (valueExpr instanceof Number) {
+					valueQuery = LongPoint.newExactQuery(ATTRIBUTE_PREFIX + key, ((Number)valueExpr).longValue());
+				} else {
+					final Term term = new Term(ATTRIBUTE_PREFIX + key, valueExpr.toString());
+					valueQuery = new TermQuery(term);
+				}
+
+				final Query query = new BooleanQuery.Builder()
+					.add(getIndexQuery(), Occur.FILTER)
+					.add(valueQuery, Occur.MUST)
+					.build();
+
+				final NodeListCollector collector = new NodeListCollector(searcher);
+				searcher.search(query, collector);
+				return new ListIGraphIterable(collector.getNodes());
 			} catch (IOException e) {
 				LOGGER.error(e.getMessage(), e);
 				return new EmptyIGraphIterable<>();
@@ -271,6 +366,7 @@ public class GreycatLuceneIndexer {
 				if (isNew) {
 					document = new Document();
 					document.add(new StringField(CMPID_FIELD, docId, Store.YES));
+					document.add(new StringField(DOCTYPE_FIELD, NODE_DOCTYPE, Store.YES));
 				} else {
 					document = searcher.doc(results.scoreDocs[0].doc);
 				}
@@ -279,8 +375,14 @@ public class GreycatLuceneIndexer {
 					final String fieldName = ATTRIBUTE_PREFIX + entry.getKey();
 					document.removeField(fieldName);
 
-					// TODO: handle numeric types here
-					document.add(new StringField(fieldName, entry.getValue().toString(), Store.YES));
+					final Object value = entry.getValue();
+					if (value instanceof Float || value instanceof Double) {
+						document.add(new DoublePoint(fieldName, ((Number)value).doubleValue()));
+					} else if (value instanceof Number) {
+						document.add(new LongPoint(fieldName, ((Number)value).longValue()));
+					} else {
+						document.add(new StringField(fieldName, value.toString(), Store.YES));
+					}
 				}
 
 				writer.updateDocument(nodeTerm(docId), document);
@@ -297,13 +399,17 @@ public class GreycatLuceneIndexer {
 			return new Term(CMPID_FIELD, compositeID);
 		}
 
+		protected Query getIndexQuery() {
+			return new PrefixQuery(new Term(CMPID_FIELD, name + "@"));
+		}
+
 		protected String getDocumentId(final GreycatNode gn) {
-			return String.format("%d_%d_%d", gn.getWorld(), gn.getTime(), gn.getId());
+			return String.format("%s@%d@%d@%d", name, gn.getWorld(), gn.getTime(), gn.getId());
 		}
 
 		protected GreycatNode getNodeByDocumentId(String compositeId) {
-			String[] parts = compositeId.split("_", 3);
-			final long id = Long.parseLong(parts[2]);
+			String[] parts = compositeId.split("@", 4);
+			final long id = Long.parseLong(parts[3]);
 			final GreycatNode gn = database.getNodeById(id);
 			return gn;
 		}
@@ -320,10 +426,43 @@ public class GreycatLuceneIndexer {
 	}
 
 	public IGraphNodeIndex getIndex(String name) {
+		// Make sure the index is listed
+		try (IndexWriter writer = createWriter()) {
+			final DirectoryReader reader = DirectoryReader.open(writer);
+			final IndexSearcher searcher = new IndexSearcher(reader);
+
+			TopDocs scoreDocs = searcher.search(new TermQuery(new Term(INDEX_FIELD, name)), 1);
+			if (scoreDocs.totalHits == 0) {
+				Document doc = new Document();
+				doc.add(new StringField(INDEX_FIELD, name, Store.YES));
+				doc.add(new StringField(DOCTYPE_FIELD, INDEX_DOCTYPE, Store.YES));
+				writer.addDocument(doc);
+			}
+		}  catch (IOException e) {
+			LOGGER.error("Could not register index", e);
+		}
+
 		return new GreycatLuceneNodeIndex(name);
 	}
 
 	private IndexWriter createWriter() throws IOException {
 		return new IndexWriter(indexDirectory, new IndexWriterConfig(analyzer));
+	}
+
+	public Set<String> getIndexNames() {
+		try (IndexReader reader = DirectoryReader.open(indexDirectory)) {
+			final IndexSearcher searcher = new IndexSearcher(reader);
+			final ListCollector lc = new ListCollector(searcher);
+			searcher.search(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), lc);
+
+			final Set<String> names = new HashSet<>();
+			for (Document doc : lc.getDocuments()) {
+				names.add(doc.getField(INDEX_FIELD).stringValue());
+			}
+			return names;
+		} catch (IOException e) {
+			LOGGER.error("Could not list index name", e.getMessage());
+			return Collections.emptySet();
+		} 
 	}
 }

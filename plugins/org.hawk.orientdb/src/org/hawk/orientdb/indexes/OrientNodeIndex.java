@@ -98,8 +98,8 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 	@Override
 	public IGraphIterable<IGraphNode> query(final String key, final Number nFrom, final Number nTo, final boolean fromInclusive, final boolean toInclusive) {
 		if (nFrom instanceof Float || nFrom instanceof Double) {
-			final double dFrom = (double)nFrom;
-			final double dTo = (double)nTo;
+			final double dFrom = nFrom.doubleValue();
+			final double dTo = nTo.doubleValue();
 
 			final OIndex<?> idx = getIndex(Double.class);
 			if (idx == null) {
@@ -114,8 +114,8 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 			}, graph, IGraphNode.class);
 			
 		} else {
-			final int lFrom = (int) nFrom;
-			final int lTo = (int) nTo;
+			final int lFrom = nFrom.intValue();
+			final int lTo = nTo.intValue();
 
 			final OIndex<?> idx = getIndex(Integer.class);
 			if (idx == null) {
