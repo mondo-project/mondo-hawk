@@ -29,7 +29,6 @@ import org.hawk.core.IConsole;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
-import org.hawk.core.graph.IGraphEdgeIndex;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
@@ -61,7 +60,6 @@ public class GreycatDatabase implements IGraphDatabase {
 	 * this with a custom index.
 	 */
 	protected static final String NODE_LABEL_IDX = "h_nodeLabel";
-
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GreycatDatabase.class);
 
@@ -157,11 +155,6 @@ public class GreycatDatabase implements IGraphDatabase {
 	}
 
 	@Override
-	public IGraphEdgeIndex getOrCreateEdgeIndex(String name) {
-		throw new UnsupportedOperationException("Edge indices are not implemented for Greycat");
-	}
-
-	@Override
 	public IGraphNodeIndex getMetamodelIndex() {
 		return getOrCreateNodeIndex("_hawkMetamodelIndex");
 	}
@@ -230,6 +223,7 @@ public class GreycatDatabase implements IGraphDatabase {
 	}
 
 	protected void save(CompletableFuture<Boolean> result) {
+		// First stage save
 		graph.save(saved -> {
 			softDeleteIndex.find(results -> {
 				Semaphore sem = new Semaphore(-results.length + 1);
@@ -243,7 +237,13 @@ public class GreycatDatabase implements IGraphDatabase {
 				} catch (InterruptedException e) {
 					LOGGER.error(e.getMessage(), e);
 				}
-				result.complete(saved);
+
+				if (results.length > 0) {
+					// Second stage (for fully dropping those nodes)
+					graph.save(savedAgain -> result.complete(savedAgain));
+				} else {
+					result.complete(saved);
+				}
 			}, world, time);
 		});
 	}
@@ -283,11 +283,6 @@ public class GreycatDatabase implements IGraphDatabase {
 	@Override
 	public boolean nodeIndexExists(String name) {
 		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean edgeIndexExists(String name) {
 		return false;
 	}
 
@@ -383,15 +378,8 @@ public class GreycatDatabase implements IGraphDatabase {
 	}
 
 	protected void hardDelete(GreycatNode gn, Callback<?> callback) {
-		// Remove all edges (otherwise, future reads may fail)
-		final Node n = gn.getNode();
-		for (IGraphEdge e : gn.getEdges()) {
-			e.delete();
-		}
-
-		softDeleteIndex.unindex(n);
-		nodeLabelIndex.unindex(n);
-		n.drop(callback);
+		unlink(gn);
+		gn.getNode().drop(callback);
 	}
 
 	/**
@@ -399,10 +387,28 @@ public class GreycatDatabase implements IGraphDatabase {
 	 * next save.
 	 */
 	protected void softDelete(GreycatNode gn) {
+		unlink(gn);
+
 		// Soft delete, to make definitive after next save
 		final Node node = gn.getNode();
 		node.set(SOFT_DELETED_KEY, Type.BOOL, true);
 		softDeleteIndex.update(node);
+	}
+
+	/**
+	 * Changes a node so it is disconnected from the graph and cannot be found
+	 * through the internal indices.
+	 */
+	private void unlink(GreycatNode gn) {
+		for (IGraphEdge e : gn.getEdges()) {
+			e.delete();
+		}
+
+		final Node n = gn.getNode();
+		softDeleteIndex.unindex(n);
+		nodeLabelIndex.unindex(n);
+
+		// TODO: remove from the Lucene indices, too (add test!)
 	}
 
 }

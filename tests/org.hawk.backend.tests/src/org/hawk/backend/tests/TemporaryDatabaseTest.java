@@ -15,11 +15,13 @@ import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.util.DefaultConsole;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+@Ignore
 @RunWith(Parameterized.class)
 public class TemporaryDatabaseTest {
 

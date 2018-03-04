@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -26,7 +27,6 @@ import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.DocValuesFieldExistsQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
@@ -55,8 +55,9 @@ public class GreycatLuceneIndexer {
 	private static final String ATTRIBUTE_PREFIX = "a_";
 	private static final String INDEX_FIELD   = "h_index";
 	private static final String DOCTYPE_FIELD = "h_doctype";
+	private static final String FIELDS_FIELD = "h_fields";
 	private static final String INDEX_DOCTYPE = "indexdecl";
-	
+
 	protected static final class ListIGraphIterable implements IGraphIterable<IGraphNode> {
 		private final List<IGraphNode> nodes;
 
@@ -238,6 +239,12 @@ public class GreycatLuceneIndexer {
 					query = LongPoint.newRangeQuery(ATTRIBUTE_PREFIX + key, fromInclusive ? lFrom : Math.addExact(lFrom, 1), toInclusive ? lTo : Math.addExact(lTo, -1));
 				}
 
+				// Also filter by index
+				query = new BooleanQuery.Builder()
+					.add(getIndexQuery(), Occur.FILTER)
+					.add(query, Occur.MUST)
+					.build();
+
 				final NodeListCollector c = new NodeListCollector(searcher);
 				searcher.search(query, c);
 				return new ListIGraphIterable(c.getNodes());
@@ -258,9 +265,11 @@ public class GreycatLuceneIndexer {
 				if ("*".equals(key)) {
 					if (!"*".equals(valueExpr)) {
 						throw new UnsupportedOperationException("*:non-null not implemented yet for query");
+					} else {
+						// We can just delegate on the query == null case below
 					}
 				} else if ("*".equals(valueExpr)) {
-					query = new DocValuesFieldExistsQuery(ATTRIBUTE_PREFIX + key);
+					query = new TermQuery(new Term(FIELDS_FIELD, key));
 				} else if (valueExpr instanceof Float || valueExpr instanceof Double) {
 					query = DoublePoint.newExactQuery(ATTRIBUTE_PREFIX + key, ((Number)valueExpr).doubleValue());
 				} else if (valueExpr instanceof Number) {
@@ -360,35 +369,61 @@ public class GreycatLuceneIndexer {
 				final IndexSearcher searcher = new IndexSearcher(reader);
 
 				final String docId = getDocumentId(gn);
+				final Document document = new Document();
+				document.add(new StringField(CMPID_FIELD, docId, Store.YES));
+				document.add(new StringField(DOCTYPE_FIELD, NODE_DOCTYPE, Store.NO));
+				document.add(new StringField(INDEX_FIELD, name, Store.NO));
+
 				final TopDocs results = searcher.search(findNodeQuery(docId), 1);
-				final boolean isNew = results.totalHits == 0;
-				Document document;
-				if (isNew) {
-					document = new Document();
-					document.add(new StringField(CMPID_FIELD, docId, Store.YES));
-					document.add(new StringField(DOCTYPE_FIELD, NODE_DOCTYPE, Store.YES));
-				} else {
-					document = searcher.doc(results.scoreDocs[0].doc);
+				if (results.totalHits > 0) {
+					// Create our own copy, for updating
+					Document oldDocument = searcher.doc(results.scoreDocs[0].doc);
+					values = copyOldValues(oldDocument, values);
 				}
 
 				for (Entry<String, Object> entry : values.entrySet()) {
-					final String fieldName = ATTRIBUTE_PREFIX + entry.getKey();
-					document.removeField(fieldName);
-
-					final Object value = entry.getValue();
-					if (value instanceof Float || value instanceof Double) {
-						document.add(new DoublePoint(fieldName, ((Number)value).doubleValue()));
-					} else if (value instanceof Number) {
-						document.add(new LongPoint(fieldName, ((Number)value).longValue()));
-					} else {
-						document.add(new StringField(fieldName, value.toString(), Store.YES));
-					}
+					addField(document, entry.getKey(), entry.getValue());
 				}
 
 				writer.updateDocument(nodeTerm(docId), document);
 			} catch (IOException e) {
 				LOGGER.error(e.getMessage(), e);
 			}
+		}
+
+		protected void addField(Document document, final String key, final Object value) {
+			final String fieldName = ATTRIBUTE_PREFIX + key;
+
+			if (value instanceof Float || value instanceof Double) {
+				document.add(new DoublePoint(fieldName, ((Number)value).doubleValue()));
+			} else if (value instanceof Number) {
+				document.add(new LongPoint(fieldName, ((Number)value).longValue()));
+			} else {
+				document.add(new StringField(fieldName, value.toString(), Store.YES));
+			}
+
+			document.add(new StringField(FIELDS_FIELD, key, Store.NO));
+		}
+
+		protected Map<String, Object> copyOldValues(Document oldDocument, Map<String, Object> destValues) {
+			destValues = new HashMap<>(destValues);
+
+			for (IndexableField oldField : oldDocument.getFields()) {
+				final String rawOldFieldName = oldField.name();
+				if (rawOldFieldName.startsWith(ATTRIBUTE_PREFIX)) {
+					final String oldFieldName = rawOldFieldName.substring(ATTRIBUTE_PREFIX.length());
+					if (!destValues.containsKey(oldFieldName)) {
+						if (oldField.stringValue() != null) {
+							destValues.put(oldFieldName, oldField.stringValue());
+						} else if (oldField.numericValue() != null) {
+							destValues.put(oldFieldName, oldField.numericValue());
+						} else {
+							throw new IllegalStateException("Attribute stored with unknown value type");
+						}
+					}
+				}
+			}
+			return destValues;
 		}
 
 		protected TermQuery findNodeQuery(final String compositeID) {

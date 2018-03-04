@@ -40,8 +40,6 @@ public interface IGraphDatabase {
 	// can be used to get any index not exposed here or created by developers.
 	IGraphNodeIndex getOrCreateNodeIndex(String name);
 
-	IGraphEdgeIndex getOrCreateEdgeIndex(String name);
-
 	IGraphNodeIndex getMetamodelIndex();
 
 	IGraphNodeIndex getFileIndex();
@@ -71,8 +69,6 @@ public interface IGraphDatabase {
 	// /Map<?, ?> getConfig();
 
 	boolean nodeIndexExists(String name);
-
-	boolean edgeIndexExists(String name);
 
 	String getType();
 

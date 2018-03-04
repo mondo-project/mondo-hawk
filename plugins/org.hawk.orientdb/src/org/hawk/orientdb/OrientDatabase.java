@@ -33,11 +33,9 @@ import org.hawk.core.IConsole;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
-import org.hawk.core.graph.IGraphEdgeIndex;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.orientdb.cache.ORecordCacheGuava;
-import org.hawk.orientdb.indexes.OrientEdgeIndex;
 import org.hawk.orientdb.indexes.OrientNodeIndex;
 import org.hawk.orientdb.indexes.OrientNodeIndex.PostponedIndexAdd;
 import org.hawk.orientdb.util.OrientClusterDocumentIterable;
@@ -315,11 +313,6 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	@Override
-	public IGraphEdgeIndex getOrCreateEdgeIndex(String name) {
-		return new OrientEdgeIndex(name, this);
-	}
-
-	@Override
 	public IGraphNodeIndex getMetamodelIndex() {
 		return metamodelIndex;
 	}
@@ -591,11 +584,6 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	@Override
-	public boolean edgeIndexExists(String name) {
-		return getIndexStore().getEdgeIndexNames().contains(name);
-	}
-
-	@Override
 	public String getType() {
 		return getClass().getCanonicalName();
 	}
@@ -699,7 +687,7 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	public void unmarkNodeAsDirty(OrientNode orientNode) {
-		dirtyNodes.remove(orientNode.getId());
+		dirtyNodes.remove(orientNode.getId() + "");
 	}
 
 	public void markEdgeAsDirty(OrientEdge orientEdge) {
@@ -710,7 +698,7 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	public void unmarkEdgeAsDirty(OrientEdge orientEdge) {
-		dirtyEdges.remove(orientEdge.getId());
+		dirtyEdges.remove(orientEdge.getId() + "");
 	}
 
 	public void discardDirty() {

@@ -268,6 +268,7 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 			assertEquals(0, size(left.getOutgoing()));
 			assertEquals(0, size(right.getIncoming()));
 			assertEquals(0, size(right.getOutgoing()));
+			tx.success();
 		}
 	}
 

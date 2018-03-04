@@ -24,7 +24,6 @@ import org.hawk.core.IConsole;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
-import org.hawk.core.graph.IGraphEdgeIndex;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
@@ -32,7 +31,6 @@ import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.util.FileOperations;
 import org.hawk.neo4j_v2.util.Neo4JBatchUtil;
 import org.hawk.neo4j_v2.util.Neo4JEdge;
-import org.hawk.neo4j_v2.util.Neo4JEdgeIndex;
 import org.hawk.neo4j_v2.util.Neo4JIterable;
 import org.hawk.neo4j_v2.util.Neo4JNode;
 import org.hawk.neo4j_v2.util.Neo4JNodeIndex;
@@ -249,30 +247,6 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 		return found;
 
-	}
-
-	@Override
-	public boolean edgeIndexExists(String name) {
-
-		boolean found = false;
-
-		if (graph != null) {
-
-			found = indexer.existsForRelationships(name);
-
-		} else {
-
-			// no way to find out if exists return false
-
-		}
-
-		return found;
-
-	}
-
-	@Override
-	public IGraphEdgeIndex getOrCreateEdgeIndex(String name) {
-		return new Neo4JEdgeIndex(name, this);
 	}
 
 	@Override

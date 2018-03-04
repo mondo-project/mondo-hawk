@@ -260,25 +260,15 @@ public class IndexTest extends TemporaryDatabaseTest {
 				IGraphNodeIndex idx = db.getOrCreateNodeIndex(name);
 
 				IGraphIterable<IGraphNode> results = idx.query("id", 1);
-				assertEquals(1, results.size());
+				assertEquals("Exact query for index " + name + " should produce one result", 1, results.size());
 				results = idx.query("id", 0, 1, true, true);
-				assertEquals(1, results.size());
+				assertEquals("Range query for index " + name + " should produce one result", 1, results.size());
 
 				final IGraphIterable<IGraphNode> allID = idx.query("id", "*");
 				assertEquals("Should find exactly one match in " + name, 1, allID.size());
 
 				tx.success();
 			}
-		}
-
-		try (IGraphTransaction tx = db.beginTransaction()) {
-			for (char invalidChar : invalidChars) {
-				final String name = "my" + invalidChar + "index";
-				db.getOrCreateEdgeIndex(name);
-				assertTrue(db.getEdgeIndexNames().contains(name));
-				// TODO: no methods to add things in IGraphEdgeIndex?
-			}
-			tx.success();
 		}
 	}
 
