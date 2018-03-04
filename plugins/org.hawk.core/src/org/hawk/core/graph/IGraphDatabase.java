@@ -66,8 +66,6 @@ public interface IGraphDatabase {
 
 	IGraphNode getNodeById(Object id);
 
-	// /Map<?, ?> getConfig();
-
 	boolean nodeIndexExists(String name);
 
 	String getType();
@@ -87,8 +85,6 @@ public interface IGraphDatabase {
 	Mode currentMode();
 
 	Set<String> getNodeIndexNames();
-
-	Set<String> getEdgeIndexNames();
 
 	Set<String> getKnownMMUris();
 

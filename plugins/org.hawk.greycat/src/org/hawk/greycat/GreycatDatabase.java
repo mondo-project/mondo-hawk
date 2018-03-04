@@ -312,11 +312,6 @@ public class GreycatDatabase implements IGraphDatabase {
 	}
 
 	@Override
-	public Set<String> getEdgeIndexNames() {
-		return Collections.emptySet();
-	}
-
-	@Override
 	public Set<String> getKnownMMUris() {
 		final Set<String> mmURIs = new HashSet<>();
 		for (IGraphNode node : getMetamodelIndex().query("*", "*")) {

@@ -609,11 +609,6 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	@Override
-	public Set<String> getEdgeIndexNames() {
-		return new HashSet<String>(getIndexStore().getEdgeIndexNames());
-	}
-
-	@Override
 	public Set<String> getKnownMMUris() {
 		final Set<String> mmURIs = new HashSet<>();
 		for (IGraphNode node : getMetamodelIndex().query("*", "*")) {

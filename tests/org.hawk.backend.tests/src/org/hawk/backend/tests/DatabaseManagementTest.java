@@ -55,7 +55,7 @@ public class DatabaseManagementTest {
 		assertNotNull(db.getFileIndex());
 		assertNotNull(db.getMetamodelIndex());
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			assertEquals(Collections.EMPTY_SET, db.getEdgeIndexNames());
+			assertEquals(Collections.EMPTY_SET, db.getNodeIndexNames());
 			tx.success();
 		}
 		db.shutdown();

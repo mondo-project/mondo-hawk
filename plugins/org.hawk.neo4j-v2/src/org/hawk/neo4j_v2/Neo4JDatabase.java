@@ -13,7 +13,6 @@ package org.hawk.neo4j_v2;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -192,12 +191,6 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 		return ret;
 
-	}
-
-	@Override
-	public Set<String> getEdgeIndexNames() {
-		return new HashSet<String>(Arrays.asList(indexer
-				.relationshipIndexNames()));
 	}
 
 	private final static Map<String, String> FILEPATHENCODING = new HashMap<String, String>();
