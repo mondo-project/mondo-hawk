@@ -395,6 +395,7 @@ public class GreycatDatabase implements IGraphDatabase {
 		final Node n = gn.getNode();
 		softDeleteIndex.unindex(n);
 		nodeLabelIndex.unindex(n);
+		luceneIndexer.remove(gn);
 
 		// TODO: remove from the Lucene indices, too (add test!)
 	}

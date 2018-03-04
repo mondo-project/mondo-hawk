@@ -58,6 +58,7 @@ public class GreycatLuceneIndexer {
 	private static final String DOCTYPE_FIELD = "h_doctype";
 	private static final String FIELDS_FIELD = "h_fields";
 	private static final String INDEX_DOCTYPE = "indexdecl";
+	private static final String NODEID_FIELD   = "h_nodeid";
 
 	protected static final class ListIGraphIterable implements IGraphIterable<IGraphNode> {
 		private final List<IGraphNode> nodes;
@@ -123,7 +124,6 @@ public class GreycatLuceneIndexer {
 	protected final class GreycatLuceneNodeIndex implements IGraphNodeIndex {
 		private final String name;
 
-		private static final String CMPID_FIELD   = "h_cmpid";
 		private static final String NODE_DOCTYPE = "node";
 		
 		protected class NodeListCollector extends ListCollector {
@@ -134,7 +134,7 @@ public class GreycatLuceneIndexer {
 			public List<IGraphNode> getNodes() throws IOException {
 				List<IGraphNode> result = new ArrayList<>();
 				for (Document document : getDocuments()) {
-					final String compositeId = document.getField(CMPID_FIELD).stringValue();
+					final String compositeId = document.getField(NODEID_FIELD).stringValue();
 					final GreycatNode gn = getNodeByDocumentId(compositeId);
 					result.add(gn);
 				}
@@ -152,7 +152,7 @@ public class GreycatLuceneIndexer {
 				final DirectoryReader reader = DirectoryReader.open(writer);
 				final IndexSearcher searcher = new IndexSearcher(reader);
 
-				final String docId = getDocumentId((GreycatNode) n);
+				final String docId = getNodeId((GreycatNode) n);
 				final TopDocs results = searcher.search(findNodeQuery(docId), 1);
 				if (results.totalHits > 0) {
 					final Document document = searcher.doc(results.scoreDocs[0].doc);
@@ -221,7 +221,7 @@ public class GreycatLuceneIndexer {
 		@Override
 		public void remove(IGraphNode n) {
 			try (IndexWriter writer = createWriter()) {
-				final String docId = getDocumentId((GreycatNode) n);
+				final String docId = getNodeId((GreycatNode) n);
 				final Term term = nodeTerm(docId);
 				writer.deleteDocuments(term);
 			} catch (IOException e) {
@@ -244,10 +244,7 @@ public class GreycatLuceneIndexer {
 				}
 
 				// Also filter by index
-				query = new BooleanQuery.Builder()
-					.add(getIndexQuery(), Occur.FILTER)
-					.add(query, Occur.MUST)
-					.build();
+				query = getIndexQueryBuilder().add(query, Occur.MUST).build();
 
 				final NodeListCollector c = new NodeListCollector(searcher);
 				searcher.search(query, c);
@@ -292,12 +289,9 @@ public class GreycatLuceneIndexer {
 				}
 
 				if (query == null) {
-					query = getIndexQuery();
+					query = getIndexQueryBuilder().build();
 				} else {
-					query = new BooleanQuery.Builder()
-						.add(getIndexQuery(), Occur.FILTER)
-						.add(query, Occur.MUST)
-						.build();
+					query = getIndexQueryBuilder().add(query, Occur.MUST).build();
 				}
 
 				final NodeListCollector c = new NodeListCollector(searcher);
@@ -329,11 +323,7 @@ public class GreycatLuceneIndexer {
 					valueQuery = new TermQuery(term);
 				}
 
-				final Query query = new BooleanQuery.Builder()
-					.add(getIndexQuery(), Occur.FILTER)
-					.add(valueQuery, Occur.MUST)
-					.build();
-
+				final Query query = getIndexQueryBuilder().add(valueQuery, Occur.MUST).build();
 				final NodeListCollector collector = new NodeListCollector(searcher);
 				searcher.search(query, collector);
 				return new ListIGraphIterable(collector.getNodes());
@@ -350,8 +340,11 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public void delete() {
-			// TODO Auto-generated method stub
-			
+			try (IndexWriter writer = createWriter()) {
+				writer.deleteDocuments(new TermQuery(new Term(INDEX_FIELD, name)));
+			} catch (IOException e) {
+				LOGGER.error(String.format("Could not delete index %s", name), e);
+			}
 		}
 
 		@Override
@@ -372,9 +365,9 @@ public class GreycatLuceneIndexer {
 				final DirectoryReader reader = DirectoryReader.open(writer);
 				final IndexSearcher searcher = new IndexSearcher(reader);
 
-				final String docId = getDocumentId(gn);
+				final String docId = getNodeId(gn);
 				final Document document = new Document();
-				document.add(new StringField(CMPID_FIELD, docId, Store.YES));
+				document.add(new StringField(NODEID_FIELD, docId, Store.YES));
 				document.add(new StringField(DOCTYPE_FIELD, NODE_DOCTYPE, Store.NO));
 				document.add(new StringField(INDEX_FIELD, name, Store.NO));
 
@@ -444,20 +437,18 @@ public class GreycatLuceneIndexer {
 		}
 
 		protected Term nodeTerm(final String compositeID) {
-			return new Term(CMPID_FIELD, compositeID);
+			return new Term(NODEID_FIELD, compositeID);
 		}
 
-		protected Query getIndexQuery() {
-			return new PrefixQuery(new Term(CMPID_FIELD, name + "@"));
-		}
-
-		protected String getDocumentId(final GreycatNode gn) {
-			return String.format("%s@%d@%d@%d", name, gn.getWorld(), gn.getTime(), gn.getId());
+		protected BooleanQuery.Builder getIndexQueryBuilder() {
+			return new BooleanQuery.Builder()
+				.add(new TermQuery(new Term(INDEX_FIELD, name)), Occur.FILTER)
+				.add(new TermQuery(new Term(DOCTYPE_FIELD, NODE_DOCTYPE)), Occur.FILTER);
 		}
 
 		protected GreycatNode getNodeByDocumentId(String compositeId) {
-			String[] parts = compositeId.split("@", 4);
-			final long id = Long.parseLong(parts[3]);
+			String[] parts = compositeId.split("@", 3);
+			final long id = Long.parseLong(parts[2]);
 			final GreycatNode gn = database.getNodeById(id);
 			return gn;
 		}
@@ -529,5 +520,25 @@ public class GreycatLuceneIndexer {
 			LOGGER.error(String.format("Could not check if %s exists", name), e);
 			return false;
 		}
+	}
+
+	/**
+	 * Removes this node from all indices.
+	 */
+	public void remove(GreycatNode gn) {
+		try (IndexWriter writer = createWriter()) {
+			writer.deleteDocuments(new TermQuery(new Term(NODEID_FIELD, getNodeId(gn))));
+		} catch (IOException e) {
+			LOGGER.error(String.format(
+				"Could not remove node %s in world %d at time %d",
+				gn.getId(), gn.getWorld(), gn.getTime()), e);
+		}
+	}
+
+	/**
+	 * Returns an identifying string for a specific node at a specific point in time.
+	 */
+	protected String getNodeId(GreycatNode gn) {
+		return String.format("%d@%d@%d", gn.getWorld(), gn.getTime(), gn.getId());
 	}
 }

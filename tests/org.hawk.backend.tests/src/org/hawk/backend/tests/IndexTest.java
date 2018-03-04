@@ -494,12 +494,49 @@ public class IndexTest extends TemporaryDatabaseTest {
 
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			idxRoots = db.getOrCreateNodeIndex("roots");
+			assertEquals(0, idxRoots.query("a", "*").size());
 			idxRoots.add(x, "a", "2");
 			tx.success();
 		}
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			assertEquals(0, idxRoots.query("a", "1").size());
 			assertEquals(1, idxRoots.query("a", "2").size());
+		}
+	}
+
+	@Test
+	public void nodeDelete() throws Exception {
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			IGraphNode n = db.createNode(null, "x");
+			db.getMetamodelIndex().add(n, "a", 1);
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			final IGraphIterable<IGraphNode> results = db.getMetamodelIndex().get("a", 1);
+			assertEquals(1, results.size());
+			results.getSingle().delete();
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			final IGraphIterable<IGraphNode> results = db.getMetamodelIndex().get("a", 1);
+			assertEquals(0, results.size());
+			tx.success();
+		}
+	}
+
+	@Test
+	public void indexRollback() throws Exception {
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			IGraphNode n = db.createNode(null, "x");
+			db.getMetamodelIndex().add(n, "a", 1);
+			tx.failure();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(0, db.getMetamodelIndex().query("*", "*").size());
+			tx.success();
 		}
 	}
 
