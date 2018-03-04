@@ -49,6 +49,10 @@ import org.slf4j.LoggerFactory;
 
 public class Neo4JDatabase implements IGraphDatabase {
 
+	private static final String FILEIDX_NAME = "FILEINDEX";
+	private static final String MMIDX_NAME = "METAMODELINDEX";
+	private static final String DB_NAME = "db";
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(Neo4JDatabase.class);
 
 	private String loc;
@@ -82,7 +86,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 		tempdir = loc + "/temp";
 
-		loc += "/" + databaseName;
+		loc += "/" + DB_NAME;
 
 		// init it
 		graph = Neo4JBatchUtil.createGraphService(loc);
@@ -90,8 +94,8 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 		try (IGraphTransaction t = beginTransaction()) {
 
-			metamodelindex = new Neo4JNodeIndex(metamodelIndexName, this);
-			fileindex = new Neo4JNodeIndex(fileIndexName, this);
+			metamodelindex = new Neo4JNodeIndex(MMIDX_NAME, this);
+			fileindex = new Neo4JNodeIndex(FILEIDX_NAME, this);
 
 			t.success();
 		} catch (Exception e) {
@@ -112,8 +116,8 @@ public class Neo4JDatabase implements IGraphDatabase {
 		if (batchindexer == null)
 			batchindexer = new LuceneBatchInserterIndexProvider(batch);
 
-		metamodelindex = new Neo4JNodeIndex(metamodelIndexName, this);
-		fileindex = new Neo4JNodeIndex(fileIndexName, this);
+		metamodelindex = new Neo4JNodeIndex(MMIDX_NAME, this);
+		fileindex = new Neo4JNodeIndex(FILEIDX_NAME, this);
 
 	}
 
@@ -143,8 +147,8 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 			try (IGraphTransaction t = beginTransaction()) {
 
-				metamodelindex = new Neo4JNodeIndex(metamodelIndexName, this);
-				fileindex = new Neo4JNodeIndex(fileIndexName, this);
+				metamodelindex = new Neo4JNodeIndex(MMIDX_NAME, this);
+				fileindex = new Neo4JNodeIndex(FILEIDX_NAME, this);
 
 				t.success();
 			} catch (Exception e) {
@@ -175,7 +179,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 		System.gc();
 
 		final boolean deleted = FileOperations.deleteFiles(new File(getPath()).getParentFile(), true);
-		LOGGER.info(deleted ? "Successfully deleted store {}" : "Failed to delete store {}", databaseName);
+		LOGGER.info(deleted ? "Successfully deleted store {}" : "Failed to delete store {}", DB_NAME);
 	}
 
 	@Override

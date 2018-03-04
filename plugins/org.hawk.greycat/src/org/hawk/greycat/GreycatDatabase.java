@@ -282,8 +282,7 @@ public class GreycatDatabase implements IGraphDatabase {
 
 	@Override
 	public boolean nodeIndexExists(String name) {
-		// TODO Auto-generated method stub
-		return false;
+		return luceneIndexer.indexExists(name);
 	}
 
 	@Override
@@ -325,9 +324,11 @@ public class GreycatDatabase implements IGraphDatabase {
 		CompletableFuture<Boolean> connected = new CompletableFuture<>();
 
 		if (graph != null) {
-			// Only disconnect storage - we want to release locks on the storage *without*
-			// saving.
-			// Seems to be the only simple way to do a rollback to the latest saved state.
+			/*
+			 * Only disconnect storage - we want to release locks on the storage *without*
+			 * saving. Seems to be the only simple way to do a rollback to the latest saved
+			 * state.
+			 */
 			graph.storage().disconnect(disconnectedStorage -> {
 				connect(connected);
 			});

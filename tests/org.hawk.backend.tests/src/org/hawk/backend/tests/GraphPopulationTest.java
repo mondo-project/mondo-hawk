@@ -245,7 +245,7 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 			middle = db.createNode(null, "eobject");
 			right = db.createNode(null, "eobject");
 			db.createRelationship(left, middle, "x", null);
-			db.createRelationship(middle, right, "x", null);
+			db.createRelationship(middle, right, "x", Collections.singletonMap("some", "thing"));
 			tx.success();
 		}
 

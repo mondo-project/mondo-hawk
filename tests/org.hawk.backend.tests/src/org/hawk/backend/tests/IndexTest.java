@@ -11,6 +11,7 @@
 package org.hawk.backend.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -134,6 +135,63 @@ public class IndexTest extends TemporaryDatabaseTest {
 	}
 
 	@Test
+	public void removeByFullKeyInt() throws Exception {
+		IGraphNode n1, n2;
+		final String key = "int";
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			n1 = db.createNode(null, "v");
+			n2 = db.createNode(null, "v");
+			db.getMetamodelIndex().add(n1, key, 1);
+			db.getMetamodelIndex().add(n2, key, 2);
+
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			final IGraphNodeIndex mmIdx = db.getMetamodelIndex();
+			mmIdx.remove(key, 1, n1);
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(0, db.getMetamodelIndex().get(key, 1).size());
+			assertEquals(1, db.getMetamodelIndex().get(key, 2).size());
+			assertEquals(1, db.getMetamodelIndex().query(key, 1, 2, true, true).size());
+			assertEquals(1, db.getMetamodelIndex().query(key, "*").size());
+			tx.success();
+		}
+	}
+
+	@Test
+	public void removeByFullKeyDouble() throws Exception {
+		final String key = "double";
+
+		IGraphNode n1, n2;
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			n1 = db.createNode(null, "v");
+			n2 = db.createNode(null, "v");
+			db.getMetamodelIndex().add(n1, key, 1.1);
+			db.getMetamodelIndex().add(n2, key, 2.3);
+
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			final IGraphNodeIndex mmIdx = db.getMetamodelIndex();
+			mmIdx.remove(key, 1.1, n1);
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(0, db.getMetamodelIndex().get(key, 1.1).size());
+			assertEquals(1, db.getMetamodelIndex().get(key, 2.3).size());
+			assertEquals(1, db.getMetamodelIndex().query(key, 1.0, 3.0, false, false).size());
+			assertEquals(1, db.getMetamodelIndex().query(key, "*").size());
+			tx.success();
+		}
+	}
+	
+	@Test
 	public void removeByValueNode() throws Exception {
 		final String mmBarURI = populateForRemove();
 		final IGraphIterable<IGraphNode> iter = checkBeforeRemove(mmBarURI);
@@ -162,14 +220,80 @@ public class IndexTest extends TemporaryDatabaseTest {
 	public void removeByNode3Arg() throws Exception {
 		final String mmBarURI = populateForRemove();
 
-		// NOTE: changes in Lucene indexes are not complete until we commit the
-		// transaction
+		// NOTE: changes in Lucene indexes are not complete until we commit the transaction
 		final IGraphIterable<IGraphNode> iter = checkBeforeRemove(mmBarURI);
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			db.getMetamodelIndex().remove(null, null, iter.getSingle());
 			tx.success();
 		}
 		checkAfterRemove(mmBarURI);
+	}
+
+	@Test
+	public void integerExact() throws Exception {
+		final String mmBarURI = "http://foo/bar";
+		final Map<String, Object> mmBarNodeProps = Collections.singletonMap(IModelIndexer.IDENTIFIER_PROPERTY, mmBarURI);
+
+		final IGraphNodeIndex idx = db.getMetamodelIndex();
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			IGraphNode mmNode = db.createNode(mmBarNodeProps, "metamodel");
+			idx.add(mmNode, Collections.singletonMap("value", 5));
+
+			IGraphNode mmNode2 = db.createNode(mmBarNodeProps, "metamodel");
+			idx.add(mmNode2, Collections.singletonMap("value", 8));
+
+			IGraphNode mmNode3 = db.createNode(mmBarNodeProps, "metamodel");
+			idx.add(mmNode3, Collections.singletonMap("value", 8));
+
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(0, idx.get("value", 1).size());
+			assertEquals(0, idx.query("value", 1).size());
+
+			assertEquals(1, idx.get("value", 5).size());
+			assertEquals(1, idx.query("value", 5).size());
+
+			assertEquals(2, idx.get("value", 8).size());
+			assertEquals(2, idx.query("value", 8).size());
+
+			tx.success();
+		}
+	}
+
+	@Test
+	public void doubleExact() throws Exception {
+		final String mmBarURI = "http://foo/bar";
+		final Map<String, Object> mmBarNodeProps = Collections.singletonMap(IModelIndexer.IDENTIFIER_PROPERTY, mmBarURI);
+
+		final IGraphNodeIndex idx = db.getMetamodelIndex();
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			IGraphNode mmNode = db.createNode(mmBarNodeProps, "metamodel");
+			idx.add(mmNode, Collections.singletonMap("value", 5.3));
+
+			IGraphNode mmNode2 = db.createNode(mmBarNodeProps, "metamodel");
+			idx.add(mmNode2, Collections.singletonMap("value", 8.1));
+
+			IGraphNode mmNode3 = db.createNode(mmBarNodeProps, "metamodel");
+			idx.add(mmNode3, Collections.singletonMap("value", 8.1));
+
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(0, idx.get("value", 5.2).size());
+			assertEquals(0, idx.query("value", 5.2).size());
+			assertEquals(0, idx.get("value", 8.4).size());
+			assertEquals(0, idx.query("value", 8.4).size());
+
+			assertEquals(1, idx.get("value", 5.3).size());
+			assertEquals(1, idx.query("value", 5.3).size());
+			assertEquals(2, idx.get("value", 8.1).size());
+			assertEquals(2, idx.query("value", 8.1).size());
+
+			tx.success();
+		}
 	}
 
 	@Test
@@ -250,6 +374,7 @@ public class IndexTest extends TemporaryDatabaseTest {
 		for (char invalidChar : invalidChars) {
 			final String name = "my" + invalidChar + "index";
 			try (IGraphTransaction tx = db.beginTransaction()) {
+				assertFalse(db.nodeIndexExists(name));
 				IGraphNodeIndex idx = db.getOrCreateNodeIndex(name);
 				idx.add(n, "id", 1);
 				tx.success();
@@ -257,6 +382,7 @@ public class IndexTest extends TemporaryDatabaseTest {
 
 			try (IGraphTransaction tx = db.beginTransaction()) {
 				assertTrue(db.getNodeIndexNames().contains(name));
+				assertTrue(db.nodeIndexExists(name));
 				IGraphNodeIndex idx = db.getOrCreateNodeIndex(name);
 
 				IGraphIterable<IGraphNode> results = idx.query("id", 1);
@@ -383,10 +509,11 @@ public class IndexTest extends TemporaryDatabaseTest {
 
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			IGraphNode mmNode = db.createNode(mmBarNodeProps, "metamodel");
-			db.getMetamodelIndex().add(mmNode, Collections.singletonMap("id", mmBarURI));
+			final IGraphNodeIndex mmIdx = db.getMetamodelIndex();
+			mmIdx.add(mmNode, Collections.singletonMap("id", mmBarURI));
 
 			IGraphNode mmNode2 = db.createNode(mmBarNodeProps, "metamodel");
-			db.getMetamodelIndex().add(mmNode2, Collections.singletonMap("id", "file://foo"));
+			mmIdx.add(mmNode2, Collections.singletonMap("id", "file://foo"));
 
 			tx.success();
 		}
@@ -395,16 +522,13 @@ public class IndexTest extends TemporaryDatabaseTest {
 
 	private void checkAfterRemove(final String mmBarURI) throws Exception {
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			final IGraphIterable<IGraphNode> iter2 = db.getMetamodelIndex().query("id", mmBarURI);
-			assertEquals(0, iter2.size());
-			final IGraphIterable<IGraphNode> iter3 = db.getMetamodelIndex().query("id", "http://*");
-			assertEquals(0, iter3.size());
-			final IGraphIterable<IGraphNode> iter4 = db.getMetamodelIndex().query("id", "file://*");
-			assertEquals(1, iter4.size());
-			final IGraphIterable<IGraphNode> iter5 = db.getMetamodelIndex().query("id", "fil*://*");
-			assertEquals(1, iter5.size());
-			final IGraphIterable<IGraphNode> iter6 = db.getMetamodelIndex().query("id", "*file://*");
-			assertEquals(1, iter6.size());
+			final IGraphNodeIndex mmIdx = db.getMetamodelIndex();
+
+			assertEquals(0, mmIdx.query("id", mmBarURI).size());
+			assertEquals(0, mmIdx.query("id", "http://*").size());
+			assertEquals(1, mmIdx.query("id", "file://*").size());
+			assertEquals(1, mmIdx.query("id", "fil*://*").size());
+			assertEquals(1, mmIdx.query("id", "*file://*").size());
 		}
 	}
 

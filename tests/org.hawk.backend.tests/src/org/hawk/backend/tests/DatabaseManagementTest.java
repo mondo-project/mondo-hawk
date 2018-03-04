@@ -15,8 +15,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Collections;
-
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphTransaction;
@@ -55,7 +53,7 @@ public class DatabaseManagementTest {
 		assertNotNull(db.getFileIndex());
 		assertNotNull(db.getMetamodelIndex());
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			assertEquals(Collections.EMPTY_SET, db.getNodeIndexNames());
+			assertEquals(2, db.getNodeIndexNames().size());
 			tx.success();
 		}
 		db.shutdown();

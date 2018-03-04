@@ -93,6 +93,8 @@ public class GreycatHeavyEdge implements IGraphEdge {
 		final GreycatNode startNode = getStartNode();
 		startNode.removeOutgoing(type, node);
 		getEndNode().removeIncoming(type, node);
+		node.delete();
+
 		startNode.saveOutsideTx();
 	}
 

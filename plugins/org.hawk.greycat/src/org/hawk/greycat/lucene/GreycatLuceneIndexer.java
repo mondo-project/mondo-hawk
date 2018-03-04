@@ -17,6 +17,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.DoublePoint;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.LongPoint;
+import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -143,7 +144,6 @@ public class GreycatLuceneIndexer {
 
 		public GreycatLuceneNodeIndex(String name) {
 			this.name = name;
-
 		}
 
 		@Override
@@ -168,14 +168,18 @@ public class GreycatLuceneIndexer {
 			}
 		}
 
-		protected void removeKeyValue(IndexWriter writer, final Document document, final String docId, String key,
-				Object value) throws IOException {
-			// TODO: handle other value types
+		protected void removeKeyValue(IndexWriter writer, final Document document, final String docId, String key, Object value) throws IOException {
 			final List<IndexableField> remainingFields = new ArrayList<>();
 			boolean matched = false;
 			for (IndexableField field : document.getFields(ATTRIBUTE_PREFIX + key)) {
-				final String existingValue = field.stringValue();
-				if (value == null || existingValue.equals(value)) {
+				if (value == null) {
+					matched = true;
+				} else if (value instanceof Float || value instanceof Double) {
+					// WARN: not happy about == for equality with floating-point values... 
+					matched = matched || ((Number)value).doubleValue() == field.numericValue().doubleValue();
+				} else if (value instanceof Number) {
+					matched = matched || ((Number)value).longValue() == field.numericValue().longValue();
+				} else if (value.equals(field.stringValue())) {
 					matched = true;
 				} else {
 					remainingFields.add(field);
@@ -394,10 +398,19 @@ public class GreycatLuceneIndexer {
 		protected void addField(Document document, final String key, final Object value) {
 			final String fieldName = ATTRIBUTE_PREFIX + key;
 
+			/*
+			 * Point classes are very useful for fast range queries, but they do not store
+			 * the value in the document. We need to add a StoredField so we can use the
+			 * full version of remove (key, value and node).
+			 */
 			if (value instanceof Float || value instanceof Double) {
-				document.add(new DoublePoint(fieldName, ((Number)value).doubleValue()));
+				final double doubleValue = ((Number)value).doubleValue();
+				document.add(new DoublePoint(fieldName, doubleValue));
+				document.add(new StoredField(fieldName, doubleValue));
 			} else if (value instanceof Number) {
-				document.add(new LongPoint(fieldName, ((Number)value).longValue()));
+				final long longValue = ((Number)value).longValue();
+				document.add(new LongPoint(fieldName, longValue));
+				document.add(new StoredField(fieldName, longValue));
 			} else {
 				document.add(new StringField(fieldName, value.toString(), Store.YES));
 			}
@@ -499,5 +512,22 @@ public class GreycatLuceneIndexer {
 			LOGGER.error("Could not list index name", e.getMessage());
 			return Collections.emptySet();
 		} 
+	}
+
+	public boolean indexExists(String name) {
+		try (IndexReader reader = DirectoryReader.open(indexDirectory)) {
+			final IndexSearcher searcher = new IndexSearcher(reader);
+
+			Query query = new BooleanQuery.Builder()
+				.add(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), Occur.FILTER)
+				.add(new TermQuery(new Term(INDEX_FIELD, name)), Occur.MUST)
+				.build();
+			
+			TopDocs results = searcher.search(query, 1);
+			return results.totalHits > 0;
+		} catch (IOException e) {
+			LOGGER.error(String.format("Could not check if %s exists", name), e);
+			return false;
+		}
 	}
 }
