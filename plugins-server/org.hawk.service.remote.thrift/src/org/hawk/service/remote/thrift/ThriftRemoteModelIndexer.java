@@ -61,7 +61,6 @@ import org.hawk.service.api.FailedQuery;
 import org.hawk.service.api.Hawk.Client;
 import org.hawk.service.api.HawkInstance;
 import org.hawk.service.api.HawkInstanceNotFound;
-import org.hawk.service.api.HawkInstanceNotRunning;
 import org.hawk.service.api.HawkQueryOptions;
 import org.hawk.service.api.HawkState;
 import org.hawk.service.api.HawkStateEvent;
@@ -663,11 +662,6 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	@Override
 	public File getParentFolder() {
 		return parentFolder;
-	}
-
-	@Override
-	public void logFullStore() throws Exception {
-		console.printerrln("Cannot log content of graph in " + this.getClass().getName());
 	}
 
 	@Override

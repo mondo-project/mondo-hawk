@@ -302,14 +302,6 @@ public class GreycatDatabase implements IGraphDatabase {
 	}
 
 	@Override
-	public File logFull() throws Exception {
-		File logFolder = new File(storageFolder, "logs");
-		logFolder.mkdir();
-		// TODO print something here
-		return logFolder;
-	}
-
-	@Override
 	public Mode currentMode() {
 		return mode;
 	}

@@ -599,14 +599,6 @@ public class OrientDatabase implements IGraphDatabase {
 	}
 
 	@Override
-	public File logFull() throws Exception {
-		File logFolder = new File(storageFolder, "logs");
-		logFolder.mkdir();
-		// TODO print something here
-		return logFolder;
-	}
-
-	@Override
 	public Mode currentMode() {
 		return currentMode;
 	}

@@ -532,12 +532,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	}
 
-	public void logFullStore() throws Exception {
-
-		graph.logFull();
-
-	}
-
 	private void registerMetamodelFiles() throws Exception {
 
 		stateListener.info("Registering metamodels...");

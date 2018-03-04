@@ -434,9 +434,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 		}
 	}
 
-	@Override
 	public File logFull() throws Exception {
-
 		File logFolder = new File(loc + "/logs");
 		logFolder.mkdir();
 
@@ -448,9 +446,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 		}
 
 		BufferedWriter w = new BufferedWriter(new FileWriter(log));
-
 		String str = "";
-
 		try (IGraphTransaction tx = beginTransaction()) {
 			// operations on the graph
 			// ...

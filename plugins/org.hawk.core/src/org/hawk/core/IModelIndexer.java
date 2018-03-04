@@ -186,14 +186,6 @@ public interface IModelIndexer {
 	 */
 	File getParentFolder();
 
-	/**
-	 * creates a comprehensive log of the entire contents of hawk -- use
-	 * sparingly as may take a very long time for large hawk instances
-	 * 
-	 * @throws Exception
-	 */
-	void logFullStore() throws Exception;
-
 	void setMetaModelUpdater(IMetaModelUpdater metaModelUpdater);
 
 	void addDerivedAttribute(String metamodeluri, String typename, String attributename, String attributetype,

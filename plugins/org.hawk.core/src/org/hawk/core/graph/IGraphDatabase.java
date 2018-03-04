@@ -76,15 +76,6 @@ public interface IGraphDatabase {
 
 	String getTempDir();
 
-	// Set<VcsCommitItem> compareWithLocalFiles(Set<VcsCommitItem> reposItems);
-
-	/**
-	 * <p>
-	 * Prints the contents of the graph to a file.
-	 * </p>
-	 */
-	File logFull() throws Exception;
-
 	public enum Mode {
 		TX_MODE, NO_TX_MODE, UNKNOWN
 	};
