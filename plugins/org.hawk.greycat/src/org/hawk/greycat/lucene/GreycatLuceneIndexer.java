@@ -37,6 +37,7 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.NIOFSDirectory;
 import org.hawk.core.graph.EmptyIGraphIterable;
+import org.hawk.core.graph.IGraphDatabase.Mode;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
@@ -148,7 +149,7 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public void remove(String key, Object value, IGraphNode n) {
-			try (IndexWriter writer = createWriter()) {
+			try {
 				final DirectoryReader reader = DirectoryReader.open(writer);
 				final IndexSearcher searcher = new IndexSearcher(reader);
 
@@ -163,6 +164,8 @@ public class GreycatLuceneIndexer {
 						removeKeyValue(writer, document, docId, key, value);
 					}
 				}
+
+				saveIfOutsideTx();
 			} catch (IOException e) {
 				LOGGER.error("Could not remove node from index", e);
 			}
@@ -220,18 +223,19 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public void remove(IGraphNode n) {
-			try (IndexWriter writer = createWriter()) {
+			try {
 				final String docId = getNodeId((GreycatNode) n);
 				final Term term = nodeTerm(docId);
 				writer.deleteDocuments(term);
 			} catch (IOException e) {
 				LOGGER.error("Could not remove node from index", e);
 			}
+			saveIfOutsideTx();
 		}
 
 		@Override
 		public IGraphIterable<IGraphNode> query(String key, Number from, Number to, boolean fromInclusive, boolean toInclusive) {
-			try (IndexReader reader = DirectoryReader.open(indexDirectory)) {
+			try (IndexReader reader = DirectoryReader.open(writer)) {
 				final IndexSearcher searcher = new IndexSearcher(reader);
 
 				Query query;
@@ -258,7 +262,7 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public IGraphIterable<IGraphNode> query(String key, Object valueExpr) {
-			try (IndexReader reader = DirectoryReader.open(indexDirectory)) {
+			try (IndexReader reader = DirectoryReader.open(writer)) {
 				final IndexSearcher searcher = new IndexSearcher(reader);
 				final String sValueExpr = valueExpr.toString();
 
@@ -310,7 +314,7 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public IGraphIterable<IGraphNode> get(String key, Object valueExpr) {
-			try (IndexReader reader = DirectoryReader.open(indexDirectory)) {
+			try (IndexReader reader = DirectoryReader.open(writer)) {
 				IndexSearcher searcher = new IndexSearcher(reader);
 
 				Query valueQuery;
@@ -335,13 +339,18 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public void flush() {
-			// nothing to do
+			try {
+				writer.flush();
+			} catch (IOException e) {
+				LOGGER.error("Failed to flush index", e);
+			}
 		}
 
 		@Override
 		public void delete() {
-			try (IndexWriter writer = createWriter()) {
+			try {
 				writer.deleteDocuments(new TermQuery(new Term(INDEX_FIELD, name)));
+				saveIfOutsideTx();
 			} catch (IOException e) {
 				LOGGER.error(String.format("Could not delete index %s", name), e);
 			}
@@ -361,7 +370,7 @@ public class GreycatLuceneIndexer {
 			}
 			final GreycatNode gn = (GreycatNode)n;
 
-			try (IndexWriter writer = createWriter()) {
+			try {
 				final DirectoryReader reader = DirectoryReader.open(writer);
 				final IndexSearcher searcher = new IndexSearcher(reader);
 
@@ -383,6 +392,8 @@ public class GreycatLuceneIndexer {
 				}
 
 				writer.updateDocument(nodeTerm(docId), document);
+				saveIfOutsideTx();
+
 			} catch (IOException e) {
 				LOGGER.error(e.getMessage(), e);
 			}
@@ -454,19 +465,21 @@ public class GreycatLuceneIndexer {
 		}
 	}
 
-	private final NIOFSDirectory indexDirectory;
+	private final NIOFSDirectory nioFSDirectory;
 	private final Analyzer analyzer;
 	private final GreycatDatabase database;
+	private IndexWriter writer;
 
-	public GreycatLuceneIndexer(GreycatDatabase db, File indexDirectory) throws IOException {
+	public GreycatLuceneIndexer(GreycatDatabase db, File dir) throws IOException {
 		this.database = db;
-		this.indexDirectory = new NIOFSDirectory(indexDirectory.toPath());
+		this.nioFSDirectory = new NIOFSDirectory(dir.toPath());
 		this.analyzer = new CaseInsensitiveWhitespaceAnalyzer();
+		this.writer = new IndexWriter(nioFSDirectory, new IndexWriterConfig(analyzer));
 	}
 
 	public IGraphNodeIndex getIndex(String name) {
 		// Make sure the index is listed
-		try (IndexWriter writer = createWriter()) {
+		try {
 			final DirectoryReader reader = DirectoryReader.open(writer);
 			final IndexSearcher searcher = new IndexSearcher(reader);
 
@@ -480,16 +493,23 @@ public class GreycatLuceneIndexer {
 		}  catch (IOException e) {
 			LOGGER.error("Could not register index", e);
 		}
+		saveIfOutsideTx();
 
 		return new GreycatLuceneNodeIndex(name);
 	}
 
-	private IndexWriter createWriter() throws IOException {
-		return new IndexWriter(indexDirectory, new IndexWriterConfig(analyzer));
+	private void saveIfOutsideTx() {
+		if (database.currentMode() == Mode.NO_TX_MODE) {
+			try {
+				writer.commit();
+			} catch (IOException e) {
+				LOGGER.error(e.getMessage(), e);
+			}
+		}
 	}
 
 	public Set<String> getIndexNames() {
-		try (IndexReader reader = DirectoryReader.open(indexDirectory)) {
+		try (IndexReader reader = DirectoryReader.open(writer)) {
 			final IndexSearcher searcher = new IndexSearcher(reader);
 			final ListCollector lc = new ListCollector(searcher);
 			searcher.search(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), lc);
@@ -506,7 +526,7 @@ public class GreycatLuceneIndexer {
 	}
 
 	public boolean indexExists(String name) {
-		try (IndexReader reader = DirectoryReader.open(indexDirectory)) {
+		try (IndexReader reader = DirectoryReader.open(writer)) {
 			final IndexSearcher searcher = new IndexSearcher(reader);
 
 			Query query = new BooleanQuery.Builder()
@@ -526,13 +546,15 @@ public class GreycatLuceneIndexer {
 	 * Removes this node from all indices.
 	 */
 	public void remove(GreycatNode gn) {
-		try (IndexWriter writer = createWriter()) {
+		try {
 			writer.deleteDocuments(new TermQuery(new Term(NODEID_FIELD, getNodeId(gn))));
 		} catch (IOException e) {
 			LOGGER.error(String.format(
 				"Could not remove node %s in world %d at time %d",
 				gn.getId(), gn.getWorld(), gn.getTime()), e);
 		}
+
+		saveIfOutsideTx();
 	}
 
 	/**
@@ -540,5 +562,26 @@ public class GreycatLuceneIndexer {
 	 */
 	protected String getNodeId(GreycatNode gn) {
 		return String.format("%d@%d@%d", gn.getWorld(), gn.getTime(), gn.getId());
+	}
+
+	/**
+	 * Commits all changes to the index.
+	 * 
+	 * @throws IOException
+	 *             Failed to commit the changes.
+	 */
+	public void commit() throws IOException {
+		writer.commit();
+	}
+
+	/**
+	 * Rolls back all changes to the index.
+	 * 
+	 * @throws IOException
+	 *             Failed to roll back the changes.
+	 */
+	public synchronized void rollback() throws IOException {
+		writer.rollback();
+		writer = new IndexWriter(nioFSDirectory, new IndexWriterConfig(analyzer)); 
 	}
 }

@@ -128,6 +128,8 @@ public class GreycatDatabase implements IGraphDatabase {
 			done.complete(true);
 		});
 		done.join();
+
+		graph = null;
 	}
 
 	private static void deleteRecursively(File f) throws IOException {
@@ -225,6 +227,12 @@ public class GreycatDatabase implements IGraphDatabase {
 	protected void save(CompletableFuture<Boolean> result) {
 		// First stage save
 		graph.save(saved -> {
+			try {
+				luceneIndexer.commit();
+			} catch (IOException e1) {
+				LOGGER.error("Failed to commit the changes to the index", e1);
+			}
+
 			softDeleteIndex.find(results -> {
 				Semaphore sem = new Semaphore(-results.length + 1);
 				for (Node n : results) {
@@ -324,6 +332,12 @@ public class GreycatDatabase implements IGraphDatabase {
 		CompletableFuture<Boolean> connected = new CompletableFuture<>();
 
 		if (graph != null) {
+			try {
+				luceneIndexer.rollback();
+			} catch (IOException e) {
+				LOGGER.error("Failed to roll back changes to Lucene", e);
+			}
+
 			/*
 			 * Only disconnect storage - we want to release locks on the storage *without*
 			 * saving. Seems to be the only simple way to do a rollback to the latest saved

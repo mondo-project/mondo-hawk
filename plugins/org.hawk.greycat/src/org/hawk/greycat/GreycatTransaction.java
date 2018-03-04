@@ -1,11 +1,8 @@
 package org.hawk.greycat;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import org.hawk.core.graph.IGraphTransaction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class GreycatTransaction implements IGraphTransaction {
 
