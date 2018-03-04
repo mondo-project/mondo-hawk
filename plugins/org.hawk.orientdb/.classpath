@@ -8,7 +8,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/jars/jna-4.5.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/jna-platform-4.5.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-client-2.2.30.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-core-2.2.30.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/orientdb-core-2.2.30.jar" sourcepath="/home/antonio/src/orientdb-2.2.30/core/src/main/java"/>
 	<classpathentry exported="true" kind="lib" path="lib/bundles/snappy-java-1.1.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/commons-pool2-2.4.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>

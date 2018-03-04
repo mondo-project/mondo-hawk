@@ -157,6 +157,10 @@ public class AbstractOrientIndex {
 		
 		final OSimpleKeyIndexDefinition indexDef = new OSimpleKeyIndexDefinition(factory.getLastVersion(), OType.STRING, keyType);
 		indexManager.createIndex(idxName, OClass.INDEX_TYPE.NOTUNIQUE.toString(), indexDef, null, null, null, null);
+
+		if (txWasOpen) {
+			graph.getGraph().begin();
+		}
 	}
 
 	protected String getSBTreeIndexName(final Class<?> keyClass) {

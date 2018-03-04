@@ -535,7 +535,8 @@ public class IndexTest extends TemporaryDatabaseTest {
 		}
 
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			assertEquals(0, db.getMetamodelIndex().query("*", "*").size());
+			final IGraphIterable<IGraphNode> results = db.getMetamodelIndex().query("*", "*");
+			assertEquals(0, results.size());
 			tx.success();
 		}
 	}

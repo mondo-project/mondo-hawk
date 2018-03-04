@@ -293,6 +293,10 @@ public class OrientNode implements IGraphNode {
 		for (IGraphEdge e : getEdges()) {
 			e.delete();
 		}
+		for (String idxName : getIndexKeys().keySet()) {
+			graph.getOrCreateNodeIndex(idxName).remove(this);
+		}
+
 		graph.getGraph().delete(getId());
 		changedVertex = null;
 		graph.unmarkNodeAsDirty(this);
@@ -561,6 +565,16 @@ public class OrientNode implements IGraphNode {
 			graph.markNodeAsDirty(this);
 		}
 		return removedEntries;
+	}
+
+	public Map<String, Map<String, Object>> getIndexKeys() {
+		changedVertex = getDocument();
+
+		Map<String, Map<String, Object>> field = changedVertex.field(ATTR_INDEX_KEYS);
+		if (field == null) {
+			field = Collections.emptyMap();
+		}
+		return field;
 	}
 
 	protected static void setupDocumentClass(OClass oClass) {

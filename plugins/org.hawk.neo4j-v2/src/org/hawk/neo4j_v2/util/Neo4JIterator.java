@@ -40,17 +40,19 @@ public class Neo4JIterator<T> implements Iterator<T> {
 
 		Object next = parent.next();
 
-		if (next instanceof Node)
+		if (next instanceof Neo4JNode) {
+			return (T) next;
+		} else if (next instanceof Node) {
 			return (T) new Neo4JNode((Node) next, (Neo4JDatabase) graph);
-		else if (next instanceof Relationship)
+		} else if (next instanceof Relationship) {
 			return (T) new Neo4JEdge((Relationship) next, (Neo4JDatabase) graph);
-		else if (next instanceof BatchRelationship)
+		} else if (next instanceof BatchRelationship) {
 			return (T) new Neo4JEdge((BatchRelationship) next,
 					(Neo4JDatabase) graph);
-		else if (next instanceof Long)
+		} else if (next instanceof Long) {
 			return (T) new Neo4JNode((long) next, (Neo4JDatabase) graph);
-		else {
-			System.err.println("next called on unknown object (class: "
+		} else {
+			System.err.println("next produced unknown object (class: "
 					+ next.getClass() + "), returning null");
 			return null;
 		}

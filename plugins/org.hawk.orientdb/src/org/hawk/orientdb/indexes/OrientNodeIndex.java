@@ -263,6 +263,10 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 		store.removeNodeIndex(name);
 		indexManager.flush();
 		graph.getGraph().getMetadata().getIndexManager().getConfiguration().save();
+
+		if (txWasOpen) {
+			graph.getGraph().begin();
+		}
 	}
 
 	/**
