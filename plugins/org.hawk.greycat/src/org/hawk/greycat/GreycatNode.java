@@ -87,6 +87,11 @@ public class GreycatNode implements IGraphNode {
 
 			return _node;
 		}
+
+		@Override
+		public void finalize() {
+			_node.free();
+		}
 	}
 
 	/** Prefix for all attribute names. Prevents clashes with reserved names. */
