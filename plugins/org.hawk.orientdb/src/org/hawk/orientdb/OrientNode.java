@@ -139,8 +139,62 @@ public class OrientNode implements IGraphNode {
 					genericClass = Object.class;
 				}
 			}
-			final Object[] newArray = (Object[])Array.newInstance(genericClass, cValue.size());
-			return cValue.toArray(newArray);
+
+			// Return arrays of primitives (like Neo4j or GreyCat)
+			switch (genericClass.getSimpleName()) {
+			case "Long": {
+				final long[] newArray = new long[cValue.size()];
+				int i = 0;
+				for (Object o : cValue) {
+					newArray[i++] = (long) o;
+				}
+				return newArray;
+			}
+			case "Integer": {
+				final int[] newArray = new int[cValue.size()];
+				int i = 0;
+				for (Object o : cValue) {
+					newArray[i++] = (int) o;
+				}
+				return newArray;
+			}
+			case "Short":{
+				final short[] newArray = new short[cValue.size()];
+				int i = 0;
+				for (Object o : cValue) {
+					newArray[i++] = (short) o;
+				}
+				return newArray;
+			}
+			case "Byte":{
+				final byte[] newArray = new byte[cValue.size()];
+				int i = 0;
+				for (Object o : cValue) {
+					newArray[i++] = (byte) o;
+				}
+				return newArray;
+			}
+			case "Double":{
+				final double[] newArray = new double[cValue.size()];
+				int i = 0;
+				for (Object o : cValue) {
+					newArray[i++] = (double) o;
+				}
+				return newArray;
+			}
+			case "Float":{
+				final float[] newArray = new float[cValue.size()];
+				int i = 0;
+				for (Object o : cValue) {
+					newArray[i++] = (float) o;
+				}
+				return newArray;
+			}
+			default: {
+				final Object[] newArray = (Object[])Array.newInstance(genericClass, cValue.size());
+				return cValue.toArray(newArray);
+			}
+			}
 		}
 		return value;
 	}
