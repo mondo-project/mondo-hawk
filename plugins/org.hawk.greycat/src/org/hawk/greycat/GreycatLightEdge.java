@@ -15,7 +15,7 @@ public class GreycatLightEdge implements IGraphEdge {
 	public static GreycatLightEdge create(String type, GreycatNode from, GreycatNode to) {
 		from.addOutgoing(type, to);
 		to.addIncoming(type, from);
-		from.saveOutsideTx();
+		from.save();
 
 		return new GreycatLightEdge(from, to, type);
 	}
@@ -69,7 +69,7 @@ public class GreycatLightEdge implements IGraphEdge {
 	public void delete() {
 		start.removeOutgoing(type, end);
 		end.removeIncoming(type, start);
-		start.saveOutsideTx();
+		start.save();
 	}
 
 	@Override

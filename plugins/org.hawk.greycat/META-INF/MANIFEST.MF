@@ -1,12 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Greycat Backend for Hawk
-Bundle-SymbolicName: org.hawk.greycat
+Bundle-SymbolicName: org.hawk.greycat;singleton:=true
 Bundle-Version: 1.2.0.qualifier
 Bundle-Vendor: Aston University
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.hawk.core;bundle-version="1.2.0",
- org.slf4j.api;bundle-version="1.7.2"
+ org.slf4j.api;bundle-version="1.7.2",
+ com.google.guava;bundle-version="15.0.0"
 Bundle-ClassPath: lib/jars/greycat-10.jar,
  lib/jars/greycat-rocksdb-10.jar,
  lib/jars/lucene-core-7.2.1.jar,

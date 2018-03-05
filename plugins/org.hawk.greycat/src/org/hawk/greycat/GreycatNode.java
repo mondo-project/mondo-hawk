@@ -1,6 +1,7 @@
 package org.hawk.greycat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -16,22 +17,30 @@ import org.hawk.core.graph.IGraphNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 import greycat.Graph;
 import greycat.Node;
 import greycat.Type;
 import greycat.plugin.NodeState;
 import greycat.plugin.Resolver;
+import greycat.struct.DoubleArray;
+import greycat.struct.IntArray;
+import greycat.struct.LongArray;
 import greycat.struct.Relation;
+import greycat.struct.StringArray;
+import greycat.struct.StringIntMap;
 
 public class GreycatNode implements IGraphNode {
-	
+
 	private enum Direction {
 		IN {
 			@Override
 			public String getPrefix() {
 				return "in_";
 			}
-	
+
 			public IGraphEdge convertToEdge(String type, GreycatNode current, GreycatNode other) {
 				if (GreycatHeavyEdge.NODETYPE.equals(other.getNodeLabel())) {
 					return new GreycatHeavyEdge(other);
@@ -43,7 +52,7 @@ public class GreycatNode implements IGraphNode {
 			public String getPrefix() {
 				return "out_";
 			}
-	
+
 			@Override
 			public IGraphEdge convertToEdge(String type, GreycatNode current, GreycatNode other) {
 				if (GreycatHeavyEdge.NODETYPE.equals(other.getNodeLabel())) {
@@ -52,7 +61,7 @@ public class GreycatNode implements IGraphNode {
 				return new GreycatLightEdge(current, other, type);
 			}
 		};
-	
+
 		public abstract String getPrefix();
 		public abstract IGraphEdge convertToEdge(String type, GreycatNode current, GreycatNode other);
 	}
@@ -97,30 +106,53 @@ public class GreycatNode implements IGraphNode {
 	/** Prefix for all attribute names. Prevents clashes with reserved names. */
 	private static final String ATTRIBUTE_PREFIX = "a_";
 
+	/**
+	 * Special property used to record actual Java array types. Greycat V11 only
+	 * stores int, long, double and String arrays. We have to keep the real array
+	 * type here and then convert back.
+	 * 
+	 * Only problem is that we can't really modify arrays in place - we have to
+	 * replace them entirely with {@link #setProperty(String, Object)}.
+	 */
+	private static final String ARRAYTYPE_PROPERTY = "h_arraytypes";
+	private static final BiMap<String, Integer> scalarTypes = HashBiMap.create();
+	static {
+		int counter = 0;
+		for (Class<?> klass : Arrays.asList(String.class,
+			Double.class, Float.class, Long.class, Integer.class, Short.class, Byte.class,
+			double.class, float.class, long.class, int.class, short.class, byte.class)) {
+			scalarTypes.put(klass.getSimpleName(), counter++);
+		}
+	}
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(GreycatNode.class);
 
 	private final GreycatDatabase db;
 	private final long world, time, id;
 	private final Supplier<Node> node;
 
-	private static int getValueType(Object value) {
+	protected static int getValueType(Object value) {
 		if (value == null) {
 			return Type.STRING;
 		}
-	
+
 		switch (value.getClass().getSimpleName()) {
+		case "boolean":
+		case "Boolean":
+			return Type.BOOL;
 		case "Short":
 		case "Byte":
 		case "Integer":
-		case "Long":
 			return Type.INT;
+		case "Long":
+			return Type.LONG;
 		case "Float":
 		case "Double":
 			return Type.DOUBLE;
 		case "String":
 			return Type.STRING;
 		}
-	
+
 		LOGGER.warn("Unknown type: {}, returning Type.STRING", value.getClass().getSimpleName());
 		return Type.STRING;
 	}
@@ -170,13 +202,107 @@ public class GreycatNode implements IGraphNode {
 
 	@Override
 	public Object getProperty(String name) {
-		return getNode().get(ATTRIBUTE_PREFIX + name);
+		final Object rawValue = getNode().get(ATTRIBUTE_PREFIX + name);
+
+		if (rawValue instanceof StringArray) {
+			return ((StringArray)rawValue).extract();
+		} else if (rawValue instanceof LongArray) {
+			final int arrayTypeID = getArrayTypesMap().getValue(name);
+			final String cmpType = scalarTypes.inverse().get(arrayTypeID);
+			final LongArray lArray = (LongArray)rawValue;
+
+			if ("Long".equals(cmpType)) {
+				Long[] ret = new Long[lArray.size()];
+				for (int i = 0; i < lArray.size(); i++) {
+					ret[i] = lArray.get(i);
+				}
+				return ret;
+			}
+
+			return lArray.extract();
+		} else if (rawValue instanceof DoubleArray) {
+			final int arrayTypeID = getArrayTypesMap().getValue(name);
+			final String cmpType = scalarTypes.inverse().get(arrayTypeID);
+			final DoubleArray dArray = (DoubleArray)rawValue;
+
+			switch (cmpType) {
+			case "Double": {
+				Double[] ret = new Double[dArray.size()];
+				for (int i = 0; i < dArray.size(); i++) {
+					ret[i] = dArray.get(i);
+				}
+				return ret;
+			}
+			case "Float": {
+				Float[] ret = new Float[dArray.size()];
+				for (int i = 0; i < dArray.size(); i++) {
+					ret[i] = (float) dArray.get(i);
+				}
+				return ret;
+			}
+			case "float": {
+				float[] ret = new float[dArray.size()];
+				for (int i = 0; i < dArray.size(); i++) {
+					ret[i] = (float) dArray.get(i);
+				}
+				return ret;
+			}
+			}
+
+			return dArray.extract();
+		} else if (rawValue instanceof IntArray) {
+			final int arrayTypeID = getArrayTypesMap().getValue(name);
+			final String cmpType = scalarTypes.inverse().get(arrayTypeID);
+			final IntArray iArray = (IntArray)rawValue;
+
+			switch (cmpType) {
+			case "Integer": {
+				Integer[] ret = new Integer[iArray.size()];
+				for (int i = 0; i < iArray.size(); i++) {
+					ret[i] = iArray.get(i);
+				}
+				return ret;
+			}
+			case "Short": {
+				Short[] ret = new Short[iArray.size()];
+				for (int i = 0; i < iArray.size(); i++) {
+					ret[i] = (short) iArray.get(i);
+				}
+				return ret;
+			}
+			case "short": {
+				short[] ret = new short[iArray.size()];
+				for (int i = 0; i < iArray.size(); i++) {
+					ret[i] = (short) iArray.get(i);
+				}
+				return ret;
+			}
+			case "Byte": {
+				Byte[] ret = new Byte[iArray.size()];
+				for (int i = 0; i < iArray.size(); i++) {
+					ret[i] = (byte) iArray.get(i);
+				}
+				return ret;
+			}
+			case "byte": {
+				byte[] ret = new byte[iArray.size()];
+				for (int i = 0; i < iArray.size(); i++) {
+					ret[i] = (byte) iArray.get(i);
+				}
+				return ret;
+			}
+			}
+
+			return iArray.extract();
+		}
+
+		return rawValue;
 	}
 
 	@Override
 	public void setProperty(String name, Object value) {
 		setPropertyRaw(name, value);
-		saveOutsideTx();
+		save();
 	}
 
 	/**
@@ -186,14 +312,143 @@ public class GreycatNode implements IGraphNode {
 		for (Entry<String, Object> entry : props.entrySet()) {
 			setPropertyRaw(entry.getKey(), entry.getValue());
 		}
-		saveOutsideTx();
+		save();
 	}
 
 	/**
 	 * Saves the property, without saving.
 	 */
-	private void setPropertyRaw(String name, Object value) {
-		getNode().set(ATTRIBUTE_PREFIX + name, getValueType(value), value);
+	protected void setPropertyRaw(String name, Object value) {
+		if (value != null && value.getClass().isArray()) {
+			setArrayPropertyRaw(name, value);
+		} else {
+			getNode().set(ATTRIBUTE_PREFIX + name, getValueType(value), value);
+		}
+	}
+
+	protected void setArrayPropertyRaw(String name, Object value) {
+		// Save real array type here, so we can convert back in getProperty()
+		final String  cmpType = value.getClass().getComponentType().getSimpleName();
+		final Integer cmpTypeID = scalarTypes.get(cmpType);
+		if (cmpTypeID == null) {
+			throw new IllegalArgumentException("Unknown array component type: " + cmpType);
+		}
+
+		final StringIntMap arrayTypes = getArrayTypesMap();
+		arrayTypes.put(name, cmpTypeID);
+
+		switch (cmpType) {
+		case "Double":
+		case "double":
+		case "Float":
+		case "float":
+			DoubleArray dArray = (DoubleArray) getNode().getOrCreate(ATTRIBUTE_PREFIX + name, Type.DOUBLE_ARRAY);
+			dArray.clear();
+
+			switch (cmpType) {
+			case "Double":
+				for (Double d : (Double[]) value) {
+					if (d != null) {
+						dArray.addElement(d);
+					}
+				}
+				break;
+			case "double":
+				for (double d : (double[]) value) {
+					dArray.addElement(d);
+				}
+				break;
+			case "Float":
+				for (Float f : (Float[]) value) {
+					if (f != null) {
+						dArray.addElement(f);
+					}
+				}
+				break;
+			case "float":
+				for (float f : (float[]) value) {
+					dArray.addElement(f);
+				}
+				break;
+			}
+
+			break;
+		case "Long":
+		case "long":
+			LongArray lArray = (LongArray) getNode().getOrCreate(ATTRIBUTE_PREFIX + name, Type.LONG_ARRAY);
+			lArray.clear();
+
+			if ("Long".equals(cmpType)) {
+				for (long l : (Long[]) value) {
+					lArray.addElement(l);
+				}
+			} else {
+				for (long l : (long[]) value) {
+					lArray.addElement(l);
+				}
+			}
+
+			break;
+		case "Integer":
+		case "int":
+		case "Short":
+		case "short":
+		case "Byte":
+		case "byte":
+			IntArray iArray = (IntArray) getNode().getOrCreate(ATTRIBUTE_PREFIX + name, Type.INT_ARRAY);
+			iArray.clear();
+
+			switch (cmpType) {
+			case "Integer":
+				for (Integer i : (Integer[])value) {
+					if (i != null) {
+						iArray.addElement(i);
+					}
+				}
+				break;
+			case "int":
+				for (int i : (int[])value) {
+					iArray.addElement(i);
+				}
+				break;
+			case "Short":
+				for (Short i : (Short[])value) {
+					if (i != null) {
+						iArray.addElement(i);
+					}
+				}
+				break;
+			case "short":
+				for (short i : (short[])value) {
+					iArray.addElement(i);
+				}
+				break;
+			case "Byte":
+				for (Byte i : (Byte[])value) {
+					if (i != null) {
+						iArray.addElement(i);
+					}
+				}
+				break;
+			case "byte":
+				for (byte i : (byte[])value) {
+					iArray.addElement(i);
+				}
+				break;
+			}
+
+			break;
+		case "String": {
+			StringArray sArray = (StringArray) getNode().getOrCreate(ATTRIBUTE_PREFIX + name, Type.STRING_ARRAY);
+			sArray.clear();
+			sArray.addAll((String[]) value);
+			break;
+		}
+		}
+	}
+
+	protected StringIntMap getArrayTypesMap() {
+		return (StringIntMap) getNode().getOrCreate(ARRAYTYPE_PROPERTY, Type.STRING_TO_INT_MAP);
 	}
 
 	@Override
@@ -216,12 +471,14 @@ public class GreycatNode implements IGraphNode {
 		return getEdgesWithType(new ArrayList<>(), Direction.IN, type);
 	}
 
-	private List<IGraphEdge> getEdgesWithType(final List<IGraphEdge> results, final Direction dir, String type) {
+	protected List<IGraphEdge> getEdgesWithType(final List<IGraphEdge> results, final Direction dir, String type) {
 		final CompletableFuture<Boolean> done = new CompletableFuture<>();
 		node.get().traverse(dir.getPrefix() + type, (Node[] targets) -> {
-			for (Node target : targets) {
-				results.add(dir.convertToEdge(type, this,
-					new GreycatNode(getGraph(), target)));
+			if (targets != null) {
+				for (Node target : targets) {
+					results.add(dir.convertToEdge(type, this,
+						new GreycatNode(getGraph(), target)));
+				}
 			}
 			done.complete(true);
 		});
@@ -240,7 +497,7 @@ public class GreycatNode implements IGraphNode {
 		return getAllEdges(new ArrayList<>(), Direction.OUT);
 	}
 
-	private List<IGraphEdge> getAllEdges(final List<IGraphEdge> results, final Direction dir) {
+	protected List<IGraphEdge> getAllEdges(final List<IGraphEdge> results, final Direction dir) {
 		final Node n = getNode();
 		final Resolver resolver = n.graph().resolver();
 		final NodeState state = resolver.resolveState(n);
@@ -281,11 +538,11 @@ public class GreycatNode implements IGraphNode {
 	@Override
 	public void removeProperty(String name) {
 		node.get().remove(ATTRIBUTE_PREFIX + name);
-		saveOutsideTx();
+		save();
 	}
 
-	protected void saveOutsideTx() {
-		db.saveOutsideTx(new CompletableFuture<>()).join();
+	protected void save() {
+		db.save(this);
 	}
 
 	public Node getNode() {

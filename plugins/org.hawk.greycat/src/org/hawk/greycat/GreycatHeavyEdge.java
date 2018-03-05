@@ -29,7 +29,7 @@ public class GreycatHeavyEdge implements IGraphEdge {
 		heavyEdgeNode.addToRelation(GreycatHeavyEdge.END_REL, endNode);
 		from.addOutgoing(type, gHeavyEdgeNode);
 		to.addIncoming(type, gHeavyEdgeNode);
-		gHeavyEdgeNode.saveOutsideTx();
+		gHeavyEdgeNode.save();
 
 		return new GreycatHeavyEdge(gHeavyEdgeNode);
 	}
@@ -95,7 +95,7 @@ public class GreycatHeavyEdge implements IGraphEdge {
 		getEndNode().removeIncoming(type, node);
 		node.delete();
 
-		startNode.saveOutsideTx();
+		startNode.save();
 	}
 
 	@Override

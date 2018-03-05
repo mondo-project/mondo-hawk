@@ -17,8 +17,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -70,9 +72,13 @@ public class GreycatDatabase implements IGraphDatabase {
 	private Mode mode = Mode.TX_MODE;
 	private GreycatLuceneIndexer luceneIndexer;
 
+	// Keeps nodes in current tx reachable, to avoid GC: note
+	// that Greycat has a cache capacity and bails out when
+	// exceeded
+	private List<GreycatNode> currentTxNodes = new ArrayList<>();
+
 	private int world = 0;
 	private int time = 0;
-
 
 	public int getWorld() {
 		return world;
@@ -210,18 +216,20 @@ public class GreycatDatabase implements IGraphDatabase {
 			n.setProperties(props);
 		}
 		nodeLabelIndex.update(node);
-		saveOutsideTx(new CompletableFuture<>()).join();
+		save(n);
 
 		return new GreycatNode(this, node);
 	}
 
-	protected CompletableFuture<Boolean> saveOutsideTx(CompletableFuture<Boolean> result) {
+	protected Boolean save(GreycatNode n) {
+		final CompletableFuture<Boolean> result = new CompletableFuture<>();
 		if (mode == Mode.NO_TX_MODE) {
 			save(result);
 		} else {
+			currentTxNodes.add(n);
 			result.complete(true);
 		}
-		return result;
+		return result.join();
 	}
 
 	protected void save(CompletableFuture<Boolean> result) {
@@ -254,6 +262,8 @@ public class GreycatDatabase implements IGraphDatabase {
 				}
 			}, world, time);
 		});
+
+		currentTxNodes.clear();
 	}
 
 	@Override
@@ -359,7 +369,9 @@ public class GreycatDatabase implements IGraphDatabase {
 	}
 
 	protected void connect(CompletableFuture<Boolean> cConnected) {
-		this.graph = new GraphBuilder().withStorage(new RocksDBStorage(storageFolder.getAbsolutePath())).build();
+		this.graph = new GraphBuilder()
+			.withStorage(new RocksDBStorage(storageFolder.getAbsolutePath()))
+			.build();
 
 		exitBatchMode();
 		graph.connect((connected) -> {
