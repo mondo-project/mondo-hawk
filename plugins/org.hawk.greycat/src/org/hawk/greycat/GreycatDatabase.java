@@ -117,6 +117,7 @@ public class GreycatDatabase implements IGraphDatabase {
 
 	@Override
 	public void shutdown() throws Exception {
+		luceneIndexer.shutdown();
 		graph.disconnect(result -> {
 			console.println("Disconnected from GreyCat graph");
 		});
@@ -187,12 +188,18 @@ public class GreycatDatabase implements IGraphDatabase {
 
 	@Override
 	public void enterBatchMode() {
-		mode = Mode.NO_TX_MODE;
+		if (mode != Mode.NO_TX_MODE) {
+			commitLuceneIndex();
+			mode = Mode.NO_TX_MODE;
+		}
 	}
 
 	@Override
 	public void exitBatchMode() {
-		mode = Mode.TX_MODE;
+		if (mode != Mode.TX_MODE) {
+			commitLuceneIndex();
+			mode = Mode.TX_MODE;
+		}
 	}
 
 	@Override
@@ -218,7 +225,7 @@ public class GreycatDatabase implements IGraphDatabase {
 		nodeLabelIndex.update(node);
 		save(n);
 
-		return new GreycatNode(this, node);
+		return n;
 	}
 
 	protected Boolean save(GreycatNode n) {
@@ -235,12 +242,6 @@ public class GreycatDatabase implements IGraphDatabase {
 	protected void save(CompletableFuture<Boolean> result) {
 		// First stage save
 		graph.save(saved -> {
-			try {
-				luceneIndexer.commit();
-			} catch (IOException e1) {
-				LOGGER.error("Failed to commit the changes to the index", e1);
-			}
-
 			softDeleteIndex.find(results -> {
 				Semaphore sem = new Semaphore(-results.length + 1);
 				for (Node n : results) {
@@ -285,6 +286,10 @@ public class GreycatDatabase implements IGraphDatabase {
 
 	@Override
 	public GreycatNode getNodeById(Object id) {
+		if (id instanceof String) {
+			id = Long.valueOf((String) id);
+		}
+
 		CompletableFuture<GreycatNode> result = new CompletableFuture<>();
 		graph.lookup(world, time, (long) id, (node) -> {
 			result.complete(new GreycatNode(this, node));
@@ -422,8 +427,13 @@ public class GreycatDatabase implements IGraphDatabase {
 		softDeleteIndex.unindex(n);
 		nodeLabelIndex.unindex(n);
 		luceneIndexer.remove(gn);
-
-		// TODO: remove from the Lucene indices, too (add test!)
 	}
 
+	protected void commitLuceneIndex() {
+		try {
+			luceneIndexer.commit();
+		} catch (IOException ex) {
+			LOGGER.error("Failed to commit Lucene index", ex);
+		}
+	}
 }

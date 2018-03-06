@@ -15,6 +15,7 @@ public class GreycatTransaction implements IGraphTransaction {
 	@Override
 	public void success() {
 		CompletableFuture<Boolean> cSaved = new CompletableFuture<>();
+		db.commitLuceneIndex();
 		db.save(cSaved);
 		cSaved.join();
 	}

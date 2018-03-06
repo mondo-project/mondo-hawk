@@ -31,13 +31,13 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.RegexpQuery;
 import org.apache.lucene.search.SimpleCollector;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.store.NIOFSDirectory;
+import org.apache.lucene.search.WildcardQuery;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.MMapDirectory;
 import org.hawk.core.graph.EmptyIGraphIterable;
-import org.hawk.core.graph.IGraphDatabase.Mode;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
@@ -150,7 +150,6 @@ public class GreycatLuceneIndexer {
 		@Override
 		public void remove(String key, Object value, IGraphNode n) {
 			try {
-				final DirectoryReader reader = DirectoryReader.open(writer);
 				final IndexSearcher searcher = new IndexSearcher(reader);
 
 				final String docId = getNodeId((GreycatNode) n);
@@ -165,7 +164,7 @@ public class GreycatLuceneIndexer {
 					}
 				}
 
-				saveIfOutsideTx();
+				refreshReader();
 			} catch (IOException e) {
 				LOGGER.error("Could not remove node from index", e);
 			}
@@ -230,12 +229,12 @@ public class GreycatLuceneIndexer {
 			} catch (IOException e) {
 				LOGGER.error("Could not remove node from index", e);
 			}
-			saveIfOutsideTx();
+			refreshReader();
 		}
 
 		@Override
 		public IGraphIterable<IGraphNode> query(String key, Number from, Number to, boolean fromInclusive, boolean toInclusive) {
-			try (IndexReader reader = DirectoryReader.open(writer)) {
+			try {
 				final IndexSearcher searcher = new IndexSearcher(reader);
 
 				Query query;
@@ -262,7 +261,7 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public IGraphIterable<IGraphNode> query(String key, Object valueExpr) {
-			try (IndexReader reader = DirectoryReader.open(writer)) {
+			try {
 				final IndexSearcher searcher = new IndexSearcher(reader);
 				final String sValueExpr = valueExpr.toString();
 
@@ -314,7 +313,7 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public IGraphIterable<IGraphNode> get(String key, Object valueExpr) {
-			try (IndexReader reader = DirectoryReader.open(writer)) {
+			try {
 				IndexSearcher searcher = new IndexSearcher(reader);
 
 				Query valueQuery;
@@ -350,7 +349,7 @@ public class GreycatLuceneIndexer {
 		public void delete() {
 			try {
 				writer.deleteDocuments(new TermQuery(new Term(INDEX_FIELD, name)));
-				saveIfOutsideTx();
+				refreshReader();
 			} catch (IOException e) {
 				LOGGER.error(String.format("Could not delete index %s", name), e);
 			}
@@ -371,7 +370,6 @@ public class GreycatLuceneIndexer {
 			final GreycatNode gn = (GreycatNode)n;
 
 			try {
-				final DirectoryReader reader = DirectoryReader.open(writer);
 				final IndexSearcher searcher = new IndexSearcher(reader);
 
 				final String docId = getNodeId(gn);
@@ -391,9 +389,8 @@ public class GreycatLuceneIndexer {
 					addField(document, entry.getKey(), entry.getValue());
 				}
 
-				writer.updateDocument(nodeTerm(docId), document);
-				saveIfOutsideTx();
-
+				writer.updateDocument(findNodeTerm(gn), document);
+				refreshReader();
 			} catch (IOException e) {
 				LOGGER.error(e.getMessage(), e);
 			}
@@ -465,22 +462,23 @@ public class GreycatLuceneIndexer {
 		}
 	}
 
-	private final NIOFSDirectory nioFSDirectory;
+	private final Directory storage;
 	private final Analyzer analyzer;
 	private final GreycatDatabase database;
 	private IndexWriter writer;
+	private DirectoryReader reader;
 
 	public GreycatLuceneIndexer(GreycatDatabase db, File dir) throws IOException {
 		this.database = db;
-		this.nioFSDirectory = new NIOFSDirectory(dir.toPath());
+		this.storage = new MMapDirectory(dir.toPath());
 		this.analyzer = new CaseInsensitiveWhitespaceAnalyzer();
-		this.writer = new IndexWriter(nioFSDirectory, new IndexWriterConfig(analyzer));
+		this.writer = new IndexWriter(storage, new IndexWriterConfig(analyzer));
+		this.reader = DirectoryReader.open(writer);
 	}
 
 	public IGraphNodeIndex getIndex(String name) {
 		// Make sure the index is listed
 		try {
-			final DirectoryReader reader = DirectoryReader.open(writer);
 			final IndexSearcher searcher = new IndexSearcher(reader);
 
 			TopDocs scoreDocs = searcher.search(new TermQuery(new Term(INDEX_FIELD, name)), 1);
@@ -489,22 +487,25 @@ public class GreycatLuceneIndexer {
 				doc.add(new StringField(INDEX_FIELD, name, Store.YES));
 				doc.add(new StringField(DOCTYPE_FIELD, INDEX_DOCTYPE, Store.YES));
 				writer.addDocument(doc);
+
+				refreshReader();
 			}
 		}  catch (IOException e) {
 			LOGGER.error("Could not register index", e);
 		}
-		saveIfOutsideTx();
 
 		return new GreycatLuceneNodeIndex(name);
 	}
 
-	private void saveIfOutsideTx() {
-		if (database.currentMode() == Mode.NO_TX_MODE) {
-			try {
-				writer.commit();
-			} catch (IOException e) {
-				LOGGER.error(e.getMessage(), e);
+	private void refreshReader() {
+		try {
+			DirectoryReader newReader = DirectoryReader.openIfChanged(reader);
+			if (newReader != null && reader != newReader) {
+				reader.close();
+				reader = newReader;
 			}
+		} catch (IOException e) {
+			LOGGER.error("Could not refresh the reader", e);
 		}
 	}
 
@@ -554,7 +555,7 @@ public class GreycatLuceneIndexer {
 				gn.getId(), gn.getWorld(), gn.getTime()), e);
 		}
 
-		saveIfOutsideTx();
+		refreshReader();
 	}
 
 	/**
@@ -565,13 +566,16 @@ public class GreycatLuceneIndexer {
 	}
 
 	/**
-	 * Commits all changes to the index.
+	 * Commits all changes to the index. Should only be called after
+	 * an explicit transaction in Hawk, during shutdown, or when
+	 * switching transactional modes.
 	 * 
 	 * @throws IOException
 	 *             Failed to commit the changes.
 	 */
 	public void commit() throws IOException {
 		writer.commit();
+		refreshReader();
 	}
 
 	/**
@@ -581,7 +585,20 @@ public class GreycatLuceneIndexer {
 	 *             Failed to roll back the changes.
 	 */
 	public synchronized void rollback() throws IOException {
+		reader.close();
 		writer.rollback();
-		writer = new IndexWriter(nioFSDirectory, new IndexWriterConfig(analyzer)); 
+
+		this.writer = new IndexWriter(storage, new IndexWriterConfig(analyzer));
+		this.reader = DirectoryReader.open(writer);
+	}
+
+	public void shutdown() {
+		try {
+			reader.close();
+			writer.close();
+			storage.close();
+		} catch (IOException e) {
+			LOGGER.error("Error during Lucene shutdown", e);
+		}
 	}
 }
