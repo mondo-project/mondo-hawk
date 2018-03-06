@@ -106,37 +106,46 @@ public class GreycatDatabase implements IGraphDatabase {
 		this.storageFolder = parentFolder;
 		this.tempFolder = new File(storageFolder, "temp");
 		this.console = c;
-		try {
-			this.luceneIndexer = new GreycatLuceneIndexer(this, new File(storageFolder, "lucene"));
-		} catch (IOException e) {
-			LOGGER.error("Could not set up Lucene indexing", e);
-		}
 
 		reconnect();
 	}
 
 	@Override
 	public void shutdown() throws Exception {
-		luceneIndexer.shutdown();
-		graph.disconnect(result -> {
-			console.println("Disconnected from GreyCat graph");
-		});
+		if (luceneIndexer != null) {
+			luceneIndexer.shutdown();
+			luceneIndexer = null;
+		}
+
+		if (graph != null) {
+			graph.disconnect(result -> {
+				console.println("Disconnected from GreyCat graph");
+			});
+
+			graph = null;
+		}
 	}
 
 	@Override
 	public void delete() throws Exception {
-		CompletableFuture<Boolean> done = new CompletableFuture<>();
-		graph.disconnect(result -> {
-			try {
-				deleteRecursively(storageFolder);
-			} catch (IOException e) {
-				LOGGER.error("Error while deleting Greycat storage", e);
-			}
-			done.complete(true);
-		});
-		done.join();
+		if (luceneIndexer != null) {
+			luceneIndexer.shutdown();
+			luceneIndexer = null;
+		}
 
-		graph = null;
+		if (graph != null) {
+			CompletableFuture<Boolean> done = new CompletableFuture<>();
+			graph.disconnect(result -> {
+				try {
+					deleteRecursively(storageFolder);
+				} catch (IOException e) {
+					LOGGER.error("Error while deleting Greycat storage", e);
+				}
+				done.complete(true);
+			});
+			done.join();
+			graph = null;
+		}
 	}
 
 	private static void deleteRecursively(File f) throws IOException {
@@ -350,7 +359,7 @@ public class GreycatDatabase implements IGraphDatabase {
 			try {
 				luceneIndexer.rollback();
 			} catch (IOException e) {
-				LOGGER.error("Failed to roll back changes to Lucene", e);
+				LOGGER.error("Could not rollback Lucene", e);
 			}
 
 			/*
@@ -362,6 +371,11 @@ public class GreycatDatabase implements IGraphDatabase {
 				connect(connected);
 			});
 		} else {
+			try {
+				this.luceneIndexer = new GreycatLuceneIndexer(this, new File(storageFolder, "lucene"));
+			} catch (IOException e) {
+				LOGGER.error("Could not set up Lucene indexing", e);
+			}
 			connect(connected);
 		}
 

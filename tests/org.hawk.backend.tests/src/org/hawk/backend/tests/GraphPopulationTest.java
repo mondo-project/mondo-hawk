@@ -64,8 +64,10 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 
 	@Test
 	public void oneNodeProperty() throws Exception {
-		final String yValue = "hello world";
+		final String sValue = "hello world";
 		final boolean bValue = true;
+		final double dValue = 1.34;
+		final float fValue = 3.3f;
 
 		// Array types - strings and scalar numeric values
 		final String[] asValue = new String[] {"a", "b"};
@@ -84,8 +86,9 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 			assertEquals(0, eobs.size());
 
 			Map<String, Object> map = new HashMap<>();
-			map.put("x", 1.34);
-			map.put("y", yValue);
+			map.put("d", dValue);
+			map.put("f", fValue);
+			map.put("s", sValue);
 			map.put("b", bValue);
 			map.put("as", asValue);
 			map.put("ad", adValue);
@@ -98,49 +101,58 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 
 			tx.success();
 		}
+
+		// doubles
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			IGraphNode node = eobs.getSingle();
-			assertTrue((double) node.getProperty("x") > 1.3);
+			assertEquals(dValue, (double) node.getProperty("d"), Double.MIN_NORMAL);
 			assertEquals(1, eobs.size());
 			tx.success();
 		}
-
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			n.setProperty("x", 2.57);
+			n.setProperty("d", 2.57);
 			tx.success();
 		}
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			assertTrue((double) eobs.getSingle().getProperty("x") > 2.5);
+			assertEquals(2.57, (double) eobs.getSingle().getProperty("d"), Double.MIN_NORMAL);
+			tx.success();
+		}
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			n.setProperty("d", null);
+			assertFalse(n.getPropertyKeys().stream().anyMatch(key -> "d".equals(key)));
 			tx.success();
 		}
 
+		// floats
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			n.setProperty("x", null);
-			assertFalse(n.getPropertyKeys().stream().anyMatch(key -> "x".equals(key)));
+			assertEquals(fValue, (float) eobs.getSingle().getProperty("f"), Float.MIN_NORMAL);
 			tx.success();
 		}
 
+		// Strings
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			n.removeProperty("y");
+			n.removeProperty("s");
 			tx.failure();
 		}
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			assertEquals(yValue, eobs.getSingle().getProperty("y"));
+			assertEquals(sValue, eobs.getSingle().getProperty("s"));
 			tx.failure();
 		}
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			n.removeProperty("y");
+			n.removeProperty("s");
 			tx.success();
 		}
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			assertNull(eobs.getSingle().getProperty("y"));
+			assertNull(eobs.getSingle().getProperty("s"));
 			tx.failure();
 		}
 
+		// Booleans
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			assertEquals(bValue, eobs.getSingle().getProperty("b"));
 			tx.success();
 		}
+
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			final Object propValue = eobs.getSingle().getProperty("as");
 			assertArrayEquals(asValue, (String[]) propValue);
