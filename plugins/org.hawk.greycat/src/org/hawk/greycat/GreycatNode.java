@@ -586,4 +586,33 @@ public class GreycatNode implements IGraphNode {
 	public String toString() {
 		return "GreycatNode [world=" + world + ", time=" + time + ", id=" + id + ", getNode()=" + getNode() + "]";
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + (int) (time ^ (time >>> 32));
+		result = prime * result + (int) (world ^ (world >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		GreycatNode other = (GreycatNode) obj;
+		if (id != other.id)
+			return false;
+		if (time != other.time)
+			return false;
+		if (world != other.world)
+			return false;
+		return true;
+	}
+
 }
