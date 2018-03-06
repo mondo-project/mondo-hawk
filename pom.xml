@@ -52,6 +52,7 @@
     <module>plugins/org.hawk.graph.sampleListener</module>
     <module>plugins/org.hawk.graph.syncValidationListener</module>
     <module>plugins/org.hawk.graph</module>
+    <module>plugins/org.hawk.greycat</module>
     <module>plugins/org.hawk.http</module>
     <module>plugins/org.hawk.localfolder</module>
     <module>plugins/org.hawk.manifest</module>
