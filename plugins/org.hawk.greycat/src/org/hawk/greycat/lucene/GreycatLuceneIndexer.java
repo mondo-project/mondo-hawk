@@ -286,8 +286,7 @@ public class GreycatLuceneIndexer {
 						final String prefix = sValueExpr.substring(0, sValueExpr.length() - 1);
 						query = new PrefixQuery(new Term(ATTRIBUTE_PREFIX + key, prefix));
 					} else {
-						final String regex = sValueExpr.replaceAll("[*]", ".*");
-						query = new RegexpQuery(new Term(ATTRIBUTE_PREFIX + key, regex));
+						query = new WildcardQuery(new Term(ATTRIBUTE_PREFIX + key, sValueExpr));
 					}
 				}
 
