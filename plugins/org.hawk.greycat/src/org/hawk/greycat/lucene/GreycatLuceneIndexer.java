@@ -125,9 +125,12 @@ public class GreycatLuceneIndexer {
 	protected final class GreycatLuceneNodeIndex implements IGraphNodeIndex {
 		private final String name;
 
+		private static final String CMPID_FIELD = "h_cmpid";
 		private static final String NODE_DOCTYPE = "node";
 		
 		protected class NodeListCollector extends ListCollector {
+			// TODO: fetch documents on the go (saves memory)
+
 			protected NodeListCollector(IndexSearcher searcher) {
 				super(searcher);
 			}
@@ -135,8 +138,11 @@ public class GreycatLuceneIndexer {
 			public List<IGraphNode> getNodes() throws IOException {
 				List<IGraphNode> result = new ArrayList<>();
 				for (Document document : getDocuments()) {
-					final String compositeId = document.getField(NODEID_FIELD).stringValue();
-					final GreycatNode gn = getNodeByDocumentId(compositeId);
+					final String nodeId = document.getField(NODEID_FIELD).stringValue();
+					String[] parts = nodeId.split("@", 3);
+					final long id = Long.parseLong(parts[2]);
+					final GreycatNode gn = database.getNodeById(id);
+
 					result.add(gn);
 				}
 				return result;
@@ -152,15 +158,15 @@ public class GreycatLuceneIndexer {
 			try {
 				final IndexSearcher searcher = new IndexSearcher(reader);
 
-				final String docId = getNodeId((GreycatNode) n);
-				final TopDocs results = searcher.search(findNodeQuery(docId), 1);
+				final GreycatNode gn = (GreycatNode) n;
+				final TopDocs results = searcher.search(findNodeQuery(gn), 1);
 				if (results.totalHits > 0) {
 					final Document document = searcher.doc(results.scoreDocs[0].doc);
 
 					if (key == null) {
-						removeValue(writer, document, docId, value);
+						removeValue(writer, document, gn, value);
 					} else {
-						removeKeyValue(writer, document, docId, key, value);
+						removeKeyValue(writer, document, gn, key, value);
 					}
 				}
 
@@ -170,7 +176,7 @@ public class GreycatLuceneIndexer {
 			}
 		}
 
-		protected void removeKeyValue(IndexWriter writer, final Document document, final String docId, String key, Object value) throws IOException {
+		protected void removeKeyValue(IndexWriter writer, final Document document, final GreycatNode gn, String key, Object value) throws IOException {
 			final List<IndexableField> remainingFields = new ArrayList<>();
 			boolean matched = false;
 			for (IndexableField field : document.getFields(ATTRIBUTE_PREFIX + key)) {
@@ -193,12 +199,11 @@ public class GreycatLuceneIndexer {
 				for (IndexableField field : remainingFields) {
 					document.add(field);
 				}
-				writer.updateDocument(nodeTerm(docId), document);
+				writer.updateDocument(findNodeTerm(gn), document);
 			}
 		}
 
-		protected void removeValue(IndexWriter writer, final Document document, final String docId, Object value)
-				throws IOException {
+		protected void removeValue(IndexWriter writer, final Document document, final GreycatNode gn, Object value) throws IOException {
 			final Document copy = new Document();
 
 			boolean matched = false;
@@ -216,16 +221,14 @@ public class GreycatLuceneIndexer {
 			}
 
 			if (matched) {
-				writer.updateDocument(nodeTerm(docId), copy);
+				writer.updateDocument(findNodeTerm(gn), copy);
 			}
 		}
 
 		@Override
 		public void remove(IGraphNode n) {
 			try {
-				final String docId = getNodeId((GreycatNode) n);
-				final Term term = nodeTerm(docId);
-				writer.deleteDocuments(term);
+				writer.deleteDocuments(findNodeTerm((GreycatNode) n));
 			} catch (IOException e) {
 				LOGGER.error("Could not remove node from index", e);
 			}
@@ -371,13 +374,13 @@ public class GreycatLuceneIndexer {
 			try {
 				final IndexSearcher searcher = new IndexSearcher(reader);
 
-				final String docId = getNodeId(gn);
 				final Document document = new Document();
-				document.add(new StringField(NODEID_FIELD, docId, Store.YES));
+				document.add(new StringField(NODEID_FIELD, getNodeId(gn), Store.YES));
+				document.add(new StringField(CMPID_FIELD, getCompositeId(gn), Store.NO));
 				document.add(new StringField(DOCTYPE_FIELD, NODE_DOCTYPE, Store.NO));
 				document.add(new StringField(INDEX_FIELD, name, Store.NO));
 
-				final TopDocs results = searcher.search(findNodeQuery(docId), 1);
+				final TopDocs results = searcher.search(findNodeQuery(gn), 1);
 				if (results.totalHits > 0) {
 					// Create our own copy, for updating
 					Document oldDocument = searcher.doc(results.scoreDocs[0].doc);
@@ -439,12 +442,12 @@ public class GreycatLuceneIndexer {
 			return destValues;
 		}
 
-		protected TermQuery findNodeQuery(final String compositeID) {
-			return new TermQuery(nodeTerm(compositeID));
+		protected TermQuery findNodeQuery(final GreycatNode n) {
+			return new TermQuery(findNodeTerm(n));
 		}
 
-		protected Term nodeTerm(final String compositeID) {
-			return new Term(NODEID_FIELD, compositeID);
+		protected Term findNodeTerm(final GreycatNode n) {
+			return new Term(CMPID_FIELD, getCompositeId(n));
 		}
 
 		protected BooleanQuery.Builder getIndexQueryBuilder() {
@@ -453,11 +456,11 @@ public class GreycatLuceneIndexer {
 				.add(new TermQuery(new Term(DOCTYPE_FIELD, NODE_DOCTYPE)), Occur.FILTER);
 		}
 
-		protected GreycatNode getNodeByDocumentId(String compositeId) {
-			String[] parts = compositeId.split("@", 3);
-			final long id = Long.parseLong(parts[2]);
-			final GreycatNode gn = database.getNodeById(id);
-			return gn;
+		/**
+		 * Returns an identifying string for a specific node at a specific point in time, in a specific index.
+		 */
+		protected String getCompositeId(GreycatNode gn) {
+			return String.format("%s@%d@%d@%d", name, gn.getWorld(), gn.getTime(), gn.getId());
 		}
 	}
 
@@ -547,7 +550,9 @@ public class GreycatLuceneIndexer {
 	 */
 	public void remove(GreycatNode gn) {
 		try {
-			writer.deleteDocuments(new TermQuery(new Term(NODEID_FIELD, getNodeId(gn))));
+			final String nodeId = getNodeId(gn);
+			LOGGER.debug("Removing node {} from ALL indices", nodeId);
+			writer.deleteDocuments(new TermQuery(new Term(NODEID_FIELD, nodeId)));
 		} catch (IOException e) {
 			LOGGER.error(String.format(
 				"Could not remove node %s in world %d at time %d",

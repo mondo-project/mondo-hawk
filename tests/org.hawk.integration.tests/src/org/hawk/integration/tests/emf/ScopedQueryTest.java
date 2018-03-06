@@ -8,12 +8,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.hawk.backend.tests.BackendTestSuite;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
+import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
 import org.hawk.epsilon.emc.CEOLQueryEngine;
+import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.syncValidationListener.SyncValidationListener;
 import org.hawk.integration.tests.ModelIndexingTest;
 import org.junit.Before;
@@ -41,6 +45,24 @@ public class ScopedQueryTest extends ModelIndexingTest {
 		indexer.registerMetamodels(new File("resources/metamodels/Ecore.ecore"),
 				new File("resources/metamodels/crossrefs.ecore"));
 		requestFolderIndex(new File("resources/models/scopedQuery"));
+	}
+
+	@Test
+	public void listFiles() throws Throwable {
+		waitForSync(() -> {
+			try (IGraphTransaction tx = db.beginTransaction()) {
+				GraphWrapper gw = new GraphWrapper(db);
+
+				Function<String, Supplier<Integer>> query = (String path) -> () -> (Integer) gw
+						.getFileNodes(Collections.singleton("*"), Collections.singleton(path)).size();
+
+				assertEquals(3, (int) query.apply("*").get());
+				assertEquals(2, (int) query.apply("/subfolder/*").get());
+				assertEquals(1, (int) query.apply("/subfolder/subfolder/*").get());
+
+				return null;
+			}
+		});
 	}
 
 	@Test

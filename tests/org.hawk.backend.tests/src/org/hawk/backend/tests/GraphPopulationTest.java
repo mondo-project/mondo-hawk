@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.hawk.backend.tests;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -45,17 +46,36 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 
 	@Test
 	public void oneNode() throws Exception {
+		IGraphNode n;
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			assertEquals(0, db.allNodes("eobject").size());
-			db.createNode(new HashMap<String, Object>(), "eobject");
+			n = db.createNode(new HashMap<String, Object>(), "eobject");
 			assertEquals(1, db.allNodes("eobject").size());
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			IGraphNode n2 = db.getNodeById(n.getId());
+			assertEquals("equals() should be implemented", n, n2);
+			assertEquals("hashCode() should be implemented", n.hashCode(), n2.hashCode());
 			tx.success();
 		}
 	}
 
 	@Test
 	public void oneNodeProperty() throws Exception {
-		final String yValue = "hello";
+		final String yValue = "hello world";
+		final boolean bValue = true;
+
+		// Array types - strings and scalar numeric values
+		final String[] asValue = new String[] {"a", "b"};
+		final double[] adValue = new double[] {1.1, 2.3};
+		final float[] afValue = new float[] {1.1f, 2.3f};
+		final long[] alValue = new long[] {1L, 2L};
+		final short[] ahValue = new short[] {0, 1, 2, 3};
+		final int[] aiValue = new int[] {0, 1, 2, 3};
+		final byte[] abValue = new byte[] {0, 1, 2, 3};
+
 		IGraphNode n;
 		IGraphIterable<IGraphNode> eobs;
 
@@ -66,6 +86,14 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 			Map<String, Object> map = new HashMap<>();
 			map.put("x", 1.34);
 			map.put("y", yValue);
+			map.put("b", bValue);
+			map.put("as", asValue);
+			map.put("ad", adValue);
+			map.put("af", afValue);
+			map.put("al", alValue);
+			map.put("ai", aiValue);
+			map.put("ah", ahValue);
+			map.put("ab", abValue);
 			n = db.createNode(map, "eobject");
 
 			tx.success();
@@ -100,7 +128,6 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 			assertEquals(yValue, eobs.getSingle().getProperty("y"));
 			tx.failure();
 		}
-
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			n.removeProperty("y");
 			tx.success();
@@ -108,6 +135,46 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			assertNull(eobs.getSingle().getProperty("y"));
 			tx.failure();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(bValue, eobs.getSingle().getProperty("b"));
+			tx.success();
+		}
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			final Object propValue = eobs.getSingle().getProperty("as");
+			assertArrayEquals(asValue, (String[]) propValue);
+			tx.success();
+		}
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			final Object propValue = eobs.getSingle().getProperty("ad");
+			assertArrayEquals(adValue, (double[]) propValue, 1e-2);
+			tx.success();
+		}
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			final Object propValue = eobs.getSingle().getProperty("af");
+			assertArrayEquals(afValue, (float[]) propValue, 1e-2f);
+			tx.success();
+		}
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			final Object propValue = eobs.getSingle().getProperty("al");
+			assertArrayEquals(alValue, (long[]) propValue);
+			tx.success();
+		}
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			final Object propValue = eobs.getSingle().getProperty("ah");
+			assertArrayEquals(ahValue, (short[]) propValue);
+			tx.success();
+		}
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			final Object propValue = eobs.getSingle().getProperty("ai");
+			assertArrayEquals(aiValue, (int[]) propValue);
+			tx.success();
+		}
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			final Object propValue = eobs.getSingle().getProperty("ab");
+			assertArrayEquals(abValue, (byte[]) propValue);
+			tx.success();
 		}
 	}
 
@@ -213,6 +280,7 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 			assertEquals("dep", e.getType());
 			assertEquals(1, size(x1.getOutgoingWithType("dep")));
 			assertEquals(1, size(x10.getIncomingWithType("dep")));
+			assertEquals(0, size(x10.getIncomingWithType("other")));
 			tx.success();
 		}
 	}

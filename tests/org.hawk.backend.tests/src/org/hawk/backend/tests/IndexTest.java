@@ -101,9 +101,30 @@ public class IndexTest extends TemporaryDatabaseTest {
 			tx.success();
 		}
 
-		// Use */* (all fields, all values): not available with OrientDB?
+		// Use */* (all fields, all values)
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			assertEquals(new HashSet<>(Arrays.asList(mmBarURI, mmFileURI)), db.getKnownMMUris());
+			tx.success();
+		}
+	}
+
+	@Test
+	public void queryWithPipes() throws Exception {
+		// Pipe characters should be treated as such, not as "OR" (as in regexps)
+		final String sN1 = "/a||/foo/bar", sN2 = "/b||/test";
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			IGraphNode n1 = db.createNode(null, "metamodel");
+			db.getMetamodelIndex().add(n1, "id", sN1);
+
+			IGraphNode n2 = db.createNode(null, "metamodel");
+			db.getMetamodelIndex().add(n2, "id", sN2);
+
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(1, db.getMetamodelIndex().query("id", "/*||/foo/*").size());
 			tx.success();
 		}
 	}
@@ -120,6 +141,27 @@ public class IndexTest extends TemporaryDatabaseTest {
 			tx.success();
 		}
 		checkAfterRemove(mmBarURI);
+	}
+
+	@Test
+	public void removeByNodeMultipleIndices() throws Exception {
+		IGraphNode n;
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			n = db.createNode(null, "x");
+			db.getMetamodelIndex().add(n, "a", 1);
+			db.getFileIndex().add(n, "f", "/x/y");
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(1, db.getMetamodelIndex().query("*", "*").size());
+			assertEquals(1, db.getFileIndex().query("*", "*").size());
+			db.getMetamodelIndex().remove(n);
+			assertEquals(0, db.getMetamodelIndex().query("*", "*").size());
+			assertEquals(1, db.getFileIndex().query("*", "*").size());
+
+			tx.success();
+		}
 	}
 
 	@Test
@@ -258,6 +300,9 @@ public class IndexTest extends TemporaryDatabaseTest {
 			assertEquals(2, idx.get("value", 8).size());
 			assertEquals(2, idx.query("value", 8).size());
 
+			assertEquals(3, idx.query("value", "*").size());
+			assertEquals(3, idx.query("*", "*").size());
+
 			tx.success();
 		}
 	}
@@ -291,6 +336,9 @@ public class IndexTest extends TemporaryDatabaseTest {
 			assertEquals(1, idx.query("value", 5.3).size());
 			assertEquals(2, idx.get("value", 8.1).size());
 			assertEquals(2, idx.query("value", 8.1).size());
+
+			assertEquals(3, idx.query("value", "*").size());
+			assertEquals(3, idx.query("*", "*").size());
 
 			tx.success();
 		}
