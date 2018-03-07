@@ -366,21 +366,21 @@ public class SyncValidationListener implements IGraphChangeListener {
 		return modelReferences;
 	}
 
-	protected void compareAttributes(final IGraphNode instance, final IHawkObject eobject) {
+	protected void compareAttributes(final IGraphNode node, final IHawkObject modelElement) {
 		// cache model element attributes and references by name
-		HashMap<String, Object> modelAttributes = new HashMap<>();
-		for (IHawkAttribute a : ((IHawkClass) eobject.getType()).getAllAttributes()) {
-			if (eobject.isSet(a)) {
-				modelAttributes.put(a.getName(), eobject.get(a));
+		final Map<String, Object> modelAttributes = new HashMap<>();
+		for (IHawkAttribute a : ((IHawkClass) modelElement.getType()).getAllAttributes()) {
+			if (modelElement.isSet(a)) {
+				modelAttributes.put(a.getName(), modelElement.get(a));
 			}
 		}
 
-		for (String propertykey : instance.getPropertyKeys()) {
+		for (String propertykey : node.getPropertyKeys()) {
 			if (!propertykey.equals(IModelIndexer.SIGNATURE_PROPERTY)
 					&& !propertykey.equals(IModelIndexer.IDENTIFIER_PROPERTY)
 					&& !propertykey.startsWith(GraphModelUpdater.PROXY_REFERENCE_PREFIX)) {
 
-				Object dbattr = instance.getProperty(propertykey);
+				Object dbattr = node.getProperty(propertykey);
 				Object attr = modelAttributes.get(propertykey);
 
 				if (!flattenedStringEquals(dbattr, attr)) {
@@ -389,20 +389,23 @@ public class SyncValidationListener implements IGraphChangeListener {
 					final String cla1 = dbattr != null ? dbattr.getClass().toString() : "null attr";
 					System.err.println(String.format("database:\t%s JAVATYPE: %s IN NODE: %s WITH ID: %s",
 						(dbattr instanceof Object[] ? (Arrays.asList((Object[]) dbattr)) : dbattr),
-						cla1, instance.getId(), instance.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)));
+						cla1, node.getId(), node.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)));
 
 					String cla2 = attr != null ? attr.getClass().toString() : "null attr";
 					System.err.println(String.format("model:\t\t%s JAVATYPE: %s IN ELEMENT WITH ID %s",
 						(attr instanceof Object[] ? (Arrays.asList((Object[]) attr)) : attr),
-						cla2, eobject.getUriFragment()));
+						cla2, modelElement.getUriFragment()));
 				}
 
 				modelAttributes.remove(propertykey);
 			}
 		}
 		if (modelAttributes.size() > 0) {
-			System.err.println("error in validating, the following attributes were not found in the graph node:");
-			System.err.println(modelAttributes.keySet());
+			System.err.println(String.format(
+				"error in validating, the following attributes were "
+				+ "not found in the graph node %s: %s",
+				node.getId(), modelAttributes.keySet()));
+
 			totalErrors++;
 		}
 	}

@@ -66,21 +66,21 @@ public class GreycatNode implements IGraphNode {
 		public abstract IGraphEdge convertToEdge(String type, GreycatNode current, GreycatNode other);
 	}
 
-	protected final class LazyNode implements Supplier<Node> {
+	private final class LazyNode {
 		private Graph _graph;
 		private Node _node;
+		private boolean _isDirty = false;
 
 		public LazyNode(Graph graph, Node node) {
 			this._graph = graph;
 			this._node = node;
 		}
 
-		@Override
 		public Node get() {
-			if (db.getGraph() == _graph) {
+			if (db.getGraph() == _graph && _node != null) {
 				return _node;
 			} else {
-				// there was a reconnection: reload the Node
+				// there was a reconnection or the Node was freed: reload
 				CompletableFuture<Node> c = new CompletableFuture<>();
 				db.getGraph().lookup(world, time, id, node -> {
 					c.complete(node);
@@ -97,9 +97,55 @@ public class GreycatNode implements IGraphNode {
 			return _node;
 		}
 
+		public void markDirty() {
+			this._isDirty = true;
+			db.markDirty(GreycatNode.this);
+		}
+
+		public void freeUnlessDirty() {
+			if (!_isDirty) {
+				free();
+			}
+		}
+
+		public void free() {
+			if (_node != null) {
+				_node.free();
+				_node = null;
+				_isDirty = false;
+			}
+		}
+	}
+
+	/**
+	 * Encapsulates an access to the underlying node, with implicit free unless
+	 * changed since the last save, and implicit saves upon full closing of all
+	 * nodes open so far. Allows for nested calls: should be safe as long as we
+	 * stick to try-with-resources.
+	 */
+	private int nestingLevel = 0;
+	protected final class NodeReader implements AutoCloseable, Supplier<Node> {
+		private Node _node = nodeProvider.get();
+
+		private NodeReader() {
+			++nestingLevel;
+			db.markOpen(GreycatNode.this);
+		}
+
+		public Node get() {
+			return _node;
+		}
+
+		public void markDirty() {
+			nodeProvider.markDirty();
+		}
+
 		@Override
-		public void finalize() {
-			_node.free();
+		public void close() {
+			if (--nestingLevel <= 0) {
+				db.markClosed(GreycatNode.this);
+				nodeProvider.freeUnlessDirty();
+			}
 		}
 	}
 
@@ -118,18 +164,21 @@ public class GreycatNode implements IGraphNode {
 	private static final BiMap<String, Integer> javaTypes = HashBiMap.create();
 	static {
 		int counter = 0;
-		for (Class<?> klass : Arrays.asList(String[].class, Float.class,
+		for (Class<?> klass : Arrays.asList(Float.class,
 			Double[].class, Float[].class, Long[].class, Integer[].class, Short[].class, Byte[].class,
 			double[].class, float[].class, long[].class, int[].class, short[].class, byte[].class)) {
 			javaTypes.put(klass.getSimpleName(), counter++);
 		}
 	}
 
+	/** Greycat does not save empty strings into nodes, instead returning just null for them. We replace them with this placeholder value and map it back afterwards. */
+	private static final String EMPTY_STRING_MARKER = "_@_h_empty_@_";
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(GreycatNode.class);
 
 	private final GreycatDatabase db;
 	private final long world, time, id;
-	private final Supplier<Node> node;
+	private final LazyNode nodeProvider;
 
 	protected static int getValueType(Object value) {
 		if (value == null) {
@@ -157,13 +206,31 @@ public class GreycatNode implements IGraphNode {
 		return Type.STRING;
 	}
 
+	/**
+	 * For new nodes produced through queries.
+	 */
+	public GreycatNode(GreycatDatabase db, long world, long time, long id) {
+		this.db = db;
+
+		this.world = world;
+		this.time = time;
+		this.id = id;
+
+		this.nodeProvider = new LazyNode(db.getGraph(), null);
+	}
+
+	/**
+	 * For nodes that have been newly created and still need to be saved for the first time.
+	 */
 	public GreycatNode(GreycatDatabase db, Node node) {
 		this.db = db;
 
 		this.world = node.world();
 		this.time = node.time();
 		this.id = node.id();
-		this.node = new LazyNode(node.graph(), node);
+
+		this.nodeProvider = new LazyNode(db.getGraph(), node);
+		this.nodeProvider.markDirty();
 	}
 
 	@Override
@@ -172,188 +239,210 @@ public class GreycatNode implements IGraphNode {
 	}
 
 	public long getWorld() {
-		return getNode().world();
+		return world;
 	}
 
 	public long getTime() {
-		return getNode().time();
+		return time;
 	}
 
 	public String getNodeLabel() {
-		return getNode().get(GreycatDatabase.NODE_LABEL_IDX).toString();
+		try (NodeReader rn = getNodeReader()) {
+			return rn.get().get(GreycatDatabase.NODE_LABEL_IDX).toString();
+		}
 	}
 
 	@Override
 	public Set<String> getPropertyKeys() {
-		final Node n = getNode();
-		final Resolver resolver = n.graph().resolver();
-		NodeState state = resolver.resolveState(n);
+		try (NodeReader rn = getNodeReader()) {
+			final Node n = rn.get();
+			final Resolver resolver = n.graph().resolver();
+			NodeState state = resolver.resolveState(n);
 
-		final Set<String> results = new HashSet<>();
-		state.each((attributeKey, elemType, elem) -> {
-            final String resolveName = resolver.hashToString(attributeKey);
-            if (resolveName != null && resolveName.startsWith(ATTRIBUTE_PREFIX)) {
-            	results.add(resolveName.substring(ATTRIBUTE_PREFIX.length()));
-            }
-		});
+			final Set<String> results = new HashSet<>();
+			state.each((attributeKey, elemType, elem) -> {
+				final String resolveName = resolver.hashToString(attributeKey);
+				if (resolveName != null && resolveName.startsWith(ATTRIBUTE_PREFIX)) {
+					results.add(resolveName.substring(ATTRIBUTE_PREFIX.length()));
+				}
+			});
 
-		return results;
+			return results;
+		}
+	}
+
+	protected NodeReader getNodeReader() {
+		return new NodeReader();
 	}
 
 	@Override
 	public Object getProperty(String name) {
-		final Object rawValue = getNode().get(ATTRIBUTE_PREFIX + name);
+		Object rawValue;
+		try (NodeReader rn = getNodeReader()) {
+			rawValue = rn.get().get(ATTRIBUTE_PREFIX + name);
 
-		if (rawValue instanceof StringArray) {
-			return ((StringArray)rawValue).extract();
-		} else if (rawValue instanceof LongArray) {
-			final int javaTypeID = getJavaTypesMap().getValue(name);
-			final String javaType = javaTypes.inverse().get(javaTypeID);
-			final LongArray lArray = (LongArray)rawValue;
+			if (rawValue instanceof StringArray) {
+				return ((StringArray) rawValue).extract();
+			} else if (rawValue instanceof LongArray) {
+				final int javaTypeID = getJavaTypesMap(rn).getValue(name);
+				final String javaType = javaTypes.inverse().get(javaTypeID);
+				final LongArray lArray = (LongArray) rawValue;
 
-			if ("Long[]".equals(javaType)) {
-				Long[] ret = new Long[lArray.size()];
-				for (int i = 0; i < lArray.size(); i++) {
-					ret[i] = lArray.get(i);
+				if ("Long[]".equals(javaType)) {
+					Long[] ret = new Long[lArray.size()];
+					for (int i = 0; i < lArray.size(); i++) {
+						ret[i] = lArray.get(i);
+					}
+					return ret;
 				}
-				return ret;
+
+				return lArray.extract();
+			} else if (rawValue instanceof DoubleArray) {
+				final int javaTypeID = getJavaTypesMap(rn).getValue(name);
+				final String javaType = javaTypes.inverse().get(javaTypeID);
+				final DoubleArray dArray = (DoubleArray) rawValue;
+
+				switch (javaType) {
+				case "Double[]": {
+					Double[] ret = new Double[dArray.size()];
+					for (int i = 0; i < dArray.size(); i++) {
+						ret[i] = dArray.get(i);
+					}
+					return ret;
+				}
+				case "Float[]": {
+					Float[] ret = new Float[dArray.size()];
+					for (int i = 0; i < dArray.size(); i++) {
+						ret[i] = (float) dArray.get(i);
+					}
+					return ret;
+				}
+				case "float[]": {
+					float[] ret = new float[dArray.size()];
+					for (int i = 0; i < dArray.size(); i++) {
+						ret[i] = (float) dArray.get(i);
+					}
+					return ret;
+				}
+				}
+
+				return dArray.extract();
+			} else if (rawValue instanceof IntArray) {
+				final int javaTypeID = getJavaTypesMap(rn).getValue(name);
+				final String javaType = javaTypes.inverse().get(javaTypeID);
+				final IntArray iArray = (IntArray) rawValue;
+
+				switch (javaType) {
+				case "Integer[]": {
+					Integer[] ret = new Integer[iArray.size()];
+					for (int i = 0; i < iArray.size(); i++) {
+						ret[i] = iArray.get(i);
+					}
+					return ret;
+				}
+				case "Short[]": {
+					Short[] ret = new Short[iArray.size()];
+					for (int i = 0; i < iArray.size(); i++) {
+						ret[i] = (short) iArray.get(i);
+					}
+					return ret;
+				}
+				case "short[]": {
+					short[] ret = new short[iArray.size()];
+					for (int i = 0; i < iArray.size(); i++) {
+						ret[i] = (short) iArray.get(i);
+					}
+					return ret;
+				}
+				case "Byte[]": {
+					Byte[] ret = new Byte[iArray.size()];
+					for (int i = 0; i < iArray.size(); i++) {
+						ret[i] = (byte) iArray.get(i);
+					}
+					return ret;
+				}
+				case "byte[]": {
+					byte[] ret = new byte[iArray.size()];
+					for (int i = 0; i < iArray.size(); i++) {
+						ret[i] = (byte) iArray.get(i);
+					}
+					return ret;
+				}
+				}
+
+				return iArray.extract();
+			} else if (rawValue instanceof Double) {
+				final int javaTypeID = getJavaTypesMap(rn).getValue(name);
+				final String javaType = javaTypes.inverse().get(javaTypeID);
+
+				if ("Float".equals(javaType)) {
+					return ((Double) rawValue).floatValue();
+				}
+			} else if (EMPTY_STRING_MARKER.equals(rawValue)) {
+				return "";
 			}
 
-			return lArray.extract();
-		} else if (rawValue instanceof DoubleArray) {
-			final int javaTypeID = getJavaTypesMap().getValue(name);
-			final String javaType = javaTypes.inverse().get(javaTypeID);
-			final DoubleArray dArray = (DoubleArray)rawValue;
-
-			switch (javaType) {
-			case "Double[]": {
-				Double[] ret = new Double[dArray.size()];
-				for (int i = 0; i < dArray.size(); i++) {
-					ret[i] = dArray.get(i);
-				}
-				return ret;
-			}
-			case "Float[]": {
-				Float[] ret = new Float[dArray.size()];
-				for (int i = 0; i < dArray.size(); i++) {
-					ret[i] = (float) dArray.get(i);
-				}
-				return ret;
-			}
-			case "float[]": {
-				float[] ret = new float[dArray.size()];
-				for (int i = 0; i < dArray.size(); i++) {
-					ret[i] = (float) dArray.get(i);
-				}
-				return ret;
-			}
-			}
-
-			return dArray.extract();
-		} else if (rawValue instanceof IntArray) {
-			final int javaTypeID = getJavaTypesMap().getValue(name);
-			final String javaType = javaTypes.inverse().get(javaTypeID);
-			final IntArray iArray = (IntArray)rawValue;
-
-			switch (javaType) {
-			case "Integer[]": {
-				Integer[] ret = new Integer[iArray.size()];
-				for (int i = 0; i < iArray.size(); i++) {
-					ret[i] = iArray.get(i);
-				}
-				return ret;
-			}
-			case "Short[]": {
-				Short[] ret = new Short[iArray.size()];
-				for (int i = 0; i < iArray.size(); i++) {
-					ret[i] = (short) iArray.get(i);
-				}
-				return ret;
-			}
-			case "short[]": {
-				short[] ret = new short[iArray.size()];
-				for (int i = 0; i < iArray.size(); i++) {
-					ret[i] = (short) iArray.get(i);
-				}
-				return ret;
-			}
-			case "Byte[]": {
-				Byte[] ret = new Byte[iArray.size()];
-				for (int i = 0; i < iArray.size(); i++) {
-					ret[i] = (byte) iArray.get(i);
-				}
-				return ret;
-			}
-			case "byte[]": {
-				byte[] ret = new byte[iArray.size()];
-				for (int i = 0; i < iArray.size(); i++) {
-					ret[i] = (byte) iArray.get(i);
-				}
-				return ret;
-			}
-			}
-
-			return iArray.extract();
-		} else if (rawValue instanceof Double) {
-			final int javaTypeID = getJavaTypesMap().getValue(name);
-			final String javaType = javaTypes.inverse().get(javaTypeID);
-
-			if ("Float".equals(javaType)) {
-				return ((Double) rawValue).floatValue();
-			}
+			return rawValue;
 		}
-
-		return rawValue;
 	}
 
 	@Override
 	public void setProperty(String name, Object value) {
-		setPropertyRaw(name, value);
-		save();
+		try (NodeReader rn = getNodeReader()) {
+			setPropertyRaw(rn, name, value);
+		}
 	}
 
 	/**
 	 * Allows for setting multiple properties at once, in a slightly more efficient way.
 	 */
 	public void setProperties(Map<String, Object> props) {
-		for (Entry<String, Object> entry : props.entrySet()) {
-			setPropertyRaw(entry.getKey(), entry.getValue());
+		try (NodeReader rn = getNodeReader()) {
+			setPropertiesRaw(rn, props);
 		}
-		save();
+	}
+
+	protected void setPropertiesRaw(NodeReader rn, Map<String, Object> props) {
+		for (Entry<String, Object> entry : props.entrySet()) {
+			setPropertyRaw(rn, entry.getKey(), entry.getValue());
+		}
 	}
 
 	/**
-	 * Saves the property, without saving.
+	 * Saves the property, marking as dirty the node but without saving.
 	 */
-	protected void setPropertyRaw(String name, Object value) {
+	protected void setPropertyRaw(NodeReader rn, String name, Object value) {
 		if (value != null && value.getClass().isArray()) {
-			setArrayPropertyRaw(name, value);
+			setArrayPropertyRaw(rn, name, value);
 		} else if (value instanceof Float) {
-			getJavaTypesMap().put(name, javaTypes.get(value.getClass().getSimpleName()));
-			getNode().set(ATTRIBUTE_PREFIX + name, Type.DOUBLE, value);
+			getJavaTypesMap(rn).put(name, javaTypes.get(value.getClass().getSimpleName()));
+			rn.get().set(ATTRIBUTE_PREFIX + name, Type.DOUBLE, value);
 		} else {
-			getJavaTypesMap().remove(name);
-			getNode().set(ATTRIBUTE_PREFIX + name, getValueType(value), value);
+			getJavaTypesMap(rn).remove(name);
+			if ("".equals(value)) {
+				value = EMPTY_STRING_MARKER;
+			}
+			rn.get().set(ATTRIBUTE_PREFIX + name, getValueType(value), value);
 		}
+		rn.markDirty();
 	}
 
-	protected void setArrayPropertyRaw(String name, Object value) {
+	protected void setArrayPropertyRaw(NodeReader rn, String name, Object value) {
 		// Save real array type here, so we can convert back in getProperty()
 		final String  javaType = value.getClass().getSimpleName();
 		final Integer javaTypeID = javaTypes.get(javaType);
-		if (javaTypeID == null) {
-			throw new IllegalArgumentException("Unknown array component type: " + javaType);
+		if (javaTypeID != null) {
+			final StringIntMap arrayTypes = getJavaTypesMap(rn);
+			arrayTypes.put(name, javaTypeID);
 		}
-
-		final StringIntMap arrayTypes = getJavaTypesMap();
-		arrayTypes.put(name, javaTypeID);
+		final Node n = rn.get();
 
 		switch (javaType) {
 		case "Double[]":
 		case "double[]":
 		case "Float[]":
 		case "float[]":
-			DoubleArray dArray = (DoubleArray) getNode().getOrCreate(ATTRIBUTE_PREFIX + name, Type.DOUBLE_ARRAY);
+			DoubleArray dArray = (DoubleArray) n.getOrCreate(ATTRIBUTE_PREFIX + name, Type.DOUBLE_ARRAY);
 			dArray.clear();
 
 			switch (javaType) {
@@ -386,7 +475,7 @@ public class GreycatNode implements IGraphNode {
 			break;
 		case "Long[]":
 		case "long[]":
-			LongArray lArray = (LongArray) getNode().getOrCreate(ATTRIBUTE_PREFIX + name, Type.LONG_ARRAY);
+			LongArray lArray = (LongArray) n.getOrCreate(ATTRIBUTE_PREFIX + name, Type.LONG_ARRAY);
 			lArray.clear();
 
 			if ("Long".equals(javaType)) {
@@ -406,7 +495,7 @@ public class GreycatNode implements IGraphNode {
 		case "short[]":
 		case "Byte[]":
 		case "byte[]":
-			IntArray iArray = (IntArray) getNode().getOrCreate(ATTRIBUTE_PREFIX + name, Type.INT_ARRAY);
+			IntArray iArray = (IntArray) n.getOrCreate(ATTRIBUTE_PREFIX + name, Type.INT_ARRAY);
 			iArray.clear();
 
 			switch (javaType) {
@@ -450,7 +539,7 @@ public class GreycatNode implements IGraphNode {
 
 			break;
 		case "String[]": {
-			StringArray sArray = (StringArray) getNode().getOrCreate(ATTRIBUTE_PREFIX + name, Type.STRING_ARRAY);
+			StringArray sArray = (StringArray) n.getOrCreate(ATTRIBUTE_PREFIX + name, Type.STRING_ARRAY);
 			sArray.clear();
 			sArray.addAll((String[]) value);
 			break;
@@ -458,73 +547,94 @@ public class GreycatNode implements IGraphNode {
 		}
 	}
 
-	protected StringIntMap getJavaTypesMap() {
-		return (StringIntMap) getNode().getOrCreate(JAVATYPE_PROPERTY, Type.STRING_TO_INT_MAP);
+	protected StringIntMap getJavaTypesMap(NodeReader rn) {
+		StringIntMap value = (StringIntMap) rn.get().get(JAVATYPE_PROPERTY);
+		if (value == null) {
+			value = (StringIntMap) rn.get().getOrCreate(JAVATYPE_PROPERTY, Type.STRING_TO_INT_MAP);
+			rn.markDirty();
+		}
+		return value;
 	}
 
 	@Override
 	public Iterable<IGraphEdge> getEdges() {
-		return getAllEdges(getAllEdges(new ArrayList<>(), Direction.OUT), Direction.IN);
+		try (NodeReader rn = getNodeReader()) {
+			return getAllEdges(rn, getAllEdges(rn, new ArrayList<>(), Direction.OUT), Direction.IN);
+		}
 	}
 
 	@Override
 	public Iterable<IGraphEdge> getEdgesWithType(String type) {
-		return getEdgesWithType(getEdgesWithType(new ArrayList<>(), Direction.IN, type), Direction.OUT, type);
+		try (NodeReader rn = getNodeReader()) {
+			return getEdgesWithType(rn, getEdgesWithType(rn, new ArrayList<>(), Direction.IN, type), Direction.OUT, type);
+		}
 	}
 
 	@Override
 	public Iterable<IGraphEdge> getOutgoingWithType(String type) {
-		return getEdgesWithType(new ArrayList<>(), Direction.OUT, type);
+		try (NodeReader rn = getNodeReader()) {
+			return getEdgesWithType(rn, new ArrayList<>(), Direction.OUT, type);
+		}
 	}
 
 	@Override
 	public Iterable<IGraphEdge> getIncomingWithType(String type) {
-		return getEdgesWithType(new ArrayList<>(), Direction.IN, type);
+		try (NodeReader rn = getNodeReader()) {
+			return getEdgesWithType(rn, new ArrayList<>(), Direction.IN, type);
+		}
 	}
 
-	protected List<IGraphEdge> getEdgesWithType(final List<IGraphEdge> results, final Direction dir, String type) {
-		final CompletableFuture<Boolean> done = new CompletableFuture<>();
-		node.get().traverse(dir.getPrefix() + type, (Node[] targets) -> {
-			if (targets != null) {
-				for (Node target : targets) {
-					results.add(dir.convertToEdge(type, this,
-						new GreycatNode(getGraph(), target)));
-				}
+	protected List<IGraphEdge> getEdgesWithType(final NodeReader rn, final List<IGraphEdge> results, final Direction dir, String type) {
+		final int relationPosition = db.getGraph().resolver().stringToHash(dir.getPrefix() + type, false);
+		final Relation relation = (Relation) rn.get().getAt(relationPosition);
+
+		if (relation != null) {
+			final int relSize = relation.size();
+			for (int i = 0; i < relSize; i++) {
+				/*
+				 * Do NOT preload all target nodes, unlike traverse - doing so balloons memory
+				 * usage in some cases (e.g. going from the file node to the instance nodes).
+				 */
+				final long nodeId = relation.get(i);
+				final GreycatNode target = new GreycatNode(getGraph(), world, time, nodeId);
+				results.add(dir.convertToEdge(type, this, target));
 			}
-			done.complete(true);
-		});
-		done.join();
-	
+		}
+
 		return results;
 	}
 
 	@Override
 	public Iterable<IGraphEdge> getIncoming() {
-		return getAllEdges(new ArrayList<>(), Direction.IN);
+		try (NodeReader rn = getNodeReader()) {
+			return getAllEdges(rn, new ArrayList<>(), Direction.IN);
+		}
 	}
 
 	@Override
 	public Iterable<IGraphEdge> getOutgoing() {
-		return getAllEdges(new ArrayList<>(), Direction.OUT);
+		try (NodeReader rn = getNodeReader()) {
+			return getAllEdges(rn, new ArrayList<>(), Direction.OUT);
+		}
 	}
 
-	protected List<IGraphEdge> getAllEdges(final List<IGraphEdge> results, final Direction dir) {
-		final Node n = getNode();
+	protected List<IGraphEdge> getAllEdges(final NodeReader rn, final List<IGraphEdge> results, final Direction dir) {
+		final Node n = rn.get();
 		final Resolver resolver = n.graph().resolver();
 		final NodeState state = resolver.resolveState(n);
-	    final String prefix = dir.getPrefix();
-	
+		final String prefix = dir.getPrefix();
+
 		state.each((attributeKey, elemType, elem) -> {
 			if (elemType == Type.RELATION) {
-	            final String resolveName = resolver.hashToString(attributeKey);
+				final String resolveName = resolver.hashToString(attributeKey);
 				if (resolveName.startsWith(prefix)) {
-	            	final String edgeType = resolveName.substring(prefix.length());
-	                Relation castedRelArr = (Relation) elem;
-	                for (int j = 0; j < castedRelArr.size(); j++) {
-	                	GreycatNode targetNode = db.getNodeById(castedRelArr.get(j));
-	                	results.add(dir.convertToEdge(edgeType, this, targetNode));
-	                }
-	            }
+					final String edgeType = resolveName.substring(prefix.length());
+					Relation castedRelArr = (Relation) elem;
+					for (int j = 0; j < castedRelArr.size(); j++) {
+						final GreycatNode targetNode = new GreycatNode(db, world, time, castedRelArr.get(j));
+						results.add(dir.convertToEdge(edgeType, this, targetNode));
+					}
+				}
 			}
 		});
 		return results;
@@ -548,16 +658,14 @@ public class GreycatNode implements IGraphNode {
 
 	@Override
 	public void removeProperty(String name) {
-		node.get().remove(ATTRIBUTE_PREFIX + name);
-		save();
+		try (NodeReader rn = getNodeReader()) {
+			rn.get().remove(ATTRIBUTE_PREFIX + name);
+			rn.markDirty();
+		}
 	}
 
-	protected void save() {
-		db.save(this);
-	}
-
-	public Node getNode() {
-		return node.get();
+	protected void free() {
+		nodeProvider.free();
 	}
 
 	/**
@@ -565,8 +673,10 @@ public class GreycatNode implements IGraphNode {
 	 * If so, it should be ignored by any queries and iterables.
 	 */
 	protected boolean isSoftDeleted() {
-		final Boolean softDeleted = (Boolean) node.get().get(GreycatDatabase.SOFT_DELETED_KEY);
-		return softDeleted == Boolean.TRUE;
+		try (NodeReader rn = getNodeReader()) {
+			final Boolean softDeleted = (Boolean) rn.get().get(GreycatDatabase.SOFT_DELETED_KEY);
+			return softDeleted == Boolean.TRUE;
+		}
 	}
 
 	protected IGraphEdge addEdge(String type, GreycatNode end, Map<String, Object> props) {
@@ -577,25 +687,29 @@ public class GreycatNode implements IGraphNode {
 		}
 	}
 
-	protected void addOutgoing(String type, final GreycatNode endNode) {
-		getNode().addToRelation(Direction.OUT.getPrefix() + type, endNode.getNode());
+	protected static void addOutgoing(String type, final NodeReader rn, final NodeReader ro) {
+		rn.get().addToRelation(Direction.OUT.getPrefix() + type, ro.get());
+		rn.markDirty();
 	}
 
-	protected void addIncoming(String type, final GreycatNode endNode) {
-		getNode().addToRelation(Direction.IN.getPrefix() + type, endNode.getNode());
+	protected static void addIncoming(String type, final NodeReader rn, final NodeReader ro) {
+		rn.get().addToRelation(Direction.IN.getPrefix() + type, ro.get());
+		rn.markDirty();
 	}
 
-	protected void removeOutgoing(String type, final GreycatNode endNode) {
-		getNode().removeFromRelation(Direction.OUT.getPrefix() + type, endNode.getNode());
+	protected static void removeOutgoing(String type, final NodeReader rn, final NodeReader ro) {
+		rn.get().removeFromRelation(Direction.OUT.getPrefix() + type, ro.get());
+		rn.markDirty();
 	}
 
-	protected void removeIncoming(String type, final GreycatNode endNode) {
-		getNode().removeFromRelation(Direction.IN.getPrefix() + type, endNode.getNode());
+	protected static void removeIncoming(String type, final NodeReader rn, final NodeReader ro) {
+		rn.get().removeFromRelation(Direction.IN.getPrefix() + type, ro.get());
+		rn.markDirty();
 	}
 
 	@Override
 	public String toString() {
-		return "GreycatNode [world=" + world + ", time=" + time + ", id=" + id + ", getNode()=" + getNode() + "]";
+		return "GreycatNode [world=" + world + ", time=" + time + ", id=" + id + "]";
 	}
 
 	@Override

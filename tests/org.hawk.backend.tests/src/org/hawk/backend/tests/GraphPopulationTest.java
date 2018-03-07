@@ -65,6 +65,7 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 	@Test
 	public void oneNodeProperty() throws Exception {
 		final String sValue = "hello world";
+		final String esValue = ""; // empty string
 		final boolean bValue = true;
 		final double dValue = 1.34;
 		final float fValue = 3.3f;
@@ -81,14 +82,15 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 		IGraphNode n;
 		IGraphIterable<IGraphNode> eobs;
 
+		final Map<String, Object> map = new HashMap<>();
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			eobs = db.allNodes("eobject");
 			assertEquals(0, eobs.size());
 
-			Map<String, Object> map = new HashMap<>();
 			map.put("d", dValue);
 			map.put("f", fValue);
 			map.put("s", sValue);
+			map.put("es", esValue);
 			map.put("b", bValue);
 			map.put("as", asValue);
 			map.put("ad", adValue);
@@ -99,6 +101,12 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 			map.put("ab", abValue);
 			n = db.createNode(map, "eobject");
 
+			tx.success();
+		}
+
+		// property keys
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(map.keySet(), n.getPropertyKeys());
 			tx.success();
 		}
 
@@ -129,7 +137,7 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 			tx.success();
 		}
 
-		// Strings
+		// Non-empty strings
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			n.removeProperty("s");
 			tx.failure();
@@ -145,6 +153,12 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			assertNull(eobs.getSingle().getProperty("s"));
 			tx.failure();
+		}
+
+		// Empty strings
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(esValue, n.getProperty("es"));
+			tx.success();
 		}
 
 		// Booleans
@@ -282,14 +296,19 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 		db.enterBatchMode();
 		IGraphNode x1 = db.createNode(Collections.singletonMap("x", 1), "eobject");
 		IGraphNode x10 = db.createNode(Collections.singletonMap("x", 10), "eobject");
-		IGraphEdge e = db.createRelationship(x1, x10, "dep", Collections.singletonMap("y", "abc"));
+		IGraphEdge e1 = db.createRelationship(x1, x10, "dep", Collections.singletonMap("y", "abc"));
+		db.createRelationship(x1, x10, "light", null);
 		db.exitBatchMode();
 
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			assertEquals(1, e.getStartNode().getProperty("x"));
-			assertEquals(10, e.getEndNode().getProperty("x"));
-			assertEquals("abc", e.getProperty("y"));
-			assertEquals("dep", e.getType());
+			assertEquals(1, e1.getStartNode().getProperty("x"));
+			assertEquals(10, e1.getEndNode().getProperty("x"));
+			assertEquals("abc", e1.getProperty("y"));
+			assertEquals("dep", e1.getType());
+
+			assertEquals(1, size(x1.getOutgoingWithType("light")));
+			assertEquals(1, size(x10.getIncomingWithType("light")));
+
 			assertEquals(1, size(x1.getOutgoingWithType("dep")));
 			assertEquals(1, size(x10.getIncomingWithType("dep")));
 			assertEquals(0, size(x10.getIncomingWithType("other")));

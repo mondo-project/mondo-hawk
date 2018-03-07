@@ -17,10 +17,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -35,6 +33,7 @@ import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.greycat.GreycatNode.NodeReader;
 import org.hawk.greycat.lucene.GreycatLuceneIndexer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +62,11 @@ public class GreycatDatabase implements IGraphDatabase {
 	 */
 	protected static final String NODE_LABEL_IDX = "h_nodeLabel";
 
+	/**
+	 * In batch mode, we save every time we reach an X number of dirty nodes.
+	 */
+	protected static final int SAVE_EVERY = 10_000;
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(GreycatDatabase.class);
 
 	private File storageFolder, tempFolder;
@@ -72,10 +76,17 @@ public class GreycatDatabase implements IGraphDatabase {
 	private Mode mode = Mode.TX_MODE;
 	private GreycatLuceneIndexer luceneIndexer;
 
-	// Keeps nodes in current tx reachable, to avoid GC: note
-	// that Greycat has a cache capacity and bails out when
-	// exceeded
-	private List<GreycatNode> currentTxNodes = new ArrayList<>();
+	/**
+	 * Keeps nodes modified so far, so we can free them after we save.
+	 */
+	private Set<GreycatNode> currentDirtyNodes = new HashSet<>();
+
+	/**
+	 * Keeps nodes opened right now, so we can avoid doing a periodic
+	 * save in the middle of some modifications.
+	 */
+	private Set<GreycatNode> currentOpenNodes = new HashSet<>();
+	
 
 	private int world = 0;
 	private int time = 0;
@@ -197,16 +208,18 @@ public class GreycatDatabase implements IGraphDatabase {
 
 	@Override
 	public void enterBatchMode() {
-		if (mode != Mode.NO_TX_MODE) {
+		if (mode == Mode.TX_MODE) {
 			commitLuceneIndex();
+			save();
 			mode = Mode.NO_TX_MODE;
 		}
 	}
 
 	@Override
 	public void exitBatchMode() {
-		if (mode != Mode.TX_MODE) {
+		if (mode == Mode.NO_TX_MODE) {
 			commitLuceneIndex();
+			save();
 			mode = Mode.TX_MODE;
 		}
 	}
@@ -226,32 +239,47 @@ public class GreycatDatabase implements IGraphDatabase {
 	public GreycatNode createNode(Map<String, Object> props, String label) {
 		final Node node = graph.newNode(world, time);
 		node.set(NODE_LABEL_IDX, Type.STRING, label);
+		nodeLabelIndex.update(node);
 
 		final GreycatNode n = new GreycatNode(this, node);
 		if (props != null) {
 			n.setProperties(props);
 		}
-		nodeLabelIndex.update(node);
-		save(n);
 
 		return n;
 	}
 
-	protected Boolean save(GreycatNode n) {
-		final CompletableFuture<Boolean> result = new CompletableFuture<>();
-		if (mode == Mode.NO_TX_MODE) {
-			save(result);
-		} else {
-			currentTxNodes.add(n);
-			result.complete(true);
-		}
-		return result.join();
+	protected void markDirty(GreycatNode n) {
+		currentDirtyNodes.add(n);
 	}
 
-	protected void save(CompletableFuture<Boolean> result) {
+	/**
+	 * Marks a certain node as being currently opened: a periodic save should not be
+	 * triggered until all currently opened nodes are closed.
+	 */
+	protected void markOpen(GreycatNode n) {
+		currentOpenNodes.add(n);
+	}
+
+	/**
+	 * Removes a node from being currently opened, and triggers a periodic
+	 * save request if that results in the open set to be empty.
+	 */
+	protected void markClosed(GreycatNode n) {
+		if (currentOpenNodes.remove(n) && currentOpenNodes.isEmpty()) {
+			if (mode == Mode.NO_TX_MODE && currentDirtyNodes.size() > SAVE_EVERY) {
+				save();
+			}
+		}
+	}
+
+	protected void save() {
+		final CompletableFuture<Boolean> result = new CompletableFuture<>();
+
 		// First stage save
 		graph.save(saved -> {
 			softDeleteIndex.find(results -> {
+
 				Semaphore sem = new Semaphore(-results.length + 1);
 				for (Node n : results) {
 					hardDelete(new GreycatNode(this, n), dropped -> sem.release());
@@ -272,8 +300,16 @@ public class GreycatDatabase implements IGraphDatabase {
 				}
 			}, world, time);
 		});
+		result.join();
 
-		currentTxNodes.clear();
+		// Free nodes after having saved them 
+		for (GreycatNode dirtyNode : currentDirtyNodes) {
+			dirtyNode.free();
+		}
+		currentDirtyNodes.clear();
+
+		// useful for finding GreyCat Node leaks
+		//System.out.println("-- SAVED: available is " + graph.space().available());
 	}
 
 	@Override
@@ -299,17 +335,7 @@ public class GreycatDatabase implements IGraphDatabase {
 			id = Long.valueOf((String) id);
 		}
 
-		CompletableFuture<GreycatNode> result = new CompletableFuture<>();
-		graph.lookup(world, time, (long) id, (node) -> {
-			result.complete(new GreycatNode(this, node));
-		});
-
-		try {
-			return result.get();
-		} catch (InterruptedException | ExecutionException e) {
-			LOGGER.error(e.getMessage(), e);
-			return null;
-		}
+		return new GreycatNode(this, world, time, (long)id);
 	}
 
 	@Override
@@ -389,6 +415,7 @@ public class GreycatDatabase implements IGraphDatabase {
 
 	protected void connect(CompletableFuture<Boolean> cConnected) {
 		this.graph = new GraphBuilder()
+			.withMemorySize(100_000)
 			.withStorage(new RocksDBStorage(storageFolder.getAbsolutePath()))
 			.build();
 
@@ -412,7 +439,11 @@ public class GreycatDatabase implements IGraphDatabase {
 
 	protected void hardDelete(GreycatNode gn, Callback<?> callback) {
 		unlink(gn);
-		gn.getNode().drop(callback);
+
+		try (GreycatNode.NodeReader rn = gn.getNodeReader()) {
+			final Node node = rn.get();
+			node.drop(callback);
+		}
 	}
 
 	/**
@@ -423,9 +454,13 @@ public class GreycatDatabase implements IGraphDatabase {
 		unlink(gn);
 
 		// Soft delete, to make definitive after next save
-		final Node node = gn.getNode();
-		node.set(SOFT_DELETED_KEY, Type.BOOL, true);
-		softDeleteIndex.update(node);
+		try (GreycatNode.NodeReader rn = gn.getNodeReader()) {
+			final Node node = rn.get();
+			node.set(SOFT_DELETED_KEY, Type.BOOL, true);
+			softDeleteIndex.update(node);
+
+			rn.markDirty();
+		}
 	}
 
 	/**
@@ -437,10 +472,12 @@ public class GreycatDatabase implements IGraphDatabase {
 			e.delete();
 		}
 
-		final Node n = gn.getNode();
-		softDeleteIndex.unindex(n);
-		nodeLabelIndex.unindex(n);
-		luceneIndexer.remove(gn);
+		try (NodeReader rn = gn.getNodeReader()) {
+			final Node n = rn.get();
+			softDeleteIndex.unindex(n);
+			nodeLabelIndex.unindex(n);
+			luceneIndexer.remove(gn);
+		}
 	}
 
 	protected void commitLuceneIndex() {

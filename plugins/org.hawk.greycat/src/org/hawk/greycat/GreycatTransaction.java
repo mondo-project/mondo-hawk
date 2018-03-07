@@ -1,7 +1,5 @@
 package org.hawk.greycat;
 
-import java.util.concurrent.CompletableFuture;
-
 import org.hawk.core.graph.IGraphTransaction;
 
 public class GreycatTransaction implements IGraphTransaction {
@@ -14,10 +12,8 @@ public class GreycatTransaction implements IGraphTransaction {
 
 	@Override
 	public void success() {
-		CompletableFuture<Boolean> cSaved = new CompletableFuture<>();
 		db.commitLuceneIndex();
-		db.save(cSaved);
-		cSaved.join();
+		db.save();
 	}
 
 	@Override

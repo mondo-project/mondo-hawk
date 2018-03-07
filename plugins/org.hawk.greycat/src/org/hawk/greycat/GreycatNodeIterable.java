@@ -31,10 +31,11 @@ public class GreycatNodeIterable implements IGraphIterable<IGraphNode> {
 			final Node[] nodes = nodesGenerator.call();
 			final List<IGraphNode> gNodes = new ArrayList<>();
 			for (Node n : nodes) {
-				GreycatNode gNode = new GreycatNode(db, n);
+				GreycatNode gNode = new GreycatNode(db, n.world(), n.time(), n.id());
 				if (!gNode.isSoftDeleted()) {
 					gNodes.add(gNode);
 				}
+				n.free();
 			}
 
 			return gNodes.iterator();

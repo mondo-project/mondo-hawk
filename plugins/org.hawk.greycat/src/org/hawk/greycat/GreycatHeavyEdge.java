@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.hawk.core.graph.IGraphEdge;
+import org.hawk.greycat.GreycatNode.NodeReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,19 +20,22 @@ import greycat.Type;
 public class GreycatHeavyEdge implements IGraphEdge {
 
 	public static GreycatHeavyEdge create(String type, GreycatNode from, GreycatNode to, Map<String, Object> props) {
-		final Node startNode = from.getNode();
-		final Node endNode = to.getNode();
-		final GreycatNode gHeavyEdgeNode = from.getGraph().createNode(props, NODETYPE);
+		try (NodeReader rStart = from.getNodeReader(); NodeReader rEnd = to.getNodeReader()) {
+			final GreycatNode gHeavyEdgeNode = from.getGraph().createNode(props, NODETYPE);
 
-		final Node heavyEdgeNode = gHeavyEdgeNode.getNode();
-		heavyEdgeNode.set(GreycatHeavyEdge.TYPE_PROP, Type.STRING, type);
-		heavyEdgeNode.addToRelation(GreycatHeavyEdge.START_REL, startNode);
-		heavyEdgeNode.addToRelation(GreycatHeavyEdge.END_REL, endNode);
-		from.addOutgoing(type, gHeavyEdgeNode);
-		to.addIncoming(type, gHeavyEdgeNode);
-		gHeavyEdgeNode.save();
+			try (GreycatNode.NodeReader rEdge = gHeavyEdgeNode.getNodeReader()) {
+				final Node heavyEdgeNode = rEdge.get();
 
-		return new GreycatHeavyEdge(gHeavyEdgeNode);
+				heavyEdgeNode.set(GreycatHeavyEdge.TYPE_PROP, Type.STRING, type);
+				heavyEdgeNode.addToRelation(GreycatHeavyEdge.START_REL, rStart.get());
+				heavyEdgeNode.addToRelation(GreycatHeavyEdge.END_REL, rEnd.get());
+				GreycatNode.addOutgoing(type, rStart, rEdge);
+				GreycatNode.addIncoming(type, rEnd, rEdge);
+				rEdge.markDirty();
+			}
+
+			return new GreycatHeavyEdge(gHeavyEdgeNode);
+		}
 	}
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GreycatHeavyEdge.class);
@@ -54,7 +58,13 @@ public class GreycatHeavyEdge implements IGraphEdge {
 
 	@Override
 	public String getType() {
-		return node.getNode().get(TYPE_PROP).toString();
+		try (NodeReader rn = node.getNodeReader()) {
+			return getType(rn);
+		}
+	}
+
+	protected String getType(NodeReader rn) {
+		return rn.get().get(TYPE_PROP).toString();
 	}
 
 	@Override
@@ -88,14 +98,20 @@ public class GreycatHeavyEdge implements IGraphEdge {
 
 	@Override
 	public void delete() {
-		final String type = getType();
-
 		final GreycatNode startNode = getStartNode();
-		startNode.removeOutgoing(type, node);
-		getEndNode().removeIncoming(type, node);
-		node.delete();
+		final GreycatNode endNode = getEndNode();
 
-		startNode.save();
+		try (
+			NodeReader rEdge = node.getNodeReader();
+			NodeReader rStart = startNode.getNodeReader();
+			NodeReader rEnd = endNode.getNodeReader()
+		) {
+			final String type = getType();
+
+			GreycatNode.removeOutgoing(type, rStart, rEdge);
+			GreycatNode.removeIncoming(type, rEnd, rEdge);
+			node.delete();
+		}
 	}
 
 	@Override
@@ -104,12 +120,16 @@ public class GreycatHeavyEdge implements IGraphEdge {
 	}
 
 	protected GreycatNode getRawTarget(final String relationName) {
-		CompletableFuture<GreycatNode> result = new CompletableFuture<>(); 
-		node.getNode().traverse(relationName, (Node[] targets) -> {
-			result.complete(new GreycatNode(node.getGraph(), targets[0]));
-		});
-	
-		try {
+		try (NodeReader reader = node.getNodeReader()) {
+			CompletableFuture<GreycatNode> result = new CompletableFuture<>();
+			reader.get().traverse(relationName, (Node[] targets) -> {
+				final Node target = targets[0];
+				final GreycatNode newNode = new GreycatNode(node.getGraph(),
+					target.world(), target.time(), target.id());
+				target.free();
+				result.complete(newNode);
+			});
+
 			return result.get();
 		} catch (InterruptedException | ExecutionException e) {
 			LOGGER.error(e.getMessage(), e);
@@ -140,6 +160,12 @@ public class GreycatHeavyEdge implements IGraphEdge {
 		} else if (!node.equals(other.node))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "GreycatHeavyEdge [node=" + node + ", getStartNode()=" + getStartNode() + ", getEndNode()="
+				+ getEndNode() + "]";
 	}
 	
 }

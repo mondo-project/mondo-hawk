@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.greycat.GreycatNode.NodeReader;
 
 /**
  * Light edge that cannot have any properties. This is the default edge
@@ -13,9 +14,10 @@ import org.hawk.core.graph.IGraphNode;
 public class GreycatLightEdge implements IGraphEdge {
 
 	public static GreycatLightEdge create(String type, GreycatNode from, GreycatNode to) {
-		from.addOutgoing(type, to);
-		to.addIncoming(type, from);
-		from.save();
+		try (NodeReader rFrom = from.getNodeReader(); NodeReader rTo = to.getNodeReader()) {
+			GreycatNode.addOutgoing(type, rFrom, rTo);
+			GreycatNode.addIncoming(type, rTo, rFrom);
+		}
 
 		return new GreycatLightEdge(from, to, type);
 	}
@@ -67,9 +69,10 @@ public class GreycatLightEdge implements IGraphEdge {
 
 	@Override
 	public void delete() {
-		start.removeOutgoing(type, end);
-		end.removeIncoming(type, start);
-		start.save();
+		try (NodeReader rStart = start.getNodeReader(); NodeReader rEnd = end.getNodeReader()) {
+			GreycatNode.removeOutgoing(type, rStart, rEnd);
+			GreycatNode.removeIncoming(type, rEnd, rStart);
+		}
 	}
 
 	@Override
