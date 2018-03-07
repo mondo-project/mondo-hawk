@@ -938,7 +938,7 @@ public class GraphModelInserter {
 
 				if (remainingProxies == null || remainingProxies.length == 0) {
 					n.removeProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + fullPathURI);
-					proxyDictionary.remove(GraphModelUpdater.PROXY_REFERENCE_PREFIX, fullPathURI, n);
+					proxyDictionary.remove(n, GraphModelUpdater.PROXY_REFERENCE_PREFIX, fullPathURI);
 				} else {
 					n.setProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + fullPathURI, remainingProxies);
 				}

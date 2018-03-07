@@ -203,7 +203,7 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 	}
 
 	@Override
-	public void remove(String field, Object value, IGraphNode n) {
+	public void remove(IGraphNode n, String field, Object value) {
 		final OrientNode oNode = (OrientNode)n;
 
 		if (field == null && value == null) {
@@ -211,7 +211,7 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 		} else if (field == null) {
 			final OrientIndexStore store = graph.getIndexStore();
 			for (String fieldName : store.getNodeFieldIndexNames(name)) {
-				remove(fieldName, value, n);
+				remove(n, fieldName, value);
 			}
 		} else if (value == null) {
 			remove(field, oNode);

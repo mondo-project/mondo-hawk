@@ -8,13 +8,19 @@ import java.util.ListIterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.DoublePoint;
+import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.document.StoredField;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -103,6 +109,7 @@ final class SoftTxLucene {
 	public void commit() {
 		synchronized (rollbackLog) {
 			rollbackLog.clear();
+			System.out.println("Committed, rollback log is now " + rollbackLog);
 		}
 	}
 
@@ -113,6 +120,7 @@ final class SoftTxLucene {
 			}
 			rollbackLog.clear();
 			refreshReader();
+			System.out.println("Rolled back, rollback log is now " + rollbackLog);
 		}
 	}
 
@@ -125,7 +133,8 @@ final class SoftTxLucene {
 
 			@Override
 			public void doWork() throws IOException {
-				oldDocument = getDocument(term);
+				oldDocument = GreycatLuceneIndexer.copy(getDocument(term));
+				System.out.println("Update document with "  + term + " to:\n" + newDocument);
 				writer.updateDocument(term, newDocument);
 				refreshReader();
 			}
@@ -134,8 +143,10 @@ final class SoftTxLucene {
 			public void undoWork() throws IOException {
 				if (oldDocument == null) {
 					writer.deleteDocuments(term);
+					System.out.println("Deleted document with " + term);
 				} else {
 					writer.updateDocument(term, oldDocument);
+					System.out.println("Revert document with " + term + " to:\n" + oldDocument);
 				}
 			}
 		});
@@ -150,7 +161,7 @@ final class SoftTxLucene {
 
 			@Override
 			public void doWork() throws IOException {
-				oldDocument = getDocument(term);
+				oldDocument = GreycatLuceneIndexer.copy(getDocument(term));
 				writer.deleteDocuments(term);
 				refreshReader();
 			}
@@ -159,6 +170,7 @@ final class SoftTxLucene {
 			public void undoWork() throws IOException {
 				if (oldDocument != null) {
 					writer.addDocument(oldDocument);
+					System.out.println("Recovered document " + oldDocument);
 				}
 			}
 		});
@@ -176,7 +188,7 @@ final class SoftTxLucene {
 				final IndexSearcher searcher = new IndexSearcher(reader);
 				final ListCollector lc = new ListCollector(searcher);
 				searcher.search(query, lc);
-				oldDocuments = lc.getDocuments();
+				oldDocuments = lc.getDocuments().stream().map(d -> GreycatLuceneIndexer.copy(d)).collect(Collectors.toList());
 
 				writer.deleteDocuments(query);
 				refreshReader();
@@ -184,7 +196,10 @@ final class SoftTxLucene {
 
 			@Override
 			public void undoWork() throws IOException {
-				writer.addDocuments(oldDocuments);
+				for (Document old : oldDocuments) {
+					writer.addDocument(old);
+					System.out.println("Recovered document " + old);
+				}
 			}
 		});
 	}

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -98,12 +97,14 @@ public class GreycatLuceneIndexer {
 		}
 
 		@Override
-		public void remove(String key, Object value, IGraphNode n) {
+		public void remove(IGraphNode n, String key, Object value) {
 			try {
 				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
 				final GreycatNode gn = (GreycatNode) n;
-				final TopDocs results = searcher.search(findNodeQuery(gn), 1);
+				final TermQuery query = findNodeQuery(gn);
+				final TopDocs results = searcher.search(query, 1);
+				System.out.println("Total hits for " + query + ": " + results.totalHits);
 				if (results.totalHits > 0) {
 					final Document document = searcher.doc(results.scoreDocs[0].doc);
 
@@ -113,35 +114,47 @@ public class GreycatLuceneIndexer {
 						removeKeyValue(document, gn, key, value);
 					}
 				}
+				final TopDocs results2 = new IndexSearcher(lucene.getReader()).search(query, 1);
+				System.out.println("Total hits for " + query + ": " + results2.totalHits);
 			} catch (IOException e) {
 				LOGGER.error("Could not remove node from index", e);
 			}
 		}
 
 		protected void removeKeyValue(final Document document, final GreycatNode gn, String key, Object value) throws IOException {
-			final List<IndexableField> remainingFields = new ArrayList<>();
-			boolean matched = false;
-			for (IndexableField field : document.getFields(ATTRIBUTE_PREFIX + key)) {
-				if (value == null) {
-					matched = true;
-				} else if (value instanceof Float || value instanceof Double) {
-					// WARN: not happy about == for equality with floating-point values... 
-					matched = matched || ((Number)value).doubleValue() == field.numericValue().doubleValue();
-				} else if (value instanceof Number) {
-					matched = matched || ((Number)value).longValue() == field.numericValue().longValue();
-				} else if (value.equals(field.stringValue())) {
-					matched = true;
-				} else {
-					remainingFields.add(field);
+			final Document copy = new Document();
+
+			// Copy all other fields as we go
+			boolean anyMatched = false;
+			for (IndexableField field : document.getFields()) {
+				boolean matched = false;
+
+				if (field.name().equals(ATTRIBUTE_PREFIX + key)) {
+					if (value == null) {
+						matched = true;
+					} else if (value instanceof Float) {
+						final float fValue = field.numericValue() == null ? Float.valueOf(field.stringValue()) : field.numericValue().floatValue();
+						matched = fValue == ((float) value);
+					} else if (value instanceof Double) {
+						final double fValue = field.numericValue() == null ? Double.valueOf(field.stringValue()) : field.numericValue().doubleValue();
+						matched = fValue == ((double) value);
+					} else if (value instanceof Number) {
+						final Long fValue = field.numericValue() == null ? Long.valueOf(field.stringValue()) : field.numericValue().longValue();
+						matched = ((Number) value).longValue() == fValue;
+					} else if (value.equals(field.stringValue())) {
+						matched = true;
+					}
 				}
+
+				if (!matched) {
+					copyField(field, copy);
+				}
+				
+				anyMatched = anyMatched || matched;
 			}
 
-			if (matched) {
-				document.removeFields(ATTRIBUTE_PREFIX + key);
-				for (IndexableField field : remainingFields) {
-					document.add(field);
-				}
-				lucene.update(findNodeTerm(gn), document);
+			if (anyMatched) {
+				lucene.update(findNodeTerm(gn), copy);
 			}
 		}
 
@@ -155,10 +168,10 @@ public class GreycatLuceneIndexer {
 					if (value == null || existingValue.equals(value)) {
 						matched = true;
 					} else {
-						copy.add(field);
+						copyField(field, copy);
 					}
 				} else {
-					copy.add(field);
+					copyField(field, copy);
 				}
 			}
 
@@ -240,6 +253,7 @@ public class GreycatLuceneIndexer {
 					query = getIndexQueryBuilder().add(query, Occur.MUST).build();
 				}
 
+				System.out.println("Running query " + query);
 				final NodeListCollector c = new NodeListCollector(searcher);
 				searcher.search(query, c);
 				return new ListIGraphIterable(c.getNodes());
@@ -319,64 +333,27 @@ public class GreycatLuceneIndexer {
 				final TopDocs results = searcher.search(findNodeQuery(gn), 1);
 				if (results.totalHits > 0) {
 					// Create our own copy, for updating
-					Document oldDocument = searcher.doc(results.scoreDocs[0].doc);
-					values = copyOldValues(oldDocument, values);
+					final Document oldDocument = searcher.doc(results.scoreDocs[0].doc);
+
+					for (IndexableField oldField : oldDocument.getFields()) {
+						final String rawOldFieldName = oldField.name();
+						if (rawOldFieldName.startsWith(ATTRIBUTE_PREFIX)) {
+							final String oldFieldName = rawOldFieldName.substring(ATTRIBUTE_PREFIX.length());
+							if (!values.containsKey(oldFieldName)) {
+								copyField(oldField, document);
+							}
+						}
+					}
 				}
 
 				for (Entry<String, Object> entry : values.entrySet()) {
-					addField(document, entry.getKey(), entry.getValue());
+					addRawField(document, ATTRIBUTE_PREFIX + entry.getKey(), entry.getValue());
 				}
 
 				lucene.update(findNodeTerm(gn), document);
 			} catch (IOException e) {
 				LOGGER.error(e.getMessage(), e);
 			}
-		}
-
-		protected void addField(Document document, final String key, final Object value) {
-			final String fieldName = ATTRIBUTE_PREFIX + key;
-
-			/*
-			 * Point classes are very useful for fast range queries, but they do not store
-			 * the value in the document. We need to add a StoredField so we can use the
-			 * full version of remove (key, value and node).
-			 *
-			 * TODO: do we get these back after a soft rollback? We need tests for this.
-			 */
-			if (value instanceof Float || value instanceof Double) {
-				final double doubleValue = ((Number)value).doubleValue();
-				document.add(new DoublePoint(fieldName, doubleValue));
-				document.add(new StoredField(fieldName, doubleValue));
-			} else if (value instanceof Number) {
-				final long longValue = ((Number)value).longValue();
-				document.add(new LongPoint(fieldName, longValue));
-				document.add(new StoredField(fieldName, longValue));
-			} else {
-				document.add(new StringField(fieldName, value.toString(), Store.YES));
-			}
-
-			document.add(new StringField(FIELDS_FIELD, key, Store.NO));
-		}
-
-		protected Map<String, Object> copyOldValues(Document oldDocument, Map<String, Object> destValues) {
-			destValues = new HashMap<>(destValues);
-
-			for (IndexableField oldField : oldDocument.getFields()) {
-				final String rawOldFieldName = oldField.name();
-				if (rawOldFieldName.startsWith(ATTRIBUTE_PREFIX)) {
-					final String oldFieldName = rawOldFieldName.substring(ATTRIBUTE_PREFIX.length());
-					if (!destValues.containsKey(oldFieldName)) {
-						if (oldField.stringValue() != null) {
-							destValues.put(oldFieldName, oldField.stringValue());
-						} else if (oldField.numericValue() != null) {
-							destValues.put(oldFieldName, oldField.numericValue());
-						} else {
-							throw new IllegalStateException("Attribute stored with unknown value type");
-						}
-					}
-				}
-			}
-			return destValues;
 		}
 
 		protected TermQuery findNodeQuery(final GreycatNode n) {
@@ -470,7 +447,6 @@ public class GreycatLuceneIndexer {
 	public void remove(GreycatNode gn) {
 		try {
 			final String nodeId = getNodeId(gn);
-			LOGGER.debug("Removing node {} from ALL indices", nodeId);
 			lucene.delete(new TermQuery(new Term(NODEID_FIELD, nodeId)));
 		} catch (IOException e) {
 			LOGGER.error(String.format(
@@ -515,4 +491,62 @@ public class GreycatLuceneIndexer {
 	public void shutdown() {
 		lucene.shutdown();
 	}
+
+
+	protected static void addRawField(Document document, final String fieldName, final Object value) {
+		/*
+		 * Point classes are very useful for fast range queries, but they do not store
+		 * the value in the document. We need to add a StoredField so we can use the
+		 * full version of remove (key, value and node).
+		 *
+		 * TODO: do we get these back after a soft rollback? We need tests for this.
+		 */
+		if (value instanceof Float || value instanceof Double) {
+			final double doubleValue = ((Number)value).doubleValue();
+			document.add(new DoublePoint(fieldName, doubleValue));
+			document.add(new StoredField(fieldName, doubleValue));
+		} else if (value instanceof Number) {
+			final long longValue = ((Number)value).longValue();
+			document.add(new LongPoint(fieldName, longValue));
+			document.add(new StoredField(fieldName, longValue));
+		} else {
+			document.add(new StringField(fieldName, value.toString(), Store.YES));
+		}
+
+		if (fieldName.startsWith(ATTRIBUTE_PREFIX)) {
+			document.add(new StringField(FIELDS_FIELD, fieldName.substring(ATTRIBUTE_PREFIX.length()), Store.YES));
+		}
+	}
+
+	/**
+	 * Copies and recreates an entire document, including IntPoint and DoublePoint fields.
+	 */
+	protected static Document copy(Document doc) {
+		if (doc == null) {
+			return null;
+		}
+
+		final Document newDoc = new Document();
+		for (IndexableField f : doc.getFields()) {
+			copyField(f, newDoc);
+		}
+
+		return newDoc;
+	}
+
+	/**
+	 * Copies an existing field into a document, as long as it is not the `meta`
+	 * {@link #FIELDS_FIELD} that is used to indicate that an attribute has been
+	 * set.
+	 */
+	protected static void copyField(IndexableField field, final Document copy) {
+		if (!FIELDS_FIELD.equals(field.name())) {
+			if (field.numericValue() instanceof Number) {
+				addRawField(copy, field.name(), field.numericValue());
+			} else {
+				addRawField(copy, field.name(), field.stringValue());
+			}
+		}
+	}
+	
 }

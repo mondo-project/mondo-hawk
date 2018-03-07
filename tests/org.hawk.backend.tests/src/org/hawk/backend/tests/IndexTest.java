@@ -170,7 +170,7 @@ public class IndexTest extends TemporaryDatabaseTest {
 
 		final IGraphIterable<IGraphNode> iter = checkBeforeRemove(mmBarURI);
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			db.getMetamodelIndex().remove("id", mmBarURI, iter.getSingle());
+			db.getMetamodelIndex().remove(iter.getSingle(), "id", mmBarURI);
 			tx.success();
 		}
 		checkAfterRemove(mmBarURI);
@@ -191,7 +191,8 @@ public class IndexTest extends TemporaryDatabaseTest {
 
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			final IGraphNodeIndex mmIdx = db.getMetamodelIndex();
-			mmIdx.remove(key, 1, n1);
+			assertEquals(2, mmIdx.query(key, 1, 2, true, true).size());
+			mmIdx.remove(n1, key, 1);
 			tx.success();
 		}
 
@@ -220,7 +221,7 @@ public class IndexTest extends TemporaryDatabaseTest {
 
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			final IGraphNodeIndex mmIdx = db.getMetamodelIndex();
-			mmIdx.remove(key, 1.1, n1);
+			mmIdx.remove(n1, key, 1.1);
 			tx.success();
 		}
 
@@ -238,7 +239,7 @@ public class IndexTest extends TemporaryDatabaseTest {
 		final String mmBarURI = populateForRemove();
 		final IGraphIterable<IGraphNode> iter = checkBeforeRemove(mmBarURI);
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			db.getMetamodelIndex().remove(null, mmBarURI, iter.getSingle());
+			db.getMetamodelIndex().remove(iter.getSingle(), null, mmBarURI);
 			tx.success();
 		} catch (UnsupportedOperationException ex) {
 			Assume.assumeTrue("Removing a node by value with no key is not supported on this backend", false);
@@ -252,7 +253,7 @@ public class IndexTest extends TemporaryDatabaseTest {
 
 		final IGraphIterable<IGraphNode> iter = checkBeforeRemove(mmBarURI);
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			db.getMetamodelIndex().remove("id", null, iter.getSingle());
+			db.getMetamodelIndex().remove(iter.getSingle(), "id", null);
 			tx.success();
 		}
 		checkAfterRemove(mmBarURI);
@@ -265,7 +266,7 @@ public class IndexTest extends TemporaryDatabaseTest {
 		// NOTE: changes in Lucene indexes are not complete until we commit the transaction
 		final IGraphIterable<IGraphNode> iter = checkBeforeRemove(mmBarURI);
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			db.getMetamodelIndex().remove(null, null, iter.getSingle());
+			db.getMetamodelIndex().remove(iter.getSingle(), null, null);
 			tx.success();
 		}
 		checkAfterRemove(mmBarURI);
@@ -575,15 +576,15 @@ public class IndexTest extends TemporaryDatabaseTest {
 	}
 
 	@Test
-	public void indexAdditionRollback() throws Exception {
+	public void indexKeyAdditionRollback() throws Exception {
+		IGraphNode n;
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			IGraphNode n = db.createNode(null, "x");
+			n = db.createNode(null, "x");
 			db.getMetamodelIndex().add(n, "b", 1);
 			tx.success();
 		}
 
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			IGraphNode n = db.createNode(null, "x");
 			db.getMetamodelIndex().add(n, "a", 1);
 			tx.failure();
 		}
@@ -591,6 +592,31 @@ public class IndexTest extends TemporaryDatabaseTest {
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			assertEquals(0, db.getMetamodelIndex().query("a", "*").size());
 			assertEquals(1, db.getMetamodelIndex().query("b", "*").size());
+			tx.success();
+		}
+	}
+
+	@Test
+	public void indexKeyRemovalRollback() throws Exception {
+		IGraphNode n;
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			n = db.createNode(null, "x");
+			db.getMetamodelIndex().add(n, "b", 1);
+			db.getMetamodelIndex().add(n, "c", "x");
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			db.getMetamodelIndex().remove(n, "b", 1);
+			db.getMetamodelIndex().remove(n, "c", "x");
+			assertEquals(0, db.getMetamodelIndex().query("b", 1).size());
+			assertEquals(0, db.getMetamodelIndex().query("c", "x").size());
+			tx.failure();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(1, db.getMetamodelIndex().query("b", 1).size());
+			assertEquals(1, db.getMetamodelIndex().query("c", "x").size());
 			tx.success();
 		}
 	}

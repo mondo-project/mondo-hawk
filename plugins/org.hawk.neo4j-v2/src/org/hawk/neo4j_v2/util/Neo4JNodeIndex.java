@@ -122,7 +122,7 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 
 	@Override
 	public void remove(IGraphNode n) {
-		remove(null, null, n);
+		remove(n, null, null);
 	}
 
 	@Override
@@ -192,7 +192,7 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 	}
 
 	@Override
-	public void remove(String key, Object value, IGraphNode n) {
+	public void remove(IGraphNode n, String key, Object value) {
 
 		if (index != null) {
 			GraphDatabaseService g = graph.getGraph();
