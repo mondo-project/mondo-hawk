@@ -21,6 +21,7 @@
     <module>features/org.hawk.emfresource.feature</module>
     <module>features/org.hawk.epsilon.feature</module>
     <module>features/org.hawk.git.feature</module>
+    <module>features/org.hawk.greycat.feature</module>
     <module>features/org.hawk.http.feature</module>
     <module>features/org.hawk.localfolder.feature</module>
     <module>features/org.hawk.modelio.exml.feature</module>

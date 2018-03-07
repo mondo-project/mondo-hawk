@@ -117,6 +117,12 @@
    <feature url="features/org.hawk.uml.feature_1.2.0.qualifier.jar" id="org.hawk.uml.feature" version="1.2.0.qualifier">
       <category name="hawk.drivers"/>
    </feature>
+   <feature url="features/org.hawk.greycat.feature_1.2.0.qualifier.jar" id="org.hawk.greycat.feature" version="1.2.0.qualifier">
+      <category name="hawk.backends"/>
+   </feature>
+   <feature url="features/org.hawk.greycat.feature.source_1.2.0.qualifier.jar" id="org.hawk.greycat.feature.source" version="1.2.0.qualifier">
+      <category name="hawk.backends"/>
+   </feature>
    <category-def name="hawk.core" label="Hawk Core"/>
    <category-def name="hawk.connectors" label="Hawk Connectors"/>
    <category-def name="hawk.backends" label="Hawk Backends"/>
