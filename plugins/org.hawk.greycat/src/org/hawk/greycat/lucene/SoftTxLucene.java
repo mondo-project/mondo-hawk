@@ -53,11 +53,13 @@ final class SoftTxLucene {
 
 		this.executor = Executors.newScheduledThreadPool(1);
 		executor.scheduleWithFixedDelay(() -> {
-			try {
-				writer.commit();
-				refreshReader();
-			} catch (IOException e) {
-				LOGGER.error("Periodic commit of Lucene at " + storage + " failed", e);
+			synchronized (rollbackLog) {
+				try {
+					writer.commit();
+					refreshReader();
+				} catch (IOException e) {
+					LOGGER.error("Periodic commit of Lucene at " + storage + " failed", e);
+				}
 			}
 		}, 60, 60, TimeUnit.SECONDS); 
 	}
