@@ -248,24 +248,25 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 
 	@Override
 	public void delete() {
-		final boolean txWasOpen = graph.getGraph().getTransaction().isActive();
-		if (txWasOpen) {
-			graph.getConsole().println("Warning: prematurely committing a transaction so we can delete index " + name);
-			graph.saveDirty();
-			graph.getGraph().commit();
-		}
+		/*
+		 * Doesn't outright drop the index, since that cannot be rolled back. It does
+		 * remove the index name from the storage, so it will not be listed by the
+		 * database.
+		 */
+		clearIndexOfType(String.class);
+		clearIndexOfType(Double.class);
+		clearIndexOfType(Integer.class);
 
 		final OrientIndexStore store = graph.getIndexStore();
-		final OIndexManager indexManager = getIndexManager();
-		indexManager.dropIndex(getSBTreeIndexName(String.class));
-		indexManager.dropIndex(getSBTreeIndexName(Double.class));
-		indexManager.dropIndex(getSBTreeIndexName(Integer.class));
 		store.removeNodeIndex(name);
-		indexManager.flush();
-		graph.getGraph().getMetadata().getIndexManager().getConfiguration().save();
+	}
 
-		if (txWasOpen) {
-			graph.getGraph().begin();
+	protected void clearIndexOfType(final Class<?> klass) {
+		final OIndexManager indexManager = getIndexManager();
+		final String sIdxStrings = getSBTreeIndexName(klass);
+		final OIndex<?> idxStrings = indexManager.getIndex(sIdxStrings);
+		if (idxStrings != null) {
+			idxStrings.clear();
 		}
 	}
 
