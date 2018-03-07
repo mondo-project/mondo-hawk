@@ -104,7 +104,6 @@ public class GreycatLuceneIndexer {
 				final GreycatNode gn = (GreycatNode) n;
 				final TermQuery query = findNodeQuery(gn);
 				final TopDocs results = searcher.search(query, 1);
-				System.out.println("Total hits for " + query + ": " + results.totalHits);
 				if (results.totalHits > 0) {
 					final Document document = searcher.doc(results.scoreDocs[0].doc);
 
@@ -114,19 +113,17 @@ public class GreycatLuceneIndexer {
 						removeKeyValue(document, gn, key, value);
 					}
 				}
-				final TopDocs results2 = new IndexSearcher(lucene.getReader()).search(query, 1);
-				System.out.println("Total hits for " + query + ": " + results2.totalHits);
 			} catch (IOException e) {
 				LOGGER.error("Could not remove node from index", e);
 			}
 		}
 
-		protected void removeKeyValue(final Document document, final GreycatNode gn, String key, Object value) throws IOException {
-			final Document copy = new Document();
+		protected void removeKeyValue(final Document oldDocument, final GreycatNode gn, String key, Object value) throws IOException {
+			final Document updated = new Document();
 
 			// Copy all other fields as we go
 			boolean anyMatched = false;
-			for (IndexableField field : document.getFields()) {
+			for (IndexableField field : oldDocument.getFields()) {
 				boolean matched = false;
 
 				if (field.name().equals(ATTRIBUTE_PREFIX + key)) {
@@ -147,22 +144,22 @@ public class GreycatLuceneIndexer {
 				}
 
 				if (!matched) {
-					copyField(field, copy);
+					copyField(field, updated);
 				}
 				
 				anyMatched = anyMatched || matched;
 			}
 
 			if (anyMatched) {
-				lucene.update(findNodeTerm(gn), copy);
+				lucene.update(findNodeTerm(gn), oldDocument, updated);
 			}
 		}
 
-		protected void removeValue(final Document document, final GreycatNode gn, Object value) throws IOException {
+		protected void removeValue(final Document oldDocument, final GreycatNode gn, Object value) throws IOException {
 			final Document copy = new Document();
 
 			boolean matched = false;
-			for (IndexableField field : document.getFields()) {
+			for (IndexableField field : oldDocument.getFields()) {
 				if (field.name().startsWith(ATTRIBUTE_PREFIX)) {
 					final String existingValue = field.stringValue();
 					if (value == null || existingValue.equals(value)) {
@@ -176,7 +173,7 @@ public class GreycatLuceneIndexer {
 			}
 
 			if (matched) {
-				lucene.update(findNodeTerm(gn), copy);
+				lucene.update(findNodeTerm(gn), oldDocument, copy);
 			}
 		}
 
@@ -253,7 +250,6 @@ public class GreycatLuceneIndexer {
 					query = getIndexQueryBuilder().add(query, Occur.MUST).build();
 				}
 
-				System.out.println("Running query " + query);
 				final NodeListCollector c = new NodeListCollector(searcher);
 				searcher.search(query, c);
 				return new ListIGraphIterable(c.getNodes());
@@ -324,33 +320,33 @@ public class GreycatLuceneIndexer {
 			try {
 				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
-				final Document document = new Document();
-				document.add(new StringField(NODEID_FIELD, getNodeId(gn), Store.YES));
-				document.add(new StringField(CMPID_FIELD, getCompositeId(gn), Store.YES));
-				document.add(new StringField(DOCTYPE_FIELD, NODE_DOCTYPE, Store.YES));
-				document.add(new StringField(INDEX_FIELD, name, Store.YES));
+				final Document updated = new Document();
+				updated.add(new StringField(NODEID_FIELD, getNodeId(gn), Store.YES));
+				updated.add(new StringField(CMPID_FIELD, getCompositeId(gn), Store.YES));
+				updated.add(new StringField(DOCTYPE_FIELD, NODE_DOCTYPE, Store.YES));
+				updated.add(new StringField(INDEX_FIELD, name, Store.YES));
 
+				Document oldDocument = null;
 				final TopDocs results = searcher.search(findNodeQuery(gn), 1);
 				if (results.totalHits > 0) {
-					// Create our own copy, for updating
-					final Document oldDocument = searcher.doc(results.scoreDocs[0].doc);
+					oldDocument = searcher.doc(results.scoreDocs[0].doc);
 
 					for (IndexableField oldField : oldDocument.getFields()) {
 						final String rawOldFieldName = oldField.name();
 						if (rawOldFieldName.startsWith(ATTRIBUTE_PREFIX)) {
 							final String oldFieldName = rawOldFieldName.substring(ATTRIBUTE_PREFIX.length());
 							if (!values.containsKey(oldFieldName)) {
-								copyField(oldField, document);
+								copyField(oldField, updated);
 							}
 						}
 					}
 				}
 
 				for (Entry<String, Object> entry : values.entrySet()) {
-					addRawField(document, ATTRIBUTE_PREFIX + entry.getKey(), entry.getValue());
+					addRawField(updated, ATTRIBUTE_PREFIX + entry.getKey(), entry.getValue());
 				}
 
-				lucene.update(findNodeTerm(gn), document);
+				lucene.update(findNodeTerm(gn), oldDocument, updated);
 			} catch (IOException e) {
 				LOGGER.error(e.getMessage(), e);
 			}
@@ -397,7 +393,7 @@ public class GreycatLuceneIndexer {
 				Document doc = new Document();
 				doc.add(new StringField(INDEX_FIELD, name, Store.YES));
 				doc.add(new StringField(DOCTYPE_FIELD, INDEX_DOCTYPE, Store.YES));
-				lucene.update(new Term(INDEX_FIELD, name), doc);
+				lucene.update(new Term(INDEX_FIELD, name), null, doc);
 			}
 		}  catch (IOException e) {
 			LOGGER.error("Could not register index", e);

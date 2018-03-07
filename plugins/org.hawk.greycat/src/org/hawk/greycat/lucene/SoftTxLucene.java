@@ -12,15 +12,10 @@ import java.util.stream.Collectors;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.DoublePoint;
-import org.apache.lucene.document.Field.Store;
-import org.apache.lucene.document.StoredField;
-import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -109,7 +104,6 @@ final class SoftTxLucene {
 	public void commit() {
 		synchronized (rollbackLog) {
 			rollbackLog.clear();
-			System.out.println("Committed, rollback log is now " + rollbackLog);
 		}
 	}
 
@@ -120,33 +114,29 @@ final class SoftTxLucene {
 			}
 			rollbackLog.clear();
 			refreshReader();
-			System.out.println("Rolled back, rollback log is now " + rollbackLog);
 		}
 	}
 
 	/**
 	 * Updates a single document with this term.
 	 */
-	public void update(Term term, Document newDocument) throws IOException {
+	public void update(Term term, Document oldDocument, Document newDocument) throws IOException {
 		doWork(new IUndoable() {
-			private Document oldDocument = null;
+			private Document prevDocument = null;
 
 			@Override
 			public void doWork() throws IOException {
-				oldDocument = GreycatLuceneIndexer.copy(getDocument(term));
-				System.out.println("Update document with "  + term + " to:\n" + newDocument);
+				prevDocument = GreycatLuceneIndexer.copy(oldDocument);
 				writer.updateDocument(term, newDocument);
 				refreshReader();
 			}
 
 			@Override
 			public void undoWork() throws IOException {
-				if (oldDocument == null) {
+				if (prevDocument == null) {
 					writer.deleteDocuments(term);
-					System.out.println("Deleted document with " + term);
 				} else {
-					writer.updateDocument(term, oldDocument);
-					System.out.println("Revert document with " + term + " to:\n" + oldDocument);
+					writer.updateDocument(term, prevDocument);
 				}
 			}
 		});
@@ -170,7 +160,6 @@ final class SoftTxLucene {
 			public void undoWork() throws IOException {
 				if (oldDocument != null) {
 					writer.addDocument(oldDocument);
-					System.out.println("Recovered document " + oldDocument);
 				}
 			}
 		});
@@ -198,7 +187,6 @@ final class SoftTxLucene {
 			public void undoWork() throws IOException {
 				for (Document old : oldDocuments) {
 					writer.addDocument(old);
-					System.out.println("Recovered document " + old);
 				}
 			}
 		});

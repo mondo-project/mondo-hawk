@@ -621,6 +621,52 @@ public class IndexTest extends TemporaryDatabaseTest {
 		}
 	}
 
+	@Test
+	public void indexDeletionRollback() throws Exception {
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			IGraphNode n1 = db.createNode(null, "x"), n2 = db.createNode(null, "y");
+			db.getMetamodelIndex().add(n1, "b", 1);
+			db.getMetamodelIndex().add(n2, "b", 3);
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(2, db.getMetamodelIndex().query("b", "*").size());
+			db.getMetamodelIndex().delete();
+			assertEquals(0, db.getMetamodelIndex().query("b", "*").size());
+			tx.failure();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(2, db.getMetamodelIndex().query("b", "*").size());
+			tx.success();
+		}
+	}
+
+	@Test
+	public void indexNodeDeletionRollback() throws Exception {
+		IGraphNode n1, n2;
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			n1 = db.createNode(null, "x");
+			n2 = db.createNode(null, "y");
+			db.getMetamodelIndex().add(n1, "b", 1);
+			db.getMetamodelIndex().add(n2, "b", 3);
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(2, db.getMetamodelIndex().query("b", "*").size());
+			db.getMetamodelIndex().remove(n2);
+			assertEquals(1, db.getMetamodelIndex().query("b", "*").size());
+			tx.failure();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(2, db.getMetamodelIndex().query("b", "*").size());
+			tx.success();
+		}
+	}
+
 	private String populateForRemove() throws Exception {
 		final String mmBarURI = "http://foo/bar";
 		final Map<String, Object> mmBarNodeProps = Collections.singletonMap(IModelIndexer.IDENTIFIER_PROPERTY, mmBarURI);
