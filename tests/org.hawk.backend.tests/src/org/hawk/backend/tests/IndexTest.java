@@ -575,7 +575,13 @@ public class IndexTest extends TemporaryDatabaseTest {
 	}
 
 	@Test
-	public void indexRollback() throws Exception {
+	public void indexAdditionRollback() throws Exception {
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			IGraphNode n = db.createNode(null, "x");
+			db.getMetamodelIndex().add(n, "b", 1);
+			tx.success();
+		}
+
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			IGraphNode n = db.createNode(null, "x");
 			db.getMetamodelIndex().add(n, "a", 1);
@@ -583,8 +589,8 @@ public class IndexTest extends TemporaryDatabaseTest {
 		}
 
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			final IGraphIterable<IGraphNode> results = db.getMetamodelIndex().query("*", "*");
-			assertEquals(0, results.size());
+			assertEquals(0, db.getMetamodelIndex().query("a", "*").size());
+			assertEquals(1, db.getMetamodelIndex().query("b", "*").size());
 			tx.success();
 		}
 	}

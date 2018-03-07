@@ -6,37 +6,27 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.DoublePoint;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.StringField;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexableField;
-import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.SimpleCollector;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.MMapDirectory;
 import org.hawk.core.graph.EmptyIGraphIterable;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
@@ -49,6 +39,17 @@ import org.slf4j.LoggerFactory;
 /**
  * Integration between Greycat and Apache Lucene, to allow it to have the type
  * of advanced indexing that we need for Hawk.
+ *
+ * The standard approach for Lucene is to commit only every so often, in a background
+ * thread: commits are extremely expensive!
+ *
+ * We want to follow the same approach, while being able to react to real time queries
+ * easily. To do this, we keep "soft" tx with a rollback log: should a soft rollback be
+ * requested, the various operations since the previous soft commit will be undone in
+ * reverse order in-memory.
+ *
+ * We have a background thread that will do a real commit if the rollback log is
+ * empty. There is also an explicit commit when this indexer shuts down.
  */
 public class GreycatLuceneIndexer {
 
@@ -60,63 +61,6 @@ public class GreycatLuceneIndexer {
 	private static final String FIELDS_FIELD = "h_fields";
 	private static final String INDEX_DOCTYPE = "indexdecl";
 	private static final String NODEID_FIELD   = "h_nodeid";
-
-	protected static final class ListIGraphIterable implements IGraphIterable<IGraphNode> {
-		private final List<IGraphNode> nodes;
-
-		protected ListIGraphIterable(List<IGraphNode> nodes) {
-			this.nodes = nodes;
-		}
-
-		@Override
-		public Iterator<IGraphNode> iterator() {
-			return nodes.iterator();
-		}
-
-		@Override
-		public int size() {
-			return nodes.size();
-		}
-
-		@Override
-		public IGraphNode getSingle() {
-			return nodes.iterator().next();
-		}
-	}
-
-	protected class ListCollector extends SimpleCollector {
-		private final List<Integer> docIds = new ArrayList<>();
-		private final IndexSearcher searcher;
-		private int docBase;
-
-		protected ListCollector(IndexSearcher searcher) {
-			this.searcher = searcher;
-		}
-
-		@Override
-		protected void doSetNextReader(LeafReaderContext context) throws IOException {
-			this.docBase = context.docBase;
-		}
-
-		@Override
-		public boolean needsScores() {
-			return false;
-		}
-
-		@Override
-		public void collect(int doc) {
-			docIds.add(docBase + doc);
-		}
-
-		public List<Document> getDocuments() throws IOException {
-			List<Document> result = new ArrayList<>();
-			for (int docId : docIds) {
-				final Document document = searcher.doc(docId);
-				result.add(document);
-			}
-			return result;
-		}
-	}
 
 	/**
 	 * Implements a node index as a collection of documents, with a single document
@@ -156,7 +100,7 @@ public class GreycatLuceneIndexer {
 		@Override
 		public void remove(String key, Object value, IGraphNode n) {
 			try {
-				final IndexSearcher searcher = new IndexSearcher(reader);
+				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
 				final GreycatNode gn = (GreycatNode) n;
 				final TopDocs results = searcher.search(findNodeQuery(gn), 1);
@@ -164,19 +108,17 @@ public class GreycatLuceneIndexer {
 					final Document document = searcher.doc(results.scoreDocs[0].doc);
 
 					if (key == null) {
-						removeValue(writer, document, gn, value);
+						removeValue(document, gn, value);
 					} else {
-						removeKeyValue(writer, document, gn, key, value);
+						removeKeyValue(document, gn, key, value);
 					}
 				}
-
-				refreshReader();
 			} catch (IOException e) {
 				LOGGER.error("Could not remove node from index", e);
 			}
 		}
 
-		protected void removeKeyValue(IndexWriter writer, final Document document, final GreycatNode gn, String key, Object value) throws IOException {
+		protected void removeKeyValue(final Document document, final GreycatNode gn, String key, Object value) throws IOException {
 			final List<IndexableField> remainingFields = new ArrayList<>();
 			boolean matched = false;
 			for (IndexableField field : document.getFields(ATTRIBUTE_PREFIX + key)) {
@@ -199,11 +141,11 @@ public class GreycatLuceneIndexer {
 				for (IndexableField field : remainingFields) {
 					document.add(field);
 				}
-				writer.updateDocument(findNodeTerm(gn), document);
+				lucene.update(findNodeTerm(gn), document);
 			}
 		}
 
-		protected void removeValue(IndexWriter writer, final Document document, final GreycatNode gn, Object value) throws IOException {
+		protected void removeValue(final Document document, final GreycatNode gn, Object value) throws IOException {
 			final Document copy = new Document();
 
 			boolean matched = false;
@@ -221,24 +163,23 @@ public class GreycatLuceneIndexer {
 			}
 
 			if (matched) {
-				writer.updateDocument(findNodeTerm(gn), copy);
+				lucene.update(findNodeTerm(gn), copy);
 			}
 		}
 
 		@Override
 		public void remove(IGraphNode n) {
 			try {
-				writer.deleteDocuments(findNodeTerm((GreycatNode) n));
+				lucene.delete(findNodeTerm((GreycatNode) n));
 			} catch (IOException e) {
-				LOGGER.error("Could not remove node from index", e);
+				LOGGER.error(String.format("Could not remove node with id %d from index %s", n.getId(), name), e);
 			}
-			refreshReader();
 		}
 
 		@Override
 		public IGraphIterable<IGraphNode> query(String key, Number from, Number to, boolean fromInclusive, boolean toInclusive) {
 			try {
-				final IndexSearcher searcher = new IndexSearcher(reader);
+				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
 				Query query;
 				if (from instanceof Float || to instanceof Double) {
@@ -265,7 +206,7 @@ public class GreycatLuceneIndexer {
 		@Override
 		public IGraphIterable<IGraphNode> query(String key, Object valueExpr) {
 			try {
-				final IndexSearcher searcher = new IndexSearcher(reader);
+				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 				final String sValueExpr = valueExpr.toString();
 
 				Query query = null;
@@ -316,7 +257,7 @@ public class GreycatLuceneIndexer {
 		@Override
 		public IGraphIterable<IGraphNode> get(String key, Object valueExpr) {
 			try {
-				IndexSearcher searcher = new IndexSearcher(reader);
+				IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
 				Query valueQuery;
 				if (valueExpr instanceof Float || valueExpr instanceof Double) {
@@ -340,20 +281,15 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public void flush() {
-			try {
-				writer.flush();
-			} catch (IOException e) {
-				LOGGER.error("Failed to flush index", e);
-			}
+			lucene.flush();
 		}
 
 		@Override
 		public void delete() {
 			try {
-				writer.deleteDocuments(new TermQuery(new Term(INDEX_FIELD, name)));
-				refreshReader();
+				lucene.delete(new TermQuery(new Term(INDEX_FIELD, name)));
 			} catch (IOException e) {
-				LOGGER.error(String.format("Could not delete index %s", name), e);
+				LOGGER.error("Could not delete index " + name, e);
 			}
 		}
 
@@ -372,13 +308,13 @@ public class GreycatLuceneIndexer {
 			final GreycatNode gn = (GreycatNode)n;
 
 			try {
-				final IndexSearcher searcher = new IndexSearcher(reader);
+				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
 				final Document document = new Document();
 				document.add(new StringField(NODEID_FIELD, getNodeId(gn), Store.YES));
-				document.add(new StringField(CMPID_FIELD, getCompositeId(gn), Store.NO));
-				document.add(new StringField(DOCTYPE_FIELD, NODE_DOCTYPE, Store.NO));
-				document.add(new StringField(INDEX_FIELD, name, Store.NO));
+				document.add(new StringField(CMPID_FIELD, getCompositeId(gn), Store.YES));
+				document.add(new StringField(DOCTYPE_FIELD, NODE_DOCTYPE, Store.YES));
+				document.add(new StringField(INDEX_FIELD, name, Store.YES));
 
 				final TopDocs results = searcher.search(findNodeQuery(gn), 1);
 				if (results.totalHits > 0) {
@@ -391,8 +327,7 @@ public class GreycatLuceneIndexer {
 					addField(document, entry.getKey(), entry.getValue());
 				}
 
-				writer.updateDocument(findNodeTerm(gn), document);
-				refreshReader();
+				lucene.update(findNodeTerm(gn), document);
 			} catch (IOException e) {
 				LOGGER.error(e.getMessage(), e);
 			}
@@ -405,6 +340,8 @@ public class GreycatLuceneIndexer {
 			 * Point classes are very useful for fast range queries, but they do not store
 			 * the value in the document. We need to add a StoredField so we can use the
 			 * full version of remove (key, value and node).
+			 *
+			 * TODO: do we get these back after a soft rollback? We need tests for this.
 			 */
 			if (value instanceof Float || value instanceof Double) {
 				final double doubleValue = ((Number)value).doubleValue();
@@ -464,33 +401,26 @@ public class GreycatLuceneIndexer {
 		}
 	}
 
-	private final Directory storage;
-	private final Analyzer analyzer;
+
 	private final GreycatDatabase database;
-	private IndexWriter writer;
-	private DirectoryReader reader;
+	private final SoftTxLucene lucene;
 
 	public GreycatLuceneIndexer(GreycatDatabase db, File dir) throws IOException {
 		this.database = db;
-		this.storage = new MMapDirectory(dir.toPath());
-		this.analyzer = new CaseInsensitiveWhitespaceAnalyzer();
-		this.writer = new IndexWriter(storage, new IndexWriterConfig(analyzer));
-		this.reader = DirectoryReader.open(writer);
+		this.lucene = new SoftTxLucene(dir);
 	}
 
 	public IGraphNodeIndex getIndex(String name) {
 		// Make sure the index is listed
 		try {
-			final IndexSearcher searcher = new IndexSearcher(reader);
+			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
 			TopDocs scoreDocs = searcher.search(new TermQuery(new Term(INDEX_FIELD, name)), 1);
 			if (scoreDocs.totalHits == 0) {
 				Document doc = new Document();
 				doc.add(new StringField(INDEX_FIELD, name, Store.YES));
 				doc.add(new StringField(DOCTYPE_FIELD, INDEX_DOCTYPE, Store.YES));
-				writer.addDocument(doc);
-
-				refreshReader();
+				lucene.update(new Term(INDEX_FIELD, name), doc);
 			}
 		}  catch (IOException e) {
 			LOGGER.error("Could not register index", e);
@@ -499,21 +429,10 @@ public class GreycatLuceneIndexer {
 		return new GreycatLuceneNodeIndex(name);
 	}
 
-	private void refreshReader() {
-		try {
-			DirectoryReader newReader = DirectoryReader.openIfChanged(reader);
-			if (newReader != null && reader != newReader) {
-				reader.close();
-				reader = newReader;
-			}
-		} catch (IOException e) {
-			LOGGER.error("Could not refresh the reader", e);
-		}
-	}
 
 	public Set<String> getIndexNames() {
-		try (IndexReader reader = DirectoryReader.open(writer)) {
-			final IndexSearcher searcher = new IndexSearcher(reader);
+		try {
+			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 			final ListCollector lc = new ListCollector(searcher);
 			searcher.search(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), lc);
 
@@ -529,8 +448,8 @@ public class GreycatLuceneIndexer {
 	}
 
 	public boolean indexExists(String name) {
-		try (IndexReader reader = DirectoryReader.open(writer)) {
-			final IndexSearcher searcher = new IndexSearcher(reader);
+		try {
+			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
 			Query query = new BooleanQuery.Builder()
 				.add(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), Occur.FILTER)
@@ -552,14 +471,12 @@ public class GreycatLuceneIndexer {
 		try {
 			final String nodeId = getNodeId(gn);
 			LOGGER.debug("Removing node {} from ALL indices", nodeId);
-			writer.deleteDocuments(new TermQuery(new Term(NODEID_FIELD, nodeId)));
+			lucene.delete(new TermQuery(new Term(NODEID_FIELD, nodeId)));
 		} catch (IOException e) {
 			LOGGER.error(String.format(
 				"Could not remove node %s in world %d at time %d",
 				gn.getId(), gn.getWorld(), gn.getTime()), e);
 		}
-
-		refreshReader();
 	}
 
 	/**
@@ -570,39 +487,32 @@ public class GreycatLuceneIndexer {
 	}
 
 	/**
-	 * Commits all changes to the index. Should only be called after
-	 * an explicit transaction in Hawk, during shutdown, or when
-	 * switching transactional modes.
+	 * Commits all changes to the index. This is a soft-commit: real Lucene
+	 * commits are only done periodically in the background, when the rollback
+	 * log is empty.
 	 * 
 	 * @throws IOException
 	 *             Failed to commit the changes.
 	 */
 	public void commit() throws IOException {
-		writer.commit();
-		refreshReader();
+		lucene.commit();
 	}
 
 	/**
-	 * Rolls back all changes to the index.
-	 * 
+	 * Rolls back all changes to the index. This is a soft-rollback: changes that
+	 * have not been committed yet are undone in memory.
+	 *
 	 * @throws IOException
 	 *             Failed to roll back the changes.
 	 */
-	public synchronized void rollback() throws IOException {
-		reader.close();
-		writer.rollback();
-
-		this.writer = new IndexWriter(storage, new IndexWriterConfig(analyzer));
-		this.reader = DirectoryReader.open(writer);
+	public void rollback() throws IOException {
+		lucene.rollback();
 	}
 
+	/**
+	 * Commits all pending changes and shuts down Lucene.
+	 */
 	public void shutdown() {
-		try {
-			reader.close();
-			writer.close();
-			storage.close();
-		} catch (IOException e) {
-			LOGGER.error("Error during Lucene shutdown", e);
-		}
+		lucene.shutdown();
 	}
 }
