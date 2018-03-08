@@ -28,7 +28,7 @@
     <dependency>
       <groupId>org.eclipse.epsilon</groupId>
       <artifactId>epsilon-core</artifactId>
-      <version>1.4</version>
+      <version>1.5.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

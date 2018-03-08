@@ -25,6 +25,7 @@
     <module>plugins/org.hawk.modelio.exml/pom-plain.xml</module>
     <module>plugins/org.hawk.neo4j-v2/pom-plain.xml</module>
     <module>plugins/org.hawk.orientdb/pom-plain.xml</module>
+    <module>plugins/org.hawk.greycat/pom-plain.xml</module>
     <module>plugins/org.hawk.svn/pom-plain.xml</module>
     <module>plugins/org.hawk.graph.sampleListener/pom-plain.xml</module>
     <module>standalone/_hawk_runtime_example/pom-plain.xml</module>
@@ -66,10 +67,19 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.3</version>
 	      <configuration>
-	        <source>1.7</source>
-	        <target>1.7</target>
+	        <source>1.8</source>
+	        <target>1.8</target>
 	      </configuration>
       </plugin>
     </plugins>
   </build>
+
+  <repositories>
+    <!-- Has Epsilon interim releases as snapshots -->
+    <repository>
+      <id>sonatype-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </repository>
+  </repositories>
+
 </project>
