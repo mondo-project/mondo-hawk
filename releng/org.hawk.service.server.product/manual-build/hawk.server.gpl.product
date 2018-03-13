@@ -29,7 +29,6 @@
    <windowImages/>
 
    <launcher name="mondo-server">
-      <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
@@ -87,6 +86,7 @@
       <feature id="org.eclipse.bpmn2.feature"/>
       <feature id="org.eclipse.emf.edit.ui"/>
       <feature id="org.eclipse.emf.common.ui"/>
+      <feature id="org.hawk.greycat.feature"/>
    </features>
 
    <configurations>
