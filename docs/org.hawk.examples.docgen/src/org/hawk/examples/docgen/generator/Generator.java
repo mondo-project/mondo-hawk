@@ -244,7 +244,7 @@ public class Generator {
 
 		final int nAuthors = minAuthors + random.nextInt(maxAuthors - minAuthors + 1);
 		for (int iAuthor = 0; iAuthor < nAuthors; iAuthor++) {
-			doc.getWrittenBy().add(authors.get(iAuthor));
+			doc.getWrittenBy().add(authors.get(random.nextInt(authors.size())));
 		}
 
 		final int nTags = minTags + random.nextInt(maxTags - minTags + 1);
