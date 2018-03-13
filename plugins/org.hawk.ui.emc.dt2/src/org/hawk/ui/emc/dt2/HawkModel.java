@@ -117,17 +117,4 @@ public class HawkModel extends ModelReference {
 		}
 		super.dispose();
 	}
-
-	private static List<String> splitBy(String haystack, String separator) {
-		// normalize null values and trailing whitespace
-		haystack = (haystack + "").trim();
-
-		final List<String> l = new ArrayList<String>();
-		if (haystack.length() > 0) {
-			for (String elem : haystack.split(separator)) {
-				l.add(elem);
-			}
-		}
-		return l;
-	}
 }

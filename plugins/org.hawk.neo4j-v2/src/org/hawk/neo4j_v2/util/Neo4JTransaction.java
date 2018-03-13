@@ -20,24 +20,19 @@ public class Neo4JTransaction implements IGraphTransaction {
 	GraphDatabaseService graph;
 
 	public Neo4JTransaction(IGraphDatabase graph) {
-
 		this.graph = ((Neo4JDatabase) graph).getGraph();
 		t = this.graph.beginTx();
-
 	}
 
 	public void success() {
-
 		t.success();
 	}
 
 	public void failure() {
-
 		t.failure();
 	}
 
 	public void close() {
-
 		t.close();
 	}
 
