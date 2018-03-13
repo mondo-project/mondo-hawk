@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -25,8 +27,8 @@ import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.TotalHitCountCollector;
 import org.apache.lucene.search.WildcardQuery;
-import org.hawk.core.graph.EmptyIGraphIterable;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
@@ -61,6 +63,73 @@ public class GreycatLuceneIndexer {
 	private static final String INDEX_DOCTYPE = "indexdecl";
 	private static final String NODEID_FIELD   = "h_nodeid";
 
+	protected final class NodeListCollector extends ListCollector {
+		protected NodeListCollector(IndexSearcher searcher) {
+			super(searcher);
+		}
+
+		public List<IGraphNode> getNodes() throws IOException {
+			List<IGraphNode> result = new ArrayList<>();
+			for (Document document : getDocuments()) {
+				final GreycatNode gn = getNodeByDocument(document);
+				result.add(gn);
+			}
+			return result;
+		}
+	}
+
+	protected final class LuceneGraphIterable implements IGraphIterable<IGraphNode> {
+		private final Query query;
+
+		protected LuceneGraphIterable(Query query) {
+			this.query = query;
+		}
+
+		@Override
+		public Iterator<IGraphNode> iterator() {
+			// TODO: fetch documents on the go (saves memory)
+			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
+			try {
+				final NodeListCollector lc = new NodeListCollector(searcher);
+				searcher.search(query, lc);
+				return lc.getNodes().iterator();
+			} catch (IOException e) {
+				LOGGER.error("Failed to obtain single result", e);
+				return Collections.emptyIterator();
+			}
+		}
+
+		@Override
+		public int size() {
+			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
+
+			try {
+				final TotalHitCountCollector collector = new TotalHitCountCollector();
+				searcher.search(query, collector);
+				return collector.getTotalHits();
+			} catch (IOException e) {
+				LOGGER.error("Failed to obtain single result", e);
+				return 0;
+			}
+		}
+
+		@Override
+		public IGraphNode getSingle() {
+			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
+
+			try {
+				TopDocs results = searcher.search(query, 1);
+				if (results.totalHits > 0) {
+					return getNodeByDocument(searcher.doc(results.scoreDocs[0].doc));
+				}
+			} catch (IOException e) {
+				LOGGER.error("Failed to obtain single result", e);
+			}
+
+			throw new NoSuchElementException();
+		}
+	}
+	
 	/**
 	 * Implements a node index as a collection of documents, with a single document
 	 * representing the existence of the index itself.
@@ -71,27 +140,6 @@ public class GreycatLuceneIndexer {
 		private static final String CMPID_FIELD = "h_cmpid";
 		private static final String NODE_DOCTYPE = "node";
 		
-		protected class NodeListCollector extends ListCollector {
-			// TODO: fetch documents on the go (saves memory)
-
-			protected NodeListCollector(IndexSearcher searcher) {
-				super(searcher);
-			}
-
-			public List<IGraphNode> getNodes() throws IOException {
-				List<IGraphNode> result = new ArrayList<>();
-				for (Document document : getDocuments()) {
-					final String nodeId = document.getField(NODEID_FIELD).stringValue();
-					String[] parts = nodeId.split("@", 3);
-					final long id = Long.parseLong(parts[2]);
-					final GreycatNode gn = database.getNodeById(id);
-
-					result.add(gn);
-				}
-				return result;
-			}
-		}
-
 		public GreycatLuceneNodeIndex(String name) {
 			this.name = name;
 		}
@@ -188,9 +236,6 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public IGraphIterable<IGraphNode> query(String key, Number from, Number to, boolean fromInclusive, boolean toInclusive) {
-			try {
-				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
-
 				Query query;
 				if (from instanceof Float || to instanceof Double) {
 					final double dFrom = from.doubleValue(), dTo = to.doubleValue();
@@ -203,60 +248,45 @@ public class GreycatLuceneIndexer {
 				// Also filter by index
 				query = getIndexQueryBuilder().add(query, Occur.MUST).build();
 
-				final NodeListCollector c = new NodeListCollector(searcher);
-				searcher.search(query, c);
-				return new ListIGraphIterable(c.getNodes());
-
-			} catch (IOException e) {
-				LOGGER.error(e.getMessage(), e);
-				return new EmptyIGraphIterable<>();
-			}
+				return new LuceneGraphIterable(query);
 		}
 
 		@Override
 		public IGraphIterable<IGraphNode> query(String key, Object valueExpr) {
-			try {
-				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
-				final String sValueExpr = valueExpr.toString();
+			final String sValueExpr = valueExpr.toString();
 
-				Query query = null;
-				if ("*".equals(key)) {
-					if (!"*".equals(valueExpr)) {
-						throw new UnsupportedOperationException("*:non-null not implemented yet for query");
-					} else {
-						// We can just delegate on the query == null case below
-					}
-				} else if ("*".equals(valueExpr)) {
-					query = new TermQuery(new Term(FIELDS_FIELD, key));
-				} else if (valueExpr instanceof Float || valueExpr instanceof Double) {
-					query = DoublePoint.newExactQuery(ATTRIBUTE_PREFIX + key, ((Number)valueExpr).doubleValue());
-				} else if (valueExpr instanceof Number) {
-					query = LongPoint.newExactQuery(ATTRIBUTE_PREFIX + key, ((Number)valueExpr).longValue());
+			Query query = null;
+			if ("*".equals(key)) {
+				if (!"*".equals(valueExpr)) {
+					throw new UnsupportedOperationException("*:non-null not implemented yet for query");
 				} else {
-					final int starIdx = sValueExpr.indexOf('*');
-					if (starIdx == -1) {
-						query = new TermQuery(new Term(ATTRIBUTE_PREFIX + key, sValueExpr));
-					} else if (starIdx > 0 && starIdx == sValueExpr.length() - 1) {
-						final String prefix = sValueExpr.substring(0, sValueExpr.length() - 1);
-						query = new PrefixQuery(new Term(ATTRIBUTE_PREFIX + key, prefix));
-					} else {
-						query = new WildcardQuery(new Term(ATTRIBUTE_PREFIX + key, sValueExpr));
-					}
+					// We can just delegate on the query == null case below
 				}
-
-				if (query == null) {
-					query = getIndexQueryBuilder().build();
+			} else if ("*".equals(valueExpr)) {
+				query = new TermQuery(new Term(FIELDS_FIELD, key));
+			} else if (valueExpr instanceof Float || valueExpr instanceof Double) {
+				query = DoublePoint.newExactQuery(ATTRIBUTE_PREFIX + key, ((Number) valueExpr).doubleValue());
+			} else if (valueExpr instanceof Number) {
+				query = LongPoint.newExactQuery(ATTRIBUTE_PREFIX + key, ((Number) valueExpr).longValue());
+			} else {
+				final int starIdx = sValueExpr.indexOf('*');
+				if (starIdx == -1) {
+					query = new TermQuery(new Term(ATTRIBUTE_PREFIX + key, sValueExpr));
+				} else if (starIdx > 0 && starIdx == sValueExpr.length() - 1) {
+					final String prefix = sValueExpr.substring(0, sValueExpr.length() - 1);
+					query = new PrefixQuery(new Term(ATTRIBUTE_PREFIX + key, prefix));
 				} else {
-					query = getIndexQueryBuilder().add(query, Occur.MUST).build();
+					query = new WildcardQuery(new Term(ATTRIBUTE_PREFIX + key, sValueExpr));
 				}
-
-				final NodeListCollector c = new NodeListCollector(searcher);
-				searcher.search(query, c);
-				return new ListIGraphIterable(c.getNodes());
-			} catch (IOException e) {
-				LOGGER.error(e.getMessage(), e);
-				return new EmptyIGraphIterable<>();
 			}
+
+			if (query == null) {
+				query = getIndexQueryBuilder().build();
+			} else {
+				query = getIndexQueryBuilder().add(query, Occur.MUST).build();
+			}
+
+			return new LuceneGraphIterable(query);
 		}
 
 		@Override
@@ -266,27 +296,18 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public IGraphIterable<IGraphNode> get(String key, Object valueExpr) {
-			try {
-				IndexSearcher searcher = new IndexSearcher(lucene.getReader());
-
-				Query valueQuery;
-				if (valueExpr instanceof Float || valueExpr instanceof Double) {
-					valueQuery = DoublePoint.newExactQuery(ATTRIBUTE_PREFIX + key, ((Number)valueExpr).doubleValue());
-				} else if (valueExpr instanceof Number) {
-					valueQuery = LongPoint.newExactQuery(ATTRIBUTE_PREFIX + key, ((Number)valueExpr).longValue());
-				} else {
-					final Term term = new Term(ATTRIBUTE_PREFIX + key, valueExpr.toString());
-					valueQuery = new TermQuery(term);
-				}
-
-				final Query query = getIndexQueryBuilder().add(valueQuery, Occur.MUST).build();
-				final NodeListCollector collector = new NodeListCollector(searcher);
-				searcher.search(query, collector);
-				return new ListIGraphIterable(collector.getNodes());
-			} catch (IOException e) {
-				LOGGER.error(e.getMessage(), e);
-				return new EmptyIGraphIterable<>();
+			Query valueQuery;
+			if (valueExpr instanceof Float || valueExpr instanceof Double) {
+				valueQuery = DoublePoint.newExactQuery(ATTRIBUTE_PREFIX + key, ((Number) valueExpr).doubleValue());
+			} else if (valueExpr instanceof Number) {
+				valueQuery = LongPoint.newExactQuery(ATTRIBUTE_PREFIX + key, ((Number) valueExpr).longValue());
+			} else {
+				final Term term = new Term(ATTRIBUTE_PREFIX + key, valueExpr.toString());
+				valueQuery = new TermQuery(term);
 			}
+
+			final Query query = getIndexQueryBuilder().add(valueQuery, Occur.MUST).build();
+			return new LuceneGraphIterable(query);
 		}
 
 		@Override
@@ -543,6 +564,14 @@ public class GreycatLuceneIndexer {
 				addRawField(copy, field.name(), field.stringValue());
 			}
 		}
+	}
+
+	protected GreycatNode getNodeByDocument(Document document) {
+		final String nodeId = document.getField(NODEID_FIELD).stringValue();
+		String[] parts = nodeId.split("@", 3);
+		final long id = Long.parseLong(parts[2]);
+		final GreycatNode gn = database.getNodeById(id);
+		return gn;
 	}
 	
 }
