@@ -68,13 +68,26 @@ public class GreycatLuceneIndexer {
 			super(searcher);
 		}
 
-		public List<IGraphNode> getNodes() throws IOException {
-			List<IGraphNode> result = new ArrayList<>();
-			for (Document document : getDocuments()) {
-				final GreycatNode gn = getNodeByDocument(document);
-				result.add(gn);
-			}
-			return result;
+		public Iterator<IGraphNode> getNodeIterator() {
+			final Iterator<Integer> itIdentifiers = docIds.iterator();
+
+			return new Iterator<IGraphNode>() {
+				@Override
+				public boolean hasNext() {
+					return itIdentifiers.hasNext();
+				}
+
+				@Override
+				public IGraphNode next() {
+					int docId = itIdentifiers.next();
+					try {
+						return getNodeByDocument(searcher.doc(docId));
+					} catch (IOException e) {
+						LOGGER.error("Could not retrieve document with ID " + docId, e);
+						throw new NoSuchElementException();
+					}
+				}
+			};
 		}
 	}
 
@@ -87,12 +100,11 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public Iterator<IGraphNode> iterator() {
-			// TODO: fetch documents on the go (saves memory)
 			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 			try {
 				final NodeListCollector lc = new NodeListCollector(searcher);
 				searcher.search(query, lc);
-				return lc.getNodes().iterator();
+				return lc.getNodeIterator();
 			} catch (IOException e) {
 				LOGGER.error("Failed to obtain single result", e);
 				return Collections.emptyIterator();

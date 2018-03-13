@@ -10,8 +10,8 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.SimpleCollector;
 
 class ListCollector extends SimpleCollector {
-	private final List<Integer> docIds = new ArrayList<>();
-	private final IndexSearcher searcher;
+	protected final List<Integer> docIds = new ArrayList<>();
+	protected final IndexSearcher searcher;
 	private int docBase;
 
 	protected ListCollector(IndexSearcher searcher) {
