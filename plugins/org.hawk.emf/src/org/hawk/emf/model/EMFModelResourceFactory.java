@@ -25,8 +25,12 @@ import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.emf.EMFWrapperFactory;
 import org.hawk.emf.metamodel.EMFMetaModelResourceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EMFModelResourceFactory implements IModelResourceFactory {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(EMFModelResourceFactory.class);
 
 	/**
 	 * Property that can be set to a comma-separated list of extensions (e.g.
@@ -104,9 +108,7 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 			r.load(null);
 			ret = new EMFModelResource(r, new EMFWrapperFactory(), this);
 		} catch (Exception e) {
-			System.err.print("error in parse(File f): ");
-			System.err.println(e.getCause());
-			// e.printStackTrace();
+			LOGGER.error("Failed to parse " + f.getAbsolutePath(), e);
 			ret = null;
 		}
 

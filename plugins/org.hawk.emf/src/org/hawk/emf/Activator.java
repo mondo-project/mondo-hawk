@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2018 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,7 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
- *     Antonio Garcia Dominguez - register known EMF extensions on activation
+ *     Antonio Garcia Dominguez - register known EMF extensions on activation, add SLF4J
  ******************************************************************************/
 package org.hawk.emf;
 
@@ -24,8 +24,12 @@ import org.eclipse.emf.ecore.resource.Resource.Factory.Registry;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.hawk.emf.model.EMFModelResourceFactory;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Activator extends Plugin {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(Activator.class);
 
 	private static BundleContext context;
 	private static Plugin instance;
@@ -77,7 +81,7 @@ public class Activator extends Plugin {
 						registeredExtensions.add(entry.getKey());
 					}
 				} catch (Throwable ex) {
-					System.err.println(String.format("Could not enable Hawk EMF driver for .%s files: %s", entry.getKey(), ex.getMessage()));
+					LOGGER.error(String.format("Could not enable Hawk EMF driver for .%s files", entry.getKey()), ex);
 				}
 			}
 			if (entry.getValue() instanceof XMIResourceFactoryImpl) {

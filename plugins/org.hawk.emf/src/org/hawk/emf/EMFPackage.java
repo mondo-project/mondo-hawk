@@ -22,8 +22,11 @@ import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkPackage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EMFPackage extends EMFModelElement implements IHawkPackage {
+	private static final Logger LOGGER = LoggerFactory.getLogger(EMFPackage.class);
 
 	private EPackage ep;
 	private IHawkMetaModelResource r;
@@ -50,8 +53,7 @@ public class EMFPackage extends EMFModelElement implements IHawkPackage {
 		if (e instanceof EClass) {
 			return wf.createClass((EClass) e);
 		} else {
-			System.err
-					.println("attempt to call getEClassifier(String string) on a non-eclass, debug");
+			LOGGER.warn("Called getEClassifier(String string) on non-eclass {}: BUG?", e);
 			return null;
 		}
 	}

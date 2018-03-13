@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2018 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,25 +7,26 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - use SLF4J
  ******************************************************************************/
 package org.hawk.emf.model.util;
-
-import java.util.Arrays;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RegisterMeta {
+	private static final Logger LOGGER = LoggerFactory.getLogger(RegisterMeta.class);
 
 	private static int registered = 0;
 
 	public void clean() {
-
 		Object[] packages = EPackage.Registry.INSTANCE.keySet().toArray();
-		System.err.println(Arrays.toString(packages));
+		LOGGER.info("Cleaning packages: {}", packages);
 
 		for (Object s : packages)
 			if ((!((String) s).contains("Ecore") && !((String) s)
@@ -46,9 +47,9 @@ public class RegisterMeta {
 				&& !root.getNsURI().equals(XMLTypePackage.eNS_URI)) {
 			if (EPackage.Registry.INSTANCE.get(root.getNsURI()) == null) {
 				if (EPackage.Registry.INSTANCE.put(root.getNsURI(), root) == null) {
-					System.err.println("registering package: " + root.getName()
-							+ "(" + root.getNsURI() + ") ["
-							+ root.eResource().getURI() + "]");
+					LOGGER.info("Registering package: {} ({}) [{}]",
+						root.getName(), root.getNsURI(), root.eResource().getURI()
+					);
 					registered++;
 				}
 				for (EPackage pkg : root.getESubpackages()) {

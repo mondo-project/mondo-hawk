@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2017 The University of York, Aston University.
+ * Copyright (c) 2011-2018 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,7 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
- *     Antonio Garcia-Dominguez - cleanup and use covariant return types
+ *     Antonio Garcia-Dominguez - cleanup, use covariant return types, add SLF4J
  ******************************************************************************/
 package org.hawk.emf;
 
@@ -30,8 +30,11 @@ import org.hawk.core.model.IHawkDataType;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EMFObject implements IHawkObject {
+	private static final Logger LOGGER = LoggerFactory.getLogger(EMFObject.class);
 
 	protected EMFWrapperFactory wf;
 	protected EObject eob;
@@ -68,11 +71,9 @@ public class EMFObject implements IHawkObject {
 
 			return frag;
 		} catch (Exception e) {
-			System.err.println(eob);
-			System.err.println(eob.eResource());
-			System.err.println(eob.eClass());
-			System.err.println("Error in finding URI: " + uri
-					+ ", returning null");
+			LOGGER.error(
+				"For object:{}\nwithin: {}\nof type:{}\nCould not find URI {}, returning null",
+				eob, eob.eResource(), eob.eClass(), uri);
 			return null;
 		}
 
@@ -201,9 +202,7 @@ public class EMFObject implements IHawkObject {
 		if (signature == null) {
 
 			if (eob.eIsProxy()) {
-
-				System.err
-						.println("signature called on proxy object returning null");
+				LOGGER.error("Signature called on proxy object returning null");
 				return null;
 
 			} else {
@@ -213,8 +212,7 @@ public class EMFObject implements IHawkObject {
 				try {
 					md = MessageDigest.getInstance("SHA-1");
 				} catch (NoSuchAlgorithmException e) {
-					System.err
-							.println("signature() tried to create a SHA-1 digest but a NoSuchAlgorithmException was thrown, returning null");
+					LOGGER.error("signature() tried to create a SHA-1 digest but a NoSuchAlgorithmException was thrown, returning null", e);
 					return null;
 				}
 
@@ -271,9 +269,7 @@ public class EMFObject implements IHawkObject {
 						}
 					}
 				} else {
-					System.err
-							.println("warning emf object tried to create signature, but found type: "
-									+ type);
+					LOGGER.warn("Unknown type {} while creating signature", type);
 				}
 				signature = md.digest();
 			}

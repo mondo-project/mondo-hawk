@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2017 The University of York, Aston University.
+ * Copyright (c) 2011-2018 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,7 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
- *     Antonio Garcia-Dominguez - cleanup and use covariant return types
+ *     Antonio Garcia-Dominguez - cleanup, use covariant return types, use SLF4J
  ******************************************************************************/
 package org.hawk.emf;
 
@@ -17,8 +17,11 @@ import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EDataType;
 import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EMFFeatureMapReference extends EMFModelElement implements IHawkReference {
+	private static final Logger LOGGER = LoggerFactory.getLogger(EMFFeatureMapReference.class);
 	private EAttribute r;
 
 	public EMFFeatureMapReference(EAttribute esf, EMFWrapperFactory wf) {
@@ -70,7 +73,7 @@ public class EMFFeatureMapReference extends EMFModelElement implements IHawkRefe
 		else if (type instanceof EDataType)
 			return wf.createDataType((EDataType) r.getEType());
 		else {
-			System.err.println("ref: " + r.getEType());
+			LOGGER.warn("Unknown EClassifier subclass: {}", r.getEType());
 			return null;
 		}
 	}
@@ -78,7 +81,6 @@ public class EMFFeatureMapReference extends EMFModelElement implements IHawkRefe
 	@Override
 	public int hashCode() {
 		return r.hashCode();
-
 	}
 
 }
