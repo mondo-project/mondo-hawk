@@ -294,6 +294,11 @@ public class GreycatDatabase implements IGraphDatabase {
 
 	@Override
 	public IGraphIterable<IGraphNode> allNodes(String label) {
+		/*
+		 * TODO: Model.allContents.size() can be VERY slow on big graphs - Greycat will
+		 * fetch everything rather than just the IDs and doing the rest on demand, like
+		 * Neo4j.
+		 */
 		return new GreycatNodeIterable(this, () -> {
 			CompletableFuture<Node[]> nodes = new CompletableFuture<>();
 			nodeLabelIndex.find(result -> {
