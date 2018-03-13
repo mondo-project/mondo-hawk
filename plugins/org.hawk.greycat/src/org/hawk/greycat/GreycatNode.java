@@ -43,7 +43,7 @@ public class GreycatNode implements IGraphNode {
 
 			public IGraphEdge convertToEdge(String type, GreycatNode current, GreycatNode other) {
 				if (GreycatHeavyEdge.NODETYPE.equals(other.getNodeLabel())) {
-					return new GreycatHeavyEdge(other);
+					return new GreycatHeavyEdge(other, type);
 				}
 				return new GreycatLightEdge(other, current, type);
 			}
@@ -56,7 +56,7 @@ public class GreycatNode implements IGraphNode {
 			@Override
 			public IGraphEdge convertToEdge(String type, GreycatNode current, GreycatNode other) {
 				if (GreycatHeavyEdge.NODETYPE.equals(other.getNodeLabel())) {
-					return new GreycatHeavyEdge(other);
+					return new GreycatHeavyEdge(other, type);
 				}
 				return new GreycatLightEdge(current, other, type);
 			}
@@ -174,6 +174,9 @@ public class GreycatNode implements IGraphNode {
 	private final long world, time, id;
 	private final LazyNode nodeProvider;
 
+	/** lazily initialized node label */
+	private String nodeLabel;
+
 	protected static int getValueType(Object value) {
 		if (value == null) {
 			return Type.STRING;
@@ -241,9 +244,13 @@ public class GreycatNode implements IGraphNode {
 	}
 
 	public String getNodeLabel() {
-		try (NodeReader rn = getNodeReader()) {
-			return rn.get().get(GreycatDatabase.NODE_LABEL_IDX).toString();
+		if (nodeLabel == null) {
+			try (NodeReader rn = getNodeReader()) {
+				nodeLabel = rn.get().get(GreycatDatabase.NODE_LABEL_IDX).toString();
+			}
 		}
+
+		return nodeLabel;
 	}
 
 	@Override

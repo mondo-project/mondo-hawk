@@ -34,7 +34,7 @@ public class GreycatHeavyEdge implements IGraphEdge {
 				rEdge.markDirty();
 			}
 
-			return new GreycatHeavyEdge(gHeavyEdgeNode);
+			return new GreycatHeavyEdge(gHeavyEdgeNode, type);
 		}
 	}
 
@@ -47,8 +47,16 @@ public class GreycatHeavyEdge implements IGraphEdge {
 
 	private final GreycatNode node;
 
-	public GreycatHeavyEdge(GreycatNode node) {
+	/**
+	 * The type is already known from the in/out edge of the target/source node, but
+	 * we keep it in the intermediate node as well in case the user takes advantage
+	 * of a node visualizer.
+	 */
+	private final String type;
+
+	public GreycatHeavyEdge(GreycatNode node, String type) {
 		this.node = node;
+		this.type = type;
 	}
 
 	@Override
@@ -58,13 +66,7 @@ public class GreycatHeavyEdge implements IGraphEdge {
 
 	@Override
 	public String getType() {
-		try (NodeReader rn = node.getNodeReader()) {
-			return getType(rn);
-		}
-	}
-
-	protected String getType(NodeReader rn) {
-		return rn.get().get(TYPE_PROP).toString();
+		return type;
 	}
 
 	@Override
