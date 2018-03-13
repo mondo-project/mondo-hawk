@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated document -->
+      <package
+            uri="http://github.com/mondo-project/mondo-hawk/document"
+            class="org.hawk.examples.docgen.model.document.DocumentPackage"
+            genModel="model/document.genmodel"/>
+   </extension>
+
+</plugin>

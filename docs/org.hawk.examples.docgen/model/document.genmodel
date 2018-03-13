@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" copyrightText="Copyright (c) 2018 Aston University.&#xA;All rights reserved. This program and the accompanying materials&#xA;are made available under the terms of the Eclipse Public License v1.0&#xA;which accompanies this distribution, and is available at&#xA;http://www.eclipse.org/legal/epl-v10.html&#xA;&#xA;Contributors:&#xA;  Antonio Garcia-Dominguez - initial API and implementation"
+    modelDirectory="/org.hawk.examples.docgen/src-gen" modelPluginID="org.hawk.examples.docgen"
+    modelName="Document" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0" copyrightFields="false"
+    language="" operationReflection="true" importOrganizing="true">
+  <foreignModel>document.ecore</foreignModel>
+  <genPackages prefix="Document" basePackage="org.hawk.examples.docgen.model" disposableProviderFactory="true"
+      fileExtensions="dcollection" ecorePackage="document.ecore#/">
+    <genClasses ecoreClass="document.ecore#//Collection">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference document.ecore#//Collection/authors"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference document.ecore#//Collection/documents"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference document.ecore#//Collection/tags"/>
+    </genClasses>
+    <genClasses ecoreClass="document.ecore#//Author">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute document.ecore#//Author/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference document.ecore#//Author/knows"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference document.ecore#//Author/isKnownBy"/>
+    </genClasses>
+    <genClasses ecoreClass="document.ecore#//Tag">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute document.ecore#//Tag/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference document.ecore#//Tag/isKindOf"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference document.ecore#//Tag/hasKinds"/>
+    </genClasses>
+    <genClasses ecoreClass="document.ecore#//Document">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference document.ecore#//Document/writtenBy"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference document.ecore#//Document/hasTags"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute document.ecore#//Document/text"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

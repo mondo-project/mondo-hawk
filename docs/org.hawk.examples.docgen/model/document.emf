@@ -1,0 +1,28 @@
+@namespace(uri="http://github.com/mondo-project/mondo-hawk/document", prefix="d")
+package document;
+
+class Collection {
+	val Author[*] authors;
+	val Document[*] documents;
+	val Tag[*] tags;
+}
+
+class Author {
+	attr String name;
+	ref Author[*]#isKnownBy knows;
+	ref Author[*]#knows isKnownBy;
+}
+
+class Tag {
+	attr String name;
+	ref Tag[*]#hasKinds isKindOf;
+	ref Tag[*]#isKindOf hasKinds;
+}
+
+class Document {
+	ref Author[*] writtenBy;
+	ref Tag[*] tags;
+	ref Document[*] cites;
+
+	attr String text;
+}
