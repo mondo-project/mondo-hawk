@@ -8,12 +8,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
 import org.hawk.core.graph.IGraphDatabase.Mode;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.greycat.GreycatDatabase.NodeCacheWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +69,7 @@ public class GreycatNode implements IGraphNode {
 	private final class LazyNode {
 		private Graph _graph;
 		private Node _node;
+		private NodeCacheWrapper _cacheWrapper = null;
 		private boolean _isDirty = false;
 
 		public LazyNode(Graph graph, Node node) {
@@ -80,18 +81,9 @@ public class GreycatNode implements IGraphNode {
 			if (db.getGraph() == _graph && _node != null) {
 				return _node;
 			} else {
-				// there was a reconnection or the Node was freed: reload
-				CompletableFuture<Node> c = new CompletableFuture<>();
-				db.getGraph().lookup(world, time, id, node -> {
-					c.complete(node);
-				});
-
-				try {
-					_node = c.get();
-				} catch (InterruptedException | ExecutionException e) {
-					LOGGER.error(e.getMessage(), e);
-					_node = null;
-				}
+				_cacheWrapper = db.lookup(world, time, id);
+				_cacheWrapper.inUse = true;
+				_node = _cacheWrapper.node;
 			}
 
 			return _node;
@@ -102,9 +94,11 @@ public class GreycatNode implements IGraphNode {
 			db.markDirty(GreycatNode.this);
 		}
 
-		public void freeUnlessDirty() {
-			if (!_isDirty) {
-				free();
+		public void release() {
+			if (_cacheWrapper != null && !_isDirty) {
+				// Get it from the cache next time
+				_node = null;
+				_cacheWrapper.inUse = false;
 			}
 		}
 
@@ -144,7 +138,7 @@ public class GreycatNode implements IGraphNode {
 		public void close() {
 			if (--nestingLevel <= 0) {
 				db.markClosed(GreycatNode.this);
-				nodeProvider.freeUnlessDirty();
+				nodeProvider.release();
 			}
 		}
 	}
@@ -234,7 +228,7 @@ public class GreycatNode implements IGraphNode {
 	}
 
 	@Override
-	public Object getId() {
+	public Long getId() {
 		return id;
 	}
 

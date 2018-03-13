@@ -38,6 +38,11 @@ import org.hawk.greycat.lucene.GreycatLuceneIndexer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
+
 import greycat.Callback;
 import greycat.Graph;
 import greycat.GraphBuilder;
@@ -47,6 +52,59 @@ import greycat.Type;
 import greycat.rocksdb.RocksDBStorage;
 
 public class GreycatDatabase implements IGraphDatabase {
+
+	private static final class NodeKey {
+		public final long world, time, id;
+
+		public NodeKey(long world2, long time2, long id2) {
+			this.world = world2;
+			this.time = time2;
+			this.id = id2;
+		}
+
+		public NodeKey(GreycatNode gn) {
+			this(gn.getWorld(), gn.getTime(), gn.getId());
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + (int) (id ^ (id >>> 32));
+			result = prime * result + (int) (time ^ (time >>> 32));
+			result = prime * result + (int) (world ^ (world >>> 32));
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			NodeKey other = (NodeKey) obj;
+			if (id != other.id)
+				return false;
+			if (time != other.time)
+				return false;
+			if (world != other.world)
+				return false;
+			return true;
+		}
+	}
+
+	protected static final class NodeCacheWrapper {
+		public final Node node;
+
+		/** This node is currently in use - do not allow the cache to free it upon LRU removal. */
+		public boolean inUse = false;
+
+		public NodeCacheWrapper(Node n) {
+			this.node = n;
+		}
+	}
 
 	/**
 	 * Apparently deletion is the one thing we cannot roll back from through a
@@ -69,6 +127,7 @@ public class GreycatDatabase implements IGraphDatabase {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GreycatDatabase.class);
 
+	private Cache<NodeKey, NodeCacheWrapper> nodeCache;
 	private File storageFolder, tempFolder;
 	private IConsole console;
 	private Graph graph;
@@ -123,10 +182,7 @@ public class GreycatDatabase implements IGraphDatabase {
 
 	@Override
 	public void shutdown() throws Exception {
-		if (luceneIndexer != null) {
-			luceneIndexer.shutdown();
-			luceneIndexer = null;
-		}
+		shutdownHelpers();
 
 		if (graph != null) {
 			graph.disconnect(result -> {
@@ -139,10 +195,7 @@ public class GreycatDatabase implements IGraphDatabase {
 
 	@Override
 	public void delete() throws Exception {
-		if (luceneIndexer != null) {
-			luceneIndexer.shutdown();
-			luceneIndexer = null;
-		}
+		shutdownHelpers();
 
 		if (graph != null) {
 			CompletableFuture<Boolean> done = new CompletableFuture<>();
@@ -156,6 +209,21 @@ public class GreycatDatabase implements IGraphDatabase {
 			});
 			done.join();
 			graph = null;
+		}
+	}
+
+	/**
+	 * Shuts down any auxiliary facilities (Guava node cache, Lucene index).
+	 */
+	protected void shutdownHelpers() {
+		if (nodeCache != null) {
+			nodeCache.invalidateAll();
+			nodeCache = null;
+		}
+
+		if (luceneIndexer != null) {
+			luceneIndexer.shutdown();
+			luceneIndexer = null;
 		}
 	}
 
@@ -249,6 +317,11 @@ public class GreycatDatabase implements IGraphDatabase {
 		return n;
 	}
 
+	/**
+	 * Marks a certain node as being dirty: on batch mode, a periodic save will be
+	 * triggered when the set of dirty nodes reaches {@link #SAVE_EVERY} and there
+	 * are no opened nodes.
+	 */
 	protected void markDirty(GreycatNode n) {
 		currentDirtyNodes.add(n);
 	}
@@ -305,6 +378,7 @@ public class GreycatDatabase implements IGraphDatabase {
 		// Free nodes after having saved them 
 		for (GreycatNode dirtyNode : currentDirtyNodes) {
 			dirtyNode.free();
+			nodeCache.invalidate(new NodeKey(dirtyNode));
 		}
 		currentDirtyNodes.clear();
 
@@ -381,6 +455,10 @@ public class GreycatDatabase implements IGraphDatabase {
 	public boolean reconnect() {
 		CompletableFuture<Boolean> connected = new CompletableFuture<>();
 
+		if (nodeCache != null) {
+			nodeCache.invalidateAll();
+		}
+
 		if (graph != null) {
 			try {
 				luceneIndexer.rollback();
@@ -414,8 +492,21 @@ public class GreycatDatabase implements IGraphDatabase {
 	}
 
 	protected void connect(CompletableFuture<Boolean> cConnected) {
+		this.nodeCache = CacheBuilder.newBuilder()
+			.maximumSize(1_000)
+			.removalListener(new RemovalListener<NodeKey, NodeCacheWrapper>() {
+				@Override
+				public void onRemoval(RemovalNotification<NodeKey, NodeCacheWrapper> notification) {
+					final NodeCacheWrapper wrapper = notification.getValue();
+					if (!wrapper.inUse) {
+						wrapper.node.free();
+					}
+				}
+			})
+			.build();
+
 		this.graph = new GraphBuilder()
-			.withMemorySize(100_000)
+			.withMemorySize(1_000_000)
 			.withStorage(new RocksDBStorage(storageFolder.getAbsolutePath()))
 			.build();
 
@@ -444,6 +535,7 @@ public class GreycatDatabase implements IGraphDatabase {
 			final Node node = rn.get();
 			node.drop(callback);
 		}
+		nodeCache.invalidate(new NodeKey(gn));
 	}
 
 	/**
@@ -485,6 +577,22 @@ public class GreycatDatabase implements IGraphDatabase {
 			luceneIndexer.commit();
 		} catch (IOException ex) {
 			LOGGER.error("Failed to commit Lucene index", ex);
+		}
+	}
+
+	/**
+	 * Looks up a node, using the Guava LRU cache in the middle.
+	 */
+	protected NodeCacheWrapper lookup(long world, long time, long id) {
+		try {
+			return nodeCache.get(new NodeKey(world, time, id), () -> {
+				CompletableFuture<Node> result = new CompletableFuture<>();
+				graph.lookup(world, time, id, node -> result.complete(node));
+				return new NodeCacheWrapper(result.join());
+			});
+		} catch (ExecutionException e) {
+			LOGGER.error(String.format("Failed to lookup node %d:%d:%d", world, time, id), e);
+			return null;
 		}
 	}
 }
