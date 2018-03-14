@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2018 The University of York, Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - improved error reporting
  ******************************************************************************/
 package org.hawk.epsilon.emc;
 
@@ -42,12 +43,16 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.util.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OptimisableCollectionSelectOperation extends SelectOperation {
 
 	// XXX can also index subsets of X.all as the context is kept. but this may
 	// be counter-productive as you may end up doing a retain all on a list of a
 	// couple of elements into an indexed result of millions
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(OptimisableCollectionSelectOperation.class);
 
 	protected EOLQueryEngine model;
 	private IEolContext context;
@@ -76,19 +81,12 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 			try (IGraphTransaction ignored = graph.beginTransaction()) {
 				metaclass = ((OptimisableCollection) target).type.getNode();
 				ignored.success();
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new EolRuntimeException("OptimisableCollectionSelectOperation: parseAST(iterator, ast) failed:",
-						ast);
 			}
 
 			return decomposeAST(target, ast);
-
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new EolRuntimeException("OptimisableCollectionSelectOperation: parseAST(iterator, ast) failed:", ast);
+			throw new EolRuntimeException("select(...) failed: " + e.getMessage(), ast);
 		}
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -268,13 +266,13 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 		final Expression valueAST = opExp.getSecondOperand();
 		Object attributevalue = null;
 		try {
-			attributevalue = context.getExecutorFactory().executeAST(valueAST, context);
+			attributevalue = context.getExecutorFactory().execute(valueAST, context);
 		} catch (Exception e) {
 			// if the rhs is invalid or tries to use the iterator of the select
 			// (which is outside its scope) -- default to epsilon's select
-			System.err.println("Warning: the RHS of the expression:\n" + ast
-					+ "\ncannot be evaluated using database indexing,\nas the iterator variable of the current select operation ("
-					+ iterator.getName() + ") is not used in this process.\nDefaulting to Epsion's select");
+			LOGGER.warn("Warning: the RHS of the expression:\n{}"
+					+ "\ncannot be evaluated using database indexing,\nas the iterator variable of the current select operation ({}) "
+					+ "is not used in this process.\nDefaulting to Epsilon's select", ast, iterator.getName());
 		}
 
 		String indexname;
@@ -376,9 +374,7 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 				ignored.success();
 
 			} catch (Exception e) {
-				e.printStackTrace();
-				throw new EolRuntimeException("optimise(Object target, AST ast) crashed (see above)");
-
+				throw new EolRuntimeException("select optimisation failed: " + e.getMessage(), ast);
 			}
 
 			result.retainAll(filter);
@@ -440,17 +436,14 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 	}
 
 	private String isIndexed(String attributename) {
-
 		String result = null;
 
 		try (IGraphTransaction ignored = graph.beginTransaction()) {
-
 			String indexname = metaclass.getOutgoingWithType("epackage").iterator().next().getEndNode()
 					.getProperty(IModelIndexer.IDENTIFIER_PROPERTY) + "##"
 					+ metaclass.getProperty(IModelIndexer.IDENTIFIER_PROPERTY) + "##" + attributename;
 
 			// if (indexManager == null) indexManager = graph.index();
-
 			// System.err.println(indexname);
 			// System.err.println(graph.getNodeIndexNames());
 
@@ -458,14 +451,10 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 				result = indexname;
 
 			ignored.success();
-
 		} catch (Exception e) {
-			System.err
-					.println("OptimisableCollectionSelectOperation, isIndexed, suppressed exception: " + e.getCause());
-			e.printStackTrace();
+			LOGGER.warn("Suppressed exception from isIndexed", e);
 		}
 
 		return result;
-
 	}
 }

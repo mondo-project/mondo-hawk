@@ -619,8 +619,9 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		final List<String> ret = new LinkedList<>();
 		try {
 			module.parse(derivationlogic);
-			for (ParseProblem p : module.getParseProblems())
+			for (ParseProblem p : module.getParseProblems()) {
 				ret.add(p.toString());
+			}
 		} catch (Exception e) {
 			LOGGER.error("Error while parsing EOL", e);
 		}
@@ -730,7 +731,16 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 				System.out.println("PARSING:\n----------\n" + name == null ? "QUERY" : name + "\n----------");
 				System.out.println("Graph path: " + graph.getPath() + "\n----------");
 			}
+
 			module.parse(query);
+			if (!module.getParseProblems().isEmpty()) {
+				StringBuilder sb = new StringBuilder("Query failed to parse correctly:");
+				for (ParseProblem problem : module.getParseProblems()) {
+					sb.append("\n");
+					sb.append(problem.toString());
+				}
+				throw new InvalidQueryException(sb.toString());
+			}
 		} catch (Exception ex) {
 			throw new InvalidQueryException(ex);
 		}

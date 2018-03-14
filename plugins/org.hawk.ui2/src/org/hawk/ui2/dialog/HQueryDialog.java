@@ -304,7 +304,6 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 							if (result != null)
 								ret = result.toString();
 							resultField.setText(ret);
-
 						} else {
 							result = index.query(queryField.getText(), ql, map);
 							resultField.setText(result != null ? result.toString() : "<null>");
