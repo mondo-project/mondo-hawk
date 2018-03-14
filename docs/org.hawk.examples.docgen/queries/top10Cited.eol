@@ -1,4 +1,4 @@
 return `http://github.com/mondo-project/mondo-hawk/document`::Document.all
   .collect(d| Sequence {d, d.revRefNav_cites.size})
   .sortBy(e|-e.second)
-  .subList(0, 5);
+  .subList(0, 10);
