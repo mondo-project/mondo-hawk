@@ -208,8 +208,12 @@ public class ModelIndexingTest {
 		IWorkspace ws = ResourcesPlugin.getWorkspace();
 		IProjectDescription description = ws.loadProjectDescription(projectPath);
 		IProject project = ws.getRoot().getProject(description.getName());
-		project.create(description, null);
-		project.open(null);
+		if (!project.exists()) {
+			project.create(description, null);
+		}
+		if (!project.isOpen()) {
+			project.open(null);
+		}
 
 		return project;
 	}
