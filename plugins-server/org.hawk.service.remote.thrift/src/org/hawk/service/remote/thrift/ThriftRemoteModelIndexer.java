@@ -366,8 +366,8 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 		}
 
 		@Override
-		public Set<String> getPrefixesToBeStripped() {
-			return Collections.emptySet();
+		public String getRepositoryPath(String rawPath) {
+			return rawPath;
 		}
 
 		@Override

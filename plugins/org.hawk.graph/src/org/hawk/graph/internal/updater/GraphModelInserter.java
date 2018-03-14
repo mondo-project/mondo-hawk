@@ -70,7 +70,7 @@ public class GraphModelInserter {
 	private int unset = 0; // number of unset references (used for logging)
 
 	private String repoURL;
-	private Set<String> prefixesToStrip = new HashSet<>();
+	private String tempDirURI;
 
 	private IHawkModelResource resource;
 	private Map<String, IHawkObject> updated = new HashMap<>();
@@ -82,7 +82,7 @@ public class GraphModelInserter {
 	private IModelIndexer indexer;
 	private IGraphDatabase graph;
 	private GraphModelBatchInjector inj;
-	private VcsCommitItem s;
+	private VcsCommitItem commitItem;
 
 	private Map<String, IGraphNode> nodes = new HashMap<>();
 	private TypeCache typeCache;
@@ -97,17 +97,14 @@ public class GraphModelInserter {
 		if (verbose) {
 			indexer.getCompositeStateListener().info("Calculating model delta for file: " + s.getPath() + "...");
 		}
+
 		this.resource = res;
-		this.s = s;
-		this.inj = new GraphModelBatchInjector(graph, typeCache, this.s, indexer.getCompositeGraphChangeListener());
+		this.commitItem = s;
+		this.inj = new GraphModelBatchInjector(graph, typeCache, this.commitItem, indexer.getCompositeGraphChangeListener());
 
 		final int delta = calculateModelDeltaSize(verbose);
 		if (delta != -1) {
-			final IVcsManager manager = s.getCommit().getDelta().getManager();
-
-			prefixesToStrip.clear();
-			prefixesToStrip.add(new File(graph.getTempDir()).toURI().toString());
-			prefixesToStrip.addAll(manager.getPrefixesToBeStripped());
+			this.tempDirURI = new File(graph.getTempDir()).toURI().toString();
 
 			if (verbose) {
 				LOGGER.debug("File already present, calculating deltas with respect to graph storage");
@@ -140,7 +137,7 @@ public class GraphModelInserter {
 		graph.exitBatchMode();
 		if (verbose) {
 			indexer.getCompositeStateListener()
-					.info("Performing transactional update (delta:" + delta + ") on file: " + s.getPath() + "...");
+					.info("Performing transactional update (delta:" + delta + ") on file: " + commitItem.getPath() + "...");
 			LOGGER.debug("transactional update called");
 		}
 
@@ -148,9 +145,9 @@ public class GraphModelInserter {
 		try (IGraphTransaction t = graph.beginTransaction()) {
 			listener.changeStart();
 
-			repoURL = s.getCommit().getDelta().getManager().getLocation();
+			repoURL = commitItem.getCommit().getDelta().getManager().getLocation();
 			IGraphNode fileNode = graph.getFileIndex()
-					.get("id", repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + s.getPath()).iterator().next();
+					.get("id", repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + commitItem.getPath()).iterator().next();
 
 			// manage retyped nodes
 			for (final Map.Entry<String, IHawkObject> entry : retyped.entrySet()) {
@@ -177,7 +174,7 @@ public class GraphModelInserter {
 				// track change new node
 				for (final String transientLabelEdge : ModelElementNode.TRANSIENT_EDGE_LABELS) {
 					for (final IGraphEdge e : node1.getOutgoingWithType(transientLabelEdge)) {
-						listener.referenceAddition(s, node1, e.getEndNode(), transientLabelEdge, true);
+						listener.referenceAddition(commitItem, node1, e.getEndNode(), transientLabelEdge, true);
 					}
 				}
 			}
@@ -261,7 +258,7 @@ public class GraphModelInserter {
 								e.delete();
 
 								// track change deleted reference
-								listener.referenceRemoval(this.s, node, n, edgeType, false);
+								listener.referenceRemoval(this.commitItem, node, n, edgeType, false);
 							}
 						}
 
@@ -285,7 +282,7 @@ public class GraphModelInserter {
 								graph.createRelationship(node, dest, refname, props);
 
 								// track change new reference
-								listener.referenceAddition(this.s, node, dest, refname, false);
+								listener.referenceAddition(this.commitItem, node, dest, refname, false);
 							} else {
 								// proxy reference, handled above
 							}
@@ -301,7 +298,7 @@ public class GraphModelInserter {
 							final IGraphNode endNode = e.getEndNode();
 							final String type = e.getType();
 							e.delete();
-							listener.referenceRemoval(this.s, node, endNode, type, false);
+							listener.referenceRemoval(this.commitItem, node, endNode, type, false);
 						}
 					}
 
@@ -309,7 +306,7 @@ public class GraphModelInserter {
 
 			} // for (String o)
 
-			fileNode.setProperty("revision", s.getCommit().getRevision());
+			fileNode.setProperty("revision", commitItem.getCommit().getRevision());
 			t.success();
 			listener.changeSuccess();
 			return true;
@@ -320,7 +317,7 @@ public class GraphModelInserter {
 		} finally {
 			if (verbose) {
 				indexer.getCompositeStateListener()
-						.info("Performed transactional update on file: " + s.getPath() + ".");
+						.info("Performed transactional update on file: " + commitItem.getPath() + ".");
 			}
 		}
 
@@ -347,13 +344,13 @@ public class GraphModelInserter {
 
 		// track change deleted node
 		for (String key : node.getPropertyKeys()) {
-			listener.modelElementAttributeRemoval(this.s, null, key, node,
+			listener.modelElementAttributeRemoval(this.commitItem, null, key, node,
 					ModelElementNode.TRANSIENT_ATTRIBUTES.contains(key));
 		}
 		for (IGraphEdge e : node.getOutgoing()) {
 			if (e.getProperty("isDerived") == null) {
 				final boolean isTransient = ModelElementNode.TRANSIENT_EDGE_LABELS.contains(e.getType());
-				listener.referenceRemoval(this.s, node, e.getEndNode(), e.getType(), isTransient);
+				listener.referenceRemoval(this.commitItem, node, e.getEndNode(), e.getType(), isTransient);
 			}
 		}
 
@@ -365,26 +362,22 @@ public class GraphModelInserter {
 			boolean isContainment, boolean isContainer) {
 
 		try {
+			// TODO this seems duplicated (see GraphModelBatchInjector#addProxyRef)
+
 			// proxydictionary.add(graph.getNodeById(hash.get((from))),
-			// edgelabel,
-			// ((EObject)destinationObject).eIsProxy());
+			// edgelabel, ((EObject)destinationObject).eIsProxy());
 
 			final String uri = destinationObject.getUri();
 
-			String destinationObjectRelativePathURI =
-			// new DeletionUtils(graph).getRelativeURI(
-			uri
-			// .toString())
-			;
-
+			String destinationObjectRelativePathURI = uri;
 			if (!destinationObject.URIIsRelative()) {
-
-				destinationObjectRelativePathURI = new Utils().makeRelative(prefixesToStrip,
-						destinationObjectRelativePathURI);
-
+				if (destinationObjectRelativePathURI.startsWith(tempDirURI)) {
+					destinationObjectRelativePathURI = destinationObjectRelativePathURI.substring(tempDirURI.length());
+				} else {
+					final IVcsManager vcs = commitItem.getCommit().getDelta().getManager();
+					destinationObjectRelativePathURI = vcs.getRepositoryPath(destinationObjectRelativePathURI);
+				}
 			}
-			// System.err.println(uri.toString().substring(uri.toString().indexOf(".metadata/.plugins/com.google.code.hawk.neo4j/temp/m/")+53));
-			// System.err.println(uri.);
 
 			String destinationObjectRelativeFileURI = destinationObjectRelativePathURI;
 
@@ -445,7 +438,7 @@ public class GraphModelInserter {
 				normalattributes.add(eAttribute);
 			} else if (node.getProperty(attrName) != null) {
 				node.removeProperty(attrName);
-				indexer.getCompositeGraphChangeListener().modelElementAttributeRemoval(s, eObject, eAttribute.getName(),
+				indexer.getCompositeGraphChangeListener().modelElementAttributeRemoval(commitItem, eObject, eAttribute.getName(),
 						node, false);
 			}
 		}
@@ -462,7 +455,7 @@ public class GraphModelInserter {
 
 				if (!newValue.equals(oldproperty)) {
 					// track changed property (primitive)
-					listener.modelElementAttributeUpdate(this.s, eObject, a.getName(), oldproperty, newValue, node,
+					listener.modelElementAttributeUpdate(this.commitItem, eObject, a.getName(), oldproperty, newValue, node,
 							false);
 					node.setProperty(a.getName(), newValue);
 				}
@@ -501,7 +494,7 @@ public class GraphModelInserter {
 				Object ret = collection.toArray((Object[]) r);
 
 				if (!ret.equals(oldproperty)) {
-					listener.modelElementAttributeUpdate(this.s, eObject, a.getName(), oldproperty, ret, node, false);
+					listener.modelElementAttributeUpdate(this.commitItem, eObject, a.getName(), oldproperty, ret, node, false);
 					node.setProperty(a.getName(), ret);
 				}
 			}
@@ -571,21 +564,21 @@ public class GraphModelInserter {
 
 	private boolean batchUpdate(final boolean verbose) throws Exception {
 		if (verbose) {
-			indexer.getCompositeStateListener().info("Performing batch update of file: " + s.getPath() + "...");
+			indexer.getCompositeStateListener().info("Performing batch update of file: " + commitItem.getPath() + "...");
 		}
 		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
 		listener.changeStart();
 		try {
-			IGraphNode g = new Utils().getFileNodeFromVCSCommitItem(graph, s);
+			IGraphNode g = new Utils().getFileNodeFromVCSCommitItem(graph, commitItem);
 
 			if (g != null) {
 				try (IGraphTransaction t = graph.beginTransaction()) {
-					new DeletionUtils(graph).deleteAll(g, s, listener);
+					new DeletionUtils(graph).deleteAll(g, commitItem, listener);
 					t.success();
 				}
 			}
 			graph.enterBatchMode();
-			new GraphModelBatchInjector(indexer, typeCache, s, resource, listener, verbose);
+			new GraphModelBatchInjector(indexer, typeCache, commitItem, resource, listener, verbose);
 			listener.changeSuccess();
 			return true;
 		} catch (Exception ex) {
@@ -593,7 +586,7 @@ public class GraphModelInserter {
 			return false;
 		} finally {
 			if (verbose) {
-				indexer.getCompositeStateListener().info("Performed batch update of file: " + s.getPath() + ".");
+				indexer.getCompositeStateListener().info("Performed batch update of file: " + commitItem.getPath() + ".");
 			}
 		}
 	}
@@ -603,17 +596,17 @@ public class GraphModelInserter {
 			LOGGER.info("calculateModelDeltaSize() called");
 		}
 
-		if (new Utils().getFileNodeFromVCSCommitItem(graph, s) != null) {
+		if (new Utils().getFileNodeFromVCSCommitItem(graph, commitItem) != null) {
 
 			try (IGraphTransaction t = graph.beginTransaction()) {
 
-				final String repositoryURL = s.getCommit().getDelta().getManager().getLocation();
+				final String repositoryURL = commitItem.getCommit().getDelta().getManager().getLocation();
 
 				HashMap<String, byte[]> signatures = new HashMap<>();
 
 				// Get existing nodes from the store (and their signatures)
 				for (IGraphEdge e : graph.getFileIndex()
-						.get("id", repositoryURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + s.getPath()).getSingle()
+						.get("id", repositoryURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + commitItem.getPath()).getSingle()
 						.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 					IGraphNode n = e.getStartNode();
 
@@ -689,11 +682,11 @@ public class GraphModelInserter {
 	 */
 	private boolean addNodes(boolean verbose) throws Exception {
 		if (verbose) {
-			indexer.getCompositeStateListener().info("Performing batch insert on file: " + s.getPath() + "...");
+			indexer.getCompositeStateListener().info("Performing batch insert on file: " + commitItem.getPath() + "...");
 		}
 		boolean success = true;
 		if (resource != null) {
-			GraphModelBatchInjector batch = new GraphModelBatchInjector(indexer, typeCache, s, resource,
+			GraphModelBatchInjector batch = new GraphModelBatchInjector(indexer, typeCache, commitItem, resource,
 					indexer.getCompositeGraphChangeListener(), verbose);
 			unset = batch.getUnset();
 			success = batch.getSuccess();
@@ -706,17 +699,17 @@ public class GraphModelInserter {
 		}
 
 		if (verbose) {
-			indexer.getCompositeStateListener().info("Performed batch insert on file: " + s.getPath() + ".");
+			indexer.getCompositeStateListener().info("Performed batch insert on file: " + commitItem.getPath() + ".");
 		}
 		return success;
 	}
 
 	private void remove(IGraphNode modelElement, String repositoryURL, IGraphNode fileNode, IGraphChangeListener l) {
 		DeletionUtils del = new DeletionUtils(graph);
-		del.dereference(modelElement, l, s);
-		del.makeProxyRefs(s, modelElement, repositoryURL, fileNode, l);
+		del.dereference(modelElement, l, commitItem);
+		del.makeProxyRefs(commitItem, modelElement, repositoryURL, fileNode, l);
 		if (del.delete(modelElement))
-			l.modelElementRemoval(this.s, modelElement, false);
+			l.modelElementRemoval(this.commitItem, modelElement, false);
 	}
 
 	/*
@@ -906,7 +899,7 @@ public class GraphModelInserter {
 								// " -> "+ no.getId());
 							} else {
 								resolved = true;
-								listener.referenceAddition(this.s, n, no, edgeLabel, false);
+								listener.referenceAddition(this.commitItem, n, no, edgeLabel, false);
 							}
 							break;
 						}
@@ -923,7 +916,7 @@ public class GraphModelInserter {
 									.resolveProxyRef(n, no, edgeLabel, isContainment, isContainer);
 							if (change) {
 								resolved = true;
-								listener.referenceAddition(this.s, n, no, edgeLabel, false);
+								listener.referenceAddition(this.commitItem, n, no, edgeLabel, false);
 							}
 						}
 

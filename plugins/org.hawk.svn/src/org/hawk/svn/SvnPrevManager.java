@@ -447,8 +447,11 @@ public class SvnPrevManager implements IVcsManager {
 	}
 
 	@Override
-	public Set<String> getPrefixesToBeStripped() {
-		return Collections.emptySet();
+	public String getRepositoryPath(String rawPath) {
+		if (rawPath.startsWith(repositoryURL)) {
+			return rawPath.substring(repositoryURL.length());
+		}
+		return rawPath;
 	}
 
 	@Override

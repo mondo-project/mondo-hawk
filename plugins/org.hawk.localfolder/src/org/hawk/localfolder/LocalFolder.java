@@ -374,14 +374,12 @@ public class LocalFolder implements IVcsManager {
 	}
 
 	@Override
-	public Set<String> getPrefixesToBeStripped() {
-		Set<String> ret = new HashSet<>();
-		ret.add(normalizeToEMFUri(getLocation()));
-		return ret;
-	}
-
-	private String normalizeToEMFUri(String location) {
-		return location.replaceFirst("file:///", "file:/");
+	public String getRepositoryPath(String rawPath) {
+		final String emfUriPrefix = getLocation().replaceFirst("file:///", "file:/");
+		if (rawPath.startsWith(emfUriPrefix)) {
+			return rawPath.substring(emfUriPrefix.length());
+		}
+		return rawPath;
 	}
 
 	@Override

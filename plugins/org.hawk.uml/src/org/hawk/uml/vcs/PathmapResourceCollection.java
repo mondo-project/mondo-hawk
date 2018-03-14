@@ -186,11 +186,6 @@ public abstract class PathmapResourceCollection implements IVcsManager {
 	}
 
 	@Override
-	public Set<String> getPrefixesToBeStripped() {
-		return Collections.emptySet();
-	}
-
-	@Override
 	public boolean isFrozen() {
 		return isFrozen;
 	}

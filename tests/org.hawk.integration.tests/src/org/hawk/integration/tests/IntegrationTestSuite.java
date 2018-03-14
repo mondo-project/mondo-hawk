@@ -20,6 +20,7 @@ import org.hawk.integration.tests.emf.TreeUpdateTest;
 import org.hawk.integration.tests.manifests.ManifestIndexQueryTest;
 import org.hawk.integration.tests.modelio.ModelioMetamodelPopulationTest;
 import org.hawk.integration.tests.uml.UMLIndexingTest;
+import org.hawk.integration.tests.uml.UMLWorkspaceIndexingTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
@@ -37,6 +38,7 @@ import com.github.peterwippermann.junit4.parameterizedsuite.ParameterizedSuite;
 	ScopedQueryTest.class,
 	TreeUpdateTest.class,
 	UMLIndexingTest.class,
+	UMLWorkspaceIndexingTest.class,
 })
 public class IntegrationTestSuite {
 

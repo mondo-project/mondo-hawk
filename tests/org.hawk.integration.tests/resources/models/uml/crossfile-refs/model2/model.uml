@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_FytzwCcKEeiTkcaGVDQDuA" name="Model2">
+  <packageImport xmi:type="uml:PackageImport" xmi:id="_F37D4CcKEeiTkcaGVDQDuA">
+    <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+  </packageImport>
+  <packagedElement xmi:type="uml:Class" xmi:id="_GaUmUCcKEeiTkcaGVDQDuA" name="Class2">
+    <generalization xmi:type="uml:Generalization" xmi:id="_XhLZkCcKEeiTkcaGVDQDuA">
+      <general xmi:type="uml:Class" href="../model1/model.uml#_BraAICcKEeiTkcaGVDQDuA"/>
+    </generalization>
+    <generalization xmi:type="uml:Generalization" xmi:id="_6MqPQCcMEeiTkcaGVDQDuA" general="_4-l5oCcMEeiTkcaGVDQDuA"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_4-l5oCcMEeiTkcaGVDQDuA" name="Class3"/>
+</uml:Model>

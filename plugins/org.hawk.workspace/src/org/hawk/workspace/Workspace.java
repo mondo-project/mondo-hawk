@@ -11,7 +11,8 @@
 package org.hawk.workspace;
 
 import java.io.File;
-import java.util.Arrays;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,11 +38,15 @@ import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommit;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.VcsRepositoryDelta;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Repository manager for an Eclipse workspace.
  */
 public class Workspace implements IVcsManager {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(Workspace.class);
 
 	private final class WorkspaceDeltaVisitor implements IResourceDeltaVisitor {
 		private static final int CHANGE_MASK =
@@ -93,9 +98,8 @@ public class Workspace implements IVcsManager {
 	private IConsole console;
 	private WorkspaceListener listener;
 
-	// Needed to emulate the usual URLs within a workspace when concatenated
-	// with the file path
-	private final String repositoryURL = "platform:/resource";
+	/* Needed to emulate the usual URLs within a workspace when concatenated with the file path. */
+	public static final String REPOSITORY_URL = "platform:/resource";
 
 	private Set<IFile> previousFiles = new HashSet<>();
 	private Map<IFile, Long> recordedStamps = new HashMap<>();
@@ -212,7 +216,7 @@ public class Workspace implements IVcsManager {
 
 	@Override
 	public String getLocation() {
-		return repositoryURL;
+		return REPOSITORY_URL;
 	}
 
 	@Override
@@ -260,8 +264,30 @@ public class Workspace implements IVcsManager {
 	}
 
 	@Override
-	public Set<String> getPrefixesToBeStripped() {
-		return new HashSet<>(Arrays.asList("platform:/resource"));
+	public String getRepositoryPath(String rawPath) {
+		if (rawPath.startsWith(REPOSITORY_URL)) {
+			return rawPath.substring(REPOSITORY_URL.length());
+		} else if (rawPath.startsWith("pathmap://")) {
+			// we'd need the ResourceSet that the IHawkObject belongs to in order to undo the mapping
+			return rawPath;
+		}
+
+		try {
+			final URI uri = new URI(rawPath);
+			IFile[] files = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(uri);
+			if (files.length > 0) {
+				String filePath = files[0].getFullPath().toString();
+				if (uri.getFragment() == null) {
+					return filePath;
+				} else {
+					return filePath + "#" + uri.getFragment();
+				}
+			}
+		} catch (URISyntaxException e) {
+			LOGGER.error("Could not find file " + rawPath + " in the workspace");
+		}
+
+		return rawPath;
 	}
 
 	@Override

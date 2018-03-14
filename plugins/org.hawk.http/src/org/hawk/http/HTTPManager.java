@@ -55,7 +55,7 @@ public class HTTPManager implements IVcsManager {
 
 	private boolean isActive;
 	private IConsole console;
-	private URI repositoryURL;
+	private URI repositoryURI;
 
 	private String username;
 	private String password;
@@ -80,7 +80,7 @@ public class HTTPManager implements IVcsManager {
 			 * request.
 			 */
 
-			final HttpHead headRequest = new HttpHead(repositoryURL);
+			final HttpHead headRequest = new HttpHead(repositoryURI);
 			decorateCurrentRevisionRequest(headRequest);
 			try (CloseableHttpResponse response = cl.execute(headRequest)) {
 				String headRevision = getRevision(response);
@@ -89,7 +89,7 @@ public class HTTPManager implements IVcsManager {
 				}
 			}
 
-			final HttpGet getRequest = new HttpGet(repositoryURL);
+			final HttpGet getRequest = new HttpGet(repositoryURI);
 			decorateCurrentRevisionRequest(getRequest);
 			try (CloseableHttpResponse response = cl.execute(getRequest)) {
 				String getRev = getRevision(response);
@@ -154,7 +154,7 @@ public class HTTPManager implements IVcsManager {
 		// Provide username and password if specified
 		if (username != null) {
 			final BasicCredentialsProvider credProvider = new BasicCredentialsProvider();
-			credProvider.setCredentials(new AuthScope(new HttpHost(repositoryURL.getHost())),
+			credProvider.setCredentials(new AuthScope(new HttpHost(repositoryURI.getHost())),
 					new UsernamePasswordCredentials(username, password));
 			builder.setDefaultCredentialsProvider(credProvider);
 		}
@@ -183,14 +183,14 @@ public class HTTPManager implements IVcsManager {
 			VcsCommit c = new VcsCommit();
 			c.setAuthor("Unknown");
 			c.setJavaDate(new Date());
-			c.setMessage("HTTP file changed: " + repositoryURL);
+			c.setMessage("HTTP file changed: " + repositoryURI);
 			c.setRevision(endRevision);
 			c.setDelta(delta);
 			delta.getCommits().add(c);
 
 			VcsCommitItem ci = new VcsCommitItem();
 			ci.setChangeType(VcsChangeType.UPDATED);
-			ci.setPath(repositoryURL.getPath());
+			ci.setPath(repositoryURI.getPath());
 			ci.setCommit(c);
 			c.getItems().add(ci);
 		}
@@ -202,7 +202,7 @@ public class HTTPManager implements IVcsManager {
 	@Override
 	public File importFiles(String path, File temp) {
 		try (CloseableHttpClient cl = createClient()) {
-			try (CloseableHttpResponse response = cl.execute(new HttpGet(repositoryURL))) {
+			try (CloseableHttpResponse response = cl.execute(new HttpGet(repositoryURI))) {
 				Files.copy(response.getEntity().getContent(), temp.toPath());
 				return temp;
 			}
@@ -220,7 +220,7 @@ public class HTTPManager implements IVcsManager {
 	@Override
 	public void init(String vcsloc, IModelIndexer indexer) throws URISyntaxException {
 		console = indexer.getConsole();
-		this.repositoryURL = new URI(vcsloc);
+		this.repositoryURI = new URI(vcsloc);
 		this.indexer = indexer;
 	}
 
@@ -233,7 +233,7 @@ public class HTTPManager implements IVcsManager {
 				// call: retry the change to the credentials store.
 				setCredentials(username, password, credStore);
 			} else {
-				final Credentials credentials = credStore.get(repositoryURL.toString());
+				final Credentials credentials = credStore.get(repositoryURI.toString());
 				if (credentials != null) {
 					this.username = credentials.getUsername();
 					this.password = credentials.getPassword();
@@ -243,7 +243,7 @@ public class HTTPManager implements IVcsManager {
 					 * will try to use the GNOME keyring in Linux, and that will
 					 * lock up our Eclipse instance in some cases.
 					 */
-					console.printerrln("No username/password recorded for the repository " + repositoryURL);
+					console.printerrln("No username/password recorded for the repository " + repositoryURI);
 					this.username = "";
 					this.password = "";
 				}
@@ -258,13 +258,13 @@ public class HTTPManager implements IVcsManager {
 
 	@Override
 	public void shutdown() {
-		repositoryURL = null;
+		repositoryURI = null;
 		console = null;
 	}
 
 	@Override
 	public String getLocation() {
-		return repositoryURL.toString();
+		return repositoryURI.toString();
 	}
 
 	@Override
@@ -279,10 +279,10 @@ public class HTTPManager implements IVcsManager {
 
 	@Override
 	public void setCredentials(String username, String password, ICredentialsStore credStore) {
-		if (username != null && password != null && repositoryURL != null
+		if (username != null && password != null && repositoryURI != null
 				&& (!username.equals(this.username) || !password.equals(this.password))) {
 			try {
-				credStore.put(repositoryURL.toString(), new Credentials(username, password));
+				credStore.put(repositoryURI.toString(), new Credentials(username, password));
 			} catch (Exception e) {
 				console.printerrln("Could not save new username/password");
 				console.printerrln(e);
@@ -318,8 +318,12 @@ public class HTTPManager implements IVcsManager {
 	}
 
 	@Override
-	public Set<String> getPrefixesToBeStripped() {
-		return Collections.emptySet();
+	public String getRepositoryPath(String rawPath) {
+		final String sRepositoryURI = repositoryURI.toString();
+		if (rawPath.startsWith(sRepositoryURI)) {
+			return rawPath.substring(sRepositoryURI.length());
+		}
+		return rawPath;
 	}
 
 	@Override

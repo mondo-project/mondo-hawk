@@ -104,15 +104,20 @@ public interface IVcsManager {
 	boolean isURLLocationAccepted();
 
 	/**
-	 * Returns a set of prefixes that should be stripped from any inter-resource
-	 * references in the files contained within that repository in order to turn
-	 * them into relative paths within the repository.
+	 * Maps the raw URI given by the {@link IHawkObject} to a relative path within
+	 * the repository.
 	 */
-	Set<String> getPrefixesToBeStripped();
+	String getRepositoryPath(String rawPath);
 
-	// kostas
+	/**
+	 * Returns <code>true</code> if the repository should be "frozen", ignoring
+	 * any changes on the contained files until thawed.
+	 */
 	boolean isFrozen();
 
-	// kostas
-	void setFrozen(boolean f);
+	/**
+	 * Changes whether the location is "frozen", ignoring any changes on the
+	 * contained files until thawed.
+	 */
+	void setFrozen(boolean frozen);
 }

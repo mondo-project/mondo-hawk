@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Aston University.
+ * Copyright (c) 2017-2018 Aston University.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,20 +13,14 @@ package org.hawk.integration.tests.uml;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.epsilon.common.util.FileUtil;
-import org.eclipse.uml2.uml.resources.util.UMLResourcesUtil;
-import org.hawk.backend.tests.BackendTestSuite;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
@@ -34,41 +28,24 @@ import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.epsilon.emc.CEOLQueryEngine;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.epsilon.emc.GraphNodeWrapper;
-import org.hawk.integration.tests.ModelIndexingTest;
-import org.hawk.uml.vcs.PredefinedUMLLibraries;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Tests for UML indexing. These *must* be run as JUnit plug-in tests, as we
  * rely on the URI mappings registered for the predefined libraries by the UML
  * plugins.
  */
-public class UMLIndexingTest extends ModelIndexingTest {
+public class UMLIndexingTest extends AbstractUMLIndexingTest {
 
 	private static final String SIMPLE_PROFILE_NSURI_PREFIX = "http://github.com/mondo-project/mondo-hawk/simpleProfile";
-
-	private static final File BASE_DIRECTORY = new File("resources/models/uml");
 
 	@Rule
 	public TemporaryFolder modelFolder = new TemporaryFolder();
 
-	@Parameters(name = "{0}")
-    public static Iterable<Object[]> params() {
-    	return BackendTestSuite.caseParams();
-    }
-
 	public UMLIndexingTest(IGraphDatabaseFactory dbf) {
-		super(dbf, new UMLModelSupportFactory());
-	}
-
-	@Override
-	public void setup() throws Throwable {
-		UMLResourcesUtil.initGlobalRegistries();
-		super.setup();
-		addUMLComponents();
+		super(dbf);
 	}
 
 	@Test
@@ -247,23 +224,15 @@ public class UMLIndexingTest extends ModelIndexingTest {
 		});
 	}
 
-	protected void copyResource(final URI destURI, final File oldFile) throws IOException {
-		//! Have to replace this with re-saving the resource to the other location:
-		// simply copying breaks the path-based URL to the metamodel file
-		ResourceSetImpl rs = new ResourceSetImpl();
-		UMLResourcesUtil.init(rs);
-		final Resource oldResource = rs.createResource(URI.createFileURI(oldFile.toString()));
-		oldResource.load(null);
-		oldResource.setURI(destURI);
-		oldResource.save(null);
-		oldResource.unload();
-	}
-
-	protected void addUMLComponents() throws Throwable {
-		final PredefinedUMLLibraries vcs = new PredefinedUMLLibraries();
-		vcs.init(null, indexer);
-		vcs.run();
-		indexer.addVCSManager(vcs, true);
-		waitForSync();
+	@Test
+	public void localfolderCrosslinks() throws Throwable {
+		requestFolderIndex(new File(BASE_DIRECTORY, "crossfile-refs"));
+		waitForSync(() -> {
+			Map<String, Object> ctx = Collections.singletonMap(CEOLQueryEngine.PROPERTY_FILECONTEXT, "*model.uml");
+			assertEquals(3, eol("return Class.all.size;", ctx));
+			assertEquals(new HashSet<>(Arrays.asList("Class1", "Class3")),
+				eol("return Class.all.selectOne(c|c.name='Class2').generalization.general.name.flatten.asSet;", ctx));
+			return false;
+		});
 	}
 }

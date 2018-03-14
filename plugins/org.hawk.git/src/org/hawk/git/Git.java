@@ -302,17 +302,11 @@ public class Git implements IVcsManager {
 	}
 
 	private String makeRelative(String base, String extension) {
-
-		// System.err.println(">>"+base);
-		// System.err.println("<>"+extension);
-
 		if (!extension.startsWith(base))
 			return extension;
 
 		String ret = extension.substring(base.length());
-
 		return ret;
-
 	}
 
 	private void addAllFiles(File dir, Set<File> ret) {
@@ -362,8 +356,11 @@ public class Git implements IVcsManager {
 	}
 
 	@Override
-	public Set<String> getPrefixesToBeStripped() {
-		return Collections.emptySet();
+	public String getRepositoryPath(String rawPath) {
+		if (rawPath.startsWith(repositoryURL)) {
+			return rawPath.substring(repositoryURL.length());
+		}
+		return rawPath;
 	}
 
 	@Override

@@ -13,8 +13,8 @@ package org.hawk.graph.internal.updater;
 import java.io.File;
 import java.lang.reflect.Array;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -61,7 +61,6 @@ public class GraphModelBatchInjector {
 	private int unset;
 
 	private String repoURL;
-	private Set<String> prefixesToStrip = new HashSet<>();
 
 	private static enum ParseOptions {
 		MODELELEMENTS, MODELREFERENCES
@@ -83,6 +82,7 @@ public class GraphModelBatchInjector {
 
 	private final IGraphChangeListener listener;
 	private final VcsCommitItem commitItem;
+	private final String tempDirURI;
 	private Mode previousMode = Mode.UNKNOWN;
 
 	private void refreshIndexes() throws Exception {
@@ -122,27 +122,19 @@ public class GraphModelBatchInjector {
 		this.typeCache = typeCache;
 		this.commitItem = s;
 		this.listener = listener;
-
-		if (s != null) {
-			final IVcsManager vcsManager = s.getCommit().getDelta().getManager();
-			prefixesToStrip.addAll(vcsManager.getPrefixesToBeStripped());
-		}
-		prefixesToStrip.add(new File(g.getTempDir()).toURI().toString());
+		this.tempDirURI = new File(g.getTempDir()).toURI().toString();
 
 		refreshIndexes();
 	}
 
-	public GraphModelBatchInjector(IModelIndexer hawk, TypeCache typeCache, VcsCommitItem s, IHawkModelResource r,
-			IGraphChangeListener listener, boolean verbose) throws Exception {
+	public GraphModelBatchInjector(IModelIndexer hawk, TypeCache typeCache, VcsCommitItem s, IHawkModelResource r, IGraphChangeListener listener, boolean verbose) throws Exception {
+
 		IGraphDatabase g = hawk.getGraph();
 		this.graph = g;
 		this.typeCache = typeCache;
 		this.commitItem = s;
 		this.listener = listener;
-
-		final IVcsManager vcsManager = s.getCommit().getDelta().getManager();
-		prefixesToStrip.addAll(vcsManager.getPrefixesToBeStripped());
-		prefixesToStrip.add(new File(g.getTempDir()).toURI().toString());
+		this.tempDirURI = new File(g.getTempDir()).toURI().toString();
 
 		startTime = System.nanoTime();
 		graph.enterBatchMode();
@@ -841,7 +833,7 @@ public class GraphModelBatchInjector {
 			boolean isContainer) {
 
 		try {
-			String uri = destinationObject.getUri();
+			final String uri = destinationObject.getUri();
 
 			String destinationObjectRelativePathURI = uri;
 			if (destinationObject.isFragmentUnique()) {
@@ -852,31 +844,28 @@ public class GraphModelBatchInjector {
 				destinationObjectRelativePathURI = GraphModelUpdater.PROXY_FILE_WILDCARD + "#"
 						+ destinationObjectRelativePathURI.substring(destinationObjectRelativePathURI.indexOf("#") + 1);
 			} else if (!destinationObject.URIIsRelative()) {
-				destinationObjectRelativePathURI = new Utils().makeRelative(prefixesToStrip,
-						destinationObjectRelativePathURI);
+				if (destinationObjectRelativePathURI.startsWith(tempDirURI)) {
+					destinationObjectRelativePathURI = destinationObjectRelativePathURI.substring(tempDirURI.length());
+				} else {
+					final IVcsManager vcs = commitItem.getCommit().getDelta().getManager();
+					destinationObjectRelativePathURI = vcs.getRepositoryPath(destinationObjectRelativePathURI);
+				}
 			}
 
-			String destinationObjectRelativeFileURI = destinationObjectRelativePathURI;
-			destinationObjectRelativeFileURI = destinationObjectRelativePathURI.substring(0,
-					destinationObjectRelativePathURI.indexOf("#"));
+			final String destinationObjectRelativeFileURI =
+				destinationObjectRelativePathURI.substring(0, destinationObjectRelativePathURI.indexOf("#"));
 
-			String destinationObjectFullPathURI = repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
-					+ destinationObjectRelativePathURI;
-
-			String destinationObjectFullFileURI = repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR
-					+ destinationObjectRelativeFileURI;
+			String destinationObjectFullPathURI = repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + destinationObjectRelativePathURI;
+			String destinationObjectFullFileURI = repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + destinationObjectRelativeFileURI;
 
 			Object proxies = null;
 			proxies = node.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + destinationObjectFullFileURI);
-			proxies = new Utils().addToElementProxies((String[]) proxies, destinationObjectFullPathURI, edgelabel,
-					isContainment, isContainer);
+			proxies = new Utils().addToElementProxies((String[]) proxies, destinationObjectFullPathURI, edgelabel, isContainment, isContainer);
 
 			node.setProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + destinationObjectFullFileURI, proxies);
 
-			HashMap<String, Object> m = new HashMap<>();
-			m.put(GraphModelUpdater.PROXY_REFERENCE_PREFIX, destinationObjectFullFileURI);
-
-			proxyDictionary.add(node, m);
+			proxyDictionary.add(node, Collections.singletonMap(
+				GraphModelUpdater.PROXY_REFERENCE_PREFIX, destinationObjectFullFileURI));
 
 		} catch (Exception e) {
 			LOGGER.error("proxydictionary error", e);

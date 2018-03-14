@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.hawk.uml.vcs;
 
+import java.io.File;
 import java.util.Arrays;
 
 import org.eclipse.emf.common.util.URI;
@@ -45,6 +46,12 @@ public class PredefinedUMLLibraries extends PathmapResourceCollection implements
 	@Override
 	public String getHumanReadableName() {
 		return "UML Predefined Libraries";
+	}
+
+	@Override
+	public String getRepositoryPath(String rawPath) {
+		// The basename of the model should be enough
+		return new File(rawPath).getName();
 	}
 
 }

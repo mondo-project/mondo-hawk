@@ -13,11 +13,18 @@ package org.hawk.integration.tests;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
@@ -34,6 +41,7 @@ import org.hawk.graph.internal.updater.GraphMetaModelUpdater;
 import org.hawk.graph.internal.updater.GraphModelUpdater;
 import org.hawk.graph.syncValidationListener.SyncValidationListener;
 import org.hawk.localfolder.LocalFolder;
+import org.hawk.workspace.Workspace;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -179,5 +187,30 @@ public class ModelIndexingTest {
 
 	protected Object eol(final String eolQuery, Map<String, Object> context) throws InvalidQueryException, QueryExecutionException {
 		return queryEngine.query(indexer, eolQuery, context);
+	}
+
+	protected Object eolWorkspace(final String query) throws InvalidQueryException, QueryExecutionException {
+		return eol(query,
+			Collections.singletonMap(EOLQueryEngine.PROPERTY_REPOSITORYCONTEXT, Workspace.REPOSITORY_URL));
+	}
+
+	protected void requestWorkspaceIndexing() throws Exception {
+		final Workspace vcs = new Workspace();
+		vcs.init("/", indexer);
+		vcs.run();
+		indexer.addVCSManager(vcs, true);
+	}
+
+	protected IProject openProject(final File projectFolder) throws CoreException {
+		final File projectFile = new File(projectFolder, ".project");
+		final Path projectPath = new Path(projectFile.getAbsolutePath());
+
+		IWorkspace ws = ResourcesPlugin.getWorkspace();
+		IProjectDescription description = ws.loadProjectDescription(projectPath);
+		IProject project = ws.getRoot().getProject(description.getName());
+		project.create(description, null);
+		project.open(null);
+
+		return project;
 	}
 }
