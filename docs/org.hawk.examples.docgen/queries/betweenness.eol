@@ -1,0 +1,67 @@
+/*
+  A Faster Algorithm for Betweenness Centrality
+  Ulrik Brandes
+
+  We use the O(V*E) one for unweighted edges.
+*/
+
+var allAuthors = Author.all;
+
+var centrality: Map;
+for (v in allAuthors) {
+  centrality.put(v.name, 0);
+}
+
+for (s in allAuthors) {
+  var path: Map;
+  var sigma: Map;
+  var delta: Map;
+  var distance: Map;
+  for (w in allAuthors) {
+    path.put(w.name, Sequence {});
+    sigma.put(w.name, 0);
+    delta.put(w.name, 0);
+    distance.put(w.name, -1);
+  }
+  sigma.put(s.name, 1);
+  distance.put(s.name, 0);
+
+  var stack: Sequence;
+  var queue: Sequence;
+  queue.add(s);
+  while (not queue.isEmpty) {
+    var v = queue.get(0);
+    queue.removeAt(0);
+    stack.add(0, v);
+
+    for (w in v.knows) {
+      if (distance.get(w.name) < 0) {
+        queue.add(w);
+        distance.put(w.name, distance.get(v.name) + 1);
+      }
+      if (distance.get(w.name) = distance.get(v.name) + 1) {
+        sigma.put(w.name, sigma.get(w.name) + sigma.get(v.name));
+        path.get(w.name).add(v);
+      }
+    }
+  }
+
+  while (not stack.isEmpty) {
+    var w = stack.get(0); stack.removeAt(0);
+    for (v in path.get(w.name)) {
+      delta.put(v.name, delta.get(v.name) + (1.0 * sigma.get(v.name)/sigma.get(w.name)) * (1.0 + delta.get(w.name)));
+    }
+    if (w.getId() <> s.getId()) {
+      centrality.put(w.name, centrality.get(w.name) + delta.get(w.name));
+    }
+  }
+}
+
+var result = allAuthors.collect(a | Sequence{a.name, centrality.get(a.name)}).sortBy(a|-a.second).asSequence;
+/*
+for (r in result) {
+  r.println();
+}
+*/
+
+return result;

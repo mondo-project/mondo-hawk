@@ -1,0 +1,4 @@
+return `http://github.com/mondo-project/mondo-hawk/document`::Document.all
+  .collect(d| Sequence {d, d.nCitedBy})
+  .sortBy(e|-e.second)
+  .subList(0, 5);

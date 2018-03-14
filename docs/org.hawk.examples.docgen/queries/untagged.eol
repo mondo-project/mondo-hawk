@@ -1,0 +1,2 @@
+return `http://github.com/mondo-project/mondo-hawk/document`::Document.all
+  .select(d|d.tags.size = 0);
