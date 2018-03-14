@@ -27,6 +27,7 @@ import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTransaction;
 import org.junit.Assume;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
 
@@ -34,6 +35,9 @@ import org.junit.runners.Parameterized.Parameters;
  * Tests for populating the graph with nodes and vertices and navigating it.
  */
 public class GraphPopulationTest extends TemporaryDatabaseTest {
+
+	@Rule
+	public LogbackOnlyErrorsRule logRule = new LogbackOnlyErrorsRule();
 
 	@Parameters(name = "Parameters are {0}")
 	public static Iterable<Object[]> params() {

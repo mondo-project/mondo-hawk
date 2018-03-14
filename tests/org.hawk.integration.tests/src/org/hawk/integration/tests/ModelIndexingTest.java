@@ -25,6 +25,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.hawk.backend.tests.LogbackOnlyErrorsRule;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
@@ -57,6 +58,9 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class ModelIndexingTest {
+	@Rule
+	public LogbackOnlyErrorsRule logRule = new LogbackOnlyErrorsRule();
+
 	@Rule
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 

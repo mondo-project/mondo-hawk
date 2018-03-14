@@ -35,6 +35,9 @@ public class DatabaseManagementTest {
 	private IGraphDatabaseFactory dbFactory;
 
 	@Rule
+	public LogbackOnlyErrorsRule logRule = new LogbackOnlyErrorsRule();
+
+	@Rule
 	public TemporaryFolder folder = new TemporaryFolder();
 
 	@Parameters(name="Parameters are {0}")

@@ -518,7 +518,6 @@ public class GreycatDatabase implements IGraphDatabase {
 		exitBatchMode();
 		graph.connect((connected) -> {
 			if (connected) {
-				console.println("Connected to Greycat DB at " + storageFolder);
 				graph.declareIndex(world, NODE_LABEL_IDX, nodeIndex -> {
 					this.nodeLabelIndex = nodeIndex;
 					graph.declareIndex(world, SOFT_DELETED_KEY, softDeleteIndex -> {

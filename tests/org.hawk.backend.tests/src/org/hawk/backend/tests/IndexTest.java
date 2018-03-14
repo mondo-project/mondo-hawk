@@ -31,6 +31,7 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.junit.Assume;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
 
@@ -38,6 +39,9 @@ import org.junit.runners.Parameterized.Parameters;
  * Tests for populating and querying indices.
  */
 public class IndexTest extends TemporaryDatabaseTest {
+
+	@Rule
+	public LogbackOnlyErrorsRule logRule = new LogbackOnlyErrorsRule();
 
 	@Parameters(name="Parameters are {0}")
 	public static Iterable<Object[]> params() {
