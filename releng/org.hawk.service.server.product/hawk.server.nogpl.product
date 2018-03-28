@@ -102,9 +102,6 @@
       <plugin id="org.eclipse.equinox.http.registry" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
-      <plugin id="org.eclipse.rap.rwt" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.rap.rwt.osgi" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.rap.ui.workbench" autoStart="true" startLevel="0" />
       <plugin id="org.hawk.service.artemis.server" autoStart="true" startLevel="4" />
       <plugin id="org.hawk.service.servlet" autoStart="true" startLevel="0" />
    </configurations>
