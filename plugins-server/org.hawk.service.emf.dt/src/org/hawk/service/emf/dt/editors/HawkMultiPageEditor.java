@@ -220,11 +220,12 @@ public class HawkMultiPageEditor extends FormEditor	implements IResourceChangeLi
 
 	@Override
 	protected void pageChange(int newPageIndex) {
+		final int oldPageIndex = getCurrentPage();
 		super.pageChange(newPageIndex);
 		if (isDirty()) { 
-			if (newPageIndex == textEditorPageIndex && isDirty()) {
+			if (newPageIndex == textEditorPageIndex) {
 				refreshRawText();
-			} else {
+			} else if (oldPageIndex == textEditorPageIndex){
 				refreshForm();
 			}
 		}

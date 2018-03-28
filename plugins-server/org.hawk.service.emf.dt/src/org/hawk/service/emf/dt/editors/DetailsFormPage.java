@@ -216,7 +216,7 @@ class DetailsFormPage extends FormPage {
 		}
 
 		public void setPageSize(int size) {
-			fldPaged.getText().setText(size + "");
+			fldPaged.setTextWithoutListener(size + "", this);
 		}
 
 		public void setDefaultNamespaces(String defaultNS) {
@@ -659,6 +659,8 @@ class DetailsFormPage extends FormPage {
 			@Override protected void clientIDChanged() { getEditor().setDirty(true); }
 			@Override protected void durabilityChanged() { getEditor().setDirty(true); }
 		};
+
+		managedForm.reflow(true);
 	}
 
 	public InstanceSection getInstanceSection() {

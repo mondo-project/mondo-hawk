@@ -76,6 +76,14 @@ public class EffectiveMetamodelFormPage extends FormPage {
 
 	private static final String EMM_IMPORTER_EXTID = "org.hawk.service.emf.dt.emmImporter";
 
+	private final class ReloadSelectionListener extends SelectionAdapter {
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			treeViewer.setInput(null);
+			treeViewer.setInput(store);
+		}
+	}
+
 	private final class ImportEMMSelectionListener extends SelectionAdapter {
 		@Override
 		public void widgetSelected(SelectionEvent event) {
@@ -481,6 +489,8 @@ public class EffectiveMetamodelFormPage extends FormPage {
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			if (newInput != null) {
 				computeRoots();
+			} else {
+				roots = null;
 			}
 		}
 
@@ -598,7 +608,7 @@ public class EffectiveMetamodelFormPage extends FormPage {
 				+ "<p>With everything set to 'Default' or 'Includes', only the included elements are retrieved.</p>"
 				+ "<p>With everything set to 'Default' or 'Excludes', everything but the excluded elements is retrieved.</p>"
 				+ "<p>Using all three values, only the elements which are 1. included and 2. not excluded are retrieved.</p>"
-				+ "<p>The shown metamodels are those registered in the Hawk server: please make sure the Instance section of the descriptor has been setup correctly before using this page.</p>"
+				+ "<p>The shown metamodels are those registered in the Hawk server: please make sure the Instance section of the descriptor has been setup correctly before using this page. If the table is empty, correct the Instance section and click on Reload when done.</p>"
 				+ "</p>",
 				true, false);
 
@@ -683,6 +693,10 @@ public class EffectiveMetamodelFormPage extends FormPage {
 		btnImport.setText("Import...");
 		btnImport.addSelectionListener(new ImportEMMSelectionListener());
 
+		final Button btnReload = new Button(cButtons, SWT.NONE);
+		btnReload.setText("Reload");
+		btnReload.addSelectionListener(new ReloadSelectionListener());
+
 		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
@@ -695,6 +709,8 @@ public class EffectiveMetamodelFormPage extends FormPage {
 
 		treeViewer.setInput(store);
 		treeViewer.expandToLevel(2);
+
+		managedForm.reflow(true);
 	}
 
 	public EffectiveMetamodelRuleset getEffectiveMetamodel() {
