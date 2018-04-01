@@ -74,7 +74,7 @@ public class GraphModelUpdater implements IModelUpdater {
 		 */
 		final IGraphDatabase g = indexer.getGraph();
 		final DirtyDerivedAttributesListener l = new DirtyDerivedAttributesListener(g);
-		if (!indexer.getDerivedAttributeNames().isEmpty()) {
+		if (!indexer.getDerivedAttributes().isEmpty()) {
 			indexer.addGraphChangeListener(l);
 		}
 

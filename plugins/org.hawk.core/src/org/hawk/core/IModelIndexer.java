@@ -193,18 +193,7 @@ public interface IModelIndexer {
 
 	void addIndexedAttribute(String metamodeluri, String typename, String attributename);
 
-	Collection<String> getDerivedAttributeNames();
-
 	Collection<IndexedAttributeParameters> getDerivedAttributes();
-
-	/**
-	 * Returns a collection of strings of the form
-	 * <code>mmuri##typename##attrname</code>, where <code>mmuri</code> is the
-	 * URI of the EPackage, <code>typename</code> is the unqualified name of the
-	 * type, and <code>attrname</code> is the name of the attribute being
-	 * indexed.
-	 */
-	Collection<String> getIndexedAttributeNames();
 
 	Collection<IndexedAttributeParameters> getIndexedAttributes();
 

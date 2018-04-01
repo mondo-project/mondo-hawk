@@ -722,20 +722,6 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	}
 
 	@Override
-	public Collection<String> getDerivedAttributeNames() {
-		final List<String> attrs = new ArrayList<>();
-		try {
-			for (DerivedAttributeSpec spec : client.listDerivedAttributes(name)) {
-				attrs.add(String.format("%s##%s##%s", spec.metamodelUri, spec.typeName, spec.attributeName));
-			}
-		} catch (TException e) {
-			console.printerrln("Could not list the derived attributes");
-			console.printerrln(e);
-		}
-		return attrs;
-	}
-
-	@Override
 	public Collection<IndexedAttributeParameters> getDerivedAttributes() {
 		final List<IndexedAttributeParameters> attrs = new ArrayList<>();
 		try {
@@ -752,20 +738,6 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 			console.printerrln(e);
 		}
 		return attrs;		
-	}
-
-	@Override
-	public Collection<String> getIndexedAttributeNames() {
-		final List<String> attrs = new ArrayList<>();
-		try {
-			for (IndexedAttributeSpec spec : client.listIndexedAttributes(name)) {
-				attrs.add(String.format("%s##%s##%s", spec.metamodelUri, spec.typeName, spec.attributeName));
-			}
-		} catch (TException e) {
-			console.printerrln("Could not list the indexed attributes");
-			console.printerrln(e);
-		}
-		return attrs;
 	}
 
 	@Override

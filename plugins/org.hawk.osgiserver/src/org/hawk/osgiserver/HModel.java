@@ -415,10 +415,6 @@ public class HModel implements IStateListener {
 		return parsers;
 	}
 
-	public Collection<String> getDerivedAttributeNames() {
-		return hawk.getModelIndexer().getDerivedAttributeNames();
-	}
-
 	public Collection<IndexedAttributeParameters> getDerivedAttributes() {
 		return hawk.getModelIndexer().getDerivedAttributes();
 	}
@@ -429,10 +425,6 @@ public class HModel implements IStateListener {
 
 	public IGraphDatabase getGraph() {
 		return hawk.getModelIndexer().getGraph();
-	}
-
-	public Collection<String> getIndexedAttributeNames() {
-		return hawk.getModelIndexer().getIndexedAttributeNames();
 	}
 
 	public Collection<IndexedAttributeParameters> getIndexedAttributes() {

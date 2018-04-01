@@ -207,7 +207,7 @@ public class GraphMetaModelResourceInjector {
 
 				Set<IGraphNode> toBeUpdated = new HashSet<>();
 				final DirtyDerivedAttributesListener l = new DirtyDerivedAttributesListener(graph);
-				if (!hawk.getDerivedAttributeNames().isEmpty()) {
+				if (!hawk.getDerivedAttributes().isEmpty()) {
 					hawk.addGraphChangeListener(l);
 				}
 

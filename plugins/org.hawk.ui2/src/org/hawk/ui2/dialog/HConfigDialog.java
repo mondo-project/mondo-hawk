@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.ui.PlatformUI;
 import org.hawk.core.IStateListener;
 import org.hawk.core.IVcsManager;
+import org.hawk.core.util.IndexedAttributeParameters;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.view.HView;
 
@@ -398,8 +399,10 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 
 	private void updateDerivedAttributeList() {
 		derivedAttributeList.removeAll();
-		for (String da : hawkModel.getDerivedAttributeNames()) {
-			derivedAttributeList.add(da);
+		for (IndexedAttributeParameters da : hawkModel.getDerivedAttributes()) {
+			derivedAttributeList.add(
+				String.format("%s##%s##%s", da.getMetamodelUri(), da.getTypeName(), da.getAttributeName())
+			);
 		}
 		String[] items = derivedAttributeList.getItems();
 		java.util.Arrays.sort(items);
@@ -408,8 +411,10 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 
 	private void updateIndexedAttributeList() {
 		indexedAttributeList.removeAll();
-		for (String ia : hawkModel.getIndexedAttributeNames()) {
-			indexedAttributeList.add(ia);
+		for (IndexedAttributeParameters ia : hawkModel.getIndexedAttributes()) {
+			indexedAttributeList.add(
+					String.format("%s##%s##%s", ia.getMetamodelUri(), ia.getTypeName(), ia.getAttributeName())
+			);
 		}
 		String[] items = indexedAttributeList.getItems();
 		java.util.Arrays.sort(items);

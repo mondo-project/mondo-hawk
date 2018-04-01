@@ -939,21 +939,12 @@ public class ModelIndexerImpl implements IModelIndexer {
 	 * Every method that changes the derived attributes in some form should set this to
 	 * null, so it is recomputed in the next call to {@link #getDerivedAttributes()}.
 	 */
-	private Collection<String> cachedDerivedAttributeNames = null;
 	private Collection<IndexedAttributeParameters> cachedDerivedAttributes = null;
-
-	@Override
-	public Collection<String> getDerivedAttributeNames() {
-		if (cachedDerivedAttributeNames == null) {
-			cachedDerivedAttributeNames = getExtraAttributeNames(IS_DERIVED);
-		}
-		return cachedDerivedAttributeNames;
-	}
 
 	@Override
 	public Collection<IndexedAttributeParameters> getDerivedAttributes() {
 		if (cachedDerivedAttributes == null) {
-			cachedDerivedAttributes  = getExtraAttributes(IS_DERIVED);
+			cachedDerivedAttributes = getExtraAttributes(IS_DERIVED);
 		}
 		return cachedDerivedAttributes;
 	}
@@ -988,11 +979,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 	}
 
 	@Override
-	public Collection<String> getIndexedAttributeNames() {
-		return getExtraAttributeNames(IS_INDEXED);
-	}
-
-	@Override
 	public Collection<IndexedAttributeParameters> getIndexedAttributes() {
 		return  getExtraAttributes(IS_INDEXED);
 	}
@@ -1019,47 +1005,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 	 * {@link #IS_INDEXED} if not.
 	 */
 	private boolean isDerivedAttribute(IGraphNode typenode, final String attrName) {
-		return ((String[]) typenode.getProperty(attrName))[0].equals("d");
+		final String[] propertyInfo = (String[]) typenode.getProperty(attrName);
+		return propertyInfo[0].equals("d");
 	}
-
-	/**
-	 * Lists all the Hawk-specific attributes available. If
-	 * <code>isDerived</code> is {@link #IS_DERIVED}, it will list all the
-	 * derived attributes. If it is {@link #IS_INDEXED}, it will list all the
-	 * indexed attributes.
-	 */
-	private Collection<String> getExtraAttributeNames(final boolean isDerived) {
-		Set<String> ret = new HashSet<String>();
-
-		try (IGraphTransaction t = graph.beginTransaction()) {
-			ret = getAttributeIndexNames();
-			
-			Iterator<String> it = ret.iterator();
-			while (it.hasNext()) {
-
-				String s = it.next();
-				String[] split = s.split("##"); 
-
-				final String mmURI = split[0];
-				final String typeName = split[1];
-				final String attrName = split[2];
-
-				IGraphNode typenode = getTypeNode(mmURI, typeName);
-
-				if (isDerivedAttribute(typenode, attrName) != isDerived) {
-					it.remove();
-				}
-			}
-
-			t.success();
-		} catch (Exception e) {
-			System.err.println("error in getExtraAttributeNames");
-			e.printStackTrace();
-		}
-		return ret;
-	}
-	
-
 
 	private Collection<IndexedAttributeParameters> getExtraAttributes(final boolean isDerived) {
 
