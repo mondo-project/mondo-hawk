@@ -5,8 +5,8 @@
       version="1.2.0.qualifier"
       provider-name="University of York">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description>
+     Provides OSGi console commands for communicating with a remote Hawk index.
    </description>
 
    <copyright url="http://www.example.com/copyright">

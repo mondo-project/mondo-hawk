@@ -6,11 +6,13 @@
       provider-name="Aston University">
 
    <description url="https://github.com/mondo-project/mondo-hawk">
-      This feature allows Hawk to index EMF UML2 models and register profiles as metamodels. In order to reference the UML2 standard library, it also adds a virtual repository type that exposes those models to Hawk for indexing.
+     This feature allows Hawk to index EMF UML2 models and register profiles as
+     metamodels. In order to reference the UML2 standard library, it also adds a
+     virtual repository type that exposes those models to Hawk for indexing.
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+   <copyright>
+     Copyright (C) 2016-2018 Aston University.
    </copyright>
 
    <license url="https://www.eclipse.org/legal/epl-2.0/">

@@ -5,16 +5,17 @@
       version="1.2.0.qualifier"
       provider-name="Aston University">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description>
+     Backend implementation based on Greycat many-worlds temporal graphs,
+     with custom Lucene indexing.
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+   <copyright>
+     Copyright (C) 2018 Aston University.
    </copyright>
 
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   <license url="https://www.eclipse.org/legal/epl-2.0/">
+     Eclipse Public License - v2.0
    </license>
 
    <requires>

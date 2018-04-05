@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.hawk.osgiserver.feature"
-      label="Hawk OSGi-based Server Feature"
-      version="1.2.0.qualifier"
-      provider-name="University of York">
+    id="org.hawk.osgiserver.feature"
+    label="Hawk OSGi-based Server Feature"
+    version="1.2.0.qualifier"
+    provider-name="University of York">
 
-   <description url="http://www.example.com/description">
-      Feature for an OSGi-based server for Hawk.
-   </description>
+  <description url="http://www.example.com/description">
+    Feature for an OSGi-based server for Hawk.
+  </description>
+  
+  <copyright>
+    Copyright (C) 2015-2018 University of York, Aston University.
+  </copyright>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
-   </copyright>
+  <license url="https://www.eclipse.org/legal/epl-2.0/">
+    Eclipse Public License - v2.0
+  </license>
 
-   <license url="http://www.example.com/license">
-      Eclipse Public License - v2.0
-   </license>
+  <requires>
+    <import plugin="org.eclipse.core.runtime"/>
+    <import plugin="org.hawk.core" version="1.0.0" match="greaterOrEqual"/>
+    <import plugin="org.hawk.core.dependencies"/>
+    <import plugin="org.slf4j.api"/>
+  </requires>
 
-   <requires>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.hawk.core" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.hawk.core.dependencies"/>
-      <import plugin="org.slf4j.api"/>
-   </requires>
-
-   <plugin
-         id="org.hawk.osgiserver"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+  <plugin
+      id="org.hawk.osgiserver"
+      download-size="0"
+      install-size="0"
+      version="0.0.0"
+      unpack="false"/>
 
 </feature>

@@ -5,12 +5,13 @@
       version="1.2.0.qualifier"
       provider-name="University of York">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description>
+     Provides the ability to index the currently running Eclipse workspace, and
+     react immediately to any changes.
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+   <copyright>
+     Copyright (C) 2015-2018 University of York, Aston University.
    </copyright>
 
    <license url="https://www.eclipse.org/legal/epl-2.0/">

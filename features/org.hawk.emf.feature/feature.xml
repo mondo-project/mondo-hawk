@@ -5,12 +5,12 @@
       version="1.2.0.qualifier"
       provider-name="University of York">
 
-   <description url="http://www.example.com/description">
+   <description>
       Allows indexing EMF models using Hawk.
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+   <copyright>
+     Copyright (C) 2011-2018 University of York, Aston University.
    </copyright>
 
    <license url="https://www.eclipse.org/legal/epl-2.0/">

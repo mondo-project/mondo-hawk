@@ -5,16 +5,18 @@
       version="1.2.0.qualifier"
       provider-name="University of York">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description>
+     Provides an EPL-friendly clean-room implementation of a parser for the EXML
+     persistence format used by the open-source SOFTEAM Modelio tool, for use by
+     Hawk.
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+   <copyright>
+     Copyright (C) 2015-2018 University of York, Aston University.
    </copyright>
 
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   <license url="https://www.eclipse.org/legal/epl-2.0/">
+      Eclipse Public License - v2.0
    </license>
 
    <plugin

@@ -5,12 +5,13 @@
       version="1.2.0.qualifier"
       provider-name="University of York">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description>
+     This feature allows Hawk to index models in the Busines Process Modelling
+     Notation.
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+   <copyright>
+     Copyright (C) 2015-2018 The University of York, Aston University.
    </copyright>
 
    <license url="https://www.eclipse.org/legal/epl-2.0/">
