@@ -1,10 +1,16 @@
 /*******************************************************************************
  * Copyright (c) 2017 Aston University
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-2.0/
  * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * This Source Code may also be made available under the following Secondary
+ * Licenses when the conditions for such availability set forth in the Eclipse
+ * Public License, v. 2.0 are satisfied: GNU General Public License, version 3.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR GPL-3.0
+ *
  * Contributors:
  *     Orjuwan Al-Wadeai - Modelio XML metamodel parser
  ******************************************************************************/
@@ -17,13 +23,7 @@ import java.util.NoSuchElementException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.hawk.core.model.IHawkClassifier;
-import org.hawk.modelio.exml.metamodel.ModelioAttribute;
-import org.hawk.modelio.exml.metamodel.ModelioClass;
-import org.hawk.modelio.exml.metamodel.ModelioPackage;
-import org.hawk.modelio.exml.metamodel.mlib.MEnum;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
