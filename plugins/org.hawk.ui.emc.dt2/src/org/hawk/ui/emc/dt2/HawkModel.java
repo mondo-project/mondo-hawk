@@ -64,7 +64,6 @@ public class HawkModel extends ModelReference {
 			eolQueryEngine.setDefaultNamespaces(namespaces);
 		}
 		this.target = eolQueryEngine;
-		eolQueryEngine.setDatabaseConfig(properties);
 
 		final HUIManager m = HUIManager.getInstance();
 		final String hn = properties.getProperty(PROPERTY_INDEXER_NAME);

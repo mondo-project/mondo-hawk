@@ -33,13 +33,18 @@ public class LogbackOnlyErrorsRule extends ExternalResource {
 
 	@Override
 	protected void before() throws Throwable {
-		logger = (Logger) LoggerFactory.getLogger("org.hawk");
-		oldLevel = logger.getLevel();
-		logger.setLevel(Level.ERROR);
+		Object rawLogger = LoggerFactory.getLogger("org.hawk");
+		if (rawLogger instanceof Logger) {
+			logger = (Logger) LoggerFactory.getLogger("org.hawk");
+			oldLevel = logger.getLevel();
+			logger.setLevel(Level.ERROR);
+		}
 	}
 
 	@Override
 	protected void after() {
-		logger.setLevel(oldLevel);
+		if (logger != null) {
+			logger.setLevel(oldLevel);
+		}
 	}
 }

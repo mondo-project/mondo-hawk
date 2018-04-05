@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.epsilon.common.parse.problem.ParseProblem;
-import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.eol.EolModule;
 import org.eclipse.epsilon.eol.execute.context.Variable;
 import org.hawk.core.IModelIndexer;
@@ -155,47 +154,10 @@ public class DeriveFeature {
 	}
 
 	private EolModule initModule(IModelIndexer m, EOLQueryEngine model) throws Exception {
-
 		EolModule currentModule = new EolModule();
-
-		StringProperties configuration = new StringProperties();
-
-		long x = Runtime.getRuntime().maxMemory() / 1000000 / 60;
-		// configuration.put("DUMP_DATABASE_CONFIG_ON_EXIT", true);
-		// configuration.put("DUMP_MODEL_CONFIG_ON_EXIT", true);
-		// configuration.put("DUMP_FULL_DATABASE_CONFIG_ON_EXIT", true);
-		configuration.put(AbstractEpsilonModel.databaseLocation, m.getGraph().getPath());
-		configuration.put("name", "Model");
-		configuration.put(AbstractEpsilonModel.enableCaching, true);
-
-		configuration.put("neostore.nodestore.db.mapped_memory", 3 * x + "M");
-		configuration.put("neostore.relationshipstore.db.mapped_memory", 14 * x + "M");
-		configuration.put("neostore.propertystore.db.mapped_memory", x + "M");
-		configuration.put("neostore.propertystore.db.strings.mapped_memory", 2 * x + "M");
-		configuration.put("neostore.propertystore.db.arrays.mapped_memory", x + "M");
-
-		model.setDatabaseConfig(configuration);
-
 		model.load(m);
-
 		currentModule.getContext().getModelRepository().addModel(model);
-
-		// run("Model.find(td:TypeDeclaration|td.bodyDeclarations.select(md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public='true')
-		// and md.modifiers.exists(mod:Modifier|mod.static='true') and
-		// md.returnType.isTypeOf(SimpleType) and
-		// md.returnType.name.fullyQualifiedName = td.name.fullyQualifiedName)
-		// ).size().println();");
-
-		// run("Model.find(td:TypeDeclaration|td.bodyDeclarations.select(" +
-		// "md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public=='true')
-		// "
-		// +
-		// "and md.modifiers.exists(mod:Modifier|mod.static=='true') " +
-		// "and md.returnType.isTypeOf(SimpleType) " +
-		// "and md.returnType.name.fullyQualifiedNam
-
 		return currentModule;
-
 	}
 
 }

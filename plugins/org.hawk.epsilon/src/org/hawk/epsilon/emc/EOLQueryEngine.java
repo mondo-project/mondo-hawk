@@ -33,7 +33,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.epsilon.common.parse.problem.ParseProblem;
-import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.eol.EolModule;
 import org.eclipse.epsilon.eol.IEolModule;
 import org.eclipse.epsilon.eol.exceptions.EolInternalException;
@@ -45,7 +44,6 @@ import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementT
 import org.eclipse.epsilon.eol.execute.context.Variable;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertyGetter;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertySetter;
-import org.eclipse.epsilon.eol.models.Model;
 import org.eclipse.epsilon.eol.types.EolAnyType;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IStateListener.HawkState;
@@ -92,7 +90,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 	protected IGraphNodeIndex metamodeldictionary;
 
-	protected StringProperties config = null;
 	protected Set<String> defaultNamespaces = null;
 
 	protected GraphPropertyGetter propertyGetter;
@@ -300,44 +297,29 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	}
 
 	public void load(IModelIndexer m) throws EolModelLoadingException {
-
-		if (config == null)
-			config = getDatabaseConfig();
-
 		if (m != null) {
 			indexer = m;
 			graph = m.getGraph();
 			aliases.add(m.getName());
 		}
 
+		if (name == null) {
+			name = "Model";
+		}
+
 		if (propertyGetter == null || propertyGetter.getGraph() != graph)
 			propertyGetter = new GraphPropertyGetter(graph, this);
 
-		name = (String) config.get(EOLQueryEngine.PROPERTY_NAME);
-		String aliasString = config.getProperty(Model.PROPERTY_ALIASES);
-		boolean aliasStringIsValid = aliasString != null && aliasString.trim().length() > 0;
-		String[] aliasArray = aliasStringIsValid ? aliasString.split(",") : new String[0];
-		for (int i = 0; i < aliasArray.length; i++) {
-			this.aliases.add(aliasArray[i].trim());
-		}
-
 		if (graph != null) {
-
 			try (IGraphTransaction tx = graph.beginTransaction()) {
 				metamodeldictionary = graph.getMetamodelIndex();
 				tx.success();
 			} catch (Exception e) {
 				LOGGER.error("Could not retrieve the metamodel index", e);
 			}
-
-		} else
-			throw new EolModelLoadingException(new Exception("Attempt to load a model from an invalid graph: " + graph),
-					this);
-
-		if (enableDebugOutput) {
-			LOGGER.info("engine initialised with model named: {}, with alises: {}", name, aliases);
+		} else {
+			throw new EolModelLoadingException(new Exception("Attempt to load a model from an invalid graph: " + graph), this);
 		}
-
 	}
 
 	@Override
@@ -406,30 +388,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		}
 	}
 
-	/*
-	 * TODO: move this to the Neo4j backend.
-	 */
-	protected StringProperties getDefaultDatabaseConfig() {
-		final long x = Runtime.getRuntime().maxMemory() / 1000000 / 60;
-		StringProperties defaultConfig = new StringProperties();
-		defaultConfig.put("neostore.nodestore.db.mapped_memory", 5 * x + "M");
-		defaultConfig.put("neostore.relationshipstore.db.mapped_memory", 15 * x + "M");
-		defaultConfig.put("neostore.propertystore.db.mapped_memory", 20 * x + "M");
-		defaultConfig.put("neostore.propertystore.db.strings.mapped_memory", 2 * x + "M");
-		defaultConfig.put("neostore.propertystore.db.arrays.mapped_memory", x + "M");
-		defaultConfig.put("keep_logical_logs", "false");
-
-		File genericWorkspaceFile = new File("");
-
-		defaultConfig.put(databaseLocation,
-				new File(new File(genericWorkspaceFile.getAbsolutePath().replaceAll("\\\\", "/")).getParentFile()
-						.getAbsolutePath()) + "/DB");
-
-		defaultConfig.put("name", "Model");
-
-		return defaultConfig;
-	}
-
 	@Override
 	public boolean knowsAboutProperty(Object instance, String property) {
 		if (!owns(instance))
@@ -453,19 +411,12 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 	@Override
 	public IPropertySetter getPropertySetter() {
-		return null;// new NeoPropertySetter(graph, this);
+		return null;
 	}
 
 	public IGraphDatabase getBackend() {
 		return graph;
 	}
-
-	protected void dumpDatabaseConfig() {
-		for (Object c : config.keySet()) {
-			LOGGER.debug(">" + c + " = " + config.get(c));
-		}
-	}
-
 
 	public List<TypeNodeWrapper> getTypes() {
 		final List<TypeNodeWrapper> nodes = new ArrayList<>();
@@ -505,16 +456,9 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 
 		indexer = m;
 		graph = m.getGraph();
-
-		if (config == null)
-			config = getDatabaseConfig();
-
 		if (propertyGetter == null)
 			propertyGetter = new GraphPropertyGetter(graph, this);
 
-		StringProperties configuration = new StringProperties();
-		configuration.put(EOLQueryEngine.PROPERTY_ENABLE_CACHING, true);
-		setDatabaseConfig(configuration);
 		try {
 			load(m);
 		} catch (EolModelLoadingException e2) {
@@ -553,15 +497,9 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			if (prop.startsWith(DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX)) {
 				Object derived = "DERIVATION_EXCEPTION";
 				try {
-					Object enablecaching = getDatabaseConfig().get(EOLQueryEngine.PROPERTY_ENABLE_CACHING);
-					if (enablecaching != null && (enablecaching.equals("true") || enablecaching.equals(true))) {
-						derived = new DeriveFeature().deriveFeature(cachedModules, indexer, n, this, s, prop);
-					} else {
-						derived = new DeriveFeature().deriveFeature(new HashMap<String, EolModule>(), indexer, n, this,
-								s, prop);
-					}
-				} catch (Exception e1) {
-					LOGGER.error("Error while deriving feature " + prop, e1);
+					derived = new DeriveFeature().deriveFeature(cachedModules, indexer, n, this, s, prop);
+				} catch (Exception e) {
+					LOGGER.error("Error while deriving feature " + prop, e);
 				}
 
 				// Unset the current value (if there is any)
@@ -675,8 +613,8 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 		} catch (Exception e) {
 			LOGGER.error("Error reading the EOL file", e);
 		}
-		return query(m, code, context);
 
+		return query(m, code, context);
 	}
 
 	protected Object contextlessQuery(IModelIndexer m, String query, Map<String, Object> context)
@@ -733,11 +671,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	protected void parseQuery(String query, Map<String, Object> context, final EOLQueryEngine model,
 			final IEolModule module) throws InvalidQueryException {
 		try {
-			if (enableDebugOutput) {
-				System.out.println("PARSING:\n----------\n" + name == null ? "QUERY" : name + "\n----------");
-				System.out.println("Graph path: " + graph.getPath() + "\n----------");
-			}
-
 			module.parse(query);
 			if (!module.getParseProblems().isEmpty()) {
 				StringBuilder sb = new StringBuilder("Query failed to parse correctly:");
@@ -755,7 +688,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 	}
 
 	protected Object runQuery(final long trueStart, final IEolModule module) throws QueryExecutionException {
-		final long init = System.currentTimeMillis();
 		Object ret = null;
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			ret = module.execute();
@@ -786,14 +718,6 @@ public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine
 			}
 		} catch (Exception e) {
 			throw new QueryExecutionException(e);
-		}
-
-		if (enableDebugOutput) {
-			System.out.println("QUERY TOOK " + (System.currentTimeMillis() - init) / 1000 + "s"
-					+ (System.currentTimeMillis() - init) % 1000 + "ms, to run");
-
-			System.out.println("total time taken " + (System.currentTimeMillis() - trueStart) / 1000 + "s"
-					+ (System.currentTimeMillis() - trueStart) % 1000 + "ms, to run");
 		}
 
 		return ret;

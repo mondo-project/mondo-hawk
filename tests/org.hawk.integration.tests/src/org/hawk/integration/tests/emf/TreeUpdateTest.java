@@ -96,26 +96,6 @@ public class TreeUpdateTest extends ModelIndexingTest {
 		});
 	}
 
-	/*
-	@Test
-	public void bpmn() throws Throwable {
-		setup("bpmn", "bpmn/v0-B.2.0.bpmn", true);
-		final Callable<Object> noErrors = new Callable<Object>() {
-			@Override
-			public Object call() throws Exception {
-				assertEquals(0, validationListener.getTotalErrors());
-				return null;
-			}
-		};
-
-		for (int i = 1; i <= 8; i++) {
-			replaceWith("bpmn/v" + i + "-B.2.0.bpmn");
-			indexer.requestImmediateSync();
-			SyncEndListener.waitForSync(indexer, 200, noErrors);
-		}
-	}
-	*/
-
 	@Test
 	public void removeChild() throws Throwable {
 		prepare("tree/tree.model");
