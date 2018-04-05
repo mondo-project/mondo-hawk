@@ -14,7 +14,7 @@
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
  ******************************************************************************/
-package org.hawk.epsilon.emc;
+package org.hawk.epsilon.emc.tracking;
 
 import java.util.HashSet;
 import java.util.Set;

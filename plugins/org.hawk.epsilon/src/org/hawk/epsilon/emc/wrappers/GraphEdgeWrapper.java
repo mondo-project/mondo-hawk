@@ -14,12 +14,13 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.epsilon.emc;
+package org.hawk.epsilon.emc.wrappers;
 
 import java.util.Set;
 
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.hawk.core.graph.IGraphEdge;
+import org.hawk.epsilon.emc.EOLQueryEngine;
 
 /**
  * Wraps an edge produced during a Hawk query. Has a few useful synonyms

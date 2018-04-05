@@ -15,7 +15,7 @@
  *     Konstantinos Barmpis - initial API and implementation
  *     Antonio Garcia-Dominguez - add isContainedWithin (for EMF-Splitter integration)
  ******************************************************************************/
-package org.hawk.epsilon.emc;
+package org.hawk.epsilon.emc.wrappers;
 
 import java.lang.ref.WeakReference;
 
@@ -24,6 +24,7 @@ import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeReference;
 import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.ModelElementNode;
 
 public class GraphNodeWrapper implements IGraphNodeReference {

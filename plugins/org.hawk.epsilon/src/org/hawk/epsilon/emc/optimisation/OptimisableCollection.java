@@ -14,13 +14,15 @@
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
  ******************************************************************************/
-package org.hawk.epsilon.emc;
+package org.hawk.epsilon.emc.optimisation;
 
 import java.util.HashSet;
 
 import org.eclipse.epsilon.eol.execute.operations.AbstractOperation;
 import org.eclipse.epsilon.eol.execute.operations.declarative.IAbstractOperationContributor;
 import org.eclipse.epsilon.eol.models.IModel;
+import org.hawk.epsilon.emc.EOLQueryEngine;
+import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 
 public class OptimisableCollection extends HashSet<Object> implements
 		IAbstractOperationContributor {

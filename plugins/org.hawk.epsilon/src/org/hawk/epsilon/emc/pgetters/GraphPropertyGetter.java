@@ -14,7 +14,7 @@
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
  ******************************************************************************/
-package org.hawk.epsilon.emc;
+package org.hawk.epsilon.emc.pgetters;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,8 +36,13 @@ import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.util.Utils;
+import org.hawk.epsilon.emc.EOLQueryEngine;
+import org.hawk.epsilon.emc.tracking.AccessListener;
+import org.hawk.epsilon.emc.wrappers.GraphEdgeWrapper;
+import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.ModelElementNode;
+import org.hawk.graph.TypeNode;
 import org.hawk.graph.internal.updater.DirtyDerivedAttributesListener;
 
 public class GraphPropertyGetter extends AbstractPropertyGetter {
@@ -446,13 +451,10 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 	}
 
 	public String debug(GraphNodeWrapper object) {
-
 		IGraphNode node = object.getNode();
-
 		String ret = node.toString();
 
 		for (String p : node.getPropertyKeys()) {
-
 			Object n = node.getProperty(p);
 			String temp = "error: " + n.getClass();
 			if (n instanceof int[])
@@ -469,16 +471,13 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 		}
 
 		Collection<String> refs = new HashSet<String>();
-
 		for (IGraphEdge r : node.getOutgoing()) {
-
 			refs.add(r.getType().toString());
-
 		}
 
-		return ret + "\nOF TYPE: " + new MetamodelUtils().typeOfName(node)
-
-				+ "\nWITH OUTGOING REFERENCES: " + refs;
+		return ret + "\nOF TYPE: "
+			+ new TypeNode(node).getTypeName()
+			+ "\nWITH OUTGOING REFERENCES: " + refs;
 	}
 
 }

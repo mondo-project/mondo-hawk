@@ -14,7 +14,7 @@
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
  ******************************************************************************/
-package org.hawk.epsilon.emc;
+package org.hawk.epsilon.emc.pgetters;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,6 +31,8 @@ import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.util.Utils;
+import org.hawk.epsilon.emc.CEOLQueryEngine;
+import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.internal.updater.DirtyDerivedAttributesListener;

@@ -14,7 +14,7 @@
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
  ******************************************************************************/
-package org.hawk.epsilon.emc;
+package org.hawk.epsilon.emc.tracking;
 
 import org.hawk.core.query.IAccess;
 

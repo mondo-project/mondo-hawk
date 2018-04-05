@@ -29,6 +29,8 @@ import org.eclipse.epsilon.eol.EolModule;
 import org.eclipse.epsilon.eol.execute.context.Variable;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.epsilon.emc.pgetters.GraphPropertyGetter;
+import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.graph.internal.updater.DirtyDerivedAttributesListener;
 import org.hawk.graph.internal.util.GraphUtil;
 import org.slf4j.Logger;
@@ -103,7 +105,7 @@ public class DeriveFeature {
 			}
 
 			if (!(ret instanceof Collection<?>)) {
-				return toPrimitive(ret);
+				return AbstractHawkModel.toPrimitive(ret);
 			} else {
 
 				Collection<Object> collection = null;
@@ -116,7 +118,7 @@ public class DeriveFeature {
 				final Collection<?> srcCollection = (Collection<?>) ret;
 				Class<?> elemClass = null;
 				for (Object o : srcCollection) {
-					Object converted = toPrimitive(o);
+					Object converted = AbstractHawkModel.toPrimitive(o);
 					if (converted != null) {
 						collection.add(converted);
 					}
@@ -139,19 +141,6 @@ public class DeriveFeature {
 		return "DERIVATION_OTHER_ERROR";
 	}
 
-	protected static Object toPrimitive(Object ret) {
-		if (ret == null) {
-			return null;
-		} else if (ret instanceof Collection<?>) {
-			return "Hawk collection error: nested collections are not supported for derived/indexed attributes";
-		} else if (GraphUtil.isPrimitiveOrWrapperType(ret.getClass())) {
-			return ret;
-		} else if (ret instanceof GraphNodeWrapper) {
-			return ret;
-		} else {
-			return ret.toString();
-		}
-	}
 
 	private EolModule initModule(IModelIndexer m, EOLQueryEngine model) throws Exception {
 		EolModule currentModule = new EolModule();

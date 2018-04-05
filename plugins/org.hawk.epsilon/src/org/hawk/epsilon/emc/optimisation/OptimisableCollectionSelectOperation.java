@@ -15,7 +15,7 @@
  *     Konstantinos Barmpis - initial API and implementation
  *     Antonio Garcia-Dominguez - improved error reporting
  ******************************************************************************/
-package org.hawk.epsilon.emc;
+package org.hawk.epsilon.emc.optimisation;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -49,6 +49,9 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.util.Utils;
+import org.hawk.epsilon.emc.AbstractHawkModel;
+import org.hawk.epsilon.emc.EOLQueryEngine;
+import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -284,13 +287,13 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 		String indexname;
 		if (attributevalue != null && (indexname = isIndexed(attributename)) != null) {
 			if (!(attributevalue instanceof Collection<?>)) {
-				attributevalue = DeriveFeature.toPrimitive(attributevalue);
+				attributevalue = AbstractHawkModel.toPrimitive(attributevalue);
 			} else {
 				Collection<?> cRet = (Collection<?>) attributevalue;
 				Object[] aRet = new Object[cRet.size()];
 				int count = 0;
 				for (Iterator<?> it = cRet.iterator(); it.hasNext();) {
-					aRet[count] = DeriveFeature.toPrimitive(it.next());
+					aRet[count] = AbstractHawkModel.toPrimitive(it.next());
 					count++;
 				}
 				// flatten to allow comparison to index value (which cannot be

@@ -28,6 +28,10 @@ import java.util.Set;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.epsilon.emc.optimisation.OptimisableCollection;
+import org.hawk.epsilon.emc.pgetters.CGraphPropertyGetter;
+import org.hawk.epsilon.emc.wrappers.FileNodeWrapper;
+import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.ModelElementNode;
@@ -149,7 +153,7 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 		return allFNW;
 	}
 
-	protected Set<IGraphNode> getRawFileNodes() {
+	public Set<IGraphNode> getRawFileNodes() {
 		return files;
 	}
 

@@ -25,13 +25,29 @@ import org.eclipse.epsilon.eol.exceptions.models.EolEnumerationValueNotFoundExce
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.models.Model;
+import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.graph.ModelElementNode;
+import org.hawk.graph.internal.util.GraphUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractEpsilonModel extends Model {
+public abstract class AbstractHawkModel extends Model {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEpsilonModel.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractHawkModel.class);
+
+	public static Object toPrimitive(Object ret) {
+		if (ret == null) {
+			return null;
+		} else if (ret instanceof Collection<?>) {
+			return "Hawk collection error: nested collections are not supported for derived/indexed attributes";
+		} else if (GraphUtil.isPrimitiveOrWrapperType(ret.getClass())) {
+			return ret;
+		} else if (ret instanceof GraphNodeWrapper) {
+			return ret;
+		} else {
+			return ret.toString();
+		}
+	}
 
 	abstract public Collection<Object> getAllOf(String arg0, final String typeorkind)
 			throws EolModelElementTypeNotFoundException, EolInternalException;

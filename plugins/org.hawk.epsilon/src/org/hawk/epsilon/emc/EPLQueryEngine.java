@@ -28,6 +28,7 @@ import org.eclipse.epsilon.epl.execute.PatternMatchModel;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.query.QueryExecutionException;
+import org.hawk.epsilon.emc.tracking.AccessListener;
 
 /**
  * Adds support for EPL queries to Hawk. Derived attributes are not supported.

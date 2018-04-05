@@ -56,6 +56,13 @@ import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
 import org.hawk.core.util.Utils;
+import org.hawk.epsilon.emc.optimisation.OptimisableCollection;
+import org.hawk.epsilon.emc.pgetters.GraphPropertyGetter;
+import org.hawk.epsilon.emc.tracking.AccessListener;
+import org.hawk.epsilon.emc.wrappers.FileNodeWrapper;
+import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
+import org.hawk.epsilon.emc.wrappers.MetamodelNodeWrapper;
+import org.hawk.epsilon.emc.wrappers.TypeNodeWrapper;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.MetamodelNode;
 import org.hawk.graph.ModelElementNode;
@@ -73,7 +80,7 @@ import org.slf4j.LoggerFactory;
  * Right now the two seem to be deeply intertwined and separating them would break backwards
  * compatibility.
  */
-public class EOLQueryEngine extends AbstractEpsilonModel implements IQueryEngine {
+public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EOLQueryEngine.class);
 

@@ -33,7 +33,7 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.epsilon.emc.CEOLQueryEngine;
 import org.hawk.epsilon.emc.EOLQueryEngine;
-import org.hawk.epsilon.emc.GraphNodeWrapper;
+import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;

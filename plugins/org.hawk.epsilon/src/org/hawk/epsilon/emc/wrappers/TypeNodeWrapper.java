@@ -14,7 +14,7 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.epsilon.emc;
+package org.hawk.epsilon.emc.wrappers;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,6 +23,7 @@ import java.util.List;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTypeNodeReference;
 import org.hawk.core.query.IQueryEngine;
+import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.Slot;
 import org.hawk.graph.TypeNode;
