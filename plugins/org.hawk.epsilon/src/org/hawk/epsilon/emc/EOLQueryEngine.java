@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -64,6 +65,7 @@ import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.epsilon.emc.wrappers.MetamodelNodeWrapper;
 import org.hawk.epsilon.emc.wrappers.TypeNodeWrapper;
 import org.hawk.graph.FileNode;
+import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.MetamodelNode;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.TypeNode;
@@ -81,6 +83,8 @@ import org.slf4j.LoggerFactory;
  * compatibility.
  */
 public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
+
+	private static final String MMURI_TYPE_SEPARATOR = "::";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EOLQueryEngine.class);
 
@@ -142,6 +146,76 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 		throw new EolModelElementTypeNotFoundException(this.getName(), typeName);
 	}
 
+	/**
+	 * Convenience version of
+	 * {@link #getAllOf(String, String, String, String, String)} that looks in all
+	 * repositories.
+	 */
+	public Collection<GraphNodeWrapper> getAllOf(final String metamodelURI, final String typeName, final String filePatterns)
+			throws EolInternalException, EolModelElementTypeNotFoundException {
+		return getAllOf(metamodelURI, typeName, "*", filePatterns);
+	}
+
+	/**
+	 * Finds all the instances of a certain type (including subtypes) contained in
+	 * the specified repository and file patterns. This version assumes we will provide
+	 * a limited number of files and that these will be small - we start from the files.
+	 *
+	 * @param metamodelURI
+	 *            URI of the metamodel, e.g.
+	 *            <code>http://eclipse.org/example</code>.
+	 * @param typeName
+	 *            Name of the type within the metamodel, e.g.
+	 *            <code>Subsystem</code>.
+	 * @param repoPattern
+	 *            Pattern of the repository or repositories to use, e.g.
+	 *            <code>file:/*</code> or <code>project:/resource</code>.
+	 * @param filePatterns
+	 *            Comma-separated list of file patterns, such as
+	 *            <code>/a/b/c.xmi</code> or <code>/d/*</code>.
+	 * @throws EolInternalException
+	 *             Error while retrieving the type/file nodes.
+	 * @throws EolModelElementTypeNotFoundException
+	 *             Could not find the specified type.
+	 */
+	public Collection<GraphNodeWrapper> getAllOf(final String metamodelURI, final String typeName, final String repoPattern, final String filePatterns)
+		throws EolInternalException, EolModelElementTypeNotFoundException
+	{
+		try {
+			List<IGraphNode> typeNodes = getTypeNodes(metamodelURI, typeName);
+			if (typeNodes.size() == 1) {
+				final TypeNode targetTypeNode = new TypeNode(typeNodes.get(0));
+
+				final List<GraphNodeWrapper> results = new ArrayList<>();
+				final Set<FileNode> fileNodes = new GraphWrapper(graph).getFileNodes(
+					Collections.singleton(repoPattern),
+					Arrays.asList(filePatterns.split(",")));
+
+				for (FileNode fn : fileNodes) {
+					for (ModelElementNode me : fn.getModelElements()) {
+						if (me.getTypeNode().equals(targetTypeNode)) {
+							results.add(new GraphNodeWrapper(me.getNode(), this));
+						} else {
+							for (TypeNode superType : me.getKindNodes()) {
+								if (superType.equals(targetTypeNode)) {
+									results.add(new GraphNodeWrapper(me.getNode(), this));
+									break;
+								}
+							}
+						}
+					}
+				}
+
+				return results;
+			}
+
+		} catch (Exception e) {
+			throw new EolInternalException(e);
+		}
+
+		throw new EolModelElementTypeNotFoundException(this.getName(), typeName);
+	}
+
 	public Collection<Object> getAllOf(IGraphNode typeNode, final String typeorkind) {
 		OptimisableCollection nodes = new OptimisableCollection(this, new GraphNodeWrapper(typeNode, this));
 
@@ -153,27 +227,16 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 	}
 
 	protected List<IGraphNode> getTypeNodes(String typeName) {
-		if (typeName.contains("::")) {
-			String ep = typeName.substring(0, typeName.indexOf("::"));
-			IGraphNode pack = null;
-	
-			// operations on the graph
-			// ...
-	
-			pack = metamodeldictionary.get("id", ep).getSingle();
-	
-			for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
-				IGraphNode othernode = r.getStartNode();
-				if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)
-						.equals(typeName.substring(typeName.indexOf("::") + 2))) {
-					return Collections.singletonList(othernode);
-				}
-			}
+		final int idxColon = typeName.lastIndexOf(MMURI_TYPE_SEPARATOR);
+
+		if (idxColon != -1) {
+			final String epackage = typeName.substring(0, idxColon);
+			final String type = typeName.substring(idxColon + MMURI_TYPE_SEPARATOR.length()); 
+			return getTypeNodes(epackage, type);
 		} else {
-	
-			Iterator<IGraphNode> packs = metamodeldictionary.query("id", "*").iterator();
-			LinkedList<IGraphNode> candidates = new LinkedList<IGraphNode>();
-	
+			final Iterator<IGraphNode> packs = metamodeldictionary.query("id", "*").iterator();
+			final List<IGraphNode> candidates = new LinkedList<IGraphNode>();
+
 			while (packs.hasNext()) {
 				IGraphNode pack = packs.next();
 				for (IGraphEdge n : pack.getIncomingWithType("epackage")) {
@@ -185,7 +248,7 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 					}
 				}
 			}
-	
+
 			if (candidates.size() == 1) {
 				return candidates;
 			} else if (candidates.size() > 1) {
@@ -202,6 +265,18 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 			}
 		}
 
+		return Collections.emptyList();
+	}
+
+	protected List<IGraphNode> getTypeNodes(String mmURI, String type) {
+		IGraphNode pack;
+		pack = metamodeldictionary.get("id", mmURI).getSingle();
+		for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
+			IGraphNode othernode = r.getStartNode();
+			if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(type)) {
+				return Collections.singletonList(othernode);
+			}
+		}
 		return Collections.emptyList();
 	}
 

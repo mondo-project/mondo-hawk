@@ -85,6 +85,18 @@ public class ModelElementNode {
 	}
 
 	/**
+	 * Returns the type nodes for the supertypes of this model element node,
+	 * excluding its own type (which can be obtained through {@link #getTypeNode()}.
+	 */
+	public List<TypeNode> getKindNodes() {
+		final List<TypeNode> nodes = new ArrayList<>();
+		for (IGraphEdge outEdge : node.getOutgoingWithType(EDGE_LABEL_OFKIND)) {
+			nodes.add(new TypeNode(outEdge.getEndNode()));
+		}
+		return nodes;
+	}
+
+	/**
 	 * Returns the file node for this model element node.
 	 */
 	public FileNode getFileNode() {

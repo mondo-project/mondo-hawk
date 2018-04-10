@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 public class CEOLQueryEngine extends EOLQueryEngine {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CEOLQueryEngine.class);
+
 	private Set<IGraphNode> files = null;
 	private boolean isTraversalScopingEnabled = true;
 
@@ -62,13 +63,9 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 			isTraversalScopingEnabled = Boolean.parseBoolean(etss);
 		}
 
-		final String[] filePatterns = (sFilePatterns != null && sFilePatterns.trim().length() != 0)
-				? sFilePatterns.split(",") : null;
-		final String[] repoPatterns = (sRepoPatterns != null && sRepoPatterns.trim().length() != 0)
-				? sRepoPatterns.split(",") : null;
-
+		final String[] filePatterns = (sFilePatterns != null && sFilePatterns.trim().length() != 0)	? sFilePatterns.split(",") : null;
+		final String[] repoPatterns = (sRepoPatterns != null && sRepoPatterns.trim().length() != 0) ? sRepoPatterns.split(",") : null;
 		this.files = new HashSet<>();
-
 		List<String> fplist = (filePatterns != null) ? Arrays.asList(filePatterns) : null;
 		List<String> rplist = (repoPatterns != null) ? Arrays.asList(repoPatterns) : null;
 

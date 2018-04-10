@@ -62,8 +62,8 @@ public class BackendTestSuite {
 	    	return Collections.singletonList(new Object[]{
 	    		// Change uncommented line depending on which backend you want to test outside this suite
 	    		//new Neo4JDatabaseFactory()
-	    		//new OrientDatabaseFactory()
-	    		new GreycatDatabaseFactory()
+	    		new OrientDatabaseFactory()
+	    		//new GreycatDatabaseFactory()
 	    	});
 	    }
 	}

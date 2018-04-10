@@ -34,6 +34,7 @@ import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
 import org.hawk.epsilon.emc.CEOLQueryEngine;
 import org.hawk.graph.GraphWrapper;
+import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.syncValidationListener.SyncValidationListener;
 import org.hawk.integration.tests.ModelIndexingTest;
 import org.junit.Before;
@@ -42,6 +43,8 @@ import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
 
 public class ScopedQueryTest extends ModelIndexingTest {
+
+	private static final String MM_URI = "http://github.com/mondo-hawk/testing/xrefs";
 
 	@Rule
 	public GraphChangeListenerRule<SyncValidationListener> syncValidation = new GraphChangeListenerRule<>(
@@ -99,6 +102,32 @@ public class ScopedQueryTest extends ModelIndexingTest {
 		});
 	}
 
+	@Test
+	public void instanceCountsAllOf() throws Throwable {
+		waitForSync(() -> {
+			assertEquals(0, syncValidation.getListener().getTotalErrors());
+
+			try (IGraphTransaction tx = db.beginTransaction()) {
+				assertEquals("With no context, it should return all six elements of the exact type", 6,
+						queryEngine.getAllOf("Element", ModelElementNode.EDGE_LABEL_OFTYPE).size());
+				assertEquals("OFKIND does not include the exact type", 0,
+						queryEngine.getAllOf("Element", ModelElementNode.EDGE_LABEL_OFKIND).size());
+
+				assertEquals("With file context '*', it should return all six elements", 6,
+						queryEngine.getAllOf(MM_URI, "Element", "*").size());
+				assertEquals("With file context '/root.model', it should return only the two root elements", 2,
+						queryEngine.getAllOf(MM_URI, "Element", "/root.model").size());
+				assertEquals("With file context '/subfolder/*', it should return four elements", 4,
+						queryEngine.getAllOf(MM_URI, "Element", "/subfolder/*").size());
+				assertEquals("With file context '/subfolder/subfolder/*', it should return only two elements", 2,
+						queryEngine.getAllOf(MM_URI, "Element", "/subfolder/subfolder/*").size());
+				tx.success();
+			}
+
+			return null;
+		});
+	}
+	
 	@Test
 	public void forwardRefs() throws Throwable {
 		waitForSync(() -> {
