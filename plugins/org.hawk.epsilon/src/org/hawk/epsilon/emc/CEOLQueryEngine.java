@@ -44,7 +44,7 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 	private Set<IGraphNode> files = null;
 	private boolean isTraversalScopingEnabled = true;
 
-	CEOLQueryEngine() {
+	public CEOLQueryEngine() {
 		// objects of this type should only be created on-the-fly by EOLQueryEngine#contextfulQuery
 	}
 
