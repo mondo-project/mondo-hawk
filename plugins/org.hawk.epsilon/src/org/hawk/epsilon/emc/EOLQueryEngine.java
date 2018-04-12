@@ -362,7 +362,8 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 
 	@Override
 	public boolean hasType(String type) {
-		return getTypeNodes(type).size() == 1;
+		final int size = getTypeNodes(type).size();
+		return size == 1;
 	}
 
 	@Override
