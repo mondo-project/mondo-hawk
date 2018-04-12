@@ -1,5 +1,5 @@
 @thrift(javans="org.hawk.service.api")
-@namespace(uri="hawk_api", prefix="")
+@namespace(uri="http://github.com/mondo-hawk/hawk_api", prefix="")
 package hawk_api;
 
 // Credentials: implied in the "auth" @doc attribute.

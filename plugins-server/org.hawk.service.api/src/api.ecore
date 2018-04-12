@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="hawk_api" nsURI="hawk_api" nsPrefix="">
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="hawk_api" nsURI="http://github.com/mondo-hawk/hawk_api" nsPrefix="">
   <eAnnotations source="thrift">
     <details key="javans" value="org.hawk.service.api"/>
   </eAnnotations>
