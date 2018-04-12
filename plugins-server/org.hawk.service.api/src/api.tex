@@ -147,6 +147,18 @@ The following service operations expose the capabilities of the Hawk heterogeneo
 	 & \camelcase{HawkInstanceNotRunning} & \multicolumn{2}{p{8.5cm}|}{The selected Hawk instance is not running.} \\\hline 
 \end{longtable}
 \begin{longtable} {|p{2cm}|p{3.5cm}|p{2.5cm}|p{6.5cm}|}
+	\caption{Operation Hawk.listMetamodelParsers}
+	\label{tab:hawk-listMetamodelParsers}\\
+	\cline{2-4}%
+	\multicolumn{1}{c|}{} & \textbf{Name} & \textbf{Type} & \textbf{Documentation} \\\hline 
+	\textbf{Operation} & \camelcase{listMetamodelParsers} & \camelcase{list<MetamodelParserDetails>} & Lists the details of the metamodel parsers in a Hawk instance. \\\hline
+	\textbf{Parameters} & \multicolumn{3}{l|}{} \\\hline
+	 & name & \camelcase{string} & The name of the Hawk instance. \\\hline 
+	\textbf{Exceptions} & \multicolumn{3}{l|}{} \\\hline
+	 & \camelcase{HawkInstanceNotFound} & \multicolumn{2}{p{8.5cm}|}{No Hawk instance exists with that name.} \\\hline 
+	 & \camelcase{HawkInstanceNotRunning} & \multicolumn{2}{p{8.5cm}|}{The selected Hawk instance is not running.} \\\hline 
+\end{longtable}
+\begin{longtable} {|p{2cm}|p{3.5cm}|p{2.5cm}|p{6.5cm}|}
 	\caption{Operation Hawk.listQueryLanguages}
 	\label{tab:hawk-listQueryLanguages}\\
 	\cline{2-4}%
@@ -161,6 +173,24 @@ The following service operations expose the capabilities of the Hawk heterogeneo
 	\cline{2-4}%
 	\multicolumn{1}{c|}{} & \textbf{Name} & \textbf{Type} & \textbf{Documentation} \\\hline 
 	\textbf{Operation} & \camelcase{query} & \camelcase{QueryResult} & Runs a query on a Hawk instance and returns a sequence of scalar values and/or model elements. \\\hline
+	\textbf{Parameters} & \multicolumn{3}{l|}{} \\\hline
+	 & name & \camelcase{string} & The name of the Hawk instance. \\\hline 
+	 & query & \camelcase{string} & The query to be executed. \\\hline 
+	 & language & \camelcase{string} & The name of the query language used (e.g. EOL, OCL). \\\hline 
+	 & options & \camelcase{HawkQueryOptions} & Options for the query. \\\hline 
+	\textbf{Exceptions} & \multicolumn{3}{l|}{} \\\hline
+	 & \camelcase{HawkInstanceNotFound} & \multicolumn{2}{p{8.5cm}|}{No Hawk instance exists with that name.} \\\hline 
+	 & \camelcase{HawkInstanceNotRunning} & \multicolumn{2}{p{8.5cm}|}{The selected Hawk instance is not running.} \\\hline 
+	 & \camelcase{UnknownQueryLanguage} & \multicolumn{2}{p{8.5cm}|}{The specified query language is not supported by the operation.} \\\hline 
+	 & \camelcase{InvalidQuery} & \multicolumn{2}{p{8.5cm}|}{The specified query is not valid.} \\\hline 
+	 & \camelcase{FailedQuery} & \multicolumn{2}{p{8.5cm}|}{The specified query failed to complete its execution.} \\\hline 
+\end{longtable}
+\begin{longtable} {|p{2cm}|p{3.5cm}|p{2.5cm}|p{6.5cm}|}
+	\caption{Operation Hawk.timedQuery}
+	\label{tab:hawk-timedQuery}\\
+	\cline{2-4}%
+	\multicolumn{1}{c|}{} & \textbf{Name} & \textbf{Type} & \textbf{Documentation} \\\hline 
+	\textbf{Operation} & \camelcase{timedQuery} & \camelcase{QueryReport} & Runs a query on a Hawk instance and returns a sequence of scalar values and/or model elements. \\\hline
 	\textbf{Parameters} & \multicolumn{3}{l|}{} \\\hline
 	 & name & \camelcase{string} & The name of the Hawk instance. \\\hline 
 	 & query & \camelcase{string} & The query to be executed. \\\hline 
@@ -438,47 +468,6 @@ The following service operations expose the capabilities of the Hawk heterogeneo
 	 & \camelcase{HawkInstanceNotRunning} & \multicolumn{2}{p{8.5cm}|}{The selected Hawk instance is not running.} \\\hline 
 \end{longtable}
 
-\subsubsection{IFCExport}
-\label{sec:IFCExport}
-IFC export facility for getting IFC models from the Hawk server.
-
-\begin{longtable} {|p{2cm}|p{3.5cm}|p{2.5cm}|p{6.5cm}|}
-	\caption{Operation IFCExport.exportAsSTEP}
-	\label{tab:iFCExport-exportAsSTEP}\\
-	\cline{2-4}%
-	\multicolumn{1}{c|}{} & \textbf{Name} & \textbf{Type} & \textbf{Documentation} \\\hline 
-	\textbf{Operation} & \camelcase{exportAsSTEP} & \camelcase{IFCExportJob} & Export part of a Hawk index in IFC STEP format. \\\hline
-	\textbf{Parameters} & \multicolumn{3}{l|}{} \\\hline
-	 & hawkInstance & \camelcase{string} &  \\\hline 
-	 & options & \camelcase{IFCExportOptions} &  \\\hline 
-\end{longtable}
-\begin{longtable} {|p{2cm}|p{3.5cm}|p{2.5cm}|p{6.5cm}|}
-	\caption{Operation IFCExport.getJobs}
-	\label{tab:iFCExport-getJobs}\\
-	\cline{2-4}%
-	\multicolumn{1}{c|}{} & \textbf{Name} & \textbf{Type} & \textbf{Documentation} \\\hline 
-	\textbf{Operation} & \camelcase{getJobs} & \camelcase{list<IFCExportJob>} & List all the previously scheduled IFC export jobs. \\\hline
-	\textbf{Parameters} & \multicolumn{3}{l|}{None.} \\\hline
-\end{longtable}
-\begin{longtable} {|p{2cm}|p{3.5cm}|p{2.5cm}|p{6.5cm}|}
-	\caption{Operation IFCExport.getJobStatus}
-	\label{tab:iFCExport-getJobStatus}\\
-	\cline{2-4}%
-	\multicolumn{1}{c|}{} & \textbf{Name} & \textbf{Type} & \textbf{Documentation} \\\hline 
-	\textbf{Operation} & \camelcase{getJobStatus} & \camelcase{IFCExportJob} & Retrieve the current status of the job with the specified ID. \\\hline
-	\textbf{Parameters} & \multicolumn{3}{l|}{} \\\hline
-	 & jobID & \camelcase{string} &  \\\hline 
-\end{longtable}
-\begin{longtable} {|p{2cm}|p{3.5cm}|p{2.5cm}|p{6.5cm}|}
-	\caption{Operation IFCExport.killJob}
-	\label{tab:iFCExport-killJob}\\
-	\cline{2-4}%
-	\multicolumn{1}{c|}{} & \textbf{Name} & \textbf{Type} & \textbf{Documentation} \\\hline 
-	\textbf{Operation} & \camelcase{killJob} & \camelcase{bool} & Cancel the job with the specified ID. \\\hline
-	\textbf{Parameters} & \multicolumn{3}{l|}{} \\\hline
-	 & jobID & \camelcase{string} &  \\\hline 
-\end{longtable}
-
 \subsubsection{Users}
 \label{sec:Users}
 The majority of service operations provided by the server
@@ -647,7 +636,7 @@ Representation of a set of rules for either including or excluding metamodels, t
 	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
 		  \camelcase{metamodel}  & \camelcase{map<string,set<string>>}  & Types and slots within the metamodel that should be included or excluded: empty means 'all types and slots'. \\\hline
 		  \camelcase{uri}  & \camelcase{string}  & Namespace URI of the metamodel. \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} HawkQueryOptions, IFCExportOptions} \\\hline
+   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} HawkQueryOptions} \\\hline
 \end{longtable}
 
 \subsubsection{File}
@@ -807,7 +796,7 @@ Options for a Hawk query.
 		  \camelcase{includeNodeIDs}  & \camelcase{bool}  (optional) & Whether to include node IDs (true) or not (false) in model element results. \\\hline
 		  \camelcase{includeReferences}  & \camelcase{bool}  (optional) & Whether to include references (true) or not (false) in model element results. \\\hline
 		  \camelcase{repositoryPattern}  & \camelcase{string}  (optional) & The repository for the query (or * for all repositories). \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.query, Hawk.resolveProxies, Hawk.getModel, Hawk.getRootElements} \\\hline
+   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.query, Hawk.timedQuery, Hawk.resolveProxies, Hawk.getModel, Hawk.getRootElements} \\\hline
 \end{longtable}
 
 \subsubsection{HawkReferenceAdditionEvent}
@@ -883,37 +872,6 @@ Serialized form of a sync start event.
    \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} HawkChangeEvent} \\\hline
 \end{longtable}
 
-\subsubsection{IFCExportJob}
-
-Information about a server-side IFC export job.
-
-\begin{longtable} {|p{4cm}|p{4cm}|p{7.25cm}|}
-	\caption{Structure IFCExportJob}
-	\label{tab:iFCExportJob}\\
-	\hline%
-	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
-		  \camelcase{jobID}  & \camelcase{string}  &  \\\hline
-		  \camelcase{message}  & \camelcase{string}  &  \\\hline
-		  \camelcase{status}  & \camelcase{IFCExportStatus}  &  \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} IFCExport.exportAsSTEP, IFCExport.getJobs, IFCExport.getJobStatus} \\\hline
-\end{longtable}
-
-\subsubsection{IFCExportOptions}
-
-Options for a server-side IFC export.
-
-\begin{longtable} {|p{4cm}|p{4cm}|p{7.25cm}|}
-	\caption{Structure IFCExportOptions}
-	\label{tab:iFCExportOptions}\\
-	\hline%
-	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
-		  \camelcase{excludeRules}  & \camelcase{map<string,map<string,set<string>>>}  (optional) & If set and not empty, the mentioned metamodels, types and features will not be fetched. The string '*' can be used to refer to all types within a metamodel or all fields within a type. \\\hline
-		  \camelcase{filePatterns}  & \camelcase{list<string>}  (optional) & The file patterns for the query (e.g. *.uml). \\\hline
-		  \camelcase{includeRules}  & \camelcase{map<string,map<string,set<string>>>}  (optional) & If set and not empty, only the specified metamodels, types and features will be fetched. Otherwise, everything that is not excluded will be fetched. The string '*' can be used to refer to all types within a metamodel or all fields within a type. \\\hline
-		  \camelcase{repositoryPattern}  & \camelcase{string}  (optional) & The repository for the query (or * for all repositories). \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} IFCExport.exportAsSTEP} \\\hline
-\end{longtable}
-
 \subsubsection{IndexedAttributeSpec}
 
 Used to configure Hawk's indexed attributes (discussed in D5.3).
@@ -955,6 +913,20 @@ The transformation is not valid: it is unparsable or inconsistent.
 		  \camelcase{location}  & \camelcase{string}  & Location of the problem, if applicable. Usually a combination of line and column numbers. \\\hline
 		  \camelcase{reason}  & \camelcase{string}  & Reason for the transformation not being valid. \\\hline
    
+\end{longtable}
+
+\subsubsection{MetamodelParserDetails}
+
+Details for a metamodel registered in a Hawk instance.
+
+\begin{longtable} {|p{4cm}|p{4cm}|p{7.25cm}|}
+	\caption{Structure MetamodelParserDetails}
+	\label{tab:metamodelParserDetails}\\
+	\hline%
+	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
+		  \camelcase{fileExtensions}  & \camelcase{set<string>}  & Recognised file extensions, starting with '.'. \\\hline
+		  \camelcase{identifier}  & \camelcase{string}  & Type identifier. \\\hline
+   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.listMetamodelParsers} \\\hline
 \end{longtable}
 
 \subsubsection{MixedReference}
@@ -1025,6 +997,20 @@ Captures information about source/target models of ATL transformations.
    \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} InvalidModelSpec} \\\hline
 \end{longtable}
 
+\subsubsection{QueryReport}
+
+Report from a query, including execution time and any other information we may consider later.
+
+\begin{longtable} {|p{4cm}|p{4cm}|p{7.25cm}|}
+	\caption{Structure QueryReport}
+	\label{tab:queryReport}\\
+	\hline%
+	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
+		  \camelcase{result}  & \camelcase{QueryResult}  & Result of the query. \\\hline
+		  \camelcase{wallMillis}  & \camelcase{i64}  & Wall time on the server in milliseconds. \\\hline
+   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.timedQuery} \\\hline
+\end{longtable}
+
 \subsubsection{QueryResult}
 
 Union type for a scalar value, a reference to a model element, a heterogeneous
@@ -1049,7 +1035,7 @@ to stay flexible.
 		  \camelcase{vModelElementType}  & \camelcase{ModelElementType}  & Encoded model element type. \\\hline
 		  \camelcase{vShort}  (\nohyphens{inherited}) & \camelcase{i16}  & 16-bit signed integer value. \\\hline
 		  \camelcase{vString}  (\nohyphens{inherited}) & \camelcase{string}  & Sequence of UTF8 characters. \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.query, QueryResult, QueryResultMap} \\\hline
+   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.query, QueryResult, QueryReport, QueryResultMap} \\\hline
 \end{longtable}
 
 \subsubsection{QueryResultMap}
@@ -1155,7 +1141,7 @@ Union type for a single scalar value, a homogeneous collection of scalar values,
 		  \camelcase{vDoubles}  & \camelcase{list<double>}  & List of 64-bit floating point values. \\\hline
 		  \camelcase{vInteger}  (\nohyphens{inherited}) & \camelcase{i32}  & 32-bit signed integer value. \\\hline
 		  \camelcase{vIntegers}  & \camelcase{list<i32>}  & List of 32-bit signed integers. \\\hline
-		  \camelcase{vList}  & \camelcase{list<SlotValue>}  & List of lists. \\\hline
+		  \camelcase{vLists}  & \camelcase{list<SlotValue>}  & List of lists. \\\hline
 		  \camelcase{vLong}  (\nohyphens{inherited}) & \camelcase{i64}  & 64-bit signed integer value. \\\hline
 		  \camelcase{vLongs}  & \camelcase{list<i64>}  & List of 64-bit signed integers. \\\hline
 		  \camelcase{vShort}  (\nohyphens{inherited}) & \camelcase{i16}  & 16-bit signed integer value. \\\hline
@@ -1249,21 +1235,6 @@ Union type for a single scalar value.
 	\multicolumn{2}{|p{.95\linewidth}|}{\textbf{Used in:} HawkStateEvent, HawkInstance} \\\hline
 \end{longtable}
 
-\subsubsection{IFCExportStatus}
-
-\begin{longtable} {|p{4cm}|p{10.5cm}|}
-	\caption{Enumeration IFCExportStatus}
-	\label{tab:iFCExportStatus}\\
-	\hline%
-	\textbf{Name} & \textbf{Documentation} \\\hline 
-		CANCELLED & The job has been cancelled. \\\hline 
-		DONE & The job is completed. \\\hline 
-		FAILED & The job has failed. \\\hline 
-		RUNNING & The job is currently running. \\\hline 
-		SCHEDULED & The job has been scheduled but has not started yet. \\\hline 
-	\multicolumn{2}{|p{.95\linewidth}|}{\textbf{Used in:} IFCExportJob} \\\hline
-\end{longtable}
-
 \subsubsection{SubscriptionDurability}
 
 \begin{longtable} {|p{4cm}|p{10.5cm}|}
@@ -1288,7 +1259,7 @@ The specified query failed to complete its execution.
 	\hline%
 	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
 		  \camelcase{reason}  & \camelcase{string}  & Reason for the query failing to complete its execution. \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.query} \\\hline
+   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.query, Hawk.timedQuery} \\\hline
 \end{longtable}
 \subsubsection{HawkInstanceNotFound}
 No Hawk instance exists with that name.
@@ -1299,7 +1270,7 @@ No Hawk instance exists with that name.
 	\hline%
 	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
 	    --- & --- & --- \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.removeInstance, Hawk.startInstance, Hawk.stopInstance, Hawk.syncInstance, Hawk.registerMetamodels, Hawk.unregisterMetamodels, Hawk.listMetamodels, Hawk.query, Hawk.resolveProxies, Hawk.addRepository, Hawk.isFrozen, Hawk.setFrozen, Hawk.removeRepository, Hawk.updateRepositoryCredentials, Hawk.listRepositories, Hawk.listFiles, Hawk.configurePolling, Hawk.addDerivedAttribute, Hawk.removeDerivedAttribute, Hawk.listDerivedAttributes, Hawk.addIndexedAttribute, Hawk.removeIndexedAttribute, Hawk.listIndexedAttributes, Hawk.getModel, Hawk.watchStateChanges, Hawk.watchModelChanges} \\\hline
+   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.removeInstance, Hawk.startInstance, Hawk.stopInstance, Hawk.syncInstance, Hawk.registerMetamodels, Hawk.unregisterMetamodels, Hawk.listMetamodels, Hawk.listMetamodelParsers, Hawk.query, Hawk.timedQuery, Hawk.resolveProxies, Hawk.addRepository, Hawk.isFrozen, Hawk.setFrozen, Hawk.removeRepository, Hawk.updateRepositoryCredentials, Hawk.listRepositories, Hawk.listFiles, Hawk.configurePolling, Hawk.addDerivedAttribute, Hawk.removeDerivedAttribute, Hawk.listDerivedAttributes, Hawk.addIndexedAttribute, Hawk.removeIndexedAttribute, Hawk.listIndexedAttributes, Hawk.getModel, Hawk.watchStateChanges, Hawk.watchModelChanges} \\\hline
 \end{longtable}
 \subsubsection{HawkInstanceNotRunning}
 The selected Hawk instance is not running.
@@ -1310,7 +1281,7 @@ The selected Hawk instance is not running.
 	\hline%
 	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
 	    --- & --- & --- \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.stopInstance, Hawk.syncInstance, Hawk.registerMetamodels, Hawk.unregisterMetamodels, Hawk.listMetamodels, Hawk.query, Hawk.resolveProxies, Hawk.addRepository, Hawk.isFrozen, Hawk.setFrozen, Hawk.removeRepository, Hawk.updateRepositoryCredentials, Hawk.listRepositories, Hawk.listFiles, Hawk.configurePolling, Hawk.addDerivedAttribute, Hawk.removeDerivedAttribute, Hawk.listDerivedAttributes, Hawk.addIndexedAttribute, Hawk.removeIndexedAttribute, Hawk.listIndexedAttributes, Hawk.getModel, Hawk.watchStateChanges, Hawk.watchModelChanges} \\\hline
+   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.stopInstance, Hawk.syncInstance, Hawk.registerMetamodels, Hawk.unregisterMetamodels, Hawk.listMetamodels, Hawk.listMetamodelParsers, Hawk.query, Hawk.timedQuery, Hawk.resolveProxies, Hawk.addRepository, Hawk.isFrozen, Hawk.setFrozen, Hawk.removeRepository, Hawk.updateRepositoryCredentials, Hawk.listRepositories, Hawk.listFiles, Hawk.configurePolling, Hawk.addDerivedAttribute, Hawk.removeDerivedAttribute, Hawk.listDerivedAttributes, Hawk.addIndexedAttribute, Hawk.removeIndexedAttribute, Hawk.listIndexedAttributes, Hawk.getModel, Hawk.watchStateChanges, Hawk.watchModelChanges} \\\hline
 \end{longtable}
 \subsubsection{InvalidDerivedAttributeSpec}
 The derived attribute specification is not valid.
@@ -1365,7 +1336,7 @@ The specified query is not valid.
 	\hline%
 	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
 		  \camelcase{reason}  & \camelcase{string}  & Reason for the query not being valid. \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.query} \\\hline
+   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.query, Hawk.timedQuery} \\\hline
 \end{longtable}
 \subsubsection{UnknownQueryLanguage}
 The specified query language is not supported by the operation.
@@ -1376,7 +1347,7 @@ The specified query language is not supported by the operation.
 	\hline%
 	\textbf{Field} & \textbf{Type} & \textbf{Documentation} \\\hline
 	    --- & --- & --- \\\hline
-   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.query} \\\hline
+   \multicolumn{3}{|p{.95\linewidth}|}{\textbf{Used in:} Hawk.query, Hawk.timedQuery} \\\hline
 \end{longtable}
 \subsubsection{UnknownRepositoryType}
 The specified repository type is not supported by the operation.

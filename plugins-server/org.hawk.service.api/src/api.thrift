@@ -14,14 +14,6 @@ enum HawkState {
 		/* The instance is updating its contents from the indexed locations. */ UPDATING 
 }
 
-enum IFCExportStatus {
-		/* The job has been cancelled. */ CANCELLED 
-		/* The job is completed. */ DONE 
-		/* The job has failed. */ FAILED 
-		/* The job is currently running. */ RUNNING 
-		/* The job has been scheduled but has not started yet. */ SCHEDULED 
-}
-
 enum SubscriptionDurability {
 		/* Subscription survives client disconnections but not server restarts. */ DEFAULT 
 		/* Subscription survives client disconnections and server restarts. */ DURABLE 
@@ -118,12 +110,6 @@ struct HawkSynchronizationEndEvent {
 
 struct HawkSynchronizationStartEvent {
 	 /* Local timestamp, measured in nanoseconds. Only meant to be used to compute synchronization cost. */ 1: required i64 timestampNanos,
-}
-
-struct IFCExportJob {
-	 /*  */ 1: required string jobID,
-	 /*  */ 2: required IFCExportStatus status,
-	 /*  */ 3: required string message,
 }
 
 struct IndexedAttributeSpec {
@@ -328,13 +314,6 @@ struct HawkQueryOptions {
 	 /* Whether to include derived attributes (true) or not (false) in model element results. */ 10: optional bool includeDerived = true,
 }
 
-struct IFCExportOptions {
-	 /* The repository for the query (or * for all repositories). */ 1: optional string repositoryPattern = "*",
-	 /* The file patterns for the query (e.g. *.uml). */ 2: optional list<string> filePatterns,
-	 /* If set and not empty, only the specified metamodels, types and features will be fetched. Otherwise, everything that is not excluded will be fetched. The string '*' can be used to refer to all types within a metamodel or all fields within a type. */ 3: optional map<string,map<string,set<string>>> includeRules,
-	 /* If set and not empty, the mentioned metamodels, types and features will not be fetched. The string '*' can be used to refer to all types within a metamodel or all fields within a type. */ 4: optional map<string,map<string,set<string>>> excludeRules,
-}
-
 struct ModelElement {
 	 /* Unique ID of the model element (not set if using position-based references). */ 1: optional string id,
 	 /* URI of the repository to which the element belongs (not set if equal to that of the previous model element). */ 2: optional string repositoryURL,
@@ -495,10 +474,10 @@ service Hawk {
 	/* The name of the Hawk instance. */ 1: required string name,
   )
   throws (
-	1: HawkInstanceNotFound err1 /* No Hawk instance exists with that name. */
-	2: HawkInstanceNotRunning err2 /* The selected Hawk instance is not running. */
-	)
-
+	1: HawkInstanceNotFound err1 /* No Hawk instance exists with that name. */ 
+	2: HawkInstanceNotRunning err2 /* The selected Hawk instance is not running. */ 
+	) 
+	
   /* Lists the supported query languages and their status. Auth needed: Yes */
   list<string> listQueryLanguages(
 	/* The name of the Hawk instance. */ 1: required string name,
@@ -735,30 +714,6 @@ service Hawk {
 	1: HawkInstanceNotFound err1 /* No Hawk instance exists with that name. */ 
 	2: HawkInstanceNotRunning err2 /* The selected Hawk instance is not running. */ 
 	) 
-	
-}
-
-/* IFC export facility for getting IFC models from the Hawk server. */
-service IFCExport {
-  /* Export part of a Hawk index in IFC STEP format. Auth needed: Yes */
-  IFCExportJob exportAsSTEP(
-	/*  */ 1: required string hawkInstance,
-	/*  */ 2: required IFCExportOptions options,
-  )
-	
-  /* List all the previously scheduled IFC export jobs. Auth needed: Yes */
-  list<IFCExportJob> getJobs(
-  )
-	
-  /* Retrieve the current status of the job with the specified ID. Auth needed: Yes */
-  IFCExportJob getJobStatus(
-	/*  */ 1: required string jobID,
-  )
-	
-  /* Cancel the job with the specified ID. Auth needed: Yes */
-  bool killJob(
-	/*  */ 1: required string jobID,
-  )
 	
 }
 
