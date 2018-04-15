@@ -55,8 +55,19 @@ public interface IVcsManager {
 	 * files in the same repository when implementing this method.
 	 *
 	 * Returns <code>null</code> if the file could not be found.
+	 *
+	 * @param revision
+	 *            Identifier of the desired revision of the specified file.
+	 *            Implementations that do not support retrieving past versions of
+	 *            the file may ignore this argument.
+	 * @param path
+	 *            Path within the repository where the file is stored.
+	 * @param optionalTemp
+	 *            If the file is not available as-is in the local filesystem (e.g.
+	 *            needs to be retrieved over the network), this argument provides a
+	 *            location where the implementation can temporarily save it.
 	 */
-	File importFiles(String path, File optionalTemp);
+	File importFile(String revision, String path, File optionalTemp);
 
 	/**
 	 * Returns <code>true</code> if the manager is running correctly,

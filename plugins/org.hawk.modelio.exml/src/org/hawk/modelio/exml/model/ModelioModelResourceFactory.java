@@ -61,7 +61,6 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 
 	@Override
 	public IHawkModelResource parse(IFileImporter importer, File f) throws Exception {
-
 		// use importer to grab mversion.dat
 		extractVersionsForModel(importer, f);
 

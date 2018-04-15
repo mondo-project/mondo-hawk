@@ -258,20 +258,16 @@ public class SvnManager implements IVcsManager {
 	}
 
 	@Override
-	public File importFiles(String path, File temp) {
-		SVNRepository svnRepository = getSVNRepository(repositoryURL, username, password);
-
-		try {
-			OutputStream o = new FileOutputStream(temp);
-			svnRepository.getFile(path, SVNRevision.HEAD.getNumber(), new SVNProperties(), o);
-			o.flush();
-			o.close();
+	public File importFile(String revision, String path, File temp) {
+		final SVNRepository svnRepository = getSVNRepository(repositoryURL, username, password);
+		final long rev = revision == null ? SVNRevision.HEAD.getNumber() : Long.valueOf(revision);
+		try (FileOutputStream fOS = new FileOutputStream(temp)) {
+			svnRepository.getFile(path, rev, new SVNProperties(), fOS);
 			return temp;
 		} catch (Exception e) {
 			console.printerrln(e);
 			return null;
 		}
-
 	}
 
 	@Override

@@ -113,7 +113,7 @@ public abstract class PathmapResourceCollection implements IVcsManager {
 	}
 
 	@Override
-	public File importFiles(String path, File optionalTemp) {
+	public File importFile(String revision, String path, File optionalTemp) {
 		final URI uri = URI.createURI(baseURI + path.substring(1));
 		try {
 			final InputStream is = rs.getURIConverter().createInputStream(uri);

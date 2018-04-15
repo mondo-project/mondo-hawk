@@ -13,7 +13,7 @@
  *
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
- *     Antonio Garcia-Dominguez - extract import to interface
+ *     Antonio Garcia-Dominguez - extract import to interface, cleanup, use revision in imports
  ******************************************************************************/
 package org.hawk.core.runtime;
 
@@ -72,12 +72,14 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	public static class DefaultFileImporter implements IFileImporter {
 
-		private Map<String, File> cachedImports = new HashMap<>();
-		private IVcsManager vcs;
-		private File tempDir;
+		private final Map<String, File> cachedImports = new HashMap<>();
+		private final IVcsManager vcs;
+		private final String revision;
+		private final File tempDir;
 
-		public DefaultFileImporter(IVcsManager vcs, File tempDir) {
+		public DefaultFileImporter(IVcsManager vcs, String revision, File tempDir) {
 			this.vcs = vcs;
+			this.revision = revision;
 			this.tempDir = tempDir;
 		}
 
@@ -102,7 +104,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 					destination = new File(destination, commitPath);
 				}
 
-				File result = vcs.importFiles(commitPath, destination);
+				File result = vcs.importFile(revision, commitPath, destination);
 				cachedImports.put(commitPath, result);
 				return result;
 			} else {
@@ -192,9 +194,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 		stateListener.state(HawkState.UPDATING);
 
 		try {
-			// System.err.println(currLocalTopRevisions);
-			// System.err.println(currReposTopRevisions);
-
 			long start = System.currentTimeMillis();
 			boolean allSync = true;
 			fileToResourceMap = new HashMap<>();
@@ -218,7 +217,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 					} else {
 						console.printerrln("Monitor is frozen, skipping it.");
 						// frozen do nothing
-
 					}
 				}
 			}
@@ -233,29 +231,23 @@ public class ModelIndexerImpl implements IModelIndexer {
 		}
 	}
 
-	private boolean internalSynchronise(boolean allSync, IVcsManager m) throws Exception {
+	private boolean internalSynchronise(boolean allSync, IVcsManager vcsManager) throws Exception {
+		String currentRevision = currReposTopRevisions.get(vcsManager.getLocation());
 		try {
-			currReposTopRevisions.put(m.getLocation(), m.getCurrentRevision());
-		} catch (Exception e1) {
-			// if
-			// (e1.getMessage().contains("Authentication"))
-			// {syserr(Eclipse_VCS_NoSQL_UI_view.indexers.remove(this)+"");
-			// syserr("Incorrect authentication to version
-			// control, removing this indexer, please add it
-			// again with the correct credentials");}
-			// else
-			e1.printStackTrace();
+			// Try to fetch the current revision from the VCS, if not, keep the latest seen revision
+			currentRevision = vcsManager.getCurrentRevision();
+			currReposTopRevisions.put(vcsManager.getLocation(), currentRevision);
+		} catch (Exception e) {
+			console.printerrln(e);
 			allSync = false;
 		}
 
-		if (!currReposTopRevisions.get(m.getLocation()).equals(currLocalTopRevisions.get(m.getLocation()))) {
-
-			boolean success = true;
+		if (!currentRevision.equals(currLocalTopRevisions.get(vcsManager.getLocation()))) {
 			latestUpdateFoundChanges = true;
 
 			final Set<VcsCommitItem> deleteditems = new HashSet<VcsCommitItem>();
 			final Set<VcsCommitItem> interestingfiles = new HashSet<VcsCommitItem>();
-			inspectChanges(m, deleteditems, interestingfiles);
+			inspectChanges(vcsManager, deleteditems, interestingfiles);
 			deletedFiles = deletedFiles + deleteditems.size();
 			interestingFiles = interestingFiles + interestingfiles.size();
 
@@ -264,8 +256,9 @@ public class ModelIndexerImpl implements IModelIndexer {
 			temp.mkdir();
 			
 			// for each registered updater
-			for (IModelUpdater u : getUpdaters()) {
-				success = internalSynchronise(success, m, u, deleteditems, interestingfiles, monitorTempDir);
+			boolean success = true;
+			for (IModelUpdater updater : getUpdaters()) {
+				success = internalSynchronise(success, currentRevision, vcsManager, updater, deleteditems, interestingfiles, monitorTempDir);
 			}
 
 			// delete temporary files
@@ -273,18 +266,18 @@ public class ModelIndexerImpl implements IModelIndexer {
 				console.printerrln("error in deleting temporary local vcs files");
 
 			if (success) {
-				currLocalTopRevisions.put(m.getLocation(),
-					currReposTopRevisions.get(m.getLocation()));
+				currLocalTopRevisions.put(vcsManager.getLocation(),
+					currReposTopRevisions.get(vcsManager.getLocation()));
 			} else {
 				allSync = false;
-				currLocalTopRevisions.put(m.getLocation(), "-3");
+				currLocalTopRevisions.put(vcsManager.getLocation(), "-3");
 			}
 		}
 
 		return allSync;
 	}
 
-	private boolean internalSynchronise(boolean success, final IVcsManager m, final IModelUpdater u,
+	private boolean internalSynchronise(boolean success, final String currentRevision, final IVcsManager m, final IModelUpdater u,
 			final Set<VcsCommitItem> deletedItems, final Set<VcsCommitItem> interestingfiles,
 			final String monitorTempDir) {
 
@@ -297,7 +290,7 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 		// create temp files with changed repos files
 		final Map<String, File> pathToImported = new HashMap<>();
-		final IFileImporter importer = new DefaultFileImporter(m, new File(monitorTempDir));
+		final IFileImporter importer = new DefaultFileImporter(m, currentRevision, new File(monitorTempDir));
 		importFiles(importer, currReposChangedItems, pathToImported);
 
 		// delete all removed files
@@ -336,10 +329,10 @@ public class ModelIndexerImpl implements IModelIndexer {
 					if (file == null || !file.exists()) {
 						console.printerrln("warning, cannot find file: " + file + ", ignoring changes");
 					} else {
-						IModelResourceFactory mrf = getModelParserFromFilename(
-								file.getName().toLowerCase());
-						if (mrf.canParse(file))
+						IModelResourceFactory mrf = getModelParserFromFilename(file.getName().toLowerCase());
+						if (mrf.canParse(file)) {
 							r = mrf.parse(importer, file);
+						}
 					}
 				}
 				success = u.updateStore(v, r) && success;
@@ -533,17 +526,13 @@ public class ModelIndexerImpl implements IModelIndexer {
 
 	@Override
 	public String getId() {
-
 		return "ModelIndexer | " + " | " + this;
-
 	}
 
 	private void registerMetamodelFiles() throws Exception {
-
 		stateListener.info("Registering metamodels...");
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
-
 			for (IGraphNode epackage : graph.getMetamodelIndex().query("id", "*")) {
 				final String s = epackage.getProperty(IModelIndexer.METAMODEL_RESOURCE_PROPERTY) + "";
 				final String ep = epackage.getProperty(IModelIndexer.IDENTIFIER_PROPERTY) + "";
@@ -556,7 +545,6 @@ public class ModelIndexerImpl implements IModelIndexer {
 					console.printerrln("cannot register metamodel in graph, named: " + ep + ", with type: " + type
 							+ ", as no relevant parser is registered");
 				}
-
 			}
 
 			t.success();

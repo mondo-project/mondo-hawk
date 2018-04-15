@@ -175,7 +175,7 @@ public class LocalFolder implements IVcsManager {
 	}
 
 	@Override
-	public File importFiles(String p, File temp) {
+	public File importFile(String revision, String p, File temp) {
 		try {
 			final String path = URLDecoder.decode(p.replace("+", "%2B"), "UTF-8");
 			final Path resolvedPath = rootLocation.resolve(path.startsWith("/") ? path.replaceFirst("/", "") : path);

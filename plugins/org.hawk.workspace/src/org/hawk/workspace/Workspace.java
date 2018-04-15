@@ -189,7 +189,7 @@ public class Workspace implements IVcsManager {
 	}
 
 	@Override
-	public File importFiles(String path, File temp) {
+	public File importFile(String revision, String path, File temp) {
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
 		// Access directly the file (no need for copying - helps with links between workspace files)
 		return file.getRawLocation().toFile();

@@ -203,7 +203,7 @@ public class HTTPManager implements IVcsManager {
 	}
 
 	@Override
-	public File importFiles(String path, File temp) {
+	public File importFile(String revision, String path, File temp) {
 		try (CloseableHttpClient cl = createClient()) {
 			try (CloseableHttpResponse response = cl.execute(new HttpGet(repositoryURI))) {
 				Files.copy(response.getEntity().getContent(), temp.toPath());

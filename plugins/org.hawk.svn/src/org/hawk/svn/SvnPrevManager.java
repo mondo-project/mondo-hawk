@@ -371,7 +371,7 @@ public class SvnPrevManager implements IVcsManager {
 	}
 
 	@Override
-	public File importFiles(String path, File temp) {
+	public File importFile(String revision, String path, File temp) {
 		SVNRepository svnRepository = getSVNRepository(repositoryURL, username, password);
 
 		try {
