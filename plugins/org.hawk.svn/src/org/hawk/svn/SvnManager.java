@@ -20,16 +20,12 @@ package org.hawk.svn;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 import org.hawk.core.IConsole;
 import org.hawk.core.ICredentialsStore;
@@ -40,9 +36,6 @@ import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommit;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.VcsRepositoryDelta;
-import org.hawk.core.runtime.ModelIndexerImpl;
-import org.hawk.core.security.FileBasedCredentialsStore;
-import org.hawk.core.util.DefaultConsole;
 import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.SVNLogEntryPath;
 import org.tmatesoft.svn.core.SVNProperties;
@@ -67,42 +60,6 @@ public class SvnManager implements IVcsManager {
 	 */
 	private static final Set<String> EXTENSION_BLACKLIST = new HashSet<>(
 			Arrays.asList(".png", ".jpg", ".bmp", ".jar", ".gz", ".tar"));
-
-	public SvnManager() {
-	}
-
-	public static void main(String[] _a) throws Exception {
-		System.err.println("testing");
-		final JFrame parent = new JFrame();
-		parent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		String pass = JOptionPane.showInputDialog(parent, "pw plz", "hi there");
-		parent.dispose();
-
-		System.err.println("testing2");
-		SvnManager m = new SvnManager();
-		System.err.println("testing3");
-
-		final String vcsloc = "https://cssvn.york.ac.uk/repos/sosym/kostas/Hawk/org.hawk.emf/src/org/hawk/emf/model/examples/single/0";
-		FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(new File("security.xml"), "admin".toCharArray());
-		credStore.put(vcsloc, new Credentials("kb634", pass));
-		m.init(vcsloc, new ModelIndexerImpl(null, null, credStore, new DefaultConsole()));
-		m.run();
-		System.err.println("testing4");
-		m.test();
-		System.err.println("testing5-end");
-	}
-
-	private void test() {
-		try {
-			console = new DefaultConsole();
-			System.err.println("------------");
-			System.err.println(getDelta("0"));
-			shutdown();
-			System.err.println("------------");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	@Override
 	public void init(String vcsloc, IModelIndexer indexer) throws Exception {
@@ -147,9 +104,7 @@ public class SvnManager implements IVcsManager {
 	}
 
 	protected static SVNRepository getSVNRepository(String url, String username, String password) {
-		SvnUtil.setupLibrary();
-		SVNRepository svnRepository = SvnUtil.connectToSVNInstance(url, username, password);
-		return svnRepository;
+		return SvnUtil.connectToSVNInstance(url, username, password);
 	}
 
 	@Override
@@ -182,9 +137,8 @@ public class SvnManager implements IVcsManager {
 					SVNLogEntryPath svnLogEntryPath = changedPaths.get(path);
 
 					final int lastDotIndex = path.lastIndexOf(".");
-					if (lastDotIndex <= 0) {
-						// No extension or file starts by "." (hidden files in
-						// Unix systems): skip
+					if (lastDotIndex <= 1) {
+						// No extension (index is -1) or path starts by "/." (hidden files in Unix systems): skip
 						continue;
 					}
 					final String ext = path.substring(lastDotIndex, path.length());
@@ -215,10 +169,6 @@ public class SvnManager implements IVcsManager {
 					}
 				}
 			}
-		}
-
-		for (VcsCommitItem c : delta.getCompactedCommitItems()) {
-			console.println(c.getPath());
 		}
 
 		return delta;
@@ -313,7 +263,7 @@ public class SvnManager implements IVcsManager {
 
 	@Override
 	public Collection<VcsCommitItem> getDelta(String startRevision) throws Exception {
-		if (Integer.parseInt(startRevision) < 0)
+		if (Long.valueOf(startRevision) < 0)
 			return getDelta(getFirstRevision(), getCurrentRevision()).getCompactedCommitItems();
 		else
 			return getDelta(startRevision, getCurrentRevision()).getCompactedCommitItems();

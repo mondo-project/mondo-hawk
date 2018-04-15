@@ -36,8 +36,11 @@ import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
 public class SvnUtil {
 
-	public static SVNRepository connectToSVNInstance(String url) {
+	static {
 		SvnUtil.setupLibrary();
+	}
+
+	public static SVNRepository connectToSVNInstance(String url) {
 		SVNRepository repository = null;
 		try {
 			repository = SvnUtil.createRepository(url);
@@ -58,7 +61,6 @@ public class SvnUtil {
 
 	public static SVNRepository connectToSVNInstance(String url, String usr,
 			String pass) {
-		SvnUtil.setupLibrary();
 		SVNRepository repository = null;
 		try {
 			repository = SvnUtil.createRepository(url);

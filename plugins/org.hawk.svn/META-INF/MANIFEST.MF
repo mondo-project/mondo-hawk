@@ -4,7 +4,8 @@ Bundle-Name: Hawk Svn Plugin
 Bundle-SymbolicName: org.hawk.svn;singleton:=true
 Bundle-Version: 1.2.0.qualifier
 Require-Bundle: org.hawk.core,
- org.tmatesoft.svnkit;bundle-version="1.8.6"
+ org.tmatesoft.svnkit;bundle-version="1.8.6";visibility:=reexport,
+ org.tmatesoft.sqljet;bundle-version="1.1.10";visibility:=reexport
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.hawk.svn
 Bundle-Vendor: University of York
