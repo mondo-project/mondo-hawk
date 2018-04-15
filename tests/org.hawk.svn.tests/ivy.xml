@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+    <info
+        organisation="org.hawk"
+        module="svn.tests"
+        status="integration">
+	</info>
+	<dependencies>
+		<dependency org="org.mockito" name="mockito-core" rev="2.18.0"/>
+	</dependencies>
+</ivy-module>

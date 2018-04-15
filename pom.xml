@@ -101,6 +101,7 @@
     <module>tests/org.hawk.modelio.exml.tests</module>
     <module>tests/org.hawk.service.emf.tests</module>
     <module>tests/org.hawk.service.servlet.tests</module>
+    <module>tests/org.hawk.svn.tests</module>
     <module>tests/org.hawk.uml.tests</module>
   </modules>
 
