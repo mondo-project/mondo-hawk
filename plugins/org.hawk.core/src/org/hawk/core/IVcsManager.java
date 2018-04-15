@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2018 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -13,7 +13,8 @@
  *
  * Contributors:
  * 	   Nikolas Matragkas, James Williams, Dimitris Kolovos - initial API and implementation
- *     Konstantinos Barmpis - adaption for use in Hawk
+ *     Konstantinos Barmpis - adaptation for use in Hawk
+ *     Antonio Garcia-Dominguez - further additions + javadocs
  ******************************************************************************/
 package org.hawk.core;
 
@@ -24,20 +25,31 @@ import org.hawk.core.model.IHawkObject;
 
 public interface IVcsManager {
 
+	/**
+	 * Returns an identifier for the last revision available at this location.
+	 */
 	String getCurrentRevision() throws Exception;
 
+	/**
+	 * Returns an identifier for the first revision available at this location.
+	 */
 	String getFirstRevision() throws Exception;
 
+	/**
+	 * Returns the set of changed items on this revision.
+	 */
 	Collection<VcsCommitItem> getDelta(String endRevision) throws Exception;
 
-	VcsRepositoryDelta getDelta(String startRevision, String endRevision)
-			throws Exception;
+	/**
+	 * Returns the set of changed items between these revisions.
+	 */
+	VcsRepositoryDelta getDelta(String startRevision, String endRevision) throws Exception;
 
 	/**
-	 * Places the contents of the resource located at <code>path</code> in a
-	 * local file. Hawk will provide a suggested temporary file location through
-	 * <code>optionalTemp</code>, but the implementation may use another one
-	 * (e.g. the file might already be available on disk somewhere else). The
+	 * Places the contents of the resource located at <code>path</code> in a local
+	 * file. Hawk will provide a suggested temporary file location through
+	 * <code>optionalTemp</code>, but the implementation may use another one (e.g.
+	 * the file might already be available on disk somewhere else). The
 	 * implementation must return the file that should be read in the end.
 	 * Implementations should be careful to preserve relative paths between the
 	 * files in the same repository when implementing this method.
@@ -46,23 +58,28 @@ public interface IVcsManager {
 	 */
 	File importFiles(String path, File optionalTemp);
 
-	// kostas
+	/**
+	 * Returns <code>true</code> if the manager is running correctly,
+	 * <code>false</code> otherwise.
+	 */
 	boolean isActive();
 
-	// kostas
+	/** Prepares this manager to be run. Always invoked before {@link #run()}. */
 	void init(String vcsloc, IModelIndexer hawk) throws Exception;
 
-	// kostas
+	/**
+	 * Starts this manager, after it has been initialised with
+	 * {@link #init(String, IModelIndexer)}.
+	 */
 	void run() throws Exception;
 
-	// kostas
+	/** Shuts down this manager. */
 	void shutdown();
 
-	// kostas
 	/**
 	 * 
-	 * @return returns the canonical and normalised representation of the
-	 *         location of this VCSManager, always including a trailing slash
+	 * @return returns the canonical and normalised representation of the location
+	 *         of this VCSManager, always including a trailing slash
 	 */
 	String getLocation();
 
@@ -77,16 +94,18 @@ public interface IVcsManager {
 	String getPassword();
 
 	/**
-	 * Changes the username and password in one go. Both must be passed at the
-	 * same time to be able to support remote instances.
+	 * Changes the username and password in one go. Both must be passed at the same
+	 * time to be able to support remote instances.
 	 */
-	void setCredentials(String username, String password,
-			ICredentialsStore credStore);
+	void setCredentials(String username, String password, ICredentialsStore credStore);
 
-	// kostas
+	/**
+	 * Returns a unique identifier for this manager, to be used from configuration
+	 * files.
+	 */
 	String getType();
 
-	// kostas
+	/** Returns a human-friendly description of this manager, to be used from UI. */
 	String getHumanReadableName();
 
 	/**
@@ -95,18 +114,16 @@ public interface IVcsManager {
 	boolean isAuthSupported();
 
 	/**
-	 * Returns <code>true</code> if the implementation accepts filesystem paths
-	 * as locations. It should be OK for an implementation to return
-	 * <code>true</code> for this and {@link #isURLLocationAccepted()} at the
-	 * same time.
+	 * Returns <code>true</code> if the implementation accepts filesystem paths as
+	 * locations. It should be OK for an implementation to return <code>true</code>
+	 * for this and {@link #isURLLocationAccepted()} at the same time.
 	 */
 	boolean isPathLocationAccepted();
 
 	/**
-	 * Returns <code>true</code> if the implementation accepts URL-based paths
-	 * as locations. It should be OK for an implementation to return
-	 * <code>true</code> for this and {@link #isPathLocationAccepted()} at the
-	 * same time.
+	 * Returns <code>true</code> if the implementation accepts URL-based paths as
+	 * locations. It should be OK for an implementation to return <code>true</code>
+	 * for this and {@link #isPathLocationAccepted()} at the same time.
 	 */
 	boolean isURLLocationAccepted();
 
@@ -117,8 +134,8 @@ public interface IVcsManager {
 	String getRepositoryPath(String rawPath);
 
 	/**
-	 * Returns <code>true</code> if the repository should be "frozen", ignoring
-	 * any changes on the contained files until thawed.
+	 * Returns <code>true</code> if the repository should be "frozen", ignoring any
+	 * changes on the contained files until thawed.
 	 */
 	boolean isFrozen();
 

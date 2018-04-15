@@ -83,8 +83,7 @@ public class SvnManager implements IVcsManager {
 		System.err.println("testing3");
 
 		final String vcsloc = "https://cssvn.york.ac.uk/repos/sosym/kostas/Hawk/org.hawk.emf/src/org/hawk/emf/model/examples/single/0";
-		FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(new File("security.xml"),
-				"admin".toCharArray());
+		FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(new File("security.xml"), "admin".toCharArray());
 		credStore.put(vcsloc, new Credentials("kb634", pass));
 		m.init(vcsloc, new ModelIndexerImpl(null, null, credStore, new DefaultConsole()));
 		m.run();
@@ -161,7 +160,7 @@ public class SvnManager implements IVcsManager {
 		delta.setManager(this);
 
 		final String rootURL = svnRepository.getRepositoryRoot(false).toDecodedString();
-		final String overLappedURL = makeRelative(rootURL, repositoryURL);
+		final String overlappedURL = makeRelative(rootURL, repositoryURL);
 
 		if (!startRevision.equals(endRevision)) {
 			Collection<?> c = svnRepository.log(new String[] { "" }, null, Long.valueOf(startRevision),
@@ -194,7 +193,7 @@ public class SvnManager implements IVcsManager {
 						continue;
 					}
 
-					if (path.contains(overLappedURL)) {
+					if (path.contains(overlappedURL)) {
 						VcsCommitItem commitItem = new VcsCommitItem();
 						commit.getItems().add(commitItem);
 						commitItem.setCommit(commit);
