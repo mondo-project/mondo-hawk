@@ -320,7 +320,6 @@ public class LocalFolder implements IVcsManager {
 			}
 
 		}
-		delta.setLatestRevision(getCurrentRevision(true));
 
 		return delta;
 	}

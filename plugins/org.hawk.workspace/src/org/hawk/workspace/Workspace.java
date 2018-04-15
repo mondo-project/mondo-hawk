@@ -146,7 +146,6 @@ public class Workspace implements IVcsManager {
 			pendingChanges = false;
 		}
 		delta.setManager(this);
-		delta.setLatestRevision(revision + "");
 
 		return delta;
 	}

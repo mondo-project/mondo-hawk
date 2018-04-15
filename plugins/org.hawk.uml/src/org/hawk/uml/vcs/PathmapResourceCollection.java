@@ -108,7 +108,6 @@ public abstract class PathmapResourceCollection implements IVcsManager {
 				commit.getItems().add(c);
 			}
 		}
-		delta.setLatestRevision(currentRevision);
 
 		return delta;
 	}

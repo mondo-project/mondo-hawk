@@ -301,7 +301,6 @@ public class Git implements IVcsManager {
 			}
 
 		}
-		delta.setLatestRevision(getCurrentRevision(true));
 
 		return delta;
 	}

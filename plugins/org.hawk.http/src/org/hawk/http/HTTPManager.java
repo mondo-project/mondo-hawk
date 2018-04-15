@@ -198,7 +198,6 @@ public class HTTPManager implements IVcsManager {
 			ci.setCommit(c);
 			c.getItems().add(ci);
 		}
-		delta.setLatestRevision(getCurrentRevision());
 
 		return delta;
 	}

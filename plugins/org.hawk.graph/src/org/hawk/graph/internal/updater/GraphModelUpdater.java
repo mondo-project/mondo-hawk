@@ -211,7 +211,6 @@ public class GraphModelUpdater implements IModelUpdater {
 			final VcsCommit fakeCommit = new VcsCommit();
 			delta.setManager(c);
 			delta.getCommits().add(fakeCommit);
-			delta.setLatestRevision(c.getCurrentRevision() + "-deleted");
 			fakeCommit.setAuthor("hawk");
 			fakeCommit.setDelta(delta);
 			fakeCommit.setJavaDate(new Date());

@@ -1,6 +1,6 @@
 /*******************************************************************************
- * Copyright (c) 2011-2016 The University of York.
- * 
+ * Copyright (c) 2011-2018 The University of York, Aston University.
+ *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -20,7 +20,6 @@ package org.hawk.core;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,17 +43,12 @@ public class VcsRepositoryDelta implements Serializable {
 		return commits;
 	}
 
-	public String getLatestRevision() {
-		return latestRevision;
-	}
-
-	public void setLatestRevision(String latestRevision) {
-		this.latestRevision = latestRevision;
-	} // TODO (VcsRepositoryDelta developer comment) THIS NEEDS SETTING ON
-		// CREATION
-
-	// XXX (Kostas comment) keeping all info from svn, compacted
-	public Collection<VcsCommitItem> getCompactedCommitItems() {
+	/**
+	 * Compacts the information from the various commits. If the same
+	 * path has been touched by multiple commits, it will only return
+	 * the information from the last commit that changed it.
+	 */
+	public List<VcsCommitItem> getCompactedCommitItems() {
 		final Map<String, VcsCommitItem> compacted = new HashMap<>();
 		for (VcsCommit commit : commits) {
 			for (VcsCommitItem item : commit.getItems()) {
@@ -72,7 +66,7 @@ public class VcsRepositoryDelta implements Serializable {
 			}
 		}
 
-		return compacted.values();
+		return new ArrayList<>(compacted.values());
 	}
 
 	public String toString() {
