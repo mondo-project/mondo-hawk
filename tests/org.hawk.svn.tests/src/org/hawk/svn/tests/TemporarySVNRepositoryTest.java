@@ -32,7 +32,7 @@ import org.tmatesoft.svn.core.SVNLogEntry;
 /**
  * Tests for the {@link TemporarySVNRepository} JUnit 4 rule.
  */
-public class TemporarySVNRepositoryTests {
+public class TemporarySVNRepositoryTest {
 
 	@Rule
 	public TemporarySVNRepository svnRepository = new TemporarySVNRepository();

@@ -51,7 +51,7 @@ import org.tmatesoft.svn.core.SVNException;
 /**
  * Tests for the {@link SvnManager} class.
  */
-public class SvnManagerTests {
+public class SvnManagerTest {
 
 	private static final String DUMMY_PASS = "dummypass";
 	private static final String DUMMY_USER = "dummyuser";
