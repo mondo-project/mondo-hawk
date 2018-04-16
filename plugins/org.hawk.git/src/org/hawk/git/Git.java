@@ -300,6 +300,8 @@ public class Git implements IVcsManager {
 				commit.getItems().add(c);
 			}
 
+			// Update the latest revision seen
+			getCurrentRevision(true);
 		}
 
 		return delta;
