@@ -221,7 +221,7 @@ public interface IModelIndexer {
 
 	String getDerivedAttributeExecutionEngine();
 
-	void removeVCS(IVcsManager vcs) throws Exception;
+	void removeVCSManager(IVcsManager vcs) throws Exception;
 
 	/**
 	 * Sets the periodic synchronisation of Hawk's index. This interval will

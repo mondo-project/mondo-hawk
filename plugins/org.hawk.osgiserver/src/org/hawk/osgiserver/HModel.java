@@ -581,7 +581,7 @@ public class HModel implements IStateListener {
 
 	public void removeRepository(IVcsManager manager) throws Exception {
 		try {
-			hawk.getModelIndexer().removeVCS(manager);
+			hawk.getModelIndexer().removeVCSManager(manager);
 		} catch (Exception e) {
 			getConsole().printerrln(e);
 		}

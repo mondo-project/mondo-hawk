@@ -855,7 +855,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	}
 
 	@Override
-	public void removeVCS(IVcsManager vcs) throws Exception {
+	public void removeVCSManager(IVcsManager vcs) throws Exception {
 		client.removeRepository(name, vcs.getLocation());
 	}
 
