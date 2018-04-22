@@ -29,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IVcsManager;
@@ -87,9 +88,9 @@ public class GraphModelInserter {
 
 	private Map<String, IGraphNode> nodes = new HashMap<>();
 	private TypeCache typeCache;
-	private DeletionUtils deletionUtils;
+	private Supplier<DeletionUtils> deletionUtils;
 
-	public GraphModelInserter(IModelIndexer hawk, DeletionUtils deletionUtils, TypeCache typeCache) {
+	public GraphModelInserter(IModelIndexer hawk, Supplier<DeletionUtils> deletionUtils, TypeCache typeCache) {
 		this.indexer = hawk;
 		this.graph = indexer.getGraph();
 		this.typeCache = typeCache;
@@ -103,7 +104,7 @@ public class GraphModelInserter {
 
 		this.resource = res;
 		this.commitItem = s;
-		this.inj = new GraphModelBatchInjector(graph, deletionUtils, typeCache, this.commitItem, indexer.getCompositeGraphChangeListener());
+		this.inj = new GraphModelBatchInjector(graph, typeCache, this.commitItem, indexer.getCompositeGraphChangeListener());
 
 		final double ratio = calculateModelDeltaRatio(verbose);
 		if (ratio >= 0) {
@@ -545,7 +546,7 @@ public class GraphModelInserter {
 
 			if (g != null) {
 				try (IGraphTransaction t = graph.beginTransaction()) {
-					deletionUtils.deleteAll(g, commitItem, listener);
+					deletionUtils.get().deleteAll(g, commitItem, listener);
 					t.success();
 				}
 			}
@@ -675,9 +676,10 @@ public class GraphModelInserter {
 	}
 
 	private void remove(IGraphNode modelElement, String repositoryURL, IGraphNode fileNode, IGraphChangeListener l) {
-		deletionUtils.dereference(modelElement, l, commitItem);
-		deletionUtils.makeProxyRefs(commitItem, modelElement, repositoryURL, fileNode, l);
-		if (deletionUtils.delete(modelElement))
+		DeletionUtils del = deletionUtils.get();
+		del.dereference(modelElement, l, commitItem);
+		del.makeProxyRefs(commitItem, modelElement, repositoryURL, fileNode, l);
+		if (del.delete(modelElement))
 			l.modelElementRemoval(this.commitItem, modelElement, false);
 	}
 
@@ -797,7 +799,7 @@ public class GraphModelInserter {
 								+ no.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 
 						if (nodeURI.equals(uri)) {
-							boolean change = new GraphModelBatchInjector(graph, deletionUtils, typeCache, null, listener)
+							boolean change = new GraphModelBatchInjector(graph, typeCache, null, listener)
 									.resolveProxyRef(n, no, edgeLabel, isContainment, isContainer);
 
 							if (!change) {
@@ -821,7 +823,7 @@ public class GraphModelInserter {
 						Iterator<IGraphNode> targetNodes = fragDictionary.get("id", fragment).iterator();
 						if (targetNodes.hasNext()) {
 							final IGraphNode no = targetNodes.next();
-							boolean change = new GraphModelBatchInjector(graph, deletionUtils, typeCache, null, listener)
+							boolean change = new GraphModelBatchInjector(graph, typeCache, null, listener)
 									.resolveProxyRef(n, no, edgeLabel, isContainment, isContainer);
 							if (change) {
 								resolved = true;

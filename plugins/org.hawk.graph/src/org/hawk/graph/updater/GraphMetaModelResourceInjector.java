@@ -248,7 +248,7 @@ public class GraphMetaModelResourceInjector {
 
 				LOGGER.info("Updating any relevant derived attributes...");
 				try {
-					new GraphModelInserter(hawk, del, new TypeCache())
+					new GraphModelInserter(hawk, () -> del, new TypeCache())
 							.updateDerivedAttributes(hawk.getDerivedAttributeExecutionEngine(), toBeUpdated);
 					toBeUpdated = new HashSet<>();
 				} catch (Exception e) {

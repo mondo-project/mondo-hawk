@@ -60,7 +60,7 @@ public class TimeAwareModelUpdater extends GraphModelUpdater {
 
 	@Override
 	protected GraphModelInserter createInserter() {
-		return new GraphModelInserter(indexer, createDeletionUtils(), typeCache) {
+		return new GraphModelInserter(indexer, this::createDeletionUtils, typeCache) {
 			@Override
 			protected double calculateModelDeltaRatio(IGraphNode fileNode, boolean verbose) throws Exception {
 				/*

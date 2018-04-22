@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IVcsManager;
@@ -123,7 +124,7 @@ public class GraphModelBatchInjector {
 		derivedProxyDictionary = graph.getOrCreateNodeIndex(DERIVED_PROXY_DICT_NAME);
 	}
 
-	public GraphModelBatchInjector(IGraphDatabase g, DeletionUtils deletionUtils, TypeCache typeCache, VcsCommitItem s, IGraphChangeListener listener) throws Exception {
+	public GraphModelBatchInjector(IGraphDatabase g, TypeCache typeCache, VcsCommitItem s, IGraphChangeListener listener) throws Exception {
 		this.graph = g;
 		this.typeCache = typeCache;
 		this.commitItem = s;
@@ -133,7 +134,7 @@ public class GraphModelBatchInjector {
 		refreshIndexes();
 	}
 
-	public GraphModelBatchInjector(IModelIndexer hawk, DeletionUtils deletionUtils, TypeCache typeCache, VcsCommitItem s, IHawkModelResource r, IGraphChangeListener listener, boolean verbose) throws Exception {
+	public GraphModelBatchInjector(IModelIndexer hawk, Supplier<DeletionUtils> deletionUtils, TypeCache typeCache, VcsCommitItem s, IHawkModelResource r, IGraphChangeListener listener, boolean verbose) throws Exception {
 
 		IGraphDatabase g = hawk.getGraph();
 		this.graph = g;
@@ -209,7 +210,7 @@ public class GraphModelBatchInjector {
 					if (n != null) {
 
 						try (IGraphTransaction t = g.beginTransaction()) {
-							deletionUtils.deleteAll(n, s, listener);
+							deletionUtils.get().deleteAll(n, s, listener);
 							t.success();
 
 						} catch (Exception e2) {
