@@ -45,9 +45,8 @@ public class DeletionUtils {
 	}
 
 	protected boolean delete(IGraphNode modelElement) {
-
 		// only try to delete nodes with no edges
-		if (!modelElement.getEdges().iterator().hasNext())
+		if (!modelElement.getEdges().iterator().hasNext()) {
 			try {
 				removeFromIndexes(modelElement);
 				modelElement.delete();
@@ -55,8 +54,9 @@ public class DeletionUtils {
 			} catch (Exception e) {
 				LOGGER.error(e.getMessage(), e);
 			}
-		return false;
+		}
 
+		return false;
 	}
 
 	protected boolean deleteAll(IGraphNode file, VcsCommitItem s,
@@ -116,8 +116,7 @@ public class DeletionUtils {
 
 		Iterator<IGraphNode> singletonMatches = singletonIndex.get(
 				"id",
-				referencedModelElement
-						.getProperty(IModelIndexer.IDENTIFIER_PROPERTY))
+				referencedModelElement.getProperty(IModelIndexer.IDENTIFIER_PROPERTY))
 				.iterator();
 		if (singletonMatches.hasNext())
 			if (singletonMatches.next()
@@ -193,9 +192,7 @@ public class DeletionUtils {
 	/*
 	 * Should be called before makeproxyrefs
 	 */
-	protected void dereference(IGraphNode modelElement, IGraphChangeListener l,
-			VcsCommitItem s) {
-
+	protected void dereference(IGraphNode modelElement, IGraphChangeListener l, VcsCommitItem s) {
 		boolean safeToDereference = true;
 
 		// track nodes with multiple sources (singletons)
@@ -226,25 +223,22 @@ public class DeletionUtils {
 					l.modelElementRemoval(s, n, true);
 					removeFromIndexes(n);
 
-					// remove outgoing edges (would exist if this is a derived
-					// reference node)
-					for (IGraphEdge e : n.getOutgoing())
+					// remove outgoing edges (would exist if this is a derived reference node)
+					for (IGraphEdge e : n.getOutgoing()) {
 						e.delete();
+					}
 					
 					n.delete();
 				}
 
 				rel.delete();
-
 			}
-
 	}
 
-	private void removeFromIndexes(IGraphNode n) {
-
-		for (String indexname : graph.getNodeIndexNames())
+	protected void removeFromIndexes(IGraphNode n) {
+		for (String indexname : graph.getNodeIndexNames()) {
 			graph.getOrCreateNodeIndex(indexname).remove(n);
-
+		}
 	}
 
 	public void delete(IGraphEdge rel) {
@@ -258,5 +252,4 @@ public class DeletionUtils {
 	public void dereference(IGraphNode metaModelElement) {
 		dereference(metaModelElement, null, null);
 	}
-
 }

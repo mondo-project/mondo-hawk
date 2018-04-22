@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.eclipse.emf.common.util.URI;
@@ -12,6 +13,12 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.hawk.backend.tests.factories.GreycatDatabaseFactory;
+import org.hawk.core.IModelIndexer;
+import org.hawk.core.query.InvalidQueryException;
+import org.hawk.core.query.QueryExecutionException;
+import org.hawk.core.security.FileBasedCredentialsStore;
+import org.hawk.graph.timeaware.TimeAwareEOLQueryEngine;
+import org.hawk.graph.timeaware.TimeAwareIndexer;
 import org.hawk.graph.timeaware.TimeAwareModelUpdater;
 import org.hawk.graph.updater.GraphModelUpdater;
 import org.hawk.integration.tests.ModelIndexingTest;
@@ -29,12 +36,13 @@ import org.junit.runners.Parameterized.Parameters;
  * Tests for the time-aware indexing of model element nodes.
  */
 public class NodeHistoryTests extends ModelIndexingTest {
-
 	@Rule
 	public TemporarySVNRepository svnRepository = new TemporarySVNRepository();
 
 	private final TreeFactory treeFactory = TreeFactory.eINSTANCE;
 	private ResourceSet rsTree;
+
+	private TimeAwareEOLQueryEngine timeAwareQueryEngine;
 
 	@Parameters(name = "{0}")
     public static Iterable<Object[]> params() {
@@ -55,11 +63,13 @@ public class NodeHistoryTests extends ModelIndexingTest {
 		rsTree.getResourceFactoryRegistry()
 			.getExtensionToFactoryMap()
 			.put("*", new XMIResourceFactoryImpl());
+
+		timeAwareQueryEngine = new TimeAwareEOLQueryEngine();
+		indexer.addQueryEngine(timeAwareQueryEngine);
 	}
 
 	@Test
 	public void createDeleteNode() throws Throwable {
-
 		final File fTree = new File(svnRepository.getCheckoutDirectory(), "root.xmi");
 		Resource rTree = rsTree.createResource(URI.createFileURI(fTree.getAbsolutePath()));
 
@@ -78,13 +88,13 @@ public class NodeHistoryTests extends ModelIndexingTest {
 			@Override
 			public Object call() throws Exception {
 				// .all works on the latest revision (keeps time-aware querying working)
-				assertEquals(0, eol("return Tree.all.size;"));
+				assertEquals(0, timeAwareEOL("return Tree.all.size;"));
 
 				// .created can return instances that have been created from a certain moment in time (even if not alive anymore)
-				assertEquals(1, eol("return Tree.created('always').size;"));
+				assertEquals(1, timeAwareEOL("return Tree.created('anytime').size;"));
 
 				// .isAlive('time') returns true/false depending on whether the node still exists at this point in time
-				assertEquals(false, eol("return Tree.created('always').first.isAlive('now');"));
+				assertEquals(false, timeAwareEOL("return Tree.created('anytime').first.isAlive('now');"));
 
 				return null;
 			}
@@ -96,11 +106,24 @@ public class NodeHistoryTests extends ModelIndexingTest {
 		return new TimeAwareModelUpdater();
 	}
 
+	@Override
+	protected IModelIndexer createIndexer(File indexerFolder, FileBasedCredentialsStore credStore) {
+		return new TimeAwareIndexer("test", indexerFolder, credStore, console);
+	}
+
 	private void requestSVNIndex() throws Exception {
 		final SvnManager vcs = new SvnManager();
 		vcs.init(svnRepository.getRepositoryURL().toString(), indexer);
 		vcs.run();
 		indexer.addVCSManager(vcs, true);
+	}
+
+	protected Object timeAwareEOL(final String eolQuery) throws InvalidQueryException, QueryExecutionException {
+		return timeAwareEOL(eolQuery, null);
+	}
+
+	protected Object timeAwareEOL(final String eolQuery, Map<String, Object> context) throws InvalidQueryException, QueryExecutionException {
+		return timeAwareQueryEngine.query(indexer, eolQuery, context);
 	}
 
 }

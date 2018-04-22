@@ -69,11 +69,7 @@ public class GraphModelInserter {
 	private static final int PROXY_RESOLVE_NOTIFY_INTERVAL = 25000;
 	private static final int PROXY_RESOLVE_TX_SIZE = 5000;
 	private static final int DERIVED_PNODE_TX_SIZE = 1000;
-
-	private static final double maxTransactionalAcceptableLoadRatio = 0.5;
-
-	@SuppressWarnings("unused")
-	private int unset = 0; // number of unset references (used for logging)
+	private static final double MAX_TX_LOADRATIO = 0.5;
 
 	private String repoURL;
 	private String tempDirURI;
@@ -83,7 +79,6 @@ public class GraphModelInserter {
 	private Map<String, IHawkObject> added = new HashMap<>();
 	private Map<String, IHawkObject> unchanged = new HashMap<>();
 	private Map<String, IHawkObject> retyped = new HashMap<>();
-	private double currentDeltaRatio;
 
 	private IModelIndexer indexer;
 	private IGraphDatabase graph;
@@ -92,11 +87,13 @@ public class GraphModelInserter {
 
 	private Map<String, IGraphNode> nodes = new HashMap<>();
 	private TypeCache typeCache;
+	private DeletionUtils deletionUtils;
 
-	public GraphModelInserter(IModelIndexer hawk, TypeCache typeCache) {
+	public GraphModelInserter(IModelIndexer hawk, DeletionUtils deletionUtils, TypeCache typeCache) {
 		this.indexer = hawk;
 		this.graph = indexer.getGraph();
 		this.typeCache = typeCache;
+		this.deletionUtils = deletionUtils;
 	}
 
 	public boolean run(IHawkModelResource res, VcsCommitItem s, final boolean verbose) throws Exception {
@@ -106,46 +103,37 @@ public class GraphModelInserter {
 
 		this.resource = res;
 		this.commitItem = s;
-		this.inj = new GraphModelBatchInjector(graph, typeCache, this.commitItem, indexer.getCompositeGraphChangeListener());
+		this.inj = new GraphModelBatchInjector(graph, deletionUtils, typeCache, this.commitItem, indexer.getCompositeGraphChangeListener());
 
-		final int delta = calculateModelDeltaSize(verbose);
-		if (delta != -1) {
+		final double ratio = calculateModelDeltaRatio(verbose);
+		if (ratio >= 0) {
 			this.tempDirURI = new File(graph.getTempDir()).toURI().toString();
-
 			if (verbose) {
 				LOGGER.debug("File already present, calculating deltas with respect to graph storage");
 			}
-			if (currentDeltaRatio > maxTransactionalAcceptableLoadRatio) {
-				// System.err.print("[" + currentDeltaRatio + ">" +
-				// maxTransactionalAcceptableLoadRatio + "] ");
+
+			if (ratio > MAX_TX_LOADRATIO) {
 				return batchUpdate(verbose);
 			} else {
-				// System.err.print("[" + currentDeltaRatio + "<=" +
-				// maxTransactionalAcceptableLoadRatio + "] ");
-				return transactionalUpdate(delta, verbose);
+				indexer.getCompositeStateListener()
+					.info("Performing transactional update (ratio:" + ratio + ") on file: " + commitItem.getPath() + "...");
+				LOGGER.debug("transactional update called");
+
+				return transactionalUpdate(verbose);
 			}
 
-			//
-			// FIXMEdone -- at end of all updates similar to derived proxy
-			// // for each change see if any derived attributes need
-			// re-calculation - if they do add em to derived proxy
-			// dictionary for re-calculation!
-			//
 		} else {
-			// populate the database from scratch (for this file) -- this
-			// will trigger calculation of all derived attrs
+			/*
+			 * Populate the database from scratch (for this file) -- this will trigger
+			 * calculation of all derived attributes.
+			 */
 			return addNodes(verbose);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private boolean transactionalUpdate(int delta, final boolean verbose) throws Exception {
+	private boolean transactionalUpdate(final boolean verbose) throws Exception {
 		graph.exitBatchMode();
-		if (verbose) {
-			indexer.getCompositeStateListener()
-					.info("Performing transactional update (delta:" + delta + ") on file: " + commitItem.getPath() + "...");
-			LOGGER.debug("transactional update called");
-		}
 
 		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
 		try (IGraphTransaction t = graph.beginTransaction()) {
@@ -208,7 +196,6 @@ public class GraphModelInserter {
 				} else {
 					remove(node, fileNode, listener);
 				}
-
 			}
 
 			// change references (including adding new proxies as required)
@@ -342,12 +329,6 @@ public class GraphModelInserter {
 	}
 
 	protected void remove(IGraphNode node, IGraphNode fileNode, final IGraphChangeListener listener) {
-		// not in unchanged or updated so its deleted
-		//
-		// System.err.println("deleting node " + node +
-		// " as new model does not contain it!");
-		//
-
 		// track change deleted node
 		for (String key : node.getPropertyKeys()) {
 			listener.modelElementAttributeRemoval(this.commitItem, null, key, node,
@@ -361,18 +342,12 @@ public class GraphModelInserter {
 		}
 
 		remove(node, repoURL, fileNode, listener);
-		// new DeletionUtils(graph).delete(node);
 	}
 
 	private boolean addProxyRef(final IGraphNode node, final IHawkObject destinationObject, final String edgelabel,
 			boolean isContainment, boolean isContainer) {
 
 		try {
-			// TODO this seems duplicated (see GraphModelBatchInjector#addProxyRef)
-
-			// proxydictionary.add(graph.getNodeById(hash.get((from))),
-			// edgelabel, ((EObject)destinationObject).eIsProxy());
-
 			final String uri = destinationObject.getUri();
 
 			String destinationObjectRelativePathURI = uri;
@@ -397,15 +372,6 @@ public class GraphModelInserter {
 					+ destinationObjectRelativeFileURI;
 
 			Object proxies = null;
-			// if
-			// (withProxy.hasProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX +
-			// relativeFileURI)) {
-			// proxies =
-			// withProxy.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX +
-			// relativeFileURI);
-			// }
-			// System.err.println(">>>>>>>"+relativeFileURI);
-
 			proxies = node.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + destinationObjectFullFileURI);
 			proxies = new Utils().addToElementProxies((String[]) proxies, destinationObjectFullPathURI, edgelabel,
 					isContainment, isContainer);
@@ -579,12 +545,12 @@ public class GraphModelInserter {
 
 			if (g != null) {
 				try (IGraphTransaction t = graph.beginTransaction()) {
-					new DeletionUtils(graph).deleteAll(g, commitItem, listener);
+					deletionUtils.deleteAll(g, commitItem, listener);
 					t.success();
 				}
 			}
 			graph.enterBatchMode();
-			new GraphModelBatchInjector(indexer, typeCache, commitItem, resource, listener, verbose);
+			new GraphModelBatchInjector(indexer, deletionUtils, typeCache, commitItem, resource, listener, verbose);
 			listener.changeSuccess();
 			return true;
 		} catch (Exception ex) {
@@ -597,83 +563,81 @@ public class GraphModelInserter {
 		}
 	}
 
-	private int calculateModelDeltaSize(boolean verbose) throws Exception {
+	private double calculateModelDeltaRatio(boolean verbose) throws Exception {
 		if (verbose) {
 			LOGGER.info("calculateModelDeltaSize() called");
 		}
 
-		if (new Utils().getFileNodeFromVCSCommitItem(graph, commitItem) != null) {
-
-			try (IGraphTransaction t = graph.beginTransaction()) {
-
-				final String repositoryURL = commitItem.getCommit().getDelta().getManager().getLocation();
-
-				HashMap<String, byte[]> signatures = new HashMap<>();
-
-				// Get existing nodes from the store (and their signatures)
-				for (IGraphEdge e : graph.getFileIndex()
-						.get("id", repositoryURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + commitItem.getPath()).getSingle()
-						.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
-					IGraphNode n = e.getStartNode();
-
-					nodes.put(n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString(), n);
-
-					signatures.put((String) n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY),
-							(byte[]) n.getProperty(IModelIndexer.SIGNATURE_PROPERTY));
-				}
-				if (verbose) {
-					LOGGER.info("File contains: {} ({}) nodes in store", nodes.size(), signatures.size());
-				}
-
-				// Get the model elements from the resource and use signatures
-				// and URI
-				for (IHawkObject o : resource.getAllContents()) {
-					final String uriFragment = o.getUriFragment();
-					byte[] hash = signatures.get(uriFragment);
-					if (hash != null) {
-						if (!Arrays.equals(hash, o.signature())) {
-							final String actualType = o.getType().getName();
-
-							final IGraphNode node = nodes.get(uriFragment);
-							final Iterator<IGraphEdge> typeEdges = node
-									.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator();
-							final IGraphNode typeNode = typeEdges.next().getEndNode();
-							final String nodeType = typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
-							if (actualType.equals(nodeType)) {
-								this.updated.put(uriFragment, o);
-							} else {
-								// The model element with this URI fragment has
-								// changed type
-								// from the previous version of the model to the
-								// current version.
-								this.retyped.put(uriFragment, o);
-							}
-						} else {
-							this.unchanged.put(uriFragment, o);
-						}
-					} else {
-						this.added.put(uriFragment, o);
-					}
-				}
-				t.success();
-				int addedn = added.size();
-				int retypedn = retyped.size();
-				int updatedn = updated.size();
-				int deletedn = nodes.size() - unchanged.size() - updated.size() - retyped.size();
-				currentDeltaRatio = (addedn + retypedn + updatedn + deletedn) / ((double) nodes.size());
-				if (verbose) {
-					LOGGER.info("Update contains | a:{} u:{} d:{} ratio: {}",
-						(addedn + retypedn), updatedn, deletedn, currentDeltaRatio);
-				}
-
-				return addedn + retypedn + updatedn + deletedn;
-			}
+		final IGraphNode fileNode = new Utils().getFileNodeFromVCSCommitItem(graph, commitItem);
+		if (fileNode != null) {
+			return calculateModelDeltaRatio(fileNode, verbose);
 		} else {
 			if (verbose) {
 				LOGGER.info("File not in store, performing initial batch file insertion");
 			}
-			currentDeltaRatio = -1;
 			return -1;
+		}
+	}
+
+	protected double calculateModelDeltaRatio(final IGraphNode fileNode, boolean verbose) throws Exception {
+		try (IGraphTransaction t = graph.beginTransaction()) {
+			final Map<String, byte[]> signatures = new HashMap<>();
+
+			// Get existing nodes from the store (and their signatures)
+			for (IGraphEdge e : fileNode.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+				IGraphNode n = e.getStartNode();
+				nodes.put(n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString(), n);
+
+				signatures.put((String) n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY),
+						(byte[]) n.getProperty(IModelIndexer.SIGNATURE_PROPERTY));
+			}
+			if (verbose) {
+				LOGGER.info("File contains: {} ({}) nodes in store", nodes.size(), signatures.size());
+			}
+
+			// Get the model elements from the resource and use signatures and URI
+			for (IHawkObject o : resource.getAllContents()) {
+				final String uriFragment = o.getUriFragment();
+				byte[] hash = signatures.get(uriFragment);
+				if (hash != null) {
+					if (!Arrays.equals(hash, o.signature())) {
+						final String actualType = o.getType().getName();
+
+						final IGraphNode node = nodes.get(uriFragment);
+						final Iterator<IGraphEdge> typeEdges = node
+								.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator();
+						final IGraphNode typeNode = typeEdges.next().getEndNode();
+						final String nodeType = typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+						if (actualType.equals(nodeType)) {
+							this.updated.put(uriFragment, o);
+						} else {
+							/*
+							 * The model element with this URI fragment has changed type from the previous
+							 * version of the model to the current version.
+							 */
+							this.retyped.put(uriFragment, o);
+						}
+					} else {
+						this.unchanged.put(uriFragment, o);
+					}
+				} else {
+					this.added.put(uriFragment, o);
+				}
+			}
+			t.success();
+
+			final int addedn = added.size();
+			final int retypedn = retyped.size();
+			final int updatedn = updated.size();
+			final int deletedn = nodes.size() - unchanged.size() - updatedn - retypedn;
+
+			final double ratio = (addedn + retypedn + updatedn + deletedn) / ((double) nodes.size());
+			if (verbose) {
+				LOGGER.info("Update contains | a:{} u:{} d:{} ratio: {}",
+					(addedn + retypedn), updatedn, deletedn, ratio);
+			}
+
+			return ratio;
 		}
 	}
 
@@ -692,9 +656,9 @@ public class GraphModelInserter {
 		}
 		boolean success = true;
 		if (resource != null) {
-			GraphModelBatchInjector batch = new GraphModelBatchInjector(indexer, typeCache, commitItem, resource,
-					indexer.getCompositeGraphChangeListener(), verbose);
-			unset = batch.getUnset();
+			GraphModelBatchInjector batch = new GraphModelBatchInjector(indexer, deletionUtils, typeCache,
+				commitItem, resource,
+				indexer.getCompositeGraphChangeListener(), verbose);
 			success = batch.getSuccess();
 			if (!success) {
 				LOGGER.error(
@@ -711,68 +675,10 @@ public class GraphModelInserter {
 	}
 
 	private void remove(IGraphNode modelElement, String repositoryURL, IGraphNode fileNode, IGraphChangeListener l) {
-		DeletionUtils del = new DeletionUtils(graph);
-		del.dereference(modelElement, l, commitItem);
-		del.makeProxyRefs(commitItem, modelElement, repositoryURL, fileNode, l);
-		if (del.delete(modelElement))
+		deletionUtils.dereference(modelElement, l, commitItem);
+		deletionUtils.makeProxyRefs(commitItem, modelElement, repositoryURL, fileNode, l);
+		if (deletionUtils.delete(modelElement))
 			l.modelElementRemoval(this.commitItem, modelElement, false);
-	}
-
-	/*
-	 * Deprected
-	 */
-	@SuppressWarnings("unused")
-	private void init(File dbloc) {
-
-		try {
-
-			// create resource set
-			// modelResourceSet = new ResourceSetImpl();
-			// modelResourceSet.getResourceFactoryRegistry()
-			// .getExtensionToFactoryMap()
-			// .put("ecore", new EcoreResourceFactoryImpl());
-			// modelResourceSet.getResourceFactoryRegistry()
-			// .getExtensionToFactoryMap()
-			// .put("*", new XMIResourceFactoryImpl());
-
-			long cpu = System.nanoTime();
-
-			// String db = System.getProperty("user.dir").replaceAll("\\\\",
-			// "/")
-			// + "/svntest";
-			String db = dbloc.getPath();
-
-			long x = Runtime.getRuntime().maxMemory() / 1000000 / 60;
-
-			Map<String, String> config = new HashMap<String, String>();
-			config.put("neostore.nodestore.db.mapped_memory", 3 * x + "M");
-			config.put("neostore.relationshipstore.db.mapped_memory", 14 * x + "M");
-			config.put("neostore.propertystore.db.mapped_memory", x + "M");
-			config.put("neostore.propertystore.db.strings.mapped_memory", 2 * x + "M");
-			config.put("neostore.propertystore.db.arrays.mapped_memory", x + "M");
-
-			// File fi = new File(db);
-
-			// deletion of database each time used for debugging, remove to
-			// make
-			// it reference a static db
-			// NB: DELETE ALL DATABASES BEFORE COMMITING ELSE YOU
-			// WILL MAKE THE SVN ANGRY!!!
-			// if (fi.exists()) {
-			// if (!deleteDir(fi)) {
-			// System.err
-			// .println("Cannot delete database, exiting program, io error!");
-			// oldSystemdotexit(1);
-			// }
-			// }
-
-			// graph = new EmbeddedGraphDatabase(db, config);
-
-			// registerShutdownHook(graph);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	public int resolveProxies(IGraphDatabase graph) throws Exception {
@@ -830,12 +736,9 @@ public class GraphModelInserter {
 
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex(GraphModelBatchInjector.PROXY_DICT_NAME);
-
 			proxiesLeft = proxyDictionary.query(GraphModelUpdater.PROXY_REFERENCE_PREFIX, "*").size();
-
 			LOGGER.info("{} - sets of proxy references left in the store", proxiesLeft);
 			tx.success();
-
 		}
 
 		LOGGER.info("proxy resolution took: ~{}s", (System.currentTimeMillis() - start) / 1000.0);
@@ -894,7 +797,7 @@ public class GraphModelInserter {
 								+ no.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 
 						if (nodeURI.equals(uri)) {
-							boolean change = new GraphModelBatchInjector(graph, typeCache, null, listener)
+							boolean change = new GraphModelBatchInjector(graph, deletionUtils, typeCache, null, listener)
 									.resolveProxyRef(n, no, edgeLabel, isContainment, isContainer);
 
 							if (!change) {
@@ -918,7 +821,7 @@ public class GraphModelInserter {
 						Iterator<IGraphNode> targetNodes = fragDictionary.get("id", fragment).iterator();
 						if (targetNodes.hasNext()) {
 							final IGraphNode no = targetNodes.next();
-							boolean change = new GraphModelBatchInjector(graph, typeCache, null, listener)
+							boolean change = new GraphModelBatchInjector(graph, deletionUtils, typeCache, null, listener)
 									.resolveProxyRef(n, no, edgeLabel, isContainment, isContainer);
 							if (change) {
 								resolved = true;

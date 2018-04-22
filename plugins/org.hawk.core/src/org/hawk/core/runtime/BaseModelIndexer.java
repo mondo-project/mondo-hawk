@@ -47,6 +47,7 @@ import org.hawk.core.IModelUpdater;
 import org.hawk.core.IStateListener;
 import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.IVcsManager;
+import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
@@ -57,6 +58,7 @@ import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.util.DerivedAttributeParameters;
+import org.hawk.core.util.FileOperations;
 import org.hawk.core.util.HawkProperties;
 import org.hawk.core.util.IndexedAttributeParameters;
 import org.slf4j.Logger;
@@ -197,13 +199,47 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 	 * <code>persist</code> is <code>true</code>, the new manager should be added to
 	 * the Hawk index configuration file.
 	 */
-	public abstract void addVCSManager(IVcsManager vcs, boolean persist);
+	public void addVCSManager(IVcsManager vcs, boolean persist) {
+		monitors.add(vcs);
+
+		try {
+			if (persist) {
+				saveIndexer();
+			}
+		} catch (Exception e) {
+			LOGGER.error("addVCSManager tried to saveIndexer but failed", e);
+		}
+	
+		requestImmediateSync();
+	}
 
 	/**
 	 * Removes a {@link IVcsManager} from Hawk, including any contained models
 	 * indexed.
 	 */
-	public abstract void removeVCSManager(IVcsManager vcs) throws Exception;
+	public void removeVCSManager(IVcsManager vcs) throws Exception {
+		stateListener.state(HawkState.UPDATING);
+		stateListener.info("Removing vcs...");
+		monitors.remove(vcs);
+
+		try {
+			saveIndexer();
+		} catch (Exception e) {
+			System.err.println("removeVCS tried to saveIndexer but failed");
+			e.printStackTrace();
+		}
+	
+		for (IModelUpdater u : updaters)
+			try {
+				u.deleteAll(vcs);
+			} catch (Exception e) {
+				System.err.println("removeVCS tried to delete index contents but failed");
+				e.printStackTrace();
+			}
+	
+		stateListener.state(HawkState.RUNNING);
+		stateListener.info("Removed vcs.");
+	}
 
 	/**
 	 * Updates the Hawk index based on the current contents of the specified {@link IVcsManager}.
@@ -990,4 +1026,157 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 		updateTimer.schedule(task, delayMillis, TimeUnit.MILLISECONDS);
 	}
 
+	protected void inspectChanges(Iterable<VcsCommitItem> files, Set<VcsCommitItem> deleteditems, Set<VcsCommitItem> interestingfiles) {
+		stateListener.info("Calculating relevant changed model files...");
+	
+		for (VcsCommitItem r : files) {
+			for (IModelResourceFactory parser : modelParsers.values()) {
+				for (String ext : parser.getModelExtensions()) {
+					if (r.getPath().toLowerCase().endsWith(ext)) {
+						interestingfiles.add(r);
+					}
+				}
+			}
+		}
+
+		Iterator<VcsCommitItem> it = interestingfiles.iterator();
+		while (it.hasNext()) {
+			VcsCommitItem c = it.next();
+	
+			if (c.getChangeType().equals(VcsChangeType.DELETED)) {
+				if (VERBOSE) {
+					console.println(String.format(
+						"--> %s HAS CHANGED (%S), PROPAGATING CHANGES",
+						c.getPath(), c.getChangeType()));
+				}
+
+				deleteditems.add(c);
+				it.remove();
+			}
+		}
+	}
+
+	protected boolean internalSynchronise(final String currentRevision, final IVcsManager m,
+			final IModelUpdater u, final Set<VcsCommitItem> deletedItems, final Set<VcsCommitItem> interestingfiles,
+			final String monitorTempDir) {
+		boolean success = true;
+
+		// enters transaction mode!
+		Set<VcsCommitItem> currReposChangedItems = u.compareWithLocalFiles(interestingfiles);
+
+		// metadata about synchronise
+		final int totalFiles = currReposChangedItems.size();
+		currchangeditems = currchangeditems + totalFiles;
+
+		// create temp files with changed repos files
+		final Map<String, File> pathToImported = new HashMap<>();
+		final IFileImporter importer = new DefaultFileImporter(m, currentRevision, new File(monitorTempDir));
+		importFiles(importer, currReposChangedItems, pathToImported);
+
+		// delete all removed files
+		success = deleteRemovedModels(success, u, deletedItems);
+
+		stateListener.info("Updating models to the new version...");
+
+		// prepare for mass inserts if needed
+		graph.enterBatchMode();
+
+		final boolean fileCountProgress = totalFiles > FILECOUNT_PROGRESS_THRESHOLD;
+		final long millisSinceStart = System.currentTimeMillis();
+		int totalProcessedFiles = 0, filesProcessedSinceLastPrint = 0;
+		long millisSinceLastPrint = millisSinceStart;
+
+		for (VcsCommitItem v : currReposChangedItems) {
+			try {
+				// Place before the actual update so we print the 0/X message as well
+				if (fileCountProgress && (totalProcessedFiles == 0 && filesProcessedSinceLastPrint == 0
+						|| filesProcessedSinceLastPrint == FILECOUNT_PROGRESS_THRESHOLD)) {
+					totalProcessedFiles += filesProcessedSinceLastPrint;
+
+					final long millisPrint = System.currentTimeMillis();
+					stateListener.info(String.format("Processed %d/%d files in repo %s (%s sec, %s sec total)",
+							totalProcessedFiles, totalFiles, m.getLocation(),
+							(millisPrint - millisSinceLastPrint) / 1000, (millisPrint - millisSinceStart) / 1000));
+
+					filesProcessedSinceLastPrint = 0;
+					millisSinceLastPrint = millisPrint;
+				}
+
+				IHawkModelResource r = null;
+				if (u.caresAboutResources()) {
+					final File file = pathToImported.get(v.getPath());
+					if (file == null || !file.exists()) {
+						console.printerrln("warning, cannot find file: " + file + ", ignoring changes");
+					} else {
+						IModelResourceFactory mrf = getModelParserFromFilename(file.getName().toLowerCase());
+						if (mrf.canParse(file)) {
+							r = mrf.parse(importer, file);
+						}
+					}
+				}
+				success = u.updateStore(v, r) && success;
+
+				if (r != null) {
+					if (!isSyncMetricsEnabled) {
+						r.unload();
+					} else {
+						fileToResourceMap.put(v, r);
+					}
+					loadedResources++;
+				}
+
+				filesProcessedSinceLastPrint++;
+
+			} catch (Exception e) {
+				console.printerrln("updater: " + u + "failed to update store");
+				console.printerrln(e);
+				success = false;
+			}
+		}
+
+		// Print the final message
+		if (fileCountProgress) {
+			totalProcessedFiles += filesProcessedSinceLastPrint;
+			final long millisPrint = System.currentTimeMillis();
+			stateListener.info(String.format("Processed %d/%d files in repo %s (%s sec, %s sec total)",
+					totalProcessedFiles, totalFiles, m.getLocation(), (millisPrint - millisSinceLastPrint) / 1000,
+					(millisPrint - millisSinceStart) / 1000));
+		}
+
+		stateListener.info("Updating proxies...");
+
+		// update proxies
+		u.updateProxies();
+
+		// leave batch mode
+		graph.exitBatchMode();
+
+		stateListener.info("Updated proxies.");
+
+		return success;
+	}
+
+	protected boolean synchroniseFiles(String revision, IVcsManager vcsManager, final Collection<VcsCommitItem> files) {
+		final Set<VcsCommitItem> deleteditems = new HashSet<VcsCommitItem>();
+		final Set<VcsCommitItem> interestingfiles = new HashSet<VcsCommitItem>();
+		inspectChanges(files, deleteditems, interestingfiles);
+		deletedFiles = deletedFiles + deleteditems.size();
+		interestingFiles = interestingFiles + interestingfiles.size();
+
+		final String monitorTempDir = graph.getTempDir();
+		File temp = new File(monitorTempDir);
+		temp.mkdir();
+
+		// for each registered updater
+		boolean updatersOK = true;
+		for (IModelUpdater updater : getUpdaters()) {
+			updatersOK = updatersOK && internalSynchronise(revision, vcsManager, updater, deleteditems, interestingfiles, monitorTempDir);
+		}
+
+		// delete temporary files
+		if (!FileOperations.deleteFiles(new File(monitorTempDir), true))
+			console.printerrln("error in deleting temporary local vcs files");
+		return updatersOK;
+	}
+	
 }

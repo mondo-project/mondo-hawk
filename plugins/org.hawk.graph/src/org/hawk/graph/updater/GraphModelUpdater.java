@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2018 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -13,6 +13,8 @@
  *
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - separate inserter and deletion utils creation
+ *       for time-aware version
  ******************************************************************************/
 package org.hawk.graph.updater;
 
@@ -38,13 +40,9 @@ import org.hawk.core.model.IHawkModelResource;
 
 public class GraphModelUpdater implements IModelUpdater {
 
-	private IModelIndexer indexer;
-	private IConsole console;
-	private TypeCache typeCache = new TypeCache();
-
-	private boolean isActive = false;
 	public static final String FILEINDEX_REPO_SEPARATOR = "||||";
 	public static final String PROXY_REFERENCE_PREFIX = "hawkProxyRef:";
+	public static final boolean CARES_ABOUT_RESOURCES = true;
 
 	/**
 	 * Used in URIs of targets when we only know the unique fragment and we
@@ -52,12 +50,11 @@ public class GraphModelUpdater implements IModelUpdater {
 	 */
 	public static final String PROXY_FILE_WILDCARD = "*";
 
-	public static final boolean caresAboutResources = true;
-
+	protected IModelIndexer indexer;
+	protected IConsole console;
+	protected TypeCache typeCache = new TypeCache();
+	private boolean isActive = false;
 	private Set<IGraphNode> toBeUpdated = new HashSet<>();
-
-	public GraphModelUpdater() {
-	}
 
 	@Override
 	public void run(IConsole c, IModelIndexer hawk) throws Exception {
@@ -101,7 +98,7 @@ public class GraphModelUpdater implements IModelUpdater {
 								+ "\nafter its resource failed to be loaded");
 						success = false;
 					}
-				} else if (!new GraphModelInserter(indexer, typeCache).run(res, f, verbose)) {
+				} else if (!createInserter().run(res, f, verbose)) {
 					console.printerrln("warning: failed to update item: " + f
 							+ "\nmodel resource: " + res);
 					success = false;
@@ -142,7 +139,7 @@ public class GraphModelUpdater implements IModelUpdater {
 		try {
 			indexer.getCompositeStateListener().info(
 					"Resolving any leftover cross-file references...");
-			new GraphModelInserter(indexer, typeCache).resolveProxies(indexer.getGraph());
+			createInserter().resolveProxies(indexer.getGraph());
 		} catch (Exception e) {
 			console.printerrln("Exception in updateStore - resolving proxies, returning 0:");
 			console.printerrln(e);
@@ -152,7 +149,7 @@ public class GraphModelUpdater implements IModelUpdater {
 		try {
 			indexer.getCompositeStateListener().info(
 					"Resolving any uninitialized derived attributes...");
-			new GraphModelInserter(indexer, typeCache).resolveDerivedAttributeProxies(
+			createInserter().resolveDerivedAttributeProxies(
 					indexer.getDerivedAttributeExecutionEngine());
 		} catch (Exception e) {
 			console.printerrln("Exception in updateStore - resolving DERIVED proxies, returning 0:");
@@ -163,7 +160,7 @@ public class GraphModelUpdater implements IModelUpdater {
 		try {
 			indexer.getCompositeStateListener().info(
 					"Updating any affected derived attributes...");
-			new GraphModelInserter(indexer, typeCache).updateDerivedAttributes(
+			createInserter().updateDerivedAttributes(
 					indexer.getDerivedAttributeExecutionEngine(), toBeUpdated);
 			toBeUpdated = new HashSet<>();
 		} catch (Exception e) {
@@ -190,7 +187,7 @@ public class GraphModelUpdater implements IModelUpdater {
 
 	@Override
 	public boolean caresAboutResources() {
-		return caresAboutResources;
+		return CARES_ABOUT_RESOURCES;
 	}
 
 	@Override
@@ -202,11 +199,9 @@ public class GraphModelUpdater implements IModelUpdater {
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
 			IGraphNodeIndex filedictionary = graph.getFileIndex();
-			IGraphIterable<IGraphNode> fileNodes = filedictionary.query("id",
-					c.getLocation() + "*");
+			IGraphIterable<IGraphNode> fileNodes = filedictionary.query("id", c.getLocation() + "*");
 
-			// Construct a simulated VcsRepositoryDelta with a "-deleted"
-			// revision
+			// Construct a simulated VcsRepositoryDelta with a "-deleted" revision
 			final VcsRepositoryDelta delta = new VcsRepositoryDelta();
 			final VcsCommit fakeCommit = new VcsCommit();
 			delta.setManager(c);
@@ -217,12 +212,9 @@ public class GraphModelUpdater implements IModelUpdater {
 			fakeCommit.setRevision(c.getCurrentRevision() + "-deleted");
 			fakeCommit.setMessage("stopped indexing");
 
-			final DeletionUtils deletionUtils = new DeletionUtils(graph);
-			final IGraphChangeListener changeListener = indexer
-					.getCompositeGraphChangeListener();
+			final IGraphChangeListener changeListener = indexer.getCompositeGraphChangeListener();
 
 			for (IGraphNode fileNode : fileNodes) {
-
 				VcsCommitItem item = new VcsCommitItem();
 				item.setChangeType(VcsChangeType.DELETED);
 				item.setCommit(fakeCommit);
@@ -231,8 +223,7 @@ public class GraphModelUpdater implements IModelUpdater {
 				item.setPath(path.startsWith("/") ? path : "/" + path);
 
 				fakeCommit.getItems().add(item);
-				//
-				deletionUtils.deleteAll(fileNode, item, changeListener);
+				createDeletionUtils().deleteAll(fileNode, item, changeListener);
 			}
 
 			t.success();
@@ -243,28 +234,25 @@ public class GraphModelUpdater implements IModelUpdater {
 
 	@Override
 	public boolean deleteAll(VcsCommitItem c) throws Exception {
-		indexer.getCompositeStateListener().info(
-				"Deleting all contents of file: " + c.getPath() + "...");
+		indexer.getCompositeStateListener().info("Deleting all contents of file: " + c.getPath() + "...");
 		boolean ret = false;
 
-		IGraphNode n = new Utils().getFileNodeFromVCSCommitItem(
-				indexer.getGraph(), c);
+		IGraphNode n = new Utils().getFileNodeFromVCSCommitItem(indexer.getGraph(), c);
 		if (n != null) {
 
 			try (IGraphTransaction t = indexer.getGraph().beginTransaction()) {
-				ret = new DeletionUtils(indexer.getGraph()).deleteAll(n, c,
-						indexer.getCompositeGraphChangeListener());
+				ret = createDeletionUtils().deleteAll(n, c, indexer.getCompositeGraphChangeListener());
 				t.success();
 			} catch (Exception e) {
 				e.printStackTrace();
 				ret = false;
 			}
-
-		} else
+		} else {
 			return true;
+		}
 
-		indexer.getCompositeStateListener().info(
-				"Deleted all contents of file: " + c.getPath() + ".");
+		indexer.getCompositeStateListener().info("Deleted all contents of file: " + c.getPath() + ".");
+
 		return ret;
 	}
 
@@ -273,7 +261,8 @@ public class GraphModelUpdater implements IModelUpdater {
 			String attributename, String attributetype, boolean isMany,
 			boolean isOrdered, boolean isUnique, String derivationlanguage,
 			String derivationlogic) {
-		new GraphModelInserter(indexer, typeCache).updateDerivedAttribute(metamodeluri,
+		createInserter()
+			.updateDerivedAttribute(metamodeluri,
 				typename, attributename, attributetype, isMany, isOrdered,
 				isUnique, derivationlanguage, derivationlogic);
 	}
@@ -281,7 +270,7 @@ public class GraphModelUpdater implements IModelUpdater {
 	@Override
 	public void updateIndexedAttribute(String metamodeluri, String typename,
 			String attributename) {
-		new GraphModelInserter(indexer, typeCache).updateIndexedAttribute(metamodeluri,
+		createInserter().updateIndexedAttribute(metamodeluri,
 				typename, attributename);
 	}
 
@@ -355,5 +344,13 @@ public class GraphModelUpdater implements IModelUpdater {
 		}
 
 		return changed;
+	}
+
+	protected GraphModelInserter createInserter() {
+		return new GraphModelInserter(indexer, createDeletionUtils(), typeCache);
+	}
+
+	protected DeletionUtils createDeletionUtils() {
+		return new DeletionUtils(indexer.getGraph());
 	}
 }

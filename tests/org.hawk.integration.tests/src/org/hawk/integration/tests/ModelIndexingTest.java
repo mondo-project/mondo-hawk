@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.Path;
 import org.hawk.backend.tests.LogbackOnlyErrorsRule;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.core.IMetaModelResourceFactory;
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.graph.IGraphChangeListener;
@@ -109,9 +110,8 @@ public class ModelIndexingTest {
 		IModelResourceFactory createModelResourceFactory();
 	}
 
-	private DefaultConsole console;
-
-	protected ModelIndexerImpl indexer;
+	protected DefaultConsole console;
+	protected IModelIndexer indexer;
 	protected EOLQueryEngine queryEngine;
 	protected IGraphDatabase db;
 
@@ -141,7 +141,7 @@ public class ModelIndexingTest {
 		final FileBasedCredentialsStore credStore = new FileBasedCredentialsStore(new File("keystore"),
 				"admin".toCharArray());
 
-		indexer = new ModelIndexerImpl("test", indexerFolder, credStore, console);
+		indexer = createIndexer(indexerFolder, credStore);
 		indexer.addMetaModelResourceFactory(msFactory.createMetaModelResourceFactory());
 		indexer.addModelResourceFactory(msFactory.createModelResourceFactory());
 
@@ -152,6 +152,10 @@ public class ModelIndexingTest {
 		indexer.setDB(db, true);
 
 		indexer.init(0, 0);
+	}
+
+	protected IModelIndexer createIndexer(final File indexerFolder, final FileBasedCredentialsStore credStore) {
+		return new ModelIndexerImpl("test", indexerFolder, credStore, console);
 	}
 
 	protected GraphModelUpdater createModelUpdater() {

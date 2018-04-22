@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.hawk.core;singleton:=true
 Bundle-Version: 1.2.0.qualifier
 Export-Package: org.hawk.core,
  org.hawk.core.graph,
+ org.hawk.core.graph.timeaware,
  org.hawk.core.model,
  org.hawk.core.query,
  org.hawk.core.runtime,

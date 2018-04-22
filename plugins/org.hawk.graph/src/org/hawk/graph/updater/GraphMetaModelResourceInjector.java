@@ -63,8 +63,7 @@ public class GraphMetaModelResourceInjector {
 	private final HashSet<IHawkPackage> addedepackages = new HashSet<>();
 	private final CompositeGraphChangeListener listener;
 
-	public GraphMetaModelResourceInjector(IModelIndexer hawk, Set<IHawkMetaModelResource> set,
-			CompositeGraphChangeListener listener) throws Exception {
+	public GraphMetaModelResourceInjector(IModelIndexer hawk, Set<IHawkMetaModelResource> set, CompositeGraphChangeListener listener) throws Exception {
 		this.hawk = hawk;
 		this.graph = hawk.getGraph();
 		this.listener = listener;
@@ -249,7 +248,7 @@ public class GraphMetaModelResourceInjector {
 
 				LOGGER.info("Updating any relevant derived attributes...");
 				try {
-					new GraphModelInserter(hawk, new TypeCache())
+					new GraphModelInserter(hawk, del, new TypeCache())
 							.updateDerivedAttributes(hawk.getDerivedAttributeExecutionEngine(), toBeUpdated);
 					toBeUpdated = new HashSet<>();
 				} catch (Exception e) {

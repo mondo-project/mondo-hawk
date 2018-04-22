@@ -33,12 +33,12 @@ import java.util.concurrent.Semaphore;
 
 import org.hawk.core.IConsole;
 import org.hawk.core.IModelIndexer;
-import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphDatabase;
 import org.hawk.greycat.GreycatNode.NodeReader;
 import org.hawk.greycat.lucene.GreycatLuceneIndexer;
 import org.slf4j.Logger;
@@ -57,15 +57,15 @@ import greycat.NodeIndex;
 import greycat.Type;
 import greycat.rocksdb.RocksDBStorage;
 
-public class GreycatDatabase implements IGraphDatabase {
+public class GreycatDatabase implements ITimeAwareGraphDatabase {
 
 	private static final class NodeKey {
 		public final long world, time, id;
 
-		public NodeKey(long world2, long time2, long id2) {
-			this.world = world2;
-			this.time = time2;
-			this.id = id2;
+		public NodeKey(long world, long time, long id) {
+			this.world = world;
+			this.time = time;
+			this.id = id;
 		}
 
 		public NodeKey(GreycatNode gn) {
@@ -153,22 +153,24 @@ public class GreycatDatabase implements IGraphDatabase {
 	private Set<GreycatNode> currentOpenNodes = new HashSet<>();
 	
 
-	private int world = 0;
-	private int time = 0;
+	private long world = 0;
+	private long time = 0;
 
-	public int getWorld() {
+	public long getWorld() {
 		return world;
 	}
 
-	public void setWorld(int world) {
+	public void setWorld(long world) {
 		this.world = world;
 	}
 
-	public int getTime() {
+	@Override
+	public long getTime() {
 		return time;
 	}
 
-	public void setTime(int time) {
+	@Override
+	public void setTime(long time) {
 		this.time = time;
 	}
 
@@ -598,7 +600,8 @@ public class GreycatDatabase implements IGraphDatabase {
 			return nodeCache.get(new NodeKey(world, time, id), () -> {
 				CompletableFuture<Node> result = new CompletableFuture<>();
 				graph.lookup(world, time, id, node -> result.complete(node));
-				return new NodeCacheWrapper(result.join());
+				final Node node = result.join();
+				return new NodeCacheWrapper(node);
 			});
 		} catch (ExecutionException e) {
 			LOGGER.error(String.format("Failed to lookup node %d:%d:%d", world, time, id), e);

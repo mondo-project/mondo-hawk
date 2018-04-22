@@ -117,8 +117,9 @@ public class SvnManager implements IVcsManager {
 		final String rootURL = svnRepository.getRepositoryRoot(false).toDecodedString();
 		final String overlappedURL = makeRelative(rootURL, repositoryURL);
 
-		if (!startRevision.equals(endRevision)) {
-			Collection<?> c = svnRepository.log(new String[] { "" }, null, Long.valueOf(startRevision),
+		if (startRevision == null && endRevision != startRevision || !startRevision.equals(endRevision)) {
+			Collection<?> c = svnRepository.log(new String[] { "" }, null,
+					startRevision == null ? 0 : Long.valueOf(startRevision),
 					Long.valueOf(endRevision), true, true);
 
 			for (Object o : c) {

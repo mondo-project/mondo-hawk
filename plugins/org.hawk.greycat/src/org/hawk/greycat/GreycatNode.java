@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 
 import org.hawk.core.graph.IGraphDatabase.Mode;
 import org.hawk.core.graph.IGraphEdge;
-import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.greycat.GreycatDatabase.NodeCacheWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
+import greycat.Constants;
 import greycat.Graph;
 import greycat.Node;
 import greycat.Type;
@@ -48,7 +49,7 @@ import greycat.struct.Relation;
 import greycat.struct.StringArray;
 import greycat.struct.StringIntMap;
 
-public class GreycatNode implements IGraphNode {
+public class GreycatNode implements ITimeAwareGraphNode {
 
 	private enum Direction {
 		IN {
@@ -255,8 +256,57 @@ public class GreycatNode implements IGraphNode {
 		return world;
 	}
 
+	@Override
 	public long getTime() {
 		return time;
+	}
+
+	@Override
+	public void end() {
+		try (NodeReader rn = getNodeReader()) {
+			// Unlink node and then end its lifespan
+			for (IGraphEdge out : getOutgoing()) {
+				out.delete();
+			}
+			for (IGraphEdge in : getIncoming()) {
+				in.delete();
+			}
+
+			rn.get().end();
+		}
+	}
+
+	@Override
+	public List<ITimeAwareGraphNode> getAllVersions() throws Exception {
+		try (NodeReader rn = getNodeReader()) {
+			final Node n = rn.get();
+
+			CompletableFuture<long[]> result = new CompletableFuture<>();
+			n.timepoints(Constants.BEGINNING_OF_TIME, Constants.END_OF_TIME, (value) -> {
+				result.complete(value);
+			});
+
+			List<ITimeAwareGraphNode> versions = new ArrayList<>();
+			for (long timepoint : result.get()) {
+				versions.add(new GreycatNode(db, world, timepoint, id));
+			}
+			return versions;
+		}
+	}
+
+	@Override
+	public ITimeAwareGraphNode travelInTime(long time) {
+		try (NodeReader rn = getNodeReader()) {
+			final Node n = rn.get();
+
+			final CompletableFuture<Node> completable = new CompletableFuture<Node>();
+			n.travelInTime(time, (node) -> {
+				completable.complete(node);
+			});
+			final Node on = completable.join();
+
+			return on == null ? null : new GreycatNode(db, on);
+		}
 	}
 
 	public String getNodeLabel() {
