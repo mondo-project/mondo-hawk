@@ -43,7 +43,7 @@ public class UMLWorkspaceIndexingTest extends AbstractUMLIndexingTest {
 		IProject project2 = openProject(new File(testResourcesBase, "model2"));
 
 		try {
-			requestWorkspaceIndexing();
+			requestWorkspaceIndex();
 			waitForSync(() -> {
 				assertEquals(3, eolWorkspace("return Class.all.size;"));
 				assertEquals(new HashSet<>(Arrays.asList("Class1", "Class3")), eolWorkspace(

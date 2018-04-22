@@ -148,10 +148,14 @@ public class ModelIndexingTest {
 		queryEngine = new EOLQueryEngine();
 		indexer.addQueryEngine(queryEngine);
 		indexer.setMetaModelUpdater(new GraphMetaModelUpdater());
-		indexer.addModelUpdater(new GraphModelUpdater());
+		indexer.addModelUpdater(createModelUpdater());
 		indexer.setDB(db, true);
 
 		indexer.init(0, 0);
+	}
+
+	protected GraphModelUpdater createModelUpdater() {
+		return new GraphModelUpdater();
 	}
 
 	@After
@@ -191,6 +195,13 @@ public class ModelIndexingTest {
 		indexer.addVCSManager(vcs, true);
 	}
 
+	protected void requestWorkspaceIndex() throws Exception {
+		final Workspace vcs = new Workspace();
+		vcs.init("/", indexer);
+		vcs.run();
+		indexer.addVCSManager(vcs, true);
+	}
+
 	protected Object eol(final String eolQuery) throws InvalidQueryException, QueryExecutionException {
 		return eol(eolQuery, null);
 	}
@@ -202,13 +213,6 @@ public class ModelIndexingTest {
 	protected Object eolWorkspace(final String query) throws InvalidQueryException, QueryExecutionException {
 		return eol(query,
 			Collections.singletonMap(EOLQueryEngine.PROPERTY_REPOSITORYCONTEXT, Workspace.REPOSITORY_URL));
-	}
-
-	protected void requestWorkspaceIndexing() throws Exception {
-		final Workspace vcs = new Workspace();
-		vcs.init("/", indexer);
-		vcs.run();
-		indexer.addVCSManager(vcs, true);
 	}
 
 	protected IProject openProject(final File projectFolder) throws CoreException {
