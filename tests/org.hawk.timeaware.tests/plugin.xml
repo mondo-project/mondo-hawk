@@ -6,12 +6,5 @@
 
 <plugin>
 
-   <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated Tree -->
-      <package
-            uri="Tree"
-            class="org.hawk.timeaware.tests.tree.Tree.TreePackage"
-            genModel="resources/metamodels/Tree.genmodel"/>
-   </extension>
 
 </plugin>
