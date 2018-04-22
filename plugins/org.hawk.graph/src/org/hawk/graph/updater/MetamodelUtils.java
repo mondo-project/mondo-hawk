@@ -14,7 +14,7 @@
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
  ******************************************************************************/
-package org.hawk.graph.internal.updater;
+package org.hawk.graph.updater;
 
 import java.util.Iterator;
 

@@ -15,7 +15,7 @@
  *     Konstantinos Barmpis - initial API and implementation
  *     Antonio Garcia-Dominguez - protect against null EPackage nsURIs
  ******************************************************************************/
-package org.hawk.graph.internal.updater;
+package org.hawk.graph.updater;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -81,6 +81,9 @@ public class GraphMetaModelResourceInjector {
 		this.listener = listener;
 	}
 
+	/**
+	 * Removes all the metamodel resources and their dependent model elements from the index.
+	 */
 	public void removeMetamodels(Set<IHawkMetaModelResource> set) {
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
@@ -132,6 +135,11 @@ public class GraphMetaModelResourceInjector {
 
 	}
 
+	/**
+	 * Removes all the metamodels and models dependent on the <code>epsn</code> metamodel nodes.
+	 * 
+	 * @return URIs of the repositories impacted by the removal.
+	 */
 	private Set<String> removeAll(Set<IGraphNode> epns) throws Exception {
 
 		Set<String> affectedRepositories = new HashSet<>();
@@ -794,7 +802,11 @@ public class GraphMetaModelResourceInjector {
 
 	}
 
-	// FIXME: why do we have two removeMetamodels(...) methods?
+	/**
+	 * Removes all the metamodels with the specified URIs.
+	 * 
+	 * @return URIs of the repositories impacted by the removal.
+	 */
 	public Set<String> removeMetamodels(String[] mmuris) {
 
 		Set<String> ret = new HashSet<>();

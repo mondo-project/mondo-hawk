@@ -4,13 +4,13 @@
    <extension
          point="org.hawk.core.ModelUpdaterExtensionPoint">
                 <model
-                      ModelUpdater="org.hawk.graph.internal.updater.GraphModelUpdater">
+                      ModelUpdater="org.hawk.graph.updater.GraphModelUpdater">
       </model>
    </extension>
    <extension
          point="org.hawk.core.MetaModelUpdaterExtensionPoint">    
  <metamodel
-                      metamodelupdater="org.hawk.graph.internal.updater.GraphMetaModelUpdater">
+                      metamodelupdater="org.hawk.graph.updater.GraphMetaModelUpdater">
       </metamodel>      
    </extension>
 </plugin>

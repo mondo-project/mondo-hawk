@@ -15,7 +15,7 @@
  *     Konstantinos Barmpis - initial API and implementation
  *     Antonio Garcia-Dominguez - switch to logging through SLF4J
  ******************************************************************************/
-package org.hawk.graph.internal.updater;
+package org.hawk.graph.updater;
 
 import java.util.HashSet;
 import java.util.Iterator;

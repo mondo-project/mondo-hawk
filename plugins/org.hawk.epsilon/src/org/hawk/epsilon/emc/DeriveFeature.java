@@ -31,8 +31,8 @@ import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.epsilon.emc.pgetters.GraphPropertyGetter;
 import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
-import org.hawk.graph.internal.updater.DirtyDerivedAttributesListener;
-import org.hawk.graph.internal.util.GraphUtil;
+import org.hawk.graph.updater.DirtyDerivedAttributesListener;
+import org.hawk.graph.util.GraphUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

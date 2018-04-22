@@ -22,7 +22,7 @@ import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
-import org.hawk.graph.internal.updater.GraphModelBatchInjector;
+import org.hawk.graph.updater.GraphModelBatchInjector;
 
 /**
  * Read-only abstraction of a file within the graph populated by this updater.

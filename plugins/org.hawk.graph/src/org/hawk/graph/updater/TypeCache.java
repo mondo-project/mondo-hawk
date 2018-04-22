@@ -14,7 +14,7 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.graph.internal.updater;
+package org.hawk.graph.updater;
 
 import java.util.HashMap;
 import java.util.Hashtable;

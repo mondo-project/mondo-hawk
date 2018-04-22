@@ -14,7 +14,7 @@
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
  ******************************************************************************/
-package org.hawk.graph.internal.updater;
+package org.hawk.graph.updater;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -46,8 +46,8 @@ import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.ModelElementNode;
-import org.hawk.graph.internal.util.GraphUtil;
-import org.hawk.graph.internal.util.Pair;
+import org.hawk.graph.util.GraphUtil;
+import org.hawk.graph.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

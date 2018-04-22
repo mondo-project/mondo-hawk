@@ -27,7 +27,7 @@ import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.models.Model;
 import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.graph.ModelElementNode;
-import org.hawk.graph.internal.util.GraphUtil;
+import org.hawk.graph.util.GraphUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

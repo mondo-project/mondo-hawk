@@ -35,7 +35,7 @@ import org.hawk.epsilon.emc.CEOLQueryEngine;
 import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.ModelElementNode;
-import org.hawk.graph.internal.updater.DirtyDerivedAttributesListener;
+import org.hawk.graph.updater.DirtyDerivedAttributesListener;
 
 public class CGraphPropertyGetter extends GraphPropertyGetter {
 

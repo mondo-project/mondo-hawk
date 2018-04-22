@@ -14,7 +14,7 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.graph.internal.util;
+package org.hawk.graph.util;
 
 /**
  * Immutable pair of two objects. Useful for composite keys, especially Strings, as we

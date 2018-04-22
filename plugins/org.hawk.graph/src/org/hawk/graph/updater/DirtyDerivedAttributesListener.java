@@ -15,7 +15,7 @@
  *     Konstantinos Barmpis - original idea and implementation
  *     Antonio Garcia-Dominguez - rearrange as graph change listener
  ******************************************************************************/
-package org.hawk.graph.internal.updater;
+package org.hawk.graph.updater;
 
 import java.util.HashSet;
 import java.util.Map.Entry;

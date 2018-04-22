@@ -69,7 +69,7 @@ import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.MetamodelNode;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.TypeNode;
-import org.hawk.graph.internal.updater.DirtyDerivedAttributesListener;
+import org.hawk.graph.updater.DirtyDerivedAttributesListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -43,8 +43,8 @@ import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.runtime.ModelIndexerImpl;
-import org.hawk.graph.internal.updater.GraphModelBatchInjector;
-import org.hawk.graph.internal.updater.GraphModelUpdater;
+import org.hawk.graph.updater.GraphModelBatchInjector;
+import org.hawk.graph.updater.GraphModelUpdater;
 
 public class SyncValidationListener implements IGraphChangeListener {
 

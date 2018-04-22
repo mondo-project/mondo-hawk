@@ -26,7 +26,7 @@ import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
-import org.hawk.graph.internal.updater.GraphModelUpdater;
+import org.hawk.graph.updater.GraphModelUpdater;
 
 /**
  * Wraps an {@link IGraphDatabase} that has been updated by this plugin. This is
