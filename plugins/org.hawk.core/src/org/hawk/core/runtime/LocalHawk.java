@@ -26,9 +26,7 @@ import org.hawk.core.IModelIndexer;
 public class LocalHawk implements IHawk {
 
 	private File location;
-
 	private IModelIndexer indexer;
-
 	private String dbtype;
 
 	public LocalHawk(String name, File storageFolder, ICredentialsStore credStore, IConsole c) throws Exception {
@@ -42,12 +40,12 @@ public class LocalHawk implements IHawk {
 	}
 
 	@Override
-	public String getDbtype() {
+	public String getDatabaseType() {
 		return dbtype;
 	}
 
 	@Override
-	public void setDbtype(String dbtype) {
+	public void setDatabaseType(String dbtype) {
 		this.dbtype = dbtype;
 	}
 

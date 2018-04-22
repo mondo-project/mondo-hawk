@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-SymbolicName: org.hawk.graph.timeaware.tests;singleton:=true
+Bundle-SymbolicName: org.hawk.timeaware.tests;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
@@ -13,7 +13,7 @@ Export-Package: org.hawk.timeaware.tests.tree.Tree,
 Require-Bundle: org.junit;bundle-version="4.0.0",
  org.hawk.core;bundle-version="1.2.0",
  org.hawk.graph;bundle-version="1.2.0",
- org.hawk.graph.timeaware;bundle-version="1.0.0",
+ org.hawk.timeaware;bundle-version="1.0.0",
  org.hawk.greycat;bundle-version="1.2.0",
  org.hawk.svn;bundle-version="1.2.0",
  org.hawk.svn.tests;bundle-version="1.2.0",

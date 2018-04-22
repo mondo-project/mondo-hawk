@@ -21,9 +21,9 @@ public interface IHawk {
 
 	public IModelIndexer getModelIndexer();
 
-	String getDbtype();
+	String getDatabaseType();
 
-	void setDbtype(String dbtype);
+	void setDatabaseType(String dbtype);
 
 	public boolean exists();
 

@@ -147,12 +147,12 @@ public class HManager {
 
 	public IGraphDatabase createGraph(IHawk hawk) throws Exception {
 		for (IConfigurationElement i : getBackends()) {
-			if (i.getAttribute("store").equals(hawk.getDbtype())) {
+			if (i.getAttribute("store").equals(hawk.getDatabaseType())) {
 				return (IGraphDatabase) i.createExecutableExtension("store");
 			}
 		}
 		throw new Exception("cannot instantiate this type of graph: "
-				+ hawk.getDbtype());
+				+ hawk.getDatabaseType());
 	}
 
 	/**

@@ -14,7 +14,7 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.graph.timeaware;
+package org.hawk.timeaware.graph;
 
 import java.util.Collections;
 

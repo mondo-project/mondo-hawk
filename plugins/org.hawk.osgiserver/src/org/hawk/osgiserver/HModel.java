@@ -116,7 +116,7 @@ public class HModel implements IStateListener {
 
 		HModel hm = new HModel(manager, hawkFactory, name, storageFolder, location, credStore, plugins);
 		if (dbType != null) {
-			hm.hawk.setDbtype(dbType);
+			hm.hawk.setDatabaseType(dbType);
 		}
 
 		// TODO use plugins list to enable only these plugins
@@ -193,11 +193,11 @@ public class HModel implements IStateListener {
 	}
 	
 	public String getDbType() {
-		return this.hawk.getDbtype();
+		return this.hawk.getDatabaseType();
 	}
 
 	public void setDbType(String dbType) throws Exception {
-		hawk.setDbtype(dbType);
+		hawk.setDatabaseType(dbType);
 		if (hawkFactory.instancesCreateGraph()) {
 			IGraphDatabase db = manager.createGraph(this.hawk);
 			db.run(new File(this.getHawkConfig().getStorageFolder()), getConsole());
@@ -563,7 +563,7 @@ public class HModel implements IStateListener {
 		String path = hawk.getModelIndexer().getParentFolder() + File.separator + "properties.xml";
 
 		HawkProperties hp = (HawkProperties) stream.fromXML(new File(path));
-		hawk.setDbtype(hp.getDbType());
+		hawk.setDatabaseType(hp.getDbType());
 		for (String[] s : hp.getMonitoredVCS()) {
 			loadVCS(s[0], s[1], s.length > 2 ? Boolean.parseBoolean(s[2]) : false);
 		}

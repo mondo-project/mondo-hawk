@@ -14,7 +14,7 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.graph.timeaware;
+package org.hawk.timeaware.graph;
 
 import java.io.File;
 
@@ -26,7 +26,7 @@ import org.hawk.core.VcsRepositoryDelta;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphDatabase;
 import org.hawk.core.runtime.BaseModelIndexer;
-import org.hawk.graph.timeaware.VCSManagerIndex.RepositoryNode;
+import org.hawk.timeaware.graph.VCSManagerIndex.RepositoryNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

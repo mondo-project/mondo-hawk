@@ -13,18 +13,19 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.hawk.backend.tests.factories.GreycatDatabaseFactory;
+import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
 import org.hawk.core.security.FileBasedCredentialsStore;
-import org.hawk.graph.timeaware.TimeAwareEOLQueryEngine;
-import org.hawk.graph.timeaware.TimeAwareIndexer;
-import org.hawk.graph.timeaware.TimeAwareModelUpdater;
 import org.hawk.graph.updater.GraphModelUpdater;
 import org.hawk.integration.tests.ModelIndexingTest;
 import org.hawk.integration.tests.emf.EMFModelSupportFactory;
 import org.hawk.svn.SvnManager;
 import org.hawk.svn.tests.rules.TemporarySVNRepository;
+import org.hawk.timeaware.graph.TimeAwareIndexer;
+import org.hawk.timeaware.graph.TimeAwareModelUpdater;
+import org.hawk.timeaware.queries.TimeAwareEOLQueryEngine;
 import org.hawk.timeaware.tests.tree.Tree.Tree;
 import org.hawk.timeaware.tests.tree.Tree.TreeFactory;
 import org.junit.Before;
@@ -46,11 +47,13 @@ public class NodeHistoryTests extends ModelIndexingTest {
 
 	@Parameters(name = "{0}")
     public static Iterable<Object[]> params() {
-    	return Collections.singletonList(new Object[0]);
+    	return Collections.singletonList(new Object[] {
+    		new GreycatDatabaseFactory(), new EMFModelSupportFactory() 
+    	});
     }
 	
-	public NodeHistoryTests() {
-		super(new GreycatDatabaseFactory(), new EMFModelSupportFactory());
+	public NodeHistoryTests(IGraphDatabaseFactory dbFactory, IModelSupportFactory modelSupportFactory) {
+		super(dbFactory, modelSupportFactory);
 	}
 
 	@Before

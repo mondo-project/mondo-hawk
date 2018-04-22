@@ -50,12 +50,12 @@ public class ThriftRemoteHawk implements IHawk {
 	}
 
 	@Override
-	public String getDbtype() {
+	public String getDatabaseType() {
 		return indexer.getDBType();
 	}
 
 	@Override
-	public void setDbtype(String dbtype) {
+	public void setDatabaseType(String dbtype) {
 		indexer.setDBType(dbtype);
 	}
 
