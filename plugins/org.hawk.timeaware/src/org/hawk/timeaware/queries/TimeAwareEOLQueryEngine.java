@@ -81,7 +81,9 @@ public class TimeAwareEOLQueryEngine extends EOLQueryEngine {
 					for (ITimeAwareGraphNode typeNodeVersion : taNode.getAllVersions()) {
 						TypeNode typeNode = new TypeNode(typeNodeVersion);
 						for (ModelElementNode instanceNode : typeNode.getAllInstances()) {
-							ret.add(new GraphNodeWrapper(instanceNode.getNode(), TimeAwareEOLQueryEngine.this));
+							final IGraphNode meNode = instanceNode.getNode();
+							final GraphNodeWrapper gnw = new GraphNodeWrapper(meNode, (EOLQueryEngine)eolType.getModel());
+							ret.add(gnw);
 						}
 					}
 				} else {

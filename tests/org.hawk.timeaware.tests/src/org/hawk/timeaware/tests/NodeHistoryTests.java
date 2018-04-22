@@ -99,6 +99,8 @@ public class NodeHistoryTests extends ModelIndexingTest {
 				// .isAlive('time') returns true/false depending on whether the node still exists at this point in time
 				assertEquals(false, timeAwareEOL("return Tree.created('anytime').first.isAlive('now');"));
 
+				assertEquals("xy", timeAwareEOL("return Tree.created('anytime').first.label;"));
+
 				return null;
 			}
 		});
