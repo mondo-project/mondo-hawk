@@ -70,11 +70,11 @@ public class Neo4JNode implements IGraphNode {
 
 	@Override
 	public Object getProperty(String name) {
-
 		if (graph.getGraph() != null) {
-			if (node == null)
+			if (node == null) {
 				node = graph.getGraph().getNodeById(id);
-			return node.hasProperty(name) ? node.getProperty(name) : null;
+			}
+			return node.getProperty(name, null);
 		} else {
 			return graph.getBatch().getNodeProperties(id).get(name);
 		}
@@ -112,7 +112,6 @@ public class Neo4JNode implements IGraphNode {
 
 	@Override
 	public Iterable<IGraphEdge> getEdges() {
-
 		if (graph.getGraph() != null) {
 			if (node == null)
 				node = graph.getGraph().getNodeById(id);
@@ -120,20 +119,16 @@ public class Neo4JNode implements IGraphNode {
 		} else {
 			return new Neo4JIterable<IGraphEdge>(() -> graph.getBatch().getRelationships(id), graph);
 		}
-
 	}
 
 	@Override
 	public Iterable<IGraphEdge> getEdgesWithType(String type) {
-
 		if (graph.getGraph() != null) {
-			if (node == null)
+			if (node == null) {
 				node = graph.getGraph().getNodeById(id);
+			}
 			return new Neo4JIterable<IGraphEdge>(() -> node.getRelationships(getNewRelationshipType(type)), graph);
 		} else {
-			// System.err
-			// .println("warning batch neo4j does not support getting edges with
-			// type, returning all edges instead");
 			return new Neo4JIterable<IGraphEdge>(() -> graph.getBatch().getRelationships(id), graph);
 		}
 
@@ -141,7 +136,6 @@ public class Neo4JNode implements IGraphNode {
 
 	@Override
 	public Iterable<IGraphEdge> getOutgoingWithType(String type) {
-
 		if (graph.getGraph() != null) {
 			if (node == null)
 				node = graph.getGraph().getNodeById(id);
@@ -214,7 +208,6 @@ public class Neo4JNode implements IGraphNode {
 
 	@Override
 	public boolean equals(Object o) {
-
 		if (!(o instanceof Neo4JNode))
 			return false;
 		else
@@ -232,14 +225,11 @@ public class Neo4JNode implements IGraphNode {
 	}
 
 	public static RelationshipType getNewRelationshipType(final String name) {
-
 		return DynamicRelationshipType.withName(name);
-
 	}
 
 	@Override
 	public String toString() {
-
 		return "Node:" + id + " :: properties:" + getProperties();
 	}
 
