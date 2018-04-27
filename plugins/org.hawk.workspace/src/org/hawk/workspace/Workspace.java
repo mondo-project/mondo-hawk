@@ -260,12 +260,13 @@ public class Workspace implements IVcsManager {
 
 	@Override
 	public boolean isPathLocationAccepted() {
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean isURLLocationAccepted() {
-		return false;
+		// platform:/resource is a URL
+		return true;
 	}
 
 	@Override
