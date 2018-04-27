@@ -70,7 +70,6 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 		List<String> rplist = (repoPatterns != null) ? Arrays.asList(repoPatterns) : null;
 
 		try (IGraphTransaction tx = graph.beginTransaction()) {
-
 			final Set<FileNode> fileNodes = gw.getFileNodes(rplist, fplist);
 			for (FileNode fn : fileNodes) {
 				this.files.add(fn.getNode());

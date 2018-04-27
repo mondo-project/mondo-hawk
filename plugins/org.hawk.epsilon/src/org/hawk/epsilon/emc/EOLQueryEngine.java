@@ -360,10 +360,17 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 		return ret;
 	}
 
+	// Speeds up repeated queries reusing this query engine
+	private Map<String, Boolean> hasTypeCache = new HashMap<>();
+
 	@Override
 	public boolean hasType(String type) {
-		final int size = getTypeNodes(type).size();
-		return size == 1;
+		Boolean value = hasTypeCache.get(type);
+		if (value == null) {
+			value = getTypeNodes(type).size() == 1;
+			hasTypeCache.put(type, value);
+		}
+		return value;
 	}
 
 	@Override
