@@ -25,6 +25,12 @@ import org.hawk.core.graph.IGraphNode;
 
 public interface IQueryEngine {
 
+	/**
+	 * If true, contextful getAllOf will start from the files then check types. Can
+	 * be useful when querying very large collections of small fragments.
+	 */
+	public static final String PROPERTY_FILEFIRST = "FILEFIRST";
+
 	public static final String PROPERTY_FILECONTEXT = "FILE";
 	public static final String PROPERTY_REPOSITORYCONTEXT = "REPOSITORY";
 	public static final String PROPERTY_DEFAULTNAMESPACES = "DEFAULTNAMESPACES";

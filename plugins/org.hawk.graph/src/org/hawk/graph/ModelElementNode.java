@@ -391,6 +391,23 @@ public class ModelElementNode {
 		return isOf(metaClass, EDGE_LABEL_OFTYPE);
 	}
 
+	public boolean isOfKind(IGraphNode typeNode) {
+		return isOf(typeNode, EDGE_LABEL_OFKIND) || isOf(typeNode, EDGE_LABEL_OFTYPE);
+	}
+
+	public boolean isOfType(IGraphNode typeNode) {
+		return isOf(typeNode, EDGE_LABEL_OFTYPE);
+	}
+
+	protected boolean isOf(IGraphNode typeNode, String edgeLabelOftype) {
+		for (IGraphEdge edge : node.getOutgoingWithType(edgeLabelOftype)) {
+			if (edge.getEndNode().getId().equals(typeNode.getId())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	protected boolean isOf(String metaClass, final String edgeLabel) {
 		for (IGraphEdge edge : node.getOutgoingWithType(edgeLabel)) {
 			TypeNode tn = new TypeNode(edge.getEndNode());

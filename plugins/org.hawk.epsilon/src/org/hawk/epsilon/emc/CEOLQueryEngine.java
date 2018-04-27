@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2018 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -28,7 +28,6 @@ import java.util.Set;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTransaction;
-import org.hawk.epsilon.emc.optimisation.OptimisableCollection;
 import org.hawk.epsilon.emc.pgetters.CGraphPropertyGetter;
 import org.hawk.epsilon.emc.wrappers.FileNodeWrapper;
 import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
@@ -44,10 +43,7 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 
 	private Set<IGraphNode> files = null;
 	private boolean isTraversalScopingEnabled = true;
-
-	public CEOLQueryEngine() {
-		// objects of this type should only be created on-the-fly by EOLQueryEngine#contextfulQuery
-	}
+	private boolean filterByFileFirst = false;
 
 	public void setContext(Map<String, Object> context) {
 		if (context == null) {
@@ -62,6 +58,7 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 		if (etss != null) {
 			isTraversalScopingEnabled = Boolean.parseBoolean(etss);
 		}
+		filterByFileFirst = Boolean.parseBoolean((String) context.getOrDefault(PROPERTY_FILEFIRST, "false"));
 
 		final String[] filePatterns = (sFilePatterns != null && sFilePatterns.trim().length() != 0)	? sFilePatterns.split(",") : null;
 		final String[] repoPatterns = (sRepoPatterns != null && sRepoPatterns.trim().length() != 0) ? sRepoPatterns.split(",") : null;
@@ -117,26 +114,29 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 
 	@Override
 	public Collection<Object> getAllOf(IGraphNode typeNode, final String typeorkind) {
-		OptimisableCollection nodes = new OptimisableCollection(this, new GraphNodeWrapper(typeNode, this));
+		Collection<Object> nodes = createAllOfCollection(typeNode);
 
-		// operations on the graph
-		// ...
+		if (filterByFileFirst) {
+			for (IGraphNode rawFileNode : files) {
+				final FileNode f = new FileNode(rawFileNode);
+				for (ModelElementNode me : f.getModelElements()) {
+					if (me.isOfKind(typeNode)) {
+						nodes.add(new GraphNodeWrapper(me.getNode(), this));
+					}
+				}
+			}
+		} else {
+			for (IGraphEdge n : typeNode.getIncomingWithType(typeorkind)) {
+				IGraphNode node = n.getStartNode();
 
-		for (IGraphEdge n : typeNode.getIncomingWithType(typeorkind)) {
-
-			IGraphNode node = n.getStartNode();
-
-			// System.err.println(Arrays.toString(files.toArray()));
-			// System.err.println(files.iterator().next().getGraph());
-			// System.err.println(node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE).iterator().next().getEndNode().getGraph());
-
-			for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
-
-				if (files.contains(e.getEndNode())) {
-					nodes.add(new GraphNodeWrapper(node, this));
+				for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+					if (files.contains(e.getEndNode())) {
+						nodes.add(new GraphNodeWrapper(node, this));
+					}
 				}
 			}
 		}
+
 		return nodes;
 	}
 
