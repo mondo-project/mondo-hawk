@@ -32,6 +32,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ScheduledFuture;
 
 import org.apache.activemq.artemis.api.core.client.ClientMessage;
 import org.apache.activemq.artemis.api.core.client.MessageHandler;
@@ -929,7 +931,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	}
 
 	@Override
-	public void scheduleTask(Runnable task, long delayMillis) {
+	public <T> ScheduledFuture<T> scheduleTask(Callable<T> task, long delayMillis) {
 		// TODO If this works to fix server configuration issues,
 		// reevaluate.
 		throw new UnsupportedOperationException();
