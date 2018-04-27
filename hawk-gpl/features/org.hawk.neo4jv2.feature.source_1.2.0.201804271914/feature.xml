@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature id="org.hawk.neo4jv2.feature.source" version="1.2.0.201804271914" label="Hawk Neo4Jv2 Backend Feature" provider-name="University of York"     >
+	<description >
+		Implements a Neo4Jv2 backend for storing Hawk&apos;s index.
+	</description>
+	<copyright >
+		Copyright (C) 2011-2018 University of York, Aston University.
+	</copyright>
+	<license url="https://www.eclipse.org/legal/epl-2.0/">
+		Eclipse Public License - v2.0
+	</license>
+	<plugin id="org.hawk.neo4j-v2.source" version="1.2.0.201804271914"     unpack="false"/>
+	<plugin id="org.hawk.neo4j-v2.dependencies.source" version="1.0.0"     unpack="false"/>
+</feature>
