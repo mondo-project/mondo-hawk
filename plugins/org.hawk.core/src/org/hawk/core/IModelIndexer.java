@@ -21,6 +21,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ScheduledFuture;
 
 import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.graph.IGraphChangeListener;
@@ -244,5 +246,5 @@ public interface IModelIndexer {
 	 * any changes on a Hawk configuration through tasks scheduled this way. Hawk
 	 * is not designed to be thread safe.
 	 */
-	void scheduleTask(Runnable task, long delayMillis);
+	<T> ScheduledFuture<T> scheduleTask(Callable<T> task, long delayMillis);
 }

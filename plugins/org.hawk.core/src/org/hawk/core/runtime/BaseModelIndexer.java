@@ -32,7 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimerTask;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -1022,8 +1024,8 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 	}
 
 	@Override
-	public void scheduleTask(Runnable task, long delayMillis) {
-		updateTimer.schedule(task, delayMillis, TimeUnit.MILLISECONDS);
+	public <T> ScheduledFuture<T> scheduleTask(Callable<T> task, long delayMillis) {
+		return updateTimer.schedule(task, delayMillis, TimeUnit.MILLISECONDS);
 	}
 
 	protected void inspectChanges(Iterable<VcsCommitItem> files, Set<VcsCommitItem> deleteditems, Set<VcsCommitItem> interestingfiles) {

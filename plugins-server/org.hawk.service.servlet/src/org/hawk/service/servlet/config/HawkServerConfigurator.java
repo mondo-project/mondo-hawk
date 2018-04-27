@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import org.apache.thrift.TException;
 import org.eclipse.core.runtime.FileLocator;
@@ -149,9 +150,9 @@ public class HawkServerConfigurator  {
 			hawkInstance.getIndexer().waitFor(HawkState.RUNNING , 3000);
 
 			final HModel hModel = hawkInstance;
-			hawkInstance.getHawk().getModelIndexer().scheduleTask(new Runnable(){
+			hawkInstance.getHawk().getModelIndexer().scheduleTask(new Callable<Void>(){
 				@Override
-				public void run() {
+				public Void call() {
 					// add metamodels, Do it first before adding attributes or repositories
 					addMetamodels(hModel, config);
 
@@ -172,6 +173,7 @@ public class HawkServerConfigurator  {
 					hModel.configurePolling(config.getDelayMin(), config.getDelayMax());
 
 					numberOfConfiguredInstances++;
+					return null;
 				}
 			}, 0);
 

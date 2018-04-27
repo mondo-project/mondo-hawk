@@ -16,19 +16,19 @@
  ******************************************************************************/
 package org.hawk.service.servlet.config;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.TimerTask;
+import java.util.concurrent.Callable;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
@@ -106,14 +106,15 @@ public class HawkServerConfiguratorTest {
 		instance.configurePolling(0, 0);
 		
 
-		instance.getHawk().getModelIndexer().scheduleTask(new TimerTask(){
+		instance.getHawk().getModelIndexer().scheduleTask(new Callable<Void>(){
 			@Override
-			public void run() {
+			public Void call() {
 				metamodels = instance.getRegisteredMetamodels();
 				repos = instance.getRunningVCSManagers();
 				derivedAttributes = instance.getDerivedAttributes();
 				indexedAttributes = instance.getIndexedAttributes();
 				finishedRetrievingInstanceInfo = true;
+				return null;
 			}
 		}, 0);;
 		

@@ -59,18 +59,17 @@ public class Workspace implements IVcsManager {
 				IResourceDelta.CONTENT | IResourceDelta.MOVED_FROM | IResourceDelta.MOVED_TO |
 				IResourceDelta.COPIED_FROM | IResourceDelta.TYPE | IResourceDelta.SYNC |
 				IResourceDelta.REPLACED;
+
 		private boolean anyChanges = false;
 
 		@Override
 		public boolean visit(IResourceDelta delta) throws CoreException {
-			if (!(delta.getResource() instanceof IFile)) {
-				// not a file: not interested
+			final boolean isFile = delta.getResource() instanceof IFile;
+			if (isFile && (delta.getFlags() & CHANGE_MASK) != 0) {
+				anyChanges = true;
 				return true;
 			}
-			if ((delta.getFlags() & CHANGE_MASK) != 0) {
-				anyChanges = true;
-			}
-			return false;
+			return !isFile;
 		}
 	}
 
@@ -83,18 +82,17 @@ public class Workspace implements IVcsManager {
 
 		@Override
 		public void resourceChanged(IResourceChangeEvent event) {
-			if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
-				IResourceDelta delta = event.getDelta();
-				try {
-					final WorkspaceDeltaVisitor visitor = new WorkspaceDeltaVisitor();
-					delta.accept(visitor);
-					if (!pendingChanges && visitor.anyChanges) {
-						pendingChanges = true;
-						indexer.requestImmediateSync();
-					}
-				} catch (Exception e) {
-					console.printerrln(e);
+			IResourceDelta delta = event.getDelta();
+			try {
+				final WorkspaceDeltaVisitor visitor = new WorkspaceDeltaVisitor();
+				delta.accept(visitor);
+
+				if (!pendingChanges && visitor.anyChanges) {
+					pendingChanges = true;
+					indexer.requestImmediateSync();
 				}
+			} catch (Exception e) {
+				console.printerrln(e);
 			}
 		}
 	}
@@ -260,12 +258,13 @@ public class Workspace implements IVcsManager {
 
 	@Override
 	public boolean isPathLocationAccepted() {
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean isURLLocationAccepted() {
-		return false;
+		// platform:/resource is a URL
+		return true;
 	}
 
 	@Override
