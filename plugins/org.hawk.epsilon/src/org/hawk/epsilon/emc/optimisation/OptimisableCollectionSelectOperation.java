@@ -75,9 +75,6 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 	public Object execute(Object target, Variable iterator, Expression ast, IEolContext context,
 			boolean returnOnFirstMatch) throws EolRuntimeException {
 
-		// System.err.println("OptimisableCollectionSelectOperation execute
-		// called!");
-
 		try {
 
 			this.context = context;

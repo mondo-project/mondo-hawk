@@ -46,6 +46,7 @@ import org.eclipse.epsilon.eol.execute.context.Variable;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertyGetter;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertySetter;
 import org.eclipse.epsilon.eol.types.EolAnyType;
+import org.eclipse.epsilon.eol.types.EolSequence;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.graph.IGraphDatabase;
@@ -91,20 +92,20 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 	public static final String TYPE = "org.hawk.epsilon.emc.EOLQueryEngine";
 	private static final String ANY_TYPE = new EolAnyType().getName();
 
-	protected final Set<String> cachedTypes = new HashSet<String>();
-	protected final Map<String, OptimisableCollection> typeContents = new HashMap<>();
-	protected final Map<String, OptimisableCollection> superTypeContents = new HashMap<>();
-
 	/* TODO: these two should not have to be static.*/
 	protected static IModelIndexer indexer = null;
 	protected static IGraphDatabase graph = null;
 
 	protected IGraphNodeIndex metamodeldictionary;
-
 	protected Set<String> defaultNamespaces = null;
-
 	protected GraphPropertyGetter propertyGetter;
 
+	/** Speeds up repeated queries for type nodes. */
+	private Map<String, List<IGraphNode>> typeNodesCache = new HashMap<>();
+
+	/** Do not use OptimisedCollection unless we can benefit from it. */
+	private boolean useOptimisableCollection;
+	
 	/**
 	 * Returns all of the contents of the database in the form of lightweight
 	 * {@link GraphNodeWrapper} objects.
@@ -217,18 +218,33 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 	}
 
 	public Collection<Object> getAllOf(IGraphNode typeNode, final String typeorkind) {
-		OptimisableCollection nodes = new OptimisableCollection(this, new GraphNodeWrapper(typeNode, this));
+		Collection<Object> nodes = createAllOfCollection(typeNode);
 
 		for (IGraphEdge n : typeNode.getIncomingWithType(typeorkind)) {
 			nodes.add(new GraphNodeWrapper(n.getStartNode(), this));
 		}
+
 		broadcastAllOfXAccess(nodes);
 		return nodes;
 	}
 
-	protected List<IGraphNode> getTypeNodes(String typeName) {
-		final int idxColon = typeName.lastIndexOf(MMURI_TYPE_SEPARATOR);
+	protected Collection<Object> createAllOfCollection(IGraphNode typeNode) {
+		Collection<Object> nodes = useOptimisableCollection
+			? new OptimisableCollection(this, new GraphNodeWrapper(typeNode, this)) : new EolSequence<>();
+		return nodes;
+	}
 
+	protected List<IGraphNode> getTypeNodes(String typeName) {
+		List<IGraphNode> typeNodes = typeNodesCache.get(typeName);
+		if (typeNodes == null) {
+			typeNodes = computeTypeNodes(typeName);
+			typeNodesCache.put(typeName, typeNodes);
+		}
+		return typeNodes;
+	}
+
+	protected List<IGraphNode> computeTypeNodes(String typeName) {
+		final int idxColon = typeName.lastIndexOf(MMURI_TYPE_SEPARATOR);
 		if (idxColon != -1) {
 			final String epackage = typeName.substring(0, idxColon);
 			final String type = typeName.substring(idxColon + MMURI_TYPE_SEPARATOR.length()); 
@@ -360,17 +376,9 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 		return ret;
 	}
 
-	// Speeds up repeated queries reusing this query engine
-	private Map<String, Boolean> hasTypeCache = new HashMap<>();
-
 	@Override
 	public boolean hasType(String type) {
-		Boolean value = hasTypeCache.get(type);
-		if (value == null) {
-			value = getTypeNodes(type).size() == 1;
-			hasTypeCache.put(type, value);
-		}
-		return value;
+		return getTypeNodes(type).size() == 1;
 	}
 
 	@Override
@@ -397,12 +405,15 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 			name = "Model";
 		}
 
-		if (propertyGetter == null || propertyGetter.getGraph() != graph)
+		if (propertyGetter == null || propertyGetter.getGraph() != graph) {
 			propertyGetter = new GraphPropertyGetter(graph, this);
+		}
 
 		if (graph != null) {
 			try (IGraphTransaction tx = graph.beginTransaction()) {
 				metamodeldictionary = graph.getMetamodelIndex();
+				useOptimisableCollection = !indexer.getIndexedAttributes().isEmpty() || !indexer.getDerivedAttributes().isEmpty();
+
 				tx.success();
 			} catch (Exception e) {
 				LOGGER.error("Could not retrieve the metamodel index", e);
