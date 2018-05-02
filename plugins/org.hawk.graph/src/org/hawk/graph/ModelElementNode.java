@@ -399,6 +399,14 @@ public class ModelElementNode {
 		return isOf(typeNode, EDGE_LABEL_OFTYPE);
 	}
 
+	public boolean isOfKind(TypeNode targetTypeNode) {
+		return isOfKind(targetTypeNode.getNode());
+	}
+	
+	public boolean isOfType(TypeNode typeNode) {
+		return isOfType(typeNode.getNode());
+	}
+
 	protected boolean isOf(IGraphNode typeNode, String edgeLabelOftype) {
 		for (IGraphEdge edge : node.getOutgoingWithType(edgeLabelOftype)) {
 			if (edge.getEndNode().getId().equals(typeNode.getId())) {

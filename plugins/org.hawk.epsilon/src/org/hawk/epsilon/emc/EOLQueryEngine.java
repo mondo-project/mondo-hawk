@@ -85,6 +85,10 @@ import org.slf4j.LoggerFactory;
  */
 public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 
+	interface Function3<T, U, V> {
+		V apply(T t, U u);
+	}
+
 	private static final String MMURI_TYPE_SEPARATOR = "::";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EOLQueryEngine.class);
@@ -194,15 +198,8 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 
 				for (FileNode fn : fileNodes) {
 					for (ModelElementNode me : fn.getModelElements()) {
-						if (me.getTypeNode().equals(targetTypeNode)) {
+						if (me.isOfKind(targetTypeNode)) {
 							results.add(new GraphNodeWrapper(me.getNode(), this));
-						} else {
-							for (TypeNode superType : me.getKindNodes()) {
-								if (superType.equals(targetTypeNode)) {
-									results.add(new GraphNodeWrapper(me.getNode(), this));
-									break;
-								}
-							}
 						}
 					}
 				}
@@ -439,6 +436,15 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 
 	@Override
 	public boolean isOfKind(Object instance, String metaClass) throws EolModelElementTypeNotFoundException {
+		return isOf(instance, metaClass, ModelElementNode::isOfKind);
+	}
+
+	@Override
+	public boolean isOfType(Object instance, String metaClass) throws EolModelElementTypeNotFoundException {
+		return isOf(instance, metaClass, ModelElementNode::isOfType);
+	}
+
+	private boolean isOf(Object instance, String metaClass, Function3<ModelElementNode, IGraphNode, Boolean> isOfCheck) {
 		if (!(instance instanceof GraphNodeWrapper)) {
 			return false;
 		}
@@ -447,45 +453,13 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 			return true;
 		}
 
-		final GraphNodeWrapper gnw = (GraphNodeWrapper) instance;
-		final ModelElementNode men = new ModelElementNode(gnw.getNode());
-		return men.isOfKind(metaClass);
-	}
-
-	@Override
-	public boolean isOfType(Object instance, String metaClass) throws EolModelElementTypeNotFoundException {
-		if (!(instance instanceof GraphNodeWrapper)) {
+		final List<IGraphNode> typeNodes = getTypeNodes(metaClass);
+		if (typeNodes.isEmpty()) {
 			return false;
-		}
-		final GraphNodeWrapper gnw = (GraphNodeWrapper) instance;
-		final ModelElementNode men = new ModelElementNode(gnw.getNode());
-		return men.isOfType(metaClass);
-	}
-
-	public boolean isOf(Object instance, String metaClass, final String typeorkind)
-			throws EolModelElementTypeNotFoundException {
-		if (instance == null) {
-			return false;
-		}
-		if (!(instance instanceof GraphNodeWrapper)) {
-			return false;
-		}
-
-		String id = null;
-		try {
-			try {
-				id = ((GraphNodeWrapper) instance).getTypeName();
-			} catch (Exception e) {
-				LOGGER.debug("warning: metaclass node asked for its type, ignored");
-			}
-		} catch (Exception e) {
-			LOGGER.error("Could not retrieve type name", e);
-		}
-
-		if (id != null) {
-			return metaClass.equals(id) || metaClass.equals(id.substring(id.lastIndexOf("/") + 1));
 		} else {
-			return false;
+			final GraphNodeWrapper gnw = (GraphNodeWrapper) instance;
+			final ModelElementNode men = new ModelElementNode(gnw.getNode());
+			return isOfCheck.apply(men, typeNodes.get(0));
 		}
 	}
 
