@@ -18,6 +18,7 @@ package org.hawk.epsilon.emc.pgetters;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -261,6 +262,24 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				throw new EolRuntimeException("eContainer failed,\n" + node + "\nis not contained");
 
 			return ret;
+		}
+		case "eContainers": {
+			// This version returns a collection - if you don't have a container, it will return
+			// an empty collection rather than failing. Useful for closures.
+			GraphNodeWrapper ret = null;
+			for (IGraphEdge r : node.getIncoming()) {
+				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
+					return Collections.singletonList(new GraphNodeWrapper(r.getStartNode(), m));
+				}
+			}
+			if (ret == null) {
+				for (IGraphEdge r : node.getOutgoing()) {
+					if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER) != null) {
+						return Collections.singletonList(new GraphNodeWrapper(r.getEndNode(), m));
+					}
+				}
+			}
+			return Collections.emptyList();
 		}
 		case "eContents": {
 			final Set<GraphNodeWrapper> results = new EolSet<>();

@@ -62,6 +62,9 @@ public class CountInstancesTest extends ModelIndexingTest {
 			public Object call() throws Exception {
 				assertEquals(0, syncValidation.getListener().getTotalErrors());
 				assertEquals(2, eol("return Tree.all.size;"));
+				assertEquals("t3", eol("return Tree.all.selectOne(t|t.label='t9000').eContainer.label;"));
+				assertEquals(0, eol("return Tree.all.selectOne(t|t.label='t3').eContainers.size;"));
+				assertEquals(1, eol("return Tree.all.selectOne(t|t.label='t9000').eContainers.size;"));
 				return null;
 			}
 		});

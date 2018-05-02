@@ -18,6 +18,7 @@ package org.hawk.epsilon.emc.pgetters;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -157,6 +158,28 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 				}
 			}
 			ret = results;
+		}
+
+		else if (property.equals("eContainers")) {
+			for (IGraphEdge r : node.getIncoming()) {
+				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
+					ret = wrapIfInScope(r.getStartNode());
+				}
+			}
+			if (ret == null) {
+				for (IGraphEdge r : node.getOutgoing()) {
+					if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER) != null) {
+						ret = wrapIfInScope(r.getEndNode());
+						break;
+					}
+				}
+			}
+
+			if (ret == null) {
+				ret = Collections.emptyList();
+			} else {
+				ret = Collections.singletonList(ret);
+			}
 		}
 
 		else if (property.equals("hawkIn") || property.equals("hawkOut")) {
