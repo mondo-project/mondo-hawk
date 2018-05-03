@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.formatter.align" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="Alignment.class" isClass="true" isInterface="false">
+    <type elementName="Alignment" fullyQualifiedName="org.eclipse.jdt.internal.formatter.align.Alignment" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.align.Alignment">
+      <fields elementName="name" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="enclosing" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.formatter.align.Alignment;" isVolatile="false" isTransient="false"/>
+      <fields elementName="location" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.formatter.Location;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fragmentIndex" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fragmentCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fragmentIndentations" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="needRedoColumnAlignment" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="chunkStartIndex" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="chunkKind" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="originalIndentationLevel" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="breakIndentationLevel" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="shiftBreakIndentationLevel" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fragmentBreaks" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="wasSplit" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="scribe" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.formatter.Scribe;" isVolatile="false" isTransient="false"/>
+      <fields elementName="M_FORCE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="M_INDENT_ON_COLUMN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="M_INDENT_BY_ONE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="M_COMPACT_SPLIT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="M_COMPACT_FIRST_BREAK_SPLIT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="M_ONE_PER_LINE_SPLIT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="M_NEXT_SHIFTED_SPLIT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="M_NEXT_PER_LINE_SPLIT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="M_MULTICOLUMN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="M_NO_ALIGNMENT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="mode" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SPLIT_MASK" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="R_OUTERMOST" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="R_INNERMOST" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="tieBreakRule" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="NONE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="BREAK" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CHUNK_FIELD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CHUNK_METHOD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CHUNK_TYPE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CHUNK_ENUM" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="Alignment" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.formatter.Scribe;"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+      </methods>
+      <methods elementName="checkChunkStart" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="checkColumn" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="couldBreak" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAlignment" returnType="Lorg.eclipse.jdt.internal.formatter.align.Alignment;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="performFragmentEffect" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="reset" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toFragmentsString" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="update" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isWrapped" returnType="Z" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="AlignmentException.class" isClass="true" isInterface="false">
+    <type elementName="AlignmentException" fullyQualifiedName="org.eclipse.jdt.internal.formatter.align.AlignmentException" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.align.AlignmentException">
+      <fields elementName="LINE_TOO_LONG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ALIGN_TOO_SMALL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="serialVersionUID" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="reason" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="value" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="relativeDepth" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="AlignmentException" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="AlignmentException" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

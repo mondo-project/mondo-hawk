@@ -1,0 +1,723 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.compiler.apt.model" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.compiler.apt_1.0.100.v20080513-1235.jar.xmi#/"/>
+  <classFiles elementName="AnnotationMirrorImpl.class" isClass="true" isInterface="false">
+    <type elementName="AnnotationMirrorImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.AnnotationMirrorImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.AnnotationMirrorImpl">
+      <fields elementName="_env" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_binding" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.lookup.AnnotationBinding;" isVolatile="false" isTransient="false"/>
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="AnnotationMirrorImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.AnnotationBinding;"/>
+      </methods>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.AnnotationBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.AnnotationBinding;"/>
+      </methods>
+      <methods elementName="getAnnotationType" returnType="Ljavax.lang.model.type.DeclaredType;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getElementValues" returnType="Ljava.util.Map&lt;+Ljavax.lang.model.element.ExecutableElement;+Ljavax.lang.model.element.AnnotationValue;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getElementValuesWithDefaults" returnType="Ljava.util.Map&lt;+Ljavax.lang.model.element.ExecutableElement;+Ljavax.lang.model.element.AnnotationValue;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="invoke" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Ljava.lang.reflect.Method;"/>
+        <parameters name="arg2" type="[Ljava.lang.Object;"/>
+        <exceptionTypes>Ljava.lang.Throwable;</exceptionTypes>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="formatArgs" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="getMethodBinding" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getReflectionValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Ljava.lang.Class&lt;*>;"/>
+      </methods>
+      <methods elementName="convertJDTArrayToReflectionArray" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Ljava.lang.Class&lt;*>;"/>
+      </methods>
+      <methods elementName="convertJDTValueToReflectionType" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Ljava.lang.Class&lt;*>;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="AnnotationValueImpl.class" isClass="true" isInterface="false">
+    <type elementName="AnnotationValueImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.AnnotationValueImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.AnnotationValueImpl">
+      <fields elementName="T_AnnotationMirror" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="T_EnumConstant" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="T_ClassObject" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="T_ArrayType" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="_env" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_value" isEnumConstant="false" typeSignature="Ljava.lang.Object;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_kind" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="AnnotationValueImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="convertToMirrorType" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="[I"/>
+      </methods>
+      <methods elementName="accept" returnType="TR;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.AnnotationValueVisitor&lt;TR;TP;>;"/>
+        <parameters name="arg1" type="TP;"/>
+      </methods>
+      <methods elementName="getValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ArrayTypeImpl.class" isClass="true" isInterface="false">
+    <type elementName="ArrayTypeImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.ArrayTypeImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.ArrayTypeImpl">
+      <methods elementName="ArrayTypeImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ArrayBinding;"/>
+      </methods>
+      <methods elementName="getComponentType" returnType="Ljavax.lang.model.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="accept" returnType="TR;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeVisitor&lt;TR;TP;>;"/>
+        <parameters name="arg1" type="TP;"/>
+      </methods>
+      <methods elementName="getKind" returnType="Ljavax.lang.model.type.TypeKind;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="DeclaredTypeImpl.class" isClass="true" isInterface="false">
+    <type elementName="DeclaredTypeImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.DeclaredTypeImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.DeclaredTypeImpl">
+      <fields elementName="_elementKindHint" isEnumConstant="false" typeSignature="Ljavax.lang.model.element.ElementKind;" isVolatile="false" isTransient="false"/>
+      <methods elementName="DeclaredTypeImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="DeclaredTypeImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg2" type="Ljavax.lang.model.element.ElementKind;"/>
+      </methods>
+      <methods elementName="asElement" returnType="Ljavax.lang.model.element.Element;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnclosingType" returnType="Ljavax.lang.model.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTypeArguments" returnType="Ljava.util.List&lt;+Ljavax.lang.model.type.TypeMirror;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="accept" returnType="TR;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeVisitor&lt;TR;TP;>;"/>
+        <parameters name="arg1" type="TP;"/>
+      </methods>
+      <methods elementName="getKind" returnType="Ljavax.lang.model.type.TypeKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ElementImpl.class" isClass="true" isInterface="false">
+    <type elementName="ElementImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.ElementImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.ElementImpl">
+      <fields elementName="_env" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_binding" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ElementImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;"/>
+      </methods>
+      <methods elementName="asType" returnType="Ljavax.lang.model.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAnnotation" returnType="TA;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Class&lt;TA;>;"/>
+      </methods>
+      <methods elementName="getAnnotationBindings" returnType="[Lorg.eclipse.jdt.internal.compiler.lookup.AnnotationBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAnnotationMirrors" returnType="Ljava.util.List&lt;+Ljavax.lang.model.element.AnnotationMirror;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getModifiers" returnType="Ljava.util.Set&lt;Ljavax.lang.model.element.Modifier;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSimpleName" returnType="Ljavax.lang.model.element.Name;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFileName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPackage" returnType="Ljavax.lang.model.element.PackageElement;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hides" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.Element;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ElementsImpl.class" isClass="true" isInterface="false">
+    <type elementName="ElementsImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.ElementsImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.ElementsImpl">
+      <fields elementName="INITIAL_DELIMITER" isEnumConstant="false" typeSignature="Ljava.util.regex.Pattern;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_env" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="$SWITCH_TABLE$javax$lang$model$element$ElementKind" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="ElementsImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+      </methods>
+      <methods elementName="getAllAnnotationMirrors" returnType="Ljava.util.List&lt;+Ljavax.lang.model.element.AnnotationMirror;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.Element;"/>
+      </methods>
+      <methods elementName="getAllMembers" returnType="Ljava.util.List&lt;+Ljavax.lang.model.element.Element;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.TypeElement;"/>
+      </methods>
+      <methods elementName="collectSuperInterfaces" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Ljava.util.Set&lt;Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;>;"/>
+        <parameters name="arg2" type="Ljava.util.Set&lt;Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;>;"/>
+      </methods>
+      <methods elementName="addMembers" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Ljava.util.Map&lt;Ljava.lang.String;Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;>;"/>
+        <parameters name="arg3" type="Ljava.util.List&lt;Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;>;"/>
+        <parameters name="arg4" type="Ljava.util.Map&lt;Ljava.lang.String;Ljava.util.Set&lt;Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;>;>;"/>
+      </methods>
+      <methods elementName="getBinaryName" returnType="Ljavax.lang.model.element.Name;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.TypeElement;"/>
+      </methods>
+      <methods elementName="getConstantExpression" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="getDocComment" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.Element;"/>
+      </methods>
+      <methods elementName="getUnparsedDocComment" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.Element;"/>
+      </methods>
+      <methods elementName="formatJavadoc" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="getStars" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="getElementValuesWithDefaults" returnType="Ljava.util.Map&lt;+Ljavax.lang.model.element.ExecutableElement;+Ljavax.lang.model.element.AnnotationValue;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.AnnotationMirror;"/>
+      </methods>
+      <methods elementName="getName" returnType="Ljavax.lang.model.element.Name;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.CharSequence;"/>
+      </methods>
+      <methods elementName="getPackageElement" returnType="Ljavax.lang.model.element.PackageElement;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.CharSequence;"/>
+      </methods>
+      <methods elementName="getPackageOf" returnType="Ljavax.lang.model.element.PackageElement;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.Element;"/>
+      </methods>
+      <methods elementName="getTypeElement" returnType="Ljavax.lang.model.element.TypeElement;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.CharSequence;"/>
+      </methods>
+      <methods elementName="hides" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.Element;"/>
+        <parameters name="arg1" type="Ljavax.lang.model.element.Element;"/>
+      </methods>
+      <methods elementName="isDeprecated" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.Element;"/>
+      </methods>
+      <methods elementName="overrides" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.ExecutableElement;"/>
+        <parameters name="arg1" type="Ljavax.lang.model.element.ExecutableElement;"/>
+        <parameters name="arg2" type="Ljavax.lang.model.element.TypeElement;"/>
+      </methods>
+      <methods elementName="printElements" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.Writer;"/>
+        <parameters name="arg1" type="[Ljavax.lang.model.element.Element;"/>
+      </methods>
+      <methods elementName="$SWITCH_TABLE$javax$lang$model$element$ElementKind" returnType="[I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ErrorTypeElement.class" isClass="true" isInterface="false">
+    <type elementName="ErrorTypeElement" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.ErrorTypeElement" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.ErrorTypeElement">
+      <methods elementName="ErrorTypeElement" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+      </methods>
+      <methods elementName="getInterfaces" returnType="Ljava.util.List&lt;+Ljavax.lang.model.type.TypeMirror;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNestingKind" returnType="Ljavax.lang.model.element.NestingKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getQualifiedName" returnType="Ljavax.lang.model.element.Name;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSuperclass" returnType="Ljavax.lang.model.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTypeParameters" returnType="Ljava.util.List&lt;+Ljavax.lang.model.element.TypeParameterElement;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="asType" returnType="Ljavax.lang.model.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAnnotation" returnType="TA;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Class&lt;TA;>;"/>
+      </methods>
+      <methods elementName="getAnnotationMirrors" returnType="Ljava.util.List&lt;+Ljavax.lang.model.element.AnnotationMirror;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnclosedElements" returnType="Ljava.util.List&lt;+Ljavax.lang.model.element.Element;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnclosingElement" returnType="Ljavax.lang.model.element.Element;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getKind" returnType="Ljavax.lang.model.element.ElementKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getModifiers" returnType="Ljava.util.Set&lt;Ljavax.lang.model.element.Modifier;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSimpleName" returnType="Ljavax.lang.model.element.Name;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ErrorTypeImpl.class" isClass="true" isInterface="false">
+    <type elementName="ErrorTypeImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.ErrorTypeImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.ErrorTypeImpl">
+      <methods elementName="ErrorTypeImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+      </methods>
+      <methods elementName="asElement" returnType="Ljavax.lang.model.element.Element;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnclosingType" returnType="Ljavax.lang.model.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTypeArguments" returnType="Ljava.util.List&lt;+Ljavax.lang.model.type.TypeMirror;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="accept" returnType="TR;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeVisitor&lt;TR;TP;>;"/>
+        <parameters name="arg1" type="TP;"/>
+      </methods>
+      <methods elementName="getKind" returnType="Ljavax.lang.model.type.TypeKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ExecutableElementImpl.class" isClass="true" isInterface="false">
+    <type elementName="ExecutableElementImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.ExecutableElementImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.ExecutableElementImpl">
+      <fields elementName="_name" isEnumConstant="false" typeSignature="Ljavax.lang.model.element.Name;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ExecutableElementImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="accept" returnType="TR;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.ElementVisitor&lt;TR;TP;>;"/>
+        <parameters name="arg1" type="TP;"/>
+      </methods>
+      <methods elementName="getAnnotationBindings" returnType="[Lorg.eclipse.jdt.internal.compiler.lookup.AnnotationBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDefaultValue" returnType="Ljavax.lang.model.element.AnnotationValue;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnclosedElements" returnType="Ljava.util.List&lt;+Ljavax.lang.model.element.Element;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnclosingElement" returnType="Ljavax.lang.model.element.Element;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFileName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getKind" returnType="Ljavax.lang.model.element.ElementKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getModifiers" returnType="Ljava.util.Set&lt;Ljavax.lang.model.element.Modifier;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPackage" returnType="Ljavax.lang.model.element.PackageElement;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getParameters" returnType="Ljava.util.List&lt;+Ljavax.lang.model.element.VariableElement;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getReturnType" returnType="Ljavax.lang.model.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSimpleName" returnType="Ljavax.lang.model.element.Name;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getThrownTypes" returnType="Ljava.util.List&lt;+Ljavax.lang.model.type.TypeMirror;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTypeParameters" returnType="Ljava.util.List&lt;+Ljavax.lang.model.element.TypeParameterElement;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hides" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.Element;"/>
+      </methods>
+      <methods elementName="isVarArgs" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="overrides" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.ExecutableElement;"/>
+        <parameters name="arg1" type="Ljavax.lang.model.element.TypeElement;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ExecutableTypeImpl.class" isClass="true" isInterface="false">
+    <type elementName="ExecutableTypeImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.ExecutableTypeImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.ExecutableTypeImpl">
+      <methods elementName="ExecutableTypeImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="getParameterTypes" returnType="Ljava.util.List&lt;+Ljavax.lang.model.type.TypeMirror;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getReturnType" returnType="Ljavax.lang.model.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getThrownTypes" returnType="Ljava.util.List&lt;+Ljavax.lang.model.type.TypeMirror;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTypeVariables" returnType="Ljava.util.List&lt;+Ljavax.lang.model.type.TypeVariable;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="accept" returnType="TR;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeVisitor&lt;TR;TP;>;"/>
+        <parameters name="arg1" type="TP;"/>
+      </methods>
+      <methods elementName="getKind" returnType="Ljavax.lang.model.type.TypeKind;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="Factory.class" isClass="true" isInterface="false">
+    <type elementName="Factory" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.Factory" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.Factory">
+      <fields elementName="DUMMY_BYTE" isEnumConstant="false" typeSignature="Ljava.lang.Byte;" isVolatile="false" isTransient="false"/>
+      <fields elementName="DUMMY_CHAR" isEnumConstant="false" typeSignature="Ljava.lang.Character;" isVolatile="false" isTransient="false"/>
+      <fields elementName="DUMMY_DOUBLE" isEnumConstant="false" typeSignature="Ljava.lang.Double;" isVolatile="false" isTransient="false"/>
+      <fields elementName="DUMMY_FLOAT" isEnumConstant="false" typeSignature="Ljava.lang.Float;" isVolatile="false" isTransient="false"/>
+      <fields elementName="DUMMY_INTEGER" isEnumConstant="false" typeSignature="Ljava.lang.Integer;" isVolatile="false" isTransient="false"/>
+      <fields elementName="DUMMY_LONG" isEnumConstant="false" typeSignature="Ljava.lang.Long;" isVolatile="false" isTransient="false"/>
+      <fields elementName="DUMMY_SHORT" isEnumConstant="false" typeSignature="Ljava.lang.Short;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_env" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="$SWITCH_TABLE$javax$lang$model$element$ElementKind" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="$SWITCH_TABLE$javax$lang$model$type$TypeKind" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="Factory" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+      </methods>
+      <methods elementName="getAnnotationMirrors" returnType="Ljava.util.List&lt;+Ljavax.lang.model.element.AnnotationMirror;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.lookup.AnnotationBinding;"/>
+      </methods>
+      <methods elementName="appendModifier" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Set&lt;Ljavax.lang.model.element.Modifier;>;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Ljavax.lang.model.element.Modifier;"/>
+      </methods>
+      <methods elementName="decodeModifiers" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Set&lt;Ljavax.lang.model.element.Modifier;>;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="[I"/>
+      </methods>
+      <methods elementName="getMatchingDummyValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Class&lt;*>;"/>
+      </methods>
+      <methods elementName="getModifiers" returnType="Ljava.util.Set&lt;Ljavax.lang.model.element.Modifier;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljavax.lang.model.element.ElementKind;"/>
+      </methods>
+      <methods elementName="getModifiers" returnType="Ljava.util.Set&lt;Ljavax.lang.model.element.Modifier;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljavax.lang.model.element.ElementKind;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="newAnnotationMirror" returnType="Ljavax.lang.model.element.AnnotationMirror;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.AnnotationBinding;"/>
+      </methods>
+      <methods elementName="newElement" returnType="Ljavax.lang.model.element.Element;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;"/>
+        <parameters name="arg1" type="Ljavax.lang.model.element.ElementKind;"/>
+      </methods>
+      <methods elementName="newElement" returnType="Ljavax.lang.model.element.Element;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;"/>
+      </methods>
+      <methods elementName="newDeclaredType" returnType="Ljavax.lang.model.type.DeclaredType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="newAnnotationType" returnType="Ljavax.lang.model.type.DeclaredType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="newPackageElement" returnType="Ljavax.lang.model.element.PackageElement;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.PackageBinding;"/>
+      </methods>
+      <methods elementName="getNullType" returnType="Ljavax.lang.model.type.NullType;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNoType" returnType="Ljavax.lang.model.type.NoType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeKind;"/>
+      </methods>
+      <methods elementName="getPrimitiveType" returnType="Lorg.eclipse.jdt.internal.compiler.apt.model.PrimitiveTypeImpl;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeKind;"/>
+      </methods>
+      <methods elementName="getPrimitiveType" returnType="Lorg.eclipse.jdt.internal.compiler.apt.model.PrimitiveTypeImpl;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BaseTypeBinding;"/>
+      </methods>
+      <methods elementName="newTypeMirror" returnType="Ljavax.lang.model.type.TypeMirror;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;"/>
+      </methods>
+      <methods elementName="newTypeParameterElement" returnType="Ljavax.lang.model.element.TypeParameterElement;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeVariableBinding;"/>
+        <parameters name="arg1" type="Ljavax.lang.model.element.Element;"/>
+      </methods>
+      <methods elementName="getErrorType" returnType="Ljavax.lang.model.type.ErrorType;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="performNecessaryPrimitiveTypeConversion" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Class&lt;*>;"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="setArrayMatchingDummyValue" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.Class&lt;*>;"/>
+      </methods>
+      <methods elementName="$SWITCH_TABLE$javax$lang$model$element$ElementKind" returnType="[I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="$SWITCH_TABLE$javax$lang$model$type$TypeKind" returnType="[I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IElementInfo.class" isClass="false" isInterface="true">
+    <type elementName="IElementInfo" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.IElementInfo" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.IElementInfo">
+      <methods elementName="getFileName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="NameImpl.class" isClass="true" isInterface="false">
+    <type elementName="NameImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.NameImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.NameImpl">
+      <fields elementName="_name" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <methods elementName="NameImpl" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="NameImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.CharSequence;"/>
+      </methods>
+      <methods elementName="NameImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="contentEquals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.CharSequence;"/>
+      </methods>
+      <methods elementName="charAt" returnType="C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="length" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="subSequence" returnType="Ljava.lang.CharSequence;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="NoTypeImpl.class" isClass="true" isInterface="false">
+    <type elementName="NoTypeImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.NoTypeImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.NoTypeImpl">
+      <fields elementName="_kind" isEnumConstant="false" typeSignature="Ljavax.lang.model.type.TypeKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="NO_TYPE_NONE" isEnumConstant="false" typeSignature="Ljavax.lang.model.type.NoType;" isVolatile="false" isTransient="false"/>
+      <fields elementName="NO_TYPE_VOID" isEnumConstant="false" typeSignature="Ljavax.lang.model.type.NoType;" isVolatile="false" isTransient="false"/>
+      <fields elementName="NO_TYPE_PACKAGE" isEnumConstant="false" typeSignature="Ljavax.lang.model.type.NoType;" isVolatile="false" isTransient="false"/>
+      <fields elementName="NULL_TYPE" isEnumConstant="false" typeSignature="Ljavax.lang.model.type.NullType;" isVolatile="false" isTransient="false"/>
+      <fields elementName="$SWITCH_TABLE$javax$lang$model$type$TypeKind" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="NoTypeImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeKind;"/>
+      </methods>
+      <methods elementName="accept" returnType="TR;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeVisitor&lt;TR;TP;>;"/>
+        <parameters name="arg1" type="TP;"/>
+      </methods>
+      <methods elementName="getKind" returnType="Ljavax.lang.model.type.TypeKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="$SWITCH_TABLE$javax$lang$model$type$TypeKind" returnType="[I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="PackageElementImpl.class" isClass="true" isInterface="false">
+    <type elementName="PackageElementImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.PackageElementImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.PackageElementImpl">
+      <methods elementName="PackageElementImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.PackageBinding;"/>
+      </methods>
+      <methods elementName="accept" returnType="TR;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.ElementVisitor&lt;TR;TP;>;"/>
+        <parameters name="arg1" type="TP;"/>
+      </methods>
+      <methods elementName="getAnnotationBindings" returnType="[Lorg.eclipse.jdt.internal.compiler.lookup.AnnotationBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnclosedElements" returnType="Ljava.util.List&lt;+Ljavax.lang.model.element.Element;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnclosingElement" returnType="Ljavax.lang.model.element.Element;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getKind" returnType="Ljavax.lang.model.element.ElementKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPackage" returnType="Ljavax.lang.model.element.PackageElement;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSimpleName" returnType="Ljavax.lang.model.element.Name;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getQualifiedName" returnType="Ljavax.lang.model.element.Name;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isUnnamed" returnType="Z" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="PrimitiveTypeImpl.class" isClass="true" isInterface="false">
+    <type elementName="PrimitiveTypeImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.PrimitiveTypeImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.PrimitiveTypeImpl">
+      <fields elementName="BOOLEAN" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.model.PrimitiveTypeImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="BYTE" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.model.PrimitiveTypeImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="CHAR" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.model.PrimitiveTypeImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="DOUBLE" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.model.PrimitiveTypeImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="FLOAT" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.model.PrimitiveTypeImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="INT" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.model.PrimitiveTypeImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="LONG" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.model.PrimitiveTypeImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="SHORT" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.model.PrimitiveTypeImpl;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="PrimitiveTypeImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BaseTypeBinding;"/>
+      </methods>
+      <methods elementName="accept" returnType="TR;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeVisitor&lt;TR;TP;>;"/>
+        <parameters name="arg1" type="TP;"/>
+      </methods>
+      <methods elementName="getKind" returnType="Ljavax.lang.model.type.TypeKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getKind" returnType="Ljavax.lang.model.type.TypeKind;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BaseTypeBinding;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="TypeElementImpl.class" isClass="true" isInterface="false">
+    <type elementName="TypeElementImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.TypeElementImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.TypeElementImpl">
+      <fields elementName="_kindHint" isEnumConstant="false" typeSignature="Ljavax.lang.model.element.ElementKind;" isVolatile="false" isTransient="false"/>
+      <methods elementName="TypeElementImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg2" type="Ljavax.lang.model.element.ElementKind;"/>
+      </methods>
+      <methods elementName="accept" returnType="TR;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.ElementVisitor&lt;TR;TP;>;"/>
+        <parameters name="arg1" type="TP;"/>
+      </methods>
+      <methods elementName="getAnnotationBindings" returnType="[Lorg.eclipse.jdt.internal.compiler.lookup.AnnotationBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnclosedElements" returnType="Ljava.util.List&lt;+Ljavax.lang.model.element.Element;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnclosingElement" returnType="Ljavax.lang.model.element.Element;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFileName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInterfaces" returnType="Ljava.util.List&lt;+Ljavax.lang.model.type.TypeMirror;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getKind" returnType="Ljavax.lang.model.element.ElementKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getModifiers" returnType="Ljava.util.Set&lt;Ljavax.lang.model.element.Modifier;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNestingKind" returnType="Ljavax.lang.model.element.NestingKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPackage" returnType="Ljavax.lang.model.element.PackageElement;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getQualifiedName" returnType="Ljavax.lang.model.element.Name;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSimpleName" returnType="Ljavax.lang.model.element.Name;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSuperclass" returnType="Ljavax.lang.model.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTypeParameters" returnType="Ljava.util.List&lt;+Ljavax.lang.model.element.TypeParameterElement;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hides" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.Element;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="TypeMirrorImpl.class" isClass="true" isInterface="false">
+    <type elementName="TypeMirrorImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.TypeMirrorImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.TypeMirrorImpl">
+      <fields elementName="_env" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_binding" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;" isVolatile="false" isTransient="false"/>
+      <methods elementName="TypeMirrorImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;"/>
+      </methods>
+      <methods elementName="binding" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="accept" returnType="TR;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeVisitor&lt;TR;TP;>;"/>
+        <parameters name="arg1" type="TP;"/>
+      </methods>
+      <methods elementName="getKind" returnType="Ljavax.lang.model.type.TypeKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="TypeParameterElementImpl.class" isClass="true" isInterface="false">
+    <type elementName="TypeParameterElementImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.TypeParameterElementImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.TypeParameterElementImpl">
+      <fields elementName="_declaringElement" isEnumConstant="false" typeSignature="Ljavax.lang.model.element.Element;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_bounds" isEnumConstant="false" typeSignature="Ljava.util.List;" isVolatile="false" isTransient="false"/>
+      <methods elementName="TypeParameterElementImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeVariableBinding;"/>
+        <parameters name="arg2" type="Ljavax.lang.model.element.Element;"/>
+      </methods>
+      <methods elementName="TypeParameterElementImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeVariableBinding;"/>
+      </methods>
+      <methods elementName="getBounds" returnType="Ljava.util.List&lt;+Ljavax.lang.model.type.TypeMirror;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="calculateBounds" returnType="Ljava.util.List&lt;+Ljavax.lang.model.type.TypeMirror;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getGenericElement" returnType="Ljavax.lang.model.element.Element;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="accept" returnType="TR;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.ElementVisitor&lt;TR;TP;>;"/>
+        <parameters name="arg1" type="TP;"/>
+      </methods>
+      <methods elementName="getAnnotationBindings" returnType="[Lorg.eclipse.jdt.internal.compiler.lookup.AnnotationBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnclosedElements" returnType="Ljava.util.List&lt;+Ljavax.lang.model.element.Element;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnclosingElement" returnType="Ljavax.lang.model.element.Element;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getKind" returnType="Ljavax.lang.model.element.ElementKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPackage" returnType="Ljavax.lang.model.element.PackageElement;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="TypeVariableImpl.class" isClass="true" isInterface="false">
+    <type elementName="TypeVariableImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.TypeVariableImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.TypeVariableImpl">
+      <methods elementName="TypeVariableImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeVariableBinding;"/>
+      </methods>
+      <methods elementName="asElement" returnType="Ljavax.lang.model.element.Element;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLowerBound" returnType="Ljavax.lang.model.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getUpperBound" returnType="Ljavax.lang.model.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="accept" returnType="TR;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeVisitor&lt;TR;TP;>;"/>
+        <parameters name="arg1" type="TP;"/>
+      </methods>
+      <methods elementName="getKind" returnType="Ljavax.lang.model.type.TypeKind;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="TypesImpl.class" isClass="true" isInterface="false">
+    <type elementName="TypesImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.TypesImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.TypesImpl">
+      <fields elementName="_env" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="$SWITCH_TABLE$javax$lang$model$type$TypeKind" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="$SWITCH_TABLE$javax$lang$model$element$ElementKind" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <methods elementName="TypesImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+      </methods>
+      <methods elementName="asElement" returnType="Ljavax.lang.model.element.Element;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeMirror;"/>
+      </methods>
+      <methods elementName="asMemberOf" returnType="Ljavax.lang.model.type.TypeMirror;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.DeclaredType;"/>
+        <parameters name="arg1" type="Ljavax.lang.model.element.Element;"/>
+      </methods>
+      <methods elementName="boxedClass" returnType="Ljavax.lang.model.element.TypeElement;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.PrimitiveType;"/>
+      </methods>
+      <methods elementName="capture" returnType="Ljavax.lang.model.type.TypeMirror;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeMirror;"/>
+      </methods>
+      <methods elementName="contains" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeMirror;"/>
+        <parameters name="arg1" type="Ljavax.lang.model.type.TypeMirror;"/>
+      </methods>
+      <methods elementName="directSupertypes" returnType="Ljava.util.List&lt;+Ljavax.lang.model.type.TypeMirror;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeMirror;"/>
+      </methods>
+      <methods elementName="erasure" returnType="Ljavax.lang.model.type.TypeMirror;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeMirror;"/>
+      </methods>
+      <methods elementName="getArrayType" returnType="Ljavax.lang.model.type.ArrayType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeMirror;"/>
+      </methods>
+      <methods elementName="getDeclaredType" returnType="Ljavax.lang.model.type.DeclaredType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.TypeElement;"/>
+        <parameters name="arg1" type="[Ljavax.lang.model.type.TypeMirror;"/>
+      </methods>
+      <methods elementName="getDeclaredType" returnType="Ljavax.lang.model.type.DeclaredType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.DeclaredType;"/>
+        <parameters name="arg1" type="Ljavax.lang.model.element.TypeElement;"/>
+        <parameters name="arg2" type="[Ljavax.lang.model.type.TypeMirror;"/>
+      </methods>
+      <methods elementName="getNoType" returnType="Ljavax.lang.model.type.NoType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeKind;"/>
+      </methods>
+      <methods elementName="getNullType" returnType="Ljavax.lang.model.type.NullType;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPrimitiveType" returnType="Ljavax.lang.model.type.PrimitiveType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeKind;"/>
+      </methods>
+      <methods elementName="getWildcardType" returnType="Ljavax.lang.model.type.WildcardType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeMirror;"/>
+        <parameters name="arg1" type="Ljavax.lang.model.type.TypeMirror;"/>
+      </methods>
+      <methods elementName="isAssignable" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeMirror;"/>
+        <parameters name="arg1" type="Ljavax.lang.model.type.TypeMirror;"/>
+      </methods>
+      <methods elementName="isSameType" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeMirror;"/>
+        <parameters name="arg1" type="Ljavax.lang.model.type.TypeMirror;"/>
+      </methods>
+      <methods elementName="isSubsignature" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.ExecutableType;"/>
+        <parameters name="arg1" type="Ljavax.lang.model.type.ExecutableType;"/>
+      </methods>
+      <methods elementName="isSubtype" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeMirror;"/>
+        <parameters name="arg1" type="Ljavax.lang.model.type.TypeMirror;"/>
+      </methods>
+      <methods elementName="unboxedType" returnType="Ljavax.lang.model.type.PrimitiveType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeMirror;"/>
+      </methods>
+      <methods elementName="$SWITCH_TABLE$javax$lang$model$type$TypeKind" returnType="[I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="$SWITCH_TABLE$javax$lang$model$element$ElementKind" returnType="[I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="VariableElementImpl.class" isClass="true" isInterface="false">
+    <type elementName="VariableElementImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.VariableElementImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.VariableElementImpl">
+      <methods elementName="VariableElementImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.VariableBinding;"/>
+      </methods>
+      <methods elementName="accept" returnType="TR;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.ElementVisitor&lt;TR;TP;>;"/>
+        <parameters name="arg1" type="TP;"/>
+      </methods>
+      <methods elementName="getAnnotationBindings" returnType="[Lorg.eclipse.jdt.internal.compiler.lookup.AnnotationBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getConstantValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnclosedElements" returnType="Ljava.util.List&lt;+Ljavax.lang.model.element.Element;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnclosingElement" returnType="Ljavax.lang.model.element.Element;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getKind" returnType="Ljavax.lang.model.element.ElementKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getModifiers" returnType="Ljava.util.Set&lt;Ljavax.lang.model.element.Modifier;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPackage" returnType="Ljavax.lang.model.element.PackageElement;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSimpleName" returnType="Ljavax.lang.model.element.Name;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hides" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.Element;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="WildcardTypeImpl.class" isClass="true" isInterface="false">
+    <type elementName="WildcardTypeImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.model.WildcardTypeImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.model.WildcardTypeImpl">
+      <methods elementName="WildcardTypeImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.WildcardBinding;"/>
+      </methods>
+      <methods elementName="getExtendsBound" returnType="Ljavax.lang.model.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getKind" returnType="Ljavax.lang.model.type.TypeKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSuperBound" returnType="Ljavax.lang.model.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="accept" returnType="TR;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.type.TypeVisitor&lt;TR;TP;>;"/>
+        <parameters name="arg1" type="TP;"/>
+      </methods>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

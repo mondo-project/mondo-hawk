@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.compiler.parser.diagnose" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="DiagnoseParser$PrimaryRepairInfo.class" isClass="true" isInterface="false">
+    <type elementName="PrimaryRepairInfo" fullyQualifiedName="org.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$PrimaryRepairInfo" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser.PrimaryRepairInfo">
+      <fields elementName="distance" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="misspellIndex" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="code" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="bufferPosition" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="symbol" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="PrimaryRepairInfo" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="copy" returnType="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$PrimaryRepairInfo;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="DiagnoseParser$RepairCandidate.class" isClass="true" isInterface="false">
+    <type elementName="RepairCandidate" fullyQualifiedName="org.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$RepairCandidate" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser.RepairCandidate">
+      <fields elementName="symbol" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="location" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="RepairCandidate" returnType="V" isConstructor="true" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="DiagnoseParser$SecondaryRepairInfo.class" isClass="true" isInterface="false">
+    <type elementName="SecondaryRepairInfo" fullyQualifiedName="org.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$SecondaryRepairInfo" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser.SecondaryRepairInfo">
+      <fields elementName="code" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="distance" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="bufferPosition" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="stackPosition" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="numDeletions" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="symbol" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="recoveryOnNextStack" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="SecondaryRepairInfo" returnType="V" isConstructor="true" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="DiagnoseParser$StateInfo.class" isClass="true" isInterface="false">
+    <type elementName="StateInfo" fullyQualifiedName="org.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$StateInfo" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser.StateInfo">
+      <fields elementName="state" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="next" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="StateInfo" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="DiagnoseParser.class" isClass="true" isInterface="false">
+    <type elementName="DiagnoseParser" fullyQualifiedName="org.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser">
+      <fields elementName="DEBUG" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="DEBUG_PARSECHECK" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="STACK_INCREMENT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="BEFORE_CODE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INSERTION_CODE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INVALID_CODE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SUBSTITUTION_CODE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DELETION_CODE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MERGE_CODE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MISPLACED_CODE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SCOPE_CODE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SECONDARY_CODE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="EOF_CODE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="BUFF_UBOUND" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="BUFF_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MAX_DISTANCE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MIN_DISTANCE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="options" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.CompilerOptions;" isVolatile="false" isTransient="false"/>
+      <fields elementName="lexStream" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.LexStream;" isVolatile="false" isTransient="false"/>
+      <fields elementName="errorToken" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="errorTokenStart" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="currentToken" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="stackLength" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="stateStackTop" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="stack" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="locationStack" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="locationStartStack" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="tempStackTop" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="tempStack" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="prevStackTop" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="prevStack" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="nextStackTop" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="nextStack" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="scopeStackTop" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="scopeIndex" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="scopePosition" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="list" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="buffer" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="NIL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="stateSeen" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="statePoolTop" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="statePool" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$StateInfo;" isVolatile="false" isTransient="false"/>
+      <fields elementName="parser" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.parser.Parser;" isVolatile="false" isTransient="false"/>
+      <fields elementName="recoveryScanner" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.parser.RecoveryScanner;" isVolatile="false" isTransient="false"/>
+      <fields elementName="reportProblem" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="DiagnoseParser" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.parser.Parser;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.compiler.impl.CompilerOptions;"/>
+      </methods>
+      <methods elementName="DiagnoseParser" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.parser.Parser;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="[I"/>
+        <parameters name="arg5" type="[I"/>
+        <parameters name="arg6" type="[I"/>
+        <parameters name="arg7" type="Lorg.eclipse.jdt.internal.compiler.impl.CompilerOptions;"/>
+      </methods>
+      <methods elementName="problemReporter" returnType="Lorg.eclipse.jdt.internal.compiler.problem.ProblemReporter;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="reallocateStacks" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="diagnoseParse" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="displayEscapeCharacters" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="errorRecovery" returnType="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$RepairCandidate;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="primaryPhase" returnType="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$RepairCandidate;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="mergeCandidate" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="checkPrimaryDistance" returnType="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$PrimaryRepairInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$PrimaryRepairInfo;"/>
+      </methods>
+      <methods elementName="primaryDiagnosis" returnType="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$RepairCandidate;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$PrimaryRepairInfo;"/>
+      </methods>
+      <methods elementName="getTermIndex" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="getNtermIndex" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="isBetterSymbol" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="misspell" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="scopeTrial" returnType="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$PrimaryRepairInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$PrimaryRepairInfo;"/>
+      </methods>
+      <methods elementName="scopeTrialCheck" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$PrimaryRepairInfo;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="secondaryCheck" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="secondaryPhase" returnType="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$RepairCandidate;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="misplacementRecovery" returnType="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$SecondaryRepairInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$SecondaryRepairInfo;"/>
+        <parameters name="arg4" type="Z"/>
+      </methods>
+      <methods elementName="secondaryRecovery" returnType="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$SecondaryRepairInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$SecondaryRepairInfo;"/>
+        <parameters name="arg4" type="Z"/>
+      </methods>
+      <methods elementName="secondaryDiagnosis" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$SecondaryRepairInfo;"/>
+      </methods>
+      <methods elementName="parseCheck" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="reportError" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="reportError" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="reportPrimaryError" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="reportSecondaryError" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="getNTermTemplate" returnType="[I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <types elementName="PrimaryRepairInfo" fullyQualifiedName="org.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$PrimaryRepairInfo" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser.PrimaryRepairInfo">
+        <fields elementName="distance" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="misspellIndex" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="code" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="bufferPosition" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="symbol" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <methods elementName="PrimaryRepairInfo" returnType="V" isConstructor="true" isMainMethod="false"/>
+        <methods elementName="copy" returnType="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$PrimaryRepairInfo;" isConstructor="false" isMainMethod="false"/>
+      </types>
+      <types elementName="RepairCandidate" fullyQualifiedName="org.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$RepairCandidate" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser.RepairCandidate">
+        <fields elementName="symbol" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="location" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <methods elementName="RepairCandidate" returnType="V" isConstructor="true" isMainMethod="false"/>
+      </types>
+      <types elementName="SecondaryRepairInfo" fullyQualifiedName="org.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$SecondaryRepairInfo" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser.SecondaryRepairInfo">
+        <fields elementName="code" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="distance" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="bufferPosition" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="stackPosition" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="numDeletions" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="symbol" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="recoveryOnNextStack" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+        <methods elementName="SecondaryRepairInfo" returnType="V" isConstructor="true" isMainMethod="false"/>
+      </types>
+      <types elementName="StateInfo" fullyQualifiedName="org.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser$StateInfo" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.parser.diagnose.DiagnoseParser.StateInfo">
+        <fields elementName="state" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="next" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <methods elementName="StateInfo" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+          <parameters name="arg1" type="I"/>
+        </methods>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="LexStream$Token.class" isClass="true" isInterface="false">
+    <type elementName="Token" fullyQualifiedName="org.eclipse.jdt.internal.compiler.parser.diagnose.LexStream$Token" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.parser.diagnose.LexStream.Token">
+      <fields elementName="kind" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="name" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="start" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="end" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="line" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="flags" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="Token" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="LexStream.class" isClass="true" isInterface="false">
+    <type elementName="LexStream" fullyQualifiedName="org.eclipse.jdt.internal.compiler.parser.diagnose.LexStream" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.parser.diagnose.LexStream">
+      <fields elementName="IS_AFTER_JUMP" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LBRACE_MISSING" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="tokenCacheIndex" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="tokenCacheEOFIndex" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="tokenCache" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.parser.diagnose.LexStream$Token;" isVolatile="false" isTransient="false"/>
+      <fields elementName="currentIndex" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="scanner" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.parser.Scanner;" isVolatile="false" isTransient="false"/>
+      <fields elementName="intervalStartToSkip" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="intervalEndToSkip" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="intervalFlagsToSkip" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="previousInterval" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="currentInterval" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="LexStream" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.parser.Scanner;"/>
+        <parameters name="arg2" type="[I"/>
+        <parameters name="arg3" type="[I"/>
+        <parameters name="arg4" type="[I"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+        <parameters name="arg7" type="I"/>
+      </methods>
+      <methods elementName="readTokenFromScanner" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="token" returnType="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.LexStream$Token;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getToken" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="previous" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="next" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="afterEol" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="reset" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="reset" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="badtoken" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="kind" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="name" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="line" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="start" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="end" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="flags" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="isInsideStream" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <types elementName="Token" fullyQualifiedName="org.eclipse.jdt.internal.compiler.parser.diagnose.LexStream$Token" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.parser.diagnose.LexStream.Token">
+        <fields elementName="kind" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="name" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+        <fields elementName="start" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="end" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="line" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="flags" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <methods elementName="Token" returnType="V" isConstructor="true" isMainMethod="false"/>
+        <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="RangeUtil$RangeResult.class" isClass="true" isInterface="false">
+    <type elementName="RangeResult" fullyQualifiedName="org.eclipse.jdt.internal.compiler.parser.diagnose.RangeUtil$RangeResult" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.parser.diagnose.RangeUtil.RangeResult">
+      <fields elementName="INITIAL_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="pos" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="intervalStarts" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="intervalEnds" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="intervalFlags" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <methods elementName="RangeResult" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="addInterval" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="addInterval" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="getRanges" returnType="[[I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="quickSort" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="[I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="compare" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="RangeUtil.class" isClass="true" isInterface="false">
+    <type elementName="RangeUtil" fullyQualifiedName="org.eclipse.jdt.internal.compiler.parser.diagnose.RangeUtil" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.parser.diagnose.RangeUtil">
+      <fields elementName="NO_FLAG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LBRACE_MISSING" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IGNORE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="RangeUtil" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="containsErrorInSignature" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="computeDietRange" returnType="[[I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="computeDietRange0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.parser.diagnose.RangeUtil$RangeResult;"/>
+      </methods>
+      <methods elementName="containsIgnoredBody" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <types elementName="RangeResult" fullyQualifiedName="org.eclipse.jdt.internal.compiler.parser.diagnose.RangeUtil$RangeResult" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.parser.diagnose.RangeUtil.RangeResult">
+        <fields elementName="INITIAL_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="pos" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="intervalStarts" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+        <fields elementName="intervalEnds" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+        <fields elementName="intervalFlags" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+        <methods elementName="RangeResult" returnType="V" isConstructor="true" isMainMethod="false"/>
+        <methods elementName="addInterval" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+          <parameters name="arg1" type="I"/>
+        </methods>
+        <methods elementName="addInterval" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+          <parameters name="arg1" type="I"/>
+          <parameters name="arg2" type="I"/>
+        </methods>
+        <methods elementName="getRanges" returnType="[[I" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="quickSort" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="[I"/>
+          <parameters name="arg1" type="[I"/>
+          <parameters name="arg2" type="[I"/>
+          <parameters name="arg3" type="I"/>
+          <parameters name="arg4" type="I"/>
+        </methods>
+        <methods elementName="compare" returnType="I" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+          <parameters name="arg1" type="I"/>
+        </methods>
+      </types>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

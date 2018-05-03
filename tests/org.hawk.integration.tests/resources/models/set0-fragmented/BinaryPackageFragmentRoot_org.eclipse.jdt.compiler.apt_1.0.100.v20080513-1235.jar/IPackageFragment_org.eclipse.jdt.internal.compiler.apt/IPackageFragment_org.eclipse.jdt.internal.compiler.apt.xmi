@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.compiler.apt" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.compiler.apt_1.0.100.v20080513-1235.jar.xmi#/"/>
+</core:IPackageFragment>

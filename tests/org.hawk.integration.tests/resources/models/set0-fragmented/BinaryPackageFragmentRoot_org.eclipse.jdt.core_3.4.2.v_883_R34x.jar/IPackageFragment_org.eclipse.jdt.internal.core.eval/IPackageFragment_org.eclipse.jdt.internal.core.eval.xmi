@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.core.eval" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="EvaluationContextWrapper$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.eval.EvaluationContextWrapper$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.eval.EvaluationContextWrapper.1">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.eval.EvaluationContextWrapper;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$requestor" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.ICodeCompletionRequestor;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.eval.EvaluationContextWrapper;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.ICodeCompletionRequestor;"/>
+      </methods>
+      <methods elementName="acceptAnonymousType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[[C"/>
+        <parameters name="arg3" type="[[C"/>
+        <parameters name="arg4" type="[[C"/>
+        <parameters name="arg5" type="[C"/>
+        <parameters name="arg6" type="I"/>
+        <parameters name="arg7" type="I"/>
+        <parameters name="arg8" type="I"/>
+        <parameters name="arg9" type="I"/>
+      </methods>
+      <methods elementName="acceptClass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+      </methods>
+      <methods elementName="acceptError" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.compiler.IProblem;"/>
+      </methods>
+      <methods elementName="acceptField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="[C"/>
+        <parameters name="arg4" type="[C"/>
+        <parameters name="arg5" type="[C"/>
+        <parameters name="arg6" type="I"/>
+        <parameters name="arg7" type="I"/>
+        <parameters name="arg8" type="I"/>
+        <parameters name="arg9" type="I"/>
+      </methods>
+      <methods elementName="acceptInterface" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+      </methods>
+      <methods elementName="acceptKeyword" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="acceptLabel" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="acceptLocalVariable" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+      </methods>
+      <methods elementName="acceptMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="[[C"/>
+        <parameters name="arg4" type="[[C"/>
+        <parameters name="arg5" type="[[C"/>
+        <parameters name="arg6" type="[C"/>
+        <parameters name="arg7" type="[C"/>
+        <parameters name="arg8" type="[C"/>
+        <parameters name="arg9" type="I"/>
+        <parameters name="arg10" type="I"/>
+        <parameters name="arg11" type="I"/>
+        <parameters name="arg12" type="I"/>
+      </methods>
+      <methods elementName="acceptMethodDeclaration" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="[[C"/>
+        <parameters name="arg4" type="[[C"/>
+        <parameters name="arg5" type="[[C"/>
+        <parameters name="arg6" type="[C"/>
+        <parameters name="arg7" type="[C"/>
+        <parameters name="arg8" type="[C"/>
+        <parameters name="arg9" type="I"/>
+        <parameters name="arg10" type="I"/>
+        <parameters name="arg11" type="I"/>
+        <parameters name="arg12" type="I"/>
+      </methods>
+      <methods elementName="acceptModifier" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="acceptPackage" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="acceptType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="I"/>
+      </methods>
+      <methods elementName="acceptVariableName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="[C"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="EvaluationContextWrapper.class" isClass="true" isInterface="false">
+    <type elementName="EvaluationContextWrapper" fullyQualifiedName="org.eclipse.jdt.internal.core.eval.EvaluationContextWrapper" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.eval.EvaluationContextWrapper">
+      <fields elementName="context" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.EvaluationContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="project" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.JavaProject;" isVolatile="false" isTransient="false"/>
+      <methods elementName="EvaluationContextWrapper" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.EvaluationContext;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.JavaProject;"/>
+      </methods>
+      <methods elementName="allVariables" returnType="[Lorg.eclipse.jdt.core.eval.IGlobalVariable;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="checkBuilderState" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="codeComplete" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.ICompletionRequestor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="codeComplete" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.ICompletionRequestor;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.core.WorkingCopyOwner;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="codeComplete" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.CompletionRequestor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="codeComplete" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.CompletionRequestor;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.core.WorkingCopyOwner;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="codeSelect" returnType="[Lorg.eclipse.jdt.core.IJavaElement;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="codeSelect" returnType="[Lorg.eclipse.jdt.core.IJavaElement;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.core.WorkingCopyOwner;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="deleteVariable" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.eval.IGlobalVariable;"/>
+      </methods>
+      <methods elementName="evaluateCodeSnippet" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="[Ljava.lang.String;"/>
+        <parameters name="arg2" type="[Ljava.lang.String;"/>
+        <parameters name="arg3" type="[I"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg5" type="Z"/>
+        <parameters name="arg6" type="Z"/>
+        <parameters name="arg7" type="Lorg.eclipse.jdt.core.eval.ICodeSnippetRequestor;"/>
+        <parameters name="arg8" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="evaluateCodeSnippet" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.eval.ICodeSnippetRequestor;"/>
+        <parameters name="arg2" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="evaluateVariable" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.eval.IGlobalVariable;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.eval.ICodeSnippetRequestor;"/>
+        <parameters name="arg2" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="getBuildNameEnvironment" returnType="Lorg.eclipse.jdt.internal.compiler.env.INameEnvironment;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getVarClassName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getImports" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInfrastructureEvaluationContext" returnType="Lorg.eclipse.jdt.internal.eval.EvaluationContext;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInfrastructureEvaluationRequestor" returnType="Lorg.eclipse.jdt.internal.eval.IRequestor;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.eval.ICodeSnippetRequestor;"/>
+      </methods>
+      <methods elementName="getPackageName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getProblemFactory" returnType="Lorg.eclipse.jdt.internal.compiler.IProblemFactory;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getProject" returnType="Lorg.eclipse.jdt.core.IJavaProject;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="handleInstallException" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.InstallException;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="newVariable" returnType="Lorg.eclipse.jdt.core.eval.IGlobalVariable;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="setImports" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="setPackageName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="validateImports" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.eval.ICodeSnippetRequestor;"/>
+      </methods>
+      <methods elementName="codeComplete" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.ICodeCompletionRequestor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="GlobalVariableWrapper.class" isClass="true" isInterface="false">
+    <type elementName="GlobalVariableWrapper" fullyQualifiedName="org.eclipse.jdt.internal.core.eval.GlobalVariableWrapper" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.eval.GlobalVariableWrapper">
+      <fields elementName="variable" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.GlobalVariable;" isVolatile="false" isTransient="false"/>
+      <methods elementName="GlobalVariableWrapper" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.GlobalVariable;"/>
+      </methods>
+      <methods elementName="getInitializer" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTypeName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="RequestorWrapper.class" isClass="true" isInterface="false">
+    <type elementName="RequestorWrapper" fullyQualifiedName="org.eclipse.jdt.internal.core.eval.RequestorWrapper" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.eval.RequestorWrapper">
+      <fields elementName="requestor" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.eval.ICodeSnippetRequestor;" isVolatile="false" isTransient="false"/>
+      <methods elementName="RequestorWrapper" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.eval.ICodeSnippetRequestor;"/>
+      </methods>
+      <methods elementName="acceptClassFiles" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.ClassFile;"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="acceptProblem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

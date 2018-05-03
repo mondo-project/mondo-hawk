@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:SourcePackageFragmentRoot" href="../IJavaProject_org.eclipse.jdt.apt.pluggable.core.xmi#//@packageFragmentRoots.0"/>
+</core:IPackageFragment>

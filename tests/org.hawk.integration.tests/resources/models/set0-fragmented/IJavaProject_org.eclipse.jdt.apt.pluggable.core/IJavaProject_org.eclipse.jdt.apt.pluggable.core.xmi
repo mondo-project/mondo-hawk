@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IJavaProject xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.apt.pluggable.core" path="/org.eclipse.jdt.apt.pluggable.core" isReadOnly="false">
+  <packageFragmentRoots xsi:type="core:SourcePackageFragmentRoot" elementName="src" path="/org.eclipse.jdt.apt.pluggable.core/src" isReadOnly="false">
+    <packageFragments href="IPackageFragment_org.eclipse.jdt/IPackageFragment_org.eclipse.jdt.xmi#/"/>
+    <packageFragments href="IPackageFragment_org.eclipse.jdt.internal/IPackageFragment_org.eclipse.jdt.internal.xmi#/"/>
+    <packageFragments href="IPackageFragment_org.eclipse.jdt.internal.apt/IPackageFragment_org.eclipse.jdt.internal.apt.xmi#/"/>
+    <packageFragments href="IPackageFragment_org.eclipse.jdt.internal.apt.pluggable/IPackageFragment_org.eclipse.jdt.internal.apt.pluggable.xmi#/"/>
+    <packageFragments href="IPackageFragment_org.eclipse.jdt.internal.apt.pluggable.core/IPackageFragment_org.eclipse.jdt.internal.apt.pluggable.core.xmi#/"/>
+    <packageFragments href="IPackageFragment_org.eclipse.jdt.internal.apt.pluggable.core.dispatch/IPackageFragment_org.eclipse.jdt.internal.apt.pluggable.core.dispatch.xmi#/"/>
+    <packageFragments href="IPackageFragment_org.eclipse.jdt.internal.apt.pluggable.core.filer/IPackageFragment_org.eclipse.jdt.internal.apt.pluggable.core.filer.xmi#/"/>
+  </packageFragmentRoots>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_resources.jar/BinaryPackageFragmentRoot_resources.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_rt.jar/BinaryPackageFragmentRoot_rt.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_jsse.jar/BinaryPackageFragmentRoot_jsse.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_jce.jar/BinaryPackageFragmentRoot_jce.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_dnsns.jar/BinaryPackageFragmentRoot_dnsns.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_sunjce_provider.jar/BinaryPackageFragmentRoot_sunjce_provider.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_sunmscapi.jar/BinaryPackageFragmentRoot_sunmscapi.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_sunpkcs11.jar/BinaryPackageFragmentRoot_sunpkcs11.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.core.runtime_3.4.0.v20080512.jar/BinaryPackageFragmentRoot_org.eclipse.core.runtime_3.4.0.v20080512.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.osgi_3.4.2.R34x_v20080826-1230.jar/BinaryPackageFragmentRoot_org.eclipse.osgi_3.4.2.R34x_v20080826-1230.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.equinox.common_3.4.0.v20080421-2006.jar/BinaryPackageFragmentRoot_org.eclipse.equinox.common_3.4.0.v20080421-2006.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.core.jobs_3.4.0.v20080512.jar/BinaryPackageFragmentRoot_org.eclipse.core.jobs_3.4.0.v20080512.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_runtime_registry_compatibility.jar/BinaryPackageFragmentRoot_runtime_registry_compatibility.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.equinox.registry_3.4.0.v20080516-0950.jar/BinaryPackageFragmentRoot_org.eclipse.equinox.registry_3.4.0.v20080516-0950.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.equinox.preferences_3.2.201.R34x_v20080709.jar/BinaryPackageFragmentRoot_org.eclipse.equinox.preferences_3.2.201.R34x_v20080709.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.core.contenttype_3.3.0.v20080604-1400.jar/BinaryPackageFragmentRoot_org.eclipse.core.contenttype_3.3.0.v20080604-1400.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.equinox.app_1.1.0.v20080421-2006.jar/BinaryPackageFragmentRoot_org.eclipse.equinox.app_1.1.0.v20080421-2006.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.apt.core_3.3.101.R34x_v20080902-1220.jar/BinaryPackageFragmentRoot_org.eclipse.jdt.apt.core_3.3.101.R34x_v20080902-1220.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar/BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.compiler.tool_1.0.100.v_883_R34x.jar/BinaryPackageFragmentRoot_org.eclipse.jdt.compiler.tool_1.0.100.v_883_R34x.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.compiler.apt_1.0.100.v20080513-1235.jar/BinaryPackageFragmentRoot_org.eclipse.jdt.compiler.apt_1.0.100.v20080513-1235.jar.xmi#/"/>
+  <externalPackageFragmentRoots xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.core.resources_3.4.1.R34x_v20080902.jar/BinaryPackageFragmentRoot_org.eclipse.core.resources_3.4.1.R34x_v20080902.jar.xmi#/"/>
+</core:IJavaProject>

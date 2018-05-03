@@ -1,0 +1,1925 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.formatter" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="AbortFormatting.class" isClass="true" isInterface="false">
+    <type elementName="AbortFormatting" fullyQualifiedName="org.eclipse.jdt.internal.formatter.AbortFormatting" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.AbortFormatting">
+      <fields elementName="nestedException" isEnumConstant="false" typeSignature="Ljava.lang.Throwable;" isVolatile="false" isTransient="false"/>
+      <fields elementName="serialVersionUID" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <methods elementName="AbortFormatting" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="AbortFormatting" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Throwable;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="BinaryExpressionFragmentBuilder.class" isClass="true" isInterface="false">
+    <type elementName="BinaryExpressionFragmentBuilder" fullyQualifiedName="org.eclipse.jdt.internal.formatter.BinaryExpressionFragmentBuilder" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.BinaryExpressionFragmentBuilder">
+      <fields elementName="fragmentsList" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+      <fields elementName="operatorsList" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+      <fields elementName="realFragmentsSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="BinaryExpressionFragmentBuilder" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="addRealFragment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="addSmallFragment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="buildFragments" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="fragments" returnType="[Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="operators" returnType="[I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="realFragmentsSize" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AllocationExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AND_AND_Expression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ArrayAllocationExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ArrayInitializer;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ArrayQualifiedTypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ArrayQualifiedTypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ArrayReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ArrayTypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ArrayTypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Assignment;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.BinaryExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CombinedBinaryExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CastExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CharLiteral;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ClassLiteralAccess;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CompoundAssignment;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ConditionalExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.DoubleLiteral;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.EqualExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ExtendedStringLiteral;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.FalseLiteral;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.FloatLiteral;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.InstanceOfExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.IntLiteral;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.LongLiteral;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MessageSend;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.StringLiteralConcatenation;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.NullLiteral;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.OR_OR_Expression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.PostfixExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.PrefixExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.QualifiedAllocationExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.QualifiedNameReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.QualifiedSuperReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.QualifiedThisReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.SingleNameReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.StringLiteral;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.SuperReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ThisReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TrueLiteral;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.UnaryExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="size" returnType="I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="CascadingMethodInvocationFragmentBuilder.class" isClass="true" isInterface="false">
+    <type elementName="CascadingMethodInvocationFragmentBuilder" fullyQualifiedName="org.eclipse.jdt.internal.formatter.CascadingMethodInvocationFragmentBuilder" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.CascadingMethodInvocationFragmentBuilder">
+      <fields elementName="fragmentsList" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+      <methods elementName="CascadingMethodInvocationFragmentBuilder" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="fragments" returnType="[Lorg.eclipse.jdt.internal.compiler.ast.MessageSend;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="size" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MessageSend;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeFormatterVisitor$MultiFieldDeclaration.class" isClass="true" isInterface="false">
+    <type elementName="MultiFieldDeclaration" fullyQualifiedName="org.eclipse.jdt.internal.formatter.CodeFormatterVisitor$MultiFieldDeclaration" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.CodeFormatterVisitor.MultiFieldDeclaration">
+      <fields elementName="declarations" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;" isVolatile="false" isTransient="false"/>
+      <methods elementName="MultiFieldDeclaration" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeFormatterVisitor.class" isClass="true" isInterface="false">
+    <type elementName="CodeFormatterVisitor" fullyQualifiedName="org.eclipse.jdt.internal.formatter.CodeFormatterVisitor" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.CodeFormatterVisitor">
+      <fields elementName="DEBUG" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="NO_MODIFIERS" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SINGLETYPEREFERENCE_EXPECTEDTOKENS" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CLOSING_GENERICS_EXPECTEDTOKENS" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="chunkKind" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="lastLocalDeclarationSourceStart" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="localScanner" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.parser.Scanner;" isVolatile="false" isTransient="false"/>
+      <fields elementName="preferences" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.formatter.DefaultCodeFormatterOptions;" isVolatile="false" isTransient="false"/>
+      <fields elementName="scribe" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.formatter.Scribe;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="CodeFormatterVisitor" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.DefaultCodeFormatterOptions;"/>
+        <parameters name="arg1" type="Ljava.util.Map;"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jface.text.IRegion;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.core.util.CodeSnippetParsingUtil;"/>
+        <parameters name="arg4" type="Z"/>
+      </methods>
+      <methods elementName="acceptProblem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.compiler.IProblem;"/>
+      </methods>
+      <methods elementName="buildFragments" returnType="Lorg.eclipse.jdt.internal.formatter.BinaryExpressionFragmentBuilder;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.BinaryExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="buildFragments" returnType="Lorg.eclipse.jdt.internal.formatter.CascadingMethodInvocationFragmentBuilder;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MessageSend;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="checkChunkStart" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="commentStartsBlock" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="computeMergedMemberDeclarations" returnType="[Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="computeMergedMemberDeclarations" returnType="[Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="dumpBinaryExpression" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.BinaryExpression;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="dumpEqualityExpression" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.BinaryExpression;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="failedToFormat" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="format" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+        <parameters name="arg2" type="Z"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="format" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ASTVisitor;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodScope;"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="Z"/>
+      </methods>
+      <methods elementName="format" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ImportReference;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="format" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.CodeFormatterVisitor$MultiFieldDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ASTVisitor;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodScope;"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="Z"/>
+      </methods>
+      <methods elementName="format" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="format" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;"/>
+      </methods>
+      <methods elementName="format" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ConstructorDeclaration;"/>
+      </methods>
+      <methods elementName="format" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="format" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRegion;"/>
+      </methods>
+      <methods elementName="formatComment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="format" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="format" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+        <parameters name="arg2" type="Z"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="formatAnonymousTypeDeclaration" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="formatBlock" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Block;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="formatCascadingMessageSends" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.CascadingMethodInvocationFragmentBuilder;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="formatClassBodyDeclarations" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="formatEmptyTypeDeclaration" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="formatGuardClauseBlock" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Block;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="formatLeftCurlyBrace" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="formatLocalDeclaration" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.LocalDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg2" type="Z"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="formatMessageSend" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MessageSend;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.formatter.align.Alignment;"/>
+      </methods>
+      <methods elementName="formatMethodArguments" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Z"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="Z"/>
+        <parameters name="arg5" type="Z"/>
+        <parameters name="arg6" type="Z"/>
+        <parameters name="arg7" type="I"/>
+      </methods>
+      <methods elementName="formatEnumConstantArguments" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Z"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="Z"/>
+        <parameters name="arg5" type="Z"/>
+        <parameters name="arg6" type="Z"/>
+        <parameters name="arg7" type="I"/>
+      </methods>
+      <methods elementName="formatNecessaryEmptyStatement" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="formatOpeningBrace" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="formatStatements" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.internal.compiler.ast.Statement;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="formatThrowsClause" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Z"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="formatTypeMembers" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="formatTypeOpeningBraceForEnumConstant" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="formatTypeOpeningBrace" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="getDimensions" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hasComments" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isNextToken" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="isClosingGenericToken" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isGuardClause" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Block;"/>
+      </methods>
+      <methods elementName="isMultipleLocalDeclaration" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.LocalDeclaration;"/>
+      </methods>
+      <methods elementName="isPartOfMultipleLocalDeclaration" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="manageClosingParenthesizedExpression" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="manageOpeningParenthesizedExpression" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="printComment" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AllocationExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AND_AND_Expression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AnnotationMethodDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Argument;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ArrayAllocationExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ArrayInitializer;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ArrayQualifiedTypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ArrayQualifiedTypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ArrayReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ArrayTypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ArrayTypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AssertStatement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Assignment;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.BinaryExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Block;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.BreakStatement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CaseStatement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CastExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CharLiteral;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ClassLiteralAccess;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Clinit;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CompoundAssignment;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ConditionalExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ConstructorDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ContinueStatement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.DoStatement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.DoubleLiteral;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.EmptyStatement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.EqualExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ExplicitConstructorCall;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.FalseLiteral;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.FloatLiteral;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ForeachStatement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ForStatement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.IfStatement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Initializer;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.InstanceOfExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.IntLiteral;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.LabeledStatement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.LocalDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.LongLiteral;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MarkerAnnotation;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MarkerAnnotation;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MemberValuePair;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MessageSend;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MethodDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.NormalAnnotation;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.NullLiteral;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.OR_OR_Expression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ParameterizedSingleTypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ParameterizedSingleTypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.PostfixExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.PrefixExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.QualifiedAllocationExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.QualifiedNameReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.QualifiedSuperReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.QualifiedThisReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.QualifiedTypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.QualifiedTypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ReturnStatement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.SingleMemberAnnotation;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.SingleNameReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.SingleTypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.SingleTypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.StringLiteral;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.StringLiteralConcatenation;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.SuperReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.SwitchStatement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.SynchronizedStatement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ThisReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ThrowStatement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TrueLiteral;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TryStatement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeParameter;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeParameter;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.UnaryExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.WhileStatement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Wildcard;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Wildcard;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <types elementName="MultiFieldDeclaration" fullyQualifiedName="org.eclipse.jdt.internal.formatter.CodeFormatterVisitor$MultiFieldDeclaration" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.CodeFormatterVisitor.MultiFieldDeclaration">
+        <fields elementName="declarations" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;" isVolatile="false" isTransient="false"/>
+        <methods elementName="MultiFieldDeclaration" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+        </methods>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="DefaultCodeFormatter.class" isClass="true" isInterface="false">
+    <type elementName="DefaultCodeFormatter" fullyQualifiedName="org.eclipse.jdt.internal.formatter.DefaultCodeFormatter" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.DefaultCodeFormatter">
+      <fields elementName="DEBUG" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="K_MASK" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="NEW_COMMENTS_FORMAT" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ENABLE_NEW_COMMENTS_FORMAT" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="PROBING_SCANNER" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.parser.Scanner;" isVolatile="false" isTransient="false"/>
+      <fields elementName="codeSnippetParsingUtil" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.util.CodeSnippetParsingUtil;" isVolatile="false" isTransient="false"/>
+      <fields elementName="defaultCompilerOptions" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="newCodeFormatter" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.formatter.CodeFormatterVisitor;" isVolatile="false" isTransient="false"/>
+      <fields elementName="options" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="preferences" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.formatter.DefaultCodeFormatterOptions;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="createRegion" returnType="Lorg.eclipse.jdt.internal.formatter.comment.CommentRegion;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Lorg.eclipse.jface.text.IDocument;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jface.text.Position;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.formatter.CodeFormatterVisitor;"/>
+      </methods>
+      <methods elementName="DefaultCodeFormatter" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="DefaultCodeFormatter" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.DefaultCodeFormatterOptions;"/>
+      </methods>
+      <methods elementName="DefaultCodeFormatter" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.DefaultCodeFormatterOptions;"/>
+        <parameters name="arg1" type="Ljava.util.Map;"/>
+      </methods>
+      <methods elementName="DefaultCodeFormatter" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Map;"/>
+      </methods>
+      <methods elementName="createIndentationString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="format" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="format" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jface.text.IRegion;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="formatClassBodyDeclarations" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="[Lorg.eclipse.jface.text.IRegion;"/>
+      </methods>
+      <methods elementName="formatComment" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Ljava.lang.String;"/>
+        <parameters name="arg4" type="[Lorg.eclipse.jface.text.IRegion;"/>
+      </methods>
+      <methods elementName="formatComment" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Ljava.lang.String;"/>
+        <parameters name="arg4" type="[Lorg.eclipse.jface.text.IRegion;"/>
+        <parameters name="arg5" type="Z"/>
+      </methods>
+      <methods elementName="formatCompilationUnit" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="[Lorg.eclipse.jface.text.IRegion;"/>
+        <parameters name="arg4" type="Z"/>
+      </methods>
+      <methods elementName="formatExpression" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="[Lorg.eclipse.jface.text.IRegion;"/>
+      </methods>
+      <methods elementName="formatStatements" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="[Lorg.eclipse.jface.text.IRegion;"/>
+      </methods>
+      <methods elementName="getCoveredRegion" returnType="Lorg.eclipse.jface.text.IRegion;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jface.text.IRegion;"/>
+      </methods>
+      <methods elementName="getDebugOutput" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDefaultCompilerOptions" returnType="Ljava.util.Map;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="internalFormatClassBodyDeclarations" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="[Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg4" type="[Lorg.eclipse.jface.text.IRegion;"/>
+      </methods>
+      <methods elementName="internalFormatExpression" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg4" type="[Lorg.eclipse.jface.text.IRegion;"/>
+      </methods>
+      <methods elementName="internalFormatStatements" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.ast.ConstructorDeclaration;"/>
+        <parameters name="arg4" type="[Lorg.eclipse.jface.text.IRegion;"/>
+      </methods>
+      <methods elementName="oldCommentFormatOption" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="probeFormatting" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="[Lorg.eclipse.jface.text.IRegion;"/>
+        <parameters name="arg4" type="Z"/>
+      </methods>
+      <methods elementName="regionsSatisfiesPreconditions" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jface.text.IRegion;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="DefaultCodeFormatterOptions.class" isClass="true" isInterface="false">
+    <type elementName="DefaultCodeFormatterOptions" fullyQualifiedName="org.eclipse.jdt.internal.formatter.DefaultCodeFormatterOptions" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.DefaultCodeFormatterOptions">
+      <fields elementName="TAB" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SPACE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MIXED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_arguments_in_allocation_expression" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_arguments_in_enum_constant" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_arguments_in_explicit_constructor_call" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_arguments_in_method_invocation" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_arguments_in_qualified_allocation_expression" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_assignment" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_binary_expression" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_compact_if" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_conditional_expression" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_enum_constants" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_expressions_in_array_initializer" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_multiple_fields" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_parameters_in_constructor_declaration" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_parameters_in_method_declaration" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_selector_in_method_invocation" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_superclass_in_type_declaration" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_superinterfaces_in_enum_declaration" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_superinterfaces_in_type_declaration" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_throws_clause_in_constructor_declaration" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="alignment_for_throws_clause_in_method_declaration" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="align_type_members_on_columns" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="brace_position_for_annotation_type_declaration" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="brace_position_for_anonymous_type_declaration" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="brace_position_for_array_initializer" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="brace_position_for_block" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="brace_position_for_block_in_case" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="brace_position_for_constructor_declaration" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="brace_position_for_enum_constant" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="brace_position_for_enum_declaration" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="brace_position_for_method_declaration" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="brace_position_for_type_declaration" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="brace_position_for_switch" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="continuation_indentation" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="continuation_indentation_for_array_initializer" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="blank_lines_after_imports" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="blank_lines_after_package" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="blank_lines_before_field" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="blank_lines_before_first_class_body_declaration" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="blank_lines_before_imports" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="blank_lines_before_member_type" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="blank_lines_before_method" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="blank_lines_before_new_chunk" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="blank_lines_before_package" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="blank_lines_between_import_groups" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="blank_lines_between_type_declarations" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="blank_lines_at_beginning_of_method_body" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="comment_clear_blank_lines_in_javadoc_comment" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="comment_clear_blank_lines_in_block_comment" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="comment_format_javadoc_comment" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="comment_format_line_comment" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="comment_format_block_comment" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="comment_format_header" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="comment_format_html" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="comment_format_source" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="comment_indent_parameter_description" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="comment_indent_root_tags" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="comment_insert_empty_line_before_root_tags" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="comment_insert_new_line_for_parameter" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="comment_line_length" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="indent_statements_compare_to_block" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="indent_statements_compare_to_body" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="indent_body_declarations_compare_to_annotation_declaration_header" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="indent_body_declarations_compare_to_enum_constant_header" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="indent_body_declarations_compare_to_enum_declaration_header" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="indent_body_declarations_compare_to_type_header" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="indent_breaks_compare_to_cases" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="indent_empty_lines" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="indent_switchstatements_compare_to_cases" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="indent_switchstatements_compare_to_switch" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="indentation_size" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_new_line_after_annotation_on_member" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_new_line_after_annotation_on_parameter" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_new_line_after_annotation_on_local_variable" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_new_line_after_opening_brace_in_array_initializer" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_new_line_at_end_of_file_if_missing" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_new_line_before_catch_in_try_statement" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_new_line_before_closing_brace_in_array_initializer" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_new_line_before_else_in_if_statement" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_new_line_before_finally_in_try_statement" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_new_line_before_while_in_do_statement" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_new_line_in_empty_anonymous_type_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_new_line_in_empty_block" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_new_line_in_empty_annotation_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_new_line_in_empty_enum_constant" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_new_line_in_empty_enum_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_new_line_in_empty_method_body" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_new_line_in_empty_type_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_and_in_type_parameter" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_assignment_operator" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_at_in_annotation" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_at_in_annotation_type_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_binary_operator" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_closing_angle_bracket_in_type_arguments" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_closing_angle_bracket_in_type_parameters" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_closing_paren_in_cast" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_closing_brace_in_block" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_colon_in_assert" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_colon_in_case" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_colon_in_conditional" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_colon_in_for" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_colon_in_labeled_statement" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_comma_in_allocation_expression" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_comma_in_annotation" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_comma_in_array_initializer" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_comma_in_constructor_declaration_parameters" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_comma_in_constructor_declaration_throws" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_comma_in_enum_constant_arguments" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_comma_in_enum_declarations" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_comma_in_explicit_constructor_call_arguments" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_comma_in_for_increments" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_comma_in_for_inits" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_comma_in_method_invocation_arguments" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_comma_in_method_declaration_parameters" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_comma_in_method_declaration_throws" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_comma_in_multiple_field_declarations" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_comma_in_multiple_local_declarations" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_comma_in_parameterized_type_reference" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_comma_in_superinterfaces" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_comma_in_type_arguments" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_comma_in_type_parameters" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_ellipsis" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_opening_angle_bracket_in_parameterized_type_reference" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_opening_angle_bracket_in_type_arguments" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_opening_angle_bracket_in_type_parameters" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_opening_bracket_in_array_allocation_expression" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_opening_bracket_in_array_reference" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_opening_brace_in_array_initializer" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_opening_paren_in_annotation" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_opening_paren_in_cast" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_opening_paren_in_catch" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_opening_paren_in_constructor_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_opening_paren_in_enum_constant" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_opening_paren_in_for" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_opening_paren_in_if" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_opening_paren_in_method_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_opening_paren_in_method_invocation" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_opening_paren_in_parenthesized_expression" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_opening_paren_in_switch" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_opening_paren_in_synchronized" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_opening_paren_in_while" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_postfix_operator" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_prefix_operator" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_question_in_conditional" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_question_in_wilcard" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_semicolon_in_for" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_after_unary_operator" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_and_in_type_parameter" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_at_in_annotation_type_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_assignment_operator" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_binary_operator" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_closing_angle_bracket_in_parameterized_type_reference" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_closing_angle_bracket_in_type_arguments" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_closing_angle_bracket_in_type_parameters" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_closing_brace_in_array_initializer" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_closing_bracket_in_array_allocation_expression" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_closing_bracket_in_array_reference" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_closing_paren_in_annotation" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_closing_paren_in_cast" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_closing_paren_in_catch" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_closing_paren_in_constructor_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_closing_paren_in_enum_constant" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_closing_paren_in_for" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_closing_paren_in_if" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_closing_paren_in_method_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_closing_paren_in_method_invocation" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_closing_paren_in_parenthesized_expression" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_closing_paren_in_switch" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_closing_paren_in_synchronized" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_closing_paren_in_while" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_colon_in_assert" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_colon_in_case" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_colon_in_conditional" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_colon_in_default" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_colon_in_for" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_colon_in_labeled_statement" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_comma_in_allocation_expression" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_comma_in_annotation" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_comma_in_array_initializer" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_comma_in_constructor_declaration_parameters" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_comma_in_constructor_declaration_throws" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_comma_in_enum_constant_arguments" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_comma_in_enum_declarations" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_comma_in_explicit_constructor_call_arguments" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_comma_in_for_increments" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_comma_in_for_inits" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_comma_in_method_invocation_arguments" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_comma_in_method_declaration_parameters" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_comma_in_method_declaration_throws" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_comma_in_multiple_field_declarations" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_comma_in_multiple_local_declarations" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_comma_in_parameterized_type_reference" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_comma_in_superinterfaces" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_comma_in_type_arguments" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_comma_in_type_parameters" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_ellipsis" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_parenthesized_expression_in_return" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_parenthesized_expression_in_throw" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_question_in_wilcard" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_angle_bracket_in_parameterized_type_reference" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_angle_bracket_in_type_arguments" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_angle_bracket_in_type_parameters" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_brace_in_annotation_type_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_brace_in_anonymous_type_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_brace_in_array_initializer" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_brace_in_block" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_brace_in_constructor_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_brace_in_enum_constant" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_brace_in_enum_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_brace_in_method_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_brace_in_type_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_bracket_in_array_allocation_expression" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_bracket_in_array_reference" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_bracket_in_array_type_reference" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_paren_in_annotation" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_paren_in_annotation_type_member_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_paren_in_catch" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_paren_in_constructor_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_paren_in_enum_constant" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_paren_in_for" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_paren_in_if" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_paren_in_method_invocation" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_paren_in_method_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_paren_in_switch" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_brace_in_switch" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_paren_in_synchronized" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_paren_in_parenthesized_expression" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_opening_paren_in_while" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_postfix_operator" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_prefix_operator" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_question_in_conditional" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_semicolon" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_semicolon_in_for" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_before_unary_operator" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_between_brackets_in_array_type_reference" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_between_empty_braces_in_array_initializer" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_between_empty_brackets_in_array_allocation_expression" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_between_empty_parens_in_annotation_type_member_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_between_empty_parens_in_constructor_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_between_empty_parens_in_enum_constant" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_between_empty_parens_in_method_declaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="insert_space_between_empty_parens_in_method_invocation" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="compact_else_if" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="keep_guardian_clause_on_one_line" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="keep_else_statement_on_same_line" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="keep_empty_array_initializer_on_one_line" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="keep_simple_if_on_one_line" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="keep_then_statement_on_same_line" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="never_indent_block_comments_on_first_column" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="never_indent_line_comments_on_first_column" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="number_of_empty_lines_to_preserve" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="put_empty_statement_on_new_line" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="tab_size" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="filling_space" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="page_width" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="tab_char" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="use_tabs_only_for_leading_indentations" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="wrap_before_binary_operator" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="initial_indentation_level" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="line_separator" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <methods elementName="getDefaultSettings" returnType="Lorg.eclipse.jdt.internal.formatter.DefaultCodeFormatterOptions;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEclipseDefaultSettings" returnType="Lorg.eclipse.jdt.internal.formatter.DefaultCodeFormatterOptions;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getJavaConventionsSettings" returnType="Lorg.eclipse.jdt.internal.formatter.DefaultCodeFormatterOptions;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="DefaultCodeFormatterOptions" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="DefaultCodeFormatterOptions" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Map;"/>
+      </methods>
+      <methods elementName="getAlignment" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getMap" returnType="Ljava.util.Map;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="set" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Map;"/>
+      </methods>
+      <methods elementName="setDeprecatedOptions" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Map;"/>
+      </methods>
+      <methods elementName="setDefaultSettings" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setEclipseDefaultSettings" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setJavaConventionsSettings" returnType="V" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="FormatJavadoc.class" isClass="true" isInterface="false">
+    <type elementName="FormatJavadoc" fullyQualifiedName="org.eclipse.jdt.internal.formatter.FormatJavadoc" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.FormatJavadoc">
+      <fields elementName="blocks" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.formatter.FormatJavadocBlock;" isVolatile="false" isTransient="false"/>
+      <fields elementName="textStart" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="textEnd" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="lineStart" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="lineEnd" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="FormatJavadoc" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="getFirstBlock" returnType="Lorg.eclipse.jdt.internal.formatter.FormatJavadocBlock;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isMultiLine" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toDebugString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="FormatJavadocBlock.class" isClass="true" isInterface="false">
+    <type elementName="FormatJavadocBlock" fullyQualifiedName="org.eclipse.jdt.internal.formatter.FormatJavadocBlock" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.FormatJavadocBlock">
+      <fields elementName="INLINED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FIRST" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ON_HEADER_LINE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="TEXT_ON_TAG_LINE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ONE_LINE_TAG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="PARAM_TAG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IN_PARAM_TAG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IN_DESCRIPTION" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MAX_TAG_HIERARCHY" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="tagValue" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="tagEnd" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="reference" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.formatter.FormatJavadocReference;" isVolatile="false" isTransient="false"/>
+      <fields elementName="nodes" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.formatter.FormatJavadocNode;" isVolatile="false" isTransient="false"/>
+      <fields elementName="nodesPtr" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="flags" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="FormatJavadocBlock" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="addNode" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocNode;"/>
+      </methods>
+      <methods elementName="addBlock" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocBlock;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="addText" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocText;"/>
+      </methods>
+      <methods elementName="clean" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLastNode" returnType="Lorg.eclipse.jdt.internal.formatter.FormatJavadocNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTextHierarchy" returnType="[Lorg.eclipse.jdt.internal.formatter.FormatJavadocText;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocNode;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="hasTextOnTagLine" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isDescription" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isFirst" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isHeaderLine" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isInDescription" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isInlined" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isInParamTag" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isOneLineTag" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isParamTag" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setHeaderLine" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="toString" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="toStringDebug" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="toStringDebug" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.StringBuffer;"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="FormatJavadocNode.class" isClass="true" isInterface="false">
+    <type elementName="FormatJavadocNode" fullyQualifiedName="org.eclipse.jdt.internal.formatter.FormatJavadocNode" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.FormatJavadocNode">
+      <fields elementName="DEFAULT_ARRAY_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INCREMENT_ARRAY_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="sourceStart" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="sourceEnd" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="lineStart" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="linesBefore" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="FormatJavadocNode" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="clean" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLastNode" returnType="Lorg.eclipse.jdt.internal.formatter.FormatJavadocNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLength" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isText" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="toStringDebug" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="toStringDebug" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.StringBuffer;"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="setHeaderLine" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="FormatJavadocReference.class" isClass="true" isInterface="false">
+    <type elementName="FormatJavadocReference" fullyQualifiedName="org.eclipse.jdt.internal.formatter.FormatJavadocReference" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.FormatJavadocReference">
+      <methods elementName="FormatJavadocReference" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="FormatJavadocReference" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="clean" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="FormatJavadocText.class" isClass="true" isInterface="false">
+    <type elementName="FormatJavadocText" fullyQualifiedName="org.eclipse.jdt.internal.formatter.FormatJavadocText" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.FormatJavadocText">
+      <fields elementName="separators" isEnumConstant="false" typeSignature="[J" isVolatile="false" isTransient="false"/>
+      <fields elementName="separatorsPtr" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="htmlTagIndex" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="htmlNodes" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.formatter.FormatJavadocNode;" isVolatile="false" isTransient="false"/>
+      <fields elementName="htmlIndexes" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="htmlNodesPtr" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="depth" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="FormatJavadocText" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="appendText" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocText;"/>
+      </methods>
+      <methods elementName="appendNode" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocNode;"/>
+      </methods>
+      <methods elementName="addSeparator" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocNode;"/>
+      </methods>
+      <methods elementName="clean" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="closeTag" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getHtmlTagIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getHtmlTagID" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLastNode" returnType="Lorg.eclipse.jdt.internal.formatter.FormatJavadocNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isClosingHtmlTag" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isHtmlTag" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isImmutableHtmlTag" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isTextAfterHtmlSeparatorTag" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="isText" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setHeaderLine" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="toString" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="toStringDebug" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.StringBuffer;"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="FormatterCommentParser.class" isClass="true" isInterface="false">
+    <type elementName="FormatterCommentParser" fullyQualifiedName="org.eclipse.jdt.internal.formatter.FormatterCommentParser" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.FormatterCommentParser">
+      <fields elementName="htmlTags" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="htmlTagsPtr" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="invalidTagName" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="parseHtmlTags" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="FormatterCommentParser" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+      </methods>
+      <methods elementName="parse" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="createArgumentReference" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Z"/>
+        <parameters name="arg3" type="Ljava.lang.Object;"/>
+        <parameters name="arg4" type="[J"/>
+        <parameters name="arg5" type="J"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.compiler.InvalidInputException;</exceptionTypes>
+      </methods>
+      <methods elementName="createFakeReference" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="createFieldReference" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.compiler.InvalidInputException;</exceptionTypes>
+      </methods>
+      <methods elementName="createMethodReference" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Ljava.util.List;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.compiler.InvalidInputException;</exceptionTypes>
+      </methods>
+      <methods elementName="createTag" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="createTypeReference" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getHtmlTagIndex" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="parseHtmlTag" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.compiler.InvalidInputException;</exceptionTypes>
+      </methods>
+      <methods elementName="parseIdentifierTag" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="parseParam" returnType="Z" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Lorg.eclipse.jdt.core.compiler.InvalidInputException;</exceptionTypes>
+      </methods>
+      <methods elementName="parseReference" returnType="Z" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Lorg.eclipse.jdt.core.compiler.InvalidInputException;</exceptionTypes>
+      </methods>
+      <methods elementName="parseReturn" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="parseTag" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.compiler.InvalidInputException;</exceptionTypes>
+      </methods>
+      <methods elementName="parseThrows" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="pushParamName" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="pushSeeRef" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="pushText" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="pushText" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="pushThrowName" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="refreshInlineTagPosition" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toDebugString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="updateDocComment" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="verifyEndLine" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="verifySpaceOrEndComment" returnType="Z" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ICodeFormatterConstants.class" isClass="false" isInterface="true">
+    <type elementName="ICodeFormatterConstants" fullyQualifiedName="org.eclipse.jdt.internal.formatter.ICodeFormatterConstants" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.ICodeFormatterConstants">
+      <fields elementName="ANNOTATION_UNSPECIFIED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ANNOTATION_ON_MEMBER" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ANNOTATION_ON_PARAMETER" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ANNOTATION_ON_LOCAL_VARIABLE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="Location.class" isClass="true" isInterface="false">
+    <type elementName="Location" fullyQualifiedName="org.eclipse.jdt.internal.formatter.Location" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.Location">
+      <fields elementName="inputOffset" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="outputLine" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="outputColumn" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="outputIndentationLevel" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="needSpace" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="pendingSpace" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="nlsTagCounter" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="lastLocalDeclarationSourceStart" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="numberOfIndentations" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="lastNumberOfNewLines" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="editsIndex" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="textEdit" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.formatter.OptimizedReplaceEdit;" isVolatile="false" isTransient="false"/>
+      <methods elementName="Location" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.Scribe;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="update" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.Scribe;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="OptimizedReplaceEdit.class" isClass="true" isInterface="false">
+    <type elementName="OptimizedReplaceEdit" fullyQualifiedName="org.eclipse.jdt.internal.formatter.OptimizedReplaceEdit" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.OptimizedReplaceEdit">
+      <fields elementName="offset" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="length" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="replacement" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <methods elementName="OptimizedReplaceEdit" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="Scribe$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.formatter.Scribe$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.Scribe.1">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.formatter.Scribe;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.Scribe;"/>
+      </methods>
+      <methods elementName="compare" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="Scribe$2.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.formatter.Scribe$2" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.Scribe.2">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.formatter.Scribe;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.Scribe;"/>
+      </methods>
+      <methods elementName="compare" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="Scribe.class" isClass="true" isInterface="false">
+    <type elementName="Scribe" fullyQualifiedName="org.eclipse.jdt.internal.formatter.Scribe" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.Scribe">
+      <fields elementName="INITIAL_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="checkLineWrapping" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="column" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="commentPositions" isEnumConstant="false" typeSignature="[[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="currentAlignment" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.formatter.align.Alignment;" isVolatile="false" isTransient="false"/>
+      <fields elementName="currentToken" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="edits" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.formatter.OptimizedReplaceEdit;" isVolatile="false" isTransient="false"/>
+      <fields elementName="editsIndex" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="formatter" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.formatter.CodeFormatterVisitor;" isVolatile="false" isTransient="false"/>
+      <fields elementName="indentationLevel" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="lastNumberOfNewLines" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="line" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="lineEnds" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="maxLines" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="lineSeparator" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="memberAlignment" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.formatter.align.Alignment;" isVolatile="false" isTransient="false"/>
+      <fields elementName="needSpace" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="nlsTagCounter" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="pageWidth" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="pendingSpace" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="scanner" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.parser.Scanner;" isVolatile="false" isTransient="false"/>
+      <fields elementName="scannerEndPosition" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="tabLength" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="indentationSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="regions" isEnumConstant="false" typeSignature="[Lorg.eclipse.jface.text.IRegion;" isVolatile="false" isTransient="false"/>
+      <fields elementName="adaptedRegions" isEnumConstant="false" typeSignature="[Lorg.eclipse.jface.text.IRegion;" isVolatile="false" isTransient="false"/>
+      <fields elementName="tabChar" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="numberOfIndentations" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="useTabsOnlyForLeadingIndents" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="indentEmptyLines" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="INCLUDE_BLOCK_COMMENTS" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INCLUDE_JAVA_DOC" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INCLUDE_LINE_COMMENTS" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SKIP_FIRST_WHITESPACE_TOKEN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INVALID_TOKEN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="formatComments" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="headerEndPosition" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="commentIndentation" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="formatterCommentParser" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.formatter.FormatterCommentParser;" isVolatile="false" isTransient="false"/>
+      <methods elementName="Scribe" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.CodeFormatterVisitor;"/>
+        <parameters name="arg1" type="J"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jface.text.IRegion;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.core.util.CodeSnippetParsingUtil;"/>
+        <parameters name="arg4" type="Z"/>
+      </methods>
+      <methods elementName="adaptRegions" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="addDeleteEdit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="addInsertEdit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="addOptimizedReplaceEdit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="addReplaceEdit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="alignFragment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.align.Alignment;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="checkNLSTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="consumeInvalidToken" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="createAlignment" returnType="Lorg.eclipse.jdt.internal.formatter.align.Alignment;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="createAlignment" returnType="Lorg.eclipse.jdt.internal.formatter.align.Alignment;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="Z"/>
+      </methods>
+      <methods elementName="createAlignment" returnType="Lorg.eclipse.jdt.internal.formatter.align.Alignment;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="createAlignment" returnType="Lorg.eclipse.jdt.internal.formatter.align.Alignment;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="Z"/>
+      </methods>
+      <methods elementName="createAlignment" returnType="Lorg.eclipse.jdt.internal.formatter.align.Alignment;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="Z"/>
+      </methods>
+      <methods elementName="createMemberAlignment" returnType="Lorg.eclipse.jdt.internal.formatter.align.Alignment;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="enterAlignment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.align.Alignment;"/>
+      </methods>
+      <methods elementName="enterMemberAlignment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.align.Alignment;"/>
+      </methods>
+      <methods elementName="exitAlignment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.align.Alignment;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="exitMemberAlignment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.align.Alignment;"/>
+      </methods>
+      <methods elementName="getAlignment" returnType="Lorg.eclipse.jdt.internal.formatter.align.Alignment;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getColumnIndentationLevel" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCommentIndex" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getCommentIndex" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="getCoveringAdaptedRegion" returnType="Lorg.eclipse.jface.text.IRegion;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="getCurrentCommentOffset" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getEmptyLines" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getIndexOfAdaptedRegionAt" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getLastEdit" returnType="Lorg.eclipse.jdt.internal.formatter.OptimizedReplaceEdit;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLineEnd" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getMemberAlignment" returnType="Lorg.eclipse.jdt.internal.formatter.align.Alignment;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNewLine" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNextIndentationLevel" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getPreserveEmptyLines" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getAdaptedRegionAt" returnType="Lorg.eclipse.jface.text.IRegion;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getRootEdit" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="handleLineTooLong" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hasNLSTag" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="includesBlockComments" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="includesJavadocComments" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="includesLineComments" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="includesComments" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="indent" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="initializeScanner" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="initFormatterCommentParser" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isAdaptableRegion" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="isOnFirstColumn" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="isValidEdit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.OptimizedReplaceEdit;"/>
+      </methods>
+      <methods elementName="preserveEmptyLines" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="print" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="printBlockComment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="printBlockComment" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="printBlockCommentHeaderLine" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="printEndOfCompilationUnit" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="printCodeSnippet" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="printComment" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="printComment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="printComment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="printLineComment" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="printLineComment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="printEmptyLines" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="printEmptyLines" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="printIndentationIfNecessary" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="printIndentationIfNecessary" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="printJavadocBlock" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocBlock;"/>
+      </methods>
+      <methods elementName="printJavadocBlockNodesNewLines" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocBlock;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocNode;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="printJavadocBlockReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocBlock;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocReference;"/>
+      </methods>
+      <methods elementName="getTextLength" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocBlock;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocText;"/>
+      </methods>
+      <methods elementName="printJavadocComment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="printJavadocGapLines" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="Z"/>
+        <parameters name="arg5" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="printJavadocHtmlImmutableTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocText;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocBlock;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="printJavadocHtmlTag" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocText;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocBlock;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="printJavadocNewLine" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="printJavadocText" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocText;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocBlock;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="printJavadocTextLine" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.StringBuffer;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.formatter.FormatJavadocBlock;"/>
+        <parameters name="arg4" type="Z"/>
+        <parameters name="arg5" type="Z"/>
+        <parameters name="arg6" type="Z"/>
+      </methods>
+      <methods elementName="printModifiers" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.ast.Annotation;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ASTVisitor;"/>
+      </methods>
+      <methods elementName="printModifiers" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.ast.Annotation;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ASTVisitor;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="printNewLine" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="printNewLine" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="printNextToken" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="printNextToken" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="printNextToken" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+      </methods>
+      <methods elementName="printNextToken" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="printArrayQualifiedReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="printQualifiedReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="printRule" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="printTrailingComment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="printTrailingComment" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="redoAlignment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.align.AlignmentException;"/>
+      </methods>
+      <methods elementName="redoMemberAlignment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.align.AlignmentException;"/>
+      </methods>
+      <methods elementName="reset" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="resetAt" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.Location;"/>
+      </methods>
+      <methods elementName="resize" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setIncludeComments" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="setHeaderComment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="space" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="unIndent" returnType="V" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.core.eval" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="ICodeSnippetRequestor.class" isClass="false" isInterface="true">
+    <type elementName="ICodeSnippetRequestor" fullyQualifiedName="org.eclipse.jdt.core.eval.ICodeSnippetRequestor" fullyQualifiedParametrizedName="org.eclipse.jdt.core.eval.ICodeSnippetRequestor">
+      <fields elementName="LOCAL_VAR_PREFIX" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="DELEGATE_THIS" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="RUN_METHOD" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="RESULT_VALUE_FIELD" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="RESULT_TYPE_FIELD" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="VARIABLE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CODE_SNIPPET" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IMPORT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="PACKAGE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INTERNAL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="acceptClassFiles" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[B"/>
+        <parameters name="arg1" type="[[Ljava.lang.String;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="acceptProblem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IMarker;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="IEvaluationContext.class" isClass="false" isInterface="true">
+    <type elementName="IEvaluationContext" fullyQualifiedName="org.eclipse.jdt.core.eval.IEvaluationContext" fullyQualifiedParametrizedName="org.eclipse.jdt.core.eval.IEvaluationContext">
+      <methods elementName="allVariables" returnType="[Lorg.eclipse.jdt.core.eval.IGlobalVariable;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="codeComplete" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.ICompletionRequestor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="codeComplete" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.ICompletionRequestor;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.core.WorkingCopyOwner;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="codeComplete" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.CompletionRequestor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="codeComplete" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.CompletionRequestor;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.core.WorkingCopyOwner;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="codeSelect" returnType="[Lorg.eclipse.jdt.core.IJavaElement;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="codeSelect" returnType="[Lorg.eclipse.jdt.core.IJavaElement;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.core.WorkingCopyOwner;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="deleteVariable" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.eval.IGlobalVariable;"/>
+      </methods>
+      <methods elementName="evaluateCodeSnippet" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="[Ljava.lang.String;"/>
+        <parameters name="arg2" type="[Ljava.lang.String;"/>
+        <parameters name="arg3" type="[I"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg5" type="Z"/>
+        <parameters name="arg6" type="Z"/>
+        <parameters name="arg7" type="Lorg.eclipse.jdt.core.eval.ICodeSnippetRequestor;"/>
+        <parameters name="arg8" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="evaluateCodeSnippet" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.eval.ICodeSnippetRequestor;"/>
+        <parameters name="arg2" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="evaluateVariable" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.eval.IGlobalVariable;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.eval.ICodeSnippetRequestor;"/>
+        <parameters name="arg2" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="getImports" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPackageName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getProject" returnType="Lorg.eclipse.jdt.core.IJavaProject;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="newVariable" returnType="Lorg.eclipse.jdt.core.eval.IGlobalVariable;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="setImports" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="setPackageName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="validateImports" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.eval.ICodeSnippetRequestor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="codeComplete" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.ICodeCompletionRequestor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="IGlobalVariable.class" isClass="false" isInterface="true">
+    <type elementName="IGlobalVariable" fullyQualifiedName="org.eclipse.jdt.core.eval.IGlobalVariable" fullyQualifiedParametrizedName="org.eclipse.jdt.core.eval.IGlobalVariable">
+      <methods elementName="getInitializer" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTypeName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

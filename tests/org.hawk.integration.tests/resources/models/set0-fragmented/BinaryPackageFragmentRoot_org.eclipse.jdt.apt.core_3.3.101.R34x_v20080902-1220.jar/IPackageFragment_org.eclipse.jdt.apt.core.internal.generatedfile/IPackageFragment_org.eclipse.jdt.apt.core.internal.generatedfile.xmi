@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.apt.core.internal.generatedfile" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.apt.core_3.3.101.R34x_v20080902-1220.jar.xmi#/"/>
+  <classFiles elementName="ClasspathUtil.class" isClass="true" isInterface="false">
+    <type elementName="ClasspathUtil" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.ClasspathUtil" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.ClasspathUtil">
+      <methods elementName="findProjectSourcePath" returnType="Lorg.eclipse.jdt.core.IClasspathEntry;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaProject;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFolder;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="doesClasspathContainEntry" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaProject;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.core.IClasspathEntry;"/>
+        <parameters name="arg2" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg3" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="removeFromProjectClasspath" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaProject;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFolder;"/>
+        <parameters name="arg2" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="updateProjectClasspath" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaProject;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFolder;"/>
+        <parameters name="arg2" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="ClasspathUtil" returnType="V" isConstructor="true" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="CompilationUnitHelper.class" isClass="true" isInterface="false">
+    <type elementName="CompilationUnitHelper" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.CompilationUnitHelper" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.CompilationUnitHelper">
+      <methods elementName="CompilationUnitHelper" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="commitNewContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.ICompilationUnit;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="getWorkingCopy" returnType="Lorg.eclipse.jdt.core.ICompilationUnit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.IPackageFragmentRoot;"/>
+      </methods>
+      <methods elementName="discardWorkingCopy" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.ICompilationUnit;"/>
+      </methods>
+      <methods elementName="updateWorkingCopyContents" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.ICompilationUnit;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.WorkingCopyOwner;"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="createPackageFragment" returnType="Lorg.eclipse.jdt.core.IPackageFragment;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.IPackageFragmentRoot;"/>
+        <parameters name="arg2" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <methods elementName="parseTypeName" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="FileGenerationResult.class" isClass="true" isInterface="false">
+    <type elementName="FileGenerationResult" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.FileGenerationResult" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.FileGenerationResult">
+      <fields elementName="file" isEnumConstant="false" typeSignature="Lorg.eclipse.core.resources.IFile;" isVolatile="false" isTransient="false"/>
+      <fields elementName="modified" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="FileGenerationResult" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="getFile" returnType="Lorg.eclipse.core.resources.IFile;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isModified" returnType="Z" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="GeneratedFileManager$GeneratedPackageFragmentRoot$NameAndRoot.class" isClass="true" isInterface="false">
+    <type elementName="NameAndRoot" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager$GeneratedPackageFragmentRoot$NameAndRoot" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager.GeneratedPackageFragmentRoot.NameAndRoot">
+      <fields elementName="name" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="root" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.IPackageFragmentRoot;" isVolatile="false" isTransient="false"/>
+      <fields elementName="this$1" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager$GeneratedPackageFragmentRoot;" isVolatile="false" isTransient="false"/>
+      <methods elementName="NameAndRoot" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager$GeneratedPackageFragmentRoot;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.IPackageFragmentRoot;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="GeneratedFileManager$GeneratedPackageFragmentRoot.class" isClass="true" isInterface="false">
+    <type elementName="GeneratedPackageFragmentRoot" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager$GeneratedPackageFragmentRoot" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager.GeneratedPackageFragmentRoot">
+      <fields elementName="_root" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.IPackageFragmentRoot;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_folderName" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager;" isVolatile="false" isTransient="false"/>
+      <methods elementName="GeneratedPackageFragmentRoot" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager;"/>
+      </methods>
+      <methods elementName="get" returnType="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager$GeneratedPackageFragmentRoot$NameAndRoot;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="set" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="GeneratedPackageFragmentRoot" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager$GeneratedPackageFragmentRoot;"/>
+      </methods>
+      <types elementName="NameAndRoot" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager$GeneratedPackageFragmentRoot$NameAndRoot" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager.GeneratedPackageFragmentRoot.NameAndRoot">
+        <fields elementName="name" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+        <fields elementName="root" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.IPackageFragmentRoot;" isVolatile="false" isTransient="false"/>
+        <fields elementName="this$1" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager$GeneratedPackageFragmentRoot;" isVolatile="false" isTransient="false"/>
+        <methods elementName="NameAndRoot" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager$GeneratedPackageFragmentRoot;"/>
+          <parameters name="arg1" type="Ljava.lang.String;"/>
+          <parameters name="arg2" type="Lorg.eclipse.jdt.core.IPackageFragmentRoot;"/>
+        </methods>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="GeneratedFileManager.class" isClass="true" isInterface="false">
+    <type elementName="GeneratedFileManager" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager">
+      <fields elementName="RECURSIVE_RECONCILE" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="GENERATE_TYPE_DURING_RECONCILE" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="ENABLE_INTEGRITY_CHECKS" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="_CUHELPER" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.generatedfile.CompilationUnitHelper;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_PACKAGE_DELIMITER" isEnumConstant="false" typeSignature="Ljava.util.regex.Pattern;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_buildDeps" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileMap;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_clearDuringReconcile" isEnumConstant="false" typeSignature="Ljava.util.Set;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_reconcileDeps" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.util.ManyToMany;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_reconcileNonDeps" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.util.ManyToMany;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_hiddenBuiltTypes" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_reconcileGenTypes" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_generatedPackageFragmentRoot" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager$GeneratedPackageFragmentRoot;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_jProject" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.IJavaProject;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_gsfm" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedSourceFolderManager;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_skipTypeGeneration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="GeneratedFileManager" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.AptProject;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedSourceFolderManager;"/>
+      </methods>
+      <methods elementName="addGeneratedFileDependency" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Collection&lt;Lorg.eclipse.core.resources.IFile;>;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="compilationStarted" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="containsWorkingCopyMapEntriesForParent" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="deleteObsoleteFilesAfterBuild" returnType="Ljava.util.Set&lt;Lorg.eclipse.core.resources.IFile;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Ljava.util.Set&lt;Lorg.eclipse.core.resources.IFile;>;"/>
+      </methods>
+      <methods elementName="deleteObsoleteTypesAfterReconcile" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.ICompilationUnit;"/>
+        <parameters name="arg1" type="Ljava.util.Set&lt;Lorg.eclipse.core.resources.IFile;>;"/>
+      </methods>
+      <methods elementName="fileDeleted" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="generateFileDuringBuild" returnType="Lorg.eclipse.jdt.apt.core.internal.generatedfile.FileGenerationResult;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Collection&lt;Lorg.eclipse.core.resources.IFile;>;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="generateFileDuringReconcile" returnType="Lorg.eclipse.jdt.apt.core.internal.generatedfile.FileGenerationResult;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.ICompilationUnit;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="getGeneratedFilesForParent" returnType="Ljava.util.Set&lt;Lorg.eclipse.core.resources.IFile;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="isGeneratedFile" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="isParentFile" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="projectCleaned" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="projectClosed" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="projectDeleted" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="reconcileStarted" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="workingCopyDiscarded" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.ICompilationUnit;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="writeState" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="addBuiltFileToMaps" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Collection&lt;Lorg.eclipse.core.resources.IFile;>;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="checkIntegrity" returnType="Z" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.lang.IllegalStateException;</exceptionTypes>
+      </methods>
+      <methods elementName="computeProjectClosed" returnType="Ljava.util.List&lt;Lorg.eclipse.jdt.core.ICompilationUnit;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="compareFileContents" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="computeClean" returnType="Ljava.util.List&lt;Lorg.eclipse.jdt.core.ICompilationUnit;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="computeNewPackageFolders" returnType="Ljava.util.Set&lt;Lorg.eclipse.core.resources.IFolder;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFolder;"/>
+      </methods>
+      <methods elementName="computeObsoleteFiles" returnType="Ljava.util.Set&lt;Lorg.eclipse.core.resources.IFile;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Ljava.util.Set&lt;Lorg.eclipse.core.resources.IFile;>;"/>
+        <parameters name="arg2" type="Ljava.util.List&lt;Lorg.eclipse.jdt.core.ICompilationUnit;>;"/>
+        <parameters name="arg3" type="Ljava.util.Set&lt;Lorg.eclipse.core.resources.IFile;>;"/>
+      </methods>
+      <methods elementName="computeObsoleteReconcileTypes" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Ljava.util.Set&lt;Lorg.eclipse.core.resources.IFile;>;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.CompilationUnitHelper;"/>
+        <parameters name="arg3" type="Ljava.util.List&lt;Lorg.eclipse.jdt.core.ICompilationUnit;>;"/>
+        <parameters name="arg4" type="Ljava.util.List&lt;Lorg.eclipse.jdt.core.ICompilationUnit;>;"/>
+      </methods>
+      <methods elementName="computeObsoleteHiddenTypes" returnType="Ljava.util.List&lt;Lorg.eclipse.jdt.core.ICompilationUnit;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Ljava.util.Set&lt;Lorg.eclipse.core.resources.IFile;>;"/>
+      </methods>
+      <methods elementName="deletePhysicalFile" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="getIFileForTypeName" returnType="Lorg.eclipse.core.resources.IFile;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getTypeNameForDerivedFile" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="getWorkingCopyForReconcile" returnType="Lorg.eclipse.jdt.core.ICompilationUnit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.CompilationUnitHelper;"/>
+      </methods>
+      <methods elementName="hasNoOtherReconcileParents" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="logExtraFilePairs" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.util.Map&lt;Lorg.eclipse.core.resources.IFile;Lorg.eclipse.core.resources.IFile;>;"/>
+      </methods>
+      <methods elementName="logExtraFiles" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.Iterable&lt;Lorg.eclipse.core.resources.IFile;>;"/>
+      </methods>
+      <methods elementName="parseTypeName" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="removeFileFromBuildMaps" returnType="Ljava.util.List&lt;Lorg.eclipse.core.resources.IFile;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="removeFileFromReconcileMaps" returnType="Ljava.util.List&lt;Lorg.eclipse.jdt.core.ICompilationUnit;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="saveCompilationUnit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IPackageFragment;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <methods elementName="access$0" returnType="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedSourceFolderManager;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager;"/>
+      </methods>
+      <methods elementName="access$1" returnType="Lorg.eclipse.jdt.core.IJavaProject;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager;"/>
+      </methods>
+      <types elementName="GeneratedPackageFragmentRoot" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager$GeneratedPackageFragmentRoot" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager.GeneratedPackageFragmentRoot">
+        <fields elementName="_root" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.IPackageFragmentRoot;" isVolatile="false" isTransient="false"/>
+        <fields elementName="_folderName" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+        <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager;" isVolatile="false" isTransient="false"/>
+        <methods elementName="GeneratedPackageFragmentRoot" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager;"/>
+        </methods>
+        <methods elementName="get" returnType="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager$GeneratedPackageFragmentRoot$NameAndRoot;" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="set" returnType="V" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="GeneratedPackageFragmentRoot" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager;"/>
+          <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager$GeneratedPackageFragmentRoot;"/>
+        </methods>
+        <types elementName="NameAndRoot" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager$GeneratedPackageFragmentRoot$NameAndRoot" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager.GeneratedPackageFragmentRoot.NameAndRoot">
+          <fields elementName="name" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+          <fields elementName="root" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.IPackageFragmentRoot;" isVolatile="false" isTransient="false"/>
+          <fields elementName="this$1" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager$GeneratedPackageFragmentRoot;" isVolatile="false" isTransient="false"/>
+          <methods elementName="NameAndRoot" returnType="V" isConstructor="true" isMainMethod="false">
+            <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileManager$GeneratedPackageFragmentRoot;"/>
+            <parameters name="arg1" type="Ljava.lang.String;"/>
+            <parameters name="arg2" type="Lorg.eclipse.jdt.core.IPackageFragmentRoot;"/>
+          </methods>
+        </types>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="GeneratedFileMap$Flags.class" isClass="false" isInterface="false">
+    <type elementName="Flags" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileMap$Flags" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileMap.Flags">
+      <fields elementName="NONSOURCE" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileMap$Flags;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ENUM$VALUES" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileMap$Flags;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="Flags" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="values" returnType="[Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileMap$Flags;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="valueOf" returnType="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileMap$Flags;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="GeneratedFileMap.class" isClass="true" isInterface="false">
+    <type elementName="GeneratedFileMap" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileMap" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileMap">
+      <fields elementName="SERIALIZATION_VERSION" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="_proj" isEnumConstant="false" typeSignature="Lorg.eclipse.core.resources.IProject;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_flags" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <methods elementName="GeneratedFileMap" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IProject;"/>
+      </methods>
+      <methods elementName="clear" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="remove" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="removeKey" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="removeValue" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="clearState" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="put" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="put" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="put" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg2" type="Ljava.util.Set&lt;Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileMap$Flags;>;"/>
+      </methods>
+      <methods elementName="getFlags" returnType="Ljava.util.Set&lt;Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileMap$Flags;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="isSource" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="convertIFileToPath" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="convertPathToIFile" returnType="Lorg.eclipse.core.resources.IFile;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getStateFile" returnType="Ljava.io.File;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IProject;"/>
+      </methods>
+      <methods elementName="readState" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="writeState" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="removeKey" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="remove" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="removeValue" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="put" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+      </methods>
+      <types elementName="Flags" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileMap$Flags" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileMap.Flags">
+        <fields elementName="NONSOURCE" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileMap$Flags;" isVolatile="false" isTransient="false"/>
+        <fields elementName="ENUM$VALUES" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileMap$Flags;" isVolatile="false" isTransient="false"/>
+        <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="Flags" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+          <parameters name="arg1" type="I"/>
+        </methods>
+        <methods elementName="values" returnType="[Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileMap$Flags;" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="valueOf" returnType="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedFileMap$Flags;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+        </methods>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="GeneratedResourceChangeListener$PostChangeVisitor.class" isClass="true" isInterface="false">
+    <type elementName="PostChangeVisitor" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener$PostChangeVisitor" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener.PostChangeVisitor">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener;" isVolatile="false" isTransient="false"/>
+      <methods elementName="PostChangeVisitor" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceDelta;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="PostChangeVisitor" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener$PostChangeVisitor;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="GeneratedResourceChangeListener$PreBuildVisitor.class" isClass="true" isInterface="false">
+    <type elementName="PreBuildVisitor" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener$PreBuildVisitor" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener.PreBuildVisitor">
+      <fields elementName="_addGenFolderTo" isEnumConstant="false" typeSignature="Ljava.util.Set;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_removedProjects" isEnumConstant="false" typeSignature="Ljava.util.Set;" isVolatile="false" isTransient="false"/>
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener;" isVolatile="false" isTransient="false"/>
+      <methods elementName="PreBuildVisitor" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceDelta;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="handleDeletion" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResource;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="getProjectsThatNeedGenSrcFolder" returnType="Ljava.util.Set&lt;Lorg.eclipse.core.resources.IProject;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="canUpdate" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IProject;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="PreBuildVisitor" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener$PreBuildVisitor;"/>
+      </methods>
+      <methods elementName="access$1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener$PreBuildVisitor;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IResource;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="GeneratedResourceChangeListener.class" isClass="true" isInterface="false">
+    <type elementName="GeneratedResourceChangeListener" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener">
+      <fields elementName="deletedResources" isEnumConstant="false" typeSignature="Ljava.util.Set;" isVolatile="false" isTransient="false"/>
+      <methods elementName="GeneratedResourceChangeListener" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="resourceChanged" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceChangeEvent;"/>
+      </methods>
+      <methods elementName="addGeneratedSrcFolderTo" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Set&lt;Lorg.eclipse.core.resources.IProject;>;"/>
+      </methods>
+      <methods elementName="access$0" returnType="Ljava.util.Set;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener;"/>
+      </methods>
+      <types elementName="PostChangeVisitor" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener$PostChangeVisitor" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener.PostChangeVisitor">
+        <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener;" isVolatile="false" isTransient="false"/>
+        <methods elementName="PostChangeVisitor" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener;"/>
+        </methods>
+        <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceDelta;"/>
+          <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+        </methods>
+        <methods elementName="PostChangeVisitor" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener;"/>
+          <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener$PostChangeVisitor;"/>
+        </methods>
+      </types>
+      <types elementName="PreBuildVisitor" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener$PreBuildVisitor" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener.PreBuildVisitor">
+        <fields elementName="_addGenFolderTo" isEnumConstant="false" typeSignature="Ljava.util.Set;" isVolatile="false" isTransient="false"/>
+        <fields elementName="_removedProjects" isEnumConstant="false" typeSignature="Ljava.util.Set;" isVolatile="false" isTransient="false"/>
+        <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener;" isVolatile="false" isTransient="false"/>
+        <methods elementName="PreBuildVisitor" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener;"/>
+        </methods>
+        <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceDelta;"/>
+          <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+        </methods>
+        <methods elementName="handleDeletion" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.core.resources.IResource;"/>
+          <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+        </methods>
+        <methods elementName="getProjectsThatNeedGenSrcFolder" returnType="Ljava.util.Set&lt;Lorg.eclipse.core.resources.IProject;>;" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="canUpdate" returnType="Z" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.core.resources.IProject;"/>
+          <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+        </methods>
+        <methods elementName="PreBuildVisitor" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener;"/>
+          <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener$PreBuildVisitor;"/>
+        </methods>
+        <methods elementName="access$1" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedResourceChangeListener$PreBuildVisitor;"/>
+          <parameters name="arg1" type="Lorg.eclipse.core.resources.IResource;"/>
+          <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+        </methods>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="GeneratedSourceFolderManager$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedSourceFolderManager$1" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedSourceFolderManager.1">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedSourceFolderManager;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$srcFolder" isEnumConstant="false" typeSignature="Lorg.eclipse.core.resources.IFolder;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.generatedfile.GeneratedSourceFolderManager;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFolder;"/>
+      </methods>
+      <methods elementName="run" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="GeneratedSourceFolderManager.class" isClass="true" isInterface="false">
+    <type elementName="GeneratedSourceFolderManager" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedSourceFolderManager" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.GeneratedSourceFolderManager">
+      <fields elementName="_aptProject" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.AptProject;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_generatedSourceFolder" isEnumConstant="false" typeSignature="Lorg.eclipse.core.resources.IFolder;" isVolatile="false" isTransient="false"/>
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="GeneratedSourceFolderManager" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.AptProject;"/>
+      </methods>
+      <methods elementName="addToClasspath" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFolder;"/>
+      </methods>
+      <methods elementName="configure" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="ensureFolderExists" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="createOnDisk" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFolder;"/>
+      </methods>
+      <methods elementName="enabledPreferenceChanged" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="folderNamePreferenceChanged" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="folderDeleted" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getBinaryOutputLocation" returnType="Lorg.eclipse.core.runtime.IPath;" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="getFolder" returnType="Lorg.eclipse.core.resources.IFolder;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFolderPreference" returnType="Lorg.eclipse.core.resources.IFolder;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isGeneratedSourceFolder" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFolder;"/>
+      </methods>
+      <methods elementName="isOnClasspath" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFolder;"/>
+      </methods>
+      <methods elementName="removeFolder" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="validate" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaProject;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="WorkingCopyCleanupListener.class" isClass="true" isInterface="false">
+    <type elementName="WorkingCopyCleanupListener" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.generatedfile.WorkingCopyCleanupListener" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.generatedfile.WorkingCopyCleanupListener">
+      <methods elementName="WorkingCopyCleanupListener" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="elementChanged" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.ElementChangedEvent;"/>
+      </methods>
+      <methods elementName="processElementDelta" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaElementDelta;"/>
+      </methods>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

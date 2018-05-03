@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.core.dom" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="NaiveASTFlattener.class" isClass="true" isInterface="false">
+    <type elementName="NaiveASTFlattener" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.NaiveASTFlattener" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.NaiveASTFlattener">
+      <fields elementName="JLS2" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="buffer" isEnumConstant="false" typeSignature="Ljava.lang.StringBuffer;" isVolatile="false" isTransient="false"/>
+      <fields elementName="indent" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="NaiveASTFlattener" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="getName" returnType="Lorg.eclipse.jdt.core.dom.Name;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ClassInstanceCreation;"/>
+      </methods>
+      <methods elementName="getResult" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getReturnType" returnType="Lorg.eclipse.jdt.core.dom.Type;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MethodDeclaration;"/>
+      </methods>
+      <methods elementName="getSuperclass" returnType="Lorg.eclipse.jdt.core.dom.Name;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="getTypeDeclaration" returnType="Lorg.eclipse.jdt.core.dom.TypeDeclaration;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TypeDeclarationStatement;"/>
+      </methods>
+      <methods elementName="printIndent" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="printModifiers" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="printModifiers" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.List;"/>
+      </methods>
+      <methods elementName="reset" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="superInterfaces" returnType="Ljava.util.List;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.AnnotationTypeDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.AnonymousClassDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ArrayAccess;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ArrayCreation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ArrayInitializer;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ArrayType;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.AssertStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.Assignment;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.Block;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.BlockComment;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.BooleanLiteral;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.BreakStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.CastExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.CatchClause;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.CharacterLiteral;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ClassInstanceCreation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.CompilationUnit;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ConditionalExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ConstructorInvocation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ContinueStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.DoStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.EmptyStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.EnhancedForStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.EnumConstantDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.EnumDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ExpressionStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.FieldAccess;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.FieldDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ForStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.IfStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ImportDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.InfixExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.Initializer;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.InstanceofExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.Javadoc;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.LabeledStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.LineComment;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MarkerAnnotation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MemberRef;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MemberValuePair;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MethodDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MethodInvocation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MethodRef;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MethodRefParameter;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.Modifier;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.NormalAnnotation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.NullLiteral;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.NumberLiteral;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.PackageDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ParameterizedType;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ParenthesizedExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.PostfixExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.PrefixExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.PrimitiveType;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.QualifiedName;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.QualifiedType;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ReturnStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SimpleName;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SimpleType;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SingleMemberAnnotation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SingleVariableDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.StringLiteral;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SuperConstructorInvocation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SuperFieldAccess;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SuperMethodInvocation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SwitchCase;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SwitchStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SynchronizedStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TagElement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TextElement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ThisExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ThrowStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TryStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TypeDeclarationStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TypeLiteral;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TypeParameter;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.VariableDeclarationExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.VariableDeclarationFragment;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.VariableDeclarationStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.WhileStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.WildcardType;"/>
+      </methods>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

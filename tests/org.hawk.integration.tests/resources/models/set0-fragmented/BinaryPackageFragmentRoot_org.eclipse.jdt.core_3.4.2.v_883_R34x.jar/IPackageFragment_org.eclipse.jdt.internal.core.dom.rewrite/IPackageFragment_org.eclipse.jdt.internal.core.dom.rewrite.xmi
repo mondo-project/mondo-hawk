@@ -1,0 +1,2350 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.core.dom.rewrite" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="ASTRewriteAnalyzer$ListRewriter.class" isClass="true" isInterface="false">
+    <type elementName="ListRewriter" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer$ListRewriter" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer.ListRewriter">
+      <fields elementName="contantSeparator" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="startPos" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="list" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;" isVolatile="false" isTransient="false"/>
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ListRewriter" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer;"/>
+      </methods>
+      <methods elementName="getOriginalNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getNewNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getSeparatorString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getInitialIndent" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNodeIndent" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getStartOfNextNode" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="getEndOfNode" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="rewriteList" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Ljava.lang.String;"/>
+        <parameters name="arg4" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="insertAfterSeparator" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="rewriteList" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTRewriteAnalyzer$ModifierRewriter.class" isClass="true" isInterface="false">
+    <type elementName="ModifierRewriter" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer$ModifierRewriter" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer.ModifierRewriter">
+      <fields elementName="annotationSeparation" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;" isVolatile="false" isTransient="false"/>
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ModifierRewriter" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;"/>
+      </methods>
+      <methods elementName="getSeparatorString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTRewriteAnalyzer$ParagraphListRewriter.class" isClass="true" isInterface="false">
+    <type elementName="ParagraphListRewriter" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer$ParagraphListRewriter" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer.ParagraphListRewriter">
+      <fields elementName="DEFAULT_SPACING" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="initialIndent" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="separatorLines" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ParagraphListRewriter" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="getInitialIndent" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSeparatorString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getNewLines" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="countEmptyLines" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTRewriteAnalyzer$SwitchListRewriter.class" isClass="true" isInterface="false">
+    <type elementName="SwitchListRewriter" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer$SwitchListRewriter" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer.SwitchListRewriter">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer;" isVolatile="false" isTransient="false"/>
+      <methods elementName="SwitchListRewriter" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="getNodeIndent" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTRewriteAnalyzer.class" isClass="true" isInterface="false">
+    <type elementName="ASTRewriteAnalyzer" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer">
+      <fields elementName="JLS2_INTERNAL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="currentEdit" isEnumConstant="false" typeSignature="Lorg.eclipse.text.edits.TextEdit;" isVolatile="false" isTransient="false"/>
+      <fields elementName="eventStore" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;" isVolatile="false" isTransient="false"/>
+      <fields elementName="tokenScanner" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.TokenScanner;" isVolatile="false" isTransient="false"/>
+      <fields elementName="sourceCopyInfoToEdit" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="sourceCopyEndNodes" isEnumConstant="false" typeSignature="Ljava.util.Stack;" isVolatile="false" isTransient="false"/>
+      <fields elementName="content" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="lineInfo" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.LineInformation;" isVolatile="false" isTransient="false"/>
+      <fields elementName="formatter" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter;" isVolatile="false" isTransient="false"/>
+      <fields elementName="nodeInfos" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore;" isVolatile="false" isTransient="false"/>
+      <fields elementName="extendedSourceRangeComputer" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.rewrite.TargetSourceRangeComputer;" isVolatile="false" isTransient="false"/>
+      <fields elementName="lineCommentEndOffsets" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.LineCommentEndOffsets;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ASTRewriteAnalyzer" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.LineInformation;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="Lorg.eclipse.text.edits.TextEdit;"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;"/>
+        <parameters name="arg5" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore;"/>
+        <parameters name="arg6" type="Ljava.util.List;"/>
+        <parameters name="arg7" type="Ljava.util.Map;"/>
+        <parameters name="arg8" type="Lorg.eclipse.jdt.core.dom.rewrite.TargetSourceRangeComputer;"/>
+      </methods>
+      <methods elementName="getScanner" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.TokenScanner;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getContent" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLineInformation" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.LineInformation;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getExtendedRange" returnType="Lorg.eclipse.jdt.core.dom.rewrite.TargetSourceRangeComputer$SourceRange;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="getExtendedOffset" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="getExtendedEnd" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="getCopySourceEdit" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$CopySourceInfo;"/>
+      </methods>
+      <methods elementName="getChangeKind" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="hasChildrenChanges" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="isChanged" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="isCollapsed" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="isInsertBoundToPrevious" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="getEditGroup" returnType="Lorg.eclipse.text.edits.TextEditGroup;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="getEvent" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="getEditGroup" returnType="Lorg.eclipse.text.edits.TextEditGroup;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;"/>
+      </methods>
+      <methods elementName="getOriginalValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="getNewValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="addEdit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.text.edits.TextEdit;"/>
+      </methods>
+      <methods elementName="getLineDelimiter" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="createIndentString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getIndentOfLine" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getIndentAtOffset" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="doTextInsert" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Lorg.eclipse.text.edits.TextEditGroup;"/>
+      </methods>
+      <methods elementName="addEditGroup" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.text.edits.TextEditGroup;"/>
+        <parameters name="arg1" type="Lorg.eclipse.text.edits.TextEdit;"/>
+      </methods>
+      <methods elementName="doTextRemove" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.text.edits.TextEditGroup;"/>
+      </methods>
+      <methods elementName="doTextRemoveAndVisit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg3" type="Lorg.eclipse.text.edits.TextEditGroup;"/>
+      </methods>
+      <methods elementName="doVisit" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="doVisit" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="doVisitList" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.List;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="voidVisit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="voidVisit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="voidVisitList" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.List;"/>
+      </methods>
+      <methods elementName="doVisitUnchangedChildren" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="doTextReplace" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="Lorg.eclipse.text.edits.TextEditGroup;"/>
+      </methods>
+      <methods elementName="doTextCopy" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.text.edits.TextEdit;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Ljava.lang.String;"/>
+        <parameters name="arg4" type="Lorg.eclipse.text.edits.TextEditGroup;"/>
+      </methods>
+      <methods elementName="changeNotSupported" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="rewriteRequiredNode" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="rewriteNode" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;"/>
+      </methods>
+      <methods elementName="rewriteJavadoc" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="rewriteBodyNode" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$BlockContext;"/>
+      </methods>
+      <methods elementName="rewriteOptionalQualifier" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="rewriteParagraphList" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="I"/>
+      </methods>
+      <methods elementName="rewriteOptionalTypeParameters" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Ljava.lang.String;"/>
+        <parameters name="arg4" type="Z"/>
+        <parameters name="arg5" type="Z"/>
+      </methods>
+      <methods elementName="isAllOfKind" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="rewriteNodeList" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Ljava.lang.String;"/>
+        <parameters name="arg4" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="rewriteMethodBody" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MethodDeclaration;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="rewriteExtraDimensions" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="rewriteExtraDimensions" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.text.edits.TextEditGroup;"/>
+      </methods>
+      <methods elementName="getPosAfterLeftBrace" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getIndent" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="doTextInsert" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="Lorg.eclipse.text.edits.TextEditGroup;"/>
+      </methods>
+      <methods elementName="needsNewLineForLineComment" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="getCurrentLine" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="rewriteModifiers" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="rewriteModifiers2" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ChildListPropertyDescriptor;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="replaceOperation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Lorg.eclipse.text.edits.TextEditGroup;"/>
+      </methods>
+      <methods elementName="rewriteOperation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="postVisit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="preVisit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="doCopySourcePreVisit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$CopySourceInfo;"/>
+        <parameters name="arg1" type="Ljava.util.Stack;"/>
+      </methods>
+      <methods elementName="doCopySourcePostVisit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Ljava.util.Stack;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.CompilationUnit;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="rewriteReturnType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MethodDeclaration;"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MethodDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.Block;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ReturnStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.AnonymousClassDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ArrayAccess;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ArrayCreation;"/>
+      </methods>
+      <methods elementName="getElementType" returnType="Lorg.eclipse.jdt.core.dom.Type;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ArrayType;"/>
+      </methods>
+      <methods elementName="getDimensions" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ArrayType;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ArrayInitializer;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ArrayType;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.AssertStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.Assignment;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.BooleanLiteral;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.BreakStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.CastExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.CatchClause;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.CharacterLiteral;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ClassInstanceCreation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ConditionalExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ConstructorInvocation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ContinueStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.DoStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.EmptyStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ExpressionStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.FieldAccess;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.FieldDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ForStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.IfStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ImportDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.InfixExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.Initializer;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.InstanceofExpression;"/>
+      </methods>
+      <methods elementName="ensureSpaceAfterReplace" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ChildPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="ensureSpaceBeforeReplace" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ChildPropertyDescriptor;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.Javadoc;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.LabeledStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MethodInvocation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.NullLiteral;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.NumberLiteral;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.PackageDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ParenthesizedExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.PostfixExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.PrefixExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.PrimitiveType;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.QualifiedName;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SimpleName;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SimpleType;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SingleVariableDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.StringLiteral;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SuperConstructorInvocation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SuperFieldAccess;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SuperMethodInvocation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SwitchCase;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SwitchStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SynchronizedStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ThisExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ThrowStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TryStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TypeDeclarationStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TypeLiteral;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.VariableDeclarationExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.VariableDeclarationFragment;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.VariableDeclarationStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.WhileStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MemberRef;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MethodRef;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MethodRefParameter;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TagElement;"/>
+      </methods>
+      <methods elementName="findTagNameEnd" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TagElement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TextElement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.AnnotationTypeDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.EnhancedForStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.EnumConstantDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.EnumDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MarkerAnnotation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MemberValuePair;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.Modifier;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.NormalAnnotation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ParameterizedType;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.QualifiedType;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SingleMemberAnnotation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TypeParameter;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.WildcardType;"/>
+      </methods>
+      <methods elementName="handleException" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Throwable;"/>
+      </methods>
+      <types elementName="ListRewriter" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer$ListRewriter" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer.ListRewriter">
+        <fields elementName="contantSeparator" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+        <fields elementName="startPos" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="list" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;" isVolatile="false" isTransient="false"/>
+        <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer;" isVolatile="false" isTransient="false"/>
+        <methods elementName="ListRewriter" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer;"/>
+        </methods>
+        <methods elementName="getOriginalNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+        </methods>
+        <methods elementName="getNewNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+        </methods>
+        <methods elementName="getSeparatorString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+        </methods>
+        <methods elementName="getInitialIndent" returnType="I" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="getNodeIndent" returnType="I" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+        </methods>
+        <methods elementName="getStartOfNextNode" returnType="I" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+          <parameters name="arg1" type="I"/>
+        </methods>
+        <methods elementName="getEndOfNode" returnType="I" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        </methods>
+        <methods elementName="rewriteList" returnType="I" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+          <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+          <parameters name="arg2" type="I"/>
+          <parameters name="arg3" type="Ljava.lang.String;"/>
+          <parameters name="arg4" type="Ljava.lang.String;"/>
+        </methods>
+        <methods elementName="insertAfterSeparator" returnType="Z" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        </methods>
+        <methods elementName="rewriteList" returnType="I" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+          <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+          <parameters name="arg2" type="I"/>
+          <parameters name="arg3" type="Ljava.lang.String;"/>
+        </methods>
+      </types>
+      <types elementName="ModifierRewriter" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer$ModifierRewriter" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer.ModifierRewriter">
+        <fields elementName="annotationSeparation" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;" isVolatile="false" isTransient="false"/>
+        <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer;" isVolatile="false" isTransient="false"/>
+        <methods elementName="ModifierRewriter" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer;"/>
+          <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;"/>
+        </methods>
+        <methods elementName="getSeparatorString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+        </methods>
+      </types>
+      <types elementName="ParagraphListRewriter" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer$ParagraphListRewriter" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer.ParagraphListRewriter">
+        <fields elementName="DEFAULT_SPACING" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="initialIndent" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="separatorLines" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer;" isVolatile="false" isTransient="false"/>
+        <methods elementName="ParagraphListRewriter" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer;"/>
+          <parameters name="arg1" type="I"/>
+          <parameters name="arg2" type="I"/>
+        </methods>
+        <methods elementName="getInitialIndent" returnType="I" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="getSeparatorString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+        </methods>
+        <methods elementName="getNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+        </methods>
+        <methods elementName="getNewLines" returnType="I" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+        </methods>
+        <methods elementName="countEmptyLines" returnType="I" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        </methods>
+      </types>
+      <types elementName="SwitchListRewriter" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer$SwitchListRewriter" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer.SwitchListRewriter">
+        <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer;" isVolatile="false" isTransient="false"/>
+        <methods elementName="SwitchListRewriter" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteAnalyzer;"/>
+          <parameters name="arg1" type="I"/>
+        </methods>
+        <methods elementName="getNodeIndent" returnType="I" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+        </methods>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTRewriteFlattener.class" isClass="true" isInterface="false">
+    <type elementName="ASTRewriteFlattener" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFlattener" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFlattener">
+      <fields elementName="JLS2_INTERNAL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="result" isEnumConstant="false" typeSignature="Ljava.lang.StringBuffer;" isVolatile="false" isTransient="false"/>
+      <fields elementName="store" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;" isVolatile="false" isTransient="false"/>
+      <methods elementName="asString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;"/>
+      </methods>
+      <methods elementName="ASTRewriteFlattener" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;"/>
+      </methods>
+      <methods elementName="getResult" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="reset" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="printModifiers" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="getChildList" returnType="Ljava.util.List;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="getChildNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="getIntAttribute" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="getBooleanAttribute" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="getAttribute" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="visitList" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="visitList" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="Ljava.lang.String;"/>
+        <parameters name="arg4" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.AnonymousClassDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ArrayAccess;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ArrayCreation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ArrayInitializer;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ArrayType;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.AssertStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.Assignment;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.Block;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.BooleanLiteral;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.BreakStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.CastExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.CatchClause;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.CharacterLiteral;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ClassInstanceCreation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.CompilationUnit;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ConditionalExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ConstructorInvocation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ContinueStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.DoStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.EmptyStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ExpressionStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.FieldAccess;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.FieldDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ForStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.IfStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ImportDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.InfixExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.InstanceofExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.Initializer;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.Javadoc;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.LabeledStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MethodDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MethodInvocation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.NullLiteral;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.NumberLiteral;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.PackageDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ParenthesizedExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.PostfixExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.PrefixExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.PrimitiveType;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.QualifiedName;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ReturnStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SimpleName;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SimpleType;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SingleVariableDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.StringLiteral;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SuperConstructorInvocation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SuperFieldAccess;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SuperMethodInvocation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SwitchCase;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SwitchStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SynchronizedStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ThisExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ThrowStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TryStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TypeDeclarationStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TypeLiteral;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.VariableDeclarationExpression;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.VariableDeclarationFragment;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.VariableDeclarationStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.WhileStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.BlockComment;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.LineComment;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MemberRef;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MethodRef;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MethodRefParameter;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TagElement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TextElement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.AnnotationTypeDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.EnhancedForStatement;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.EnumConstantDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.EnumDeclaration;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MarkerAnnotation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.MemberValuePair;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.Modifier;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.NormalAnnotation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ParameterizedType;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.QualifiedType;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SingleMemberAnnotation;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.TypeParameter;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.WildcardType;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTRewriteFormatter$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter.1">
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="notDeleted" returnType="Z" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTRewriteFormatter$BlockContext.class" isClass="false" isInterface="true">
+    <type elementName="BlockContext" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$BlockContext" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter.BlockContext">
+      <methods elementName="getPrefixAndSuffix" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTRewriteFormatter$BlockFormattingPrefix.class" isClass="true" isInterface="false">
+    <type elementName="BlockFormattingPrefix" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$BlockFormattingPrefix" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter.BlockFormattingPrefix">
+      <fields elementName="prefix" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="start" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter;" isVolatile="false" isTransient="false"/>
+      <methods elementName="BlockFormattingPrefix" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="getPrefixAndSuffix" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTRewriteFormatter$BlockFormattingPrefixSuffix.class" isClass="true" isInterface="false">
+    <type elementName="BlockFormattingPrefixSuffix" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$BlockFormattingPrefixSuffix" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter.BlockFormattingPrefixSuffix">
+      <fields elementName="prefix" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="suffix" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="start" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter;" isVolatile="false" isTransient="false"/>
+      <methods elementName="BlockFormattingPrefixSuffix" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="getPrefixAndSuffix" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTRewriteFormatter$ConstPrefix.class" isClass="true" isInterface="false">
+    <type elementName="ConstPrefix" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$ConstPrefix" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter.ConstPrefix">
+      <fields elementName="prefix" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ConstPrefix" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getPrefix" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTRewriteFormatter$ExtendedFlattener.class" isClass="true" isInterface="false">
+    <type elementName="ExtendedFlattener" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$ExtendedFlattener" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter.ExtendedFlattener">
+      <fields elementName="positions" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ExtendedFlattener" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;"/>
+      </methods>
+      <methods elementName="preVisit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="postVisit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.Block;"/>
+      </methods>
+      <methods elementName="addMarker" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$NodeMarker;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="fixupLength" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="getMarkers" returnType="[Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$NodeMarker;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTRewriteFormatter$FormattingPrefix.class" isClass="true" isInterface="false">
+    <type elementName="FormattingPrefix" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$FormattingPrefix" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter.FormattingPrefix">
+      <fields elementName="kind" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="string" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="start" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="length" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter;" isVolatile="false" isTransient="false"/>
+      <methods elementName="FormattingPrefix" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="getPrefix" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTRewriteFormatter$NodeMarker.class" isClass="true" isInterface="false">
+    <type elementName="NodeMarker" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$NodeMarker" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter.NodeMarker">
+      <fields elementName="data" isEnumConstant="false" typeSignature="Ljava.lang.Object;" isVolatile="false" isTransient="false"/>
+      <methods elementName="NodeMarker" returnType="V" isConstructor="true" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTRewriteFormatter$Prefix.class" isClass="false" isInterface="true">
+    <type elementName="Prefix" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter.Prefix">
+      <methods elementName="getPrefix" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTRewriteFormatter.class" isClass="true" isInterface="false">
+    <type elementName="ASTRewriteFormatter" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter">
+      <fields elementName="lineDelimiter" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="tabWidth" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="indentWidth" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="placeholders" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore;" isVolatile="false" isTransient="false"/>
+      <fields elementName="eventStore" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;" isVolatile="false" isTransient="false"/>
+      <fields elementName="options" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="NONE" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;" isVolatile="false" isTransient="false"/>
+      <fields elementName="SPACE" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ASSERT_COMMENT" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;" isVolatile="false" isTransient="false"/>
+      <fields elementName="VAR_INITIALIZER" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;" isVolatile="false" isTransient="false"/>
+      <fields elementName="METHOD_BODY" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;" isVolatile="false" isTransient="false"/>
+      <fields elementName="FINALLY_BLOCK" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;" isVolatile="false" isTransient="false"/>
+      <fields elementName="CATCH_BLOCK" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ANNOT_MEMBER_DEFAULT" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ENUM_BODY_START" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ENUM_BODY_END" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;" isVolatile="false" isTransient="false"/>
+      <fields elementName="WILDCARD_EXTENDS" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;" isVolatile="false" isTransient="false"/>
+      <fields elementName="WILDCARD_SUPER" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;" isVolatile="false" isTransient="false"/>
+      <fields elementName="FIRST_ENUM_CONST" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ANNOTATION_SEPARATION" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;" isVolatile="false" isTransient="false"/>
+      <fields elementName="PARAM_ANNOTATION_SEPARATION" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix;" isVolatile="false" isTransient="false"/>
+      <fields elementName="IF_BLOCK_WITH_ELSE" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$BlockContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="IF_BLOCK_NO_ELSE" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$BlockContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ELSE_AFTER_STATEMENT" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$BlockContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ELSE_AFTER_BLOCK" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$BlockContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="FOR_BLOCK" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$BlockContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="WHILE_BLOCK" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$BlockContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="DO_BLOCK" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$BlockContext;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="ASTRewriteFormatter" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;"/>
+        <parameters name="arg2" type="Ljava.util.Map;"/>
+        <parameters name="arg3" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getPlaceholders" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEventStore" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTabWidth" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getIndentWidth" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLineDelimiter" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFormattedResult" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.util.Collection;"/>
+      </methods>
+      <methods elementName="createIndentString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getIndentString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="changeIndent" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="computeIndentUnits" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="evaluateFormatterEdit" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.text.edits.TextEdit;"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jface.text.Position;"/>
+      </methods>
+      <methods elementName="formatString" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="formatNode" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="shifEdit" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.text.edits.TextEdit;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="createDocument" returnType="Lorg.eclipse.jface.text.Document;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jface.text.Position;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+      </methods>
+      <types elementName="BlockContext" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$BlockContext" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter.BlockContext">
+        <methods elementName="getPrefixAndSuffix" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+          <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+          <parameters name="arg2" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;"/>
+        </methods>
+      </types>
+      <types elementName="BlockFormattingPrefix" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$BlockFormattingPrefix" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter.BlockFormattingPrefix">
+        <fields elementName="prefix" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+        <fields elementName="start" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter;" isVolatile="false" isTransient="false"/>
+        <methods elementName="BlockFormattingPrefix" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter;"/>
+          <parameters name="arg1" type="Ljava.lang.String;"/>
+          <parameters name="arg2" type="I"/>
+        </methods>
+        <methods elementName="getPrefixAndSuffix" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+          <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+          <parameters name="arg2" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;"/>
+        </methods>
+      </types>
+      <types elementName="BlockFormattingPrefixSuffix" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$BlockFormattingPrefixSuffix" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter.BlockFormattingPrefixSuffix">
+        <fields elementName="prefix" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+        <fields elementName="suffix" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+        <fields elementName="start" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter;" isVolatile="false" isTransient="false"/>
+        <methods elementName="BlockFormattingPrefixSuffix" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter;"/>
+          <parameters name="arg1" type="Ljava.lang.String;"/>
+          <parameters name="arg2" type="Ljava.lang.String;"/>
+          <parameters name="arg3" type="I"/>
+        </methods>
+        <methods elementName="getPrefixAndSuffix" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+          <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+          <parameters name="arg2" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;"/>
+        </methods>
+      </types>
+      <types elementName="ConstPrefix" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$ConstPrefix" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter.ConstPrefix">
+        <fields elementName="prefix" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+        <methods elementName="ConstPrefix" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+        </methods>
+        <methods elementName="getPrefix" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+        </methods>
+      </types>
+      <types elementName="ExtendedFlattener" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$ExtendedFlattener" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter.ExtendedFlattener">
+        <fields elementName="positions" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+        <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter;" isVolatile="false" isTransient="false"/>
+        <methods elementName="ExtendedFlattener" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter;"/>
+          <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;"/>
+        </methods>
+        <methods elementName="preVisit" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        </methods>
+        <methods elementName="postVisit" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        </methods>
+        <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.Block;"/>
+        </methods>
+        <methods elementName="addMarker" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$NodeMarker;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.Object;"/>
+          <parameters name="arg1" type="I"/>
+          <parameters name="arg2" type="I"/>
+        </methods>
+        <methods elementName="fixupLength" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.Object;"/>
+          <parameters name="arg1" type="I"/>
+        </methods>
+        <methods elementName="getMarkers" returnType="[Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$NodeMarker;" isConstructor="false" isMainMethod="false"/>
+      </types>
+      <types elementName="FormattingPrefix" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$FormattingPrefix" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter.FormattingPrefix">
+        <fields elementName="kind" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="string" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+        <fields elementName="start" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="length" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter;" isVolatile="false" isTransient="false"/>
+        <methods elementName="FormattingPrefix" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter;"/>
+          <parameters name="arg1" type="Ljava.lang.String;"/>
+          <parameters name="arg2" type="Ljava.lang.String;"/>
+          <parameters name="arg3" type="I"/>
+        </methods>
+        <methods elementName="getPrefix" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+        </methods>
+      </types>
+      <types elementName="NodeMarker" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$NodeMarker" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter.NodeMarker">
+        <fields elementName="data" isEnumConstant="false" typeSignature="Ljava.lang.Object;" isVolatile="false" isTransient="false"/>
+        <methods elementName="NodeMarker" returnType="V" isConstructor="true" isMainMethod="false"/>
+      </types>
+      <types elementName="Prefix" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter$Prefix" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ASTRewriteFormatter.Prefix">
+        <methods elementName="getPrefix" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+        </methods>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="ImportRewriteAnalyzer$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer.1">
+      <fields elementName="foundTypes" isEnumConstant="false" typeSignature="Ljava.util.HashMap;" isVolatile="false" isTransient="false"/>
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$onDemandConflicts" isEnumConstant="false" typeSignature="Ljava.util.HashSet;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer;"/>
+        <parameters name="arg1" type="Ljava.util.HashSet;"/>
+      </methods>
+      <methods elementName="getTypeContainerName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[[C"/>
+      </methods>
+      <methods elementName="acceptType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="[[C"/>
+        <parameters name="arg4" type="Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ImportRewriteAnalyzer$ImportDeclEntry.class" isClass="true" isInterface="false">
+    <type elementName="ImportDeclEntry" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$ImportDeclEntry" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer.ImportDeclEntry">
+      <fields elementName="elementName" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="sourceRange" isEnumConstant="false" typeSignature="Lorg.eclipse.jface.text.IRegion;" isVolatile="false" isTransient="false"/>
+      <fields elementName="isStatic" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="ImportDeclEntry" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Lorg.eclipse.jface.text.IRegion;"/>
+      </methods>
+      <methods elementName="getElementName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="compareTo" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="getSimpleName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isOnDemand" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isStatic" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isNew" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isComment" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSourceRange" returnType="Lorg.eclipse.jface.text.IRegion;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ImportRewriteAnalyzer$PackageEntry.class" isClass="true" isInterface="false">
+    <type elementName="PackageEntry" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$PackageEntry" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer.PackageEntry">
+      <fields elementName="name" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="importEntries" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+      <fields elementName="group" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="isStatic" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="createOnPlaceholderEntry" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$PackageEntry;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="PackageEntry" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="PackageEntry" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="isStatic" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="compareTo" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="sortIn" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$ImportDeclEntry;"/>
+      </methods>
+      <methods elementName="add" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$ImportDeclEntry;"/>
+      </methods>
+      <methods elementName="find" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$ImportDeclEntry;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="remove" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="removeAllNew" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Set;"/>
+      </methods>
+      <methods elementName="getImportAt" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$ImportDeclEntry;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="hasStarImport" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.util.Set;"/>
+      </methods>
+      <methods elementName="getNumberOfImports" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getGroupID" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setGroupID" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="isSameGroup" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$PackageEntry;"/>
+      </methods>
+      <methods elementName="getLast" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$ImportDeclEntry;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isComment" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isDefaultPackage" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ImportRewriteAnalyzer$PackageMatcher.class" isClass="true" isInterface="false">
+    <type elementName="PackageMatcher" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$PackageMatcher" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer.PackageMatcher">
+      <fields elementName="newName" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="bestName" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="bestMatchLen" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="PackageMatcher" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="initialize" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="isBetterMatch" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="sameMatchLenTest" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ImportRewriteAnalyzer.class" isClass="true" isInterface="false">
+    <type elementName="ImportRewriteAnalyzer" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer">
+      <fields elementName="compilationUnit" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.ICompilationUnit;" isVolatile="false" isTransient="false"/>
+      <fields elementName="packageEntries" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+      <fields elementName="importsCreated" isEnumConstant="false" typeSignature="Ljava.util.List;" isVolatile="false" isTransient="false"/>
+      <fields elementName="staticImportsCreated" isEnumConstant="false" typeSignature="Ljava.util.List;" isVolatile="false" isTransient="false"/>
+      <fields elementName="replaceRange" isEnumConstant="false" typeSignature="Lorg.eclipse.jface.text.IRegion;" isVolatile="false" isTransient="false"/>
+      <fields elementName="importOnDemandThreshold" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="staticImportOnDemandThreshold" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="filterImplicitImports" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="findAmbiguousImports" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="flags" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="F_NEEDS_LEADING_DELIM" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="F_NEEDS_TRAILING_DELIM" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVA_LANG" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ImportRewriteAnalyzer" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.ICompilationUnit;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.CompilationUnit;"/>
+        <parameters name="arg2" type="[Ljava.lang.String;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="Z"/>
+      </methods>
+      <methods elementName="getSpacesBetweenImportGroups" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="addPreferenceOrderHolders" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$PackageEntry;"/>
+      </methods>
+      <methods elementName="getQualifier" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ImportDeclaration;"/>
+      </methods>
+      <methods elementName="getFullName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ImportDeclaration;"/>
+      </methods>
+      <methods elementName="addExistingImports" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.CompilationUnit;"/>
+      </methods>
+      <methods elementName="setFilterImplicitImports" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="setFindAmbiguousImports" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="getCommonPrefixLength" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getCharAt" returnType="C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="findBestMatch" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$PackageEntry;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="isImplicitImport" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.ICompilationUnit;"/>
+      </methods>
+      <methods elementName="addImport" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="removeImport" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="getIndexAfterStatics" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="sortIn" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$ImportDeclEntry;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="evaluateReplaceRange" returnType="Lorg.eclipse.jface.text.IRegion;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.CompilationUnit;"/>
+      </methods>
+      <methods elementName="getResultingEdits" returnType="Lorg.eclipse.text.edits.MultiTextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="removeAndInsertNew" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IBuffer;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Ljava.util.ArrayList;"/>
+        <parameters name="arg4" type="Lorg.eclipse.text.edits.MultiTextEdit;"/>
+      </methods>
+      <methods elementName="findInBuffer" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IBuffer;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="evaluateStarImportConflicts" returnType="Ljava.util.Set;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="getNewImportString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getFirstTypeBeginPos" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.CompilationUnit;"/>
+      </methods>
+      <methods elementName="getPackageStatementEndPos" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.CompilationUnit;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCreatedImports" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCreatedStaticImports" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <types elementName="ImportDeclEntry" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$ImportDeclEntry" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer.ImportDeclEntry">
+        <fields elementName="elementName" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+        <fields elementName="sourceRange" isEnumConstant="false" typeSignature="Lorg.eclipse.jface.text.IRegion;" isVolatile="false" isTransient="false"/>
+        <fields elementName="isStatic" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+        <methods elementName="ImportDeclEntry" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+          <parameters name="arg1" type="Z"/>
+          <parameters name="arg2" type="Lorg.eclipse.jface.text.IRegion;"/>
+        </methods>
+        <methods elementName="getElementName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="compareTo" returnType="I" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+          <parameters name="arg1" type="Z"/>
+        </methods>
+        <methods elementName="getSimpleName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="isOnDemand" returnType="Z" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="isStatic" returnType="Z" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="isNew" returnType="Z" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="isComment" returnType="Z" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="getSourceRange" returnType="Lorg.eclipse.jface.text.IRegion;" isConstructor="false" isMainMethod="false"/>
+      </types>
+      <types elementName="PackageEntry" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$PackageEntry" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer.PackageEntry">
+        <fields elementName="name" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+        <fields elementName="importEntries" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+        <fields elementName="group" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+        <fields elementName="isStatic" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+        <methods elementName="createOnPlaceholderEntry" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$PackageEntry;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+        </methods>
+        <methods elementName="PackageEntry" returnType="V" isConstructor="true" isMainMethod="false"/>
+        <methods elementName="PackageEntry" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+          <parameters name="arg1" type="Ljava.lang.String;"/>
+          <parameters name="arg2" type="Z"/>
+        </methods>
+        <methods elementName="isStatic" returnType="Z" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="compareTo" returnType="I" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+          <parameters name="arg1" type="Z"/>
+        </methods>
+        <methods elementName="sortIn" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$ImportDeclEntry;"/>
+        </methods>
+        <methods elementName="add" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$ImportDeclEntry;"/>
+        </methods>
+        <methods elementName="find" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$ImportDeclEntry;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+        </methods>
+        <methods elementName="remove" returnType="Z" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+          <parameters name="arg1" type="Z"/>
+        </methods>
+        <methods elementName="removeAllNew" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.util.Set;"/>
+        </methods>
+        <methods elementName="getImportAt" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$ImportDeclEntry;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+        </methods>
+        <methods elementName="hasStarImport" returnType="Z" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+          <parameters name="arg1" type="Ljava.util.Set;"/>
+        </methods>
+        <methods elementName="getNumberOfImports" returnType="I" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="getName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="getGroupID" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="setGroupID" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+        </methods>
+        <methods elementName="isSameGroup" returnType="Z" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$PackageEntry;"/>
+        </methods>
+        <methods elementName="getLast" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$ImportDeclEntry;" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="isComment" returnType="Z" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="isDefaultPackage" returnType="Z" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      </types>
+      <types elementName="PackageMatcher" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer$PackageMatcher" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ImportRewriteAnalyzer.PackageMatcher">
+        <fields elementName="newName" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+        <fields elementName="bestName" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+        <fields elementName="bestMatchLen" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <methods elementName="PackageMatcher" returnType="V" isConstructor="true" isMainMethod="false"/>
+        <methods elementName="initialize" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+          <parameters name="arg1" type="Ljava.lang.String;"/>
+        </methods>
+        <methods elementName="isBetterMatch" returnType="Z" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+          <parameters name="arg1" type="Z"/>
+        </methods>
+        <methods elementName="sameMatchLenTest" returnType="Z" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+        </methods>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="LineCommentEndOffsets.class" isClass="true" isInterface="false">
+    <type elementName="LineCommentEndOffsets" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.LineCommentEndOffsets" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.LineCommentEndOffsets">
+      <fields elementName="offsets" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="commentList" isEnumConstant="false" typeSignature="Ljava.util.List;" isVolatile="false" isTransient="false"/>
+      <methods elementName="LineCommentEndOffsets" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.List;"/>
+      </methods>
+      <methods elementName="getOffsets" returnType="[I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isEndOfLineComment" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="isEndOfLineComment" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="remove" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="LineInformation$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.LineInformation$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.LineInformation.1">
+      <fields elementName="val$doc" isEnumConstant="false" typeSignature="Lorg.eclipse.jface.text.IDocument;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jface.text.IDocument;"/>
+      </methods>
+      <methods elementName="getLineOfOffset" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getLineOffset" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="LineInformation$2.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.LineInformation$2" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.LineInformation.2">
+      <fields elementName="val$astRoot" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.CompilationUnit;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.CompilationUnit;"/>
+      </methods>
+      <methods elementName="getLineOfOffset" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getLineOffset" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="LineInformation.class" isClass="true" isInterface="false">
+    <type elementName="LineInformation" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.LineInformation" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.LineInformation">
+      <methods elementName="LineInformation" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="create" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.LineInformation;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jface.text.IDocument;"/>
+      </methods>
+      <methods elementName="create" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.LineInformation;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.CompilationUnit;"/>
+      </methods>
+      <methods elementName="getLineOfOffset" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getLineOffset" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ListRewriteEvent.class" isClass="true" isInterface="false">
+    <type elementName="ListRewriteEvent" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.ListRewriteEvent" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.ListRewriteEvent">
+      <fields elementName="NEW" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="OLD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="BOTH" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="originalNodes" isEnumConstant="false" typeSignature="Ljava.util.List;" isVolatile="false" isTransient="false"/>
+      <fields elementName="listEntries" isEnumConstant="false" typeSignature="Ljava.util.List;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ListRewriteEvent" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.List;"/>
+      </methods>
+      <methods elementName="ListRewriteEvent" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;"/>
+      </methods>
+      <methods elementName="getEntries" returnType="Ljava.util.List;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getChangeKind" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isListRewrite" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getChildren" returnType="[Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getOriginalValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNewValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="removeEntry" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="replaceEntry" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="revertChange" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.NodeRewriteEvent;"/>
+      </methods>
+      <methods elementName="getIndex" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="insert" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="setNewValue" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="getChangeKind" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="NodeInfoStore$CopyPlaceholderData.class" isClass="true" isInterface="false">
+    <type elementName="CopyPlaceholderData" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore$CopyPlaceholderData" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore.CopyPlaceholderData">
+      <fields elementName="copySource" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$CopySourceInfo;" isVolatile="false" isTransient="false"/>
+      <methods elementName="CopyPlaceholderData" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="NodeInfoStore$PlaceholderData.class" isClass="true" isInterface="false">
+    <type elementName="PlaceholderData" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore$PlaceholderData" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore.PlaceholderData">
+      <methods elementName="PlaceholderData" returnType="V" isConstructor="true" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="NodeInfoStore$StringPlaceholderData.class" isClass="true" isInterface="false">
+    <type elementName="StringPlaceholderData" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore$StringPlaceholderData" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore.StringPlaceholderData">
+      <fields elementName="code" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <methods elementName="StringPlaceholderData" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="NodeInfoStore.class" isClass="true" isInterface="false">
+    <type elementName="NodeInfoStore" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore">
+      <fields elementName="ast" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.AST;" isVolatile="false" isTransient="false"/>
+      <fields elementName="placeholderNodes" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="collapsedNodes" isEnumConstant="false" typeSignature="Ljava.util.Set;" isVolatile="false" isTransient="false"/>
+      <methods elementName="NodeInfoStore" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.AST;"/>
+      </methods>
+      <methods elementName="markAsStringPlaceholder" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="markAsCopyTarget" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$CopySourceInfo;"/>
+      </methods>
+      <methods elementName="newPlaceholderNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="createCollapsePlaceholder" returnType="Lorg.eclipse.jdt.core.dom.Block;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isCollapsed" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="getPlaceholderData" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="setPlaceholderData" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore$PlaceholderData;"/>
+      </methods>
+      <methods elementName="clear" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <types elementName="CopyPlaceholderData" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore$CopyPlaceholderData" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore.CopyPlaceholderData">
+        <fields elementName="copySource" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$CopySourceInfo;" isVolatile="false" isTransient="false"/>
+        <methods elementName="CopyPlaceholderData" returnType="V" isConstructor="true" isMainMethod="false"/>
+        <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      </types>
+      <types elementName="PlaceholderData" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore$PlaceholderData" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore.PlaceholderData">
+        <methods elementName="PlaceholderData" returnType="V" isConstructor="true" isMainMethod="false"/>
+      </types>
+      <types elementName="StringPlaceholderData" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore$StringPlaceholderData" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore.StringPlaceholderData">
+        <fields elementName="code" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+        <methods elementName="StringPlaceholderData" returnType="V" isConstructor="true" isMainMethod="false"/>
+        <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="NodeRewriteEvent.class" isClass="true" isInterface="false">
+    <type elementName="NodeRewriteEvent" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.NodeRewriteEvent" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.NodeRewriteEvent">
+      <fields elementName="originalValue" isEnumConstant="false" typeSignature="Ljava.lang.Object;" isVolatile="false" isTransient="false"/>
+      <fields elementName="newValue" isEnumConstant="false" typeSignature="Ljava.lang.Object;" isVolatile="false" isTransient="false"/>
+      <methods elementName="NodeRewriteEvent" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="getNewValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getOriginalValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getChangeKind" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isListRewrite" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setNewValue" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="getChildren" returnType="[Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="RewriteEvent.class" isClass="true" isInterface="false">
+    <type elementName="RewriteEvent" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent">
+      <fields elementName="INSERTED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="REMOVED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="REPLACED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CHILDREN_CHANGED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="UNCHANGED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="RewriteEvent" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="getChangeKind" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isListRewrite" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getOriginalValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNewValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getChildren" returnType="[Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="RewriteEventStore$CopySourceInfo.class" isClass="true" isInterface="false">
+    <type elementName="CopySourceInfo" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$CopySourceInfo" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore.CopySourceInfo">
+      <fields elementName="location" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$PropertyLocation;" isVolatile="false" isTransient="false"/>
+      <fields elementName="node" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.ASTNode;" isVolatile="false" isTransient="false"/>
+      <fields elementName="isMove" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="CopySourceInfo" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$PropertyLocation;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="getNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="compareTo" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="RewriteEventStore$EventHolder.class" isClass="true" isInterface="false">
+    <type elementName="EventHolder" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$EventHolder" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore.EventHolder">
+      <fields elementName="parent" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.ASTNode;" isVolatile="false" isTransient="false"/>
+      <fields elementName="childProperty" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;" isVolatile="false" isTransient="false"/>
+      <fields elementName="event" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;" isVolatile="false" isTransient="false"/>
+      <methods elementName="EventHolder" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="RewriteEventStore$INodePropertyMapper.class" isClass="false" isInterface="true">
+    <type elementName="INodePropertyMapper" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$INodePropertyMapper" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore.INodePropertyMapper">
+      <methods elementName="getOriginalValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="RewriteEventStore$NodeRangeInfo.class" isClass="true" isInterface="false">
+    <type elementName="NodeRangeInfo" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$NodeRangeInfo" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore.NodeRangeInfo">
+      <fields elementName="first" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.ASTNode;" isVolatile="false" isTransient="false"/>
+      <fields elementName="last" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.ASTNode;" isVolatile="false" isTransient="false"/>
+      <fields elementName="copyInfo" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$CopySourceInfo;" isVolatile="false" isTransient="false"/>
+      <fields elementName="replacingNode" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.ASTNode;" isVolatile="false" isTransient="false"/>
+      <fields elementName="editGroup" isEnumConstant="false" typeSignature="Lorg.eclipse.text.edits.TextEditGroup;" isVolatile="false" isTransient="false"/>
+      <methods elementName="NodeRangeInfo" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$CopySourceInfo;"/>
+        <parameters name="arg5" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg6" type="Lorg.eclipse.text.edits.TextEditGroup;"/>
+      </methods>
+      <methods elementName="getStartNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEndNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isMove" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInternalPlaceholder" returnType="Lorg.eclipse.jdt.core.dom.Block;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="compareTo" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="updatePlaceholderSourceRanges" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.rewrite.TargetSourceRangeComputer;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="RewriteEventStore$ParentIterator.class" isClass="true" isInterface="false">
+    <type elementName="ParentIterator" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$ParentIterator" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore.ParentIterator">
+      <fields elementName="eventIter" isEnumConstant="false" typeSignature="Ljava.util.Iterator;" isVolatile="false" isTransient="false"/>
+      <fields elementName="sourceNodeIter" isEnumConstant="false" typeSignature="Ljava.util.Iterator;" isVolatile="false" isTransient="false"/>
+      <fields elementName="rangeNodeIter" isEnumConstant="false" typeSignature="Ljava.util.Iterator;" isVolatile="false" isTransient="false"/>
+      <fields elementName="trackedNodeIter" isEnumConstant="false" typeSignature="Ljava.util.Iterator;" isVolatile="false" isTransient="false"/>
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ParentIterator" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;"/>
+      </methods>
+      <methods elementName="hasNext" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="next" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="remove" returnType="V" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="RewriteEventStore$PropertyLocation.class" isClass="true" isInterface="false">
+    <type elementName="PropertyLocation" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$PropertyLocation" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore.PropertyLocation">
+      <fields elementName="parent" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.ASTNode;" isVolatile="false" isTransient="false"/>
+      <fields elementName="property" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;" isVolatile="false" isTransient="false"/>
+      <methods elementName="PropertyLocation" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="getParent" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getProperty" returnType="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="RewriteEventStore.class" isClass="true" isInterface="false">
+    <type elementName="RewriteEventStore" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore">
+      <fields elementName="NEW" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ORIGINAL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="BOTH" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="eventLookup" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="lastEvent" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$EventHolder;" isVolatile="false" isTransient="false"/>
+      <fields elementName="editGroups" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="nodeCopySources" isEnumConstant="false" typeSignature="Ljava.util.List;" isVolatile="false" isTransient="false"/>
+      <fields elementName="nodeRangeInfos" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="trackedNodes" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="insertBoundToPrevious" isEnumConstant="false" typeSignature="Ljava.util.Set;" isVolatile="false" isTransient="false"/>
+      <fields elementName="nodePropertyMapper" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$INodePropertyMapper;" isVolatile="false" isTransient="false"/>
+      <fields elementName="INTERNAL_PLACEHOLDER_PROPERTY" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <methods elementName="RewriteEventStore" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="setNodePropertyMapper" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$INodePropertyMapper;"/>
+      </methods>
+      <methods elementName="clear" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="addEvent" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;"/>
+      </methods>
+      <methods elementName="getEvent" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="getNodeEvent" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.NodeRewriteEvent;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="getListEvent" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.ListRewriteEvent;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="getChangeRootIterator" returnType="Ljava.util.Iterator;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hasChangedProperties" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="getPropertyLocation" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$PropertyLocation;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="findEvent" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="isNodeInEvent" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="getOriginalValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="getNewValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="getChangeKind" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="accessOriginalValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="getEventEditGroup" returnType="Lorg.eclipse.text.edits.TextEditGroup;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;"/>
+      </methods>
+      <methods elementName="setEventEditGroup" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;"/>
+        <parameters name="arg1" type="Lorg.eclipse.text.edits.TextEditGroup;"/>
+      </methods>
+      <methods elementName="getTrackedNodeData" returnType="Lorg.eclipse.text.edits.TextEditGroup;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="setTrackedNodeData" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.text.edits.TextEditGroup;"/>
+      </methods>
+      <methods elementName="markAsTracked" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.text.edits.TextEditGroup;"/>
+      </methods>
+      <methods elementName="createCopySourceInfo" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$CopySourceInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$PropertyLocation;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="markAsCopySource" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$CopySourceInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="isRangeCopyPlaceholder" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="createRangeCopy" returnType="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$CopySourceInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg4" type="Z"/>
+        <parameters name="arg5" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg6" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg7" type="Lorg.eclipse.text.edits.TextEditGroup;"/>
+      </methods>
+      <methods elementName="getNodeCopySources" returnType="[Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$CopySourceInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="internalGetCopySources" returnType="[Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$CopySourceInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.List;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="assertNoOverlap" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.ListRewriteEvent;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Ljava.util.List;"/>
+      </methods>
+      <methods elementName="prepareMovedNodes" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.rewrite.TargetSourceRangeComputer;"/>
+      </methods>
+      <methods elementName="revertMovedNodes" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="removeMoveRangePlaceholders" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="revertListWithRanges" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;"/>
+        <parameters name="arg1" type="Ljava.util.Set;"/>
+        <parameters name="arg2" type="Ljava.util.List;"/>
+      </methods>
+      <methods elementName="prepareNodeRangeCopies" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.rewrite.TargetSourceRangeComputer;"/>
+      </methods>
+      <methods elementName="processListWithRanges" returnType="[Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.List;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.dom.rewrite.TargetSourceRangeComputer;"/>
+      </methods>
+      <methods elementName="prepareSingleNodeCopies" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="doMarkMovedAsRemoved" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$CopySourceInfo;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="isInsertBoundToPrevious" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="setInsertBoundToPrevious" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="validateIsListProperty" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="validateHasChildProperty" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="validateIsNodeProperty" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isNewNode" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <types elementName="CopySourceInfo" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$CopySourceInfo" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore.CopySourceInfo">
+        <fields elementName="location" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$PropertyLocation;" isVolatile="false" isTransient="false"/>
+        <fields elementName="node" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.ASTNode;" isVolatile="false" isTransient="false"/>
+        <fields elementName="isMove" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+        <methods elementName="CopySourceInfo" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$PropertyLocation;"/>
+          <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+          <parameters name="arg2" type="Z"/>
+        </methods>
+        <methods elementName="getNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="compareTo" returnType="I" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.Object;"/>
+        </methods>
+        <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      </types>
+      <types elementName="EventHolder" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$EventHolder" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore.EventHolder">
+        <fields elementName="parent" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.ASTNode;" isVolatile="false" isTransient="false"/>
+        <fields elementName="childProperty" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;" isVolatile="false" isTransient="false"/>
+        <fields elementName="event" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;" isVolatile="false" isTransient="false"/>
+        <methods elementName="EventHolder" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+          <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+          <parameters name="arg2" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEvent;"/>
+        </methods>
+        <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      </types>
+      <types elementName="INodePropertyMapper" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$INodePropertyMapper" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore.INodePropertyMapper">
+        <methods elementName="getOriginalValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+          <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        </methods>
+      </types>
+      <types elementName="NodeRangeInfo" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$NodeRangeInfo" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore.NodeRangeInfo">
+        <fields elementName="first" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.ASTNode;" isVolatile="false" isTransient="false"/>
+        <fields elementName="last" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.ASTNode;" isVolatile="false" isTransient="false"/>
+        <fields elementName="copyInfo" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$CopySourceInfo;" isVolatile="false" isTransient="false"/>
+        <fields elementName="replacingNode" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.ASTNode;" isVolatile="false" isTransient="false"/>
+        <fields elementName="editGroup" isEnumConstant="false" typeSignature="Lorg.eclipse.text.edits.TextEditGroup;" isVolatile="false" isTransient="false"/>
+        <methods elementName="NodeRangeInfo" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+          <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+          <parameters name="arg2" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+          <parameters name="arg3" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+          <parameters name="arg4" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$CopySourceInfo;"/>
+          <parameters name="arg5" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+          <parameters name="arg6" type="Lorg.eclipse.text.edits.TextEditGroup;"/>
+        </methods>
+        <methods elementName="getStartNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="getEndNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="isMove" returnType="Z" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="getInternalPlaceholder" returnType="Lorg.eclipse.jdt.core.dom.Block;" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="compareTo" returnType="I" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.Object;"/>
+        </methods>
+        <methods elementName="updatePlaceholderSourceRanges" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.rewrite.TargetSourceRangeComputer;"/>
+        </methods>
+        <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      </types>
+      <types elementName="ParentIterator" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$ParentIterator" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore.ParentIterator">
+        <fields elementName="eventIter" isEnumConstant="false" typeSignature="Ljava.util.Iterator;" isVolatile="false" isTransient="false"/>
+        <fields elementName="sourceNodeIter" isEnumConstant="false" typeSignature="Ljava.util.Iterator;" isVolatile="false" isTransient="false"/>
+        <fields elementName="rangeNodeIter" isEnumConstant="false" typeSignature="Ljava.util.Iterator;" isVolatile="false" isTransient="false"/>
+        <fields elementName="trackedNodeIter" isEnumConstant="false" typeSignature="Ljava.util.Iterator;" isVolatile="false" isTransient="false"/>
+        <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;" isVolatile="false" isTransient="false"/>
+        <methods elementName="ParentIterator" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;"/>
+        </methods>
+        <methods elementName="hasNext" returnType="Z" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="next" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="remove" returnType="V" isConstructor="false" isMainMethod="false"/>
+      </types>
+      <types elementName="PropertyLocation" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore$PropertyLocation" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore.PropertyLocation">
+        <fields elementName="parent" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.ASTNode;" isVolatile="false" isTransient="false"/>
+        <fields elementName="property" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;" isVolatile="false" isTransient="false"/>
+        <methods elementName="PropertyLocation" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+          <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;"/>
+        </methods>
+        <methods elementName="getParent" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="getProperty" returnType="Lorg.eclipse.jdt.core.dom.StructuralPropertyDescriptor;" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.Object;"/>
+        </methods>
+        <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="SourceModifier.class" isClass="true" isInterface="false">
+    <type elementName="SourceModifier" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.SourceModifier" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.SourceModifier">
+      <fields elementName="destinationIndent" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="sourceIndentLevel" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="tabWidth" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="indentWidth" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="SourceModifier" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="copy" returnType="Lorg.eclipse.text.edits.ISourceModifier;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getModifications" returnType="[Lorg.eclipse.text.edits.ReplaceEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="TokenScanner.class" isClass="true" isInterface="false">
+    <type elementName="TokenScanner" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.TokenScanner" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.TokenScanner">
+      <fields elementName="END_OF_FILE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LEXICAL_ERROR" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DOCUMENT_ERROR" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="scanner" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.compiler.IScanner;" isVolatile="false" isTransient="false"/>
+      <fields elementName="endPosition" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="TokenScanner" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.compiler.IScanner;"/>
+      </methods>
+      <methods elementName="getScanner" returnType="Lorg.eclipse.jdt.core.compiler.IScanner;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setOffset" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getCurrentEndOffset" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCurrentStartOffset" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCurrentLength" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="readNext" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="readNext" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Z"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="getNextStartOffset" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Z"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="getNextEndOffset" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Z"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="readToToken" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="readToToken" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="getTokenStartOffset" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="getTokenEndOffset" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="getPreviousTokenEndOffset" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="isComment" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="isModifier" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="createError" returnType="Lorg.eclipse.core.runtime.IStatus;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Ljava.lang.Throwable;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="TrackedNodePosition.class" isClass="true" isInterface="false">
+    <type elementName="TrackedNodePosition" fullyQualifiedName="org.eclipse.jdt.internal.core.dom.rewrite.TrackedNodePosition" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.dom.rewrite.TrackedNodePosition">
+      <fields elementName="group" isEnumConstant="false" typeSignature="Lorg.eclipse.text.edits.TextEditGroup;" isVolatile="false" isTransient="false"/>
+      <fields elementName="node" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.ASTNode;" isVolatile="false" isTransient="false"/>
+      <methods elementName="TrackedNodePosition" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.text.edits.TextEditGroup;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+      </methods>
+      <methods elementName="getStartPosition" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLength" returnType="I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

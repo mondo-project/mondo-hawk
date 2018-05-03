@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:BinaryPackageFragmentRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.apt.core_3.3.101.R34x_v20080902-1220.jar" path="C:/Eclipse/Eclipse_Ganym&#xe8;de/eclipse/plugins/org.eclipse.jdt.apt.core_3.3.101.R34x_v20080902-1220.jar" isReadOnly="true">
+  <packageFragments href="IPackageFragment_org.eclipse.jdt.apt.core.internal.type/IPackageFragment_org.eclipse.jdt.apt.core.internal.type.xmi#/"/>
+  <packageFragments href="IPackageFragment_org.eclipse.jdt.apt.core.env/IPackageFragment_org.eclipse.jdt.apt.core.env.xmi#/"/>
+  <packageFragments href="IPackageFragment_org.eclipse.jdt.apt.core.internal/IPackageFragment_org.eclipse.jdt.apt.core.internal.xmi#/"/>
+  <packageFragments href="IPackageFragment_org.eclipse.jdt.apt.core.internal.util/IPackageFragment_org.eclipse.jdt.apt.core.internal.util.xmi#/"/>
+  <packageFragments href="IPackageFragment_org.eclipse.jdt.apt.core.util/IPackageFragment_org.eclipse.jdt.apt.core.util.xmi#/"/>
+  <packageFragments href="IPackageFragment_org.eclipse.jdt/IPackageFragment_org.eclipse.jdt.xmi#/"/>
+  <packageFragments href="IPackageFragment_org.eclipse.jdt.apt.core.internal.build/IPackageFragment_org.eclipse.jdt.apt.core.internal.build.xmi#/"/>
+  <packageFragments href="IPackageFragment_org.eclipse.jdt.apt/IPackageFragment_org.eclipse.jdt.apt.xmi#/"/>
+  <packageFragments href="IPackageFragment_org.eclipse.jdt.apt.core/IPackageFragment_org.eclipse.jdt.apt.core.xmi#/"/>
+  <packageFragments href="IPackageFragment_org.eclipse.jdt.apt.core.build/IPackageFragment_org.eclipse.jdt.apt.core.build.xmi#/"/>
+  <packageFragments href="IPackageFragment_org.eclipse.jdt.apt.core.internal.generatedfile/IPackageFragment_org.eclipse.jdt.apt.core.internal.generatedfile.xmi#/"/>
+  <packageFragments href="IPackageFragment_org.eclipse.jdt.apt.core.internal.env/IPackageFragment_org.eclipse.jdt.apt.core.internal.env.xmi#/"/>
+  <packageFragments href="IPackageFragment_org.eclipse.jdt.apt.core.internal.declaration/IPackageFragment_org.eclipse.jdt.apt.core.internal.declaration.xmi#/"/>
+</core:BinaryPackageFragmentRoot>

@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.compiler.impl" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="BooleanConstant.class" isClass="true" isInterface="false">
+    <type elementName="BooleanConstant" fullyQualifiedName="org.eclipse.jdt.internal.compiler.impl.BooleanConstant" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.impl.BooleanConstant">
+      <fields elementName="value" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="TRUE" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.BooleanConstant;" isVolatile="false" isTransient="false"/>
+      <fields elementName="FALSE" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.BooleanConstant;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="fromValue" returnType="Lorg.eclipse.jdt.internal.compiler.impl.BooleanConstant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="BooleanConstant" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="booleanValue" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="stringValue" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="typeID" returnType="I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ByteConstant.class" isClass="true" isInterface="false">
+    <type elementName="ByteConstant" fullyQualifiedName="org.eclipse.jdt.internal.compiler.impl.ByteConstant" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.impl.ByteConstant">
+      <fields elementName="value" isEnumConstant="false" typeSignature="B" isVolatile="false" isTransient="false"/>
+      <methods elementName="fromValue" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="B"/>
+      </methods>
+      <methods elementName="ByteConstant" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="B"/>
+      </methods>
+      <methods elementName="byteValue" returnType="B" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="charValue" returnType="C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="doubleValue" returnType="D" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="floatValue" returnType="F" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="intValue" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="longValue" returnType="J" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="shortValue" returnType="S" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="stringValue" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="typeID" returnType="I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="CharConstant.class" isClass="true" isInterface="false">
+    <type elementName="CharConstant" fullyQualifiedName="org.eclipse.jdt.internal.compiler.impl.CharConstant" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.impl.CharConstant">
+      <fields elementName="value" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <methods elementName="fromValue" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="C"/>
+      </methods>
+      <methods elementName="CharConstant" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="C"/>
+      </methods>
+      <methods elementName="byteValue" returnType="B" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="charValue" returnType="C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="doubleValue" returnType="D" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="floatValue" returnType="F" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="intValue" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="longValue" returnType="J" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="shortValue" returnType="S" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="stringValue" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="typeID" returnType="I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="CompilerOptions.class" isClass="true" isInterface="false">
+    <type elementName="CompilerOptions" fullyQualifiedName="org.eclipse.jdt.internal.compiler.impl.CompilerOptions" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.impl.CompilerOptions">
+      <fields elementName="OPTION_LocalVariableAttribute" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_LineNumberAttribute" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_SourceFileAttribute" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_PreserveUnusedLocal" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_DocCommentSupport" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportMethodWithConstructorName" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportOverridingPackageDefaultMethod" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportDeprecation" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportDeprecationInDeprecatedCode" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportDeprecationWhenOverridingDeprecatedMethod" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportHiddenCatchBlock" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUnusedLocal" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUnusedParameter" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUnusedParameterWhenImplementingAbstract" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUnusedParameterWhenOverridingConcrete" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUnusedParameterIncludeDocCommentReference" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUnusedImport" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportSyntheticAccessEmulation" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportNoEffectAssignment" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportLocalVariableHiding" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportSpecialParameterHidingField" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportFieldHiding" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportTypeParameterHiding" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportPossibleAccidentalBooleanAssignment" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportNonExternalizedStringLiteral" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportIncompatibleNonInheritedInterfaceMethod" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUnusedPrivateMember" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportNoImplicitStringConversion" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportAssertIdentifier" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportEnumIdentifier" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportNonStaticAccessToStatic" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportIndirectStaticAccess" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportEmptyStatement" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUnnecessaryTypeCheck" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUnnecessaryElse" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUndocumentedEmptyBlock" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportInvalidJavadoc" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportInvalidJavadocTags" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportInvalidJavadocTagsDeprecatedRef" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportInvalidJavadocTagsNotVisibleRef" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportInvalidJavadocTagsVisibility" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportMissingJavadocTags" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportMissingJavadocTagsVisibility" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportMissingJavadocTagsOverriding" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportMissingJavadocComments" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportMissingJavadocTagDescription" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportMissingJavadocCommentsVisibility" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportMissingJavadocCommentsOverriding" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportFinallyBlockNotCompletingNormally" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUnusedDeclaredThrownException" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUnusedDeclaredThrownExceptionWhenOverriding" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUnusedDeclaredThrownExceptionIncludeDocCommentReference" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUnusedDeclaredThrownExceptionExemptExceptionAndThrowable" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUnqualifiedFieldAccess" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUncheckedTypeOperation" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportRawTypeReference" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportFinalParameterBound" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportMissingSerialVersion" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportVarargsArgumentNeedCast" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUnusedTypeArgumentsForMethodInvocation" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_Source" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_TargetPlatform" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_Compliance" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_Encoding" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_MaxProblemPerUnit" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_TaskTags" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_TaskPriorities" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_TaskCaseSensitive" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_InlineJsr" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportNullReference" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportPotentialNullReference" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportRedundantNullCheck" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportAutoboxing" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportAnnotationSuperInterface" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportMissingOverrideAnnotation" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportMissingDeprecatedAnnotation" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportIncompleteEnumSwitch" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportForbiddenReference" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportDiscouragedReference" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_SuppressWarnings" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUnhandledWarningToken" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUnusedWarningToken" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportUnusedLabel" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_FatalOptionalError" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportParameterAssignment" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportFallthroughCase" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportOverridingMethodWithoutSuperInvocation" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_GenerateClassFiles" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_Process_Annotations" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportRedundantSuperinterface" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportInvalidAnnotation" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportMissingAnnotation" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTION_ReportMissingJavadoc" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="GENERATE" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="DO_NOT_GENERATE" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="PRESERVE" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="OPTIMIZE_OUT" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="VERSION_1_1" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="VERSION_1_2" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="VERSION_1_3" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="VERSION_1_4" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="VERSION_JSR14" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="VERSION_CLDC1_1" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="VERSION_1_5" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="VERSION_1_6" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="VERSION_1_7" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ERROR" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="WARNING" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="IGNORE" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ENABLED" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="DISABLED" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="PUBLIC" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="PROTECTED" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="DEFAULT" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="PRIVATE" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="RETURN_TAG" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="NO_TAG" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ALL_STANDARD_TAGS" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="MethodWithConstructorName" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="OverriddenPackageDefaultMethod" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="UsingDeprecatedAPI" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="MaskedCatchBlock" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="UnusedLocalVariable" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="UnusedArgument" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="NoImplicitStringConversion" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="AccessEmulation" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="NonExternalizedString" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="AssertUsedAsAnIdentifier" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="UnusedImport" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="NonStaticAccessToStatic" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="Task" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="NoEffectAssignment" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="IncompatibleNonInheritedInterfaceMethod" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="UnusedPrivateMember" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="LocalVariableHiding" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="FieldHiding" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="AccidentalBooleanAssign" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="EmptyStatement" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="MissingJavadocComments" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="MissingJavadocTags" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="UnqualifiedFieldAccess" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="UnusedDeclaredThrownException" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="FinallyBlockNotCompleting" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="InvalidJavadoc" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="UnnecessaryTypeCheck" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="UndocumentedEmptyBlock" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="IndirectStaticAccess" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="UnnecessaryElse" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="UncheckedTypeOperation" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="FinalParameterBound" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="MissingSerialVersion" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="EnumUsedAsAnIdentifier" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="ForbiddenReference" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="VarargsArgumentNeedCast" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="NullReference" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="AutoBoxing" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="AnnotationSuperInterface" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="TypeHiding" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="MissingOverrideAnnotation" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="IncompleteEnumSwitch" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="MissingDeprecatedAnnotation" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="DiscouragedReference" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="UnhandledWarningToken" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="RawTypeReference" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="UnusedLabel" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="ParameterAssignment" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="FallthroughCase" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="OverridingMethodWithoutSuperInvocation" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="PotentialNullReference" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="RedundantNullCheck" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="MissingJavadocTagDescription" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="UnusedTypeArguments" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="UnusedWarningToken" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="RedundantSuperinterface" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="OptionToIrritants" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="errorThreshold" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="warningThreshold" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="produceDebugAttributes" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="complianceLevel" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="sourceLevel" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="targetJDK" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="defaultEncoding" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="verbose" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="produceReferenceInfo" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="preserveAllLocalVariables" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="parseLiteralExpressionsAsConstants" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="maxProblemsPerUnit" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="taskTags" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="taskPriorites" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="isTaskCaseSensitive" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="reportDeprecationInsideDeprecatedCode" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="reportDeprecationWhenOverridingDeprecatedMethod" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="reportUnusedParameterWhenImplementingAbstract" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="reportUnusedParameterWhenOverridingConcrete" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="reportUnusedParameterIncludeDocCommentReference" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="reportUnusedDeclaredThrownExceptionWhenOverriding" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="reportUnusedDeclaredThrownExceptionIncludeDocCommentReference" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="reportUnusedDeclaredThrownExceptionExemptExceptionAndThrowable" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="reportSpecialParameterHidingField" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="reportInvalidJavadocTagsVisibility" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="reportInvalidJavadocTags" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="reportInvalidJavadocTagsDeprecatedRef" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="reportInvalidJavadocTagsNotVisibleRef" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="reportMissingJavadocTagDescription" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="reportMissingJavadocTagsVisibility" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="reportMissingJavadocTagsOverriding" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="reportMissingJavadocCommentsVisibility" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="reportMissingJavadocCommentsOverriding" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="inlineJsrBytecode" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="docCommentSupport" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="suppressWarnings" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="treatOptionalErrorAsFatal" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="performMethodsFullRecovery" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="performStatementsRecovery" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="storeAnnotations" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="generateClassFiles" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="processAnnotations" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="warningTokens" isEnumConstant="false" typeSignature="[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="CompilerOptions" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="CompilerOptions" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Map;"/>
+      </methods>
+      <methods elementName="CompilerOptions" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Map;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="getMap" returnType="Ljava.util.Map;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="optionKeyFromIrritant" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+      </methods>
+      <methods elementName="optionKeyToIrritant" returnType="J" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getSeverity" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+      </methods>
+      <methods elementName="getSeverityString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+      </methods>
+      <methods elementName="getVisibilityString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="set" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Map;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="updateSeverity" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="versionToJdkLevel" returnType="J" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="versionFromJdkLevel" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+      </methods>
+      <methods elementName="warningOptionNames" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="warningTokenFromIrritant" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+      </methods>
+      <methods elementName="warningTokenToIrritants" returnType="J" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="CompilerStats.class" isClass="true" isInterface="false">
+    <type elementName="CompilerStats" fullyQualifiedName="org.eclipse.jdt.internal.compiler.impl.CompilerStats" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.impl.CompilerStats">
+      <fields elementName="startTime" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="endTime" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="lineCount" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="parseTime" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="resolveTime" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="analyzeTime" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="generateTime" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <methods elementName="CompilerStats" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="elapsedTime" returnType="J" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="compareTo" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="Constant.class" isClass="true" isInterface="false">
+    <type elementName="Constant" fullyQualifiedName="org.eclipse.jdt.internal.compiler.impl.Constant" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.impl.Constant">
+      <fields elementName="NotAConstant" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="Constant" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="booleanValue" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="byteValue" returnType="B" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="castTo" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="charValue" returnType="C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="computeConstantOperation" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="computeConstantOperation" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="computeConstantOperationAND" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="computeConstantOperationAND_AND" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="computeConstantOperationDIVIDE" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="computeConstantOperationEQUAL_EQUAL" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="computeConstantOperationGREATER" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="computeConstantOperationGREATER_EQUAL" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="computeConstantOperationLEFT_SHIFT" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="computeConstantOperationLESS" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="computeConstantOperationLESS_EQUAL" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="computeConstantOperationMINUS" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="computeConstantOperationMULTIPLY" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="computeConstantOperationOR" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="computeConstantOperationOR_OR" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="computeConstantOperationPLUS" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="computeConstantOperationREMAINDER" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="computeConstantOperationRIGHT_SHIFT" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="computeConstantOperationUNSIGNED_RIGHT_SHIFT" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="computeConstantOperationXOR" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="doubleValue" returnType="D" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="floatValue" returnType="F" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hasSameValue" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.Constant;"/>
+      </methods>
+      <methods elementName="intValue" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="longValue" returnType="J" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="shortValue" returnType="S" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="stringValue" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="typeID" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="typeName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="DoubleConstant.class" isClass="true" isInterface="false">
+    <type elementName="DoubleConstant" fullyQualifiedName="org.eclipse.jdt.internal.compiler.impl.DoubleConstant" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.impl.DoubleConstant">
+      <fields elementName="value" isEnumConstant="false" typeSignature="D" isVolatile="false" isTransient="false"/>
+      <methods elementName="fromValue" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="D"/>
+      </methods>
+      <methods elementName="DoubleConstant" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="D"/>
+      </methods>
+      <methods elementName="byteValue" returnType="B" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="charValue" returnType="C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="doubleValue" returnType="D" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="floatValue" returnType="F" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="intValue" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="longValue" returnType="J" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="shortValue" returnType="S" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="stringValue" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="typeID" returnType="I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="FloatConstant.class" isClass="true" isInterface="false">
+    <type elementName="FloatConstant" fullyQualifiedName="org.eclipse.jdt.internal.compiler.impl.FloatConstant" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.impl.FloatConstant">
+      <fields elementName="value" isEnumConstant="false" typeSignature="F" isVolatile="false" isTransient="false"/>
+      <methods elementName="fromValue" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="F"/>
+      </methods>
+      <methods elementName="FloatConstant" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="F"/>
+      </methods>
+      <methods elementName="byteValue" returnType="B" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="charValue" returnType="C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="doubleValue" returnType="D" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="floatValue" returnType="F" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="intValue" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="longValue" returnType="J" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="shortValue" returnType="S" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="stringValue" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="typeID" returnType="I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ITypeRequestor.class" isClass="false" isInterface="true">
+    <type elementName="ITypeRequestor" fullyQualifiedName="org.eclipse.jdt.internal.compiler.impl.ITypeRequestor" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.impl.ITypeRequestor">
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.IBinaryType;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.PackageBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.env.AccessRestriction;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.ICompilationUnit;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.env.AccessRestriction;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.env.ISourceType;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.PackageBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.env.AccessRestriction;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="IntConstant.class" isClass="true" isInterface="false">
+    <type elementName="IntConstant" fullyQualifiedName="org.eclipse.jdt.internal.compiler.impl.IntConstant" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.impl.IntConstant">
+      <fields elementName="value" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MINUS_FOUR" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.IntConstant;" isVolatile="false" isTransient="false"/>
+      <fields elementName="MINUS_THREE" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.IntConstant;" isVolatile="false" isTransient="false"/>
+      <fields elementName="MINUS_TWO" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.IntConstant;" isVolatile="false" isTransient="false"/>
+      <fields elementName="MINUS_ONE" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.IntConstant;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ZERO" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.IntConstant;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ONE" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.IntConstant;" isVolatile="false" isTransient="false"/>
+      <fields elementName="TWO" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.IntConstant;" isVolatile="false" isTransient="false"/>
+      <fields elementName="THREE" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.IntConstant;" isVolatile="false" isTransient="false"/>
+      <fields elementName="FOUR" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.IntConstant;" isVolatile="false" isTransient="false"/>
+      <fields elementName="FIVE" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.IntConstant;" isVolatile="false" isTransient="false"/>
+      <fields elementName="SIX" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.IntConstant;" isVolatile="false" isTransient="false"/>
+      <fields elementName="SEVEN" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.IntConstant;" isVolatile="false" isTransient="false"/>
+      <fields elementName="EIGHT" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.IntConstant;" isVolatile="false" isTransient="false"/>
+      <fields elementName="NINE" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.IntConstant;" isVolatile="false" isTransient="false"/>
+      <fields elementName="TEN" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.IntConstant;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="fromValue" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="IntConstant" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="byteValue" returnType="B" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="charValue" returnType="C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="doubleValue" returnType="D" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="floatValue" returnType="F" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="intValue" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="longValue" returnType="J" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="shortValue" returnType="S" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="stringValue" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="typeID" returnType="I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="LongConstant.class" isClass="true" isInterface="false">
+    <type elementName="LongConstant" fullyQualifiedName="org.eclipse.jdt.internal.compiler.impl.LongConstant" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.impl.LongConstant">
+      <fields elementName="ZERO" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.LongConstant;" isVolatile="false" isTransient="false"/>
+      <fields elementName="value" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="fromValue" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+      </methods>
+      <methods elementName="LongConstant" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+      </methods>
+      <methods elementName="byteValue" returnType="B" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="charValue" returnType="C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="doubleValue" returnType="D" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="floatValue" returnType="F" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="intValue" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="longValue" returnType="J" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="shortValue" returnType="S" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="stringValue" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="typeID" returnType="I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ReferenceContext.class" isClass="false" isInterface="true">
+    <type elementName="ReferenceContext" fullyQualifiedName="org.eclipse.jdt.internal.compiler.impl.ReferenceContext" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.impl.ReferenceContext">
+      <methods elementName="abort" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+      </methods>
+      <methods elementName="compilationResult" returnType="Lorg.eclipse.jdt.internal.compiler.CompilationResult;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hasErrors" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="tagAsHavingErrors" returnType="V" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ShortConstant.class" isClass="true" isInterface="false">
+    <type elementName="ShortConstant" fullyQualifiedName="org.eclipse.jdt.internal.compiler.impl.ShortConstant" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.impl.ShortConstant">
+      <fields elementName="value" isEnumConstant="false" typeSignature="S" isVolatile="false" isTransient="false"/>
+      <methods elementName="fromValue" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="S"/>
+      </methods>
+      <methods elementName="ShortConstant" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="S"/>
+      </methods>
+      <methods elementName="byteValue" returnType="B" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="charValue" returnType="C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="doubleValue" returnType="D" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="floatValue" returnType="F" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="intValue" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="longValue" returnType="J" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="shortValue" returnType="S" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="stringValue" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="typeID" returnType="I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="StringConstant.class" isClass="true" isInterface="false">
+    <type elementName="StringConstant" fullyQualifiedName="org.eclipse.jdt.internal.compiler.impl.StringConstant" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.impl.StringConstant">
+      <fields elementName="value" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <methods elementName="fromValue" returnType="Lorg.eclipse.jdt.internal.compiler.impl.Constant;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="StringConstant" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="stringValue" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="typeID" returnType="I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

@@ -1,0 +1,2129 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.core.util" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="ByteCodeVisitorAdapter.class" isClass="true" isInterface="false">
+    <type elementName="ByteCodeVisitorAdapter" fullyQualifiedName="org.eclipse.jdt.core.util.ByteCodeVisitorAdapter" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.ByteCodeVisitorAdapter">
+      <methods elementName="ByteCodeVisitorAdapter" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="_aaload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_aastore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_aconst_null" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_aload_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_aload_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_aload_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_aload_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_aload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_anewarray" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_areturn" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_arraylength" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_astore_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_astore_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_astore_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_astore_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_astore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_athrow" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_baload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_bastore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_bipush" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="B"/>
+      </methods>
+      <methods elementName="_caload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_castore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_checkcast" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_d2f" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_d2i" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_d2l" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dadd" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_daload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dastore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dcmpg" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dcmpl" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dconst_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dconst_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_ddiv" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dload_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dload_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dload_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dload_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_dmul" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dneg" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_drem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dreturn" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dstore_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dstore_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dstore_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dstore_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dstore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_dsub" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dup_x1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dup_x2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dup" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dup2_x1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dup2_x2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dup2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_f2d" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_f2i" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_f2l" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fadd" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_faload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fastore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fcmpg" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fcmpl" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fconst_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fconst_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fconst_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fdiv" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fload_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fload_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fload_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fload_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_fmul" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fneg" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_frem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_freturn" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fstore_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fstore_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fstore_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fstore_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fstore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_fsub" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_getfield" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_getstatic" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_goto_w" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_goto" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_i2b" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_i2c" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_i2d" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_i2f" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_i2l" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_i2s" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iadd" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iaload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iand" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iastore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iconst_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iconst_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iconst_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iconst_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iconst_4" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iconst_5" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iconst_m1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_idiv" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_if_acmpeq" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_if_acmpne" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_if_icmpeq" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_if_icmpge" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_if_icmpgt" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_if_icmple" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_if_icmplt" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_if_icmpne" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_ifeq" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_ifge" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_ifgt" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_ifle" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_iflt" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_ifne" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_ifnonnull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_ifnull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_iinc" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="_iload_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iload_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iload_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iload_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_imul" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_ineg" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_instanceof" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_invokeinterface" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="B"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_invokespecial" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_invokestatic" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_invokevirtual" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_ior" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_irem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_ireturn" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_ishl" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_ishr" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_istore_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_istore_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_istore_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_istore_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_istore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_isub" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iushr" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_ixor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_jsr_w" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_jsr" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_l2d" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_l2f" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_l2i" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_ladd" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_laload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_land" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lastore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lcmp" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lconst_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lconst_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_ldc_w" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_ldc" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_ldc2_w" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_ldiv" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lload_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lload_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lload_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lload_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_lmul" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lneg" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lookupswitch" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="[[I"/>
+      </methods>
+      <methods elementName="_lor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lrem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lreturn" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lshl" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lshr" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lstore_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lstore_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lstore_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lstore_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lstore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_lsub" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lushr" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lxor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_monitorenter" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_monitorexit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_multianewarray" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_new" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_newarray" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_nop" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_pop" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_pop2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_putfield" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_putstatic" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_ret" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_return" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_saload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_sastore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_sipush" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="S"/>
+      </methods>
+      <methods elementName="_swap" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_tableswitch" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="[I"/>
+      </methods>
+      <methods elementName="_wide" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="_wide" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="_breakpoint" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_impdep1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_impdep2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ClassFileBytesDisassembler.class" isClass="true" isInterface="false">
+    <type elementName="ClassFileBytesDisassembler" fullyQualifiedName="org.eclipse.jdt.core.util.ClassFileBytesDisassembler" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.ClassFileBytesDisassembler">
+      <fields elementName="DETAILED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DEFAULT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SYSTEM" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMPACT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="WORKING_COPY" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="ClassFileBytesDisassembler" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="disassemble" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[B"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.util.ClassFormatException;</exceptionTypes>
+      </methods>
+      <methods elementName="disassemble" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[B"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.util.ClassFormatException;</exceptionTypes>
+      </methods>
+      <methods elementName="getDescription" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ClassFormatException.class" isClass="true" isInterface="false">
+    <type elementName="ClassFormatException" fullyQualifiedName="org.eclipse.jdt.core.util.ClassFormatException" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.ClassFormatException">
+      <fields elementName="ERROR_MALFORMED_UTF8" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ERROR_TRUNCATED_INPUT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INVALID_CONSTANT_POOL_ENTRY" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="TOO_MANY_BYTES" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INVALID_ARGUMENTS_FOR_INVOKEINTERFACE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INVALID_BYTECODE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INVALID_TAG_CONSTANT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INVALID_MAGIC_NUMBER" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="serialVersionUID" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <methods elementName="ClassFormatException" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="ClassFormatException" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="CompilationUnitSorter.class" isClass="true" isInterface="false">
+    <type elementName="CompilationUnitSorter" fullyQualifiedName="org.eclipse.jdt.core.util.CompilationUnitSorter" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.CompilationUnitSorter">
+      <fields elementName="RELATIVE_ORDER" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <methods elementName="CompilationUnitSorter" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="checkASTLevel" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="sort" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.ICompilationUnit;"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="Ljava.util.Comparator;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="sort" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.ICompilationUnit;"/>
+        <parameters name="arg2" type="[I"/>
+        <parameters name="arg3" type="Ljava.util.Comparator;"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="sort" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.CompilationUnit;"/>
+        <parameters name="arg1" type="Ljava.util.Comparator;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.text.edits.TextEditGroup;"/>
+        <parameters name="arg4" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="IAnnotation.class" isClass="false" isInterface="true">
+    <type elementName="IAnnotation" fullyQualifiedName="org.eclipse.jdt.core.util.IAnnotation" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IAnnotation">
+      <methods elementName="getTypeIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTypeName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getComponentsNumber" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getComponents" returnType="[Lorg.eclipse.jdt.core.util.IAnnotationComponent;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IAnnotationComponent.class" isClass="false" isInterface="true">
+    <type elementName="IAnnotationComponent" fullyQualifiedName="org.eclipse.jdt.core.util.IAnnotationComponent" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IAnnotationComponent">
+      <methods elementName="getComponentNameIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getComponentName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getComponentValue" returnType="Lorg.eclipse.jdt.core.util.IAnnotationComponentValue;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IAnnotationComponentValue.class" isClass="false" isInterface="true">
+    <type elementName="IAnnotationComponentValue" fullyQualifiedName="org.eclipse.jdt.core.util.IAnnotationComponentValue" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IAnnotationComponentValue">
+      <fields elementName="BYTE_TAG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CHAR_TAG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DOUBLE_TAG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FLOAT_TAG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INTEGER_TAG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LONG_TAG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SHORT_TAG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="BOOLEAN_TAG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="STRING_TAG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ENUM_TAG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CLASS_TAG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ANNOTATION_TAG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ARRAY_TAG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="getAnnotationComponentValues" returnType="[Lorg.eclipse.jdt.core.util.IAnnotationComponentValue;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAnnotationValue" returnType="Lorg.eclipse.jdt.core.util.IAnnotation;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getClassInfo" returnType="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getClassInfoIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getConstantValue" returnType="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getConstantValueIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnumConstantName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnumConstantNameIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnumConstantTypeName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnumConstantTypeNameIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTag" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getValuesNumber" returnType="I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IAnnotationDefaultAttribute.class" isClass="false" isInterface="true">
+    <type elementName="IAnnotationDefaultAttribute" fullyQualifiedName="org.eclipse.jdt.core.util.IAnnotationDefaultAttribute" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IAnnotationDefaultAttribute">
+      <methods elementName="getMemberValue" returnType="Lorg.eclipse.jdt.core.util.IAnnotationComponentValue;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IAttributeNamesConstants.class" isClass="false" isInterface="true">
+    <type elementName="IAttributeNamesConstants" fullyQualifiedName="org.eclipse.jdt.core.util.IAttributeNamesConstants" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IAttributeNamesConstants">
+      <fields elementName="SYNTHETIC" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_VALUE" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="LINE_NUMBER" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="LOCAL_VARIABLE" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="INNER_CLASSES" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="CODE" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="EXCEPTIONS" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="SOURCE" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="DEPRECATED" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="SIGNATURE" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="ENCLOSING_METHOD" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="LOCAL_VARIABLE_TYPE_TABLE" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="RUNTIME_VISIBLE_ANNOTATIONS" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="RUNTIME_INVISIBLE_ANNOTATIONS" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="ANNOTATION_DEFAULT" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="STACK_MAP_TABLE" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="STACK_MAP" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IBytecodeVisitor.class" isClass="false" isInterface="true">
+    <type elementName="IBytecodeVisitor" fullyQualifiedName="org.eclipse.jdt.core.util.IBytecodeVisitor" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IBytecodeVisitor">
+      <methods elementName="_aaload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_aastore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_aconst_null" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_aload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_aload_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_aload_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_aload_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_aload_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_anewarray" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_areturn" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_arraylength" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_astore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_astore_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_astore_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_astore_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_astore_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_athrow" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_baload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_bastore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_bipush" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="B"/>
+      </methods>
+      <methods elementName="_caload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_castore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_checkcast" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_d2f" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_d2i" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_d2l" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dadd" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_daload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dastore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dcmpg" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dcmpl" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dconst_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dconst_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_ddiv" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_dload_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dload_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dload_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dload_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dmul" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dneg" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_drem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dreturn" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dstore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_dstore_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dstore_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dstore_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dstore_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dsub" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dup" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dup_x1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dup_x2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dup2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dup2_x1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_dup2_x2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_f2d" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_f2i" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_f2l" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fadd" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_faload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fastore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fcmpg" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fcmpl" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fconst_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fconst_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fconst_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fdiv" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_fload_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fload_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fload_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fload_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fmul" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fneg" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_frem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_freturn" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fstore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_fstore_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fstore_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fstore_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fstore_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_fsub" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_getfield" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_getstatic" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_goto" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_goto_w" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_i2b" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_i2c" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_i2d" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_i2f" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_i2l" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_i2s" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iadd" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iaload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iand" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iastore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iconst_m1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iconst_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iconst_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iconst_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iconst_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iconst_4" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iconst_5" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_idiv" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_if_acmpeq" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_if_acmpne" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_if_icmpeq" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_if_icmpne" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_if_icmplt" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_if_icmpge" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_if_icmpgt" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_if_icmple" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_ifeq" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_ifne" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_iflt" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_ifge" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_ifgt" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_ifle" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_ifnonnull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_ifnull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_iinc" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="_iload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_iload_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iload_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iload_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iload_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_imul" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_ineg" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_instanceof" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_invokeinterface" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="B"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_invokespecial" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_invokestatic" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_invokevirtual" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_ior" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_irem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_ireturn" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_ishl" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_ishr" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_istore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_istore_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_istore_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_istore_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_istore_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_isub" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_iushr" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_ixor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_jsr" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_jsr_w" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_l2d" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_l2f" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_l2i" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_ladd" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_laload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_land" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lastore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lcmp" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lconst_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lconst_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_ldc" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_ldc_w" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_ldc2_w" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_ldiv" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_lload_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lload_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lload_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lload_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lmul" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lneg" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lookupswitch" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="[[I"/>
+      </methods>
+      <methods elementName="_lor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lrem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lreturn" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lshl" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lshr" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lstore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_lstore_0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lstore_1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lstore_2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lstore_3" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lsub" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lushr" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_lxor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_monitorenter" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_monitorexit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_multianewarray" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_new" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_newarray" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_nop" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_pop" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_pop2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_putfield" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_putstatic" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;"/>
+      </methods>
+      <methods elementName="_ret" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="_return" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_saload" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_sastore" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_sipush" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="S"/>
+      </methods>
+      <methods elementName="_swap" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_tableswitch" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="[I"/>
+      </methods>
+      <methods elementName="_wide" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="_wide" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="_breakpoint" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_impdep1" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="_impdep2" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="IClassFileAttribute.class" isClass="false" isInterface="true">
+    <type elementName="IClassFileAttribute" fullyQualifiedName="org.eclipse.jdt.core.util.IClassFileAttribute" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IClassFileAttribute">
+      <methods elementName="getAttributeNameIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAttributeName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAttributeLength" returnType="J" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IClassFileDisassembler.class" isClass="false" isInterface="true">
+    <type elementName="IClassFileDisassembler" fullyQualifiedName="org.eclipse.jdt.core.util.IClassFileDisassembler" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IClassFileDisassembler">
+      <fields elementName="DETAILED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DEFAULT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="disassemble" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.util.IClassFileReader;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="disassemble" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.util.IClassFileReader;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="IClassFileReader.class" isClass="false" isInterface="true">
+    <type elementName="IClassFileReader" fullyQualifiedName="org.eclipse.jdt.core.util.IClassFileReader" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IClassFileReader">
+      <fields elementName="ALL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_POOL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="METHOD_INFOS" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FIELD_INFOS" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SUPER_INTERFACES" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CLASSFILE_ATTRIBUTES" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="METHOD_BODIES" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ALL_BUT_METHOD_BODIES" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="getAccessFlags" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFieldInfos" returnType="[Lorg.eclipse.jdt.core.util.IFieldInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInterfaceNames" returnType="[[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInterfaceIndexes" returnType="[I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInnerClassesAttribute" returnType="Lorg.eclipse.jdt.core.util.IInnerClassesAttribute;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMethodInfos" returnType="[Lorg.eclipse.jdt.core.util.IMethodInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getClassName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getClassIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSuperclassName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSuperclassIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isClass" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isInterface" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSourceFileAttribute" returnType="Lorg.eclipse.jdt.core.util.ISourceAttribute;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getConstantPool" returnType="Lorg.eclipse.jdt.core.util.IConstantPool;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMinorVersion" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMajorVersion" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAttributeCount" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAttributes" returnType="[Lorg.eclipse.jdt.core.util.IClassFileAttribute;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMagic" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFieldsCount" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMethodsCount" returnType="I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ICodeAttribute.class" isClass="false" isInterface="true">
+    <type elementName="ICodeAttribute" fullyQualifiedName="org.eclipse.jdt.core.util.ICodeAttribute" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.ICodeAttribute">
+      <methods elementName="getMaxLocals" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMaxStack" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLineNumberAttribute" returnType="Lorg.eclipse.jdt.core.util.ILineNumberAttribute;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLocalVariableAttribute" returnType="Lorg.eclipse.jdt.core.util.ILocalVariableAttribute;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getExceptionTable" returnType="[Lorg.eclipse.jdt.core.util.IExceptionTableEntry;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getBytecodes" returnType="[B" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCodeLength" returnType="J" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAttributesCount" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAttributes" returnType="[Lorg.eclipse.jdt.core.util.IClassFileAttribute;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getExceptionTableLength" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="traverse" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.util.IBytecodeVisitor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.util.ClassFormatException;</exceptionTypes>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="IConstantPool.class" isClass="false" isInterface="true">
+    <type elementName="IConstantPool" fullyQualifiedName="org.eclipse.jdt.core.util.IConstantPool" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IConstantPool">
+      <methods elementName="getConstantPoolCount" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEntryKind" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="decodeEntry" returnType="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="IConstantPoolConstant.class" isClass="false" isInterface="true">
+    <type elementName="IConstantPoolConstant" fullyQualifiedName="org.eclipse.jdt.core.util.IConstantPoolConstant" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IConstantPoolConstant">
+      <fields elementName="CONSTANT_Class" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_Fieldref" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_Methodref" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_InterfaceMethodref" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_String" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_Integer" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_Float" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_Long" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_Double" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_NameAndType" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_Utf8" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_Methodref_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_Class_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_Double_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_Fieldref_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_Float_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_Integer_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_InterfaceMethodref_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_Long_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_String_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_Utf8_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTANT_NameAndType_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IConstantPoolEntry.class" isClass="false" isInterface="true">
+    <type elementName="IConstantPoolEntry" fullyQualifiedName="org.eclipse.jdt.core.util.IConstantPoolEntry" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IConstantPoolEntry">
+      <methods elementName="getKind" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getClassInfoNameIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getClassIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNameAndTypeIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getStringIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getStringValue" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getIntegerValue" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFloatValue" returnType="F" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDoubleValue" returnType="D" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLongValue" returnType="J" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNameAndTypeInfoDescriptorIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNameAndTypeInfoNameIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getClassInfoName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getClassName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFieldName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMethodName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFieldDescriptor" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMethodDescriptor" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getUtf8Value" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getUtf8Length" returnType="I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IConstantValueAttribute.class" isClass="false" isInterface="true">
+    <type elementName="IConstantValueAttribute" fullyQualifiedName="org.eclipse.jdt.core.util.IConstantValueAttribute" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IConstantValueAttribute">
+      <methods elementName="getConstantValueIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getConstantValue" returnType="Lorg.eclipse.jdt.core.util.IConstantPoolEntry;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IEnclosingMethodAttribute.class" isClass="false" isInterface="true">
+    <type elementName="IEnclosingMethodAttribute" fullyQualifiedName="org.eclipse.jdt.core.util.IEnclosingMethodAttribute" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IEnclosingMethodAttribute">
+      <methods elementName="getEnclosingClass" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnclosingClassIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMethodDescriptor" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMethodDescriptorIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMethodName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMethodNameIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMethodNameAndTypeIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IExceptionAttribute.class" isClass="false" isInterface="true">
+    <type elementName="IExceptionAttribute" fullyQualifiedName="org.eclipse.jdt.core.util.IExceptionAttribute" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IExceptionAttribute">
+      <methods elementName="getExceptionsNumber" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getExceptionNames" returnType="[[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getExceptionIndexes" returnType="[I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IExceptionTableEntry.class" isClass="false" isInterface="true">
+    <type elementName="IExceptionTableEntry" fullyQualifiedName="org.eclipse.jdt.core.util.IExceptionTableEntry" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IExceptionTableEntry">
+      <methods elementName="getStartPC" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEndPC" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getHandlerPC" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCatchTypeIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCatchType" returnType="[C" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IFieldInfo.class" isClass="false" isInterface="true">
+    <type elementName="IFieldInfo" fullyQualifiedName="org.eclipse.jdt.core.util.IFieldInfo" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IFieldInfo">
+      <methods elementName="getConstantValueAttribute" returnType="Lorg.eclipse.jdt.core.util.IConstantValueAttribute;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAccessFlags" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNameIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDescriptor" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDescriptorIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hasConstantValueAttribute" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isSynthetic" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isDeprecated" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAttributeCount" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAttributes" returnType="[Lorg.eclipse.jdt.core.util.IClassFileAttribute;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IInnerClassesAttribute.class" isClass="false" isInterface="true">
+    <type elementName="IInnerClassesAttribute" fullyQualifiedName="org.eclipse.jdt.core.util.IInnerClassesAttribute" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IInnerClassesAttribute">
+      <methods elementName="getNumberOfClasses" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInnerClassAttributesEntries" returnType="[Lorg.eclipse.jdt.core.util.IInnerClassesAttributeEntry;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IInnerClassesAttributeEntry.class" isClass="false" isInterface="true">
+    <type elementName="IInnerClassesAttributeEntry" fullyQualifiedName="org.eclipse.jdt.core.util.IInnerClassesAttributeEntry" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IInnerClassesAttributeEntry">
+      <methods elementName="getAccessFlags" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInnerNameIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getOuterClassNameIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInnerClassNameIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInnerName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getOuterClassName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInnerClassName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ILineNumberAttribute.class" isClass="false" isInterface="true">
+    <type elementName="ILineNumberAttribute" fullyQualifiedName="org.eclipse.jdt.core.util.ILineNumberAttribute" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.ILineNumberAttribute">
+      <methods elementName="getLineNumberTableLength" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLineNumberTable" returnType="[[I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ILocalVariableAttribute.class" isClass="false" isInterface="true">
+    <type elementName="ILocalVariableAttribute" fullyQualifiedName="org.eclipse.jdt.core.util.ILocalVariableAttribute" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.ILocalVariableAttribute">
+      <methods elementName="getLocalVariableTableLength" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLocalVariableTable" returnType="[Lorg.eclipse.jdt.core.util.ILocalVariableTableEntry;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ILocalVariableTableEntry.class" isClass="false" isInterface="true">
+    <type elementName="ILocalVariableTableEntry" fullyQualifiedName="org.eclipse.jdt.core.util.ILocalVariableTableEntry" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.ILocalVariableTableEntry">
+      <methods elementName="getStartPC" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLength" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNameIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDescriptorIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDescriptor" returnType="[C" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ILocalVariableTypeTableAttribute.class" isClass="false" isInterface="true">
+    <type elementName="ILocalVariableTypeTableAttribute" fullyQualifiedName="org.eclipse.jdt.core.util.ILocalVariableTypeTableAttribute" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.ILocalVariableTypeTableAttribute">
+      <methods elementName="getLocalVariableTypeTableLength" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLocalVariableTypeTable" returnType="[Lorg.eclipse.jdt.core.util.ILocalVariableTypeTableEntry;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ILocalVariableTypeTableEntry.class" isClass="false" isInterface="true">
+    <type elementName="ILocalVariableTypeTableEntry" fullyQualifiedName="org.eclipse.jdt.core.util.ILocalVariableTypeTableEntry" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.ILocalVariableTypeTableEntry">
+      <methods elementName="getStartPC" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLength" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNameIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSignatureIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSignature" returnType="[C" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IMethodInfo.class" isClass="false" isInterface="true">
+    <type elementName="IMethodInfo" fullyQualifiedName="org.eclipse.jdt.core.util.IMethodInfo" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IMethodInfo">
+      <methods elementName="getDescriptor" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDescriptorIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAccessFlags" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNameIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isClinit" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isConstructor" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isSynthetic" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isDeprecated" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCodeAttribute" returnType="Lorg.eclipse.jdt.core.util.ICodeAttribute;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getExceptionAttribute" returnType="Lorg.eclipse.jdt.core.util.IExceptionAttribute;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAttributeCount" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAttributes" returnType="[Lorg.eclipse.jdt.core.util.IClassFileAttribute;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IModifierConstants.class" isClass="false" isInterface="true">
+    <type elementName="IModifierConstants" fullyQualifiedName="org.eclipse.jdt.core.util.IModifierConstants" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IModifierConstants">
+      <fields elementName="ACC_PUBLIC" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ACC_PRIVATE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ACC_PROTECTED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ACC_STATIC" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ACC_FINAL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ACC_SUPER" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ACC_SYNCHRONIZED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ACC_VOLATILE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ACC_BRIDGE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ACC_TRANSIENT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ACC_VARARGS" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ACC_NATIVE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ACC_INTERFACE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ACC_ABSTRACT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ACC_STRICT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ACC_SYNTHETIC" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ACC_ANNOTATION" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ACC_ENUM" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IOpcodeMnemonics.class" isClass="false" isInterface="true">
+    <type elementName="IOpcodeMnemonics" fullyQualifiedName="org.eclipse.jdt.core.util.IOpcodeMnemonics" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IOpcodeMnemonics">
+      <fields elementName="NOP" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ACONST_NULL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ICONST_M1" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ICONST_0" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ICONST_1" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ICONST_2" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ICONST_3" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ICONST_4" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ICONST_5" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LCONST_0" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LCONST_1" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FCONST_0" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FCONST_1" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FCONST_2" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DCONST_0" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DCONST_1" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="BIPUSH" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SIPUSH" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LDC" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LDC_W" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LDC2_W" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ILOAD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LLOAD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FLOAD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DLOAD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ALOAD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ILOAD_0" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ILOAD_1" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ILOAD_2" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ILOAD_3" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LLOAD_0" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LLOAD_1" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LLOAD_2" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LLOAD_3" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FLOAD_0" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FLOAD_1" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FLOAD_2" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FLOAD_3" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DLOAD_0" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DLOAD_1" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DLOAD_2" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DLOAD_3" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ALOAD_0" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ALOAD_1" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ALOAD_2" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ALOAD_3" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IALOAD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LALOAD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FALOAD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DALOAD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="AALOAD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="BALOAD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CALOAD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SALOAD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ISTORE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LSTORE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FSTORE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DSTORE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ASTORE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ISTORE_0" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ISTORE_1" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ISTORE_2" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ISTORE_3" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LSTORE_0" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LSTORE_1" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LSTORE_2" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LSTORE_3" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FSTORE_0" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FSTORE_1" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FSTORE_2" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FSTORE_3" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DSTORE_0" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DSTORE_1" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DSTORE_2" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DSTORE_3" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ASTORE_0" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ASTORE_1" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ASTORE_2" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ASTORE_3" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IASTORE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LASTORE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FASTORE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DASTORE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="AASTORE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="BASTORE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CASTORE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SASTORE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="POP" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="POP2" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DUP" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DUP_X1" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DUP_X2" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DUP2" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DUP2_X1" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DUP2_X2" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SWAP" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IADD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LADD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FADD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DADD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ISUB" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LSUB" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FSUB" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DSUB" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IMUL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LMUL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FMUL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DMUL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IDIV" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LDIV" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FDIV" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DDIV" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IREM" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LREM" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FREM" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DREM" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INEG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LNEG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FNEG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DNEG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ISHL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LSHL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ISHR" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LSHR" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IUSHR" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LUSHR" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IAND" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LAND" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IOR" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LOR" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IXOR" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LXOR" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IINC" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="I2L" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="I2F" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="I2D" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="L2I" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="L2F" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="L2D" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="F2I" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="F2L" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="F2D" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="D2I" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="D2L" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="D2F" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="I2B" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="I2C" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="I2S" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LCMP" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FCMPL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FCMPG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DCMPL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DCMPG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IFEQ" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IFNE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IFLT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IFGE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IFGT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IFLE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IF_ICMPEQ" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IF_ICMPNE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IF_ICMPLT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IF_ICMPGE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IF_ICMPGT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IF_ICMPLE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IF_ACMPEQ" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IF_ACMPNE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="GOTO" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="JSR" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="RET" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="TABLESWITCH" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LOOKUPSWITCH" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IRETURN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LRETURN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FRETURN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DRETURN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ARETURN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="RETURN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="GETSTATIC" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="PUTSTATIC" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="GETFIELD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="PUTFIELD" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INVOKEVIRTUAL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INVOKESPECIAL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INVOKESTATIC" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INVOKEINTERFACE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="NEW" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="NEWARRAY" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ANEWARRAY" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ARRAYLENGTH" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ATHROW" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CHECKCAST" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INSTANCEOF" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MONITORENTER" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MONITOREXIT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="WIDE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MULTIANEWARRAY" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IFNULL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IFNONNULL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="GOTO_W" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="JSR_W" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="BREAKPOINT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IMPDEP1" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IMPDEP2" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IParameterAnnotation.class" isClass="false" isInterface="true">
+    <type elementName="IParameterAnnotation" fullyQualifiedName="org.eclipse.jdt.core.util.IParameterAnnotation" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IParameterAnnotation">
+      <methods elementName="getAnnotationsNumber" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAnnotations" returnType="[Lorg.eclipse.jdt.core.util.IAnnotation;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IRuntimeInvisibleAnnotationsAttribute.class" isClass="false" isInterface="true">
+    <type elementName="IRuntimeInvisibleAnnotationsAttribute" fullyQualifiedName="org.eclipse.jdt.core.util.IRuntimeInvisibleAnnotationsAttribute" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IRuntimeInvisibleAnnotationsAttribute">
+      <methods elementName="getAnnotationsNumber" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAnnotations" returnType="[Lorg.eclipse.jdt.core.util.IAnnotation;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IRuntimeInvisibleParameterAnnotationsAttribute.class" isClass="false" isInterface="true">
+    <type elementName="IRuntimeInvisibleParameterAnnotationsAttribute" fullyQualifiedName="org.eclipse.jdt.core.util.IRuntimeInvisibleParameterAnnotationsAttribute" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IRuntimeInvisibleParameterAnnotationsAttribute">
+      <methods elementName="getParametersNumber" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getParameterAnnotations" returnType="[Lorg.eclipse.jdt.core.util.IParameterAnnotation;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IRuntimeVisibleAnnotationsAttribute.class" isClass="false" isInterface="true">
+    <type elementName="IRuntimeVisibleAnnotationsAttribute" fullyQualifiedName="org.eclipse.jdt.core.util.IRuntimeVisibleAnnotationsAttribute" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IRuntimeVisibleAnnotationsAttribute">
+      <methods elementName="getAnnotationsNumber" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAnnotations" returnType="[Lorg.eclipse.jdt.core.util.IAnnotation;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IRuntimeVisibleParameterAnnotationsAttribute.class" isClass="false" isInterface="true">
+    <type elementName="IRuntimeVisibleParameterAnnotationsAttribute" fullyQualifiedName="org.eclipse.jdt.core.util.IRuntimeVisibleParameterAnnotationsAttribute" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IRuntimeVisibleParameterAnnotationsAttribute">
+      <methods elementName="getParametersNumber" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getParameterAnnotations" returnType="[Lorg.eclipse.jdt.core.util.IParameterAnnotation;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ISignatureAttribute.class" isClass="false" isInterface="true">
+    <type elementName="ISignatureAttribute" fullyQualifiedName="org.eclipse.jdt.core.util.ISignatureAttribute" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.ISignatureAttribute">
+      <methods elementName="getSignatureIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSignature" returnType="[C" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ISourceAttribute.class" isClass="false" isInterface="true">
+    <type elementName="ISourceAttribute" fullyQualifiedName="org.eclipse.jdt.core.util.ISourceAttribute" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.ISourceAttribute">
+      <methods elementName="getSourceFileIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSourceFileName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IStackMapAttribute.class" isClass="false" isInterface="true">
+    <type elementName="IStackMapAttribute" fullyQualifiedName="org.eclipse.jdt.core.util.IStackMapAttribute" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IStackMapAttribute">
+      <methods elementName="getNumberOfEntries" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getStackMapFrame" returnType="[Lorg.eclipse.jdt.core.util.IStackMapFrame;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IStackMapFrame.class" isClass="false" isInterface="true">
+    <type elementName="IStackMapFrame" fullyQualifiedName="org.eclipse.jdt.core.util.IStackMapFrame" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IStackMapFrame">
+      <methods elementName="getFrameType" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getOffsetDelta" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNumberOfLocals" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLocals" returnType="[Lorg.eclipse.jdt.core.util.IVerificationTypeInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNumberOfStackItems" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getStackItems" returnType="[Lorg.eclipse.jdt.core.util.IVerificationTypeInfo;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IStackMapTableAttribute.class" isClass="false" isInterface="true">
+    <type elementName="IStackMapTableAttribute" fullyQualifiedName="org.eclipse.jdt.core.util.IStackMapTableAttribute" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IStackMapTableAttribute">
+      <methods elementName="getNumberOfEntries" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getStackMapFrame" returnType="[Lorg.eclipse.jdt.core.util.IStackMapFrame;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IVerificationTypeInfo.class" isClass="false" isInterface="true">
+    <type elementName="IVerificationTypeInfo" fullyQualifiedName="org.eclipse.jdt.core.util.IVerificationTypeInfo" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.IVerificationTypeInfo">
+      <fields elementName="ITEM_TOP" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ITEM_INTEGER" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ITEM_FLOAT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ITEM_DOUBLE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ITEM_LONG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ITEM_NULL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ITEM_UNINITIALIZED_THIS" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ITEM_OBJECT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ITEM_UNINITIALIZED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="getTag" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getOffset" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getConstantPoolIndex" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getClassTypeName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="OpcodeStringValues.class" isClass="true" isInterface="false">
+    <type elementName="OpcodeStringValues" fullyQualifiedName="org.eclipse.jdt.core.util.OpcodeStringValues" fullyQualifiedParametrizedName="org.eclipse.jdt.core.util.OpcodeStringValues">
+      <fields elementName="BYTECODE_NAMES" isEnumConstant="false" typeSignature="[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="OpcodeStringValues" returnType="V" isConstructor="true" isMainMethod="false"/>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

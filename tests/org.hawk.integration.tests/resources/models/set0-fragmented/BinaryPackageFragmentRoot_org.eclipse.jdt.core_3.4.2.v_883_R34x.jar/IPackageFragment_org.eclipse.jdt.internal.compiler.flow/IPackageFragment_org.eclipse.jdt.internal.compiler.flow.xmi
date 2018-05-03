@@ -1,0 +1,696 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.compiler.flow" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="ConditionalFlowInfo.class" isClass="true" isInterface="false">
+    <type elementName="ConditionalFlowInfo" fullyQualifiedName="org.eclipse.jdt.internal.compiler.flow.ConditionalFlowInfo" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.flow.ConditionalFlowInfo">
+      <fields elementName="initsWhenTrue" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isVolatile="false" isTransient="false"/>
+      <fields elementName="initsWhenFalse" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ConditionalFlowInfo" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="addInitializationsFrom" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="addPotentialInitializationsFrom" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="asNegatedCondition" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="copy" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="initsWhenFalse" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="initsWhenTrue" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isDefinitelyAssigned" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+      </methods>
+      <methods elementName="isDefinitelyAssigned" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isDefinitelyNonNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isDefinitelyNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isDefinitelyUnknown" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isPotentiallyAssigned" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+      </methods>
+      <methods elementName="isPotentiallyAssigned" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isPotentiallyNonNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isPotentiallyNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isPotentiallyUnknown" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isProtectedNonNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isProtectedNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsComparedEqualToNonNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsComparedEqualToNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsDefinitelyAssigned" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+      </methods>
+      <methods elementName="markAsDefinitelyAssigned" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsDefinitelyNonNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsDefinitelyNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsDefinitelyUnknown" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="setReachMode" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="mergedWith" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;"/>
+      </methods>
+      <methods elementName="nullInfoLessUnconditionalCopy" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="safeInitsWhenTrue" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="unconditionalCopy" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="unconditionalFieldLessCopy" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="unconditionalInits" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="unconditionalInitsWithoutSideEffect" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ExceptionHandlingFlowContext.class" isClass="true" isInterface="false">
+    <type elementName="ExceptionHandlingFlowContext" fullyQualifiedName="org.eclipse.jdt.internal.compiler.flow.ExceptionHandlingFlowContext" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.flow.ExceptionHandlingFlowContext">
+      <fields elementName="BitCacheSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="handledExceptions" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;" isVolatile="false" isTransient="false"/>
+      <fields elementName="isReached" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="isNeeded" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="initsOnExceptions" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isVolatile="false" isTransient="false"/>
+      <fields elementName="indexes" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.codegen.ObjectCache;" isVolatile="false" isTransient="false"/>
+      <fields elementName="isMethodContext" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="initsOnReturn" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isVolatile="false" isTransient="false"/>
+      <fields elementName="extendedExceptions" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ExceptionHandlingFlowContext" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;"/>
+      </methods>
+      <methods elementName="complainIfUnusedExceptionHandlers" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="complainIfUnusedExceptionHandlers" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.TryStatement;"/>
+      </methods>
+      <methods elementName="individualToString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="initsOnException" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="initsOnReturn" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="mergeUnhandledException" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="recordHandlingException" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg4" type="Z"/>
+      </methods>
+      <methods elementName="recordReturnFrom" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;"/>
+      </methods>
+      <methods elementName="subroutine" returnType="Lorg.eclipse.jdt.internal.compiler.ast.SubRoutineStatement;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="FinallyFlowContext.class" isClass="true" isInterface="false">
+    <type elementName="FinallyFlowContext" fullyQualifiedName="org.eclipse.jdt.internal.compiler.flow.FinallyFlowContext" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.flow.FinallyFlowContext">
+      <fields elementName="finalAssignments" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.ast.Reference;" isVolatile="false" isTransient="false"/>
+      <fields elementName="finalVariables" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.lookup.VariableBinding;" isVolatile="false" isTransient="false"/>
+      <fields elementName="assignCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="nullLocals" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;" isVolatile="false" isTransient="false"/>
+      <fields elementName="nullReferences" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.ast.Expression;" isVolatile="false" isTransient="false"/>
+      <fields elementName="nullCheckTypes" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="nullCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="FinallyFlowContext" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="complainOnDeferredChecks" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="individualToString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isSubRoutine" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="recordFinalAssignment" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.VariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.Reference;"/>
+      </methods>
+      <methods elementName="recordUsingNullReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.Scope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="removeFinalAssignmentIfAny" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Reference;"/>
+      </methods>
+      <methods elementName="recordNullReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="FlowContext.class" isClass="true" isInterface="false">
+    <type elementName="FlowContext" fullyQualifiedName="org.eclipse.jdt.internal.compiler.flow.FlowContext" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.flow.FlowContext">
+      <fields elementName="NotContinuableContext" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="associatedNode" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;" isVolatile="false" isTransient="false"/>
+      <fields elementName="parent" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="initsOnFinally" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.flow.NullInfoRegistry;" isVolatile="false" isTransient="false"/>
+      <fields elementName="deferNullDiagnostic" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="preemptNullDiagnostic" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="CAN_ONLY_NULL_NON_NULL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CAN_ONLY_NULL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CAN_ONLY_NON_NULL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MAY_NULL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CHECK_MASK" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IN_COMPARISON_NULL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IN_COMPARISON_NON_NULL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IN_ASSIGNMENT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="IN_INSTANCEOF" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONTEXT_MASK" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="FlowContext" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="breakLabel" returnType="Lorg.eclipse.jdt.internal.compiler.codegen.BranchLabel;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="checkExceptionHandlers" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="checkExceptionHandlers" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="continueLabel" returnType="Lorg.eclipse.jdt.internal.compiler.codegen.BranchLabel;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTargetContextForBreakLabel" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="getTargetContextForContinueLabel" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="getTargetContextForDefaultBreak" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTargetContextForDefaultContinue" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="individualToString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="initsOnBreak" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="initsOnReturn" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isBreakable" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isContinuable" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isNonReturningContext" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isSubRoutine" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="labelName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="recordBreakFrom" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="recordBreakTo" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;"/>
+      </methods>
+      <methods elementName="recordContinueFrom" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="recordFinalAssignment" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.VariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.Reference;"/>
+      </methods>
+      <methods elementName="recordNullReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="recordReturnFrom" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;"/>
+      </methods>
+      <methods elementName="recordSettingFinal" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.VariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.Reference;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="recordUsingNullReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.Scope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="removeFinalAssignmentIfAny" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Reference;"/>
+      </methods>
+      <methods elementName="subroutine" returnType="Lorg.eclipse.jdt.internal.compiler.ast.SubRoutineStatement;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="FlowInfo.class" isClass="true" isInterface="false">
+    <type elementName="FlowInfo" fullyQualifiedName="org.eclipse.jdt.internal.compiler.flow.FlowInfo" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.flow.FlowInfo">
+      <fields elementName="tagBits" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="REACHABLE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="UNREACHABLE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="NULL_FLAG_MASK" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="UNKNOWN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="NULL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="NON_NULL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DEAD_END" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="FlowInfo" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="addInitializationsFrom" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="addPotentialInitializationsFrom" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="asNegatedCondition" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="conditional" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="cannotBeDefinitelyNullOrNonNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="cannotBeNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="canOnlyBeNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="copy" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="initial" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="initsWhenFalse" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="initsWhenTrue" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isDefinitelyAssigned" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+      </methods>
+      <methods elementName="isDefinitelyAssigned" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isDefinitelyNonNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isDefinitelyNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isDefinitelyUnknown" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isPotentiallyAssigned" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+      </methods>
+      <methods elementName="isPotentiallyAssigned" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isPotentiallyNonNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isPotentiallyNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isPotentiallyUnknown" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isProtectedNonNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isProtectedNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsComparedEqualToNonNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsComparedEqualToNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsDefinitelyAssigned" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+      </methods>
+      <methods elementName="markAsDefinitelyNonNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsDefinitelyNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsDefinitelyAssigned" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsDefinitelyUnknown" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="mergedOptimizedBranches" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="Z"/>
+      </methods>
+      <methods elementName="reachMode" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="safeInitsWhenTrue" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setReachMode" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="mergedWith" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;"/>
+      </methods>
+      <methods elementName="nullInfoLessUnconditionalCopy" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="unconditionalCopy" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="unconditionalFieldLessCopy" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="unconditionalInits" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="unconditionalInitsWithoutSideEffect" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="InitializationFlowContext.class" isClass="true" isInterface="false">
+    <type elementName="InitializationFlowContext" fullyQualifiedName="org.eclipse.jdt.internal.compiler.flow.InitializationFlowContext" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.flow.InitializationFlowContext">
+      <fields elementName="exceptionCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="thrownExceptions" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isVolatile="false" isTransient="false"/>
+      <fields elementName="exceptionThrowers" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;" isVolatile="false" isTransient="false"/>
+      <fields elementName="exceptionThrowerFlowInfos" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isVolatile="false" isTransient="false"/>
+      <methods elementName="InitializationFlowContext" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="checkInitializerExceptions" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="individualToString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="recordHandlingException" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg4" type="Z"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="InsideSubRoutineFlowContext.class" isClass="true" isInterface="false">
+    <type elementName="InsideSubRoutineFlowContext" fullyQualifiedName="org.eclipse.jdt.internal.compiler.flow.InsideSubRoutineFlowContext" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.flow.InsideSubRoutineFlowContext">
+      <fields elementName="initsOnReturn" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isVolatile="false" isTransient="false"/>
+      <methods elementName="InsideSubRoutineFlowContext" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="individualToString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="initsOnReturn" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isNonReturningContext" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="recordReturnFrom" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;"/>
+      </methods>
+      <methods elementName="subroutine" returnType="Lorg.eclipse.jdt.internal.compiler.ast.SubRoutineStatement;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="LabelFlowContext.class" isClass="true" isInterface="false">
+    <type elementName="LabelFlowContext" fullyQualifiedName="org.eclipse.jdt.internal.compiler.flow.LabelFlowContext" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.flow.LabelFlowContext">
+      <fields elementName="labelName" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <methods elementName="LabelFlowContext" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.codegen.BranchLabel;"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="checkLabelValidity" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="individualToString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="labelName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="LoopingFlowContext.class" isClass="true" isInterface="false">
+    <type elementName="LoopingFlowContext" fullyQualifiedName="org.eclipse.jdt.internal.compiler.flow.LoopingFlowContext" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.flow.LoopingFlowContext">
+      <fields elementName="continueLabel" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.codegen.BranchLabel;" isVolatile="false" isTransient="false"/>
+      <fields elementName="initsOnContinue" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isVolatile="false" isTransient="false"/>
+      <fields elementName="upstreamNullFlowInfo" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isVolatile="false" isTransient="false"/>
+      <fields elementName="innerFlowContexts" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.flow.LoopingFlowContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="innerFlowInfos" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isVolatile="false" isTransient="false"/>
+      <fields elementName="innerFlowContextsCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="breakTargetContexts" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.flow.LabelFlowContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="breakTargetsCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="finalAssignments" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.ast.Reference;" isVolatile="false" isTransient="false"/>
+      <fields elementName="finalVariables" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.lookup.VariableBinding;" isVolatile="false" isTransient="false"/>
+      <fields elementName="assignCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="nullLocals" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;" isVolatile="false" isTransient="false"/>
+      <fields elementName="nullReferences" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.ast.Expression;" isVolatile="false" isTransient="false"/>
+      <fields elementName="nullCheckTypes" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="nullCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="associatedScope" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.lookup.Scope;" isVolatile="false" isTransient="false"/>
+      <methods elementName="LoopingFlowContext" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.codegen.BranchLabel;"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.compiler.codegen.BranchLabel;"/>
+        <parameters name="arg5" type="Lorg.eclipse.jdt.internal.compiler.lookup.Scope;"/>
+      </methods>
+      <methods elementName="complainOnDeferredFinalChecks" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="complainOnDeferredNullChecks" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="continueLabel" returnType="Lorg.eclipse.jdt.internal.compiler.codegen.BranchLabel;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="individualToString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isContinuable" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isContinuedTo" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="recordBreakTo" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;"/>
+      </methods>
+      <methods elementName="recordContinueFrom" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="recordFinalAssignment" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.VariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.Reference;"/>
+      </methods>
+      <methods elementName="recordNullReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="recordUsingNullReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.Scope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="removeFinalAssignmentIfAny" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Reference;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="NullInfoRegistry.class" isClass="true" isInterface="false">
+    <type elementName="NullInfoRegistry" fullyQualifiedName="org.eclipse.jdt.internal.compiler.flow.NullInfoRegistry" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.flow.NullInfoRegistry">
+      <methods elementName="NullInfoRegistry" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;"/>
+      </methods>
+      <methods elementName="add" returnType="Lorg.eclipse.jdt.internal.compiler.flow.NullInfoRegistry;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.NullInfoRegistry;"/>
+      </methods>
+      <methods elementName="markAsComparedEqualToNonNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsDefinitelyNonNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsDefinitelyNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsDefinitelyUnknown" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="mitigateNullInfoOf" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="SwitchFlowContext.class" isClass="true" isInterface="false">
+    <type elementName="SwitchFlowContext" fullyQualifiedName="org.eclipse.jdt.internal.compiler.flow.SwitchFlowContext" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.flow.SwitchFlowContext">
+      <fields elementName="breakLabel" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.codegen.BranchLabel;" isVolatile="false" isTransient="false"/>
+      <fields elementName="initsOnBreak" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isVolatile="false" isTransient="false"/>
+      <methods elementName="SwitchFlowContext" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.codegen.BranchLabel;"/>
+      </methods>
+      <methods elementName="breakLabel" returnType="Lorg.eclipse.jdt.internal.compiler.codegen.BranchLabel;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="individualToString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isBreakable" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="recordBreakFrom" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="UnconditionalFlowInfo$AssertionFailedException.class" isClass="true" isInterface="false">
+    <type elementName="AssertionFailedException" fullyQualifiedName="org.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo$AssertionFailedException" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo.AssertionFailedException">
+      <fields elementName="serialVersionUID" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <methods elementName="AssertionFailedException" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="UnconditionalFlowInfo.class" isClass="true" isInterface="false">
+    <type elementName="UnconditionalFlowInfo" fullyQualifiedName="org.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo">
+      <fields elementName="coverageTestFlag" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="coverageTestId" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="definiteInits" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="potentialInits" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="nullBit1" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="nullBit2" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="nullBit3" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="nullBit4" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="extraLength" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="extra" isEnumConstant="false" typeSignature="[[J" isVolatile="false" isTransient="false"/>
+      <fields elementName="maxFieldCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="BitCacheSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="UnconditionalFlowInfo" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="addInitializationsFrom" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="addPotentialInitializationsFrom" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="addPotentialNullInfoFrom" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;"/>
+      </methods>
+      <methods elementName="cannotBeDefinitelyNullOrNonNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="cannotBeNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="canOnlyBeNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="copy" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="discardInitializationInfo" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="discardNonFieldInitializations" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="initsWhenFalse" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="initsWhenTrue" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isDefinitelyAssigned" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="isDefinitelyAssigned" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+      </methods>
+      <methods elementName="isDefinitelyAssigned" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isDefinitelyNonNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isDefinitelyNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isDefinitelyUnknown" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isPotentiallyAssigned" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="isPotentiallyAssigned" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+      </methods>
+      <methods elementName="isPotentiallyAssigned" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isPotentiallyNonNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isPotentiallyNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isPotentiallyUnknown" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isProtectedNonNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="isProtectedNull" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsComparedEqualToNonNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsComparedEqualToNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsDefinitelyAssigned" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="markAsDefinitelyAssigned" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+      </methods>
+      <methods elementName="markAsDefinitelyAssigned" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsDefinitelyNonNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsDefinitelyNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="markAsDefinitelyUnknown" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+      </methods>
+      <methods elementName="mergedWith" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;"/>
+      </methods>
+      <methods elementName="numberOfEnclosingFields" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="nullInfoLessUnconditionalCopy" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="safeInitsWhenTrue" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setReachMode" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="unconditionalCopy" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="unconditionalFieldLessCopy" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="unconditionalInits" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="unconditionalInitsWithoutSideEffect" returnType="Lorg.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo;" isConstructor="false" isMainMethod="false"/>
+      <types elementName="AssertionFailedException" fullyQualifiedName="org.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo$AssertionFailedException" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo.AssertionFailedException">
+        <fields elementName="serialVersionUID" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+        <methods elementName="AssertionFailedException" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+        </methods>
+      </types>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

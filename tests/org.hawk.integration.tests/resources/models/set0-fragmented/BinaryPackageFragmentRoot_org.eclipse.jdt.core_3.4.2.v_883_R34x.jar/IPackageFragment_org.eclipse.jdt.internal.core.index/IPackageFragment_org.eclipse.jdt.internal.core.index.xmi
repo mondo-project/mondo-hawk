@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.core.index" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="DiskIndex$IntList.class" isClass="true" isInterface="false">
+    <type elementName="IntList" fullyQualifiedName="org.eclipse.jdt.internal.core.index.DiskIndex$IntList" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.index.DiskIndex.IntList">
+      <fields elementName="size" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="elements" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <methods elementName="IntList" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+      </methods>
+      <methods elementName="add" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="asArray" returnType="[I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="DiskIndex.class" isClass="true" isInterface="false">
+    <type elementName="DiskIndex" fullyQualifiedName="org.eclipse.jdt.internal.core.index.DiskIndex" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.index.DiskIndex">
+      <fields elementName="indexFile" isEnumConstant="false" typeSignature="Ljava.io.File;" isVolatile="false" isTransient="false"/>
+      <fields elementName="headerInfoOffset" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="numberOfChunks" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="sizeOfLastChunk" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="chunkOffsets" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="documentReferenceSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="startOfCategoryTables" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="categoryOffsets" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfIntValues;" isVolatile="false" isTransient="false"/>
+      <fields elementName="categoryEnds" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfIntValues;" isVolatile="false" isTransient="false"/>
+      <fields elementName="cacheUserCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="cachedChunks" isEnumConstant="false" typeSignature="[[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="categoryTables" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfObject;" isVolatile="false" isTransient="false"/>
+      <fields elementName="cachedCategoryName" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="DEFAULT_BUFFER_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="BUFFER_READ_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="BUFFER_WRITE_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="streamBuffer" isEnumConstant="false" typeSignature="[B" isVolatile="false" isTransient="false"/>
+      <fields elementName="bufferIndex" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="bufferEnd" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="streamEnd" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="separator" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="SIGNATURE" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="SIGNATURE_CHARS" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="DEBUG" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="RE_INDEXED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DELETED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CHUNK_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="INTERNED_CATEGORY_NAMES" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleSetOfCharArray;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="DiskIndex" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="addDocumentNames" returnType="Lorg.eclipse.jdt.internal.compiler.util.SimpleSet;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.index.MemoryIndex;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="addQueryResult" returnType="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfObject;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfObject;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfObject;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.core.index.MemoryIndex;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="addQueryResults" returnType="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfObject;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.core.index.MemoryIndex;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="cacheDocumentNames" returnType="V" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="computeDocumentNames" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.String;"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.core.index.MemoryIndex;"/>
+      </methods>
+      <methods elementName="copyQueryResults" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfObject;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="initialize" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="initializeFrom" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.index.DiskIndex;"/>
+        <parameters name="arg1" type="Ljava.io.File;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="mergeCategories" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.index.DiskIndex;"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="Ljava.io.FileOutputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="mergeCategory" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.index.DiskIndex;"/>
+        <parameters name="arg2" type="[I"/>
+        <parameters name="arg3" type="Ljava.io.FileOutputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="mergeWith" returnType="Lorg.eclipse.jdt.internal.core.index.DiskIndex;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.index.MemoryIndex;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="readAllDocumentNames" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="readCategoryTable" returnType="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfObject;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="Z"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="readChunk" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.io.FileInputStream;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="readDocumentName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="readDocumentNumbers" returnType="[I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="readHeaderInfo" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.FileInputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="startQuery" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="stopQuery" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="readStreamBuffer" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.FileInputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="readStreamChars" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.FileInputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="readStreamDocumentArray" returnType="[I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.FileInputStream;"/>
+        <parameters name="arg1" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="readStreamInt" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.FileInputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="writeAllDocumentNames" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.io.FileOutputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="writeCategories" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.FileOutputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="writeCategoryTable" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfObject;"/>
+        <parameters name="arg2" type="Ljava.io.FileOutputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="writeDocumentNumbers" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+        <parameters name="arg1" type="Ljava.io.FileOutputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="writeHeaderInfo" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.FileOutputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="writeOffsetToHeader" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="writeStreamChars" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.FileOutputStream;"/>
+        <parameters name="arg1" type="[C"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="writeStreamChars" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.FileOutputStream;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="writeStreamInt" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.FileOutputStream;"/>
+        <parameters name="arg1" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <types elementName="IntList" fullyQualifiedName="org.eclipse.jdt.internal.core.index.DiskIndex$IntList" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.index.DiskIndex.IntList">
+        <fields elementName="size" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="elements" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+        <methods elementName="IntList" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="[I"/>
+        </methods>
+        <methods elementName="add" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+        </methods>
+        <methods elementName="asArray" returnType="[I" isConstructor="false" isMainMethod="false"/>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="EntryResult.class" isClass="true" isInterface="false">
+    <type elementName="EntryResult" fullyQualifiedName="org.eclipse.jdt.internal.core.index.EntryResult" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.index.EntryResult">
+      <fields elementName="word" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="documentTables" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.util.HashtableOfObject;" isVolatile="false" isTransient="false"/>
+      <fields elementName="documentNames" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleSet;" isVolatile="false" isTransient="false"/>
+      <methods elementName="EntryResult" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfObject;"/>
+      </methods>
+      <methods elementName="addDocumentName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="addDocumentTable" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfObject;"/>
+      </methods>
+      <methods elementName="getWord" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDocumentNames" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.index.Index;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="isEmpty" returnType="Z" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="Index.class" isClass="true" isInterface="false">
+    <type elementName="Index" fullyQualifiedName="org.eclipse.jdt.internal.core.index.Index" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.index.Index">
+      <fields elementName="containerPath" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="monitor" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.search.indexing.ReadWriteMonitor;" isVolatile="false" isTransient="false"/>
+      <fields elementName="DEFAULT_SEPARATOR" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="separator" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="diskIndex" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.index.DiskIndex;" isVolatile="false" isTransient="false"/>
+      <fields elementName="memoryIndex" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.index.MemoryIndex;" isVolatile="false" isTransient="false"/>
+      <fields elementName="MATCH_RULE_INDEX_MASK" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="isMatch" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="Index" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Z"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="addIndexEntry" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="containerRelativePath" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getIndexFile" returnType="Ljava.io.File;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hasChanged" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="query" returnType="[Lorg.eclipse.jdt.internal.core.index.EntryResult;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="queryDocumentNames" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="remove" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="save" returnType="V" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="startQuery" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="stopQuery" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="MemoryIndex.class" isClass="true" isInterface="false">
+    <type elementName="MemoryIndex" fullyQualifiedName="org.eclipse.jdt.internal.core.index.MemoryIndex" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.index.MemoryIndex">
+      <fields elementName="NUM_CHANGES" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="docsToReferences" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isVolatile="false" isTransient="false"/>
+      <fields elementName="allWords" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.util.SimpleWordSet;" isVolatile="false" isTransient="false"/>
+      <fields elementName="lastDocumentName" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="lastReferenceTable" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfObject;" isVolatile="false" isTransient="false"/>
+      <methods elementName="MemoryIndex" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="addDocumentNames" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.util.SimpleSet;"/>
+      </methods>
+      <methods elementName="addIndexEntry" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="addQueryResults" returnType="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfObject;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfObject;"/>
+      </methods>
+      <methods elementName="hasChanged" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="remove" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="shouldMerge" returnType="Z" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

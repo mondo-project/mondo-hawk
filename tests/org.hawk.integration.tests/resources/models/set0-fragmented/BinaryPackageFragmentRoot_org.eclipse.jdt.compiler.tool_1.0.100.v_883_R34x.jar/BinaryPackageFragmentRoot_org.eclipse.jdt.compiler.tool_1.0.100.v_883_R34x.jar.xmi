@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:BinaryPackageFragmentRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.compiler.tool_1.0.100.v_883_R34x.jar" path="C:/Eclipse/Eclipse_Ganym&#xe8;de/eclipse/plugins/org.eclipse.jdt.compiler.tool_1.0.100.v_883_R34x.jar" isReadOnly="true">
+  <packageFragments href="IPackageFragment_org.eclipse.jdt/IPackageFragment_org.eclipse.jdt.xmi#/"/>
+  <packageFragments href="IPackageFragment_org.eclipse.jdt.internal.compiler.tool/IPackageFragment_org.eclipse.jdt.internal.compiler.tool.xmi#/"/>
+  <packageFragments href="IPackageFragment_org.eclipse.jdt.internal.compiler/IPackageFragment_org.eclipse.jdt.internal.compiler.xmi#/"/>
+  <packageFragments href="IPackageFragment_org.eclipse.jdt.internal/IPackageFragment_org.eclipse.jdt.internal.xmi#/"/>
+</core:BinaryPackageFragmentRoot>

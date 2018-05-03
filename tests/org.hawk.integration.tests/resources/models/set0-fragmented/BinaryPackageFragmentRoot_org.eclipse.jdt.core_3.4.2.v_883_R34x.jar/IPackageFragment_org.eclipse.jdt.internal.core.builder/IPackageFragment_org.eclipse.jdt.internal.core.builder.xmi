@@ -1,0 +1,1126 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.core.builder" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="AbortIncrementalBuildException.class" isClass="true" isInterface="false">
+    <type elementName="AbortIncrementalBuildException" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.AbortIncrementalBuildException" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.AbortIncrementalBuildException">
+      <fields elementName="qualifiedTypeName" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="serialVersionUID" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <methods elementName="AbortIncrementalBuildException" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="AbstractImageBuilder$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.AbstractImageBuilder$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.AbstractImageBuilder.1">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.AbstractImageBuilder;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$exclusionPatterns" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$inclusionPatterns" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$sourceFiles" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$sourceLocation" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.ClasspathMultiDirectory;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$isAlsoProject" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$isOutputFolder" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$segmentCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$outputFolder" isEnumConstant="false" typeSignature="Lorg.eclipse.core.resources.IContainer;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.AbstractImageBuilder;"/>
+        <parameters name="arg1" type="[[C"/>
+        <parameters name="arg2" type="[[C"/>
+        <parameters name="arg3" type="Ljava.util.ArrayList;"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.core.builder.ClasspathMultiDirectory;"/>
+        <parameters name="arg5" type="Z"/>
+        <parameters name="arg6" type="Z"/>
+        <parameters name="arg7" type="I"/>
+        <parameters name="arg8" type="Lorg.eclipse.core.resources.IContainer;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceProxy;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="AbstractImageBuilder.class" isClass="true" isInterface="false">
+    <type elementName="AbstractImageBuilder" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.AbstractImageBuilder" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.AbstractImageBuilder">
+      <fields elementName="javaBuilder" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.JavaBuilder;" isVolatile="false" isTransient="false"/>
+      <fields elementName="newState" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.State;" isVolatile="false" isTransient="false"/>
+      <fields elementName="nameEnvironment" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.NameEnvironment;" isVolatile="false" isTransient="false"/>
+      <fields elementName="sourceLocations" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.core.builder.ClasspathMultiDirectory;" isVolatile="false" isTransient="false"/>
+      <fields elementName="notifier" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.BuildNotifier;" isVolatile="false" isTransient="false"/>
+      <fields elementName="compiler" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.Compiler;" isVolatile="false" isTransient="false"/>
+      <fields elementName="workQueue" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.WorkQueue;" isVolatile="false" isTransient="false"/>
+      <fields elementName="problemSourceFiles" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+      <fields elementName="compiledAllAtOnce" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="inCompiler" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="keepStoringProblemMarkers" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="filesWithAnnotations" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleSet;" isVolatile="false" isTransient="false"/>
+      <fields elementName="MAX_AT_ONCE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVA_PROBLEM_MARKER_ATTRIBUTE_NAMES" isEnumConstant="false" typeSignature="[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVA_TASK_MARKER_ATTRIBUTE_NAMES" isEnumConstant="false" typeSignature="[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="S_ERROR" isEnumConstant="false" typeSignature="Ljava.lang.Integer;" isVolatile="false" isTransient="false"/>
+      <fields elementName="S_WARNING" isEnumConstant="false" typeSignature="Ljava.lang.Integer;" isVolatile="false" isTransient="false"/>
+      <fields elementName="P_HIGH" isEnumConstant="false" typeSignature="Ljava.lang.Integer;" isVolatile="false" isTransient="false"/>
+      <fields elementName="P_NORMAL" isEnumConstant="false" typeSignature="Ljava.lang.Integer;" isVolatile="false" isTransient="false"/>
+      <fields elementName="P_LOW" isEnumConstant="false" typeSignature="Ljava.lang.Integer;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="AbstractImageBuilder" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.JavaBuilder;"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.core.builder.State;"/>
+      </methods>
+      <methods elementName="acceptResult" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+      </methods>
+      <methods elementName="acceptSecondaryType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ClassFile;"/>
+      </methods>
+      <methods elementName="addAllSourceFiles" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.ArrayList;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="cleanUp" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="compile" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+      </methods>
+      <methods elementName="compile" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="copyResource" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResource;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IResource;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="createProblemFor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResource;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.IMember;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="deleteGeneratedFiles" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="findSourceFile" returnType="Lorg.eclipse.jdt.internal.core.builder.SourceFile;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="finishedWith" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="Ljava.util.ArrayList;"/>
+        <parameters name="arg4" type="Ljava.util.ArrayList;"/>
+      </methods>
+      <methods elementName="createFolder" returnType="Lorg.eclipse.core.resources.IContainer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IContainer;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="fromIFile" returnType="Lorg.eclipse.jdt.internal.compiler.env.ICompilationUnit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="initializeAnnotationProcessorManager" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.Compiler;"/>
+      </methods>
+      <methods elementName="internalException" returnType="Ljava.lang.RuntimeException;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.CoreException;"/>
+      </methods>
+      <methods elementName="isExcludedFromProject" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="newCompiler" returnType="Lorg.eclipse.jdt.internal.compiler.Compiler;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="notifyParticipants" returnType="[Lorg.eclipse.jdt.core.compiler.BuildContext;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+      </methods>
+      <methods elementName="processAnnotationResults" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.core.builder.CompilationParticipantResult;"/>
+      </methods>
+      <methods elementName="processAnnotations" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.core.compiler.BuildContext;"/>
+      </methods>
+      <methods elementName="recordParticipantResult" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.CompilationParticipantResult;"/>
+      </methods>
+      <methods elementName="storeProblemsFor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="storeTasksFor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="updateProblemsFor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="updateTasksFor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="writeClassFile" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ClassFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+        <parameters name="arg2" type="Z"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="writeClassFileContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ClassFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="AdditionalTypeCollection.class" isClass="true" isInterface="false">
+    <type elementName="AdditionalTypeCollection" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.AdditionalTypeCollection" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.AdditionalTypeCollection">
+      <fields elementName="definedTypeNames" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <methods elementName="AdditionalTypeCollection" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[[[C"/>
+        <parameters name="arg2" type="[[C"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="BatchImageBuilder$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.BatchImageBuilder$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.BatchImageBuilder.1">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.BatchImageBuilder;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.BatchImageBuilder;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResource;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="BatchImageBuilder$2.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.BatchImageBuilder$2" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.BatchImageBuilder.2">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.BatchImageBuilder;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$exclusionPatterns" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$inclusionPatterns" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.BatchImageBuilder;"/>
+        <parameters name="arg1" type="[[C"/>
+        <parameters name="arg2" type="[[C"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceProxy;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="BatchImageBuilder$3.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.BatchImageBuilder$3" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.BatchImageBuilder.3">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.BatchImageBuilder;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$exclusionPatterns" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$inclusionPatterns" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$segmentCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$outputFolder" isEnumConstant="false" typeSignature="Lorg.eclipse.core.resources.IContainer;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$deletedAll" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$isAlsoProject" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.BatchImageBuilder;"/>
+        <parameters name="arg1" type="[[C"/>
+        <parameters name="arg2" type="[[C"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="Lorg.eclipse.core.resources.IContainer;"/>
+        <parameters name="arg5" type="Z"/>
+        <parameters name="arg6" type="Z"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceProxy;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="BatchImageBuilder.class" isClass="true" isInterface="false">
+    <type elementName="BatchImageBuilder" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.BatchImageBuilder" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.BatchImageBuilder">
+      <fields elementName="incrementalBuilder" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.IncrementalImageBuilder;" isVolatile="false" isTransient="false"/>
+      <fields elementName="secondaryTypes" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+      <fields elementName="typeLocatorsWithUndefinedTypes" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.StringSet;" isVolatile="false" isTransient="false"/>
+      <methods elementName="BatchImageBuilder" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.JavaBuilder;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="build" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="acceptSecondaryType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ClassFile;"/>
+      </methods>
+      <methods elementName="cleanOutputFolders" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="cleanUp" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="compile" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="copyExtraResourcesBack" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.ClasspathMultiDirectory;"/>
+        <parameters name="arg1" type="Z"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="findOriginalResource" returnType="Lorg.eclipse.core.resources.IResource;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+      </methods>
+      <methods elementName="printStats" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="processAnnotationResults" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.core.builder.CompilationParticipantResult;"/>
+      </methods>
+      <methods elementName="rebuildTypesAffectedBySecondaryTypes" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="storeProblemsFor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="BuildNotifier.class" isClass="true" isInterface="false">
+    <type elementName="BuildNotifier" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.BuildNotifier" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.BuildNotifier">
+      <fields elementName="monitor" isEnumConstant="false" typeSignature="Lorg.eclipse.core.runtime.IProgressMonitor;" isVolatile="false" isTransient="false"/>
+      <fields elementName="cancelling" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="percentComplete" isEnumConstant="false" typeSignature="F" isVolatile="false" isTransient="false"/>
+      <fields elementName="progressPerCompilationUnit" isEnumConstant="false" typeSignature="F" isVolatile="false" isTransient="false"/>
+      <fields elementName="newErrorCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fixedErrorCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="newWarningCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fixedWarningCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="workDone" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="totalWork" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="previousSubtask" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="NewErrorCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FixedErrorCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="NewWarningCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FixedWarningCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="resetProblemCounters" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="BuildNotifier" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IProject;"/>
+      </methods>
+      <methods elementName="aboutToCompile" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+      </methods>
+      <methods elementName="begin" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="checkCancel" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="checkCancelWithinCompiler" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="compiled" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+      </methods>
+      <methods elementName="done" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="problemsMessage" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setCancelling" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="setProgressPerCompilationUnit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="F"/>
+      </methods>
+      <methods elementName="subTask" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="updateProblemCounts" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+      </methods>
+      <methods elementName="updateProblemCounts" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.core.resources.IMarker;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+      </methods>
+      <methods elementName="updateProgress" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="F"/>
+      </methods>
+      <methods elementName="updateProgressDelta" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="F"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ClasspathDirectory.class" isClass="true" isInterface="false">
+    <type elementName="ClasspathDirectory" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.ClasspathDirectory" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.ClasspathDirectory">
+      <fields elementName="binaryFolder" isEnumConstant="false" typeSignature="Lorg.eclipse.core.resources.IContainer;" isVolatile="false" isTransient="false"/>
+      <fields elementName="isOutputFolder" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="directoryCache" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isVolatile="false" isTransient="false"/>
+      <fields elementName="missingPackageHolder" isEnumConstant="false" typeSignature="[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="accessRuleSet" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.env.AccessRuleSet;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ClasspathDirectory" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IContainer;"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.env.AccessRuleSet;"/>
+      </methods>
+      <methods elementName="cleanup" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="directoryList" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="doesFileExist" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="findClass" returnType="Lorg.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getProjectRelativePath" returnType="Lorg.eclipse.core.runtime.IPath;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isExcluded" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResource;"/>
+      </methods>
+      <methods elementName="isOutputFolder" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isPackage" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="reset" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="debugPathString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ClasspathJar$PackageCacheEntry.class" isClass="true" isInterface="false">
+    <type elementName="PackageCacheEntry" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.ClasspathJar$PackageCacheEntry" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.ClasspathJar.PackageCacheEntry">
+      <fields elementName="lastModified" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="fileSize" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="packageSet" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleSet;" isVolatile="false" isTransient="false"/>
+      <methods elementName="PackageCacheEntry" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+        <parameters name="arg1" type="J"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.util.SimpleSet;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ClasspathJar.class" isClass="true" isInterface="false">
+    <type elementName="ClasspathJar" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.ClasspathJar" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.ClasspathJar">
+      <fields elementName="PackageCache" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isVolatile="false" isTransient="false"/>
+      <fields elementName="zipFilename" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="resource" isEnumConstant="false" typeSignature="Lorg.eclipse.core.resources.IFile;" isVolatile="false" isTransient="false"/>
+      <fields elementName="zipFile" isEnumConstant="false" typeSignature="Ljava.util.zip.ZipFile;" isVolatile="false" isTransient="false"/>
+      <fields elementName="lastModified" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="closeZipFileAtEnd" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="knownPackageNames" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleSet;" isVolatile="false" isTransient="false"/>
+      <fields elementName="accessRuleSet" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.env.AccessRuleSet;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="findPackageSet" returnType="Lorg.eclipse.jdt.internal.compiler.util.SimpleSet;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.ClasspathJar;"/>
+      </methods>
+      <methods elementName="ClasspathJar" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.env.AccessRuleSet;"/>
+      </methods>
+      <methods elementName="ClasspathJar" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="J"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.env.AccessRuleSet;"/>
+      </methods>
+      <methods elementName="ClasspathJar" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.zip.ZipFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.env.AccessRuleSet;"/>
+      </methods>
+      <methods elementName="cleanup" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="findClass" returnType="Lorg.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getProjectRelativePath" returnType="Lorg.eclipse.core.runtime.IPath;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isPackage" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="lastModified" returnType="J" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="debugPathString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <types elementName="PackageCacheEntry" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.ClasspathJar$PackageCacheEntry" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.ClasspathJar.PackageCacheEntry">
+        <fields elementName="lastModified" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+        <fields elementName="fileSize" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+        <fields elementName="packageSet" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleSet;" isVolatile="false" isTransient="false"/>
+        <methods elementName="PackageCacheEntry" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="J"/>
+          <parameters name="arg1" type="J"/>
+          <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.util.SimpleSet;"/>
+        </methods>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="ClasspathLocation.class" isClass="true" isInterface="false">
+    <type elementName="ClasspathLocation" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.ClasspathLocation" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.ClasspathLocation">
+      <methods elementName="ClasspathLocation" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="forSourceFolder" returnType="Lorg.eclipse.jdt.internal.core.builder.ClasspathLocation;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IContainer;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IContainer;"/>
+        <parameters name="arg2" type="[[C"/>
+        <parameters name="arg3" type="[[C"/>
+      </methods>
+      <methods elementName="forBinaryFolder" returnType="Lorg.eclipse.jdt.internal.core.builder.ClasspathLocation;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IContainer;"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.env.AccessRuleSet;"/>
+      </methods>
+      <methods elementName="forLibrary" returnType="Lorg.eclipse.jdt.internal.core.builder.ClasspathLocation;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="J"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.env.AccessRuleSet;"/>
+      </methods>
+      <methods elementName="forLibrary" returnType="Lorg.eclipse.jdt.internal.core.builder.ClasspathLocation;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.env.AccessRuleSet;"/>
+      </methods>
+      <methods elementName="forLibrary" returnType="Lorg.eclipse.jdt.internal.core.builder.ClasspathLocation;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.env.AccessRuleSet;"/>
+      </methods>
+      <methods elementName="findClass" returnType="Lorg.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getProjectRelativePath" returnType="Lorg.eclipse.core.runtime.IPath;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isOutputFolder" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isPackage" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="cleanup" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="reset" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="debugPathString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ClasspathMultiDirectory.class" isClass="true" isInterface="false">
+    <type elementName="ClasspathMultiDirectory" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.ClasspathMultiDirectory" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.ClasspathMultiDirectory">
+      <fields elementName="sourceFolder" isEnumConstant="false" typeSignature="Lorg.eclipse.core.resources.IContainer;" isVolatile="false" isTransient="false"/>
+      <fields elementName="inclusionPatterns" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="exclusionPatterns" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="hasIndependentOutputFolder" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="ClasspathMultiDirectory" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IContainer;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IContainer;"/>
+        <parameters name="arg2" type="[[C"/>
+        <parameters name="arg3" type="[[C"/>
+      </methods>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="isExcluded" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResource;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="CompilationParticipantResult.class" isClass="true" isInterface="false">
+    <type elementName="CompilationParticipantResult" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.CompilationParticipantResult" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.CompilationParticipantResult">
+      <fields elementName="sourceFile" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.SourceFile;" isVolatile="false" isTransient="false"/>
+      <fields elementName="hasAnnotations" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="addedFiles" isEnumConstant="false" typeSignature="[Lorg.eclipse.core.resources.IFile;" isVolatile="false" isTransient="false"/>
+      <fields elementName="deletedFiles" isEnumConstant="false" typeSignature="[Lorg.eclipse.core.resources.IFile;" isVolatile="false" isTransient="false"/>
+      <fields elementName="problems" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.core.compiler.CategorizedProblem;" isVolatile="false" isTransient="false"/>
+      <fields elementName="dependencies" isEnumConstant="false" typeSignature="[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <methods elementName="CompilationParticipantResult" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+      </methods>
+      <methods elementName="reset" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ICompilationUnitLocator.class" isClass="false" isInterface="true">
+    <type elementName="ICompilationUnitLocator" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.ICompilationUnitLocator" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.ICompilationUnitLocator">
+      <methods elementName="fromIFile" returnType="Lorg.eclipse.jdt.internal.compiler.env.ICompilationUnit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ImageBuilderInternalException.class" isClass="true" isInterface="false">
+    <type elementName="ImageBuilderInternalException" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.ImageBuilderInternalException" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.ImageBuilderInternalException">
+      <fields elementName="serialVersionUID" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="coreException" isEnumConstant="false" typeSignature="Lorg.eclipse.core.runtime.CoreException;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ImageBuilderInternalException" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.CoreException;"/>
+      </methods>
+      <methods elementName="getThrowable" returnType="Lorg.eclipse.core.runtime.CoreException;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="printStackTrace" returnType="V" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IncrementalImageBuilder.class" isClass="true" isInterface="false">
+    <type elementName="IncrementalImageBuilder" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.IncrementalImageBuilder" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.IncrementalImageBuilder">
+      <fields elementName="sourceFiles" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+      <fields elementName="previousSourceFiles" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+      <fields elementName="qualifiedStrings" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.StringSet;" isVolatile="false" isTransient="false"/>
+      <fields elementName="simpleStrings" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.StringSet;" isVolatile="false" isTransient="false"/>
+      <fields elementName="secondaryTypesToRemove" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isVolatile="false" isTransient="false"/>
+      <fields elementName="hasStructuralChanges" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="compileLoop" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="makeOutputFolderConsistent" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="MaxCompileLoop" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="IncrementalImageBuilder" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.JavaBuilder;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.builder.State;"/>
+      </methods>
+      <methods elementName="IncrementalImageBuilder" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.JavaBuilder;"/>
+      </methods>
+      <methods elementName="IncrementalImageBuilder" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.BatchImageBuilder;"/>
+      </methods>
+      <methods elementName="build" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;"/>
+      </methods>
+      <methods elementName="buildAfterBatchBuild" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="addAffectedSourceFiles" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="addAffectedSourceFiles" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.StringSet;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.builder.StringSet;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.core.builder.StringSet;"/>
+      </methods>
+      <methods elementName="addDependentsOf" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="addDependentsOf" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.core.builder.StringSet;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.core.builder.StringSet;"/>
+      </methods>
+      <methods elementName="checkForClassFileChanges" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceDelta;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.builder.ClasspathMultiDirectory;"/>
+        <parameters name="arg2" type="I"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="cleanUp" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="compile" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="deleteGeneratedFiles" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="findAffectedSourceFiles" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceDelta;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.internal.core.builder.ClasspathLocation;"/>
+        <parameters name="arg2" type="Lorg.eclipse.core.resources.IProject;"/>
+      </methods>
+      <methods elementName="findAffectedSourceFiles" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceDelta;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.core.builder.StringSet;"/>
+      </methods>
+      <methods elementName="findSourceFiles" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceDelta;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="findSourceFiles" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceDelta;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.builder.ClasspathMultiDirectory;"/>
+        <parameters name="arg2" type="I"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="finishedWith" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="Ljava.util.ArrayList;"/>
+        <parameters name="arg4" type="Ljava.util.ArrayList;"/>
+      </methods>
+      <methods elementName="processAnnotationResults" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.core.builder.CompilationParticipantResult;"/>
+      </methods>
+      <methods elementName="removeClassFile" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IContainer;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="removeSecondaryTypes" returnType="V" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="resetCollections" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="updateProblemsFor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="updateTasksFor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="writeClassFileContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ClassFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="writeClassFileCheck" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="[B"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="JavaBuilder.class" isClass="true" isInterface="false">
+    <type elementName="JavaBuilder" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.JavaBuilder" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.JavaBuilder">
+      <fields elementName="currentProject" isEnumConstant="false" typeSignature="Lorg.eclipse.core.resources.IProject;" isVolatile="false" isTransient="false"/>
+      <fields elementName="javaProject" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.JavaProject;" isVolatile="false" isTransient="false"/>
+      <fields elementName="workspaceRoot" isEnumConstant="false" typeSignature="Lorg.eclipse.core.resources.IWorkspaceRoot;" isVolatile="false" isTransient="false"/>
+      <fields elementName="participants" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.core.compiler.CompilationParticipant;" isVolatile="false" isTransient="false"/>
+      <fields elementName="nameEnvironment" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.NameEnvironment;" isVolatile="false" isTransient="false"/>
+      <fields elementName="binaryLocationsPerProject" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isVolatile="false" isTransient="false"/>
+      <fields elementName="lastState" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.State;" isVolatile="false" isTransient="false"/>
+      <fields elementName="notifier" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.BuildNotifier;" isVolatile="false" isTransient="false"/>
+      <fields elementName="extraResourceFileFilters" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="extraResourceFolderFilters" isEnumConstant="false" typeSignature="[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="SOURCE_ID" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="DEBUG" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="SHOW_STATS" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="builtProjects" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="JavaBuilder" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="getProblemsFor" returnType="[Lorg.eclipse.core.resources.IMarker;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResource;"/>
+      </methods>
+      <methods elementName="getTasksFor" returnType="[Lorg.eclipse.core.resources.IMarker;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResource;"/>
+      </methods>
+      <methods elementName="buildStarting" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="buildFinished" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="removeProblemsFor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResource;"/>
+      </methods>
+      <methods elementName="removeTasksFor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResource;"/>
+      </methods>
+      <methods elementName="removeProblemsAndTasksFor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResource;"/>
+      </methods>
+      <methods elementName="readState" returnType="Lorg.eclipse.jdt.internal.core.builder.State;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IProject;"/>
+        <parameters name="arg1" type="Ljava.io.DataInputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="writeState" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Ljava.io.DataOutputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="build" returnType="[Lorg.eclipse.core.resources.IProject;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.util.Map;"/>
+        <parameters name="arg2" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="buildAll" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="buildDeltas" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;"/>
+      </methods>
+      <methods elementName="clean" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="createInconsistentBuildMarker" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.CoreException;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="cleanup" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="clearLastState" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="filterExtraResource" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResource;"/>
+      </methods>
+      <methods elementName="findDeltas" returnType="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLastState" returnType="Lorg.eclipse.jdt.internal.core.builder.State;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IProject;"/>
+      </methods>
+      <methods elementName="getRequiredProjects" returnType="[Lorg.eclipse.core.resources.IProject;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="hasBuildpathErrors" returnType="Z" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="hasClasspathChanged" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hasJavaBuilder" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IProject;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="hasStructuralDelta" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="initializeBuilder" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Z"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="isClasspathBroken" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.core.IClasspathEntry;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IProject;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="isWorthBuilding" returnType="Z" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="mustPropagateStructuralChanges" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="printLocations" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.core.builder.ClasspathLocation;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.internal.core.builder.ClasspathLocation;"/>
+      </methods>
+      <methods elementName="recordNewState" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.State;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="MissingSourceFileException.class" isClass="true" isInterface="false">
+    <type elementName="MissingSourceFileException" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.MissingSourceFileException" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.MissingSourceFileException">
+      <fields elementName="missingSourceFile" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="serialVersionUID" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <methods elementName="MissingSourceFileException" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="NameEnvironment.class" isClass="true" isInterface="false">
+    <type elementName="NameEnvironment" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.NameEnvironment" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.NameEnvironment">
+      <fields elementName="isIncrementalBuild" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="sourceLocations" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.core.builder.ClasspathMultiDirectory;" isVolatile="false" isTransient="false"/>
+      <fields elementName="binaryLocations" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.core.builder.ClasspathLocation;" isVolatile="false" isTransient="false"/>
+      <fields elementName="notifier" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.BuildNotifier;" isVolatile="false" isTransient="false"/>
+      <fields elementName="initialTypeNames" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleSet;" isVolatile="false" isTransient="false"/>
+      <fields elementName="additionalUnits" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isVolatile="false" isTransient="false"/>
+      <methods elementName="NameEnvironment" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IWorkspaceRoot;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.JavaProject;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.core.builder.BuildNotifier;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="NameEnvironment" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaProject;"/>
+      </methods>
+      <methods elementName="computeClasspathLocations" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IWorkspaceRoot;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.JavaProject;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="cleanup" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="createOutputFolder" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IContainer;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="createParentFolder" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IContainer;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="findClass" returnType="Lorg.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="findType" returnType="Lorg.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+      </methods>
+      <methods elementName="findType" returnType="Lorg.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[[C"/>
+      </methods>
+      <methods elementName="isPackage" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="isPackage" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="setNames" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.String;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="NameSet.class" isClass="true" isInterface="false">
+    <type elementName="NameSet" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.NameSet" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.NameSet">
+      <fields elementName="names" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="elementSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="threshold" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="NameSet" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="add" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="rehash" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ProblemFactory.class" isClass="true" isInterface="false">
+    <type elementName="ProblemFactory" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.ProblemFactory" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.ProblemFactory">
+      <fields elementName="factories" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="ProblemFactory" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Locale;"/>
+      </methods>
+      <methods elementName="getProblemFactory" returnType="Lorg.eclipse.jdt.internal.core.builder.ProblemFactory;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Locale;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="QualifiedNameSet.class" isClass="true" isInterface="false">
+    <type elementName="QualifiedNameSet" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.QualifiedNameSet" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.QualifiedNameSet">
+      <fields elementName="qualifiedNames" isEnumConstant="false" typeSignature="[[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="elementSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="threshold" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="QualifiedNameSet" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="add" returnType="[[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+      </methods>
+      <methods elementName="rehash" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ReferenceCollection.class" isClass="true" isInterface="false">
+    <type elementName="ReferenceCollection" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.ReferenceCollection" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.ReferenceCollection">
+      <fields elementName="qualifiedNameReferences" isEnumConstant="false" typeSignature="[[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="simpleNameReferences" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="WellKnownQualifiedNames" isEnumConstant="false" typeSignature="[[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="WellKnownSimpleNames" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="EmptyQualifiedNames" isEnumConstant="false" typeSignature="[[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="EmptySimpleNames" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="MaxQualifiedNames" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="InternedQualifiedNames" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.core.builder.QualifiedNameSet;" isVolatile="false" isTransient="false"/>
+      <fields elementName="MaxSimpleNames" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="InternedSimpleNames" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.core.builder.NameSet;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="ReferenceCollection" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[[[C"/>
+        <parameters name="arg1" type="[[C"/>
+      </methods>
+      <methods elementName="addDependencies" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="includes" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="includes" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+      </methods>
+      <methods elementName="includes" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[[C"/>
+        <parameters name="arg1" type="[[C"/>
+      </methods>
+      <methods elementName="internQualifiedNames" returnType="[[[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.StringSet;"/>
+      </methods>
+      <methods elementName="internQualifiedNames" returnType="[[[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[[C"/>
+      </methods>
+      <methods elementName="internSimpleNames" returnType="[[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.StringSet;"/>
+      </methods>
+      <methods elementName="internSimpleNames" returnType="[[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SourceFile.class" isClass="true" isInterface="false">
+    <type elementName="SourceFile" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.SourceFile" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.SourceFile">
+      <fields elementName="resource" isEnumConstant="false" typeSignature="Lorg.eclipse.core.resources.IFile;" isVolatile="false" isTransient="false"/>
+      <fields elementName="sourceLocation" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.ClasspathMultiDirectory;" isVolatile="false" isTransient="false"/>
+      <fields elementName="initialTypeName" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="updateClassFile" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="SourceFile" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.builder.ClasspathMultiDirectory;"/>
+      </methods>
+      <methods elementName="SourceFile" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.builder.ClasspathMultiDirectory;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="extractTypeName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getContents" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFileName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMainTypeName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPackageName" returnType="[[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="typeLocator" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="State.class" isClass="true" isInterface="false">
+    <type elementName="State" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.State" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.State">
+      <fields elementName="javaProjectName" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="sourceLocations" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.core.builder.ClasspathMultiDirectory;" isVolatile="false" isTransient="false"/>
+      <fields elementName="binaryLocations" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.core.builder.ClasspathLocation;" isVolatile="false" isTransient="false"/>
+      <fields elementName="references" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isVolatile="false" isTransient="false"/>
+      <fields elementName="typeLocators" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isVolatile="false" isTransient="false"/>
+      <fields elementName="buildNumber" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="lastStructuralBuildTime" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="structuralBuildTimes" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isVolatile="false" isTransient="false"/>
+      <fields elementName="knownPackageNames" isEnumConstant="false" typeSignature="[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="previousStructuralBuildTime" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="structurallyChangedTypes" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.builder.StringSet;" isVolatile="false" isTransient="false"/>
+      <fields elementName="MaxStructurallyChangedTypes" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="VERSION" isEnumConstant="false" typeSignature="B" isVolatile="false" isTransient="false"/>
+      <fields elementName="SOURCE_FOLDER" isEnumConstant="false" typeSignature="B" isVolatile="false" isTransient="false"/>
+      <fields elementName="BINARY_FOLDER" isEnumConstant="false" typeSignature="B" isVolatile="false" isTransient="false"/>
+      <fields elementName="EXTERNAL_JAR" isEnumConstant="false" typeSignature="B" isVolatile="false" isTransient="false"/>
+      <fields elementName="INTERNAL_JAR" isEnumConstant="false" typeSignature="B" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="State" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="State" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.JavaBuilder;"/>
+      </methods>
+      <methods elementName="computeStructuralBuildTime" returnType="J" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+      </methods>
+      <methods elementName="copyFrom" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.State;"/>
+      </methods>
+      <methods elementName="getDefinedTypeNamesFor" returnType="[[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getReferences" returnType="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getStructurallyChangedTypes" returnType="Lorg.eclipse.jdt.internal.core.builder.StringSet;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.State;"/>
+      </methods>
+      <methods elementName="isDuplicateLocator" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="isKnownPackage" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="isKnownType" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="record" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="[[[C"/>
+        <parameters name="arg2" type="[[C"/>
+        <parameters name="arg3" type="[C"/>
+        <parameters name="arg4" type="Ljava.util.ArrayList;"/>
+      </methods>
+      <methods elementName="recordLocatorForType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="recordStructuralDependency" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IProject;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.builder.State;"/>
+      </methods>
+      <methods elementName="removeLocator" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="removePackage" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceDelta;"/>
+      </methods>
+      <methods elementName="removeQualifiedTypeName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="read" returnType="Lorg.eclipse.jdt.internal.core.builder.State;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IProject;"/>
+        <parameters name="arg1" type="Ljava.io.DataInputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="readName" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.DataInputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="readNames" returnType="[[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.DataInputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="readRestriction" returnType="Lorg.eclipse.jdt.internal.compiler.env.AccessRuleSet;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.DataInputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="tagAsNoopBuild" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="wasNoopBuild" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="tagAsStructurallyChanged" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="wasStructurallyChanged" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IProject;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.builder.State;"/>
+      </methods>
+      <methods elementName="wasStructurallyChanged" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="write" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.DataOutputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="writeName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="Ljava.io.DataOutputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="writeNames" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="Ljava.io.DataOutputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="writeRestriction" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.AccessRuleSet;"/>
+        <parameters name="arg1" type="Ljava.io.DataOutputStream;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="StringSet.class" isClass="true" isInterface="false">
+    <type elementName="StringSet" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.StringSet" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.StringSet">
+      <fields elementName="values" isEnumConstant="false" typeSignature="[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="elementSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="threshold" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="StringSet" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="add" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="clear" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="includes" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="rehash" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="WorkQueue.class" isClass="true" isInterface="false">
+    <type elementName="WorkQueue" fullyQualifiedName="org.eclipse.jdt.internal.core.builder.WorkQueue" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.builder.WorkQueue">
+      <fields elementName="needsCompileList" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleSet;" isVolatile="false" isTransient="false"/>
+      <fields elementName="compiledList" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleSet;" isVolatile="false" isTransient="false"/>
+      <methods elementName="WorkQueue" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="add" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+      </methods>
+      <methods elementName="addAll" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+      </methods>
+      <methods elementName="clear" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="finished" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+      </methods>
+      <methods elementName="isCompiled" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+      </methods>
+      <methods elementName="isWaiting" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.builder.SourceFile;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

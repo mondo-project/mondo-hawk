@@ -1,0 +1,800 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.core.hierarchy" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="ChangeCollector.class" isClass="true" isInterface="false">
+    <type elementName="ChangeCollector" fullyQualifiedName="org.eclipse.jdt.internal.core.hierarchy.ChangeCollector" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.hierarchy.ChangeCollector">
+      <fields elementName="changes" isEnumConstant="false" typeSignature="Ljava.util.HashMap;" isVolatile="false" isTransient="false"/>
+      <fields elementName="hierarchy" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.hierarchy.TypeHierarchy;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ChangeCollector" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.hierarchy.TypeHierarchy;"/>
+      </methods>
+      <methods elementName="addAffectedChildren" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaElementDelta;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="addChange" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.ICompilationUnit;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.IJavaElementDelta;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="addChange" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IImportContainer;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.IJavaElementDelta;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="addChange" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IImportDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.IJavaElementDelta;"/>
+      </methods>
+      <methods elementName="addChange" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IMember;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.IJavaElementDelta;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="addChange" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.IJavaElementDelta;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="addTypeAddition" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.SimpleDelta;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="addTypeChange" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.core.SimpleDelta;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="addTypeRemoval" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.SimpleDelta;"/>
+      </methods>
+      <methods elementName="getAllTypesFromElement" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaElement;"/>
+        <parameters name="arg1" type="Ljava.util.ArrayList;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="getAllTypesFromHierarchy" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.JavaElement;"/>
+        <parameters name="arg1" type="Ljava.util.ArrayList;"/>
+      </methods>
+      <methods elementName="hasSuperTypeChange" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="hasVisibilityChange" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="needsRefresh" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="HierarchyBinaryType.class" isClass="true" isInterface="false">
+    <type elementName="HierarchyBinaryType" fullyQualifiedName="org.eclipse.jdt.internal.core.hierarchy.HierarchyBinaryType" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.hierarchy.HierarchyBinaryType">
+      <fields elementName="modifiers" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="sourceName" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="name" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="enclosingTypeName" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="superclass" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="superInterfaces" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="typeParameterSignatures" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="genericSignature" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <methods elementName="HierarchyBinaryType" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="[C"/>
+        <parameters name="arg4" type="[[C"/>
+        <parameters name="arg5" type="C"/>
+      </methods>
+      <methods elementName="getAnnotations" returnType="[Lorg.eclipse.jdt.internal.compiler.env.IBinaryAnnotation;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnclosingTypeName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFields" returnType="[Lorg.eclipse.jdt.internal.compiler.env.IBinaryField;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFileName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getGenericSignature" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInterfaceNames" returnType="[[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMemberTypes" returnType="[Lorg.eclipse.jdt.internal.compiler.env.IBinaryNestedType;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMethods" returnType="[Lorg.eclipse.jdt.internal.compiler.env.IBinaryMethod;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMissingTypeNames" returnType="[[[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getModifiers" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSourceName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSuperclassName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTagBits" returnType="J" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isAnonymous" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isBinaryType" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isLocal" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isMember" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="recordSuperType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="C"/>
+      </methods>
+      <methods elementName="sourceFileName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="HierarchyBuilder$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.hierarchy.HierarchyBuilder$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.hierarchy.HierarchyBuilder.1">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.hierarchy.HierarchyBuilder;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$elementName" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.hierarchy.HierarchyBuilder;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg2" type="Ljava.net.URI;"/>
+        <parameters name="arg3" type="[C"/>
+      </methods>
+      <methods elementName="getFileName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="HierarchyBuilder.class" isClass="true" isInterface="false">
+    <type elementName="HierarchyBuilder" fullyQualifiedName="org.eclipse.jdt.internal.core.hierarchy.HierarchyBuilder" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.hierarchy.HierarchyBuilder">
+      <fields elementName="hierarchy" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.hierarchy.TypeHierarchy;" isVolatile="false" isTransient="false"/>
+      <fields elementName="nameLookup" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.NameLookup;" isVolatile="false" isTransient="false"/>
+      <fields elementName="hierarchyResolver" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.hierarchy.HierarchyResolver;" isVolatile="false" isTransient="false"/>
+      <fields elementName="infoToHandle" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="focusQualifiedName" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <methods elementName="HierarchyBuilder" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.hierarchy.TypeHierarchy;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="build" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="buildSupertypes" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="connect" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.IGenericType;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg3" type="[Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="getHandle" returnType="Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.IGenericType;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="getType" returnType="Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="lookupBinaryHandle" returnType="Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.IBinaryType;"/>
+      </methods>
+      <methods elementName="worked" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="createCompilationUnitFromPath" returnType="Lorg.eclipse.jdt.internal.compiler.env.ICompilationUnit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.Openable;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="createInfoFromClassFile" returnType="Lorg.eclipse.jdt.internal.compiler.env.IBinaryType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.Openable;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IResource;"/>
+      </methods>
+      <methods elementName="createInfoFromClassFileInJar" returnType="Lorg.eclipse.jdt.internal.compiler.env.IBinaryType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.Openable;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="HierarchyResolver.class" isClass="true" isInterface="false">
+    <type elementName="HierarchyResolver" fullyQualifiedName="org.eclipse.jdt.internal.core.hierarchy.HierarchyResolver" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.hierarchy.HierarchyResolver">
+      <fields elementName="focusType" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;" isVolatile="false" isTransient="false"/>
+      <fields elementName="superTypesOnly" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="hasMissingSuperClass" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="lookupEnvironment" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.lookup.LookupEnvironment;" isVolatile="false" isTransient="false"/>
+      <fields elementName="options" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.CompilerOptions;" isVolatile="false" isTransient="false"/>
+      <fields elementName="builder" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.hierarchy.HierarchyBuilder;" isVolatile="false" isTransient="false"/>
+      <fields elementName="typeBindings" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;" isVolatile="false" isTransient="false"/>
+      <fields elementName="typeIndex" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="typeModels" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.env.IGenericType;" isVolatile="false" isTransient="false"/>
+      <fields elementName="FakeUnit" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="HierarchyResolver" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.INameEnvironment;"/>
+        <parameters name="arg1" type="Ljava.util.Map;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.core.hierarchy.HierarchyBuilder;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.IProblemFactory;"/>
+      </methods>
+      <methods elementName="HierarchyResolver" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LookupEnvironment;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.hierarchy.HierarchyBuilder;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.IBinaryType;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.PackageBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.env.AccessRestriction;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.ICompilationUnit;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.env.AccessRestriction;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.env.ISourceType;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.PackageBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.env.AccessRestriction;"/>
+      </methods>
+      <methods elementName="findSuperClass" returnType="Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.IGenericType;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="findSuperInterfaces" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.IGenericType;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="fixSupertypeBindings" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="remember" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.IGenericType;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="remember" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="rememberAllTypes" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.ICompilationUnit;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="rememberWithMemberTypes" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="reportHierarchy" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="reset" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="resolve" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.IGenericType;"/>
+      </methods>
+      <methods elementName="resolve" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.core.Openable;"/>
+        <parameters name="arg1" type="Ljava.util.HashSet;"/>
+        <parameters name="arg2" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <methods elementName="setEnvironment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LookupEnvironment;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.hierarchy.HierarchyBuilder;"/>
+      </methods>
+      <methods elementName="setFocusType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+      </methods>
+      <methods elementName="subOrSuperOfFocus" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="subTypeOfType" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="worked" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="HierarchyType.class" isClass="true" isInterface="false">
+    <type elementName="HierarchyType" fullyQualifiedName="org.eclipse.jdt.internal.core.hierarchy.HierarchyType" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.hierarchy.HierarchyType">
+      <fields elementName="typeHandle" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.IType;" isVolatile="false" isTransient="false"/>
+      <fields elementName="name" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="modifiers" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="superclassName" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="superInterfaceNames" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <methods elementName="HierarchyType" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="[C"/>
+        <parameters name="arg4" type="[[C"/>
+      </methods>
+      <methods elementName="getFileName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getModifiers" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isBinaryType" returnType="Z" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IndexBasedHierarchyBuilder$1$PathCollector.class" isClass="true" isInterface="false">
+    <type elementName="PathCollector" fullyQualifiedName="org.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder$1$PathCollector" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder.1.PathCollector">
+      <fields elementName="paths" isEnumConstant="false" typeSignature="Ljava.util.HashSet;" isVolatile="false" isTransient="false"/>
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$localTypes" isEnumConstant="false" typeSignature="Ljava.util.HashSet;" isVolatile="false" isTransient="false"/>
+      <methods elementName="PathCollector" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder;"/>
+        <parameters name="arg1" type="Ljava.util.HashSet;"/>
+      </methods>
+      <methods elementName="acceptPath" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="IndexBasedHierarchyBuilder$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder.1">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$indexes" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfObjectToInt;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfObjectToInt;"/>
+      </methods>
+      <methods elementName="compare" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="IndexBasedHierarchyBuilder$2.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder$2" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder.2">
+      <fields elementName="val$pathRequestor" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.IPathRequestor;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$binariesFromIndexMatches" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$foundSuperNames" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfObject;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$queue" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder$Queue;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.IPathRequestor;"/>
+        <parameters name="arg1" type="Ljava.util.Map;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfObject;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder$Queue;"/>
+      </methods>
+      <methods elementName="acceptIndexMatch" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.search.SearchPattern;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.search.SearchParticipant;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.env.AccessRuleSet;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="IndexBasedHierarchyBuilder$3.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder$3" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder.3">
+      <fields elementName="val$progressMonitor" isEnumConstant="false" typeSignature="Lorg.eclipse.core.runtime.IProgressMonitor;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <methods elementName="setCanceled" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="isCanceled" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="subTask" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="IndexBasedHierarchyBuilder$Queue.class" isClass="true" isInterface="false">
+    <type elementName="Queue" fullyQualifiedName="org.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder$Queue" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder.Queue">
+      <fields elementName="names" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="start" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="end" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="Queue" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="add" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="retrieve" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IndexBasedHierarchyBuilder.class" isClass="true" isInterface="false">
+    <type elementName="IndexBasedHierarchyBuilder" fullyQualifiedName="org.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder">
+      <fields elementName="MAXTICKS" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="cuToHandle" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="scope" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.search.IJavaSearchScope;" isVolatile="false" isTransient="false"/>
+      <fields elementName="binariesFromIndexMatches" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <methods elementName="IndexBasedHierarchyBuilder" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.hierarchy.TypeHierarchy;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.search.IJavaSearchScope;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="build" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="buildForProject" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.JavaProject;"/>
+        <parameters name="arg1" type="Ljava.util.ArrayList;"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jdt.core.ICompilationUnit;"/>
+        <parameters name="arg3" type="Ljava.util.HashSet;"/>
+        <parameters name="arg4" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="buildFromPotentialSubtypes" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.util.HashSet;"/>
+        <parameters name="arg2" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <methods elementName="createCompilationUnitFromPath" returnType="Lorg.eclipse.jdt.internal.compiler.env.ICompilationUnit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.Openable;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+      </methods>
+      <methods elementName="createInfoFromClassFile" returnType="Lorg.eclipse.jdt.internal.compiler.env.IBinaryType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.Openable;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IResource;"/>
+      </methods>
+      <methods elementName="createInfoFromClassFileInJar" returnType="Lorg.eclipse.jdt.internal.compiler.env.IBinaryType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.Openable;"/>
+      </methods>
+      <methods elementName="determinePossibleSubTypes" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.HashSet;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <methods elementName="searchAllPossibleSubTypes" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.search.IJavaSearchScope;"/>
+        <parameters name="arg2" type="Ljava.util.Map;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.core.IPathRequestor;"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <types elementName="Queue" fullyQualifiedName="org.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder$Queue" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.hierarchy.IndexBasedHierarchyBuilder.Queue">
+        <fields elementName="names" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+        <fields elementName="start" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="end" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <methods elementName="Queue" returnType="V" isConstructor="true" isMainMethod="false"/>
+        <methods elementName="add" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="[C"/>
+        </methods>
+        <methods elementName="retrieve" returnType="[C" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="RegionBasedHierarchyBuilder.class" isClass="true" isInterface="false">
+    <type elementName="RegionBasedHierarchyBuilder" fullyQualifiedName="org.eclipse.jdt.internal.core.hierarchy.RegionBasedHierarchyBuilder" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.hierarchy.RegionBasedHierarchyBuilder">
+      <methods elementName="RegionBasedHierarchyBuilder" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.hierarchy.TypeHierarchy;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="build" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="createTypeHierarchyBasedOnRegion" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.HashMap;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <methods elementName="determineOpenablesInRegion" returnType="Ljava.util.HashMap;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <methods elementName="injectAllOpenablesForJavaProject" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaProject;"/>
+        <parameters name="arg1" type="Ljava.util.ArrayList;"/>
+      </methods>
+      <methods elementName="injectAllOpenablesForPackageFragment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IPackageFragment;"/>
+        <parameters name="arg1" type="Ljava.util.ArrayList;"/>
+      </methods>
+      <methods elementName="injectAllOpenablesForPackageFragmentRoot" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IPackageFragmentRoot;"/>
+        <parameters name="arg1" type="Ljava.util.ArrayList;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="RegionBasedTypeHierarchy$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.hierarchy.RegionBasedTypeHierarchy$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.hierarchy.RegionBasedTypeHierarchy.1">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.hierarchy.RegionBasedTypeHierarchy;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.hierarchy.RegionBasedTypeHierarchy;"/>
+      </methods>
+      <methods elementName="add" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaElement;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="RegionBasedTypeHierarchy.class" isClass="true" isInterface="false">
+    <type elementName="RegionBasedTypeHierarchy" fullyQualifiedName="org.eclipse.jdt.internal.core.hierarchy.RegionBasedTypeHierarchy" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.hierarchy.RegionBasedTypeHierarchy">
+      <fields elementName="region" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.IRegion;" isVolatile="false" isTransient="false"/>
+      <methods elementName="RegionBasedTypeHierarchy" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IRegion;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.core.ICompilationUnit;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="initializeRegions" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="compute" returnType="V" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="isAffectedByOpenable" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaElementDelta;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.IJavaElement;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="javaProject" returnType="Lorg.eclipse.jdt.core.IJavaProject;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="pruneDeadBranches" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="pruneDeadBranches" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="pruneDeadBranches" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="removeType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="TypeHierarchy$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.hierarchy.TypeHierarchy$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.hierarchy.TypeHierarchy.1">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.hierarchy.TypeHierarchy;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$listener" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.ITypeHierarchyChangedListener;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.hierarchy.TypeHierarchy;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.ITypeHierarchyChangedListener;"/>
+      </methods>
+      <methods elementName="handleException" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Throwable;"/>
+      </methods>
+      <methods elementName="run" returnType="V" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.lang.Exception;</exceptionTypes>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="TypeHierarchy.class" isClass="true" isInterface="false">
+    <type elementName="TypeHierarchy" fullyQualifiedName="org.eclipse.jdt.internal.core.hierarchy.TypeHierarchy" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.hierarchy.TypeHierarchy">
+      <fields elementName="DEBUG" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="VERSION" isEnumConstant="false" typeSignature="B" isVolatile="false" isTransient="false"/>
+      <fields elementName="SEPARATOR1" isEnumConstant="false" typeSignature="B" isVolatile="false" isTransient="false"/>
+      <fields elementName="SEPARATOR2" isEnumConstant="false" typeSignature="B" isVolatile="false" isTransient="false"/>
+      <fields elementName="SEPARATOR3" isEnumConstant="false" typeSignature="B" isVolatile="false" isTransient="false"/>
+      <fields elementName="SEPARATOR4" isEnumConstant="false" typeSignature="B" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMPUTE_SUBTYPES" isEnumConstant="false" typeSignature="B" isVolatile="false" isTransient="false"/>
+      <fields elementName="CLASS" isEnumConstant="false" typeSignature="B" isVolatile="false" isTransient="false"/>
+      <fields elementName="INTERFACE" isEnumConstant="false" typeSignature="B" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMPUTED_FOR" isEnumConstant="false" typeSignature="B" isVolatile="false" isTransient="false"/>
+      <fields elementName="ROOT" isEnumConstant="false" typeSignature="B" isVolatile="false" isTransient="false"/>
+      <fields elementName="NO_FLAGS" isEnumConstant="false" typeSignature="[B" isVolatile="false" isTransient="false"/>
+      <fields elementName="SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="project" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.IJavaProject;" isVolatile="false" isTransient="false"/>
+      <fields elementName="focusType" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.IType;" isVolatile="false" isTransient="false"/>
+      <fields elementName="workingCopies" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.core.ICompilationUnit;" isVolatile="false" isTransient="false"/>
+      <fields elementName="classToSuperclass" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="typeToSuperInterfaces" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="typeToSubtypes" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="typeFlags" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="rootClasses" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.TypeVector;" isVolatile="false" isTransient="false"/>
+      <fields elementName="interfaces" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+      <fields elementName="missingTypes" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+      <fields elementName="NO_TYPE" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.core.IType;" isVolatile="false" isTransient="false"/>
+      <fields elementName="progressMonitor" isEnumConstant="false" typeSignature="Lorg.eclipse.core.runtime.IProgressMonitor;" isVolatile="false" isTransient="false"/>
+      <fields elementName="changeListeners" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+      <fields elementName="files" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="packageRegion" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.Region;" isVolatile="false" isTransient="false"/>
+      <fields elementName="projectRegion" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.Region;" isVolatile="false" isTransient="false"/>
+      <fields elementName="computeSubtypes" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="scope" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.search.IJavaSearchScope;" isVolatile="false" isTransient="false"/>
+      <fields elementName="needsRefresh" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="changeCollector" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.hierarchy.ChangeCollector;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="TypeHierarchy" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="TypeHierarchy" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.core.ICompilationUnit;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.IJavaProject;"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="TypeHierarchy" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.core.ICompilationUnit;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.search.IJavaSearchScope;"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="initializeRegions" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="addAllCheckingDuplicates" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.ArrayList;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="addInterface" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="addRootClass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="addSubtype" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="addTypeHierarchyChangedListener" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.ITypeHierarchyChangedListener;"/>
+      </methods>
+      <methods elementName="bytesToFlags" returnType="Ljava.lang.Integer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[B"/>
+      </methods>
+      <methods elementName="cacheFlags" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="cacheSuperclass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="cacheSuperInterfaces" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="checkCanceled" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="compute" returnType="V" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+      <methods elementName="contains" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="elementChanged" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.ElementChangedEvent;"/>
+      </methods>
+      <methods elementName="exists" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="fireChange" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="flagsToBytes" returnType="[B" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Integer;"/>
+      </methods>
+      <methods elementName="getAllClasses" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAllInterfaces" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAllSubtypes" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="getAllSubtypesForType" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="getAllSubtypesForType0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="Ljava.util.ArrayList;"/>
+      </methods>
+      <methods elementName="getAllSuperclasses" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="getAllSuperInterfaces" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="getAllSuperInterfaces0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="Ljava.util.ArrayList;"/>
+      </methods>
+      <methods elementName="getAllSupertypes" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="getAllSupertypes0" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="Ljava.util.ArrayList;"/>
+      </methods>
+      <methods elementName="getAllTypes" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCachedFlags" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="getExtendingInterfaces" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="getExtendingInterfaces0" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="getImplementingClasses" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="getImplementingClasses0" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="getRootClasses" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getRootInterfaces" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSubclasses" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="getSubtypes" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="getSubtypesForType" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="getSuperclass" returnType="Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="getSuperInterfaces" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="getSupertypes" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="getType" returnType="Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="growAndAddToArray" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="growAndAddToArray" returnType="[Lorg.eclipse.jdt.core.IType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="hasFineGrainChanges" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hasSubtypeNamed" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="hasTypeNamed" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="includesTypeOrSupertype" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="initialize" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="isAffected" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaElementDelta;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="isAffectedByChildren" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaElementDelta;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="isAffectedByJavaModel" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaElementDelta;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.IJavaElement;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="isAffectedByJavaProject" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaElementDelta;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.IJavaElement;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="isAffectedByPackageFragment" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaElementDelta;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.PackageFragment;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="isAffectedByPackageFragmentRoot" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaElementDelta;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.IJavaElement;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="isAffectedByOpenable" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaElementDelta;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.IJavaElement;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="isInterface" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="javaProject" returnType="Lorg.eclipse.jdt.core.IJavaProject;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="readUntil" returnType="[B" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.InputStream;"/>
+        <parameters name="arg1" type="B"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="readUntil" returnType="[B" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.InputStream;"/>
+        <parameters name="arg1" type="B"/>
+        <parameters name="arg2" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="load" returnType="Lorg.eclipse.jdt.core.ITypeHierarchy;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg1" type="Ljava.io.InputStream;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.core.WorkingCopyOwner;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="packageRegionContainsSamePackageFragment" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.PackageFragment;"/>
+      </methods>
+      <methods elementName="refresh" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="removeTypeHierarchyChangedListener" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.ITypeHierarchyChangedListener;"/>
+      </methods>
+      <methods elementName="store" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.OutputStream;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="subtypesIncludeSupertypeOf" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IType;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.StringBuffer;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.IType;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="hasSupertype" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="worked" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

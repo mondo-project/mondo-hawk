@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.core.compiler.batch" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="BatchCompiler.class" isClass="true" isInterface="false">
+    <type elementName="BatchCompiler" fullyQualifiedName="org.eclipse.jdt.core.compiler.batch.BatchCompiler" fullyQualifiedParametrizedName="org.eclipse.jdt.core.compiler.batch.BatchCompiler">
+      <methods elementName="compile" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.io.PrintWriter;"/>
+        <parameters name="arg2" type="Ljava.io.PrintWriter;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.core.compiler.CompilationProgress;"/>
+      </methods>
+      <methods elementName="compile" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.io.PrintWriter;"/>
+        <parameters name="arg2" type="Ljava.io.PrintWriter;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.core.compiler.CompilationProgress;"/>
+      </methods>
+      <methods elementName="BatchCompiler" returnType="V" isConstructor="true" isMainMethod="false"/>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

@@ -1,0 +1,817 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.compiler.util" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="CompoundNameVector.class" isClass="true" isInterface="false">
+    <type elementName="CompoundNameVector" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.CompoundNameVector" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.CompoundNameVector">
+      <fields elementName="INITIAL_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="size" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="maxSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="elements" isEnumConstant="false" typeSignature="[[[C" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="CompoundNameVector" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="add" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+      </methods>
+      <methods elementName="addAll" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[[C"/>
+      </methods>
+      <methods elementName="contains" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+      </methods>
+      <methods elementName="elementAt" returnType="[[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="remove" returnType="[[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+      </methods>
+      <methods elementName="removeAll" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="FloatUtil.class" isClass="true" isInterface="false">
+    <type elementName="FloatUtil" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.FloatUtil" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.FloatUtil">
+      <fields elementName="DOUBLE_FRACTION_WIDTH" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DOUBLE_PRECISION" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MAX_DOUBLE_EXPONENT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MIN_NORMALIZED_DOUBLE_EXPONENT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MIN_UNNORMALIZED_DOUBLE_EXPONENT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DOUBLE_EXPONENT_BIAS" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DOUBLE_EXPONENT_SHIFT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SINGLE_FRACTION_WIDTH" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SINGLE_PRECISION" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MAX_SINGLE_EXPONENT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MIN_NORMALIZED_SINGLE_EXPONENT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MIN_UNNORMALIZED_SINGLE_EXPONENT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SINGLE_EXPONENT_BIAS" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SINGLE_EXPONENT_SHIFT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="FloatUtil" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="valueOfHexFloatLiteral" returnType="F" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="valueOfHexDoubleLiteral" returnType="D" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="convertHexFloatingPointLiteralToBits" returnType="J" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="GenericXMLWriter$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.GenericXMLWriter$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.GenericXMLWriter.1">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.GenericXMLWriter;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.util.GenericXMLWriter;"/>
+      </methods>
+      <methods elementName="compare" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="GenericXMLWriter.class" isClass="true" isInterface="false">
+    <type elementName="GenericXMLWriter" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.GenericXMLWriter" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.GenericXMLWriter">
+      <fields elementName="XML_VERSION" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="lineSeparator" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="tab" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="appendEscapedChar" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.StringBuffer;"/>
+        <parameters name="arg1" type="C"/>
+      </methods>
+      <methods elementName="getEscaped" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getReplacement" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="C"/>
+      </methods>
+      <methods elementName="GenericXMLWriter" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.OutputStream;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="GenericXMLWriter" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.Writer;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="endTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="printString" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="printTabulation" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="printTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.util.HashMap;"/>
+        <parameters name="arg2" type="Z"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="Z"/>
+      </methods>
+      <methods elementName="startTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="HashSetOfInt.class" isClass="true" isInterface="false">
+    <type elementName="HashSetOfInt" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.HashSetOfInt" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.HashSetOfInt">
+      <fields elementName="set" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="elementSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="threshold" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="HashSetOfInt" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="HashSetOfInt" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="clone" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.lang.CloneNotSupportedException;</exceptionTypes>
+      </methods>
+      <methods elementName="contains" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="add" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="remove" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="rehash" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="size" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="HashtableOfInt.class" isClass="true" isInterface="false">
+    <type elementName="HashtableOfInt" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.HashtableOfInt" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.HashtableOfInt">
+      <fields elementName="keyTable" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="valueTable" isEnumConstant="false" typeSignature="[Ljava.lang.Object;" isVolatile="false" isTransient="false"/>
+      <fields elementName="elementSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="threshold" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="HashtableOfInt" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="HashtableOfInt" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="containsKey" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="get" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="put" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="rehash" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="size" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="HashtableOfIntValues.class" isClass="true" isInterface="false">
+    <type elementName="HashtableOfIntValues" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.HashtableOfIntValues" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.HashtableOfIntValues">
+      <fields elementName="NO_VALUE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="keyTable" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="valueTable" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="elementSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="threshold" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="HashtableOfIntValues" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="HashtableOfIntValues" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="clone" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.lang.CloneNotSupportedException;</exceptionTypes>
+      </methods>
+      <methods elementName="containsKey" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="get" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="put" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="removeKey" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="rehash" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="size" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="HashtableOfLong.class" isClass="true" isInterface="false">
+    <type elementName="HashtableOfLong" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.HashtableOfLong" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.HashtableOfLong">
+      <fields elementName="keyTable" isEnumConstant="false" typeSignature="[J" isVolatile="false" isTransient="false"/>
+      <fields elementName="valueTable" isEnumConstant="false" typeSignature="[Ljava.lang.Object;" isVolatile="false" isTransient="false"/>
+      <fields elementName="elementSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="threshold" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="HashtableOfLong" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="HashtableOfLong" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="containsKey" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+      </methods>
+      <methods elementName="get" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+      </methods>
+      <methods elementName="put" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="rehash" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="size" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="HashtableOfObject.class" isClass="true" isInterface="false">
+    <type elementName="HashtableOfObject" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.HashtableOfObject" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.HashtableOfObject">
+      <fields elementName="keyTable" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="valueTable" isEnumConstant="false" typeSignature="[Ljava.lang.Object;" isVolatile="false" isTransient="false"/>
+      <fields elementName="elementSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="threshold" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="HashtableOfObject" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="HashtableOfObject" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="clear" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="clone" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.lang.CloneNotSupportedException;</exceptionTypes>
+      </methods>
+      <methods elementName="containsKey" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="get" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="put" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="removeKey" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="rehash" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="size" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="HashtableOfObjectToInt.class" isClass="true" isInterface="false">
+    <type elementName="HashtableOfObjectToInt" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.HashtableOfObjectToInt" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.HashtableOfObjectToInt">
+      <fields elementName="keyTable" isEnumConstant="false" typeSignature="[Ljava.lang.Object;" isVolatile="false" isTransient="false"/>
+      <fields elementName="valueTable" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="elementSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="threshold" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="HashtableOfObjectToInt" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="HashtableOfObjectToInt" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="clone" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.lang.CloneNotSupportedException;</exceptionTypes>
+      </methods>
+      <methods elementName="containsKey" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="get" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="keysToArray" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="put" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="removeKey" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="rehash" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="size" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="HashtableOfObjectToIntArray.class" isClass="true" isInterface="false">
+    <type elementName="HashtableOfObjectToIntArray" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.HashtableOfObjectToIntArray" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.HashtableOfObjectToIntArray">
+      <fields elementName="keyTable" isEnumConstant="false" typeSignature="[Ljava.lang.Object;" isVolatile="false" isTransient="false"/>
+      <fields elementName="valueTable" isEnumConstant="false" typeSignature="[[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="elementSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="threshold" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="HashtableOfObjectToIntArray" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="HashtableOfObjectToIntArray" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="clone" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.lang.CloneNotSupportedException;</exceptionTypes>
+      </methods>
+      <methods elementName="containsKey" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="get" returnType="[I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="keysToArray" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="put" returnType="[I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="[I"/>
+      </methods>
+      <methods elementName="removeKey" returnType="[I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="rehash" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="size" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="HashtableOfPackage.class" isClass="true" isInterface="false">
+    <type elementName="HashtableOfPackage" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.HashtableOfPackage" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.HashtableOfPackage">
+      <fields elementName="keyTable" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="valueTable" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.lookup.PackageBinding;" isVolatile="false" isTransient="false"/>
+      <fields elementName="elementSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="threshold" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="HashtableOfPackage" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="HashtableOfPackage" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="containsKey" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="get" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.PackageBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="put" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.PackageBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.PackageBinding;"/>
+      </methods>
+      <methods elementName="rehash" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="size" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="HashtableOfType.class" isClass="true" isInterface="false">
+    <type elementName="HashtableOfType" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.HashtableOfType" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.HashtableOfType">
+      <fields elementName="keyTable" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="valueTable" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;" isVolatile="false" isTransient="false"/>
+      <fields elementName="elementSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="threshold" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="HashtableOfType" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="HashtableOfType" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="containsKey" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="get" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="put" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="rehash" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="size" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="Messages$MessagesProperties.class" isClass="true" isInterface="false">
+    <type elementName="MessagesProperties" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.Messages$MessagesProperties" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.Messages.MessagesProperties">
+      <fields elementName="MOD_EXPECTED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MOD_MASK" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="serialVersionUID" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="fields" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <methods elementName="MessagesProperties" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.reflect.Field;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="put" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="Messages.class" isClass="true" isInterface="false">
+    <type elementName="Messages" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.Messages" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.Messages">
+      <fields elementName="nlSuffixes" isEnumConstant="false" typeSignature="[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="EXTENSION" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="BUNDLE_NAME" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="compilation_unresolvedProblem" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="compilation_unresolvedProblems" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="compilation_request" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="compilation_loadBinary" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="compilation_process" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="compilation_write" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="compilation_done" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="compilation_units" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="compilation_unit" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="compilation_internalError" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="compilation_beginningToCompile" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="compilation_processing" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="output_isFile" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="output_notValidAll" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="output_notValid" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="problem_noSourceInformation" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="problem_atLine" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="abort_invalidAttribute" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="abort_invalidExceptionAttribute" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="abort_invalidOpcode" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="abort_missingCode" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="abort_againstSourceModel" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="accept_cannot" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="parser_incorrectPath" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="parser_moveFiles" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="parser_syntaxRecovery" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="parser_regularParse" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="parser_missingFile" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="parser_corruptedFile" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="parser_endOfFile" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="parser_endOfConstructor" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="parser_endOfMethod" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="parser_endOfInitializer" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ast_missingCode" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="constant_cannotCastedInto" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="constant_cannotConvertedTo" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="class$0" isEnumConstant="false" typeSignature="Ljava.lang.Class;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="Messages" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="bind" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="bind" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="bind" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+        <parameters name="arg2" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="bind" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="[Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="buildVariants" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="initializeMessages" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.Class;"/>
+      </methods>
+      <methods elementName="load" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.ClassLoader;"/>
+        <parameters name="arg2" type="[Ljava.lang.reflect.Field;"/>
+      </methods>
+      <types elementName="MessagesProperties" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.Messages$MessagesProperties" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.Messages.MessagesProperties">
+        <fields elementName="MOD_EXPECTED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="MOD_MASK" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+        <fields elementName="serialVersionUID" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+        <fields elementName="fields" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+        <methods elementName="MessagesProperties" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="[Ljava.lang.reflect.Field;"/>
+          <parameters name="arg1" type="Ljava.lang.String;"/>
+        </methods>
+        <methods elementName="put" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.Object;"/>
+          <parameters name="arg1" type="Ljava.lang.Object;"/>
+        </methods>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="ObjectVector.class" isClass="true" isInterface="false">
+    <type elementName="ObjectVector" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.ObjectVector" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.ObjectVector">
+      <fields elementName="INITIAL_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="size" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="maxSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="elements" isEnumConstant="false" typeSignature="[Ljava.lang.Object;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="ObjectVector" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="ObjectVector" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="add" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="addAll" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="addAll" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.util.ObjectVector;"/>
+      </methods>
+      <methods elementName="containsIdentical" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="contains" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="copyInto" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="copyInto" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.Object;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="elementAt" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="find" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="remove" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="removeAll" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="size" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="SimpleLookupTable.class" isClass="true" isInterface="false">
+    <type elementName="SimpleLookupTable" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.SimpleLookupTable" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.SimpleLookupTable">
+      <fields elementName="keyTable" isEnumConstant="false" typeSignature="[Ljava.lang.Object;" isVolatile="false" isTransient="false"/>
+      <fields elementName="valueTable" isEnumConstant="false" typeSignature="[Ljava.lang.Object;" isVolatile="false" isTransient="false"/>
+      <fields elementName="elementSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="threshold" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="SimpleLookupTable" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="SimpleLookupTable" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="clone" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.lang.CloneNotSupportedException;</exceptionTypes>
+      </methods>
+      <methods elementName="containsKey" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="get" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="getKey" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="keyForValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="put" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="removeKey" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="removeValue" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="rehash" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="SimpleNameVector.class" isClass="true" isInterface="false">
+    <type elementName="SimpleNameVector" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.SimpleNameVector" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.SimpleNameVector">
+      <fields elementName="INITIAL_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="size" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="maxSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="elements" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="SimpleNameVector" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="add" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="addAll" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+      </methods>
+      <methods elementName="copyInto" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="contains" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="elementAt" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="remove" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="removeAll" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="size" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="SimpleSet.class" isClass="true" isInterface="false">
+    <type elementName="SimpleSet" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.SimpleSet" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.SimpleSet">
+      <fields elementName="values" isEnumConstant="false" typeSignature="[Ljava.lang.Object;" isVolatile="false" isTransient="false"/>
+      <fields elementName="elementSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="threshold" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="SimpleSet" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="SimpleSet" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="add" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="addIfNotIncluded" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="asArray" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="clear" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="clone" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.lang.CloneNotSupportedException;</exceptionTypes>
+      </methods>
+      <methods elementName="includes" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="remove" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="rehash" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="SimpleSetOfCharArray.class" isClass="true" isInterface="false">
+    <type elementName="SimpleSetOfCharArray" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.SimpleSetOfCharArray" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.SimpleSetOfCharArray">
+      <fields elementName="values" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="elementSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="threshold" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="SimpleSetOfCharArray" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="SimpleSetOfCharArray" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="add" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="asArray" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="clear" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="clone" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.lang.CloneNotSupportedException;</exceptionTypes>
+      </methods>
+      <methods elementName="get" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="includes" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="remove" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="rehash" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="SuffixConstants.class" isClass="false" isInterface="true">
+    <type elementName="SuffixConstants" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.SuffixConstants" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.SuffixConstants">
+      <fields elementName="EXTENSION_class" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="EXTENSION_CLASS" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="EXTENSION_java" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="EXTENSION_JAVA" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="SUFFIX_STRING_class" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="SUFFIX_STRING_CLASS" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="SUFFIX_STRING_java" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="SUFFIX_STRING_JAVA" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="SUFFIX_class" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="SUFFIX_CLASS" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="SUFFIX_java" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="SUFFIX_JAVA" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="Util$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.Util$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.Util.1">
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="displayString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="Util$Displayable.class" isClass="false" isInterface="true">
+    <type elementName="Displayable" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.Util$Displayable" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.Util.Displayable">
+      <methods elementName="displayString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="Util.class" isClass="true" isInterface="false">
+    <type elementName="Util" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.Util" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.Util">
+      <fields elementName="DEFAULT_READING_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="DEFAULT_WRITING_SIZE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="UTF_8" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="LINE_SEPARATOR" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="EMPTY_STRING" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="EMPTY_INT_ARRAY" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="Util" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="buildAllDirectoriesInto" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="bytesToChar" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[B"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="computeOuterMostVisibility" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="getFileByteContent" returnType="[B" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.File;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="getFileCharContent" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.File;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="getFileOutputStream" returnType="Ljava.io.FileOutputStream;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="getInputStreamAsByteArray" returnType="[B" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.InputStream;"/>
+        <parameters name="arg1" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="getInputStreamAsCharArray" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.InputStream;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="getLineNumber" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="getZipEntryByteContent" returnType="[B" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.zip.ZipEntry;"/>
+        <parameters name="arg1" type="Ljava.util.zip.ZipFile;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="isPotentialZipArchive" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="isClassFileName" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="isClassFileName" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="isExcluded" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[[C"/>
+        <parameters name="arg2" type="[[C"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="isJavaFileName" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="isJavaFileName" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="reverseQuickSort" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="reverseQuickSort" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="[I"/>
+      </methods>
+      <methods elementName="searchColumnNumber" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="toBoolean" returnType="Ljava.lang.Boolean;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.util.Util$Displayable;"/>
+      </methods>
+      <methods elementName="writeToDisk" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.ClassFile;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <types elementName="Displayable" fullyQualifiedName="org.eclipse.jdt.internal.compiler.util.Util$Displayable" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.util.Util.Displayable">
+        <methods elementName="displayString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.Object;"/>
+        </methods>
+      </types>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

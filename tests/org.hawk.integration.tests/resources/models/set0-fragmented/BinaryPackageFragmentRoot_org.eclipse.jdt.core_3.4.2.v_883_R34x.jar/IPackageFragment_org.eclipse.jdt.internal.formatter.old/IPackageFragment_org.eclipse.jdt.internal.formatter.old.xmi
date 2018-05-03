@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.formatter.old" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="CodeFormatter.class" isClass="true" isInterface="false">
+    <type elementName="CodeFormatter" fullyQualifiedName="org.eclipse.jdt.internal.formatter.old.CodeFormatter" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.old.CodeFormatter">
+      <fields elementName="options" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <methods elementName="CodeFormatter" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Map;"/>
+      </methods>
+      <methods elementName="format" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="[I"/>
+        <parameters name="arg3" type="Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

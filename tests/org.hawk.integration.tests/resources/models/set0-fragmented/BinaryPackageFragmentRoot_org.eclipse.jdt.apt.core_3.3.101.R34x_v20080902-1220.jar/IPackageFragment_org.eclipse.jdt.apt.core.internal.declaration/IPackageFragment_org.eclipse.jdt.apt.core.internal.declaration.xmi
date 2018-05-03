@@ -1,0 +1,817 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.apt.core.internal.declaration" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.apt.core_3.3.101.R34x_v20080902-1220.jar.xmi#/"/>
+  <classFiles elementName="ASTBasedAnnotationElementDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="ASTBasedAnnotationElementDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.ASTBasedAnnotationElementDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.ASTBasedAnnotationElementDeclarationImpl">
+      <methods elementName="ASTBasedAnnotationElementDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="getDeclaringType" returnType="Lcom.sun.mirror.declaration.AnnotationTypeDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDefaultValue" returnType="Lcom.sun.mirror.declaration.AnnotationValue;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAstNodeForDefault" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isVarArgs" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSimpleName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getReturnType" returnType="Lcom.sun.mirror.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getParameters" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.ParameterDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMemberAstNode" returnType="Lorg.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclaringType" returnType="Lcom.sun.mirror.declaration.TypeDeclaration;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTBasedConstructorDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="ASTBasedConstructorDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.ASTBasedConstructorDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.ASTBasedConstructorDeclarationImpl">
+      <methods elementName="ASTBasedConstructorDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.BodyDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTBasedDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="ASTBasedDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.ASTBasedDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.ASTBasedDeclarationImpl">
+      <fields elementName="EMPTY_STRING" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_astNode" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.ASTNode;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_file" isEnumConstant="false" typeSignature="Lorg.eclipse.core.resources.IFile;" isVolatile="false" isTransient="false"/>
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="ASTBasedDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="getModifiers" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.Modifier;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getModifiers" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.Modifier;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getAnnotation" returnType="TA;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Class&lt;TA;>;"/>
+      </methods>
+      <methods elementName="getAnnotationMirrors" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.AnnotationMirror;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAnnotationInstancesFromAST" returnType="[Lorg.eclipse.jdt.core.dom.IAnnotationBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isFromSource" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAstNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCompilationUnit" returnType="Lorg.eclipse.jdt.core.dom.CompilationUnit;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getResource" returnType="Lorg.eclipse.core.resources.IFile;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPosition" returnType="Lcom.sun.mirror.util.SourcePosition;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isBindingBased" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTBasedExecutableDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="ASTBasedExecutableDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.ASTBasedExecutableDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.ASTBasedExecutableDeclarationImpl">
+      <methods elementName="ASTBasedExecutableDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.BodyDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="getFormalTypeParameters" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.TypeParameterDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getParameters" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.ParameterDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getThrownTypes" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.type.ReferenceType;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isVarArgs" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSimpleName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMethodAstNode" returnType="Lorg.eclipse.jdt.core.dom.MethodDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTBasedFieldDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="ASTBasedFieldDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.ASTBasedFieldDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.ASTBasedFieldDeclarationImpl">
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="ASTBasedFieldDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.VariableDeclarationFragment;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="getConstantExpression" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getConstantValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSimpleName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getType" returnType="Lcom.sun.mirror.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAstNode" returnType="Lorg.eclipse.jdt.core.dom.VariableDeclarationFragment;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFieldDeclarationAstNode" returnType="Lorg.eclipse.jdt.core.dom.FieldDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAstNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTBasedMemberDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="ASTBasedMemberDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.ASTBasedMemberDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.ASTBasedMemberDeclarationImpl">
+      <methods elementName="ASTBasedMemberDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="getDeclaringType" returnType="Lcom.sun.mirror.declaration.TypeDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDocComment" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getContainingTypeAstNode" returnType="Lorg.eclipse.jdt.core.dom.AbstractTypeDeclaration;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ASTBasedMethodDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="ASTBasedMethodDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.ASTBasedMethodDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.ASTBasedMethodDeclarationImpl">
+      <methods elementName="ASTBasedMethodDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.BodyDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="getReturnType" returnType="Lcom.sun.mirror.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="AnnotationDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="AnnotationDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.AnnotationDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.AnnotationDeclarationImpl">
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="AnnotationDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ITypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="getMethods" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.AnnotationTypeElementDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.TypeVisitor;"/>
+      </methods>
+      <methods elementName="getDeclaration" returnType="Lcom.sun.mirror.declaration.AnnotationTypeDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclaration" returnType="Lcom.sun.mirror.declaration.TypeDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclaration" returnType="Lcom.sun.mirror.declaration.InterfaceDeclaration;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="AnnotationElementDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="AnnotationElementDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.AnnotationElementDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.AnnotationElementDeclarationImpl">
+      <methods elementName="AnnotationElementDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.IMethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="getDeclaringType" returnType="Lcom.sun.mirror.declaration.AnnotationTypeDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDefaultValue" returnType="Lcom.sun.mirror.declaration.AnnotationValue;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAstNodeForDefault" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getParameters" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.ParameterDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclaringType" returnType="Lcom.sun.mirror.declaration.TypeDeclaration;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="AnnotationMirrorImpl.class" isClass="true" isInterface="false">
+    <type elementName="AnnotationMirrorImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.AnnotationMirrorImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.AnnotationMirrorImpl">
+      <fields elementName="_domAnnotation" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.IAnnotationBinding;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_env" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_annotated" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseDeclarationImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="AnnotationMirrorImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.IAnnotationBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseDeclarationImpl;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="getAnnotationType" returnType="Lcom.sun.mirror.type.AnnotationType;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getElementValues" returnType="Ljava.util.Map&lt;Lcom.sun.mirror.declaration.AnnotationTypeElementDeclaration;Lcom.sun.mirror.declaration.AnnotationValue;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPosition" returnType="Lcom.sun.mirror.util.SourcePosition;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMemberValueTypeBinding" returnType="[Lorg.eclipse.jdt.core.dom.ITypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getValueTypeBinding" returnType="[Lorg.eclipse.jdt.core.dom.ITypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ITypeBinding;"/>
+      </methods>
+      <methods elementName="getValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getMethodBinding" returnType="Lorg.eclipse.jdt.core.dom.IMethodBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getResolvedAnnotaion" returnType="Lorg.eclipse.jdt.core.dom.IAnnotationBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isFromSource" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAstNode" returnType="Lorg.eclipse.jdt.core.dom.Annotation;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getASTNodeForElement" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getCompilationUnit" returnType="Lorg.eclipse.jdt.core.dom.CompilationUnit;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnvironment" returnType="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getResource" returnType="Lorg.eclipse.core.resources.IFile;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAnnotatedDeclaration" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseDeclarationImpl;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="AnnotationValueImpl.class" isClass="true" isInterface="false">
+    <type elementName="AnnotationValueImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.AnnotationValueImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.AnnotationValueImpl">
+      <fields elementName="_parent" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_env" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_value" isEnumConstant="false" typeSignature="Ljava.lang.Object;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_name" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_index" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="$SWITCH_TABLE$org$eclipse$jdt$apt$core$internal$declaration$EclipseMirrorObject$MirrorKind" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="AnnotationValueImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.apt.core.internal.declaration.AnnotationElementDeclarationImpl;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="AnnotationValueImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.apt.core.internal.declaration.AnnotationMirrorImpl;"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="getPosition" returnType="Lcom.sun.mirror.util.SourcePosition;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCompilationUnit" returnType="Lorg.eclipse.jdt.core.dom.CompilationUnit;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isFromSource" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getResource" returnType="Lorg.eclipse.core.resources.IFile;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnvironment" returnType="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="$SWITCH_TABLE$org$eclipse$jdt$apt$core$internal$declaration$EclipseMirrorObject$MirrorKind" returnType="[I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="BinaryParameterDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="BinaryParameterDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.BinaryParameterDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.BinaryParameterDeclarationImpl">
+      <fields elementName="ARG" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_type" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.ITypeBinding;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_executable" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.ExecutableDeclarationImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_paramIndex" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="BinaryParameterDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.declaration.ExecutableDeclarationImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ITypeBinding;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="getModifiers" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.Modifier;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDocComment" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSimpleName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPosition" returnType="Lcom.sun.mirror.util.SourcePosition;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getType" returnType="Lcom.sun.mirror.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAnnotation" returnType="TA;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Class&lt;TA;>;"/>
+      </methods>
+      <methods elementName="getAnnotationMirrors" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.AnnotationMirror;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isBindingBased" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isFromSource" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAstNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getResource" returnType="Lorg.eclipse.core.resources.IFile;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTypeBinding" returnType="Lorg.eclipse.jdt.core.dom.ITypeBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclarationBinding" returnType="Lorg.eclipse.jdt.core.dom.IBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ClassDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="ClassDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.ClassDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.ClassDeclarationImpl">
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="ClassDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ITypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="getASTConstructor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.AbstractTypeDeclaration;"/>
+        <parameters name="arg1" type="Ljava.util.List&lt;Lcom.sun.mirror.declaration.ConstructorDeclaration;>;"/>
+      </methods>
+      <methods elementName="getConstructors" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.ConstructorDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMethods" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.MethodDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.TypeVisitor;"/>
+      </methods>
+      <methods elementName="getSuperclass" returnType="Lcom.sun.mirror.type.ClassType;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclaration" returnType="Lcom.sun.mirror.declaration.ClassDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclaration" returnType="Lcom.sun.mirror.declaration.TypeDeclaration;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ConstructorDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="ConstructorDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.ConstructorDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.ConstructorDeclarationImpl">
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="ConstructorDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.IMethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="DeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="DeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.DeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.DeclarationImpl">
+      <fields elementName="_binding" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.dom.IBinding;" isVolatile="false" isTransient="false"/>
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="DeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.IBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclarationBinding" returnType="Lorg.eclipse.jdt.core.dom.IBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getModifiers" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.Modifier;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isBindingBased" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAstNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCompilationUnit" returnType="Lorg.eclipse.jdt.core.dom.CompilationUnit;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getResource" returnType="Lorg.eclipse.core.resources.IFile;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="EclipseDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="EclipseDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.EclipseDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.EclipseDeclarationImpl">
+      <fields elementName="_env" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;" isVolatile="false" isTransient="false"/>
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="EclipseDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="_getAnnotation" returnType="TA;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Class&lt;TA;>;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.core.dom.IAnnotationBinding;"/>
+      </methods>
+      <methods elementName="_getAnnotationMirrors" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.AnnotationMirror;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.core.dom.IAnnotationBinding;"/>
+      </methods>
+      <methods elementName="_getAnnotationMirrors" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.AnnotationMirror;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.List&lt;Lorg.eclipse.jdt.core.dom.Annotation;>;"/>
+      </methods>
+      <methods elementName="getAstNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCompilationUnit" returnType="Lorg.eclipse.jdt.core.dom.CompilationUnit;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getResource" returnType="Lorg.eclipse.core.resources.IFile;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isFromSource" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isBindingBased" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnvironment" returnType="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getRangeNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDocComment" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.BodyDeclaration;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="EclipseMirrorObject$MirrorKind.class" isClass="false" isInterface="false">
+    <type elementName="MirrorKind" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject.MirrorKind">
+      <fields elementName="CONSTRUCTOR" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="METHOD" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ANNOTATION_ELEMENT" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="FIELD" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ENUM_CONSTANT" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ANNOTATION_VALUE" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ANNOTATION_MIRROR" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="TYPE_ANNOTATION" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="TYPE_INTERFACE" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="TYPE_CLASS" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="TYPE_ENUM" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="TYPE_ARRAY" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="TYPE_WILDCARD" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="TYPE_VOID" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="TYPE_PRIMITIVE" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="TYPE_PARAMETER_VARIABLE" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="TYPE_ERROR" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="FORMAL_PARAMETER" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="PACKAGE" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <fields elementName="ENUM$VALUES" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="MirrorKind" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="values" returnType="[Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="valueOf" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="EclipseMirrorObject.class" isClass="false" isInterface="true">
+    <type elementName="EclipseMirrorObject" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject">
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnvironment" returnType="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;" isConstructor="false" isMainMethod="false"/>
+      <types elementName="MirrorKind" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject.MirrorKind">
+        <fields elementName="CONSTRUCTOR" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <fields elementName="METHOD" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <fields elementName="ANNOTATION_ELEMENT" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <fields elementName="FIELD" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <fields elementName="ENUM_CONSTANT" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <fields elementName="ANNOTATION_VALUE" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <fields elementName="ANNOTATION_MIRROR" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <fields elementName="TYPE_ANNOTATION" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <fields elementName="TYPE_INTERFACE" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <fields elementName="TYPE_CLASS" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <fields elementName="TYPE_ENUM" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <fields elementName="TYPE_ARRAY" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <fields elementName="TYPE_WILDCARD" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <fields elementName="TYPE_VOID" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <fields elementName="TYPE_PRIMITIVE" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <fields elementName="TYPE_PARAMETER_VARIABLE" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <fields elementName="TYPE_ERROR" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <fields elementName="FORMAL_PARAMETER" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <fields elementName="PACKAGE" isEnumConstant="true" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <fields elementName="ENUM$VALUES" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isVolatile="false" isTransient="false"/>
+        <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="MirrorKind" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+          <parameters name="arg1" type="I"/>
+        </methods>
+        <methods elementName="values" returnType="[Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="valueOf" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+        </methods>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="EclipseMirrorType.class" isClass="false" isInterface="true">
+    <type elementName="EclipseMirrorType" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorType" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorType">
+      <methods elementName="isAssignmentCompatible" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorType;"/>
+      </methods>
+      <methods elementName="isSubTypeCompatible" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorType;"/>
+      </methods>
+      <methods elementName="getTypeBinding" returnType="Lorg.eclipse.jdt.core.dom.ITypeBinding;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="EnumConstantDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="EnumConstantDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.EnumConstantDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.EnumConstantDeclarationImpl">
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="EnumConstantDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.IVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="getDeclaringType" returnType="Lcom.sun.mirror.declaration.EnumDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclaringType" returnType="Lcom.sun.mirror.declaration.TypeDeclaration;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="EnumDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="EnumDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.EnumDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.EnumDeclarationImpl">
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="EnumDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ITypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="getEnumConstants" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.EnumConstantDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.TypeVisitor;"/>
+      </methods>
+      <methods elementName="getDeclaration" returnType="Lcom.sun.mirror.declaration.EnumDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclaration" returnType="Lcom.sun.mirror.declaration.TypeDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclaration" returnType="Lcom.sun.mirror.declaration.ClassDeclaration;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ExecutableDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="ExecutableDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.ExecutableDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.ExecutableDeclarationImpl">
+      <methods elementName="ExecutableDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.IMethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="getDeclaringType" returnType="Lcom.sun.mirror.declaration.TypeDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFormalTypeParameters" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.TypeParameterDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getParameters" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.ParameterDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getThrownTypes" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.type.ReferenceType;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isVarArgs" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSimpleName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclarationBinding" returnType="Lorg.eclipse.jdt.core.dom.IMethodBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isFromSource" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclarationBinding" returnType="Lorg.eclipse.jdt.core.dom.IBinding;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ExecutableUtil.class" isClass="true" isInterface="false">
+    <type elementName="ExecutableUtil" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.ExecutableUtil" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.ExecutableUtil">
+      <methods elementName="ExecutableUtil" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="getFormalTypeParameters" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.TypeParameterDeclaration;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseDeclarationImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="getParameters" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.ParameterDeclaration;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseDeclarationImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="getThrownTypes" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.type.ReferenceType;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseDeclarationImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="FieldDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="FieldDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.FieldDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.FieldDeclarationImpl">
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="FieldDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.IVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="getConstantExpression" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getConstantValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclaringType" returnType="Lcom.sun.mirror.declaration.TypeDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSimpleName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getType" returnType="Lcom.sun.mirror.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclarationBinding" returnType="Lorg.eclipse.jdt.core.dom.IVariableBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isFromSource" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclarationBinding" returnType="Lorg.eclipse.jdt.core.dom.IBinding;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="InterfaceDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="InterfaceDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.InterfaceDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.InterfaceDeclarationImpl">
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="InterfaceDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ITypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="getMethods" returnType="Ljava.util.Collection&lt;+Lcom.sun.mirror.declaration.MethodDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.TypeVisitor;"/>
+      </methods>
+      <methods elementName="getDeclaration" returnType="Lcom.sun.mirror.declaration.InterfaceDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclaration" returnType="Lcom.sun.mirror.declaration.TypeDeclaration;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="MemberDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="MemberDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.MemberDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.MemberDeclarationImpl">
+      <methods elementName="MemberDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.IBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="getAnnotation" returnType="TA;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Class&lt;TA;>;"/>
+      </methods>
+      <methods elementName="getAnnotationMirrors" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.AnnotationMirror;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAnnotationInstances" returnType="[Lorg.eclipse.jdt.core.dom.IAnnotationBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDocComment" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPosition" returnType="Lcom.sun.mirror.util.SourcePosition;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="MethodDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="MethodDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.MethodDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.MethodDeclarationImpl">
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="MethodDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.IMethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="getReturnType" returnType="Lcom.sun.mirror.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="PackageDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="PackageDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.PackageDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.PackageDeclarationImpl">
+      <fields elementName="_hideSourcePosition" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="_typeDecl" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.apt.core.internal.declaration.TypeDeclarationImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_pkgFragments" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.core.IPackageFragment;" isVolatile="false" isTransient="false"/>
+      <methods elementName="PackageDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.IPackageBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.declaration.TypeDeclarationImpl;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="PackageDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.IPackageBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.declaration.TypeDeclarationImpl;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="[Lorg.eclipse.jdt.core.IPackageFragment;"/>
+      </methods>
+      <methods elementName="getPackageBinding" returnType="Lorg.eclipse.jdt.core.dom.IPackageBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="getAnnotation" returnType="TA;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Class&lt;TA;>;"/>
+      </methods>
+      <methods elementName="getAnnotationMirrors" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.AnnotationMirror;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAnnotationTypes" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.AnnotationTypeDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getClasses" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.ClassDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnums" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.EnumDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInterfaces" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.InterfaceDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDocComment" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getModifiers" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.Modifier;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPosition" returnType="Lcom.sun.mirror.util.SourcePosition;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getQualifiedName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSimpleName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclarationBinding" returnType="Lorg.eclipse.jdt.core.dom.IPackageBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isFromSource" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="initFragments" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTypesInPackage" returnType="Ljava.util.List&lt;Lorg.eclipse.jdt.core.IType;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.core.IPackageFragment;"/>
+      </methods>
+      <methods elementName="getDeclarationBinding" returnType="Lorg.eclipse.jdt.core.dom.IBinding;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="PackageDeclarationImplNoBinding.class" isClass="true" isInterface="false">
+    <type elementName="PackageDeclarationImplNoBinding" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.PackageDeclarationImplNoBinding" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.PackageDeclarationImplNoBinding">
+      <fields elementName="fragments" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.core.IPackageFragment;" isVolatile="false" isTransient="false"/>
+      <methods elementName="PackageDeclarationImplNoBinding" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.core.IPackageFragment;"/>
+      </methods>
+      <methods elementName="getQualifiedName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getClasses" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.ClassDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnums" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.EnumDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInterfaces" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.InterfaceDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAnnotationTypes" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.AnnotationTypeDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDocComment" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAnnotationMirrors" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.AnnotationMirror;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAnnotation" returnType="TA;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Class&lt;TA;>;"/>
+      </methods>
+      <methods elementName="getModifiers" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.Modifier;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSimpleName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPosition" returnType="Lcom.sun.mirror.util.SourcePosition;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SourceParameterDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="SourceParameterDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.SourceParameterDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.SourceParameterDeclarationImpl">
+      <methods elementName="SourceParameterDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.SingleVariableDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="getType" returnType="Lcom.sun.mirror.type.TypeMirror;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSimpleName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDocComment" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAstNode" returnType="Lorg.eclipse.jdt.core.dom.SingleVariableDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getAstNode" returnType="Lorg.eclipse.jdt.core.dom.ASTNode;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="TypeDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="TypeDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.TypeDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.TypeDeclarationImpl">
+      <fields elementName="HAS_INCONSISTENT_TYPE_HIERACHY" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <methods elementName="TypeDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ITypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="getQualifiedName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSimpleName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPackage" returnType="Lcom.sun.mirror.declaration.PackageDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="getTypeBinding" returnType="Lorg.eclipse.jdt.core.dom.ITypeBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getASTFields" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.AbstractTypeDeclaration;"/>
+        <parameters name="arg1" type="Ljava.util.List&lt;Lcom.sun.mirror.declaration.FieldDeclaration;>;"/>
+      </methods>
+      <methods elementName="getFields" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.FieldDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNestedTypes" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.TypeDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFormalTypeParameters" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.TypeParameterDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclaringType" returnType="Lcom.sun.mirror.declaration.TypeDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getActualTypeArguments" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.type.TypeMirror;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getContainingType" returnType="Lcom.sun.mirror.type.DeclaredType;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclaration" returnType="Lcom.sun.mirror.declaration.TypeDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSuperinterfaces" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.type.InterfaceType;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclarationBinding" returnType="Lorg.eclipse.jdt.core.dom.ITypeBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getASTMethods" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.AbstractTypeDeclaration;"/>
+        <parameters name="arg1" type="Ljava.util.List&lt;Lcom.sun.mirror.declaration.MethodDeclaration;>;"/>
+      </methods>
+      <methods elementName="_getMethods" returnType="Ljava.util.List&lt;+Lcom.sun.mirror.declaration.MethodDeclaration;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isFromSource" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isAssignmentCompatible" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorType;"/>
+      </methods>
+      <methods elementName="isSubTypeCompatible" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorType;"/>
+      </methods>
+      <methods elementName="isImplementorOf" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ITypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ITypeBinding;"/>
+      </methods>
+      <methods elementName="isSubClassOf" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ITypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ITypeBinding;"/>
+      </methods>
+      <methods elementName="eq" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ITypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.dom.ITypeBinding;"/>
+      </methods>
+      <methods elementName="getDeclarationBinding" returnType="Lorg.eclipse.jdt.core.dom.IBinding;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="TypeParameterDeclarationImpl.class" isClass="true" isInterface="false">
+    <type elementName="TypeParameterDeclarationImpl" fullyQualifiedName="org.eclipse.jdt.apt.core.internal.declaration.TypeParameterDeclarationImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.internal.declaration.TypeParameterDeclarationImpl">
+      <fields elementName="$assertionsDisabled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="TypeParameterDeclarationImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.dom.ITypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.DeclarationVisitor;"/>
+      </methods>
+      <methods elementName="getAnnotation" returnType="TA;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Class&lt;TA;>;"/>
+      </methods>
+      <methods elementName="getAnnotationMirrors" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.AnnotationMirror;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getBounds" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.type.ReferenceType;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDocComment" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getModifiers" returnType="Ljava.util.Collection&lt;Lcom.sun.mirror.declaration.Modifier;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getOwner" returnType="Lcom.sun.mirror.declaration.Declaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getOwnerBinding" returnType="Lorg.eclipse.jdt.core.dom.IBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPosition" returnType="Lcom.sun.mirror.util.SourcePosition;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSimpleName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lcom.sun.mirror.util.TypeVisitor;"/>
+      </methods>
+      <methods elementName="getDeclaration" returnType="Lcom.sun.mirror.declaration.TypeParameterDeclaration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="kind" returnType="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorObject$MirrorKind;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeclarationBinding" returnType="Lorg.eclipse.jdt.core.dom.ITypeBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTypeBinding" returnType="Lorg.eclipse.jdt.core.dom.ITypeBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isFromSource" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isAssignmentCompatible" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorType;"/>
+      </methods>
+      <methods elementName="isSubTypeCompatible" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.internal.declaration.EclipseMirrorType;"/>
+      </methods>
+      <methods elementName="getDeclarationBinding" returnType="Lorg.eclipse.jdt.core.dom.IBinding;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

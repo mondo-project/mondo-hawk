@@ -1,0 +1,2022 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.compiler.problem" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="AbortCompilation.class" isClass="true" isInterface="false">
+    <type elementName="AbortCompilation" fullyQualifiedName="org.eclipse.jdt.internal.compiler.problem.AbortCompilation" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.problem.AbortCompilation">
+      <fields elementName="compilationResult" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.CompilationResult;" isVolatile="false" isTransient="false"/>
+      <fields elementName="exception" isEnumConstant="false" typeSignature="Ljava.lang.Throwable;" isVolatile="false" isTransient="false"/>
+      <fields elementName="problem" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;" isVolatile="false" isTransient="false"/>
+      <fields elementName="isSilent" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="silentException" isEnumConstant="false" typeSignature="Ljava.lang.RuntimeException;" isVolatile="false" isTransient="false"/>
+      <fields elementName="serialVersionUID" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <methods elementName="AbortCompilation" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="AbortCompilation" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+      </methods>
+      <methods elementName="AbortCompilation" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+        <parameters name="arg1" type="Ljava.lang.Throwable;"/>
+      </methods>
+      <methods elementName="AbortCompilation" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+        <parameters name="arg1" type="Ljava.lang.RuntimeException;"/>
+      </methods>
+      <methods elementName="updateContext" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.InvocationSite;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+      </methods>
+      <methods elementName="updateContext" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="AbortCompilationUnit.class" isClass="true" isInterface="false">
+    <type elementName="AbortCompilationUnit" fullyQualifiedName="org.eclipse.jdt.internal.compiler.problem.AbortCompilationUnit" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.problem.AbortCompilationUnit">
+      <fields elementName="serialVersionUID" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="encoding" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <methods elementName="AbortCompilationUnit" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+      </methods>
+      <methods elementName="AbortCompilationUnit" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+        <parameters name="arg1" type="Ljava.io.IOException;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="AbortMethod.class" isClass="true" isInterface="false">
+    <type elementName="AbortMethod" fullyQualifiedName="org.eclipse.jdt.internal.compiler.problem.AbortMethod" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.problem.AbortMethod">
+      <fields elementName="serialVersionUID" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <methods elementName="AbortMethod" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="AbortType.class" isClass="true" isInterface="false">
+    <type elementName="AbortType" fullyQualifiedName="org.eclipse.jdt.internal.compiler.problem.AbortType" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.problem.AbortType">
+      <fields elementName="serialVersionUID" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <methods elementName="AbortType" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="DefaultProblem.class" isClass="true" isInterface="false">
+    <type elementName="DefaultProblem" fullyQualifiedName="org.eclipse.jdt.internal.compiler.problem.DefaultProblem" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.problem.DefaultProblem">
+      <fields elementName="fileName" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="id" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="startPosition" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="endPosition" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="line" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="column" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="severity" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="arguments" isEnumConstant="false" typeSignature="[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="message" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="MARKER_TYPE_PROBLEM" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="MARKER_TYPE_TASK" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="EMPTY_VALUES" isEnumConstant="false" typeSignature="[Ljava.lang.Object;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="DefaultProblem" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="[Ljava.lang.String;"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+        <parameters name="arg7" type="I"/>
+        <parameters name="arg8" type="I"/>
+      </methods>
+      <methods elementName="errorReportSource" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="getArguments" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCategoryID" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getID" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInternalCategoryMessage" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMarkerType" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMessage" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getOriginatingFileName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSourceEnd" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSourceColumnNumber" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSourceLineNumber" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSourceStart" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isError" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isWarning" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setOriginatingFileName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="setSourceEnd" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setSourceLineNumber" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setSourceStart" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="DefaultProblemFactory.class" isClass="true" isInterface="false">
+    <type elementName="DefaultProblemFactory" fullyQualifiedName="org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory">
+      <fields elementName="messageTemplates" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfInt;" isVolatile="false" isTransient="false"/>
+      <fields elementName="locale" isEnumConstant="false" typeSignature="Ljava.util.Locale;" isVolatile="false" isTransient="false"/>
+      <fields elementName="DEFAULT_LOCALE_TEMPLATES" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfInt;" isVolatile="false" isTransient="false"/>
+      <fields elementName="DOUBLE_QUOTES" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="SINGLE_QUOTE" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="FIRST_ARGUMENT" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="DefaultProblemFactory" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="DefaultProblemFactory" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Locale;"/>
+      </methods>
+      <methods elementName="createProblem" returnType="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="[Ljava.lang.String;"/>
+        <parameters name="arg3" type="[Ljava.lang.String;"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+        <parameters name="arg7" type="I"/>
+        <parameters name="arg8" type="I"/>
+      </methods>
+      <methods elementName="createProblem" returnType="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="[Ljava.lang.String;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="[Ljava.lang.String;"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+        <parameters name="arg7" type="I"/>
+        <parameters name="arg8" type="I"/>
+        <parameters name="arg9" type="I"/>
+      </methods>
+      <methods elementName="keyFromID" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getLocale" returnType="Ljava.util.Locale;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setLocale" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Locale;"/>
+      </methods>
+      <methods elementName="getLocalizedMessage" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getLocalizedMessage" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="[Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="localizedMessage" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+      </methods>
+      <methods elementName="loadMessageTemplates" returnType="Lorg.eclipse.jdt.internal.compiler.util.HashtableOfInt;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Locale;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ProblemHandler.class" isClass="true" isInterface="false">
+    <type elementName="ProblemHandler" fullyQualifiedName="org.eclipse.jdt.internal.compiler.problem.ProblemHandler" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.problem.ProblemHandler">
+      <fields elementName="NoArgument" isEnumConstant="false" typeSignature="[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="policy" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.IErrorHandlingPolicy;" isVolatile="false" isTransient="false"/>
+      <fields elementName="problemFactory" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.IProblemFactory;" isVolatile="false" isTransient="false"/>
+      <fields elementName="options" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.CompilerOptions;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="ProblemHandler" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.IErrorHandlingPolicy;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.impl.CompilerOptions;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.IProblemFactory;"/>
+      </methods>
+      <methods elementName="computeSeverity" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="createProblem" returnType="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="[Ljava.lang.String;"/>
+        <parameters name="arg3" type="[Ljava.lang.String;"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+        <parameters name="arg7" type="I"/>
+        <parameters name="arg8" type="I"/>
+      </methods>
+      <methods elementName="createProblem" returnType="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="[Ljava.lang.String;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="[Ljava.lang.String;"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+        <parameters name="arg7" type="I"/>
+        <parameters name="arg8" type="I"/>
+        <parameters name="arg9" type="I"/>
+      </methods>
+      <methods elementName="handle" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="[Ljava.lang.String;"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+        <parameters name="arg7" type="Lorg.eclipse.jdt.internal.compiler.impl.ReferenceContext;"/>
+        <parameters name="arg8" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+      </methods>
+      <methods elementName="handle" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[Ljava.lang.String;"/>
+        <parameters name="arg2" type="[Ljava.lang.String;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="Lorg.eclipse.jdt.internal.compiler.impl.ReferenceContext;"/>
+        <parameters name="arg6" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+      </methods>
+      <methods elementName="record" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.ReferenceContext;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ProblemReporter.class" isClass="true" isInterface="false">
+    <type elementName="ProblemReporter" fullyQualifiedName="org.eclipse.jdt.internal.compiler.problem.ProblemReporter" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.problem.ProblemReporter">
+      <fields elementName="referenceContext" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.ReferenceContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="positionScanner" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.parser.Scanner;" isVolatile="false" isTransient="false"/>
+      <fields elementName="FIELD_ACCESS" isEnumConstant="false" typeSignature="B" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTRUCTOR_ACCESS" isEnumConstant="false" typeSignature="B" isVolatile="false" isTransient="false"/>
+      <fields elementName="METHOD_ACCESS" isEnumConstant="false" typeSignature="B" isVolatile="false" isTransient="false"/>
+      <methods elementName="getElaborationId" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="B"/>
+      </methods>
+      <methods elementName="getIrritant" returnType="J" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getProblemCategory" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="ProblemReporter" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.IErrorHandlingPolicy;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.impl.CompilerOptions;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.IProblemFactory;"/>
+      </methods>
+      <methods elementName="abortDueToInternalError" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="abortDueToInternalError" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="abstractMethodCannotBeOverridden" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="abstractMethodInAbstractClass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="abstractMethodMustBeImplemented" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="abstractMethodNeedingNoBody" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="alreadyDefinedLabel" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="annotationCannotOverrideMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="annotationCircularity" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+      </methods>
+      <methods elementName="annotationMembersCannotHaveParameters" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AnnotationMethodDeclaration;"/>
+      </methods>
+      <methods elementName="annotationMembersCannotHaveTypeParameters" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AnnotationMethodDeclaration;"/>
+      </methods>
+      <methods elementName="annotationTypeDeclarationCannotHaveConstructor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ConstructorDeclaration;"/>
+      </methods>
+      <methods elementName="annotationTypeDeclarationCannotHaveSuperclass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="annotationTypeDeclarationCannotHaveSuperinterfaces" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="annotationTypeUsedAsSuperinterface" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="annotationValueMustBeAnnotation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="annotationValueMustBeArrayInitializer" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="annotationValueMustBeClassLiteral" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="annotationValueMustBeConstant" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="anonymousClassCannotExtendFinalClass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="argumentTypeCannotBeVoid" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.Argument;"/>
+      </methods>
+      <methods elementName="argumentTypeCannotBeVoidArray" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Argument;"/>
+      </methods>
+      <methods elementName="arrayConstantsOnlyInArrayInitializers" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="assignmentHasNoEffect" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractVariableDeclaration;"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="assignmentHasNoEffect" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Assignment;"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="attemptToReturnNonVoidExpression" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ReturnStatement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="attemptToReturnVoidValue" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ReturnStatement;"/>
+      </methods>
+      <methods elementName="autoboxing" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="boundCannotBeArray" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="boundMustBeAnInterface" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="bytecodeExceeds64KLimit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="bytecodeExceeds64KLimit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="cannotAllocateVoidArray" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="cannotAssignToFinalField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="cannotAssignToFinalLocal" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="cannotAssignToFinalOuterLocal" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="cannotDefineDimensionsAndInitializer" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ArrayAllocationExpression;"/>
+      </methods>
+      <methods elementName="cannotDireclyInvokeAbstractMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MessageSend;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="cannotExtendEnum" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="cannotImportPackage" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ImportReference;"/>
+      </methods>
+      <methods elementName="cannotInstantiate" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="cannotInvokeSuperConstructorInEnum" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ExplicitConstructorCall;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="cannotReadSource" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.problem.AbortCompilationUnit;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="cannotReferToNonFinalOuterLocal" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="cannotReturnInInitializer" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="cannotThrowNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="cannotThrowType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="cannotUseQualifiedEnumConstantInCaseLabel" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Reference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+      </methods>
+      <methods elementName="cannotUseSuperInCodeSnippet" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="cannotUseSuperInJavaLangObject" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="caseExpressionMustBeConstant" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="classExtendFinalClass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="codeSnippetMissingClass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="codeSnippetMissingMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="computeSeverity" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="conditionalArgumentsIncompatibleTypes" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ConditionalExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="conflictingImport" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ImportReference;"/>
+      </methods>
+      <methods elementName="constantOutOfFormat" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.NumberLiteral;"/>
+      </methods>
+      <methods elementName="constantOutOfRange" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Literal;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="corruptedSignature" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="deprecatedField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="deprecatedMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="deprecatedType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="disallowedTargetForAnnotation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Annotation;"/>
+      </methods>
+      <methods elementName="duplicateAnnotation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Annotation;"/>
+      </methods>
+      <methods elementName="duplicateAnnotationValue" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.MemberValuePair;"/>
+      </methods>
+      <methods elementName="duplicateBounds" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="duplicateCase" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CaseStatement;"/>
+      </methods>
+      <methods elementName="duplicateDefaultCase" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="duplicateEnumSpecialMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="duplicateFieldInType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+      </methods>
+      <methods elementName="duplicateImport" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ImportReference;"/>
+      </methods>
+      <methods elementName="duplicateInheritedMethods" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="duplicateInitializationOfBlankFinalField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.Reference;"/>
+      </methods>
+      <methods elementName="duplicateInitializationOfFinalLocal" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="duplicateMethodInType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="duplicateModifierForField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+      </methods>
+      <methods elementName="duplicateModifierForMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="duplicateModifierForType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="duplicateModifierForVariable" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.LocalDeclaration;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="duplicateNestedType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="duplicateSuperinterface" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="duplicateTargetInTargetAnnotation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.NameReference;"/>
+      </methods>
+      <methods elementName="duplicateTypeParameterInType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeParameter;"/>
+      </methods>
+      <methods elementName="duplicateTypes" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="emptyControlFlowStatement" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="enumAbstractMethodMustBeImplemented" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="enumConstantMustImplementAbstractMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+      </methods>
+      <methods elementName="enumConstantsCannotBeSurroundedByParenthesis" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="enumStaticFieldUsedDuringInitialization" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="enumSwitchCannotTargetField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Reference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+      </methods>
+      <methods elementName="errorNoMethodFor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MessageSend;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="errorThisSuperInStatic" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="expressionShouldBeAVariable" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="fieldHiding" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;"/>
+      </methods>
+      <methods elementName="fieldsOrThisBeforeConstructorInvocation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ThisReference;"/>
+      </methods>
+      <methods elementName="finallyMustCompleteNormally" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Block;"/>
+      </methods>
+      <methods elementName="finalMethodCannotBeOverridden" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="finalVariableBound" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+      </methods>
+      <methods elementName="forbiddenReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg2" type="B"/>
+        <parameters name="arg3" type="Ljava.lang.String;"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="forbiddenReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg2" type="B"/>
+        <parameters name="arg3" type="Ljava.lang.String;"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="forbiddenReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg2" type="B"/>
+        <parameters name="arg3" type="Ljava.lang.String;"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="forwardReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Reference;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="forwardTypeVariableReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeVariableBinding;"/>
+      </methods>
+      <methods elementName="genericTypeCannotExtendThrowable" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="handle" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="[Ljava.lang.String;"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+      </methods>
+      <methods elementName="handle" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[Ljava.lang.String;"/>
+        <parameters name="arg2" type="[Ljava.lang.String;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="handle" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[Ljava.lang.String;"/>
+        <parameters name="arg2" type="[Ljava.lang.String;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+      </methods>
+      <methods elementName="handle" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[Ljava.lang.String;"/>
+        <parameters name="arg2" type="[Ljava.lang.String;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="I"/>
+      </methods>
+      <methods elementName="hiddenCatchBlock" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="hierarchyCircularity" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+      </methods>
+      <methods elementName="hierarchyHasProblems" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="illegalAbstractModifierCombinationForMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="illegalAccessFromTypeVariable" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="illegalClassLiteralForTypeVariable" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="illegalExtendedDimensions" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AnnotationMethodDeclaration;"/>
+      </methods>
+      <methods elementName="illegalExtendedDimensions" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Argument;"/>
+      </methods>
+      <methods elementName="illegalGenericArray" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="illegalInstanceOfGenericType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="illegalLocalTypeDeclaration" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="illegalModifierCombinationFinalAbstractForClass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="illegalModifierCombinationFinalVolatileForField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+      </methods>
+      <methods elementName="illegalModifierForAnnotationField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+      </methods>
+      <methods elementName="illegalModifierForAnnotationMember" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="illegalModifierForAnnotationMemberType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="illegalModifierForAnnotationType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="illegalModifierForClass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="illegalModifierForEnum" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="illegalModifierForEnumConstant" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+      </methods>
+      <methods elementName="illegalModifierForEnumConstructor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="illegalModifierForField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+      </methods>
+      <methods elementName="illegalModifierForInterface" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="illegalModifierForInterfaceField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+      </methods>
+      <methods elementName="illegalModifierForInterfaceMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="illegalModifierForLocalClass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="illegalModifierForLocalEnum" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="illegalModifierForMemberClass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="illegalModifierForMemberEnum" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="illegalModifierForMemberInterface" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="illegalModifierForMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="illegalModifierForVariable" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.LocalDeclaration;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="illegalPrimitiveOrArrayTypeForEnclosingInstance" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="illegalQualifiedParameterizedTypeAllocation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="illegalStaticModifierForMemberType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="illegalUsageOfQualifiedTypeReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.QualifiedTypeReference;"/>
+      </methods>
+      <methods elementName="illegalUsageOfWildcard" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+      </methods>
+      <methods elementName="illegalVararg" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Argument;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="illegalVisibilityModifierCombinationForField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+      </methods>
+      <methods elementName="illegalVisibilityModifierCombinationForMemberType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="illegalVisibilityModifierCombinationForMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="illegalVisibilityModifierForInterfaceMemberType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="illegalVoidExpression" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="importProblem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ImportReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;"/>
+      </methods>
+      <methods elementName="incompatibleExceptionInThrowsClause" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="incompatibleReturnType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="incorrectArityForParameterizedType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="incorrectLocationForNonEmptyDimension" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ArrayAllocationExpression;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="incorrectSwitchType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="indirectAccessToStaticField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+      </methods>
+      <methods elementName="indirectAccessToStaticMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="inheritedMethodReducesVisibility" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="inheritedMethodsHaveIncompatibleReturnTypes" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="inheritedMethodsHaveIncompatibleReturnTypes" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="inheritedMethodsHaveNameClash" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="initializerMustCompleteNormally" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+      </methods>
+      <methods elementName="innerTypesCannotDeclareStaticInitializers" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.Initializer;"/>
+      </methods>
+      <methods elementName="interfaceCannotHaveConstructors" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ConstructorDeclaration;"/>
+      </methods>
+      <methods elementName="interfaceCannotHaveInitializers" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+      </methods>
+      <methods elementName="invalidAnnotationMemberType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MethodDeclaration;"/>
+      </methods>
+      <methods elementName="invalidBreak" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="invalidConstructor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Statement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="invalidContinue" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="invalidEnclosingType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="invalidExplicitConstructorCall" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="invalidExpressionAsStatement" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="invalidField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="invalidField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.NameReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+      </methods>
+      <methods elementName="invalidField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.QualifiedNameReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="invalidFileNameForPackageAnnotations" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Annotation;"/>
+      </methods>
+      <methods elementName="invalidMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MessageSend;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="invalidNullToSynchronize" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="invalidOperator" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.BinaryExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="invalidOperator" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CompoundAssignment;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="invalidOperator" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.UnaryExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="invalidParameterizedExceptionType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="invalidParenthesizedExpression" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="invalidType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="invalidTypeForCollection" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="invalidTypeReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="invalidTypeToSynchronize" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="invalidTypeVariableAsException" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="invalidUnaryExpression" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="invalidUsageOfAnnotation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Annotation;"/>
+      </methods>
+      <methods elementName="invalidUsageOfAnnotationDeclarations" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="invalidUsageOfEnumDeclarations" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="invalidUsageOfForeachStatements" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.LocalDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="invalidUsageOfStaticImports" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ImportReference;"/>
+      </methods>
+      <methods elementName="invalidUsageOfTypeArguments" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+      </methods>
+      <methods elementName="invalidUsageOfTypeParameters" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeParameter;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeParameter;"/>
+      </methods>
+      <methods elementName="invalidUsageOfTypeParametersForAnnotationDeclaration" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="invalidUsageOfTypeParametersForEnumDeclaration" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="invalidUsageOfVarargs" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Argument;"/>
+      </methods>
+      <methods elementName="isClassPathCorrect" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;"/>
+        <parameters name="arg2" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="isIdentifier" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="isKeyword" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="isLiteral" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="isRecoveredName" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="isRecoveredName" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+      </methods>
+      <methods elementName="javadocAmbiguousMethodReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="javadocDeprecatedField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="javadocDeprecatedMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="javadocDeprecatedType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="javadocDuplicatedParamTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="javadocDuplicatedReturnTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="javadocDuplicatedTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="javadocDuplicatedThrowsClassName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="javadocEmptyReturnTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="javadocErrorNoMethodFor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MessageSend;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="javadocHiddenReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.Scope;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="javadocInvalidConstructor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Statement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="javadocInvalidField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="javadocInvalidMemberTypeQualification" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="javadocInvalidMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MessageSend;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="javadocInvalidParamTagName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="javadocInvalidParamTypeParameter" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="javadocInvalidReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="javadocInvalidSeeHref" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="javadocInvalidSeeReferenceArgs" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="javadocInvalidSeeUrlReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="javadocInvalidTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="javadocInvalidThrowsClass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="javadocInvalidThrowsClassName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="javadocInvalidType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="javadocInvalidValueReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="javadocMalformedSeeReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="javadocMissing" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="javadocMissing" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="javadocMissingHashCharacter" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="javadocMissingIdentifier" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="javadocMissingParamName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="javadocMissingParamTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="javadocMissingReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="javadocMissingReturnTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="javadocMissingTagDescription" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="javadocMissingTagDescriptionAfterReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="javadocMissingThrowsClassName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="javadocMissingThrowsTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="javadocUndeclaredParamTagName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="javadocUnexpectedTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="javadocUnexpectedText" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="javadocUnterminatedInlineTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="javadocVisibility" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="javadocVisibilityArgument" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="localVariableHiding" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.LocalDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="localVariableNonNullComparedToNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="localVariableNullComparedToNonNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="localVariableNullInstanceof" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="localVariableNullReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="localVariablePotentialNullReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="localVariableRedundantCheckOnNonNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="localVariableRedundantCheckOnNull" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="localVariableRedundantNullAssignment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="methodMustOverride" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="methodNameClash" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="methodNeedBody" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="methodNeedingNoBody" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MethodDeclaration;"/>
+      </methods>
+      <methods elementName="methodWithConstructorName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MethodDeclaration;"/>
+      </methods>
+      <methods elementName="missingDeprecatedAnnotationForField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+      </methods>
+      <methods elementName="missingDeprecatedAnnotationForMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="missingDeprecatedAnnotationForType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="missingEnumConstantCase" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.SwitchStatement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+      </methods>
+      <methods elementName="missingOverrideAnnotation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="missingReturnType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="missingSemiColon" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="missingSerialVersion" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="missingTypeInConstructor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="missingTypeInMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MessageSend;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="missingValueForAnnotationMember" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Annotation;"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="mustDefineDimensionsOrInitializer" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ArrayAllocationExpression;"/>
+      </methods>
+      <methods elementName="mustSpecifyPackage" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;"/>
+      </methods>
+      <methods elementName="mustUseAStaticMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MessageSend;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="nativeMethodsCannotBeStrictfp" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="needImplementation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="needToEmulateFieldAccess" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="needToEmulateMethodAccess" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="noAdditionalBoundAfterTypeVariable" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+      </methods>
+      <methods elementName="nodeSourceEnd" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="nodeSourceEnd" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="nodeSourceStart" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="nodeSourceStart" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="noMoreAvailableSpaceForArgument" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="noMoreAvailableSpaceForConstant" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="noMoreAvailableSpaceForLocal" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="noMoreAvailableSpaceInConstantPool" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="nonExternalizedStringLiteral" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="nonGenericTypeCannotBeParameterized" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg3" type="[Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="nonStaticAccessToStaticField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+      </methods>
+      <methods elementName="nonStaticAccessToStaticField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="nonStaticAccessToStaticMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="nonStaticContextForEnumMemberType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="noSuchEnclosingInstance" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="notCompatibleTypesError" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.EqualExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="notCompatibleTypesError" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.InstanceOfExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="notCompatibleTypesErrorInForeach" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="objectCannotBeGeneric" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="objectCannotHaveSuperTypes" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="objectMustBeClass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="operatorOnlyValidOnNumericType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CompoundAssignment;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="overridesDeprecatedMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="overridesMethodWithoutSuperInvocation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="overridesPackageDefaultMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="packageCollidesWithType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;"/>
+      </methods>
+      <methods elementName="packageIsNotExpectedPackage" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;"/>
+      </methods>
+      <methods elementName="parameterAssignment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="parameterBoundAsString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeVariableBinding;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="parameterizedMemberTypeMissingArguments" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="parseError" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="[C"/>
+        <parameters name="arg4" type="Ljava.lang.String;"/>
+        <parameters name="arg5" type="[Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="parseErrorDeleteToken" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="[C"/>
+        <parameters name="arg4" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="parseErrorDeleteTokens" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="parseErrorInsertAfterToken" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="[C"/>
+        <parameters name="arg4" type="Ljava.lang.String;"/>
+        <parameters name="arg5" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="parseErrorInsertBeforeToken" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="[C"/>
+        <parameters name="arg4" type="Ljava.lang.String;"/>
+        <parameters name="arg5" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="parseErrorInsertToComplete" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="parseErrorInsertToCompletePhrase" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="parseErrorInsertToCompleteScope" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="parseErrorInvalidToken" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="[C"/>
+        <parameters name="arg4" type="Ljava.lang.String;"/>
+        <parameters name="arg5" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="parseErrorMergeTokens" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="parseErrorMisplacedConstruct" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="parseErrorNoSuggestion" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="[C"/>
+        <parameters name="arg4" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="parseErrorNoSuggestionForTokens" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="parseErrorReplaceToken" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="[C"/>
+        <parameters name="arg4" type="Ljava.lang.String;"/>
+        <parameters name="arg5" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="parseErrorReplaceTokens" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="parseErrorUnexpectedEnd" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="possibleAccidentalBooleanAssignment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Assignment;"/>
+      </methods>
+      <methods elementName="possibleFallThroughCase" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CaseStatement;"/>
+      </methods>
+      <methods elementName="publicClassMustMatchFileName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="rawMemberTypeCannotBeParameterized" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="rawTypeReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="recursiveConstructorInvocation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ExplicitConstructorCall;"/>
+      </methods>
+      <methods elementName="redefineArgument" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Argument;"/>
+      </methods>
+      <methods elementName="redefineLocal" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.LocalDeclaration;"/>
+      </methods>
+      <methods elementName="redundantSuperInterface" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="referenceMustBeArrayTypeAt" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ArrayReference;"/>
+      </methods>
+      <methods elementName="reset" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="retrieveClosingAngleBracketPosition" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="retrieveEndingPositionAfterOpeningParenthesis" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="retrieveStartingPositionAfterOpeningParenthesis" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="returnTypeCannotBeVoidArray" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MethodDeclaration;"/>
+      </methods>
+      <methods elementName="scannerError" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.parser.Parser;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="shouldReturn" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="signalNoImplicitStringConversionForCharArrayExpression" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="staticAndInstanceConflict" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="staticFieldAccessToNonStaticVariable" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+      </methods>
+      <methods elementName="staticInheritedMethodConflicts" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="staticMemberOfParameterizedType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="stringConstantIsExceedingUtf8Limit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="superclassMustBeAClass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="superfluousSemicolon" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="superinterfaceMustBeAnInterface" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="superinterfacesCollide" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="superTypeCannotUseWildcard" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="syntaxError" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="[C"/>
+        <parameters name="arg5" type="Ljava.lang.String;"/>
+        <parameters name="arg6" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="task" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="tooManyDimensions" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="tooManyFields" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="tooManyMethods" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="typeCastError" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CastExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="typeCollidesWithEnclosingType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="typeCollidesWithPackage" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="typeHiding" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="typeHiding" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeVariableBinding;"/>
+      </methods>
+      <methods elementName="typeHiding" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeParameter;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;"/>
+      </methods>
+      <methods elementName="typeMismatchError" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="typeMismatchError" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeVariableBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="typesAsString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="undefinedAnnotationValue" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.MemberValuePair;"/>
+      </methods>
+      <methods elementName="undefinedLabel" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.BranchStatement;"/>
+      </methods>
+      <methods elementName="undefinedTypeVariableSignature" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="undocumentedEmptyBlock" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="unexpectedStaticModifierForField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+      </methods>
+      <methods elementName="unexpectedStaticModifierForMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="unhandledException" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="unhandledWarningToken" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="uninitializedBlankFinalField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="uninitializedLocalVariable" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.LocalVariableBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="unmatchedBracket" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.impl.ReferenceContext;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+      </methods>
+      <methods elementName="unnecessaryCast" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CastExpression;"/>
+      </methods>
+      <methods elementName="unnecessaryElse" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="unnecessaryEnclosingInstanceSpecification" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="unnecessaryInstanceof" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.InstanceOfExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="unnecessaryNLSTags" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="unnecessaryTypeArgumentsForMethodInvocation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+      </methods>
+      <methods elementName="unqualifiedFieldAccess" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.NameReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+      </methods>
+      <methods elementName="unreachableCatchBlock" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="unreachableCode" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Statement;"/>
+      </methods>
+      <methods elementName="unresolvableReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.NameReference;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;"/>
+      </methods>
+      <methods elementName="unsafeCast" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.CastExpression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.Scope;"/>
+      </methods>
+      <methods elementName="unsafeGenericArrayForVarargs" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="unsafeRawFieldAssignment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="unsafeRawGenericMethodInvocation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="unsafeRawInvocation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="unsafeReturnTypeOverride" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="unsafeTypeConversion" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="unusedArgument" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.LocalDeclaration;"/>
+      </methods>
+      <methods elementName="unusedDeclaredThrownException" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="unusedImport" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ImportReference;"/>
+      </methods>
+      <methods elementName="unusedLabel" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.LabeledStatement;"/>
+      </methods>
+      <methods elementName="unusedLocalVariable" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.LocalDeclaration;"/>
+      </methods>
+      <methods elementName="unusedPrivateConstructor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ConstructorDeclaration;"/>
+      </methods>
+      <methods elementName="unusedPrivateField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+      </methods>
+      <methods elementName="unusedPrivateMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;"/>
+      </methods>
+      <methods elementName="unusedPrivateType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="unusedWarningToken" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="useAssertAsAnIdentifier" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="useEnumAsAnIdentifier" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="varargsArgumentNeedCast" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.InvocationSite;"/>
+      </methods>
+      <methods elementName="varargsConflict" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+      </methods>
+      <methods elementName="variableTypeCannotBeVoid" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractVariableDeclaration;"/>
+      </methods>
+      <methods elementName="variableTypeCannotBeVoidArray" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.AbstractVariableDeclaration;"/>
+      </methods>
+      <methods elementName="visibilityConflict" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="wildcardAssignment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+      </methods>
+      <methods elementName="wildcardInvocation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg3" type="[Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+      <methods elementName="wrongSequenceOfExceptionTypesError" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TryStatement;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ProblemSeverities.class" isClass="false" isInterface="true">
+    <type elementName="ProblemSeverities" fullyQualifiedName="org.eclipse.jdt.internal.compiler.problem.ProblemSeverities" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.problem.ProblemSeverities">
+      <fields elementName="Ignore" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="Warning" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="Error" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="AbortCompilation" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="AbortCompilationUnit" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="AbortType" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="AbortMethod" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="Abort" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="Optional" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SecondaryError" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="Fatal" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ShouldNotImplement.class" isClass="true" isInterface="false">
+    <type elementName="ShouldNotImplement" fullyQualifiedName="org.eclipse.jdt.internal.compiler.problem.ShouldNotImplement" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.problem.ShouldNotImplement">
+      <fields elementName="serialVersionUID" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <methods elementName="ShouldNotImplement" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

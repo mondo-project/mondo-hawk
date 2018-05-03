@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.apt.core.build" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.apt.core_3.3.101.R34x_v20080902-1220.jar.xmi#/"/>
+  <classFiles elementName="AptBuilder$SystemOutProgressMonitor.class" isClass="true" isInterface="false">
+    <type elementName="SystemOutProgressMonitor" fullyQualifiedName="org.eclipse.jdt.apt.core.build.AptBuilder$SystemOutProgressMonitor" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.build.AptBuilder.SystemOutProgressMonitor">
+      <methods elementName="SystemOutProgressMonitor" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="beginTask" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="subTask" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="SystemOutProgressMonitor" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.build.AptBuilder$SystemOutProgressMonitor;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="AptBuilder.class" isClass="true" isInterface="false">
+    <type elementName="AptBuilder" fullyQualifiedName="org.eclipse.jdt.apt.core.build.AptBuilder" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.build.AptBuilder">
+      <methods elementName="AptBuilder" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="start" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.equinox.app.IApplicationContext;"/>
+        <exceptionTypes>Ljava.lang.Exception;</exceptionTypes>
+      </methods>
+      <methods elementName="stop" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <types elementName="SystemOutProgressMonitor" fullyQualifiedName="org.eclipse.jdt.apt.core.build.AptBuilder$SystemOutProgressMonitor" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.build.AptBuilder.SystemOutProgressMonitor">
+        <methods elementName="SystemOutProgressMonitor" returnType="V" isConstructor="true" isMainMethod="false"/>
+        <methods elementName="beginTask" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+          <parameters name="arg1" type="I"/>
+        </methods>
+        <methods elementName="subTask" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+        </methods>
+        <methods elementName="SystemOutProgressMonitor" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.apt.core.build.AptBuilder$SystemOutProgressMonitor;"/>
+        </methods>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="JdtApt.class" isClass="true" isInterface="false">
+    <type elementName="JdtApt" fullyQualifiedName="org.eclipse.jdt.apt.core.build.JdtApt" fullyQualifiedParametrizedName="org.eclipse.jdt.apt.core.build.JdtApt">
+      <fields elementName="APP_CLASSNAME" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="APP_PLUGIN" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="workspace" isEnumConstant="false" typeSignature="Ljava.io.File;" isVolatile="false" isTransient="false"/>
+      <fields elementName="startupJar" isEnumConstant="false" typeSignature="Ljava.io.File;" isVolatile="false" isTransient="false"/>
+      <methods elementName="JdtApt" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="setWorkspace" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.File;"/>
+      </methods>
+      <methods elementName="setEclipseHome" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.File;"/>
+      </methods>
+      <methods elementName="execute" returnType="V" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Lorg.apache.tools.ant.BuildException;</exceptionTypes>
+      </methods>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

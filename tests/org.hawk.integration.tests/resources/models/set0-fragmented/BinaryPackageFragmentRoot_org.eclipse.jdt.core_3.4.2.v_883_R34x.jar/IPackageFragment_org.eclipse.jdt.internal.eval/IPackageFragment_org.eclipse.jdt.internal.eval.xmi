@@ -1,0 +1,1212 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.eval" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="CodeSnippetAllocationExpression.class" isClass="true" isInterface="false">
+    <type elementName="CodeSnippetAllocationExpression" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetAllocationExpression" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetAllocationExpression">
+      <fields elementName="evaluationContext" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.EvaluationContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="delegateThis" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;" isVolatile="false" isTransient="false"/>
+      <methods elementName="CodeSnippetAllocationExpression" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.EvaluationContext;"/>
+      </methods>
+      <methods elementName="generateCode" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="manageEnclosingInstanceAccessIfNecessary" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="manageSyntheticAccessIfNecessary" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="resolveType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeSnippetClassFile.class" isClass="true" isInterface="false">
+    <type elementName="CodeSnippetClassFile" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetClassFile" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetClassFile">
+      <methods elementName="CodeSnippetClassFile" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ClassFile;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="createProblemType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeSnippetCompiler.class" isClass="true" isInterface="false">
+    <type elementName="CodeSnippetCompiler" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetCompiler" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetCompiler">
+      <fields elementName="evaluationContext" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.EvaluationContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="codeSnippetStart" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="codeSnippetEnd" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="CodeSnippetCompiler" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.INameEnvironment;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.IErrorHandlingPolicy;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.CompilerOptions;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.ICompilerRequestor;"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.compiler.IProblemFactory;"/>
+        <parameters name="arg5" type="Lorg.eclipse.jdt.internal.eval.EvaluationContext;"/>
+        <parameters name="arg6" type="I"/>
+        <parameters name="arg7" type="I"/>
+      </methods>
+      <methods elementName="initializeParser" returnType="V" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeSnippetEnvironment.class" isClass="true" isInterface="false">
+    <type elementName="CodeSnippetEnvironment" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetEnvironment" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetEnvironment">
+      <fields elementName="env" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.env.INameEnvironment;" isVolatile="false" isTransient="false"/>
+      <fields elementName="context" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.EvaluationContext;" isVolatile="false" isTransient="false"/>
+      <methods elementName="CodeSnippetEnvironment" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.INameEnvironment;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.eval.EvaluationContext;"/>
+      </methods>
+      <methods elementName="findType" returnType="Lorg.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+      </methods>
+      <methods elementName="findType" returnType="Lorg.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[[C"/>
+      </methods>
+      <methods elementName="isPackage" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="cleanup" returnType="V" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeSnippetEvaluator.class" isClass="true" isInterface="false">
+    <type elementName="CodeSnippetEvaluator" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetEvaluator" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetEvaluator">
+      <fields elementName="DEVELOPMENT_MODE" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="codeSnippet" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="mapper" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.CodeSnippetToCuMapper;" isVolatile="false" isTransient="false"/>
+      <methods elementName="CodeSnippetEvaluator" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.eval.EvaluationContext;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.env.INameEnvironment;"/>
+        <parameters name="arg3" type="Ljava.util.Map;"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.eval.IRequestor;"/>
+        <parameters name="arg5" type="Lorg.eclipse.jdt.internal.compiler.IProblemFactory;"/>
+      </methods>
+      <methods elementName="addEvaluationResultForCompilationProblem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Map;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+        <parameters name="arg2" type="[C"/>
+      </methods>
+      <methods elementName="getClassName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCompiler" returnType="Lorg.eclipse.jdt.internal.compiler.Compiler;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ICompilerRequestor;"/>
+      </methods>
+      <methods elementName="getMapper" returnType="Lorg.eclipse.jdt.internal.eval.CodeSnippetToCuMapper;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSource" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getWrapperEnvironment" returnType="Lorg.eclipse.jdt.internal.compiler.env.INameEnvironment;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeSnippetFieldReference.class" isClass="true" isInterface="false">
+    <type elementName="CodeSnippetFieldReference" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetFieldReference" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetFieldReference">
+      <fields elementName="evaluationContext" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.EvaluationContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="delegateThis" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;" isVolatile="false" isTransient="false"/>
+      <methods elementName="CodeSnippetFieldReference" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="J"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.eval.EvaluationContext;"/>
+      </methods>
+      <methods elementName="generateAssignment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.Assignment;"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="generateCode" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="generateCompoundAssignment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="Z"/>
+      </methods>
+      <methods elementName="generatePostIncrement" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.CompoundAssignment;"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="manageSyntheticAccessIfNecessary" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="resolveType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeSnippetMessageSend.class" isClass="true" isInterface="false">
+    <type elementName="CodeSnippetMessageSend" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetMessageSend" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetMessageSend">
+      <fields elementName="evaluationContext" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.EvaluationContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="delegateThis" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;" isVolatile="false" isTransient="false"/>
+      <methods elementName="CodeSnippetMessageSend" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.EvaluationContext;"/>
+      </methods>
+      <methods elementName="generateCode" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="manageSyntheticAccessIfNecessary" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="resolveType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeSnippetParser.class" isClass="true" isInterface="false">
+    <type elementName="CodeSnippetParser" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetParser" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetParser">
+      <fields elementName="codeSnippetStart" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="codeSnippetEnd" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="evaluationContext" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.EvaluationContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="hasRecoveredOnExpression" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="lastStatement" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="lineSeparatorLength" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="problemCountBeforeRecovery" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="CodeSnippetParser" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.problem.ProblemReporter;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.eval.EvaluationContext;"/>
+        <parameters name="arg2" type="Z"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="classInstanceCreation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="consumeClassDeclaration" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeClassHeaderName1" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeEmptyStatement" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeEnhancedForStatement" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeExpressionStatement" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeFieldAccess" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="consumeInterfaceHeaderName1" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeInternalCompilationUnit" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeInternalCompilationUnitWithTypes" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeLocalVariableDeclarationStatement" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeMethodDeclaration" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="consumeMethodInvocationName" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeMethodInvocationSuper" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumePrimaryNoNewArrayThis" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeStatementBreak" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeStatementBreakWithLabel" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeStatementCatch" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeStatementContinue" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeStatementContinueWithLabel" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeStatementDo" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeStatementFor" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeStatementIfNoElse" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeStatementIfWithElse" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeStatementLabel" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeStatementReturn" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeStatementSwitch" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeStatementSynchronized" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeStatementThrow" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeStatementTry" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="consumeStatementWhile" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="endParse" returnType="Lorg.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getUnspecifiedReference" returnType="Lorg.eclipse.jdt.internal.compiler.ast.NameReference;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getUnspecifiedReferenceOptimized" returnType="Lorg.eclipse.jdt.internal.compiler.ast.NameReference;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="ignoreExpressionAssignment" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isTopLevelType" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="newMessageSend" returnType="Lorg.eclipse.jdt.internal.compiler.ast.MessageSend;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="recordLastStatementIfNeeded" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="reportSyntaxErrors" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="resumeOnSyntaxError" returnType="Z" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeSnippetQualifiedNameReference.class" isClass="true" isInterface="false">
+    <type elementName="CodeSnippetQualifiedNameReference" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetQualifiedNameReference" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetQualifiedNameReference">
+      <fields elementName="evaluationContext" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.EvaluationContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="delegateThis" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;" isVolatile="false" isTransient="false"/>
+      <methods elementName="CodeSnippetQualifiedNameReference" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[J"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.eval.EvaluationContext;"/>
+      </methods>
+      <methods elementName="checkFieldAccess" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="generateAssignment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.Assignment;"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="generateCode" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="generateCompoundAssignment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="Z"/>
+      </methods>
+      <methods elementName="generatePostIncrement" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.CompoundAssignment;"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="generateReadSequence" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+      </methods>
+      <methods elementName="generateReceiver" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+      </methods>
+      <methods elementName="getOtherFieldBindings" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="getReceiverType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="manageSyntheticAccessIfNecessary" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="reportError" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="resolveTypeVisibility" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeSnippetReturnStatement.class" isClass="true" isInterface="false">
+    <type elementName="CodeSnippetReturnStatement" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetReturnStatement" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetReturnStatement">
+      <fields elementName="setResultMethod" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;" isVolatile="false" isTransient="false"/>
+      <methods elementName="CodeSnippetReturnStatement" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="analyseCode" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+      </methods>
+      <methods elementName="generateReturnBytecode" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+      </methods>
+      <methods elementName="generateStoreSaveValueIfNecessary" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+      </methods>
+      <methods elementName="genericTypeArguments" returnType="[Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isSuperAccess" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isTypeAccess" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="needValue" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="prepareSaveValueLocation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TryStatement;"/>
+      </methods>
+      <methods elementName="resolve" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="setActualReceiverType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="setDepth" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setFieldIndex" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeSnippetScope.class" isClass="true" isInterface="false">
+    <type elementName="CodeSnippetScope" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetScope" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetScope">
+      <methods elementName="CodeSnippetScope" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.Scope;"/>
+      </methods>
+      <methods elementName="CodeSnippetScope" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="CodeSnippetScope" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="canBeSeenByForCodeSnippet" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.InvocationSite;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.lookup.Scope;"/>
+      </methods>
+      <methods elementName="canBeSeenByForCodeSnippet" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.InvocationSite;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.lookup.Scope;"/>
+      </methods>
+      <methods elementName="canBeSeenByForCodeSnippet" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="findExactMethod" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.lookup.InvocationSite;"/>
+      </methods>
+      <methods elementName="findFieldForCodeSnippet" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.InvocationSite;"/>
+      </methods>
+      <methods elementName="findMethod" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.lookup.InvocationSite;"/>
+      </methods>
+      <methods elementName="findMethodForArray" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ArrayBinding;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.lookup.InvocationSite;"/>
+      </methods>
+      <methods elementName="getBinding" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.InvocationSite;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="getConstructor" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.InvocationSite;"/>
+      </methods>
+      <methods elementName="getFieldForCodeSnippet" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.InvocationSite;"/>
+      </methods>
+      <methods elementName="getImplicitMethod" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.lookup.InvocationSite;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeSnippetSingleNameReference.class" isClass="true" isInterface="false">
+    <type elementName="CodeSnippetSingleNameReference" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetSingleNameReference" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetSingleNameReference">
+      <fields elementName="evaluationContext" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.EvaluationContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="delegateThis" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;" isVolatile="false" isTransient="false"/>
+      <methods elementName="CodeSnippetSingleNameReference" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="J"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.eval.EvaluationContext;"/>
+      </methods>
+      <methods elementName="analyseCode" returnType="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowContext;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="checkFieldAccess" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="generateAssignment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.Assignment;"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="generateCode" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="generateCompoundAssignment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="Z"/>
+      </methods>
+      <methods elementName="generatePostIncrement" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.CompoundAssignment;"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="generateReceiver" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+      </methods>
+      <methods elementName="getReceiverType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="manageSyntheticAccessIfNecessary" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.flow.FlowInfo;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="reportError" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeSnippetSkeleton$BinaryMethodSkeleton.class" isClass="true" isInterface="false">
+    <type elementName="BinaryMethodSkeleton" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetSkeleton$BinaryMethodSkeleton" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetSkeleton.BinaryMethodSkeleton">
+      <fields elementName="exceptionTypeNames" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="methodDescriptor" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="selector" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="isConstructor" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="BinaryMethodSkeleton" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[[C"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="getAnnotations" returnType="[Lorg.eclipse.jdt.internal.compiler.env.IBinaryAnnotation;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getArgumentNames" returnType="[[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDefaultValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getExceptionTypeNames" returnType="[[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getGenericSignature" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMethodDescriptor" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getModifiers" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getParameterAnnotations" returnType="[Lorg.eclipse.jdt.internal.compiler.env.IBinaryAnnotation;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getSelector" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTagBits" returnType="J" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isClinit" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isConstructor" returnType="Z" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeSnippetSkeleton.class" isClass="true" isInterface="false">
+    <type elementName="CodeSnippetSkeleton" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetSkeleton" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetSkeleton">
+      <fields elementName="methods" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.env.IBinaryMethod;" isVolatile="false" isTransient="false"/>
+      <methods elementName="CodeSnippetSkeleton" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="getAnnotations" returnType="[Lorg.eclipse.jdt.internal.compiler.env.IBinaryAnnotation;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEnclosingTypeName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFields" returnType="[Lorg.eclipse.jdt.internal.compiler.env.IBinaryField;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFileName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getGenericSignature" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInterfaceNames" returnType="[[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getJavadocContents" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getJavadocContents" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.JavaModelException;</exceptionTypes>
+      </methods>
+      <methods elementName="getMemberTypes" returnType="[Lorg.eclipse.jdt.internal.compiler.env.IBinaryNestedType;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMethods" returnType="[Lorg.eclipse.jdt.internal.compiler.env.IBinaryMethod;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getModifiers" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMissingTypeNames" returnType="[[[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSourceName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSuperclassName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTagBits" returnType="J" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getURLContents" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="isAnonymous" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isBinaryType" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isLocal" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isMember" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="sourceFileName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <types elementName="BinaryMethodSkeleton" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetSkeleton$BinaryMethodSkeleton" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetSkeleton.BinaryMethodSkeleton">
+        <fields elementName="exceptionTypeNames" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+        <fields elementName="methodDescriptor" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+        <fields elementName="selector" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+        <fields elementName="isConstructor" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+        <methods elementName="BinaryMethodSkeleton" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="[C"/>
+          <parameters name="arg1" type="[C"/>
+          <parameters name="arg2" type="[[C"/>
+          <parameters name="arg3" type="Z"/>
+        </methods>
+        <methods elementName="getAnnotations" returnType="[Lorg.eclipse.jdt.internal.compiler.env.IBinaryAnnotation;" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="getArgumentNames" returnType="[[C" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="getDefaultValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="getExceptionTypeNames" returnType="[[C" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="getGenericSignature" returnType="[C" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="getMethodDescriptor" returnType="[C" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="getModifiers" returnType="I" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="getParameterAnnotations" returnType="[Lorg.eclipse.jdt.internal.compiler.env.IBinaryAnnotation;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+        </methods>
+        <methods elementName="getSelector" returnType="[C" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="getTagBits" returnType="J" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="isClinit" returnType="Z" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="isConstructor" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeSnippetSuperReference.class" isClass="true" isInterface="false">
+    <type elementName="CodeSnippetSuperReference" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetSuperReference" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetSuperReference">
+      <methods elementName="CodeSnippetSuperReference" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="genericTypeArguments" returnType="[Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="resolveType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="isSuperAccess" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isTypeAccess" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setActualReceiverType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="setDepth" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setFieldIndex" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeSnippetThisReference.class" isClass="true" isInterface="false">
+    <type elementName="CodeSnippetThisReference" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetThisReference" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetThisReference">
+      <fields elementName="evaluationContext" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.EvaluationContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="delegateThis" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.lookup.FieldBinding;" isVolatile="false" isTransient="false"/>
+      <fields elementName="isImplicit" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="CodeSnippetThisReference" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.eval.EvaluationContext;"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="checkAccess" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodScope;"/>
+      </methods>
+      <methods elementName="generateCode" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.codegen.CodeStream;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="genericTypeArguments" returnType="[Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isSuperAccess" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isTypeAccess" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="printExpression" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="resolveType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="setActualReceiverType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="setDepth" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setFieldIndex" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeSnippetToCuMapper$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetToCuMapper$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetToCuMapper.1">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.CodeSnippetToCuMapper;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$originalRequestor" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.CompletionRequestor;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.CodeSnippetToCuMapper;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.CompletionRequestor;"/>
+      </methods>
+      <methods elementName="accept" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.CompletionProposal;"/>
+      </methods>
+      <methods elementName="completionFailure" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.compiler.IProblem;"/>
+      </methods>
+      <methods elementName="acceptContext" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.CompletionContext;"/>
+      </methods>
+      <methods elementName="beginReporting" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="endReporting" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isIgnored" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setIgnored" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="isAllowingRequiredProposals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="setAllowsRequiredProposals" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeSnippetToCuMapper$2.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetToCuMapper$2" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetToCuMapper.2">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.CodeSnippetToCuMapper;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$originalRequestor" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.codeassist.ISelectionRequestor;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.CodeSnippetToCuMapper;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.codeassist.ISelectionRequestor;"/>
+      </methods>
+      <methods elementName="acceptType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="[C"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+      </methods>
+      <methods elementName="acceptError" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+      </methods>
+      <methods elementName="acceptField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="[C"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+      </methods>
+      <methods elementName="acceptMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="[C"/>
+        <parameters name="arg4" type="[[C"/>
+        <parameters name="arg5" type="[[C"/>
+        <parameters name="arg6" type="[Ljava.lang.String;"/>
+        <parameters name="arg7" type="[[C"/>
+        <parameters name="arg8" type="[[[C"/>
+        <parameters name="arg9" type="Z"/>
+        <parameters name="arg10" type="Z"/>
+        <parameters name="arg11" type="[C"/>
+        <parameters name="arg12" type="I"/>
+        <parameters name="arg13" type="I"/>
+      </methods>
+      <methods elementName="acceptPackage" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="acceptTypeParameter" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="I"/>
+      </methods>
+      <methods elementName="acceptMethodTypeParameter" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="[C"/>
+        <parameters name="arg6" type="Z"/>
+        <parameters name="arg7" type="I"/>
+        <parameters name="arg8" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeSnippetToCuMapper.class" isClass="true" isInterface="false">
+    <type elementName="CodeSnippetToCuMapper" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetToCuMapper" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetToCuMapper">
+      <fields elementName="cuSource" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="lineNumberOffset" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="startPosOffset" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="codeSnippet" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="snippetPackageName" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="snippetImports" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="snippetClassName" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="snippetVarClassName" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="snippetDeclaringTypeName" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="localVarNames" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="localVarTypeNames" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="localVarModifiers" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <methods elementName="CodeSnippetToCuMapper" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[[C"/>
+        <parameters name="arg3" type="[C"/>
+        <parameters name="arg4" type="[C"/>
+        <parameters name="arg5" type="[[C"/>
+        <parameters name="arg6" type="[[C"/>
+        <parameters name="arg7" type="[I"/>
+        <parameters name="arg8" type="[C"/>
+        <parameters name="arg9" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="buildCUSource" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getCompletionRequestor" returnType="Lorg.eclipse.jdt.core.CompletionRequestor;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.CompletionRequestor;"/>
+      </methods>
+      <methods elementName="getCUSource" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getEvaluationType" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getImport" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getSelectionRequestor" returnType="Lorg.eclipse.jdt.internal.codeassist.ISelectionRequestor;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.codeassist.ISelectionRequestor;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="CodeSnippetTypeDeclaration.class" isClass="true" isInterface="false">
+    <type elementName="CodeSnippetTypeDeclaration" fullyQualifiedName="org.eclipse.jdt.internal.eval.CodeSnippetTypeDeclaration" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.CodeSnippetTypeDeclaration">
+      <methods elementName="CodeSnippetTypeDeclaration" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+      </methods>
+      <methods elementName="generateCode" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ClassFile;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="EvaluationConstants.class" isClass="false" isInterface="true">
+    <type elementName="EvaluationConstants" fullyQualifiedName="org.eclipse.jdt.internal.eval.EvaluationConstants" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.EvaluationConstants">
+      <fields elementName="CODE_SNIPPET_CLASS_NAME_PREFIX" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="GLOBAL_VARS_CLASS_NAME_PREFIX" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="PACKAGE_NAME" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="CODE_SNIPPET_NAME" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="ROOT_CLASS_NAME" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="ROOT_FULL_CLASS_NAME" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="SETRESULT_SELECTOR" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="SETRESULT_ARGUMENTS" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="ROOT_COMPOUND_NAME" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="RUN_METHOD" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="RESULT_VALUE_FIELD" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="RESULT_TYPE_FIELD" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="LOCAL_VAR_PREFIX" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="DELEGATE_THIS" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="EvaluationContext$1$ForwardingRequestor.class" isClass="true" isInterface="false">
+    <type elementName="ForwardingRequestor" fullyQualifiedName="org.eclipse.jdt.internal.eval.EvaluationContext$1$ForwardingRequestor" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.EvaluationContext.1.ForwardingRequestor">
+      <fields elementName="hasErrors" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.EvaluationContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$requestor" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.IRequestor;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ForwardingRequestor" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.EvaluationContext;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.eval.IRequestor;"/>
+      </methods>
+      <methods elementName="acceptClassFiles" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.ClassFile;"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="acceptProblem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="EvaluationContext$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.eval.EvaluationContext$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.EvaluationContext.1">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.EvaluationContext;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.EvaluationContext;"/>
+      </methods>
+      <methods elementName="acceptClassFiles" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.ClassFile;"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="acceptProblem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="EvaluationContext$2.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.eval.EvaluationContext$2" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.EvaluationContext.2">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.EvaluationContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$className" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$mapper" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.CodeSnippetToCuMapper;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.EvaluationContext;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.eval.CodeSnippetToCuMapper;"/>
+      </methods>
+      <methods elementName="getFileName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getContents" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMainTypeName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPackageName" returnType="[[C" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="EvaluationContext$3.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.eval.EvaluationContext$3" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.EvaluationContext.3">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.EvaluationContext;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.EvaluationContext;"/>
+      </methods>
+      <methods elementName="getBytes" returnType="[B" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCompoundName" returnType="[[C" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="EvaluationContext$4.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.eval.EvaluationContext$4" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.EvaluationContext.4">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.EvaluationContext;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.EvaluationContext;"/>
+      </methods>
+      <methods elementName="compare" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="EvaluationContext$5.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.eval.EvaluationContext$5" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.EvaluationContext.5">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.EvaluationContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$className" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$mapper" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.CodeSnippetToCuMapper;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.EvaluationContext;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.eval.CodeSnippetToCuMapper;"/>
+      </methods>
+      <methods elementName="getFileName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getContents" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMainTypeName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPackageName" returnType="[[C" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="EvaluationContext.class" isClass="true" isInterface="false">
+    <type elementName="EvaluationContext" fullyQualifiedName="org.eclipse.jdt.internal.eval.EvaluationContext" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.EvaluationContext">
+      <fields elementName="TIMING" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="VAR_CLASS_COUNTER" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CODE_SNIPPET_COUNTER" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="variables" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.eval.GlobalVariable;" isVolatile="false" isTransient="false"/>
+      <fields elementName="variableCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="imports" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="packageName" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="varsChanged" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="installedVars" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.VariablesInfo;" isVolatile="false" isTransient="false"/>
+      <fields elementName="codeSnippetBinary" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.env.IBinaryType;" isVolatile="false" isTransient="false"/>
+      <fields elementName="lineSeparator" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="declaringTypeName" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="localVariableModifiers" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="localVariableTypeNames" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="localVariableNames" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="isStatic" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="isConstructorCall" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="EvaluationContext" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="allVariables" returnType="[Lorg.eclipse.jdt.internal.eval.GlobalVariable;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="complete" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.core.SearchableEnvironment;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.core.CompletionRequestor;"/>
+        <parameters name="arg4" type="Ljava.util.Map;"/>
+        <parameters name="arg5" type="Lorg.eclipse.jdt.core.IJavaProject;"/>
+        <parameters name="arg6" type="Lorg.eclipse.jdt.core.WorkingCopyOwner;"/>
+      </methods>
+      <methods elementName="deleteVariable" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.GlobalVariable;"/>
+      </methods>
+      <methods elementName="deployCodeSnippetClassIfNeeded" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.IRequestor;"/>
+      </methods>
+      <methods elementName="evaluate" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[[C"/>
+        <parameters name="arg2" type="[[C"/>
+        <parameters name="arg3" type="[I"/>
+        <parameters name="arg4" type="[C"/>
+        <parameters name="arg5" type="Z"/>
+        <parameters name="arg6" type="Z"/>
+        <parameters name="arg7" type="Lorg.eclipse.jdt.internal.compiler.env.INameEnvironment;"/>
+        <parameters name="arg8" type="Ljava.util.Map;"/>
+        <parameters name="arg9" type="Lorg.eclipse.jdt.internal.eval.IRequestor;"/>
+        <parameters name="arg10" type="Lorg.eclipse.jdt.internal.compiler.IProblemFactory;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.internal.eval.InstallException;</exceptionTypes>
+      </methods>
+      <methods elementName="evaluate" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.env.INameEnvironment;"/>
+        <parameters name="arg2" type="Ljava.util.Map;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.eval.IRequestor;"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.compiler.IProblemFactory;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.internal.eval.InstallException;</exceptionTypes>
+      </methods>
+      <methods elementName="evaluateImports" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.INameEnvironment;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.eval.IRequestor;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.IProblemFactory;"/>
+      </methods>
+      <methods elementName="evaluateVariable" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.GlobalVariable;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.env.INameEnvironment;"/>
+        <parameters name="arg2" type="Ljava.util.Map;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.eval.IRequestor;"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.compiler.IProblemFactory;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.internal.eval.InstallException;</exceptionTypes>
+      </methods>
+      <methods elementName="evaluateVariables" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.INameEnvironment;"/>
+        <parameters name="arg1" type="Ljava.util.Map;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.eval.IRequestor;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.IProblemFactory;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.internal.eval.InstallException;</exceptionTypes>
+      </methods>
+      <methods elementName="getCodeSnippetBytes" returnType="[B" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCodeSnippetSource" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getImports" returnType="[[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPackageName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getRootCodeSnippetBinary" returnType="Lorg.eclipse.jdt.internal.compiler.env.IBinaryType;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getVarClassName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="newVariable" returnType="Lorg.eclipse.jdt.internal.eval.GlobalVariable;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+      </methods>
+      <methods elementName="select" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.core.SearchableEnvironment;"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.codeassist.ISelectionRequestor;"/>
+        <parameters name="arg5" type="Ljava.util.Map;"/>
+      </methods>
+      <methods elementName="setImports" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+      </methods>
+      <methods elementName="setLineSeparator" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="setPackageName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="EvaluationResult.class" isClass="true" isInterface="false">
+    <type elementName="EvaluationResult" fullyQualifiedName="org.eclipse.jdt.internal.eval.EvaluationResult" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.EvaluationResult">
+      <fields elementName="NO_PROBLEMS" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.core.compiler.CategorizedProblem;" isVolatile="false" isTransient="false"/>
+      <fields elementName="evaluationID" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="evaluationType" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="problems" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.core.compiler.CategorizedProblem;" isVolatile="false" isTransient="false"/>
+      <fields elementName="displayString" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="typeName" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="T_VARIABLE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="T_CODE_SNIPPET" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="T_IMPORT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="T_PACKAGE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="T_INTERNAL" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="EvaluationResult" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="[C"/>
+      </methods>
+      <methods elementName="EvaluationResult" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+      </methods>
+      <methods elementName="addProblem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+      </methods>
+      <methods elementName="getEvaluationID" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEvaluationType" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getProblems" returnType="[Lorg.eclipse.jdt.core.compiler.CategorizedProblem;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getValue" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getValueDisplayString" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getValueTypeName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hasErrors" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hasProblems" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hasValue" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hasWarnings" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="Evaluator$1$CompilerRequestor.class" isClass="true" isInterface="false">
+    <type elementName="CompilerRequestor" fullyQualifiedName="org.eclipse.jdt.internal.eval.Evaluator$1$CompilerRequestor" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.Evaluator.1.CompilerRequestor">
+      <fields elementName="hasErrors" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.Evaluator;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$source" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$classDefinitions" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+      <methods elementName="CompilerRequestor" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.Evaluator;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="Ljava.util.ArrayList;"/>
+      </methods>
+      <methods elementName="acceptResult" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="Evaluator$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.eval.Evaluator$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.Evaluator.1">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.Evaluator;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$source" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.Evaluator;"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="getFileName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getContents" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMainTypeName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPackageName" returnType="[[C" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="Evaluator.class" isClass="true" isInterface="false">
+    <type elementName="Evaluator" fullyQualifiedName="org.eclipse.jdt.internal.eval.Evaluator" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.Evaluator">
+      <fields elementName="context" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.EvaluationContext;" isVolatile="false" isTransient="false"/>
+      <fields elementName="environment" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.env.INameEnvironment;" isVolatile="false" isTransient="false"/>
+      <fields elementName="options" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="requestor" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.eval.IRequestor;" isVolatile="false" isTransient="false"/>
+      <fields elementName="problemFactory" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.IProblemFactory;" isVolatile="false" isTransient="false"/>
+      <methods elementName="Evaluator" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.EvaluationContext;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.env.INameEnvironment;"/>
+        <parameters name="arg2" type="Ljava.util.Map;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.eval.IRequestor;"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.compiler.IProblemFactory;"/>
+      </methods>
+      <methods elementName="addEvaluationResultForCompilationProblem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Map;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+        <parameters name="arg2" type="[C"/>
+      </methods>
+      <methods elementName="evaluationResultsForCompilationProblems" returnType="[Lorg.eclipse.jdt.internal.eval.EvaluationResult;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="getClasses" returnType="[Lorg.eclipse.jdt.internal.compiler.ClassFile;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getClassName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCompiler" returnType="Lorg.eclipse.jdt.internal.compiler.Compiler;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ICompilerRequestor;"/>
+      </methods>
+      <methods elementName="getSource" returnType="[C" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="GlobalVariable.class" isClass="true" isInterface="false">
+    <type elementName="GlobalVariable" fullyQualifiedName="org.eclipse.jdt.internal.eval.GlobalVariable" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.GlobalVariable">
+      <fields elementName="typeName" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="name" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="initializer" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="declarationStart" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="initializerStart" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="initExpressionStart" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="initializerLineStart" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="GlobalVariable" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+      </methods>
+      <methods elementName="getInitializer" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTypeName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IRequestor.class" isClass="false" isInterface="true">
+    <type elementName="IRequestor" fullyQualifiedName="org.eclipse.jdt.internal.eval.IRequestor" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.IRequestor">
+      <methods elementName="acceptClassFiles" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.ClassFile;"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="acceptProblem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="InstallException.class" isClass="true" isInterface="false">
+    <type elementName="InstallException" fullyQualifiedName="org.eclipse.jdt.internal.eval.InstallException" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.InstallException">
+      <fields elementName="serialVersionUID" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <methods elementName="InstallException" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="InstallException" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="VariablesEvaluator.class" isClass="true" isInterface="false">
+    <type elementName="VariablesEvaluator" fullyQualifiedName="org.eclipse.jdt.internal.eval.VariablesEvaluator" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.VariablesEvaluator">
+      <methods elementName="VariablesEvaluator" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.EvaluationContext;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.env.INameEnvironment;"/>
+        <parameters name="arg2" type="Ljava.util.Map;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.eval.IRequestor;"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.compiler.IProblemFactory;"/>
+      </methods>
+      <methods elementName="addEvaluationResultForCompilationProblem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Map;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+        <parameters name="arg2" type="[C"/>
+      </methods>
+      <methods elementName="getClassName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCompiler" returnType="Lorg.eclipse.jdt.internal.compiler.Compiler;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ICompilerRequestor;"/>
+      </methods>
+      <methods elementName="getPackageName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSource" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="numberOfCRs" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="VariablesInfo.class" isClass="true" isInterface="false">
+    <type elementName="VariablesInfo" fullyQualifiedName="org.eclipse.jdt.internal.eval.VariablesInfo" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.eval.VariablesInfo">
+      <fields elementName="variables" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.eval.GlobalVariable;" isVolatile="false" isTransient="false"/>
+      <fields elementName="variableCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="packageName" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="className" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="classFiles" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.ClassFile;" isVolatile="false" isTransient="false"/>
+      <methods elementName="VariablesInfo" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jdt.internal.compiler.ClassFile;"/>
+        <parameters name="arg3" type="[Lorg.eclipse.jdt.internal.eval.GlobalVariable;"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="indexOf" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.eval.GlobalVariable;"/>
+      </methods>
+      <methods elementName="varNamed" returnType="Lorg.eclipse.jdt.internal.eval.GlobalVariable;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

@@ -1,0 +1,1147 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.core.jdom" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="AbstractDOMBuilder.class" isClass="true" isInterface="false">
+    <type elementName="AbstractDOMBuilder" fullyQualifiedName="org.eclipse.jdt.internal.core.jdom.AbstractDOMBuilder" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.jdom.AbstractDOMBuilder">
+      <fields elementName="fAbort" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="fBuildingCU" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="fBuildingType" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="fDocument" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="fLineStartPositions" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fStack" isEnumConstant="false" typeSignature="Ljava.util.Stack;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fFieldCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fNode" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isVolatile="false" isTransient="false"/>
+      <methods elementName="AbstractDOMBuilder" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="acceptLineSeparatorPositions" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+      </methods>
+      <methods elementName="addChild" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.jdom.IDOMNode;"/>
+      </methods>
+      <methods elementName="createCompilationUnit" returnType="Lorg.eclipse.jdt.core.jdom.IDOMCompilationUnit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="createCompilationUnit" returnType="Lorg.eclipse.jdt.core.jdom.IDOMCompilationUnit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.ICompilationUnit;"/>
+      </methods>
+      <methods elementName="enterCompilationUnit" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="exitCompilationUnit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="exitType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="getLineStart" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="initializeBuild" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="CompilationUnit.class" isClass="true" isInterface="false">
+    <type elementName="CompilationUnit" fullyQualifiedName="org.eclipse.jdt.internal.core.jdom.CompilationUnit" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.jdom.CompilationUnit">
+      <fields elementName="fContents" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="fFileName" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="fMainTypeName" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <methods elementName="CompilationUnit" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="getContents" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFileName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMainTypeName" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPackageName" returnType="[[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="DOMBuilder.class" isClass="true" isInterface="false">
+    <type elementName="DOMBuilder" fullyQualifiedName="org.eclipse.jdt.internal.core.jdom.DOMBuilder" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.jdom.DOMBuilder">
+      <fields elementName="fBuildingSingleMember" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="fFinishedSingleMember" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="fFields" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+      <fields elementName="options" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <methods elementName="DOMBuilder" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="acceptImport" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="[I"/>
+        <parameters name="arg3" type="[C"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="Z"/>
+        <parameters name="arg6" type="I"/>
+      </methods>
+      <methods elementName="acceptInitializer" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="[I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+      </methods>
+      <methods elementName="acceptPackage" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="[I"/>
+        <parameters name="arg3" type="[C"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="acceptProblem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+      </methods>
+      <methods elementName="addChild" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.jdom.IDOMNode;"/>
+      </methods>
+      <methods elementName="createCompilationUnit" returnType="Lorg.eclipse.jdt.core.jdom.IDOMCompilationUnit;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="createCompilationUnit" returnType="Lorg.eclipse.jdt.core.jdom.IDOMCompilationUnit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.ICompilationUnit;"/>
+      </methods>
+      <methods elementName="createField" returnType="Lorg.eclipse.jdt.core.jdom.IDOMField;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="createFields" returnType="[Lorg.eclipse.jdt.core.jdom.IDOMField;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="createImport" returnType="Lorg.eclipse.jdt.core.jdom.IDOMImport;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="createImport" returnType="Lorg.eclipse.jdt.core.jdom.IDOMImport;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="createInitializer" returnType="Lorg.eclipse.jdt.core.jdom.IDOMInitializer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="createMethod" returnType="Lorg.eclipse.jdt.core.jdom.IDOMMethod;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="createPackage" returnType="Lorg.eclipse.jdt.core.jdom.IDOMPackage;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="createPackage" returnType="Lorg.eclipse.jdt.core.jdom.IDOMPackage;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="createType" returnType="Lorg.eclipse.jdt.core.jdom.IDOMType;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="enterAbstractMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="[C"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+        <parameters name="arg7" type="I"/>
+        <parameters name="arg8" type="[C"/>
+        <parameters name="arg9" type="I"/>
+        <parameters name="arg10" type="I"/>
+        <parameters name="arg11" type="[[C"/>
+        <parameters name="arg12" type="[I"/>
+        <parameters name="arg13" type="[I"/>
+        <parameters name="arg14" type="[[C"/>
+        <parameters name="arg15" type="[I"/>
+        <parameters name="arg16" type="[I"/>
+        <parameters name="arg17" type="I"/>
+        <parameters name="arg18" type="I"/>
+        <parameters name="arg19" type="I"/>
+        <parameters name="arg20" type="[[C"/>
+        <parameters name="arg21" type="[I"/>
+        <parameters name="arg22" type="[I"/>
+        <parameters name="arg23" type="I"/>
+        <parameters name="arg24" type="Z"/>
+      </methods>
+      <methods elementName="enterClass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="[C"/>
+        <parameters name="arg6" type="I"/>
+        <parameters name="arg7" type="I"/>
+        <parameters name="arg8" type="[C"/>
+        <parameters name="arg9" type="I"/>
+        <parameters name="arg10" type="I"/>
+        <parameters name="arg11" type="[[C"/>
+        <parameters name="arg12" type="[I"/>
+        <parameters name="arg13" type="[I"/>
+        <parameters name="arg14" type="I"/>
+      </methods>
+      <methods elementName="enterConstructor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="[C"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+        <parameters name="arg7" type="[[C"/>
+        <parameters name="arg8" type="[I"/>
+        <parameters name="arg9" type="[I"/>
+        <parameters name="arg10" type="[[C"/>
+        <parameters name="arg11" type="[I"/>
+        <parameters name="arg12" type="[I"/>
+        <parameters name="arg13" type="I"/>
+        <parameters name="arg14" type="[[C"/>
+        <parameters name="arg15" type="[I"/>
+        <parameters name="arg16" type="[I"/>
+        <parameters name="arg17" type="I"/>
+      </methods>
+      <methods elementName="enterField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="[C"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+        <parameters name="arg7" type="I"/>
+        <parameters name="arg8" type="[C"/>
+        <parameters name="arg9" type="I"/>
+        <parameters name="arg10" type="I"/>
+        <parameters name="arg11" type="I"/>
+        <parameters name="arg12" type="I"/>
+      </methods>
+      <methods elementName="enterInterface" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="[C"/>
+        <parameters name="arg6" type="I"/>
+        <parameters name="arg7" type="I"/>
+        <parameters name="arg8" type="[[C"/>
+        <parameters name="arg9" type="[I"/>
+        <parameters name="arg10" type="[I"/>
+        <parameters name="arg11" type="I"/>
+      </methods>
+      <methods elementName="enterMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="[C"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+        <parameters name="arg7" type="I"/>
+        <parameters name="arg8" type="[C"/>
+        <parameters name="arg9" type="I"/>
+        <parameters name="arg10" type="I"/>
+        <parameters name="arg11" type="[[C"/>
+        <parameters name="arg12" type="[I"/>
+        <parameters name="arg13" type="[I"/>
+        <parameters name="arg14" type="[[C"/>
+        <parameters name="arg15" type="[I"/>
+        <parameters name="arg16" type="[I"/>
+        <parameters name="arg17" type="I"/>
+        <parameters name="arg18" type="I"/>
+        <parameters name="arg19" type="I"/>
+        <parameters name="arg20" type="[[C"/>
+        <parameters name="arg21" type="[I"/>
+        <parameters name="arg22" type="[I"/>
+        <parameters name="arg23" type="I"/>
+      </methods>
+      <methods elementName="enterType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="[C"/>
+        <parameters name="arg6" type="I"/>
+        <parameters name="arg7" type="I"/>
+        <parameters name="arg8" type="[C"/>
+        <parameters name="arg9" type="I"/>
+        <parameters name="arg10" type="I"/>
+        <parameters name="arg11" type="[[C"/>
+        <parameters name="arg12" type="[I"/>
+        <parameters name="arg13" type="[I"/>
+        <parameters name="arg14" type="I"/>
+        <parameters name="arg15" type="Z"/>
+      </methods>
+      <methods elementName="exitAbstractMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="exitClass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="exitConstructor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="exitField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="exitInterface" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="exitMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="getParser" returnType="Lorg.eclipse.jdt.internal.compiler.DocumentElementParser;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Map;"/>
+      </methods>
+      <methods elementName="initializeBuild" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Z"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="DOMCompilationUnit.class" isClass="true" isInterface="false">
+    <type elementName="DOMCompilationUnit" fullyQualifiedName="org.eclipse.jdt.internal.core.jdom.DOMCompilationUnit" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.jdom.DOMCompilationUnit">
+      <fields elementName="fHeader" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <methods elementName="DOMCompilationUnit" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="DOMCompilationUnit" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[I"/>
+      </methods>
+      <methods elementName="appendFragmentedContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="canHaveChildren" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getHeader" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getJavaElement" returnType="Lorg.eclipse.jdt.core.IJavaElement;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaElement;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+      </methods>
+      <methods elementName="getName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNodeType" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="initalizeHeader" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isAllowableChild" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.jdom.IDOMNode;"/>
+      </methods>
+      <methods elementName="newDOMNode" returnType="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="normalize" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.jdom.ILineStartFinder;"/>
+      </methods>
+      <methods elementName="setHeader" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="setName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="shareContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="DOMField.class" isClass="true" isInterface="false">
+    <type elementName="DOMField" fullyQualifiedName="org.eclipse.jdt.internal.core.jdom.DOMField" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.jdom.DOMField">
+      <fields elementName="fType" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fTypeRange" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fInitializer" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fInitializerRange" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <methods elementName="DOMField" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="DOMField" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="[I"/>
+        <parameters name="arg4" type="[I"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="[I"/>
+        <parameters name="arg7" type="[I"/>
+        <parameters name="arg8" type="Ljava.lang.String;"/>
+        <parameters name="arg9" type="Z"/>
+        <parameters name="arg10" type="[I"/>
+        <parameters name="arg11" type="Z"/>
+      </methods>
+      <methods elementName="DOMField" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="[I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="Ljava.lang.String;"/>
+        <parameters name="arg6" type="Z"/>
+      </methods>
+      <methods elementName="appendMemberBodyContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="appendMemberDeclarationContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="appendMemberHeaderFragment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="appendSimpleContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="becomeDetailed" returnType="V" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Lorg.eclipse.jdt.core.jdom.DOMException;</exceptionTypes>
+      </methods>
+      <methods elementName="clone" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="expand" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDetailedNode" returnType="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFirstFieldDeclaration" returnType="Lorg.eclipse.jdt.internal.core.jdom.DOMField;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInitializer" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getJavaElement" returnType="Lorg.eclipse.jdt.core.IJavaElement;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaElement;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+      </methods>
+      <methods elementName="getLastFieldDeclaration" returnType="Lorg.eclipse.jdt.internal.core.jdom.DOMField;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMemberDeclarationStartPosition" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNodeType" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSingleVariableDeclaratorContents" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getType" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTypeContents" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hasInitializer" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hasMultipleVariableDeclarators" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="insertSibling" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.jdom.IDOMNode;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+        <exceptionTypes>Lorg.eclipse.jdt.core.jdom.DOMException;</exceptionTypes>
+      </methods>
+      <methods elementName="isTypeAltered" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isVariableDeclarator" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="newDOMNode" returnType="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="normalizeEndPosition" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.jdom.ILineStartFinder;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;"/>
+      </methods>
+      <methods elementName="normalizeStartPosition" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.jdom.ILineStartFinder;"/>
+      </methods>
+      <methods elementName="offset" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="remove" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setComment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="setFlags" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setHasInitializer" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="setInitializer" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="setInitializerRange" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="setIsVariableDeclarator" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="setName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+      </methods>
+      <methods elementName="setType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+      </methods>
+      <methods elementName="setTypeAltered" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="shareContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="DOMImport.class" isClass="true" isInterface="false">
+    <type elementName="DOMImport" fullyQualifiedName="org.eclipse.jdt.internal.core.jdom.DOMImport" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.jdom.DOMImport">
+      <fields elementName="fOnDemand" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="fFlags" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="DOMImport" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="DOMImport" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="[I"/>
+        <parameters name="arg4" type="Z"/>
+        <parameters name="arg5" type="I"/>
+      </methods>
+      <methods elementName="DOMImport" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="appendFragmentedContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="getContents" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDetailedNode" returnType="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getJavaElement" returnType="Lorg.eclipse.jdt.core.IJavaElement;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaElement;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+      </methods>
+      <methods elementName="getNodeType" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isOnDemand" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="newDOMNode" returnType="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFlags" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setFlags" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="DOMInitializer.class" isClass="true" isInterface="false">
+    <type elementName="DOMInitializer" fullyQualifiedName="org.eclipse.jdt.internal.core.jdom.DOMInitializer" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.jdom.DOMInitializer">
+      <fields elementName="fBody" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fBodyRange" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <methods elementName="DOMInitializer" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="DOMInitializer" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="[I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="[I"/>
+        <parameters name="arg5" type="I"/>
+      </methods>
+      <methods elementName="DOMInitializer" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="appendMemberBodyContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="appendMemberDeclarationContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="appendSimpleContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="getBody" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDetailedNode" returnType="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getJavaElement" returnType="Lorg.eclipse.jdt.core.IJavaElement;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaElement;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+      </methods>
+      <methods elementName="getMemberDeclarationStartPosition" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNodeType" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isSignatureEqual" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.jdom.IDOMNode;"/>
+      </methods>
+      <methods elementName="newDOMNode" returnType="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="offset" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setBody" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="setName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="shareContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="DOMMember.class" isClass="true" isInterface="false">
+    <type elementName="DOMMember" fullyQualifiedName="org.eclipse.jdt.internal.core.jdom.DOMMember" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.jdom.DOMMember">
+      <fields elementName="fFlags" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fComment" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fCommentRange" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fModifiers" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="fModifierRange" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <methods elementName="DOMMember" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="DOMMember" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="[I"/>
+        <parameters name="arg4" type="[I"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="[I"/>
+      </methods>
+      <methods elementName="appendFragmentedContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="appendMemberBodyContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="appendMemberDeclarationContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="appendMemberHeaderFragment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="appendSimpleContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="appendString" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="generateFlags" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getComment" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFlags" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMemberDeclarationStartPosition" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getModifiersText" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hasBody" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hasComment" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="offset" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setComment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="setFlags" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setHasBody" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="setHasComment" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="setStartPosition" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="shareContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="DOMMethod.class" isClass="true" isInterface="false">
+    <type elementName="DOMMethod" fullyQualifiedName="org.eclipse.jdt.internal.core.jdom.DOMMethod" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.jdom.DOMMethod">
+      <fields elementName="fReturnType" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fReturnTypeRange" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fParameterList" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="fParameterRange" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fExceptionList" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="fExceptionRange" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fBody" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fBodyRange" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fParameterNames" isEnumConstant="false" typeSignature="[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fParameterTypes" isEnumConstant="false" typeSignature="[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fExceptions" isEnumConstant="false" typeSignature="[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fTypeParameters" isEnumConstant="false" typeSignature="[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fDefaultValue" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <methods elementName="DOMMethod" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="DOMMethod" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="[I"/>
+        <parameters name="arg4" type="[I"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="[I"/>
+        <parameters name="arg7" type="Z"/>
+        <parameters name="arg8" type="Ljava.lang.String;"/>
+        <parameters name="arg9" type="[I"/>
+        <parameters name="arg10" type="[Ljava.lang.String;"/>
+        <parameters name="arg11" type="[Ljava.lang.String;"/>
+        <parameters name="arg12" type="[I"/>
+        <parameters name="arg13" type="[Ljava.lang.String;"/>
+        <parameters name="arg14" type="[I"/>
+        <parameters name="arg15" type="[I"/>
+      </methods>
+      <methods elementName="DOMMethod" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="[I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="Z"/>
+        <parameters name="arg6" type="Ljava.lang.String;"/>
+        <parameters name="arg7" type="[Ljava.lang.String;"/>
+        <parameters name="arg8" type="[Ljava.lang.String;"/>
+        <parameters name="arg9" type="[Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="addException" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+      </methods>
+      <methods elementName="addParameter" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+      </methods>
+      <methods elementName="appendMemberBodyContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="appendMemberDeclarationContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="appendSimpleContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="getBody" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getConstructorName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDetailedNode" returnType="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getExceptions" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="generateFlags" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getJavaElement" returnType="Lorg.eclipse.jdt.core.IJavaElement;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaElement;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+      </methods>
+      <methods elementName="getMemberDeclarationStartPosition" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNodeType" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getParameterNames" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getParameterTypes" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getReturnType" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getReturnTypeContents" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hasTrailingArrayQualifier" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isConstructor" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isReturnTypeAltered" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isSignatureEqual" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.jdom.IDOMNode;"/>
+      </methods>
+      <methods elementName="newDOMNode" returnType="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="offset" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setBody" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="setBodyRangeEnd" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setConstructor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="setExceptions" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="setName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="setParameters" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.String;"/>
+        <parameters name="arg1" type="[Ljava.lang.String;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+      </methods>
+      <methods elementName="setReturnType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+      </methods>
+      <methods elementName="setReturnTypeAltered" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="setSourceRangeEnd" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="shareContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setDefault" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getDefault" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTypeParameters" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setTypeParameters" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="DOMNode.class" isClass="true" isInterface="false">
+    <type elementName="DOMNode" fullyQualifiedName="org.eclipse.jdt.internal.core.jdom.DOMNode" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.jdom.DOMNode">
+      <fields elementName="fFirstChild" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fLastChild" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fNextNode" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fParent" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fPreviousNode" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fIsFragmented" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="fName" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fNameRange" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fDocument" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="fSourceRange" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fStateMask" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fInsertionPosition" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MASK_FIELD_HAS_INITIALIZER" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MASK_FIELD_IS_VARIABLE_DECLARATOR" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MASK_FIELD_TYPE_ALTERED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MASK_NAME_ALTERED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MASK_HAS_BODY" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MASK_HAS_COMMENT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MASK_IS_CONSTRUCTOR" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MASK_TYPE_IS_CLASS" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MASK_TYPE_HAS_SUPERCLASS" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MASK_TYPE_HAS_INTERFACES" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MASK_RETURN_TYPE_ALTERED" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="MASK_DETAILED_SOURCE_INDEXES" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="DOMNode" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="DOMNode" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="[I"/>
+      </methods>
+      <methods elementName="addChild" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.jdom.IDOMNode;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+        <exceptionTypes>Lorg.eclipse.jdt.core.jdom.DOMException;</exceptionTypes>
+      </methods>
+      <methods elementName="appendContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="appendContentsOfChildren" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="appendFragmentedContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="basicAddChild" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.jdom.IDOMNode;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+        <exceptionTypes>Lorg.eclipse.jdt.core.jdom.DOMException;</exceptionTypes>
+      </methods>
+      <methods elementName="becomeDetailed" returnType="V" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Lorg.eclipse.jdt.core.jdom.DOMException;</exceptionTypes>
+      </methods>
+      <methods elementName="canHaveChildren" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="clone" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="cloneSharingDocument" returnType="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="fragment" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCharacters" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getChild" returnType="Lorg.eclipse.jdt.core.jdom.IDOMNode;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getChildren" returnType="Ljava.util.Enumeration;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getContents" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDetailedNode" returnType="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDocument" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEndPosition" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFactory" returnType="Lorg.eclipse.jdt.core.jdom.IDOMFactory;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFirstChild" returnType="Lorg.eclipse.jdt.core.jdom.IDOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInsertionPosition" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMask" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNameContents" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNextNode" returnType="Lorg.eclipse.jdt.core.jdom.IDOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getParent" returnType="Lorg.eclipse.jdt.core.jdom.IDOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getParentEndDeclaration" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPreviousNode" returnType="Lorg.eclipse.jdt.core.jdom.IDOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getRoot" returnType="Lorg.eclipse.jdt.core.jdom.IDOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getStartPosition" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="insertSibling" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.jdom.IDOMNode;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+        <exceptionTypes>Lorg.eclipse.jdt.core.jdom.DOMException;</exceptionTypes>
+      </methods>
+      <methods elementName="isAllowableChild" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.jdom.IDOMNode;"/>
+      </methods>
+      <methods elementName="isContentMergableWith" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;"/>
+      </methods>
+      <methods elementName="isDetailed" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isFragmented" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isNameAltered" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isSignatureEqual" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.jdom.IDOMNode;"/>
+      </methods>
+      <methods elementName="localizeContents" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="newDOMNode" returnType="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="normalize" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.jdom.ILineStartFinder;"/>
+      </methods>
+      <methods elementName="normalizeEndPosition" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.jdom.ILineStartFinder;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;"/>
+      </methods>
+      <methods elementName="normalizeStartPosition" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.jdom.ILineStartFinder;"/>
+      </methods>
+      <methods elementName="offset" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="offsetRange" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="rangeCopy" returnType="[I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+      </methods>
+      <methods elementName="remove" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setMask" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="setName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="setNameAltered" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="setSourceRangeEnd" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setStartPosition" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="shareContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="DOMPackage.class" isClass="true" isInterface="false">
+    <type elementName="DOMPackage" fullyQualifiedName="org.eclipse.jdt.internal.core.jdom.DOMPackage" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.jdom.DOMPackage">
+      <methods elementName="DOMPackage" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="DOMPackage" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="DOMPackage" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="[I"/>
+      </methods>
+      <methods elementName="appendFragmentedContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="getContents" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDetailedNode" returnType="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getJavaElement" returnType="Lorg.eclipse.jdt.core.IJavaElement;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaElement;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+      </methods>
+      <methods elementName="getNodeType" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="newDOMNode" returnType="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="DOMType.class" isClass="true" isInterface="false">
+    <type elementName="DOMType" fullyQualifiedName="org.eclipse.jdt.internal.core.jdom.DOMType" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.jdom.DOMType">
+      <fields elementName="fTypeKeyword" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fTypeRange" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fSuperclass" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fSuperclassRange" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fExtendsRange" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fImplementsRange" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fInterfaces" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="fInterfacesRange" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fOpenBodyRange" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fCloseBodyRange" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fSuperInterfaces" isEnumConstant="false" typeSignature="[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fTypeParameters" isEnumConstant="false" typeSignature="[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fIsEnum" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="fIsAnnotation" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="DOMType" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="DOMType" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="[I"/>
+        <parameters name="arg4" type="[I"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="[I"/>
+        <parameters name="arg7" type="[I"/>
+        <parameters name="arg8" type="[I"/>
+        <parameters name="arg9" type="[I"/>
+        <parameters name="arg10" type="[Ljava.lang.String;"/>
+        <parameters name="arg11" type="[I"/>
+        <parameters name="arg12" type="[I"/>
+        <parameters name="arg13" type="[I"/>
+        <parameters name="arg14" type="[I"/>
+        <parameters name="arg15" type="Z"/>
+      </methods>
+      <methods elementName="DOMType" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[I"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="[I"/>
+        <parameters name="arg4" type="I"/>
+        <parameters name="arg5" type="[Ljava.lang.String;"/>
+        <parameters name="arg6" type="Z"/>
+      </methods>
+      <methods elementName="addSuperInterface" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+      </methods>
+      <methods elementName="appendMemberBodyContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="appendMemberDeclarationContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="appendSimpleContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.util.CharArrayBuffer;"/>
+      </methods>
+      <methods elementName="canHaveChildren" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getCloseBodyPosition" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDetailedNode" returnType="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getInsertionPosition" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getJavaElement" returnType="Lorg.eclipse.jdt.core.IJavaElement;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaElement;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+      </methods>
+      <methods elementName="getMemberDeclarationStartPosition" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNodeType" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getOpenBodyEnd" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSuperclass" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSuperInterfaces" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isAllowableChild" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.jdom.IDOMNode;"/>
+      </methods>
+      <methods elementName="isClass" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="newDOMNode" returnType="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="normalize" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.jdom.ILineStartFinder;"/>
+      </methods>
+      <methods elementName="normalizeEndPosition" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.jdom.ILineStartFinder;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;"/>
+      </methods>
+      <methods elementName="offset" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setClass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="setCloseBodyRangeEnd" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setCloseBodyRangeStart" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+      </methods>
+      <methods elementName="setOpenBodyRangeEnd" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setOpenBodyRangeStart" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setSuperclass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="setSuperInterfaces" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="setTypeKeyword" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="shareContents" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.jdom.DOMNode;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTypeParameters" returnType="[Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isEnum" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isAnnotation" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setEnum" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="setAnnotation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="setTypeParameters" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ILineStartFinder.class" isClass="false" isInterface="true">
+    <type elementName="ILineStartFinder" fullyQualifiedName="org.eclipse.jdt.internal.core.jdom.ILineStartFinder" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.jdom.ILineStartFinder">
+      <methods elementName="getLineStart" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SiblingEnumeration.class" isClass="true" isInterface="false">
+    <type elementName="SiblingEnumeration" fullyQualifiedName="org.eclipse.jdt.internal.core.jdom.SiblingEnumeration" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.jdom.SiblingEnumeration">
+      <fields elementName="fCurrentElement" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.jdom.IDOMNode;" isVolatile="false" isTransient="false"/>
+      <methods elementName="SiblingEnumeration" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.jdom.IDOMNode;"/>
+      </methods>
+      <methods elementName="hasMoreElements" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="nextElement" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="SimpleDOMBuilder.class" isClass="true" isInterface="false">
+    <type elementName="SimpleDOMBuilder" fullyQualifiedName="org.eclipse.jdt.internal.core.jdom.SimpleDOMBuilder" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.jdom.SimpleDOMBuilder">
+      <methods elementName="SimpleDOMBuilder" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="acceptProblem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+      </methods>
+      <methods elementName="acceptImport" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="[[C"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="acceptPackage" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ImportReference;"/>
+      </methods>
+      <methods elementName="createCompilationUnit" returnType="Lorg.eclipse.jdt.core.jdom.IDOMCompilationUnit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="createCompilationUnit" returnType="Lorg.eclipse.jdt.core.jdom.IDOMCompilationUnit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.ICompilationUnit;"/>
+      </methods>
+      <methods elementName="enterAbstractMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ISourceElementRequestor$MethodInfo;"/>
+      </methods>
+      <methods elementName="enterConstructor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ISourceElementRequestor$MethodInfo;"/>
+      </methods>
+      <methods elementName="enterField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ISourceElementRequestor$FieldInfo;"/>
+      </methods>
+      <methods elementName="enterInitializer" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="enterMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ISourceElementRequestor$MethodInfo;"/>
+      </methods>
+      <methods elementName="enterType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ISourceElementRequestor$TypeInfo;"/>
+      </methods>
+      <methods elementName="exitConstructor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="exitField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="exitInitializer" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="exitMember" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="exitMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="exitType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getParser" returnType="Lorg.eclipse.jdt.internal.compiler.SourceElementParser;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Map;"/>
+      </methods>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

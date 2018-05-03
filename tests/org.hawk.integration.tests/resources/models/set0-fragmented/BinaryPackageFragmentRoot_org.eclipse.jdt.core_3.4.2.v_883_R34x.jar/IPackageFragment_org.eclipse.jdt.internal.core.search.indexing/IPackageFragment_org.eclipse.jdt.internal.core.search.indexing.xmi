@@ -1,0 +1,854 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.core.search.indexing" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="AbstractIndexer.class" isClass="true" isInterface="false">
+    <type elementName="AbstractIndexer" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.AbstractIndexer" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.AbstractIndexer">
+      <fields elementName="document" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.search.SearchDocument;" isVolatile="false" isTransient="false"/>
+      <methods elementName="AbstractIndexer" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.search.SearchDocument;"/>
+      </methods>
+      <methods elementName="addAnnotationTypeDeclaration" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="[[C"/>
+        <parameters name="arg4" type="Z"/>
+      </methods>
+      <methods elementName="addAnnotationTypeReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="addClassDeclaration" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="[[C"/>
+        <parameters name="arg4" type="[C"/>
+        <parameters name="arg5" type="[[C"/>
+        <parameters name="arg6" type="[[C"/>
+        <parameters name="arg7" type="Z"/>
+      </methods>
+      <methods elementName="erasure" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="addConstructorDeclaration" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[[C"/>
+        <parameters name="arg2" type="[[C"/>
+      </methods>
+      <methods elementName="addConstructorReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="addEnumDeclaration" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="[[C"/>
+        <parameters name="arg4" type="[C"/>
+        <parameters name="arg5" type="[[C"/>
+        <parameters name="arg6" type="Z"/>
+      </methods>
+      <methods elementName="addFieldDeclaration" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="addFieldReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="addIndexEntry" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="addInterfaceDeclaration" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="[[C"/>
+        <parameters name="arg4" type="[[C"/>
+        <parameters name="arg5" type="[[C"/>
+        <parameters name="arg6" type="Z"/>
+      </methods>
+      <methods elementName="addMethodDeclaration" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[[C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="[[C"/>
+      </methods>
+      <methods elementName="addMethodReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="addNameReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="addTypeDeclaration" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="[[C"/>
+        <parameters name="arg4" type="Z"/>
+      </methods>
+      <methods elementName="addTypeReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="indexDocument" returnType="V" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="AddFolderToIndex$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.AddFolderToIndex$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.AddFolderToIndex.1">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.search.indexing.AddFolderToIndex;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$indexManager" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.search.indexing.IndexManager;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$container" isEnumConstant="false" typeSignature="Lorg.eclipse.core.runtime.IPath;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$parser" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.SourceElementParser;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.search.indexing.AddFolderToIndex;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.search.indexing.IndexManager;"/>
+        <parameters name="arg2" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.SourceElementParser;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceProxy;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="AddFolderToIndex$2.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.AddFolderToIndex$2" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.AddFolderToIndex.2">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.search.indexing.AddFolderToIndex;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$indexManager" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.search.indexing.IndexManager;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$container" isEnumConstant="false" typeSignature="Lorg.eclipse.core.runtime.IPath;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$parser" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.SourceElementParser;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.search.indexing.AddFolderToIndex;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.search.indexing.IndexManager;"/>
+        <parameters name="arg2" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.SourceElementParser;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceProxy;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="AddFolderToIndex.class" isClass="true" isInterface="false">
+    <type elementName="AddFolderToIndex" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.AddFolderToIndex" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.AddFolderToIndex">
+      <fields elementName="folderPath" isEnumConstant="false" typeSignature="Lorg.eclipse.core.runtime.IPath;" isVolatile="false" isTransient="false"/>
+      <fields elementName="project" isEnumConstant="false" typeSignature="Lorg.eclipse.core.resources.IProject;" isVolatile="false" isTransient="false"/>
+      <fields elementName="inclusionPatterns" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="exclusionPatterns" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <methods elementName="AddFolderToIndex" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IProject;"/>
+        <parameters name="arg2" type="[[C"/>
+        <parameters name="arg3" type="[[C"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.core.search.indexing.IndexManager;"/>
+      </methods>
+      <methods elementName="execute" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="AddJarFileToIndex.class" isClass="true" isInterface="false">
+    <type elementName="AddJarFileToIndex" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.AddJarFileToIndex" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.AddJarFileToIndex">
+      <fields elementName="JAR_SEPARATOR" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="resource" isEnumConstant="false" typeSignature="Lorg.eclipse.core.resources.IFile;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="AddJarFileToIndex" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.search.indexing.IndexManager;"/>
+      </methods>
+      <methods elementName="AddJarFileToIndex" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.search.indexing.IndexManager;"/>
+      </methods>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="execute" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <methods elementName="getJobFamily" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="updatedIndexState" returnType="Ljava.lang.Integer;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="BinaryIndexer.class" isClass="true" isInterface="false">
+    <type elementName="BinaryIndexer" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.BinaryIndexer" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.BinaryIndexer">
+      <fields elementName="BYTE" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="CHAR" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="DOUBLE" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="FLOAT" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="INT" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="LONG" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="SHORT" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="BOOLEAN" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="VOID" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="INIT" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="BinaryIndexer" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.search.SearchDocument;"/>
+      </methods>
+      <methods elementName="addBinaryStandardAnnotations" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+      </methods>
+      <methods elementName="addBinaryTargetAnnotation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+      </methods>
+      <methods elementName="addBinaryRetentionAnnotation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+      </methods>
+      <methods elementName="addBinaryAnnotation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.IBinaryAnnotation;"/>
+      </methods>
+      <methods elementName="addPairValue" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="addTypeReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="convertToArrayType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="convertToArrayType" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="decodeFieldType" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <exceptionTypes>Lorg.eclipse.jdt.internal.compiler.classfmt.ClassFormatException;</exceptionTypes>
+      </methods>
+      <methods elementName="decodeParameterTypes" returnType="[[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="Z"/>
+        <exceptionTypes>Lorg.eclipse.jdt.internal.compiler.classfmt.ClassFormatException;</exceptionTypes>
+      </methods>
+      <methods elementName="decodeReturnType" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <exceptionTypes>Lorg.eclipse.jdt.internal.compiler.classfmt.ClassFormatException;</exceptionTypes>
+      </methods>
+      <methods elementName="extractArgCount" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <exceptionTypes>Lorg.eclipse.jdt.internal.compiler.classfmt.ClassFormatException;</exceptionTypes>
+      </methods>
+      <methods elementName="extractClassName" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.classfmt.ClassFileReader;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="extractName" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.classfmt.ClassFileReader;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="extractClassReference" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.classfmt.ClassFileReader;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="extractReferenceFromConstantPool" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[B"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.classfmt.ClassFileReader;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.internal.compiler.classfmt.ClassFormatException;</exceptionTypes>
+      </methods>
+      <methods elementName="extractType" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.classfmt.ClassFileReader;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="indexDocument" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="replace" returnType="[[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="C"/>
+        <parameters name="arg1" type="C"/>
+        <parameters name="arg2" type="[[C"/>
+      </methods>
+      <methods elementName="replace" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="C"/>
+        <parameters name="arg1" type="C"/>
+        <parameters name="arg2" type="[C"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="IIndexConstants.class" isClass="false" isInterface="true">
+    <type elementName="IIndexConstants" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.IIndexConstants" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.IIndexConstants">
+      <fields elementName="REF" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="ANNOTATION_REF" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="METHOD_REF" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTRUCTOR_REF" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="SUPER_REF" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="TYPE_DECL" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="METHOD_DECL" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTRUCTOR_DECL" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="FIELD_DECL" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="OBJECT" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="COUNTS" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="CLASS_SUFFIX" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="INTERFACE_SUFFIX" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="ENUM_SUFFIX" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="ANNOTATION_TYPE_SUFFIX" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="TYPE_SUFFIX" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="CLASS_AND_ENUM_SUFFIX" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="CLASS_AND_INTERFACE_SUFFIX" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="INTERFACE_AND_ANNOTATION_SUFFIX" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="SEPARATOR" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="SECONDARY_SUFFIX" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="ONE_STAR" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="ONE_STAR_CHAR" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="ZERO_CHAR" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="ONE_ZERO" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="ONE_ZERO_CHAR" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="PKG_REF_PATTERN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="PKG_DECL_PATTERN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="TYPE_REF_PATTERN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="TYPE_DECL_PATTERN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SUPER_REF_PATTERN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CONSTRUCTOR_PATTERN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FIELD_PATTERN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="METHOD_PATTERN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="OR_PATTERN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LOCAL_VAR_PATTERN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="TYPE_PARAM_PATTERN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="AND_PATTERN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="ANNOT_REF_PATTERN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IndexAllProject$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.IndexAllProject$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.IndexAllProject.1">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.search.indexing.IndexAllProject;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$exclusionPatterns" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$inclusionPatterns" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$indexedFileNames" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$hasOutputs" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$outputs" isEnumConstant="false" typeSignature="Ljava.util.HashSet;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.search.indexing.IndexAllProject;"/>
+        <parameters name="arg1" type="[[C"/>
+        <parameters name="arg2" type="[[C"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;"/>
+        <parameters name="arg4" type="Z"/>
+        <parameters name="arg5" type="Ljava.util.HashSet;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceProxy;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="IndexAllProject$2.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.IndexAllProject$2" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.IndexAllProject.2">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.search.indexing.IndexAllProject;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$exclusionPatterns" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$inclusionPatterns" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$indexedFileNames" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$indexLastModified" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$hasOutputs" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$outputs" isEnumConstant="false" typeSignature="Ljava.util.HashSet;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.search.indexing.IndexAllProject;"/>
+        <parameters name="arg1" type="[[C"/>
+        <parameters name="arg2" type="[[C"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;"/>
+        <parameters name="arg4" type="J"/>
+        <parameters name="arg5" type="Z"/>
+        <parameters name="arg6" type="Ljava.util.HashSet;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceProxy;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="IndexAllProject.class" isClass="true" isInterface="false">
+    <type elementName="IndexAllProject" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.IndexAllProject" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.IndexAllProject">
+      <fields elementName="project" isEnumConstant="false" typeSignature="Lorg.eclipse.core.resources.IProject;" isVolatile="false" isTransient="false"/>
+      <methods elementName="IndexAllProject" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IProject;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.search.indexing.IndexManager;"/>
+      </methods>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="execute" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="updatedIndexState" returnType="Ljava.lang.Integer;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IndexBinaryFolder$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.IndexBinaryFolder$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.IndexBinaryFolder.1">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.search.indexing.IndexBinaryFolder;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$indexedFileNames" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.search.indexing.IndexBinaryFolder;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceProxy;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="IndexBinaryFolder$2.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.IndexBinaryFolder$2" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.IndexBinaryFolder.2">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.search.indexing.IndexBinaryFolder;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$indexedFileNames" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$indexLastModified" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.search.indexing.IndexBinaryFolder;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;"/>
+        <parameters name="arg2" type="J"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IResourceProxy;"/>
+        <exceptionTypes>Lorg.eclipse.core.runtime.CoreException;</exceptionTypes>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="IndexBinaryFolder.class" isClass="true" isInterface="false">
+    <type elementName="IndexBinaryFolder" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.IndexBinaryFolder" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.IndexBinaryFolder">
+      <fields elementName="folder" isEnumConstant="false" typeSignature="Lorg.eclipse.core.resources.IContainer;" isVolatile="false" isTransient="false"/>
+      <methods elementName="IndexBinaryFolder" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IContainer;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.search.indexing.IndexManager;"/>
+      </methods>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="execute" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="updatedIndexState" returnType="Ljava.lang.Integer;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IndexManager$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.IndexManager$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.IndexManager.1">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.search.indexing.IndexManager;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$indexLocation" isEnumConstant="false" typeSignature="Lorg.eclipse.core.runtime.IPath;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$searchDocument" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.search.SearchDocument;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$searchParticipant" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.core.search.SearchParticipant;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.search.indexing.IndexManager;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.core.search.indexing.IndexManager;"/>
+        <parameters name="arg3" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.core.search.SearchDocument;"/>
+        <parameters name="arg5" type="Lorg.eclipse.jdt.core.search.SearchParticipant;"/>
+      </methods>
+      <methods elementName="execute" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IndexManager.class" isClass="true" isInterface="false">
+    <type elementName="IndexManager" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.IndexManager" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.IndexManager">
+      <fields elementName="indexLocations" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isVolatile="false" isTransient="false"/>
+      <fields elementName="indexes" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isVolatile="false" isTransient="false"/>
+      <fields elementName="needToSave" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="checksumCalculator" isEnumConstant="false" typeSignature="Ljava.util.zip.CRC32;" isVolatile="false" isTransient="false"/>
+      <fields elementName="javaPluginLocation" isEnumConstant="false" typeSignature="Lorg.eclipse.core.runtime.IPath;" isVolatile="false" isTransient="false"/>
+      <fields elementName="indexStates" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isVolatile="false" isTransient="false"/>
+      <fields elementName="savedIndexNamesFile" isEnumConstant="false" typeSignature="Ljava.io.File;" isVolatile="false" isTransient="false"/>
+      <fields elementName="SAVED_STATE" isEnumConstant="false" typeSignature="Ljava.lang.Integer;" isVolatile="false" isTransient="false"/>
+      <fields elementName="UPDATING_STATE" isEnumConstant="false" typeSignature="Ljava.lang.Integer;" isVolatile="false" isTransient="false"/>
+      <fields elementName="UNKNOWN_STATE" isEnumConstant="false" typeSignature="Ljava.lang.Integer;" isVolatile="false" isTransient="false"/>
+      <fields elementName="REBUILDING_STATE" isEnumConstant="false" typeSignature="Ljava.lang.Integer;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="IndexManager" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="aboutToUpdateIndex" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg1" type="Ljava.lang.Integer;"/>
+      </methods>
+      <methods elementName="addBinary" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.runtime.IPath;"/>
+      </methods>
+      <methods elementName="addSource" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IFile;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.SourceElementParser;"/>
+      </methods>
+      <methods elementName="cleanUpIndexes" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="computeIndexLocation" returnType="Lorg.eclipse.core.runtime.IPath;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+      </methods>
+      <methods elementName="deleteIndexFiles" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="deleteIndexFiles" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.util.SimpleSet;"/>
+      </methods>
+      <methods elementName="ensureIndexExists" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.runtime.IPath;"/>
+      </methods>
+      <methods elementName="getSourceElementParser" returnType="Lorg.eclipse.jdt.internal.compiler.SourceElementParser;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.IJavaProject;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ISourceElementRequestor;"/>
+      </methods>
+      <methods elementName="getIndex" returnType="Lorg.eclipse.jdt.internal.core.index.Index;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+      </methods>
+      <methods elementName="getIndex" returnType="Lorg.eclipse.jdt.internal.core.index.Index;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="getIndex" returnType="Lorg.eclipse.jdt.internal.core.index.Index;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg2" type="Z"/>
+        <parameters name="arg3" type="Z"/>
+      </methods>
+      <methods elementName="getIndexes" returnType="[Lorg.eclipse.jdt.internal.core.index.Index;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <methods elementName="getIndexForUpdate" returnType="Lorg.eclipse.jdt.internal.core.index.Index;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg1" type="Z"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="getIndexStates" returnType="Lorg.eclipse.jdt.internal.compiler.util.SimpleLookupTable;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getJavaPluginWorkingLocation" returnType="Lorg.eclipse.core.runtime.IPath;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSavedIndexesDirectory" returnType="Ljava.io.File;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="indexDocument" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.search.SearchDocument;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.core.search.SearchParticipant;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.core.index.Index;"/>
+        <parameters name="arg3" type="Lorg.eclipse.core.runtime.IPath;"/>
+      </methods>
+      <methods elementName="indexAll" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.resources.IProject;"/>
+      </methods>
+      <methods elementName="indexLibrary" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.resources.IProject;"/>
+      </methods>
+      <methods elementName="indexSourceFolder" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.JavaProject;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg2" type="[[C"/>
+        <parameters name="arg3" type="[[C"/>
+      </methods>
+      <methods elementName="jobWasCancelled" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+      </methods>
+      <methods elementName="moveToNextJob" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="notifyIdle" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+      </methods>
+      <methods elementName="processName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="rebuildIndex" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.runtime.IPath;"/>
+      </methods>
+      <methods elementName="recreateIndex" returnType="Lorg.eclipse.jdt.internal.core.index.Index;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+      </methods>
+      <methods elementName="remove" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.runtime.IPath;"/>
+      </methods>
+      <methods elementName="removeIndex" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+      </methods>
+      <methods elementName="removeIndexPath" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+      </methods>
+      <methods elementName="removeIndexFamily" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+      </methods>
+      <methods elementName="removeSourceFolderFromIndex" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.JavaProject;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg2" type="[[C"/>
+        <parameters name="arg3" type="[[C"/>
+      </methods>
+      <methods elementName="reset" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="saveIndex" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.index.Index;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="saveIndexes" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="scheduleDocumentIndexing" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.search.SearchDocument;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg2" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.core.search.SearchParticipant;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="readIndexState" returnType="[[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="removeIndexesState" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.core.runtime.IPath;"/>
+      </methods>
+      <methods elementName="updateIndexState" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg1" type="Ljava.lang.Integer;"/>
+      </methods>
+      <methods elementName="writeSavedIndexNamesFile" returnType="V" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IndexRequest.class" isClass="true" isInterface="false">
+    <type elementName="IndexRequest" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.IndexRequest" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.IndexRequest">
+      <fields elementName="isCancelled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="containerPath" isEnumConstant="false" typeSignature="Lorg.eclipse.core.runtime.IPath;" isVolatile="false" isTransient="false"/>
+      <fields elementName="manager" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.search.indexing.IndexManager;" isVolatile="false" isTransient="false"/>
+      <methods elementName="IndexRequest" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.search.indexing.IndexManager;"/>
+      </methods>
+      <methods elementName="belongsTo" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="cancel" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="ensureReadyToRun" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getJobFamily" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="updatedIndexState" returnType="Ljava.lang.Integer;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IndexingParser.class" isClass="true" isInterface="false">
+    <type elementName="IndexingParser" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.IndexingParser" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.IndexingParser">
+      <fields elementName="singleNameReference" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.ast.SingleNameReference;" isVolatile="false" isTransient="false"/>
+      <fields elementName="qualifiedNameReference" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.ast.QualifiedNameReference;" isVolatile="false" isTransient="false"/>
+      <fields elementName="importReference" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.ast.ImportReference;" isVolatile="false" isTransient="false"/>
+      <methods elementName="IndexingParser" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ISourceElementRequestor;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.IProblemFactory;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.impl.CompilerOptions;"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="Z"/>
+        <parameters name="arg5" type="Z"/>
+      </methods>
+      <methods elementName="newImportReference" returnType="Lorg.eclipse.jdt.internal.compiler.ast.ImportReference;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[J"/>
+        <parameters name="arg2" type="Z"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="newSingleNameReference" returnType="Lorg.eclipse.jdt.internal.compiler.ast.SingleNameReference;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="J"/>
+      </methods>
+      <methods elementName="newQualifiedNameReference" returnType="Lorg.eclipse.jdt.internal.compiler.ast.QualifiedNameReference;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[J"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="InternalSearchDocument.class" isClass="true" isInterface="false">
+    <type elementName="InternalSearchDocument" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.InternalSearchDocument" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.InternalSearchDocument">
+      <fields elementName="index" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.index.Index;" isVolatile="false" isTransient="false"/>
+      <fields elementName="containerRelativePath" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="parser" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.SourceElementParser;" isVolatile="false" isTransient="false"/>
+      <methods elementName="InternalSearchDocument" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="addIndexEntry" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="getContainerRelativePath" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="removeAllIndexEntries" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getPath" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ReadWriteMonitor.class" isClass="true" isInterface="false">
+    <type elementName="ReadWriteMonitor" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.ReadWriteMonitor" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.ReadWriteMonitor">
+      <fields elementName="status" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="ReadWriteMonitor" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="enterRead" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="enterWrite" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="exitRead" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="exitWrite" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="exitReadEnterWrite" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="exitWriteEnterRead" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="RemoveFolderFromIndex.class" isClass="true" isInterface="false">
+    <type elementName="RemoveFolderFromIndex" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.RemoveFolderFromIndex" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.RemoveFolderFromIndex">
+      <fields elementName="folderPath" isEnumConstant="false" typeSignature="Lorg.eclipse.core.runtime.IPath;" isVolatile="false" isTransient="false"/>
+      <fields elementName="inclusionPatterns" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="exclusionPatterns" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="project" isEnumConstant="false" typeSignature="Lorg.eclipse.core.resources.IProject;" isVolatile="false" isTransient="false"/>
+      <methods elementName="RemoveFolderFromIndex" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg1" type="[[C"/>
+        <parameters name="arg2" type="[[C"/>
+        <parameters name="arg3" type="Lorg.eclipse.core.resources.IProject;"/>
+        <parameters name="arg4" type="Lorg.eclipse.jdt.internal.core.search.indexing.IndexManager;"/>
+      </methods>
+      <methods elementName="execute" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="RemoveFromIndex.class" isClass="true" isInterface="false">
+    <type elementName="RemoveFromIndex" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.RemoveFromIndex" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.RemoveFromIndex">
+      <fields elementName="resourceName" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <methods elementName="RemoveFromIndex" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.core.search.indexing.IndexManager;"/>
+      </methods>
+      <methods elementName="execute" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="SaveIndex.class" isClass="true" isInterface="false">
+    <type elementName="SaveIndex" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.SaveIndex" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.SaveIndex">
+      <methods elementName="SaveIndex" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IPath;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.core.search.indexing.IndexManager;"/>
+      </methods>
+      <methods elementName="execute" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="SourceIndexer.class" isClass="true" isInterface="false">
+    <type elementName="SourceIndexer" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.SourceIndexer" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.SourceIndexer">
+      <methods elementName="SourceIndexer" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.search.SearchDocument;"/>
+      </methods>
+      <methods elementName="indexDocument" returnType="V" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="SourceIndexerRequestor.class" isClass="true" isInterface="false">
+    <type elementName="SourceIndexerRequestor" fullyQualifiedName="org.eclipse.jdt.internal.core.search.indexing.SourceIndexerRequestor" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.indexing.SourceIndexerRequestor">
+      <fields elementName="indexer" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.search.indexing.SourceIndexer;" isVolatile="false" isTransient="false"/>
+      <fields elementName="packageName" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="enclosingTypeNames" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="depth" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="methodDepth" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="SourceIndexerRequestor" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.search.indexing.SourceIndexer;"/>
+      </methods>
+      <methods elementName="acceptAnnotationTypeReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="acceptAnnotationTypeReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="acceptConstructorReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="acceptFieldReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="acceptImport" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="[[C"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="acceptLineSeparatorPositions" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[I"/>
+      </methods>
+      <methods elementName="acceptMethodReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="acceptPackage" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ImportReference;"/>
+      </methods>
+      <methods elementName="acceptProblem" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.core.compiler.CategorizedProblem;"/>
+      </methods>
+      <methods elementName="acceptTypeReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="acceptTypeReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="acceptUnknownReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="acceptUnknownReference" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="enclosingTypeNames" returnType="[[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="enterAnnotationType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ISourceElementRequestor$TypeInfo;"/>
+      </methods>
+      <methods elementName="enterClass" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ISourceElementRequestor$TypeInfo;"/>
+      </methods>
+      <methods elementName="enterCompilationUnit" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="enterConstructor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ISourceElementRequestor$MethodInfo;"/>
+      </methods>
+      <methods elementName="enterEnum" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ISourceElementRequestor$TypeInfo;"/>
+      </methods>
+      <methods elementName="enterField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ISourceElementRequestor$FieldInfo;"/>
+      </methods>
+      <methods elementName="enterInitializer" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="enterInterface" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ISourceElementRequestor$TypeInfo;"/>
+      </methods>
+      <methods elementName="enterMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ISourceElementRequestor$MethodInfo;"/>
+      </methods>
+      <methods elementName="enterType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ISourceElementRequestor$TypeInfo;"/>
+      </methods>
+      <methods elementName="exitCompilationUnit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="exitConstructor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="exitField" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="exitInitializer" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="exitMethod" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="exitType" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="getSimpleName" returnType="[C" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="popTypeName" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="pushTypeName" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

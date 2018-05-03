@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.compiler.apt.dispatch" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.compiler.apt_1.0.100.v20080513-1235.jar.xmi#/"/>
+  <classFiles elementName="AnnotationDiscoveryVisitor.class" isClass="true" isInterface="false">
+    <type elementName="AnnotationDiscoveryVisitor" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.AnnotationDiscoveryVisitor" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.dispatch.AnnotationDiscoveryVisitor">
+      <fields elementName="_env" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_factory" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.model.Factory;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_annoToElement" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.util.ManyToMany;" isVolatile="false" isTransient="false"/>
+      <methods elementName="AnnotationDiscoveryVisitor" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Argument;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.ConstructorDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.FieldDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.MethodDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="visit" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;"/>
+      </methods>
+      <methods elementName="resolveAnnotations" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.internal.compiler.ast.Annotation;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="AptProblem.class" isClass="true" isInterface="false">
+    <type elementName="AptProblem" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.AptProblem" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.dispatch.AptProblem">
+      <fields elementName="MARKER_ID" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_referenceContext" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.impl.ReferenceContext;" isVolatile="false" isTransient="false"/>
+      <methods elementName="AptProblem" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.impl.ReferenceContext;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="[Ljava.lang.String;"/>
+        <parameters name="arg5" type="I"/>
+        <parameters name="arg6" type="I"/>
+        <parameters name="arg7" type="I"/>
+        <parameters name="arg8" type="I"/>
+        <parameters name="arg9" type="I"/>
+      </methods>
+      <methods elementName="getCategoryID" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMarkerType" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="BaseAnnotationProcessorManager.class" isClass="true" isInterface="false">
+    <type elementName="BaseAnnotationProcessorManager" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.BaseAnnotationProcessorManager" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.dispatch.BaseAnnotationProcessorManager">
+      <fields elementName="_out" isEnumConstant="false" typeSignature="Ljava.io.PrintWriter;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_err" isEnumConstant="false" typeSignature="Ljava.io.PrintWriter;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_processingEnv" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_isFirstRound" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="_processors" isEnumConstant="false" typeSignature="Ljava.util.List;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_printProcessorInfo" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="_printRounds" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="_round" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="BaseAnnotationProcessorManager" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="configure" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="[Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="configureFromPlatform" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.Compiler;"/>
+        <parameters name="arg1" type="Ljava.lang.Object;"/>
+        <parameters name="arg2" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="getDiscoveredProcessors" returnType="Ljava.util.List&lt;Lorg.eclipse.jdt.internal.compiler.apt.dispatch.ProcessorInfo;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeletedUnits" returnType="[Lorg.eclipse.jdt.internal.compiler.env.ICompilationUnit;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNewUnits" returnType="[Lorg.eclipse.jdt.internal.compiler.env.ICompilationUnit;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNewClassFiles" returnType="[Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="reset" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setErr" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.PrintWriter;"/>
+      </methods>
+      <methods elementName="setOut" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.PrintWriter;"/>
+      </methods>
+      <methods elementName="setProcessors" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="processAnnotations" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="BaseMessagerImpl.class" isClass="true" isInterface="false">
+    <type elementName="BaseMessagerImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.BaseMessagerImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.dispatch.BaseMessagerImpl">
+      <fields elementName="NO_ARGUMENTS" isEnumConstant="false" typeSignature="[Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="$SWITCH_TABLE$javax$lang$model$element$ElementKind" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <fields elementName="$SWITCH_TABLE$javax$tools$Diagnostic$Kind" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="createProblem" returnType="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.AptProblem;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.tools.Diagnostic$Kind;"/>
+        <parameters name="arg1" type="Ljava.lang.CharSequence;"/>
+        <parameters name="arg2" type="Ljavax.lang.model.element.Element;"/>
+      </methods>
+      <methods elementName="BaseMessagerImpl" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="$SWITCH_TABLE$javax$lang$model$element$ElementKind" returnType="[I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="$SWITCH_TABLE$javax$tools$Diagnostic$Kind" returnType="[I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="BaseProcessingEnvImpl.class" isClass="true" isInterface="false">
+    <type elementName="BaseProcessingEnvImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl">
+      <fields elementName="_filer" isEnumConstant="false" typeSignature="Ljavax.annotation.processing.Filer;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_messager" isEnumConstant="false" typeSignature="Ljavax.annotation.processing.Messager;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_processorOptions" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_compiler" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.Compiler;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_elementUtils" isEnumConstant="false" typeSignature="Ljavax.lang.model.util.Elements;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_typeUtils" isEnumConstant="false" typeSignature="Ljavax.lang.model.util.Types;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_addedUnits" isEnumConstant="false" typeSignature="Ljava.util.List;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_addedClassFiles" isEnumConstant="false" typeSignature="Ljava.util.List;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_deletedUnits" isEnumConstant="false" typeSignature="Ljava.util.List;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_errorRaised" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="_factory" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.model.Factory;" isVolatile="false" isTransient="false"/>
+      <methods elementName="BaseProcessingEnvImpl" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="addNewUnit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.ICompilationUnit;"/>
+      </methods>
+      <methods elementName="addNewClassFile" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="getCompiler" returnType="Lorg.eclipse.jdt.internal.compiler.Compiler;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDeletedUnits" returnType="[Lorg.eclipse.jdt.internal.compiler.env.ICompilationUnit;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNewUnits" returnType="[Lorg.eclipse.jdt.internal.compiler.env.ICompilationUnit;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getElementUtils" returnType="Ljavax.lang.model.util.Elements;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFiler" returnType="Ljavax.annotation.processing.Filer;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getMessager" returnType="Ljavax.annotation.processing.Messager;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getOptions" returnType="Ljava.util.Map&lt;Ljava.lang.String;Ljava.lang.String;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getTypeUtils" returnType="Ljavax.lang.model.util.Types;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLookupEnvironment" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.LookupEnvironment;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSourceVersion" returnType="Ljavax.lang.model.SourceVersion;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="reset" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="errorRaised" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setErrorRaised" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="getFactory" returnType="Lorg.eclipse.jdt.internal.compiler.apt.model.Factory;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getNewClassFiles" returnType="[Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="BatchAnnotationProcessorManager.class" isClass="true" isInterface="false">
+    <type elementName="BatchAnnotationProcessorManager" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.BatchAnnotationProcessorManager" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.dispatch.BatchAnnotationProcessorManager">
+      <fields elementName="_setProcessors" isEnumConstant="false" typeSignature="Ljava.util.List;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_setProcessorIter" isEnumConstant="false" typeSignature="Ljava.util.Iterator;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_commandLineProcessors" isEnumConstant="false" typeSignature="Ljava.util.List;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_commandLineProcessorIter" isEnumConstant="false" typeSignature="Ljava.util.Iterator;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_serviceLoader" isEnumConstant="false" typeSignature="Ljava.util.ServiceLoader;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_serviceLoaderIter" isEnumConstant="false" typeSignature="Ljava.util.Iterator;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_procLoader" isEnumConstant="false" typeSignature="Ljava.lang.ClassLoader;" isVolatile="false" isTransient="false"/>
+      <fields elementName="VERBOSE_PROCESSOR_DISCOVERY" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="_printProcessorDiscovery" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="BatchAnnotationProcessorManager" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="configure" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="[Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="parseCommandLine" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="discoverNextProcessor" returnType="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.ProcessorInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getProcessorLocation" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.annotation.processing.Processor;"/>
+      </methods>
+      <methods elementName="reportProcessorException" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.annotation.processing.Processor;"/>
+        <parameters name="arg1" type="Ljava.lang.Exception;"/>
+      </methods>
+      <methods elementName="setProcessors" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.Object;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="BatchFilerImpl.class" isClass="true" isInterface="false">
+    <type elementName="BatchFilerImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.BatchFilerImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.dispatch.BatchFilerImpl">
+      <fields elementName="_dispatchManager" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseAnnotationProcessorManager;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_env" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_fileManager" isEnumConstant="false" typeSignature="Ljavax.tools.JavaFileManager;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_createdFiles" isEnumConstant="false" typeSignature="Ljava.util.HashSet;" isVolatile="false" isTransient="false"/>
+      <methods elementName="BatchFilerImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseAnnotationProcessorManager;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BatchProcessingEnvImpl;"/>
+      </methods>
+      <methods elementName="addNewUnit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.ICompilationUnit;"/>
+      </methods>
+      <methods elementName="addNewClassFile" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="createClassFile" returnType="Ljavax.tools.JavaFileObject;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.CharSequence;"/>
+        <parameters name="arg1" type="[Ljavax.lang.model.element.Element;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="createResource" returnType="Ljavax.tools.FileObject;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.tools.JavaFileManager$Location;"/>
+        <parameters name="arg1" type="Ljava.lang.CharSequence;"/>
+        <parameters name="arg2" type="Ljava.lang.CharSequence;"/>
+        <parameters name="arg3" type="[Ljavax.lang.model.element.Element;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="createSourceFile" returnType="Ljavax.tools.JavaFileObject;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.CharSequence;"/>
+        <parameters name="arg1" type="[Ljavax.lang.model.element.Element;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="getResource" returnType="Ljavax.tools.FileObject;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.tools.JavaFileManager$Location;"/>
+        <parameters name="arg1" type="Ljava.lang.CharSequence;"/>
+        <parameters name="arg2" type="Ljava.lang.CharSequence;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="BatchMessagerImpl.class" isClass="true" isInterface="false">
+    <type elementName="BatchMessagerImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.BatchMessagerImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.dispatch.BatchMessagerImpl">
+      <fields elementName="_compiler" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.batch.Main;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_processingEnv" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;" isVolatile="false" isTransient="false"/>
+      <methods elementName="BatchMessagerImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.batch.Main;"/>
+      </methods>
+      <methods elementName="printMessage" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.tools.Diagnostic$Kind;"/>
+        <parameters name="arg1" type="Ljava.lang.CharSequence;"/>
+      </methods>
+      <methods elementName="printMessage" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.tools.Diagnostic$Kind;"/>
+        <parameters name="arg1" type="Ljava.lang.CharSequence;"/>
+        <parameters name="arg2" type="Ljavax.lang.model.element.Element;"/>
+      </methods>
+      <methods elementName="printMessage" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.tools.Diagnostic$Kind;"/>
+        <parameters name="arg1" type="Ljava.lang.CharSequence;"/>
+        <parameters name="arg2" type="Ljavax.lang.model.element.Element;"/>
+        <parameters name="arg3" type="Ljavax.lang.model.element.AnnotationMirror;"/>
+      </methods>
+      <methods elementName="printMessage" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.tools.Diagnostic$Kind;"/>
+        <parameters name="arg1" type="Ljava.lang.CharSequence;"/>
+        <parameters name="arg2" type="Ljavax.lang.model.element.Element;"/>
+        <parameters name="arg3" type="Ljavax.lang.model.element.AnnotationMirror;"/>
+        <parameters name="arg4" type="Ljavax.lang.model.element.AnnotationValue;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="BatchProcessingEnvImpl.class" isClass="true" isInterface="false">
+    <type elementName="BatchProcessingEnvImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.BatchProcessingEnvImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.dispatch.BatchProcessingEnvImpl">
+      <fields elementName="_dispatchManager" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseAnnotationProcessorManager;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_fileManager" isEnumConstant="false" typeSignature="Ljavax.tools.JavaFileManager;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_compilerOwner" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.batch.Main;" isVolatile="false" isTransient="false"/>
+      <methods elementName="BatchProcessingEnvImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseAnnotationProcessorManager;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.batch.Main;"/>
+        <parameters name="arg2" type="[Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="parseProcessorOptions" returnType="Ljava.util.Map&lt;Ljava.lang.String;Ljava.lang.String;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getFileManager" returnType="Ljavax.tools.JavaFileManager;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLocale" returnType="Ljava.util.Locale;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="HookedJavaFileObject$ForwardingOutputStream.class" isClass="true" isInterface="false">
+    <type elementName="ForwardingOutputStream" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.HookedJavaFileObject$ForwardingOutputStream" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.dispatch.HookedJavaFileObject.ForwardingOutputStream">
+      <fields elementName="_os" isEnumConstant="false" typeSignature="Ljava.io.OutputStream;" isVolatile="false" isTransient="false"/>
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.HookedJavaFileObject;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ForwardingOutputStream" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.HookedJavaFileObject;"/>
+        <parameters name="arg1" type="Ljava.io.OutputStream;"/>
+      </methods>
+      <methods elementName="close" returnType="V" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="flush" returnType="V" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="write" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[B"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="write" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[B"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="write" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="clone" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.lang.CloneNotSupportedException;</exceptionTypes>
+      </methods>
+      <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="HookedJavaFileObject$ForwardingWriter.class" isClass="true" isInterface="false">
+    <type elementName="ForwardingWriter" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.HookedJavaFileObject$ForwardingWriter" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.dispatch.HookedJavaFileObject.ForwardingWriter">
+      <fields elementName="_w" isEnumConstant="false" typeSignature="Ljava.io.Writer;" isVolatile="false" isTransient="false"/>
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.HookedJavaFileObject;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ForwardingWriter" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.HookedJavaFileObject;"/>
+        <parameters name="arg1" type="Ljava.io.Writer;"/>
+      </methods>
+      <methods elementName="append" returnType="Ljava.io.Writer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="C"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="append" returnType="Ljava.io.Writer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.CharSequence;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="append" returnType="Ljava.io.Writer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.CharSequence;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="close" returnType="V" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="flush" returnType="V" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="write" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="write" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="write" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="write" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="write" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="clone" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.lang.CloneNotSupportedException;</exceptionTypes>
+      </methods>
+      <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="append" returnType="Ljava.lang.Appendable;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.CharSequence;"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="append" returnType="Ljava.lang.Appendable;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.CharSequence;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="append" returnType="Ljava.lang.Appendable;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="C"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="HookedJavaFileObject.class" isClass="true" isInterface="false">
+    <type elementName="HookedJavaFileObject" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.HookedJavaFileObject" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.dispatch.HookedJavaFileObject">
+      <fields elementName="_filer" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BatchFilerImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_fileName" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_closed" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="$SWITCH_TABLE$javax$tools$JavaFileObject$Kind" isEnumConstant="false" typeSignature="[I" isVolatile="false" isTransient="false"/>
+      <methods elementName="HookedJavaFileObject" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.tools.JavaFileObject;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BatchFilerImpl;"/>
+      </methods>
+      <methods elementName="openOutputStream" returnType="Ljava.io.OutputStream;" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="openWriter" returnType="Ljava.io.Writer;" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="closed" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="$SWITCH_TABLE$javax$tools$JavaFileObject$Kind" returnType="[I" isConstructor="false" isMainMethod="false"/>
+      <types elementName="ForwardingOutputStream" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.HookedJavaFileObject$ForwardingOutputStream" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.dispatch.HookedJavaFileObject.ForwardingOutputStream">
+        <fields elementName="_os" isEnumConstant="false" typeSignature="Ljava.io.OutputStream;" isVolatile="false" isTransient="false"/>
+        <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.HookedJavaFileObject;" isVolatile="false" isTransient="false"/>
+        <methods elementName="ForwardingOutputStream" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.HookedJavaFileObject;"/>
+          <parameters name="arg1" type="Ljava.io.OutputStream;"/>
+        </methods>
+        <methods elementName="close" returnType="V" isConstructor="false" isMainMethod="false">
+          <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+        </methods>
+        <methods elementName="flush" returnType="V" isConstructor="false" isMainMethod="false">
+          <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+        </methods>
+        <methods elementName="write" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="[B"/>
+          <parameters name="arg1" type="I"/>
+          <parameters name="arg2" type="I"/>
+          <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+        </methods>
+        <methods elementName="write" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="[B"/>
+          <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+        </methods>
+        <methods elementName="write" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+          <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+        </methods>
+        <methods elementName="clone" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+          <exceptionTypes>Ljava.lang.CloneNotSupportedException;</exceptionTypes>
+        </methods>
+        <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.Object;"/>
+        </methods>
+        <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      </types>
+      <types elementName="ForwardingWriter" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.HookedJavaFileObject$ForwardingWriter" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.dispatch.HookedJavaFileObject.ForwardingWriter">
+        <fields elementName="_w" isEnumConstant="false" typeSignature="Ljava.io.Writer;" isVolatile="false" isTransient="false"/>
+        <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.HookedJavaFileObject;" isVolatile="false" isTransient="false"/>
+        <methods elementName="ForwardingWriter" returnType="V" isConstructor="true" isMainMethod="false">
+          <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.HookedJavaFileObject;"/>
+          <parameters name="arg1" type="Ljava.io.Writer;"/>
+        </methods>
+        <methods elementName="append" returnType="Ljava.io.Writer;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="C"/>
+          <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+        </methods>
+        <methods elementName="append" returnType="Ljava.io.Writer;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.CharSequence;"/>
+          <parameters name="arg1" type="I"/>
+          <parameters name="arg2" type="I"/>
+          <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+        </methods>
+        <methods elementName="append" returnType="Ljava.io.Writer;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.CharSequence;"/>
+          <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+        </methods>
+        <methods elementName="close" returnType="V" isConstructor="false" isMainMethod="false">
+          <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+        </methods>
+        <methods elementName="flush" returnType="V" isConstructor="false" isMainMethod="false">
+          <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+        </methods>
+        <methods elementName="write" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="[C"/>
+          <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+        </methods>
+        <methods elementName="write" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="I"/>
+          <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+        </methods>
+        <methods elementName="write" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+          <parameters name="arg1" type="I"/>
+          <parameters name="arg2" type="I"/>
+          <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+        </methods>
+        <methods elementName="write" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.String;"/>
+          <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+        </methods>
+        <methods elementName="write" returnType="V" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="[C"/>
+          <parameters name="arg1" type="I"/>
+          <parameters name="arg2" type="I"/>
+          <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+        </methods>
+        <methods elementName="clone" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+          <exceptionTypes>Ljava.lang.CloneNotSupportedException;</exceptionTypes>
+        </methods>
+        <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.Object;"/>
+        </methods>
+        <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+        <methods elementName="append" returnType="Ljava.lang.Appendable;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.CharSequence;"/>
+          <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+        </methods>
+        <methods elementName="append" returnType="Ljava.lang.Appendable;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="Ljava.lang.CharSequence;"/>
+          <parameters name="arg1" type="I"/>
+          <parameters name="arg2" type="I"/>
+          <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+        </methods>
+        <methods elementName="append" returnType="Ljava.lang.Appendable;" isConstructor="false" isMainMethod="false">
+          <parameters name="arg0" type="C"/>
+          <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+        </methods>
+      </types>
+    </type>
+  </classFiles>
+  <classFiles elementName="IProcessorProvider.class" isClass="false" isInterface="true">
+    <type elementName="IProcessorProvider" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.IProcessorProvider" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.dispatch.IProcessorProvider">
+      <methods elementName="discoverNextProcessor" returnType="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.ProcessorInfo;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDiscoveredProcessors" returnType="Ljava.util.List&lt;Lorg.eclipse.jdt.internal.compiler.apt.dispatch.ProcessorInfo;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="reportProcessorException" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.annotation.processing.Processor;"/>
+        <parameters name="arg1" type="Ljava.lang.Exception;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="ProcessorInfo.class" isClass="true" isInterface="false">
+    <type elementName="ProcessorInfo" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.ProcessorInfo" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.dispatch.ProcessorInfo">
+      <fields elementName="_processor" isEnumConstant="false" typeSignature="Ljavax.annotation.processing.Processor;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_supportedOptions" isEnumConstant="false" typeSignature="Ljava.util.Set;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_supportedSourceVersion" isEnumConstant="false" typeSignature="Ljavax.lang.model.SourceVersion;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_supportedAnnotationTypesPattern" isEnumConstant="false" typeSignature="Ljava.util.regex.Pattern;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_supportsStar" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="_hasBeenCalled" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="ProcessorInfo" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.annotation.processing.Processor;"/>
+      </methods>
+      <methods elementName="computeSupportedAnnotations" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.util.Set&lt;Ljavax.lang.model.element.TypeElement;>;"/>
+        <parameters name="arg1" type="Ljava.util.Set&lt;Ljavax.lang.model.element.TypeElement;>;"/>
+      </methods>
+      <methods elementName="supportsStar" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="reset" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hashCode" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="equals" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSupportedAnnotationTypesAsString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="RoundDispatcher.class" isClass="true" isInterface="false">
+    <type elementName="RoundDispatcher" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.RoundDispatcher" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.dispatch.RoundDispatcher">
+      <fields elementName="_unclaimedAnnotations" isEnumConstant="false" typeSignature="Ljava.util.Set;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_roundEnv" isEnumConstant="false" typeSignature="Ljavax.annotation.processing.RoundEnvironment;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_provider" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.IProcessorProvider;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_searchForStar" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="_traceProcessorInfo" isEnumConstant="false" typeSignature="Ljava.io.PrintWriter;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_traceRounds" isEnumConstant="false" typeSignature="Ljava.io.PrintWriter;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_processors" isEnumConstant="false" typeSignature="Ljava.util.List;" isVolatile="false" isTransient="false"/>
+      <methods elementName="RoundDispatcher" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.IProcessorProvider;"/>
+        <parameters name="arg1" type="Ljavax.annotation.processing.RoundEnvironment;"/>
+        <parameters name="arg2" type="Ljava.util.Set&lt;Ljavax.lang.model.element.TypeElement;>;"/>
+        <parameters name="arg3" type="Ljava.io.PrintWriter;"/>
+        <parameters name="arg4" type="Ljava.io.PrintWriter;"/>
+      </methods>
+      <methods elementName="round" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="handleProcessor" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.ProcessorInfo;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="RoundEnvImpl.class" isClass="true" isInterface="false">
+    <type elementName="RoundEnvImpl" fullyQualifiedName="org.eclipse.jdt.internal.compiler.apt.dispatch.RoundEnvImpl" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.compiler.apt.dispatch.RoundEnvImpl">
+      <fields elementName="_processingEnv" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_isLastRound" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="_units" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_annoToUnit" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.util.ManyToMany;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_binaryTypes" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_factory" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.apt.model.Factory;" isVolatile="false" isTransient="false"/>
+      <fields elementName="_rootElements" isEnumConstant="false" typeSignature="Ljava.util.Set;" isVolatile="false" isTransient="false"/>
+      <methods elementName="RoundEnvImpl" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg2" type="Z"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.apt.dispatch.BaseProcessingEnvImpl;"/>
+      </methods>
+      <methods elementName="collectAnnotations" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="getRootAnnotations" returnType="Ljava.util.Set&lt;Ljavax.lang.model.element.TypeElement;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="errorRaised" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getElementsAnnotatedWith" returnType="Ljava.util.Set&lt;+Ljavax.lang.model.element.Element;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljavax.lang.model.element.TypeElement;"/>
+      </methods>
+      <methods elementName="addAnnotatedElements" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg2" type="Ljava.util.Set&lt;Ljavax.lang.model.element.Element;>;"/>
+      </methods>
+      <methods elementName="inheritsAnno" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+      <methods elementName="getElementsAnnotatedWith" returnType="Ljava.util.Set&lt;+Ljavax.lang.model.element.Element;>;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Class&lt;+Ljava.lang.annotation.Annotation;>;"/>
+      </methods>
+      <methods elementName="getRootElements" returnType="Ljava.util.Set&lt;+Ljavax.lang.model.element.Element;>;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="processingOver" returnType="Z" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

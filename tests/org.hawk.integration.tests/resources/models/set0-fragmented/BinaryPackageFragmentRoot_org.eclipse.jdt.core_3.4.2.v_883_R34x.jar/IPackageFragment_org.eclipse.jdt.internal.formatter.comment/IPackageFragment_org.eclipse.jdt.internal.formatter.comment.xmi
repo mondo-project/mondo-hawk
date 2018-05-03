@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.formatter.comment" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="CommentFormatterUtil$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.formatter.comment.CommentFormatterUtil$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.comment.CommentFormatterUtil.1">
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="notDeleted" returnType="Z" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="CommentFormatterUtil.class" isClass="true" isInterface="false">
+    <type elementName="CommentFormatterUtil" fullyQualifiedName="org.eclipse.jdt.internal.formatter.comment.CommentFormatterUtil" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.comment.CommentFormatterUtil">
+      <methods elementName="CommentFormatterUtil" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="evaluateFormatterEdit" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Lorg.eclipse.text.edits.TextEdit;"/>
+        <parameters name="arg2" type="[Lorg.eclipse.jface.text.Position;"/>
+      </methods>
+      <methods elementName="format2" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Ljava.lang.String;"/>
+        <parameters name="arg4" type="Ljava.util.Map;"/>
+      </methods>
+      <methods elementName="createDocument" returnType="Lorg.eclipse.jface.text.Document;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jface.text.Position;"/>
+        <exceptionTypes>Ljava.lang.IllegalArgumentException;</exceptionTypes>
+      </methods>
+      <methods elementName="log" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Throwable;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="CommentLine.class" isClass="true" isInterface="false">
+    <type elementName="CommentLine" fullyQualifiedName="org.eclipse.jdt.internal.formatter.comment.CommentLine" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.comment.CommentLine">
+      <fields elementName="NON_FORMAT_START_PREFIX" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fAttributes" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fParent" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.formatter.comment.CommentRegion;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fRanges" isEnumConstant="false" typeSignature="Ljava.util.LinkedList;" isVolatile="false" isTransient="false"/>
+      <methods elementName="CommentLine" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRegion;"/>
+      </methods>
+      <methods elementName="adapt" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentLine;"/>
+      </methods>
+      <methods elementName="append" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+      </methods>
+      <methods elementName="formatLine" returnType="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentLine;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg2" type="Ljava.lang.String;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="formatLowerBorder" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="formatUpperBorder" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="getContentPrefix" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEndingPrefix" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getFirst" returnType="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getIndentationReference" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getLast" returnType="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getParent" returnType="Lorg.eclipse.jdt.internal.formatter.comment.CommentRegion;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSize" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getStartingPrefix" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="hasAttribute" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="scanLine" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setAttribute" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="tokenizeLine" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="CommentRange.class" isClass="true" isInterface="false">
+    <type elementName="CommentRange" fullyQualifiedName="org.eclipse.jdt.internal.formatter.comment.CommentRange" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.comment.CommentRange">
+      <fields elementName="fAttributes" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="CommentRange" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="hasAttribute" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="isClosingTag" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="isOpeningTag" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="markHtmlTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Z"/>
+        <parameters name="arg4" type="Z"/>
+      </methods>
+      <methods elementName="markPrefixTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="C"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="markTagRange" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="Z"/>
+      </methods>
+      <methods elementName="move" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="setAttribute" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="trimBegin" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="trimEnd" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="CommentRegion.class" isClass="true" isInterface="false">
+    <type elementName="CommentRegion" fullyQualifiedName="org.eclipse.jdt.internal.formatter.comment.CommentRegion" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.comment.CommentRegion">
+      <fields elementName="COMMENT_RANGE_DELIMITER" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMMENT_PREFIX_LENGTH" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fBorders" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fClear" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="fDelimiter" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fDocument" isEnumConstant="false" typeSignature="Lorg.eclipse.jface.text.IDocument;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fLines" isEnumConstant="false" typeSignature="Ljava.util.LinkedList;" isVolatile="false" isTransient="false"/>
+      <fields elementName="preferences" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.formatter.DefaultCodeFormatterOptions;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fRanges" isEnumConstant="false" typeSignature="Ljava.util.LinkedList;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fSingleLine" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="fTabSize" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="scribe" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.formatter.Scribe;" isVolatile="false" isTransient="false"/>
+      <methods elementName="CommentRegion" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jface.text.IDocument;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jface.text.Position;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.formatter.CodeFormatterVisitor;"/>
+      </methods>
+      <methods elementName="append" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+      </methods>
+      <methods elementName="canAppend" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentLine;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="canFormat" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+      </methods>
+      <methods elementName="format" returnType="Lorg.eclipse.text.edits.TextEdit;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="formatRegion" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="getDelimiter" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getDelimiter" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentLine;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentLine;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg4" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getDelimiter" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+      </methods>
+      <methods elementName="getDocument" returnType="Lorg.eclipse.jface.text.IDocument;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getRanges" returnType="Ljava.util.LinkedList;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getSize" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getText" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="hasBorder" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="isAlphaNumeric" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+      </methods>
+      <methods elementName="isNonAlphaNumeric" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+      </methods>
+      <methods elementName="isClearLines" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isSingleLine" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="logEdit" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="markRegion" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setBorder" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="computeIndentation" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="replicate" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="stringToIndent" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="stringToLength" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="expandTabs" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="tokenizeRegion" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="wrapRegion" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="createLine" returnType="Lorg.eclipse.jdt.internal.formatter.comment.CommentLine;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="HTMLEntity2JavaReader.class" isClass="true" isInterface="false">
+    <type elementName="HTMLEntity2JavaReader" fullyQualifiedName="org.eclipse.jdt.internal.formatter.comment.HTMLEntity2JavaReader" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.comment.HTMLEntity2JavaReader">
+      <fields elementName="fgEntityLookup" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="HTMLEntity2JavaReader" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.Reader;"/>
+      </methods>
+      <methods elementName="computeSubstitution" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="entity2Text" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="processEntity" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="IBorderAttributes.class" isClass="false" isInterface="true">
+    <type elementName="IBorderAttributes" fullyQualifiedName="org.eclipse.jdt.internal.formatter.comment.IBorderAttributes" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.comment.IBorderAttributes">
+      <fields elementName="BORDER_LOWER" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="BORDER_UPPER" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="ICommentAttributes.class" isClass="false" isInterface="true">
+    <type elementName="ICommentAttributes" fullyQualifiedName="org.eclipse.jdt.internal.formatter.comment.ICommentAttributes" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.comment.ICommentAttributes">
+      <fields elementName="COMMENT_BLANKLINE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMMENT_BREAK" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMMENT_CLOSE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMMENT_CODE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMMENT_HTML" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMMENT_IMMUTABLE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMMENT_NEWLINE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMMENT_OPEN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMMENT_PARAGRAPH" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMMENT_PARAMETER" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMMENT_ROOT" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMMENT_SEPARATOR" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMMENT_FIRST_TOKEN" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMMENT_STARTS_WITH_RANGE_DELIMITER" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IHtmlTagDelimiters.class" isClass="false" isInterface="true">
+    <type elementName="IHtmlTagDelimiters" fullyQualifiedName="org.eclipse.jdt.internal.formatter.comment.IHtmlTagDelimiters" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.comment.IHtmlTagDelimiters">
+      <fields elementName="HTML_CLOSE_PREFIX" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="HTML_TAG_POSTFIX" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="HTML_TAG_PREFIX" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="IJavaDocTagConstants.class" isClass="false" isInterface="true">
+    <type elementName="IJavaDocTagConstants" fullyQualifiedName="org.eclipse.jdt.internal.formatter.comment.IJavaDocTagConstants" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.comment.IJavaDocTagConstants">
+      <fields elementName="JAVADOC_SINGLE_BREAK_TAG" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_CODE_TAGS" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_BREAK_TAGS" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_IMMUTABLE_TAGS" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_NEWLINE_TAGS" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_PARAM_TAGS" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_SEPARATOR_TAGS" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_SPECIAL_TAGS" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_TAG_PREFIX" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="LINK_TAG_POSTFIX" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="LINK_TAG_PREFIX_STRING" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="LINK_TAG_PREFIX" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMMENT_ROOT_TAGS" isEnumConstant="false" typeSignature="[[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMMENT_TAG_PREFIX" isEnumConstant="false" typeSignature="C" isVolatile="false" isTransient="false"/>
+      <fields elementName="BLOCK_HEADER" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="BLOCK_HEADER_LENGTH" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_HEADER" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_HEADER_LENGTH" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="BLOCK_LINE_PREFIX" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="BLOCK_LINE_PREFIX_LENGTH" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="BLOCK_FOOTER" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="BLOCK_FOOTER_LENGTH" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="LINE_COMMENT_PREFIX" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="LINE_COMMENT_PREFIX_LENGTH" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_STAR" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_TAGS_INDEX_MASK" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_TAGS_ID_MASK" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_SINGLE_BREAK_TAG_ID" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_CODE_TAGS_ID" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_BREAK_TAGS_ID" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_IMMUTABLE_TAGS_ID" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_SEPARATOR_TAGS_ID" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_SINGLE_TAGS_ID" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_CLOSED_TAG" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="JAVADOC_SPECIAL_TAGS_ID" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="Java2HTMLEntityReader.class" isClass="true" isInterface="false">
+    <type elementName="Java2HTMLEntityReader" fullyQualifiedName="org.eclipse.jdt.internal.formatter.comment.Java2HTMLEntityReader" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.comment.Java2HTMLEntityReader">
+      <fields elementName="BEGIN_LINE" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fgEntityLookup" isEnumConstant="false" typeSignature="Ljava.util.Map;" isVolatile="false" isTransient="false"/>
+      <fields elementName="bits" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="Java2HTMLEntityReader" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.Reader;"/>
+      </methods>
+      <methods elementName="computeSubstitution" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="JavaDocLine.class" isClass="true" isInterface="false">
+    <type elementName="JavaDocLine" fullyQualifiedName="org.eclipse.jdt.internal.formatter.comment.JavaDocLine" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.comment.JavaDocLine">
+      <fields elementName="JAVADOC_START_PREFIX" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <methods elementName="JavaDocLine" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRegion;"/>
+      </methods>
+      <methods elementName="formatUpperBorder" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="getStartingPrefix" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="JavaDocRegion.class" isClass="true" isInterface="false">
+    <type elementName="JavaDocRegion" fullyQualifiedName="org.eclipse.jdt.internal.formatter.comment.JavaDocRegion" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.comment.JavaDocRegion">
+      <fields elementName="fCodePositions" isEnumConstant="false" typeSignature="Ljava.util.ArrayList;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fFormatHtml" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="fFormatSource" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="JavaDocRegion" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jface.text.IDocument;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jface.text.Position;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.formatter.CodeFormatterVisitor;"/>
+      </methods>
+      <methods elementName="canFormat" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+      </methods>
+      <methods elementName="formatRegion" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="preprocessCodeSnippet" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="formatCodeSnippet" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="postprocessCodeSnippet" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="markHtmlRanges" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="markHtmlTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="markJavadocTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="markTagRanges" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="canAppend" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentLine;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="convertJava2Html" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="convertHtml2Java" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="createLine" returnType="Lorg.eclipse.jdt.internal.formatter.comment.CommentLine;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="MultiCommentLine.class" isClass="true" isInterface="false">
+    <type elementName="MultiCommentLine" fullyQualifiedName="org.eclipse.jdt.internal.formatter.comment.MultiCommentLine" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.comment.MultiCommentLine">
+      <fields elementName="MULTI_COMMENT_CONTENT_PREFIX" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="MULTI_COMMENT_END_PREFIX" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="MULTI_COMMENT_START_PREFIX" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fReferenceIndentation" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fgTagLookup" isEnumConstant="false" typeSignature="Ljava.util.Set;" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="MultiCommentLine" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRegion;"/>
+      </methods>
+      <methods elementName="adapt" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentLine;"/>
+      </methods>
+      <methods elementName="append" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+      </methods>
+      <methods elementName="getContentPrefix" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEndingPrefix" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getIndentationReference" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getStartingPrefix" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="scanLine" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="tokenizeLine" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="isValidTag" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="isTagName" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="trimLine" returnType="Lorg.eclipse.jface.text.IRegion;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="MultiCommentRegion.class" isClass="true" isInterface="false">
+    <type elementName="MultiCommentRegion" fullyQualifiedName="org.eclipse.jdt.internal.formatter.comment.MultiCommentRegion" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.comment.MultiCommentRegion">
+      <fields elementName="fIndentDescriptions" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="fIndentRoots" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="fParameterNewLine" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="fSeparateRoots" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="MultiCommentRegion" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jface.text.IDocument;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jface.text.Position;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.formatter.CodeFormatterVisitor;"/>
+      </methods>
+      <methods elementName="canAppend" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentLine;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg3" type="I"/>
+        <parameters name="arg4" type="I"/>
+      </methods>
+      <methods elementName="getDelimiter" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentLine;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentLine;"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg4" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="getDelimiter" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+      </methods>
+      <methods elementName="isIndentDescriptions" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isIndentRoots" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="markHtmlRanges" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="markHtmlTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="markJavadocTag" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg1" type="[C"/>
+      </methods>
+      <methods elementName="markRegion" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="createLine" returnType="Lorg.eclipse.jdt.internal.formatter.comment.CommentLine;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="SingleCommentLine.class" isClass="true" isInterface="false">
+    <type elementName="SingleCommentLine" fullyQualifiedName="org.eclipse.jdt.internal.formatter.comment.SingleCommentLine" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.comment.SingleCommentLine">
+      <fields elementName="SINGLE_COMMENT_PREFIX" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="NLS_TAG_PREFIX" isEnumConstant="false" typeSignature="Ljava.lang.String;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fLocaleSequence" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="SingleCommentLine" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRegion;"/>
+      </methods>
+      <methods elementName="adapt" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentLine;"/>
+      </methods>
+      <methods elementName="formatLowerBorder" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="formatUpperBorder" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.formatter.comment.CommentRange;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="getContentPrefix" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getEndingPrefix" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getStartingPrefix" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="scanLine" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="tokenizeLine" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SubstitutionTextReader.class" isClass="true" isInterface="false">
+    <type elementName="SubstitutionTextReader" fullyQualifiedName="org.eclipse.jdt.internal.formatter.comment.SubstitutionTextReader" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.formatter.comment.SubstitutionTextReader">
+      <fields elementName="fReader" isEnumConstant="false" typeSignature="Ljava.io.Reader;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fWasWhiteSpace" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="fCharAfterWhiteSpace" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="fSkipWhiteSpace" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="fReadFromBuffer" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="fBuffer" isEnumConstant="false" typeSignature="Ljava.lang.StringBuffer;" isVolatile="false" isTransient="false"/>
+      <fields elementName="fIndex" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="SubstitutionTextReader" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.io.Reader;"/>
+      </methods>
+      <methods elementName="getString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="computeSubstitution" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="getReader" returnType="Ljava.io.Reader;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="nextChar" returnType="I" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="read" returnType="I" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="read" returnType="I" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="ready" returnType="Z" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="close" returnType="V" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="reset" returnType="V" isConstructor="false" isMainMethod="false">
+        <exceptionTypes>Ljava.io.IOException;</exceptionTypes>
+      </methods>
+      <methods elementName="setSkipWhitespace" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="isSkippingWhitespace" returnType="Z" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

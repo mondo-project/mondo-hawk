@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.codeassist.select" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="SelectionJavadoc.class" isClass="true" isInterface="false">
+    <type elementName="SelectionJavadoc" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionJavadoc" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionJavadoc">
+      <fields elementName="selectedNode" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.ast.Expression;" isVolatile="false" isTransient="false"/>
+      <methods elementName="SelectionJavadoc" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="print" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="internalResolve" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.Scope;"/>
+      </methods>
+      <methods elementName="resolve" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="resolve" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodScope;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionJavadocParser.class" isClass="true" isInterface="false">
+    <type elementName="SelectionJavadocParser" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionJavadocParser" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionJavadocParser">
+      <fields elementName="selectionStart" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="selectionEnd" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="selectedNode" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;" isVolatile="false" isTransient="false"/>
+      <methods elementName="SelectionJavadocParser" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.codeassist.select.SelectionParser;"/>
+      </methods>
+      <methods elementName="checkDeprecation" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="commentParse" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="createArgumentReference" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Z"/>
+        <parameters name="arg3" type="Ljava.lang.Object;"/>
+        <parameters name="arg4" type="[J"/>
+        <parameters name="arg5" type="J"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.compiler.InvalidInputException;</exceptionTypes>
+      </methods>
+      <methods elementName="createFieldReference" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.compiler.InvalidInputException;</exceptionTypes>
+      </methods>
+      <methods elementName="createMethodReference" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.Object;"/>
+        <parameters name="arg1" type="Ljava.util.List;"/>
+        <exceptionTypes>Lorg.eclipse.jdt.core.compiler.InvalidInputException;</exceptionTypes>
+      </methods>
+      <methods elementName="createTypeReference" returnType="Ljava.lang.Object;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="pushParamName" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="updateDocComment" returnType="V" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionNodeFound.class" isClass="true" isInterface="false">
+    <type elementName="SelectionNodeFound" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionNodeFound" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionNodeFound">
+      <fields elementName="binding" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;" isVolatile="false" isTransient="false"/>
+      <fields elementName="isDeclaration" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="serialVersionUID" isEnumConstant="false" typeSignature="J" isVolatile="false" isTransient="false"/>
+      <methods elementName="SelectionNodeFound" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="SelectionNodeFound" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;"/>
+      </methods>
+      <methods elementName="SelectionNodeFound" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.Binding;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionOnArgumentName.class" isClass="true" isInterface="false">
+    <type elementName="SelectionOnArgumentName" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnArgumentName" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnArgumentName">
+      <methods elementName="SelectionOnArgumentName" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="J"/>
+        <parameters name="arg2" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="bind" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+      <methods elementName="print" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="resolve" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionOnExplicitConstructorCall.class" isClass="true" isInterface="false">
+    <type elementName="SelectionOnExplicitConstructorCall" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnExplicitConstructorCall" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnExplicitConstructorCall">
+      <methods elementName="SelectionOnExplicitConstructorCall" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="printStatement" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="resolve" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionOnFieldReference.class" isClass="true" isInterface="false">
+    <type elementName="SelectionOnFieldReference" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnFieldReference" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnFieldReference">
+      <methods elementName="SelectionOnFieldReference" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="J"/>
+      </methods>
+      <methods elementName="printExpression" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="resolveType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionOnFieldType.class" isClass="true" isInterface="false">
+    <type elementName="SelectionOnFieldType" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnFieldType" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnFieldType">
+      <methods elementName="SelectionOnFieldType" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+      </methods>
+      <methods elementName="printStatement" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionOnImportReference.class" isClass="true" isInterface="false">
+    <type elementName="SelectionOnImportReference" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnImportReference" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnImportReference">
+      <methods elementName="SelectionOnImportReference" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[J"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="print" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionOnLocalName.class" isClass="true" isInterface="false">
+    <type elementName="SelectionOnLocalName" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnLocalName" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnLocalName">
+      <methods elementName="SelectionOnLocalName" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="resolve" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="printAsExpression" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="printStatement" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionOnMessageSend.class" isClass="true" isInterface="false">
+    <type elementName="SelectionOnMessageSend" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnMessageSend" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnMessageSend">
+      <methods elementName="SelectionOnMessageSend" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="findNonDefaultAbstractMethod" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.MethodBinding;"/>
+      </methods>
+      <methods elementName="printExpression" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="resolveType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionOnNameOfMemberValuePair.class" isClass="true" isInterface="false">
+    <type elementName="SelectionOnNameOfMemberValuePair" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnNameOfMemberValuePair" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnNameOfMemberValuePair">
+      <methods elementName="SelectionOnNameOfMemberValuePair" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="print" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="resolveTypeExpecting" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionOnPackageReference.class" isClass="true" isInterface="false">
+    <type elementName="SelectionOnPackageReference" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnPackageReference" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnPackageReference">
+      <methods elementName="SelectionOnPackageReference" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[J"/>
+      </methods>
+      <methods elementName="print" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+        <parameters name="arg2" type="Z"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionOnParameterizedQualifiedTypeReference.class" isClass="true" isInterface="false">
+    <type elementName="SelectionOnParameterizedQualifiedTypeReference" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnParameterizedQualifiedTypeReference" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnParameterizedQualifiedTypeReference">
+      <methods elementName="SelectionOnParameterizedQualifiedTypeReference" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[[Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg3" type="[Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg4" type="[J"/>
+      </methods>
+      <methods elementName="resolveType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="resolveType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="printExpression" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionOnParameterizedSingleTypeReference.class" isClass="true" isInterface="false">
+    <type elementName="SelectionOnParameterizedSingleTypeReference" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnParameterizedSingleTypeReference" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnParameterizedSingleTypeReference">
+      <methods elementName="SelectionOnParameterizedSingleTypeReference" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="[Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg2" type="J"/>
+      </methods>
+      <methods elementName="resolveType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Z"/>
+      </methods>
+      <methods elementName="resolveType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.ClassScope;"/>
+      </methods>
+      <methods elementName="printExpression" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionOnQualifiedAllocationExpression.class" isClass="true" isInterface="false">
+    <type elementName="SelectionOnQualifiedAllocationExpression" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnQualifiedAllocationExpression" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnQualifiedAllocationExpression">
+      <methods elementName="SelectionOnQualifiedAllocationExpression" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="SelectionOnQualifiedAllocationExpression" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeDeclaration;"/>
+      </methods>
+      <methods elementName="printExpression" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="resolveType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionOnQualifiedNameReference.class" isClass="true" isInterface="false">
+    <type elementName="SelectionOnQualifiedNameReference" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnQualifiedNameReference" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnQualifiedNameReference">
+      <methods elementName="SelectionOnQualifiedNameReference" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[J"/>
+      </methods>
+      <methods elementName="printExpression" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="resolveType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionOnQualifiedSuperReference.class" isClass="true" isInterface="false">
+    <type elementName="SelectionOnQualifiedSuperReference" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnQualifiedSuperReference" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnQualifiedSuperReference">
+      <methods elementName="SelectionOnQualifiedSuperReference" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="printExpression" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="resolveType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionOnQualifiedTypeReference.class" isClass="true" isInterface="false">
+    <type elementName="SelectionOnQualifiedTypeReference" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnQualifiedTypeReference" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnQualifiedTypeReference">
+      <methods elementName="SelectionOnQualifiedTypeReference" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[J"/>
+      </methods>
+      <methods elementName="aboutToResolve" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.Scope;"/>
+      </methods>
+      <methods elementName="getTypeBinding" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.Scope;"/>
+      </methods>
+      <methods elementName="printExpression" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionOnSingleNameReference.class" isClass="true" isInterface="false">
+    <type elementName="SelectionOnSingleNameReference" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnSingleNameReference" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnSingleNameReference">
+      <methods elementName="SelectionOnSingleNameReference" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="J"/>
+      </methods>
+      <methods elementName="resolveType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="printExpression" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionOnSingleTypeReference.class" isClass="true" isInterface="false">
+    <type elementName="SelectionOnSingleTypeReference" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnSingleTypeReference" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnSingleTypeReference">
+      <methods elementName="SelectionOnSingleTypeReference" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="J"/>
+      </methods>
+      <methods elementName="aboutToResolve" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.Scope;"/>
+      </methods>
+      <methods elementName="getTypeBinding" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.Scope;"/>
+      </methods>
+      <methods elementName="printExpression" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="resolveTypeEnclosing" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionOnSuperReference.class" isClass="true" isInterface="false">
+    <type elementName="SelectionOnSuperReference" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnSuperReference" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionOnSuperReference">
+      <methods elementName="SelectionOnSuperReference" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="I"/>
+      </methods>
+      <methods elementName="printExpression" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+      <methods elementName="resolveType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionParser$1.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionParser$1" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionParser.1">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.codeassist.select.SelectionParser;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$constructorCall" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.ast.ExplicitConstructorCall;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.codeassist.select.SelectionParser;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ExplicitConstructorCall;"/>
+      </methods>
+      <methods elementName="resolveType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="printExpression" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionParser$2.class" isClass="true" isInterface="false">
+    <type elementName="" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionParser$2" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionParser.2">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.codeassist.select.SelectionParser;" isVolatile="false" isTransient="false"/>
+      <fields elementName="val$constructorCall" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.ast.ExplicitConstructorCall;" isVolatile="false" isTransient="false"/>
+      <methods elementName="" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.codeassist.select.SelectionParser;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.ast.ExplicitConstructorCall;"/>
+      </methods>
+      <methods elementName="resolveType" returnType="Lorg.eclipse.jdt.internal.compiler.lookup.TypeBinding;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.lookup.BlockScope;"/>
+      </methods>
+      <methods elementName="printExpression" returnType="Ljava.lang.StringBuffer;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+        <parameters name="arg1" type="Ljava.lang.StringBuffer;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionParser.class" isClass="true" isInterface="false">
+    <type elementName="SelectionParser" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionParser" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionParser">
+      <fields elementName="SELECTION_PARSER" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SELECTION_OR_ASSIST_PARSER" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="K_BETWEEN_CASE_AND_COLON" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="assistNodeParent" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.compiler.ast.ASTNode;" isVolatile="false" isTransient="false"/>
+      <fields elementName="selectionStart" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="selectionEnd" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="SUPER" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="THIS" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="SelectionParser" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.problem.ProblemReporter;"/>
+      </methods>
+      <methods elementName="assistIdentifier" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="attachOrphanCompletionNode" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="buildMoreCompletionContext" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.ast.Expression;"/>
+      </methods>
+      <methods elementName="checkRecoveredType" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="classInstanceCreation" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="consumeArrayCreationExpressionWithoutInitializer" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeArrayCreationExpressionWithInitializer" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeClassInstanceCreationExpressionQualifiedWithTypeArguments" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeClassInstanceCreationExpressionWithTypeArguments" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeEnterAnonymousClassBody" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeEnterVariable" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeExitVariableWithInitialization" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeFieldAccess" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="consumeFormalParameter" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Z"/>
+      </methods>
+      <methods elementName="consumeInstanceOfExpression" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeInstanceOfExpressionWithName" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeLocalVariableDeclarationStatement" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeMarkerAnnotation" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeMemberValuePair" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeMethodInvocationName" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeMethodInvocationPrimary" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeNormalAnnotation" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeSingleMemberAnnotation" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeStaticImportOnDemandDeclarationName" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="consumeToken" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="I"/>
+      </methods>
+      <methods elementName="consumeTypeImportOnDemandDeclarationName" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="createAssistImportReference" returnType="Lorg.eclipse.jdt.internal.compiler.ast.ImportReference;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[J"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="createAssistPackageReference" returnType="Lorg.eclipse.jdt.internal.compiler.ast.ImportReference;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[J"/>
+      </methods>
+      <methods elementName="createJavadocParser" returnType="Lorg.eclipse.jdt.internal.compiler.parser.JavadocParser;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="createLocalDeclaration" returnType="Lorg.eclipse.jdt.internal.compiler.ast.LocalDeclaration;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="I"/>
+      </methods>
+      <methods elementName="createQualifiedAssistNameReference" returnType="Lorg.eclipse.jdt.internal.compiler.ast.NameReference;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[J"/>
+      </methods>
+      <methods elementName="createQualifiedAssistTypeReference" returnType="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="[J"/>
+      </methods>
+      <methods elementName="createParameterizedQualifiedAssistTypeReference" returnType="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[[C"/>
+        <parameters name="arg1" type="[[Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg2" type="[C"/>
+        <parameters name="arg3" type="[Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg4" type="[J"/>
+      </methods>
+      <methods elementName="createSingleAssistNameReference" returnType="Lorg.eclipse.jdt.internal.compiler.ast.NameReference;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="J"/>
+      </methods>
+      <methods elementName="createSingleAssistTypeReference" returnType="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+        <parameters name="arg1" type="J"/>
+      </methods>
+      <methods elementName="createParameterizedSingleAssistTypeReference" returnType="Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[Lorg.eclipse.jdt.internal.compiler.ast.TypeReference;"/>
+        <parameters name="arg1" type="[C"/>
+        <parameters name="arg2" type="J"/>
+      </methods>
+      <methods elementName="dietParse" returnType="Lorg.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.ICompilationUnit;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="getUnspecifiedReference" returnType="Lorg.eclipse.jdt.internal.compiler.ast.NameReference;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="getUnspecifiedReferenceOptimized" returnType="Lorg.eclipse.jdt.internal.compiler.ast.NameReference;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="initializeScanner" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="newMessageSend" returnType="Lorg.eclipse.jdt.internal.compiler.ast.MessageSend;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="newMessageSendWithTypeArguments" returnType="Lorg.eclipse.jdt.internal.compiler.ast.MessageSend;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="parse" returnType="Lorg.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.compiler.env.ICompilationUnit;"/>
+        <parameters name="arg1" type="Lorg.eclipse.jdt.internal.compiler.CompilationResult;"/>
+        <parameters name="arg2" type="I"/>
+        <parameters name="arg3" type="I"/>
+      </methods>
+      <methods elementName="resumeAfterRecovery" returnType="Z" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="selectionIdentifierCheck" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="setAssistIdentifier" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="[C"/>
+      </methods>
+      <methods elementName="updateRecoveryState" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="SelectionScanner.class" isClass="true" isInterface="false">
+    <type elementName="SelectionScanner" fullyQualifiedName="org.eclipse.jdt.internal.codeassist.select.SelectionScanner" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.codeassist.select.SelectionScanner">
+      <fields elementName="selectionIdentifier" isEnumConstant="false" typeSignature="[C" isVolatile="false" isTransient="false"/>
+      <fields elementName="selectionStart" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="selectionEnd" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="SelectionScanner" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+      </methods>
+      <methods elementName="getCurrentIdentifierSource" returnType="[C" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="scanIdentifierOrKeyword" returnType="I" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+</core:IPackageFragment>

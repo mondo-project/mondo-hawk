@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:IPackageFragment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="org.amma.dsl.jdt.core" elementName="org.eclipse.jdt.internal.core.search.processing" isDefaultPackage="false">
+  <packageFragmentRoot xsi:type="core:BinaryPackageFragmentRoot" href="../BinaryPackageFragmentRoot_org.eclipse.jdt.core_3.4.2.v_883_R34x.jar.xmi#/"/>
+  <classFiles elementName="IJob.class" isClass="false" isInterface="true">
+    <type elementName="IJob" fullyQualifiedName="org.eclipse.jdt.internal.core.search.processing.IJob" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.processing.IJob">
+      <fields elementName="ForceImmediate" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="CancelIfNotReady" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="WaitUntilReady" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="FAILED" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="COMPLETE" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <methods elementName="belongsTo" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="cancel" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="ensureReadyToRun" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="execute" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <methods elementName="getJobFamily" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+  <classFiles elementName="JobManager$1$ProgressJob.class" isClass="true" isInterface="false">
+    <type elementName="ProgressJob" fullyQualifiedName="org.eclipse.jdt.internal.core.search.processing.JobManager$1$ProgressJob" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.processing.JobManager.1.ProgressJob">
+      <fields elementName="this$0" isEnumConstant="false" typeSignature="Lorg.eclipse.jdt.internal.core.search.processing.JobManager;" isVolatile="false" isTransient="false"/>
+      <methods elementName="ProgressJob" returnType="V" isConstructor="true" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.search.processing.JobManager;"/>
+        <parameters name="arg1" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="run" returnType="Lorg.eclipse.core.runtime.IStatus;" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+    </type>
+  </classFiles>
+  <classFiles elementName="JobManager.class" isClass="true" isInterface="false">
+    <type elementName="JobManager" fullyQualifiedName="org.eclipse.jdt.internal.core.search.processing.JobManager" fullyQualifiedParametrizedName="org.eclipse.jdt.internal.core.search.processing.JobManager">
+      <fields elementName="awaitingJobs" isEnumConstant="false" typeSignature="[Lorg.eclipse.jdt.internal.core.search.processing.IJob;" isVolatile="false" isTransient="false"/>
+      <fields elementName="jobStart" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="jobEnd" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="executing" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="processingThread" isEnumConstant="false" typeSignature="Ljava.lang.Thread;" isVolatile="false" isTransient="false"/>
+      <fields elementName="progressJob" isEnumConstant="false" typeSignature="Lorg.eclipse.core.runtime.jobs.Job;" isVolatile="false" isTransient="false"/>
+      <fields elementName="enableCount" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <fields elementName="VERBOSE" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="activated" isEnumConstant="false" typeSignature="Z" isVolatile="false" isTransient="false"/>
+      <fields elementName="awaitingClients" isEnumConstant="false" typeSignature="I" isVolatile="false" isTransient="false"/>
+      <methods elementName="&lt;clinit>" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="JobManager" returnType="V" isConstructor="true" isMainMethod="false"/>
+      <methods elementName="activateProcessing" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="awaitingJobsCount" returnType="I" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="currentJob" returnType="Lorg.eclipse.jdt.internal.core.search.processing.IJob;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="disable" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="discardJobs" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Ljava.lang.String;"/>
+      </methods>
+      <methods elementName="enable" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="isJobWaiting" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.search.processing.IJob;"/>
+      </methods>
+      <methods elementName="moveToNextJob" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="notifyIdle" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="J"/>
+      </methods>
+      <methods elementName="performConcurrentJob" returnType="Z" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.search.processing.IJob;"/>
+        <parameters name="arg1" type="I"/>
+        <parameters name="arg2" type="Lorg.eclipse.core.runtime.IProgressMonitor;"/>
+      </methods>
+      <methods elementName="processName" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="request" returnType="V" isConstructor="false" isMainMethod="false">
+        <parameters name="arg0" type="Lorg.eclipse.jdt.internal.core.search.processing.IJob;"/>
+      </methods>
+      <methods elementName="reset" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="run" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="shutdown" returnType="V" isConstructor="false" isMainMethod="false"/>
+      <methods elementName="toString" returnType="Ljava.lang.String;" isConstructor="false" isMainMethod="false"/>
+    </type>
+  </classFiles>
+</core:IPackageFragment>
