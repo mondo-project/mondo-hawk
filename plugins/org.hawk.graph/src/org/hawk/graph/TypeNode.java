@@ -32,8 +32,7 @@ public class TypeNode {
 	private final IGraphNode node;
 	private final String name; 
 
-	// never use this field directly: use getSlots() instead, as we use lazy
-	// initialization.
+	// never use this field directly: use getSlots() instead, as we use lazy initialization.
 	private List<Slot> slots;
 
 	public TypeNode(IGraphNode node) {
@@ -56,6 +55,13 @@ public class TypeNode {
 
 	public String getTypeName() {
 		return name;
+	}
+
+	public Slot getSlot(String name) {
+		if (node.getProperty(name) != null) {
+			return new Slot(this, name);
+		}
+		return null;
 	}
 
 	public List<Slot> getSlots() {
@@ -108,6 +114,7 @@ public class TypeNode {
 		};
 	}
 
+	@Deprecated
 	public Iterable<ModelElementNode> getAllInstances() {
 		return getAll();
 	}

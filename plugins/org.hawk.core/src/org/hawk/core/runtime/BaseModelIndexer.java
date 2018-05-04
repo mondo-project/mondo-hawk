@@ -817,7 +817,7 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 	
 				if (isDerivedAttribute(typenode, attrName) == isDerived) {
 					String[] metadata = (String[]) typenode.getProperty(attrName);
-					IndexedAttributeParameters params = getAttributeParametersfromMetadata(mmURI, typeName ,attrName, metadata);
+					IndexedAttributeParameters params = getAttributeParametersfromMetadata(mmURI, typeName, attrName, metadata);
 					paramsSet.add(params);
 				}
 			}

@@ -50,6 +50,23 @@ public interface IQueryEngine {
 	public static final String PROPERTY_SUBTREECONTEXT = "SUBTREE";
 
 	/**
+	 * If {@link #PROPERTY_SUBTREECONTEXT} is used and this is set to "true",
+	 * Type.all queries will implicitly register derived edges from Type to all its
+	 * direct and indirect containers for its type, which will speed up subsequent
+	 * accesses by traversing the derived edges in reverse from the local root(s) of
+	 * the files in scope. A local root is understood as an element that is not contained
+	 * by any other element in the same file.
+	 * 
+	 * If false or unset, the behaviour will depend on whether
+	 * {@link #PROPERTY_FILEFIRST} has been set or not. This option takes priority
+	 * over {@link #PROPERTY_FILEFIRST}.
+	 *
+	 * @see #PROPERTY_SUBTREECONTEXT
+	 * @see #PROPERTY_FILEFIRST
+	 */
+	public static final String PROPERTY_SUBTREE_DERIVEDALLOF = "SUBTREE_DERIVEDALLOF";
+
+	/**
 	 * If set to a comma-separated list of repository path patterns (where '*' is
 	 * 'any 0+ characters, glob style), limits Model.allContents and contextful
 	 * getAllOf(...) to the contents of these files.

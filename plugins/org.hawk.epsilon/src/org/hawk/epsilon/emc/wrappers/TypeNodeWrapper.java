@@ -63,9 +63,7 @@ public class TypeNodeWrapper implements IGraphTypeNodeReference {
 	}
 
 	public Collection<Object> getAll() {
-		final Collection<Object> allOf = model.getAllOf(typeNode.getNode(), ModelElementNode.EDGE_LABEL_OFKIND);
-		allOf.addAll(model.getAllOf(typeNode.getNode(), ModelElementNode.EDGE_LABEL_OFTYPE));
-		return allOf;
+		return model.getAllOf(typeNode.getNode(), ModelElementNode.EDGE_LABEL_OFKIND);
 	}
 
 	public List<Slot> getAttributes() {

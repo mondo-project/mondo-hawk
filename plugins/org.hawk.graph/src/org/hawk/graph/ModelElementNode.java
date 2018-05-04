@@ -427,4 +427,21 @@ public class ModelElementNode {
 		}
 		return false;
 	}
+
+	/**
+	 * Returns the 'local root' that contains this model element node: the topmost
+	 * element in the containment tree of the same file as this element.
+	 */
+	public ModelElementNode getLocalRoot() {
+		final FileNode fileNode = getFileNode();
+
+		ModelElementNode localRoot = this;
+		ModelElementNode container = localRoot.getContainer();
+		while (container != null && container.getFileNode().equals(fileNode)) {
+			localRoot = container;
+			container = localRoot.getContainer();
+		}
+
+		return localRoot;
+	}
 }

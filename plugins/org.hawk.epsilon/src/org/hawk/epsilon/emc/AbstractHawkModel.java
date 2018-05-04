@@ -61,10 +61,7 @@ public abstract class AbstractHawkModel extends Model {
 	@Override
 	public Collection<Object> getAllOfKind(String metaclass) throws EolModelElementTypeNotFoundException {
 		try {
-			Collection<Object> ofType = (Collection<Object>) getAllOf(metaclass, ModelElementNode.EDGE_LABEL_OFTYPE);
-			Collection<Object> ofKind = (Collection<Object>) getAllOf(metaclass, ModelElementNode.EDGE_LABEL_OFKIND);
-			ofKind.addAll(ofType);
-			return ofKind;
+			return (Collection<Object>) getAllOf(metaclass, ModelElementNode.EDGE_LABEL_OFKIND);
 		} catch (EolInternalException ex) {
 			LOGGER.error(ex.getMessage(), ex);
 			throw new EolModelElementTypeNotFoundException(this.getName(), metaclass);

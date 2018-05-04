@@ -220,14 +220,44 @@ public class SubtreeContextTest extends ModelIndexingTest {
 	@Test
 	public void getAllOf() throws Throwable {
 		final String eolQuery = "return IType.all.size;";
+
+		/*
+		 * First do the most straightforward approach: find all the files under a folder,
+		 * go to the type, then go through all instances filtering by file.
+		 */
 		final int fileClasses = (int) eol(eolQuery, ctx(
 			IQueryEngine.PROPERTY_REPOSITORYCONTEXT, fragmentedRepoURI,
 			IQueryEngine.PROPERTY_FILECONTEXT, "/IJavaProject_org.eclipse.jdt.apt.pluggable.core/*"));
+
+		/* This version goes to the file nodes first, then checks types. */
+		final int fileFirstClasses = (int) eol(eolQuery, ctx(
+				IQueryEngine.PROPERTY_REPOSITORYCONTEXT, fragmentedRepoURI,
+				IQueryEngine.PROPERTY_FILECONTEXT, "/IJavaProject_org.eclipse.jdt.apt.pluggable.core/*",
+				IQueryEngine.PROPERTY_FILEFIRST, "true"));
+		assertEquals(fileClasses, fileFirstClasses);
+
+		/* This version finds out the files in a containment subtree. */
 		final int subtreeClasses = (int) eol(eolQuery, ctx(
 			IQueryEngine.PROPERTY_REPOSITORYCONTEXT, fragmentedRepoURI,
 			IQueryEngine.PROPERTY_SUBTREECONTEXT, "/IJavaProject_org.eclipse.jdt.apt.pluggable.core/IJavaProject_org.eclipse.jdt.apt.pluggable.core.xmi"
 		));
 		assertEquals(fileClasses, subtreeClasses);
+
+		/* This version finds out the files in a containment subtree, and uses file-first traversal. */
+		final int subtreeFileFirstClasses = (int) eol(eolQuery, ctx(
+			IQueryEngine.PROPERTY_REPOSITORYCONTEXT, fragmentedRepoURI,
+			IQueryEngine.PROPERTY_SUBTREECONTEXT, "/IJavaProject_org.eclipse.jdt.apt.pluggable.core/IJavaProject_org.eclipse.jdt.apt.pluggable.core.xmi",
+			IQueryEngine.PROPERTY_FILEFIRST, "true"
+		));
+		assertEquals(fileClasses, subtreeFileFirstClasses);
+
+		/* This version finds out the files in a containment subtree, and registers derived edges to quickly find instances of a type within a containment subtree. */
+		final int subtreeClassesDerived = (int) eol(eolQuery, ctx(
+			IQueryEngine.PROPERTY_REPOSITORYCONTEXT, fragmentedRepoURI,
+			IQueryEngine.PROPERTY_SUBTREECONTEXT, "/IJavaProject_org.eclipse.jdt.apt.pluggable.core/IJavaProject_org.eclipse.jdt.apt.pluggable.core.xmi",
+			IQueryEngine.PROPERTY_SUBTREE_DERIVEDALLOF, "true"
+		));
+		assertEquals(fileClasses, subtreeClassesDerived);
 	}
 
 	@Test

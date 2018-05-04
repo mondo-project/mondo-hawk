@@ -81,7 +81,8 @@ public class FileNode {
 	}
 
 	/**
-	 * Returns <code>true</code> if the model element is the root of this file node.
+	 * Returns <code>true</code> if the model element is a root (not contained by
+	 * any other, not even in another file).
 	 */
 	public boolean isRoot(ModelElementNode men) {
 		for (ModelElementNode root : getRootModelElements()) {
