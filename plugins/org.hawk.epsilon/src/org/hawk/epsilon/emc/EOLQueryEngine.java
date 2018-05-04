@@ -659,16 +659,11 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 							currentState));
 		}
 
-		if (context == null)
-			return contextlessQuery(m, query, context);
-
-		final Object repo = context.get(PROPERTY_REPOSITORYCONTEXT);
-		final Object file = context.get(PROPERTY_FILECONTEXT);
-		if (repo == null && file == null) // no scope
-			return contextlessQuery(m, query, context);
-		else
-			// scoped
+		if (context != null && (context.containsKey(PROPERTY_REPOSITORYCONTEXT) || context.containsKey(PROPERTY_FILECONTEXT) || context.containsKey(PROPERTY_SUBTREECONTEXT))) {
 			return contextfulQuery(m, query, context);
+		} else {
+			return contextlessQuery(m, query, context);
+		}
 	}
 
 	@Override
