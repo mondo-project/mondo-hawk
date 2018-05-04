@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2018 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -14,6 +14,7 @@
  * Contributors:
  *     Seyyed Shah - initial API and implementation
  *     Konstantinos Barmpis - updates and maintenance
+ *     Antonio Garcia-Dominguez - redo layout into FormLayout, expose more options
  ******************************************************************************/
 package org.hawk.ui2.dialog;
 
@@ -22,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -36,8 +38,10 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -50,23 +54,165 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.hawk.core.IStateListener;
+import org.hawk.core.query.IQueryEngine;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.Activator;
 import org.osgi.framework.FrameworkUtil;
 
 public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 
+	protected class SyncSelectionAdapter extends SelectionAdapter {
+		public void widgetSelected(SelectionEvent e) {
+			try {
+				index.sync();
+			} catch (Exception ee) {
+				Activator.logError("Failed to invoke manual sync", ee);
+			}
+		}
+	}
+
+	protected class QueryModifyListener implements ModifyListener {
+		public void modifyText(ModifyEvent e) {
+			String res = resultField.getText();
+			if (!res.startsWith(QUERY_EDITED)) {
+				resultField.setText(QUERY_EDITED + "\n" + res);
+				resultField.setStyleRange(createRedBoldRange(QUERY_EDITED.length()));
+			}
+		}
+	}
+
+	protected class ResetButtonSelectionAdapter extends SelectionAdapter {
+		public void widgetSelected(SelectionEvent e) {
+			queryField.setText("");
+			queryField.setEditable(true);
+			resultField.setText("");
+			contextFiles.setText("");
+		}
+	}
+
+	protected class QueryExecutionSelectionAdapter extends SelectionAdapter {
+		public void widgetSelected(SelectionEvent e) {
+			final long start = System.currentTimeMillis();
+
+			final String query = queryLanguage.getText().trim();
+			if (query.length() == 0) {
+				return;
+			}
+
+			Object result = runQuery(query);
+
+			final long end = System.currentTimeMillis();
+			final long time = end - start;
+			if (result instanceof Collection) {
+				setMessage(String.format("Query returned %d results in %d s %d ms",
+					((Collection<?>) result).size(), time / 1000, time % 1000), 0);
+			} else {
+				setMessage(String.format("Query completed in %d s %d ms",
+					time / 1000, time % 1000), 0);
+			}
+		}
+
+		protected Object runQuery(final String query) {
+			Object result = null;
+			try {
+				final Map<String, Object> context = createContext();
+
+				if (queryField.getText().startsWith(QUERY_IS_EDITOR)) {
+					result = index.query(queryField.getText().substring(QUERY_IS_EDITOR.length()), query, context);
+				} else if (queryField.getText().startsWith(QUERY_IS_FILE)) {
+					result = index.query(new File(queryField.getText().substring(QUERY_IS_FILE.length())), query, context);
+				} else {
+					result = index.query(queryField.getText(), query, context);
+				}
+
+				resultField.setText(result != null ? result.toString() : "<null>");
+			} catch (Exception ex) {
+				final String error = "Error while running the query: " + ex.getMessage();
+				resultField.setText(error);
+				resultField.setStyleRange(createRedBoldRange(error.length()));
+				Activator.logError(error, ex);
+			}
+			return result;
+		}
+
+		protected Map<String, Object> createContext() {
+			final String sRepo = contextRepo.getText().trim();
+			final String sFiles = contextFiles.getText().trim();
+			final String defaultNamespace = defaultNamespaces.getText().trim();
+			final String sSubtree = subtreeText.getText().trim();
+			final boolean bFileFirst = fileFirstButton.getSelection();
+			final boolean bFullTraversalScoping = enableFullTraversalScopingButton.getSelection();
+			final boolean bSubtreeDerived = useDerivedForSubtreeButton.getSelection();
+
+			Map<String, Object> context = new HashMap<>();
+			if (!sFiles.equals("")) { 
+				context.put(IQueryEngine.PROPERTY_FILECONTEXT, sFiles);
+			}
+			if (!sRepo.equals("")) {
+				context.put(IQueryEngine.PROPERTY_REPOSITORYCONTEXT, sRepo);
+			}
+			if (!defaultNamespace.equals("")) {
+				context.put(IQueryEngine.PROPERTY_DEFAULTNAMESPACES, defaultNamespace);
+			}
+			if (!sSubtree.equals("")) {
+				context.put(IQueryEngine.PROPERTY_SUBTREECONTEXT, sSubtree);
+			}
+			context.put(IQueryEngine.PROPERTY_FILEFIRST, bFileFirst + "");
+			context.put(IQueryEngine.PROPERTY_ENABLE_TRAVERSAL_SCOPING, bFullTraversalScoping + "");
+			context.put(IQueryEngine.PROPERTY_SUBTREE_DERIVEDALLOF, bSubtreeDerived + "");
+
+			return context;
+		}
+	}
+
+	protected class QueryFileSelectionAdapter extends SelectionAdapter {
+		public void widgetSelected(SelectionEvent e) {
+			String s = fileQueryBrowse();
+			if (s != null) {
+				queryField.setEditable(false);
+				queryField.setText(QUERY_IS_FILE + s);
+				queryField.setStyleRange(createBoldRange(QUERY_IS_FILE.length()));
+			}
+		}
+	}
+
+	protected class UseEditorSelectionAdapter extends SelectionAdapter {
+		public void widgetSelected(SelectionEvent e) {
+			String s = "<ERROR: retrieving query from editor>";
+			queryField.setEditable(false);
+			IEditorPart part;
+			part = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+					.getActivePage().getActiveEditor();
+
+			if (part instanceof ITextEditor) {
+				ITextEditor editor = (ITextEditor) part;
+				s = (QUERY_IS_EDITOR + editor.getDocumentProvider()
+						.getDocument(editor.getEditorInput()).get());
+			} else {
+				s = ("<ERROR: selected editor is not a Text editor>");
+			}
+			queryField.setText(s);
+			if (s.startsWith(QUERY_IS_EDITOR)) {
+				queryField.setStyleRange(createBoldRange(QUERY_IS_EDITOR.length()));
+			} else {
+				queryField.setStyleRange(createBoldRange(s.length()));
+			}
+		}
+	}
+
 	private static final String QUERY_IS_FILE = "FILE QUERY:\n";
 	private static final String QUERY_IS_EDITOR = "EDITOR QUERY:\n";
 	private static final String QUERY_EDITED = "[query has been edited since last results]";
 
-	private StyledText queryField;
-	private StyledText resultField;
-	Button enableFullTraversalScopingButton;
-
 	private HModel index;
 
+	private StyledText queryField, resultField, contextRepo, contextFiles, defaultNamespaces;
+	private Button enableFullTraversalScopingButton;
 	private Button queryButton;
+	private Combo queryLanguage;
+	private StyledText subtreeText;
+	private Button useDerivedForSubtreeButton;
+	private Button fileFirstButton;
 
 	public HQueryDialog(Shell parentShell, HModel in) {
 		super(parentShell);
@@ -93,311 +239,257 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 
 	protected Control createDialogArea(Composite parent) {
 		super.createDialogArea(parent);
-
-		final Composite container = new Composite(parent, SWT.NONE);
-		final GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 2;
-		container.setLayout(gridLayout);
-
 		setTitle("Query Hawk index");
 		setMessage("Enter a query (either as text or as a file) and click [Run Query] to get a result.");
 
-		final Label qLabel = new Label(container, SWT.NONE);
-		qLabel.setText("Query:");
+		final Composite container = new Composite(parent, SWT.NONE);
+		final FormLayout formLayout = new FormLayout();
+		container.setLayout(formLayout);
+		container.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		Composite buttons = new Composite(container, SWT.NONE);
-		buttons.setLayout(gridLayout);
-
-		buttons.setLayoutData(new GridData(GridData.END, GridData.END, true,
-				true, 1, 1));
-
-		final Button editor = new Button(buttons, SWT.PUSH);
-		editor.setLayoutData(new GridData(GridData.END, GridData.END, true,
-				true, 1, 1));
-		editor.setText("Query Current Editor");
-
-		editor.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				String s = "<ERROR: retrieving query from editor>";
-				queryField.setEditable(false);
-				IEditorPart part;
-				part = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-						.getActivePage().getActiveEditor();
-
-				if (part instanceof ITextEditor) {
-					ITextEditor editor = (ITextEditor) part;
-					s = (QUERY_IS_EDITOR + editor.getDocumentProvider()
-							.getDocument(editor.getEditorInput()).get());
-				} else {
-					s = ("<ERROR: selected editor is not a Text editor>");
-				}
-				queryField.setText(s);
-				if (s.startsWith(QUERY_IS_EDITOR))
-					queryField.setStyleRange(createBoldRange(QUERY_IS_EDITOR
-							.length()));
-				else
-					queryField.setStyleRange(createBoldRange(s.length()));
-			}
-		});
-
-		final Button file = new Button(buttons, SWT.PUSH);
-		file.setLayoutData(new GridData(GridData.END, GridData.END, true, true,
-				1, 1));
-		file.setText("Query File");
-
-		queryField = new StyledText(container, SWT.MULTI | SWT.BORDER
-				| SWT.WRAP | SWT.V_SCROLL);
-		GridData gridDataQ = new GridData();
-		gridDataQ.grabExcessHorizontalSpace = true;
-		gridDataQ.horizontalAlignment = GridData.FILL_BOTH;
-		gridDataQ.minimumWidth = 600;
-		gridDataQ.minimumHeight = 300;
-		gridDataQ.heightHint = 100;
-		gridDataQ.horizontalSpan = 2;
-		queryField.setLayoutData(gridDataQ);
-
-		file.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				String s = filequeryBrowse();
-				if (s != null) {
-					queryField.setEditable(false);
-					queryField.setText(QUERY_IS_FILE + s);
-					queryField.setStyleRange(createBoldRange(QUERY_IS_FILE
-							.length()));
-				}
-			}
-
-		});
-
-		final Label rLabel = new Label(container, SWT.NONE);
-		rLabel.setText("Result:");
-
-		final Label dummy2 = new Label(container, SWT.NONE);
-		dummy2.setText("");
-
-		resultField = new StyledText(container, SWT.MULTI | SWT.BORDER
-				| SWT.WRAP | SWT.V_SCROLL);
-		GridData gridDataR = new GridData();
-		gridDataR.grabExcessHorizontalSpace = true;
-		gridDataR.horizontalAlignment = GridData.FILL_BOTH;
-		gridDataR.minimumWidth = 600;
-		gridDataR.minimumHeight = 300;
-		gridDataR.heightHint = 100;
-		gridDataR.horizontalSpan = 2;
-		resultField.setLayoutData(gridDataR);
-		resultField.setEditable(false);
-
-		Label l = new Label(container, SWT.READ_ONLY);
-		l.setText(" Query Engine:");
-
-		final Combo queryLanguage = new Combo(container, SWT.READ_ONLY);
-		for (String s : index.getKnownQueryLanguages())
-			queryLanguage.add(s);
-
-		if (queryLanguage.getItems().length > 0)
-			queryLanguage.select(0);
-
-		l = new Label(container, SWT.READ_ONLY);
-		l.setText(" Context Repositories (comma separated");
-
-		l = new Label(container, SWT.READ_ONLY);
-
-		l = new Label(container, SWT.READ_ONLY);
-		l.setText("   (partial) matches using * as wildcard):");
-
-		final StyledText contextRepo = new StyledText(container, SWT.NONE);
-		GridData gridData = new GridData();
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.minimumWidth = 250;
-		contextRepo.setLayoutData(gridData);
-
-		l = new Label(container, SWT.READ_ONLY);
-		l.setText(" Context Files (comma separated (partial)");
-
-		l = new Label(container, SWT.READ_ONLY);
-
-		l = new Label(container, SWT.READ_ONLY);
-		l.setText("   matches using * as wildcard):");
-
-		final StyledText contextFiles = new StyledText(container, SWT.NONE);
-		gridData = new GridData();
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.minimumWidth = 250;
-		contextFiles.setLayoutData(gridData);
-
-		l = new Label(container, SWT.READ_ONLY);
-		l.setText(" Enable Full Traversal Scoping (may affect");
-
-		l = new Label(container, SWT.READ_ONLY);
-
-		l = new Label(container, SWT.READ_ONLY);
-		l.setText("   performance -- only for scoped queries):");
-
-		enableFullTraversalScopingButton = new Button(container, SWT.CHECK);
-
-		l = new Label(container, SWT.READ_ONLY);
-		l.setText(" Default Namespaces (comma separated)");
-
-		final StyledText defaultNamespaces = new StyledText(container, SWT.NONE);
-		gridData = new GridData();
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.minimumWidth = 250;
-		defaultNamespaces.setLayoutData(gridData);
-
-		queryButton = new Button(container, SWT.PUSH);
-		gridData = new GridData();
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.horizontalSpan = 2;
-		gridData.minimumWidth = 555;
-		queryButton.setLayoutData(gridData);
-		queryButton.setText("Run Query");
-
-		// return TypeDeclaration.all.size();
-
-		// l = new Label(container, SWT.READ_ONLY);
-
-		queryButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-
-				long start = System.currentTimeMillis();
-				
-				Object result = null;
-				try {
-					String ql = null;
-					String text = queryLanguage.getText();
-					ql = text.equals("") ? null : text;
-					if (ql != null) {
-
-						final String sRepo = contextRepo.getText();
-						final String sFiles = contextFiles.getText();
-						final String defaultNamespace = defaultNamespaces
-								.getText();
-
-						Map<String, Object> map = new HashMap<>();
-						if (sFiles != null && !sFiles.trim().equals(""))
-							map.put(org.hawk.core.query.IQueryEngine.PROPERTY_FILECONTEXT,
-									sFiles);
-						if (sRepo != null && !sRepo.trim().equals(""))
-							map.put(org.hawk.core.query.IQueryEngine.PROPERTY_REPOSITORYCONTEXT,
-									sRepo);
-						if (defaultNamespace != null
-								&& !defaultNamespace.trim().equals(""))
-							map.put(org.hawk.core.query.IQueryEngine.PROPERTY_DEFAULTNAMESPACES,
-									defaultNamespace);
-						map.put(org.hawk.core.query.IQueryEngine.PROPERTY_ENABLE_TRAVERSAL_SCOPING,
-								new Boolean(enableFullTraversalScopingButton
-										.getSelection()).toString());
-						if (map.size() == 0)
-							map = null;
-
-						if (queryField.getText().startsWith(QUERY_IS_EDITOR)) {
-
-							result = index.query(queryField.getText()
-									.substring(QUERY_IS_EDITOR.length()), ql,
-									map);
-							String ret = "<null>";
-							if (result != null)
-								ret = result.toString();
-							resultField.setText(ret);
-
-						} else if (queryField.getText().startsWith(QUERY_IS_FILE)) {
-
-							result = index.query(new File(queryField
-									.getText()
-									.substring(QUERY_IS_FILE.length())), ql,
-									map);
-							String ret = "<null>";
-							if (result != null)
-								ret = result.toString();
-							resultField.setText(ret);
-						} else {
-							result = index.query(queryField.getText(), ql, map);
-							resultField.setText(result != null ? result.toString() : "<null>");
-						}
-
-					}
-				} catch (Exception ex) {
-					final String error = "Error while running the query: "
-							+ ex.getMessage();
-					resultField.setText(error);
-					resultField.setStyleRange(createRedBoldRange(error.length()));
-					ex.printStackTrace();
-				}
-				
-				long end = System.currentTimeMillis();
-				long time = end-start;
-
-				if (result instanceof Collection) {
-					setMessage(String.format("Query returned %d results in %d s %d ms", ((Collection)result).size(), time/1000,  time % 1000), 0);
-				} else {
-					setMessage(String.format("Query completed in %d s %d ms", time/1000,  time % 1000), 0);
-				}
-				
-			}
-		});
-
-		Button button2 = new Button(container, SWT.PUSH);
-		gridData = new GridData();
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.horizontalSpan = 1;
-		gridData.minimumWidth = 252;
-		button2.setLayoutData(gridData);
-		button2.setText("Reset Query");
-
-		button2.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				queryField.setText("");
-				queryField.setEditable(true);
-				resultField.setText("");
-				contextFiles.setText("");
-			}
-		});
-
-		queryField.setText("");
-		queryField.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				String res = resultField.getText();
-				if (!res.startsWith(QUERY_EDITED)) {
-					resultField.setText(QUERY_EDITED + "\n" + res);
-					resultField.setStyleRange(createRedBoldRange(QUERY_EDITED
-							.length()));
-				}
-			}
-
-		});
-
-		// l = new Label(container, SWT.READ_ONLY);
-
-		Button button3 = new Button(container, SWT.PUSH);
-		button3.setText("Request Immediate Sync");
-		button3.setImage(ImageDescriptor.createFromURL(
-				FileLocator.find(FrameworkUtil.getBundle(this.getClass()),
-						new Path("icons/refresh.gif"), null)).createImage());
-		button3.setLayoutData(gridData);
-		button3.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				try {
-					index.sync();
-				} catch (Exception ee) {
-					Activator.logError("Failed to invoke manual sync", ee);
-				}
-			}
-		});
+		createQueryArea(container);
+		createQueryLanguageSelector(container);
+		createContextRepository(container);
+		createContextFiles(container);
+		createDefaultNamespaces(container);
+		createFullTraversal(container);
+		createSubtree(container);
+		createButtons(container);
 
 		return container;
 	}
 
-	private String filequeryBrowse() {
-		FileDialog fd = new FileDialog(getShell(), SWT.OPEN);
+	protected void createSubtree(Composite container) {
+		Label lSubtree = new Label(container, SWT.WRAP | SWT.LEFT);
+		lSubtree.setText("Subtree root context (for fragmented models - path within repository):");
+		FormData lSubtreeFD = new FormData();
+		lSubtreeFD.left = new FormAttachment(5, 0);
+		lSubtreeFD.top = new FormAttachment(enableFullTraversalScopingButton, 10);
+		lSubtreeFD.width = 450;
+		lSubtree.setLayoutData(lSubtreeFD);
 
-		fd.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation()
-				.toFile().toString());
-		// fd.setFilterExtensions(new String [] {"*.ecore"});
-		fd.setText("Select a file to query");
-		return fd.open();
+		subtreeText = new StyledText(container, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		FormData subtreeTextFD = new FormData();
+		subtreeTextFD.left = new FormAttachment(50, 0);
+		subtreeTextFD.right = new FormAttachment(95, 0);
+		subtreeTextFD.height = 60;
+		subtreeTextFD.top = new FormAttachment(enableFullTraversalScopingButton, 10);
+		subtreeText.setLayoutData(subtreeTextFD);
 
+		Label lSubtreeDerived = new Label(container, SWT.WRAP | SWT.LEFT);
+		lSubtreeDerived.setText("Use derived edges to speed up Type.all in subtree queries:");
+		FormData lSubtreeDerivedFD = new FormData();
+		lSubtreeDerivedFD.left = new FormAttachment(5, 0);
+		lSubtreeDerivedFD.top = new FormAttachment(subtreeText, 10);
+		lSubtreeDerivedFD.width = 500;
+		lSubtreeDerived.setLayoutData(lSubtreeDerivedFD);
+
+		useDerivedForSubtreeButton = new Button(container, SWT.CHECK);
+		FormData useDerivedFD = new FormData();
+		useDerivedFD.left = new FormAttachment(lSubtreeDerived, 5);
+		useDerivedFD.top = new FormAttachment(subtreeText, 10);
+		useDerivedForSubtreeButton.setLayoutData(useDerivedFD);
 	}
 
+	protected void createButtons(final Composite container) {
+		queryButton = new Button(container, SWT.PUSH);
+		queryButton.setText("Run Query");
+		FormData queryButtonFD = new FormData();
+		queryButtonFD.left = new FormAttachment(6, 0);
+		queryButtonFD.right = new FormAttachment(34, 0);
+		queryButtonFD.top = new FormAttachment(useDerivedForSubtreeButton, 20);
+		queryButton.setLayoutData(queryButtonFD);
+		queryButton.addSelectionListener(new QueryExecutionSelectionAdapter());
+		
+		Button resetButton = new Button(container, SWT.PUSH);
+		resetButton.setText("Reset Query");
+		FormData resetButtonFD = new FormData();
+		resetButtonFD.left = new FormAttachment(36, 0);
+		resetButtonFD.right = new FormAttachment(64, 0);
+		resetButtonFD.top = new FormAttachment(useDerivedForSubtreeButton, 20);
+		resetButton.setLayoutData(resetButtonFD);
+		resetButton.addSelectionListener(new ResetButtonSelectionAdapter());
+
+		Button syncButton = new Button(container, SWT.PUSH);
+		syncButton.setText("Request Immediate Sync");
+		syncButton.setImage(ImageDescriptor.createFromURL(
+				FileLocator.find(FrameworkUtil.getBundle(this.getClass()),
+						new Path("icons/refresh.gif"), null)).createImage());
+		FormData syncButtonFD = new FormData();
+		syncButtonFD.left = new FormAttachment(66, 0);
+		syncButtonFD.right = new FormAttachment(94, 0);
+		syncButtonFD.top = new FormAttachment(useDerivedForSubtreeButton, 20);
+		syncButton.setLayoutData(syncButtonFD);
+		syncButton.addSelectionListener(new SyncSelectionAdapter());
+	}
+
+	protected void createDefaultNamespaces(final Composite container) {
+		Label lDefaultNamespaces = new Label(container, SWT.READ_ONLY);
+		lDefaultNamespaces.setText("Default Namespaces (comma separated):");
+		FormData lDefaultNamespacesFD = new FormData();
+		lDefaultNamespacesFD.left = new FormAttachment(5, 0);
+		lDefaultNamespacesFD.top = new FormAttachment(fileFirstButton, 10);
+		lDefaultNamespaces.setLayoutData(lDefaultNamespacesFD);
+
+		defaultNamespaces = new StyledText(container, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		FormData defaultNamespacesFD = new FormData();
+		defaultNamespacesFD.left = new FormAttachment(50, 0);
+		defaultNamespacesFD.top = new FormAttachment(fileFirstButton, 10);
+		defaultNamespacesFD.right = new FormAttachment(95, 0);
+		defaultNamespacesFD.height = 60;
+		defaultNamespaces.setLayoutData(defaultNamespacesFD);
+	}
+
+	protected void createFullTraversal(final Composite container) {
+		Label lFullTraversal = new Label(container, SWT.WRAP | SWT.LEFT);
+		lFullTraversal.setText("Enable Full Traversal Scoping (may affect performance -- only for scoped queries):");
+		FormData lFullTraversalFD = new FormData();
+		lFullTraversalFD.left = new FormAttachment(5, 0);
+		lFullTraversalFD.top = new FormAttachment(defaultNamespaces, 10);
+		lFullTraversalFD.width = 700;
+		lFullTraversal.setLayoutData(lFullTraversalFD);
+
+		enableFullTraversalScopingButton = new Button(container, SWT.CHECK);
+		FormData enableFTFD = new FormData();
+		enableFTFD.left = new FormAttachment(lFullTraversal, 5);
+		enableFTFD.top = new FormAttachment(defaultNamespaces, 10);
+		enableFullTraversalScopingButton.setLayoutData(enableFTFD);
+	}
+
+	protected void createContextFiles(final Composite container) {
+		Label lFiles = new Label(container, SWT.WRAP | SWT.LEFT);
+		lFiles.setText("Context Files (comma separated (partial) matches using * as wildcard):");
+		FormData lFilesFD = new FormData();
+		lFilesFD.left = new FormAttachment(5, 0);
+		lFilesFD.top = new FormAttachment(contextRepo, 10);
+		lFilesFD.width = 450;
+		lFiles.setLayoutData(lFilesFD);
+
+		contextFiles = new StyledText(container, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		FormData contextFilesFD = new FormData();
+		contextFilesFD.left = new FormAttachment(50, 0);
+		contextFilesFD.right = new FormAttachment(95, 0);
+		contextFilesFD.top = new FormAttachment(contextRepo, 10);
+		contextFilesFD.height = 60;
+		contextFiles.setLayoutData(contextFilesFD);
+
+		Label lFileFirst = new Label(container, SWT.WRAP);
+		lFileFirst.setText("Start with files rather than types for Type.all (faster for small fragments in large graphs):");
+		FormData lFileFirstFD = new FormData();
+		lFileFirstFD.left = new FormAttachment(5, 0);
+		lFileFirstFD.top = new FormAttachment(contextFiles, 10);
+		lFileFirst.setLayoutData(lFileFirstFD);
+
+		fileFirstButton = new Button(container, SWT.CHECK);
+		FormData fileFirstButtonFD = new FormData();
+		fileFirstButtonFD.left = new FormAttachment(lFileFirst, 10);
+		fileFirstButtonFD.top = new FormAttachment(contextFiles, 10);
+		fileFirstButton.setLayoutData(fileFirstButtonFD);
+	}
+
+	protected void createContextRepository(final Composite container) {
+		Label lRepositories = new Label(container, SWT.WRAP | SWT.LEFT);
+		lRepositories.setText("Context Repositories (comma separated (partial) matches using * as wildcard):");
+		FormData lRepositoriesFD = new FormData();
+		lRepositoriesFD.left = new FormAttachment(5, 0);
+		lRepositoriesFD.top = new FormAttachment(queryLanguage, 10);
+		lRepositoriesFD.width = 450;
+		lRepositories.setLayoutData(lRepositoriesFD);
+
+		contextRepo = new StyledText(container, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		FormData contextRepoFD = new FormData();
+		contextRepoFD.left = new FormAttachment(50, 0);
+		contextRepoFD.right = new FormAttachment(95, 0);
+		contextRepoFD.top = new FormAttachment(queryLanguage, 10);
+		contextRepoFD.height = 60;
+		contextRepo.setLayoutData(contextRepoFD);
+	}
+
+	protected void createQueryLanguageSelector(final Composite container) {
+		Label lQueryEngine = new Label(container, SWT.READ_ONLY);
+		lQueryEngine.setText("Query Engine:");
+		FormData lQueryEngineFD = new FormData();
+		lQueryEngineFD.left = new FormAttachment(5, 0);
+		lQueryEngineFD.top = new FormAttachment(resultField, 14);
+		lQueryEngine.setLayoutData(lQueryEngineFD);
+
+		queryLanguage = new Combo(container, SWT.READ_ONLY);
+		for (String s : index.getKnownQueryLanguages()) {
+			queryLanguage.add(s);
+		}
+		if (queryLanguage.getItems().length > 0) {
+			queryLanguage.select(0);
+		}
+		FormData queryLanguageFD = new FormData();
+		queryLanguageFD.left = new FormAttachment(50, 0);
+		queryLanguageFD.right = new FormAttachment(95, 0);
+		queryLanguageFD.top = new FormAttachment(resultField, 10);
+		queryLanguage.setLayoutData(queryLanguageFD);
+	}
+
+	protected void createQueryArea(final Composite container) {
+		final Label qLabel = new Label(container, SWT.NONE);
+		qLabel.setText("Query:");
+		FormData qLabelFD = new FormData();
+		qLabelFD.top = new FormAttachment(5, 0);
+		qLabelFD.left = new FormAttachment(5, 0);
+		qLabel.setLayoutData(qLabelFD);
+
+		queryField = new StyledText(container, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+		FormData queryFieldFD = new FormData();
+		queryFieldFD.top = new FormAttachment(qLabel, 10);
+		queryFieldFD.left = new FormAttachment(5, 0);
+		queryFieldFD.right = new FormAttachment(95, 0);
+		queryFieldFD.height = 100;
+		queryField.setLayoutData(queryFieldFD);
+		queryField.addModifyListener(new QueryModifyListener());
+
+		final Button editor = new Button(container, SWT.PUSH);
+		editor.setText("Query Current Editor");
+		editor.addSelectionListener(new UseEditorSelectionAdapter());
+		FormData editorFD = new FormData();
+		editorFD.bottom = new FormAttachment(queryField, -10);
+		editorFD.right = new FormAttachment(95, 0);
+		editor.setLayoutData(editorFD);
+
+		final Button file = new Button(container, SWT.PUSH);
+		file.setText("Query File");
+		file.addSelectionListener(new QueryFileSelectionAdapter());
+		FormData fileFD = new FormData();
+		fileFD.bottom = new FormAttachment(queryField, -10);
+		fileFD.right = new FormAttachment(editor, -5);
+		file.setLayoutData(fileFD);
+
+		final Label rLabel = new Label(container, SWT.NONE);
+		rLabel.setText("Result:");
+		FormData rLabelFD = new FormData();
+		rLabelFD.left = new FormAttachment(5, 0);
+		rLabelFD.top = new FormAttachment(queryField, 10);
+		rLabel.setLayoutData(rLabelFD);
+
+		resultField = new StyledText(container, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+		resultField.setEditable(false);
+		FormData resultFieldFD = new FormData();
+		resultFieldFD.left = new FormAttachment(5, 0);
+		resultFieldFD.top = new FormAttachment(rLabel, 10);
+		resultFieldFD.right = new FormAttachment(95, 0);
+		resultFieldFD.height = queryFieldFD.height;
+		resultField.setLayoutData(resultFieldFD);
+	}
+
+	private String fileQueryBrowse() {
+		FileDialog fd = new FileDialog(getShell(), SWT.OPEN);
+
+		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		final File rootFile = root.getLocation().toFile();
+		fd.setFilterPath(rootFile.toString());
+		// fd.setFilterExtensions(new String [] {"*.ecore"});
+		fd.setText("Select a file to query");
+
+		return fd.open();
+	}
+
+	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText("Query: " + index.getName());
