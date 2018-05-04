@@ -585,6 +585,7 @@ public class GraphModelBatchInjector {
 
 				final HashMap<String, Object> emptyMap = new HashMap<String, Object>();
 				createReference(ModelElementNode.EDGE_LABEL_OFTYPE, node, eClass, emptyMap, true);
+				createReference(ModelElementNode.EDGE_LABEL_OFKIND, node, eClass, emptyMap, true);
 				if (originatingFile != null) {
 					createReference(ModelElementNode.EDGE_LABEL_FILE, node, originatingFile, emptyMap, true);
 				}
