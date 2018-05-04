@@ -794,7 +794,12 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 	 */
 	private boolean isDerivedAttribute(IGraphNode typenode, final String attrName) {
 		final String[] propertyInfo = (String[]) typenode.getProperty(attrName);
-		return propertyInfo[0].equals("d");
+		if (propertyInfo == null) {
+			LOGGER.warn("Information on derived attribute {} in type node {} is missing", typenode.getId(), attrName);
+			return false;
+		} else {
+			return propertyInfo[0].equals("d");
+		}
 	}
 
 	private Collection<IndexedAttributeParameters> getExtraAttributes(final boolean isDerived) {

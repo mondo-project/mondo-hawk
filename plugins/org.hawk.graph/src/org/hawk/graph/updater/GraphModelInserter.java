@@ -62,6 +62,13 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class GraphModelInserter {
+
+	/**
+	 * Name of the feature in the derived feature nodes which stores the name of the
+	 * index which should be told about any new values.
+	 */
+	public static final String DERIVEDFEATURE_NODE_IDXNAME = "indexName";
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(GraphModelInserter.class);
 
 	// toggle to enabled detailed output of update process
@@ -1030,40 +1037,34 @@ public class GraphModelInserter {
 				}
 			}
 
-			HashSet<IGraphNode> nodes = new HashSet<>();
-			for (IGraphEdge e : typeNode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)) {
-				nodes.add(e.getStartNode());
-			}
+			final Set<IGraphNode> nodes = new HashSet<>();
 			for (IGraphEdge e : typeNode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFKIND)) {
 				nodes.add(e.getStartNode());
 			}
 
 			for (IGraphNode instanceNode : nodes) {
-
 				Iterator<IGraphEdge> derived = instanceNode.getOutgoingWithType(attributeName).iterator();
 
-				HashMap<String, Object> m = new HashMap<>();
+				final Map<String, Object> m = new HashMap<>();
 				m.put("isMany", isMany);
 				m.put("isOrdered", isOrdered);
 				m.put("isUnique", isUnique);
 				m.put("attributetype", attributeType);
 				m.put("derivationlanguage", derivationlanguage);
 				m.put("derivationlogic", derivationlogic);
+				m.put(DERIVEDFEATURE_NODE_IDXNAME, String.format("%s##%s##%s", metamodelUri, typeName, attributeName));
 				m.put(attributeName, DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX + derivationlogic);
 
-				// derived node exists -- update derived property
 				if (derived.hasNext()) {
-
+					// derived node exists -- update derived property
 					IGraphNode derivedPropertyNode = derived.next().getEndNode();
-
-					for (String s : m.keySet())
+					for (String s : m.keySet()) {
 						derivedPropertyNode.setProperty(s, m.get(s));
+					}
 
 					derivedPropertyNodes.add(derivedPropertyNode);
-
-				} else// derived node does not exist -- create derived property
-				{
-
+				} else {
+					// derived node does not exist -- create derived property
 					IGraphNode derivedPropertyNode = graph.createNode(m, "derivedattribute");
 
 					m.clear();
@@ -1072,7 +1073,6 @@ public class GraphModelInserter {
 					graph.createRelationship(instanceNode, derivedPropertyNode, attributeName, m);
 
 					derivedPropertyNodes.add(derivedPropertyNode);
-
 				}
 
 			}
@@ -1133,30 +1133,21 @@ public class GraphModelInserter {
 				e.printStackTrace();
 			}
 
-			HashSet<IGraphNode> nodes = new HashSet<>();
-			for (IGraphEdge e : typeNode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFTYPE)) {
-				nodes.add(e.getStartNode());
-			}
+			final Set<IGraphNode> nodes = new HashSet<>();
 			for (IGraphEdge e : typeNode.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFKIND)) {
 				nodes.add(e.getStartNode());
 			}
 
 			for (IGraphNode node : nodes) {
-
 				Map<String, Object> m = new HashMap<>();
 
 				if (!"t".equals(metadata[1])) {
-
-					if (isPrimitiveOrWrapperType)
+					if (isPrimitiveOrWrapperType) {
 						m.put(attributename, node.getProperty(attributename));
-
-					else
+					} else {
 						m.put(attributename, node.getProperty(attributename).toString());
-
-				}
-
-				else {
-
+					}
+				} else {
 					Collection<Object> collection = null;
 
 					if ("t".equals(metadata[3]))
@@ -1165,23 +1156,17 @@ public class GraphModelInserter {
 						collection = new LinkedList<Object>();
 
 					for (Object o : (Collection<?>) node.getProperty(attributename)) {
-
-						if (isPrimitiveOrWrapperType)
+						if (isPrimitiveOrWrapperType) {
 							collection.add(o);
-
-						else
+						} else {
 							collection.add(o.toString());
-
+						}
 					}
 
 					if (collection.size() > 0) {
-
 						Object r = Array.newInstance(c, collection.size());
-
 						Object ret = collection.toArray((Object[]) r);
-
 						m.put(attributename, ret);
-
 					}
 				}
 

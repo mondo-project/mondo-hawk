@@ -71,6 +71,7 @@ import org.hawk.graph.MetamodelNode;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.TypeNode;
 import org.hawk.graph.updater.DirtyDerivedAttributesListener;
+import org.hawk.graph.updater.GraphModelInserter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -602,13 +603,9 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 					n.setProperty(s, new String[0]);
 				}
 
-				IGraphNode elementnode = n.getIncoming().iterator().next().getStartNode();
-
-				IGraphNode typeNode = elementnode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator()
-						.next().getEndNode();
-				IGraphNodeIndex idxNodeByDerivedValue = graph.getOrCreateNodeIndex(typeNode.getOutgoingWithType("epackage")
-						.iterator().next().getEndNode().getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString() + "##"
-						+ typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString() + "##" + s);
+				final IGraphNode elementNode = n.getIncoming().iterator().next().getStartNode();
+				final String idxName = n.getProperty(GraphModelInserter.DERIVEDFEATURE_NODE_IDXNAME).toString();
+				final IGraphNodeIndex idxNodeByDerivedValue = graph.getOrCreateNodeIndex(idxName);
 
 				// flatten multi-valued derived features for indexing
 				if (derived != null) {
@@ -617,7 +614,7 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 					}
 
 					// TODO: need to test how this works with derived edges
-					idxNodeByDerivedValue.add(elementnode, s, derived);
+					idxNodeByDerivedValue.add(elementNode, s, derived);
 				}
 			}
 		}

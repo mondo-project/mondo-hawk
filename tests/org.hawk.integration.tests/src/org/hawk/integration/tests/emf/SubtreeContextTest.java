@@ -17,6 +17,7 @@
 package org.hawk.integration.tests.emf;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +37,8 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.hawk.backend.tests.BackendTestSuite;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.core.query.IQueryEngine;
+import org.hawk.core.query.InvalidQueryException;
+import org.hawk.core.query.QueryExecutionException;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.syncValidationListener.SyncValidationListener;
 import org.hawk.integration.tests.ModelIndexingTest;
@@ -154,8 +157,29 @@ public class SubtreeContextTest extends ModelIndexingTest {
 		indexer.registerMetamodels(new File("resources/metamodels/Ecore.ecore"),
 				new File("resources/metamodels/JDTAST.ecore"));
 
-		// Add set0 as usual - should work normally
 		folderOriginal = new File("resources/models/set0").getAbsoluteFile();
+		folderFragmented = new File("resources/models/set0-fragmented").getAbsoluteFile();
+		originalRepoURI = folderOriginal.toPath().toUri().toString();
+		fragmentedRepoURI = folderFragmented.toPath().toUri().toString();
+	}
+
+	protected void prepareBoth() throws Exception, Throwable {
+		prepareOriginal();
+		prepareFragmented();
+	}
+
+	protected void prepareFragmented() throws Exception, Throwable {
+		requestFolderIndex(folderFragmented);
+		waitForSync(new Callable<Object>() {
+			@Override
+			public Object call() throws Exception {
+				assertEquals(0, syncValidation.getListener().getTotalErrors());
+				return null;
+			}
+		});
+	}
+
+	protected void prepareOriginal() throws Exception, Throwable {
 		requestFolderIndex(folderOriginal);
 		waitForSync(new Callable<Object>() {
 			@Override
@@ -165,23 +189,12 @@ public class SubtreeContextTest extends ModelIndexingTest {
 				return null;
 			}
 		});
-
-		folderFragmented = new File("resources/models/set0-fragmented").getAbsoluteFile();
-		requestFolderIndex(folderFragmented);
-		waitForSync(new Callable<Object>() {
-			@Override
-			public Object call() throws Exception {
-				assertEquals(0, syncValidation.getListener().getTotalErrors());
-				return null;
-			}
-		});
-
-		originalRepoURI = folderOriginal.toPath().toUri().toString();
-		fragmentedRepoURI = folderFragmented.toPath().toUri().toString();
 	}
 
 	@Test
 	public void allContents() throws Throwable {
+		prepareBoth();
+
 		// Sanity check for .allContents (repo-based)
 		final int originalSize = (int) eol("return Model.allContents.size;",
 				ctx(IQueryEngine.PROPERTY_REPOSITORYCONTEXT, originalRepoURI));
@@ -219,6 +232,7 @@ public class SubtreeContextTest extends ModelIndexingTest {
 
 	@Test
 	public void getAllOf() throws Throwable {
+		prepareBoth();
 		final String eolQuery = "return IType.all.size;";
 
 		/*
@@ -261,7 +275,30 @@ public class SubtreeContextTest extends ModelIndexingTest {
 	}
 
 	@Test
+	public void getAllOfCountsSubtypes() throws Throwable {
+		prepareFragmented();
+
+		/* This version finds out the files in a containment subtree, and registers derived edges to quickly find instances of a type within a containment subtree. */
+		final int binpkgCount = (int) eol("return BinaryPackageFragmentRoot.all.size;", ctx(
+			IQueryEngine.PROPERTY_REPOSITORYCONTEXT, fragmentedRepoURI,
+			IQueryEngine.PROPERTY_SUBTREECONTEXT, "/set0.xmi",
+			IQueryEngine.PROPERTY_SUBTREE_DERIVEDALLOF, "true"
+		));
+		final int ipkgCount = (int) eol("return IPackageFragmentRoot.all.size;", ctx(
+			IQueryEngine.PROPERTY_REPOSITORYCONTEXT, fragmentedRepoURI,
+			IQueryEngine.PROPERTY_SUBTREECONTEXT, "/set0.xmi",
+			IQueryEngine.PROPERTY_SUBTREE_DERIVEDALLOF, "true"
+		));
+
+		assertTrue(String.format(
+			"IPackageFragmentRoot.all.size should be > than BinaryPackageFragmentRoot.all.size: checking %d > %d", ipkgCount, binpkgCount),
+			ipkgCount > binpkgCount);
+	}
+
+	@Test
 	public void subtreeTraversalScoping() throws Throwable {
+		prepareBoth();
+
 		// None of the external package fragment roots should be visible with traversal scoping on
 		final String eolQuery = "return IJavaProject.all.first.externalPackageFragmentRoots.size;";
 		final int fileClasses = (int) eol(eolQuery, ctx(
@@ -280,6 +317,8 @@ public class SubtreeContextTest extends ModelIndexingTest {
 
 	@Test
 	public void getFiles() throws Throwable {
+		prepareBoth();
+
 		final int fragmentedFilesCount = (int) eol("return Model.files.size;", ctx(
 			IQueryEngine.PROPERTY_REPOSITORYCONTEXT, fragmentedRepoURI,
 			IQueryEngine.PROPERTY_FILECONTEXT, "/IJavaProject_org.eclipse.jdt.apt.pluggable.core/*"));
