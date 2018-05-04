@@ -18,18 +18,23 @@
 package org.hawk.epsilon.emc.wrappers;
 
 import java.lang.ref.WeakReference;
+import java.util.Iterator;
 
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.hawk.core.IModelIndexer;
+import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeReference;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.ModelElementNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GraphNodeWrapper implements IGraphNodeReference {
 
-	// private IGraphDatabase container;
+	private static final Logger LOGGER = LoggerFactory.getLogger(GraphNodeWrapper.class);
+
 	protected String id;
 	protected EOLQueryEngine containerModel;
 	protected WeakReference<IGraphNode> node;
@@ -98,20 +103,17 @@ public class GraphNodeWrapper implements IGraphNodeReference {
 		try (IGraphTransaction t = containerModel.getBackend().beginTransaction()) {
 			IGraphNode n = getNode();
 
-			type = n.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().next().getEndNode()
-					.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
-
-			// HawkClass e = new MetamodelUtils().getTypeOfFromNode(n,
-			// containerModel.parser);
-			//
-			// type = (e != null ? e.getName() : new MetamodelUtils()
-			// .getClassFromNode(container.getNodeById(id),
-			// containerModel.parser).getName())
-			// + "";
+			final Iterator<IGraphEdge> itTypeNode = n.getOutgoingWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator();
+			if (itTypeNode.hasNext()) {
+				final IGraphNode typeNode = itTypeNode.next().getEndNode();
+				type = typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+			} else {
+				LOGGER.error("No type node found for node {}", n);
+			}
 
 			t.success();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		}
 
 		return type;
