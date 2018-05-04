@@ -13,6 +13,8 @@
  *
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - expand javadocs, add
+ *       PROPERTY_FILEFIRST and PROPERTY_SUBTREECONTEXT
  ******************************************************************************/
 package org.hawk.core.query;
 
@@ -26,15 +28,56 @@ import org.hawk.core.graph.IGraphNode;
 public interface IQueryEngine {
 
 	/**
-	 * If true, contextful getAllOf will start from the files then check types. Can
-	 * be useful when querying very large collections of small fragments.
+	 * If true, contextful getAllOf will start from the files in
+	 * {@link #PROPERTY_FILECONTEXT} then check types. Can be useful when querying a
+	 * small fragment out of a large graph.
+	 * 
+	 * If false or unset, the search will start from the types and then filter by
+	 * file: this is good when looking for a rare type across a large graph.
 	 */
 	public static final String PROPERTY_FILEFIRST = "FILEFIRST";
 
+	/**
+	 * If set to the full repository path (starting with '/') of a file, contextful
+	 * getAllOf(...) will only return the elements of that type inside the
+	 * containment subtree rooted in that file. Model.allContents will also be
+	 * limited to the elements in that subtree.
+	 * 
+	 * The first type this request is received, the query engine will create derived
+	 * edges from the elements of that type to its ancestors, which will be followed
+	 * in reverse from the root of the subtree to provide results quickly.
+	 */
+	public static final String PROPERTY_SUBTREECONTEXT = "SUBTREE";
+
+	/**
+	 * If set to a comma-separated list of repository path patterns (where '*' is
+	 * 'any 0+ characters, glob style), limits Model.allContents and contextful
+	 * getAllOf(...) to the contents of these files.
+	 *
+	 * @see #PROPERTY_FILEFIRST
+	 */
 	public static final String PROPERTY_FILECONTEXT = "FILE";
+
+	/**
+	 * If set to the full URI of a repository, results will be limited to the files within
+	 * this repository.
+	 *
+	 * @see #PROPERTY_FILECONTEXT
+	 * @see #PROPERTY_SUBTREECONTEXT
+	 */
 	public static final String PROPERTY_REPOSITORYCONTEXT = "REPOSITORY";
+
+	/**
+	 * If set to a list of metamodel URIs, it will resolve ambiguous type references by
+	 * using the first metamodel in the list that contains a type with that name.
+	 */
 	public static final String PROPERTY_DEFAULTNAMESPACES = "DEFAULTNAMESPACES";
-	public static final String PROPERTY_ENABLE_CACHING = "ENABLE_CACHING";
+
+	/**
+	 * If set to true, limits incoming and outgoing edges from any model element to the
+	 * same context defined by {@link #PROPERTY_FILECONTEXT}, {@link #PROPERTY_REPOSITORYCONTEXT}
+	 * and/or {@link #PROPERTY_SUBTREECONTEXT}.
+	 */
 	public static final String PROPERTY_ENABLE_TRAVERSAL_SCOPING = "ENABLE_TRAVERSAL_SCOPING";
 
 	/**

@@ -83,8 +83,8 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 	protected Map<IGraphNode, Map<String, PropertyType>> propertyTypeCache = new HashMap<>();
 	protected Map<IGraphNode, Map<String, String[]>> propertyTypeFlagsCache = new HashMap<>();
 
-	public GraphPropertyGetter(IGraphDatabase graph2, EOLQueryEngine m) {
-		graph = graph2;
+	public GraphPropertyGetter(IGraphDatabase graph, EOLQueryEngine m) {
+		this.graph = graph;
 		this.m = m;
 	}
 

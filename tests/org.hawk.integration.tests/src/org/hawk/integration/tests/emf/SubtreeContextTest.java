@@ -16,8 +16,13 @@
  ******************************************************************************/
 package org.hawk.integration.tests.emf;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.TreeIterator;
@@ -34,7 +39,9 @@ import org.hawk.core.query.IQueryEngine;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.syncValidationListener.SyncValidationListener;
 import org.hawk.integration.tests.ModelIndexingTest;
+import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runners.Parameterized.Parameters;
 
@@ -57,8 +64,7 @@ public class SubtreeContextTest extends ModelIndexingTest {
 
 		public void run() throws IOException {
 			rs = new ResourceSetImpl();
-			rs.getResourceFactoryRegistry()
-				.getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
+			rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
 
 			Resource rEcoreMM = rs.createResource(URI.createFileURI(new File(pathToMetamodel).getAbsolutePath()));
 			rEcoreMM.load(null);
@@ -92,7 +98,7 @@ public class SubtreeContextTest extends ModelIndexingTest {
 			File fRoot = new File(rRoot.getURI().toFileString());
 			File fRootFolder = fRoot.getParentFile();
 
-			for (TreeIterator<EObject> itContents = rRoot.getAllContents(); itContents.hasNext(); ) {
+			for (TreeIterator<EObject> itContents = rRoot.getAllContents(); itContents.hasNext();) {
 				EObject eob = itContents.next();
 				if (rRoot.getContents().contains(eob)) {
 					// No roots (otherwise, we'd have endless recursion)
@@ -109,7 +115,7 @@ public class SubtreeContextTest extends ModelIndexingTest {
 
 					final File fFolder = new File(fRootFolder, String.format("%s_%s", eClassName, name));
 					fFolder.mkdirs();
-					final File fChild = new File(fFolder, String.format("%s_%s.xmi", eClassName, name)); 
+					final File fChild = new File(fFolder, String.format("%s_%s.xmi", eClassName, name));
 					final URI uriChild = URI.createFileURI(fChild.getAbsolutePath());
 					Resource r = rs.createResource(uriChild);
 					itContents.prune();
@@ -125,21 +131,147 @@ public class SubtreeContextTest extends ModelIndexingTest {
 	}
 
 	@Rule
-	public GraphChangeListenerRule<SyncValidationListener> syncValidation
-		= new GraphChangeListenerRule<>(new SyncValidationListener());
+	public GraphChangeListenerRule<SyncValidationListener> syncValidation = new GraphChangeListenerRule<>(
+			new SyncValidationListener());
 
 	@Rule
 	public TemporaryFolder modelFolder = new TemporaryFolder();
 
+	private File folderOriginal, folderFragmented;
+	private String originalRepoURI, fragmentedRepoURI;
+
 	@Parameters(name = "{0}")
-    public static Iterable<Object[]> params() {
-    	return BackendTestSuite.caseParams();
-    }
+	public static Iterable<Object[]> params() {
+		return BackendTestSuite.caseParams();
+	}
 
 	public SubtreeContextTest(IGraphDatabaseFactory dbf) {
 		super(dbf, new EMFModelSupportFactory());
 	}
 
+	@Before
+	public void setUp() throws Throwable {
+		indexer.registerMetamodels(new File("resources/metamodels/Ecore.ecore"),
+				new File("resources/metamodels/JDTAST.ecore"));
+
+		// Add set0 as usual - should work normally
+		folderOriginal = new File("resources/models/set0").getAbsoluteFile();
+		requestFolderIndex(folderOriginal);
+		waitForSync(new Callable<Object>() {
+			@Override
+			public Object call() throws Exception {
+				assertEquals(0, syncValidation.getListener().getTotalErrors());
+
+				return null;
+			}
+		});
+
+		folderFragmented = new File("resources/models/set0-fragmented").getAbsoluteFile();
+		requestFolderIndex(folderFragmented);
+		waitForSync(new Callable<Object>() {
+			@Override
+			public Object call() throws Exception {
+				assertEquals(0, syncValidation.getListener().getTotalErrors());
+				return null;
+			}
+		});
+
+		originalRepoURI = folderOriginal.toPath().toUri().toString();
+		fragmentedRepoURI = folderFragmented.toPath().toUri().toString();
+	}
+
+	@Test
+	public void allContents() throws Throwable {
+		// Sanity check for .allContents (repo-based)
+		final int originalSize = (int) eol("return Model.allContents.size;",
+				ctx(IQueryEngine.PROPERTY_REPOSITORYCONTEXT, originalRepoURI));
+		final int fragmentedSize = (int) eol("return Model.allContents.size;",
+				ctx(IQueryEngine.PROPERTY_REPOSITORYCONTEXT, fragmentedRepoURI));
+		assertEquals(originalSize, fragmentedSize);
+		assertEquals(originalSize * 2, eol("return Model.allContents.size;"));
+
+		// Now doing it with the subtree context (will be replaced by a breadth-first traversal)
+		final int subtreeOriginalSize = (int) eol("return Model.allContents.size;", ctx(
+			IQueryEngine.PROPERTY_REPOSITORYCONTEXT, originalRepoURI,
+			IQueryEngine.PROPERTY_SUBTREECONTEXT, "/set0.xmi"
+		));
+		assertEquals(originalSize, subtreeOriginalSize);
+
+		final int subtreeFragmentedSize = (int) eol("return Model.allContents.size;", ctx(
+			IQueryEngine.PROPERTY_REPOSITORYCONTEXT, fragmentedRepoURI,
+			IQueryEngine.PROPERTY_SUBTREECONTEXT, "/set0.xmi"
+		));
+		assertEquals(subtreeFragmentedSize, subtreeOriginalSize);
+
+		// Now limit to the contents of the first IJavaProject
+		final int originalJavaContents = (int) eol("return 1 + IJavaProject.all.first.closure(e|e.eContents).size;",
+				ctx(IQueryEngine.PROPERTY_REPOSITORYCONTEXT, originalRepoURI));
+		final int fileBasedJavaContents = (int) eol("return Model.allContents.size;", ctx(
+			IQueryEngine.PROPERTY_REPOSITORYCONTEXT, fragmentedRepoURI,
+			IQueryEngine.PROPERTY_FILECONTEXT, "/IJavaProject_org.eclipse.jdt.apt.pluggable.core/*"));
+		final int subtreeJavaContents = (int) eol("return Model.allContents.size;", ctx(
+			IQueryEngine.PROPERTY_REPOSITORYCONTEXT, fragmentedRepoURI,
+			IQueryEngine.PROPERTY_SUBTREECONTEXT, "/IJavaProject_org.eclipse.jdt.apt.pluggable.core/IJavaProject_org.eclipse.jdt.apt.pluggable.core.xmi"
+		));
+		assertEquals(originalJavaContents, fileBasedJavaContents);
+		assertEquals(originalJavaContents, subtreeJavaContents);
+	}
+
+	@Test
+	public void getAllOf() throws Throwable {
+		final String eolQuery = "return IType.all.size;";
+		final int fileClasses = (int) eol(eolQuery, ctx(
+			IQueryEngine.PROPERTY_REPOSITORYCONTEXT, fragmentedRepoURI,
+			IQueryEngine.PROPERTY_FILECONTEXT, "/IJavaProject_org.eclipse.jdt.apt.pluggable.core/*"));
+		final int subtreeClasses = (int) eol(eolQuery, ctx(
+			IQueryEngine.PROPERTY_REPOSITORYCONTEXT, fragmentedRepoURI,
+			IQueryEngine.PROPERTY_SUBTREECONTEXT, "/IJavaProject_org.eclipse.jdt.apt.pluggable.core/IJavaProject_org.eclipse.jdt.apt.pluggable.core.xmi"
+		));
+		assertEquals(fileClasses, subtreeClasses);
+	}
+
+	@Test
+	public void subtreeTraversalScoping() throws Throwable {
+		// None of the external package fragment roots should be visible with traversal scoping on
+		final String eolQuery = "return IJavaProject.all.first.externalPackageFragmentRoots.size;";
+		final int fileClasses = (int) eol(eolQuery, ctx(
+			IQueryEngine.PROPERTY_REPOSITORYCONTEXT, fragmentedRepoURI,
+			IQueryEngine.PROPERTY_FILECONTEXT, "/IJavaProject_org.eclipse.jdt.apt.pluggable.core/*",
+			IQueryEngine.PROPERTY_ENABLE_TRAVERSAL_SCOPING, "true"));
+		assertEquals(0, fileClasses);
+
+		// Same should happen with the subtree context
+		final int subtreeClasses = (int) eol(eolQuery, ctx(
+			IQueryEngine.PROPERTY_REPOSITORYCONTEXT, fragmentedRepoURI,
+			IQueryEngine.PROPERTY_SUBTREECONTEXT, "/IJavaProject_org.eclipse.jdt.apt.pluggable.core/IJavaProject_org.eclipse.jdt.apt.pluggable.core.xmi",
+			IQueryEngine.PROPERTY_ENABLE_TRAVERSAL_SCOPING, "true"));
+		assertEquals(0, subtreeClasses);
+	}
+
+	@Test
+	public void getFiles() throws Throwable {
+		final int fragmentedFilesCount = (int) eol("return Model.files.size;", ctx(
+			IQueryEngine.PROPERTY_REPOSITORYCONTEXT, fragmentedRepoURI,
+			IQueryEngine.PROPERTY_FILECONTEXT, "/IJavaProject_org.eclipse.jdt.apt.pluggable.core/*"));
+		final int subtreeFilesCount = (int) eol("return Model.files.size;", ctx(
+			IQueryEngine.PROPERTY_REPOSITORYCONTEXT, fragmentedRepoURI,
+			IQueryEngine.PROPERTY_SUBTREECONTEXT, "/IJavaProject_org.eclipse.jdt.apt.pluggable.core/IJavaProject_org.eclipse.jdt.apt.pluggable.core.xmi"
+		));
+		assertEquals(fragmentedFilesCount, subtreeFilesCount);
+	}
+
+	private static Map<String, Object> ctx(String... opts) {
+		Map<String, Object> ctx = new HashMap<>();
+		for (int i = 0; i + 1 < opts.length; i += 2) {
+			final String key = opts[i], value = opts[i + 1];
+			ctx.put(key, value);
+		}
+		return ctx;
+	}
+
+	/**
+	 * Creates the fragmented version of set0, to help with testing.
+	 */
 	public static void main(String[] args) throws IOException {
 		new Fragmenter().run();
 	}

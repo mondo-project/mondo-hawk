@@ -367,7 +367,8 @@ public class ModelElementNode {
 
 	/**
 	 * Returns <code>true</code> if this model element is contained directly or
-	 * indirectly by the provided file within the provided repository.
+	 * indirectly by the provided file within the provided repository. Null values
+	 * can be provided to check only the repository or only the file.
 	 */
 	public boolean isContainedWithin(final String containerRepository, final String containerPath) {
 		for (ModelElementNode men = this; men != null; men = men.getContainer()) {
@@ -375,7 +376,8 @@ public class ModelElementNode {
 			final String repositoryURL = fn.getRepositoryURL();
 			final String filePath = fn.getFilePath();
 
-			if (repositoryURL.equals(containerRepository) && filePath.equals(containerPath)) {
+			if ((containerRepository == null || repositoryURL.equals(containerRepository))
+				&& (containerPath == null || filePath.equals(containerPath))) {
 				return true;
 			}
 		}

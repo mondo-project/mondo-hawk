@@ -42,9 +42,8 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 
 	private final CEOLQueryEngine engine;
 
-	public CGraphPropertyGetter(IGraphDatabase graph2, CEOLQueryEngine m) {
-		super(graph2, m);
-		// System.out.println("CGraphPropertyGetter created.");
+	public CGraphPropertyGetter(IGraphDatabase graph, CEOLQueryEngine m) {
+		super(graph, m);
 		engine = m;
 	}
 
@@ -337,7 +336,6 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 
 		// capture multiple file containment (ie for singleton nodes)
 		for (IGraphEdge e : graph.getNodeById(ret.getId()).getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
-
 			if (engine.getRawFileNodes().contains(e.getEndNode())) {
 				return ret;
 			}

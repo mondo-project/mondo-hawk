@@ -38,7 +38,9 @@ public class SyncEndListener extends GraphChangeAdapter {
 	@Override
 	public void synchroniseEnd() {
 		try {
-			r.call();
+			if (r != null) {
+				r.call();
+			}
 		} catch (Throwable e) {
 			ex = e;
 		}
