@@ -23,9 +23,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -37,8 +39,6 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.hawk.backend.tests.BackendTestSuite;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.core.query.IQueryEngine;
-import org.hawk.core.query.InvalidQueryException;
-import org.hawk.core.query.QueryExecutionException;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.syncValidationListener.SyncValidationListener;
 import org.hawk.integration.tests.ModelIndexingTest;
@@ -293,6 +293,24 @@ public class SubtreeContextTest extends ModelIndexingTest {
 		assertTrue(String.format(
 			"IPackageFragmentRoot.all.size should be > than BinaryPackageFragmentRoot.all.size: checking %d > %d", ipkgCount, binpkgCount),
 			ipkgCount > binpkgCount);
+
+		Random rnd = new Random(42);
+		for (File f : FileUtils.listFiles(folderFragmented, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE)) {
+			if (rnd.nextDouble() < 0.2) {
+				FileUtils.touch(f);
+			}
+		}
+		indexer.requestImmediateSync();
+		waitForSync(() -> {
+			final int ipkgCount2 = (int) eol("return IPackageFragmentRoot.all.size;", ctx(
+				IQueryEngine.PROPERTY_REPOSITORYCONTEXT, fragmentedRepoURI,
+				IQueryEngine.PROPERTY_SUBTREECONTEXT, "/set0.xmi",
+				IQueryEngine.PROPERTY_SUBTREE_DERIVEDALLOF, "true"
+			));
+			assertEquals(ipkgCount, ipkgCount2);
+
+			return null;
+		});
 	}
 
 	@Test
