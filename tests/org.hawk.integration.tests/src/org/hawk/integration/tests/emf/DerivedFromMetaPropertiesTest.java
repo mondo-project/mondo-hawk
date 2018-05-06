@@ -110,7 +110,7 @@ public class DerivedFromMetaPropertiesTest extends ModelIndexingTest {
 	}
 
 	@Test
-	public void eContentsIsUpdated() throws Throwable {
+	public void eContainersIsUpdatedRoot() throws Throwable {
 		indexer.addDerivedAttribute(TreePackage.eNS_URI, "Tree", "allContainers",
 				"Tree", true, false, true,
 				EOLQueryEngine.TYPE, "return self.closure(e|e.eContainers);");
