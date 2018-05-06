@@ -89,7 +89,6 @@ public class Workspace implements IVcsManager {
 
 				if (!pendingChanges && visitor.anyChanges) {
 					pendingChanges = true;
-					indexer.requestImmediateSync();
 				}
 			} catch (Exception e) {
 				console.printerrln(e);
