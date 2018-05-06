@@ -21,7 +21,6 @@ package org.hawk.graph.updater;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.function.Supplier;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
@@ -36,7 +35,6 @@ import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
-import org.hawk.graph.ModelElementNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,7 +103,6 @@ public class DirtyDerivedFeaturesListener implements IGraphChangeListener {
 
 	public DirtyDerivedFeaturesListener(IGraphDatabase graph) {
 		this.db = graph;
-
 	}
 
 	public Set<IGraphNode> getNodesToBeUpdated() {
@@ -282,18 +279,9 @@ public class DirtyDerivedFeaturesListener implements IGraphChangeListener {
 		final IGraphEdge firstIncoming = incoming.iterator().next();
 		final String derivedPropertyName = firstIncoming.getType();
 
-		final Supplier<Boolean> hasDerivedAttribute = () ->
-			node.getPropertyKeys().contains(derivedPropertyName);
-		final Supplier<Boolean> hasDerivedEdge = () ->
-			node.getOutgoingWithType(ModelElementNode.DERIVED_EDGE_PREFIX + derivedPropertyName)
-				.iterator().hasNext();
-
-		if (hasDerivedAttribute.get() || hasDerivedEdge.get()) {
-			node.setProperty(derivedPropertyName, NOT_YET_DERIVED_PREFIX + node.getProperty("derivationlogic"));
-			nodesToBeUpdated.add(node);
-		} else {
-			LOGGER.warn("Derived attribute node did not contain property {}", derivedPropertyName);
-		}
+		node.setProperty(derivedPropertyName,
+			NOT_YET_DERIVED_PREFIX + node.getProperty("derivationlogic"));
+		nodesToBeUpdated.add(node);
 	}
 
 	@Override
