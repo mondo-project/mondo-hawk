@@ -110,7 +110,7 @@ public class ScopedQueryTest extends ModelIndexingTest {
 			try (IGraphTransaction tx = db.beginTransaction()) {
 				assertEquals("With no context, it should return all six elements of the exact type", 6,
 						queryEngine.getAllOf("Element", ModelElementNode.EDGE_LABEL_OFTYPE).size());
-				assertEquals("OFKIND does not include the exact type", 0,
+				assertEquals("With no context, it should return all six elements of the exact type or subtypes", 6,
 						queryEngine.getAllOf("Element", ModelElementNode.EDGE_LABEL_OFKIND).size());
 
 				assertEquals("With file context '*', it should return all six elements", 6,
