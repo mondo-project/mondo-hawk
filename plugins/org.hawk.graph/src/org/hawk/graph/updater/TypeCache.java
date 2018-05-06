@@ -17,7 +17,6 @@
 package org.hawk.graph.updater;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -27,6 +26,8 @@ import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkClassifier;
+import org.hawk.graph.Slot;
+import org.hawk.graph.TypeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,8 +39,9 @@ import org.slf4j.LoggerFactory;
 public class TypeCache {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TypeCache.class);
+
 	private Map<IHawkClass, IGraphNode> hashedEClasses = new HashMap<>();
-	private Map<IGraphNode, Map<String, Object>> hashedEClassProperties = new HashMap<>();
+	private Map<IGraphNode, Map<String, Slot>> hashedEClassSlots = new HashMap<>();
 
 	public IGraphNode getEClassNode(IGraphDatabase graph, IHawkClassifier e) throws Exception {
 		IHawkClass eClass = null;
@@ -85,21 +87,13 @@ public class TypeCache {
 						eClass.getName(), eClass.getUri(), packageNSURI));
 			}
 
-			// typeCache properties
-			Hashtable<String, Object> properties = new Hashtable<>();
-			for (String s : classnode.getPropertyKeys()) {
-				Object prop = classnode.getProperty(s);
-				if (prop instanceof String[])
-					properties.put(s, prop);
-			}
-			hashedEClassProperties.put(classnode, properties);
+			hashedEClassSlots.put(classnode, new TypeNode(classnode).getSlots());
 		}
 
 		return classnode;
-
 	}
 
-	public Map<String, Object> getEClassNodeProperties(IGraphDatabase graph, IHawkClassifier e) throws Exception {
-		return hashedEClassProperties.get(getEClassNode(graph, e));
+	public Map<String, Slot> getEClassNodeSlots(IGraphDatabase graph, IHawkClassifier e) throws Exception {
+		return hashedEClassSlots.get(getEClassNode(graph, e));
 	}
 }

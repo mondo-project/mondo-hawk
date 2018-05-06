@@ -896,9 +896,14 @@ public class GraphModelInserter {
 		final long startMillis = System.currentTimeMillis();
 		final IQueryEngine q = indexer.getKnownQueryLanguages().get(type);
 
+		Iterator<IGraphNode> itUnresolved;
+		try (IGraphTransaction tx = graph.beginTransaction()) {
+			itUnresolved = derivedFeatureNodes.iterator();
+			tx.success();
+		}
+
 		// Process derived nodes in chunks, to keep the size of the access listener and the transactions bounded
 		int count = 0;
-		final Iterator<IGraphNode> itUnresolved = derivedFeatureNodes.iterator();
 		boolean done = false;
 		while (!done) {
 			try (IGraphTransaction tx = graph.beginTransaction()) {

@@ -131,7 +131,7 @@ public class ModelElementNode {
 	 *             Could not begin the transaction on the graph.
 	 */
 	public void getSlotValues(Map<String, Object> attributeValues, Map<String, Object> referenceValues, Map<String, Object> mixedValues, Map<String, Object> derivedValues) {
-		final List<Slot> slots = getTypeNode().getSlots();
+		final Collection<Slot> slots = getTypeNode().getSlots().values();
 		for (Slot s : slots) {
 			if (s.isAttribute() && attributeValues != null) {
 				final Object value = getSlotValue(s);

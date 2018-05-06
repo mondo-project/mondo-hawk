@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 The University of York.
+ * Copyright (c) 2015-2018 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -28,8 +28,11 @@ import java.util.LinkedHashSet;
 public class Slot {
 	private final TypeNode typeNode;
 	private final String propertyName, propertyType;
-	private final boolean isAttribute, isReference, isMixed, isDerived;
+	private final boolean isAttribute, isReference, isMixed, isDerived, isIndexed;
 	private final boolean isMany, isOrdered, isUnique;
+
+	// Only valid if this is derived
+	private final String derivationLanguage, derivationLogic;
 
 	public Slot(TypeNode typeNode, String propertyName) {
 		this.typeNode = typeNode;
@@ -43,7 +46,16 @@ public class Slot {
 		this.isMany = "t".equals(propertyMetadata[1]);
 		this.isOrdered = "t".equals(propertyMetadata[2]);
 		this.isUnique = "t".equals(propertyMetadata[3]);
+		this.isIndexed = isAttribute && "t".equals(propertyMetadata[5]);
 		this.propertyType = propertyMetadata[4];
+
+		if (isDerived) {
+			this.derivationLanguage = propertyMetadata[5];
+			this.derivationLogic = propertyMetadata[6];
+		} else {
+			this.derivationLanguage = null;
+			this.derivationLogic = null;
+		}
 	}
 
 	/**
@@ -98,6 +110,10 @@ public class Slot {
 		return isUnique;
 	}
 
+	public boolean isIndexed() {
+		return isIndexed;
+	}
+
 	public String getType() {
 		return propertyType;
 	}
@@ -135,10 +151,20 @@ public class Slot {
 		return true;
 	}
 
+	public String getDerivationLanguage() {
+		return derivationLanguage;
+	}
+
+	public String getDerivationLogic() {
+		return derivationLogic;
+	}
+
 	@Override
 	public String toString() {
 		return "Slot [typeNode=" + typeNode + ", propertyName=" + propertyName + ", propertyType=" + propertyType
-				+ ", isAttribute=" + isAttribute + ", isReference=" + isReference + ", isMixed=" + isMixed + ", isDerived=" + isDerived
-				+ ", isMany=" + isMany + ", isOrdered=" + isOrdered + ", isUnique=" + isUnique + "]";
+				+ ", isAttribute=" + isAttribute + ", isReference=" + isReference + ", isMixed=" + isMixed
+				+ ", isDerived=" + isDerived + ", isIndexed=" + isIndexed + ", isMany=" + isMany + ", isOrdered="
+				+ isOrdered + ", isUnique=" + isUnique + ", derivationLanguage=" + derivationLanguage
+				+ ", derivationLogic=" + derivationLogic + "]";
 	}
 }

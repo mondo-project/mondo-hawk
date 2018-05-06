@@ -71,10 +71,8 @@ public class DeletionUtils {
 			LOGGER.debug("deleting nodes from file: {}", file.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 
 			Set<IGraphNode> modelElements = new HashSet<IGraphNode>();
-			for (IGraphEdge rel : file
-					.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
+			for (IGraphEdge rel : file.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 				modelElements.add(rel.getStartNode());
-				rel.delete();
 			}
 
 			for (IGraphNode node : modelElements) {
@@ -197,7 +195,7 @@ public class DeletionUtils {
 		boolean safeToDereference = true;
 
 		// track nodes with multiple sources (singletons)
-		if (s != null)
+		if (s != null) {
 			for (IGraphEdge rel : modelElement
 					.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 				IGraphNode fileNode = rel.getEndNode();
@@ -208,8 +206,8 @@ public class DeletionUtils {
 					rel.delete();
 				else
 					safeToDereference = false;
-
 			}
+		}
 
 		if (safeToDereference) {
 			for (IGraphEdge rel : modelElement.getOutgoing()) {
@@ -229,9 +227,9 @@ public class DeletionUtils {
 					}
 
 					n.delete();
+				} else {
+					rel.delete();
 				}
-
-				rel.delete();
 			}
 		}
 	}

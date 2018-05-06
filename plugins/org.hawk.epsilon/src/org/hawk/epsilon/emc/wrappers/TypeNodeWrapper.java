@@ -68,7 +68,7 @@ public class TypeNodeWrapper implements IGraphTypeNodeReference {
 
 	public List<Slot> getAttributes() {
 		List<Slot> attributes = new ArrayList<>();
-		for (Slot s : typeNode.getSlots()) {
+		for (Slot s : typeNode.getSlots().values()) {
 			if (s.isAttribute()) {
 				attributes.add(s);
 			}
@@ -78,7 +78,7 @@ public class TypeNodeWrapper implements IGraphTypeNodeReference {
 
 	public List<Slot> getReferences() {
 		List<Slot> attributes = new ArrayList<>();
-		for (Slot s : typeNode.getSlots()) {
+		for (Slot s : typeNode.getSlots().values()) {
 			if (s.isReference()) {
 				attributes.add(s);
 			}
@@ -86,8 +86,8 @@ public class TypeNodeWrapper implements IGraphTypeNodeReference {
 		return attributes;
 	}
 
-	public List<Slot> getFeatures() {
-		return typeNode.getSlots();
+	public Collection<Slot> getFeatures() {
+		return typeNode.getSlots().values();
 	}
 
 	public MetamodelNodeWrapper getMetamodel() {

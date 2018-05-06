@@ -16,9 +16,10 @@
  ******************************************************************************/
 package org.hawk.graph;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphEdge;
@@ -33,7 +34,7 @@ public class TypeNode {
 	private final String name; 
 
 	// never use this field directly: use getSlots() instead, as we use lazy initialization.
-	private List<Slot> slots;
+	private Map<String, Slot> slots;
 
 	public TypeNode(IGraphNode node) {
 		this.node = node;
@@ -64,16 +65,16 @@ public class TypeNode {
 		return null;
 	}
 
-	public List<Slot> getSlots() {
+	public Map<String, Slot> getSlots() {
 		if (slots == null) {
-			slots = new ArrayList<>();
+			slots = new HashMap<>();
 			for (String propertyName : node.getPropertyKeys()) {
 				// skip over the 'id' property, which is a friendly identifier and not a 'real' slot
 				if (IModelIndexer.IDENTIFIER_PROPERTY.equals(propertyName)) continue;
 
 				final Slot slot = new Slot(this, propertyName);
 				if (slot.isAttribute() || slot.isReference() || slot.isMixed() || slot.isDerived()) {
-					slots.add(slot);
+					slots.put(propertyName, slot);
 				}
 			}
 		}

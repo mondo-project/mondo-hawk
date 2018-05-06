@@ -180,7 +180,6 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 				ret = Collections.singletonList(ret);
 			}
 		}
-
 		else if (property.equals("hawkIn") || property.equals("hawkOut")) {
 			final boolean isIncoming = property.equals("hawkIn");
 			final List<GraphNodeWrapper> results = new ArrayList<>();

@@ -42,7 +42,7 @@ public class HawkModelElementTypeEncoder {
 		t.setTypeName(me.getTypeName());
 		t.setId(me.getNode().getId().toString());
 
-		for (Slot s : me.getSlots()) {
+		for (Slot s : me.getSlots().values()) {
 			final SlotMetadata sm = new SlotMetadata();
 			sm.setIsMany(s.isMany());
 			sm.setIsOrdered(s.isOrdered());

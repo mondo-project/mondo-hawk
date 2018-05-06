@@ -18,6 +18,7 @@ package org.hawk.graph.updater;
 
 import java.io.File;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,7 +27,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Supplier;
 
 import org.hawk.core.IModelIndexer;
@@ -42,11 +42,14 @@ import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.model.IHawkAttribute;
 import org.hawk.core.model.IHawkClass;
+import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.ModelElementNode;
+import org.hawk.graph.Slot;
+import org.hawk.graph.TypeNode;
 import org.hawk.graph.util.GraphUtil;
 import org.hawk.graph.util.Pair;
 import org.slf4j.Logger;
@@ -91,6 +94,10 @@ public class GraphModelBatchInjector {
 	private final VcsCommitItem commitItem;
 	private final String tempDirURI;
 	private Mode previousMode = Mode.UNKNOWN;
+
+	private final TypeCache typeCache;
+
+	private boolean successState = true;
 
 	private void refreshIndexes() throws Exception {
 
@@ -321,220 +328,172 @@ public class GraphModelBatchInjector {
 	 * @throws Exception
 	 */
 	private IGraphNode createEObjectNode(IHawkObject eObject, IGraphNode typenode) throws Exception {
-		IGraphNode node = null;
-
 		try {
+			final List<IHawkAttribute> normalAttributes = new ArrayList<IHawkAttribute>();
+			final List<IHawkAttribute> indexedAttributes = new ArrayList<IHawkAttribute>();
+			IGraphNode node = createBasicEObjectNode(eObject, normalAttributes, indexedAttributes);
 
-			String eObjectId = getEObjectId(eObject);
-			HashMap<String, Object> m = new HashMap<>();
-			m.put(IModelIndexer.IDENTIFIER_PROPERTY, eObjectId);
-			m.put(IModelIndexer.SIGNATURE_PROPERTY, eObject.signature());
+			// Derived features and indexed attributes
+			final IHawkClassifier classifier = eObject.getType();
+			addDerivedFeatureNodes(node, typenode, typeCache.getEClassNodeSlots(graph, classifier));
+			for (IHawkAttribute a : indexedAttributes) {
+				IGraphNodeIndex i = graph.getOrCreateNodeIndex(String.format("%s##%s##%s", 
+					classifier.getPackageNSURI(), eObject.getType().getName(), a.getName()));
 
-			final List<IHawkAttribute> normalattributes = new LinkedList<IHawkAttribute>();
-			final List<IHawkAttribute> indexedattributes = new LinkedList<IHawkAttribute>();
-
-			final IHawkClass iHawkClass = (IHawkClass) eObject.getType();
-			for (final IHawkAttribute eAttribute : iHawkClass.getAllAttributes()) {
-				if (eObject.isSet(eAttribute)) {
-					final Map<String, Object> hashedProperties = typeCache.getEClassNodeProperties(graph, eObject.getType());
-					final String[] attributeProperties = (String[]) hashedProperties.get(eAttribute.getName());
-
-					if (attributeProperties == null) {
-						LOGGER.error("Attribute {} is not within the properties of the node for type {}, skipping",
-								eAttribute.getName(), iHawkClass.getName());
-					} else {
-						final boolean isIndexed = attributeProperties[5].equals("t");
-						if (isIndexed) {
-							indexedattributes.add(eAttribute);
-						}
-						normalattributes.add(eAttribute);
-					}
-				}
+				final Object rawValue = eObject.get(a);
+				i.add(node, a.getName(), convertValue(a, rawValue));
 			}
 
-			for (IHawkAttribute a : normalattributes) {
-				final Object value = eObject.get(a);
-
-				if (!a.isMany()) {
-					final Class<?> valueClass = value.getClass();
-					if (GraphUtil.isPrimitiveOrWrapperType(valueClass)) {
-						m.put(a.getName(), value);
-					} else {
-						m.put(a.getName(), value.toString());
-					}
-				} else {
-					Collection<Object> collection = null;
-
-					if (a.isUnique())
-						collection = new LinkedHashSet<Object>();
-					else
-						collection = new LinkedList<Object>();
-
-					final Collection<?> srcCollection = (Collection<?>) value;
-					Class<?> elemClass = null;
-					boolean primitiveOrWrapperClass = false;
-					if (!srcCollection.isEmpty()) {
-						final Object first = srcCollection.iterator().next();
-						elemClass = first.getClass();
-						primitiveOrWrapperClass = GraphUtil.isPrimitiveOrWrapperType(elemClass);
-						if (primitiveOrWrapperClass) {
-							for (Object o : srcCollection) {
-								collection.add(o);
-							}
-						} else {
-							for (Object o : srcCollection) {
-								collection.add(o.toString());
-							}
-						}
-					}
-
-					Object r = null;
-					if (primitiveOrWrapperClass && elemClass != null) {
-						r = Array.newInstance(elemClass, collection.size());
-					} else {
-						r = Array.newInstance(String.class, collection.size());
-					}
-					Object ret = collection.toArray((Object[]) r);
-
-					m.put(a.getName(), ret);
-				}
-			}
-
-			try {
-				node = graph.createNode(m, ModelElementNode.OBJECT_VERTEX_LABEL);
-				if (eObject.isFragmentUnique()) {
-					fragmentIdx.add(node, "id", eObject.getUriFragment());
-					fragmentIdx.flush();
-				}
-			} catch (IllegalArgumentException ex) {
-				LOGGER.error(ex.getMessage(), ex);
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
-
-			// propagate changes to listeners
-			listener.modelElementAddition(commitItem, eObject, node, false);
-			for (String s : m.keySet()) {
-				Object value = m.get(s);
-				listener.modelElementAttributeUpdate(commitItem, eObject, s, null, value, node,
-						ModelElementNode.TRANSIENT_ATTRIBUTES.contains(s));
-			}
-
-			// add derived attrs
-			final Map<String, Object> hashed = typeCache.getEClassNodeProperties(graph, eObject.getType());
-			final Set<String> attributekeys = hashed.keySet();
-
-			for (String attributekey : attributekeys) {
-				final Object attr = hashed.get(attributekey);
-
-				if (attr instanceof String[]) {
-
-					String[] metadata = (String[]) attr;
-
-					if (metadata[0].equals("d")) {
-						m.clear();
-						m.put("isMany", metadata[1]);
-						m.put("isOrdered", metadata[2]);
-						m.put("isUnique", metadata[3]);
-						m.put("attributetype", metadata[4]);
-						m.put("derivationlanguage", metadata[5]);
-						m.put("derivationlogic", metadata[6]);
-						m.put(attributekey, DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX + metadata[6]);
-
-						IGraphNode derivedattributenode = graph.createNode(m, "derivedattribute");
-
-						m.clear();
-						m.put(GraphModelInserter.DERIVED_FEATURE_EDGEPROP, true);
-
-						graph.createRelationship(node, derivedattributenode, attributekey, m);
-						addToProxyAttributes(derivedattributenode);
-
-					}
-
-				}
-
-			}
-
-			for (IHawkAttribute a : indexedattributes) {
-				IGraphNodeIndex i = graph.getOrCreateNodeIndex(
-						eObject.getType().getPackageNSURI() + "##" + eObject.getType().getName() + "##" + a.getName());
-
-				m.clear();
-				// graph.setNodeProperty(node,"value",
-				// eObject.eGet(a).toString());
-
-				final Object v = eObject.get(a);
-
-				if (!a.isMany()) {
-
-					if (GraphUtil.isPrimitiveOrWrapperType(v.getClass()))
-						m.put(a.getName(), v);
-
-					else
-						m.put(a.getName(), v.toString());
-
-				}
-
-				else {
-
-					Collection<Object> collection = null;
-
-					if (a.isUnique())
-						collection = new LinkedHashSet<Object>();
-					else
-						collection = new LinkedList<Object>();
-
-					final Collection<?> srcCollection = (Collection<?>) v;
-					Class<?> elemClass = null;
-					boolean primitiveOrWrapperClass = false;
-					if (!srcCollection.isEmpty()) {
-						final Object first = srcCollection.iterator().next();
-						elemClass = first.getClass();
-						primitiveOrWrapperClass = GraphUtil.isPrimitiveOrWrapperType(elemClass);
-						if (primitiveOrWrapperClass) {
-							for (Object o : srcCollection) {
-								collection.add(o);
-							}
-						} else {
-							for (Object o : srcCollection) {
-								collection.add(o.toString());
-							}
-						}
-					}
-
-					Object r = null;
-					if (primitiveOrWrapperClass && elemClass != null) {
-						r = Array.newInstance(elemClass, 1);
-					} else {
-						r = Array.newInstance(String.class, 1);
-					}
-					Object ret = collection.toArray((Object[]) r);
-
-					m.put(a.getName(), ret);
-
-				}
-
-				i.add(node, m);
-			}
-
+			return node;
 		} catch (Exception e) {
 			LOGGER.error("Error in inserting attributes", e);
 		}
 
-		return node;
+		return null;
+	}
+
+	/**
+	 * Creates the model element node in the graph. Does not index nor add derived feature nodes. 
+	 */
+	private IGraphNode createBasicEObjectNode(IHawkObject eObject, final List<IHawkAttribute> normalAttributes, final List<IHawkAttribute> indexedAttributes) throws Exception {
+		final String eObjectId = getEObjectId(eObject);
+
+		final Map<String, Object> nodeMap = new HashMap<>();
+		nodeMap.put(IModelIndexer.IDENTIFIER_PROPERTY, eObjectId);
+		nodeMap.put(IModelIndexer.SIGNATURE_PROPERTY, eObject.signature());
+		classifyAttributes(eObject, normalAttributes, indexedAttributes);
+		for (IHawkAttribute a1 : normalAttributes) {
+			final Object value1 = eObject.get(a1);
+			nodeMap.put(a1.getName(), convertValue(a1, value1));
+		}
+
+		try {
+			IGraphNode node = graph.createNode(nodeMap, ModelElementNode.OBJECT_VERTEX_LABEL);
+			if (eObject.isFragmentUnique()) {
+				fragmentIdx.add(node, "id", eObject.getUriFragment());
+				fragmentIdx.flush();
+			}
+
+			// propagate changes to listeners
+			listener.modelElementAddition(commitItem, eObject, node, false);
+			for (String s : nodeMap.keySet()) {
+				Object value = nodeMap.get(s);
+				listener.modelElementAttributeUpdate(commitItem, eObject, s, null, value, node,
+						ModelElementNode.TRANSIENT_ATTRIBUTES.contains(s));
+			}
+
+			return node;
+		} catch (Throwable ex) {
+			LOGGER.error(ex.getMessage(), ex);
+		}
+
+		return null;
+	}
+
+	private Object convertValue(IHawkAttribute attribute, final Object value) {
+		if (!attribute.isMany()) {
+			final Class<?> valueClass = value.getClass();
+			if (GraphUtil.isPrimitiveOrWrapperType(valueClass)) {
+				return value;
+			} else {
+				return value.toString();
+			}
+		} else {
+			Collection<Object> collection;
+			if (attribute.isUnique()) {
+				collection = new LinkedHashSet<Object>();
+			} else {
+				collection = new LinkedList<Object>();
+			}
+
+			final Collection<?> srcCollection = (Collection<?>) value;
+			Class<?> elemClass = null;
+			boolean primitiveOrWrapperClass = false;
+			if (!srcCollection.isEmpty()) {
+				final Object first = srcCollection.iterator().next();
+				elemClass = first.getClass();
+				primitiveOrWrapperClass = GraphUtil.isPrimitiveOrWrapperType(elemClass);
+				if (primitiveOrWrapperClass) {
+					for (Object o : srcCollection) {
+						collection.add(o);
+					}
+				} else {
+					for (Object o : srcCollection) {
+						collection.add(o.toString());
+					}
+				}
+			}
+
+			Object r = null;
+			if (primitiveOrWrapperClass && elemClass != null) {
+				r = Array.newInstance(elemClass, collection.size());
+			} else {
+				r = Array.newInstance(String.class, collection.size());
+			}
+			Object ret = collection.toArray((Object[]) r);
+
+			return ret;
+		}
+	}
+
+	/**
+	 * Adds all set attributes to <code>allAttributes</code>, and all set and
+	 * indexed attributes to <code>indexedAttributes</code>.
+	 */
+	private void classifyAttributes(IHawkObject eObject, final List<IHawkAttribute> allAttributes, final List<IHawkAttribute> indexedAttributes) throws Exception {
+		final IHawkClass iHawkClass = (IHawkClass) eObject.getType();
+		for (final IHawkAttribute eAttribute : iHawkClass.getAllAttributes()) {
+			if (eObject.isSet(eAttribute)) {
+				final Map<String, Slot> slots = typeCache.getEClassNodeSlots(graph, eObject.getType());
+				final Slot slot = slots.get(eAttribute.getName());
+
+				if (slot == null) {
+					LOGGER.error("Attribute {} is not within the properties of the node for type {}, skipping",
+							eAttribute.getName(), iHawkClass.getName());
+				} else {
+					allAttributes.add(eAttribute);
+
+					if (slot.isIndexed()) {
+						indexedAttributes.add(eAttribute);
+					}
+				}
+			}
+		}
+	}
+
+	private void addDerivedFeatureNodes(IGraphNode node, IGraphNode typenode, Map<String, Slot> slots) {
+		TypeNode tn = new TypeNode(typenode);
+		for (Slot slot : slots.values()) {
+			if (!slot.isDerived()) {
+				continue;
+			}
+
+			Map<String, Object> dfnAttributes = new HashMap<>(); 
+			dfnAttributes.put("isMany", slot.isMany());
+			dfnAttributes.put("isOrdered", slot.isOrdered());
+			dfnAttributes.put("isUnique", slot.isUnique());
+			dfnAttributes.put("attributetype", slot.getType());
+			dfnAttributes.put("derivationlanguage", slot.getDerivationLanguage());
+			dfnAttributes.put("derivationlogic", slot.getDerivationLogic());
+			dfnAttributes.put(GraphModelInserter.DERIVEDFEATURE_NODE_IDXNAME,
+				String.format("%s##%s##%s", tn.getMetamodelURI(), tn.getTypeName(), slot.getName()));
+			dfnAttributes.put(slot.getName(),
+				DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX + slot.getDerivationLogic());
+
+			IGraphNode derivedattributenode = graph.createNode(dfnAttributes, "derivedattribute");
+
+			graph.createRelationship(node, derivedattributenode, slot.getName(),
+				Collections.singletonMap(GraphModelInserter.DERIVED_FEATURE_EDGEPROP, true));
+			addToProxyAttributes(derivedattributenode);
+		}
 	}
 
 	private void addToProxyAttributes(IGraphNode node) {
-
 		Map<String, Object> m = new HashMap<>();
 		m.put("derived", "_");
 
 		derivedProxyDictionary.add(node, m);
-
 	}
-
-	private final TypeCache typeCache;
-	private boolean successState = true;
 
 	/**
 	 * Creates a node with the eObject, adds it to the hash and adds it the the
@@ -620,7 +579,7 @@ public class GraphModelBatchInjector {
 		}
 	}
 
-	protected IGraphNode getFromFragmentIndex(IHawkObject eObject) {
+	private IGraphNode getFromFragmentIndex(IHawkObject eObject) {
 		IGraphNode node = null;
 
 		final Iterator<IGraphNode> itr = fragmentIdx.get("id", eObject.getUriFragment()).iterator();

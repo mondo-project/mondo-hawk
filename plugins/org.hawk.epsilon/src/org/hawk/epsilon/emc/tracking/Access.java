@@ -58,4 +58,8 @@ public class Access implements IAccess {
 		this.property = property;
 	}
 
+	@Override
+	public String toString() {
+		return "Access [sourceObject=" + sourceObject + ", accessObject=" + accessObject + ", property=" + property + "]";
+	}
 }
