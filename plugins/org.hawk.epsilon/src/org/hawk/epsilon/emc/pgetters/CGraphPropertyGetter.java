@@ -36,7 +36,7 @@ import org.hawk.epsilon.emc.CEOLQueryEngine;
 import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.ModelElementNode;
-import org.hawk.graph.updater.DirtyDerivedAttributesListener;
+import org.hawk.graph.updater.DirtyDerivedFeaturesListener;
 
 public class CGraphPropertyGetter extends GraphPropertyGetter {
 
@@ -218,7 +218,7 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 			}
 			if (ret == null) {
 				throw new EolRuntimeException("derived attribute lookup failed for: " + object + " # " + property);
-			} else if (ret instanceof String && ((String) ret).startsWith(DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX)) {
+			} else if (ret instanceof String && ((String) ret).startsWith(DirtyDerivedFeaturesListener.NOT_YET_DERIVED_PREFIX)) {
 				// XXX IDEA: dynamically derive on the spot on access
 				System.err.println("attribute: " + property + " is NYD for node: " + node.getId());
 			}

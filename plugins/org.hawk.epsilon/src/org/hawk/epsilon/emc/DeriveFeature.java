@@ -31,7 +31,7 @@ import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.epsilon.emc.pgetters.GraphPropertyGetter;
 import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
-import org.hawk.graph.updater.DirtyDerivedAttributesListener;
+import org.hawk.graph.updater.DirtyDerivedFeaturesListener;
 import org.hawk.graph.util.GraphUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,8 +44,8 @@ public class DeriveFeature {
 			EOLQueryEngine containerModel, String propertyName, String EOLScript) throws Exception {
 
 		// remove prefix (_NYD)
-		final String actualEOLScript = EOLScript.startsWith(DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX)
-				? EOLScript.substring(DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX.length())
+		final String actualEOLScript = EOLScript.startsWith(DirtyDerivedFeaturesListener.NOT_YET_DERIVED_PREFIX)
+				? EOLScript.substring(DirtyDerivedFeaturesListener.NOT_YET_DERIVED_PREFIX.length())
 				: EOLScript;
 
 		EolModule currentModule = null;

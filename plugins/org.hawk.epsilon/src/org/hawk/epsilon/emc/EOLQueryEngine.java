@@ -70,7 +70,7 @@ import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.MetamodelNode;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.TypeNode;
-import org.hawk.graph.updater.DirtyDerivedAttributesListener;
+import org.hawk.graph.updater.DirtyDerivedFeaturesListener;
 import org.hawk.graph.updater.GraphModelInserter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -570,7 +570,7 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 		for (String s : n.getPropertyKeys()) {
 			String prop = n.getProperty(s).toString();
 
-			if (prop.startsWith(DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX)) {
+			if (prop.startsWith(DirtyDerivedFeaturesListener.NOT_YET_DERIVED_PREFIX)) {
 				Object derived = "DERIVATION_EXCEPTION";
 				try {
 					derived = new DeriveFeature().deriveFeature(cachedModules, indexer, n, this, s, prop);
@@ -604,7 +604,7 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 				}
 
 				final IGraphNode elementNode = n.getIncoming().iterator().next().getStartNode();
-				final String idxName = n.getProperty(GraphModelInserter.DERIVEDFEATURE_NODE_IDXNAME).toString();
+				final String idxName = n.getProperty(GraphModelInserter.DERIVED_IDXNAME_NODEPROP).toString();
 				final IGraphNodeIndex idxNodeByDerivedValue = graph.getOrCreateNodeIndex(idxName);
 
 				// flatten multi-valued derived features for indexing

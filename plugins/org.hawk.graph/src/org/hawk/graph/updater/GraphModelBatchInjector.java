@@ -475,10 +475,10 @@ public class GraphModelBatchInjector {
 			dfnAttributes.put("attributetype", slot.getType());
 			dfnAttributes.put("derivationlanguage", slot.getDerivationLanguage());
 			dfnAttributes.put("derivationlogic", slot.getDerivationLogic());
-			dfnAttributes.put(GraphModelInserter.DERIVEDFEATURE_NODE_IDXNAME,
+			dfnAttributes.put(GraphModelInserter.DERIVED_IDXNAME_NODEPROP,
 				String.format("%s##%s##%s", tn.getMetamodelURI(), tn.getTypeName(), slot.getName()));
 			dfnAttributes.put(slot.getName(),
-				DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX + slot.getDerivationLogic());
+				DirtyDerivedFeaturesListener.NOT_YET_DERIVED_PREFIX + slot.getDerivationLogic());
 
 			IGraphNode derivedattributenode = graph.createNode(dfnAttributes, "derivedattribute");
 

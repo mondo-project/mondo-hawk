@@ -44,7 +44,7 @@ import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.TypeNode;
-import org.hawk.graph.updater.DirtyDerivedAttributesListener;
+import org.hawk.graph.updater.DirtyDerivedFeaturesListener;
 import org.hawk.graph.updater.GraphModelInserter;
 
 public class GraphPropertyGetter extends AbstractPropertyGetter {
@@ -146,7 +146,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 			if (derivedValue == null) {
 				throw new EolRuntimeException("derived attribute lookup failed for: " + node + " # " + property);
 			} else if (derivedValue instanceof String
-					&& ((String) derivedValue).startsWith(DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX)) {
+					&& ((String) derivedValue).startsWith(DirtyDerivedFeaturesListener.NOT_YET_DERIVED_PREFIX)) {
 				// XXX IDEA: dynamically derive on the spot on access
 				System.err.println("attribute: " + property + " is NYD for node: " + node.getId());
 			}
@@ -360,7 +360,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 	}
 
 	protected void broadcastAccess(Object object, String property) {
-		accessListener.accessed(((GraphNodeWrapper) object) + "", property);
+		accessListener.accessed(((GraphNodeWrapper) object).getId() + "", property);
 	}
 
 	public void setBroadcastAccess(boolean b) {

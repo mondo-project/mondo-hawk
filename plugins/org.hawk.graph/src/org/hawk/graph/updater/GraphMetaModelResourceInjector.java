@@ -219,7 +219,7 @@ public class GraphMetaModelResourceInjector {
 				LOGGER.info("Deleting nodes from relevant models...");
 
 				Set<IGraphNode> toBeUpdated = new HashSet<>();
-				final DirtyDerivedAttributesListener l = new DirtyDerivedAttributesListener(graph);
+				final DirtyDerivedFeaturesListener l = new DirtyDerivedFeaturesListener(graph);
 				if (!hawk.getDerivedAttributes().isEmpty()) {
 					hawk.addGraphChangeListener(l);
 				}
@@ -974,7 +974,7 @@ public class GraphMetaModelResourceInjector {
 
 					if (metadata.length == 7 && metadata[0].equals("d")) {
 						LOGGER.info("derived attribute removed: {}::{}", metamodelUri, typeName);
-						IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex("derivedaccessdictionary");
+						IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex(GraphModelInserter.DERIVED_ACCESS_IDXNAME);
 						IGraphNodeIndex derivedProxyDictionary = graph.getOrCreateNodeIndex("derivedproxydictionary");
 
 						typenode.removeProperty(attributeName);

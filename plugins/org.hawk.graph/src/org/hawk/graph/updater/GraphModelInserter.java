@@ -64,6 +64,11 @@ import org.slf4j.LoggerFactory;
 public class GraphModelInserter {
 
 	/**
+	 * Name of the node index used to track property accesses during derived feature computation.
+	 */
+	public static final String DERIVED_ACCESS_IDXNAME = "derivedaccessdictionary";
+
+	/**
 	 * Property set on the edges that connects a model element to its derived
 	 * feature nodes.
 	 */
@@ -73,7 +78,7 @@ public class GraphModelInserter {
 	 * Name of the feature in the derived feature nodes which stores the name of the
 	 * index which should be told about any new values.
 	 */
-	public static final String DERIVEDFEATURE_NODE_IDXNAME = "indexName";
+	public static final String DERIVED_IDXNAME_NODEPROP = "indexName";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GraphModelInserter.class);
 
@@ -915,7 +920,7 @@ public class GraphModelInserter {
 				}
 				done = !itUnresolved.hasNext();
 
-				final IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex("derivedaccessdictionary");
+				final IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex(DERIVED_ACCESS_IDXNAME);
 				final IAccessListener accessListener = q.calculateDerivedAttributes(indexer, chunk);
 
 				// dump access to Lucene and add hooks on updates
@@ -965,7 +970,7 @@ public class GraphModelInserter {
 			// not needed as indexes should be up to date
 			// nodesToBeUpdated = graph.retainExisting(nodesToBeUpdated);
 
-			IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex("derivedaccessdictionary");
+			IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex(DERIVED_ACCESS_IDXNAME);
 			for (IAccess a : accessListener.getAccesses()) {
 				IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
 
@@ -1064,8 +1069,8 @@ public class GraphModelInserter {
 				m.put("attributetype", attributeType);
 				m.put("derivationlanguage", derivationlanguage);
 				m.put("derivationlogic", derivationlogic);
-				m.put(DERIVEDFEATURE_NODE_IDXNAME, String.format("%s##%s##%s", metamodelUri, typeName, attributeName));
-				m.put(attributeName, DirtyDerivedAttributesListener.NOT_YET_DERIVED_PREFIX + derivationlogic);
+				m.put(DERIVED_IDXNAME_NODEPROP, String.format("%s##%s##%s", metamodelUri, typeName, attributeName));
+				m.put(attributeName, DirtyDerivedFeaturesListener.NOT_YET_DERIVED_PREFIX + derivationlogic);
 
 				if (derived.hasNext()) {
 					// derived node exists -- update derived property

@@ -27,10 +27,10 @@ public class Access implements IAccess {
 	// name
 	private String property;
 
-	public Access(String sourceObject, String accessObject2,
+	public Access(String sourceObject, String accessObject,
 			String property) {
 		this.setSourceObjectID(sourceObject);
-		this.setAccessObjectID(accessObject2);
+		this.setAccessObjectID(accessObject);
 		this.setProperty(property);
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2018 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -13,13 +13,15 @@
  *
  * Contributors:
  *     Konstantinos Barmpis - original idea and implementation
- *     Antonio Garcia-Dominguez - rearrange as graph change listener
+ *     Antonio Garcia-Dominguez - rearrange as graph change listener,
+ *       generalise to derived features
  ******************************************************************************/
 package org.hawk.graph.updater;
 
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
@@ -34,12 +36,17 @@ import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
+import org.hawk.graph.ModelElementNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Graph change listener that collects the graph nodes whose derived attributes
+ * Graph change listener that collects the graph nodes whose derived features
  * should be updated, and marks them as dirty on the fly with special properties.
  */
-public class DirtyDerivedAttributesListener implements IGraphChangeListener {
+public class DirtyDerivedFeaturesListener implements IGraphChangeListener {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(DirtyDerivedFeaturesListener.class);
 
 	public static final String NOT_YET_DERIVED_PREFIX = "_NYD##";
 
@@ -96,7 +103,7 @@ public class DirtyDerivedAttributesListener implements IGraphChangeListener {
 	private Set<IGraphNode> markedForRemoval = new HashSet<>();
 	private Set<Entry<String, String>> pending = new HashSet<>();
 
-	public DirtyDerivedAttributesListener(IGraphDatabase graph) {
+	public DirtyDerivedFeaturesListener(IGraphDatabase graph) {
 		this.db = graph;
 
 	}
@@ -108,27 +115,26 @@ public class DirtyDerivedAttributesListener implements IGraphChangeListener {
 	}
 
 	private void resolvePending() {
-
 		Set<IGraphNode> toBeUpdated = new HashSet<>();
 
 		try {
-
 			IGraphTransaction t = null;
-
-			if (db.currentMode().equals(Mode.TX_MODE))
+			if (db.currentMode().equals(Mode.TX_MODE)) {
 				t = db.beginTransaction();
+			}
 
-			final IGraphNodeIndex idx = db
-					.getOrCreateNodeIndex("derivedaccessdictionary");
+			final IGraphNodeIndex idx = db.getOrCreateNodeIndex(GraphModelInserter.DERIVED_ACCESS_IDXNAME);
 
 			// Do a quick check first if there are *any* derived attributes:
 			// repeated checks are very expensive in Neo4j due to Lucene query
 			// parsing.
 			IGraphIterable<IGraphNode> anyResults = idx.query("*", "*");
 			if (anyResults.iterator().hasNext()) {
-				for (Entry<String, String> e : pending)
-					for (IGraphNode n : idx.query(e.getKey(), e.getValue()))
+				for (Entry<String, String> e : pending) {
+					for (IGraphNode n : idx.query(e.getKey(), e.getValue())) {
 						toBeUpdated.add(n);
+					}
+				}
 			}
 
 			if (toBeUpdated.size() > 0) {
@@ -147,15 +153,10 @@ public class DirtyDerivedAttributesListener implements IGraphChangeListener {
 			}
 
 		} catch (Exception e) {
-
-			System.err
-					.println("Exception in updateStore -- marking of derived attributes needing update failed.");
-			e.printStackTrace();
-
+			LOGGER.error("Marking of derived attributes needing update failed", e);
 		}
 
 		pending.clear();
-
 	}
 
 	@Override
@@ -281,14 +282,17 @@ public class DirtyDerivedAttributesListener implements IGraphChangeListener {
 		final IGraphEdge firstIncoming = incoming.iterator().next();
 		final String derivedPropertyName = firstIncoming.getType();
 
-		if (node.getPropertyKeys().contains(derivedPropertyName)) {
-			node.setProperty(derivedPropertyName,
-					NOT_YET_DERIVED_PREFIX + node.getProperty("derivationlogic"));
+		final Supplier<Boolean> hasDerivedAttribute = () ->
+			node.getPropertyKeys().contains(derivedPropertyName);
+		final Supplier<Boolean> hasDerivedEdge = () ->
+			node.getOutgoingWithType(ModelElementNode.DERIVED_EDGE_PREFIX + derivedPropertyName)
+				.iterator().hasNext();
+
+		if (hasDerivedAttribute.get() || hasDerivedEdge.get()) {
+			node.setProperty(derivedPropertyName, NOT_YET_DERIVED_PREFIX + node.getProperty("derivationlogic"));
 			nodesToBeUpdated.add(node);
 		} else {
-			System.err
-					.println("updateDerivedAttributes() -- derived attribute node did not contain property: "
-							+ derivedPropertyName);
+			LOGGER.warn("Derived attribute node did not contain property {}", derivedPropertyName);
 		}
 	}
 
