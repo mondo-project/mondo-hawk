@@ -64,6 +64,12 @@ import org.slf4j.LoggerFactory;
 public class GraphModelInserter {
 
 	/**
+	 * Property set on the edges that connects a model element to its derived
+	 * feature nodes.
+	 */
+	public static final String DERIVED_FEATURE_EDGEPROP = "isDerived";
+
+	/**
 	 * Name of the feature in the derived feature nodes which stores the name of the
 	 * index which should be told about any new values.
 	 */
@@ -343,7 +349,7 @@ public class GraphModelInserter {
 					ModelElementNode.TRANSIENT_ATTRIBUTES.contains(key));
 		}
 		for (IGraphEdge e : node.getOutgoing()) {
-			if (e.getProperty("isDerived") == null) {
+			if (e.getProperty(DERIVED_FEATURE_EDGEPROP) == null) {
 				final boolean isTransient = ModelElementNode.TRANSIENT_EDGE_LABELS.contains(e.getType());
 				listener.referenceRemoval(this.commitItem, node, e.getEndNode(), e.getType(), isTransient);
 			}
@@ -686,8 +692,9 @@ public class GraphModelInserter {
 		DeletionUtils del = deletionUtils.get();
 		del.dereference(modelElement, l, commitItem);
 		del.makeProxyRefs(commitItem, modelElement, repositoryURL, fileNode, l);
-		if (del.delete(modelElement))
+		if (del.delete(modelElement)) {
 			l.modelElementRemoval(this.commitItem, modelElement, false);
+		}
 	}
 
 	public int resolveProxies(IGraphDatabase graph) throws Exception {
@@ -1068,7 +1075,7 @@ public class GraphModelInserter {
 					IGraphNode derivedPropertyNode = graph.createNode(m, "derivedattribute");
 
 					m.clear();
-					m.put("isDerived", true);
+					m.put(DERIVED_FEATURE_EDGEPROP, true);
 
 					graph.createRelationship(instanceNode, derivedPropertyNode, attributeName, m);
 

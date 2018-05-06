@@ -444,7 +444,7 @@ public class GraphModelBatchInjector {
 						IGraphNode derivedattributenode = graph.createNode(m, "derivedattribute");
 
 						m.clear();
-						m.put("isDerived", true);
+						m.put(GraphModelInserter.DERIVED_FEATURE_EDGEPROP, true);
 
 						graph.createRelationship(node, derivedattributenode, attributekey, m);
 						addToProxyAttributes(derivedattributenode);

@@ -84,8 +84,9 @@ public class DeletionUtils {
 				makeProxyRefs(s, node, repository, file, changeListener);
 			}
 			for (IGraphNode node : modelElements) {
-				if (delete(node))
+				if (delete(node)) {
 					changeListener.modelElementRemoval(s, node, false);
+				}
 			}
 
 			modelElements = null;
@@ -210,11 +211,10 @@ public class DeletionUtils {
 
 			}
 
-		if (safeToDereference)
+		if (safeToDereference) {
 			for (IGraphEdge rel : modelElement.getOutgoing()) {
-
 				// delete derived attributes stored as nodes
-				if (rel.getProperty("isDerived") != null) {
+				if (rel.getProperty(GraphModelInserter.DERIVED_FEATURE_EDGEPROP) != null) {
 					if (l == null && s == null) {
 						LOGGER.warn("warning dereference has null listener/vcscommit -- this should only be used for non-model elements");
 						break;
@@ -227,12 +227,13 @@ public class DeletionUtils {
 					for (IGraphEdge e : n.getOutgoing()) {
 						e.delete();
 					}
-					
+
 					n.delete();
 				}
 
 				rel.delete();
 			}
+		}
 	}
 
 	protected void removeFromIndexes(IGraphNode n) {

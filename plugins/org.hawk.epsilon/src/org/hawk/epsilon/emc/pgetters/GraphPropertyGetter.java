@@ -45,6 +45,7 @@ import org.hawk.graph.FileNode;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.TypeNode;
 import org.hawk.graph.updater.DirtyDerivedAttributesListener;
+import org.hawk.graph.updater.GraphModelInserter;
 
 public class GraphPropertyGetter extends AbstractPropertyGetter {
 
@@ -288,10 +289,6 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 					// TODO add ability to mark derived edges as containments to
 					// be able to use them here
-					// if(r.getProperty("isDerived")!=null){
-					// System.err.println("entered eContents containment
-					// references...");
-					// }
 
 					results.add(new GraphNodeWrapper(r.getEndNode(), m));
 				}
@@ -313,7 +310,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 					continue;
 				}
 				final IGraphNode edgeNode = isIncoming ? r.getStartNode() : r.getEndNode();
-				if (r.getProperty("isDerived") != null) {
+				if (r.getProperty(GraphModelInserter.DERIVED_FEATURE_EDGEPROP) != null) {
 					final Iterable<IGraphEdge> it = isIncoming ? edgeNode.getIncoming() : edgeNode.getOutgoing();
 					for (IGraphEdge derivedEdge : it) {
 						final IGraphNode derivedEdgeNode = isIncoming ? derivedEdge.getStartNode()
@@ -337,7 +334,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				if (ModelElementNode.TRANSIENT_EDGE_LABELS.contains(r.getType())) {
 					continue;
 				}
-				if (r.getProperty("isDerived") != null) {
+				if (r.getProperty(GraphModelInserter.DERIVED_FEATURE_EDGEPROP) != null) {
 					final IGraphNode derivedNode = isIncoming ? r.getStartNode() : r.getEndNode();
 					final Iterable<IGraphEdge> it = isIncoming ? derivedNode.getIncoming() : derivedNode.getOutgoing();
 					for (IGraphEdge derivedEdge : it) {

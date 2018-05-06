@@ -43,7 +43,9 @@ import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.runtime.ModelIndexerImpl;
+import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.updater.GraphModelBatchInjector;
+import org.hawk.graph.updater.GraphModelInserter;
 import org.hawk.graph.updater.GraphModelUpdater;
 
 public class SyncValidationListener implements IGraphChangeListener {
@@ -326,10 +328,10 @@ public class SyncValidationListener implements IGraphChangeListener {
 		Map<String, Set<String>> nodereferences = new HashMap<>();
 
 		for (IGraphEdge reference : instance.getOutgoing()) {
-			if (reference.getType().equals("file")
-				|| reference.getType().equals("ofType")
-				|| reference.getType().equals("ofKind")
-				|| reference.getPropertyKeys().contains("isDerived")) {
+			if (reference.getType().equals(ModelElementNode.EDGE_LABEL_FILE)
+				|| reference.getType().equals(ModelElementNode.EDGE_LABEL_OFTYPE)
+				|| reference.getType().equals(ModelElementNode.EDGE_LABEL_OFKIND)
+				|| reference.getPropertyKeys().contains(GraphModelInserter.DERIVED_FEATURE_EDGEPROP)) {
 				continue;
 			}
 
