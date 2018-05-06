@@ -63,6 +63,32 @@ import org.slf4j.LoggerFactory;
  */
 public class GraphModelInserter {
 
+	protected class ReloadNodeCollectionIterable implements Iterable<IGraphNode> {
+		private final Iterable<IGraphNode> nodes;
+
+		protected ReloadNodeCollectionIterable(Iterable<IGraphNode> nodesToBeUpdated) {
+			this.nodes = nodesToBeUpdated;
+		}
+
+		@Override
+		public Iterator<IGraphNode> iterator() {
+			Iterator<IGraphNode> itNodes = nodes.iterator();
+
+			return new Iterator<IGraphNode>() {
+				@Override
+				public boolean hasNext() {
+					return itNodes.hasNext();
+				}
+
+				@Override
+				public IGraphNode next() {
+					Object id = itNodes.next().getId();
+					return indexer.getGraph().getNodeById(id);
+				}
+			};
+		}
+	}
+
 	/**
 	 * Name of the node index used to track property accesses during derived feature computation.
 	 */
@@ -960,7 +986,8 @@ public class GraphModelInserter {
 		// This is done outside any other tx, as we need to be able to break up
 		// derivation into smaller tx
 		IQueryEngine q = indexer.getKnownQueryLanguages().get(type);
-		IAccessListener accessListener = q.calculateDerivedAttributes(indexer, nodesToBeUpdated);
+		IAccessListener accessListener = q.calculateDerivedAttributes(
+				indexer, new ReloadNodeCollectionIterable(nodesToBeUpdated));
 
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			listener.changeStart();
