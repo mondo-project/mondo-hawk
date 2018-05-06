@@ -135,7 +135,7 @@ public class DeletionUtils {
 				if (referencingNode.getProperty("derivationlanguage") != null
 						&& referencingNode.getProperty("derivationlogic") != null) {
 					rel.delete();
-					return;
+					continue;
 				}
 								
 				String referencingNodeFileID = referencingNode
