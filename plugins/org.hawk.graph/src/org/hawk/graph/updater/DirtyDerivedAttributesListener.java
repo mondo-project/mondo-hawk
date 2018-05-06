@@ -85,6 +85,10 @@ public class DirtyDerivedAttributesListener implements IGraphChangeListener {
 				return false;
 		}
 
+		@Override
+		public String toString() {
+			return "PendingEntry [key=" + key + ", value=" + value + "]";
+		}
 	}
 
 	private final Set<IGraphNode> nodesToBeUpdated = new HashSet<>();
