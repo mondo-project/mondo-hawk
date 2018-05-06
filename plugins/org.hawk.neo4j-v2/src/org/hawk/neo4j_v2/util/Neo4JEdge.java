@@ -82,7 +82,7 @@ public class Neo4JEdge implements IGraphEdge {
 		if (graph.getGraph() != null) {
 			if (rel == null)
 				rel = graph.getGraph().getRelationshipById(id);
-			return rel.hasProperty(name) ? rel.getProperty(name) : null;
+			return rel.getProperty(name, null);
 		} else {
 			return graph.getBatch().getRelationshipProperties(id).get(name);
 		}
