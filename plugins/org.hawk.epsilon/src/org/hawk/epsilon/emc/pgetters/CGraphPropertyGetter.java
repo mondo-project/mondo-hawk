@@ -322,7 +322,7 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 			while (it.hasNext()) {
 				Object r = it.next();
 				if (r instanceof GraphNodeWrapper)
-					if (retainScoped((GraphNodeWrapper) ret) == null)
+					if (retainScoped((GraphNodeWrapper) r) == null)
 						it.remove();
 			}
 		}
