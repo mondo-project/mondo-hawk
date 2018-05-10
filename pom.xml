@@ -95,6 +95,7 @@
     <module>releng/org.hawk.service.server.productdefs</module>
 
     <module>tests/com.github.peterwippermann.junit4.parameterizedsuite_1.1.0</module>
+    <module>tests/org.mockito</module>
     <module>tests/org.hawk.backend.tests</module>
     <module>tests/org.hawk.integration.tests</module>
     <module>tests/org.hawk.manifest.tests</module>
@@ -103,6 +104,7 @@
     <module>tests/org.hawk.service.servlet.tests</module>
     <module>tests/org.hawk.svn.tests</module>
     <module>tests/org.hawk.uml.tests</module>
+    <module>tests/org.hawk.workspace.tests</module>
   </modules>
 
   <build>

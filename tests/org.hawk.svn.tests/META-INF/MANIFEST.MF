@@ -7,10 +7,7 @@ Bundle-Vendor: Aston University
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.hawk.core;bundle-version="1.2.0",
  org.hawk.svn;bundle-version="1.2.0",
- org.junit;bundle-version="4.0.0"
+ org.junit;bundle-version="4.0.0",
+ org.mockito;bundle-version="2.18.0"
 Export-Package: org.hawk.svn.tests.rules
-Bundle-ClassPath: lib/jars/byte-buddy-1.8.3.jar,
- lib/jars/byte-buddy-agent-1.8.3.jar,
- lib/jars/mockito-core-2.18.0.jar,
- lib/jars/objenesis-2.6.jar,
- .
+Bundle-ClassPath: .

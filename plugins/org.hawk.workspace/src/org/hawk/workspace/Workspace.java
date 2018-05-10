@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2018 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -48,24 +48,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Repository manager for an Eclipse workspace.
+ * Repository manager for an Eclipse workspace. This one uses
+ * {@link IFile#getModificationStamp()} to find out if a file changed: it is
+ * inexpensive to compute, but it changes if you ask for a full build, even if
+ * the file has not changed. If all your work is done from Eclipse editors, the
+ * {@link LocalHistoryWorkspace} component will trigger updates less often.
  */
 public class Workspace implements IVcsManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Workspace.class);
 
 	private final class WorkspaceDeltaVisitor implements IResourceDeltaVisitor {
-		private static final int CHANGE_MASK =
-				IResourceDelta.CONTENT | IResourceDelta.MOVED_FROM | IResourceDelta.MOVED_TO |
-				IResourceDelta.COPIED_FROM | IResourceDelta.TYPE | IResourceDelta.SYNC |
-				IResourceDelta.REPLACED;
-
 		private boolean anyChanges = false;
 
 		@Override
 		public boolean visit(IResourceDelta delta) throws CoreException {
 			final boolean isFile = delta.getResource() instanceof IFile;
-			if (isFile && (delta.getFlags() & CHANGE_MASK) != 0) {
+			if (isFile) {
 				anyChanges = true;
 				return true;
 			}
@@ -74,24 +73,30 @@ public class Workspace implements IVcsManager {
 	}
 
 	private class WorkspaceListener implements IResourceChangeListener {
-		private IModelIndexer indexer;
-
-		public WorkspaceListener(IModelIndexer indexer) {
-			this.indexer = indexer;
-		}
-
 		@Override
 		public void resourceChanged(IResourceChangeEvent event) {
-			IResourceDelta delta = event.getDelta();
-			try {
-				final WorkspaceDeltaVisitor visitor = new WorkspaceDeltaVisitor();
-				delta.accept(visitor);
+			switch (event.getType()) {
+			case IResourceChangeEvent.PRE_CLOSE:
+			case IResourceChangeEvent.PRE_DELETE:
+				/*
+				 * No delta in these events - but we know a project is being closed/deleted, so
+				 * we can react to it.
+				 */
+				pendingChanges = true;
+				break;
+			case IResourceChangeEvent.POST_CHANGE:
+				try {
+					IResourceDelta delta = event.getDelta();
+					final WorkspaceDeltaVisitor visitor = new WorkspaceDeltaVisitor();
+					delta.accept(visitor);
 
-				if (!pendingChanges && visitor.anyChanges) {
-					pendingChanges = true;
+					if (!pendingChanges && visitor.anyChanges) {
+						pendingChanges = true;
+					}
+				} catch (Exception e) {
+					console.printerrln(e);
 				}
-			} catch (Exception e) {
-				console.printerrln(e);
+				break;
 			}
 		}
 	}
@@ -114,7 +119,7 @@ public class Workspace implements IVcsManager {
 	}
 
 	@Override
-	public VcsRepositoryDelta getDelta(String startRevision, String endRevision) throws Exception {
+	public VcsRepositoryDelta getDelta(String sStartRevision, String endRevision) throws Exception {
 		VcsRepositoryDelta delta = new VcsRepositoryDelta();
 		delta.setManager(this);
 
@@ -128,14 +133,14 @@ public class Workspace implements IVcsManager {
 
 		for (IFile f : files) {
 			previousFiles.add(f);
-			final Long latestRev = f.getModificationStamp();
+
+			final long latestRev = getModificationTimestamp(f);
+
 			final Long lastRev = recordedStamps.get(f);
-			if (lastRev != null && lastRev.equals(latestRev)) {
-				if ((revision + "").equals(startRevision))
-					continue;
+			if (lastRev == null || lastRev < latestRev) {
+				recordedStamps.put(f, latestRev);
+				addIFile(delta, f, lastRev == null ? VcsChangeType.ADDED : VcsChangeType.UPDATED);
 			}
-			recordedStamps.put(f, latestRev);
-			addIFile(delta, f, VcsChangeType.UPDATED);
 		}
 
 		if (pendingChanges) {
@@ -145,6 +150,10 @@ public class Workspace implements IVcsManager {
 		delta.setManager(this);
 
 		return delta;
+	}
+
+	protected long getModificationTimestamp(IFile f) throws CoreException {
+		return f.getModificationStamp();
 	}
 
 	private Set<IFile> getAllFiles() {
@@ -200,7 +209,7 @@ public class Workspace implements IVcsManager {
 	@Override
 	public void init(String vcsloc, IModelIndexer indexer) throws Exception {
 		this.console = indexer.getConsole();
-		this.listener = new WorkspaceListener(indexer);
+		this.listener = new WorkspaceListener();
 	}
 
 	@Override
