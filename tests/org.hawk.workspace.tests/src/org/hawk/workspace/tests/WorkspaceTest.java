@@ -21,9 +21,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.function.Supplier;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -39,19 +44,37 @@ import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.util.DefaultConsole;
+import org.hawk.workspace.LocalHistoryWorkspace;
 import org.hawk.workspace.Workspace;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 /**
- * JUnit plugin test suite for workspace indexing in Hawk. 
+ * JUnit plugin test suite for workspace indexing in Hawk.
  */
+@RunWith(Parameterized.class)
 public class WorkspaceTest {
 
+	private final Supplier<Workspace> supplier;
 	private IWorkspaceRoot root;
 	private IWorkspace workspace;
 	private Workspace vcs;
+
+	@Parameters
+	public static Iterable<Object[]> data() {
+		return Arrays.asList(new Object[][] {
+			{ (Supplier<Workspace>) Workspace::new },
+			{ (Supplier<Workspace>) LocalHistoryWorkspace::new }
+		});
+	}
+
+	public WorkspaceTest(Supplier<Workspace> supplier) {
+		this.supplier = supplier;
+	}
 
 	@Before
 	public void setup() {
@@ -60,12 +83,14 @@ public class WorkspaceTest {
 	}
 
 	@After
-	public void teardown() throws CoreException {
+	public void teardown() throws Exception {
 		if (vcs != null) {
 			vcs.shutdown();
 		}
 		for (IProject proj : root.getProjects()) {
+			File fProject = proj.getLocation().toFile();
 			proj.delete(IProject.FORCE, null);
+			FileUtils.deleteDirectory(fProject);
 		}
 	}
 
@@ -203,7 +228,7 @@ public class WorkspaceTest {
 		final IModelIndexer indexer = mock(IModelIndexer.class);
 		when(indexer.getConsole()).thenReturn(new DefaultConsole());
 
-		vcs = new Workspace();
+		vcs = supplier.get();
 		vcs.init(null, indexer);
 		vcs.run();
 		return vcs;
