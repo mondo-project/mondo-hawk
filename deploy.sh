@@ -1,9 +1,9 @@
 #!/bin/bash
 
 deploy_updates() {
-    # Clone the gh-pages branch
+    # Clone the last two commits of the gh-pages branch
     rm -rf out || true
-    git clone -b gh-pages --single-branch https://github.com/mondo-project/mondo-hawk.git out
+    git clone -b gh-pages --depth 2 --single-branch https://github.com/mondo-project/mondo-hawk.git out
     cd out
 
     # Indicate clearly that this commit comes from Travis
@@ -15,7 +15,7 @@ deploy_updates() {
     cp -r ../releng/org.hawk.updatesite/target/repository hawk-updates
     git add --all .
     if git log --format=%an HEAD~.. | grep -q "Travis CI"; then
-	COMMIT_FLAGS="--amend"
+	      COMMIT_FLAGS="--amend"
     fi
     git commit $COMMIT_FLAGS -am "Build update site"
 
