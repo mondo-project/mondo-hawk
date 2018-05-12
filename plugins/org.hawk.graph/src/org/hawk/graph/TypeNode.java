@@ -18,10 +18,10 @@ package org.hawk.graph;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.hawk.core.IModelIndexer;
+import org.hawk.core.graph.IGraphDatabase.Mode;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 
@@ -46,8 +46,13 @@ public class TypeNode {
 	}
 
 	public MetamodelNode getMetamodel() {
+		if (node.getGraph().currentMode() == Mode.NO_TX_MODE) {
+			throw new IllegalStateException("Cannot retrieve metamodel node from type in batch mode");
+		}
+
 		final Iterator<IGraphEdge> itEPackageEdges = node.getOutgoingWithType("epackage").iterator();
-		return new MetamodelNode(itEPackageEdges.next().getEndNode());
+		final IGraphEdge ePackageEdge = itEPackageEdges.next();
+		return new MetamodelNode(ePackageEdge.getEndNode());
 	}
 
 	public String getMetamodelURI() {

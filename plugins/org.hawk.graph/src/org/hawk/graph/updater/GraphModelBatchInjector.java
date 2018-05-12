@@ -335,7 +335,7 @@ public class GraphModelBatchInjector {
 
 			// Derived features and indexed attributes
 			final IHawkClassifier classifier = eObject.getType();
-			addDerivedFeatureNodes(node, typenode, typeCache.getEClassNodeSlots(graph, classifier));
+			addDerivedFeatureNodes(node, typenode, classifier.getPackageNSURI(), typeCache.getEClassNodeSlots(graph, classifier));
 			for (IHawkAttribute a : indexedAttributes) {
 				IGraphNodeIndex i = graph.getOrCreateNodeIndex(String.format("%s##%s##%s", 
 					classifier.getPackageNSURI(), eObject.getType().getName(), a.getName()));
@@ -461,7 +461,7 @@ public class GraphModelBatchInjector {
 		}
 	}
 
-	private void addDerivedFeatureNodes(IGraphNode node, IGraphNode typenode, Map<String, Slot> slots) {
+	private void addDerivedFeatureNodes(IGraphNode node, IGraphNode typenode, String metamodelURI, Map<String, Slot> slots) {
 		TypeNode tn = new TypeNode(typenode);
 		for (Slot slot : slots.values()) {
 			if (!slot.isDerived()) {
@@ -475,8 +475,14 @@ public class GraphModelBatchInjector {
 			dfnAttributes.put("attributetype", slot.getType());
 			dfnAttributes.put("derivationlanguage", slot.getDerivationLanguage());
 			dfnAttributes.put("derivationlogic", slot.getDerivationLogic());
-			dfnAttributes.put(GraphModelInserter.DERIVED_IDXNAME_NODEPROP,
-				String.format("%s##%s##%s", tn.getMetamodelURI(), tn.getTypeName(), slot.getName()));
+
+			/*
+			 * We cannot use tn.getMetamodelURI() - in Neo4j batch mode, we can't get the
+			 * outgoing edges of a certain type and instead we get all outgoing edges. Instead,
+			 * we rely on the metamodel URI reported by the IHawkClassifier.
+			 */
+			final String idxName = String.format("%s##%s##%s", metamodelURI, tn.getTypeName(), slot.getName());
+			dfnAttributes.put(GraphModelInserter.DERIVED_IDXNAME_NODEPROP, idxName);
 			dfnAttributes.put(slot.getName(),
 				DirtyDerivedFeaturesListener.NOT_YET_DERIVED_PREFIX + slot.getDerivationLogic());
 

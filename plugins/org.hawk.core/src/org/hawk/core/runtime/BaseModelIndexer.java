@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
@@ -836,9 +837,13 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 	}
 
 	private IGraphNode getTypeNode(String mmURI, String typeName) {
-		IGraphNode epackagenode = graph.getMetamodelIndex().get("id", mmURI).iterator().next();
+		final Iterator<IGraphNode> itMetamodelNode = graph.getMetamodelIndex().get("id", mmURI).iterator();
+		if (!itMetamodelNode.hasNext()) {
+			throw new NoSuchElementException(String.format("Metamodel %s could not be found", mmURI));
+		}
+		final IGraphNode epackagenode = itMetamodelNode.next();
 		IGraphNode typenode = null;
-	
+
 		for (IGraphEdge e : epackagenode.getIncomingWithType("epackage")) {
 			IGraphNode temp = e.getStartNode();
 			if (temp.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(typeName)) {

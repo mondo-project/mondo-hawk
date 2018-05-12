@@ -153,6 +153,26 @@ public class DerivedFeatureTest extends ModelIndexingTest {
 			}
 		});
 	}
+
+	@Test
+	public void deriveThenAdd() throws Throwable {
+		indexer.registerMetamodels(new File("resources/metamodels/Ecore.ecore"),
+				new File("resources/metamodels/crossrefs.ecore"));
+		indexer.addDerivedAttribute("http://github.com/mondo-hawk/testing/xrefs", "Element", "nRefs", "dummy", false, true, false,
+				EOLQueryEngine.TYPE, "return self.xrefs.size;");
+		requestFolderIndex(new File("resources/models/scopedQuery"));
+
+		waitForSync(new Callable<Object>() {
+			@Override
+			public Object call() throws Exception {
+				assertEquals(1, eol("return Element.all.selectOne(e|e.id=0).nRefs;"));
+				assertEquals(3, eol("return Element.all.selectOne(e|e.id=1).nRefs;"));
+				assertEquals(3, eol("return Element.all.selectOne(e|e.id=23).nRefs;"));
+				return null;
+			}
+		});
+		
+	}
 	
 	// TODO: indexed lookup tests
 }
