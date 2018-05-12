@@ -120,6 +120,7 @@ public class Workspace implements IVcsManager {
 
 	@Override
 	public VcsRepositoryDelta getDelta(String sStartRevision, String endRevision) throws Exception {
+		final long startMillis = System.currentTimeMillis();
 		VcsRepositoryDelta delta = new VcsRepositoryDelta();
 		delta.setManager(this);
 
@@ -148,6 +149,11 @@ public class Workspace implements IVcsManager {
 			pendingChanges = false;
 		}
 		delta.setManager(this);
+
+		if (LOGGER.isInfoEnabled()) {
+			final long endMillis = System.currentTimeMillis();
+			LOGGER.info("getDelta() over workspace - {} ms", endMillis - startMillis);
+		}
 
 		return delta;
 	}
