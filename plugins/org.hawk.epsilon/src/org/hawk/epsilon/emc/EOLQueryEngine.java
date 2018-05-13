@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -283,8 +284,12 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 	}
 
 	protected List<IGraphNode> getTypeNodes(String mmURI, String type) {
-		IGraphNode pack;
-		pack = metamodeldictionary.get("id", mmURI).getSingle();
+		Iterator<IGraphNode> itPack = metamodeldictionary.get("id", mmURI).iterator();
+		if (!itPack.hasNext()) {
+			throw new NoSuchElementException("Could not find the metamodel node for " + mmURI);
+		}
+
+		IGraphNode pack = itPack.next();
 		for (IGraphEdge r : pack.getIncomingWithType("epackage")) {
 			IGraphNode othernode = r.getStartNode();
 			if (othernode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(type)) {
