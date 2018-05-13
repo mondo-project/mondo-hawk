@@ -40,7 +40,6 @@ public class Neo4JBatchUtil {
 	}
 
 	public static BatchInserter getGraph(String st) {
-
 		File f = new File(st);
 
 		Map<String, String> config = new HashMap<String, String>();
@@ -64,15 +63,11 @@ public class Neo4JBatchUtil {
 				+ " GB of Database VM (embedded in heap)");
 
 		BatchInserter i = BatchInserters.inserter(f.getPath(), config);
-
-		registerShutdownHook(i);
-
 		return i;
-
 	}
 
 	public static BatchInserter getGraph(String st, Map<String, String> config) {
-		File f = new File(st);
+		final File f = new File(st);
 
 		System.out.println("Opening: " + f.getPath() + "\nWITH: "
 				+ Runtime.getRuntime().maxMemory() / 1000000000 + "."
@@ -81,34 +76,7 @@ public class Neo4JBatchUtil {
 				+ getTotalVM(config) % 1000
 				+ " GB of Database VM (embedded in heap)");
 
-		BatchInserter i = BatchInserters.inserter(f.getPath(), config);
-		registerShutdownHook(i);
-		return i;
-	}
-
-	private static BatchInserter lastBatchGraph;
-
-	// extra check to make sure database is shut down if the jvm is interrupted
-	/**
-	 * 
-	 * @param graph2
-	 */
-	private static void registerShutdownHook(final BatchInserter graph2) {
-		if (lastBatchGraph == null) {
-			Runtime.getRuntime().addShutdownHook(new Thread() {
-				@Override
-				public void run() {
-					try {
-						final long l = System.nanoTime();
-						lastBatchGraph.shutdown();
-						LOGGER.info("SHUTDOWN HOOK INVOKED: (took ~{}sec to commit changes", (System.nanoTime() - l) / 1_000_000_000);
-					} catch (Exception e) {
-						LOGGER.error("Error during shutdown hook", e);
-					}
-				}
-			});
-		}
-		lastBatchGraph = graph2;
+		return BatchInserters.inserter(f.getPath(), config);
 	}
 
 	private static int getTotalVM(Map<String, String> config) {

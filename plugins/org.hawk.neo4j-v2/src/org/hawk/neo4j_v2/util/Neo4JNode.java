@@ -216,7 +216,6 @@ public class Neo4JNode implements IGraphNode {
 
 	@Override
 	public int hashCode() {
-
 		return id.hashCode() + graph.hashCode();
 	}
 

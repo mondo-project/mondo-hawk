@@ -72,34 +72,26 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 	private IGraphNodeIndex fileindex;
 	private IGraphNodeIndex metamodelindex;
-
-	// private IConsole console;
-
-	public Neo4JDatabase() {
-	}
+	private Thread shutdownHook;
 
 	public void run(File location, IConsole c) {
-
-		// console = c;
-
 		if (location == null) {
 			File runtimeDir = new File("runtime_data");
 			runtimeDir.mkdir();
-			loc = new File("runtime_data/.metadata").getAbsolutePath()
-					.replaceAll("\\\\", "/");
-		} else
+			loc = new File("runtime_data/.metadata").getAbsolutePath().replaceAll("\\\\", "/");
+		} else {
 			loc = location.getAbsolutePath();
+		}
 
 		tempdir = loc + "/temp";
 
 		loc += "/" + DB_NAME;
 
-		// init it
 		graph = Neo4JBatchUtil.createGraphService(loc);
 		indexer = graph.index();
+		registerShutdownHook();
 
 		try (IGraphTransaction t = beginTransaction()) {
-
 			metamodelindex = new Neo4JNodeIndex(MMIDX_NAME, this);
 			fileindex = new Neo4JNodeIndex(FILEIDX_NAME, this);
 
@@ -107,47 +99,33 @@ public class Neo4JDatabase implements IGraphDatabase {
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 		}
+
 	}
 
 	@Override
 	public void enterBatchMode() {
-
-		if (graph != null)
+		if (graph != null) {
 			graph.shutdown();
+		}
 		graph = null;
 		indexer = null;
 
-		if (batch == null)
+		if (batch == null) {
 			batch = Neo4JBatchUtil.getGraph(loc);
-		if (batchindexer == null)
+		}
+		if (batchindexer == null) {
 			batchindexer = new LuceneBatchInserterIndexProvider(batch);
+		}
 
 		metamodelindex = new Neo4JNodeIndex(MMIDX_NAME, this);
 		fileindex = new Neo4JNodeIndex(FILEIDX_NAME, this);
-
 	}
 
 	@Override
 	public void exitBatchMode() {
-
-		if (batchindexer != null) {
-			try {
-				batchindexer.shutdown();
-			} catch (Exception e) {
-			}
-			batchindexer = null;
-		}
-
-		if (batch != null) {
-			try {
-				batch.shutdown();
-			} catch (Exception e) {
-			}
-			batch = null;
-		}
+		shutdownBatchMode();
 
 		if (graph == null) {
-
 			graph = Neo4JBatchUtil.createGraphService(loc);
 			indexer = graph.index();
 
@@ -163,6 +141,40 @@ public class Neo4JDatabase implements IGraphDatabase {
 		}
 	}
 
+	protected void registerShutdownHook() {
+		shutdownHook = new Thread() {
+			@Override
+			public void run() {
+				try {
+					final long l = System.nanoTime();
+					shutdown();
+					LOGGER.info("SHUTDOWN HOOK INVOKED: (took ~{}sec)", (System.nanoTime() - l) / 1_000_000_000);
+				} catch (Exception e) {
+					LOGGER.error("Error during shutdown hook", e);
+				}
+			}
+		};
+		Runtime.getRuntime().addShutdownHook(shutdownHook);
+	}
+
+	protected void shutdownBatchMode() {
+		if (batchindexer != null) {
+			try {
+				batchindexer.shutdown();
+			} catch (Exception e) {
+			}
+			batchindexer = null;
+		}
+
+		if (batch != null) {
+			try {
+				batch.shutdown();
+			} catch (Exception e) {
+			}
+			batch = null;
+		}
+	}
+
 	@Override
 	public String getPath() {
 		return loc;
@@ -171,8 +183,12 @@ public class Neo4JDatabase implements IGraphDatabase {
 	@Override
 	public void shutdown() throws Exception {
 		try {
-			exitBatchMode();
-			graph.shutdown();
+			shutdownBatchMode();
+			if (graph != null) {
+				graph.shutdown();
+				graph = null;
+			}
+			Runtime.getRuntime().removeShutdownHook(shutdownHook);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 		}
@@ -180,9 +196,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 	@Override
 	public void delete() throws Exception {
-		// unregisterPackages();
 		shutdown();
-		System.gc();
 
 		final boolean deleted = FileOperations.deleteFiles(new File(getPath()).getParentFile(), true);
 		LOGGER.info(deleted ? "Successfully deleted store {}" : "Failed to delete store {}", DB_NAME);
@@ -190,7 +204,6 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 	@Override
 	public Set<String> getNodeIndexNames() {
-
 		Set<String> ret = new HashSet<>();
 
 		for (String s : indexer.nodeIndexNames()) {
@@ -200,7 +213,6 @@ public class Neo4JDatabase implements IGraphDatabase {
 		}
 
 		return ret;
-
 	}
 
 	private final static Map<String, String> FILEPATHENCODING = new HashMap<String, String>();
