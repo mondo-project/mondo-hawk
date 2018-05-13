@@ -33,4 +33,9 @@ public class FileTimestampWorkspace extends Workspace {
 		return f.getLocation().toFile().lastModified();
 	}
 
+	@Override
+	public String getHumanReadableName() {
+		return "Workspace driver - file lastModified based";
+	}
+
 }

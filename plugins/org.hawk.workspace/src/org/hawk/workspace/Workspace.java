@@ -243,12 +243,12 @@ public class Workspace implements IVcsManager {
 
 	@Override
 	public String getType() {
-		return Workspace.class.getName();
+		return getClass().getName();
 	}
 
 	@Override
 	public String getHumanReadableName() {
-		return "Workspace driver";
+		return "Workspace driver - workspace timestamp based";
 	}
 
 	@Override
