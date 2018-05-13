@@ -46,11 +46,15 @@ import org.hawk.core.util.HawkConfig;
 import org.hawk.core.util.HawksConfig;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.prefs.BackingStoreException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class HManager {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(HManager.class);
 
 	static final String MUPDATER_CLASS_ATTRIBUTE = "ModelUpdater";
 	static final String MPARSER_CLASS_ATTRIBUTE = "ModelParser";
@@ -390,50 +394,49 @@ public class HManager {
 
 	protected void loadHawksFromMetadata() {
 		IEclipsePreferences preferences = getPreferences();
+		String xml = preferences.get("config", null);
 
-		try {
-			Collection<HawkConfig> hawks = new HashSet<HawkConfig>();
-
-			String xml = preferences.get("config", null);
-
-			if (xml != null) {
+		boolean success = true;
+		if (xml != null) {
+			try {
 				XStream stream = new XStream(new DomDriver());
 				stream.processAnnotations(HawksConfig.class);
 				stream.processAnnotations(HawkConfig.class);
 				stream.setClassLoader(HawksConfig.class.getClassLoader());
+
 				HawksConfig hc = (HawksConfig) stream.fromXML(xml);
+				Set<HawkConfig> hawks = new HashSet<>();
 				for (HawkConfig s : hc.getConfigs()) {
-					// The storage folder may have been deleted since then:
-					// check
-					// if it still exists.
+					/*
+					 * The storage folder may have been deleted since then: check if it still
+					 * exists.
+					 */
 					if (new File(s.getStorageFolder()).exists()) {
 						hawks.add(s);
 					}
 				}
-			}
 
-			boolean success = true;
+				for (HawkConfig s : hawks) {
+					success = success && addHawk(HModel.load(s, this));
+				}
 
-			for (HawkConfig s : hawks) {
-				success = success && addHawk(HModel.load(s, this));
+			} catch (Exception e) {
+				LOGGER.error("Failed to load configuration: started with "
+						+ xml.substring(0, Math.min(xml.length() - 1, 20)), e);
+				success = false;
 			}
+		}
 
-			if (!success) {
-				preferences.remove("config");
-				preferences.flush();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (!success) {
 			preferences.remove("config");
 			try {
 				preferences.flush();
-			} catch (BackingStoreException e1) {
-				e1.printStackTrace();
+			} catch (BackingStoreException e) {
+				LOGGER.error("Failed to flush preferences", e);
 			}
 		}
 
 		firstRun = false;
-
 	}
 
 	public ICredentialsStore getCredentialsStore() {
