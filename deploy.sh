@@ -8,7 +8,7 @@ deploy_updates() {
 
     # Indicate clearly that this commit comes from Travis
     git config user.name "Travis CI"
-    git config user.email "antonio.garciadominguez@york.ac.uk"
+    git config user.email "agarcdomi@gmail.com"
 
     # If the tip comes from Travis, amend it. Otherwise, add a new commit.
     rm -rf hawk-updates
