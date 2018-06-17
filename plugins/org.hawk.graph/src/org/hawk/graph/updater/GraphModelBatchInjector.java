@@ -853,12 +853,12 @@ public class GraphModelBatchInjector {
 		refreshIndexes();
 
 		boolean found = false;
-
-		for (IGraphEdge e : source.getOutgoingWithType(edgeLabel))
+		for (IGraphEdge e : source.getOutgoingWithType(edgeLabel)) {
 			if (e.getEndNode().getId().equals(target.getId())) {
 				found = true;
 				break;
 			}
+		}
 
 		if (found)
 			return false;

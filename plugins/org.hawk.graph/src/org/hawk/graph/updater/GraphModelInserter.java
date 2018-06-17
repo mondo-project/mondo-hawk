@@ -28,6 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -52,6 +53,9 @@ import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
 import org.hawk.graph.ModelElementNode;
+import org.hawk.graph.updater.proxies.ProxyReferenceList;
+import org.hawk.graph.updater.proxies.ProxyReferenceList.ProxyReference;
+import org.hawk.graph.updater.proxies.ProxyReferenceTarget;
 import org.hawk.graph.util.GraphUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -728,40 +732,71 @@ public class GraphModelInserter {
 		}
 	}
 
-	public int resolveProxies(IGraphDatabase graph) throws Exception {
+	public void resolveProxies(IGraphDatabase graph) throws Exception {
 		final long start = System.currentTimeMillis();
-		int proxiesLeft = -1;
 
 		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
-		List<IGraphNode> proxiesToBeResolved = new LinkedList<>();
+
+		// First, find out about all the proxy reference lists that we have to process
+		final List<ProxyReferenceList> proxyReferenceLists = new ArrayList<>();
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex(GraphModelBatchInjector.PROXY_DICT_NAME);
 			IGraphIterable<IGraphNode> proxies = proxyDictionary.query(GraphModelUpdater.PROXY_REFERENCE_PREFIX, "*");
 			for (IGraphNode n : proxies) {
-				proxiesToBeResolved.add(n);
+				for (String propertyKey : n.getPropertyKeys()) {
+					if (propertyKey.startsWith(GraphModelUpdater.PROXY_REFERENCE_PREFIX)) {
+						final String[] propertyValue = (String[]) n.getProperty(propertyKey);
+						proxyReferenceLists.add(new ProxyReferenceList(n, propertyValue));
+					}
+				}
 			}
 			tx.success();
 		}
 
-		final int nToBeResolved = proxiesToBeResolved.size();
+		// Now reorganize individual proxy references by target file
+		int nToBeResolved = 0;
+		final Map<ProxyReferenceTarget, List<ProxyReference>> refsByTargetFile = new HashMap<>();
+		for (ProxyReferenceList list : proxyReferenceLists) {
+			List<ProxyReference> refs = refsByTargetFile.get(list.getTargetFile());
+			if (refs == null) {
+				refs = new ArrayList<>();
+				refsByTargetFile.put(list.getTargetFile(), refs);
+			}
+
+			refs.addAll(list.getReferences());
+			nToBeResolved += list.getReferences().size();
+		}
+
 		final long startMillis = System.currentTimeMillis();
 		int totalProcessed = 0, currentProcessed = 0;
-		if (proxiesToBeResolved != null && nToBeResolved > 0) {
-			Iterator<IGraphNode> itProxies = proxiesToBeResolved.iterator();
+		final Iterator<Entry<ProxyReferenceTarget, List<ProxyReference>>> itTargetFiles
+			= refsByTargetFile.entrySet().iterator();
+		if (nToBeResolved > 0) {
+			indexer.getCompositeStateListener()
+				.info(String.format("Processing %d/%d proxy references (%d sec total)",
+					totalProcessed, nToBeResolved, (System.currentTimeMillis() - startMillis) / 1000));
+		}
 
-			// Resolve proxies in batches, to keep the size of the tx bounded
-			// and avoid excessive memory usage
-			while (itProxies.hasNext()) {
-				int nBatch = 0;
+		// Go through the proxy references pointing to each target file
+		while (itTargetFiles.hasNext()) {
+			final Entry<ProxyReferenceTarget, List<ProxyReference>> entry = itTargetFiles.next();
+			final ProxyReferenceTarget targetFile = entry.getKey();
+			final List<ProxyReference> refs = entry.getValue();
+
+			int iFrom = 0;
+			while (iFrom < refs.size()) {
+				// Need to batch up proxy resolution to keep tx size bound
+				List<ProxyReference> sublistRefs = refs.subList(iFrom,
+						Math.min(refs.size(), iFrom + PROXY_RESOLVE_TX_SIZE));
+				iFrom += PROXY_RESOLVE_TX_SIZE;
+
 				try (IGraphTransaction tx = graph.beginTransaction()) {
 					listener.changeStart();
-					while (itProxies.hasNext() && nBatch < PROXY_RESOLVE_TX_SIZE) {
-						IGraphNode n = itProxies.next();
-						itProxies.remove();
-						IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex(GraphModelBatchInjector.PROXY_DICT_NAME);
-						resolveProxies(graph, listener, n, proxyDictionary);
-						++nBatch;
-					}
+					IGraphNodeIndex proxyDictionary = graph
+							.getOrCreateNodeIndex(GraphModelBatchInjector.PROXY_DICT_NAME);
+					int nResolved = resolveProxies(graph, listener, targetFile, sublistRefs, proxyDictionary);
+					currentProcessed += nResolved;
+
 					tx.success();
 					listener.changeSuccess();
 				} catch (Throwable ex) {
@@ -769,130 +804,120 @@ public class GraphModelInserter {
 					throw ex;
 				}
 
-				currentProcessed += nBatch;
 				if (currentProcessed >= PROXY_RESOLVE_NOTIFY_INTERVAL) {
 					totalProcessed += currentProcessed;
 					currentProcessed = 0;
 					final long elapsedSeconds = (System.currentTimeMillis() - startMillis) / 1000;
 					indexer.getCompositeStateListener()
-							.info(String.format("Processed %d/%d nodes with proxies (%dsec total)", totalProcessed,
-									nToBeResolved, elapsedSeconds));
+							.info(String.format("Processed %d/%d proxy references (%d sec total)",
+									totalProcessed, nToBeResolved, elapsedSeconds));
 				}
 			}
 		}
 
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex(GraphModelBatchInjector.PROXY_DICT_NAME);
-			proxiesLeft = proxyDictionary.query(GraphModelUpdater.PROXY_REFERENCE_PREFIX, "*").size();
-			LOGGER.info("{} - sets of proxy references left in the store", proxiesLeft);
+			final int proxiesLeft = proxyDictionary.query(GraphModelUpdater.PROXY_REFERENCE_PREFIX, "*").size();
+			LOGGER.info("{} - sets of proxy reference lists left in the store", proxiesLeft);
 			tx.success();
 		}
 
 		LOGGER.info("proxy resolution took: ~{}s", (System.currentTimeMillis() - start) / 1000.0);
-		return proxiesLeft;
 	}
 
-	private void resolveProxies(IGraphDatabase graph, final IGraphChangeListener listener, IGraphNode n,
-			IGraphNodeIndex proxyDictionary) throws Exception {
-		Set<String[]> allProxies = new HashSet<>();
-		for (String propertyKey : n.getPropertyKeys()) {
-			if (propertyKey.startsWith(GraphModelUpdater.PROXY_REFERENCE_PREFIX)) {
-				final String[] propertyValue = (String[]) n.getProperty(propertyKey);
-				allProxies.add(propertyValue);
+	private int resolveProxies(IGraphDatabase graph, IGraphChangeListener listener,	ProxyReferenceTarget targetFile, List<ProxyReference> references, IGraphNodeIndex proxyDictionary) throws Exception {
+		// Do URI -> ref mapping, find proxy ref lists that will need to be updated
+		final Map<String, List<ProxyReference>> refsByURI = new HashMap<>();
+		final Set<ProxyReferenceList> refLists = new HashSet<>();
+		for (ProxyReference ref : references) {
+			List<ProxyReference> refs = refsByURI.get(ref.getTarget().getElementURI());
+			if (refs == null) {
+				refs = new LinkedList<>();
+				refsByURI.put(ref.getTarget().getElementURI(), refs);
+			}
+			refs.add(ref);
+
+			refLists.add(ref.getList());
+		}
+
+		// Keep track of how many we resolved
+		int resolved = 0;
+
+		// URI-based proxy resolution (e.g. for most EMF models)
+		final IGraphNode fileNode = getFileNode(graph, targetFile.getRepositoryURL(), targetFile.getFilePath());
+		Iterable<IGraphEdge> rels = allNodesWithFile(fileNode);
+		if (rels != null) {
+			for (IGraphEdge r : rels) {
+				final IGraphNode targetNode = r.getStartNode();
+				final String nodeURI = targetFile.getFileURI() + "#"
+						+ targetNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
+
+				List<ProxyReference> pendingRefs = refsByURI.get(nodeURI);
+				if (pendingRefs != null) {
+					for (Iterator<ProxyReference> itPendingRefs = pendingRefs.iterator(); itPendingRefs.hasNext();) {
+						ProxyReference pendingRef = itPendingRefs.next();
+
+						final IGraphNode sourceNode = graph.getNodeById(pendingRef.getList().getSourceNodeID());
+						boolean change = new GraphModelBatchInjector(graph, typeCache, null, listener).resolveProxyRef(
+								sourceNode, targetNode, pendingRef.getEdgeLabel(), pendingRef.isContainment(),
+								pendingRef.isContainer());
+
+						if (change) {
+							itPendingRefs.remove();
+							++resolved;
+
+							// TODO: something more efficient than this?
+							pendingRef.getList().getReferences().remove(pendingRef);
+
+							listener.referenceAddition(this.commitItem, sourceNode, targetNode,
+									pendingRef.getEdgeLabel(), false);
+						}
+					}
+				}
 			}
 		}
 
-		for (String[] proxies : allProxies) {
-			final String fullPathURI = proxies[0].substring(0, proxies[0].indexOf("#"));
+		// GUID-based proxy resolution (e.g. for Modelio)
+		if (targetFile.isFragmentBased()) {
+			final IGraphNodeIndex fragDictionary = graph.getOrCreateNodeIndex(GraphModelBatchInjector.FRAGMENT_DICT_NAME);
 
-			int seploc = fullPathURI.indexOf(GraphModelUpdater.FILEINDEX_REPO_SEPARATOR);
-			String[] repoFile = { fullPathURI.substring(0, seploc),
-					fullPathURI.substring(seploc + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR.length()) };
+			for (List<ProxyReference> refs : refsByURI.values()) {
+				for (Iterator<ProxyReference> itPendingRefs = refs.iterator(); itPendingRefs.hasNext(); ) {
+					ProxyReference ref = itPendingRefs.next();
+					Iterator<IGraphNode> targetNodes = fragDictionary.get("id", ref.getTarget().getFragment()).iterator();
 
-			final String repoURL = repoFile[0];
-			String filePath = repoFile[1];
-			//NB: we forced file paths to start with a slash
-			if (!filePath.startsWith("/")) {
-				filePath = "/" + filePath;
-			}
+					if (targetNodes.hasNext()) {
+						final IGraphNode sourceNode = graph.getNodeById(ref.getList().getSourceNodeID());
+						final IGraphNode targetNode = targetNodes.next();
+						boolean change = new GraphModelBatchInjector(graph, typeCache, null, listener).resolveProxyRef(
+							sourceNode, targetNode, ref.getEdgeLabel(), ref.isContainment(), ref.isContainer());
 
-			final Set<IGraphNode> nodes = new HashSet<IGraphNode>();
-			final IGraphNode fileNode = getFileNode(graph, repoURL, filePath);
-			Iterable<IGraphEdge> rels = allNodesWithFile(fileNode);
-			if (rels != null) {
-				for (IGraphEdge r : rels) {
-					nodes.add(r.getStartNode());
-				}
-			}
+						if (change) {
+							itPendingRefs.remove();
+							++resolved;
 
-			final boolean isFragmentBased = filePath.equals("/" + GraphModelUpdater.PROXY_FILE_WILDCARD);
-			if (nodes.size() != 0 || isFragmentBased) {
-				String[] remainingProxies = proxies.clone();
+							// TODO: something more efficient than this?
+							ref.getList().getReferences().remove(ref);
 
-				// for each proxy
-				for (int i = 0; i < proxies.length; i = i + 4) {
-					boolean resolved = false;
-
-					final String uri = proxies[i];
-					final String fragment = uri.substring(uri.indexOf("#") + 1);
-					final String edgeLabel = proxies[i + 1];
-					final boolean isContainment = Boolean.valueOf(proxies[i + 2]);
-					final boolean isContainer = Boolean.valueOf(proxies[i + 3]);
-
-					for (IGraphNode no : nodes) {
-						String nodeURI = fullPathURI + "#"
-								+ no.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
-
-						if (nodeURI.equals(uri)) {
-							boolean change = new GraphModelBatchInjector(graph, typeCache, null, listener)
-									.resolveProxyRef(n, no, edgeLabel, isContainment, isContainer);
-
-							if (!change) {
-								// System.err.println("resolving
-								// proxy ref returned false, edge
-								// already existed: "+
-								// n.getId()+ " - "+ edgeLabel+
-								// " -> "+ no.getId());
-							} else {
-								resolved = true;
-								listener.referenceAddition(this.commitItem, n, no, edgeLabel, false);
-							}
-							break;
+							listener.referenceAddition(this.commitItem, sourceNode, targetNode, ref.getEdgeLabel(), false);
 						}
 					}
-
-					if (!resolved && isFragmentBased) {
-						// fragment-based proxy resolution (e.g. for Modelio)
-						IGraphNodeIndex fragDictionary = graph
-								.getOrCreateNodeIndex(GraphModelBatchInjector.FRAGMENT_DICT_NAME);
-						Iterator<IGraphNode> targetNodes = fragDictionary.get("id", fragment).iterator();
-						if (targetNodes.hasNext()) {
-							final IGraphNode no = targetNodes.next();
-							boolean change = new GraphModelBatchInjector(graph, typeCache, null, listener)
-									.resolveProxyRef(n, no, edgeLabel, isContainment, isContainer);
-							if (change) {
-								resolved = true;
-								listener.referenceAddition(this.commitItem, n, no, edgeLabel, false);
-							}
-						}
-
-					}
-
-					if (resolved) {
-						remainingProxies = new Utils().removeFromElementProxies(remainingProxies, uri, edgeLabel,
-								isContainment, isContainer);
-					}
-
-				}
-
-				if (remainingProxies == null || remainingProxies.length == 0) {
-					n.removeProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + fullPathURI);
-					proxyDictionary.remove(n, GraphModelUpdater.PROXY_REFERENCE_PREFIX, fullPathURI);
-				} else {
-					n.setProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + fullPathURI, remainingProxies);
 				}
 			}
 		}
+
+		// Go through the proxy reference lists and update graph based on it
+		for (ProxyReferenceList list : refLists) {
+			final IGraphNode sourceNode = graph.getNodeById(list.getSourceNodeID());
+			if (list.getReferences().isEmpty()) {
+				sourceNode.removeProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + list.getFullPathURI());
+				proxyDictionary.remove(sourceNode, GraphModelUpdater.PROXY_REFERENCE_PREFIX, list.getFullPathURI());
+			} else {
+				sourceNode.setProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + list.getFullPathURI(), list.toArray());
+			}
+		}
+
+		return resolved;
 	}
 
 	public int resolveDerivedAttributeProxies(String type) throws Exception {
