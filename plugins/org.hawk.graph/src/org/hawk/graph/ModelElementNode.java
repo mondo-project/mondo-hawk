@@ -43,14 +43,20 @@ public class ModelElementNode {
 
 	public static final String EDGE_PROPERTY_CONTAINMENT = "isContainment";
 
-	/** Label for the transient edge from the model element node to its file. */
-	public static final String EDGE_LABEL_FILE = "file";
+	/**
+	 * Label for the transient edge from the model element node to its file. Changed
+	 * in Hawk 1.2.0 to avoid conflict with MoDisco metamodel.
+	 */
+	public static final String EDGE_LABEL_FILE = "_hawkFile";
 
-	/** Label for the transient edge from the model element node to its type and all its supertypes. */
-	public static final String EDGE_LABEL_OFKIND = "ofKind";
+	/**
+	 * Label for the transient edge from the model element node to its type and all
+	 * its supertypes.
+	 */
+	public static final String EDGE_LABEL_OFKIND = "_hawkOfKind";
 
 	/** Label for the transient edge from the node to its immediate type. */
-	public static final String EDGE_LABEL_OFTYPE = "ofType";
+	public static final String EDGE_LABEL_OFTYPE = "_hawkOfType";
 
 	/** Labels for all the transient edges from a model element node. */
 	public static final List<String> TRANSIENT_EDGE_LABELS = Arrays.asList(
