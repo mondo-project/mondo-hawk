@@ -31,6 +31,7 @@ import java.util.Set;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.graph.ModelElementNode;
 import org.hawk.orientdb.util.OrientNameCleaner;
 
 import com.orientechnologies.common.collection.OCollection;
@@ -643,21 +644,19 @@ public class OrientNode implements IGraphNode {
 		// of class V at 2 by default, so we do the same.
 		oClass.setOverSize(2);
 
-		// TODO: should use constants from .graph, or there should be a way for
-		// graph to tell the DB certain things so it can optimize for them.
 		switch (oClass.getName()) {
 		case "V_eclass":
 			oClass.setOverSize(4);
-			oClass.createProperty(PREFIX_INCOMING + "ofType", OType.LINKBAG);
-			oClass.createProperty(PREFIX_INCOMING + "ofKind", OType.LINKBAG);
+			oClass.createProperty(PREFIX_INCOMING + ModelElementNode.EDGE_LABEL_OFTYPE, OType.LINKBAG);
+			oClass.createProperty(PREFIX_INCOMING + ModelElementNode.EDGE_LABEL_OFKIND, OType.LINKBAG);
 			break;
 		case "V_eobject":
-			oClass.createProperty(PREFIX_OUTGOING + "file", OType.LINKBAG);
-			oClass.createProperty(PREFIX_OUTGOING + "ofType", OType.LINKLIST);
-			oClass.createProperty(PREFIX_OUTGOING + "ofKind", OType.LINKLIST);
+			oClass.createProperty(PREFIX_OUTGOING + ModelElementNode.EDGE_LABEL_FILE, OType.LINKBAG);
+			oClass.createProperty(PREFIX_OUTGOING + ModelElementNode.EDGE_LABEL_OFTYPE, OType.LINKLIST);
+			oClass.createProperty(PREFIX_OUTGOING + ModelElementNode.EDGE_LABEL_OFKIND, OType.LINKLIST);
 			break;
 		case "V_file":
-			oClass.createProperty(PREFIX_INCOMING + "file", OType.LINKBAG);
+			oClass.createProperty(PREFIX_INCOMING + ModelElementNode.EDGE_LABEL_FILE, OType.LINKBAG);
 			break;
 		}
 

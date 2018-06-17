@@ -6,6 +6,7 @@ Bundle-Version: 1.2.0.qualifier
 Bundle-Vendor: University of York
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.hawk.core,
+ org.hawk.graph,
  com.google.guava;bundle-version="15.0.0",
  org.slf4j.api
 Bundle-ClassPath: .,

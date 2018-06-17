@@ -33,6 +33,7 @@ import org.hawk.core.query.IAccessListener;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
+import org.hawk.graph.ModelElementNode;
 import org.hawk.orientdb.OrientDatabase;
 
 import com.orientechnologies.orient.core.id.ORID;
@@ -58,7 +59,7 @@ public class OrientSQLQueryEngine implements IQueryEngine {
 
 		@Override
 		public String getTypeName() {
-			final IGraphNode typeNode = getNode().getEdgesWithType("ofType").iterator().next().getEndNode();
+			final IGraphNode typeNode = getNode().getEdgesWithType(ModelElementNode.EDGE_LABEL_OFTYPE).iterator().next().getEndNode();
 			return typeNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).toString();
 		}
 

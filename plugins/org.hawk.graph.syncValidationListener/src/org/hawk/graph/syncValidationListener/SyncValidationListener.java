@@ -181,7 +181,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 			cacheModelElements(c, r, eobjectCache, malformedObjectCache);
 
 			// go through all nodes in graph from the file the resource is in
-			for (IGraphEdge instanceEdge : filenode.getIncomingWithType("file")) {
+			for (IGraphEdge instanceEdge : filenode.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 				final IGraphNode instance = instanceEdge.getStartNode();
 				totalGraphSize++;
 
@@ -275,7 +275,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 			if (noderefvaluesclone.size() > 0) {
 				System.err.println("error in validating: reference " + modelRefName + " of node: "
 						+ instance.getProperty(IModelIndexer.IDENTIFIER_PROPERTY) + "\nlocated: "
-						+ instance.getOutgoingWithType("file").iterator().next().getEndNode()
+						+ instance.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE).iterator().next().getEndNode()
 								.getProperty(IModelIndexer.IDENTIFIER_PROPERTY));
 				System.err.println(noderefvaluesclone);
 				System.err.println("the above ids were found in the graph but not the model");
@@ -345,7 +345,7 @@ public class SyncValidationListener implements IGraphChangeListener {
 			if (!singletonIndexIsEmpty && singletonIndex.get("id", refEndNodeId).iterator().hasNext()) {
 				refvals.add(refEndNodeId);
 			} else {
-				final IGraphNode targetFileNode = refEndNode.getOutgoingWithType("file").iterator().next().getEndNode();
+				final IGraphNode targetFileNode = refEndNode.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE).iterator().next().getEndNode();
 				final Object targetFileID = targetFileNode.getProperty(IModelIndexer.IDENTIFIER_PROPERTY);
 				refvals.add(repoURL	+ GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + targetFileID + "#" + refEndNodeId);
 			}
