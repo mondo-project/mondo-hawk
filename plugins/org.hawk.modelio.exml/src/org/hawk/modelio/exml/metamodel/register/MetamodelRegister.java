@@ -19,9 +19,10 @@ package org.hawk.modelio.exml.metamodel.register;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -83,13 +84,24 @@ public class MetamodelRegister {
 	}
 
 	private ModelioClass getMClass(String className, Map<String, String> mmPackageVersions) {
-		// Always limit the packages to those in the .dat file if provided
-		Set<String> pkgNames;
+		/* Always limit the packages to those in the .dat file if provided. */
+		List<String> pkgNames;
 		if (mmPackageVersions == null) {
-			pkgNames = registeredMetamodelsByName.keySet();
+			pkgNames = new ArrayList<>(registeredMetamodelsByName.keySet());
 		} else {
-			pkgNames = mmPackageVersions.keySet();
+			pkgNames = new ArrayList<>(mmPackageVersions.keySet());
 		}
+
+		/* Prioritize Standard if possible, for 3.4 backwards compatibility */
+		Collections.sort(pkgNames, (a, b) -> {
+			if ("Standard".equals(a)) {
+				return -1;
+			} else if ("Standard".equals(b)) {
+				return 1;
+			} else {
+				return a.compareTo(b);
+			}
+		});
 
 		for (String pkgName : pkgNames) {
 			final SortedMap<String, ModelioPackage> versions = registeredMetamodelsByName.get(pkgName);

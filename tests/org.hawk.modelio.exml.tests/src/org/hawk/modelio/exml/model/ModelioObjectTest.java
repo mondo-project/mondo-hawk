@@ -22,8 +22,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.List;
 import java.util.Map;
 
+import org.hawk.core.model.IHawkReference;
 import org.hawk.modelio.exml.metamodel.ModelioAttribute;
 import org.hawk.modelio.exml.metamodel.ModelioClass;
 import org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory;
@@ -38,6 +40,7 @@ public class ModelioObjectTest {
 	private static final String FRAGMENT34_PATH = "resources/Zoo/data/fragments/";
 	private static final String FRAGMENT35_PATH = "resources/Zoo35/data/fragments/";
 	private static final String CLASSDIAG_EXML = FRAGMENT34_PATH + "Zoo/model/ClassDiagram/cf6a3b18-94f9-49ba-b8d9-653cb2f93cfb.exml";
+	private static final String AREA_CLASS34_EXML = FRAGMENT34_PATH + "Zoo/model/Class/0a4ac84f-75a3-4b5b-bbad-d0e67857b4cf.exml";
 	private static final String AREA_CLASS35_EXML = FRAGMENT35_PATH + "Zoo/model/Class/09864fe3-abc6-4de6-89c3-dd84c76ea535.exml";
 
 	private static final String METAMODEL_PATH = "resources/metamodel/";
@@ -69,6 +72,26 @@ public class ModelioObjectTest {
 		assertEquals("Parent ModelioProxy should point to the right object", "ea878bd2-7ef9-4ce1-a11e-35fa129981bb", value.getUriFragment());
 	}
 
+	@SuppressWarnings("unchecked")
+	@Test
+	public void accessClassModelio34() throws Exception {
+		final ModelioObject mO = parse(new File(AREA_CLASS34_EXML));
+
+		final ModelioClass mC = mO.getType();
+		final Map<String, ModelioAttribute> attrs = mC.getAllAttributesMap();
+		assertEquals("Area", (String) mO.get(attrs.get("Name")));
+		assertEquals("Standard", mC.getPackage().getName());
+
+		IHawkReference refOwnedEnd = (IHawkReference) mC.getStructuralFeature("OwnedEnd");
+		ModelioObject mOwnedEnd = ((List<ModelioObject>) mO.get(refOwnedEnd, false)).get(0);
+		ModelioClass cAssociationEnd = mOwnedEnd.getType();
+		IHawkReference refAssociation = (IHawkReference)cAssociationEnd.getStructuralFeature("Association");
+
+		ModelioProxy mAssociation = (ModelioProxy) mOwnedEnd.get(refAssociation, false);
+		assertEquals("Standard", mAssociation.getType().getPackage().getName());
+	}
+
+	@SuppressWarnings("unchecked")
 	@Test
 	public void accessClassModelio35() throws Exception {
 		final ModelioObject mO = parse(new File(AREA_CLASS35_EXML));
@@ -76,6 +99,14 @@ public class ModelioObjectTest {
 		final ModelioClass mC = mO.getType();
 		final Map<String, ModelioAttribute> attrs = mC.getAllAttributesMap();
 		assertEquals((String) mO.get(attrs.get("Name")), "Area");
+
+		IHawkReference refOwnedEnd = (IHawkReference) mC.getStructuralFeature("OwnedEnd");
+		ModelioObject mOwnedEnd = ((List<ModelioObject>) mO.get(refOwnedEnd, false)).get(0);
+		ModelioClass cAssociationEnd = mOwnedEnd.getType();
+		IHawkReference refAssociation = (IHawkReference)cAssociationEnd.getStructuralFeature("Association");
+
+		ModelioProxy mAssociation = (ModelioProxy) mOwnedEnd.get(refAssociation, false);
+		assertEquals("Standard", mAssociation.getType().getPackage().getName());
 	}
 
 	protected ModelioObject parse(File f) throws Exception {

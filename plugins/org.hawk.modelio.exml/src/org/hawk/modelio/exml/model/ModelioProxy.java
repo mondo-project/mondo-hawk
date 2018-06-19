@@ -17,7 +17,6 @@
 package org.hawk.modelio.exml.model;
 
 import org.hawk.core.model.IHawkAttribute;
-import org.hawk.core.model.IHawkClassifier;
 import org.hawk.core.model.IHawkReference;
 import org.hawk.core.model.IHawkStructuralFeature;
 import org.hawk.modelio.exml.metamodel.AbstractModelioObject;
@@ -56,7 +55,7 @@ public class ModelioProxy extends AbstractModelioObject {
 	}
 
 	@Override
-	public IHawkClassifier getType() {
+	public ModelioClass getType() {
 		return mc;
 	}
 
