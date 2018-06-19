@@ -159,7 +159,8 @@ public class EcoreGenerator {
 			});
 			for (IHawkAttribute mattr : mattrs) {
 				EDataType edt = ecorePkg.getEString();
-				switch (((ModelioAttribute)mattr).getRawAttribute().getMDataType().getJavaEquivalent()) {
+				final String javaEquivalent = ((ModelioAttribute)mattr).getRawAttribute().getMDataType().getJavaEquivalent().replaceAll("java[.]lang[.]", "");
+				switch (javaEquivalent) {
 				case "Short":
 					edt = ecorePkg.getEShort();
 					break;
@@ -183,6 +184,12 @@ public class EcoreGenerator {
 					break;
 				case "Boolean":
 					edt = ecorePkg.getEBoolean();
+					break;
+				case "String":
+				case "enum":
+					break;
+				default:
+					System.err.println("Unknown type " + javaEquivalent + ", using String");
 					break;
 				}
 
