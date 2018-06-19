@@ -46,7 +46,7 @@ import org.hawk.core.model.IHawkReference;
 import org.hawk.core.runtime.ModelIndexerImpl;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.ModelElementNode;
-import org.hawk.graph.internal.updater.GraphModelUpdater;
+import org.hawk.graph.updater.GraphModelUpdater;
 
 public class SyncChangeListener implements IGraphChangeListener {
 
