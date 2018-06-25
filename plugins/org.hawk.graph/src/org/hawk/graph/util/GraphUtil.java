@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2018 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -18,7 +18,12 @@ package org.hawk.graph.util;
 
 import java.util.HashSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class GraphUtil {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(GraphUtil.class);
 
 	private GraphUtil() {}
 
@@ -47,7 +52,7 @@ public class GraphUtil {
 		if (!ret) {
 			final String type = valueClass.getName();
 			if (unknownTypes.add(type)) {
-				System.err.println("warning, unknown type found, converting to String: " + type);
+				LOGGER.warn("Unknown type found, converting to String: {}", type);
 			}
 		}
 

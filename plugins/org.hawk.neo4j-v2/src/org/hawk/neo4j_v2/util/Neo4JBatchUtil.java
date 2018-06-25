@@ -43,40 +43,24 @@ public class Neo4JBatchUtil {
 		File f = new File(st);
 
 		Map<String, String> config = new HashMap<String, String>();
-		long x = Runtime.getRuntime().maxMemory() / 1000000 / 60;
+		long x = Runtime.getRuntime().maxMemory() / 1_000_000 / 60;
 		config.put("neostore.nodestore.db.mapped_memory", 3 * x + "M");
 		config.put("neostore.relationshipstore.db.mapped_memory", 14 * x + "M");
 		config.put("neostore.propertystore.db.mapped_memory", x + "M");
-		config.put("neostore.propertystore.db.strings.mapped_memory", 2 * x
-				+ "M");
+		config.put("neostore.propertystore.db.strings.mapped_memory", 2 * x + "M");
 		config.put("neostore.propertystore.db.arrays.mapped_memory", x + "M");
-		config.put("neostore.propertystore.db.index.keys.mapped_memory", x
-				+ "M");
+		config.put("neostore.propertystore.db.index.keys.mapped_memory", x + "M");
 		config.put("neostore.propertystore.db.index.mapped_memory", x + "M");
 		config.put("keep_logical_logs", "false");
 
-		System.out.println("Opening: " + f.getPath() + "\nWITH: "
-				+ Runtime.getRuntime().maxMemory() / 1000000000 + "."
-				+ Runtime.getRuntime().maxMemory() % 1000000000
-				+ " GB of HEAP and: " + getTotalVM(config) / 1000 + "."
-				+ getTotalVM(config) % 1000
-				+ " GB of Database VM (embedded in heap)");
+		LOGGER.info("Opening: {}\nWITH: {}.{} GB of HEAP and: {}.{}GB of Database VM (embedded in heap)",
+			f.getPath(), Runtime.getRuntime().maxMemory() / 1_000_000_000,
+			Runtime.getRuntime().maxMemory() % 1_000_000_000,
+			getTotalVM(config) / 1000,
+			getTotalVM(config) % 1000);
 
 		BatchInserter i = BatchInserters.inserter(f.getPath(), config);
 		return i;
-	}
-
-	public static BatchInserter getGraph(String st, Map<String, String> config) {
-		final File f = new File(st);
-
-		System.out.println("Opening: " + f.getPath() + "\nWITH: "
-				+ Runtime.getRuntime().maxMemory() / 1000000000 + "."
-				+ Runtime.getRuntime().maxMemory() % 1000000000
-				+ " GB of HEAP and: " + getTotalVM(config) / 1000 + "."
-				+ getTotalVM(config) % 1000
-				+ " GB of Database VM (embedded in heap)");
-
-		return BatchInserters.inserter(f.getPath(), config);
 	}
 
 	private static int getTotalVM(Map<String, String> config) {
