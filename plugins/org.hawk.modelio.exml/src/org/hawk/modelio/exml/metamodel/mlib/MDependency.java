@@ -57,19 +57,19 @@ public class MDependency {
         return mClass;
     }
 
-    public Boolean getIsMany() {
+    public Boolean isMany() {
         return isMany;
     }
 
-    public Boolean getIsUnique() {
+    public Boolean isUnique() {
         return isUnique;
     }
 
-    public Boolean getIsOrdered() {
+    public Boolean isOrdered() {
         return isOrdered;
     }
 
-    public Boolean getisComposition() {
+    public Boolean isComposition() {
         return isComposition;
     }
 

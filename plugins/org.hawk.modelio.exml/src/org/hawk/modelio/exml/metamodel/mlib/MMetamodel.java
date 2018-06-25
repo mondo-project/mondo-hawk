@@ -95,7 +95,7 @@ public class MMetamodel {
 				// dependencies
 				for (MMetaclassDependency dependency  : metaclass.getDependencies().values()) {
 					MDependency dep = new MDependency(dependency.getName(), dependency.getName(), getMClass(dependency.getTarget()), !(dependency.getMax() == 1), true, true, (dependency.getAggregation() == MAggregationType.Composition));
-					currentClass.getMDependencys().add(dep);
+					currentClass.getMDependencies().add(dep);
 				}
 
 				// get children

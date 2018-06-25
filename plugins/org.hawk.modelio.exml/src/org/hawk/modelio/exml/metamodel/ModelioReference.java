@@ -59,17 +59,17 @@ public class ModelioReference extends AbstractModelioObject implements IHawkRefe
 
 	@Override
 	public boolean isMany() {
-		return mDependency.getIsMany();
+		return mDependency.isMany();
 	}
 
 	@Override
 	public boolean isUnique() {
-		return mDependency.getIsUnique();
+		return mDependency.isUnique();
 	}
 
 	@Override
 	public boolean isOrdered() {
-		return mDependency.getIsOrdered();
+		return mDependency.isOrdered();
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public class ModelioReference extends AbstractModelioObject implements IHawkRefe
 
 	@Override
 	public boolean isContainment() {
-		return mDependency.getisComposition();
+		return mDependency.isComposition();
 	}
 
 	@Override

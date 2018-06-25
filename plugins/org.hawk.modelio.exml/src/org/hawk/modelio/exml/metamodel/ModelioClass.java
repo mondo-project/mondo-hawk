@@ -197,7 +197,7 @@ public class ModelioClass extends AbstractModelioObject implements IHawkClass {
 		if (ownReferences == null) {
 			ownReferences = new HashMap<>();
 
-			for (MDependency mdep : rawClass.getMDependencys()) {
+			for (MDependency mdep : rawClass.getMDependencies()) {
 				ownReferences.put(mdep.getName(), new IgnoreContainmentModelioReference(this, mdep));
 			}
 			if (rawClass.getMSuperType().isEmpty()) {

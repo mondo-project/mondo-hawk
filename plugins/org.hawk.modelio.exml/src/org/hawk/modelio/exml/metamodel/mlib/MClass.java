@@ -55,7 +55,7 @@ public class MClass {
         return mSubTypes;
     }
 
-    public List<MDependency> getMDependencys() {
+    public List<MDependency> getMDependencies() {
         return mDependencies;
     }
 
