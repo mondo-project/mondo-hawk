@@ -14,7 +14,7 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - switch to SLF4J
  ******************************************************************************/
-package org.hawk.osgiserver;
+package org.hawk.core.util;
 
 import org.hawk.core.IConsole;
 import org.slf4j.Logger;

@@ -48,6 +48,7 @@ import org.hawk.core.util.HawkConfig;
 import org.hawk.core.util.HawkProperties;
 import org.hawk.core.util.HawksConfig;
 import org.hawk.core.util.IndexedAttributeParameters;
+import org.hawk.core.util.SLF4JConsole;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.thoughtworks.xstream.XStream;
