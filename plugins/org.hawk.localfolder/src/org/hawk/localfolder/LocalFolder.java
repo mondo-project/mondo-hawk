@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2018 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -13,7 +13,8 @@
  *
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
- *     Antonio Garcia-Dominguez - use Java 7 Path instead of File+string processing
+ *     Antonio Garcia-Dominguez - use Java 7 Path instead of File+string processing,
+ *       use MapDB, refactor into shared part with LocalFile
  ******************************************************************************/
 package org.hawk.localfolder;
 
@@ -28,15 +29,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.hawk.core.IConsole;
-import org.hawk.core.ICredentialsStore;
 import org.hawk.core.IModelIndexer;
-import org.hawk.core.IVcsManager;
 import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommit;
 import org.hawk.core.VcsCommitItem;
@@ -44,9 +41,10 @@ import org.hawk.core.VcsRepositoryDelta;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 
-public class LocalFolder implements IVcsManager {
-
-	private static final String FIRST_REV = "0";
+/**
+ * VCS manager that watches over the contents of a directory, including its subdirectories. 
+ */
+public class LocalFolder extends FileBasedLocation {
 
 	private final class LastModifiedFileVisitor implements FileVisitor<Path> {
 
@@ -94,24 +92,17 @@ public class LocalFolder implements IVcsManager {
 		}
 	}
 
-	protected IConsole console;
 	private Path rootLocation;
-	private String repositoryURL;
 
 	private long currentRevision = 0;
 	protected Set<File> previousFiles;
 	protected Map<String, String> recordedModifiedDates;
-
-	private boolean isFrozen = false;
 
 	/**
 	 * MapDB database: using file-backed Java collections allows us to save
 	 * memory when handling folders with a large number of files.
 	 */
 	private DB db;
-
-	public LocalFolder() {
-	}
 
 	@Override
 	public void init(String vcsloc, IModelIndexer indexer) throws Exception {
@@ -127,7 +118,6 @@ public class LocalFolder implements IVcsManager {
 		try {
 			path = Paths.get(new URI(vcsloc));
 		} catch (URISyntaxException | IllegalArgumentException ex) {
-			// ex.printStackTrace();
 			path = Paths.get(vcsloc);
 		}
 
@@ -149,29 +139,18 @@ public class LocalFolder implements IVcsManager {
 		// URLDecoder.decode(repositoryURI.replace("+", "%2B"), "UTF-8");
 	}
 
-	@Override
-	public void run() { /* nothing */
-	}
-
-	private String getCurrentRevision(boolean alter) {
-
+	protected String getCurrentRevision(boolean alter) {
 		try {
 			final LastModifiedFileVisitor visitor = new LastModifiedFileVisitor(alter);
 			Files.walkFileTree(rootLocation, visitor);
 			long ret = visitor.hasChanged ? (currentRevision + 1) : currentRevision;
 			if (alter)
 				currentRevision = ret;
-			// System.err.println(ret + " | " + alter);
 			return ret + "";
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			console.printerrln(ex);
 			return FIRST_REV;
 		}
-	}
-
-	@Override
-	public String getCurrentRevision() {
-		return getCurrentRevision(false);
 	}
 
 	@Override
@@ -184,17 +163,6 @@ public class LocalFolder implements IVcsManager {
 			console.printerrln(e);
 			return null;
 		}
-	}
-
-	public static void main(String[] a) throws Exception {
-
-		File f = new File("C:/testfolder");
-
-		System.out.println("Folder: " + f.getPath() + "\nContains:\n");
-
-		for (VcsCommitItem r : new LocalFolder().getDelta(FIRST_REV))
-			System.out.println(r.getPath());
-
 	}
 
 	@Override
@@ -211,28 +179,8 @@ public class LocalFolder implements IVcsManager {
 	}
 
 	@Override
-	public String getLocation() {
-		return repositoryURL;
-	}
-
-	@Override
-	public String getType() {
-		return getClass().getName();
-	}
-
-	@Override
 	public String getHumanReadableName() {
 		return "Local Folder Monitor";
-	}
-
-	@Override
-	public void setCredentials(String username, String password, ICredentialsStore credStore) {
-		// ignore
-	}
-
-	@Override
-	public String getFirstRevision() throws Exception {
-		return FIRST_REV;
 	}
 
 	@Override
@@ -326,20 +274,6 @@ public class LocalFolder implements IVcsManager {
 		return delta;
 	}
 
-	private String makeRelative(String base, String extension) {
-
-		// System.err.println(">>"+base);
-		// System.err.println("<>"+extension);
-
-		if (!extension.startsWith(base))
-			return extension;
-
-		String ret = extension.substring(base.length());
-
-		return ret;
-
-	}
-
 	protected void addAllFiles(File dir, Set<File> ret) {
 		File[] files = dir.listFiles();
 		if (files == null) {
@@ -356,56 +290,7 @@ public class LocalFolder implements IVcsManager {
 		}
 	}
 
-	@Override
-	public Collection<VcsCommitItem> getDelta(String endRevision) throws Exception {
-		return getDelta(FIRST_REV, endRevision).getCompactedCommitItems();
-	}
-
-	@Override
-	public boolean isAuthSupported() {
-		return false;
-	}
-
-	@Override
-	public boolean isPathLocationAccepted() {
-		return true;
-	}
-
-	@Override
-	public boolean isURLLocationAccepted() {
-		return true;
-	}
-
 	private String getRevisionFromFileMetadata(final File f) {
 		return f.lastModified() + "-" + f.length();
-	}
-
-	@Override
-	public String getRepositoryPath(String rawPath) {
-		final String emfUriPrefix = getLocation().replaceFirst("file:///", "file:/");
-		if (rawPath.startsWith(emfUriPrefix)) {
-			return rawPath.substring(emfUriPrefix.length());
-		}
-		return rawPath;
-	}
-
-	@Override
-	public String getUsername() {
-		return null;
-	}
-
-	@Override
-	public String getPassword() {
-		return null;
-	}
-
-	@Override
-	public boolean isFrozen() {
-		return isFrozen;
-	}
-
-	@Override
-	public void setFrozen(boolean f) {
-		isFrozen = f;
 	}
 }
