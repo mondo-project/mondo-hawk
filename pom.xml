@@ -98,6 +98,7 @@
     <module>tests/org.mockito</module>
     <module>tests/org.hawk.backend.tests</module>
     <module>tests/org.hawk.integration.tests</module>
+    <module>tests/org.hawk.localfolder.tests</module>
     <module>tests/org.hawk.manifest.tests</module>
     <module>tests/org.hawk.modelio.exml.tests</module>
     <module>tests/org.hawk.service.emf.tests</module>

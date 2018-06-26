@@ -33,6 +33,7 @@ import org.hawk.core.VcsRepositoryDelta;
  */
 public class LocalFile extends FileBasedLocation {
 
+	private long initialVersion;
 	private File monitoredFile;
 
 	@Override
@@ -48,6 +49,7 @@ public class LocalFile extends FileBasedLocation {
 		}
 
 		monitoredFile = path.toFile().getCanonicalFile();
+		initialVersion = monitoredFile.lastModified();
 		String repositoryURI = path.toUri().toString();
 
 		// If the file doesn't exist, it might be because this is a local folder in
@@ -63,7 +65,12 @@ public class LocalFile extends FileBasedLocation {
 
 	@Override
 	protected String getCurrentRevision(boolean alter) {
-		return monitoredFile.lastModified() + "";
+		final long lastModified = monitoredFile.lastModified();
+		if (alter) {
+			lastRevision = lastModified;
+		}
+
+		return lastModified == initialVersion ? FIRST_REV : lastModified + "";
 	}
 
 	@Override
@@ -96,19 +103,27 @@ public class LocalFile extends FileBasedLocation {
 		commit.setDelta(delta);
 		commit.setJavaDate(null);
 		commit.setMessage("i am a local file driver - no messages recorded");
+		delta.getCommits().add(commit);
 
 		VcsCommitItem c = new VcsCommitItem();
 		c.setCommit(commit);
-		c.setPath(makeRelative(repositoryURL,
-				monitoredFile.toPath().toUri().toString()));
+		c.setPath("/" + monitoredFile.getName());
 
-		if (currentRevision == FIRST_REV) {
-			c.setChangeType(VcsChangeType.ADDED);
-			commit.getItems().add(c);
-		} else if (!currentRevision.equals(getCurrentRevision())) {
-			c.setChangeType(VcsChangeType.UPDATED);
-			commit.getItems().add(c);
+		final long currentTimestamp = monitoredFile.lastModified();
+		if (currentTimestamp != lastRevision) {
+			if (currentTimestamp == initialVersion) {
+				c.setChangeType(VcsChangeType.ADDED);
+				commit.setRevision(FIRST_REV);
+				commit.getItems().add(c);
+			} else {
+				c.setChangeType(VcsChangeType.UPDATED);
+				commit.setRevision(currentTimestamp + "");
+				commit.getItems().add(c);
+			}
 		}
+
+		// Update the latest revision seen
+		getCurrentRevision(true);
 
 		return delta;
 	}

@@ -16,7 +16,7 @@
  ******************************************************************************/
 package org.hawk.localfolder;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.hawk.core.IConsole;
 import org.hawk.core.ICredentialsStore;
@@ -29,7 +29,7 @@ public abstract class FileBasedLocation implements IVcsManager {
 
 	protected IConsole console;
 	protected String repositoryURL;
-	protected String currentRevision = FIRST_REV;
+	protected long lastRevision;
 	private boolean isFrozen = false;
 
 	@Override
@@ -99,7 +99,7 @@ public abstract class FileBasedLocation implements IVcsManager {
 	}
 
 	@Override
-	public Collection<VcsCommitItem> getDelta(String endRevision) throws Exception {
+	public List<VcsCommitItem> getDelta(String endRevision) throws Exception {
 		return getDelta(FIRST_REV, endRevision).getCompactedCommitItems();
 	}
 
