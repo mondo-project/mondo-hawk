@@ -79,14 +79,16 @@ public class LocalFileTest {
 
 	@Test
 	public void laterVersion() throws Exception {
-		vcs.getDelta(null);
+		final List<VcsCommitItem> delta1 = vcs.getDelta(LocalFile.FIRST_REV);
+		final String revision1 = delta1.get(0).getCommit().getRevision();
 
 		write("somethingelse");
-		List<VcsCommitItem> delta = vcs.getDelta(null);
-		assertEquals(1, delta.size());
-		assertEquals(VcsChangeType.UPDATED, delta.get(0).getChangeType());
+		final List<VcsCommitItem> delta2 = vcs.getDelta(revision1);
+		assertEquals(1, delta2.size());
+		assertEquals(VcsChangeType.UPDATED, delta2.get(0).getChangeType());
+		final String revision2 = delta2.get(0).getCommit().getRevision();
 
-		assertEquals(0, vcs.getDelta(null).size());
+		assertEquals(0, vcs.getDelta(revision2).size());
 	}
 		
 }

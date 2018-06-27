@@ -113,7 +113,7 @@ public class LocalFile extends FileBasedLocation {
 		if (currentTimestamp != lastRevision) {
 			if (currentTimestamp == initialVersion) {
 				c.setChangeType(VcsChangeType.ADDED);
-				commit.setRevision(FIRST_REV);
+				commit.setRevision(currentTimestamp + "");
 				commit.getItems().add(c);
 			} else {
 				c.setChangeType(VcsChangeType.UPDATED);
