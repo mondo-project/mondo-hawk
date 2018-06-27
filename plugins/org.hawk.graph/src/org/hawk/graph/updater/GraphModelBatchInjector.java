@@ -511,7 +511,7 @@ public class GraphModelBatchInjector {
 	 * @return
 	 * @throws Exception
 	 */
-	protected IGraphNode addEObject(IGraphNode originatingFile, IHawkObject eObject,
+	public IGraphNode addEObject(IGraphNode originatingFile, IHawkObject eObject,
 			boolean resourceCanProvideSingletons) throws Exception {
 
 		refreshIndexes();
@@ -752,7 +752,7 @@ public class GraphModelBatchInjector {
 	 * @param source
 	 * @throws Exception
 	 */
-	private boolean addEReferences(IHawkObject source, boolean resourceCanProvideSingletons) throws Exception {
+	public boolean addEReferences(IHawkObject source, boolean resourceCanProvideSingletons) throws Exception {
 		boolean atLeastOneSetReference = false;
 		if (source.isFragmentUnique() && resourceCanProvideSingletons && hash.get(splitURI(source.getUri())) == null) {
 			// Avoid trying to add references from a singleton object we already had
