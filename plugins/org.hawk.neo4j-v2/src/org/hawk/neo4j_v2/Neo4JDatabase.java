@@ -162,6 +162,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 			try {
 				batchindexer.shutdown();
 			} catch (Exception e) {
+				LOGGER.warn(e.getMessage(), e);
 			}
 			batchindexer = null;
 		}
@@ -170,6 +171,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 			try {
 				batch.shutdown();
 			} catch (Exception e) {
+				LOGGER.warn(e.getMessage(), e);
 			}
 			batch = null;
 		}
