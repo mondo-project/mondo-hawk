@@ -408,6 +408,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 				Node n = graph.getNodeById(numericid);
 				return new Neo4JNode(n, this);
 			} catch (Exception e) {
+				LOGGER.error(e.getMessage(), e);
 				return null;
 			}
 		} else
