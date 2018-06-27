@@ -161,6 +161,8 @@ public class Neo4JDatabase implements IGraphDatabase {
 		if (batchindexer != null) {
 			try {
 				batchindexer.shutdown();
+			} catch (IllegalStateException ex) {
+				// ignoring: already shutdown
 			} catch (Exception e) {
 				LOGGER.warn(e.getMessage(), e);
 			}
@@ -170,6 +172,8 @@ public class Neo4JDatabase implements IGraphDatabase {
 		if (batch != null) {
 			try {
 				batch.shutdown();
+			} catch (IllegalStateException ex) {
+				// ignoring: already shutdown
 			} catch (Exception e) {
 				LOGGER.warn(e.getMessage(), e);
 			}
