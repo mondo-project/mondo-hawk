@@ -14,7 +14,7 @@
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
  *     Antonio Garcia-Dominguez - use Java 7 Path instead of File+string processing,
- *       use MapDB, refactor into shared part with LocalFile
+ *       use MapDB, refactor into shared part with LocalFile, add file filtering
  ******************************************************************************/
 package org.hawk.localfolder;
 
@@ -32,6 +32,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsChangeType;
@@ -42,7 +43,8 @@ import org.mapdb.DB;
 import org.mapdb.DBMaker;
 
 /**
- * VCS manager that watches over the contents of a directory, including its subdirectories. 
+ * VCS manager that watches over the contents of a directory, including its
+ * subdirectories.
  */
 public class LocalFolder extends FileBasedLocation {
 
@@ -70,18 +72,25 @@ public class LocalFolder extends FileBasedLocation {
 
 		@Override
 		public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-			return FileVisitResult.CONTINUE;
+			if (isFileInteresting(dir.toFile())) {
+				return FileVisitResult.CONTINUE;
+			} else {
+				return FileVisitResult.SKIP_SUBTREE;
+			}
 		}
 
 		@Override
 		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 			final File f = file.toFile();
-			final String currentlatest = getRevisionFromFileMetadata(f);
-			final String lastRev = recordedModifiedDates.get(file.toString());
-			if (lastRev == null || !lastRev.equals(currentlatest)) {
-				if (alter)
-					recordedModifiedDates.put(file.toString(), currentlatest);
-				hasChanged = true;
+			if (isFileInteresting(f)) {
+				final String currentlatest = getRevisionFromFileMetadata(f);
+				final String lastRev = recordedModifiedDates.get(file.toString());
+				if (lastRev == null || !lastRev.equals(currentlatest)) {
+					if (alter) {
+						recordedModifiedDates.put(file.toString(), currentlatest);
+					}
+					hasChanged = true;
+				}
 			}
 			return FileVisitResult.CONTINUE;
 		}
@@ -93,14 +102,14 @@ public class LocalFolder extends FileBasedLocation {
 	}
 
 	private Path rootLocation;
-
 	private long currentRevision = 0;
-	protected Set<File> previousFiles;
-	protected Map<String, String> recordedModifiedDates;
+	private Set<File> previousFiles;
+	private Map<String, String> recordedModifiedDates;
+	private Function<File, Boolean> fileFilter;
 
 	/**
-	 * MapDB database: using file-backed Java collections allows us to save
-	 * memory when handling folders with a large number of files.
+	 * MapDB database: using file-backed Java collections allows us to save memory
+	 * when handling folders with a large number of files.
 	 */
 	private DB db;
 
@@ -144,8 +153,10 @@ public class LocalFolder extends FileBasedLocation {
 			final LastModifiedFileVisitor visitor = new LastModifiedFileVisitor(alter);
 			Files.walkFileTree(rootLocation, visitor);
 			long ret = visitor.hasChanged ? (currentRevision + 1) : currentRevision;
-			if (alter)
+			if (alter) {
 				currentRevision = ret;
+				
+			}
 			return ret + "";
 		} catch (IOException ex) {
 			console.printerrln(ex);
@@ -253,17 +264,8 @@ public class LocalFolder extends FileBasedLocation {
 				c.setChangeType(VcsChangeType.UPDATED);
 				c.setCommit(commit);
 
-				String relativepath = makeRelative(repositoryURL,
-						// dont decode it to ensure consistency with other
-						// managers
-						// URLDecoder.decode(
-						f.toPath().toUri().toString()
-				// .replace("+", "%2B"), "UTF-8")
-				);
-
+				String relativepath = makeRelative(repositoryURL, f.toPath().toUri().toString());
 				c.setPath(relativepath.startsWith("/") ? relativepath : ("/" + relativepath));
-
-				// c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 				commit.getItems().add(c);
 			}
 
@@ -274,6 +276,14 @@ public class LocalFolder extends FileBasedLocation {
 		return delta;
 	}
 
+	public Function<File, Boolean> getFileFilter() {
+		return fileFilter;
+	}
+
+	public void setFileFilter(Function<File, Boolean> fileFilter) {
+		this.fileFilter = fileFilter;
+	}
+
 	protected void addAllFiles(File dir, Set<File> ret) {
 		File[] files = dir.listFiles();
 		if (files == null) {
@@ -282,15 +292,21 @@ public class LocalFolder extends FileBasedLocation {
 			return;
 		}
 		for (File file : files) {
-			if (!file.isDirectory()) {
-				ret.add(file);
-			} else {
-				addAllFiles(file, ret);
+			if (isFileInteresting(file)) {
+				if (!file.isDirectory()) {
+					ret.add(file);
+				} else {
+					addAllFiles(file, ret);
+				}
 			}
 		}
 	}
 
 	private String getRevisionFromFileMetadata(final File f) {
 		return f.lastModified() + "-" + f.length();
+	}
+
+	private boolean isFileInteresting(File f) {
+		return fileFilter == null || fileFilter.apply(f);
 	}
 }

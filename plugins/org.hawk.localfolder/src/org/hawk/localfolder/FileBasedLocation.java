@@ -99,11 +99,6 @@ public abstract class FileBasedLocation implements IVcsManager {
 	}
 
 	@Override
-	public List<VcsCommitItem> getDelta(String endRevision) throws Exception {
-		return getDelta(FIRST_REV, endRevision).getCompactedCommitItems();
-	}
-
-	@Override
 	public String getFirstRevision() throws Exception {
 		return FIRST_REV;
 	}
@@ -118,6 +113,11 @@ public abstract class FileBasedLocation implements IVcsManager {
 	@Override
 	public void run() {
 		/* nothing */
+	}
+
+	@Override
+	public List<VcsCommitItem> getDelta(String startRevision) throws Exception {
+		return getDelta(startRevision, "HEAD").getCompactedCommitItems();
 	}
 
 }

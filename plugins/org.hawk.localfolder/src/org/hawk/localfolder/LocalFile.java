@@ -127,5 +127,4 @@ public class LocalFile extends FileBasedLocation {
 
 		return delta;
 	}
-
 }
