@@ -82,6 +82,12 @@ public class LocalFileTest {
 		final List<VcsCommitItem> delta1 = vcs.getDelta(LocalFile.FIRST_REV);
 		final String revision1 = delta1.get(0).getCommit().getRevision();
 
+		// If we write too soon before the next check, the lack of granularity of
+		// lastModified may result in us missing changes!
+		synchronized(this) {
+			Thread.sleep(1_000);
+		}
+		
 		write("somethingelse");
 		final List<VcsCommitItem> delta2 = vcs.getDelta(revision1);
 		assertEquals(1, delta2.size());
