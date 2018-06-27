@@ -89,9 +89,10 @@ public class GraphModelUpdater implements IModelUpdater {
 
 		try {
 			try {
-				// file failed to update to latest version so remove it to
-				// maintain consistency
 				if (res == null) {
+					/*
+					 * File failed to update to latest version so remove it to maintain consistency.
+					 */
 					if (!deleteAll(f)) {
 						console.printerrln("warning: failed to delete item: "
 								+ f
@@ -104,7 +105,7 @@ public class GraphModelUpdater implements IModelUpdater {
 					success = false;
 				}
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				console.printerrln(ex);
 				success = false;
 			}
 
@@ -244,7 +245,7 @@ public class GraphModelUpdater implements IModelUpdater {
 				ret = createDeletionUtils().deleteAll(n, c, indexer.getCompositeGraphChangeListener());
 				t.success();
 			} catch (Exception e) {
-				e.printStackTrace();
+				console.printerrln(e);
 				ret = false;
 			}
 		} else {
@@ -323,7 +324,7 @@ public class GraphModelUpdater implements IModelUpdater {
 							}
 
 						} catch (Exception e) {
-							e.printStackTrace();
+							console.printerrln(e);
 						}
 						if (r.getCommit().getRevision().equals(rev))
 							changed.remove(r);
@@ -338,7 +339,7 @@ public class GraphModelUpdater implements IModelUpdater {
 
 				tx.success();
 			} catch (Exception e) {
-				e.printStackTrace();
+				console.printerrln(e);
 			}
 
 		}
