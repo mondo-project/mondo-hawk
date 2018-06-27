@@ -17,7 +17,9 @@
  ******************************************************************************/
 package org.hawk.epsilon.emc;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.eol.exceptions.EolInternalException;
@@ -42,11 +44,18 @@ public abstract class AbstractHawkModel extends Model {
 			return "Hawk collection error: nested collections are not supported for derived/indexed attributes";
 		} else if (GraphUtil.isPrimitiveOrWrapperType(ret.getClass())) {
 			return ret;
+		} else if (ret instanceof Date) {
+			return formatDate((Date)ret);
 		} else if (ret instanceof GraphNodeWrapper) {
 			return ret;
 		} else {
 			return ret.toString();
 		}
+	}
+
+	protected static String formatDate(final Date value) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		return sdf.format(value);
 	}
 
 	abstract public Collection<Object> getAllOf(String arg0, final String typeorkind)

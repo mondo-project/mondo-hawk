@@ -18,9 +18,11 @@ package org.hawk.graph.updater;
 
 import java.io.File;
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -470,7 +472,9 @@ public class GraphModelInserter {
 
 			if (!a.isMany()) {
 				Object newValue = newproperty;
-				if (!GraphUtil.isPrimitiveOrWrapperType(newproperty.getClass())) {
+				if (newValue instanceof Date) {
+					newValue = formatDate((Date)newValue);
+				} else if (!GraphUtil.isPrimitiveOrWrapperType(newproperty.getClass())) {
 					newValue = newValue.toString();
 				}
 
@@ -498,6 +502,10 @@ public class GraphModelInserter {
 					if (primitiveOrWrapperClass) {
 						for (Object o : srcCollection) {
 							collection.add(o);
+						}
+					} else if (first instanceof Date) {
+						for (Object o : srcCollection) {
+							collection.add(formatDate((Date) o));
 						}
 					} else {
 						for (Object o : srcCollection) {
@@ -532,6 +540,8 @@ public class GraphModelInserter {
 			if (!a.isMany()) {
 				if (GraphUtil.isPrimitiveOrWrapperType(v.getClass())) {
 					i.add(node, a.getName(), v);
+				} else if (v instanceof Date) {
+					i.add(node, a.getName(), formatDate((Date)v));
 				} else {
 					i.add(node, a.getName(), v.toString());
 				}
@@ -553,6 +563,10 @@ public class GraphModelInserter {
 					if (primitiveOrWrapperClass) {
 						for (Object o : srcCollection) {
 							collection.add(o);
+						}
+					} else if (first instanceof Date) {
+						for (Object o : srcCollection) {
+							collection.add(formatDate((Date)o));
 						}
 					} else {
 						for (Object o : srcCollection) {
@@ -1210,11 +1224,14 @@ public class GraphModelInserter {
 			for (IGraphNode node : nodes) {
 				Map<String, Object> m = new HashMap<>();
 
+				final Object value = node.getProperty(attributename);
 				if (!"t".equals(metadata[1])) {
 					if (isPrimitiveOrWrapperType) {
-						m.put(attributename, node.getProperty(attributename));
+						m.put(attributename, value);
+					} else if (value instanceof Date) {
+						m.put(attributename, formatDate((Date) value));
 					} else {
-						m.put(attributename, node.getProperty(attributename).toString());
+						m.put(attributename, value.toString());
 					}
 				} else {
 					Collection<Object> collection = null;
@@ -1224,9 +1241,11 @@ public class GraphModelInserter {
 					else
 						collection = new LinkedList<Object>();
 
-					for (Object o : (Collection<?>) node.getProperty(attributename)) {
+					for (Object o : (Collection<?>) value) {
 						if (isPrimitiveOrWrapperType) {
 							collection.add(o);
+						} else if (o instanceof Date) {
+							collection.add(formatDate((Date)o));
 						} else {
 							collection.add(o.toString());
 						}
@@ -1248,6 +1267,11 @@ public class GraphModelInserter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	protected Object formatDate(final Date value) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		return sdf.format(value);
 	}
 
 }

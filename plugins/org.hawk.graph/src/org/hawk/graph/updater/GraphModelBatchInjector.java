@@ -18,9 +18,11 @@ package org.hawk.graph.updater;
 
 import java.io.File;
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -395,7 +397,9 @@ public class GraphModelBatchInjector {
 			final Class<?> valueClass = value.getClass();
 			if (GraphUtil.isPrimitiveOrWrapperType(valueClass)) {
 				return value;
-			} else {
+			} else if (value instanceof Date) {
+				return formatDate((Date)value);
+			}  else {
 				return value.toString();
 			}
 		} else {
@@ -417,6 +421,10 @@ public class GraphModelBatchInjector {
 					for (Object o : srcCollection) {
 						collection.add(o);
 					}
+				} else if (first instanceof Date) {
+					for (Object o : srcCollection) {
+						collection.add(formatDate((Date)o));
+					}
 				} else {
 					for (Object o : srcCollection) {
 						collection.add(o.toString());
@@ -434,6 +442,11 @@ public class GraphModelBatchInjector {
 
 			return ret;
 		}
+	}
+
+	protected Object formatDate(final Date value) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		return sdf.format(value);
 	}
 
 	/**
