@@ -54,7 +54,7 @@ public class GraphModelUpdater implements IModelUpdater {
 	protected IConsole console;
 	protected TypeCache typeCache = new TypeCache();
 	private boolean isActive = false;
-	private Set<IGraphNode> toBeUpdated = new HashSet<>();
+	protected Set<IGraphNode> toBeUpdated = new HashSet<>();
 
 	@Override
 	public void run(IConsole c, IModelIndexer hawk) throws Exception {
