@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.hawk</groupId>
+  <artifactId>mondo-hawk-plain</artifactId>
+  <versioning>
+    <versions>
+      <version>0.0.1-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20180628224247</lastUpdated>
+  </versioning>
+</metadata>

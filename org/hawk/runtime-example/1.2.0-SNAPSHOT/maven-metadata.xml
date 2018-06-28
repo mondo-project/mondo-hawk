@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>org.hawk</groupId>
+  <artifactId>runtime-example</artifactId>
+  <version>1.2.0-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20180628.224251</timestamp>
+      <buildNumber>3</buildNumber>
+    </snapshot>
+    <lastUpdated>20180628224251</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>1.2.0-20180628.224251-3</value>
+        <updated>20180628224251</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>1.2.0-20180628.224251-3</value>
+        <updated>20180628224251</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <classifier>constellation-deps</classifier>
+        <extension>zip</extension>
+        <value>1.2.0-20180628.224251-3</value>
+        <updated>20180628224251</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>

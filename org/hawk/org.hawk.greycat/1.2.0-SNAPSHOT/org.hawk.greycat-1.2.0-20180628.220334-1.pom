@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.hawk</groupId>
+    <artifactId>mondo-hawk-plain</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../../pom-plain.xml</relativePath>
+  </parent>
+
+  <groupId>org.hawk</groupId>
+  <artifactId>org.hawk.greycat</artifactId>
+  <version>1.2.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <properties>
+    <greycat.version>10</greycat.version>
+    <lucene.version>7.2.1</lucene.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.hawk</groupId>
+      <artifactId>org.hawk.core</artifactId>
+      <version>1.2.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.datathings</groupId>
+      <artifactId>greycat</artifactId>
+      <version>${greycat.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.datathings</groupId>
+      <artifactId>greycat-rocksdb</artifactId>
+      <version>${greycat.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>${lucene.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-analyzers-common</artifactId>
+      <version>${lucene.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>15.0</version>
+    </dependency>
+  </dependencies>
+
+</project>
