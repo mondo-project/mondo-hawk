@@ -17,12 +17,14 @@
 package org.hawk.emf.model;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.Resource.Factory;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
@@ -106,12 +108,11 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 					// Remove the initial period (if any)
 					ext = ext.substring(1);
 				}
-				extensionToFactoryMap.put(ext, new XMIResourceFactoryImpl());
+				extensionToFactoryMap.put(ext, createResourceFactory());
 			}
 
-			r = resourceSet.createResource(URI.createFileURI(f
-					.getAbsolutePath()));
-			r.load(null);
+			r = resourceSet.createResource(URI.createFileURI(f.getAbsolutePath()));
+			r.load(createEMFLoadOptions());
 			ret = new EMFModelResource(r, new EMFWrapperFactory(), this);
 		} catch (Exception e) {
 			LOGGER.error("Failed to parse " + f.getAbsolutePath(), e);
@@ -120,6 +121,14 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 
 		return ret;
 		// FIXME possibly keep metadata about failure to aid users
+	}
+
+	protected Map<?, ?> createEMFLoadOptions() {
+		return Collections.emptyMap();
+	}
+
+	protected Factory createResourceFactory() {
+		return new XMIResourceFactoryImpl();
 	}
 
 	@Override
