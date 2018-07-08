@@ -24,11 +24,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
@@ -210,6 +212,12 @@ public class HWizardPage extends WizardPage {
 		pluginTable.setLabelProvider(new LabelProvider());
 		pluginTable.setInput(HManager.getInstance().getAvailablePlugins());
 		pluginTable.setAllChecked(true);
+		pluginTable.addCheckStateListener(new ICheckStateListener() {
+			@Override
+			public void checkStateChanged(CheckStateChangedEvent event) {
+				dialogChanged();
+			}
+		});
 
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		pluginTable.getTable().setLayoutData(gd);
@@ -232,6 +240,7 @@ public class HWizardPage extends WizardPage {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				pluginTable.setAllChecked(true);
+				dialogChanged();
 			}
 		});
 		Button btnDisableAll = new Button(cTableButtons, SWT.NULL);
@@ -240,6 +249,7 @@ public class HWizardPage extends WizardPage {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				pluginTable.setAllChecked(false);
+				dialogChanged();
 			}
 		});
 
@@ -388,8 +398,27 @@ public class HWizardPage extends WizardPage {
 			return;
 		}
 
-		// check plugins form a valid hawk?
+		// check plugins form a valid Hawk
+		final List<String> enabledPlugins = getPlugins();
+		if (!containsAny(enabledPlugins, hminstance.getUpdaterTypes())) {
+			updateStatus("At least one updater plugin must be enabled");
+			return;
+		}
+		if (!containsAny(enabledPlugins, hminstance.getMetaModelTypes())) {
+			updateStatus("At least one metamodel parser plugin must be enabled");
+			return;
+		}
+		if (!containsAny(enabledPlugins, hminstance.getModelTypes())) {
+			updateStatus("At least one model parser plugin must be enabled");
+			return;
+		}
+
 		updateStatus(null);
+	}
+
+	protected boolean containsAny(final List<String> enabledPlugins, final Set<String> filter) {
+		filter.retainAll(enabledPlugins);
+		return !filter.isEmpty();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -456,11 +485,9 @@ public class HWizardPage extends WizardPage {
 
 	public List<String> getPlugins() {
 		List<String> selected = new ArrayList<String>();
-
 		for (Object checked : pluginTable.getCheckedElements()) {
 			selected.add(checked.toString());
 		}
-
 		return selected;
 	}
 

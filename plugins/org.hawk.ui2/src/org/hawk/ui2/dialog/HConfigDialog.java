@@ -19,8 +19,8 @@
 package org.hawk.ui2.dialog;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -303,8 +303,7 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 			boolean error = false;
 
 			for (int i = 0; i < metaModels.length; i++) {
-				File file = new File(fd.getFilterPath() + File.separator
-						+ metaModels[i]);
+				File file = new File(fd.getFilterPath(), metaModels[i]);
 				if (!file.exists() || !file.canRead() || !file.isFile())
 					error = true;
 				else
@@ -322,14 +321,16 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 
 	protected String[] getKnownMetamodelFilePatterns() {
 		final Set<String> extensions = hawkModel.getIndexer().getKnownMetamodelFileExtensions();
-		final Set<String> patterns = new HashSet<>(extensions.size() + 1);
+
+		final java.util.List<String> patterns = new ArrayList<>(extensions.size());
 		for (String ext : extensions) {
 			// NOTE: metamodel parsers always report metamodel file extensions with starting "."
 			patterns.add("*" + ext);
 		}
+		Collections.sort(patterns);
 		patterns.add("*.*");
-		final String[] aPatterns = patterns.toArray(new String[patterns.size()]);
-		return aPatterns;
+
+		return patterns.toArray(new String[patterns.size()]);
 	}
 
 	private Composite metamodelsTab(TabFolder parent) {

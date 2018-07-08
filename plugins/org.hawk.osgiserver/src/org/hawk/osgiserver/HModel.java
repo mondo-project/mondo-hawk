@@ -275,15 +275,16 @@ public class HModel implements IStateListener {
 					console.println(q.getType());
 //				}
 			}
+
 			console.println("adding model updaters:");
 			for (IConfigurationElement updater : manager.getUps()) {
 				IModelUpdater u = (IModelUpdater) updater.createExecutableExtension(HManager.MUPDATER_CLASS_ATTRIBUTE);
-				// So far we only have one choice (graph updater) and it doesn't make sense to disable it - see HManager#getAvailablePlugins()
-//				if (enabledPlugins == null || enabledPlugins.contains(u.getClass().getName())) {
+				if (enabledPlugins == null || enabledPlugins.contains(u.getClass().getName())) {
 					this.hawk.getModelIndexer().addModelUpdater(u);
 					console.println(u.getName());
-//				}
+				}
 			}
+
 			console.println("adding graph change listeners:");
 			for (IConfigurationElement listener : manager.getGraphChangeListeners()) {
 				IGraphChangeListener l = (IGraphChangeListener) listener.createExecutableExtension(HManager.GCHANGEL_CLASS_ATTRIBUTE);

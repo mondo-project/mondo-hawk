@@ -56,13 +56,13 @@ public class HManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HManager.class);
 
-	static final String MUPDATER_CLASS_ATTRIBUTE = "ModelUpdater";
-	static final String MPARSER_CLASS_ATTRIBUTE = "ModelParser";
-	static final String MMPARSER_CLASS_ATTRIBUTE = "MetaModelParser";
-	static final String VCSMANAGER_CLASS_ATTRIBUTE = "VCSManager";
-	static final String HAWKFACTORY_CLASS_ATTRIBUTE = "class";
-	static final String QUERYLANG_CLASS_ATTRIBUTE = "query_language";
-	static final String GCHANGEL_CLASS_ATTRIBUTE = "class";
+	public static final String MUPDATER_CLASS_ATTRIBUTE = "ModelUpdater";
+	public static final String MPARSER_CLASS_ATTRIBUTE = "ModelParser";
+	public static final String MMPARSER_CLASS_ATTRIBUTE = "MetaModelParser";
+	public static final String VCSMANAGER_CLASS_ATTRIBUTE = "VCSManager";
+	public static final String HAWKFACTORY_CLASS_ATTRIBUTE = "class";
+	public static final String QUERYLANG_CLASS_ATTRIBUTE = "query_language";
+	public static final String GCHANGEL_CLASS_ATTRIBUTE = "class";
 
 	private static HManager inst;
 
@@ -319,10 +319,10 @@ public class HManager {
 		all.addAll(getMetaModelTypes());
 		all.addAll(getModelTypes());
 
-		// So far we only have one choice for each, and it doesn't make sense to enable/disable them
+		// So far we only have one choice for it, and it doesn't make sense to enable/disable it
 		//		all.addAll(getLanguageTypes());
-		//		all.addAll(getUpdaterTypes());
 
+		all.addAll(getUpdaterTypes());
 		all.addAll(getGraphChangeListenerTypes());
 		Collections.sort(all);
 		return all;
