@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
@@ -60,6 +61,11 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 	public EMFMetaModelResourceFactory() {
 		metamodelExtensions = new HashSet<String>();
 		metamodelExtensions.add(".ecore");
+		final Object xcoreFactory = Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().get("xcore");
+		if (xcoreFactory != null) {
+			metamodelExtensions.add(".xcore");
+		}
+
 		final String sExtraExtensions = System.getProperty(PROPERTY_EXTRA_EXTENSIONS);
 		if (sExtraExtensions != null) {
 			String[] extraExtensions = sExtraExtensions.split(",");
@@ -73,11 +79,13 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 		}
 
 		resourceSet = new ResourceSetImpl();
-
-		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("ecore",
-				new EcoreResourceFactoryImpl());
-		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
-
+		
+		final Map<String, Object> extensionMap = resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap();
+		extensionMap.put("ecore", new EcoreResourceFactoryImpl());
+		if (xcoreFactory != null) {
+			extensionMap.put("xcore", xcoreFactory);
+		}
+		extensionMap.put("*", new XMIResourceFactoryImpl());
 	}
 
 	@Override
