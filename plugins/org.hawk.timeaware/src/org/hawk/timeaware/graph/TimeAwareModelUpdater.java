@@ -63,6 +63,8 @@ public class TimeAwareModelUpdater extends GraphModelUpdater {
 		return new GraphModelInserter(indexer, this::createDeletionUtils, typeCache) {
 			@Override
 			protected double calculateModelDeltaRatio(IGraphNode fileNode, boolean verbose) throws Exception {
+				super.calculateModelDeltaRatio(fileNode, verbose);
+
 				/*
 				 * We want to always do a transactional update - batch update starts by removing
 				 * every existing node, so we would lose track of the various versions of each

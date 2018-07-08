@@ -807,4 +807,40 @@ public class GreycatNode implements ITimeAwareGraphNode {
 		return true;
 	}
 
+	@Override
+	public long getLatestInstant() throws Exception {
+		try (NodeReader rn = getNodeReader()) {
+			final Node n = rn.get();
+
+			CompletableFuture<long[]> result = new CompletableFuture<>();
+			n.timepoints(Constants.BEGINNING_OF_TIME, Constants.END_OF_TIME, (value) -> {
+				result.complete(value);
+			});
+
+			long latest = 0;
+			for (long timepoint : result.get()) {
+				latest = Math.max(latest, timepoint);
+			}
+			return latest;
+		}
+	}
+
+	@Override
+	public long getEarliestInstant() throws Exception {
+		try (NodeReader rn = getNodeReader()) {
+			final Node n = rn.get();
+
+			CompletableFuture<long[]> result = new CompletableFuture<>();
+			n.timepoints(Constants.BEGINNING_OF_TIME, Constants.END_OF_TIME, (value) -> {
+				result.complete(value);
+			});
+
+			long latest = 0;
+			for (long timepoint : result.get()) {
+				latest = Math.min(latest, timepoint);
+			}
+			return latest;
+		}
+	}
+
 }

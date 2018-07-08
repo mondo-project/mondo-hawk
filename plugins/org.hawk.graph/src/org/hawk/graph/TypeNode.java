@@ -120,6 +120,9 @@ public class TypeNode {
 		};
 	}
 
+	/**
+	 * Deprecated: please use {@link #getAll()} from now on.
+	 */
 	@Deprecated
 	public Iterable<ModelElementNode> getAllInstances() {
 		return getAll();

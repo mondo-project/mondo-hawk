@@ -29,8 +29,19 @@ public interface ITimeAwareGraphNode extends IGraphNode {
 
 	/**
 	 * Returns a list with all the distinct versions of the node over time.
+	 * Versions should be ordered from newest to oldest.
 	 */
 	List<ITimeAwareGraphNode> getAllVersions() throws Exception;
+
+	/**
+	 * Returns the earliest version of this node.
+	 */
+	long getEarliestInstant() throws Exception;
+
+	/**
+	 * Returns the most recent version of this node.
+	 */
+	long getLatestInstant() throws Exception;
 
 	/**
 	 * Ends the lifespan of the node at its current timepoint.

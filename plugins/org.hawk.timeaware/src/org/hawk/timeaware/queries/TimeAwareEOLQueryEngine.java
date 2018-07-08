@@ -17,13 +17,22 @@
 package org.hawk.timeaware.queries;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.epsilon.eol.IEolModule;
+import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.execute.operations.contributors.OperationContributor;
 import org.eclipse.epsilon.eol.types.EolModelElementType;
+import org.hawk.core.IModelIndexer;
+import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
+import org.hawk.core.query.InvalidQueryException;
+import org.hawk.core.query.QueryExecutionException;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.graph.ModelElementNode;
@@ -39,7 +48,7 @@ import org.hawk.graph.TypeNode;
  */
 public class TimeAwareEOLQueryEngine extends EOLQueryEngine {
 
-	public class TimeAwareNodeOperationContributor extends OperationContributor {
+	public static class TimeAwareNodeOperationContributor extends OperationContributor {
 		@Override
 		public boolean contributesTo(Object target) {
 			return target instanceof GraphNodeWrapper && ((GraphNodeWrapper)target).getNode() instanceof ITimeAwareGraphNode;
@@ -58,33 +67,65 @@ public class TimeAwareEOLQueryEngine extends EOLQueryEngine {
 			return taNode.travelInTime(time) != null;
 		}
 
+		public List<GraphNodeWrapper> getVersions() throws Exception {
+			ITimeAwareGraphNode taNode = getTimeAwareNode();
+
+			List<GraphNodeWrapper> versions = new ArrayList<>();
+			for (ITimeAwareGraphNode version : taNode.getAllVersions()) {
+				versions.add(new GraphNodeWrapper(version, ((GraphNodeWrapper)target).getContainerModel()));
+			}
+			return versions;
+		}
+
 		protected ITimeAwareGraphNode getTimeAwareNode() {
 			return (ITimeAwareGraphNode) ((GraphNodeWrapper)target).getNode();
 		}
 	}
 
-	public class TypeHistoryOperationContributor extends OperationContributor {
+	public static class TypeHistoryOperationContributor extends OperationContributor {
 		@Override
 		public boolean contributesTo(Object target) {
 			return target instanceof EolModelElementType;
 		}
 
-		public List<GraphNodeWrapper> created(String range) throws Exception {
-			final EolModelElementType eolType = (EolModelElementType)target;
-			final List<IGraphNode> typeNodes = getTypeNodes(eolType.getTypeName());
+		/**
+		 * Returns all the instances of a type through history. Each instance will be at its
+		 * earliest timepoint.
+		 */
+		protected void returnInstancesAtAnyTime(final EOLQueryEngine model, Collection<GraphNodeWrapper> ret, ITimeAwareGraphNode taNode) throws Exception {
+			// TODO: debug why we have 2 Log objects at all in STORM example.
+			for (ITimeAwareGraphNode typeNodeVersion : taNode.getAllVersions()) {
+				TypeNode typeNode = new TypeNode(typeNodeVersion);
+				for (ModelElementNode instanceNode : typeNode.getAll()) {
+					ret.add(wrap(model, instanceNode));
+				}
+			}
+		}
 
-			List<GraphNodeWrapper> ret = new ArrayList<>();
+		/**
+		 * Returns all the available instance of a type within a certain range. Currently limited to:
+		 * <ul>
+		 * <li>anytime: any timepoint of the type. Instances will be at their earliest timepoint.</li>
+		 * <li>latest: latest timepoint of the type. Instances will be at their earliest timepoints.</li>
+		 * </ul>
+		 */
+		public Set<GraphNodeWrapper> allIn(String range) throws Exception {
+			final EolModelElementType eolType = (EolModelElementType) target;
+			final EOLQueryEngine model = (EOLQueryEngine) eolType.getModel();
+			final TimeAwareEOLQueryEngine queryEngine = (TimeAwareEOLQueryEngine) eolType.getModel();
+			final List<IGraphNode> typeNodes = queryEngine.getTypeNodes(eolType.getTypeName());
+
+			Set<GraphNodeWrapper> ret = new HashSet<>();
 			for (IGraphNode node : typeNodes) {
-				ITimeAwareGraphNode taNode = (ITimeAwareGraphNode)node;
+				ITimeAwareGraphNode taNode = (ITimeAwareGraphNode) node;
 
 				if ("anytime".equals(range)) {
-					for (ITimeAwareGraphNode typeNodeVersion : taNode.getAllVersions()) {
-						TypeNode typeNode = new TypeNode(typeNodeVersion);
-						for (ModelElementNode instanceNode : typeNode.getAllInstances()) {
-							final IGraphNode meNode = instanceNode.getNode();
-							final GraphNodeWrapper gnw = new GraphNodeWrapper(meNode, (EOLQueryEngine)eolType.getModel());
-							ret.add(gnw);
-						}
+					returnInstancesAtAnyTime(model, ret, taNode);
+				} else if ("latest".equals(range)) {
+					final long latestInstant = taNode.getLatestInstant();
+					taNode = taNode.travelInTime(latestInstant);
+					for (ModelElementNode instanceNode : new TypeNode(taNode).getAll()) {
+						ret.add(wrap(model, instanceNode));
 					}
 				} else {
 					throw new UnsupportedOperationException("Cannot understand '" + range + "' yet");
@@ -93,6 +134,16 @@ public class TimeAwareEOLQueryEngine extends EOLQueryEngine {
 
 			return ret;
 		}
+
+		protected GraphNodeWrapper wrap(final EOLQueryEngine model, ModelElementNode instanceNode) {
+			final IGraphNode meNode = instanceNode.getNode();
+			final GraphNodeWrapper gnw = new GraphNodeWrapper(meNode, model);
+			return gnw;
+		}
+	}
+
+	public TimeAwareEOLQueryEngine() {
+		// nothing to do - only for breakpoints
 	}
 
 	@Override
@@ -106,4 +157,40 @@ public class TimeAwareEOLQueryEngine extends EOLQueryEngine {
 
 		return module;
 	}
+
+	@Override
+	public String getType() {
+		return getClass().getCanonicalName();
+	}
+
+	@Override
+	public Object query(IModelIndexer m, String query, Map<String, Object> context)
+			throws InvalidQueryException, QueryExecutionException
+	{
+		final HawkState currentState = m.getCompositeStateListener().getCurrentState();
+		if (currentState != HawkState.RUNNING) {
+			throw new QueryExecutionException(
+					String.format("Cannot run the query, as the indexer is not in the RUNNING state: it is %s instead.",
+							currentState));
+		}
+
+		final long trueStart = System.currentTimeMillis();
+		String defaultnamespaces = null;
+		if (context != null) {
+			defaultnamespaces = (String) context.get(PROPERTY_DEFAULTNAMESPACES);
+		}
+
+		final EOLQueryEngine q = new TimeAwareEOLQueryEngine();
+		try {
+			q.load(m);
+			q.setDefaultNamespaces(defaultnamespaces);
+		} catch (EolModelLoadingException e) {
+			throw new QueryExecutionException("Loading of EOLQueryEngine failed");
+		}
+
+		final IEolModule module = createModule();
+		parseQuery(query, context, q, module);
+		return runQuery(trueStart, module);
+	}
+	
 }

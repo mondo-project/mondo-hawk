@@ -72,7 +72,8 @@ public class TimeAwareIndexer extends BaseModelIndexer {
 
 				VcsRepositoryDelta delta = vcsManager.getDelta(lastRev, currentRevision);
 				for (VcsCommit commit : delta.getCommits()) {
-					taGraph.setTime(commit.getJavaDate().toInstant().getEpochSecond());
+					final long epochSecond = commit.getJavaDate().toInstant().getEpochSecond();
+					taGraph.setTime(epochSecond);
 
 					/*
 					 * TODO: allow for fixing unresolved proxies in previous versions? Might make
@@ -80,7 +81,7 @@ public class TimeAwareIndexer extends BaseModelIndexer {
 					 */
 					success = success && synchroniseFiles(commit.getRevision(), vcsManager, commit.getItems());
 					console.println(String.format("Index revision %s (timepoint %d) of %s",
-							commit.getRevision(), commit.getJavaDate().toInstant().getEpochSecond(), commit.getDelta().getManager().getLocation()));
+							commit.getRevision(), epochSecond, commit.getDelta().getManager().getLocation()));
 
 					taGraph.setTime(0);
 					setLastIndexedRevision(vcsManager, commit.getRevision());
