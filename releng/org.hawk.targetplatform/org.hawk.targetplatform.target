@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Hawk Target Platform" sequenceNumber="130">
+<?pde version="3.8"?><target name="Hawk Target Platform" sequenceNumber="131">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.jetty.bundles.f.feature.group" version="9.2.13.201508192117"/>
@@ -51,33 +51,6 @@
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150124073747/repository/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.bpmn2.feature.feature.group" version="1.2.1.Final-v20160119-1829"/>
-<unit id="org.eclipse.core.runtime.feature.feature.group" version="1.1.102.v20160128-1558"/>
-<unit id="org.eclipse.ecf.core.feature.feature.group" version="1.2.0.v20151130-0157"/>
-<unit id="org.eclipse.ecf.core.ssl.feature.feature.group" version="1.1.0.v20151130-0157"/>
-<unit id="org.eclipse.ecf.filetransfer.feature.feature.group" version="3.12.0.v20151130-0157"/>
-<unit id="org.eclipse.ecf.filetransfer.httpclient4.feature.feature.group" version="3.12.0.v20151130-0157"/>
-<unit id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.feature.group" version="1.1.0.v20151130-0157"/>
-<unit id="org.eclipse.ecf.filetransfer.ssl.feature.feature.group" version="1.1.0.v20151130-0157"/>
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.11.2.v20160208-0841"/>
-<unit id="org.eclipse.equinox.core.sdk.feature.group" version="3.11.2.v20160128-1406"/>
-<unit id="org.eclipse.equinox.executable.feature.group" version="3.6.200.v20150602-1417"/>
-<unit id="org.eclipse.equinox.server.jetty.feature.group" version="1.2.2.v20160202-2102"/>
-<unit id="org.eclipse.gef.sdk.feature.group" version="3.10.1.201508170204"/>
-<unit id="org.eclipse.jdt.feature.group" version="3.11.2.v20160212-1500"/>
-<unit id="org.eclipse.ocl.unified.core.feature.group" version="1.0.2.v20160118-1848"/>
-<unit id="org.eclipse.ocl.unified.ui.feature.group" version="1.0.0.v20160118-1848"/>
-<unit id="org.eclipse.pde.feature.group" version="3.11.2.v20160212-1500"/>
-<unit id="org.eclipse.platform.sdk" version="4.5.2.M20160212-1500"/>
-<unit id="org.eclipse.uml2.common.edit.feature.group" version="2.1.0.v20160201-0816"/>
-<unit id="org.eclipse.uml2.common.feature.group" version="2.1.0.v20160201-0816"/>
-<unit id="org.eclipse.uml2.feature.group" version="5.1.2.v20160201-0816"/>
-<unit id="org.eclipse.uml2.uml.edit.feature.group" version="5.1.1.v20160201-0816"/>
-<unit id="org.eclipse.uml2.uml.feature.group" version="5.1.2.v20160201-0816"/>
-<unit id="org.eclipse.xsd.sdk.feature.group" version="2.11.0.v20160208-0841"/>
-<repository location="http://download.eclipse.org/releases/mars/"/>
-</location>
-<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.mwe.sdk.feature.group" version="1.3.13.v201512160556"/>
 <unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.8.3.v201512160634"/>
 <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.8.3.v201512160556"/>
@@ -108,6 +81,34 @@
 <unit id="org.apache.commons.io" version="2.2.0.v201405211200"/>
 <unit id="org.apache.commons.io.source" version="2.2.0.v201405211200"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150124073747/repository/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.bpmn2.feature.feature.group" version="1.2.1.Final-v20160119-1829"/>
+<unit id="org.eclipse.core.runtime.feature.feature.group" version="1.1.102.v20160128-1558"/>
+<unit id="org.eclipse.ecf.core.feature.feature.group" version="1.2.0.v20151130-0157"/>
+<unit id="org.eclipse.ecf.core.ssl.feature.feature.group" version="1.1.0.v20151130-0157"/>
+<unit id="org.eclipse.ecf.filetransfer.feature.feature.group" version="3.12.0.v20151130-0157"/>
+<unit id="org.eclipse.ecf.filetransfer.httpclient4.feature.feature.group" version="3.12.0.v20151130-0157"/>
+<unit id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.feature.group" version="1.1.0.v20151130-0157"/>
+<unit id="org.eclipse.ecf.filetransfer.ssl.feature.feature.group" version="1.1.0.v20151130-0157"/>
+<unit id="org.eclipse.emf.ecore.xcore.sdk.feature.group" version="1.3.2.v20160209-0349"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.11.2.v20160208-0841"/>
+<unit id="org.eclipse.equinox.core.sdk.feature.group" version="3.11.2.v20160128-1406"/>
+<unit id="org.eclipse.equinox.executable.feature.group" version="3.6.200.v20150602-1417"/>
+<unit id="org.eclipse.equinox.server.jetty.feature.group" version="1.2.2.v20160202-2102"/>
+<unit id="org.eclipse.gef.sdk.feature.group" version="3.10.1.201508170204"/>
+<unit id="org.eclipse.jdt.feature.group" version="3.11.2.v20160212-1500"/>
+<unit id="org.eclipse.ocl.unified.core.feature.group" version="1.0.2.v20160118-1848"/>
+<unit id="org.eclipse.ocl.unified.ui.feature.group" version="1.0.0.v20160118-1848"/>
+<unit id="org.eclipse.pde.feature.group" version="3.11.2.v20160212-1500"/>
+<unit id="org.eclipse.platform.sdk" version="4.5.2.M20160212-1500"/>
+<unit id="org.eclipse.uml2.common.edit.feature.group" version="2.1.0.v20160201-0816"/>
+<unit id="org.eclipse.uml2.common.feature.group" version="2.1.0.v20160201-0816"/>
+<unit id="org.eclipse.uml2.feature.group" version="5.1.2.v20160201-0816"/>
+<unit id="org.eclipse.uml2.uml.edit.feature.group" version="5.1.1.v20160201-0816"/>
+<unit id="org.eclipse.uml2.uml.feature.group" version="5.1.2.v20160201-0816"/>
+<unit id="org.eclipse.xsd.sdk.feature.group" version="2.11.0.v20160208-0841"/>
+<repository location="http://download.eclipse.org/releases/mars/"/>
 </location>
 </locations>
 </target>
