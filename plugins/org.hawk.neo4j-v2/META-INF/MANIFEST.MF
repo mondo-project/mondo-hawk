@@ -6,7 +6,7 @@ Bundle-Version: 1.2.0.qualifier
 Require-Bundle: org.hawk.neo4j-v2.dependencies,
  org.hawk.core,
  org.slf4j.api;bundle-version="1.7.2"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.hawk.neo4j_v2,
  org.hawk.neo4j_v2.util
 Bundle-Vendor: University of York

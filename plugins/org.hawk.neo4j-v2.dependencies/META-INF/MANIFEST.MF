@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Hawk Neo4j-v2 Dependencies Plugin
 Bundle-SymbolicName: org.hawk.neo4j-v2.dependencies
 Bundle-Version: 1.0.0
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: University of York
 Bundle-ClassPath: lib/geronimo-jta_1.1_spec-1.1.1.jar,
  lib/logback-classic-1.0.9.jar,
