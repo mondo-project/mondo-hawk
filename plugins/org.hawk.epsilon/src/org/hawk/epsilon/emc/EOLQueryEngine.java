@@ -409,7 +409,7 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 		}
 
 		if (propertyGetter == null || propertyGetter.getGraph() != graph) {
-			propertyGetter = new GraphPropertyGetter(graph, this);
+			propertyGetter = createContextlessPropertyGetter();
 		}
 
 		if (graph != null) {
@@ -537,8 +537,9 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 
 		indexer = m;
 		graph = m.getGraph();
-		if (propertyGetter == null)
-			propertyGetter = new GraphPropertyGetter(graph, this);
+		if (propertyGetter == null) {
+			propertyGetter = createContextlessPropertyGetter();
+		}
 
 		try {
 			load(m);
@@ -569,6 +570,10 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 			return pg.getAccessListener();
 		}
 		return null;
+	}
+
+	protected GraphPropertyGetter createContextlessPropertyGetter() {
+		return new GraphPropertyGetter(graph, this);
 	}
 
 	protected void calculateDerivedAttributes(Map<String, EolModule> cachedModules, IGraphNode n) {

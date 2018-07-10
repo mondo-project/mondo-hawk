@@ -843,4 +843,45 @@ public class GreycatNode implements ITimeAwareGraphNode {
 		}
 	}
 
+	@Override
+	public long getPreviousInstant() throws Exception {
+		try (NodeReader rn = getNodeReader()) {
+			final Node n = rn.get();
+
+			CompletableFuture<long[]> result = new CompletableFuture<>();
+			n.timepoints(Constants.BEGINNING_OF_TIME, getTime() - 1, (value) -> {
+				result.complete(value);
+			});
+
+			/*
+			 * We assume timepoints(...) produces elements from newest to oldest. The
+			 * previous instant is the most recent moment before the current one.
+			 */
+			final long[] instants = result.get();
+			if (instants.length == 0) {
+				return NO_SUCH_INSTANT;
+			}
+			return instants[0];
+		}
+	}
+
+	@Override
+	public long getNextInstant() throws Exception {
+		try (NodeReader rn = getNodeReader()) {
+			final Node n = rn.get();
+
+			CompletableFuture<long[]> result = new CompletableFuture<>();
+			n.timepoints(getTime() + 1, Constants.END_OF_TIME, (value) -> {
+				result.complete(value);
+			});
+
+			// See getPreviousInstant() for our assumptions
+			final long[] instants = result.get();
+			if (instants.length == 0) {
+				return NO_SUCH_INSTANT;
+			}
+			return instants[instants.length - 1];
+		}
+	}
+
 }

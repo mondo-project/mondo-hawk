@@ -185,7 +185,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 			return otherNodes != null ? otherNodes : otherNode;
 		default:
-			throw new EolIllegalPropertyException(obj, property, ast, context);
+			return null;
 		}
 	}
 
