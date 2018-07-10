@@ -18,10 +18,8 @@ package org.hawk.timeaware.queries;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.epsilon.eol.IEolModule;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
@@ -109,13 +107,13 @@ public class TimeAwareEOLQueryEngine extends EOLQueryEngine {
 		 * <li>latest: latest timepoint of the type. Instances will be at their earliest timepoints.</li>
 		 * </ul>
 		 */
-		public Set<GraphNodeWrapper> allIn(String range) throws Exception {
+		public List<GraphNodeWrapper> allIn(String range) throws Exception {
 			final EolModelElementType eolType = (EolModelElementType) target;
 			final EOLQueryEngine model = (EOLQueryEngine) eolType.getModel();
 			final TimeAwareEOLQueryEngine queryEngine = (TimeAwareEOLQueryEngine) eolType.getModel();
 			final List<IGraphNode> typeNodes = queryEngine.getTypeNodes(eolType.getTypeName());
 
-			Set<GraphNodeWrapper> ret = new HashSet<>();
+			List<GraphNodeWrapper> ret = new ArrayList<>();
 			for (IGraphNode node : typeNodes) {
 				ITimeAwareGraphNode taNode = (ITimeAwareGraphNode) node;
 

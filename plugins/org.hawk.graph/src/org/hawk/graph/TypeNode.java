@@ -88,27 +88,21 @@ public class TypeNode {
 	
 	public Iterable<ModelElementNode> getAll() {
 		final Iterable<IGraphEdge> iterableKind = node.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFKIND);
-		final Iterable<IGraphEdge> iterableType = node.getIncomingWithType(ModelElementNode.EDGE_LABEL_OFTYPE);
 		return new Iterable<ModelElementNode>() {
 
 			@Override
 			public Iterator<ModelElementNode> iterator() {
 				final Iterator<IGraphEdge> itKind = iterableKind.iterator();
-				final Iterator<IGraphEdge> itType = iterableType.iterator();
 				return new Iterator<ModelElementNode>() {
 
 					@Override
 					public boolean hasNext() {
-						return itKind.hasNext() || itType.hasNext();
+						return itKind.hasNext();
 					}
 
 					@Override
 					public ModelElementNode next() {
-						if (itKind.hasNext()) {
-							return new ModelElementNode(itKind.next().getStartNode());
-						} else {
-							return new ModelElementNode(itType.next().getStartNode());
-						}
+						return new ModelElementNode(itKind.next().getStartNode());
 					}
 
 					@Override
