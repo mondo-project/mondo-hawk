@@ -98,4 +98,22 @@ public interface ITimeAwareGraphNode extends IGraphNode {
 	 */
 	ITimeAwareGraphNode travelInTime(long time);
 
+	/**
+	 * Returns all versions between two instants, both included, from
+	 * newest to oldest.
+	 */
+	List<ITimeAwareGraphNode> getVersionsBetween(long fromInclusive, long toInclusive) throws Exception;
+
+	/**
+	 * Returns all versions from an instant, which is included. Versions are
+	 * returned from newest to oldest.
+	 */
+	List<ITimeAwareGraphNode> getVersionsFrom(long fromInclusive) throws Exception;
+
+	/**
+	 * Returns all versions up to an instant, which is included. Versions are
+	 * returned from newest to oldest.
+	 */
+	List<ITimeAwareGraphNode> getVersionsUpTo(long toInclusive) throws Exception;
+
 }

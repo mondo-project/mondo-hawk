@@ -204,7 +204,7 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 					if (ret == null) {
 						List<GraphNodeWrapper> derivedTargets = new EolSequence<>();
 						for (IGraphEdge edge : derivedNode.getOutgoingWithType(ModelElementNode.DERIVED_EDGE_PREFIX + property)) {
-							derivedTargets.add(new GraphNodeWrapper(edge.getEndNode(), m));
+							derivedTargets.add(new GraphNodeWrapper(edge.getEndNode(), model));
 							ret = derivedTargets;
 						}
 					}
@@ -345,12 +345,12 @@ public class CGraphPropertyGetter extends GraphPropertyGetter {
 
 	private GraphNodeWrapper wrapIfInScope(IGraphNode node) {
 		if (!engine.isTraversalScopingEnabled())
-			return new GraphNodeWrapper(node, m);
+			return new GraphNodeWrapper(node, model);
 
 		// capture multiple file containment (ie for singleton nodes)
 		for (IGraphEdge e : node.getOutgoingWithType(ModelElementNode.EDGE_LABEL_FILE)) {
 			if (engine.getRawFileNodes().contains(e.getEndNode())) {
-				return new GraphNodeWrapper(node, m);
+				return new GraphNodeWrapper(node, model);
 			}
 		}
 

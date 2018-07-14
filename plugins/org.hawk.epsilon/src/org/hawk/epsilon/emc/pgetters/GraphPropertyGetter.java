@@ -76,7 +76,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 	protected boolean broadcastAccess = false;
 
 	protected IGraphDatabase graph;
-	protected EOLQueryEngine m;
+	protected EOLQueryEngine model;
 	protected IGraphNode featureStartingNodeClassNode = null;
 	protected AccessListener accessListener = new AccessListener();
 
@@ -86,7 +86,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 	public GraphPropertyGetter(IGraphDatabase graph, EOLQueryEngine m) {
 		this.graph = graph;
-		this.m = m;
+		this.model = m;
 	}
 
 	@Override
@@ -138,7 +138,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 							derivedTargets = new EolSequence<>();
 							derivedValue = derivedTargets;
 						}
-						derivedTargets.add(new GraphNodeWrapper(edge.getEndNode(), m));
+						derivedTargets.add(new GraphNodeWrapper(edge.getEndNode(), model));
 					}
 				}
 			}
@@ -159,7 +159,7 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 				retCollection.addAll(values);
 			}
 			for (IGraphEdge r : node.getOutgoingWithType(property)) {
-				retCollection.add(new GraphNodeWrapper(r.getEndNode(), m));
+				retCollection.add(new GraphNodeWrapper(r.getEndNode(), model));
 			}
 			return retCollection;
 
@@ -175,9 +175,9 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 			for (IGraphEdge r : node.getOutgoingWithType(property)) {
 				if (otherNodes != null)
-					otherNodes.add(new GraphNodeWrapper(r.getEndNode(), m));
+					otherNodes.add(new GraphNodeWrapper(r.getEndNode(), model));
 				else if (otherNode == null)
-					otherNode = new GraphNodeWrapper(r.getEndNode(), m);
+					otherNode = new GraphNodeWrapper(r.getEndNode(), model);
 				else
 					throw new EolRuntimeException(
 							"A relationship with arity 1 ( " + property + " ) has more than 1 links");
@@ -195,12 +195,12 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 
 			final EolSequence<GraphNodeWrapper> ret = new EolSequence<GraphNodeWrapper>();
 			for (IGraphEdge r : node.getIncomingWithType(referenceName)) {
-				ret.add(new GraphNodeWrapper(r.getStartNode(), m));
+				ret.add(new GraphNodeWrapper(r.getStartNode(), model));
 			}
 			for (IGraphEdge r : node.getIncomingWithType(ModelElementNode.DERIVED_EDGE_PREFIX + referenceName)) {
 				IGraphNode derivedNode = r.getStartNode();
 				IGraphNode elementNode = derivedNode.getIncoming().iterator().next().getStartNode();
-				ret.add(new GraphNodeWrapper(elementNode, m));
+				ret.add(new GraphNodeWrapper(elementNode, model));
 			}
 
 			return ret;
@@ -247,14 +247,14 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 			GraphNodeWrapper ret = null;
 			for (IGraphEdge r : node.getIncoming()) {
 				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
-					ret = new GraphNodeWrapper(r.getStartNode(), m);
+					ret = new GraphNodeWrapper(r.getStartNode(), model);
 					break;
 				}
 			}
 			if (ret == null) {
 				for (IGraphEdge r : node.getOutgoing()) {
 					if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER) != null) {
-						ret = new GraphNodeWrapper(r.getEndNode(), m);
+						ret = new GraphNodeWrapper(r.getEndNode(), model);
 						break;
 					}
 				}
@@ -270,13 +270,13 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 			GraphNodeWrapper ret = null;
 			for (IGraphEdge r : node.getIncoming()) {
 				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINMENT) != null) {
-					return Collections.singletonList(new GraphNodeWrapper(r.getStartNode(), m));
+					return Collections.singletonList(new GraphNodeWrapper(r.getStartNode(), model));
 				}
 			}
 			if (ret == null) {
 				for (IGraphEdge r : node.getOutgoing()) {
 					if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER) != null) {
-						return Collections.singletonList(new GraphNodeWrapper(r.getEndNode(), m));
+						return Collections.singletonList(new GraphNodeWrapper(r.getEndNode(), model));
 					}
 				}
 			}
@@ -290,12 +290,12 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 					// TODO add ability to mark derived edges as containments to
 					// be able to use them here
 
-					results.add(new GraphNodeWrapper(r.getEndNode(), m));
+					results.add(new GraphNodeWrapper(r.getEndNode(), model));
 				}
 			}
 			for (IGraphEdge r : node.getIncoming()) {
 				if (r.getProperty(ModelElementNode.EDGE_PROPERTY_CONTAINER) != null) {
-					results.add(new GraphNodeWrapper(r.getStartNode(), m));
+					results.add(new GraphNodeWrapper(r.getStartNode(), model));
 				}
 			}
 			return results;
@@ -315,11 +315,11 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 					for (IGraphEdge derivedEdge : it) {
 						final IGraphNode derivedEdgeNode = isIncoming ? derivedEdge.getStartNode()
 								: derivedEdge.getEndNode();
-						final GraphNodeWrapper edgeNodeWrapper = new GraphNodeWrapper(derivedEdgeNode, m);
+						final GraphNodeWrapper edgeNodeWrapper = new GraphNodeWrapper(derivedEdgeNode, model);
 						results.add(edgeNodeWrapper);
 					}
 				} else {
-					final GraphNodeWrapper edgeNodeWrapper = new GraphNodeWrapper(edgeNode, m);
+					final GraphNodeWrapper edgeNodeWrapper = new GraphNodeWrapper(edgeNode, model);
 					results.add(edgeNodeWrapper);
 				}
 			}
@@ -338,10 +338,10 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 					final IGraphNode derivedNode = isIncoming ? r.getStartNode() : r.getEndNode();
 					final Iterable<IGraphEdge> it = isIncoming ? derivedNode.getIncoming() : derivedNode.getOutgoing();
 					for (IGraphEdge derivedEdge : it) {
-					results.add(new GraphEdgeWrapper(derivedEdge, m));
+					results.add(new GraphEdgeWrapper(derivedEdge, model));
 					}
 				} else
-					results.add(new GraphEdgeWrapper(r, m));
+					results.add(new GraphEdgeWrapper(r, model));
 			}
 			return results;
 		}

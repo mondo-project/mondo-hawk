@@ -278,11 +278,26 @@ public class GreycatNode implements ITimeAwareGraphNode {
 
 	@Override
 	public List<ITimeAwareGraphNode> getAllVersions() throws Exception {
+		return getVersionsBetween(Constants.BEGINNING_OF_TIME, Constants.END_OF_TIME);
+	}
+
+	@Override
+	public List<ITimeAwareGraphNode> getVersionsFrom(long fromInclusive) throws Exception {
+		return getVersionsBetween(fromInclusive, Constants.END_OF_TIME);
+	}
+
+	@Override
+	public List<ITimeAwareGraphNode> getVersionsUpTo(long toInclusive) throws Exception {
+		return getVersionsBetween(Constants.END_OF_TIME, toInclusive);
+	}
+
+	@Override
+	public List<ITimeAwareGraphNode> getVersionsBetween(long fromInclusive, long toInclusive) throws Exception {
 		try (NodeReader rn = getNodeReader()) {
 			final Node n = rn.get();
 
 			CompletableFuture<long[]> result = new CompletableFuture<>();
-			n.timepoints(Constants.BEGINNING_OF_TIME, Constants.END_OF_TIME, (value) -> {
+			n.timepoints(fromInclusive, toInclusive, (value) -> {
 				result.complete(value);
 			});
 

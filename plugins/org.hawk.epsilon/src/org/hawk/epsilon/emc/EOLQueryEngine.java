@@ -233,7 +233,7 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 		return nodes;
 	}
 
-	protected List<IGraphNode> getTypeNodes(String typeName) {
+	public List<IGraphNode> getTypeNodes(String typeName) {
 		List<IGraphNode> typeNodes = typeNodesCache.get(typeName);
 		if (typeNodes == null) {
 			typeNodes = computeTypeNodes(typeName);
@@ -774,7 +774,13 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 		} catch (EolUndefinedVariableException ex) {
 			// Provide more details than Epsilon about ambiguous intra-model type references
 			try (IGraphTransaction tx = graph.beginTransaction()) {
-				final List<IGraphNode> typeNodes = getTypeNodes(ex.getVariableName());
+				/*
+				 * Use the same EOLQueryEngine as in the model - if using a separate object
+				 * (e.g. the time-aware one) this EOLQueryEngine might not be loaded.
+				 */
+				final EOLQueryEngine eolQuery = (EOLQueryEngine) module.getContext().getModelRepository().getModels().get(0);
+				final List<IGraphNode> typeNodes = eolQuery.getTypeNodes(ex.getVariableName());
+
 				final StringBuilder sb = new StringBuilder("Ambiguous type reference '" + ex.getVariableName() + "' across these metamodels:\n");
 				for (IGraphNode typeNode : typeNodes) {
 					sb.append("\n* ");
