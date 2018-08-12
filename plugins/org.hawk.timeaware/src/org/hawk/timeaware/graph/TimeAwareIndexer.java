@@ -17,6 +17,7 @@
 package org.hawk.timeaware.graph;
 
 import java.io.File;
+import java.time.Instant;
 
 import org.hawk.core.IConsole;
 import org.hawk.core.ICredentialsStore;
@@ -72,8 +73,10 @@ public class TimeAwareIndexer extends BaseModelIndexer {
 
 				VcsRepositoryDelta delta = vcsManager.getDelta(lastRev, currentRevision);
 				for (VcsCommit commit : delta.getCommits()) {
-					final long epochSecond = commit.getJavaDate().toInstant().getEpochSecond();
-					taGraph.setTime(epochSecond);
+					// Commits might be only milliseconds apart in automated processes
+					final Instant instant = commit.getJavaDate().toInstant();
+					final long epochMillis = instant.getEpochSecond() * 1000 + instant.getNano() / 1_000_000;
+					taGraph.setTime(epochMillis);
 
 					/*
 					 * TODO: allow for fixing unresolved proxies in previous versions? Might make
@@ -81,7 +84,7 @@ public class TimeAwareIndexer extends BaseModelIndexer {
 					 */
 					success = success && synchroniseFiles(commit.getRevision(), vcsManager, commit.getItems());
 					console.println(String.format("Index revision %s (timepoint %d) of %s",
-							commit.getRevision(), epochSecond, commit.getDelta().getManager().getLocation()));
+							commit.getRevision(), epochMillis, commit.getDelta().getManager().getLocation()));
 
 					taGraph.setTime(0);
 					setLastIndexedRevision(vcsManager, commit.getRevision());

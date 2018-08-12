@@ -53,6 +53,10 @@ public class TimeAwareNodeHistoryOperationContributor extends OperationContribut
 		return getRelatedVersions((taNode) -> taNode.getVersionsUpTo(toInclusive));
 	}
 
+	public GraphNodeWrapper travelInTime(long time) {
+		return new GraphNodeWrapper(castTarget(target).travelInTime(time), model);
+	}
+
 	private List<GraphNodeWrapper> getRelatedVersions(
 			final RiskyFunction<ITimeAwareGraphNode, List<ITimeAwareGraphNode>> f) throws EolRuntimeException {
 		final ITimeAwareGraphNode taNode = castTarget(target);
