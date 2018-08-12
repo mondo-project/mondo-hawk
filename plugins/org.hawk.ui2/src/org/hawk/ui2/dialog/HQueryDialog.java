@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -50,6 +51,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -213,6 +216,7 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 	private StyledText subtreeText;
 	private Button useDerivedForSubtreeButton;
 	private Button fileFirstButton;
+	private TabFolder tabFolder;
 
 	public HQueryDialog(Shell parentShell, HModel in) {
 		super(parentShell);
@@ -247,16 +251,51 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		container.setLayout(formLayout);
 		container.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		createQueryArea(container);
-		createQueryLanguageSelector(container);
-		createContextRepository(container);
-		createContextFiles(container);
-		createDefaultNamespaces(container);
-		createFullTraversal(container);
-		createSubtree(container);
+		tabFolder = new TabFolder(container, SWT.BORDER);
+		createTab("Query", (cmp) -> {
+			createQueryArea(cmp);
+			createQueryLanguageSelector(cmp);
+			return null;
+		});
+		createTab("Path-based scope", (cmp) -> {
+			createContextRepository(cmp);
+			createContextFiles(cmp);
+			return null;
+		});
+		createTab("Tree-based scope", (cmp) -> {
+			createSubtree(cmp);
+			return null;
+		});
+		createTab("Namespaces", (cmp) -> {
+			createDefaultNamespaces(cmp);
+			return null;
+		});
+		createTab("Traversal", (cmp) -> {
+			createFullTraversal(cmp);
+			return null;
+		});
+
+		final FormData tabFolderFD = new FormData();
+		tabFolderFD.left = new FormAttachment(0, 0);
+		tabFolderFD.right = new FormAttachment(100, 0);
+		tabFolder.setLayoutData(tabFolderFD);
+
 		createButtons(container);
 
 		return container;
+	}
+
+	private void createTab(final String tabText, final Function<Composite, Void> tabFiller) {
+		final TabItem tabItem = new TabItem(tabFolder, SWT.NULL);
+		tabItem.setText(tabText);
+
+		final Composite cmp = new Composite(tabFolder, SWT.NULL);
+		final FormLayout layout = new FormLayout();
+		layout.marginBottom = 20;
+		cmp.setLayout(layout);
+
+		tabFiller.apply(cmp);
+		tabItem.setControl(cmp);
 	}
 
 	protected void createSubtree(Composite container) {
@@ -264,16 +303,16 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		lSubtree.setText("Subtree root context (for fragmented models - path within repository):");
 		FormData lSubtreeFD = new FormData();
 		lSubtreeFD.left = new FormAttachment(5, 0);
-		lSubtreeFD.top = new FormAttachment(enableFullTraversalScopingButton, 10);
-		lSubtreeFD.width = 450;
+		lSubtreeFD.right = new FormAttachment(95, 0);
+		lSubtreeFD.top = new FormAttachment(5, 0);
 		lSubtree.setLayoutData(lSubtreeFD);
 
 		subtreeText = new StyledText(container, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		FormData subtreeTextFD = new FormData();
-		subtreeTextFD.left = new FormAttachment(50, 0);
+		subtreeTextFD.left = new FormAttachment(5, 0);
 		subtreeTextFD.right = new FormAttachment(95, 0);
 		subtreeTextFD.height = 60;
-		subtreeTextFD.top = new FormAttachment(enableFullTraversalScopingButton, 10);
+		subtreeTextFD.top = new FormAttachment(lSubtree, 10);
 		subtreeText.setLayoutData(subtreeTextFD);
 
 		Label lSubtreeDerived = new Label(container, SWT.WRAP | SWT.LEFT);
@@ -281,7 +320,6 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		FormData lSubtreeDerivedFD = new FormData();
 		lSubtreeDerivedFD.left = new FormAttachment(5, 0);
 		lSubtreeDerivedFD.top = new FormAttachment(subtreeText, 10);
-		lSubtreeDerivedFD.width = 500;
 		lSubtreeDerived.setLayoutData(lSubtreeDerivedFD);
 
 		useDerivedForSubtreeButton = new Button(container, SWT.CHECK);
@@ -297,7 +335,7 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		FormData queryButtonFD = new FormData();
 		queryButtonFD.left = new FormAttachment(6, 0);
 		queryButtonFD.right = new FormAttachment(34, 0);
-		queryButtonFD.top = new FormAttachment(useDerivedForSubtreeButton, 20);
+		queryButtonFD.top = new FormAttachment(tabFolder, 20);
 		queryButton.setLayoutData(queryButtonFD);
 		queryButton.addSelectionListener(new QueryExecutionSelectionAdapter());
 		
@@ -306,7 +344,7 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		FormData resetButtonFD = new FormData();
 		resetButtonFD.left = new FormAttachment(36, 0);
 		resetButtonFD.right = new FormAttachment(64, 0);
-		resetButtonFD.top = new FormAttachment(useDerivedForSubtreeButton, 20);
+		resetButtonFD.top = new FormAttachment(tabFolder, 20);
 		resetButton.setLayoutData(resetButtonFD);
 		resetButton.addSelectionListener(new ResetButtonSelectionAdapter());
 
@@ -318,7 +356,7 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		FormData syncButtonFD = new FormData();
 		syncButtonFD.left = new FormAttachment(66, 0);
 		syncButtonFD.right = new FormAttachment(94, 0);
-		syncButtonFD.top = new FormAttachment(useDerivedForSubtreeButton, 20);
+		syncButtonFD.top = new FormAttachment(tabFolder, 20);
 		syncButton.setLayoutData(syncButtonFD);
 		syncButton.addSelectionListener(new SyncSelectionAdapter());
 	}
@@ -328,13 +366,14 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		lDefaultNamespaces.setText("Default Namespaces (comma separated):");
 		FormData lDefaultNamespacesFD = new FormData();
 		lDefaultNamespacesFD.left = new FormAttachment(5, 0);
-		lDefaultNamespacesFD.top = new FormAttachment(fileFirstButton, 10);
+		lDefaultNamespacesFD.right = new FormAttachment(95, 0);
+		lDefaultNamespacesFD.top = new FormAttachment(5, 0);
 		lDefaultNamespaces.setLayoutData(lDefaultNamespacesFD);
 
 		defaultNamespaces = new StyledText(container, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		FormData defaultNamespacesFD = new FormData();
-		defaultNamespacesFD.left = new FormAttachment(50, 0);
-		defaultNamespacesFD.top = new FormAttachment(fileFirstButton, 10);
+		defaultNamespacesFD.left = new FormAttachment(5, 0);
+		defaultNamespacesFD.top = new FormAttachment(lDefaultNamespaces, 10);
 		defaultNamespacesFD.right = new FormAttachment(95, 0);
 		defaultNamespacesFD.height = 60;
 		defaultNamespaces.setLayoutData(defaultNamespacesFD);
@@ -361,15 +400,15 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		lFiles.setText("Context Files (comma separated (partial) matches using * as wildcard):");
 		FormData lFilesFD = new FormData();
 		lFilesFD.left = new FormAttachment(5, 0);
+		lFilesFD.right = new FormAttachment(95, 0);
 		lFilesFD.top = new FormAttachment(contextRepo, 10);
-		lFilesFD.width = 450;
 		lFiles.setLayoutData(lFilesFD);
 
 		contextFiles = new StyledText(container, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		FormData contextFilesFD = new FormData();
-		contextFilesFD.left = new FormAttachment(50, 0);
+		contextFilesFD.left = new FormAttachment(5, 0);
 		contextFilesFD.right = new FormAttachment(95, 0);
-		contextFilesFD.top = new FormAttachment(contextRepo, 10);
+		contextFilesFD.top = new FormAttachment(lFiles, 10);
 		contextFilesFD.height = 60;
 		contextFiles.setLayoutData(contextFilesFD);
 
@@ -392,15 +431,15 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		lRepositories.setText("Context Repositories (comma separated (partial) matches using * as wildcard):");
 		FormData lRepositoriesFD = new FormData();
 		lRepositoriesFD.left = new FormAttachment(5, 0);
-		lRepositoriesFD.top = new FormAttachment(queryLanguage, 10);
-		lRepositoriesFD.width = 450;
+		lRepositoriesFD.top = new FormAttachment(5, 0);
+		lRepositoriesFD.right = new FormAttachment(95, 0);
 		lRepositories.setLayoutData(lRepositoriesFD);
 
 		contextRepo = new StyledText(container, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		FormData contextRepoFD = new FormData();
-		contextRepoFD.left = new FormAttachment(50, 0);
+		contextRepoFD.left = new FormAttachment(5, 0);
 		contextRepoFD.right = new FormAttachment(95, 0);
-		contextRepoFD.top = new FormAttachment(queryLanguage, 10);
+		contextRepoFD.top = new FormAttachment(lRepositories, 10);
 		contextRepoFD.height = 60;
 		contextRepo.setLayoutData(contextRepoFD);
 	}
@@ -421,9 +460,10 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 			queryLanguage.select(0);
 		}
 		FormData queryLanguageFD = new FormData();
-		queryLanguageFD.left = new FormAttachment(50, 0);
+		queryLanguageFD.left = new FormAttachment(lQueryEngine, 10);
 		queryLanguageFD.right = new FormAttachment(95, 0);
 		queryLanguageFD.top = new FormAttachment(resultField, 10);
+		
 		queryLanguage.setLayoutData(queryLanguageFD);
 	}
 
