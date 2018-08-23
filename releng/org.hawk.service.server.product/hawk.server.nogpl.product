@@ -91,6 +91,7 @@
       <feature id="org.eclipse.emf.ecore.edit"/>
       <feature id="org.eclipse.emf.mapping"/>
       <feature id="org.hawk.greycat.feature"/>
+      <feature id="org.hawk.timeaware.feature"/>
    </features>
 
    <configurations>

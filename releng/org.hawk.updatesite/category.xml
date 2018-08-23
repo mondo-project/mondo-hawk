@@ -123,6 +123,9 @@
    <feature url="features/org.hawk.greycat.feature.source_1.2.0.qualifier.jar" id="org.hawk.greycat.feature.source" version="1.2.0.qualifier">
       <category name="hawk.backends"/>
    </feature>
+   <feature url="features/org.hawk.timeaware.feature_1.2.0.qualifier.jar" id="org.hawk.timeaware.feature" version="1.2.0.qualifier">
+      <category name="hawk.timeaware"/>
+   </feature>
    <category-def name="hawk.core" label="Hawk Core"/>
    <category-def name="hawk.connectors" label="Hawk Connectors"/>
    <category-def name="hawk.backends" label="Hawk Backends"/>
@@ -130,4 +133,5 @@
    <category-def name="hawk.queries" label="Hawk Query Languages"/>
    <category-def name="hawk.clients" label="Hawk Clients"/>
    <category-def name="hawk.servers" label="Hawk Servers"/>
+   <category-def name="hawk.timeaware" label="Time-Aware Indexing"/>
 </site>

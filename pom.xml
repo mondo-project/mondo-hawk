@@ -40,6 +40,7 @@
     <module>features/org.hawk.service.servlet.feature</module>
     <module>features/org.hawk.svn.feature</module>
     <module>features/org.hawk.ui.feature</module>
+    <module>features/org.hawk.timeaware.feature</module>
     <module>features/org.hawk.uml.feature</module>
     <module>features/org.hawk.workspace.feature</module>
 
@@ -64,6 +65,7 @@
     <module>plugins/org.hawk.orientdb</module>
     <module>plugins/org.hawk.osgiserver</module>
     <module>plugins/org.hawk.svn</module>
+    <module>plugins/org.hawk.timeaware</module>
     <module>plugins/org.hawk.ui.emc.dt2</module>
     <module>plugins/org.hawk.ui.emfresource</module>
     <module>plugins/org.hawk.ui2</module>
@@ -104,6 +106,7 @@
     <module>tests/org.hawk.service.emf.tests</module>
     <module>tests/org.hawk.service.servlet.tests</module>
     <module>tests/org.hawk.svn.tests</module>
+    <module>tests/org.hawk.timeaware.tests</module>
     <module>tests/org.hawk.uml.tests</module>
     <module>tests/org.hawk.workspace.tests</module>
   </modules>

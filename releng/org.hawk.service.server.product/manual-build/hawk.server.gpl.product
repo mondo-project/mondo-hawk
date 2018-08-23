@@ -87,6 +87,7 @@
       <feature id="org.eclipse.emf.edit.ui"/>
       <feature id="org.eclipse.emf.common.ui"/>
       <feature id="org.hawk.greycat.feature"/>
+      <feature id="org.hawk.timeaware.feature"/>
    </features>
 
    <configurations>
