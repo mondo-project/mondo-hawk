@@ -36,7 +36,7 @@ import org.junit.runners.Parameterized.Parameters;
 /**
  * Tests for the time-aware indexing of model element nodes.
  */
-public class NodeHistoryTests extends ModelIndexingTest {
+public class NodeHistoryTest extends ModelIndexingTest {
 	@Rule
 	public TemporarySVNRepository svnRepository = new TemporarySVNRepository();
 
@@ -52,7 +52,7 @@ public class NodeHistoryTests extends ModelIndexingTest {
     	});
     }
 	
-	public NodeHistoryTests(IGraphDatabaseFactory dbFactory, IModelSupportFactory modelSupportFactory) {
+	public NodeHistoryTest(IGraphDatabaseFactory dbFactory, IModelSupportFactory modelSupportFactory) {
 		super(dbFactory, modelSupportFactory);
 	}
 

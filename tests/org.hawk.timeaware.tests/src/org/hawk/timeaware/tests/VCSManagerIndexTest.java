@@ -26,7 +26,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class VCSManagerIndexTests {
+public class VCSManagerIndexTest {
 
 	@Rule
 	public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -47,7 +47,7 @@ public class VCSManagerIndexTests {
     	);
     }
 	
-	public VCSManagerIndexTests(IGraphDatabaseFactory factory) {
+	public VCSManagerIndexTest(IGraphDatabaseFactory factory) {
 		this.dbFactory = factory;
 	}
 
