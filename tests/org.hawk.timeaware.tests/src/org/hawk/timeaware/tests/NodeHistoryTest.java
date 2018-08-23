@@ -94,12 +94,9 @@ public class NodeHistoryTest extends ModelIndexingTest {
 				assertEquals(0, timeAwareEOL("return Tree.all.size;"));
 
 				// .created can return instances that have been created from a certain moment in time (even if not alive anymore)
-				assertEquals(1, timeAwareEOL("return Tree.created('anytime').size;"));
+				assertEquals(1, timeAwareEOL("return Tree.latest.prev.size;"));
 
-				// .isAlive('time') returns true/false depending on whether the node still exists at this point in time
-				assertEquals(false, timeAwareEOL("return Tree.created('anytime').first.isAlive('now');"));
-
-				assertEquals("xy", timeAwareEOL("return Tree.created('anytime').first.label;"));
+				assertEquals("xy", timeAwareEOL("return Tree.latest.prev.all.first.label;"));
 
 				return null;
 			}
