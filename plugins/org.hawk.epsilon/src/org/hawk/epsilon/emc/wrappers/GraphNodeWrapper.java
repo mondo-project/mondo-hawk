@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2016 The University of York.
+ * Copyright (c) 2011-2018 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -13,7 +13,7 @@
  *
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
- *     Antonio Garcia-Dominguez - add isContainedWithin (for EMF-Splitter integration)
+ *     Antonio Garcia-Dominguez - add isContainedWithin (for EMF-Splitter integration), use logging
  ******************************************************************************/
 package org.hawk.epsilon.emc.wrappers;
 
@@ -91,7 +91,7 @@ public class GraphNodeWrapper implements IGraphNodeReference {
 			final ModelElementNode men = new ModelElementNode(getNode());
 			return men.isContainedWithin(repository, path);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		}
 		return false;
 	}
@@ -121,41 +121,16 @@ public class GraphNodeWrapper implements IGraphNodeReference {
 
 	@Override
 	public String toString() {
-
 		String info = "";
 
 		try (IGraphTransaction t = containerModel.getBackend().beginTransaction()) {
-
-			// Node n = container.getNodeById(id);
-
-			// HawkClass e = new MetamodelUtils().getTypeOfFromNode(n,
-			// containerModel.parser);
-
 			info += "type:" + getTypeName();
 			info += "";
-
-			// + (e != null ? e.getName() : new MetamodelUtils()
-			// .getClassFromNode(container.getNodeById(id),
-			// containerModel.parser).getName()) + "";
-
 			t.success();
 		} catch (Exception e) {
-			System.err.println("error in toString of GraphNodeWrapper");
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		}
-
-		// return "Wrapper with id: "
-		// + id
-		// + " $ in model: "
-		// + (containerModel != null ? containerModel.toString()
-		// : "(null container model!)")
-		// + " (name: "
-		// + (containerModel != null ? containerModel.getName()
-		// : "(null container model!)") + ") $ "
-		// + (info.equals("") ? "[no meta-info]" : info) + "";
-
 		return "GNW|id:" + id + "|" + (info.equals("") ? "[no meta-info]" : info) + "";
-
 	}
 
 	@Override
