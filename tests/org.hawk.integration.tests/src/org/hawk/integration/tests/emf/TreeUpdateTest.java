@@ -79,6 +79,14 @@ public class TreeUpdateTest extends ModelIndexingTest {
 	}
 
 	@Test
+	public void eContainer() throws Throwable {
+		prepare("tree/tree.model");
+
+		assertEquals(null, eol("return Tree.all.selectOne(t|t.label='t3').eContainer;"));
+		assertEquals("t3", eol("return Tree.all.selectOne(t|t.label='t9000').eContainer.label;"));
+	}
+	
+	@Test
 	public void addChild() throws Throwable {
 		prepare("tree/tree.model");
 		replaceWith("changed-trees/add-child.model");

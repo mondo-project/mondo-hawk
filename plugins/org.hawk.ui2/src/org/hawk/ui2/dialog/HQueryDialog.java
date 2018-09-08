@@ -128,7 +128,7 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 					result = index.query(queryField.getText(), query, context);
 				}
 
-				resultField.setText(result != null ? result.toString() : "<null>");
+				resultField.setText(result != null ? result.toString() : "<null> returned (if this unexpected, check console for errors)");
 			} catch (Exception ex) {
 				final String error = "Error while running the query: " + ex.getMessage();
 				resultField.setText(error);

@@ -259,9 +259,8 @@ public class GraphPropertyGetter extends AbstractPropertyGetter {
 					}
 				}
 			}
-			if (ret == null)
-				throw new EolRuntimeException("eContainer failed,\n" + node + "\nis not contained");
 
+			// null if not contained
 			return ret;
 		}
 		case "eContainers": {

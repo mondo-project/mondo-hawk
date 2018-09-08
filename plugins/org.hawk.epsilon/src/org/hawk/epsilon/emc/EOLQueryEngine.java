@@ -768,8 +768,6 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 		Object ret = null;
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			ret = module.execute();
-			if (ret == null)
-				ret = "no result returned (maybe it directly printed the result to console?)";
 			tx.success();
 		} catch (EolUndefinedVariableException ex) {
 			// Provide more details than Epsilon about ambiguous intra-model type references
