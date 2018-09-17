@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.hawk.ui.emc.dt2;
 
+import static org.eclipse.epsilon.common.dt.util.DialogUtil.createGroupContainer;
+
 import org.eclipse.epsilon.common.dt.launching.dialogs.AbstractModelConfigurationDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;

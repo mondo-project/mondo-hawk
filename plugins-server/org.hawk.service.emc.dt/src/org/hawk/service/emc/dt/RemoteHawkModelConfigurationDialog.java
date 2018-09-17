@@ -17,6 +17,8 @@
  *******************************************************************************/
 package org.hawk.service.emc.dt;
 
+import static org.eclipse.epsilon.common.dt.util.DialogUtil.createGroupContainer;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
