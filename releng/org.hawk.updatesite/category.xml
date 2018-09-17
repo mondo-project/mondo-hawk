@@ -133,6 +133,5 @@
    <category-def name="hawk.queries" label="Hawk Query Languages"/>
    <category-def name="hawk.clients" label="Hawk Clients"/>
    <category-def name="hawk.servers" label="Hawk Servers"/>
-   <category-def name="hawk.timeaware" label="Time-Aware Indexing"/>
-   <repository-reference location="http://eclipse.svnkit.com/1.9.x" enabled="true" />
+   <category-def name="hawk.timeaware" label="Hawk Time-Aware Indexing"/>
 </site>

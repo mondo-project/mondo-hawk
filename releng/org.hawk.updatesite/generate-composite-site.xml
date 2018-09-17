@@ -8,7 +8,7 @@
 		<p2.composite.repository>
 			<repository location="${basedir}"/>
 			<add>
-				<repository location="http://download.eclipse.org/epsilon/interim/"/>
+				<repository location="http://download.eclipse.org/epsilon/updates/"/>
 				<repository location="http://mondo-project.github.io/mondo-hawk/hawk-updates/"/>
 				<repository location="http://mondo-project.github.io/mondo-hawk/thirdparty-nonp2/"/>
 			</add>
