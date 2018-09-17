@@ -61,66 +61,73 @@
 		<repository location="http://download.eclipse.org/epsilon/updates/"/>
 	</location>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		<unit id="org.eclipse.bpmn2.feature.feature.group" version="1.5.0.Final-v20180515-1526"/>
-		<unit id="org.eclipse.core.runtime.feature.feature.group" version="1.2.100.v20180515-2014"/>
-		<unit id="org.eclipse.ecf.core.feature.feature.group" version="1.5.0.v20180426-1936"/>
-		<unit id="org.eclipse.ecf.core.feature.source.feature.group" version="1.5.0.v20180426-1936"/>
-		<unit id="org.eclipse.ecf.core.ssl.feature.feature.group" version="1.1.100.v20180301-0201"/>
-		<unit id="org.eclipse.ecf.core.ssl.feature.source.feature.group" version="1.1.100.v20180301-0201"/>
-		<unit id="org.eclipse.ecf.filetransfer.feature.feature.group" version="3.14.0.v20180306-0429"/>
-		<unit id="org.eclipse.ecf.filetransfer.feature.source.feature.group" version="3.14.0.v20180306-0429"/>
-		<unit id="org.eclipse.ecf.filetransfer.httpclient4.feature.feature.group" version="3.14.0.v20180301-0132"/>
-		<unit id="org.eclipse.ecf.filetransfer.httpclient4.feature.source.feature.group" version="3.14.0.v20180301-0132"/>
-		<unit id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.feature.group" version="1.1.100.v20180301-0132"/>
-		<unit id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.source.feature.group" version="1.1.100.v20180301-0132"/>
-		<unit id="org.eclipse.ecf.filetransfer.ssl.feature.feature.group" version="1.1.100.v20180301-0132"/>
-		<unit id="org.eclipse.ecf.filetransfer.ssl.feature.source.feature.group" version="1.1.100.v20180301-0132"/>
-		<unit id="org.eclipse.emf.ecore.xcore.sdk.feature.group" version="1.6.0.v20180527-1213"/>
-		<unit id="org.eclipse.emf.ecore.xcore.sdk.source.feature.group" version="1.6.0.v20180527-1213"/>
-		<unit id="org.eclipse.emf.sdk.feature.group" version="2.14.0.v20180529-1157"/>
-		<unit id="org.eclipse.emf.sdk.source.feature.group" version="2.14.0.v20180529-1157"/>
-		<unit id="org.eclipse.equinox.core.sdk.feature.group" version="3.14.0.v20180512-1130"/>
-		<unit id="org.eclipse.equinox.executable.feature.group" version="3.8.0.v20180518-2029"/>
+		<unit id="org.eclipse.bpmn2.feature.feature.group" version="1.4.0.Final-v20170607-1423"/>
+		<unit id="org.eclipse.core.runtime.feature.feature.group" version="1.2.2.v20180210-1608"/>
+		<unit id="org.eclipse.ecf.core.feature.feature.group" version="1.4.0.v20170516-2248"/>
+		<unit id="org.eclipse.ecf.core.feature.source.feature.group" version="1.4.0.v20170516-2248"/>
+		<unit id="org.eclipse.ecf.core.ssl.feature.feature.group" version="1.1.0.v20170110-1317"/>
+		<unit id="org.eclipse.ecf.core.ssl.feature.source.feature.group" version="1.1.0.v20170110-1317"/>
+		<unit id="org.eclipse.ecf.filetransfer.feature.feature.group" version="3.13.8.v20170715-2257"/>
+		<unit id="org.eclipse.ecf.filetransfer.feature.source.feature.group" version="3.13.8.v20170715-2257"/>
+		<unit id="org.eclipse.ecf.filetransfer.httpclient4.feature.feature.group" version="3.13.8.v20170715-2257"/>
+		<unit id="org.eclipse.ecf.filetransfer.httpclient4.feature.source.feature.group" version="3.13.8.v20170715-2257"/>
+		<unit id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.feature.group" version="1.1.0.v20170110-1317"/>
+		<unit id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.source.feature.group" version="1.1.0.v20170110-1317"/>
+		<unit id="org.eclipse.ecf.filetransfer.ssl.feature.feature.group" version="1.1.0.v20170110-1317"/>
+		<unit id="org.eclipse.ecf.filetransfer.ssl.feature.source.feature.group" version="1.1.0.v20170110-1317"/>
+		<repository location="http://download.eclipse.org/releases/oxygen/"/>
+	</location>
+	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		<unit id="org.eclipse.emf.ecore.xcore.sdk.feature.group" version="1.5.0.v20170613-0242"/>
+		<unit id="org.eclipse.emf.sdk.feature.group" version="2.13.0.v20170609-0928"/>
+		<unit id="org.eclipse.equinox.core.sdk.feature.group" version="3.13.2.v20180210-1608"/>
+		<unit id="org.eclipse.equinox.executable.feature.group" version="3.7.2.v20171108-1834"/>
+		<unit id="org.eclipse.equinox.server.jetty.feature.group" version="1.4.4.v20180322-2228"/>
+		<unit id="org.eclipse.equinox.serverside.sdk.feature.group" version="3.13.4.v20180322-2228"/>
 		<unit id="org.eclipse.gef.feature.group" version="3.11.0.201606061308"/>
 		<unit id="org.eclipse.gef.sdk.feature.group" version="3.11.0.201606061308"/>
 		<unit id="org.eclipse.gef.source.feature.group" version="3.11.0.201606061308"/>
-		<unit id="org.eclipse.jdt.feature.group" version="3.14.0.v20180611-0500"/>
-		<unit id="org.eclipse.pde.feature.group" version="3.13.100.v20180611-0826"/>
-		<unit id="org.eclipse.platform.sdk" version="4.8.0.I20180611-0500"/>
-		<repository location="http://download.eclipse.org/releases/photon/"/>
+		<unit id="org.eclipse.jdt.feature.group" version="3.13.4.v20180330-0919"/>
+		<unit id="org.eclipse.pde.feature.group" version="3.13.4.v20180330-0640"/>
+		<unit id="org.eclipse.platform.sdk" version="4.7.3.M20180330-0640"/>
+		<repository location="http://download.eclipse.org/releases/oxygen/"/>
 	</location>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		<unit id="org.eclipse.equinox.server.jetty.feature.group" version="1.5.0.v20180508-1121"/>
-		<unit id="org.eclipse.equinox.serverside.sdk.feature.group" version="3.14.0.v20180515-2149"/>
-		<unit id="org.eclipse.ocl.unified.core.feature.group" version="1.4.0.v20180611-1119"/>
-		<unit id="org.eclipse.ocl.unified.core.source.feature.group" version="1.4.0.v20180611-1119"/>
-		<unit id="org.eclipse.ocl.unified.ui.feature.group" version="1.4.0.v20180611-1119"/>
-		<unit id="org.eclipse.ocl.unified.ui.source.feature.group" version="1.4.0.v20180611-1119"/>
-		<unit id="org.eclipse.uml2.common.edit.feature.group" version="2.4.0.v20180604-1153"/>
-		<unit id="org.eclipse.uml2.common.feature.group" version="2.4.0.v20180604-1153"/>
-		<unit id="org.eclipse.uml2.feature.group" version="5.4.0.v20180604-1153"/>
-		<unit id="org.eclipse.uml2.uml.edit.feature.group" version="5.4.0.v20180604-1153"/>
-		<unit id="org.eclipse.uml2.uml.feature.group" version="5.4.0.v20180604-1153"/>
-		<unit id="org.eclipse.xsd.sdk.feature.group" version="2.14.0.v20180131-0817"/>
-		<unit id="org.eclipse.xsd.sdk.source.feature.group" version="2.14.0.v20180131-0817"/>
-		<repository location="http://download.eclipse.org/releases/photon/"/>
+		<unit id="org.eclipse.ocl.unified.core.feature.group" version="1.3.0.v20170613-1432"/>
+		<unit id="org.eclipse.ocl.unified.ui.feature.group" version="1.3.0.v20170613-1432"/>
+		<unit id="org.eclipse.uml2.common.edit.feature.group" version="2.1.0.v20170605-1616"/>
+		<unit id="org.eclipse.uml2.common.edit.source.feature.group" version="2.1.0.v20170605-1616"/>
+		<unit id="org.eclipse.uml2.common.feature.group" version="2.1.0.v20170605-1616"/>
+		<unit id="org.eclipse.uml2.common.source.feature.group" version="2.1.0.v20170605-1616"/>
+		<unit id="org.eclipse.uml2.feature.group" version="5.3.0.v20170605-1616"/>
+		<unit id="org.eclipse.uml2.source.feature.group" version="5.3.0.v20170605-1616"/>
+		<unit id="org.eclipse.uml2.uml.edit.feature.group" version="5.3.0.v20170605-1616"/>
+		<unit id="org.eclipse.uml2.uml.edit.source.feature.group" version="5.3.0.v20170605-1616"/>
+		<unit id="org.eclipse.uml2.uml.feature.group" version="5.3.0.v20170605-1616"/>
+		<unit id="org.eclipse.uml2.uml.source.feature.group" version="5.3.0.v20170605-1616"/>
+		<unit id="org.eclipse.xsd.sdk.feature.group" version="2.13.0.v20170609-0928"/>
+		<repository location="http://download.eclipse.org/releases/oxygen/"/>
+	</location>
+	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		<unit id="org.eclipse.emf.transaction.sdk.feature.group" version="1.11.0.201706061339"/>
+		<unit id="org.eclipse.emf.validation.sdk.feature.group" version="1.11.0.201706061352"/>
+		<unit id="org.eclipse.gmf.runtime.notation.sdk.feature.group" version="1.11.0.201706061354"/>
+		<unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.11.0.201706061437"/>
+		<unit id="org.eclipse.xwt.feature.feature.group" version="1.3.1.I20171018-2059"/>
+		<unit id="org.eclipse.xwt.workbench.feature.feature.group" version="1.3.1.I20171018-2059"/>
+		<repository location="http://download.eclipse.org/releases/oxygen/"/>
 	</location>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<unit id="org.eclipse.emf.mwe.sdk.feature.group" version="1.3.21.201705291011"/>
 		<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.9.1.201705291011"/>
 		<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.9.1.201705291011"/>
-		<unit id="org.eclipse.emf.transaction.sdk.feature.group" version="1.12.0.201805140824"/>
-		<unit id="org.eclipse.gmf.feature.group" version="1.12.0.201806010809"/>
-		<unit id="org.eclipse.gmf.runtime.notation.sdk.feature.group" version="1.12.0.201805221301"/>
-		<unit id="org.eclipse.m2m.qvt.oml.sdk.feature.group" version="3.8.0.v20180612-0940"/>
-		<unit id="org.eclipse.ocl.all.sdk.feature.group" version="5.4.0.v20180611-1119"/>
-		<unit id="org.eclipse.papyrus.uml.feature.feature.group" version="4.0.0.201806130934"/>
+		<unit id="org.eclipse.m2m.qvt.oml.sdk.feature.group" version="3.7.0.v20170604-1316"/>
+		<unit id="org.eclipse.ocl.all.sdk.feature.group" version="5.3.0.v20170607-1133"/>
+		<unit id="org.eclipse.papyrus.uml.feature.feature.group" version="3.0.0.201803070847"/>
 		<unit id="org.eclipse.xpand.sdk.feature.group" version="2.2.0.v201605260315"/>
-		<unit id="org.eclipse.xtend.sdk.feature.group" version="2.14.0.v20180523-0937"/>
-		<unit id="org.eclipse.xtext.sdk.feature.group" version="2.14.0.v20180523-0937"/>
-		<unit id="org.eclipse.xwt.feature.feature.group" version="1.3.1.I20171018-2059"/>
-		<unit id="org.eclipse.xwt.workbench.feature.feature.group" version="1.3.1.I20171018-2059"/>
-		<repository location="http://download.eclipse.org/releases/photon/"/>
+		<unit id="org.eclipse.xtend.sdk.feature.group" version="2.12.0.v20170519-1412"/>
+		<unit id="org.eclipse.xtext.sdk.feature.group" version="2.12.0.v20170519-1412"/>
+		<repository location="http://download.eclipse.org/releases/oxygen/"/>
 	</location>
 </locations>
 </target>
