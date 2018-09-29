@@ -17,15 +17,18 @@
 package org.hawk.workspace.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.IContainer;
@@ -97,6 +100,7 @@ public class WorkspaceTest {
 	public void existingProjectIsListed() throws Exception {
 		final IProject project = createProject("myproject");
 		createFile(project, "my.xmi", "something");
+		createFile(project, "with spaces.xmi", "something");
 		Workspace vcs = createVCS();
 
 		// No changes detected yet
@@ -105,10 +109,18 @@ public class WorkspaceTest {
 
 		// All files are listed
 		final Collection<VcsCommitItem> items = vcs.getDelta(null);
-		assertEquals(2, items.size());
-		final Iterator<VcsCommitItem> itItems = items.iterator();
-		assertEquals("/myproject/.project", itItems.next().getPath());
-		assertEquals("/myproject/my.xmi", itItems.next().getPath());
+		final Set<String> paths = items.stream()
+				.map(item -> item.getPath())
+				.collect(Collectors.toSet());
+
+		assertEquals(3, items.size());
+		assertTrue(paths.contains("/myproject/.project"));
+		assertTrue(paths.contains("/myproject/my.xmi"));
+		assertTrue(paths.contains("/myproject/with%20spaces.xmi"));
+		
+		// Try to import back the file with spaces
+		final File imported = vcs.importFile(null, "/myproject/with%20spaces.xmi", null);
+		assertTrue(imported.canRead());
 	}
 
 	@Test

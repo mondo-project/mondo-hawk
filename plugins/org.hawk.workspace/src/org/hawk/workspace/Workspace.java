@@ -17,8 +17,12 @@
 package org.hawk.workspace;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -195,15 +199,34 @@ public class Workspace implements IVcsManager {
 		c.setChangeType(changeType);
 		c.setCommit(commit);
 
-		c.setPath(f.getFullPath().toString());
+		String encodedPath;
+		try {
+			encodedPath = URLEncoder.encode(
+				f.getFullPath().toString(),
+				StandardCharsets.UTF_8.toString()
+			).replaceAll("%2F", "/").replaceAll("[+]", "%20");
 
-		commit.getItems().add(c);
+			c.setPath(encodedPath);
+			commit.getItems().add(c);
+		} catch (UnsupportedEncodingException e) {
+			LOGGER.error(e.getMessage(), e);
+		}
 	}
 
 	@Override
-	public File importFile(String revision, String path, File temp) {
-		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
+	public File importFile(String revision, String uriEncodedPath, File temp) {
+		String decodedPath;
+		try {
+			decodedPath = URLDecoder.decode(uriEncodedPath, StandardCharsets.UTF_8.toString());
+		} catch (UnsupportedEncodingException e) {
+			LOGGER.error(e.getMessage(), e);
+
+			// Fall back to not decoding
+			decodedPath = uriEncodedPath;
+		}
+
 		// Access directly the file (no need for copying - helps with links between workspace files)
+		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(decodedPath));
 		return file.getRawLocation().toFile();
 	}
 
