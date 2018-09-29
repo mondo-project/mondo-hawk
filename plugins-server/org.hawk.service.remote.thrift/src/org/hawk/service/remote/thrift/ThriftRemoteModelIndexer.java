@@ -967,4 +967,10 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 		}
 	}
 
+	@Override
+	public List<IModelUpdater> getUpdaters() {
+		console.printerrln("Cannot access updaters in " + this.getClass().getName());
+		return null;
+	}
+
 }

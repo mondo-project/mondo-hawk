@@ -334,7 +334,8 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 		}
 	}
 
-	protected List<IModelUpdater> getUpdaters() {
+	@Override
+	public List<IModelUpdater> getUpdaters() {
 		return updaters;
 	}
 

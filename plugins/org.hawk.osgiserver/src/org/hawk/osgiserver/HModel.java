@@ -119,6 +119,9 @@ public class HModel implements IStateListener {
 		if (dbType != null) {
 			hm.hawk.setDatabaseType(dbType);
 		}
+		if (hm.getUpdaters() != null && hm.getUpdaters().isEmpty()) {
+			throw new IllegalArgumentException("Must at least add one updater");
+		}
 
 		// TODO use plugins list to enable only these plugins
 		IGraphDatabase db = null;
@@ -438,7 +441,10 @@ public class HModel implements IStateListener {
 	public Collection<IndexedAttributeParameters> getIndexedAttributes() {
 		return hawk.getModelIndexer().getIndexedAttributes();
 	}
-	
+
+	public List<IModelUpdater> getUpdaters() {
+		return hawk.getModelIndexer().getUpdaters();
+	}
 
 	public Collection<String> getIndexes() {
 		return hawk.getModelIndexer().getIndexes();

@@ -93,6 +93,11 @@ public interface IModelIndexer {
 	Set<IVcsManager> getRunningVCSManagers();
 
 	/**
+	 * @return running updaters
+	 */
+	List<IModelUpdater> getUpdaters();
+
+	/**
 	 * 
 	 * @return current known metamodels in hawk
 	 */
