@@ -30,8 +30,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.eclipse.epsilon.common.parse.problem.ParseProblem;
@@ -91,13 +91,12 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 		V apply(T t, U u);
 	}
 
-	private static final String MMURI_TYPE_SEPARATOR = "::";
+	public static final String TYPE = "org.hawk.epsilon.emc.EOLQueryEngine";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EOLQueryEngine.class);
-
-	public static final String TYPE = "org.hawk.epsilon.emc.EOLQueryEngine";
+	private static final String MMURI_TYPE_SEPARATOR = "::";
 	private static final String ANY_TYPE = new EolAnyType().getName();
-
+	
 	/* TODO: these two should not have to be static.*/
 	protected static IModelIndexer indexer = null;
 	protected static IGraphDatabase graph = null;
@@ -180,6 +179,8 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 	 * @param filePatterns
 	 *            Comma-separated list of file patterns, such as
 	 *            <code>/a/b/c.xmi</code> or <code>/d/*</code>.
+	 *            If URI-invalid characters are found in the pattern,
+	 *            they will be URI-encoded.
 	 * @throws EolInternalException
 	 *             Error while retrieving the type/file nodes.
 	 * @throws EolModelElementTypeNotFoundException

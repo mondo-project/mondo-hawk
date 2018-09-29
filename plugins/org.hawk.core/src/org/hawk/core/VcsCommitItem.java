@@ -18,6 +18,8 @@
 package org.hawk.core;
 
 import java.io.Serializable;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class VcsCommitItem implements Serializable {
 
@@ -45,7 +47,17 @@ public class VcsCommitItem implements Serializable {
 	 */
 	public void setPath(String path) {
 		assert path.startsWith("/") : "Path " + path + " should start with a slash";
+		assert isValidURI(path) : "Path " + path + " should be a valid URI";
 		this.path = path;
+	}
+	
+	private boolean isValidURI(String path) {
+		try {
+			new URI(path);
+			return true;
+		} catch (URISyntaxException ex) {
+			return false;
+		}
 	}
 
 	public VcsChangeType getChangeType() {

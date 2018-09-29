@@ -28,6 +28,7 @@ import org.hawk.backend.tests.BackendTestSuite;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.graph.syncValidationListener.SyncValidationListener;
 import org.hawk.integration.tests.ModelIndexingTest;
+import org.hawk.localfolder.LocalFolder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
@@ -118,6 +119,33 @@ public class CountInstancesTest extends ModelIndexingTest {
 				final Collection<?> actualList = (Collection<?>) eol("return TypeDeclaration.all;");
 				assertEquals(reportedSize, actualList.size());
 
+				return null;
+			}
+		});
+	}
+
+	@Test
+	public void treeWithSpaces() throws Throwable {
+		indexer.registerMetamodels(
+			new File("resources/metamodels/Ecore.ecore"),
+			new File("resources/metamodels/Tree.ecore"));
+
+		final LocalFolder vcs = new LocalFolder();
+		final File folder = new File("resources/models");
+		vcs.init(folder.getAbsolutePath(), indexer);
+		vcs.setFileFilter(f -> {
+			return f.getPath().contains("tree with spaces");
+		});
+		vcs.run();
+		indexer.addVCSManager(vcs, true);
+		
+		waitForSync(new Callable<Object>() {
+			@Override
+			public Object call() throws Exception {
+				assertEquals(0, syncValidation.getListener().getTotalErrors());
+				assertEquals(1, eol("return Tree.all.size;"));
+				assertEquals(1, eol("return Model.getAllOf('Tree', 'Tree', '/tree with spaces/space tree.model').size;"));
+				assertEquals(1, eol("return Model.getAllOf('Tree', 'Tree', '/tree%20with%20spaces/space%20tree.model').size;"));
 				return null;
 			}
 		});

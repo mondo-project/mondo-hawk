@@ -16,6 +16,11 @@
  ******************************************************************************/
 package org.hawk.graph;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -27,6 +32,8 @@ import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.graph.updater.GraphModelUpdater;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Wraps an {@link IGraphDatabase} that has been updated by this plugin. This is
@@ -39,6 +46,8 @@ import org.hawk.graph.updater.GraphModelUpdater;
  * the existing queries are moved into this API.
  */
 public class GraphWrapper {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(GraphWrapper.class);
 
 	private final IGraphDatabase graph;
 
@@ -57,7 +66,9 @@ public class GraphWrapper {
 	 * @param filePatterns
 	 *            Patterns for the files. Having <code>"*"</code> as an element
 	 *            or passing a null or empty {@link Iterable} will return all
-	 *            files in the selected repository or repositories.
+	 *            files in the selected repository or repositories. If a file
+	 *            pattern has URI-invalid characters (e.g. spaces), it will be
+	 *            URI-encoded first.
 	 */
 	public Set<FileNode> getFileNodes(Iterable<String> repoPatterns, Iterable<String> filePatterns) {
 		if (repoPatterns == null || !repoPatterns.iterator().hasNext()) {
@@ -75,8 +86,22 @@ public class GraphWrapper {
 				if ("*".equals(repo) && "*".equals(file)) {
 					fullPattern = "*";
 				} else {
+					try {
+						// Is this a valid URI?
+						new URI(file);
+					} catch (URISyntaxException ex) {
+						try {
+							// No, encode it (but keep slashes and use %20 instead of + for spaces)
+							file = URLEncoder.encode(file, StandardCharsets.UTF_8.toString())
+									.replaceAll("%2F", "/").replaceAll("[+]", "%20");
+						} catch (UnsupportedEncodingException e) {
+							LOGGER.error(e.getMessage(), e);
+						}
+					}
+
 					fullPattern = repo.trim() + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + file.trim();
 				}
+
 				for (IGraphNode n : fileIndex.query("id", fullPattern)) {
 					files.add(new FileNode(n));
 				}
