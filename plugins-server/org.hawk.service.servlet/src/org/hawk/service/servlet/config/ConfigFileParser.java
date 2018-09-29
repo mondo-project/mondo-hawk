@@ -236,7 +236,6 @@ public class ConfigFileParser {
 		if(config.getPlugins() != null && !config.getPlugins().isEmpty()) {
 			Element pluginsElement = document.createElement(PLUGINS);
 			for(String plugin : config.getPlugins()) {
-				
 				/** <plugins> */
 				Element pluginElement = document.createElement(PLUGIN);
 				createAndAddAttribute(document, pluginElement, NAME, plugin);

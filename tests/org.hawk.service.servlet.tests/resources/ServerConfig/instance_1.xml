@@ -4,6 +4,7 @@
     <plugins>
         <plugin name="org.hawk.emf.metamodel.EMFMetaModelResourceFactory"/>
         <plugin name="org.hawk.emf.model.EMFModelResourceFactory"/>
+        <plugin name="org.hawk.graph.updater.GraphModelUpdater"/>
         <plugin name="org.hawk.graph.syncValidationListener.SyncValidationListener"/>
         <plugin name="org.hawk.modelio.exml.listeners.ModelioGraphChangeListener"/>
         <plugin name="org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory"/>

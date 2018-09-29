@@ -39,10 +39,11 @@ public class ConfigFileParserTest {
 		assertEquals("Instance Delay Max:", 512000, config.getDelayMax());
 		assertEquals("Instance Delay Min:", 5000, config.getDelayMin());
 		
-		assertEquals("Instance Number of Plugins:", 6, config.getPlugins().size());
+		assertEquals("Instance Number of Plugins:", 7, config.getPlugins().size());
 		assertTrue(config.getPlugins().contains("org.hawk.emf.metamodel.EMFMetaModelResourceFactory"));
 		assertTrue(config.getPlugins().contains("org.hawk.emf.model.EMFModelResourceFactory"));
 		assertTrue(config.getPlugins().contains("org.hawk.graph.syncValidationListener.SyncValidationListener"));
+		assertTrue(config.getPlugins().contains("org.hawk.graph.updater.GraphModelUpdater"));
 		assertTrue(config.getPlugins().contains("org.hawk.modelio.exml.listeners.ModelioGraphChangeListener"));
 		assertTrue(config.getPlugins().contains("org.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory"));
 		assertTrue(config.getPlugins().contains("org.hawk.modelio.exml.model.ModelioModelResourceFactory"));
