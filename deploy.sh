@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Retrieve major+minor version from the core MANIFEST.MF, keep patch level at 0
+get_version() {
+    grep Bundle-Version plugins/org.hawk.core/META-INF/MANIFEST.MF \
+	    | cut --delim=: -f2 \
+	    | sed -re 's/ *([0-9]+)[.]([0-9]+)[.].*/\1.\2.0/')
+}
+
 deploy_updates() {
     # Clone the last two commits of the gh-pages branch
     rm -rf out || true
@@ -10,9 +17,11 @@ deploy_updates() {
     git config user.name "Travis CI"
     git config user.email "agarcdomi@gmail.com"
 
+    VERSION=$(get_version)
+
     # If the tip comes from Travis, amend it. Otherwise, add a new commit.
-    rm -rf hawk-updates
-    cp -r ../releng/org.hawk.updatesite/target/repository hawk-updates
+    rm -rf hawk-updates/${VERSION}
+    cp -r ../releng/org.hawk.updatesite/target/repository hawk-updates/${VERSION}
     git add --all .
     if git log --format=%an HEAD~.. | grep -q "Travis CI"; then
 	      COMMIT_FLAGS="--amend"
