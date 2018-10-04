@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.Dialog;
@@ -49,6 +51,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.FilteredResourcesSelectionDialog;
 import org.hawk.core.IStateListener;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.util.IndexedAttributeParameters;
@@ -80,7 +83,8 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 	private Button removeIndexedAttributeButton;
 	private Button addIndexedAttributeButton;
 	private Button removeMetaModelsButton;
-	private Button addMetaModelsButton;
+	private Button addMetaModelsFromFilesystemButton;
+	private Button addMetaModelsFromWorkspaceButton;
 	private Button addVCSButton;
 	private Button editVCSButton;
 	private Button removeVCSButton;
@@ -286,7 +290,7 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 		return composite;
 	}
 
-	private void metamodelBrowse() {
+	private void metamodelBrowseFilesystem() {
 		final FileDialog fd = new FileDialog(getShell(), SWT.MULTI);
 
 		final IPath workspaceRoot = ResourcesPlugin.getWorkspace().getRoot().getLocation();
@@ -296,7 +300,6 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 		String result = fd.open();
 
 		if (result != null) {
-
 			String[] metaModels = fd.getFileNames();
 			File[] metaModelFiles = new File[metaModels.length];
 
@@ -304,11 +307,12 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 
 			for (int i = 0; i < metaModels.length; i++) {
 				File file = new File(fd.getFilterPath(), metaModels[i]);
-				if (!file.exists() || !file.canRead() || !file.isFile())
+				if (!file.exists() || !file.canRead() || !file.isFile()) {
 					error = true;
-				else
+				}
+				else {
 					metaModelFiles[i] = file;
-
+				}
 			}
 
 			if (!error) {
@@ -316,9 +320,32 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 				updateMetamodelList();
 			}
 		}
-
 	}
 
+	private void metamodelBrowseWorkspace() {
+		FilteredResourcesSelectionDialog dialog = new FilteredResourcesSelectionDialog(getShell(), true, ResourcesPlugin.getWorkspace().getRoot(), IResource.FILE);
+
+		String[] patterns = getKnownMetamodelFilePatterns();
+		if (patterns.length > 0) {
+			dialog.setInitialPattern(patterns[0], FilteredResourcesSelectionDialog.FULL_SELECTION);
+		}
+		dialog.setTitle("Add metamodel from workspace");
+		dialog.setMessage("Select a metamodel file from the workspace");
+		dialog.open();
+		
+		if (dialog.getReturnCode() == Window.OK){
+			Object[] iFiles = dialog.getResult();
+			File[] files = new File[iFiles.length];
+
+			for (int i = 0; i < iFiles.length; i++) {
+				files[i] = ((IFile)iFiles[i]).getLocation().toFile();
+			}
+
+			hawkModel.registerMeta(files);
+			updateMetamodelList();
+		}
+	}
+	
 	protected String[] getKnownMetamodelFilePatterns() {
 		final Set<String> extensions = hawkModel.getIndexer().getKnownMetamodelFileExtensions();
 
@@ -337,7 +364,7 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 
 		final Composite composite = new Composite(parent, SWT.BORDER);
 		final GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 2;
+		gridLayout.numColumns = 3;
 		composite.setLayout(gridLayout);
 
 		metamodelList = new List(composite, SWT.BORDER | SWT.MULTI
@@ -347,7 +374,7 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 		gridDataQ.horizontalAlignment = GridData.FILL;
 		gridDataQ.heightHint = 300;
 		gridDataQ.widthHint = 600;
-		gridDataQ.horizontalSpan = 2;
+		gridDataQ.horizontalSpan = 3;
 
 		metamodelList.setLayoutData(gridDataQ);
 
@@ -355,9 +382,7 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 
 		removeMetaModelsButton = new Button(composite, SWT.PUSH);
 		removeMetaModelsButton.setText("Remove");
-
 		removeMetaModelsButton.setEnabled(hawkState == HawkState.RUNNING);
-
 		removeMetaModelsButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				// remove action
@@ -383,14 +408,22 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 			}
 		});
 
-		addMetaModelsButton = new Button(composite, SWT.PUSH);
-		addMetaModelsButton.setText("Add...");
-		addMetaModelsButton.addSelectionListener(new SelectionAdapter() {
+		addMetaModelsFromFilesystemButton = new Button(composite, SWT.PUSH);
+		addMetaModelsFromFilesystemButton.setText("Add from &filesystem...");
+		addMetaModelsFromFilesystemButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				metamodelBrowse();
+				metamodelBrowseFilesystem();
 			}
 		});
 
+		addMetaModelsFromWorkspaceButton = new Button(composite, SWT.PUSH);
+		addMetaModelsFromWorkspaceButton.setText("Add from &workspace...");
+		addMetaModelsFromWorkspaceButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				metamodelBrowseWorkspace();
+			}
+		});
+		
 		return composite;
 	}
 
@@ -651,7 +684,7 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 					removeIndexedAttributeButton.setEnabled(running);
 					addIndexedAttributeButton.setEnabled(running);
 					removeMetaModelsButton.setEnabled(running);
-					addMetaModelsButton.setEnabled(running);
+					addMetaModelsFromFilesystemButton.setEnabled(running);
 					addVCSButton.setEnabled(running);
 					editVCSButton.setEnabled(running
 							&& getSelectedExistingVCSManager() != null);
@@ -669,4 +702,6 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 			}
 		});
 	}
+
+	
 }
