@@ -54,10 +54,10 @@
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150124073747/repository/"/>
 </location>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		<unit id="org.eclipse.epsilon.core.dt.feature.feature.group" version="1.5.0.201808121840"/>
-		<unit id="org.eclipse.epsilon.core.feature.feature.group" version="1.5.0.201808121840"/>
-		<unit id="org.eclipse.epsilon.emf.dt.feature.feature.group" version="1.5.0.201808121840"/>
-		<unit id="org.eclipse.epsilon.emf.feature.feature.group" version="1.5.0.201808121840"/>
+		<unit id="org.eclipse.epsilon.core.dt.feature.feature.group" version="0.0.0"/>
+		<unit id="org.eclipse.epsilon.core.feature.feature.group" version="0.0.0"/>
+		<unit id="org.eclipse.epsilon.emf.dt.feature.feature.group" version="0.0.0"/>
+		<unit id="org.eclipse.epsilon.emf.feature.feature.group" version="0.0.0"/>
 		<repository location="http://download.eclipse.org/epsilon/updates/"/>
 	</location>
 	<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
