@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2018 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -16,10 +16,19 @@
  ******************************************************************************/
 package org.hawk.ui2.dialog;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -37,48 +46,105 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.dialogs.FilteredResourcesSelectionDialog;
 import org.hawk.osgiserver.HModel;
 
 final class HDerivedAttributeDialog extends HStateBasedDialog {
-	String uri = "";
-	String type = "TypeDeclaration";
-	String name = "isSingleton";
-	String atttype = "";
-	Boolean isMany = false;
-	Boolean isOrdered = false;
-	Boolean isUnique = false;
-	String derivationlanguage = "";
-	String derivationlogic = "return self.bodyDeclarations.exists(md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public==true) and md.modifiers.exists(mod:Modifier|mod.static==true) and md.returnType.isTypeOf(SimpleType) and md.returnType.name.fullyQualifiedName == self.name.fullyQualifiedName);";
-	String error = "";
+
+	protected class EvaluateSelectionListener extends SelectionAdapter {
+		public void widgetSelected(SelectionEvent e) {
+			evaluateOKEnabled();
+		}
+	}
+
+	protected class EvaluateOKModifyListener implements ModifyListener {
+		@Override
+		public void modifyText(ModifyEvent e) {
+			evaluateOKEnabled();
+		}
+	}
+
+	private static final String DEFAULT_TYPE = "TypeDeclaration";
+	private static final String DEFAULT_NAME = "isSingleton";
+	private static final String DEFAULT_DERIVATION_LOGIC =
+			"return self.bodyDeclarations.exists(md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public==true) and md.modifiers.exists(mod:Modifier|mod.static==true) and md.returnType.isTypeOf(SimpleType) and md.returnType.name.fullyQualifiedName == self.name.fullyQualifiedName);";
+	
+	private Combo cmbMetamodel;
+	private Text txtType;
+	private Text txtName;
+
+	private Combo cmbValueType, cmbIsMany, cmbIsOrdered, cmbIsUnique;
+	private Combo cmbDerivationLanguage;
+	private Text txtDerivationLogic;
+
+	private Text txtErrorMessages;
 
 	HDerivedAttributeDialog(HModel hawkModel, Shell parentShell) {
 		super(hawkModel, parentShell);
 	}
 
+	private String getDerivationLanguage() {
+		return cmbDerivationLanguage.getText().trim();
+	}
+	
+	private String getDerivationLogic() {
+		return txtDerivationLogic.getText().trim();
+	}
+	
+	private String getMetamodelURI() {
+		return cmbMetamodel.getText().trim();
+	}
+	
+	private boolean isMany() {
+		return Boolean.parseBoolean(cmbIsMany.getText().trim());
+	}
+
+	private boolean isOrdered() {
+		return Boolean.parseBoolean(cmbIsOrdered.getText().trim());
+	}
+
+	private boolean isUnique() {
+		return Boolean.parseBoolean(cmbIsUnique.getText().trim());
+	}
+	
+	private String getTargetType() {
+		return txtType.getText().trim();
+	}
+	
+	private String getPropertyName() {
+		return txtName.getText().trim();
+	}
+	
+	private String getValueType() {
+		return cmbValueType.getText().trim();
+	}
+	
 	private boolean check() {
+		final String derivationLanguage = getDerivationLanguage();
+		final String derivationLogic = getDerivationLogic();
+		List<String> l = hawkModel.validateExpression(derivationLanguage, derivationLogic);
 
-		java.util.List<String> l = hawkModel.validateExpression(
-				derivationlanguage, derivationlogic);
-
+		String error;
 		if (l.size() > 0) {
-
 			error = "";
-
 			for (int i = 0; i < l.size(); i++) {
 				String s = l.get(i);
 				error = error + (i + 1) + ") " + s + "\n";
 			}
-
-		} else
+		} else {
 			error = "";
+		}
+		txtErrorMessages.setText(error);
 
-		// System.out.println(error);
+		final String uri = getMetamodelURI();
+		final String type = getTargetType();
+		final String name = getPropertyName();
+		final String valueType = getValueType();
 
 		return !uri.equals("") && !type.equals("") && !name.equals("")
-				&& !atttype.equals("")
-				&& !derivationlanguage.equals("")
-				&& !derivationlogic.equals("") && l.size() == 0;
-
+				&& !valueType.equals("")
+				&& !derivationLanguage.equals("")
+				&& !derivationLogic.equals("") && l.size() == 0;
 	}
 
 	protected void createButtonsForButtonBar(Composite parent) {
@@ -88,31 +154,26 @@ final class HDerivedAttributeDialog extends HStateBasedDialog {
 		ok.setText("OK");
 		setButtonLayoutData(ok);
 
-		Button ca = getButton(IDialogConstants.CANCEL_ID);
-
-		ca.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-
-				// System.out.println(uri + " " + type + " " + name +
-				// " "
-				// + atttype + " " + isMany + " " + isOrdered
-				// + " " + isUnique + " " + derivationlanguage
-				// + " " + derivationlogic);
-
-			}
-		});
-
 		ok.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				if (check()) {
+					final String metamodelURI = getMetamodelURI();
+					final String targetType = getTargetType();
+					final String propertyName = getPropertyName();
+					final String valueType = getValueType();
+					final boolean bIsMany = isMany();
+					final boolean bIsOrdered = isOrdered();
+					final boolean bIsUnique = isUnique();
+					final String derivationLanguage = getDerivationLanguage();
+					final String derivationLogic = getDerivationLogic();
+					
 					try {
-						hawkModel.addDerivedAttribute(uri, type, name,
-								atttype, isMany, isOrdered, isUnique,
-								derivationlanguage, derivationlogic);
+						hawkModel.addDerivedAttribute(metamodelURI, targetType, propertyName,
+								valueType, bIsMany, bIsOrdered, bIsUnique,
+								derivationLanguage, derivationLogic);
 					} catch (Exception e1) {
-						e1.printStackTrace();
+						org.hawk.ui2.Activator.logError(e1.getMessage(), e1);
 					}
-
 				}
 			}
 		});
@@ -127,199 +188,165 @@ final class HDerivedAttributeDialog extends HStateBasedDialog {
 		GridLayout la = new GridLayout();
 		la.numColumns = 2;
 		composite.setLayout(la);
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		Label l = new Label(composite, SWT.NONE);
-		l.setText(" Metamodel URI: ");
-
-		final Combo c = new Combo(composite, SWT.READ_ONLY);
+		l.setText("Metamodel URI:");
+		cmbMetamodel = new Combo(composite, SWT.READ_ONLY);
 		final ArrayList<String> metamodels = hawkModel.getRegisteredMetamodels();
 		Collections.sort(metamodels);
 		for (String s : metamodels) {
-			c.add(s);
+			cmbMetamodel.add(s);
 		}
 
 		l = new Label(composite, SWT.NONE);
-		l.setText(" Type Name: ");
-
-		final Text t = new Text(composite, SWT.BORDER);
-		GridData data = new GridData(SWT.BEGINNING, SWT.BEGINNING,
-				true, false);
+		l.setText("Target Type:");
+		txtType = new Text(composite, SWT.BORDER);
+		GridData data = new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false);
 		data.minimumWidth = 200;
-		t.setLayoutData(data);
-		t.setText(type);
+		txtType.setLayoutData(data);
+		txtType.setText(DEFAULT_TYPE);
 
 		l = new Label(composite, SWT.NONE);
-		l.setText(" Attribute Name: ");
-
-		final Text t2 = new Text(composite, SWT.BORDER);
+		l.setText("Property Name:");
+		txtName = new Text(composite, SWT.BORDER);
 		data = new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false);
 		data.minimumWidth = 200;
-		t2.setLayoutData(data);
-		t2.setText(name);
+		txtName.setLayoutData(data);
+		txtName.setText(DEFAULT_NAME);
 
 		l = new Label(composite, SWT.NONE);
-		l.setText(" Attribute Type: ");
-
-		final Combo cc = new Combo(composite, SWT.READ_ONLY);
-		cc.add("String");
-		cc.add("Integer");
-		cc.add("Boolean");
-
-		cc.select(0);
-		atttype = cc.getText();
+		l.setText("Attribute Type:");
+		cmbValueType = new Combo(composite, SWT.READ_ONLY);
+		cmbValueType.add("String");
+		cmbValueType.add("Integer");
+		cmbValueType.add("Boolean");
+		cmbValueType.select(0);
 
 		l = new Label(composite, SWT.NONE);
-		l.setText(" isMany: ");
-
-		final Combo ccc = new Combo(composite, SWT.READ_ONLY);
-		ccc.add("True");
-		ccc.add("False");
-
-		ccc.select(1);
-		isMany = Boolean.parseBoolean(ccc.getText());
+		l.setText("isMany: ");
+		cmbIsMany = new Combo(composite, SWT.READ_ONLY);
+		cmbIsMany.add("True");
+		cmbIsMany.add("False");
+		cmbIsMany.select(1);
 
 		l = new Label(composite, SWT.NONE);
-		l.setText(" isOrdered: ");
-
-		final Combo cccc = new Combo(composite, SWT.READ_ONLY);
-		cccc.add("True");
-		cccc.add("False");
-
-		cccc.select(1);
-		isOrdered = Boolean.parseBoolean(cccc.getText());
+		l.setText("isOrdered:");
+		cmbIsOrdered = new Combo(composite, SWT.READ_ONLY);
+		cmbIsOrdered.add("True");
+		cmbIsOrdered.add("False");
+		cmbIsOrdered.select(1);
 
 		l = new Label(composite, SWT.NONE);
-		l.setText(" isUnique: ");
-
-		final Combo ccccc = new Combo(composite, SWT.READ_ONLY);
-		ccccc.add("True");
-		ccccc.add("False");
-
-		ccccc.select(1);
-		isUnique = Boolean.parseBoolean(ccccc.getText());
+		l.setText("isUnique:");
+		cmbIsUnique = new Combo(composite, SWT.READ_ONLY);
+		cmbIsUnique.add("True");
+		cmbIsUnique.add("False");
+		cmbIsUnique.select(1);
 
 		l = new Label(composite, SWT.NONE);
-		l.setText(" Derivation Language: ");
-
-		final Combo cccccc = new Combo(composite, SWT.READ_ONLY);
-		for (String s : hawkModel.getKnownQueryLanguages())
-			cccccc.add(s);
-
-		cccccc.select(0);
-		derivationlanguage = cccccc.getText();
+		l.setText("Derivation Language:");
+		cmbDerivationLanguage = new Combo(composite, SWT.READ_ONLY);
+		for (String s : hawkModel.getKnownQueryLanguages()) {
+			cmbDerivationLanguage.add(s);
+		}
+		cmbDerivationLanguage.select(0);
 
 		l = new Label(composite, SWT.NONE);
-		l.setText(" Derivation Logic: ");
-
-		final Text t4 = new Text(composite, SWT.MULTI | SWT.BORDER
-				| SWT.WRAP | SWT.V_SCROLL);
-
-		data = new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false);
+		l.setText("Derivation Logic:");
+		txtDerivationLogic = new Text(composite,
+				SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL
+		);
+		txtDerivationLogic.setText(DEFAULT_DERIVATION_LOGIC);
+		data = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
 		data.minimumWidth = 200;
 		data.widthHint = 225;
 		data.heightHint = 150;
 		data.verticalSpan = 2;
-		t4.setLayoutData(data);
-		t4.setText(derivationlogic);
+		txtDerivationLogic.setLayoutData(data);
+		
+		Button btnLoadFromWorkspace = new Button(composite, SWT.NONE);
+		btnLoadFromWorkspace.setText("Load from workspace...");
+		data = new GridData(SWT.TRAIL, SWT.BEGINNING, false, false);
+		data.horizontalSpan = 2;
+		data.verticalSpan = 1;
+		btnLoadFromWorkspace.setLayoutData(data);
+		btnLoadFromWorkspace.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				loadLogicFromWorkspace();
+			}
+		});
 
-		final Text t5 = new Text(composite, SWT.MULTI | SWT.WRAP);
-
-		data = new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false);
-		data.widthHint = 115;
-		data.heightHint = 135;
-		t5.setForeground(new Color(getShell().getDisplay(), 255, 0, 0));
-		t5.setBackground(composite.getBackground());
-		FontData fd = t5.getFont().getFontData()[0];
+		txtErrorMessages = new Text(composite, SWT.MULTI | SWT.WRAP);
+		data = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
+		data.horizontalSpan = 2;
+		txtErrorMessages.setForeground(new Color(getShell().getDisplay(), 255, 0, 0));
+		txtErrorMessages.setBackground(composite.getBackground());
+		FontData fd = txtErrorMessages.getFont().getFontData()[0];
 		Font f = new Font(composite.getDisplay(), fd.getName(),
 				fd.getHeight() - 1, SWT.NORMAL);
-		t5.setFont(f);
-		t5.setLayoutData(data);
-		t5.setText("");
-		t5.setEditable(false);
-		t5.setVisible(true);
+		txtErrorMessages.setFont(f);
+		txtErrorMessages.setLayoutData(data);
+		txtErrorMessages.setText("");
+		txtErrorMessages.setEditable(false);
+		txtErrorMessages.setVisible(true);
 
-		c.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				uri = c.getText();
-				evaluateOKEnabled(t5);
-
-			}
-		});
-
-		t.addModifyListener(new ModifyListener() {
-
-			@Override
-			public void modifyText(ModifyEvent e) {
-				type = t.getText().trim();
-				evaluateOKEnabled(t5);
-			}
-		});
-
-		t2.addModifyListener(new ModifyListener() {
-
-			@Override
-			public void modifyText(ModifyEvent e) {
-				name = t2.getText().trim();
-				evaluateOKEnabled(t5);
-			}
-		});
-
-		cc.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				atttype = cc.getText();
-				evaluateOKEnabled(t5);
-			}
-		});
-
-		ccc.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				isMany = Boolean.parseBoolean(ccc.getText());
-				evaluateOKEnabled(t5);
-			}
-		});
-
-		cccc.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				isOrdered = Boolean.parseBoolean(cccc.getText());
-				evaluateOKEnabled(t5);
-			}
-		});
-
-		ccccc.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				isUnique = Boolean.parseBoolean(ccccc.getText());
-				enableIfRunning(hawkModel.getStatus());
-				t5.setText(error);
-			}
-		});
-
-		cccccc.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				derivationlanguage = cccccc.getText();
-				evaluateOKEnabled(t5);
-			}
-		});
-
-		t4.addModifyListener(new ModifyListener() {
-
-			@Override
-			public void modifyText(ModifyEvent e) {
-				derivationlogic = t4.getText().trim();
-				evaluateOKEnabled(t5);
-			}
-		});
+		final EvaluateSelectionListener selectionListener = new EvaluateSelectionListener();
+		cmbMetamodel.addSelectionListener(selectionListener);
+		txtType.addModifyListener(this::evaluateOKEnabled);
+		txtName.addModifyListener(this::evaluateOKEnabled);
+		cmbValueType.addSelectionListener(selectionListener);
+		cmbIsMany.addSelectionListener(selectionListener);
+		cmbIsOrdered.addSelectionListener(selectionListener);
+		cmbIsUnique.addSelectionListener(selectionListener);
+		cmbDerivationLanguage.addSelectionListener(selectionListener);
+		txtDerivationLogic.addModifyListener(this::evaluateOKEnabled);
 
 		setTitle("Create derived attribute");
 		setMessage("Specify the configuration of the new derived attribute.");
 		return composite;
 	}
 
-	private void evaluateOKEnabled(final Text t5) {
+	protected void loadLogicFromWorkspace() {
+		FilteredResourcesSelectionDialog dialog = new FilteredResourcesSelectionDialog(
+			getShell(), false, ResourcesPlugin.getWorkspace().getRoot(), IResource.FILE
+		);
+
+		dialog.setInitialPattern("*.eol");
+		dialog.setTitle("Load derivation logic from workspace");
+		dialog.setMessage("Select a script from the workspace");
+		dialog.open();
+		
+		if (dialog.getReturnCode() == Window.OK){
+			IFile iFile = (IFile) dialog.getResult()[0];
+
+			StringBuilder sb = new StringBuilder();
+			try (InputStreamReader isReader = new InputStreamReader(iFile.getContents(), iFile.getCharset()); BufferedReader bR = new BufferedReader(isReader)) {
+				String line;
+				while ((line = bR.readLine()) != null) {
+					sb.append(line);
+					sb.append(System.lineSeparator());
+				}
+			} catch (IOException | CoreException e) {
+				org.hawk.ui2.Activator.logError(e.getMessage(), e);
+			}
+
+			txtDerivationLogic.setText(sb.toString());
+			evaluateOKEnabled();
+		}
+	}
+
+	private void evaluateOKEnabled(ModifyEvent e) {
+		evaluateOKEnabled();
+	}
+
+	private void evaluateOKEnabled() {
 		Button ok = getButton(IDialogConstants.OK_ID);
-		if (check())
+		if (check()) {
 			enableIfRunning(hawkModel.getStatus());
-		else
+		}
+		else {
 			ok.setEnabled(false);
-		t5.setText(error);
+		}
 	}
 }
