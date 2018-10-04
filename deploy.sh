@@ -2,7 +2,7 @@
 
 # Retrieve major+minor version from the core MANIFEST.MF, keep patch level at 0
 get_version() {
-    grep Bundle-Version plugins/org.hawk.core/META-INF/MANIFEST.MF \
+    grep Bundle-Version ../plugins/org.hawk.core/META-INF/MANIFEST.MF \
 	      | cut --delim=: -f2 \
 	      | sed -re 's/ *([0-9]+)[.]([0-9]+)[.].*/\1.\2.0/'
 }
@@ -18,6 +18,7 @@ deploy_updates() {
     git config user.email "agarcdomi@gmail.com"
 
     VERSION=$(get_version)
+    echo "Detected version $VERSION of Hawk"
 
     # If the tip comes from Travis, amend it. Otherwise, add a new commit.
     rm -rf hawk-updates/${VERSION}
