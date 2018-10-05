@@ -19,7 +19,6 @@ package org.hawk.ui2.dialog;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,6 +26,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -48,6 +51,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.FilteredResourcesSelectionDialog;
 import org.hawk.osgiserver.HModel;
+import org.hawk.ui2.util.TypeCascadeSelectionAdapter;
+import org.osgi.framework.FrameworkUtil;
 
 final class HDerivedAttributeDialog extends HStateBasedDialog {
 
@@ -70,7 +75,7 @@ final class HDerivedAttributeDialog extends HStateBasedDialog {
 			"return self.bodyDeclarations.exists(md:MethodDeclaration|md.modifiers.exists(mod:Modifier|mod.public==true) and md.modifiers.exists(mod:Modifier|mod.static==true) and md.returnType.isTypeOf(SimpleType) and md.returnType.name.fullyQualifiedName == self.name.fullyQualifiedName);";
 	
 	private Combo cmbMetamodel;
-	private Text txtType;
+	private Combo cmbType;
 	private Text txtName;
 
 	private Combo cmbValueType, cmbIsMany, cmbIsOrdered, cmbIsUnique;
@@ -108,7 +113,7 @@ final class HDerivedAttributeDialog extends HStateBasedDialog {
 	}
 	
 	private String getTargetType() {
-		return txtType.getText().trim();
+		return cmbType.getText().trim();
 	}
 	
 	private String getPropertyName() {
@@ -147,37 +152,48 @@ final class HDerivedAttributeDialog extends HStateBasedDialog {
 				&& !derivationLogic.equals("") && l.size() == 0;
 	}
 
+	@Override
+	protected void okPressed() {
+		if (check()) {
+			final String metamodelURI = getMetamodelURI();
+			final String targetType = getTargetType();
+			final String propertyName = getPropertyName();
+			final String valueType = getValueType();
+			final boolean bIsMany = isMany();
+			final boolean bIsOrdered = isOrdered();
+			final boolean bIsUnique = isUnique();
+			final String derivationLanguage = getDerivationLanguage();
+			final String derivationLogic = getDerivationLogic();
+			
+			final String jobName = "Adding derived property " + propertyName + " to " + hawkModel.getName();
+			Job addDerivedJob = new Job(jobName) {
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					final String symbolicName = FrameworkUtil.getBundle(getClass()).getSymbolicName();
+
+					try {
+						hawkModel.addDerivedAttribute(metamodelURI, targetType,
+								propertyName, valueType,
+								bIsMany, bIsOrdered, bIsUnique,
+								derivationLanguage, derivationLogic);
+					} catch (Exception e1) {
+						return new Status(IStatus.ERROR, symbolicName, "Failed", e1);
+					}
+					return new Status(IStatus.OK, symbolicName, "Done");
+				}
+			};
+			addDerivedJob.setRule(new HModelSchedulingRule(hawkModel));
+			addDerivedJob.schedule();
+		}
+
+		super.okPressed();
+	}
+
 	protected void createButtonsForButtonBar(Composite parent) {
 		super.createButtonsForButtonBar(parent);
-
 		Button ok = getButton(IDialogConstants.OK_ID);
 		ok.setText("OK");
 		setButtonLayoutData(ok);
-
-		ok.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				if (check()) {
-					final String metamodelURI = getMetamodelURI();
-					final String targetType = getTargetType();
-					final String propertyName = getPropertyName();
-					final String valueType = getValueType();
-					final boolean bIsMany = isMany();
-					final boolean bIsOrdered = isOrdered();
-					final boolean bIsUnique = isUnique();
-					final String derivationLanguage = getDerivationLanguage();
-					final String derivationLogic = getDerivationLogic();
-					
-					try {
-						hawkModel.addDerivedAttribute(metamodelURI, targetType, propertyName,
-								valueType, bIsMany, bIsOrdered, bIsUnique,
-								derivationLanguage, derivationLogic);
-					} catch (Exception e1) {
-						org.hawk.ui2.Activator.logError(e1.getMessage(), e1);
-					}
-				}
-			}
-		});
-
 		ok.setEnabled(false);
 	}
 
@@ -193,19 +209,20 @@ final class HDerivedAttributeDialog extends HStateBasedDialog {
 		Label l = new Label(composite, SWT.NONE);
 		l.setText("Metamodel URI:");
 		cmbMetamodel = new Combo(composite, SWT.READ_ONLY);
-		final ArrayList<String> metamodels = hawkModel.getRegisteredMetamodels();
+		final List<String> metamodels = hawkModel.getRegisteredMetamodels();
 		Collections.sort(metamodels);
 		for (String s : metamodels) {
 			cmbMetamodel.add(s);
 		}
+		GridData data = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
+		cmbMetamodel.setLayoutData(data);
 
 		l = new Label(composite, SWT.NONE);
 		l.setText("Target Type:");
-		txtType = new Text(composite, SWT.BORDER);
-		GridData data = new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false);
-		data.minimumWidth = 200;
-		txtType.setLayoutData(data);
-		txtType.setText(DEFAULT_TYPE);
+		cmbType = new Combo(composite, SWT.BORDER);
+		data = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
+		cmbType.setLayoutData(data);
+		cmbType.setText(DEFAULT_TYPE);
 
 		l = new Label(composite, SWT.NONE);
 		l.setText("Property Name:");
@@ -292,8 +309,9 @@ final class HDerivedAttributeDialog extends HStateBasedDialog {
 		txtErrorMessages.setVisible(true);
 
 		final EvaluateSelectionListener selectionListener = new EvaluateSelectionListener();
+		cmbMetamodel.addSelectionListener(new TypeCascadeSelectionAdapter(hawkModel, cmbType));
 		cmbMetamodel.addSelectionListener(selectionListener);
-		txtType.addModifyListener(this::evaluateOKEnabled);
+		cmbType.addModifyListener(this::evaluateOKEnabled);
 		txtName.addModifyListener(this::evaluateOKEnabled);
 		cmbValueType.addSelectionListener(selectionListener);
 		cmbIsMany.addSelectionListener(selectionListener);

@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -64,7 +63,7 @@ public class HawkServerConfiguratorTest {
 	Collection<IVcsManager> repos;
 	Collection<IndexedAttributeParameters> derivedAttributes;
 	Collection<IndexedAttributeParameters> indexedAttributes;
-	ArrayList<String> metamodels;
+	List<String> metamodels;
 	
 	@BeforeClass
 	static public void setup() {

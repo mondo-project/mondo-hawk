@@ -470,7 +470,7 @@ public class HModel implements IStateListener {
 		return hawk.getModelIndexer().getName();
 	}
 
-	public ArrayList<String> getRegisteredMetamodels() {
+	public List<String> getRegisteredMetamodels() {
 		return new ArrayList<String>(hawk.getModelIndexer().getKnownMMUris());
 	}
 
@@ -652,7 +652,7 @@ public class HModel implements IStateListener {
 
 	}
 
-	public boolean removeDerviedAttributes(String[] selected) {
+	public boolean removeDerivedAttributes(String[] selected) {
 		boolean allSuccess = true;
 
 		for (String s : selected) {

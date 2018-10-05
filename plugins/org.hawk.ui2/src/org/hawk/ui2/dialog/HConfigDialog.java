@@ -27,6 +27,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -57,6 +61,7 @@ import org.hawk.core.IVcsManager;
 import org.hawk.core.util.IndexedAttributeParameters;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.view.HView;
+import org.osgi.framework.FrameworkUtil;
 
 public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 
@@ -175,23 +180,23 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 					public void widgetSelected(SelectionEvent e) {
 
 						// remove action
-						String[] selected = null;
-						if (derivedAttributeList.getSelection().length > 0)
-							selected = derivedAttributeList.getSelection();
-
-						if (selected != null) {
-
-							MessageBox messageBox = new MessageBox(getShell(),
-									SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-							messageBox
-									.setMessage("Are you sure you wish to delete the chosen derived attributes?");
+						final String[] selected = derivedAttributeList.getSelection();
+						if (selected.length > 0) {
+							MessageBox messageBox = new MessageBox(getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+							messageBox.setMessage("Are you sure you wish to delete the chosen derived attributes?");
 							messageBox.setText("Indexed Attribute deletion");
-							int response = messageBox.open();
-							if (response == SWT.YES) {
 
-								hawkModel.removeDerviedAttributes(selected);
-
-								updateDerivedAttributeList();
+							if (messageBox.open() == SWT.YES) {
+								Job removeDerivedJob = new Job("Removing derived attribute from " + hawkModel.getName()) {
+									@Override
+									protected IStatus run(IProgressMonitor monitor) {
+										hawkModel.removeDerivedAttributes(selected);
+										Display.getDefault().asyncExec(HConfigDialog.this::updateDerivedAttributeList);
+										return new Status(IStatus.OK, getBundleName(), "Done");
+									}
+								};
+								removeDerivedJob.setRule(new HModelSchedulingRule(hawkModel));
+								removeDerivedJob.schedule();
 							}
 						}
 
@@ -256,23 +261,22 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 					public void widgetSelected(SelectionEvent e) {
 
 						// remove action
-						String[] selected = null;
-						if (indexedAttributeList.getSelection().length > 0)
-							selected = indexedAttributeList.getSelection();
-
-						if (selected != null) {
-
-							MessageBox messageBox = new MessageBox(getShell(),
-									SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-							messageBox
-									.setMessage("Are you sure you wish to delete the chosen indexed attributes?");
+						final String[] selected = indexedAttributeList.getSelection();
+						if (selected.length > 0) {
+							MessageBox messageBox = new MessageBox(getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+							messageBox.setMessage("Are you sure you wish to delete the chosen indexed attributes?");
 							messageBox.setText("Indexed Attribute deletion");
-							int response = messageBox.open();
-							if (response == SWT.YES) {
-
-								hawkModel.removeIndexedAttributes(selected);
-
-								updateIndexedAttributeList();
+							if (messageBox.open() == SWT.YES) {
+								Job removeIndexedJob = new Job("Removing indexed attribute from " + hawkModel.getName()) {
+									@Override
+									protected IStatus run(IProgressMonitor monitor) {
+										hawkModel.removeIndexedAttributes(selected);
+										Display.getDefault().asyncExec(HConfigDialog.this::updateIndexedAttributeList);
+										return new Status(IStatus.OK, getBundleName(), "Done");
+									}
+								};
+								removeIndexedJob.setRule(new HModelSchedulingRule(hawkModel));
+								removeIndexedJob.schedule();
 							}
 						}
 
@@ -512,21 +516,28 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 				IVcsManager m = getSelectedExistingVCSManager();
 
 				if (m != null) {
-
-					MessageBox messageBox = new MessageBox(getShell(),
-							SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-					messageBox
-							.setMessage("Are you sure you wish to remove the chosen VCS location? This will also delete all indexed models from it, and may take a long time to complete.");
+					MessageBox messageBox = new MessageBox(getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+					messageBox.setMessage("Are you sure you wish to remove the chosen VCS location? This "
+							+ "will also delete all indexed models from it, and may take a long time to "
+							+ "complete in the background.");
 					messageBox.setText("VCS location deletion");
-					int response = messageBox.open();
-					if (response == SWT.YES) {
-						try {
-							hawkModel.removeRepository(m);
-						} catch (Exception ee) {
-							ee.printStackTrace();
-						}
-						lstVCSLocations.setInput(hawkModel
-								.getRunningVCSManagers().toArray());
+					if (messageBox.open() == SWT.YES) {
+						Job removeVcsJob = new Job("Removing VCS from " + hawkModel.getName()) {
+							@Override
+							protected IStatus run(IProgressMonitor monitor) {
+								try {
+									hawkModel.removeRepository(m);
+								} catch (Exception ee) {
+									return new Status(IStatus.ERROR, getBundleName(), "Failed to remove VCS", ee);
+								}
+								Display.getDefault().asyncExec(() -> {
+									lstVCSLocations.setInput(hawkModel.getRunningVCSManagers().toArray());
+								});
+								return new Status(IStatus.OK, getBundleName(), "Removed VCS");
+							}
+						};
+						removeVcsJob.setRule(new HModelSchedulingRule(hawkModel));
+						removeVcsJob.schedule();
 					}
 				}
 			}
@@ -701,6 +712,10 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 				}
 			}
 		});
+	}
+
+	private String getBundleName() {
+		return FrameworkUtil.getBundle(getClass()).getSymbolicName();
 	}
 
 	

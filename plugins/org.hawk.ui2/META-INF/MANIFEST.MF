@@ -4,8 +4,9 @@ Bundle-Name: Hawk UI Plugin
 Bundle-SymbolicName: org.hawk.ui2;singleton:=true
 Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: org.hawk.ui2.Activator
-Require-Bundle: org.eclipse.core.runtime,
- org.hawk.core,
+Require-Bundle: org.hawk.core,
+ org.hawk.graph,
+ org.eclipse.core.runtime,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.text,
  org.hawk.osgiserver,
