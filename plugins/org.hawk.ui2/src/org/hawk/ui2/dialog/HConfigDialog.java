@@ -390,12 +390,9 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 		removeMetaModelsButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				// remove action
-				String[] selectedMetamodel = null;
-				if (metamodelList.getSelection().length > 0)
-					selectedMetamodel = metamodelList.getSelection();
+				final String[] selectedMetamodel = metamodelList.getSelection();
 
-				if (selectedMetamodel != null) {
-
+				if (selectedMetamodel.length > 0) {
 					MessageBox messageBox = new MessageBox(getShell(),
 							SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 					messageBox
@@ -403,10 +400,16 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 					messageBox.setText("Metamodel deletion");
 					int response = messageBox.open();
 					if (response == SWT.YES) {
-
-						hawkModel.removeMetamodels(selectedMetamodel);
-
-						updateMetamodelList();
+						Job removeMetamodelJob = new Job("Removing metamodel from " + hawkModel.getName()) {
+							@Override
+							protected IStatus run(IProgressMonitor monitor) {
+								hawkModel.removeMetamodels(selectedMetamodel);
+								Display.getDefault().asyncExec(HConfigDialog.this::updateMetamodelList);								// TODO Auto-generated method stub
+								return new Status(IStatus.OK, getBundleName(), "Done");
+							}
+						};
+						removeMetamodelJob.setRule(new HModelSchedulingRule(hawkModel));
+						removeMetamodelJob.schedule();
 					}
 				}
 			}
@@ -442,6 +445,10 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 	}
 
 	private void updateDerivedAttributeList() {
+		if (derivedAttributeList.isDisposed()) {
+			return;
+		}
+
 		derivedAttributeList.removeAll();
 		for (IndexedAttributeParameters da : hawkModel.getDerivedAttributes()) {
 			derivedAttributeList.add(
@@ -454,6 +461,10 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 	}
 
 	private void updateIndexedAttributeList() {
+		if (indexedAttributeList.isDisposed()) {
+			return;
+		}
+		
 		indexedAttributeList.removeAll();
 		for (IndexedAttributeParameters ia : hawkModel.getIndexedAttributes()) {
 			indexedAttributeList.add(
@@ -466,6 +477,10 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 	}
 
 	private void updateMetamodelList() {
+		if (metamodelList.isDisposed()) {
+			return;
+		}
+
 		metamodelList.removeAll();
 		final java.util.List<String> mms = hawkModel.getRegisteredMetamodels();
 		Collections.sort(mms);
@@ -531,7 +546,9 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 									return new Status(IStatus.ERROR, getBundleName(), "Failed to remove VCS", ee);
 								}
 								Display.getDefault().asyncExec(() -> {
-									lstVCSLocations.setInput(hawkModel.getRunningVCSManagers().toArray());
+									if (lstVCSLocations.getControl() != null && !lstVCSLocations.getControl().isDisposed()) {
+										lstVCSLocations.setInput(hawkModel.getRunningVCSManagers().toArray());
+									}
 								});
 								return new Status(IStatus.OK, getBundleName(), "Removed VCS");
 							}
