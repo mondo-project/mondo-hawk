@@ -807,7 +807,7 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 
 		module.getContext().getModelRepository().addModel(model);
 		addQueryArguments(context, module);
-		if (context.containsKey(IQueryEngine.PROPERTY_ISCANCELLED_CALLABLE)) {
+		if (context != null && context.containsKey(IQueryEngine.PROPERTY_ISCANCELLED_CALLABLE)) {
 			@SuppressWarnings("unchecked")
 			final Callable<Boolean> isCancelled = (Callable<Boolean>) context.get(IQueryEngine.PROPERTY_ISCANCELLED_CALLABLE);
 			module.getContext().getExecutorFactory().setExecutionController(new CallablePollingExecutionController(isCancelled));
