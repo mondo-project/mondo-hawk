@@ -43,18 +43,6 @@ public class BPMNModelResource implements IHawkModelResource {
 		allContents = null;
 	}
 
-	// @Override
-	// public Resource getEMFResource() {
-	// return res;
-	//
-	// }
-
-	// @Override
-	// public ResourceSet getEMFResourceSet() {
-	// return set;
-	//
-	// }
-
 	public BPMNModelResource(Resource r, IModelResourceFactory p) {
 		parser = p;
 		res = r;
