@@ -22,12 +22,17 @@ import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.function.Function;
 
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -95,47 +100,105 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 
 	protected class QueryExecutionSelectionAdapter extends SelectionAdapter {
 		public void widgetSelected(SelectionEvent e) {
-			final long start = System.currentTimeMillis();
-
-			final String query = queryLanguage.getText().trim();
-			if (query.length() == 0) {
-				return;
-			}
-
-			Object result = runQuery(query);
-
-			final long end = System.currentTimeMillis();
-			final long time = end - start;
-			if (result instanceof Collection) {
-				setMessage(String.format("Query returned %d results in %d s %d ms",
-					((Collection<?>) result).size(), time / 1000, time % 1000), 0);
+			if (currentQueryMonitor == null) {
+				final String query = queryLanguage.getText().trim();
+				if (!query.isEmpty()) {
+					runQuery(query);
+				}
 			} else {
-				setMessage(String.format("Query completed in %d s %d ms",
-					time / 1000, time % 1000), 0);
+				currentQueryMonitor.setCanceled(true);
 			}
 		}
 
-		protected Object runQuery(final String query) {
-			Object result = null;
-			try {
-				final Map<String, Object> context = createContext();
+		private class CompletedQueryRunnable implements Runnable {
+			private final Object result;
+			private long startMillis;
 
-				if (queryField.getText().startsWith(QUERY_IS_EDITOR)) {
-					result = index.query(queryField.getText().substring(QUERY_IS_EDITOR.length()), query, context);
-				} else if (queryField.getText().startsWith(QUERY_IS_FILE)) {
-					result = index.query(new File(queryField.getText().substring(QUERY_IS_FILE.length())), query, context);
-				} else {
-					result = index.query(queryField.getText(), query, context);
+			public CompletedQueryRunnable(long startMillis, Object result) {
+				this.startMillis = startMillis;
+				this.result = result;
+			}
+
+			@Override
+			public void run() {
+				boolean bCancelled = currentQueryMonitor.isCanceled();
+				currentQueryMonitor = null;
+				if (queryButton.isDisposed()) {
+					return;
 				}
 
+				queryButton.setText("Run Query");
+				getButton(IDialogConstants.OK_ID).setEnabled(true);
 				resultField.setText(result != null ? result.toString() : "<null> returned (if this unexpected, check console for errors)");
-			} catch (Exception ex) {
-				final String error = "Error while running the query: " + ex.getMessage();
-				resultField.setText(error);
-				resultField.setStyleRange(createRedBoldRange(error.length()));
-				Activator.logError(error, ex);
+
+				final long endMillis = System.currentTimeMillis();
+				final long elapsedMillis = endMillis - startMillis;
+				if (bCancelled) {
+					setMessage(String.format("Query cancelled after %d s %d ms",
+							elapsedMillis / 1000, elapsedMillis % 1000));
+				} else if (result instanceof Collection) {
+					setMessage(String.format("Query returned %d results in %d s %d ms",
+						((Collection<?>) result).size(), elapsedMillis / 1000, elapsedMillis % 1000), 0);
+				} else {
+					setMessage(String.format("Query completed in %d s %d ms",
+						elapsedMillis / 1000, elapsedMillis % 1000), 0);
+				}
 			}
-			return result;
+		}
+
+		protected void runQuery(final String query) {
+			final Map<String, Object> context = createContext();
+			final String queryText = queryField.getText();
+			resultField.setText("");
+			setMessage("Running query...");
+
+			Job runQueryJob = new Job("Running query in " + index.getName()) {
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					context.put(IQueryEngine.PROPERTY_ISCANCELLED_CALLABLE, (Callable<Boolean>) monitor::isCanceled);
+					Display.getDefault().syncExec(() -> {
+						currentQueryMonitor = monitor;
+						queryButton.setText("Stop Query");
+						getButton(IDialogConstants.OK_ID).setEnabled(false);
+					});
+
+					final long start = System.currentTimeMillis();
+					Object result = null;
+					try {
+						if (queryText.startsWith(QUERY_IS_EDITOR)) {
+							result = index.query(queryText.substring(QUERY_IS_EDITOR.length()), query, context);
+						} else if (queryText.startsWith(QUERY_IS_FILE)) {
+							result = index.query(new File(queryText.substring(QUERY_IS_FILE.length())), query, context);
+						} else {
+							result = index.query(queryText, query, context);
+						}
+
+					} catch (Exception ex) {
+						final String error = "Error while running the query: " + ex.getMessage();
+						Activator.logError(error, ex);
+						Display.getDefault().syncExec(() -> {
+							if (!resultField.isDisposed()) {
+								resultField.setText(error);
+								resultField.setStyleRange(createRedBoldRange(error.length()));
+							}
+						});
+
+						if (!monitor.isCanceled()) {
+							return new Status(IStatus.ERROR, getBundleName(), "Failed: " + ex.getMessage(), ex);
+						}
+					} finally {
+						Display.getDefault().syncExec(new CompletedQueryRunnable(start, result));
+					}
+
+					return new Status(IStatus.OK, getBundleName(), "Done");
+				}
+
+				private String getBundleName() {
+					return FrameworkUtil.getBundle(getClass()).getSymbolicName();
+				}
+			};
+			runQueryJob.setRule(new HModelSchedulingRule(index));
+			runQueryJob.schedule();
 		}
 
 		protected Map<String, Object> createContext() {
@@ -208,6 +271,7 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 	private static final String QUERY_EDITED = "[query has been edited since last results]";
 
 	private HModel index;
+	private IProgressMonitor currentQueryMonitor;
 
 	private StyledText queryField, resultField, contextRepo, contextFiles, defaultNamespaces;
 	private Button enableFullTraversalScopingButton;

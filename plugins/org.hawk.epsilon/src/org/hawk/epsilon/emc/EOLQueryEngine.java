@@ -33,6 +33,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Callable;
 
 import org.eclipse.epsilon.common.parse.problem.ParseProblem;
 import org.eclipse.epsilon.eol.EolModule;
@@ -44,6 +47,7 @@ import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundExce
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
 import org.eclipse.epsilon.eol.execute.context.Variable;
+import org.eclipse.epsilon.eol.execute.control.DefaultExecutionController;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertyGetter;
 import org.eclipse.epsilon.eol.execute.introspection.IPropertySetter;
 import org.eclipse.epsilon.eol.types.EolAnyType;
@@ -86,6 +90,45 @@ import org.slf4j.LoggerFactory;
  * compatibility.
  */
 public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
+
+	/**
+	 * Allows a query to be cancelled by the user according to an arbitrary
+	 * {@link Callable<Boolean>} instance. The function is polled periodically
+	 * to reduce overhead.
+	 */
+	protected class CallablePollingExecutionController extends DefaultExecutionController {
+		private final Callable<Boolean> callable;
+		private final Timer timer;
+
+		private volatile boolean isTerminated = false;
+
+		public CallablePollingExecutionController(Callable<Boolean> isCancelled) {
+			this.callable = isCancelled;
+			this.timer = new Timer();
+
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					try {
+						isTerminated = callable.call();
+					} catch (Exception e) {
+						LOGGER.error("Failed to poll cancellation callable: terminating job", e);
+						isTerminated = true;
+					}
+				}
+			}, 0l, 200l);
+		}
+
+		@Override
+		public boolean isTerminated() {
+			return isTerminated;
+		}
+
+		@Override
+		public void dispose() {
+			timer.cancel();
+		}
+	}
 
 	interface Function3<T, U, V> {
 		V apply(T t, U u);
@@ -761,8 +804,14 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 		} catch (Exception ex) {
 			throw new InvalidQueryException(ex);
 		}
+
 		module.getContext().getModelRepository().addModel(model);
 		addQueryArguments(context, module);
+		if (context.containsKey(IQueryEngine.PROPERTY_ISCANCELLED_CALLABLE)) {
+			@SuppressWarnings("unchecked")
+			final Callable<Boolean> isCancelled = (Callable<Boolean>) context.get(IQueryEngine.PROPERTY_ISCANCELLED_CALLABLE);
+			module.getContext().getExecutorFactory().setExecutionController(new CallablePollingExecutionController(isCancelled));
+		}
 	}
 
 	protected Object runQuery(final long trueStart, final IEolModule module) throws QueryExecutionException {

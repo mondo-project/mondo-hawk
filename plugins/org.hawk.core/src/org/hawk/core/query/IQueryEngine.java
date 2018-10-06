@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2018 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -14,7 +14,8 @@
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
  *     Antonio Garcia-Dominguez - expand javadocs, add
- *       PROPERTY_FILEFIRST and PROPERTY_SUBTREECONTEXT
+ *       PROPERTY_FILEFIRST, PROPERTY_SUBTREECONTEXT,
+ *       PROPERTY_ISCANCELLED_CALLABLE
  ******************************************************************************/
 package org.hawk.core.query;
 
@@ -102,6 +103,13 @@ public interface IQueryEngine {
 	 * additional local variables for the underlying query.
 	 */
 	public static final String PROPERTY_ARGUMENTS = "ARGUMENTS";
+
+	/**
+	 * If set, this key should be associated to a {@link java.util.concurrent.Callable<Boolean>} that will return
+	 * <code>true</code> if the query should be cancelled, or <code>false</code>
+	 * otherwise. The query engine will control the timing used to invoke the function.
+	 */
+	public static final String PROPERTY_ISCANCELLED_CALLABLE = "IS_CANCELLED_F";
 
 	IAccessListener calculateDerivedAttributes(IModelIndexer m,
 			Iterable<IGraphNode> nodes) throws InvalidQueryException,
