@@ -21,38 +21,6 @@ enum SubscriptionDurability {
 }
 
 
-union QueryResult {
-	 /* Boolean (true/false) value. */ 1: optional bool vBoolean,
-	 /* 8-bit signed integer value. */ 2: optional byte vByte,
-	 /* 16-bit signed integer value. */ 3: optional i16 vShort,
-	 /* 32-bit signed integer value. */ 4: optional i32 vInteger,
-	 /* 64-bit signed integer value. */ 5: optional i64 vLong,
-	 /* 64-bit floating point value. */ 6: optional double vDouble,
-	 /* Sequence of UTF8 characters. */ 7: optional string vString,
-	 /* Encoded model element. */ 8: optional ModelElement vModelElement,
-	 /* Encoded model element type. */ 9: optional ModelElementType vModelElementType,
-	 /* Map between query results. */ 10: optional map<string,QueryResult> vMap,
-	 /* Nested list of query results. */ 11: optional list<QueryResult> vList,
-}
-
-union SlotValue {
-	 /* Boolean (true/false) value. */ 1: optional bool vBoolean,
-	 /* 8-bit signed integer value. */ 2: optional byte vByte,
-	 /* 16-bit signed integer value. */ 3: optional i16 vShort,
-	 /* 32-bit signed integer value. */ 4: optional i32 vInteger,
-	 /* 64-bit signed integer value. */ 5: optional i64 vLong,
-	 /* 64-bit floating point value. */ 6: optional double vDouble,
-	 /* Sequence of UTF8 characters. */ 7: optional string vString,
-	 /* List of true/false values. */ 8: optional list<bool> vBooleans,
-	 /* List of 8-bit signed integers. */ 9: optional binary vBytes,
-	 /* List of 16-bit signed integers. */ 10: optional list<i16> vShorts,
-	 /* List of 32-bit signed integers. */ 11: optional list<i32> vIntegers,
-	 /* List of 64-bit signed integers. */ 12: optional list<i64> vLongs,
-	 /* List of 64-bit floating point values. */ 13: optional list<double> vDoubles,
-	 /* List of sequences of UTF8 characters. */ 14: optional list<string> vStrings,
-	 /* List of lists. */ 15: optional list<SlotValue> vLists,
-}
-
 struct CommitItem {
 	 /* URL of the repository. */ 1: required string repoURL,
 	 /* Unique identifier of the revision of the repository. */ 2: required string revision,
@@ -98,6 +66,9 @@ exception HawkInstanceNotFound {
 exception HawkInstanceNotRunning {
 }
 
+exception HawkMetamodelNotFound {
+}
+
 struct HawkStateEvent {
 	 /* Timestamp for this state change. */ 1: required i64 timestamp,
 	 /* State of the Hawk instance. */ 2: required HawkState state,
@@ -110,6 +81,9 @@ struct HawkSynchronizationEndEvent {
 
 struct HawkSynchronizationStartEvent {
 	 /* Local timestamp, measured in nanoseconds. Only meant to be used to compute synchronization cost. */ 1: required i64 timestampNanos,
+}
+
+exception HawkTypeNotFound {
 }
 
 struct IndexedAttributeSpec {
@@ -174,6 +148,24 @@ struct SlotMetadata {
 	 /* True if this slot holds a collection of values instead of a single value. */ 3: required bool isMany,
 	 /* True if the values in this slot are ordered. */ 4: required bool isOrdered,
 	 /* True if the value of this slot must be unique within its containing model. */ 5: required bool isUnique,
+}
+
+union SlotValue {
+	 /* Boolean (true/false) value. */ 1: optional bool vBoolean,
+	 /* 8-bit signed integer value. */ 2: optional byte vByte,
+	 /* 16-bit signed integer value. */ 3: optional i16 vShort,
+	 /* 32-bit signed integer value. */ 4: optional i32 vInteger,
+	 /* 64-bit signed integer value. */ 5: optional i64 vLong,
+	 /* 64-bit floating point value. */ 6: optional double vDouble,
+	 /* Sequence of UTF8 characters. */ 7: optional string vString,
+	 /* List of true/false values. */ 8: optional list<bool> vBooleans,
+	 /* List of 8-bit signed integers. */ 9: optional binary vBytes,
+	 /* List of 16-bit signed integers. */ 10: optional list<i16> vShorts,
+	 /* List of 32-bit signed integers. */ 11: optional list<i32> vIntegers,
+	 /* List of 64-bit signed integers. */ 12: optional list<i64> vLongs,
+	 /* List of 64-bit floating point values. */ 13: optional list<double> vDoubles,
+	 /* List of sequences of UTF8 characters. */ 14: optional list<string> vStrings,
+	 /* List of lists. */ 15: optional list<SlotValue> vLists,
 }
 
 struct Subscription {
@@ -330,9 +322,24 @@ struct ContainerSlot {
 	 /* Contained elements for this slot. */ 2: required list<ModelElement> elements,
 }
 
+union QueryResult {
+	 /* Boolean (true/false) value. */ 1: optional bool vBoolean,
+	 /* 8-bit signed integer value. */ 2: optional byte vByte,
+	 /* 16-bit signed integer value. */ 3: optional i16 vShort,
+	 /* 32-bit signed integer value. */ 4: optional i32 vInteger,
+	 /* 64-bit signed integer value. */ 5: optional i64 vLong,
+	 /* 64-bit floating point value. */ 6: optional double vDouble,
+	 /* Sequence of UTF8 characters. */ 7: optional string vString,
+	 /* Encoded model element. */ 8: optional ModelElement vModelElement,
+	 /* Encoded model element type. */ 9: optional ModelElementType vModelElementType,
+	 /* Map between query results. */ 10: optional map<string,QueryResult> vMap,
+	 /* Nested list of query results. */ 11: optional list<QueryResult> vList,
+}
+
 struct QueryReport {
 	 /* Result of the query. */ 1: required QueryResult result,
 	 /* Wall time on the server in milliseconds. */ 2: required i64 wallMillis,
+	 /* Was the query cancelled?. */ 3: required bool isCancelled,
 }
 
 /* The majority of service operations provided by the server
@@ -469,6 +476,41 @@ service Hawk {
 	2: HawkInstanceNotRunning err2 /* The selected Hawk instance is not running. */ 
 	) 
 	
+  /* Lists the names of the types registered for a certain metamodel in an instance. Auth needed: Yes */
+  list<string> listTypeNames(
+	/* The name of the Hawk instance. */ 1: required string hawkInstanceName,
+	/* The URI of the metamodel. */ 2: required string metamodelURI,
+  )
+  throws (
+	1: HawkInstanceNotFound err1 /* No Hawk instance exists with that name. */ 
+	2: HawkInstanceNotRunning err2 /* The selected Hawk instance is not running. */ 
+	3: HawkMetamodelNotFound err3 /* The selected Hawk instance does not have a metamodel with that URI. */ 
+	) 
+	
+  /* Lists the names of the types registered for a certain metamodel in an instance. Auth needed: Yes */
+  list<ModelElementType> listTypes(
+	/* The name of the Hawk instance. */ 1: required string hawkInstanceName,
+	/* The URI of the metamodel. */ 2: required string metamodelURI,
+  )
+  throws (
+	1: HawkInstanceNotFound err1 /* No Hawk instance exists with that name. */ 
+	2: HawkInstanceNotRunning err2 /* The selected Hawk instance is not running. */ 
+	3: HawkMetamodelNotFound err3 /* The selected Hawk instance does not have a metamodel with that URI. */ 
+	) 
+	
+  /* Fetches all information about a type registered for a certain metamodel in an instance. Auth needed: Yes */
+  ModelElementType fetchType(
+	/* The name of the Hawk instance. */ 1: required string hawkInstanceName,
+	/* The URI of the metamodel. */ 2: required string metamodelURI,
+	/* The name of the type. */ 3: required string typeName,
+  )
+  throws (
+	1: HawkInstanceNotFound err1 /* No Hawk instance exists with that name. */ 
+	2: HawkInstanceNotRunning err2 /* The selected Hawk instance is not running. */ 
+	3: HawkMetamodelNotFound err3 /* The selected Hawk instance does not have a metamodel with that URI. */ 
+	4: HawkTypeNotFound err4 /* The selected Hawk instance does not have a type with that name. */ 
+	) 
+	
   /* Lists the details of the metamodel parsers in a Hawk instance. Auth needed: Yes */
   list<MetamodelParserDetails> listMetamodelParsers(
 	/* The name of the Hawk instance. */ 1: required string name,
@@ -522,6 +564,37 @@ service Hawk {
   throws (
 	1: HawkInstanceNotFound err1 /* No Hawk instance exists with that name. */ 
 	2: HawkInstanceNotRunning err2 /* The selected Hawk instance is not running. */ 
+	) 
+	
+  /* Schedules a query to run on a Hawk instance, returning a UUID for later reference. Auth needed: Yes */
+  string asyncQuery(
+	/* The name of the Hawk instance. */ 1: required string name,
+	/* The query to be executed. */ 2: required string query,
+	/* The name of the query language used (e.g. EOL, OCL). */ 3: required string language,
+	/* Options for the query. */ 4: required HawkQueryOptions options,
+  )
+  throws (
+	1: HawkInstanceNotFound err1 /* No Hawk instance exists with that name. */ 
+	2: HawkInstanceNotRunning err2 /* The selected Hawk instance is not running. */ 
+	3: UnknownQueryLanguage err3 /* The specified query language is not supported by the operation. */ 
+	4: InvalidQuery err4 /* The specified query is not valid. */ 
+	) 
+	
+  /* Cancels a running query in the Hawk server, freeing its resources. Auth needed: Yes */
+  void cancelAsyncQuery(
+	/* The query ID returned by asyncQuery. */ 1: required string queryID,
+  )
+  throws (
+	1: InvalidQuery err1 /* The specified query is not valid. */ 
+	) 
+	
+  /* Fetches the results from a scheduled query, freeing its resources. Blocks until the query has completed. Auth needed: Yes */
+  QueryReport fetchAsyncQueryResults(
+	/* The query ID returned by asyncQuery. */ 1: required string queryID,
+  )
+  throws (
+	1: InvalidQuery err1 /* The specified query is not valid. */ 
+	2: FailedQuery err2 /* The specified query failed to complete its execution. */ 
 	) 
 	
   /* Asks a Hawk instance to start monitoring a repository. Auth needed: Yes */

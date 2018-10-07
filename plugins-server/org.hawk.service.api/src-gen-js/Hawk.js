@@ -1517,6 +1517,640 @@ Hawk_listMetamodels_result.prototype.write = function(output) {
   return;
 };
 
+Hawk_listTypeNames_args = function(args) {
+  this.hawkInstanceName = null;
+  this.metamodelURI = null;
+  if (args) {
+    if (args.hawkInstanceName !== undefined && args.hawkInstanceName !== null) {
+      this.hawkInstanceName = args.hawkInstanceName;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field hawkInstanceName is unset!');
+    }
+    if (args.metamodelURI !== undefined && args.metamodelURI !== null) {
+      this.metamodelURI = args.metamodelURI;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field metamodelURI is unset!');
+    }
+  }
+};
+Hawk_listTypeNames_args.prototype = {};
+Hawk_listTypeNames_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.hawkInstanceName = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.metamodelURI = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Hawk_listTypeNames_args.prototype.write = function(output) {
+  output.writeStructBegin('Hawk_listTypeNames_args');
+  if (this.hawkInstanceName !== null && this.hawkInstanceName !== undefined) {
+    output.writeFieldBegin('hawkInstanceName', Thrift.Type.STRING, 1);
+    output.writeString(this.hawkInstanceName);
+    output.writeFieldEnd();
+  }
+  if (this.metamodelURI !== null && this.metamodelURI !== undefined) {
+    output.writeFieldBegin('metamodelURI', Thrift.Type.STRING, 2);
+    output.writeString(this.metamodelURI);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Hawk_listTypeNames_result = function(args) {
+  this.success = null;
+  this.err1 = null;
+  this.err2 = null;
+  this.err3 = null;
+  if (args instanceof HawkInstanceNotFound) {
+    this.err1 = args;
+    return;
+  }
+  if (args instanceof HawkInstanceNotRunning) {
+    this.err2 = args;
+    return;
+  }
+  if (args instanceof HawkMetamodelNotFound) {
+    this.err3 = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = Thrift.copyList(args.success, [null]);
+    }
+    if (args.err1 !== undefined && args.err1 !== null) {
+      this.err1 = args.err1;
+    }
+    if (args.err2 !== undefined && args.err2 !== null) {
+      this.err2 = args.err2;
+    }
+    if (args.err3 !== undefined && args.err3 !== null) {
+      this.err3 = args.err3;
+    }
+  }
+};
+Hawk_listTypeNames_result.prototype = {};
+Hawk_listTypeNames_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.LIST) {
+        var _size282 = 0;
+        var _rtmp3286;
+        this.success = [];
+        var _etype285 = 0;
+        _rtmp3286 = input.readListBegin();
+        _etype285 = _rtmp3286.etype;
+        _size282 = _rtmp3286.size;
+        for (var _i287 = 0; _i287 < _size282; ++_i287)
+        {
+          var elem288 = null;
+          elem288 = input.readString().value;
+          this.success.push(elem288);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err1 = new HawkInstanceNotFound();
+        this.err1.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err2 = new HawkInstanceNotRunning();
+        this.err2.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err3 = new HawkMetamodelNotFound();
+        this.err3.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Hawk_listTypeNames_result.prototype.write = function(output) {
+  output.writeStructBegin('Hawk_listTypeNames_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+    output.writeListBegin(Thrift.Type.STRING, this.success.length);
+    for (var iter289 in this.success)
+    {
+      if (this.success.hasOwnProperty(iter289))
+      {
+        iter289 = this.success[iter289];
+        output.writeString(iter289);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.err1 !== null && this.err1 !== undefined) {
+    output.writeFieldBegin('err1', Thrift.Type.STRUCT, 1);
+    this.err1.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.err2 !== null && this.err2 !== undefined) {
+    output.writeFieldBegin('err2', Thrift.Type.STRUCT, 2);
+    this.err2.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.err3 !== null && this.err3 !== undefined) {
+    output.writeFieldBegin('err3', Thrift.Type.STRUCT, 3);
+    this.err3.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Hawk_listTypes_args = function(args) {
+  this.hawkInstanceName = null;
+  this.metamodelURI = null;
+  if (args) {
+    if (args.hawkInstanceName !== undefined && args.hawkInstanceName !== null) {
+      this.hawkInstanceName = args.hawkInstanceName;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field hawkInstanceName is unset!');
+    }
+    if (args.metamodelURI !== undefined && args.metamodelURI !== null) {
+      this.metamodelURI = args.metamodelURI;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field metamodelURI is unset!');
+    }
+  }
+};
+Hawk_listTypes_args.prototype = {};
+Hawk_listTypes_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.hawkInstanceName = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.metamodelURI = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Hawk_listTypes_args.prototype.write = function(output) {
+  output.writeStructBegin('Hawk_listTypes_args');
+  if (this.hawkInstanceName !== null && this.hawkInstanceName !== undefined) {
+    output.writeFieldBegin('hawkInstanceName', Thrift.Type.STRING, 1);
+    output.writeString(this.hawkInstanceName);
+    output.writeFieldEnd();
+  }
+  if (this.metamodelURI !== null && this.metamodelURI !== undefined) {
+    output.writeFieldBegin('metamodelURI', Thrift.Type.STRING, 2);
+    output.writeString(this.metamodelURI);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Hawk_listTypes_result = function(args) {
+  this.success = null;
+  this.err1 = null;
+  this.err2 = null;
+  this.err3 = null;
+  if (args instanceof HawkInstanceNotFound) {
+    this.err1 = args;
+    return;
+  }
+  if (args instanceof HawkInstanceNotRunning) {
+    this.err2 = args;
+    return;
+  }
+  if (args instanceof HawkMetamodelNotFound) {
+    this.err3 = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = Thrift.copyList(args.success, [ModelElementType]);
+    }
+    if (args.err1 !== undefined && args.err1 !== null) {
+      this.err1 = args.err1;
+    }
+    if (args.err2 !== undefined && args.err2 !== null) {
+      this.err2 = args.err2;
+    }
+    if (args.err3 !== undefined && args.err3 !== null) {
+      this.err3 = args.err3;
+    }
+  }
+};
+Hawk_listTypes_result.prototype = {};
+Hawk_listTypes_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.LIST) {
+        var _size290 = 0;
+        var _rtmp3294;
+        this.success = [];
+        var _etype293 = 0;
+        _rtmp3294 = input.readListBegin();
+        _etype293 = _rtmp3294.etype;
+        _size290 = _rtmp3294.size;
+        for (var _i295 = 0; _i295 < _size290; ++_i295)
+        {
+          var elem296 = null;
+          elem296 = new ModelElementType();
+          elem296.read(input);
+          this.success.push(elem296);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err1 = new HawkInstanceNotFound();
+        this.err1.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err2 = new HawkInstanceNotRunning();
+        this.err2.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err3 = new HawkMetamodelNotFound();
+        this.err3.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Hawk_listTypes_result.prototype.write = function(output) {
+  output.writeStructBegin('Hawk_listTypes_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+    output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
+    for (var iter297 in this.success)
+    {
+      if (this.success.hasOwnProperty(iter297))
+      {
+        iter297 = this.success[iter297];
+        iter297.write(output);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.err1 !== null && this.err1 !== undefined) {
+    output.writeFieldBegin('err1', Thrift.Type.STRUCT, 1);
+    this.err1.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.err2 !== null && this.err2 !== undefined) {
+    output.writeFieldBegin('err2', Thrift.Type.STRUCT, 2);
+    this.err2.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.err3 !== null && this.err3 !== undefined) {
+    output.writeFieldBegin('err3', Thrift.Type.STRUCT, 3);
+    this.err3.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Hawk_fetchType_args = function(args) {
+  this.hawkInstanceName = null;
+  this.metamodelURI = null;
+  this.typeName = null;
+  if (args) {
+    if (args.hawkInstanceName !== undefined && args.hawkInstanceName !== null) {
+      this.hawkInstanceName = args.hawkInstanceName;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field hawkInstanceName is unset!');
+    }
+    if (args.metamodelURI !== undefined && args.metamodelURI !== null) {
+      this.metamodelURI = args.metamodelURI;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field metamodelURI is unset!');
+    }
+    if (args.typeName !== undefined && args.typeName !== null) {
+      this.typeName = args.typeName;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field typeName is unset!');
+    }
+  }
+};
+Hawk_fetchType_args.prototype = {};
+Hawk_fetchType_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.hawkInstanceName = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.metamodelURI = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.typeName = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Hawk_fetchType_args.prototype.write = function(output) {
+  output.writeStructBegin('Hawk_fetchType_args');
+  if (this.hawkInstanceName !== null && this.hawkInstanceName !== undefined) {
+    output.writeFieldBegin('hawkInstanceName', Thrift.Type.STRING, 1);
+    output.writeString(this.hawkInstanceName);
+    output.writeFieldEnd();
+  }
+  if (this.metamodelURI !== null && this.metamodelURI !== undefined) {
+    output.writeFieldBegin('metamodelURI', Thrift.Type.STRING, 2);
+    output.writeString(this.metamodelURI);
+    output.writeFieldEnd();
+  }
+  if (this.typeName !== null && this.typeName !== undefined) {
+    output.writeFieldBegin('typeName', Thrift.Type.STRING, 3);
+    output.writeString(this.typeName);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Hawk_fetchType_result = function(args) {
+  this.success = null;
+  this.err1 = null;
+  this.err2 = null;
+  this.err3 = null;
+  this.err4 = null;
+  if (args instanceof HawkInstanceNotFound) {
+    this.err1 = args;
+    return;
+  }
+  if (args instanceof HawkInstanceNotRunning) {
+    this.err2 = args;
+    return;
+  }
+  if (args instanceof HawkMetamodelNotFound) {
+    this.err3 = args;
+    return;
+  }
+  if (args instanceof HawkTypeNotFound) {
+    this.err4 = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = new ModelElementType(args.success);
+    }
+    if (args.err1 !== undefined && args.err1 !== null) {
+      this.err1 = args.err1;
+    }
+    if (args.err2 !== undefined && args.err2 !== null) {
+      this.err2 = args.err2;
+    }
+    if (args.err3 !== undefined && args.err3 !== null) {
+      this.err3 = args.err3;
+    }
+    if (args.err4 !== undefined && args.err4 !== null) {
+      this.err4 = args.err4;
+    }
+  }
+};
+Hawk_fetchType_result.prototype = {};
+Hawk_fetchType_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.success = new ModelElementType();
+        this.success.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err1 = new HawkInstanceNotFound();
+        this.err1.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err2 = new HawkInstanceNotRunning();
+        this.err2.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err3 = new HawkMetamodelNotFound();
+        this.err3.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err4 = new HawkTypeNotFound();
+        this.err4.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Hawk_fetchType_result.prototype.write = function(output) {
+  output.writeStructBegin('Hawk_fetchType_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
+    this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.err1 !== null && this.err1 !== undefined) {
+    output.writeFieldBegin('err1', Thrift.Type.STRUCT, 1);
+    this.err1.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.err2 !== null && this.err2 !== undefined) {
+    output.writeFieldBegin('err2', Thrift.Type.STRUCT, 2);
+    this.err2.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.err3 !== null && this.err3 !== undefined) {
+    output.writeFieldBegin('err3', Thrift.Type.STRUCT, 3);
+    this.err3.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.err4 !== null && this.err4 !== undefined) {
+    output.writeFieldBegin('err4', Thrift.Type.STRUCT, 4);
+    this.err4.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 Hawk_listMetamodelParsers_args = function(args) {
   this.name = null;
   if (args) {
@@ -1612,19 +2246,19 @@ Hawk_listMetamodelParsers_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size282 = 0;
-        var _rtmp3286;
+        var _size298 = 0;
+        var _rtmp3302;
         this.success = [];
-        var _etype285 = 0;
-        _rtmp3286 = input.readListBegin();
-        _etype285 = _rtmp3286.etype;
-        _size282 = _rtmp3286.size;
-        for (var _i287 = 0; _i287 < _size282; ++_i287)
+        var _etype301 = 0;
+        _rtmp3302 = input.readListBegin();
+        _etype301 = _rtmp3302.etype;
+        _size298 = _rtmp3302.size;
+        for (var _i303 = 0; _i303 < _size298; ++_i303)
         {
-          var elem288 = null;
-          elem288 = new MetamodelParserDetails();
-          elem288.read(input);
-          this.success.push(elem288);
+          var elem304 = null;
+          elem304 = new MetamodelParserDetails();
+          elem304.read(input);
+          this.success.push(elem304);
         }
         input.readListEnd();
       } else {
@@ -1661,12 +2295,12 @@ Hawk_listMetamodelParsers_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter289 in this.success)
+    for (var iter305 in this.success)
     {
-      if (this.success.hasOwnProperty(iter289))
+      if (this.success.hasOwnProperty(iter305))
       {
-        iter289 = this.success[iter289];
-        iter289.write(output);
+        iter305 = this.success[iter305];
+        iter305.write(output);
       }
     }
     output.writeListEnd();
@@ -1766,18 +2400,18 @@ Hawk_listQueryLanguages_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size290 = 0;
-        var _rtmp3294;
+        var _size306 = 0;
+        var _rtmp3310;
         this.success = [];
-        var _etype293 = 0;
-        _rtmp3294 = input.readListBegin();
-        _etype293 = _rtmp3294.etype;
-        _size290 = _rtmp3294.size;
-        for (var _i295 = 0; _i295 < _size290; ++_i295)
+        var _etype309 = 0;
+        _rtmp3310 = input.readListBegin();
+        _etype309 = _rtmp3310.etype;
+        _size306 = _rtmp3310.size;
+        for (var _i311 = 0; _i311 < _size306; ++_i311)
         {
-          var elem296 = null;
-          elem296 = input.readString().value;
-          this.success.push(elem296);
+          var elem312 = null;
+          elem312 = input.readString().value;
+          this.success.push(elem312);
         }
         input.readListEnd();
       } else {
@@ -1801,12 +2435,12 @@ Hawk_listQueryLanguages_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
-    for (var iter297 in this.success)
+    for (var iter313 in this.success)
     {
-      if (this.success.hasOwnProperty(iter297))
+      if (this.success.hasOwnProperty(iter313))
       {
-        iter297 = this.success[iter297];
-        output.writeString(iter297);
+        iter313 = this.success[iter313];
+        output.writeString(iter313);
       }
     }
     output.writeListEnd();
@@ -2388,18 +3022,18 @@ Hawk_resolveProxies_args.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.LIST) {
-        var _size298 = 0;
-        var _rtmp3302;
+        var _size314 = 0;
+        var _rtmp3318;
         this.ids = [];
-        var _etype301 = 0;
-        _rtmp3302 = input.readListBegin();
-        _etype301 = _rtmp3302.etype;
-        _size298 = _rtmp3302.size;
-        for (var _i303 = 0; _i303 < _size298; ++_i303)
+        var _etype317 = 0;
+        _rtmp3318 = input.readListBegin();
+        _etype317 = _rtmp3318.etype;
+        _size314 = _rtmp3318.size;
+        for (var _i319 = 0; _i319 < _size314; ++_i319)
         {
-          var elem304 = null;
-          elem304 = input.readString().value;
-          this.ids.push(elem304);
+          var elem320 = null;
+          elem320 = input.readString().value;
+          this.ids.push(elem320);
         }
         input.readListEnd();
       } else {
@@ -2433,12 +3067,12 @@ Hawk_resolveProxies_args.prototype.write = function(output) {
   if (this.ids !== null && this.ids !== undefined) {
     output.writeFieldBegin('ids', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.STRING, this.ids.length);
-    for (var iter305 in this.ids)
+    for (var iter321 in this.ids)
     {
-      if (this.ids.hasOwnProperty(iter305))
+      if (this.ids.hasOwnProperty(iter321))
       {
-        iter305 = this.ids[iter305];
-        output.writeString(iter305);
+        iter321 = this.ids[iter321];
+        output.writeString(iter321);
       }
     }
     output.writeListEnd();
@@ -2494,19 +3128,19 @@ Hawk_resolveProxies_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size306 = 0;
-        var _rtmp3310;
+        var _size322 = 0;
+        var _rtmp3326;
         this.success = [];
-        var _etype309 = 0;
-        _rtmp3310 = input.readListBegin();
-        _etype309 = _rtmp3310.etype;
-        _size306 = _rtmp3310.size;
-        for (var _i311 = 0; _i311 < _size306; ++_i311)
+        var _etype325 = 0;
+        _rtmp3326 = input.readListBegin();
+        _etype325 = _rtmp3326.etype;
+        _size322 = _rtmp3326.size;
+        for (var _i327 = 0; _i327 < _size322; ++_i327)
         {
-          var elem312 = null;
-          elem312 = new ModelElement();
-          elem312.read(input);
-          this.success.push(elem312);
+          var elem328 = null;
+          elem328 = new ModelElement();
+          elem328.read(input);
+          this.success.push(elem328);
         }
         input.readListEnd();
       } else {
@@ -2543,15 +3177,487 @@ Hawk_resolveProxies_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter313 in this.success)
+    for (var iter329 in this.success)
     {
-      if (this.success.hasOwnProperty(iter313))
+      if (this.success.hasOwnProperty(iter329))
       {
-        iter313 = this.success[iter313];
-        iter313.write(output);
+        iter329 = this.success[iter329];
+        iter329.write(output);
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.err1 !== null && this.err1 !== undefined) {
+    output.writeFieldBegin('err1', Thrift.Type.STRUCT, 1);
+    this.err1.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.err2 !== null && this.err2 !== undefined) {
+    output.writeFieldBegin('err2', Thrift.Type.STRUCT, 2);
+    this.err2.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Hawk_asyncQuery_args = function(args) {
+  this.name = null;
+  this.query = null;
+  this.language = null;
+  this.options = null;
+  if (args) {
+    if (args.name !== undefined && args.name !== null) {
+      this.name = args.name;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field name is unset!');
+    }
+    if (args.query !== undefined && args.query !== null) {
+      this.query = args.query;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field query is unset!');
+    }
+    if (args.language !== undefined && args.language !== null) {
+      this.language = args.language;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field language is unset!');
+    }
+    if (args.options !== undefined && args.options !== null) {
+      this.options = new HawkQueryOptions(args.options);
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field options is unset!');
+    }
+  }
+};
+Hawk_asyncQuery_args.prototype = {};
+Hawk_asyncQuery_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.query = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.language = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.options = new HawkQueryOptions();
+        this.options.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Hawk_asyncQuery_args.prototype.write = function(output) {
+  output.writeStructBegin('Hawk_asyncQuery_args');
+  if (this.name !== null && this.name !== undefined) {
+    output.writeFieldBegin('name', Thrift.Type.STRING, 1);
+    output.writeString(this.name);
+    output.writeFieldEnd();
+  }
+  if (this.query !== null && this.query !== undefined) {
+    output.writeFieldBegin('query', Thrift.Type.STRING, 2);
+    output.writeString(this.query);
+    output.writeFieldEnd();
+  }
+  if (this.language !== null && this.language !== undefined) {
+    output.writeFieldBegin('language', Thrift.Type.STRING, 3);
+    output.writeString(this.language);
+    output.writeFieldEnd();
+  }
+  if (this.options !== null && this.options !== undefined) {
+    output.writeFieldBegin('options', Thrift.Type.STRUCT, 4);
+    this.options.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Hawk_asyncQuery_result = function(args) {
+  this.success = null;
+  this.err1 = null;
+  this.err2 = null;
+  this.err3 = null;
+  this.err4 = null;
+  if (args instanceof HawkInstanceNotFound) {
+    this.err1 = args;
+    return;
+  }
+  if (args instanceof HawkInstanceNotRunning) {
+    this.err2 = args;
+    return;
+  }
+  if (args instanceof UnknownQueryLanguage) {
+    this.err3 = args;
+    return;
+  }
+  if (args instanceof InvalidQuery) {
+    this.err4 = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = args.success;
+    }
+    if (args.err1 !== undefined && args.err1 !== null) {
+      this.err1 = args.err1;
+    }
+    if (args.err2 !== undefined && args.err2 !== null) {
+      this.err2 = args.err2;
+    }
+    if (args.err3 !== undefined && args.err3 !== null) {
+      this.err3 = args.err3;
+    }
+    if (args.err4 !== undefined && args.err4 !== null) {
+      this.err4 = args.err4;
+    }
+  }
+};
+Hawk_asyncQuery_result.prototype = {};
+Hawk_asyncQuery_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRING) {
+        this.success = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err1 = new HawkInstanceNotFound();
+        this.err1.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err2 = new HawkInstanceNotRunning();
+        this.err2.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err3 = new UnknownQueryLanguage();
+        this.err3.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err4 = new InvalidQuery();
+        this.err4.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Hawk_asyncQuery_result.prototype.write = function(output) {
+  output.writeStructBegin('Hawk_asyncQuery_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRING, 0);
+    output.writeString(this.success);
+    output.writeFieldEnd();
+  }
+  if (this.err1 !== null && this.err1 !== undefined) {
+    output.writeFieldBegin('err1', Thrift.Type.STRUCT, 1);
+    this.err1.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.err2 !== null && this.err2 !== undefined) {
+    output.writeFieldBegin('err2', Thrift.Type.STRUCT, 2);
+    this.err2.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.err3 !== null && this.err3 !== undefined) {
+    output.writeFieldBegin('err3', Thrift.Type.STRUCT, 3);
+    this.err3.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.err4 !== null && this.err4 !== undefined) {
+    output.writeFieldBegin('err4', Thrift.Type.STRUCT, 4);
+    this.err4.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Hawk_cancelAsyncQuery_args = function(args) {
+  this.queryID = null;
+  if (args) {
+    if (args.queryID !== undefined && args.queryID !== null) {
+      this.queryID = args.queryID;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field queryID is unset!');
+    }
+  }
+};
+Hawk_cancelAsyncQuery_args.prototype = {};
+Hawk_cancelAsyncQuery_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.queryID = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Hawk_cancelAsyncQuery_args.prototype.write = function(output) {
+  output.writeStructBegin('Hawk_cancelAsyncQuery_args');
+  if (this.queryID !== null && this.queryID !== undefined) {
+    output.writeFieldBegin('queryID', Thrift.Type.STRING, 1);
+    output.writeString(this.queryID);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Hawk_cancelAsyncQuery_result = function(args) {
+};
+Hawk_cancelAsyncQuery_result.prototype = {};
+Hawk_cancelAsyncQuery_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    input.skip(ftype);
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Hawk_cancelAsyncQuery_result.prototype.write = function(output) {
+  output.writeStructBegin('Hawk_cancelAsyncQuery_result');
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Hawk_fetchAsyncQueryResults_args = function(args) {
+  this.queryID = null;
+  if (args) {
+    if (args.queryID !== undefined && args.queryID !== null) {
+      this.queryID = args.queryID;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field queryID is unset!');
+    }
+  }
+};
+Hawk_fetchAsyncQueryResults_args.prototype = {};
+Hawk_fetchAsyncQueryResults_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.queryID = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Hawk_fetchAsyncQueryResults_args.prototype.write = function(output) {
+  output.writeStructBegin('Hawk_fetchAsyncQueryResults_args');
+  if (this.queryID !== null && this.queryID !== undefined) {
+    output.writeFieldBegin('queryID', Thrift.Type.STRING, 1);
+    output.writeString(this.queryID);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Hawk_fetchAsyncQueryResults_result = function(args) {
+  this.success = null;
+  this.err1 = null;
+  this.err2 = null;
+  if (args instanceof InvalidQuery) {
+    this.err1 = args;
+    return;
+  }
+  if (args instanceof FailedQuery) {
+    this.err2 = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = new QueryReport(args.success);
+    }
+    if (args.err1 !== undefined && args.err1 !== null) {
+      this.err1 = args.err1;
+    }
+    if (args.err2 !== undefined && args.err2 !== null) {
+      this.err2 = args.err2;
+    }
+  }
+};
+Hawk_fetchAsyncQueryResults_result.prototype = {};
+Hawk_fetchAsyncQueryResults_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.success = new QueryReport();
+        this.success.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err1 = new InvalidQuery();
+        this.err1.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err2 = new FailedQuery();
+        this.err2.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Hawk_fetchAsyncQueryResults_result.prototype.write = function(output) {
+  output.writeStructBegin('Hawk_fetchAsyncQueryResults_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
+    this.success.write(output);
     output.writeFieldEnd();
   }
   if (this.err1 !== null && this.err1 !== undefined) {
@@ -3507,19 +4613,19 @@ Hawk_listRepositories_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size314 = 0;
-        var _rtmp3318;
+        var _size330 = 0;
+        var _rtmp3334;
         this.success = [];
-        var _etype317 = 0;
-        _rtmp3318 = input.readListBegin();
-        _etype317 = _rtmp3318.etype;
-        _size314 = _rtmp3318.size;
-        for (var _i319 = 0; _i319 < _size314; ++_i319)
+        var _etype333 = 0;
+        _rtmp3334 = input.readListBegin();
+        _etype333 = _rtmp3334.etype;
+        _size330 = _rtmp3334.size;
+        for (var _i335 = 0; _i335 < _size330; ++_i335)
         {
-          var elem320 = null;
-          elem320 = new Repository();
-          elem320.read(input);
-          this.success.push(elem320);
+          var elem336 = null;
+          elem336 = new Repository();
+          elem336.read(input);
+          this.success.push(elem336);
         }
         input.readListEnd();
       } else {
@@ -3556,12 +4662,12 @@ Hawk_listRepositories_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter321 in this.success)
+    for (var iter337 in this.success)
     {
-      if (this.success.hasOwnProperty(iter321))
+      if (this.success.hasOwnProperty(iter337))
       {
-        iter321 = this.success[iter321];
-        iter321.write(output);
+        iter337 = this.success[iter337];
+        iter337.write(output);
       }
     }
     output.writeListEnd();
@@ -3634,18 +4740,18 @@ Hawk_listRepositoryTypes_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size322 = 0;
-        var _rtmp3326;
+        var _size338 = 0;
+        var _rtmp3342;
         this.success = [];
-        var _etype325 = 0;
-        _rtmp3326 = input.readListBegin();
-        _etype325 = _rtmp3326.etype;
-        _size322 = _rtmp3326.size;
-        for (var _i327 = 0; _i327 < _size322; ++_i327)
+        var _etype341 = 0;
+        _rtmp3342 = input.readListBegin();
+        _etype341 = _rtmp3342.etype;
+        _size338 = _rtmp3342.size;
+        for (var _i343 = 0; _i343 < _size338; ++_i343)
         {
-          var elem328 = null;
-          elem328 = input.readString().value;
-          this.success.push(elem328);
+          var elem344 = null;
+          elem344 = input.readString().value;
+          this.success.push(elem344);
         }
         input.readListEnd();
       } else {
@@ -3669,12 +4775,12 @@ Hawk_listRepositoryTypes_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
-    for (var iter329 in this.success)
+    for (var iter345 in this.success)
     {
-      if (this.success.hasOwnProperty(iter329))
+      if (this.success.hasOwnProperty(iter345))
       {
-        iter329 = this.success[iter329];
-        output.writeString(iter329);
+        iter345 = this.success[iter345];
+        output.writeString(iter345);
       }
     }
     output.writeListEnd();
@@ -3730,18 +4836,18 @@ Hawk_listFiles_args.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.LIST) {
-        var _size330 = 0;
-        var _rtmp3334;
+        var _size346 = 0;
+        var _rtmp3350;
         this.repository = [];
-        var _etype333 = 0;
-        _rtmp3334 = input.readListBegin();
-        _etype333 = _rtmp3334.etype;
-        _size330 = _rtmp3334.size;
-        for (var _i335 = 0; _i335 < _size330; ++_i335)
+        var _etype349 = 0;
+        _rtmp3350 = input.readListBegin();
+        _etype349 = _rtmp3350.etype;
+        _size346 = _rtmp3350.size;
+        for (var _i351 = 0; _i351 < _size346; ++_i351)
         {
-          var elem336 = null;
-          elem336 = input.readString().value;
-          this.repository.push(elem336);
+          var elem352 = null;
+          elem352 = input.readString().value;
+          this.repository.push(elem352);
         }
         input.readListEnd();
       } else {
@@ -3750,18 +4856,18 @@ Hawk_listFiles_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
-        var _size337 = 0;
-        var _rtmp3341;
+        var _size353 = 0;
+        var _rtmp3357;
         this.filePatterns = [];
-        var _etype340 = 0;
-        _rtmp3341 = input.readListBegin();
-        _etype340 = _rtmp3341.etype;
-        _size337 = _rtmp3341.size;
-        for (var _i342 = 0; _i342 < _size337; ++_i342)
+        var _etype356 = 0;
+        _rtmp3357 = input.readListBegin();
+        _etype356 = _rtmp3357.etype;
+        _size353 = _rtmp3357.size;
+        for (var _i358 = 0; _i358 < _size353; ++_i358)
         {
-          var elem343 = null;
-          elem343 = input.readString().value;
-          this.filePatterns.push(elem343);
+          var elem359 = null;
+          elem359 = input.readString().value;
+          this.filePatterns.push(elem359);
         }
         input.readListEnd();
       } else {
@@ -3787,12 +4893,12 @@ Hawk_listFiles_args.prototype.write = function(output) {
   if (this.repository !== null && this.repository !== undefined) {
     output.writeFieldBegin('repository', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.STRING, this.repository.length);
-    for (var iter344 in this.repository)
+    for (var iter360 in this.repository)
     {
-      if (this.repository.hasOwnProperty(iter344))
+      if (this.repository.hasOwnProperty(iter360))
       {
-        iter344 = this.repository[iter344];
-        output.writeString(iter344);
+        iter360 = this.repository[iter360];
+        output.writeString(iter360);
       }
     }
     output.writeListEnd();
@@ -3801,12 +4907,12 @@ Hawk_listFiles_args.prototype.write = function(output) {
   if (this.filePatterns !== null && this.filePatterns !== undefined) {
     output.writeFieldBegin('filePatterns', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRING, this.filePatterns.length);
-    for (var iter345 in this.filePatterns)
+    for (var iter361 in this.filePatterns)
     {
-      if (this.filePatterns.hasOwnProperty(iter345))
+      if (this.filePatterns.hasOwnProperty(iter361))
       {
-        iter345 = this.filePatterns[iter345];
-        output.writeString(iter345);
+        iter361 = this.filePatterns[iter361];
+        output.writeString(iter361);
       }
     }
     output.writeListEnd();
@@ -3857,18 +4963,18 @@ Hawk_listFiles_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size346 = 0;
-        var _rtmp3350;
+        var _size362 = 0;
+        var _rtmp3366;
         this.success = [];
-        var _etype349 = 0;
-        _rtmp3350 = input.readListBegin();
-        _etype349 = _rtmp3350.etype;
-        _size346 = _rtmp3350.size;
-        for (var _i351 = 0; _i351 < _size346; ++_i351)
+        var _etype365 = 0;
+        _rtmp3366 = input.readListBegin();
+        _etype365 = _rtmp3366.etype;
+        _size362 = _rtmp3366.size;
+        for (var _i367 = 0; _i367 < _size362; ++_i367)
         {
-          var elem352 = null;
-          elem352 = input.readString().value;
-          this.success.push(elem352);
+          var elem368 = null;
+          elem368 = input.readString().value;
+          this.success.push(elem368);
         }
         input.readListEnd();
       } else {
@@ -3905,12 +5011,12 @@ Hawk_listFiles_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
-    for (var iter353 in this.success)
+    for (var iter369 in this.success)
     {
-      if (this.success.hasOwnProperty(iter353))
+      if (this.success.hasOwnProperty(iter369))
       {
-        iter353 = this.success[iter353];
-        output.writeString(iter353);
+        iter369 = this.success[iter369];
+        output.writeString(iter369);
       }
     }
     output.writeListEnd();
@@ -4526,19 +5632,19 @@ Hawk_listDerivedAttributes_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size354 = 0;
-        var _rtmp3358;
+        var _size370 = 0;
+        var _rtmp3374;
         this.success = [];
-        var _etype357 = 0;
-        _rtmp3358 = input.readListBegin();
-        _etype357 = _rtmp3358.etype;
-        _size354 = _rtmp3358.size;
-        for (var _i359 = 0; _i359 < _size354; ++_i359)
+        var _etype373 = 0;
+        _rtmp3374 = input.readListBegin();
+        _etype373 = _rtmp3374.etype;
+        _size370 = _rtmp3374.size;
+        for (var _i375 = 0; _i375 < _size370; ++_i375)
         {
-          var elem360 = null;
-          elem360 = new DerivedAttributeSpec();
-          elem360.read(input);
-          this.success.push(elem360);
+          var elem376 = null;
+          elem376 = new DerivedAttributeSpec();
+          elem376.read(input);
+          this.success.push(elem376);
         }
         input.readListEnd();
       } else {
@@ -4575,12 +5681,12 @@ Hawk_listDerivedAttributes_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter361 in this.success)
+    for (var iter377 in this.success)
     {
-      if (this.success.hasOwnProperty(iter361))
+      if (this.success.hasOwnProperty(iter377))
       {
-        iter361 = this.success[iter361];
-        iter361.write(output);
+        iter377 = this.success[iter377];
+        iter377.write(output);
       }
     }
     output.writeListEnd();
@@ -5011,19 +6117,19 @@ Hawk_listIndexedAttributes_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size362 = 0;
-        var _rtmp3366;
+        var _size378 = 0;
+        var _rtmp3382;
         this.success = [];
-        var _etype365 = 0;
-        _rtmp3366 = input.readListBegin();
-        _etype365 = _rtmp3366.etype;
-        _size362 = _rtmp3366.size;
-        for (var _i367 = 0; _i367 < _size362; ++_i367)
+        var _etype381 = 0;
+        _rtmp3382 = input.readListBegin();
+        _etype381 = _rtmp3382.etype;
+        _size378 = _rtmp3382.size;
+        for (var _i383 = 0; _i383 < _size378; ++_i383)
         {
-          var elem368 = null;
-          elem368 = new IndexedAttributeSpec();
-          elem368.read(input);
-          this.success.push(elem368);
+          var elem384 = null;
+          elem384 = new IndexedAttributeSpec();
+          elem384.read(input);
+          this.success.push(elem384);
         }
         input.readListEnd();
       } else {
@@ -5060,12 +6166,12 @@ Hawk_listIndexedAttributes_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter369 in this.success)
+    for (var iter385 in this.success)
     {
-      if (this.success.hasOwnProperty(iter369))
+      if (this.success.hasOwnProperty(iter385))
       {
-        iter369 = this.success[iter369];
-        iter369.write(output);
+        iter385 = this.success[iter385];
+        iter385.write(output);
       }
     }
     output.writeListEnd();
@@ -5197,19 +6303,19 @@ Hawk_getModel_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size370 = 0;
-        var _rtmp3374;
+        var _size386 = 0;
+        var _rtmp3390;
         this.success = [];
-        var _etype373 = 0;
-        _rtmp3374 = input.readListBegin();
-        _etype373 = _rtmp3374.etype;
-        _size370 = _rtmp3374.size;
-        for (var _i375 = 0; _i375 < _size370; ++_i375)
+        var _etype389 = 0;
+        _rtmp3390 = input.readListBegin();
+        _etype389 = _rtmp3390.etype;
+        _size386 = _rtmp3390.size;
+        for (var _i391 = 0; _i391 < _size386; ++_i391)
         {
-          var elem376 = null;
-          elem376 = new ModelElement();
-          elem376.read(input);
-          this.success.push(elem376);
+          var elem392 = null;
+          elem392 = new ModelElement();
+          elem392.read(input);
+          this.success.push(elem392);
         }
         input.readListEnd();
       } else {
@@ -5246,12 +6352,12 @@ Hawk_getModel_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter377 in this.success)
+    for (var iter393 in this.success)
     {
-      if (this.success.hasOwnProperty(iter377))
+      if (this.success.hasOwnProperty(iter393))
       {
-        iter377 = this.success[iter377];
-        iter377.write(output);
+        iter393 = this.success[iter393];
+        iter393.write(output);
       }
     }
     output.writeListEnd();
@@ -5367,19 +6473,19 @@ Hawk_getRootElements_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size378 = 0;
-        var _rtmp3382;
+        var _size394 = 0;
+        var _rtmp3398;
         this.success = [];
-        var _etype381 = 0;
-        _rtmp3382 = input.readListBegin();
-        _etype381 = _rtmp3382.etype;
-        _size378 = _rtmp3382.size;
-        for (var _i383 = 0; _i383 < _size378; ++_i383)
+        var _etype397 = 0;
+        _rtmp3398 = input.readListBegin();
+        _etype397 = _rtmp3398.etype;
+        _size394 = _rtmp3398.size;
+        for (var _i399 = 0; _i399 < _size394; ++_i399)
         {
-          var elem384 = null;
-          elem384 = new ModelElement();
-          elem384.read(input);
-          this.success.push(elem384);
+          var elem400 = null;
+          elem400 = new ModelElement();
+          elem400.read(input);
+          this.success.push(elem400);
         }
         input.readListEnd();
       } else {
@@ -5403,12 +6509,12 @@ Hawk_getRootElements_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter385 in this.success)
+    for (var iter401 in this.success)
     {
-      if (this.success.hasOwnProperty(iter385))
+      if (this.success.hasOwnProperty(iter401))
       {
-        iter385 = this.success[iter385];
-        iter385.write(output);
+        iter401 = this.success[iter401];
+        iter401.write(output);
       }
     }
     output.writeListEnd();
@@ -5631,18 +6737,18 @@ Hawk_watchModelChanges_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
-        var _size386 = 0;
-        var _rtmp3390;
+        var _size402 = 0;
+        var _rtmp3406;
         this.filePath = [];
-        var _etype389 = 0;
-        _rtmp3390 = input.readListBegin();
-        _etype389 = _rtmp3390.etype;
-        _size386 = _rtmp3390.size;
-        for (var _i391 = 0; _i391 < _size386; ++_i391)
+        var _etype405 = 0;
+        _rtmp3406 = input.readListBegin();
+        _etype405 = _rtmp3406.etype;
+        _size402 = _rtmp3406.size;
+        for (var _i407 = 0; _i407 < _size402; ++_i407)
         {
-          var elem392 = null;
-          elem392 = input.readString().value;
-          this.filePath.push(elem392);
+          var elem408 = null;
+          elem408 = input.readString().value;
+          this.filePath.push(elem408);
         }
         input.readListEnd();
       } else {
@@ -5687,12 +6793,12 @@ Hawk_watchModelChanges_args.prototype.write = function(output) {
   if (this.filePath !== null && this.filePath !== undefined) {
     output.writeFieldBegin('filePath', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRING, this.filePath.length);
-    for (var iter393 in this.filePath)
+    for (var iter409 in this.filePath)
     {
-      if (this.filePath.hasOwnProperty(iter393))
+      if (this.filePath.hasOwnProperty(iter409))
       {
-        iter393 = this.filePath[iter393];
-        output.writeString(iter393);
+        iter409 = this.filePath[iter409];
+        output.writeString(iter409);
       }
     }
     output.writeListEnd();
@@ -6373,6 +7479,187 @@ HawkClient.prototype.recv_listMetamodels = function() {
   }
   throw 'listMetamodels failed: unknown result';
 };
+HawkClient.prototype.listTypeNames = function(hawkInstanceName, metamodelURI, callback) {
+  this.send_listTypeNames(hawkInstanceName, metamodelURI, callback); 
+  if (!callback) {
+    return this.recv_listTypeNames();
+  }
+};
+
+HawkClient.prototype.send_listTypeNames = function(hawkInstanceName, metamodelURI, callback) {
+  this.output.writeMessageBegin('listTypeNames', Thrift.MessageType.CALL, this.seqid);
+  var args = new Hawk_listTypeNames_args();
+  args.hawkInstanceName = hawkInstanceName;
+  args.metamodelURI = metamodelURI;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_listTypeNames();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+HawkClient.prototype.recv_listTypeNames = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new Hawk_listTypeNames_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.err1) {
+    throw result.err1;
+  }
+  if (null !== result.err2) {
+    throw result.err2;
+  }
+  if (null !== result.err3) {
+    throw result.err3;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'listTypeNames failed: unknown result';
+};
+HawkClient.prototype.listTypes = function(hawkInstanceName, metamodelURI, callback) {
+  this.send_listTypes(hawkInstanceName, metamodelURI, callback); 
+  if (!callback) {
+    return this.recv_listTypes();
+  }
+};
+
+HawkClient.prototype.send_listTypes = function(hawkInstanceName, metamodelURI, callback) {
+  this.output.writeMessageBegin('listTypes', Thrift.MessageType.CALL, this.seqid);
+  var args = new Hawk_listTypes_args();
+  args.hawkInstanceName = hawkInstanceName;
+  args.metamodelURI = metamodelURI;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_listTypes();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+HawkClient.prototype.recv_listTypes = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new Hawk_listTypes_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.err1) {
+    throw result.err1;
+  }
+  if (null !== result.err2) {
+    throw result.err2;
+  }
+  if (null !== result.err3) {
+    throw result.err3;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'listTypes failed: unknown result';
+};
+HawkClient.prototype.fetchType = function(hawkInstanceName, metamodelURI, typeName, callback) {
+  this.send_fetchType(hawkInstanceName, metamodelURI, typeName, callback); 
+  if (!callback) {
+    return this.recv_fetchType();
+  }
+};
+
+HawkClient.prototype.send_fetchType = function(hawkInstanceName, metamodelURI, typeName, callback) {
+  this.output.writeMessageBegin('fetchType', Thrift.MessageType.CALL, this.seqid);
+  var args = new Hawk_fetchType_args();
+  args.hawkInstanceName = hawkInstanceName;
+  args.metamodelURI = metamodelURI;
+  args.typeName = typeName;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_fetchType();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+HawkClient.prototype.recv_fetchType = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new Hawk_fetchType_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.err1) {
+    throw result.err1;
+  }
+  if (null !== result.err2) {
+    throw result.err2;
+  }
+  if (null !== result.err3) {
+    throw result.err3;
+  }
+  if (null !== result.err4) {
+    throw result.err4;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'fetchType failed: unknown result';
+};
 HawkClient.prototype.listMetamodelParsers = function(name, callback) {
   this.send_listMetamodelParsers(name, callback); 
   if (!callback) {
@@ -6667,6 +7954,150 @@ HawkClient.prototype.recv_resolveProxies = function() {
     return result.success;
   }
   throw 'resolveProxies failed: unknown result';
+};
+HawkClient.prototype.asyncQuery = function(name, query, language, options, callback) {
+  this.send_asyncQuery(name, query, language, options, callback); 
+  if (!callback) {
+    return this.recv_asyncQuery();
+  }
+};
+
+HawkClient.prototype.send_asyncQuery = function(name, query, language, options, callback) {
+  this.output.writeMessageBegin('asyncQuery', Thrift.MessageType.CALL, this.seqid);
+  var args = new Hawk_asyncQuery_args();
+  args.name = name;
+  args.query = query;
+  args.language = language;
+  args.options = options;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_asyncQuery();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+HawkClient.prototype.recv_asyncQuery = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new Hawk_asyncQuery_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.err1) {
+    throw result.err1;
+  }
+  if (null !== result.err2) {
+    throw result.err2;
+  }
+  if (null !== result.err3) {
+    throw result.err3;
+  }
+  if (null !== result.err4) {
+    throw result.err4;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'asyncQuery failed: unknown result';
+};
+HawkClient.prototype.cancelAsyncQuery = function(queryID, callback) {
+  this.send_cancelAsyncQuery(queryID, callback); 
+};
+
+HawkClient.prototype.send_cancelAsyncQuery = function(queryID, callback) {
+  this.output.writeMessageBegin('cancelAsyncQuery', Thrift.MessageType.ONEWAY, this.seqid);
+  var args = new Hawk_cancelAsyncQuery_args();
+  args.queryID = queryID;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_cancelAsyncQuery();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+HawkClient.prototype.fetchAsyncQueryResults = function(queryID, callback) {
+  this.send_fetchAsyncQueryResults(queryID, callback); 
+  if (!callback) {
+    return this.recv_fetchAsyncQueryResults();
+  }
+};
+
+HawkClient.prototype.send_fetchAsyncQueryResults = function(queryID, callback) {
+  this.output.writeMessageBegin('fetchAsyncQueryResults', Thrift.MessageType.CALL, this.seqid);
+  var args = new Hawk_fetchAsyncQueryResults_args();
+  args.queryID = queryID;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_fetchAsyncQueryResults();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+HawkClient.prototype.recv_fetchAsyncQueryResults = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new Hawk_fetchAsyncQueryResults_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.err1) {
+    throw result.err1;
+  }
+  if (null !== result.err2) {
+    throw result.err2;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'fetchAsyncQueryResults failed: unknown result';
 };
 HawkClient.prototype.addRepository = function(name, repo, credentials, callback) {
   this.send_addRepository(name, repo, credentials, callback); 

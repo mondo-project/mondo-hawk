@@ -98,6 +98,25 @@ class Hawk {
 	op String[*] listMetamodels (
 		@doc(d="The name of the Hawk instance") String name
 	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+	
+	@doc(d="Lists the names of the types registered for a certain metamodel in an instance")
+	op String[*] listTypeNames(
+		@doc(d="The name of the Hawk instance") String hawkInstanceName,
+		@doc(d="The URI of the metamodel") String metamodelURI
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound;
+
+	@doc(d="Lists the names of the types registered for a certain metamodel in an instance")
+	op ModelElementType[*] listTypes(
+		@doc(d="The name of the Hawk instance") String hawkInstanceName,
+		@doc(d="The URI of the metamodel") String metamodelURI
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound;
+
+	@doc(d="Fetches all information about a type registered for a certain metamodel in an instance")
+	op ModelElementType fetchType(
+		@doc(d="The name of the Hawk instance") String hawkInstanceName,
+		@doc(d="The URI of the metamodel") String metamodelURI,
+		@doc(d="The name of the type") String typeName
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, HawkTypeNotFound;
 
 	@doc(d="Lists the details of the metamodel parsers in a Hawk instance")
     op MetamodelParserDetails[*] listMetamodelParsers(
@@ -108,6 +127,8 @@ class Hawk {
     op String[*] listQueryLanguages(
 	@doc(d="The name of the Hawk instance") String name
     );
+
+	/* SYNC QUERIES */
 
 	@doc(d="Runs a query on a Hawk instance and returns a sequence of scalar values and/or model elements.")
 	op QueryResult query (
@@ -131,6 +152,24 @@ class Hawk {
 		@doc(d="Proxy model element IDs to be resolved") String[*] ids,
 		@doc(d="Options for the query") HawkQueryOptions options
 	) throws HawkInstanceNotFound, HawkInstanceNotRunning;
+
+    /* ASYNC QUERIES */
+
+	@doc(d="Schedules a query to run on a Hawk instance, returning a UUID for later reference.")
+	op String asyncQuery (
+		@doc(d="The name of the Hawk instance") String name,
+		@doc(d="The query to be executed") String query,
+		@doc(d="The name of the query language used (e.g. EOL, OCL)") String language,
+		@doc(d="Options for the query") HawkQueryOptions options
+	) throws HawkInstanceNotFound, HawkInstanceNotRunning, UnknownQueryLanguage, InvalidQuery;
+
+	@doc(d="Cancels a running query in the Hawk server, freeing its resources.")
+	op void cancelAsyncQuery (@doc(d="The query ID returned by asyncQuery") String queryID) throws InvalidQuery;
+	
+	@doc(d="Fetches the results from a scheduled query, freeing its resources. Blocks until the query has completed.")
+	op QueryReport fetchAsyncQueryResults(@doc(d="The query ID returned by asyncQuery") String queryID) throws InvalidQuery, FailedQuery;
+
+    /* CONFIGRUATION */
 
 	@doc(d="Asks a Hawk instance to start monitoring a repository")
 	op void addRepository (
@@ -426,6 +465,12 @@ class HawkInstanceNotFound {}
 @doc(d="The selected Hawk instance is not running.")
 class HawkInstanceNotRunning {}
 
+@doc(d="The selected Hawk instance does not have a metamodel with that URI.")
+class HawkMetamodelNotFound {}
+
+@doc(d="The selected Hawk instance does not have a type with that name.")
+class HawkTypeNotFound {}
+
 @doc(d="The provided metamodel is not valid (e.g. unparsable or inconsistent).")
 class InvalidMetamodel {
 	@doc(d="Reason for the metamodel not being valid.") attr String reason;
@@ -597,6 +642,9 @@ class QueryReport {
 
 	@doc(d="Wall time on the server in milliseconds")
 	attr long wallMillis;
+
+	@doc(d="Was the query cancelled?")
+	attr boolean isCancelled = false;
 }
 
 @thrift.map(key="name", value="value")

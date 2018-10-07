@@ -154,9 +154,9 @@ public class QueryResult extends org.apache.thrift.TUnion<QueryResult, QueryResu
     tmpMap.put(_Fields.V_STRING, new org.apache.thrift.meta_data.FieldMetaData("vString", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.V_MODEL_ELEMENT, new org.apache.thrift.meta_data.FieldMetaData("vModelElement", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT        , "ModelElement")));
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ModelElement.class)));
     tmpMap.put(_Fields.V_MODEL_ELEMENT_TYPE, new org.apache.thrift.meta_data.FieldMetaData("vModelElementType", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT        , "ModelElementType")));
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ModelElementType.class)));
     tmpMap.put(_Fields.V_MAP, new org.apache.thrift.meta_data.FieldMetaData("vMap", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP, 
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING), 
@@ -405,16 +405,16 @@ public class QueryResult extends org.apache.thrift.TUnion<QueryResult, QueryResu
           if (field.type == V_MAP_FIELD_DESC.type) {
             Map<String,QueryResult> vMap;
             {
-              org.apache.thrift.protocol.TMap _map0 = iprot.readMapBegin();
-              vMap = new HashMap<String,QueryResult>(2*_map0.size);
-              String _key1;
-              QueryResult _val2;
-              for (int _i3 = 0; _i3 < _map0.size; ++_i3)
+              org.apache.thrift.protocol.TMap _map208 = iprot.readMapBegin();
+              vMap = new HashMap<String,QueryResult>(2*_map208.size);
+              String _key209;
+              QueryResult _val210;
+              for (int _i211 = 0; _i211 < _map208.size; ++_i211)
               {
-                _key1 = iprot.readString();
-                _val2 = new QueryResult();
-                _val2.read(iprot);
-                vMap.put(_key1, _val2);
+                _key209 = iprot.readString();
+                _val210 = new QueryResult();
+                _val210.read(iprot);
+                vMap.put(_key209, _val210);
               }
               iprot.readMapEnd();
             }
@@ -427,14 +427,14 @@ public class QueryResult extends org.apache.thrift.TUnion<QueryResult, QueryResu
           if (field.type == V_LIST_FIELD_DESC.type) {
             List<QueryResult> vList;
             {
-              org.apache.thrift.protocol.TList _list4 = iprot.readListBegin();
-              vList = new ArrayList<QueryResult>(_list4.size);
-              QueryResult _elem5;
-              for (int _i6 = 0; _i6 < _list4.size; ++_i6)
+              org.apache.thrift.protocol.TList _list212 = iprot.readListBegin();
+              vList = new ArrayList<QueryResult>(_list212.size);
+              QueryResult _elem213;
+              for (int _i214 = 0; _i214 < _list212.size; ++_i214)
               {
-                _elem5 = new QueryResult();
-                _elem5.read(iprot);
-                vList.add(_elem5);
+                _elem213 = new QueryResult();
+                _elem213.read(iprot);
+                vList.add(_elem213);
               }
               iprot.readListEnd();
             }
@@ -495,10 +495,10 @@ public class QueryResult extends org.apache.thrift.TUnion<QueryResult, QueryResu
         Map<String,QueryResult> vMap = (Map<String,QueryResult>)value_;
         {
           oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRUCT, vMap.size()));
-          for (Map.Entry<String, QueryResult> _iter7 : vMap.entrySet())
+          for (Map.Entry<String, QueryResult> _iter215 : vMap.entrySet())
           {
-            oprot.writeString(_iter7.getKey());
-            _iter7.getValue().write(oprot);
+            oprot.writeString(_iter215.getKey());
+            _iter215.getValue().write(oprot);
           }
           oprot.writeMapEnd();
         }
@@ -507,9 +507,9 @@ public class QueryResult extends org.apache.thrift.TUnion<QueryResult, QueryResu
         List<QueryResult> vList = (List<QueryResult>)value_;
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, vList.size()));
-          for (QueryResult _iter8 : vList)
+          for (QueryResult _iter216 : vList)
           {
-            _iter8.write(oprot);
+            _iter216.write(oprot);
           }
           oprot.writeListEnd();
         }
@@ -565,16 +565,16 @@ public class QueryResult extends org.apache.thrift.TUnion<QueryResult, QueryResu
         case V_MAP:
           Map<String,QueryResult> vMap;
           {
-            org.apache.thrift.protocol.TMap _map9 = iprot.readMapBegin();
-            vMap = new HashMap<String,QueryResult>(2*_map9.size);
-            String _key10;
-            QueryResult _val11;
-            for (int _i12 = 0; _i12 < _map9.size; ++_i12)
+            org.apache.thrift.protocol.TMap _map217 = iprot.readMapBegin();
+            vMap = new HashMap<String,QueryResult>(2*_map217.size);
+            String _key218;
+            QueryResult _val219;
+            for (int _i220 = 0; _i220 < _map217.size; ++_i220)
             {
-              _key10 = iprot.readString();
-              _val11 = new QueryResult();
-              _val11.read(iprot);
-              vMap.put(_key10, _val11);
+              _key218 = iprot.readString();
+              _val219 = new QueryResult();
+              _val219.read(iprot);
+              vMap.put(_key218, _val219);
             }
             iprot.readMapEnd();
           }
@@ -582,14 +582,14 @@ public class QueryResult extends org.apache.thrift.TUnion<QueryResult, QueryResu
         case V_LIST:
           List<QueryResult> vList;
           {
-            org.apache.thrift.protocol.TList _list13 = iprot.readListBegin();
-            vList = new ArrayList<QueryResult>(_list13.size);
-            QueryResult _elem14;
-            for (int _i15 = 0; _i15 < _list13.size; ++_i15)
+            org.apache.thrift.protocol.TList _list221 = iprot.readListBegin();
+            vList = new ArrayList<QueryResult>(_list221.size);
+            QueryResult _elem222;
+            for (int _i223 = 0; _i223 < _list221.size; ++_i223)
             {
-              _elem14 = new QueryResult();
-              _elem14.read(iprot);
-              vList.add(_elem14);
+              _elem222 = new QueryResult();
+              _elem222.read(iprot);
+              vList.add(_elem222);
             }
             iprot.readListEnd();
           }
@@ -645,10 +645,10 @@ public class QueryResult extends org.apache.thrift.TUnion<QueryResult, QueryResu
         Map<String,QueryResult> vMap = (Map<String,QueryResult>)value_;
         {
           oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRUCT, vMap.size()));
-          for (Map.Entry<String, QueryResult> _iter16 : vMap.entrySet())
+          for (Map.Entry<String, QueryResult> _iter224 : vMap.entrySet())
           {
-            oprot.writeString(_iter16.getKey());
-            _iter16.getValue().write(oprot);
+            oprot.writeString(_iter224.getKey());
+            _iter224.getValue().write(oprot);
           }
           oprot.writeMapEnd();
         }
@@ -657,9 +657,9 @@ public class QueryResult extends org.apache.thrift.TUnion<QueryResult, QueryResu
         List<QueryResult> vList = (List<QueryResult>)value_;
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, vList.size()));
-          for (QueryResult _iter17 : vList)
+          for (QueryResult _iter225 : vList)
           {
-            _iter17.write(oprot);
+            _iter225.write(oprot);
           }
           oprot.writeListEnd();
         }
