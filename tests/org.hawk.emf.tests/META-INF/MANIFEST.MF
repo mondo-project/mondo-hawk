@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hawk EMF Support Tests
+Bundle-SymbolicName: org.hawk.emf.tests
+Bundle-Version: 1.2.0.qualifier
+Fragment-Host: org.hawk.emf;bundle-version="1.2.0"
+Automatic-Module-Name: org.hawk.emf.tests
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.junit;bundle-version="4.12.0"

@@ -99,6 +99,7 @@
     <module>tests/com.github.peterwippermann.junit4.parameterizedsuite_1.1.0</module>
     <module>tests/org.mockito</module>
     <module>tests/org.hawk.backend.tests</module>
+    <module>tests/org.hawk.emf.tests</module>
     <module>tests/org.hawk.integration.tests</module>
     <module>tests/org.hawk.localfolder.tests</module>
     <module>tests/org.hawk.manifest.tests</module>

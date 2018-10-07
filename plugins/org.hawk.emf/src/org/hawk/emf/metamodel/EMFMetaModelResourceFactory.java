@@ -129,7 +129,14 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 		final Resource newResource = resourceSet
 				.createResource(URI.createURI("resource_from_epackage_" + ePackage.getNsURI()));
 		final EObject eob = ePackage.getEObject();
-		newResource.getContents().add(EcoreUtil.copy(eob));
+
+		/*
+		 * TODO: copying EPackages doesn't change packages as it should, but not copying
+		 * produces problems with "frozen" resources. Perhaps should try to fall back on
+		 * copying only with frozen resources, or even patch manually the XMI in those
+		 * cases...
+		 */
+		newResource.getContents().add(eob);
 
 		/*
 		 * Separate the other EPackages that may reside in the old resource in
@@ -144,7 +151,7 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 				final Resource auxResource = resourceSet
 						.createResource(URI.createURI("resource_from_epackage_" + otherEPackage.getNsURI()));
 				auxResources.add(auxResource);
-				auxResource.getContents().add(EcoreUtil.copy(otherEPackage));
+				auxResource.getContents().add(otherEPackage);
 			}
 		}
 
@@ -154,6 +161,13 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 			final String contents = new String(bOS.toByteArray());
 			return contents;
 		} finally {
+			/*
+			 * Move back all EPackages into the original resource, to avoid inconsistencies
+			 * across restarts.
+			 */
+			oldResource.getContents().add(eob);
+			oldResource.getContents().addAll(otherContents);
+
 			/*
 			 * Unload and remove all the auxiliary resources we've created
 			 * during the dumping.
