@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2018 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -13,6 +13,7 @@
  *
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - minor cleanup
  ******************************************************************************/
 package org.hawk.core;
 
@@ -22,12 +23,13 @@ import org.hawk.core.model.IHawkMetaModelResource;
 
 public interface IMetaModelUpdater {
 
-	// return success
-	public abstract boolean insertMetamodels(Set<IHawkMetaModelResource> set,
+	/**
+	 * @return <code>true</code> if insertion was successful, <code>false</code> otherwise.
+	 */
+	boolean insertMetamodels(Set<IHawkMetaModelResource> set,
 			IModelIndexer indexer);
 
-	public abstract void run(// IConsole console
-	);
+	void run();
 
 	boolean addDerivedAttribute(String metamodeluri, String typename,
 			String attributename, String attributetype, boolean isMany,
@@ -37,19 +39,16 @@ public interface IMetaModelUpdater {
 	boolean addIndexedAttribute(String metamodeluri, String typename,
 			String attributename, IModelIndexer indexer);
 
-	// public abstract void removeMetamodels(
-	// Set<IHawkMetaModelResource> set, IModelIndexer indexer);
+	String getName();
 
-	public abstract String getName();
-
-	public abstract Set<String> removeMetamodels(IModelIndexer indexer,
+	Set<String> removeMetamodels(IModelIndexer indexer,
 			String[] mmuris);
 
-	public abstract boolean removeIndexedAttribute(String metamodelUri,
+	boolean removeIndexedAttribute(String metamodelUri,
 			String typename, String attributename,
 			IModelIndexer modelIndexerImpl);
 
-	public abstract boolean removeDerivedAttribute(String metamodelUri,
+	boolean removeDerivedAttribute(String metamodelUri,
 			String typeName, String attributeName,
 			IModelIndexer modelIndexerImpl);
 
