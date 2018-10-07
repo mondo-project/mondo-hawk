@@ -34,7 +34,6 @@ import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.hawk.core.IMetaModelResourceFactory;
@@ -127,7 +126,7 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 		// Separate the EPackage to be saved to its own resource
 		final Resource newResource = resourceSet
-				.createResource(URI.createURI("resource_from_epackage_" + ePackage.getNsURI()));
+				.createResource(URI.createURI(IMetaModelResourceFactory.DUMPED_PKG_PREFIX + ePackage.getNsURI()));
 		final EObject eob = ePackage.getEObject();
 
 		/*
@@ -149,7 +148,7 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 			if (otherContent instanceof EPackage) {
 				final EPackage otherEPackage = (EPackage) otherContent;
 				final Resource auxResource = resourceSet
-						.createResource(URI.createURI("resource_from_epackage_" + otherEPackage.getNsURI()));
+						.createResource(URI.createURI(IMetaModelResourceFactory.DUMPED_PKG_PREFIX + otherEPackage.getNsURI()));
 				auxResources.add(auxResource);
 				auxResource.getContents().add(otherEPackage);
 			}

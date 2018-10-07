@@ -422,7 +422,7 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 	
 				final IMetaModelResourceFactory p = getMetaModelParser(type);
 				if (p != null) {
-					p.parseFromString("resource_from_epackage_" + ep, s);
+					p.parseFromString(IMetaModelResourceFactory.DUMPED_PKG_PREFIX + ep, s);
 				} else {
 					console.printerrln("cannot register metamodel in graph, named: " + ep + ", with type: " + type
 							+ ", as no relevant parser is registered");

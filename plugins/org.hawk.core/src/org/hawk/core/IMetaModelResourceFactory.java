@@ -25,6 +25,8 @@ import org.hawk.core.model.IHawkPackage;
 
 public interface IMetaModelResourceFactory {
 
+	String DUMPED_PKG_PREFIX = "resource_from_epackage_";
+
 	String getType();
 
 	String getHumanReadableName();

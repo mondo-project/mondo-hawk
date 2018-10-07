@@ -16,10 +16,16 @@
  ******************************************************************************/
 package org.hawk.emf.tests;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import java.io.File;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import org.eclipse.emf.ecore.EPackage;
+import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
@@ -34,15 +40,32 @@ public class EMFMetamodelResourceFactoryTest {
 	@Test
 	public void separateJDTAST() throws Exception {
 		EMFMetaModelResourceFactory mmf = new EMFMetaModelResourceFactory();
+		assertEquals(1, EPackage.Registry.INSTANCE.size());
 		IHawkMetaModelResource resource = mmf.parse(new File("resources/JDTAST.ecore"));
+		assertEquals(5, EPackage.Registry.INSTANCE.size());
 
+		final Map<String, String> sDumped = new LinkedHashMap<>();
 		for (IHawkObject obj : resource.getAllContents()) {
 			if (obj instanceof IHawkPackage) {
 				IHawkPackage pkg = (IHawkPackage)obj;
 				String sContent = mmf.dumpPackageToString(pkg);
 				assertFalse("Should not contain references to original file", sContent.contains("JDTAST.ecore"));
-				assertFalse("Should not contain references to itself as external: " + pkg.getNsURI(), sContent.contains("resource_from_epackage_" + pkg.getNsURI()));
+				assertFalse("Should not contain references to itself as external: " + pkg.getNsURI(),
+						sContent.contains(IMetaModelResourceFactory.DUMPED_PKG_PREFIX + pkg.getNsURI()));
+
+				sDumped.put(pkg.getNsURI(), sContent);
 			}
 		}
+		for (String nsURI : sDumped.keySet()) {
+			EPackage.Registry.INSTANCE.remove(nsURI);
+		}
+		// During dumping, a third metamodel is added
+		assertEquals(3, EPackage.Registry.INSTANCE.size());
+
+		mmf = new EMFMetaModelResourceFactory();
+		for (Entry<String, String> entry : sDumped.entrySet()) {
+			mmf.parseFromString(IMetaModelResourceFactory.DUMPED_PKG_PREFIX + entry.getKey(), entry.getValue());
+		}
+		assertEquals(6, EPackage.Registry.INSTANCE.size());
 	}
 }
