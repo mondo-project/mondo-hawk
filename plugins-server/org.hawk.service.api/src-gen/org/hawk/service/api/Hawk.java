@@ -63,9 +63,7 @@ public class Hawk {
 
     public List<String> listTypeNames(String hawkInstanceName, String metamodelURI) throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, org.apache.thrift.TException;
 
-    public List<ModelElementType> listTypes(String hawkInstanceName, String metamodelURI) throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, org.apache.thrift.TException;
-
-    public ModelElementType fetchType(String hawkInstanceName, String metamodelURI, String typeName) throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, HawkTypeNotFound, org.apache.thrift.TException;
+    public List<String> listAttributeNames(String hawkInstanceName, String metamodelURI, String typeName) throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, HawkTypeNotFound, org.apache.thrift.TException;
 
     public List<MetamodelParserDetails> listMetamodelParsers(String name) throws HawkInstanceNotFound, HawkInstanceNotRunning, org.apache.thrift.TException;
 
@@ -79,7 +77,7 @@ public class Hawk {
 
     public String asyncQuery(String name, String query, String language, HawkQueryOptions options) throws HawkInstanceNotFound, HawkInstanceNotRunning, UnknownQueryLanguage, InvalidQuery, org.apache.thrift.TException;
 
-    public void cancelAsyncQuery(String queryID) throws org.apache.thrift.TException;
+    public void cancelAsyncQuery(String queryID) throws InvalidQuery, org.apache.thrift.TException;
 
     public QueryReport fetchAsyncQueryResults(String queryID) throws InvalidQuery, FailedQuery, org.apache.thrift.TException;
 
@@ -149,9 +147,7 @@ public class Hawk {
 
     public void listTypeNames(String hawkInstanceName, String metamodelURI, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void listTypes(String hawkInstanceName, String metamodelURI, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
-
-    public void fetchType(String hawkInstanceName, String metamodelURI, String typeName, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void listAttributeNames(String hawkInstanceName, String metamodelURI, String typeName, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void listMetamodelParsers(String name, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -537,58 +533,25 @@ public class Hawk {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "listTypeNames failed: unknown result");
     }
 
-    public List<ModelElementType> listTypes(String hawkInstanceName, String metamodelURI) throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, org.apache.thrift.TException
+    public List<String> listAttributeNames(String hawkInstanceName, String metamodelURI, String typeName) throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, HawkTypeNotFound, org.apache.thrift.TException
     {
-      send_listTypes(hawkInstanceName, metamodelURI);
-      return recv_listTypes();
+      send_listAttributeNames(hawkInstanceName, metamodelURI, typeName);
+      return recv_listAttributeNames();
     }
 
-    public void send_listTypes(String hawkInstanceName, String metamodelURI) throws org.apache.thrift.TException
+    public void send_listAttributeNames(String hawkInstanceName, String metamodelURI, String typeName) throws org.apache.thrift.TException
     {
-      listTypes_args args = new listTypes_args();
-      args.setHawkInstanceName(hawkInstanceName);
-      args.setMetamodelURI(metamodelURI);
-      sendBase("listTypes", args);
-    }
-
-    public List<ModelElementType> recv_listTypes() throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, org.apache.thrift.TException
-    {
-      listTypes_result result = new listTypes_result();
-      receiveBase(result, "listTypes");
-      if (result.isSetSuccess()) {
-        return result.success;
-      }
-      if (result.err1 != null) {
-        throw result.err1;
-      }
-      if (result.err2 != null) {
-        throw result.err2;
-      }
-      if (result.err3 != null) {
-        throw result.err3;
-      }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "listTypes failed: unknown result");
-    }
-
-    public ModelElementType fetchType(String hawkInstanceName, String metamodelURI, String typeName) throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, HawkTypeNotFound, org.apache.thrift.TException
-    {
-      send_fetchType(hawkInstanceName, metamodelURI, typeName);
-      return recv_fetchType();
-    }
-
-    public void send_fetchType(String hawkInstanceName, String metamodelURI, String typeName) throws org.apache.thrift.TException
-    {
-      fetchType_args args = new fetchType_args();
+      listAttributeNames_args args = new listAttributeNames_args();
       args.setHawkInstanceName(hawkInstanceName);
       args.setMetamodelURI(metamodelURI);
       args.setTypeName(typeName);
-      sendBase("fetchType", args);
+      sendBase("listAttributeNames", args);
     }
 
-    public ModelElementType recv_fetchType() throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, HawkTypeNotFound, org.apache.thrift.TException
+    public List<String> recv_listAttributeNames() throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, HawkTypeNotFound, org.apache.thrift.TException
     {
-      fetchType_result result = new fetchType_result();
-      receiveBase(result, "fetchType");
+      listAttributeNames_result result = new listAttributeNames_result();
+      receiveBase(result, "listAttributeNames");
       if (result.isSetSuccess()) {
         return result.success;
       }
@@ -604,7 +567,7 @@ public class Hawk {
       if (result.err4 != null) {
         throw result.err4;
       }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "fetchType failed: unknown result");
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "listAttributeNames failed: unknown result");
     }
 
     public List<MetamodelParserDetails> listMetamodelParsers(String name) throws HawkInstanceNotFound, HawkInstanceNotRunning, org.apache.thrift.TException
@@ -810,16 +773,27 @@ public class Hawk {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "asyncQuery failed: unknown result");
     }
 
-    public void cancelAsyncQuery(String queryID) throws org.apache.thrift.TException
+    public void cancelAsyncQuery(String queryID) throws InvalidQuery, org.apache.thrift.TException
     {
       send_cancelAsyncQuery(queryID);
+      recv_cancelAsyncQuery();
     }
 
     public void send_cancelAsyncQuery(String queryID) throws org.apache.thrift.TException
     {
       cancelAsyncQuery_args args = new cancelAsyncQuery_args();
       args.setQueryID(queryID);
-      sendBaseOneway("cancelAsyncQuery", args);
+      sendBase("cancelAsyncQuery", args);
+    }
+
+    public void recv_cancelAsyncQuery() throws InvalidQuery, org.apache.thrift.TException
+    {
+      cancelAsyncQuery_result result = new cancelAsyncQuery_result();
+      receiveBase(result, "cancelAsyncQuery");
+      if (result.err1 != null) {
+        throw result.err1;
+      }
+      return;
     }
 
     public QueryReport fetchAsyncQueryResults(String queryID) throws InvalidQuery, FailedQuery, org.apache.thrift.TException
@@ -1816,53 +1790,18 @@ public class Hawk {
       }
     }
 
-    public void listTypes(String hawkInstanceName, String metamodelURI, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void listAttributeNames(String hawkInstanceName, String metamodelURI, String typeName, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      listTypes_call method_call = new listTypes_call(hawkInstanceName, metamodelURI, resultHandler, this, ___protocolFactory, ___transport);
+      listAttributeNames_call method_call = new listAttributeNames_call(hawkInstanceName, metamodelURI, typeName, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class listTypes_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private String hawkInstanceName;
-      private String metamodelURI;
-      public listTypes_call(String hawkInstanceName, String metamodelURI, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
-        super(client, protocolFactory, transport, resultHandler, false);
-        this.hawkInstanceName = hawkInstanceName;
-        this.metamodelURI = metamodelURI;
-      }
-
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("listTypes", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        listTypes_args args = new listTypes_args();
-        args.setHawkInstanceName(hawkInstanceName);
-        args.setMetamodelURI(metamodelURI);
-        args.write(prot);
-        prot.writeMessageEnd();
-      }
-
-      public List<ModelElementType> getResult() throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
-        }
-        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
-        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_listTypes();
-      }
-    }
-
-    public void fetchType(String hawkInstanceName, String metamodelURI, String typeName, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
-      checkReady();
-      fetchType_call method_call = new fetchType_call(hawkInstanceName, metamodelURI, typeName, resultHandler, this, ___protocolFactory, ___transport);
-      this.___currentMethod = method_call;
-      ___manager.call(method_call);
-    }
-
-    public static class fetchType_call extends org.apache.thrift.async.TAsyncMethodCall {
+    public static class listAttributeNames_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String hawkInstanceName;
       private String metamodelURI;
       private String typeName;
-      public fetchType_call(String hawkInstanceName, String metamodelURI, String typeName, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public listAttributeNames_call(String hawkInstanceName, String metamodelURI, String typeName, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.hawkInstanceName = hawkInstanceName;
         this.metamodelURI = metamodelURI;
@@ -1870,8 +1809,8 @@ public class Hawk {
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("fetchType", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        fetchType_args args = new fetchType_args();
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("listAttributeNames", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        listAttributeNames_args args = new listAttributeNames_args();
         args.setHawkInstanceName(hawkInstanceName);
         args.setMetamodelURI(metamodelURI);
         args.setTypeName(typeName);
@@ -1879,13 +1818,13 @@ public class Hawk {
         prot.writeMessageEnd();
       }
 
-      public ModelElementType getResult() throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, HawkTypeNotFound, org.apache.thrift.TException {
+      public List<String> getResult() throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, HawkTypeNotFound, org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_fetchType();
+        return (new Client(prot)).recv_listAttributeNames();
       }
     }
 
@@ -2124,24 +2063,25 @@ public class Hawk {
     public static class cancelAsyncQuery_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String queryID;
       public cancelAsyncQuery_call(String queryID, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
-        super(client, protocolFactory, transport, resultHandler, true);
+        super(client, protocolFactory, transport, resultHandler, false);
         this.queryID = queryID;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("cancelAsyncQuery", org.apache.thrift.protocol.TMessageType.ONEWAY, 0));
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("cancelAsyncQuery", org.apache.thrift.protocol.TMessageType.CALL, 0));
         cancelAsyncQuery_args args = new cancelAsyncQuery_args();
         args.setQueryID(queryID);
         args.write(prot);
         prot.writeMessageEnd();
       }
 
-      public void getResult() throws org.apache.thrift.TException {
+      public void getResult() throws InvalidQuery, org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        (new Client(prot)).recv_cancelAsyncQuery();
       }
     }
 
@@ -2873,8 +2813,7 @@ public class Hawk {
       processMap.put("unregisterMetamodels", new unregisterMetamodels());
       processMap.put("listMetamodels", new listMetamodels());
       processMap.put("listTypeNames", new listTypeNames());
-      processMap.put("listTypes", new listTypes());
-      processMap.put("fetchType", new fetchType());
+      processMap.put("listAttributeNames", new listAttributeNames());
       processMap.put("listMetamodelParsers", new listMetamodelParsers());
       processMap.put("listQueryLanguages", new listQueryLanguages());
       processMap.put("query", new query());
@@ -3193,51 +3132,23 @@ public class Hawk {
       }
     }
 
-    public static class listTypes<I extends Iface> extends org.apache.thrift.ProcessFunction<I, listTypes_args> {
-      public listTypes() {
-        super("listTypes");
+    public static class listAttributeNames<I extends Iface> extends org.apache.thrift.ProcessFunction<I, listAttributeNames_args> {
+      public listAttributeNames() {
+        super("listAttributeNames");
       }
 
-      public listTypes_args getEmptyArgsInstance() {
-        return new listTypes_args();
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public listTypes_result getResult(I iface, listTypes_args args) throws org.apache.thrift.TException {
-        listTypes_result result = new listTypes_result();
-        try {
-          result.success = iface.listTypes(args.hawkInstanceName, args.metamodelURI);
-        } catch (HawkInstanceNotFound err1) {
-          result.err1 = err1;
-        } catch (HawkInstanceNotRunning err2) {
-          result.err2 = err2;
-        } catch (HawkMetamodelNotFound err3) {
-          result.err3 = err3;
-        }
-        return result;
-      }
-    }
-
-    public static class fetchType<I extends Iface> extends org.apache.thrift.ProcessFunction<I, fetchType_args> {
-      public fetchType() {
-        super("fetchType");
-      }
-
-      public fetchType_args getEmptyArgsInstance() {
-        return new fetchType_args();
+      public listAttributeNames_args getEmptyArgsInstance() {
+        return new listAttributeNames_args();
       }
 
       protected boolean isOneway() {
         return false;
       }
 
-      public fetchType_result getResult(I iface, fetchType_args args) throws org.apache.thrift.TException {
-        fetchType_result result = new fetchType_result();
+      public listAttributeNames_result getResult(I iface, listAttributeNames_args args) throws org.apache.thrift.TException {
+        listAttributeNames_result result = new listAttributeNames_result();
         try {
-          result.success = iface.fetchType(args.hawkInstanceName, args.metamodelURI, args.typeName);
+          result.success = iface.listAttributeNames(args.hawkInstanceName, args.metamodelURI, args.typeName);
         } catch (HawkInstanceNotFound err1) {
           result.err1 = err1;
         } catch (HawkInstanceNotRunning err2) {
@@ -3427,12 +3338,17 @@ public class Hawk {
       }
 
       protected boolean isOneway() {
-        return true;
+        return false;
       }
 
-      public org.apache.thrift.TBase getResult(I iface, cancelAsyncQuery_args args) throws org.apache.thrift.TException {
-        iface.cancelAsyncQuery(args.queryID);
-        return null;
+      public cancelAsyncQuery_result getResult(I iface, cancelAsyncQuery_args args) throws org.apache.thrift.TException {
+        cancelAsyncQuery_result result = new cancelAsyncQuery_result();
+        try {
+          iface.cancelAsyncQuery(args.queryID);
+        } catch (InvalidQuery err1) {
+          result.err1 = err1;
+        }
+        return result;
       }
     }
 
@@ -3980,8 +3896,7 @@ public class Hawk {
       processMap.put("unregisterMetamodels", new unregisterMetamodels());
       processMap.put("listMetamodels", new listMetamodels());
       processMap.put("listTypeNames", new listTypeNames());
-      processMap.put("listTypes", new listTypes());
-      processMap.put("fetchType", new fetchType());
+      processMap.put("listAttributeNames", new listAttributeNames());
       processMap.put("listMetamodelParsers", new listMetamodelParsers());
       processMap.put("listQueryLanguages", new listQueryLanguages());
       processMap.put("query", new query());
@@ -4705,20 +4620,20 @@ public class Hawk {
       }
     }
 
-    public static class listTypes<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, listTypes_args, List<ModelElementType>> {
-      public listTypes() {
-        super("listTypes");
+    public static class listAttributeNames<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, listAttributeNames_args, List<String>> {
+      public listAttributeNames() {
+        super("listAttributeNames");
       }
 
-      public listTypes_args getEmptyArgsInstance() {
-        return new listTypes_args();
+      public listAttributeNames_args getEmptyArgsInstance() {
+        return new listAttributeNames_args();
       }
 
-      public AsyncMethodCallback<List<ModelElementType>> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
+      public AsyncMethodCallback<List<String>> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new AsyncMethodCallback<List<ModelElementType>>() { 
-          public void onComplete(List<ModelElementType> o) {
-            listTypes_result result = new listTypes_result();
+        return new AsyncMethodCallback<List<String>>() { 
+          public void onComplete(List<String> o) {
+            listAttributeNames_result result = new listAttributeNames_result();
             result.success = o;
             try {
               fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
@@ -4731,74 +4646,7 @@ public class Hawk {
           public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TBase msg;
-            listTypes_result result = new listTypes_result();
-            if (e instanceof HawkInstanceNotFound) {
-                        result.err1 = (HawkInstanceNotFound) e;
-                        result.setErr1IsSet(true);
-                        msg = result;
-            }
-            else             if (e instanceof HawkInstanceNotRunning) {
-                        result.err2 = (HawkInstanceNotRunning) e;
-                        result.setErr2IsSet(true);
-                        msg = result;
-            }
-            else             if (e instanceof HawkMetamodelNotFound) {
-                        result.err3 = (HawkMetamodelNotFound) e;
-                        result.setErr3IsSet(true);
-                        msg = result;
-            }
-             else 
-            {
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
-            }
-            try {
-              fcall.sendResponse(fb,msg,msgType,seqid);
-              return;
-            } catch (Exception ex) {
-              LOGGER.error("Exception writing to internal frame buffer", ex);
-            }
-            fb.close();
-          }
-        };
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public void start(I iface, listTypes_args args, org.apache.thrift.async.AsyncMethodCallback<List<ModelElementType>> resultHandler) throws TException {
-        iface.listTypes(args.hawkInstanceName, args.metamodelURI,resultHandler);
-      }
-    }
-
-    public static class fetchType<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, fetchType_args, ModelElementType> {
-      public fetchType() {
-        super("fetchType");
-      }
-
-      public fetchType_args getEmptyArgsInstance() {
-        return new fetchType_args();
-      }
-
-      public AsyncMethodCallback<ModelElementType> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
-        final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new AsyncMethodCallback<ModelElementType>() { 
-          public void onComplete(ModelElementType o) {
-            fetchType_result result = new fetchType_result();
-            result.success = o;
-            try {
-              fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
-              return;
-            } catch (Exception e) {
-              LOGGER.error("Exception writing to internal frame buffer", e);
-            }
-            fb.close();
-          }
-          public void onError(Exception e) {
-            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
-            org.apache.thrift.TBase msg;
-            fetchType_result result = new fetchType_result();
+            listAttributeNames_result result = new listAttributeNames_result();
             if (e instanceof HawkInstanceNotFound) {
                         result.err1 = (HawkInstanceNotFound) e;
                         result.setErr1IsSet(true);
@@ -4839,8 +4687,8 @@ public class Hawk {
         return false;
       }
 
-      public void start(I iface, fetchType_args args, org.apache.thrift.async.AsyncMethodCallback<ModelElementType> resultHandler) throws TException {
-        iface.fetchType(args.hawkInstanceName, args.metamodelURI, args.typeName,resultHandler);
+      public void start(I iface, listAttributeNames_args args, org.apache.thrift.async.AsyncMethodCallback<List<String>> resultHandler) throws TException {
+        iface.listAttributeNames(args.hawkInstanceName, args.metamodelURI, args.typeName,resultHandler);
       }
     }
 
@@ -5258,14 +5106,42 @@ public class Hawk {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
         return new AsyncMethodCallback<Void>() { 
           public void onComplete(Void o) {
+            cancelAsyncQuery_result result = new cancelAsyncQuery_result();
+            try {
+              fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+              return;
+            } catch (Exception e) {
+              LOGGER.error("Exception writing to internal frame buffer", e);
+            }
+            fb.close();
           }
           public void onError(Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TBase msg;
+            cancelAsyncQuery_result result = new cancelAsyncQuery_result();
+            if (e instanceof InvalidQuery) {
+                        result.err1 = (InvalidQuery) e;
+                        result.setErr1IsSet(true);
+                        msg = result;
+            }
+             else 
+            {
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+              return;
+            } catch (Exception ex) {
+              LOGGER.error("Exception writing to internal frame buffer", ex);
+            }
+            fb.close();
           }
         };
       }
 
       protected boolean isOneway() {
-        return true;
+        return false;
       }
 
       public void start(I iface, cancelAsyncQuery_args args, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws TException {
@@ -16959,1199 +16835,8 @@ public class Hawk {
 
   }
 
-  public static class listTypes_args implements org.apache.thrift.TBase<listTypes_args, listTypes_args._Fields>, java.io.Serializable, Cloneable, Comparable<listTypes_args>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("listTypes_args");
-
-    private static final org.apache.thrift.protocol.TField HAWK_INSTANCE_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("hawkInstanceName", org.apache.thrift.protocol.TType.STRING, (short)1);
-    private static final org.apache.thrift.protocol.TField METAMODEL_URI_FIELD_DESC = new org.apache.thrift.protocol.TField("metamodelURI", org.apache.thrift.protocol.TType.STRING, (short)2);
-
-    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
-    static {
-      schemes.put(StandardScheme.class, new listTypes_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new listTypes_argsTupleSchemeFactory());
-    }
-
-    public String hawkInstanceName; // required
-    public String metamodelURI; // required
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      HAWK_INSTANCE_NAME((short)1, "hawkInstanceName"),
-      METAMODEL_URI((short)2, "metamodelURI");
-
-      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
-
-      static {
-        for (_Fields field : EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          case 1: // HAWK_INSTANCE_NAME
-            return HAWK_INSTANCE_NAME;
-          case 2: // METAMODEL_URI
-            return METAMODEL_URI;
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final String _fieldName;
-
-      _Fields(short thriftId, String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public String getFieldName() {
-        return _fieldName;
-      }
-    }
-
-    // isset id assignments
-    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HAWK_INSTANCE_NAME, new org.apache.thrift.meta_data.FieldMetaData("hawkInstanceName", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      tmpMap.put(_Fields.METAMODEL_URI, new org.apache.thrift.meta_data.FieldMetaData("metamodelURI", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(listTypes_args.class, metaDataMap);
-    }
-
-    public listTypes_args() {
-    }
-
-    public listTypes_args(
-      String hawkInstanceName,
-      String metamodelURI)
-    {
-      this();
-      this.hawkInstanceName = hawkInstanceName;
-      this.metamodelURI = metamodelURI;
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public listTypes_args(listTypes_args other) {
-      if (other.isSetHawkInstanceName()) {
-        this.hawkInstanceName = other.hawkInstanceName;
-      }
-      if (other.isSetMetamodelURI()) {
-        this.metamodelURI = other.metamodelURI;
-      }
-    }
-
-    public listTypes_args deepCopy() {
-      return new listTypes_args(this);
-    }
-
-    @Override
-    public void clear() {
-      this.hawkInstanceName = null;
-      this.metamodelURI = null;
-    }
-
-    public String getHawkInstanceName() {
-      return this.hawkInstanceName;
-    }
-
-    public listTypes_args setHawkInstanceName(String hawkInstanceName) {
-      this.hawkInstanceName = hawkInstanceName;
-      return this;
-    }
-
-    public void unsetHawkInstanceName() {
-      this.hawkInstanceName = null;
-    }
-
-    /** Returns true if field hawkInstanceName is set (has been assigned a value) and false otherwise */
-    public boolean isSetHawkInstanceName() {
-      return this.hawkInstanceName != null;
-    }
-
-    public void setHawkInstanceNameIsSet(boolean value) {
-      if (!value) {
-        this.hawkInstanceName = null;
-      }
-    }
-
-    public String getMetamodelURI() {
-      return this.metamodelURI;
-    }
-
-    public listTypes_args setMetamodelURI(String metamodelURI) {
-      this.metamodelURI = metamodelURI;
-      return this;
-    }
-
-    public void unsetMetamodelURI() {
-      this.metamodelURI = null;
-    }
-
-    /** Returns true if field metamodelURI is set (has been assigned a value) and false otherwise */
-    public boolean isSetMetamodelURI() {
-      return this.metamodelURI != null;
-    }
-
-    public void setMetamodelURIIsSet(boolean value) {
-      if (!value) {
-        this.metamodelURI = null;
-      }
-    }
-
-    public void setFieldValue(_Fields field, Object value) {
-      switch (field) {
-      case HAWK_INSTANCE_NAME:
-        if (value == null) {
-          unsetHawkInstanceName();
-        } else {
-          setHawkInstanceName((String)value);
-        }
-        break;
-
-      case METAMODEL_URI:
-        if (value == null) {
-          unsetMetamodelURI();
-        } else {
-          setMetamodelURI((String)value);
-        }
-        break;
-
-      }
-    }
-
-    public Object getFieldValue(_Fields field) {
-      switch (field) {
-      case HAWK_INSTANCE_NAME:
-        return getHawkInstanceName();
-
-      case METAMODEL_URI:
-        return getMetamodelURI();
-
-      }
-      throw new IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new IllegalArgumentException();
-      }
-
-      switch (field) {
-      case HAWK_INSTANCE_NAME:
-        return isSetHawkInstanceName();
-      case METAMODEL_URI:
-        return isSetMetamodelURI();
-      }
-      throw new IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof listTypes_args)
-        return this.equals((listTypes_args)that);
-      return false;
-    }
-
-    public boolean equals(listTypes_args that) {
-      if (that == null)
-        return false;
-
-      boolean this_present_hawkInstanceName = true && this.isSetHawkInstanceName();
-      boolean that_present_hawkInstanceName = true && that.isSetHawkInstanceName();
-      if (this_present_hawkInstanceName || that_present_hawkInstanceName) {
-        if (!(this_present_hawkInstanceName && that_present_hawkInstanceName))
-          return false;
-        if (!this.hawkInstanceName.equals(that.hawkInstanceName))
-          return false;
-      }
-
-      boolean this_present_metamodelURI = true && this.isSetMetamodelURI();
-      boolean that_present_metamodelURI = true && that.isSetMetamodelURI();
-      if (this_present_metamodelURI || that_present_metamodelURI) {
-        if (!(this_present_metamodelURI && that_present_metamodelURI))
-          return false;
-        if (!this.metamodelURI.equals(that.metamodelURI))
-          return false;
-      }
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      List<Object> list = new ArrayList<Object>();
-
-      boolean present_hawkInstanceName = true && (isSetHawkInstanceName());
-      list.add(present_hawkInstanceName);
-      if (present_hawkInstanceName)
-        list.add(hawkInstanceName);
-
-      boolean present_metamodelURI = true && (isSetMetamodelURI());
-      list.add(present_metamodelURI);
-      if (present_metamodelURI)
-        list.add(metamodelURI);
-
-      return list.hashCode();
-    }
-
-    @Override
-    public int compareTo(listTypes_args other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-
-      lastComparison = Boolean.valueOf(isSetHawkInstanceName()).compareTo(other.isSetHawkInstanceName());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetHawkInstanceName()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.hawkInstanceName, other.hawkInstanceName);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetMetamodelURI()).compareTo(other.isSetMetamodelURI());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetMetamodelURI()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.metamodelURI, other.metamodelURI);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
-    }
-
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("listTypes_args(");
-      boolean first = true;
-
-      sb.append("hawkInstanceName:");
-      if (this.hawkInstanceName == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.hawkInstanceName);
-      }
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("metamodelURI:");
-      if (this.metamodelURI == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.metamodelURI);
-      }
-      first = false;
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-      if (hawkInstanceName == null) {
-        throw new org.apache.thrift.protocol.TProtocolException("Required field 'hawkInstanceName' was not present! Struct: " + toString());
-      }
-      if (metamodelURI == null) {
-        throw new org.apache.thrift.protocol.TProtocolException("Required field 'metamodelURI' was not present! Struct: " + toString());
-      }
-      // check for sub-struct validity
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-      try {
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private static class listTypes_argsStandardSchemeFactory implements SchemeFactory {
-      public listTypes_argsStandardScheme getScheme() {
-        return new listTypes_argsStandardScheme();
-      }
-    }
-
-    private static class listTypes_argsStandardScheme extends StandardScheme<listTypes_args> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, listTypes_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            case 1: // HAWK_INSTANCE_NAME
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-                struct.hawkInstanceName = iprot.readString();
-                struct.setHawkInstanceNameIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 2: // METAMODEL_URI
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-                struct.metamodelURI = iprot.readString();
-                struct.setMetamodelURIIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-
-        // check for required fields of primitive type, which can't be checked in the validate method
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, listTypes_args struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.hawkInstanceName != null) {
-          oprot.writeFieldBegin(HAWK_INSTANCE_NAME_FIELD_DESC);
-          oprot.writeString(struct.hawkInstanceName);
-          oprot.writeFieldEnd();
-        }
-        if (struct.metamodelURI != null) {
-          oprot.writeFieldBegin(METAMODEL_URI_FIELD_DESC);
-          oprot.writeString(struct.metamodelURI);
-          oprot.writeFieldEnd();
-        }
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class listTypes_argsTupleSchemeFactory implements SchemeFactory {
-      public listTypes_argsTupleScheme getScheme() {
-        return new listTypes_argsTupleScheme();
-      }
-    }
-
-    private static class listTypes_argsTupleScheme extends TupleScheme<listTypes_args> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, listTypes_args struct) throws org.apache.thrift.TException {
-        TTupleProtocol oprot = (TTupleProtocol) prot;
-        oprot.writeString(struct.hawkInstanceName);
-        oprot.writeString(struct.metamodelURI);
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, listTypes_args struct) throws org.apache.thrift.TException {
-        TTupleProtocol iprot = (TTupleProtocol) prot;
-        struct.hawkInstanceName = iprot.readString();
-        struct.setHawkInstanceNameIsSet(true);
-        struct.metamodelURI = iprot.readString();
-        struct.setMetamodelURIIsSet(true);
-      }
-    }
-
-  }
-
-  public static class listTypes_result implements org.apache.thrift.TBase<listTypes_result, listTypes_result._Fields>, java.io.Serializable, Cloneable, Comparable<listTypes_result>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("listTypes_result");
-
-    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.LIST, (short)0);
-    private static final org.apache.thrift.protocol.TField ERR1_FIELD_DESC = new org.apache.thrift.protocol.TField("err1", org.apache.thrift.protocol.TType.STRUCT, (short)1);
-    private static final org.apache.thrift.protocol.TField ERR2_FIELD_DESC = new org.apache.thrift.protocol.TField("err2", org.apache.thrift.protocol.TType.STRUCT, (short)2);
-    private static final org.apache.thrift.protocol.TField ERR3_FIELD_DESC = new org.apache.thrift.protocol.TField("err3", org.apache.thrift.protocol.TType.STRUCT, (short)3);
-
-    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
-    static {
-      schemes.put(StandardScheme.class, new listTypes_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new listTypes_resultTupleSchemeFactory());
-    }
-
-    public List<ModelElementType> success; // required
-    public HawkInstanceNotFound err1; // required
-    public HawkInstanceNotRunning err2; // required
-    public HawkMetamodelNotFound err3; // required
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success"),
-      ERR1((short)1, "err1"),
-      ERR2((short)2, "err2"),
-      ERR3((short)3, "err3");
-
-      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
-
-      static {
-        for (_Fields field : EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          case 0: // SUCCESS
-            return SUCCESS;
-          case 1: // ERR1
-            return ERR1;
-          case 2: // ERR2
-            return ERR2;
-          case 3: // ERR3
-            return ERR3;
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final String _fieldName;
-
-      _Fields(short thriftId, String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public String getFieldName() {
-        return _fieldName;
-      }
-    }
-
-    // isset id assignments
-    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ModelElementType.class))));
-      tmpMap.put(_Fields.ERR1, new org.apache.thrift.meta_data.FieldMetaData("err1", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
-      tmpMap.put(_Fields.ERR2, new org.apache.thrift.meta_data.FieldMetaData("err2", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
-      tmpMap.put(_Fields.ERR3, new org.apache.thrift.meta_data.FieldMetaData("err3", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
-      metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(listTypes_result.class, metaDataMap);
-    }
-
-    public listTypes_result() {
-    }
-
-    public listTypes_result(
-      List<ModelElementType> success,
-      HawkInstanceNotFound err1,
-      HawkInstanceNotRunning err2,
-      HawkMetamodelNotFound err3)
-    {
-      this();
-      this.success = success;
-      this.err1 = err1;
-      this.err2 = err2;
-      this.err3 = err3;
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public listTypes_result(listTypes_result other) {
-      if (other.isSetSuccess()) {
-        List<ModelElementType> __this__success = new ArrayList<ModelElementType>(other.success.size());
-        for (ModelElementType other_element : other.success) {
-          __this__success.add(new ModelElementType(other_element));
-        }
-        this.success = __this__success;
-      }
-      if (other.isSetErr1()) {
-        this.err1 = new HawkInstanceNotFound(other.err1);
-      }
-      if (other.isSetErr2()) {
-        this.err2 = new HawkInstanceNotRunning(other.err2);
-      }
-      if (other.isSetErr3()) {
-        this.err3 = new HawkMetamodelNotFound(other.err3);
-      }
-    }
-
-    public listTypes_result deepCopy() {
-      return new listTypes_result(this);
-    }
-
-    @Override
-    public void clear() {
-      this.success = null;
-      this.err1 = null;
-      this.err2 = null;
-      this.err3 = null;
-    }
-
-    public int getSuccessSize() {
-      return (this.success == null) ? 0 : this.success.size();
-    }
-
-    public java.util.Iterator<ModelElementType> getSuccessIterator() {
-      return (this.success == null) ? null : this.success.iterator();
-    }
-
-    public void addToSuccess(ModelElementType elem) {
-      if (this.success == null) {
-        this.success = new ArrayList<ModelElementType>();
-      }
-      this.success.add(elem);
-    }
-
-    public List<ModelElementType> getSuccess() {
-      return this.success;
-    }
-
-    public listTypes_result setSuccess(List<ModelElementType> success) {
-      this.success = success;
-      return this;
-    }
-
-    public void unsetSuccess() {
-      this.success = null;
-    }
-
-    /** Returns true if field success is set (has been assigned a value) and false otherwise */
-    public boolean isSetSuccess() {
-      return this.success != null;
-    }
-
-    public void setSuccessIsSet(boolean value) {
-      if (!value) {
-        this.success = null;
-      }
-    }
-
-    public HawkInstanceNotFound getErr1() {
-      return this.err1;
-    }
-
-    public listTypes_result setErr1(HawkInstanceNotFound err1) {
-      this.err1 = err1;
-      return this;
-    }
-
-    public void unsetErr1() {
-      this.err1 = null;
-    }
-
-    /** Returns true if field err1 is set (has been assigned a value) and false otherwise */
-    public boolean isSetErr1() {
-      return this.err1 != null;
-    }
-
-    public void setErr1IsSet(boolean value) {
-      if (!value) {
-        this.err1 = null;
-      }
-    }
-
-    public HawkInstanceNotRunning getErr2() {
-      return this.err2;
-    }
-
-    public listTypes_result setErr2(HawkInstanceNotRunning err2) {
-      this.err2 = err2;
-      return this;
-    }
-
-    public void unsetErr2() {
-      this.err2 = null;
-    }
-
-    /** Returns true if field err2 is set (has been assigned a value) and false otherwise */
-    public boolean isSetErr2() {
-      return this.err2 != null;
-    }
-
-    public void setErr2IsSet(boolean value) {
-      if (!value) {
-        this.err2 = null;
-      }
-    }
-
-    public HawkMetamodelNotFound getErr3() {
-      return this.err3;
-    }
-
-    public listTypes_result setErr3(HawkMetamodelNotFound err3) {
-      this.err3 = err3;
-      return this;
-    }
-
-    public void unsetErr3() {
-      this.err3 = null;
-    }
-
-    /** Returns true if field err3 is set (has been assigned a value) and false otherwise */
-    public boolean isSetErr3() {
-      return this.err3 != null;
-    }
-
-    public void setErr3IsSet(boolean value) {
-      if (!value) {
-        this.err3 = null;
-      }
-    }
-
-    public void setFieldValue(_Fields field, Object value) {
-      switch (field) {
-      case SUCCESS:
-        if (value == null) {
-          unsetSuccess();
-        } else {
-          setSuccess((List<ModelElementType>)value);
-        }
-        break;
-
-      case ERR1:
-        if (value == null) {
-          unsetErr1();
-        } else {
-          setErr1((HawkInstanceNotFound)value);
-        }
-        break;
-
-      case ERR2:
-        if (value == null) {
-          unsetErr2();
-        } else {
-          setErr2((HawkInstanceNotRunning)value);
-        }
-        break;
-
-      case ERR3:
-        if (value == null) {
-          unsetErr3();
-        } else {
-          setErr3((HawkMetamodelNotFound)value);
-        }
-        break;
-
-      }
-    }
-
-    public Object getFieldValue(_Fields field) {
-      switch (field) {
-      case SUCCESS:
-        return getSuccess();
-
-      case ERR1:
-        return getErr1();
-
-      case ERR2:
-        return getErr2();
-
-      case ERR3:
-        return getErr3();
-
-      }
-      throw new IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new IllegalArgumentException();
-      }
-
-      switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
-      case ERR1:
-        return isSetErr1();
-      case ERR2:
-        return isSetErr2();
-      case ERR3:
-        return isSetErr3();
-      }
-      throw new IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof listTypes_result)
-        return this.equals((listTypes_result)that);
-      return false;
-    }
-
-    public boolean equals(listTypes_result that) {
-      if (that == null)
-        return false;
-
-      boolean this_present_success = true && this.isSetSuccess();
-      boolean that_present_success = true && that.isSetSuccess();
-      if (this_present_success || that_present_success) {
-        if (!(this_present_success && that_present_success))
-          return false;
-        if (!this.success.equals(that.success))
-          return false;
-      }
-
-      boolean this_present_err1 = true && this.isSetErr1();
-      boolean that_present_err1 = true && that.isSetErr1();
-      if (this_present_err1 || that_present_err1) {
-        if (!(this_present_err1 && that_present_err1))
-          return false;
-        if (!this.err1.equals(that.err1))
-          return false;
-      }
-
-      boolean this_present_err2 = true && this.isSetErr2();
-      boolean that_present_err2 = true && that.isSetErr2();
-      if (this_present_err2 || that_present_err2) {
-        if (!(this_present_err2 && that_present_err2))
-          return false;
-        if (!this.err2.equals(that.err2))
-          return false;
-      }
-
-      boolean this_present_err3 = true && this.isSetErr3();
-      boolean that_present_err3 = true && that.isSetErr3();
-      if (this_present_err3 || that_present_err3) {
-        if (!(this_present_err3 && that_present_err3))
-          return false;
-        if (!this.err3.equals(that.err3))
-          return false;
-      }
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      List<Object> list = new ArrayList<Object>();
-
-      boolean present_success = true && (isSetSuccess());
-      list.add(present_success);
-      if (present_success)
-        list.add(success);
-
-      boolean present_err1 = true && (isSetErr1());
-      list.add(present_err1);
-      if (present_err1)
-        list.add(err1);
-
-      boolean present_err2 = true && (isSetErr2());
-      list.add(present_err2);
-      if (present_err2)
-        list.add(err2);
-
-      boolean present_err3 = true && (isSetErr3());
-      list.add(present_err3);
-      if (present_err3)
-        list.add(err3);
-
-      return list.hashCode();
-    }
-
-    @Override
-    public int compareTo(listTypes_result other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetSuccess()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetErr1()).compareTo(other.isSetErr1());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetErr1()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.err1, other.err1);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetErr2()).compareTo(other.isSetErr2());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetErr2()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.err2, other.err2);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetErr3()).compareTo(other.isSetErr3());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetErr3()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.err3, other.err3);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
-      }
-
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("listTypes_result(");
-      boolean first = true;
-
-      sb.append("success:");
-      if (this.success == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.success);
-      }
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("err1:");
-      if (this.err1 == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.err1);
-      }
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("err2:");
-      if (this.err2 == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.err2);
-      }
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("err3:");
-      if (this.err3 == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.err3);
-      }
-      first = false;
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-      // check for sub-struct validity
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-      try {
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private static class listTypes_resultStandardSchemeFactory implements SchemeFactory {
-      public listTypes_resultStandardScheme getScheme() {
-        return new listTypes_resultStandardScheme();
-      }
-    }
-
-    private static class listTypes_resultStandardScheme extends StandardScheme<listTypes_result> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, listTypes_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            case 0: // SUCCESS
-              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
-                {
-                  org.apache.thrift.protocol.TList _list290 = iprot.readListBegin();
-                  struct.success = new ArrayList<ModelElementType>(_list290.size);
-                  ModelElementType _elem291;
-                  for (int _i292 = 0; _i292 < _list290.size; ++_i292)
-                  {
-                    _elem291 = new ModelElementType();
-                    _elem291.read(iprot);
-                    struct.success.add(_elem291);
-                  }
-                  iprot.readListEnd();
-                }
-                struct.setSuccessIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 1: // ERR1
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.err1 = new HawkInstanceNotFound();
-                struct.err1.read(iprot);
-                struct.setErr1IsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 2: // ERR2
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.err2 = new HawkInstanceNotRunning();
-                struct.err2.read(iprot);
-                struct.setErr2IsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 3: // ERR3
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.err3 = new HawkMetamodelNotFound();
-                struct.err3.read(iprot);
-                struct.setErr3IsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-
-        // check for required fields of primitive type, which can't be checked in the validate method
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, listTypes_result struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.success != null) {
-          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
-          {
-            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.success.size()));
-            for (ModelElementType _iter293 : struct.success)
-            {
-              _iter293.write(oprot);
-            }
-            oprot.writeListEnd();
-          }
-          oprot.writeFieldEnd();
-        }
-        if (struct.err1 != null) {
-          oprot.writeFieldBegin(ERR1_FIELD_DESC);
-          struct.err1.write(oprot);
-          oprot.writeFieldEnd();
-        }
-        if (struct.err2 != null) {
-          oprot.writeFieldBegin(ERR2_FIELD_DESC);
-          struct.err2.write(oprot);
-          oprot.writeFieldEnd();
-        }
-        if (struct.err3 != null) {
-          oprot.writeFieldBegin(ERR3_FIELD_DESC);
-          struct.err3.write(oprot);
-          oprot.writeFieldEnd();
-        }
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class listTypes_resultTupleSchemeFactory implements SchemeFactory {
-      public listTypes_resultTupleScheme getScheme() {
-        return new listTypes_resultTupleScheme();
-      }
-    }
-
-    private static class listTypes_resultTupleScheme extends TupleScheme<listTypes_result> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, listTypes_result struct) throws org.apache.thrift.TException {
-        TTupleProtocol oprot = (TTupleProtocol) prot;
-        BitSet optionals = new BitSet();
-        if (struct.isSetSuccess()) {
-          optionals.set(0);
-        }
-        if (struct.isSetErr1()) {
-          optionals.set(1);
-        }
-        if (struct.isSetErr2()) {
-          optionals.set(2);
-        }
-        if (struct.isSetErr3()) {
-          optionals.set(3);
-        }
-        oprot.writeBitSet(optionals, 4);
-        if (struct.isSetSuccess()) {
-          {
-            oprot.writeI32(struct.success.size());
-            for (ModelElementType _iter294 : struct.success)
-            {
-              _iter294.write(oprot);
-            }
-          }
-        }
-        if (struct.isSetErr1()) {
-          struct.err1.write(oprot);
-        }
-        if (struct.isSetErr2()) {
-          struct.err2.write(oprot);
-        }
-        if (struct.isSetErr3()) {
-          struct.err3.write(oprot);
-        }
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, listTypes_result struct) throws org.apache.thrift.TException {
-        TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(4);
-        if (incoming.get(0)) {
-          {
-            org.apache.thrift.protocol.TList _list295 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.success = new ArrayList<ModelElementType>(_list295.size);
-            ModelElementType _elem296;
-            for (int _i297 = 0; _i297 < _list295.size; ++_i297)
-            {
-              _elem296 = new ModelElementType();
-              _elem296.read(iprot);
-              struct.success.add(_elem296);
-            }
-          }
-          struct.setSuccessIsSet(true);
-        }
-        if (incoming.get(1)) {
-          struct.err1 = new HawkInstanceNotFound();
-          struct.err1.read(iprot);
-          struct.setErr1IsSet(true);
-        }
-        if (incoming.get(2)) {
-          struct.err2 = new HawkInstanceNotRunning();
-          struct.err2.read(iprot);
-          struct.setErr2IsSet(true);
-        }
-        if (incoming.get(3)) {
-          struct.err3 = new HawkMetamodelNotFound();
-          struct.err3.read(iprot);
-          struct.setErr3IsSet(true);
-        }
-      }
-    }
-
-  }
-
-  public static class fetchType_args implements org.apache.thrift.TBase<fetchType_args, fetchType_args._Fields>, java.io.Serializable, Cloneable, Comparable<fetchType_args>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("fetchType_args");
+  public static class listAttributeNames_args implements org.apache.thrift.TBase<listAttributeNames_args, listAttributeNames_args._Fields>, java.io.Serializable, Cloneable, Comparable<listAttributeNames_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("listAttributeNames_args");
 
     private static final org.apache.thrift.protocol.TField HAWK_INSTANCE_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("hawkInstanceName", org.apache.thrift.protocol.TType.STRING, (short)1);
     private static final org.apache.thrift.protocol.TField METAMODEL_URI_FIELD_DESC = new org.apache.thrift.protocol.TField("metamodelURI", org.apache.thrift.protocol.TType.STRING, (short)2);
@@ -18159,8 +16844,8 @@ public class Hawk {
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new fetchType_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new fetchType_argsTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new listAttributeNames_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new listAttributeNames_argsTupleSchemeFactory());
     }
 
     public String hawkInstanceName; // required
@@ -18242,13 +16927,13 @@ public class Hawk {
       tmpMap.put(_Fields.TYPE_NAME, new org.apache.thrift.meta_data.FieldMetaData("typeName", org.apache.thrift.TFieldRequirementType.REQUIRED, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(fetchType_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(listAttributeNames_args.class, metaDataMap);
     }
 
-    public fetchType_args() {
+    public listAttributeNames_args() {
     }
 
-    public fetchType_args(
+    public listAttributeNames_args(
       String hawkInstanceName,
       String metamodelURI,
       String typeName)
@@ -18262,7 +16947,7 @@ public class Hawk {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public fetchType_args(fetchType_args other) {
+    public listAttributeNames_args(listAttributeNames_args other) {
       if (other.isSetHawkInstanceName()) {
         this.hawkInstanceName = other.hawkInstanceName;
       }
@@ -18274,8 +16959,8 @@ public class Hawk {
       }
     }
 
-    public fetchType_args deepCopy() {
-      return new fetchType_args(this);
+    public listAttributeNames_args deepCopy() {
+      return new listAttributeNames_args(this);
     }
 
     @Override
@@ -18289,7 +16974,7 @@ public class Hawk {
       return this.hawkInstanceName;
     }
 
-    public fetchType_args setHawkInstanceName(String hawkInstanceName) {
+    public listAttributeNames_args setHawkInstanceName(String hawkInstanceName) {
       this.hawkInstanceName = hawkInstanceName;
       return this;
     }
@@ -18313,7 +16998,7 @@ public class Hawk {
       return this.metamodelURI;
     }
 
-    public fetchType_args setMetamodelURI(String metamodelURI) {
+    public listAttributeNames_args setMetamodelURI(String metamodelURI) {
       this.metamodelURI = metamodelURI;
       return this;
     }
@@ -18337,7 +17022,7 @@ public class Hawk {
       return this.typeName;
     }
 
-    public fetchType_args setTypeName(String typeName) {
+    public listAttributeNames_args setTypeName(String typeName) {
       this.typeName = typeName;
       return this;
     }
@@ -18422,12 +17107,12 @@ public class Hawk {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof fetchType_args)
-        return this.equals((fetchType_args)that);
+      if (that instanceof listAttributeNames_args)
+        return this.equals((listAttributeNames_args)that);
       return false;
     }
 
-    public boolean equals(fetchType_args that) {
+    public boolean equals(listAttributeNames_args that) {
       if (that == null)
         return false;
 
@@ -18484,7 +17169,7 @@ public class Hawk {
     }
 
     @Override
-    public int compareTo(fetchType_args other) {
+    public int compareTo(listAttributeNames_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
@@ -18538,7 +17223,7 @@ public class Hawk {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("fetchType_args(");
+      StringBuilder sb = new StringBuilder("listAttributeNames_args(");
       boolean first = true;
 
       sb.append("hawkInstanceName:");
@@ -18598,15 +17283,15 @@ public class Hawk {
       }
     }
 
-    private static class fetchType_argsStandardSchemeFactory implements SchemeFactory {
-      public fetchType_argsStandardScheme getScheme() {
-        return new fetchType_argsStandardScheme();
+    private static class listAttributeNames_argsStandardSchemeFactory implements SchemeFactory {
+      public listAttributeNames_argsStandardScheme getScheme() {
+        return new listAttributeNames_argsStandardScheme();
       }
     }
 
-    private static class fetchType_argsStandardScheme extends StandardScheme<fetchType_args> {
+    private static class listAttributeNames_argsStandardScheme extends StandardScheme<listAttributeNames_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, fetchType_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, listAttributeNames_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -18651,7 +17336,7 @@ public class Hawk {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, fetchType_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, listAttributeNames_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -18676,16 +17361,16 @@ public class Hawk {
 
     }
 
-    private static class fetchType_argsTupleSchemeFactory implements SchemeFactory {
-      public fetchType_argsTupleScheme getScheme() {
-        return new fetchType_argsTupleScheme();
+    private static class listAttributeNames_argsTupleSchemeFactory implements SchemeFactory {
+      public listAttributeNames_argsTupleScheme getScheme() {
+        return new listAttributeNames_argsTupleScheme();
       }
     }
 
-    private static class fetchType_argsTupleScheme extends TupleScheme<fetchType_args> {
+    private static class listAttributeNames_argsTupleScheme extends TupleScheme<listAttributeNames_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, fetchType_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, listAttributeNames_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeString(struct.hawkInstanceName);
         oprot.writeString(struct.metamodelURI);
@@ -18693,7 +17378,7 @@ public class Hawk {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, fetchType_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, listAttributeNames_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.hawkInstanceName = iprot.readString();
         struct.setHawkInstanceNameIsSet(true);
@@ -18706,10 +17391,10 @@ public class Hawk {
 
   }
 
-  public static class fetchType_result implements org.apache.thrift.TBase<fetchType_result, fetchType_result._Fields>, java.io.Serializable, Cloneable, Comparable<fetchType_result>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("fetchType_result");
+  public static class listAttributeNames_result implements org.apache.thrift.TBase<listAttributeNames_result, listAttributeNames_result._Fields>, java.io.Serializable, Cloneable, Comparable<listAttributeNames_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("listAttributeNames_result");
 
-    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.LIST, (short)0);
     private static final org.apache.thrift.protocol.TField ERR1_FIELD_DESC = new org.apache.thrift.protocol.TField("err1", org.apache.thrift.protocol.TType.STRUCT, (short)1);
     private static final org.apache.thrift.protocol.TField ERR2_FIELD_DESC = new org.apache.thrift.protocol.TField("err2", org.apache.thrift.protocol.TType.STRUCT, (short)2);
     private static final org.apache.thrift.protocol.TField ERR3_FIELD_DESC = new org.apache.thrift.protocol.TField("err3", org.apache.thrift.protocol.TType.STRUCT, (short)3);
@@ -18717,11 +17402,11 @@ public class Hawk {
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new fetchType_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new fetchType_resultTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new listAttributeNames_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new listAttributeNames_resultTupleSchemeFactory());
     }
 
-    public ModelElementType success; // required
+    public List<String> success; // required
     public HawkInstanceNotFound err1; // required
     public HawkInstanceNotRunning err2; // required
     public HawkMetamodelNotFound err3; // required
@@ -18802,7 +17487,8 @@ public class Hawk {
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ModelElementType.class)));
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))));
       tmpMap.put(_Fields.ERR1, new org.apache.thrift.meta_data.FieldMetaData("err1", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
       tmpMap.put(_Fields.ERR2, new org.apache.thrift.meta_data.FieldMetaData("err2", org.apache.thrift.TFieldRequirementType.DEFAULT, 
@@ -18812,14 +17498,14 @@ public class Hawk {
       tmpMap.put(_Fields.ERR4, new org.apache.thrift.meta_data.FieldMetaData("err4", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(fetchType_result.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(listAttributeNames_result.class, metaDataMap);
     }
 
-    public fetchType_result() {
+    public listAttributeNames_result() {
     }
 
-    public fetchType_result(
-      ModelElementType success,
+    public listAttributeNames_result(
+      List<String> success,
       HawkInstanceNotFound err1,
       HawkInstanceNotRunning err2,
       HawkMetamodelNotFound err3,
@@ -18836,9 +17522,10 @@ public class Hawk {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public fetchType_result(fetchType_result other) {
+    public listAttributeNames_result(listAttributeNames_result other) {
       if (other.isSetSuccess()) {
-        this.success = new ModelElementType(other.success);
+        List<String> __this__success = new ArrayList<String>(other.success);
+        this.success = __this__success;
       }
       if (other.isSetErr1()) {
         this.err1 = new HawkInstanceNotFound(other.err1);
@@ -18854,8 +17541,8 @@ public class Hawk {
       }
     }
 
-    public fetchType_result deepCopy() {
-      return new fetchType_result(this);
+    public listAttributeNames_result deepCopy() {
+      return new listAttributeNames_result(this);
     }
 
     @Override
@@ -18867,11 +17554,26 @@ public class Hawk {
       this.err4 = null;
     }
 
-    public ModelElementType getSuccess() {
+    public int getSuccessSize() {
+      return (this.success == null) ? 0 : this.success.size();
+    }
+
+    public java.util.Iterator<String> getSuccessIterator() {
+      return (this.success == null) ? null : this.success.iterator();
+    }
+
+    public void addToSuccess(String elem) {
+      if (this.success == null) {
+        this.success = new ArrayList<String>();
+      }
+      this.success.add(elem);
+    }
+
+    public List<String> getSuccess() {
       return this.success;
     }
 
-    public fetchType_result setSuccess(ModelElementType success) {
+    public listAttributeNames_result setSuccess(List<String> success) {
       this.success = success;
       return this;
     }
@@ -18895,7 +17597,7 @@ public class Hawk {
       return this.err1;
     }
 
-    public fetchType_result setErr1(HawkInstanceNotFound err1) {
+    public listAttributeNames_result setErr1(HawkInstanceNotFound err1) {
       this.err1 = err1;
       return this;
     }
@@ -18919,7 +17621,7 @@ public class Hawk {
       return this.err2;
     }
 
-    public fetchType_result setErr2(HawkInstanceNotRunning err2) {
+    public listAttributeNames_result setErr2(HawkInstanceNotRunning err2) {
       this.err2 = err2;
       return this;
     }
@@ -18943,7 +17645,7 @@ public class Hawk {
       return this.err3;
     }
 
-    public fetchType_result setErr3(HawkMetamodelNotFound err3) {
+    public listAttributeNames_result setErr3(HawkMetamodelNotFound err3) {
       this.err3 = err3;
       return this;
     }
@@ -18967,7 +17669,7 @@ public class Hawk {
       return this.err4;
     }
 
-    public fetchType_result setErr4(HawkTypeNotFound err4) {
+    public listAttributeNames_result setErr4(HawkTypeNotFound err4) {
       this.err4 = err4;
       return this;
     }
@@ -18993,7 +17695,7 @@ public class Hawk {
         if (value == null) {
           unsetSuccess();
         } else {
-          setSuccess((ModelElementType)value);
+          setSuccess((List<String>)value);
         }
         break;
 
@@ -19078,12 +17780,12 @@ public class Hawk {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof fetchType_result)
-        return this.equals((fetchType_result)that);
+      if (that instanceof listAttributeNames_result)
+        return this.equals((listAttributeNames_result)that);
       return false;
     }
 
-    public boolean equals(fetchType_result that) {
+    public boolean equals(listAttributeNames_result that) {
       if (that == null)
         return false;
 
@@ -19168,7 +17870,7 @@ public class Hawk {
     }
 
     @Override
-    public int compareTo(fetchType_result other) {
+    public int compareTo(listAttributeNames_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
@@ -19242,7 +17944,7 @@ public class Hawk {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("fetchType_result(");
+      StringBuilder sb = new StringBuilder("listAttributeNames_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -19291,9 +17993,6 @@ public class Hawk {
     public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
-      if (success != null) {
-        success.validate();
-      }
     }
 
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
@@ -19312,15 +18011,15 @@ public class Hawk {
       }
     }
 
-    private static class fetchType_resultStandardSchemeFactory implements SchemeFactory {
-      public fetchType_resultStandardScheme getScheme() {
-        return new fetchType_resultStandardScheme();
+    private static class listAttributeNames_resultStandardSchemeFactory implements SchemeFactory {
+      public listAttributeNames_resultStandardScheme getScheme() {
+        return new listAttributeNames_resultStandardScheme();
       }
     }
 
-    private static class fetchType_resultStandardScheme extends StandardScheme<fetchType_result> {
+    private static class listAttributeNames_resultStandardScheme extends StandardScheme<listAttributeNames_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, fetchType_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, listAttributeNames_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -19331,9 +18030,18 @@ public class Hawk {
           }
           switch (schemeField.id) {
             case 0: // SUCCESS
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.success = new ModelElementType();
-                struct.success.read(iprot);
+              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
+                {
+                  org.apache.thrift.protocol.TList _list290 = iprot.readListBegin();
+                  struct.success = new ArrayList<String>(_list290.size);
+                  String _elem291;
+                  for (int _i292 = 0; _i292 < _list290.size; ++_i292)
+                  {
+                    _elem291 = iprot.readString();
+                    struct.success.add(_elem291);
+                  }
+                  iprot.readListEnd();
+                }
                 struct.setSuccessIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -19386,13 +18094,20 @@ public class Hawk {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, fetchType_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, listAttributeNames_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
         if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
-          struct.success.write(oprot);
+          {
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, struct.success.size()));
+            for (String _iter293 : struct.success)
+            {
+              oprot.writeString(_iter293);
+            }
+            oprot.writeListEnd();
+          }
           oprot.writeFieldEnd();
         }
         if (struct.err1 != null) {
@@ -19421,16 +18136,16 @@ public class Hawk {
 
     }
 
-    private static class fetchType_resultTupleSchemeFactory implements SchemeFactory {
-      public fetchType_resultTupleScheme getScheme() {
-        return new fetchType_resultTupleScheme();
+    private static class listAttributeNames_resultTupleSchemeFactory implements SchemeFactory {
+      public listAttributeNames_resultTupleScheme getScheme() {
+        return new listAttributeNames_resultTupleScheme();
       }
     }
 
-    private static class fetchType_resultTupleScheme extends TupleScheme<fetchType_result> {
+    private static class listAttributeNames_resultTupleScheme extends TupleScheme<listAttributeNames_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, fetchType_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, listAttributeNames_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -19450,7 +18165,13 @@ public class Hawk {
         }
         oprot.writeBitSet(optionals, 5);
         if (struct.isSetSuccess()) {
-          struct.success.write(oprot);
+          {
+            oprot.writeI32(struct.success.size());
+            for (String _iter294 : struct.success)
+            {
+              oprot.writeString(_iter294);
+            }
+          }
         }
         if (struct.isSetErr1()) {
           struct.err1.write(oprot);
@@ -19467,12 +18188,20 @@ public class Hawk {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, fetchType_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, listAttributeNames_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(5);
         if (incoming.get(0)) {
-          struct.success = new ModelElementType();
-          struct.success.read(iprot);
+          {
+            org.apache.thrift.protocol.TList _list295 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+            struct.success = new ArrayList<String>(_list295.size);
+            String _elem296;
+            for (int _i297 = 0; _i297 < _list295.size; ++_i297)
+            {
+              _elem296 = iprot.readString();
+              struct.success.add(_elem296);
+            }
+          }
           struct.setSuccessIsSet(true);
         }
         if (incoming.get(1)) {
@@ -27409,6 +26138,369 @@ public class Hawk {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.queryID = iprot.readString();
         struct.setQueryIDIsSet(true);
+      }
+    }
+
+  }
+
+  public static class cancelAsyncQuery_result implements org.apache.thrift.TBase<cancelAsyncQuery_result, cancelAsyncQuery_result._Fields>, java.io.Serializable, Cloneable, Comparable<cancelAsyncQuery_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("cancelAsyncQuery_result");
+
+    private static final org.apache.thrift.protocol.TField ERR1_FIELD_DESC = new org.apache.thrift.protocol.TField("err1", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new cancelAsyncQuery_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new cancelAsyncQuery_resultTupleSchemeFactory());
+    }
+
+    public InvalidQuery err1; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      ERR1((short)1, "err1");
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // ERR1
+            return ERR1;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.ERR1, new org.apache.thrift.meta_data.FieldMetaData("err1", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(cancelAsyncQuery_result.class, metaDataMap);
+    }
+
+    public cancelAsyncQuery_result() {
+    }
+
+    public cancelAsyncQuery_result(
+      InvalidQuery err1)
+    {
+      this();
+      this.err1 = err1;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public cancelAsyncQuery_result(cancelAsyncQuery_result other) {
+      if (other.isSetErr1()) {
+        this.err1 = new InvalidQuery(other.err1);
+      }
+    }
+
+    public cancelAsyncQuery_result deepCopy() {
+      return new cancelAsyncQuery_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.err1 = null;
+    }
+
+    public InvalidQuery getErr1() {
+      return this.err1;
+    }
+
+    public cancelAsyncQuery_result setErr1(InvalidQuery err1) {
+      this.err1 = err1;
+      return this;
+    }
+
+    public void unsetErr1() {
+      this.err1 = null;
+    }
+
+    /** Returns true if field err1 is set (has been assigned a value) and false otherwise */
+    public boolean isSetErr1() {
+      return this.err1 != null;
+    }
+
+    public void setErr1IsSet(boolean value) {
+      if (!value) {
+        this.err1 = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case ERR1:
+        if (value == null) {
+          unsetErr1();
+        } else {
+          setErr1((InvalidQuery)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case ERR1:
+        return getErr1();
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case ERR1:
+        return isSetErr1();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof cancelAsyncQuery_result)
+        return this.equals((cancelAsyncQuery_result)that);
+      return false;
+    }
+
+    public boolean equals(cancelAsyncQuery_result that) {
+      if (that == null)
+        return false;
+
+      boolean this_present_err1 = true && this.isSetErr1();
+      boolean that_present_err1 = true && that.isSetErr1();
+      if (this_present_err1 || that_present_err1) {
+        if (!(this_present_err1 && that_present_err1))
+          return false;
+        if (!this.err1.equals(that.err1))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      List<Object> list = new ArrayList<Object>();
+
+      boolean present_err1 = true && (isSetErr1());
+      list.add(present_err1);
+      if (present_err1)
+        list.add(err1);
+
+      return list.hashCode();
+    }
+
+    @Override
+    public int compareTo(cancelAsyncQuery_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = Boolean.valueOf(isSetErr1()).compareTo(other.isSetErr1());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetErr1()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.err1, other.err1);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+      }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("cancelAsyncQuery_result(");
+      boolean first = true;
+
+      sb.append("err1:");
+      if (this.err1 == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.err1);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class cancelAsyncQuery_resultStandardSchemeFactory implements SchemeFactory {
+      public cancelAsyncQuery_resultStandardScheme getScheme() {
+        return new cancelAsyncQuery_resultStandardScheme();
+      }
+    }
+
+    private static class cancelAsyncQuery_resultStandardScheme extends StandardScheme<cancelAsyncQuery_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, cancelAsyncQuery_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // ERR1
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.err1 = new InvalidQuery();
+                struct.err1.read(iprot);
+                struct.setErr1IsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, cancelAsyncQuery_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.err1 != null) {
+          oprot.writeFieldBegin(ERR1_FIELD_DESC);
+          struct.err1.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class cancelAsyncQuery_resultTupleSchemeFactory implements SchemeFactory {
+      public cancelAsyncQuery_resultTupleScheme getScheme() {
+        return new cancelAsyncQuery_resultTupleScheme();
+      }
+    }
+
+    private static class cancelAsyncQuery_resultTupleScheme extends TupleScheme<cancelAsyncQuery_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, cancelAsyncQuery_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetErr1()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetErr1()) {
+          struct.err1.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, cancelAsyncQuery_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.err1 = new InvalidQuery();
+          struct.err1.read(iprot);
+          struct.setErr1IsSet(true);
+        }
       }
     }
 

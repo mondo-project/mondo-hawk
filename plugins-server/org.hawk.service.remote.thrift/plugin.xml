@@ -9,5 +9,11 @@
             name="Remote (API)">
       </hawkFactory>
    </extension>
+   <extension
+         point="org.hawk.core.IndexerIntrospectionExtensionPoint">
+      <class
+            introspector="org.hawk.service.remote.thrift.ThriftRemoteMetaModelIntrospectorFactory">
+      </class>
+   </extension>
 
 </plugin>

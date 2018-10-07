@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledFuture;
@@ -42,6 +43,7 @@ import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TProtocol;
 import org.hawk.core.IConsole;
 import org.hawk.core.ICredentialsStore;
+import org.hawk.core.IMetaModelIntrospector;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.IMetaModelUpdater;
 import org.hawk.core.IModelIndexer;
@@ -91,7 +93,7 @@ import org.slf4j.LoggerFactory;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-public class ThriftRemoteModelIndexer implements IModelIndexer {
+public class ThriftRemoteModelIndexer implements IModelIndexer, IMetaModelIntrospector {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(ThriftRemoteModelIndexer.class);
 
@@ -996,6 +998,36 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	public List<IModelUpdater> getModelUpdaters() {
 		console.printerrln("Cannot access updaters in " + this.getClass().getName());
 		return null;
+	}
+
+	@Override
+	public List<String> getMetamodels() {
+		try {
+			return client.get().listMetamodels(name);
+		} catch (TException e) {
+			LOGGER.error(e.getMessage(), e);
+			return Collections.emptyList();
+		}
+	}
+
+	@Override
+	public List<String> getTypes(String metamodelURI) throws NoSuchElementException {
+		try {
+			return client.get().listTypeNames(name, metamodelURI);
+		} catch (TException e) {
+			LOGGER.error(e.getMessage(), e);
+			return Collections.emptyList();
+		}
+	}
+
+	@Override
+	public List<String> getAttributes(String metamodelURI, String typeName) throws NoSuchElementException {
+		try {
+			return client.get().listAttributeNames(name, metamodelURI, typeName);
+		} catch (TException e) {
+			LOGGER.error(e.getMessage(), e);
+			return Collections.emptyList();
+		}
 	}
 
 }

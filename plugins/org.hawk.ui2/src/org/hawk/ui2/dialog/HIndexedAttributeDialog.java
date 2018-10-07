@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.hawk.ui2.dialog;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,12 +36,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.hawk.core.graph.IGraphDatabase;
-import org.hawk.core.graph.IGraphTransaction;
-import org.hawk.graph.GraphWrapper;
-import org.hawk.graph.MetamodelNode;
-import org.hawk.graph.Slot;
-import org.hawk.graph.TypeNode;
+import org.hawk.core.IMetaModelIntrospector;
 import org.hawk.osgiserver.HModel;
 import org.hawk.osgiserver.HModelSchedulingRule;
 import org.hawk.ui2.util.TypeCascadeSelectionAdapter;
@@ -155,45 +149,15 @@ final class HIndexedAttributeDialog extends HStateBasedDialog {
 			public void widgetSelected(SelectionEvent e) {
 				final String metamodelURI = getMetamodelURI();
 				final String typeName = getTargetType();
-				
-				/*
-				 * TODO: need to add the ability to do this on remote Hawks as well - should
-				 * extend API.
-				 * 
-				 * Can't simply extend IModelIndexer as that would create a dependency loop
-				 * between .core and .graph. Might have to use some type of special extension
-				 * interface that adds this functionality to the ThriftRemoteModelIndexer.
-				 */
-				IGraphDatabase db = hawkModel.getGraph();
-				if (db != null) {
-					try (IGraphTransaction tx = db.beginTransaction()) {
-						final GraphWrapper gw = new GraphWrapper(db);
-						final MetamodelNode mmNode = gw.getMetamodelNodeByNsURI(metamodelURI);
-						if (mmNode != null) {
-							final List<String> attributeSlots = new ArrayList<>();
 
-							for (TypeNode tn : mmNode.getTypes()) {
-								if (typeName.equals(tn.getTypeName())) {
-									for (Slot slot : tn.getSlots().values()) {
-										if (slot.isAttribute()) {
-											attributeSlots.add(slot.getName());
-										}
-									}
-								}
-							}
-
-							cmbAttributeName.removeAll();
-							Collections.sort(attributeSlots);
-							for (String sAttribute : attributeSlots) {
-								cmbAttributeName.add(sAttribute);
-							}
-							cmbAttributeName.select(0);
-						}
-
-						tx.success();
-					} catch (Exception e1) {
-						org.hawk.ui2.Activator.logError(e1.getMessage(), e1);
+				cmbAttributeName.removeAll();
+				final IMetaModelIntrospector introspector = hawkModel.getIntrospector();
+				if (introspector != null) {
+					List<String> attributes = introspector.getAttributes(metamodelURI, typeName);
+					for (String sAttribute : attributes) {
+						cmbAttributeName.add(sAttribute);
 					}
+					cmbAttributeName.select(0);
 				}
 			}
 		});

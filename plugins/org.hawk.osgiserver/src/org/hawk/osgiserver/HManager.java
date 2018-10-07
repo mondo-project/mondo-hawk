@@ -39,7 +39,9 @@ import org.hawk.core.ICredentialsStore;
 import org.hawk.core.IHawk;
 import org.hawk.core.IHawkFactory;
 import org.hawk.core.IMetaModelUpdater;
+import org.hawk.core.IModelIndexer;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
+import org.hawk.core.IMetaModelIntrospector;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.util.HawkConfig;
@@ -63,6 +65,7 @@ public class HManager {
 	public static final String HAWKFACTORY_CLASS_ATTRIBUTE = "class";
 	public static final String QUERYLANG_CLASS_ATTRIBUTE = "query_language";
 	public static final String GCHANGEL_CLASS_ATTRIBUTE = "class";
+	public static final String INTROSPECTOR_CLASS_ATTRIBUTE = "introspector";
 
 	private static HManager inst;
 
@@ -127,15 +130,9 @@ public class HManager {
 			createExecutableExtensions(MMPARSER_CLASS_ATTRIBUTE, getMmps());
 			createExecutableExtensions(MPARSER_CLASS_ATTRIBUTE, getMps());
 			createExecutableExtensions(MUPDATER_CLASS_ATTRIBUTE, getUps());
-			createExecutableExtensions(HAWKFACTORY_CLASS_ATTRIBUTE,
-					getHawkFactories());
+			createExecutableExtensions(HAWKFACTORY_CLASS_ATTRIBUTE, getHawkFactories());
+			createExecutableExtensions(INTROSPECTOR_CLASS_ATTRIBUTE, getIntrospectors());
 			getLanguages();
-
-			/*
-			 * for (IConfigurationElement i : languages) {
-			 * h.addQueryLanguage((IQueryEngine)
-			 * i.createExecutableExtension("query_language")); }
-			 */
 		} catch (Exception e) {
 			HModel.getConsole().printerrln(e);
 		}
@@ -335,8 +332,7 @@ public class HManager {
 				instances.add((IVcsManager) elem
 						.createExecutableExtension(VCSMANAGER_CLASS_ATTRIBUTE));
 			} catch (CoreException e) {
-				// log exception and skip this element
-				e.printStackTrace();
+				LOGGER.error(e.getMessage(), e);
 			}
 		}
 		return instances;
@@ -362,8 +358,7 @@ public class HManager {
 						(IHawkFactory) elem
 								.createExecutableExtension(HAWKFACTORY_CLASS_ATTRIBUTE));
 			} catch (InvalidRegistryObjectException | CoreException e) {
-				// print error and skip this element
-				e.printStackTrace();
+				LOGGER.error(e.getMessage(), e);
 			}
 		}
 		return ids;
@@ -381,6 +376,25 @@ public class HManager {
 		return null;
 	}
 
+	public List<IConfigurationElement> getIntrospectors() {
+		return getConfigurationElementsFor("org.hawk.core.IndexerIntrospectionExtensionPoint");
+	}
+
+	public IMetaModelIntrospector getIntrospectorFor(IModelIndexer idx) {
+		for (IConfigurationElement conf : getIntrospectors()) {
+			try {
+				IMetaModelIntrospector.Factory impl = (IMetaModelIntrospector.Factory)
+					conf.createExecutableExtension(INTROSPECTOR_CLASS_ATTRIBUTE);
+				if (impl.canIntrospect(idx)) {
+					return impl.createFor(idx);
+				}
+			} catch (CoreException e) {
+				LOGGER.error(e.getMessage(), e);
+			}
+		}
+		return null;
+	}
+	
 	public boolean stopAllRunningInstances(ShutdownRequestType reqType) {
 		HModel.getConsole().println("Shutting down hawk:");
 		for (HModel hm : all) {

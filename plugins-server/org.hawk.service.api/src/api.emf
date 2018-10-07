@@ -105,14 +105,8 @@ class Hawk {
 		@doc(d="The URI of the metamodel") String metamodelURI
 	) throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound;
 
-	@doc(d="Lists the names of the types registered for a certain metamodel in an instance")
-	op ModelElementType[*] listTypes(
-		@doc(d="The name of the Hawk instance") String hawkInstanceName,
-		@doc(d="The URI of the metamodel") String metamodelURI
-	) throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound;
-
-	@doc(d="Fetches all information about a type registered for a certain metamodel in an instance")
-	op ModelElementType fetchType(
+	@doc(d="Lists the names of the attributes in a type registered for a certain metamodel in an instance")
+	op String[*] listAttributeNames(
 		@doc(d="The name of the Hawk instance") String hawkInstanceName,
 		@doc(d="The URI of the metamodel") String metamodelURI,
 		@doc(d="The name of the type") String typeName

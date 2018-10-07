@@ -13,4 +13,10 @@
                       metamodelupdater="org.hawk.graph.updater.GraphMetaModelUpdater">
       </metamodel>      
    </extension>
+   <extension
+         point="org.hawk.core.IndexerIntrospectionExtensionPoint">
+      <class
+            introspector="org.hawk.graph.introspector.GraphMetaModelIntrospector$Factory">
+      </class>
+   </extension>
 </plugin>

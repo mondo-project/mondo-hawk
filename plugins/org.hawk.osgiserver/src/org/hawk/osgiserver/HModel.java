@@ -37,6 +37,7 @@ import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.IMetaModelUpdater;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
+import org.hawk.core.IMetaModelIntrospector;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.IModelUpdater;
 import org.hawk.core.IStateListener;
@@ -436,6 +437,10 @@ public class HModel implements IStateListener {
 
 	public IGraphDatabase getGraph() {
 		return hawk.getModelIndexer().getGraph();
+	}
+
+	public IMetaModelIntrospector getIntrospector() {
+		return manager.getIntrospectorFor(hawk.getModelIndexer());
 	}
 
 	public Collection<IndexedAttributeParameters> getIndexedAttributes() {

@@ -223,24 +223,10 @@
         </eAnnotations>
       </eParameters>
     </eOperations>
-    <eOperations name="listTypes" upperBound="-1" eType="#//ModelElementType" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning #//HawkMetamodelNotFound">
+    <eOperations name="listAttributeNames" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning #//HawkMetamodelNotFound #//HawkTypeNotFound">
       <eAnnotations source="doc">
-        <details key="d" value="Lists the names of the types registered for a certain metamodel in an instance"/>
-      </eAnnotations>
-      <eParameters name="hawkInstanceName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="doc">
-          <details key="d" value="The name of the Hawk instance"/>
-        </eAnnotations>
-      </eParameters>
-      <eParameters name="metamodelURI" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="doc">
-          <details key="d" value="The URI of the metamodel"/>
-        </eAnnotations>
-      </eParameters>
-    </eOperations>
-    <eOperations name="fetchType" eType="#//ModelElementType" eExceptions="#//HawkInstanceNotFound #//HawkInstanceNotRunning #//HawkMetamodelNotFound #//HawkTypeNotFound">
-      <eAnnotations source="doc">
-        <details key="d" value="Fetches all information about a type registered for a certain metamodel in an instance"/>
+        <details key="d" value="Lists the names of the attributes in a type registered for a certain metamodel in an instance"/>
       </eAnnotations>
       <eParameters name="hawkInstanceName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="doc">

@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -69,7 +68,6 @@ import org.hawk.core.query.QueryExecutionException;
 import org.hawk.core.runtime.LocalHawkFactory;
 import org.hawk.core.util.GraphChangeAdapter;
 import org.hawk.core.util.IndexedAttributeParameters;
-import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.MetamodelNode;
@@ -953,83 +951,26 @@ public final class HawkThriftIface implements Hawk.Iface {
 	public List<String> listTypeNames(String hawkInstanceName, String metamodelURI)
 			throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, TException {
 		final HModel model = getRunningHawkByName(hawkInstanceName);
-		final IGraphDatabase db = model.getGraph();
-
-		final List<String> typeNames = new ArrayList<>();
-		try (IGraphTransaction tx = db.beginTransaction()) {
-			GraphWrapper gw = new GraphWrapper(db);
-			MetamodelNode mmNode = gw.getMetamodelNodeByNsURI(metamodelURI);
-			if (mmNode == null) {
-				throw new HawkMetamodelNotFound();
-			}
-
-			for (TypeNode tn : mmNode.getTypes()) {
-				typeNames.add(tn.getTypeName());
-			}
-			Collections.sort(typeNames);
-
-			tx.success();
-		} catch (Exception ex) {
-			throw new TException(ex);
+		try {
+			return model.getIntrospector().getTypes(metamodelURI);
+		} catch (NoSuchElementException ex) {
+			throw new HawkMetamodelNotFound();
 		}
-
-		return typeNames;
 	}
 
 	@Override
-	public List<ModelElementType> listTypes(String hawkInstanceName, String metamodelURI)
-			throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, TException {
-		final HModel model = getRunningHawkByName(hawkInstanceName);
-		final IGraphDatabase db = model.getGraph();
-
-		final List<ModelElementType> types = new ArrayList<>();
-		try (IGraphTransaction tx = db.beginTransaction()) {
-			GraphWrapper gw = new GraphWrapper(db);
-			MetamodelNode mmNode = gw.getMetamodelNodeByNsURI(metamodelURI);
-			if (mmNode == null) {
-				throw new HawkMetamodelNotFound();
-			}
-
-			HawkModelElementTypeEncoder encoder = new HawkModelElementTypeEncoder(gw);
-			for (TypeNode tn : mmNode.getTypes()) {
-				types.add(encoder.encode(tn));
-			}
-			Collections.sort(types, (a, b) -> a.typeName.compareTo(b.typeName));
-
-			tx.success();
-		} catch (Exception ex) {
-			throw new TException(ex);
-		}
-
-		return types;
-	}
-
-	@Override
-	public ModelElementType fetchType(String hawkInstanceName, String metamodelURI, String typeName)
+	public List<String> listAttributeNames(String hawkInstanceName, String metamodelURI, String typeName)
 			throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, HawkTypeNotFound, TException {
 		final HModel model = getRunningHawkByName(hawkInstanceName);
-		final IGraphDatabase db = model.getGraph();
 
-		try (IGraphTransaction tx = db.beginTransaction()) {
-			GraphWrapper gw = new GraphWrapper(db);
-			MetamodelNode mmNode = gw.getMetamodelNodeByNsURI(metamodelURI);
-			if (mmNode == null) {
-				throw new HawkMetamodelNotFound();
-			}
-
-			for (TypeNode tn : mmNode.getTypes()) {
-				if (typeName.equals(tn.getTypeName())) {
-					HawkModelElementTypeEncoder encoder = new HawkModelElementTypeEncoder(gw);
-					return encoder.encode(tn);
-				}
-			}
-
-			tx.success();
-		} catch (Exception ex) {
-			throw new TException(ex);
+		if (!model.getIndexer().getKnownMMUris().contains(metamodelURI)) {
+			throw new HawkMetamodelNotFound();
 		}
-
-		throw new HawkTypeNotFound();
+		try {
+			return model.getIntrospector().getAttributes(metamodelURI, typeName);
+		} catch (NoSuchElementException ex) {
+			throw new HawkTypeNotFound();
+		}
 	}
 
 	@Override

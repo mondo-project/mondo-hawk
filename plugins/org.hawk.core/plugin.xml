@@ -10,6 +10,7 @@
    <extension-point id="org.hawk.core.MetaModelUpdaterExtensionPoint" name="MetaModelUpdaterExtensionPoint" schema="schema/org.hawk.core.MetaModelUpdaterExtensionPoint.exsd"/>
    <extension-point id="org.hawk.core.HawkFactoryExtensionPoint" name="HawkFactoryExtensionPoint" schema="schema/org.hawk.core.HawkFactoryExtensionPoint.exsd"/>
    <extension-point id="org.hawk.core.GraphChangeListenerExtensionPoint" name="GraphChangeListenerExtensionPoint" schema="schema/org.hawk.core.GraphChangeListenerExtensionPoint.exsd"/>
+   <extension-point id="org.hawk.core.IndexerIntrospectionExtensionPoint" name="IndexerIntrospectionExtensionPoint" schema="schema/org.hawk.core.IndexerIntrospectionExtensionPoint.exsd"/>
    <extension
          point="org.hawk.core.HawkFactoryExtensionPoint">
       <hawkFactory

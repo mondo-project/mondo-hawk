@@ -487,19 +487,8 @@ service Hawk {
 	3: HawkMetamodelNotFound err3 /* The selected Hawk instance does not have a metamodel with that URI. */ 
 	) 
 	
-  /* Lists the names of the types registered for a certain metamodel in an instance. Auth needed: Yes */
-  list<ModelElementType> listTypes(
-	/* The name of the Hawk instance. */ 1: required string hawkInstanceName,
-	/* The URI of the metamodel. */ 2: required string metamodelURI,
-  )
-  throws (
-	1: HawkInstanceNotFound err1 /* No Hawk instance exists with that name. */ 
-	2: HawkInstanceNotRunning err2 /* The selected Hawk instance is not running. */ 
-	3: HawkMetamodelNotFound err3 /* The selected Hawk instance does not have a metamodel with that URI. */ 
-	) 
-	
-  /* Fetches all information about a type registered for a certain metamodel in an instance. Auth needed: Yes */
-  ModelElementType fetchType(
+  /* Lists the names of the attributes in a type registered for a certain metamodel in an instance. Auth needed: Yes */
+  list<string> listAttributeNames(
 	/* The name of the Hawk instance. */ 1: required string hawkInstanceName,
 	/* The URI of the metamodel. */ 2: required string metamodelURI,
 	/* The name of the type. */ 3: required string typeName,
