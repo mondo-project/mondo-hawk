@@ -378,6 +378,7 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 			updateTimer.shutdownNow();
 			updateTimer.awaitTermination(SHUTDOWN_WAIT_SECONDS, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
 			LOGGER.error("Wait for scheduled tasks was interrupted", e);
 		}
 

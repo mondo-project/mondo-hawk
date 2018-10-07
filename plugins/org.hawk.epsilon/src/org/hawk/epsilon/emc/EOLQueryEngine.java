@@ -33,9 +33,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 
 import org.eclipse.epsilon.common.parse.problem.ParseProblem;
 import org.eclipse.epsilon.eol.EolModule;
@@ -92,41 +90,19 @@ import org.slf4j.LoggerFactory;
 public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 
 	/**
-	 * Allows a query to be cancelled by the user according to an arbitrary
-	 * {@link Callable<Boolean>} instance. The function is polled periodically
-	 * to reduce overhead.
+	 * Allows a query to be cancelled by the user according to an arbitrary binary flag.
+	 * This could be used e.g. from an Eclipse job listener.
 	 */
-	protected class CallablePollingExecutionController extends DefaultExecutionController {
-		private final Callable<Boolean> callable;
-		private final Timer timer;
-
+	public static class SettableExecutionController extends DefaultExecutionController {
 		private volatile boolean isTerminated = false;
-
-		public CallablePollingExecutionController(Callable<Boolean> isCancelled) {
-			this.callable = isCancelled;
-			this.timer = new Timer();
-
-			timer.schedule(new TimerTask() {
-				@Override
-				public void run() {
-					try {
-						isTerminated = callable.call();
-					} catch (Exception e) {
-						LOGGER.error("Failed to poll cancellation callable: terminating job", e);
-						isTerminated = true;
-					}
-				}
-			}, 0l, 200l);
-		}
 
 		@Override
 		public boolean isTerminated() {
 			return isTerminated;
 		}
 
-		@Override
-		public void dispose() {
-			timer.cancel();
+		public void setTerminated(boolean terminated) {
+			this.isTerminated = terminated;
 		}
 	}
 
@@ -807,10 +783,15 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 
 		module.getContext().getModelRepository().addModel(model);
 		addQueryArguments(context, module);
-		if (context != null && context.containsKey(IQueryEngine.PROPERTY_ISCANCELLED_CALLABLE)) {
+		if (context != null && context.containsKey(IQueryEngine.PROPERTY_CANCEL_CONSUMER)) {
 			@SuppressWarnings("unchecked")
-			final Callable<Boolean> isCancelled = (Callable<Boolean>) context.get(IQueryEngine.PROPERTY_ISCANCELLED_CALLABLE);
-			module.getContext().getExecutorFactory().setExecutionController(new CallablePollingExecutionController(isCancelled));
+			final Consumer<Runnable> cancelProvider = (Consumer<Runnable>) context.get(IQueryEngine.PROPERTY_CANCEL_CONSUMER);
+
+			final SettableExecutionController controller = new SettableExecutionController();
+			module.getContext().getExecutorFactory().setExecutionController(controller);
+			cancelProvider.accept(() -> {
+				controller.setTerminated(true);
+			});
 		}
 	}
 

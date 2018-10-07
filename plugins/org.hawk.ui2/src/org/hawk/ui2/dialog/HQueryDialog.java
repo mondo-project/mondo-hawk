@@ -22,7 +22,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -130,7 +130,6 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 
 				queryButton.setText("Run Query");
 				getButton(IDialogConstants.OK_ID).setEnabled(true);
-				resultField.setText(result != null ? result.toString() : "<null> returned (if this unexpected, check console for errors)");
 
 				final long endMillis = System.currentTimeMillis();
 				final long elapsedMillis = endMillis - startMillis;
@@ -154,9 +153,21 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 			setMessage("Running query...");
 
 			Job runQueryJob = new Job("Running query in " + index.getName()) {
+				private Runnable doCancel;
+
+				@Override
+				protected void canceling() {
+					if (doCancel != null) {
+						doCancel.run();
+					}
+				}
+
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
-					context.put(IQueryEngine.PROPERTY_ISCANCELLED_CALLABLE, (Callable<Boolean>) monitor::isCanceled);
+					// If the user cancels the job, then the query engine cancel callback should be invoked
+					context.put(IQueryEngine.PROPERTY_CANCEL_CONSUMER, (Consumer<Runnable>) (doCancel) -> {
+						this.doCancel = doCancel;
+					}); 
 					Display.getDefault().syncExec(() -> {
 						currentQueryMonitor = monitor;
 						queryButton.setText("Stop Query");
@@ -173,7 +184,13 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 						} else {
 							result = index.query(queryText, query, context);
 						}
-
+						final Object endResult = result;
+						Display.getDefault().syncExec(() -> {
+							if (!resultField.isDisposed()) {
+								resultField.setText(endResult != null ? endResult.toString()
+									: "<null> returned (if this unexpected, check console for errors)");
+							}
+						});
 					} catch (Exception ex) {
 						final String error = "Error while running the query: " + ex.getMessage();
 						Activator.logError(error, ex);
@@ -183,10 +200,6 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 								resultField.setStyleRange(createRedBoldRange(error.length()));
 							}
 						});
-
-						if (!monitor.isCanceled()) {
-							return new Status(IStatus.ERROR, getBundleName(), "Failed: " + ex.getMessage(), ex);
-						}
 					} finally {
 						Display.getDefault().syncExec(new CompletedQueryRunnable(start, result));
 					}

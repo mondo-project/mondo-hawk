@@ -105,11 +105,12 @@ public interface IQueryEngine {
 	public static final String PROPERTY_ARGUMENTS = "ARGUMENTS";
 
 	/**
-	 * If set, this key should be associated to a {@link java.util.concurrent.Callable<Boolean>} that will return
-	 * <code>true</code> if the query should be cancelled, or <code>false</code>
-	 * otherwise. The query engine will control the timing used to invoke the function.
+	 * If set, this key should be associated to a {@link Consumer<Runnable>} that
+	 * will be invoked shortly before the query starts, passing a {@link Runnable}
+	 * that can be used in a thread-safe manner from the caller's side to cancel the
+	 * query.
 	 */
-	public static final String PROPERTY_ISCANCELLED_CALLABLE = "IS_CANCELLED_F";
+	public static final String PROPERTY_CANCEL_CONSUMER = "EXEC_CANCEL_CONSUMER";
 
 	IAccessListener calculateDerivedAttributes(IModelIndexer m,
 			Iterable<IGraphNode> nodes) throws InvalidQueryException,
