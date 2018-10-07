@@ -40,9 +40,9 @@ public class EMFMetamodelResourceFactoryTest {
 	@Test
 	public void separateJDTAST() throws Exception {
 		EMFMetaModelResourceFactory mmf = new EMFMetaModelResourceFactory();
-		assertEquals(1, EPackage.Registry.INSTANCE.size());
+		final int sizeBeforeParsing = EPackage.Registry.INSTANCE.size();
 		IHawkMetaModelResource resource = mmf.parse(new File("resources/JDTAST.ecore"));
-		assertEquals(5, EPackage.Registry.INSTANCE.size());
+		assertEquals(sizeBeforeParsing + 3, EPackage.Registry.INSTANCE.size());
 
 		final Map<String, String> sDumped = new LinkedHashMap<>();
 		for (IHawkObject obj : resource.getAllContents()) {
@@ -59,13 +59,12 @@ public class EMFMetamodelResourceFactoryTest {
 		for (String nsURI : sDumped.keySet()) {
 			EPackage.Registry.INSTANCE.remove(nsURI);
 		}
-		// During dumping, a third metamodel is added
-		assertEquals(3, EPackage.Registry.INSTANCE.size());
 
+		final int sizeBeforeParsingString = EPackage.Registry.INSTANCE.size();
 		mmf = new EMFMetaModelResourceFactory();
 		for (Entry<String, String> entry : sDumped.entrySet()) {
 			mmf.parseFromString(IMetaModelResourceFactory.DUMPED_PKG_PREFIX + entry.getKey(), entry.getValue());
 		}
-		assertEquals(6, EPackage.Registry.INSTANCE.size());
+		assertEquals(sizeBeforeParsingString + 3, EPackage.Registry.INSTANCE.size());
 	}
 }
