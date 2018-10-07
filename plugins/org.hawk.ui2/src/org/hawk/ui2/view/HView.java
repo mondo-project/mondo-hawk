@@ -43,7 +43,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -157,9 +157,6 @@ public class HView extends ViewPart {
 		}
 	}
 
-	class NameSorter extends ViewerSorter {
-	}
-
 	/**
 	 * The constructor.
 	 */
@@ -187,7 +184,7 @@ public class HView extends ViewPart {
 		viewer.setContentProvider(hm);
 		vlp = new ViewLabelProvider();
 		viewer.setLabelProvider(vlp);
-		viewer.setSorter(new NameSorter());
+		viewer.setComparator(new ViewerComparator());
 		viewer.setInput(getViewSite());
 
 		TableColumn c = new TableColumn(viewer.getTable(), SWT.FULL_SELECTION);

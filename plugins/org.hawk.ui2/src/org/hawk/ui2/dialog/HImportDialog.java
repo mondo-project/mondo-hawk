@@ -31,8 +31,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -188,7 +188,7 @@ public class HImportDialog extends Dialog {
 				return entry.name + (entry.state != HawkState.STOPPED ? " (running)" : "");
 			}
 		});
-		tblvInstances.setSorter(new ViewerSorter());
+		tblvInstances.setComparator(new ViewerComparator());
 		tblvInstances.setFilters(new ViewerFilter[] {
 				new RemoveExistingHawksFilter(),
 				new RemoveHawksWithUnknownDBTypeFilter()
