@@ -777,7 +777,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	public Collection<IndexedAttributeParameters> getIndexedAttributes() {
 		final List<IndexedAttributeParameters> attrs = new ArrayList<>();
 		try {
-			for (DerivedAttributeSpec spec : client.get().listDerivedAttributes(name)) {
+			for (IndexedAttributeSpec spec : client.get().listIndexedAttributes(name)) {
 				IndexedAttributeParameters params = new IndexedAttributeParameters(
 						spec.metamodelUri, spec.typeName, spec.attributeName
 						);
