@@ -64,6 +64,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.hawk.core.IStateListener;
 import org.hawk.core.query.IQueryEngine;
 import org.hawk.osgiserver.HModel;
+import org.hawk.osgiserver.HModelSchedulingRule;
 import org.hawk.ui2.Activator;
 import org.osgi.framework.FrameworkUtil;
 

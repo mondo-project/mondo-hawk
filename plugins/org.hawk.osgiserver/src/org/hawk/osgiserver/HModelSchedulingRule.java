@@ -1,13 +1,12 @@
-package org.hawk.ui2.dialog;
+package org.hawk.osgiserver;
 
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.hawk.osgiserver.HModel;
 
 /**
  * Job scheduling rule that prevents two jobs from running at once on the same
  * Hawk HModel.
  */
-class HModelSchedulingRule implements ISchedulingRule {
+public class HModelSchedulingRule implements ISchedulingRule {
 	private final HModel hawkModel;
 
 	public HModelSchedulingRule(HModel hawkModel) {

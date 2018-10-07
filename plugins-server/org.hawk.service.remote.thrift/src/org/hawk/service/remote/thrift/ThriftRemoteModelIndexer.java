@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledFuture;
+import java.util.function.Supplier;
 
 import org.apache.activemq.artemis.api.core.client.ClientMessage;
 import org.apache.activemq.artemis.api.core.client.MessageHandler;
@@ -75,6 +76,7 @@ import org.hawk.service.api.HawkStateEvent;
 import org.hawk.service.api.IndexedAttributeSpec;
 import org.hawk.service.api.InvalidQuery;
 import org.hawk.service.api.MetamodelParserDetails;
+import org.hawk.service.api.QueryReport;
 import org.hawk.service.api.Repository;
 import org.hawk.service.api.Subscription;
 import org.hawk.service.api.SubscriptionDurability;
@@ -215,7 +217,21 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 				opts.setIncludeNodeIDs(true);
 				opts.setIncludeContained(false);
 
-				return client.timedQuery(name, query, language, opts);
+				final String uuid = client.get().asyncQuery(name, query, language, opts);
+				if (context.containsKey(PROPERTY_CANCEL_CONSUMER)) {
+					@SuppressWarnings("unchecked")
+					java.util.function.Consumer<Runnable> consumer = (java.util.function.Consumer<Runnable>) context.get(PROPERTY_CANCEL_CONSUMER);
+					consumer.accept(() -> {
+						try {
+							client.get().cancelAsyncQuery(uuid);
+						} catch (TException e) {
+							LOGGER.error("Failed to cancel query " + uuid, e);
+						}
+					});
+				}
+				QueryReport result = client.get().fetchAsyncQueryResults(uuid);
+
+				return result;
 			} catch (UnknownQueryLanguage|InvalidQuery ex) {
 				throw new InvalidQueryException(ex);
 			} catch (FailedQuery ex) {
@@ -346,7 +362,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 				// Update both our local and remote copies of the credentials
 				credStore.put(location,
 						new ICredentialsStore.Credentials(username, password));
-				client.updateRepositoryCredentials(
+				client.get().updateRepositoryCredentials(
 					name, location, new Credentials(username, password));
 			} catch (Exception e) {
 				console.printerrln(e);
@@ -407,7 +423,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 		@Override
 		public boolean isFrozen() {
 			try {
-				return client.isFrozen(name, location);
+				return client.get().isFrozen(name, location);
 			} catch (TException e) {
 				LOGGER.error(String.format(
 					"Could not retrieve frozen state of repository %s from remote Hawk %s",
@@ -419,7 +435,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 		@Override
 		public void setFrozen(boolean f) {
 			try {
-				client.setFrozen(name, location, f);
+				client.get().setFrozen(name, location, f);
 			} catch (TException e) {
 				LOGGER.error(String.format(
 					"Could not change frozen state of repository %s of remote Hawk %s",
@@ -429,7 +445,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	}
 
 	private final String name, location;
-	private final Client client;
+	private final ThreadLocal<Client> client;
 	private final IConsole console;
 
 	/** Folder containing the Hawk properties.xml file. */
@@ -439,13 +455,14 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 
 	private final List<String> enabledPlugins;
 
-	private CompositeStateListener stateListener = new CompositeStateListener();
-	private Consumer consumer;
+	private final CompositeStateListener stateListener = new CompositeStateListener();
+	private Consumer artemisConsumer;
 
-	public ThriftRemoteModelIndexer(String name, String location, File parentFolder, Client client, ICredentialsStore credStore, IConsole console, List<String> enabledPlugins) throws IOException {
+	public ThriftRemoteModelIndexer(String name, String location, File parentFolder, Supplier<Client> clientSupplier,
+			ICredentialsStore credStore, IConsole console, List<String> enabledPlugins) throws IOException {
 		this.name = name;
 		this.location = location;
-		this.client = client;
+		this.client = ThreadLocal.withInitial(clientSupplier);
 		this.credStore = credStore;
 		this.console = console;
 		this.parentFolder = parentFolder;
@@ -483,21 +500,22 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 
 	@Override
 	public void requestImmediateSync() throws Exception {
-		client.syncInstance(name, false);
+		client.get().syncInstance(name, false);
 	}
 
 	@Override
 	public void shutdown(ShutdownRequestType type) throws Exception {
 		if (type == ShutdownRequestType.ALWAYS) {
 			// for remote instances, we only honour explicit requests by users.
-			client.stopInstance(name);
+			client.get().stopInstance(name);
 		}
+		artemisConsumer.closeSession();
 	}
 
 	@Override
 	public void delete() throws Exception {
-		client.removeInstance(name);
-		consumer.closeSession();
+		client.get().removeInstance(name);
+		artemisConsumer.closeSession();
 	}
 
 	@Override
@@ -505,11 +523,11 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 		console.printerrln("Graph is not accessible for " + ThriftRemoteHawk.class.getName());
 		return null;
 	}
-
+	
 	@Override
 	public Set<IVcsManager> getRunningVCSManagers() {
 		try {
-			List<Repository> repositories = client.listRepositories(name);
+			List<Repository> repositories = client.get().listRepositories(name);
 			Set<IVcsManager> dummies = new HashSet<>();
 			for (final Repository repo : repositories) {
 				dummies.add(new DummyVcsManager(repo.uri, repo.type));
@@ -524,7 +542,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	@Override
 	public Set<String> getKnownMMUris() {
 		try {
-			return new HashSet<>(client.listMetamodels(name));
+			return new HashSet<>(client.get().listMetamodels(name));
 		} catch (TException e) {
 			console.printerrln(e);
 			return Collections.emptySet();
@@ -542,7 +560,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 		for (File f : files) {
 			thriftFiles.add(APIUtils.convertJavaFileToThriftFile(f));
 		}
-		client.registerMetamodels(name, thriftFiles);
+		client.get().registerMetamodels(name, thriftFiles);
 	}
 
 	@Override
@@ -564,7 +582,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 
 			final Repository repo = new Repository(vcs.getLocation(), vcs.getType());
 			repo.setIsFrozen(false);
-			client.addRepository(name, repo, credentials);
+			client.get().addRepository(name, repo, credentials);
 		} catch (Exception e) {
 			console.printerrln("Could not add the specified repository");
 			console.printerrln(e);
@@ -599,21 +617,18 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	@Override
 	public void init(int minDelay, int maxDelay) throws Exception {
 		try {
-			client.startInstance(name);
+			client.get().startInstance(name);
 		} catch (HawkInstanceNotFound ex) {
-			client.createInstance(name, dbType, minDelay, maxDelay, enabledPlugins);
+			client.get().createInstance(name, dbType, minDelay, maxDelay, enabledPlugins);
 		}
 		connectToArtemis();
 	}
 
 	protected void connectToArtemis() {
-		if (consumer != null && consumer.isSessionOpen()) {
-			return;
-		}
 		try {
 			HawkState currentState = HawkState.RUNNING;
 			String currentInfo = "";
-			for (HawkInstance instance : client.listInstances()) {
+			for (HawkInstance instance : client.get().listInstances()) {
 				if (name.equals(instance.getName())) {
 					currentState = instance.getState();
 					currentInfo = instance.getMessage();
@@ -621,14 +636,18 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 			}
 
 			org.hawk.core.ICredentialsStore.Credentials creds = HManager.getInstance().getCredentialsStore().get(location);
-			Subscription subState = client.watchStateChanges(name);
-			consumer = APIUtils.connectToArtemis(subState, SubscriptionDurability.TEMPORARY);
-			if (creds != null) {
-				consumer.openSession(creds.getUsername(), creds.getPassword());
-			} else {
-				consumer.openSession(null, null);
+			if (artemisConsumer == null) {
+				Subscription subState = client.get().watchStateChanges(name);
+				artemisConsumer = APIUtils.connectToArtemis(subState, SubscriptionDurability.TEMPORARY);
 			}
-			consumer.processChangesAsync(new StatePropagationConsumer(currentState, currentInfo));
+			if (!artemisConsumer.isSessionOpen()) {
+				if (creds != null) {
+					artemisConsumer.openSession(creds.getUsername(), creds.getPassword());
+				} else {
+					artemisConsumer.openSession(null, null);
+				}
+				artemisConsumer.processChangesAsync(new StatePropagationConsumer(currentState, currentInfo));
+			}
 		} catch (HawkInstanceNotFound nf) {
 			/*
 			 * Not found yet: this is probably because of a call from the
@@ -656,7 +675,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	public Map<String, IQueryEngine> getKnownQueryLanguages() {
 		try {
 			final Map<String, IQueryEngine> dummyMap = new HashMap<>();
-			for (final String language : client.listQueryLanguages(name)) {
+			for (final String language : client.get().listQueryLanguages(name)) {
 				dummyMap.put(language, new RemoteQueryEngine(language));
 			}
 			return dummyMap;
@@ -694,7 +713,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 		spec.setDerivationLogic(derivationlogic);
 
 		try {
-			client.addDerivedAttribute(name, spec);
+			client.get().addDerivedAttribute(name, spec);
 		} catch (TException e) {
 			console.printerrln("Could not add derived attribute");
 			console.printerrln(e);
@@ -709,7 +728,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 		spec.setAttributeName(attributename);
 
 		try {
-			client.addIndexedAttribute(name, spec);
+			client.get().addIndexedAttribute(name, spec);
 		} catch (TException e) {
 			console.printerrln("Could not add indexed attribute");
 			console.printerrln(e);
@@ -733,7 +752,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	public Collection<IndexedAttributeParameters> getDerivedAttributes() {
 		final List<IndexedAttributeParameters> attrs = new ArrayList<>();
 		try {
-			for (DerivedAttributeSpec spec : client.listDerivedAttributes(name)) {
+			for (DerivedAttributeSpec spec : client.get().listDerivedAttributes(name)) {
 				DerivedAttributeParameters params = new DerivedAttributeParameters(
 						spec.metamodelUri, spec.typeName, spec.attributeName,
 						spec.attributeType, spec.isMany, spec.isOrdered,
@@ -752,7 +771,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	public Collection<IndexedAttributeParameters> getIndexedAttributes() {
 		final List<IndexedAttributeParameters> attrs = new ArrayList<>();
 		try {
-			for (DerivedAttributeSpec spec : client.listDerivedAttributes(name)) {
+			for (DerivedAttributeSpec spec : client.get().listDerivedAttributes(name)) {
 				IndexedAttributeParameters params = new IndexedAttributeParameters(
 						spec.metamodelUri, spec.typeName, spec.attributeName
 						);
@@ -784,7 +803,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	public boolean isRunning() {
 		connectToArtemis();
 		try {
-			for (HawkInstance instance : client.listInstances()) {
+			for (HawkInstance instance : client.get().listInstances()) {
 				if (instance.name.equals(name)) {
 					return instance.state != HawkState.STOPPED;
 				}
@@ -820,7 +839,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 
 	@Override
 	public void removeMetamodels(String... metamodelURIs) throws Exception {
-		client.unregisterMetamodels(name, Arrays.asList(metamodelURIs));
+		client.get().unregisterMetamodels(name, Arrays.asList(metamodelURIs));
 	}
 
 	@Override
@@ -858,13 +877,13 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 
 	@Override
 	public void removeVCSManager(IVcsManager vcs) throws Exception {
-		client.removeRepository(name, vcs.getLocation());
+		client.get().removeRepository(name, vcs.getLocation());
 	}
 
 	@Override
 	public void setPolling(int base, int max) {
 		try {
-			client.configurePolling(name, base, max);
+			client.get().configurePolling(name, base, max);
 		} catch (TException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
@@ -877,7 +896,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 		spec.setTypeName(typename);
 		spec.setAttributeName(attributename);
 		try {
-			client.removeIndexedAttribute(name, spec);
+			client.get().removeIndexedAttribute(name, spec);
 			return true;
 		} catch (TException e) {
 			LOGGER.error(e.getMessage(), e);
@@ -892,7 +911,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 		spec.setTypeName(typeName);
 		spec.setAttributeName(attributeName);
 		try {
-			client.removeDerivedAttribute(name, spec);
+			client.get().removeDerivedAttribute(name, spec);
 			return true;
 		} catch (TException e) {
 			LOGGER.error(e.getMessage(), e);
@@ -940,7 +959,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	@Override
 	public Set<String> getKnownMetamodelFileExtensions() {
 		try {
-			List<MetamodelParserDetails> details = client.listMetamodelParsers(name);
+			List<MetamodelParserDetails> details = client.get().listMetamodelParsers(name);
 			Set<String> extensions = new HashSet<>();
 			for (MetamodelParserDetails e : details) {
 				extensions.addAll(e.getFileExtensions());
@@ -955,7 +974,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	@Override
 	public Set<String> getKnownMetaModelParserTypes() {
 		try {
-			List<MetamodelParserDetails> details = client.listMetamodelParsers(name);
+			List<MetamodelParserDetails> details = client.get().listMetamodelParsers(name);
 			Set<String> types = new HashSet<>();
 			for (MetamodelParserDetails e : details) {
 				types.add(e.getIdentifier());

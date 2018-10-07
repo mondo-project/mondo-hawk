@@ -51,6 +51,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.FilteredResourcesSelectionDialog;
 import org.hawk.osgiserver.HModel;
+import org.hawk.osgiserver.HModelSchedulingRule;
 import org.hawk.ui2.util.TypeCascadeSelectionAdapter;
 import org.osgi.framework.FrameworkUtil;
 

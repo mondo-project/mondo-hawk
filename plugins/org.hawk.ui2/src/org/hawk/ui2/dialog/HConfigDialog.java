@@ -60,6 +60,7 @@ import org.hawk.core.IStateListener;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.util.IndexedAttributeParameters;
 import org.hawk.osgiserver.HModel;
+import org.hawk.osgiserver.HModelSchedulingRule;
 import org.hawk.ui2.view.HView;
 import org.osgi.framework.FrameworkUtil;
 

@@ -44,6 +44,7 @@ import org.hawk.graph.MetamodelNode;
 import org.hawk.graph.Slot;
 import org.hawk.graph.TypeNode;
 import org.hawk.osgiserver.HModel;
+import org.hawk.osgiserver.HModelSchedulingRule;
 import org.hawk.ui2.util.TypeCascadeSelectionAdapter;
 import org.osgi.framework.FrameworkUtil;
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 University of York.
+ * Copyright (c) 2015-2018 University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -20,15 +20,22 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.function.Consumer;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -42,6 +49,10 @@ import org.apache.activemq.artemis.api.core.client.ClientSessionFactory;
 import org.apache.activemq.artemis.api.core.client.ServerLocator;
 import org.apache.activemq.artemis.core.remoting.impl.invm.InVMConnectorFactory;
 import org.apache.thrift.TException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.core.IStateListener.HawkState;
@@ -58,6 +69,7 @@ import org.hawk.core.query.QueryExecutionException;
 import org.hawk.core.runtime.LocalHawkFactory;
 import org.hawk.core.util.GraphChangeAdapter;
 import org.hawk.core.util.IndexedAttributeParameters;
+import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.MetamodelNode;
@@ -65,6 +77,7 @@ import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.TypeNode;
 import org.hawk.osgiserver.HManager;
 import org.hawk.osgiserver.HModel;
+import org.hawk.osgiserver.HModelSchedulingRule;
 import org.hawk.osgiserver.SecurePreferencesCredentialsStore;
 import org.hawk.service.api.Credentials;
 import org.hawk.service.api.DerivedAttributeSpec;
@@ -75,7 +88,9 @@ import org.hawk.service.api.Hawk;
 import org.hawk.service.api.HawkInstance;
 import org.hawk.service.api.HawkInstanceNotFound;
 import org.hawk.service.api.HawkInstanceNotRunning;
+import org.hawk.service.api.HawkMetamodelNotFound;
 import org.hawk.service.api.HawkQueryOptions;
+import org.hawk.service.api.HawkTypeNotFound;
 import org.hawk.service.api.IndexedAttributeSpec;
 import org.hawk.service.api.InvalidDerivedAttributeSpec;
 import org.hawk.service.api.InvalidIndexedAttributeSpec;
@@ -84,6 +99,7 @@ import org.hawk.service.api.InvalidPollingConfiguration;
 import org.hawk.service.api.InvalidQuery;
 import org.hawk.service.api.MetamodelParserDetails;
 import org.hawk.service.api.ModelElement;
+import org.hawk.service.api.ModelElementType;
 import org.hawk.service.api.QueryReport;
 import org.hawk.service.api.QueryResult;
 import org.hawk.service.api.QueryResult._Fields;
@@ -112,6 +128,73 @@ import com.google.common.collect.ImmutableSet;
  * Entry point to the Hawk model indexers, implementing a Thrift-based API.
  */
 public final class HawkThriftIface implements Hawk.Iface {
+
+	protected class AsyncQueryExecutionJob extends Job {
+		private final String uuid;
+		private final String hawkInstanceName;
+		private final String language;
+		private final String query;
+		private final HawkQueryOptions options;
+
+		private Runnable doCancel;
+		private CompletableFuture<QueryReport> report = new CompletableFuture<>();
+		private long startMillis;
+
+		protected AsyncQueryExecutionJob(String uuid, String language, HawkQueryOptions options,
+				String query, String hawkInstanceName) {
+			super("Running query " + uuid);
+
+			this.language = language;
+			this.options = options;
+			this.query = query;
+			this.uuid = uuid;
+			this.hawkInstanceName = hawkInstanceName;
+		}
+
+		@Override
+		protected void canceling() {
+			if (doCancel != null) {
+				doCancel.run();
+				
+				QueryReport rValue = new QueryReport();
+				QueryResult rResult = new QueryResult();
+				rResult.setVString("cancelled");
+				rValue.setResult(rResult);
+				rValue.setWallMillis(System.currentTimeMillis() - startMillis);
+				rValue.setIsCancelled(true);
+				report.complete(rValue);
+			}
+		}
+
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
+			try {
+				startMillis = System.currentTimeMillis();
+				final QueryReport rValue = performTimedQuery(hawkInstanceName, query, language, options, this::setDoCancel);
+				report.complete(rValue);
+				return new Status(IStatus.OK, getBundleName(), "Completed query " + uuid);
+			} catch (Throwable e) {
+				if (!report.isDone()) {
+					report.completeExceptionally(e);
+					return new Status(IStatus.ERROR, getBundleName(),
+						"Query " + uuid + " failed: " + e.getMessage(), e);
+				}
+			}
+			return new Status(IStatus.OK, getBundleName(), "Cancelled query " + uuid);
+		}
+
+		public Future<QueryReport> getQueryReport() {
+			return report;
+		}
+
+		private String getBundleName() {
+			return FrameworkUtil.getBundle(getClass()).getSymbolicName();
+		}
+
+		private void setDoCancel(Runnable doCancel) {
+			this.doCancel = doCancel;
+		}
+	}
 
 	/**
 	 * {@link IGraphChangeListener} that waits for a synchronisation process to end and then start.
@@ -151,6 +234,10 @@ public final class HawkThriftIface implements Hawk.Iface {
 	// TODO: create Equinox declarative service for using this information for ACL
 	@SuppressWarnings("unused")
 	private final HttpServletRequest request;
+
+	/* Keeps track of all the running asynchronous queries. */
+	private static final Map<String, AsyncQueryExecutionJob> ASYNC_QUERIES
+		= new ConcurrentHashMap<>();
 
 	private static enum CollectElements { ALL, ONLY_ROOTS; }
 
@@ -233,13 +320,25 @@ public final class HawkThriftIface implements Hawk.Iface {
 	public QueryResult query(String name, String query, String language, HawkQueryOptions opts)
 			throws HawkInstanceNotFound, UnknownQueryLanguage, InvalidQuery,
 			FailedQuery, TException {
+		return performQuery(name, query, language, opts, null);
+	}
+
+	@Override
+	public QueryReport timedQuery(String name, String query, String language, HawkQueryOptions opts)
+			throws HawkInstanceNotFound, UnknownQueryLanguage, InvalidQuery,
+			FailedQuery, TException {
+		return performTimedQuery(name, query, language, opts, null);
+	}
+
+	private QueryResult performQuery(String name, String query, String language, HawkQueryOptions opts, Consumer<Runnable> cancelConsumer)
+			throws HawkInstanceNotFound, HawkInstanceNotRunning, InvalidQuery, FailedQuery, TException {
 		final HModel model = getRunningHawkByName(name);
 		try {
 			final Map<String, Object> context = new HashMap<>();
 			if (opts.isSetDefaultNamespaces()) {
 				context.put(IQueryEngine.PROPERTY_DEFAULTNAMESPACES, opts.getDefaultNamespaces());
 			}
-
+	
 			if (opts.isSetRepositoryPattern() || opts.isSetFilePatterns()) {
 				final boolean allRepositories = !opts.isSetRepositoryPattern() || "*".equals(opts.getRepositoryPattern());
 				final boolean allFiles = !opts.isSetFilePatterns() || Arrays.asList("*").equals(opts.getFilePatterns());
@@ -248,8 +347,11 @@ public final class HawkThriftIface implements Hawk.Iface {
 					context.put(IQueryEngine.PROPERTY_FILECONTEXT, opts.isSetFilePatterns() ? join(opts.getFilePatterns(), ",") : "*");
 				}
 			}
+			if (cancelConsumer != null) {
+				context.put(IQueryEngine.PROPERTY_CANCEL_CONSUMER, cancelConsumer);
+			}
 			Object ret = model.query(query, language, context);
-
+	
 			final GraphWrapper gw = new GraphWrapper(model.getGraph());
 			final HawkModelElementEncoder enc = new HawkModelElementEncoder(gw);
 			enc.setUseContainment(opts.includeContained);
@@ -262,9 +364,8 @@ public final class HawkThriftIface implements Hawk.Iface {
 			if (!emm.isEverythingIncluded()) {
 				enc.setEffectiveMetamodel(emm);
 			}
-
+	
 			final HawkModelElementTypeEncoder typeEnc = new HawkModelElementTypeEncoder(gw);
-
 			try (final IGraphTransaction t = model.getGraph().beginTransaction()) {
 				return encodeValue(model, ret, enc, typeEnc);
 			}
@@ -277,19 +378,15 @@ public final class HawkThriftIface implements Hawk.Iface {
 		}
 	}
 
-	@Override
-	public QueryReport timedQuery(String name, String query, String language, HawkQueryOptions opts)
-			throws HawkInstanceNotFound, UnknownQueryLanguage, InvalidQuery,
-			FailedQuery, TException {
-
+	private QueryReport performTimedQuery(String name, String query, String language, HawkQueryOptions opts, Consumer<Runnable> cancelConsumer)
+			throws HawkInstanceNotFound, UnknownQueryLanguage, InvalidQuery, FailedQuery, TException {
 		final long startMillis = System.currentTimeMillis();
-		final QueryResult result = query(name, query, language, opts);
+		final QueryResult result = performQuery(name, query, language, opts, cancelConsumer);
 		final long endMillis = System.currentTimeMillis();
 
 		final QueryReport queryReport = new QueryReport();
 		queryReport.setResult(result);
 		queryReport.setWallMillis(endMillis - startMillis);
-
 		return queryReport;
 	}
 
@@ -307,6 +404,7 @@ public final class HawkThriftIface implements Hawk.Iface {
 		return sbuf.toString();
 	}
 
+	@SuppressWarnings("unchecked")
 	private QueryResult encodeValue(final HModel model, Object ret,
 			HawkModelElementEncoder enc,
 			HawkModelElementTypeEncoder typeEnc) throws Exception {
@@ -607,7 +705,7 @@ public final class HawkThriftIface implements Hawk.Iface {
 						// Filter by type
 						if (emm.isIncluded(mmURI, tn.getTypeName())) {
 							LOGGER.info("Retrieving elements from type {}", tn.getTypeName());
-							for (final ModelElementNode meNode : tn.getAllInstances()) {
+							for (final ModelElementNode meNode : tn.getAll()) {
 								// Filter by scope
 								if (fileNodes.contains(meNode.getFileNode())) {
 									encoder.encode(meNode);
@@ -849,5 +947,135 @@ public final class HawkThriftIface implements Hawk.Iface {
 		}
 
 		return results;
+	}
+
+	@Override
+	public List<String> listTypeNames(String hawkInstanceName, String metamodelURI)
+			throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, TException {
+		final HModel model = getRunningHawkByName(hawkInstanceName);
+		final IGraphDatabase db = model.getGraph();
+
+		final List<String> typeNames = new ArrayList<>();
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			GraphWrapper gw = new GraphWrapper(db);
+			MetamodelNode mmNode = gw.getMetamodelNodeByNsURI(metamodelURI);
+			if (mmNode == null) {
+				throw new HawkMetamodelNotFound();
+			}
+
+			for (TypeNode tn : mmNode.getTypes()) {
+				typeNames.add(tn.getTypeName());
+			}
+			Collections.sort(typeNames);
+
+			tx.success();
+		} catch (Exception ex) {
+			throw new TException(ex);
+		}
+
+		return typeNames;
+	}
+
+	@Override
+	public List<ModelElementType> listTypes(String hawkInstanceName, String metamodelURI)
+			throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, TException {
+		final HModel model = getRunningHawkByName(hawkInstanceName);
+		final IGraphDatabase db = model.getGraph();
+
+		final List<ModelElementType> types = new ArrayList<>();
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			GraphWrapper gw = new GraphWrapper(db);
+			MetamodelNode mmNode = gw.getMetamodelNodeByNsURI(metamodelURI);
+			if (mmNode == null) {
+				throw new HawkMetamodelNotFound();
+			}
+
+			HawkModelElementTypeEncoder encoder = new HawkModelElementTypeEncoder(gw);
+			for (TypeNode tn : mmNode.getTypes()) {
+				types.add(encoder.encode(tn));
+			}
+			Collections.sort(types, (a, b) -> a.typeName.compareTo(b.typeName));
+
+			tx.success();
+		} catch (Exception ex) {
+			throw new TException(ex);
+		}
+
+		return types;
+	}
+
+	@Override
+	public ModelElementType fetchType(String hawkInstanceName, String metamodelURI, String typeName)
+			throws HawkInstanceNotFound, HawkInstanceNotRunning, HawkMetamodelNotFound, HawkTypeNotFound, TException {
+		final HModel model = getRunningHawkByName(hawkInstanceName);
+		final IGraphDatabase db = model.getGraph();
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			GraphWrapper gw = new GraphWrapper(db);
+			MetamodelNode mmNode = gw.getMetamodelNodeByNsURI(metamodelURI);
+			if (mmNode == null) {
+				throw new HawkMetamodelNotFound();
+			}
+
+			for (TypeNode tn : mmNode.getTypes()) {
+				if (typeName.equals(tn.getTypeName())) {
+					HawkModelElementTypeEncoder encoder = new HawkModelElementTypeEncoder(gw);
+					return encoder.encode(tn);
+				}
+			}
+
+			tx.success();
+		} catch (Exception ex) {
+			throw new TException(ex);
+		}
+
+		throw new HawkTypeNotFound();
+	}
+
+	@Override
+	public String asyncQuery(String hawkInstanceName, String query, String language, HawkQueryOptions options)
+			throws HawkInstanceNotFound, HawkInstanceNotRunning, UnknownQueryLanguage, InvalidQuery, TException {
+		final HModel model = getRunningHawkByName(hawkInstanceName);
+
+		final String queryUUID = UUID.randomUUID().toString();
+		final AsyncQueryExecutionJob timedQueryJob = new AsyncQueryExecutionJob(queryUUID, language, options, query, hawkInstanceName);
+		ASYNC_QUERIES.put(queryUUID, timedQueryJob);
+		timedQueryJob.setRule(new HModelSchedulingRule(model));
+		timedQueryJob.schedule();
+
+		return queryUUID;
+	}
+
+	@Override
+	public void cancelAsyncQuery(String queryID) throws TException {
+		AsyncQueryExecutionJob queryJob = ASYNC_QUERIES.get(queryID);
+		if (queryJob == null) {
+			throw new InvalidQuery("Cannot find query with UUID " + queryID);
+		} else {
+			queryJob.cancel();
+			ASYNC_QUERIES.remove(queryID);
+		}
+	}
+
+	@Override
+	public QueryReport fetchAsyncQueryResults(String queryID) throws TException {
+		AsyncQueryExecutionJob queryJob = ASYNC_QUERIES.get(queryID);
+		if (queryJob == null) {
+			throw new InvalidQuery("Cannot find query with UUID " + queryID);
+		} else {
+			try {
+				return queryJob.getQueryReport().get();
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				final String reason = "Query " + queryID + " was interrupted";
+				LOGGER.error(reason, e);
+				throw new FailedQuery(reason);
+			} catch (ExecutionException e) {
+				LOGGER.error(e.getMessage(), e);
+				throw new FailedQuery(e.getMessage());
+			} finally {
+				ASYNC_QUERIES.remove(queryID);
+			}
+		}
 	}
 }
