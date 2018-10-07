@@ -7,5 +7,5 @@ Bundle-Vendor: University of York, Aston University
 Fragment-Host: org.eclipse.equinox.http.jetty;bundle-version="3.0.200"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.hawk.service.server.gzip
-Require-Bundle: org.eclipse.jetty.http;bundle-version="9.2.13",
- org.eclipse.jetty.servlets;bundle-version="9.2.13"
+Require-Bundle: org.eclipse.jetty.http;bundle-version="9.4.10",
+ org.eclipse.jetty.server;bundle-version="9.4.10"
