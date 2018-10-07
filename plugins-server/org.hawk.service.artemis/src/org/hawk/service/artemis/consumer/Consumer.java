@@ -75,6 +75,7 @@ public class Consumer implements Closeable {
 		params.put(TransportConstants.HOST_PROP_NAME, host);
 		params.put(TransportConstants.PORT_PROP_NAME, port);
 		params.put(TransportConstants.SSL_ENABLED_PROP_NAME, isSSLEnabled);
+		params.put(TransportConstants.USE_NIO_PROP_NAME, true + "");
 		final TransportConfiguration config = new TransportConfiguration(NettyConnectorFactory.class.getName(), params);
 
 		return new Consumer(config, queueAddress, queueName, queueType);
@@ -95,18 +96,24 @@ public class Consumer implements Closeable {
 	}
 
 	public void openSession(String username, String password) throws Exception {
-		if (session != null) return;
-
-		locator = ActiveMQClient.createServerLocatorWithoutHA(transportConfig);
-		sessionFactory = locator.createSessionFactory();
-		session = sessionFactory.createSession(username, password, false, true, true,
-				locator.isPreAcknowledge(), locator.getAckBatchSize());
-		final boolean queueExists = session.queueQuery(new SimpleString(queueName)).isExists();
-		if (!queueExists) {
-			createQueue();
+		if (session == null) {
+			locator = ActiveMQClient.createServerLocatorWithoutHA(transportConfig);
+			sessionFactory = locator.createSessionFactory();
 		}
-		consumer = session.createConsumer(queueName);
-		session.start();
+
+		if (session == null || session.isClosed()) {
+			session = sessionFactory.createSession(username, password, false, true, true,
+				locator.isPreAcknowledge(), locator.getAckBatchSize());
+			final boolean queueExists = session.queueQuery(new SimpleString(queueName)).isExists();
+			if (!queueExists) {
+				createQueue();
+			}
+			session.start();
+		}
+
+		if (consumer == null || consumer.isClosed()) {
+			consumer = session.createConsumer(queueName);
+		}
 	}
 
 	public void commitSession() throws ActiveMQException {

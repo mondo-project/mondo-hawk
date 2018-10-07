@@ -131,7 +131,8 @@ public class Server {
 			.with(TransportConstants.HOST_PROP_NAME, listenToAllInterfaces ? "0.0.0.0" : host)
 			.with(TransportConstants.PORT_PROP_NAME, port + "")
 			.with(TransportConstants.PROTOCOLS_PROP_NAME, "CORE,STOMP")
-			.with(TransportConstants.SSL_ENABLED_PROP_NAME, isSSLEnabled + "");
+			.with(TransportConstants.SSL_ENABLED_PROP_NAME, isSSLEnabled + "")
+			.with(TransportConstants.USE_NIO_PROP_NAME, true + "");
 		if (isSSLEnabled) {
 			// The NettyAcceptor doesn't use the same system properties as the NettyConnector - do it here.
 			putFromProperties(nettyOptions, NettyConnector.ACTIVEMQ_KEYSTORE_PROVIDER_PROP_NAME,
