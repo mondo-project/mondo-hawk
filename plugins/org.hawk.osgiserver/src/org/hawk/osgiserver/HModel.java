@@ -119,7 +119,7 @@ public class HModel implements IStateListener {
 		if (dbType != null) {
 			hm.hawk.setDatabaseType(dbType);
 		}
-		if (hm.getUpdaters() != null && hm.getUpdaters().isEmpty()) {
+		if (hm.getModelUpdaters() != null && hm.getModelUpdaters().isEmpty()) {
 			throw new IllegalArgumentException("Must at least add one updater");
 		}
 
@@ -442,8 +442,8 @@ public class HModel implements IStateListener {
 		return hawk.getModelIndexer().getIndexedAttributes();
 	}
 
-	public List<IModelUpdater> getUpdaters() {
-		return hawk.getModelIndexer().getUpdaters();
+	public List<IModelUpdater> getModelUpdaters() {
+		return hawk.getModelIndexer().getModelUpdaters();
 	}
 
 	public Collection<String> getIndexes() {

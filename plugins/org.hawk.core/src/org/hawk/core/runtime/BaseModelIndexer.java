@@ -335,7 +335,7 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 	}
 
 	@Override
-	public List<IModelUpdater> getUpdaters() {
+	public List<IModelUpdater> getModelUpdaters() {
 		return updaters;
 	}
 
@@ -586,6 +586,11 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 	}
 
 	@Override
+	public IMetaModelUpdater getMetaModelUpdater() {
+		return metamodelupdater;
+	}
+
+	@Override
 	public void setMetaModelUpdater(IMetaModelUpdater u) {
 		if (metamodelupdater == null) {
 			u.run();
@@ -720,7 +725,7 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 		final boolean success = metamodelupdater.addDerivedAttribute(metamodeluri, typename, attributename,
 				attributetype, isMany, isOrdered, isUnique, derivationlanguage, derivationlogic, this);
 		if (success) {
-			for (IModelUpdater u : getUpdaters())
+			for (IModelUpdater u : getModelUpdaters())
 				u.updateDerivedAttribute(metamodeluri, typename, attributename, attributetype, isMany, isOrdered,
 						isUnique, derivationlanguage, derivationlogic);
 		}
@@ -761,7 +766,7 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 			metamodeluri, typename, attributename));
 	
 		if (metamodelupdater.addIndexedAttribute(metamodeluri, typename, attributename, this))
-			for (IModelUpdater u : getUpdaters())
+			for (IModelUpdater u : getModelUpdaters())
 				u.updateIndexedAttribute(metamodeluri, typename, attributename);
 	
 		stateListener.info(String.format(
@@ -1183,7 +1188,7 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 
 		// for each registered updater
 		boolean updatersOK = true;
-		for (IModelUpdater updater : getUpdaters()) {
+		for (IModelUpdater updater : getModelUpdaters()) {
 			updatersOK = updatersOK && internalSynchronise(revision, vcsManager, updater, deleteditems, interestingfiles, monitorTempDir);
 		}
 

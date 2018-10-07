@@ -93,9 +93,17 @@ public interface IModelIndexer {
 	Set<IVcsManager> getRunningVCSManagers();
 
 	/**
-	 * @return running updaters
+	 * @return running model updaters
 	 */
-	List<IModelUpdater> getUpdaters();
+	@Deprecated
+	default List<IModelUpdater> getUpdaters() {
+		return getModelUpdaters();
+	}
+
+	/**
+	 * Returns a list with all the available model updaters.
+	 */
+	List<IModelUpdater> getModelUpdaters();
 
 	/**
 	 * 
@@ -197,6 +205,8 @@ public interface IModelIndexer {
 	 * @return the folder the entire hawk structure is stored in
 	 */
 	File getParentFolder();
+
+	IMetaModelUpdater getMetaModelUpdater();
 
 	void setMetaModelUpdater(IMetaModelUpdater metaModelUpdater);
 

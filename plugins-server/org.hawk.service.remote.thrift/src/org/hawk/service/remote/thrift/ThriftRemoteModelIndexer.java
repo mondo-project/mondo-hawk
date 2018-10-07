@@ -692,6 +692,12 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	}
 
 	@Override
+	public IMetaModelUpdater getMetaModelUpdater() {
+		console.printerrln("Cannot check the metamodel updater in " + this.getClass().getName());
+		return null;
+	}
+
+	@Override
 	public void setMetaModelUpdater(IMetaModelUpdater metaModelUpdater) {
 		console.printerrln("Cannot change the metamodel updater in " + this.getClass().getName());
 	}
@@ -987,7 +993,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer {
 	}
 
 	@Override
-	public List<IModelUpdater> getUpdaters() {
+	public List<IModelUpdater> getModelUpdaters() {
 		console.printerrln("Cannot access updaters in " + this.getClass().getName());
 		return null;
 	}
