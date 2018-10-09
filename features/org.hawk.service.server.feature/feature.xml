@@ -5,17 +5,16 @@
       version="1.2.0.qualifier"
       provider-name="University of York">
 
-   <description url="http://www.example.com/description">
-     This feature brings together the basic components needed for the Hawk
-     server. The Hawk servlets are not included here.
+   <description>
+      This feature brings together the basic components needed for the Hawk server. The Hawk servlets are not included here.
    </description>
 
    <copyright>
-     Copyright (C) 2015-2018 University of York, Aston University.
+      Copyright (C) 2015-2018 University of York, Aston University.
    </copyright>
 
    <license url="https://www.eclipse.org/legal/epl-2.0/">
-     Eclipse Public License - v2.0
+      Eclipse Public License v2.0 with GPLv3.0 Secondary License
    </license>
 
    <requires>

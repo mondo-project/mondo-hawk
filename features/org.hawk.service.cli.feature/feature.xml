@@ -6,15 +6,15 @@
       provider-name="University of York">
 
    <description>
-     Provides OSGi console commands for communicating with a remote Hawk index.
+      Provides OSGi console commands for communicating with a remote Hawk index.
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+   <copyright>
+      Copyright (C) 2015-2018 University of York, Aston University.
    </copyright>
 
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   <license url="https://www.eclipse.org/legal/epl-2.0/">
+      Eclipse Public License v2.0 with GPLv3.0 Secondary License
    </license>
 
    <includes

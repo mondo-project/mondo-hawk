@@ -5,17 +5,16 @@
       version="1.2.0.qualifier"
       provider-name="University of York">
 
-  <description>
-    Provides a console-based Eclipse product to communicate with a remote Hawk
-    index through its Thrift web services.
+   <description>
+      Provides a console-based Eclipse product to communicate with a remote Hawk index through its Thrift web services.
    </description>
 
    <copyright>
-     Copyright (C) 2015-2018 University of York, Aston University.
+      Copyright (C) 2015-2018 University of York, Aston University.
    </copyright>
 
    <license url="https://www.eclipse.org/legal/epl-2.0/">
-      Eclipse Public License - v2.0
+      Eclipse Public License v2.0 with GPLv3.0 Secondary License
    </license>
 
    <requires>

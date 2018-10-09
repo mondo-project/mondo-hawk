@@ -6,16 +6,15 @@
       provider-name="University of York">
 
    <description>
-     This feature provides servlets implementing the Hawk web services, which
-     are automatically added to the OSGi HttpService registry.
+      This feature provides servlets implementing the Hawk web services, which are automatically added to the OSGi HttpService registry.
    </description>
 
    <copyright>
-     Copyright (C) 2015-2018 University of York, Aston University.
+      Copyright (C) 2015-2018 University of York, Aston University.
    </copyright>
 
    <license url="https://www.eclipse.org/legal/epl-2.0/">
-      Eclipse Public License - v2.0
+      Eclipse Public License v2.0 with GPLv3.0 Secondary License
    </license>
 
    <includes

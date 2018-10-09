@@ -6,17 +6,15 @@
       provider-name="University of York">
 
    <description>
-     Provides the capability to expose remote Hawk indices as EMF models. For
-     the model descriptor editor, please install the Developer Tools feature as
-     well.
+      Provides the capability to expose remote Hawk indices as EMF models. For the model descriptor editor, please install the Developer Tools feature as well.
    </description>
 
    <copyright>
-     Copyright (C) 2011-2018 University of York, Aston University.
+      Copyright (C) 2011-2018 University of York, Aston University.
    </copyright>
 
    <license url="https://www.eclipse.org/legal/epl-2.0/">
-     Eclipse Public License - v2.0
+      Eclipse Public License v2.0 with GPLv3.0 Secondary License
    </license>
 
    <requires>

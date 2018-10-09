@@ -6,16 +6,15 @@
       provider-name="Aston University">
 
    <description>
-     Backend implementation based on Greycat many-worlds temporal graphs,
-     with custom Lucene indexing.
+      Backend implementation based on Greycat many-worlds temporal graphs, with custom Lucene indexing.
    </description>
 
    <copyright>
-     Copyright (C) 2018 Aston University.
+      Copyright (C) 2018 Aston University.
    </copyright>
 
    <license url="https://www.eclipse.org/legal/epl-2.0/">
-     Eclipse Public License - v2.0
+      Eclipse Public License v2.0 with GPLv3.0 Secondary License
    </license>
 
    <requires>

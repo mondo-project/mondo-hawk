@@ -6,17 +6,17 @@
       provider-name="University of York">
 
    <description>
-     Provides an EPL-friendly clean-room implementation of a parser for the EXML
-     persistence format used by the open-source SOFTEAM Modelio tool, for use by
-     Hawk.
+      Provides an EPL-friendly clean-room implementation of a parser for the EXML
+persistence format used by the open-source SOFTEAM Modelio tool, for use by
+Hawk.
    </description>
 
    <copyright>
-     Copyright (C) 2015-2018 University of York, Aston University.
+      Copyright (C) 2015-2018 University of York, Aston University.
    </copyright>
 
    <license url="https://www.eclipse.org/legal/epl-2.0/">
-      Eclipse Public License - v2.0
+      Eclipse Public License v2.0 with GPLv3.0 Secondary License
    </license>
 
    <plugin
