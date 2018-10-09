@@ -6,10 +6,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.hawk.service.clients.cli.application.app"
-            name="MONDO CLI Client Product">
+            name="Hawk CLI Client Product">
          <property
                name="appName"
-               value="MONDO CLI Client Product">
+               value="Hawk CLI Client Product">
          </property>
       </product>
    </extension>

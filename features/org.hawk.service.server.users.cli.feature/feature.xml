@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.hawk.service.server.users.cli.feature"
-      label="MONDO User Management CLI Client Feature"
+      label="Hawk User Management CLI Client Feature"
       version="1.2.0.qualifier"
       provider-name="University of York">
 

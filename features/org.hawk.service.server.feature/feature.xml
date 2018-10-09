@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.hawk.service.server.feature"
-      label="MONDO Integration - Server Feature"
+      label="Hawk Integration - Server Feature"
       version="1.2.0.qualifier"
       provider-name="University of York">
 
