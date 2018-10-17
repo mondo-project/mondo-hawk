@@ -15,6 +15,8 @@ The Neo4j backend can be installed from this GPLv3-licensed site. If you use thi
 
 The [wiki](https://github.com/mondo-project/mondo-hawk/wiki) contains various resources for users and developers, including a user manual and links to screencasts and scientific papers.
 
+If you have questions, please visit the official [Eclipse Hawk](https://www.eclipse.org/forums/index.php/sf/thread/442/sub/0/?SQ=c1bf1ac983010df5037be417b0a8d5a1) forum.
+
 Acknowledgments
 ---------------
 
