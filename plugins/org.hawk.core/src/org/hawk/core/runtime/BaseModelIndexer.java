@@ -319,6 +319,8 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 	}
 
 	protected void importFiles(IFileImporter importer, final Set<VcsCommitItem> changedItems, final Map<String, File> pathToImported) {
+		int iImported = 0;
+
 		for (VcsCommitItem s : changedItems) {
 			final String commitPath = s.getPath();
 	
@@ -330,6 +332,12 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 			if (!pathToImported.containsKey(commitPath)) {
 				final File imported = importer.importFile(commitPath);
 				pathToImported.put(commitPath, imported);
+			}
+
+			++iImported;
+			if (iImported % 10 == 0) {
+				stateListener.info(String.format("Imported %d/%d files from %s",
+					iImported, changedItems.size(), s.getCommit().getDelta().getManager().getLocation()));
 			}
 		}
 	}
