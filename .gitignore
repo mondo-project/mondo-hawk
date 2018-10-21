@@ -10,3 +10,4 @@ out
 hawk.log
 hs_*.log
 .polyglot.build.properties
+stderr.txt

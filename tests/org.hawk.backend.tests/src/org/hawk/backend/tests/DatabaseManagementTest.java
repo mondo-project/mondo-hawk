@@ -41,6 +41,9 @@ public class DatabaseManagementTest {
 	private IGraphDatabaseFactory dbFactory;
 
 	@Rule
+	public RedirectSystemErrorRule errRule = new RedirectSystemErrorRule();
+
+	@Rule
 	public LogbackOnlyErrorsRule logRule = new LogbackOnlyErrorsRule();
 
 	@Rule

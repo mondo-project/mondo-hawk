@@ -47,6 +47,9 @@ import org.junit.runners.Parameterized.Parameters;
 public class IndexTest extends TemporaryDatabaseTest {
 
 	@Rule
+	public RedirectSystemErrorRule errRule = new RedirectSystemErrorRule();
+
+	@Rule
 	public LogbackOnlyErrorsRule logRule = new LogbackOnlyErrorsRule();
 
 	@Parameters(name="Parameters are {0}")
