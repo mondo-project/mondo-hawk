@@ -36,8 +36,10 @@ import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommit;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.VcsRepositoryDelta;
+import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.SVNLogEntryPath;
+import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.SVNProperties;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.wc.SVNRevision;
@@ -212,6 +214,18 @@ public class SvnManager implements IVcsManager {
 	public File importFile(String revision, String path, File temp) {
 		final SVNRepository svnRepository = getSVNRepository(repositoryURL, username, password);
 		final long rev = revision == null ? SVNRevision.HEAD.getNumber() : Long.valueOf(revision);
+
+		try {
+			final SVNNodeKind node = svnRepository.checkPath(path, rev);
+			if (node == SVNNodeKind.NONE) {
+				// Path does not exist
+				return null;
+			}
+		} catch (SVNException e1) {
+			console.printerrln(e1);
+			return null;
+		}
+
 		try (FileOutputStream fOS = new FileOutputStream(temp)) {
 			svnRepository.getFile(path, rev, new SVNProperties(), fOS);
 			return temp;
