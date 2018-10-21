@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 import org.hawk.backend.tests.factories.GreycatDatabaseFactory;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
+import org.hawk.backend.tests.factories.LevelDBGreycatDatabaseFactory;
 import org.hawk.backend.tests.factories.Neo4JDatabaseFactory;
 import org.hawk.backend.tests.factories.OrientDatabaseFactory;
 import org.hawk.core.graph.IGraphDatabase;
@@ -43,7 +44,8 @@ public class VCSManagerIndexTest {
     	return Arrays.asList(
     		new Object[] { new Neo4JDatabaseFactory() },
     		new Object[] { new OrientDatabaseFactory() },
-    		new Object[] { new GreycatDatabaseFactory() }
+    		new Object[] { new GreycatDatabaseFactory() },
+    		new Object[] { new LevelDBGreycatDatabaseFactory() }
     	);
     }
 	

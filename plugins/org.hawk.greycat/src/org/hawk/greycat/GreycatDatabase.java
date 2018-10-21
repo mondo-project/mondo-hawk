@@ -55,8 +55,13 @@ import greycat.GraphBuilder;
 import greycat.Node;
 import greycat.NodeIndex;
 import greycat.Type;
+import greycat.plugin.Storage;
 import greycat.rocksdb.RocksDBStorage;
 
+/**
+ * <p>Default version of the Greycat backend, which uses the RocksDB storage layer
+ * with Snappy compression on Linux/Mac, and no compression on Windows.</p>
+ */
 public class GreycatDatabase implements ITimeAwareGraphDatabase {
 
 	private static final class NodeKey {
@@ -134,7 +139,9 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GreycatDatabase.class);
 
 	private Cache<NodeKey, NodeCacheWrapper> nodeCache;
-	private File storageFolder, tempFolder;
+	protected File storageFolder;
+
+	private File tempFolder;
 	private IConsole console;
 	private Graph graph;
 	private NodeIndex nodeLabelIndex, softDeleteIndex;
@@ -520,7 +527,7 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 
 		this.graph = new GraphBuilder()
 			.withMemorySize(1_000_000)
-			.withStorage(new RocksDBStorage(storageFolder.getAbsolutePath()))
+			.withStorage(createStorage())
 			.build();
 
 		exitBatchMode();
@@ -538,6 +545,15 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 				cConnected.complete(false);
 			}
 		});
+	}
+
+	protected Storage createStorage() {
+		if (System.getProperty("os.name").startsWith("Windows")) {
+			LOGGER.warn("RocksJava for Windows lacks Snappy/LZ4 compression - falling back to no compression");
+			return new UncompressedRocksDBStorage(storageFolder.getAbsolutePath());
+		} else {
+			return new RocksDBStorage(storageFolder.getAbsolutePath());
+		}
 	}
 
 	protected void hardDelete(GreycatNode gn, Callback<?> callback) {

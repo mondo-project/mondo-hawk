@@ -20,6 +20,7 @@ import java.util.Collections;
 
 import org.hawk.backend.tests.factories.GreycatDatabaseFactory;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
+import org.hawk.backend.tests.factories.LevelDBGreycatDatabaseFactory;
 import org.hawk.backend.tests.factories.Neo4JDatabaseFactory;
 import org.hawk.backend.tests.factories.OrientDatabaseFactory;
 import org.hawk.core.graph.IGraphDatabase;
@@ -47,6 +48,7 @@ public class BackendTestSuite {
 			{new OrientDatabaseFactory()},
 			//{new RemoteOrientDatabaseFactory()}, // TODO enable automatically when server available
 			{new GreycatDatabaseFactory()},
+			{new LevelDBGreycatDatabaseFactory()},
 		};
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015-2017 The University of York, Aston University.
+ * Copyright (c) 2015-2018 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -17,16 +17,16 @@
 package org.hawk.backend.tests.factories;
 
 import org.hawk.core.graph.IGraphDatabase;
-import org.hawk.greycat.GreycatDatabase;
+import org.hawk.greycat.LevelDBGreycatDatabase;
 
-public final class GreycatDatabaseFactory implements IGraphDatabaseFactory {
+public final class LevelDBGreycatDatabaseFactory implements IGraphDatabaseFactory {
 	@Override
 	public IGraphDatabase create() {
-		return new GreycatDatabase();
+		return new LevelDBGreycatDatabase();
 	}
 
 	@Override
 	public String toString() {
-		return "RocksDB GreyCat";
+		return "LevelDB GreyCat";
 	}
 }

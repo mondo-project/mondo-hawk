@@ -7,5 +7,11 @@
             store="org.hawk.greycat.GreycatDatabase">
       </Backend>
    </extension>
+   <extension
+         point="org.hawk.core.BackEndExtensionPoint">
+      <Backend
+            store="org.hawk.greycat.LevelDBGreycatDatabase">
+      </Backend>
+   </extension>
 
 </plugin>

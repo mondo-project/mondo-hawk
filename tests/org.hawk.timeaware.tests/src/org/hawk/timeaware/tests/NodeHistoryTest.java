@@ -3,7 +3,7 @@ package org.hawk.timeaware.tests;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -14,6 +14,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.hawk.backend.tests.factories.GreycatDatabaseFactory;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
+import org.hawk.backend.tests.factories.LevelDBGreycatDatabaseFactory;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
@@ -47,11 +48,12 @@ public class NodeHistoryTest extends ModelIndexingTest {
 
 	@Parameters(name = "{0}")
     public static Iterable<Object[]> params() {
-    	return Collections.singletonList(new Object[] {
-    		new GreycatDatabaseFactory(), new EMFModelSupportFactory() 
-    	});
+    	return Arrays.asList(
+    		new Object[] { new GreycatDatabaseFactory(), new EMFModelSupportFactory() },
+    		new Object[] { new LevelDBGreycatDatabaseFactory(), new EMFModelSupportFactory() }
+    	);
     }
-	
+
 	public NodeHistoryTest(IGraphDatabaseFactory dbFactory, IModelSupportFactory modelSupportFactory) {
 		super(dbFactory, modelSupportFactory);
 	}

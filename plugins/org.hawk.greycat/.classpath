@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/bundles/guava-18.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/bundles/leveldbjni-all-1.8.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/greycat-leveldb-10.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/leveldb-0.9.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/leveldb-api-0.9.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-analyzers-common-7.2.1.jar" sourcepath="lib/sources/lucene-analyzers-common-7.2.1.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/org.hawk.greycat/lib/javadocs/lucene-analyzers-common-7.2.1.jar!/"/>
