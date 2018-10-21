@@ -194,7 +194,6 @@ final class SoftTxLucene {
 				final ListCollector lc = new ListCollector(searcher);
 				searcher.search(query, lc);
 				oldDocuments = lc.getDocuments().stream().map(d -> GreycatLuceneIndexer.copy(d)).collect(Collectors.toList());
-
 				writer.deleteDocuments(query);
 				refreshReader();
 			}

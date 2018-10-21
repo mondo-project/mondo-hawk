@@ -23,13 +23,13 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.hawk.core.graph.IGraphIterable;
-import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import greycat.Node;
 
-public class GreycatNodeIterable implements IGraphIterable<IGraphNode> {
+public class GreycatNodeIterable implements IGraphIterable<ITimeAwareGraphNode> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GreycatNodeIterable.class);
 
@@ -42,10 +42,10 @@ public class GreycatNodeIterable implements IGraphIterable<IGraphNode> {
 	}
 
 	@Override
-	public Iterator<IGraphNode> iterator() {
+	public Iterator<ITimeAwareGraphNode> iterator() {
 		try {
 			final Node[] nodes = nodesGenerator.call();
-			final List<IGraphNode> gNodes = new ArrayList<>();
+			final List<ITimeAwareGraphNode> gNodes = new ArrayList<>();
 			for (Node n : nodes) {
 				GreycatNode gNode = new GreycatNode(db, n.world(), n.time(), n.id());
 				if (!gNode.isSoftDeleted()) {
@@ -72,7 +72,7 @@ public class GreycatNodeIterable implements IGraphIterable<IGraphNode> {
 	}
 
 	@Override
-	public IGraphNode getSingle() {
+	public ITimeAwareGraphNode getSingle() {
 		return iterator().next();
 	}
 

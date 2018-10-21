@@ -96,7 +96,7 @@ public interface IGraphDatabase {
 	/**
 	 * Returns all the nodes of a certain type.
 	 */
-	IGraphIterable<IGraphNode> allNodes(String label);
+	IGraphIterable<? extends IGraphNode> allNodes(String label);
 
 	IGraphNode createNode(Map<String, Object> props, String label);
 

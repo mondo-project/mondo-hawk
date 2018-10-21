@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright (c) 2018 Aston University.
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * This Source Code may also be made available under the following Secondary
+ * Licenses when the conditions for such availability set forth in the Eclipse
+ * Public License, v. 2.0 are satisfied: GNU General Public License, version 3.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR GPL-3.0
+ *
+ * Contributors:
+ *     Antonio Garcia-Dominguez - initial API and implementation
+ ******************************************************************************/
 package org.hawk.timeaware.tests;
 
 import static org.junit.Assert.assertEquals;
@@ -32,11 +48,14 @@ import org.hawk.timeaware.tests.tree.Tree.TreeFactory;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Tests for the time-aware indexing of model element nodes.
  */
+@RunWith(Parameterized.class)
 public class NodeHistoryTest extends ModelIndexingTest {
 	@Rule
 	public TemporarySVNRepository svnRepository = new TemporarySVNRepository();

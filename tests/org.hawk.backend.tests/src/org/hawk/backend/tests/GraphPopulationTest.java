@@ -93,7 +93,7 @@ public class GraphPopulationTest extends TemporaryDatabaseTest {
 		final byte[] abValue = new byte[] {0, 1, 2, 3};
 
 		IGraphNode n;
-		IGraphIterable<IGraphNode> eobs;
+		IGraphIterable<? extends IGraphNode> eobs;
 
 		final Map<String, Object> map = new HashMap<>();
 		try (IGraphTransaction tx = db.beginTransaction()) {

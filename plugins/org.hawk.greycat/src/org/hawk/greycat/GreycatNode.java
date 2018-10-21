@@ -357,6 +357,15 @@ public class GreycatNode implements ITimeAwareGraphNode {
 		return new NodeReader();
 	}
 
+	/**
+	 * Returns <code>true</code> if the node is alive at the current world and timepoint.
+	 */
+	public boolean isAlive() {
+		try (NodeReader rn = getNodeReader()) {
+			return rn.get() != null;
+		}
+	}
+
 	@Override
 	public Object getProperty(String name) {
 		Object rawValue;

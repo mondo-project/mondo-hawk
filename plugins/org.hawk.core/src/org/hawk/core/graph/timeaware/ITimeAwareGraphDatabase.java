@@ -16,7 +16,10 @@
  ******************************************************************************/
 package org.hawk.core.graph.timeaware;
 
+import java.util.Map;
+
 import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphIterable;
 
 /**
  * Abstraction for a graph database that understands the concept of time as a
@@ -41,4 +44,13 @@ public interface ITimeAwareGraphDatabase extends IGraphDatabase {
 	 * this point onwards, until they are overwritten down the timeline.
 	 */
 	void setTime(long time);
+
+	@Override
+	ITimeAwareGraphNode createNode(Map<String, Object> props, String label);
+
+	@Override
+	ITimeAwareGraphNode getNodeById(Object id);
+
+	@Override
+	IGraphIterable<? extends ITimeAwareGraphNode> allNodes(String label);
 }

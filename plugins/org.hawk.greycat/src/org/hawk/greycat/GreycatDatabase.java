@@ -39,6 +39,7 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphDatabase;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.greycat.GreycatNode.NodeReader;
 import org.hawk.greycat.lucene.GreycatLuceneIndexer;
 import org.slf4j.Logger;
@@ -308,7 +309,7 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 	}
 
 	@Override
-	public IGraphIterable<IGraphNode> allNodes(String label) {
+	public IGraphIterable<ITimeAwareGraphNode> allNodes(String label) {
 		/*
 		 * TODO: Model.allContents.size() can be VERY slow on big graphs - Greycat will
 		 * fetch everything rather than just the IDs and doing the rest on demand, like
@@ -518,7 +519,7 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 				@Override
 				public void onRemoval(RemovalNotification<NodeKey, NodeCacheWrapper> notification) {
 					final NodeCacheWrapper wrapper = notification.getValue();
-					if (!wrapper.inUse) {
+					if (!wrapper.inUse && wrapper.node != null) {
 						wrapper.node.free();
 					}
 				}

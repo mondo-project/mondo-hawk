@@ -157,7 +157,7 @@ public class IndexTest extends TemporaryDatabaseTest {
 	}
 
 	@Test
-	public void removeByNodeMultipleIndices() throws Exception {
+	public void removeByNodeMultipleIndicesRemoveOne() throws Exception {
 		IGraphNode n;
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			n = db.createNode(null, "x");
@@ -173,6 +173,37 @@ public class IndexTest extends TemporaryDatabaseTest {
 			assertEquals(0, db.getMetamodelIndex().query("*", "*").size());
 			assertEquals(1, db.getFileIndex().query("*", "*").size());
 
+			tx.success();
+		}
+	}
+
+	@Test
+	public void removeByNodeMultipleIndicesRemoveAll() throws Exception {
+		IGraphNode n;
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			n = db.createNode(null, "x");
+			db.getMetamodelIndex().add(n, "a", 1);
+			db.getFileIndex().add(n, "f", "/x/y");
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(1, db.getMetamodelIndex().query("*", "*").size());
+			assertEquals(1, db.getFileIndex().query("*", "*").size());
+
+			for (String idxName : db.getNodeIndexNames()) {
+				db.getOrCreateNodeIndex(idxName).remove(n);
+			}
+			for (String idxName : db.getNodeIndexNames()) {
+				assertEquals(0, db.getOrCreateNodeIndex(idxName).query("*", "*").size());				
+			}
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			for (String idxName : db.getNodeIndexNames()) {
+				assertEquals(0, db.getOrCreateNodeIndex(idxName).query("*", "*").size());				
+			}
 			tx.success();
 		}
 	}

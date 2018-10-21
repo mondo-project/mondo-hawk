@@ -18,9 +18,11 @@ package org.hawk.greycat.lucene;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
@@ -33,15 +35,16 @@ import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.IndexableField;
+import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.SimpleCollector;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.TotalHitCountCollector;
 import org.apache.lucene.search.WildcardQuery;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
@@ -77,31 +80,111 @@ public class GreycatLuceneIndexer {
 	private static final String INDEX_DOCTYPE = "indexdecl";
 	private static final String NODEID_FIELD   = "h_nodeid";
 
-	protected final class NodeListCollector extends ListCollector {
-		protected NodeListCollector(IndexSearcher searcher) {
-			super(searcher);
+	protected final class AliveNodesCollector extends SimpleCollector {
+		protected AliveNodesCollector(IndexSearcher searcher) {
+			this.searcher = searcher;
 		}
 
+		private final IndexSearcher searcher;
+		protected List<IGraphNode> nodes = new ArrayList<>();
+		private int docBase;
+	
+		@Override
+		protected void doSetNextReader(LeafReaderContext context) throws IOException {
+			this.docBase = context.docBase;
+		}
+	
+		@Override
+		public boolean needsScores() {
+			return false;
+		}
+	
+		@Override
+		public void collect(int doc) {
+			try {
+				GreycatNode n = getNodeByDocument(searcher.doc(docBase + doc));
+				if (n.isAlive()) {
+					nodes.add(n);
+				}
+			} catch (IOException e) {
+				LOGGER.error(e.getMessage(), e);
+			}
+		}
+		
 		public Iterator<IGraphNode> getNodeIterator() {
-			final Iterator<Integer> itIdentifiers = docIds.iterator();
+			return nodes.iterator();
+		}
+	}
 
-			return new Iterator<IGraphNode>() {
-				@Override
-				public boolean hasNext() {
-					return itIdentifiers.hasNext();
+	protected final class TotalAliveNodesCollector extends SimpleCollector {
+		private final IndexSearcher searcher;
+		protected int count = 0;
+		private int docBase;
+	
+		private TotalAliveNodesCollector(IndexSearcher searcher) {
+			this.searcher = searcher;
+		}
+	
+		@Override
+		protected void doSetNextReader(LeafReaderContext context) throws IOException {
+			this.docBase = context.docBase;
+		}
+	
+		@Override
+		public boolean needsScores() {
+			return false;
+		}
+	
+		@Override
+		public void collect(int doc) {
+			try {
+				GreycatNode  n = getNodeByDocument(searcher.doc(docBase + doc));
+				if (n.isAlive()) {
+					count++;
 				}
+			} catch (IOException e) {
+				LOGGER.error(e.getMessage(), e);
+			}
+		}
+	
+		public int getCount() {
+			return count;
+		}
+	}
 
-				@Override
-				public IGraphNode next() {
-					int docId = itIdentifiers.next();
-					try {
-						return getNodeByDocument(searcher.doc(docId));
-					} catch (IOException e) {
-						LOGGER.error("Could not retrieve document with ID " + docId, e);
-						throw new NoSuchElementException();
-					}
+	protected final class SingleAliveNodeCollector extends SimpleCollector {
+		protected SingleAliveNodeCollector(IndexSearcher searcher) {
+			this.searcher = searcher;
+		}
+
+		private final IndexSearcher searcher;
+		protected IGraphNode node;
+		private int docBase;
+	
+		@Override
+		protected void doSetNextReader(LeafReaderContext context) throws IOException {
+			this.docBase = context.docBase;
+		}
+	
+		@Override
+		public boolean needsScores() {
+			return false;
+		}
+	
+		@Override
+		public void collect(int doc) {
+			try {
+				GreycatNode n = getNodeByDocument(searcher.doc(docBase + doc));
+				if (n.isAlive()) {
+					node = n;
 				}
-			};
+			} catch (IOException e) {
+				LOGGER.error(e.getMessage(), e);
+			}
+		}
+
+		public IGraphNode getNode() {
+			return node;
 		}
 	}
 
@@ -116,7 +199,7 @@ public class GreycatLuceneIndexer {
 		public Iterator<IGraphNode> iterator() {
 			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 			try {
-				final NodeListCollector lc = new NodeListCollector(searcher);
+				final AliveNodesCollector lc = new AliveNodesCollector(searcher);
 				searcher.search(query, lc);
 				return lc.getNodeIterator();
 			} catch (IOException e) {
@@ -130,9 +213,9 @@ public class GreycatLuceneIndexer {
 			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
 			try {
-				final TotalHitCountCollector collector = new TotalHitCountCollector();
+				final TotalAliveNodesCollector collector = new TotalAliveNodesCollector(searcher);
 				searcher.search(query, collector);
-				return collector.getTotalHits();
+				return collector.getCount();
 			} catch (IOException e) {
 				LOGGER.error("Failed to obtain single result", e);
 				return 0;
@@ -144,9 +227,11 @@ public class GreycatLuceneIndexer {
 			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
 			try {
-				TopDocs results = searcher.search(query, 1);
-				if (results.totalHits > 0) {
-					return getNodeByDocument(searcher.doc(results.scoreDocs[0].doc));
+				SingleAliveNodeCollector collector = new SingleAliveNodeCollector(searcher);
+				searcher.search(query, collector);
+				IGraphNode node = collector.getNode();
+				if (node != null) {
+					return node;
 				}
 			} catch (IOException e) {
 				LOGGER.error("Failed to obtain single result", e);
