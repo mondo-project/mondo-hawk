@@ -9,7 +9,6 @@
 	<classpathentry kind="src" path="/org.hawk.epsilon"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="/org.hawk.svn"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.hawk.ifc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.hawk.ui.emc.dt2"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.hawk.ui2"/>
 	<classpathentry kind="src" path="/org.hawk.bpmn"/>
