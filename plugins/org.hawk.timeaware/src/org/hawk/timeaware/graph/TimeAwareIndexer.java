@@ -89,6 +89,11 @@ public class TimeAwareIndexer extends BaseModelIndexer {
 					taGraph.setTime(0);
 					setLastIndexedRevision(vcsManager, commit.getRevision());
 				}
+
+				// The indexed repo might have commits in other paths - mark the last revision as done as well so
+				// we do not keep trying to index again and again.
+				taGraph.setTime(0);
+				setLastIndexedRevision(vcsManager, currentRevision);
 			}
 		} catch (Exception e) {
 			LOGGER.error("Failed to synchronise repository " + vcsManager.getLocation(), e);
