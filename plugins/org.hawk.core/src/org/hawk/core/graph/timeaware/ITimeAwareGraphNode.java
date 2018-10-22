@@ -25,6 +25,11 @@ public interface ITimeAwareGraphNode extends IGraphNode {
 	int NO_SUCH_INSTANT = -1;
 
 	/**
+	 * Returns <code>true</code> is the node is alive at its timepoint.
+	 */
+	boolean isAlive();
+
+	/**
 	 * Returns the timepoint that this instance is currently at.
 	 */
 	long getTime();

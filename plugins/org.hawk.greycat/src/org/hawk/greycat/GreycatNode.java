@@ -264,11 +264,16 @@ public class GreycatNode implements ITimeAwareGraphNode {
 	@Override
 	public void end() {
 		try (NodeReader rn = getNodeReader()) {
-			// Unlink node and then end its lifespan
-			for (IGraphEdge out : getOutgoing()) {
+			// Unlink node from next timepoint, and then end its lifespan
+
+			/*
+			 * end() means that the edges and node should still be available at *this*
+			 * precise timepoint, but not from the next timepoint onwards.
+			 */
+			for (IGraphEdge out : travelInTime(time + 1).getOutgoing()) {
 				out.delete();
 			}
-			for (IGraphEdge in : getIncoming()) {
+			for (IGraphEdge in : travelInTime(time + 1).getIncoming()) {
 				in.delete();
 			}
 
@@ -357,9 +362,7 @@ public class GreycatNode implements ITimeAwareGraphNode {
 		return new NodeReader();
 	}
 
-	/**
-	 * Returns <code>true</code> if the node is alive at the current world and timepoint.
-	 */
+	@Override
 	public boolean isAlive() {
 		try (NodeReader rn = getNodeReader()) {
 			return rn.get() != null;

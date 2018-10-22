@@ -42,14 +42,15 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests for the interaction of timepoints with index queries.
+ * Tests for timeaware backends, on the interaction of timepoints with index
+ * queries and the history of edges and nodes.
  */
 @RunWith(Parameterized.class)
-public class TimeAwareIndexTest extends TemporaryDatabaseTest {
+public class TimeAwareBackendTest extends TemporaryDatabaseTest {
 
 	private ITimeAwareGraphDatabase taDB;
 
-	public TimeAwareIndexTest(IGraphDatabaseFactory dbf) {
+	public TimeAwareBackendTest(IGraphDatabaseFactory dbf) {
 		super(dbf);
 	}
 
@@ -160,5 +161,39 @@ public class TimeAwareIndexTest extends TemporaryDatabaseTest {
 			tx.success();
 		}
 	}
-	
+
+	@Test
+	public void nodeEndWithEdges() throws Exception {
+		Object id1, id2;
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			IGraphNode n1 = db.createNode(null, "example");
+			IGraphNode n2 = db.createNode(null, "example");
+			db.createRelationship(n1, n2, "test");
+
+			id1 = n1.getId();
+			id2 = n2.getId();
+			tx.success();
+		}
+
+		taDB.setTime(1L);
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			ITimeAwareGraphNode n1 = taDB.getNodeById(id1);
+			ITimeAwareGraphNode n2 = taDB.getNodeById(id2);
+			assertTrue(n1.getOutgoing().iterator().hasNext());
+			assertTrue(n2.getIncoming().iterator().hasNext());
+			n2.end();
+			assertTrue(n1.getOutgoing().iterator().hasNext());
+			assertTrue(n2.getIncoming().iterator().hasNext());
+			tx.success();
+		}
+
+		taDB.setTime(2L);
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			ITimeAwareGraphNode n1 = taDB.getNodeById(id1);
+			ITimeAwareGraphNode n2 = taDB.getNodeById(id2);
+			assertFalse(n1.getOutgoing().iterator().hasNext());
+			assertFalse(n2.isAlive());
+			tx.success();
+		}
+	}
 }
