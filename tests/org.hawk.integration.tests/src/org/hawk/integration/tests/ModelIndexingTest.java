@@ -32,6 +32,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.hawk.backend.tests.LogbackOnlyErrorsRule;
+import org.hawk.backend.tests.RedirectSystemErrorRule;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.IModelIndexer;
@@ -65,6 +66,9 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class ModelIndexingTest {
+	@Rule
+	public RedirectSystemErrorRule errRule = new RedirectSystemErrorRule();
+
 	@Rule
 	public LogbackOnlyErrorsRule logRule = new LogbackOnlyErrorsRule();
 
