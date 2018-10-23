@@ -8,15 +8,15 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.hawk.core;bundle-version="1.2.0",
  org.slf4j.api;bundle-version="1.7.2",
  com.google.guava;bundle-version="15.0.0"
-Bundle-ClassPath: lib/jars/greycat-10.jar,
- lib/jars/greycat-rocksdb-10.jar,
- lib/jars/lucene-core-7.2.1.jar,
+Bundle-ClassPath: lib/jars/lucene-core-7.2.1.jar,
  lib/jars/lucene-analyzers-common-7.2.1.jar,
- lib/jars/rocksdbjni-5.5.5.jar,
- lib/jars/greycat-leveldb-10.jar,
  lib/jars/leveldb-0.9.jar,
  lib/jars/leveldb-api-0.9.jar,
  lib/bundles/guava-18.0.jar,
  lib/bundles/leveldbjni-all-1.8.jar,
+ lib/jars/greycat-11.jar,
+ lib/jars/greycat-leveldb-11.jar,
+ lib/jars/greycat-rocksdb-11.jar,
+ lib/jars/rocksdbjni-5.9.2.jar,
  .
 Export-Package: org.hawk.greycat

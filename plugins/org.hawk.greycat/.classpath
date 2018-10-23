@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/jars/greycat-11.jar" sourcepath="lib/sources/greycat-11.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/org.hawk.greycat/lib/javadocs/greycat-11.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="lib/jars/greycat-leveldb-11.jar" sourcepath="lib/sources/greycat-leveldb-11.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/org.hawk.greycat/lib/javadocs/greycat-leveldb-11.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="lib/jars/greycat-rocksdb-11.jar" sourcepath="lib/sources/greycat-rocksdb-11.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/org.hawk.greycat/lib/javadocs/greycat-rocksdb-11.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="lib/jars/rocksdbjni-5.9.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bundles/guava-18.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bundles/leveldbjni-all-1.8.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/greycat-leveldb-10.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/leveldb-0.9.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/leveldb-api-0.9.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-analyzers-common-7.2.1.jar" sourcepath="lib/sources/lucene-analyzers-common-7.2.1.jar">
@@ -13,17 +28,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/jars/lucene-core-7.2.1.jar" sourcepath="lib/sources/lucene-core-7.2.1.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/org.hawk.greycat/lib/javadocs/lucene-core-7.2.1.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="lib/jars/greycat-rocksdb-10.jar" sourcepath="lib/sources/greycat-rocksdb-10.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/org.hawk.greycat/lib/javadocs/greycat-rocksdb-10.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="lib/jars/rocksdbjni-5.5.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jars/greycat-10.jar" sourcepath="lib/sources/greycat-10.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/org.hawk.greycat/lib/javadocs/greycat-10.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>

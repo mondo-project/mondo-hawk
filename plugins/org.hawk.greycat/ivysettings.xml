@@ -1,0 +1,11 @@
+<ivysettings>
+  <settings defaultResolver="chain"/>
+  <property name="datathings-public"
+    value="https://registry.datathings.com/repository/public/"/>
+  <resolvers>
+    <chain name="chain">
+      <ibiblio name="datathings" m2compatible="true" root="${datathings-public}"/>
+      <ibiblio name="maven2" m2compatible="true"/>
+    </chain>
+  </resolvers>
+</ivysettings>
