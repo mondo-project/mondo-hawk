@@ -18,12 +18,14 @@ package org.hawk.greycat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
 import org.hawk.core.graph.IGraphDatabase.Mode;
@@ -282,22 +284,22 @@ public class GreycatNode implements ITimeAwareGraphNode {
 	}
 
 	@Override
-	public List<ITimeAwareGraphNode> getAllVersions() throws Exception {
+	public List<ITimeAwareGraphNode> getAllVersions() {
 		return getVersionsBetween(Constants.BEGINNING_OF_TIME, Constants.END_OF_TIME);
 	}
 
 	@Override
-	public List<ITimeAwareGraphNode> getVersionsFrom(long fromInclusive) throws Exception {
+	public List<ITimeAwareGraphNode> getVersionsFrom(long fromInclusive) {
 		return getVersionsBetween(fromInclusive, Constants.END_OF_TIME);
 	}
 
 	@Override
-	public List<ITimeAwareGraphNode> getVersionsUpTo(long toInclusive) throws Exception {
+	public List<ITimeAwareGraphNode> getVersionsUpTo(long toInclusive) {
 		return getVersionsBetween(Constants.END_OF_TIME, toInclusive);
 	}
 
 	@Override
-	public List<ITimeAwareGraphNode> getVersionsBetween(long fromInclusive, long toInclusive) throws Exception {
+	public List<ITimeAwareGraphNode> getVersionsBetween(long fromInclusive, long toInclusive) {
 		try (NodeReader rn = getNodeReader()) {
 			final Node n = rn.get();
 
@@ -311,6 +313,13 @@ public class GreycatNode implements ITimeAwareGraphNode {
 				versions.add(new GreycatNode(db, world, timepoint, id));
 			}
 			return versions;
+		} catch (InterruptedException e) {
+			LOGGER.error(e.getMessage(), e);
+			Thread.currentThread().interrupt();
+			return Collections.emptyList();
+		} catch (ExecutionException e) {
+			LOGGER.error(e.getMessage(), e);
+			return Collections.emptyList();
 		}
 	}
 

@@ -128,7 +128,15 @@ public class GreycatHeavyEdge implements IGraphEdge {
 
 			GreycatNode.removeOutgoing(type, rStart, rEdge);
 			GreycatNode.removeIncoming(type, rEnd, rEdge);
-			node.delete();
+
+			final Node edgeNode = rEdge.get();
+			if (edgeNode.timeDephasing() > 0 || node.getAllVersions().size() > 1) {
+				/* There is more than one instant for this edge: end it in the previous timepoint. */
+				node.travelInTime(node.getTime() - 1).end();
+			} else {
+				/* There is exactly one version and we are right in its timepoint - just delete the backing node altogether. */
+				node.delete();
+			}
 		}
 	}
 

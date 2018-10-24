@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.hawk.backend.tests.LogbackOnlyErrorsRule;
@@ -30,6 +31,7 @@ import org.hawk.backend.tests.TemporaryDatabaseTest;
 import org.hawk.backend.tests.factories.GreycatDatabaseFactory;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.backend.tests.factories.LevelDBGreycatDatabaseFactory;
+import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTransaction;
@@ -163,12 +165,21 @@ public class TimeAwareBackendTest extends TemporaryDatabaseTest {
 	}
 
 	@Test
-	public void nodeEndWithEdges() throws Exception {
+	public void nodeEndWithLightEdge() throws Exception {
+		nodeEndWithEdges(Collections.emptyMap());
+	}
+
+	@Test
+	public void nodeEndWithHeavyEdge() throws Exception {
+		nodeEndWithEdges(Collections.singletonMap("container", "true"));
+	}
+
+	private void nodeEndWithEdges(final Map<String, Object> props) throws Exception {
 		Object id1, id2;
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			IGraphNode n1 = db.createNode(null, "example");
 			IGraphNode n2 = db.createNode(null, "example");
-			db.createRelationship(n1, n2, "test");
+			db.createRelationship(n1, n2, "test", props);
 
 			id1 = n1.getId();
 			id2 = n2.getId();
@@ -182,11 +193,26 @@ public class TimeAwareBackendTest extends TemporaryDatabaseTest {
 			assertTrue(n1.getOutgoing().iterator().hasNext());
 			assertTrue(n2.getIncoming().iterator().hasNext());
 			n2.end();
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			ITimeAwareGraphNode n1 = taDB.getNodeById(id1);
+			ITimeAwareGraphNode n2 = taDB.getNodeById(id2);
 			assertTrue(n1.getOutgoing().iterator().hasNext());
 			assertTrue(n2.getIncoming().iterator().hasNext());
 			tx.success();
 		}
 
+		taDB.setTime(0L);
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			ITimeAwareGraphNode n1 = taDB.getNodeById(id1);
+			ITimeAwareGraphNode n2 = taDB.getNodeById(id2);
+			assertTrue(n1.getOutgoing().iterator().hasNext());
+			assertTrue(n2.getIncoming().iterator().hasNext());
+			tx.success();
+		}
+		
 		taDB.setTime(2L);
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			ITimeAwareGraphNode n1 = taDB.getNodeById(id1);
@@ -196,4 +222,36 @@ public class TimeAwareBackendTest extends TemporaryDatabaseTest {
 			tx.success();
 		}
 	}
+	
+	@Test
+	public void createDeleteHeavyEdgeBeginningOfTime() throws Exception {
+		taDB.setTime(0L);
+		createDeleteHeavyEdge();
+	}
+
+	@Test
+	public void createDeleteHeavyEdgeNonZeroTime() throws Exception {
+		taDB.setTime(1L);
+		createDeleteHeavyEdge();
+	}
+
+	private void createDeleteHeavyEdge() throws Exception {
+		Object heavyEdgeId;
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			IGraphNode n1 = db.createNode(null, "example");
+			IGraphNode n2 = db.createNode(null, "example");
+			IGraphEdge e = db.createRelationship(n1, n2, "example", Collections.singletonMap("key", "value"));
+			heavyEdgeId = e.getId();
+			e.delete();
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			ITimeAwareGraphNode backingNode = taDB.getNodeById(heavyEdgeId);
+			assertFalse(backingNode.isAlive());
+			tx.success();
+		}
+	}
+	
+	/* TODO add test cases for derived/indexed properties in combination with time-awareness */
 }
