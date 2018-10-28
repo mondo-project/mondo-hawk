@@ -13,7 +13,7 @@
   </properties>
 
   <modules>
-    <module>plugins/org.hawk.bpmn/pom-plain.xml</module>
+	  <!-- <module>plugins/org.hawk.bpmn/pom-plain.xml</module> -->
     <module>plugins/org.hawk.core/pom-plain.xml</module>
     <module>plugins/org.hawk.emf/pom-plain.xml</module>
     <module>plugins/org.hawk.emfresource/pom-plain.xml</module>
@@ -28,7 +28,9 @@
     <module>plugins/org.hawk.greycat/pom-plain.xml</module>
     <module>plugins/org.hawk.svn/pom-plain.xml</module>
     <module>plugins/org.hawk.graph.sampleListener/pom-plain.xml</module>
-    <module>standalone/_hawk_runtime_example/pom-plain.xml</module>
+    <module>plugins-server/org.hawk.service.artemis/pom-plain.xml</module>
+    <module>plugins-server/org.hawk.service.api/pom-plain.xml</module>
+    <!-- <module>standalone/_hawk_runtime_example/pom-plain.xml</module> -->
   </modules>
 
   <dependencyManagement>
@@ -86,6 +88,10 @@
     <repository>
       <id>sonatype-snapshots</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </repository>
+    <repository>
+      <id>datathings</id>
+      <url>https://registry.datathings.com/repository/public/</url>
     </repository>
   </repositories>
 
