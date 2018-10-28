@@ -3,10 +3,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.hawk.service</groupId>
-    <artifactId>parent-plain</artifactId>
+    <groupId>org.hawk</groupId>
+    <artifactId>mondo-hawk-plain</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../../pom-server-plain.xml</relativePath>
+    <relativePath>../../pom-plain.xml</relativePath>
   </parent>
 
   <groupId>org.hawk.service</groupId>
