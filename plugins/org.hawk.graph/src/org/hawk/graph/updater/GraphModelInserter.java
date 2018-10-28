@@ -760,7 +760,12 @@ public class GraphModelInserter {
 				for (String propertyKey : n.getPropertyKeys()) {
 					if (propertyKey.startsWith(GraphModelUpdater.PROXY_REFERENCE_PREFIX)) {
 						final String[] propertyValue = (String[]) n.getProperty(propertyKey);
-						proxyReferenceLists.add(new ProxyReferenceList(n, propertyValue));
+						if (propertyValue.length > 0) {
+							proxyReferenceLists.add(new ProxyReferenceList(n, propertyValue));
+						} else {
+							// TODO debug and fix?
+							LOGGER.warn("Proxy ref list is empty: node {}, key {}", n, propertyKey);
+						}
 					}
 				}
 			}
