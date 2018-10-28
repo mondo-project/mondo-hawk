@@ -38,7 +38,7 @@ public class TypeHistoryOperationContributor extends OperationContributor {
 
 	@Override
 	public boolean contributesTo(Object target) {
-		return target instanceof EolModelElementType;
+		return target instanceof EolModelElementType || target instanceof TypeNodeWrapper;
 	}
 
 	/**
@@ -84,13 +84,20 @@ public class TypeHistoryOperationContributor extends OperationContributor {
 	private List<TypeNodeWrapper> getTypeNodeVersionWrappers(RiskyFunction<ITimeAwareGraphNode, List<ITimeAwareGraphNode>> lambda)
 		throws EolRuntimeException, Exception
 	{
-		final EolModelElementType eolType = (EolModelElementType) target;
-		final TimeAwareEOLQueryEngine queryEngine = (TimeAwareEOLQueryEngine) eolType.getModel();
-		final List<IGraphNode> typeNodes = queryEngine.getTypeNodes(eolType.getTypeName());
-		checkTypeIsPrecise(eolType, typeNodes);
-		
+		ITimeAwareGraphNode taNode;
+		if (target instanceof EolModelElementType) {
+			final EolModelElementType eolType = (EolModelElementType) target;
+			final TimeAwareEOLQueryEngine queryEngine = (TimeAwareEOLQueryEngine) eolType.getModel();
+			final List<IGraphNode> typeNodes = queryEngine.getTypeNodes(eolType.getTypeName());
+			checkTypeIsPrecise(eolType, typeNodes);
+			taNode = (ITimeAwareGraphNode) typeNodes.get(0);
+		} else if (target instanceof TypeNodeWrapper) {
+			taNode = (ITimeAwareGraphNode) ((TypeNodeWrapper) target).getNode();
+		} else {
+			throw new IllegalArgumentException("Unsupported target " + target);
+		}
+
 		List<TypeNodeWrapper> ret = new ArrayList<>();
-		ITimeAwareGraphNode taNode = (ITimeAwareGraphNode) typeNodes.get(0);
 		for (ITimeAwareGraphNode typeNodeVersion : lambda.call(taNode)) {
 			TypeNode typeNode = new TypeNode(typeNodeVersion);
 			ret.add(new TypeNodeWrapper(typeNode, model));

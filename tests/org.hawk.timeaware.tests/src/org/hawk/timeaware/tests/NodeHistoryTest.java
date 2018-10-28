@@ -19,6 +19,7 @@ package org.hawk.timeaware.tests;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -51,6 +52,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.tmatesoft.svn.core.SVNException;
 
 /**
  * Tests for the time-aware indexing of model element nodes.
@@ -94,6 +96,24 @@ public class NodeHistoryTest extends ModelIndexingTest {
 
 	@Test
 	public void createDeleteNode() throws Throwable {
+		twoCommitTree();
+		waitForSync(new Callable<Object>(){
+			@Override
+			public Object call() throws Exception {
+				// .all works on the latest revision (keeps time-aware querying working)
+				assertEquals(0, timeAwareEOL("return Tree.all.size;"));
+
+				// .created can return instances that have been created from a certain moment in time (even if not alive anymore)
+				assertEquals(1, timeAwareEOL("return Tree.latest.prev.size;"));
+
+				assertEquals("xy", timeAwareEOL("return Tree.latest.prev.all.first.label;"));
+
+				return null;
+			}
+		});
+	}
+
+	private void twoCommitTree() throws IOException, SVNException, Exception {
 		final File fTree = new File(svnRepository.getCheckoutDirectory(), "root.xmi");
 		Resource rTree = rsTree.createResource(URI.createFileURI(fTree.getAbsolutePath()));
 
@@ -108,17 +128,18 @@ public class NodeHistoryTest extends ModelIndexingTest {
 		svnRepository.commit("Second commit - remove file");
 
 		requestSVNIndex();
+	}
+
+	@Test
+	public void countInstancesFromModelTypes() throws Throwable {
+		twoCommitTree();
 		waitForSync(new Callable<Object>(){
 			@Override
 			public Object call() throws Exception {
-				// .all works on the latest revision (keeps time-aware querying working)
-				assertEquals(0, timeAwareEOL("return Tree.all.size;"));
-
-				// .created can return instances that have been created from a certain moment in time (even if not alive anymore)
-				assertEquals(1, timeAwareEOL("return Tree.latest.prev.size;"));
-
-				assertEquals("xy", timeAwareEOL("return Tree.latest.prev.all.first.label;"));
-
+				assertEquals(0, timeAwareEOL("return Model.types.selectOne(t|t.name='Tree').all.size;"));
+				assertEquals(1, timeAwareEOL("return Model.types.selectOne(t|t.name='Tree').latest.prev.all.size;"));
+				assertEquals(0, timeAwareEOL("return Model.types.selectOne(t|t.name='Tree').latest.prev.prev.all.size;"));
+				assertEquals(0, timeAwareEOL("return Model.types.selectOne(t|t.name='Tree').earliest.all.size;"));
 				return null;
 			}
 		});

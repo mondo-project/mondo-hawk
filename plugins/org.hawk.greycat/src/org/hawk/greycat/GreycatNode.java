@@ -853,7 +853,7 @@ public class GreycatNode implements ITimeAwareGraphNode {
 				result.complete(value);
 			});
 
-			long latest = 0;
+			long latest = Constants.BEGINNING_OF_TIME;
 			for (long timepoint : result.get()) {
 				latest = Math.max(latest, timepoint);
 			}
@@ -871,11 +871,11 @@ public class GreycatNode implements ITimeAwareGraphNode {
 				result.complete(value);
 			});
 
-			long latest = 0;
+			long earliest = Constants.END_OF_TIME;
 			for (long timepoint : result.get()) {
-				latest = Math.min(latest, timepoint);
+				earliest = Math.min(earliest, timepoint);
 			}
-			return latest;
+			return earliest;
 		}
 	}
 
