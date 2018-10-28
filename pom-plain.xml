@@ -30,6 +30,7 @@
     <module>plugins/org.hawk.graph.sampleListener/pom-plain.xml</module>
     <module>plugins-server/org.hawk.service.artemis/pom-plain.xml</module>
     <module>plugins-server/org.hawk.service.api/pom-plain.xml</module>
+    <module>plugins-server/org.hawk.service.emf/pom-plain.xml</module>
     <!-- <module>standalone/_hawk_runtime_example/pom-plain.xml</module> -->
   </modules>
 

@@ -11,19 +11,25 @@
 
   <groupId>org.hawk.service</groupId>
   <artifactId>org.hawk.service.emf</artifactId>
-  <version>1.5.0-SNAPSHOT</version>
+  <version>1.2.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   
   <dependencies>
     <dependency>
       <groupId>org.hawk.service</groupId>
       <artifactId>org.hawk.service.api</artifactId>
-      <version>1.5.0-SNAPSHOT</version>
+      <version>1.2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.hawk</groupId>
       <artifactId>org.hawk.emfresource</artifactId>
-      <version>1.5.0-SNAPSHOT</version>
+      <version>1.2.0-SNAPSHOT</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.eclipse.platform/org.eclipse.core.runtime -->
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.core.runtime</artifactId>
+      <version>3.14.0</version>
     </dependency>
   </dependencies>
 
