@@ -137,6 +137,8 @@ public class GreycatHeavyEdge implements IGraphEdge {
 				/* There is exactly one version and we are right in its timepoint - just delete the backing node altogether. */
 				node.delete();
 			}
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
 		}
 	}
 

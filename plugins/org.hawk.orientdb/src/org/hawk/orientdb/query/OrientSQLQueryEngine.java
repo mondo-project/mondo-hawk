@@ -16,10 +16,6 @@
  ******************************************************************************/
 package org.hawk.orientdb.query;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -149,21 +145,6 @@ public class OrientSQLQueryEngine implements IQueryEngine {
 		} else {
 			throw new InvalidQueryException("Backend is not OrientDB - cannot use this native query driver");
 		}
-	}
-
-	@Override
-	public Object query(IModelIndexer m, File query, Map<String, Object> context) throws InvalidQueryException, QueryExecutionException {
-		final StringBuffer sbuf = new StringBuffer();
-		try (final BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(query), "UTF-8"))) {
-			String line;
-			while ((line = r.readLine()) != null) {
-				sbuf.append(line);
-			}
-		} catch (Exception e) {
-			System.err.println("error reading eol code file:");
-			e.printStackTrace();
-		}
-		return query(m, sbuf.toString(), context);
 	}
 
 	private Object query(final OrientDatabase db, final String query) throws InvalidQueryException {

@@ -19,8 +19,11 @@
 package org.hawk.ui2.dialog;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -531,7 +534,10 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		lQueryEngine.setLayoutData(lQueryEngineFD);
 
 		queryLanguage = new Combo(container, SWT.READ_ONLY);
-		for (String s : index.getKnownQueryLanguages()) {
+		
+		List<String> languages = new ArrayList<>(index.getKnownQueryLanguages());
+		Collections.sort(languages);
+		for (String s : languages) {
 			queryLanguage.add(s);
 		}
 		if (queryLanguage.getItems().length > 0) {

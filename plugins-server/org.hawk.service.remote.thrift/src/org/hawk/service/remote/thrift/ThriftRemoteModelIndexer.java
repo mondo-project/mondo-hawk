@@ -16,11 +16,8 @@
  *******************************************************************************/
 package org.hawk.service.remote.thrift;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -171,16 +168,6 @@ public class ThriftRemoteModelIndexer implements IModelIndexer, IMetaModelIntros
 		@Override
 		public String getType() {
 			return language;
-		}
-
-		@Override
-		public Object query(IModelIndexer m, File query, Map<String, Object> context) throws InvalidQueryException,
-				QueryExecutionException {
-			try {
-				return query(m, fileToString(query), context);
-			} catch (IOException e) {
-				throw new InvalidQueryException(e);
-			}
 		}
 
 		@Override
@@ -741,19 +728,6 @@ public class ThriftRemoteModelIndexer implements IModelIndexer, IMetaModelIntros
 			console.printerrln("Could not add indexed attribute");
 			console.printerrln(e);
 		}
-	}
-
-	private static String fileToString(File queryFile) throws IOException, FileNotFoundException {
-		final StringBuffer sbuf = new StringBuffer();
-		try (BufferedReader reader = new BufferedReader(new FileReader(queryFile))) {
-			String line;
-			while ((line = reader.readLine()) != null) {
-				sbuf.append(line);
-				sbuf.append('\n');
-			}
-		}
-		final String query = sbuf.toString();
-		return query;
 	}
 
 	@Override

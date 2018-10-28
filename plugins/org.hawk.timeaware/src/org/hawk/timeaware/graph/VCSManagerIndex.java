@@ -17,11 +17,13 @@
 package org.hawk.timeaware.graph;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 
 /**
  * Keeps track of information in the graph about the various VCS. This class

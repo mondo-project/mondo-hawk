@@ -55,8 +55,8 @@ public class EPLQueryEngine extends EOLQueryEngine {
 	}
 
 	@Override
-	protected Object runQuery(long trueStart, IEolModule module) throws QueryExecutionException {
-		final Object ret = super.runQuery(trueStart, module);
+	protected Object runQuery(IEolModule module) throws QueryExecutionException {
+		final Object ret = super.runQuery(module);
 		if (ret instanceof PatternMatchModel) {
 			final PatternMatchModel matchModel = (PatternMatchModel) ret;
 

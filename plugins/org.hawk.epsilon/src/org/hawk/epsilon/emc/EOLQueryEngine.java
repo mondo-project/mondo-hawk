@@ -17,9 +17,6 @@
  ******************************************************************************/
 package org.hawk.epsilon.emc;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -696,24 +693,6 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 		}
 	}
 
-	@Override
-	public Object query(IModelIndexer m, File query, Map<String, Object> context)
-			throws InvalidQueryException, QueryExecutionException {
-
-		String code = "";
-		try {
-			BufferedReader r = new BufferedReader(new FileReader(query));
-			String line;
-			while ((line = r.readLine()) != null)
-				code = code + "\r\n" + line;
-			r.close();
-		} catch (Exception e) {
-			LOGGER.error("Error reading the EOL file", e);
-		}
-
-		return query(m, code, context);
-	}
-
 	protected Object contextlessQuery(IModelIndexer m, String query, Map<String, Object> context)
 			throws QueryExecutionException, InvalidQueryException {
 		final long trueStart = System.currentTimeMillis();
@@ -735,7 +714,7 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 
 		final IEolModule module = createModule();
 		parseQuery(query, context, q, module);
-		return runQuery(trueStart, module);
+		return runQuery(module);
 	}
 
 	protected Object contextfulQuery(IModelIndexer m, String query, Map<String, Object> context)
@@ -753,7 +732,7 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 
 		final IEolModule module = createModule();
 		parseQuery(query, context, q, module);
-		return runQuery(trueStart, module);
+		return runQuery(module);
 	}
 
 	// IQueryEngine part //////////////////////////////////////////////////////
@@ -795,7 +774,7 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 		}
 	}
 
-	protected Object runQuery(final long trueStart, final IEolModule module) throws QueryExecutionException {
+	protected Object runQuery(final IEolModule module) throws QueryExecutionException {
 		Object ret = null;
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			ret = module.execute();

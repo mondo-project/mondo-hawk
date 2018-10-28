@@ -19,7 +19,10 @@
  ******************************************************************************/
 package org.hawk.core.query;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -152,7 +155,21 @@ public interface IQueryEngine {
 	 *             InvalidQueryException The query expression is not parsable by
 	 *             the engine.
 	 */
-	Object query(IModelIndexer m, File query, Map<String, Object> context)
-			throws InvalidQueryException, QueryExecutionException;
+	default Object query(IModelIndexer m, File query, Map<String, Object> context)
+			throws InvalidQueryException, QueryExecutionException {
+		StringBuilder code = new StringBuilder();
+		try (FileReader fR = new FileReader(query); BufferedReader r = new BufferedReader(fR)) {
+			String line;
+			while ((line = r.readLine()) != null) {
+				code.append(code);
+				code.append("\r\n");
+				code.append(line);
+			}
+			r.close();
+		} catch (IOException e) {
+			throw new QueryExecutionException(e);
+		}
+		return query(m, code.toString(), context);
+	}
 
 }

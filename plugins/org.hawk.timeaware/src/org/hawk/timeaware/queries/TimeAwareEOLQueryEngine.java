@@ -22,6 +22,7 @@ import org.eclipse.epsilon.eol.IEolModule;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IStateListener.HawkState;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphDatabase;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
 import org.hawk.epsilon.emc.EOLQueryEngine;
@@ -58,8 +59,10 @@ public class TimeAwareEOLQueryEngine extends EOLQueryEngine {
 					String.format("Cannot run the query, as the indexer is not in the RUNNING state: it is %s instead.",
 							currentState));
 		}
+		if (!(m.getGraph() instanceof ITimeAwareGraphDatabase)) {
+			throw new QueryExecutionException(getClass().getName() + " can only be used with time-aware backends");
+		}
 
-		final long trueStart = System.currentTimeMillis();
 		String defaultnamespaces = null;
 		if (context != null) {
 			defaultnamespaces = (String) context.get(PROPERTY_DEFAULTNAMESPACES);
@@ -77,7 +80,7 @@ public class TimeAwareEOLQueryEngine extends EOLQueryEngine {
 		module.getContext().getOperationContributorRegistry().add(new TimeAwareNodeHistoryOperationContributor(q));
 		module.getContext().getOperationContributorRegistry().add(new TypeHistoryOperationContributor(q));
 		parseQuery(query, context, q, module);
-		return runQuery(trueStart, module);
+		return runQuery(module);
 	}
 
 }

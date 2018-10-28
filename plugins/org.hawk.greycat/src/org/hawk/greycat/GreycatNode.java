@@ -284,46 +284,6 @@ public class GreycatNode implements ITimeAwareGraphNode {
 	}
 
 	@Override
-	public List<ITimeAwareGraphNode> getAllVersions() {
-		return getVersionsBetween(Constants.BEGINNING_OF_TIME, Constants.END_OF_TIME);
-	}
-
-	@Override
-	public List<ITimeAwareGraphNode> getVersionsFrom(long fromInclusive) {
-		return getVersionsBetween(fromInclusive, Constants.END_OF_TIME);
-	}
-
-	@Override
-	public List<ITimeAwareGraphNode> getVersionsUpTo(long toInclusive) {
-		return getVersionsBetween(Constants.END_OF_TIME, toInclusive);
-	}
-
-	@Override
-	public List<ITimeAwareGraphNode> getVersionsBetween(long fromInclusive, long toInclusive) {
-		try (NodeReader rn = getNodeReader()) {
-			final Node n = rn.get();
-
-			CompletableFuture<long[]> result = new CompletableFuture<>();
-			n.timepoints(fromInclusive, toInclusive, (value) -> {
-				result.complete(value);
-			});
-
-			List<ITimeAwareGraphNode> versions = new ArrayList<>();
-			for (long timepoint : result.get()) {
-				versions.add(new GreycatNode(db, world, timepoint, id));
-			}
-			return versions;
-		} catch (InterruptedException e) {
-			LOGGER.error(e.getMessage(), e);
-			Thread.currentThread().interrupt();
-			return Collections.emptyList();
-		} catch (ExecutionException e) {
-			LOGGER.error(e.getMessage(), e);
-			return Collections.emptyList();
-		}
-	}
-
-	@Override
 	public ITimeAwareGraphNode travelInTime(long time) {
 		try (NodeReader rn = getNodeReader()) {
 			final Node n = rn.get();
@@ -862,6 +822,31 @@ public class GreycatNode implements ITimeAwareGraphNode {
 	}
 
 	@Override
+	public List<Long> getInstantsBetween(long fromInclusive, long toInclusive) {
+		try (NodeReader rn = getNodeReader()) {
+			final Node n = rn.get();
+
+			CompletableFuture<long[]> result = new CompletableFuture<>();
+			n.timepoints(fromInclusive, toInclusive, (value) -> {
+				result.complete(value);
+			});
+
+			List<Long> instants = new ArrayList<>();
+			for (long instant : result.get()) {
+				instants.add(instant);
+			}
+			return instants;
+		} catch (InterruptedException e) {
+			LOGGER.error(e.getMessage(), e);
+			Thread.currentThread().interrupt();
+			return Collections.emptyList();
+		} catch (ExecutionException e) {
+			LOGGER.error(e.getMessage(), e);
+			return Collections.emptyList();
+		}
+	}
+
+	@Override
 	public long getEarliestInstant() throws Exception {
 		try (NodeReader rn = getNodeReader()) {
 			final Node n = rn.get();
@@ -918,6 +903,21 @@ public class GreycatNode implements ITimeAwareGraphNode {
 			}
 			return instants[instants.length - 1];
 		}
+	}
+
+	@Override
+	public List<Long> getInstantsFrom(long fromInclusive) {
+		return getInstantsBetween(fromInclusive, Constants.END_OF_TIME);
+	}
+
+	@Override
+	public List<Long> getInstantsUpTo(long toInclusive) {
+		return getInstantsBetween(Constants.BEGINNING_OF_TIME, toInclusive);
+	}
+
+	@Override
+	public List<Long> getAllInstants() throws Exception {
+		return getInstantsBetween(Constants.BEGINNING_OF_TIME, Constants.END_OF_TIME);
 	}
 
 }

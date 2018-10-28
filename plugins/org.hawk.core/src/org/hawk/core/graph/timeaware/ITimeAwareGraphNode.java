@@ -17,6 +17,7 @@
 package org.hawk.core.graph.timeaware;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.hawk.core.graph.IGraphNode;
 
@@ -35,10 +36,20 @@ public interface ITimeAwareGraphNode extends IGraphNode {
 	long getTime();
 
 	/**
+	 * Returns a list with all the distinct instants of the node over time.
+	 * Versions should be ordered from newest to oldest.
+	 */
+	List<Long> getAllInstants() throws Exception;
+
+	/**
 	 * Returns a list with all the distinct versions of the node over time.
 	 * Versions should be ordered from newest to oldest.
 	 */
-	List<ITimeAwareGraphNode> getAllVersions() throws Exception;
+	default List<ITimeAwareGraphNode> getAllVersions() throws Exception {
+		return getAllInstants().stream()
+			.map(instant -> travelInTime(instant))
+			.collect(Collectors.toList());
+	}
 
 	/**
 	 * Returns the earliest time instant for this node.
@@ -104,21 +115,52 @@ public interface ITimeAwareGraphNode extends IGraphNode {
 	ITimeAwareGraphNode travelInTime(long time);
 
 	/**
+	 * Returns all instants between two points in time, both included, from newest
+	 * to oldest.
+	 */
+	List<Long> getInstantsBetween(long fromInclusive, long toInclusive);
+
+	/**
 	 * Returns all versions between two instants, both included, from
 	 * newest to oldest.
 	 */
-	List<ITimeAwareGraphNode> getVersionsBetween(long fromInclusive, long toInclusive) throws Exception;
+	default List<ITimeAwareGraphNode> getVersionsBetween(long fromInclusive, long toInclusive) throws Exception {
+		return getInstantsBetween(fromInclusive, toInclusive).stream()
+				.map(instant -> travelInTime(instant))
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Returns all instants between two points in time, both included, from newest
+	 * to oldest.
+	 */
+	List<Long> getInstantsFrom(long fromInclusive);
 
 	/**
 	 * Returns all versions from an instant, which is included. Versions are
 	 * returned from newest to oldest.
 	 */
-	List<ITimeAwareGraphNode> getVersionsFrom(long fromInclusive) throws Exception;
+	default List<ITimeAwareGraphNode> getVersionsFrom(long fromInclusive) throws Exception  {
+		return getInstantsFrom(fromInclusive).stream()
+				.map(instant -> travelInTime(instant))
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Returns all instants between two points in time, both included, from newest
+	 * to oldest.
+	 */
+	List<Long> getInstantsUpTo(long toInclusive);
 
 	/**
 	 * Returns all versions up to an instant, which is included. Versions are
 	 * returned from newest to oldest.
 	 */
-	List<ITimeAwareGraphNode> getVersionsUpTo(long toInclusive) throws Exception;
+	default List<ITimeAwareGraphNode> getVersionsUpTo(long toInclusive) throws Exception {
+		return getInstantsUpTo(toInclusive).stream()
+				.map(instant -> travelInTime(instant))
+				.collect(Collectors.toList());
+	}
+
 
 }

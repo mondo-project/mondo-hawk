@@ -8,17 +8,23 @@
       </model>
    </extension>
    <extension
+         point="org.hawk.core.HawkFactoryExtensionPoint">
+      <hawkFactory
+            class="org.hawk.timeaware.factory.TimeAwareHawkFactory"
+            name="Time-aware Hawk Factory">
+      </hawkFactory>
+   </extension>
+   <extension
          point="org.hawk.core.QueryExtensionPoint">
       <query
             query_language="org.hawk.timeaware.queries.TimeAwareEOLQueryEngine">
       </query>
    </extension>
    <extension
-         point="org.hawk.core.HawkFactoryExtensionPoint">
-      <hawkFactory
-            class="org.hawk.timeaware.factory.TimeAwareHawkFactory"
-            name="Time-aware Hawk Factory">
-      </hawkFactory>
+         point="org.hawk.core.QueryExtensionPoint">
+      <query
+            query_language="org.hawk.timeaware.queries.TimelineEOLQueryEngine">
+      </query>
    </extension>
 
 </plugin>

@@ -76,30 +76,38 @@ public class TimeAwareIndexer extends BaseModelIndexer {
 					// Commits might be only milliseconds apart in automated processes
 					final Instant instant = commit.getJavaDate().toInstant();
 					final long epochMillis = instant.getEpochSecond() * 1000 + instant.getNano() / 1_000_000;
-					taGraph.setTime(epochMillis);
 
-					/*
-					 * TODO: allow for fixing unresolved proxies in previous versions? Might make
-					 * sense if we forgot to add a metamodel in a previous version.
-					 */
-					success = success && synchroniseFiles(commit.getRevision(), vcsManager, commit.getItems());
-					console.println(String.format("Index revision %s (timepoint %d) of %s",
+					// Do not allow anyone else to change the time while we are manipulating the graph
+					synchronized(taGraph) {
+						taGraph.setTime(epochMillis);
+
+						/*
+						 * TODO: allow for fixing unresolved proxies in previous versions? Might make
+						 * sense if we forgot to add a metamodel in a previous version.
+						 */
+						success = success && synchroniseFiles(commit.getRevision(), vcsManager, commit.getItems());
+						console.println(String.format("Index revision %s (timepoint %d) of %s",
 							commit.getRevision(), epochMillis, commit.getDelta().getManager().getLocation()));
 
-					taGraph.setTime(0);
-					setLastIndexedRevision(vcsManager, commit.getRevision());
+						taGraph.setTime(0);
+						setLastIndexedRevision(vcsManager, commit.getRevision());
+					}
 				}
 
 				// The indexed repo might have commits in other paths - mark the last revision as done as well so
 				// we do not keep trying to index again and again.
-				taGraph.setTime(0);
-				setLastIndexedRevision(vcsManager, currentRevision);
+				synchronized (taGraph) {
+					taGraph.setTime(0);
+					setLastIndexedRevision(vcsManager, currentRevision);
+				}
 			}
 		} catch (Exception e) {
 			LOGGER.error("Failed to synchronise repository " + vcsManager.getLocation(), e);
 			return false;
 		} finally {
-			taGraph.setTime(0);
+			synchronized (taGraph) {
+				taGraph.setTime(0);
+			}
 		}
 
 		return success;

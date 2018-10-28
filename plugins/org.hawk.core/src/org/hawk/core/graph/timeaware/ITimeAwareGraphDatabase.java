@@ -42,6 +42,10 @@ public interface ITimeAwareGraphDatabase extends IGraphDatabase {
 	 * call will only be visible after this timepoint, until they are
 	 * invalidated. Changes to existing nodes will only be visible from
 	 * this point onwards, until they are overwritten down the timeline.
+	 *
+	 * NOTE: it may be a good idea to use a synchronised block on a DB
+	 * while relying on a particular timepoint, to ensure that no other
+	 * caller will change it in the middle of an operation.
 	 */
 	void setTime(long time);
 

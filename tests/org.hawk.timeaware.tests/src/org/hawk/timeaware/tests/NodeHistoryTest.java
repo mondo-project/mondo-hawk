@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -44,6 +45,7 @@ import org.hawk.svn.tests.rules.TemporarySVNRepository;
 import org.hawk.timeaware.graph.TimeAwareIndexer;
 import org.hawk.timeaware.graph.TimeAwareModelUpdater;
 import org.hawk.timeaware.queries.TimeAwareEOLQueryEngine;
+import org.hawk.timeaware.queries.TimelineEOLQueryEngine;
 import org.hawk.timeaware.tests.tree.Tree.Tree;
 import org.hawk.timeaware.tests.tree.Tree.TreeFactory;
 import org.junit.Before;
@@ -66,6 +68,8 @@ public class NodeHistoryTest extends ModelIndexingTest {
 	private ResourceSet rsTree;
 
 	private TimeAwareEOLQueryEngine timeAwareQueryEngine;
+
+	private TimelineEOLQueryEngine timelineQueryEngine;
 
 	@Parameters(name = "{0}")
     public static Iterable<Object[]> params() {
@@ -92,6 +96,9 @@ public class NodeHistoryTest extends ModelIndexingTest {
 
 		timeAwareQueryEngine = new TimeAwareEOLQueryEngine();
 		indexer.addQueryEngine(timeAwareQueryEngine);
+		
+		timelineQueryEngine = new TimelineEOLQueryEngine();
+		indexer.addQueryEngine(timelineQueryEngine);
 	}
 
 	@Test
@@ -100,8 +107,11 @@ public class NodeHistoryTest extends ModelIndexingTest {
 		waitForSync(new Callable<Object>(){
 			@Override
 			public Object call() throws Exception {
-				// .all works on the latest revision (keeps time-aware querying working)
+				// .all works on revision 0
 				assertEquals(0, timeAwareEOL("return Tree.all.size;"));
+
+				// We also deleted everything in the latest revision
+				assertEquals(0, timeAwareEOL("return Tree.latest.all.size;"));
 
 				// .created can return instances that have been created from a certain moment in time (even if not alive anymore)
 				assertEquals(1, timeAwareEOL("return Tree.latest.prev.size;"));
@@ -145,6 +155,34 @@ public class NodeHistoryTest extends ModelIndexingTest {
 		});
 	}
 
+	@Test
+	public void countInstancesFromModel() throws Throwable {
+		twoCommitTree();
+		waitForSync(new Callable<Object>(){
+			@Override
+			public Object call() throws Exception {
+				assertEquals(0, timeAwareEOL("return Model.atypes.selectOne(t|t.name='Tree').all.size;"));
+				assertEquals(1, timeAwareEOL("return Model.types.selectOne(t|t.name='Tree').latest.prev.all.size;"));
+				assertEquals(0, timeAwareEOL("return Model.types.selectOne(t|t.name='Tree').latest.prev.prev.all.size;"));
+				assertEquals(0, timeAwareEOL("return Model.types.selectOne(t|t.name='Tree').earliest.all.size;"));
+				return null;
+			}
+		});
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void countInstancesTimeline() throws Throwable {
+		twoCommitTree();
+		waitForSync(() -> {
+			List<List<Object>> results = (List<List<Object>>) timelineEOL("return Tree.all.size;");
+			assertEquals(0, results.get(0).get(1));
+			assertEquals(1, results.get(1).get(1));
+			assertEquals(0, results.get(2).get(1));
+			return null;
+		});
+	}
+	
 	@Override
 	protected GraphModelUpdater createModelUpdater() {
 		return new TimeAwareModelUpdater();
@@ -170,4 +208,7 @@ public class NodeHistoryTest extends ModelIndexingTest {
 		return timeAwareQueryEngine.query(indexer, eolQuery, context);
 	}
 
+	protected Object timelineEOL(final String eolQuery) throws InvalidQueryException, QueryExecutionException {
+		return timelineQueryEngine.query(indexer, eolQuery, null);
+	}
 }
