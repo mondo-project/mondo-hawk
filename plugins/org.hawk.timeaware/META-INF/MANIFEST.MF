@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Time-aware Graph Updater for Hawk
 Bundle-SymbolicName: org.hawk.timeaware;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.2.0.qualifier
 Bundle-Vendor: Aston University
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.slf4j.api;bundle-version="1.7.2",
