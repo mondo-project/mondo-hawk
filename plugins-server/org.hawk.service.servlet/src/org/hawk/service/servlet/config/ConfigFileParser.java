@@ -51,8 +51,8 @@ public class ConfigFileParser {
 
 	private static final String NAME = "name";
 	private static final String TYPE = "type";
-
 	private static final String BACKEND  = "backend";
+	private static final String FACTORY  = "factory";
 
 	private static final String DELAY  = "delay";
 	private static final String MIN  = "min";
@@ -205,8 +205,8 @@ public class ConfigFileParser {
 	private void parseConfig(Element hawkElement , HawkInstanceConfig config) {
 		if(hawkElement.getNodeName().equals(HAWK)) {
 			config.setName(hawkElement.getAttribute(NAME));
-
 			config.setBackend(hawkElement.getAttribute(BACKEND));
+			config.setFactory(hawkElement.getAttribute(FACTORY));
 
 			readDelay(hawkElement.getElementsByTagName(DELAY), config);
 

@@ -13,6 +13,7 @@ Hawk_createInstance_args = function(args) {
   this.minimumDelayMillis = null;
   this.maximumDelayMillis = null;
   this.enabledPlugins = null;
+  this.indexFactory = null;
   if (args) {
     if (args.name !== undefined && args.name !== null) {
       this.name = args.name;
@@ -36,6 +37,9 @@ Hawk_createInstance_args = function(args) {
     }
     if (args.enabledPlugins !== undefined && args.enabledPlugins !== null) {
       this.enabledPlugins = Thrift.copyList(args.enabledPlugins, [null]);
+    }
+    if (args.indexFactory !== undefined && args.indexFactory !== null) {
+      this.indexFactory = args.indexFactory;
     }
   }
 };
@@ -101,6 +105,13 @@ Hawk_createInstance_args.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 6:
+      if (ftype == Thrift.Type.STRING) {
+        this.indexFactory = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -146,12 +157,27 @@ Hawk_createInstance_args.prototype.write = function(output) {
     output.writeListEnd();
     output.writeFieldEnd();
   }
+  if (this.indexFactory !== null && this.indexFactory !== undefined) {
+    output.writeFieldBegin('indexFactory', Thrift.Type.STRING, 6);
+    output.writeString(this.indexFactory);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
 };
 
 Hawk_createInstance_result = function(args) {
+  this.err1 = null;
+  if (args instanceof HawkFactoryNotFound) {
+    this.err1 = args;
+    return;
+  }
+  if (args) {
+    if (args.err1 !== undefined && args.err1 !== null) {
+      this.err1 = args.err1;
+    }
+  }
 };
 Hawk_createInstance_result.prototype = {};
 Hawk_createInstance_result.prototype.read = function(input) {
@@ -165,7 +191,22 @@ Hawk_createInstance_result.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.err1 = new HawkFactoryNotFound();
+        this.err1.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -174,6 +215,11 @@ Hawk_createInstance_result.prototype.read = function(input) {
 
 Hawk_createInstance_result.prototype.write = function(output) {
   output.writeStructBegin('Hawk_createInstance_result');
+  if (this.err1 !== null && this.err1 !== undefined) {
+    output.writeFieldBegin('err1', Thrift.Type.STRUCT, 1);
+    this.err1.write(output);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -6763,14 +6809,14 @@ HawkClient = function(input, output) {
     this.seqid = 0;
 };
 HawkClient.prototype = {};
-HawkClient.prototype.createInstance = function(name, backend, minimumDelayMillis, maximumDelayMillis, enabledPlugins, callback) {
-  this.send_createInstance(name, backend, minimumDelayMillis, maximumDelayMillis, enabledPlugins, callback); 
+HawkClient.prototype.createInstance = function(name, backend, minimumDelayMillis, maximumDelayMillis, enabledPlugins, indexFactory, callback) {
+  this.send_createInstance(name, backend, minimumDelayMillis, maximumDelayMillis, enabledPlugins, indexFactory, callback); 
   if (!callback) {
   this.recv_createInstance();
   }
 };
 
-HawkClient.prototype.send_createInstance = function(name, backend, minimumDelayMillis, maximumDelayMillis, enabledPlugins, callback) {
+HawkClient.prototype.send_createInstance = function(name, backend, minimumDelayMillis, maximumDelayMillis, enabledPlugins, indexFactory, callback) {
   this.output.writeMessageBegin('createInstance', Thrift.MessageType.CALL, this.seqid);
   var args = new Hawk_createInstance_args();
   args.name = name;
@@ -6778,6 +6824,7 @@ HawkClient.prototype.send_createInstance = function(name, backend, minimumDelayM
   args.minimumDelayMillis = minimumDelayMillis;
   args.maximumDelayMillis = maximumDelayMillis;
   args.enabledPlugins = enabledPlugins;
+  args.indexFactory = indexFactory;
   args.write(this.output);
   this.output.writeMessageEnd();
   if (callback) {
@@ -6811,6 +6858,9 @@ HawkClient.prototype.recv_createInstance = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.err1) {
+    throw result.err1;
+  }
   return;
 };
 HawkClient.prototype.listBackends = function(callback) {

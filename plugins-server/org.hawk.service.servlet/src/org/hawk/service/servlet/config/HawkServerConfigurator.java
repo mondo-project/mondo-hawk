@@ -187,8 +187,7 @@ public class HawkServerConfigurator  {
 		/** use iface.createInstance (instead of HModel.create) to set the right storage folder */
 		// set polling to 0,0, set to required polling later when config is done
 		iface.createInstance(config.getName(), config.getBackend(),
-				0, 0,
-				config.getPlugins());
+				0, 0, config.getPlugins(), config.getFactory());
 		
 		HModel hawkInstance = manager.getHawkByName(config.getName());
 		

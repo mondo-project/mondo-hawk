@@ -508,6 +508,35 @@ File.prototype.write = function(output) {
   return;
 };
 
+HawkFactoryNotFound = function(args) {
+};
+Thrift.inherits(HawkFactoryNotFound, Thrift.TException);
+HawkFactoryNotFound.prototype.name = 'HawkFactoryNotFound';
+HawkFactoryNotFound.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    input.skip(ftype);
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+HawkFactoryNotFound.prototype.write = function(output) {
+  output.writeStructBegin('HawkFactoryNotFound');
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 HawkInstance = function(args) {
   this.name = null;
   this.state = null;

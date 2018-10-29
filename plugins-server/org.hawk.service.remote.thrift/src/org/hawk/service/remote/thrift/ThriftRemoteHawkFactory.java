@@ -37,7 +37,14 @@ public class ThriftRemoteHawkFactory implements IHawkFactory {
 
 	@Override
 	public IHawk create(String name, File parentFolder, String location, ICredentialsStore credStore, IConsole console, List<String> enabledPlugins) throws Exception {
-		return new ThriftRemoteHawk(name, location, parentFolder, credStore, console, ThriftProtocol.guessFromURL(location), enabledPlugins);
+		return new ThriftRemoteHawk(
+			name, location, getFactoryName(),
+			parentFolder, credStore, console,
+			ThriftProtocol.guessFromURL(location), enabledPlugins);
+	}
+
+	protected String getFactoryName() {
+		return null;
 	}
 
 	@Override

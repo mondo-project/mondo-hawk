@@ -47,8 +47,9 @@ class Hawk {
 		@doc(d="The name of the backend to be used, as returned by listBackends()") String backend,
 		@doc(d="Minimum delay between periodic synchronization in milliseconds") int minimumDelayMillis,
 		@doc(d="Maximum delay between periodic synchronization in milliseconds (0 to disable periodic synchronization)") int maximumDelayMillis,
-		@doc(d="List of plugins to be enabled: if not set, all plugins are enabled.", optional="true") String[*] enabledPlugins 
-	);
+		@doc(d="List of plugins to be enabled: if not set, all plugins are enabled.", optional="true") String[*] enabledPlugins,
+		@doc(d="Factory to be used: if not set, the standard LocalHawkFactory is used.", optional="true") String indexFactory
+	) throws HawkFactoryNotFound;
 
 	@doc(d="Lists the names of the available storage backends")
 	op String[*] listBackends();
@@ -455,6 +456,9 @@ enum CommitItemChangeType {
 
 @doc(d="No Hawk instance exists with that name.")
 class HawkInstanceNotFound {}
+
+@doc(d="No Hawk factory exists with that name.")
+class HawkFactoryNotFound {}
 
 @doc(d="The selected Hawk instance is not running.")
 class HawkInstanceNotRunning {}

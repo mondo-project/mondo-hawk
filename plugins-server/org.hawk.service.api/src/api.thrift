@@ -54,6 +54,9 @@ struct File {
 	 /* Sequence of bytes with the contents of the file. */ 2: required binary contents,
 }
 
+exception HawkFactoryNotFound {
+}
+
 struct HawkInstance {
 	 /* The name of the instance. */ 1: required string name,
 	 /* Current state of the instance. */ 2: required HawkState state,
@@ -395,7 +398,11 @@ service Hawk {
 	/* Minimum delay between periodic synchronization in milliseconds. */ 3: required i32 minimumDelayMillis,
 	/* Maximum delay between periodic synchronization in milliseconds (0 to disable periodic synchronization). */ 4: required i32 maximumDelayMillis,
 	/* List of plugins to be enabled: if not set, all plugins are enabled. */ 5:  list<string> enabledPlugins,
+	/* Factory to be used: if not set, the standard LocalHawkFactory is used. */ 6:  string indexFactory,
   )
+  throws (
+	1: HawkFactoryNotFound err1 /* No Hawk factory exists with that name. */
+	)
 	
   /* Lists the names of the available storage backends. Auth needed: Yes */
   list<string> listBackends(

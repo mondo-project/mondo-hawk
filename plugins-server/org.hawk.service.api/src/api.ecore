@@ -73,7 +73,7 @@
     <eAnnotations source="doc">
       <details key="d" value="The following service operations expose the capabilities of the Hawk heterogeneous model indexing framework."/>
     </eAnnotations>
-    <eOperations name="createInstance">
+    <eOperations name="createInstance" eExceptions="#//HawkFactoryNotFound">
       <eAnnotations source="doc">
         <details key="d" value="Creates a new Hawk instance (stopped)."/>
       </eAnnotations>
@@ -100,6 +100,12 @@
       <eParameters name="enabledPlugins" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="doc">
           <details key="d" value="List of plugins to be enabled: if not set, all plugins are enabled."/>
+          <details key="optional" value="true"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="indexFactory" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="doc">
+          <details key="d" value="Factory to be used: if not set, the standard LocalHawkFactory is used."/>
           <details key="optional" value="true"/>
         </eAnnotations>
       </eParameters>
@@ -1193,6 +1199,11 @@
   <eClassifiers xsi:type="ecore:EClass" name="HawkInstanceNotFound">
     <eAnnotations source="doc">
       <details key="d" value="No Hawk instance exists with that name."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HawkFactoryNotFound">
+    <eAnnotations source="doc">
+      <details key="d" value="No Hawk factory exists with that name."/>
     </eAnnotations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="HawkInstanceNotRunning">

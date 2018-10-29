@@ -20,7 +20,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -52,6 +51,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.hawk.core.IHawkFactory;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.core.IStateListener.HawkState;
@@ -83,6 +83,7 @@ import org.hawk.service.api.EffectiveMetamodelRuleset;
 import org.hawk.service.api.FailedQuery;
 import org.hawk.service.api.File;
 import org.hawk.service.api.Hawk;
+import org.hawk.service.api.HawkFactoryNotFound;
 import org.hawk.service.api.HawkInstance;
 import org.hawk.service.api.HawkInstanceNotFound;
 import org.hawk.service.api.HawkInstanceNotRunning;
@@ -97,7 +98,6 @@ import org.hawk.service.api.InvalidPollingConfiguration;
 import org.hawk.service.api.InvalidQuery;
 import org.hawk.service.api.MetamodelParserDetails;
 import org.hawk.service.api.ModelElement;
-import org.hawk.service.api.ModelElementType;
 import org.hawk.service.api.QueryReport;
 import org.hawk.service.api.QueryResult;
 import org.hawk.service.api.QueryResult._Fields;
@@ -722,11 +722,21 @@ public final class HawkThriftIface implements Hawk.Iface {
 	}
 
 	@Override
-	public void createInstance(String name, String backend, int minDelay, int maxDelay, List<String> plugins) throws TException {
+	public void createInstance(String name, String backend, int minDelay, int maxDelay, List<String> plugins, String factoryName) throws TException {
 		try {
 			final HManager manager = HManager.getInstance();
 			if (manager.getHawkByName(name) == null) {
-				HModel model = HModel.create(new LocalHawkFactory(), name, storageFolder(name),
+				IHawkFactory factory;
+				if (factoryName == null) {
+					factory = new LocalHawkFactory();
+				} else {
+					factory = manager.getHawkFactoryInstances().get(factoryName);
+					if (factory == null) {
+						throw new HawkFactoryNotFound();
+					}
+				}
+
+				HModel model = HModel.create(factory, name, storageFolder(name),
 						null, backend, plugins,
 						manager, new SecurePreferencesCredentialsStore(), minDelay, maxDelay);
 				addStateListener(model);
