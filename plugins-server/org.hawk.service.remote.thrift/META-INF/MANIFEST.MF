@@ -21,3 +21,4 @@ Require-Bundle: org.hawk.core,
  org.hawk.service.api.dt
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.hawk.service.remote.thrift.Activator
+Export-Package: org.hawk.service.remote.thrift

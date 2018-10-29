@@ -35,6 +35,7 @@
     <!-- <module>features/org.hawk.service.emf.ifcexport.feature</module> -->
     <module>features/org.hawk.service.emf.feature</module>
     <module>features/org.hawk.service.remote.thrift.feature</module>
+    <module>features/org.hawk.service.remote.thrift.timeawarefeature</module>
     <module>features/org.hawk.service.server.feature</module>
     <module>features/org.hawk.service.server.users.cli.feature</module>
     <module>features/org.hawk.service.servlet.feature</module>
@@ -82,6 +83,7 @@
     <!-- <module>plugins-server/org.hawk.service.emf.ifcexport</module> -->
     <module>plugins-server/org.hawk.service.emf</module>
     <module>plugins-server/org.hawk.service.remote.thrift</module>
+    <module>plugins-server/org.hawk.service.remote.thrift.timeaware</module>
     <module>plugins-server/org.hawk.service.servlet</module>
     <module>plugins-server/org.hawk.service.server.application</module>
     <module>plugins-server/org.hawk.service.server.cli</module>

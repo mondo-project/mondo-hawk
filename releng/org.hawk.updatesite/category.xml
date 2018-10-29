@@ -126,6 +126,9 @@
    <feature url="features/org.hawk.timeaware.feature_1.2.0.qualifier.jar" id="org.hawk.timeaware.feature" version="1.2.0.qualifier">
       <category name="hawk.timeaware"/>
    </feature>
+   <feature url="features/org.hawk.service.remote.thrift.timeaware.feature_1.2.0.qualifier.jar" id="org.hawk.service.remote.thrift.timeaware.feature" version="1.2.0.qualifier">
+      <category name="hawk.timeaware"/>
+   </feature>
    <category-def name="hawk.core" label="Hawk Core"/>
    <category-def name="hawk.connectors" label="Hawk Connectors"/>
    <category-def name="hawk.backends" label="Hawk Backends"/>
