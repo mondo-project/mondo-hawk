@@ -411,7 +411,7 @@ public final class HawkThriftIface implements Hawk.Iface {
 		} else if (ret instanceof Byte) {
 			return new QueryResult(_Fields.V_BYTE, (Byte)ret);
 		} else if (ret instanceof Double || ret instanceof Float) {
-			return new QueryResult(_Fields.V_DOUBLE, (Double)ret);
+			return new QueryResult(_Fields.V_DOUBLE, ((Number)ret).doubleValue());
 		} else if (ret instanceof Integer) {
 			return new QueryResult(_Fields.V_INTEGER, (Integer)ret);
 		} else if (ret instanceof Long) {
