@@ -161,7 +161,7 @@ public class NodeHistoryTest extends ModelIndexingTest {
 		waitForSync(new Callable<Object>(){
 			@Override
 			public Object call() throws Exception {
-				assertEquals(0, timeAwareEOL("return Model.atypes.selectOne(t|t.name='Tree').all.size;"));
+				assertEquals(0, timeAwareEOL("return Model.types.selectOne(t|t.name='Tree').all.size;"));
 				assertEquals(1, timeAwareEOL("return Model.types.selectOne(t|t.name='Tree').latest.prev.all.size;"));
 				assertEquals(0, timeAwareEOL("return Model.types.selectOne(t|t.name='Tree').latest.prev.prev.all.size;"));
 				assertEquals(0, timeAwareEOL("return Model.types.selectOne(t|t.name='Tree').earliest.all.size;"));
