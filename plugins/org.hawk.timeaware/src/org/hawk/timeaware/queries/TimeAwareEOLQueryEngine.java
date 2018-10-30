@@ -16,17 +16,25 @@
  ******************************************************************************/
 package org.hawk.timeaware.queries;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.epsilon.eol.IEolModule;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphDatabase;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.epsilon.emc.pgetters.GraphPropertyGetter;
+import org.hawk.graph.GraphWrapper;
+import org.hawk.graph.MetamodelNode;
+import org.hawk.graph.ModelElementNode;
+import org.hawk.graph.TypeNode;
 
 /**
  * Variant of {@link EOLQueryEngine} that exposes the time-aware nature of the
@@ -43,6 +51,37 @@ public class TimeAwareEOLQueryEngine extends EOLQueryEngine {
 	@Override
 	protected GraphPropertyGetter createContextlessPropertyGetter() {
 		return new TimeAwareGraphPropertyGetter(graph, this);
+	}
+
+	/**
+	 * Extends "allInstances" with the concept of time. It is likely to be used
+	 * through the {@link #allInstancesNow()} convenience function.
+	 * 
+	 * The regular "allInstances" can still be used in timeline queries, where
+	 * the global timepoint is changed.
+	 */
+	public Collection<?> allInstancesAt(long timepoint) {
+		final Set<Object> allContents = new HashSet<>();
+
+		final GraphWrapper gW = new GraphWrapper(graph);
+		for (MetamodelNode mm : gW.getMetamodelNodes()) {
+			for (TypeNode tn : mm.getTypes()) {
+				ITimeAwareGraphNode taTNode = (ITimeAwareGraphNode) tn.getNode();
+				TypeNode locatedTN = new TypeNode(taTNode.travelInTime(timepoint));
+				for (ModelElementNode e : locatedTN.getAll()) {
+					allContents.add(e);
+				}
+			}
+		}
+		return allContents;
+	}
+
+	/**
+	 * Returns all the instances in the model at this current moment, by visiting
+	 * the type nodes at the current point in time.
+	 */
+	public Collection<?> allInstancesNow() {
+		return allInstancesAt(System.currentTimeMillis());
 	}
 
 	@Override

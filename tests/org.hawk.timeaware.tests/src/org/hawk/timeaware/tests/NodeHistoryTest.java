@@ -182,6 +182,27 @@ public class NodeHistoryTest extends ModelIndexingTest {
 			return null;
 		});
 	}
+
+	@Test
+	public void countInstancesModelAll() throws Throwable {
+		final File fTree = new File(svnRepository.getCheckoutDirectory(), "root.xmi");
+		Resource rTree = rsTree.createResource(URI.createFileURI(fTree.getAbsolutePath()));
+
+		Tree t = treeFactory.createTree();
+		t.setLabel("xy");
+		rTree.getContents().add(t);
+		rTree.save(null);
+
+		svnRepository.add(fTree);
+		svnRepository.commit("First commit");
+		requestSVNIndex();
+
+		waitForSync(() -> {
+			assertEquals(0, timeAwareEOL("return Model.allInstances.size;"));
+			assertEquals(1, timeAwareEOL("return Model.allInstancesNow.size;"));
+			return null;
+		});
+	}
 	
 	@Override
 	protected GraphModelUpdater createModelUpdater() {
