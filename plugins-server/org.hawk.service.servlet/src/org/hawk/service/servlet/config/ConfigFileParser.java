@@ -206,7 +206,7 @@ public class ConfigFileParser {
 		if(hawkElement.getNodeName().equals(HAWK)) {
 			config.setName(hawkElement.getAttribute(NAME));
 			config.setBackend(hawkElement.getAttribute(BACKEND));
-			config.setFactory(hawkElement.getAttribute(FACTORY));
+			config.setFactory(hawkElement.hasAttribute(FACTORY) ? hawkElement.getAttribute(FACTORY) : null);
 
 			readDelay(hawkElement.getElementsByTagName(DELAY), config);
 

@@ -94,16 +94,12 @@ public class HawkServerConfiguratorTest {
 		final HModel instance = manager.getHawkByName(config.getName());
 
 		assertTrue(instance.isRunning());
-
 		assertEquals(config.getName(), instance.getName());
-
 		assertEquals(config.getBackend(), instance.getDbType());
-
 		assertArrayEquals(config.getPlugins().toArray(), instance.getEnabledPlugins().toArray());
 
 		finishedRetrievingInstanceInfo = false;
 		instance.configurePolling(0, 0);
-		
 
 		instance.getHawk().getModelIndexer().scheduleTask(new Callable<Void>(){
 			@Override
