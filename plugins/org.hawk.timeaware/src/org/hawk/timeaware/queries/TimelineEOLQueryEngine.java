@@ -53,6 +53,10 @@ import org.slf4j.LoggerFactory;
  * we cannot have two timeline queries happen at the same time. Synchronisation is used to
  * enforce this.
  *
+ * TODO: right now we can only find points when type nodes changed (instances were created
+ * or deleted). We should take advantage of repository nodes instead to compute the various
+ * timepoints.
+ *
  * TODO: allow customizing range of timepoints/instants to use.
  *
  * TODO: have engine keep its own time, rather than relying on the time set on the backend.

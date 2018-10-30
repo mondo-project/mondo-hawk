@@ -25,12 +25,14 @@ import org.eclipse.epsilon.eol.IEolModule;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IStateListener.HawkState;
+import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphDatabase;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.epsilon.emc.pgetters.GraphPropertyGetter;
+import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.MetamodelNode;
 import org.hawk.graph.ModelElementNode;
@@ -61,17 +63,11 @@ public class TimeAwareEOLQueryEngine extends EOLQueryEngine {
 	 * the global timepoint is changed.
 	 */
 	public Collection<?> allInstancesAt(long timepoint) {
-		final Set<Object> allContents = new HashSet<>();
-
-		final GraphWrapper gW = new GraphWrapper(graph);
-		for (MetamodelNode mm : gW.getMetamodelNodes()) {
-			for (TypeNode tn : mm.getTypes()) {
-				ITimeAwareGraphNode taTNode = (ITimeAwareGraphNode) tn.getNode();
-				TypeNode locatedTN = new TypeNode(taTNode.travelInTime(timepoint));
-				for (ModelElementNode e : locatedTN.getAll()) {
-					allContents.add(e);
-				}
-			}
+		final Set<Object> allContents = new HashSet<Object>();
+		final ITimeAwareGraphDatabase taGraph = (ITimeAwareGraphDatabase) graph;
+		for (IGraphNode node : taGraph.allNodes(ModelElementNode.OBJECT_VERTEX_LABEL, timepoint)) {
+			GraphNodeWrapper wrapper = new GraphNodeWrapper(node, this);
+			allContents.add(wrapper);
 		}
 		return allContents;
 	}

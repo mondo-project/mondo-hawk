@@ -310,6 +310,11 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 
 	@Override
 	public IGraphIterable<ITimeAwareGraphNode> allNodes(String label) {
+		return allNodes(label, this.time);
+	}
+
+	@Override
+	public IGraphIterable<ITimeAwareGraphNode> allNodes(String label, long time) {
 		/*
 		 * TODO: Model.allContents.size() can be VERY slow on big graphs - Greycat will
 		 * fetch everything rather than just the IDs and doing the rest on demand, like
