@@ -103,27 +103,21 @@ public class GraphModelBatchInjector {
 	private boolean successState = true;
 
 	private void refreshIndexes() throws Exception {
-
 		// only do it if db state changed to avoid overhead
 		Mode currentMode = graph.currentMode();
 
 		if (previousMode != currentMode) {
-
 			previousMode = currentMode;
 
 			if (graph.currentMode().equals(Mode.TX_MODE)) {
-
 				try (IGraphTransaction t = graph.beginTransaction()) {
 					refreshIx();
 					t.success();
 				}
-
 			} else {
 				refreshIx();
 			}
-
 		}
-
 	}
 
 	private void refreshIx() {
@@ -822,37 +816,39 @@ public class GraphModelBatchInjector {
 		try {
 			final String uri = destinationObject.getUri();
 
-			String destinationObjectRelativePathURI = uri;
+			String relativeObjectURI = uri;
 			if (destinationObject.isFragmentUnique()) {
 				/*
 				 * In this scenario, we don't care about the file anymore: we
 				 * need to flag it properly for the later resolution.
 				 */
-				destinationObjectRelativePathURI = GraphModelUpdater.PROXY_FILE_WILDCARD + "#"
-						+ destinationObjectRelativePathURI.substring(destinationObjectRelativePathURI.indexOf("#") + 1);
+				relativeObjectURI = GraphModelUpdater.PROXY_FILE_WILDCARD + "#"
+						+ relativeObjectURI.substring(relativeObjectURI.indexOf("#") + 1);
 			} else if (!destinationObject.URIIsRelative()) {
-				if (destinationObjectRelativePathURI.startsWith(tempDirURI)) {
-					destinationObjectRelativePathURI = destinationObjectRelativePathURI.substring(tempDirURI.length());
+				/*
+				 * This is an absolute file-based path: strip out the prefix, which
+				 * may be the temporary import directory or a VCS-specific prefix.
+				 */
+				if (relativeObjectURI.startsWith(tempDirURI)) {
+					relativeObjectURI = relativeObjectURI.substring(tempDirURI.length());
 				} else {
 					final IVcsManager vcs = commitItem.getCommit().getDelta().getManager();
-					destinationObjectRelativePathURI = vcs.getRepositoryPath(destinationObjectRelativePathURI);
+					relativeObjectURI = vcs.getRepositoryPath(relativeObjectURI);
 				}
 			}
 
-			final String destinationObjectRelativeFileURI =
-				destinationObjectRelativePathURI.substring(0, destinationObjectRelativePathURI.indexOf("#"));
+			final String relativeObjectFileURI =
+				relativeObjectURI.substring(0, relativeObjectURI.indexOf("#"));
 
-			String destinationObjectFullPathURI = repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + destinationObjectRelativePathURI;
-			String destinationObjectFullFileURI = repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + destinationObjectRelativeFileURI;
+			final String fullObjectURI = repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + relativeObjectURI;
+			final String fullObjectFileURI = repoURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + relativeObjectFileURI;
 
-			Object proxies = null;
-			proxies = node.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + destinationObjectFullFileURI);
-			proxies = new Utils().addToElementProxies((String[]) proxies, destinationObjectFullPathURI, edgelabel, isContainment, isContainer);
-
-			node.setProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + destinationObjectFullFileURI, proxies);
+			Object proxies = node.getProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + fullObjectFileURI);
+			proxies = new Utils().addToElementProxies((String[]) proxies, fullObjectURI, edgelabel, isContainment, isContainer);
+			node.setProperty(GraphModelUpdater.PROXY_REFERENCE_PREFIX + fullObjectFileURI, proxies);
 
 			proxyDictionary.add(node, Collections.singletonMap(
-				GraphModelUpdater.PROXY_REFERENCE_PREFIX, destinationObjectFullFileURI));
+				GraphModelUpdater.PROXY_REFERENCE_PREFIX, fullObjectFileURI));
 
 		} catch (Exception e) {
 			LOGGER.error("proxydictionary error", e);
