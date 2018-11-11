@@ -55,6 +55,8 @@ public class SvnManager implements IVcsManager {
 	private IModelIndexer indexer;
 	private boolean isFrozen = false;
 
+	private SVNRepository svnRepository;
+
 	/*
 	 * TODO we can't blacklist .zip as we need support for zipped Modelio
 	 * projects - should we use a different extension (".mzip", perhaps?),or a
@@ -105,13 +107,16 @@ public class SvnManager implements IVcsManager {
 
 	}
 
-	protected static SVNRepository getSVNRepository(String url, String username, String password) {
-		return SvnUtil.connectToSVNInstance(url, username, password);
+	protected SVNRepository getSVNRepository() {
+		if (svnRepository == null) {
+			svnRepository = SvnUtil.connectToSVNInstance(repositoryURL, username, password);
+		}
+		return svnRepository;
 	}
 
 	@Override
 	public VcsRepositoryDelta getDelta(String startRevision, String endRevision) throws Exception {
-		SVNRepository svnRepository = getSVNRepository(repositoryURL, username, password);
+		final SVNRepository svnRepository = getSVNRepository();
 
 		VcsRepositoryDelta delta = new VcsRepositoryDelta();
 		delta.setManager(this);
@@ -179,7 +184,7 @@ public class SvnManager implements IVcsManager {
 
 	@Override
 	public String getCurrentRevision() throws Exception {
-		return getSVNRepository(repositoryURL, username, password).getLatestRevision() + "";
+		return getSVNRepository().getLatestRevision() + "";
 	}
 
 	/**
@@ -187,7 +192,7 @@ public class SvnManager implements IVcsManager {
 	 */
 	@Override
 	public String getFirstRevision() throws Exception {
-		SVNRepository svnRepository = getSVNRepository(repositoryURL, username, password);
+		final SVNRepository svnRepository = getSVNRepository();
 		Collection<?> c = svnRepository.log(new String[] { "" }, null, 0, Long.valueOf(getCurrentRevision()), true,
 				true);
 
@@ -212,7 +217,7 @@ public class SvnManager implements IVcsManager {
 
 	@Override
 	public File importFile(String revision, String path, File temp) {
-		final SVNRepository svnRepository = getSVNRepository(repositoryURL, username, password);
+		final SVNRepository svnRepository = getSVNRepository();
 		final long rev = revision == null ? SVNRevision.HEAD.getNumber() : Long.valueOf(revision);
 
 		try {
@@ -264,6 +269,7 @@ public class SvnManager implements IVcsManager {
 		}
 		this.username = username;
 		this.password = password;
+		this.svnRepository = null;
 	}
 
 	@Override
