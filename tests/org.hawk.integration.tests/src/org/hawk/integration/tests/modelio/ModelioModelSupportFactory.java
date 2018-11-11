@@ -24,6 +24,8 @@ import org.hawk.modelio.exml.model.ModelioModelResourceFactory;
 
 public class ModelioModelSupportFactory implements IModelSupportFactory {
 
+	protected static final String METAMODEL_PATH = "resources/metamodels/";
+
 	@Override
 	public IMetaModelResourceFactory createMetaModelResourceFactory() {
 		return new ModelioMetaModelResourceFactory();

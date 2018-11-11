@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015-2017 The University of York, Aston University.
+ * Copyright (c) 2015-2018 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -49,8 +49,6 @@ public class ModelioMetamodelPopulationTest extends ModelIndexingTest {
 	@Rule
 	public GraphChangeListenerRule<ModelioGraphChangeListener> modelioListener = new GraphChangeListenerRule<>(new ModelioGraphChangeListener());
 
-	private final String METAMODEL_PATH = "resources/metamodels/";
-
 	@Parameters(name = "{0}")
     public static Iterable<Object[]> params() {
     	return BackendTestSuite.caseParams();
@@ -63,7 +61,7 @@ public class ModelioMetamodelPopulationTest extends ModelIndexingTest {
 	@Override
 	public void setup() throws Throwable {
 		super.setup();
-		indexer.registerMetamodels(new File(METAMODEL_PATH, "metamodel_descriptor.xml"));
+		indexer.registerMetamodels(new File(ModelioModelSupportFactory.METAMODEL_PATH, "metamodel_descriptor.xml"));
 	}
 
 	@Test

@@ -8,5 +8,7 @@ Require-Bundle: org.hawk.core,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: University of York
 Export-Package: org.hawk.graph,
+ org.hawk.graph.introspector,
  org.hawk.graph.updater,
+ org.hawk.graph.updater.proxies,
  org.hawk.graph.util

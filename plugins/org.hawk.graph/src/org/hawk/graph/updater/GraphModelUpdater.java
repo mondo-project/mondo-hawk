@@ -347,7 +347,7 @@ public class GraphModelUpdater implements IModelUpdater {
 		return changed;
 	}
 
-	protected GraphModelInserter createInserter() {
+	public GraphModelInserter createInserter() {
 		return new GraphModelInserter(indexer, this::createDeletionUtils, typeCache);
 	}
 
