@@ -94,6 +94,7 @@ public interface IModelIndexer {
 
 	/**
 	 * @return running model updaters
+	 * @deprecated Please use {@link #getModelUpdaters()} instead.
 	 */
 	@Deprecated
 	default List<IModelUpdater> getUpdaters() {
