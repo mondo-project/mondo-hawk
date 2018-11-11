@@ -266,7 +266,9 @@ public class GreycatNode implements ITimeAwareGraphNode {
 	@Override
 	public void end() {
 		try (NodeReader rn = getNodeReader()) {
-			// Unlink node from next timepoint, and then end its lifespan
+			// 1. Unlink node from next endpoint
+			// 2. Unindex node from next endpoint
+			// 3. End node lifespan in Greycat
 
 			/*
 			 * end() means that the edges and node should still be available at *this*
@@ -279,12 +281,13 @@ public class GreycatNode implements ITimeAwareGraphNode {
 				in.delete();
 			}
 
+			db.luceneIndexer.remove(travelInTime(time + 1));
 			rn.get().end();
 		}
 	}
 
 	@Override
-	public ITimeAwareGraphNode travelInTime(long time) {
+	public GreycatNode travelInTime(long time) {
 		try (NodeReader rn = getNodeReader()) {
 			final Node n = rn.get();
 

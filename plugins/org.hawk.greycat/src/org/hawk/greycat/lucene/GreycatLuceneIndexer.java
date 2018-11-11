@@ -18,15 +18,14 @@ package org.hawk.greycat.lucene;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.DoublePoint;
@@ -35,16 +34,18 @@ import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.IndexableField;
-import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.BooleanQuery.Builder;
+import org.apache.lucene.search.CollectionTerminatedException;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SimpleCollector;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.TotalHitCountCollector;
 import org.apache.lucene.search.WildcardQuery;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
@@ -54,137 +55,97 @@ import org.hawk.greycat.GreycatNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 /**
- * Integration between Greycat and Apache Lucene, to allow it to have the type
- * of advanced indexing that we need for Hawk.
+ * <p>Integration between Greycat and Apache Lucene, to allow it to have the type
+ * of advanced indexing that we need for Hawk.</p>
  *
- * The standard approach for Lucene is to commit only every so often, in a background
- * thread: commits are extremely expensive!
+ * <p>The standard approach for Lucene is to commit only every so often, in a background
+ * thread: commits are extremely expensive!</p>
  *
- * We want to follow the same approach, while being able to react to real time queries
+ * <p>We want to follow the same approach, while being able to react to real time queries
  * easily. To do this, we keep "soft" tx with a rollback log: should a soft rollback be
  * requested, the various operations since the previous soft commit will be undone in
- * reverse order in-memory.
+ * reverse order in-memory.</p>
  *
- * We have a background thread that will do a real commit if the rollback log is
- * empty. There is also an explicit commit when this indexer shuts down.
+ * <p>We have a background thread that will do a real commit if the rollback log is
+ * empty. There is also an explicit commit when this indexer shuts down.</p>
+ *
+ * <p>TODO: add support for multiple worlds to this index. This may require keeping track
+ * of how worlds branch off from each other.</p>
  */
 public class GreycatLuceneIndexer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GreycatLuceneNodeIndex.class);
 
 	private static final String ATTRIBUTE_PREFIX = "a_";
+	private static final String UUID_FIELD = "h_id";
 	private static final String INDEX_FIELD   = "h_index";
 	private static final String DOCTYPE_FIELD = "h_doctype";
 	private static final String FIELDS_FIELD = "h_fields";
 	private static final String INDEX_DOCTYPE = "indexdecl";
+
+	/** Node ID, given by Greycat. */
 	private static final String NODEID_FIELD   = "h_nodeid";
 
-	protected final class AliveNodesCollector extends SimpleCollector {
-		protected AliveNodesCollector(IndexSearcher searcher) {
-			this.searcher = searcher;
-		}
+	/**
+	 * Timepoint from which this index entry is valid. This is set to the timepoint
+	 * of the node being indexed.
+	 */
+	private static final String VALIDFROM_FIELD = "h_from";
 
-		private final IndexSearcher searcher;
-		protected List<IGraphNode> nodes = new ArrayList<>();
-		private int docBase;
-	
-		@Override
-		protected void doSetNextReader(LeafReaderContext context) throws IOException {
-			this.docBase = context.docBase;
-		}
-	
+	/**
+	 * Timepoint up to which (itself included) this index entry is valid. This is
+	 * initially set to {@link Long#MAX_VALUE}, but it may be reduced if the index
+	 * entry is overridden or removed later.
+	 */
+	private static final String VALIDTO_FIELD = "h_to";
+
+	protected class MatchExistsCollector extends SimpleCollector {
+		private boolean matchFound = false;
+
 		@Override
 		public boolean needsScores() {
 			return false;
 		}
-	
+
 		@Override
-		public void collect(int doc) {
-			try {
-				GreycatNode n = getNodeByDocument(searcher.doc(docBase + doc));
-				if (n.isAlive()) {
-					nodes.add(n);
-				}
-			} catch (IOException e) {
-				LOGGER.error(e.getMessage(), e);
-			}
+		public void collect(int doc) throws IOException {
+			matchFound = true;
+			throw new CollectionTerminatedException();
+		}
+
+		public boolean isMatchFound() {
+			return matchFound;
+		}
+	}
+
+	protected final class NodeListCollector extends ListCollector {
+		protected NodeListCollector(IndexSearcher searcher) {
+			super(searcher);
 		}
 		
 		public Iterator<IGraphNode> getNodeIterator() {
-			return nodes.iterator();
-		}
-	}
-
-	protected final class TotalAliveNodesCollector extends SimpleCollector {
-		private final IndexSearcher searcher;
-		protected int count = 0;
-		private int docBase;
-	
-		private TotalAliveNodesCollector(IndexSearcher searcher) {
-			this.searcher = searcher;
-		}
-	
-		@Override
-		protected void doSetNextReader(LeafReaderContext context) throws IOException {
-			this.docBase = context.docBase;
-		}
-	
-		@Override
-		public boolean needsScores() {
-			return false;
-		}
-	
-		@Override
-		public void collect(int doc) {
-			try {
-				GreycatNode  n = getNodeByDocument(searcher.doc(docBase + doc));
-				if (n.isAlive()) {
-					count++;
+			final Iterator<Integer> itIdentifiers = docIds.iterator();
+			return new Iterator<IGraphNode>() {
+				@Override
+				public boolean hasNext() {
+					return itIdentifiers.hasNext();
 				}
-			} catch (IOException e) {
-				LOGGER.error(e.getMessage(), e);
-			}
-		}
-	
-		public int getCount() {
-			return count;
-		}
-	}
 
-	protected final class SingleAliveNodeCollector extends SimpleCollector {
-		protected SingleAliveNodeCollector(IndexSearcher searcher) {
-			this.searcher = searcher;
-		}
-
-		private final IndexSearcher searcher;
-		protected IGraphNode node;
-		private int docBase;
-	
-		@Override
-		protected void doSetNextReader(LeafReaderContext context) throws IOException {
-			this.docBase = context.docBase;
-		}
-	
-		@Override
-		public boolean needsScores() {
-			return false;
-		}
-	
-		@Override
-		public void collect(int doc) {
-			try {
-				GreycatNode n = getNodeByDocument(searcher.doc(docBase + doc));
-				if (n.isAlive()) {
-					node = n;
+				@Override
+				public IGraphNode next() {
+					int docId = itIdentifiers.next();
+					try {
+						return getNodeByDocument(searcher.doc(docId));
+					} catch (IOException e) {
+						LOGGER.error("Could not retrieve document with ID " + docId, e);
+						throw new NoSuchElementException();
+					}
 				}
-			} catch (IOException e) {
-				LOGGER.error(e.getMessage(), e);
-			}
-		}
-
-		public IGraphNode getNode() {
-			return node;
+			};
 		}
 	}
 
@@ -199,7 +160,7 @@ public class GreycatLuceneIndexer {
 		public Iterator<IGraphNode> iterator() {
 			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 			try {
-				final AliveNodesCollector lc = new AliveNodesCollector(searcher);
+				final NodeListCollector lc = new NodeListCollector(searcher);
 				searcher.search(query, lc);
 				return lc.getNodeIterator();
 			} catch (IOException e) {
@@ -213,9 +174,9 @@ public class GreycatLuceneIndexer {
 			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
 			try {
-				final TotalAliveNodesCollector collector = new TotalAliveNodesCollector(searcher);
+				final TotalHitCountCollector collector = new TotalHitCountCollector();
 				searcher.search(query, collector);
-				return collector.getCount();
+				return collector.getTotalHits();
 			} catch (IOException e) {
 				LOGGER.error("Failed to obtain single result", e);
 				return 0;
@@ -227,11 +188,9 @@ public class GreycatLuceneIndexer {
 			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
 			try {
-				SingleAliveNodeCollector collector = new SingleAliveNodeCollector(searcher);
-				searcher.search(query, collector);
-				IGraphNode node = collector.getNode();
-				if (node != null) {
-					return node;
+				TopDocs results = searcher.search(query, 1);
+				if (results.totalHits > 0) {
+					return getNodeByDocument(searcher.doc(results.scoreDocs[0].doc));
 				}
 			} catch (IOException e) {
 				LOGGER.error("Failed to obtain single result", e);
@@ -248,7 +207,6 @@ public class GreycatLuceneIndexer {
 	protected final class GreycatLuceneNodeIndex implements IGraphNodeIndex {
 		private final String name;
 
-		private static final String CMPID_FIELD = "h_cmpid";
 		private static final String NODE_DOCTYPE = "node";
 		
 		public GreycatLuceneNodeIndex(String name) {
@@ -259,19 +217,35 @@ public class GreycatLuceneIndexer {
 		public void remove(IGraphNode n, String key, Object value) {
 			try {
 				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
-
 				final GreycatNode gn = (GreycatNode) n;
-				final TermQuery query = findNodeQuery(gn);
-				final TopDocs results = searcher.search(query, 1);
-				if (results.totalHits > 0) {
-					final Document document = searcher.doc(results.scoreDocs[0].doc);
 
-					if (key == null) {
-						removeValue(document, gn, value);
-					} else {
-						removeKeyValue(document, gn, key, value);
+				/*
+				 * All documents from this point in time in the index need to be revised. One
+				 * may be still valid, others just need to have the future value removed.
+				 *
+				 * If both key and value are present, we can add those to the query to reduce
+				 * the number of documents to be changed.
+				 */
+				final Builder queryBuilder = getIndexQueryBuilder()
+					.add(LongPoint.newExactQuery(NODEID_FIELD, gn.getId()), Occur.MUST)
+					.add(LongPoint.newRangeQuery(VALIDTO_FIELD, gn.getTime(), Long.MAX_VALUE), Occur.MUST);
+				if (key != null && value != null) {
+					queryBuilder.add(getValueQuery(key, value), Occur.MUST);
+				}
+				final Query query = queryBuilder.build();
+				final ListCollector collector = new ListCollector(searcher);
+				searcher.search(query, collector);
+
+				if (key == null) {
+					for (Document doc : collector.getDocuments()) {
+						removeValue(doc, gn, value);
+					}
+				} else {
+					for (Document doc : collector.getDocuments()) {
+						removeKeyValue(doc, gn, key, value);
 					}
 				}
+
 			} catch (IOException e) {
 				LOGGER.error("Could not remove node from index", e);
 			}
@@ -310,12 +284,47 @@ public class GreycatLuceneIndexer {
 			}
 
 			if (anyMatched) {
-				lucene.update(findNodeTerm(gn), oldDocument, updated);
+				replaceDocumentAtTimepoint(gn, oldDocument, updated);
+			}
+		}
+
+		private void replaceDocumentAtTimepoint(final GreycatNode gn, final Document oldDocument, final Document newDocument) throws IOException {
+			assert oldDocument != null : "Old document should not be null";
+			assert newDocument != null : "New document should not be null";
+			assert newDocument.getField(VALIDFROM_FIELD) != null : "New document should have a starting point";
+			assert newDocument.getField(VALIDTO_FIELD) != null : "New document should have an ending point";
+			assert oldDocument.getField(UUID_FIELD).stringValue().equals(newDocument.getField(UUID_FIELD).stringValue()) : "Both documents should have same UUID";
+
+			final long lOldFrom = oldDocument.getField(VALIDFROM_FIELD).numericValue().longValue();
+			final long lOldTo = oldDocument.getField(VALIDTO_FIELD).numericValue().longValue();
+
+			// Is the old document currently in effect? If so, we need to shorten its lifespan.
+			if (gn.getTime() >= lOldFrom && gn.getTime() <= lOldTo) {
+				// the old document is currently in effect, we have to shorten its lifespan
+				final long lOldNewTo = gn.getTime() - 1;
+				if (lOldNewTo < lOldFrom) {
+					// old document would not have a lifespan - just replace
+					lucene.update(new Term(UUID_FIELD, oldDocument.get(UUID_FIELD)), oldDocument, newDocument);
+				} else {
+					// shorten lifespan of old document, generate new UUID
+					final Document shortenedDoc = copy(oldDocument);
+					replaceRawField(shortenedDoc, VALIDTO_FIELD, lOldNewTo);
+					lucene.update(new Term(UUID_FIELD, oldDocument.get(UUID_FIELD)), oldDocument, shortenedDoc);
+
+					// generate new UUID for the other document and set starting timepoint
+					final String newUUID = UUID.randomUUID().toString();
+					replaceRawField(newDocument, UUID_FIELD, newUUID);
+					replaceRawField(newDocument, VALIDFROM_FIELD, gn.getTime());
+					lucene.update(new Term(UUID_FIELD, newUUID), null, newDocument);
+				}
+			} else {
+				// the old document is not in effect - just replace the values there
+				lucene.update(new Term(UUID_FIELD), oldDocument, newDocument);
 			}
 		}
 
 		protected void removeValue(final Document oldDocument, final GreycatNode gn, Object value) throws IOException {
-			final Document copy = new Document();
+			final Document updated = new Document();
 
 			boolean matched = false;
 			for (IndexableField field : oldDocument.getFields()) {
@@ -324,22 +333,35 @@ public class GreycatLuceneIndexer {
 					if (value == null || existingValue.equals(value)) {
 						matched = true;
 					} else {
-						copyField(field, copy);
+						copyField(field, updated);
 					}
 				} else {
-					copyField(field, copy);
+					copyField(field, updated);
 				}
 			}
 
 			if (matched) {
-				lucene.update(findNodeTerm(gn), oldDocument, copy);
+				replaceDocumentAtTimepoint(gn, oldDocument, updated);
 			}
 		}
 
 		@Override
 		public void remove(IGraphNode n) {
 			try {
-				lucene.delete(findNodeTerm((GreycatNode) n));
+				final GreycatNode gn = (GreycatNode) n;
+
+				// All documents for this node starting in the future must be deleted
+				final Query queryToDelete = getIndexQueryBuilder()
+					.add(findNodeQuery(gn), Occur.MUST)
+					.add(LongPoint.newRangeQuery(VALIDFROM_FIELD, gn.getTime() + 1, Long.MAX_VALUE), Occur.MUST)
+					.build();
+				lucene.delete(queryToDelete);
+
+				// Currently valid documents must be invalidated from this timepoint
+				final Query queryToInvalidate = getIndexQueryBuilder()
+					.add(findValidNodeDocuments(gn), Occur.MUST)
+					.build();
+				invalidateAtTimepoint(gn, queryToInvalidate);
 			} catch (IOException e) {
 				LOGGER.error(String.format("Could not remove node with id %d from index %s", n.getId(), name), e);
 			}
@@ -356,8 +378,11 @@ public class GreycatLuceneIndexer {
 					query = LongPoint.newRangeQuery(ATTRIBUTE_PREFIX + key, fromInclusive ? lFrom : Math.addExact(lFrom, 1), toInclusive ? lTo : Math.addExact(lTo, -1));
 				}
 
-				// Also filter by index
-				query = getIndexQueryBuilder().add(query, Occur.MUST).build();
+				// Also filter by index and timepoint (using database for now)
+				query = getIndexQueryBuilder()
+					.add(query, Occur.MUST)
+					.add(findValidDocumentsAtTimepoint(database.getTime()), Occur.MUST)
+					.build();
 
 				return new LuceneGraphIterable(query);
 		}
@@ -366,7 +391,7 @@ public class GreycatLuceneIndexer {
 		public IGraphIterable<IGraphNode> query(String key, Object valueExpr) {
 			final String sValueExpr = valueExpr.toString();
 
-			Query query = null;
+			Query valueQuery = null;
 			if ("*".equals(key)) {
 				if (!"*".equals(valueExpr)) {
 					throw new UnsupportedOperationException("*:non-null not implemented yet for query");
@@ -374,28 +399,29 @@ public class GreycatLuceneIndexer {
 					// We can just delegate on the query == null case below
 				}
 			} else if ("*".equals(valueExpr)) {
-				query = new TermQuery(new Term(FIELDS_FIELD, key));
+				valueQuery = new TermQuery(new Term(FIELDS_FIELD, key));
 			} else if (valueExpr instanceof Float || valueExpr instanceof Double) {
-				query = DoublePoint.newExactQuery(ATTRIBUTE_PREFIX + key, ((Number) valueExpr).doubleValue());
+				valueQuery = DoublePoint.newExactQuery(ATTRIBUTE_PREFIX + key, ((Number) valueExpr).doubleValue());
 			} else if (valueExpr instanceof Number) {
-				query = LongPoint.newExactQuery(ATTRIBUTE_PREFIX + key, ((Number) valueExpr).longValue());
+				valueQuery = LongPoint.newExactQuery(ATTRIBUTE_PREFIX + key, ((Number) valueExpr).longValue());
 			} else {
 				final int starIdx = sValueExpr.indexOf('*');
 				if (starIdx == -1) {
-					query = new TermQuery(new Term(ATTRIBUTE_PREFIX + key, sValueExpr));
+					valueQuery = new TermQuery(new Term(ATTRIBUTE_PREFIX + key, sValueExpr));
 				} else if (starIdx > 0 && starIdx == sValueExpr.length() - 1) {
 					final String prefix = sValueExpr.substring(0, sValueExpr.length() - 1);
-					query = new PrefixQuery(new Term(ATTRIBUTE_PREFIX + key, prefix));
+					valueQuery = new PrefixQuery(new Term(ATTRIBUTE_PREFIX + key, prefix));
 				} else {
-					query = new WildcardQuery(new Term(ATTRIBUTE_PREFIX + key, sValueExpr));
+					valueQuery = new WildcardQuery(new Term(ATTRIBUTE_PREFIX + key, sValueExpr));
 				}
 			}
 
-			if (query == null) {
-				query = getIndexQueryBuilder().build();
-			} else {
-				query = getIndexQueryBuilder().add(query, Occur.MUST).build();
+			final Builder builder = getIndexQueryBuilder()
+				.add(findValidDocumentsAtTimepoint(database.getTime()), Occur.MUST);
+			if (valueQuery != null) {
+				builder.add(valueQuery, Occur.MUST);
 			}
+			final Query query = builder.build();
 
 			return new LuceneGraphIterable(query);
 		}
@@ -407,6 +433,15 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public IGraphIterable<IGraphNode> get(String key, Object valueExpr) {
+			final Query valueQuery = getValueQuery(key, valueExpr);
+			final Query query = getIndexQueryBuilder()
+				.add(valueQuery, Occur.MUST)
+				.add(findValidDocumentsAtTimepoint(database.getTime()), Occur.MUST)
+				.build();
+			return new LuceneGraphIterable(query);
+		}
+
+		private Query getValueQuery(String key, Object valueExpr) {
 			Query valueQuery;
 			if (valueExpr instanceof Float || valueExpr instanceof Double) {
 				valueQuery = DoublePoint.newExactQuery(ATTRIBUTE_PREFIX + key, ((Number) valueExpr).doubleValue());
@@ -416,9 +451,7 @@ public class GreycatLuceneIndexer {
 				final Term term = new Term(ATTRIBUTE_PREFIX + key, valueExpr.toString());
 				valueQuery = new TermQuery(term);
 			}
-
-			final Query query = getIndexQueryBuilder().add(valueQuery, Occur.MUST).build();
-			return new LuceneGraphIterable(query);
+			return valueQuery;
 		}
 
 		@Override
@@ -428,8 +461,10 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public void delete() {
+			// This operation is NOT time-aware: it will drop the entire index in one go.
 			try {
 				lucene.delete(new TermQuery(new Term(INDEX_FIELD, name)));
+				nodeIndexCache.invalidate(name);
 			} catch (IOException e) {
 				LOGGER.error("Could not delete index " + name, e);
 			}
@@ -452,44 +487,120 @@ public class GreycatLuceneIndexer {
 			try {
 				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
-				final Document updated = new Document();
-				updated.add(new StringField(NODEID_FIELD, getNodeId(gn), Store.YES));
-				updated.add(new StringField(CMPID_FIELD, getCompositeId(gn), Store.YES));
-				updated.add(new StringField(DOCTYPE_FIELD, NODE_DOCTYPE, Store.YES));
-				updated.add(new StringField(INDEX_FIELD, name, Store.YES));
+				// We want to find the currently valid document for this node and update it
+				final Query latestVersionQuery = getIndexQueryBuilder()
+					.add(findNodeQuery(gn), Occur.MUST)
+					.add(findValidDocumentsAtTimepoint(gn.getTime()), Occur.MUST)
+					.build();
 
-				Document oldDocument = null;
-				final TopDocs results = searcher.search(findNodeQuery(gn), 1);
+				final TopDocs results = searcher.search(latestVersionQuery, 1);
+				long validTo;
 				if (results.totalHits > 0) {
-					oldDocument = searcher.doc(results.scoreDocs[0].doc);
-
-					for (IndexableField oldField : oldDocument.getFields()) {
-						final String rawOldFieldName = oldField.name();
-						if (rawOldFieldName.startsWith(ATTRIBUTE_PREFIX)) {
-							final String oldFieldName = rawOldFieldName.substring(ATTRIBUTE_PREFIX.length());
-							if (!values.containsKey(oldFieldName)) {
-								copyField(oldField, updated);
-							}
-						}
-					}
+					validTo = extendCurrentDocument(gn, values, searcher, results);
+				} else {
+					validTo = addNewDocument(gn, values, searcher);
 				}
 
-				for (Entry<String, Object> entry : values.entrySet()) {
-					addRawField(updated, ATTRIBUTE_PREFIX + entry.getKey(), entry.getValue());
+				// If this document does not last forever, we need to update future documents too.
+				// No need to manipulate lifespans in this case.
+				if (validTo < Long.MAX_VALUE) {
+					extendFutureDocuments(gn, values, searcher, validTo);
 				}
-
-				lucene.update(findNodeTerm(gn), oldDocument, updated);
 			} catch (IOException e) {
 				LOGGER.error(e.getMessage(), e);
 			}
 		}
 
-		protected TermQuery findNodeQuery(final GreycatNode n) {
-			return new TermQuery(findNodeTerm(n));
+		private void extendFutureDocuments(final GreycatNode gn, Map<String, Object> values,
+				final IndexSearcher searcher, long validTo) throws IOException {
+			final Query allFutureQuery = getIndexQueryBuilder()
+				.add(findNodeQuery(gn), Occur.MUST)
+				.add(LongPoint.newRangeQuery(VALIDFROM_FIELD, validTo + 1, Long.MAX_VALUE), Occur.MUST)
+				.build();
+
+			final ListCollector lc = new ListCollector(searcher);
+			searcher.search(allFutureQuery, lc);
+			for (final Document doc : lc.getDocuments()) {
+				 final Document updatedFuture = copy(doc);
+				 addAttributes(updatedFuture, values);
+
+				 final String uuid = updatedFuture.getField(UUID_FIELD).stringValue();
+				 lucene.update(new Term(UUID_FIELD, uuid), doc, updatedFuture);
+			}
 		}
 
-		protected Term findNodeTerm(final GreycatNode n) {
-			return new Term(CMPID_FIELD, getCompositeId(n));
+		private long addNewDocument(final GreycatNode gn, Map<String, Object> values, final IndexSearcher searcher) throws IOException {
+			final String uuid = UUID.randomUUID().toString();
+			final Document newDocument = new Document();
+			addRawField(newDocument, NODEID_FIELD, gn.getId());
+			addRawField(newDocument, DOCTYPE_FIELD, NODE_DOCTYPE);
+			addRawField(newDocument, INDEX_FIELD, name);
+			addRawField(newDocument, UUID_FIELD, uuid);
+
+			// 'valid from' is easy - from now onwards
+			addRawField(newDocument, VALIDFROM_FIELD, gn.getTime());
+
+			// 'valid to' depends on future entries - need to compute!
+			final long validTo = computeValidToForNewDocument(gn, searcher);
+			addRawField(newDocument, VALIDTO_FIELD, validTo);
+
+			addAttributes(newDocument, values);
+			lucene.update(new Term(UUID_FIELD, uuid), null, newDocument);
+
+			return validTo;
+		}
+
+		private long extendCurrentDocument(final GreycatNode gn, Map<String, Object> values,
+				final IndexSearcher searcher, final TopDocs results) throws IOException {
+			final Document oldDocument = searcher.doc(results.scoreDocs[0].doc);
+
+			final Document updatedDocument = new Document();
+			addRawField(updatedDocument, NODEID_FIELD, gn.getId());
+			addRawField(updatedDocument, DOCTYPE_FIELD, NODE_DOCTYPE);
+			addRawField(updatedDocument, INDEX_FIELD, name);
+			addRawField(updatedDocument, VALIDFROM_FIELD, gn.getTime());
+			
+			for (IndexableField oldField : oldDocument.getFields()) {
+				final String rawOldFieldName = oldField.name();
+				if (rawOldFieldName.startsWith(ATTRIBUTE_PREFIX)) {
+					final String oldFieldName = rawOldFieldName.substring(ATTRIBUTE_PREFIX.length());
+					if (!values.containsKey(oldFieldName)) {
+						copyField(oldField, updatedDocument);
+					}
+				} else if (rawOldFieldName.equals(UUID_FIELD) || rawOldFieldName.equals(VALIDTO_FIELD)) {
+					copyField(oldField, updatedDocument);
+				}
+			}
+			addAttributes(updatedDocument, values);
+			replaceDocumentAtTimepoint(gn, oldDocument, updatedDocument);
+			final long validTo = updatedDocument.getField(VALIDTO_FIELD).numericValue().longValue();
+
+			return validTo;
+		}
+
+		private long computeValidToForNewDocument(final GreycatNode gn, final IndexSearcher searcher) throws IOException {
+			final Query afterStartQuery = getIndexQueryBuilder()
+				.add(findNodeQuery(gn), Occur.MUST)
+				.add(LongPoint.newRangeQuery(VALIDFROM_FIELD, gn.getTime() + 1, Long.MAX_VALUE), Occur.MUST)
+				.build();
+
+			final ListCollector lc = new ListCollector(searcher);
+			searcher.search(afterStartQuery, lc);
+			Long minFrom = null;
+			for (Document dAfterStart : lc.getDocuments()) {
+				final long from = dAfterStart.getField(VALIDFROM_FIELD).numericValue().longValue();
+				if (minFrom == null) {
+					minFrom = from;
+				} else {
+					minFrom = Math.min(from, minFrom);
+				}
+			}
+
+			return minFrom == null ? Long.MAX_VALUE : minFrom - 1;
+		}
+
+		protected Query findNodeQuery(final GreycatNode n) {
+			return LongPoint.newExactQuery(NODEID_FIELD, n.getId());
 		}
 
 		protected BooleanQuery.Builder getIndexQueryBuilder() {
@@ -498,16 +609,12 @@ public class GreycatLuceneIndexer {
 				.add(new TermQuery(new Term(DOCTYPE_FIELD, NODE_DOCTYPE)), Occur.FILTER);
 		}
 
-		/**
-		 * Returns an identifying string for a specific node at a specific point in time, in a specific index.
-		 */
-		protected String getCompositeId(GreycatNode gn) {
-			return String.format("%s@%d@%d@%d", name, gn.getWorld(), gn.getTime(), gn.getId());
-		}
 	}
 
 
 	private final GreycatDatabase database;
+	private final Cache<String, IGraphNodeIndex> nodeIndexCache =
+		CacheBuilder.newBuilder().maximumSize(100).build();
 	private final SoftTxLucene lucene;
 
 	public GreycatLuceneIndexer(GreycatDatabase db, File dir) throws IOException {
@@ -515,25 +622,26 @@ public class GreycatLuceneIndexer {
 		this.lucene = new SoftTxLucene(dir);
 	}
 
-	public IGraphNodeIndex getIndex(String name) {
-		// Make sure the index is listed
-		try {
+	public IGraphNodeIndex getIndex(String name) throws Exception {
+		return nodeIndexCache.get(name, () -> {
 			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
-			TopDocs scoreDocs = searcher.search(new TermQuery(new Term(INDEX_FIELD, name)), 1);
-			if (scoreDocs.totalHits == 0) {
+			final Query query = new BooleanQuery.Builder()
+				.add(new TermQuery(new Term(INDEX_FIELD, name)), Occur.MUST)
+				.add(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), Occur.MUST).build();
+
+			final TotalHitCountCollector thc = new TotalHitCountCollector();
+			searcher.search(query, thc);
+			if (thc.getTotalHits() > 0) {
 				Document doc = new Document();
 				doc.add(new StringField(INDEX_FIELD, name, Store.YES));
 				doc.add(new StringField(DOCTYPE_FIELD, INDEX_DOCTYPE, Store.YES));
 				lucene.update(new Term(INDEX_FIELD, name), null, doc);
 			}
-		}  catch (IOException e) {
-			LOGGER.error("Could not register index", e);
-		}
 
-		return new GreycatLuceneNodeIndex(name);
+			return new GreycatLuceneNodeIndex(name);
+		});
 	}
-
 
 	public Set<String> getIndexNames() {
 		try {
@@ -560,9 +668,10 @@ public class GreycatLuceneIndexer {
 				.add(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), Occur.FILTER)
 				.add(new TermQuery(new Term(INDEX_FIELD, name)), Occur.MUST)
 				.build();
-			
-			TopDocs results = searcher.search(query, 1);
-			return results.totalHits > 0;
+
+			final TotalHitCountCollector collector = new TotalHitCountCollector();
+			searcher.search(query, collector);
+			return collector.getTotalHits() > 0;
 		} catch (IOException e) {
 			LOGGER.error(String.format("Could not check if %s exists", name), e);
 			return false;
@@ -570,24 +679,26 @@ public class GreycatLuceneIndexer {
 	}
 
 	/**
-	 * Removes this node from all indices.
+	 * Removes this node from all indices, from the timepoint of the node onwards.
 	 */
 	public void remove(GreycatNode gn) {
 		try {
-			final String nodeId = getNodeId(gn);
-			lucene.delete(new TermQuery(new Term(NODEID_FIELD, nodeId)));
+			// To be removed - all documents on the node valid after this timepoint
+			final Query queryToDelete = new BooleanQuery.Builder()
+				.add(LongPoint.newExactQuery(NODEID_FIELD, gn.getId()), Occur.MUST)
+				.add(LongPoint.newRangeQuery(VALIDFROM_FIELD, gn.getTime() + 1, Long.MAX_VALUE), Occur.MUST)
+				.build();
+			lucene.delete(queryToDelete);
+
+			// To be updated - all documents valid up to now
+			final Query queryToRevise = findValidNodeDocuments(gn);
+			invalidateAtTimepoint(gn, queryToRevise);
 		} catch (IOException e) {
 			LOGGER.error(String.format(
-				"Could not remove node %s in world %d at time %d",
-				gn.getId(), gn.getWorld(), gn.getTime()), e);
+				"Could not remove node %s in world %d from time %d onwards",
+				gn.getId(), gn.getWorld(), gn.getTime()
+			), e);
 		}
-	}
-
-	/**
-	 * Returns an identifying string for a specific node at a specific point in time.
-	 */
-	protected String getNodeId(GreycatNode gn) {
-		return String.format("%d@%d@%d", gn.getWorld(), gn.getTime(), gn.getId());
 	}
 
 	/**
@@ -620,7 +731,18 @@ public class GreycatLuceneIndexer {
 		lucene.shutdown();
 	}
 
+	protected static void replaceRawField(Document document, final String fieldName, final Object value) {
+		document.removeFields(fieldName);
+		addRawField(document, fieldName, value);
+	}
 
+	protected static void addAttributes(final Document updated, Map<String, Object> values) {
+		for (Entry<String, Object> entry : values.entrySet()) {
+			final String attributeFieldName = ATTRIBUTE_PREFIX + entry.getKey();
+			addRawField(updated, attributeFieldName, entry.getValue());
+		}
+	}
+	
 	protected static void addRawField(Document document, final String fieldName, final Object value) {
 		/*
 		 * Point classes are very useful for fast range queries, but they do not store
@@ -678,11 +800,45 @@ public class GreycatLuceneIndexer {
 	}
 
 	protected GreycatNode getNodeByDocument(Document document) {
-		final String nodeId = document.getField(NODEID_FIELD).stringValue();
-		String[] parts = nodeId.split("@", 3);
-		final long id = Long.parseLong(parts[2]);
+		final long id = document.getField(NODEID_FIELD).numericValue().longValue();
 		final GreycatNode gn = database.getNodeById(id);
 		return gn;
 	}
-	
+
+	protected Query findValidNodeDocuments(GreycatNode gn) {
+		return new BooleanQuery.Builder()
+			.add(LongPoint.newExactQuery(NODEID_FIELD, gn.getId()), Occur.MUST)
+			.add(findValidDocumentsAtTimepoint(gn.getTime()), Occur.MUST)
+			.build();
+	}
+
+	protected Query findValidDocumentsAtTimepoint(final long time) {
+		return new BooleanQuery.Builder()
+			.add(LongPoint.newRangeQuery(VALIDFROM_FIELD, Long.MIN_VALUE, time), Occur.MUST)
+			.add(LongPoint.newRangeQuery(VALIDTO_FIELD, time, Long.MAX_VALUE), Occur.MUST)
+			.build();
+	}
+
+	protected void invalidateAtTimepoint(GreycatNode gn, final Query queryToRevise) throws IOException {
+		final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
+		final ListCollector lc = new ListCollector(searcher);
+		searcher.search(queryToRevise, lc);
+		for (Document doc : lc.getDocuments()) {
+			invalidateAtTimepoint(gn, doc);
+		}
+	}
+
+	protected void invalidateAtTimepoint(GreycatNode gn, Document doc) throws IOException {
+		final long lFrom = doc.getField(VALIDFROM_FIELD).numericValue().longValue();
+
+		if (lFrom == gn.getTime()) {
+			// Document was only valid at this very timepoint: simply delete
+			lucene.delete(new Term(UUID_FIELD, doc.get(UUID_FIELD)));
+		} else {
+			// Document was valid before this timepoint: shorten lifespan
+			Document revisedDoc = copy(doc);
+			replaceRawField(revisedDoc, VALIDTO_FIELD, gn.getTime() - 1);
+			lucene.update(new Term(UUID_FIELD, doc.get(UUID_FIELD)), doc, revisedDoc);
+		}
+	}
 }

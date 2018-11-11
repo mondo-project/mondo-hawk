@@ -147,7 +147,7 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 	private Graph graph;
 	private NodeIndex nodeLabelIndex, softDeleteIndex;
 	private Mode mode = Mode.TX_MODE;
-	private GreycatLuceneIndexer luceneIndexer;
+	protected GreycatLuceneIndexer luceneIndexer;
 
 	/**
 	 * Keeps nodes modified so far, so we can free them after we save.
@@ -264,7 +264,12 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 
 	@Override
 	public IGraphNodeIndex getOrCreateNodeIndex(String name) {
-		return luceneIndexer.getIndex(name);
+		try {
+			return luceneIndexer.getIndex(name);
+		} catch (Exception e) {
+			LOGGER.error("Failed to get index " + name, e);
+			return null;
+		}
 	}
 
 	@Override
