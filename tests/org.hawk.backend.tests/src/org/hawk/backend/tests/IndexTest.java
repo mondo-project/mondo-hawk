@@ -474,7 +474,7 @@ public class IndexTest extends TemporaryDatabaseTest {
 			}
 
 			try (IGraphTransaction tx = db.beginTransaction()) {
-				assertTrue(db.getNodeIndexNames().contains(name));
+				assertTrue("Index " + name + " should be listed", db.getNodeIndexNames().contains(name));
 				assertTrue(db.nodeIndexExists(name));
 				IGraphNodeIndex idx = db.getOrCreateNodeIndex(name);
 

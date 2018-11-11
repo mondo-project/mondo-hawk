@@ -1063,15 +1063,17 @@ public class GraphModelInserter {
 			for (IAccess a : accessListener.getAccesses()) {
 				IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
 
-				if (sourceNode != null)
+				if (sourceNode != null) {
 					derivedAccessDictionary.remove(sourceNode);
+				}
 			}
 
 			for (IAccess a : accessListener.getAccesses()) {
 				IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
 
-				if (sourceNode != null)
+				if (sourceNode != null) {
 					derivedAccessDictionary.add(sourceNode, a.getAccessObjectID(), a.getProperty());
+				}
 			}
 
 			tx.success();

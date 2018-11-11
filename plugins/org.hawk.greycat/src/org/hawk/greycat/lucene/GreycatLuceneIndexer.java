@@ -632,7 +632,7 @@ public class GreycatLuceneIndexer {
 
 			final TotalHitCountCollector thc = new TotalHitCountCollector();
 			searcher.search(query, thc);
-			if (thc.getTotalHits() > 0) {
+			if (thc.getTotalHits() == 0) {
 				Document doc = new Document();
 				doc.add(new StringField(INDEX_FIELD, name, Store.YES));
 				doc.add(new StringField(DOCTYPE_FIELD, INDEX_DOCTYPE, Store.YES));

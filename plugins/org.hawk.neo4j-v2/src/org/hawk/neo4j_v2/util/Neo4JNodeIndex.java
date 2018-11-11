@@ -113,11 +113,14 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 			return;
 		}
 
-		if (value instanceof Integer || value instanceof Long || value instanceof Double)
+		if (value instanceof Integer || value instanceof Long || value instanceof Double) {
 			wrappedValue = new ValueContext(value).indexNumeric();
+		}
 
 		if (index != null) {
-			index.add(graph.getGraph().getNodeById((long) n.getId()), s, wrappedValue);
+			final Node node = graph.getGraph().getNodeById((long) n.getId());
+			index.remove(node, s);
+			index.add(node, s, wrappedValue);
 		} else {
 			Map<String, Object> m = new HashMap<>();
 			m.put(s, wrappedValue);
