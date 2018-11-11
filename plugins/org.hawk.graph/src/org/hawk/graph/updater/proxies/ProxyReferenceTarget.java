@@ -33,11 +33,10 @@ public class ProxyReferenceTarget {
 			fragment = ignoreFragment ? null : uri.substring(hashPos + 1);
 		}
 
-		// Split full URI into repo URL + filePath, make sure that filePath starts with /
+		// Split full URI into repo URL + filePath, filePath may be simply * in case of fragment-based refs
 		final int repoSeparatorPos = uriWithoutFragment.indexOf(GraphModelUpdater.FILEINDEX_REPO_SEPARATOR);
 		repoURL = uriWithoutFragment.substring(0, repoSeparatorPos);
-		final String rawFilePath = uriWithoutFragment.substring(repoSeparatorPos + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR.length());
-		filePath = rawFilePath.startsWith("/") ? rawFilePath : "/" + rawFilePath;
+		filePath = uriWithoutFragment.substring(repoSeparatorPos + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR.length());
 	}
 
 	@Override
@@ -101,7 +100,7 @@ public class ProxyReferenceTarget {
 	}
 
 	public boolean isFragmentBased() {
-		return filePath.equals("/" + GraphModelUpdater.PROXY_FILE_WILDCARD);
+		return filePath.equals(GraphModelUpdater.PROXY_FILE_WILDCARD);
 	}
 
 	@Override
