@@ -36,12 +36,11 @@ public class DeletionUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DeletionUtils.class);
 
 	private IGraphDatabase graph;
-	private IGraphNodeIndex singletonIndex;
+	private IGraphNodeIndex fragmentIndex;
 
 	public DeletionUtils(IGraphDatabase graph) {
 		this.graph = graph;
-		singletonIndex = graph
-				.getOrCreateNodeIndex(GraphModelBatchInjector.FRAGMENT_DICT_NAME);
+		fragmentIndex = graph.getOrCreateNodeIndex(GraphModelBatchInjector.FRAGMENT_DICT_NAME);
 	}
 
 	protected boolean delete(IGraphNode modelElement) {
@@ -113,7 +112,7 @@ public class DeletionUtils {
 		// track nodes with multiple sources (singletons)
 		boolean isOrphan = true;
 
-		Iterator<IGraphNode> singletonMatches = singletonIndex.get(
+		Iterator<IGraphNode> singletonMatches = fragmentIndex.get(
 				"id",
 				referencedModelElement.getProperty(IModelIndexer.IDENTIFIER_PROPERTY))
 				.iterator();
