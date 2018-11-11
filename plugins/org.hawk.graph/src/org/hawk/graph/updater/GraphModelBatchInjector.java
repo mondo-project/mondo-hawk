@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2018 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -13,6 +13,7 @@
  *
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - improvements in proxy resolution
  ******************************************************************************/
 package org.hawk.graph.updater;
 
@@ -191,6 +192,7 @@ public class GraphModelBatchInjector {
 					}
 
 					int[] addedElements = parseResource(fileNode, ParseOptions.MODELELEMENTS, children, hawk, r.providesSingletonElements());
+					fragmentIdx.flush();
 					if (verbose) {
 						LOGGER.debug("{} NODES AND {} M->MM REFERENCES! (took ~{}sec)",
 							addedElements[0], addedElements[1], addedElements[2],
@@ -373,7 +375,6 @@ public class GraphModelBatchInjector {
 			IGraphNode node = graph.createNode(nodeMap, ModelElementNode.OBJECT_VERTEX_LABEL);
 			if (eObject.isFragmentUnique()) {
 				fragmentIdx.add(node, "id", eObject.getUriFragment());
-				fragmentIdx.flush();
 			}
 
 			// propagate changes to listeners
