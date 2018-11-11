@@ -569,6 +569,25 @@ public class IndexTest extends TemporaryDatabaseTest {
 	}
 
 	@Test
+	public void addOverridesPriorValue() throws Exception {
+		IGraphNodeIndex idxRoots;
+		IGraphNode x;
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			idxRoots = db.getOrCreateNodeIndex("roots");
+			x = db.createNode(null, "eobject");
+			idxRoots.add(x, "a", "1");
+			idxRoots.add(x, "a", "2");
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(0, idxRoots.query("a", "1").size());
+			assertEquals(1, idxRoots.query("a", "2").size());
+			tx.success();
+		}
+	}
+
+	@Test
 	public void deleteRecreate() throws Exception {
 		IGraphNodeIndex idxRoots;
 		IGraphNode x;
@@ -647,6 +666,12 @@ public class IndexTest extends TemporaryDatabaseTest {
 			n = db.createNode(null, "x");
 			db.getMetamodelIndex().add(n, "b", 1);
 			db.getMetamodelIndex().add(n, "c", "x");
+			tx.success();
+		}
+
+		try (IGraphTransaction tx = db.beginTransaction()) {
+			assertEquals(1, db.getMetamodelIndex().query("b", 1).size());
+			assertEquals(1, db.getMetamodelIndex().query("c", "x").size());
 			tx.success();
 		}
 

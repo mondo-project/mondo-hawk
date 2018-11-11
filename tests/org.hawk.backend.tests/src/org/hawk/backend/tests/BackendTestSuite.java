@@ -61,8 +61,12 @@ public class BackendTestSuite {
 	    if (ParameterContext.isParameterSet()) {
 	        return Collections.singletonList(ParameterContext.getParameter(Object[].class));
 	    } else {
+			/*
+			 * Change uncommented line depending on which backend you want to test outside
+			 * this suite, so you may simply right-click on the specific JUnit test class
+			 * and run it directly.
+			 */
 	    	return Collections.singletonList(new Object[]{
-	    		// Change uncommented line depending on which backend you want to test outside this suite
 	    		//new Neo4JDatabaseFactory()
 	    		new OrientDatabaseFactory()
 	    		//new GreycatDatabaseFactory()
