@@ -1092,6 +1092,9 @@ public class GraphModelInserter {
 	}
 
 	private IGraphNode getFileNode(IGraphDatabase graph, String repositoryURL, String file) {
+		if (!file.startsWith("/")) {
+			file = "/" + file;
+		}
 		final IGraphNodeIndex filedictionary = graph.getFileIndex();
 		IGraphNode fileNode = null;
 
