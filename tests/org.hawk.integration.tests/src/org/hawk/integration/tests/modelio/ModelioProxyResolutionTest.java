@@ -37,7 +37,9 @@ import org.apache.commons.io.FileUtils;
 import org.hawk.backend.tests.BackendTestSuite;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.core.graph.IGraphNodeIndex;
+import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.graph.updater.GraphModelBatchInjector;
+import org.hawk.graph.updater.GraphModelInserter;
 import org.hawk.graph.updater.GraphModelUpdater;
 import org.hawk.graph.updater.proxies.ProxyReferenceList;
 import org.hawk.graph.updater.proxies.ProxyReferenceList.ProxyReference;
@@ -93,17 +95,23 @@ public class ModelioProxyResolutionTest extends ModelIndexingTest {
 		requestFolderIndex(tempFolder.getRoot());
 		waitForSync(() -> {
 			// The file should have exactly three unique IDs that others can refer to
-			final IGraphNodeIndex fragmentIndex = db.getOrCreateNodeIndex(GraphModelBatchInjector.FRAGMENT_DICT_NAME);
-			assertEquals(3, fragmentIndex.query("id", "*").size());
+			try (IGraphTransaction tx = db.beginTransaction()) {
+				final IGraphNodeIndex fragmentIndex = db
+					.getOrCreateNodeIndex(GraphModelBatchInjector.FRAGMENT_DICT_NAME);
+				assertEquals(3, fragmentIndex.query("id", "*").size());
 
-			// We should have two lists with unresolved refs: one to the supertype, and one to the package
-			List<ProxyReferenceList> lists = updater.createInserter().getProxyReferenceLists(indexer.getGraph());
-			assertEquals(2, lists.size());
+				/*
+				 * We should have two lists with unresolved refs: one to the supertype, and one
+				 * to the package.
+				 */
+				final GraphModelInserter inserter = updater.createInserter();
+				List<ProxyReferenceList> lists = inserter.getProxyReferenceLists(indexer.getGraph());
+				assertEquals(2, lists.size());
 
-			final Set<String> unresolved = collectUnresolvedFragments(lists);
-			assertEquals(new HashSet<>(Arrays.asList(
-				PACKAGE_FRAGMENT, ANIMAL_FRAGMENT
-			)), unresolved);
+				final Set<String> unresolved = collectUnresolvedFragments(lists);
+				assertEquals(new HashSet<>(Arrays.asList(PACKAGE_FRAGMENT, ANIMAL_FRAGMENT)), unresolved);
+				tx.success();
+			}
 
 			return null;
 		});
