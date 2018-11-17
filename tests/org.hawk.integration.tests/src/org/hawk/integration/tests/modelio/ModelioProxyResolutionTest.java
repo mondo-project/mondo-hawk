@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -136,7 +137,7 @@ public class ModelioProxyResolutionTest extends ModelIndexingTest {
 				// We should only be missing the string datatype
 				List<ProxyReferenceList> lists = updater.createInserter().getProxyReferenceLists(indexer.getGraph());
 				final Set<String> unresolved = collectUnresolvedFragments(lists);
-				assertEquals(new HashSet<>(Arrays.asList(STRING_FRAGMENT)), unresolved);
+				assertEquals(Collections.emptySet(), unresolved);
 				return null;
 			}
 		});
