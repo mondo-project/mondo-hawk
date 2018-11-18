@@ -36,7 +36,7 @@ import org.hawk.core.graph.IGraphDatabase.Mode;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
-import org.hawk.greycat.GreycatDatabase.NodeCacheWrapper;
+import org.hawk.greycat.AbstractGreycatDatabase.NodeCacheWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -208,7 +208,7 @@ public class GreycatNode implements ITimeAwareGraphNode {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GreycatNode.class);
 
-	private final GreycatDatabase db;
+	private final AbstractGreycatDatabase db;
 	private final long world, time, id;
 	private final LazyNode nodeProvider;
 
@@ -244,7 +244,7 @@ public class GreycatNode implements ITimeAwareGraphNode {
 	/**
 	 * For new nodes produced through queries.
 	 */
-	public GreycatNode(GreycatDatabase db, long world, long time, long id) {
+	public GreycatNode(AbstractGreycatDatabase db, long world, long time, long id) {
 		this.db = db;
 
 		this.world = world;
@@ -257,7 +257,7 @@ public class GreycatNode implements ITimeAwareGraphNode {
 	/**
 	 * For nodes that have been newly created and still need to be saved for the first time.
 	 */
-	public GreycatNode(GreycatDatabase db, Node node) {
+	public GreycatNode(AbstractGreycatDatabase db, Node node) {
 		this.db = db;
 
 		this.world = node.world();
@@ -323,7 +323,7 @@ public class GreycatNode implements ITimeAwareGraphNode {
 	public String getNodeLabel() {
 		if (nodeLabel == null) {
 			try (NodeReader rn = getNodeReader()) {
-				nodeLabel = rn.get().get(GreycatDatabase.NODE_LABEL_IDX).toString();
+				nodeLabel = rn.get().get(AbstractGreycatDatabase.NODE_LABEL_IDX).toString();
 			}
 		}
 
@@ -782,7 +782,7 @@ public class GreycatNode implements ITimeAwareGraphNode {
 	}
 
 	@Override
-	public GreycatDatabase getGraph() {
+	public AbstractGreycatDatabase getGraph() {
 		return db;
 	}
 
@@ -804,7 +804,7 @@ public class GreycatNode implements ITimeAwareGraphNode {
 	 */
 	protected boolean isSoftDeleted() {
 		try (NodeReader rn = getNodeReader()) {
-			final Boolean softDeleted = (Boolean) rn.get().get(GreycatDatabase.SOFT_DELETED_KEY);
+			final Boolean softDeleted = (Boolean) rn.get().get(AbstractGreycatDatabase.SOFT_DELETED_KEY);
 			return softDeleted == Boolean.TRUE;
 		}
 	}

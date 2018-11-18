@@ -18,7 +18,7 @@ package org.hawk.backend.tests;
 
 import java.util.Collections;
 
-import org.hawk.backend.tests.factories.GreycatDatabaseFactory;
+import org.hawk.backend.tests.factories.RocksDBGreycatDatabaseFactory;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.backend.tests.factories.LevelDBGreycatDatabaseFactory;
 import org.hawk.backend.tests.factories.Neo4JDatabaseFactory;
@@ -47,7 +47,7 @@ public class BackendTestSuite {
 			{new Neo4JDatabaseFactory()},
 			{new OrientDatabaseFactory()},
 			//{new RemoteOrientDatabaseFactory()}, // TODO enable automatically when server available
-			{new GreycatDatabaseFactory()},
+			{new RocksDBGreycatDatabaseFactory()}, // will skip some tests due to bad performance (deprecated)
 			{new LevelDBGreycatDatabaseFactory()},
 		};
 	}

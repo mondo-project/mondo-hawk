@@ -20,9 +20,9 @@ import org.hawk.core.graph.IGraphTransaction;
 
 public class GreycatTransaction implements IGraphTransaction {
 
-	private final GreycatDatabase db;
+	private final AbstractGreycatDatabase db;
 
-	public GreycatTransaction(GreycatDatabase db) {
+	public GreycatTransaction(AbstractGreycatDatabase db) {
 		this.db = db;
 	}
 

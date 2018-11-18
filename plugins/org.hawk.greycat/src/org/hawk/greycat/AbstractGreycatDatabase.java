@@ -55,67 +55,66 @@ import com.google.common.collect.Iterators;
 
 import greycat.Callback;
 import greycat.Graph;
-import greycat.GraphBuilder;
 import greycat.Node;
 import greycat.NodeIndex;
 import greycat.Type;
-import greycat.plugin.Storage;
-import greycat.rocksdb.RocksDBStorage;
 
 /**
- * <p>Default version of the Greycat backend, which uses the RocksDB storage layer
- * with Snappy compression on Linux/Mac, and no compression on Windows.</p>
+ * Base version of the Greycat support in Hawk, which can use any of the
+ * Greycat storage backends.
  */
-public class GreycatDatabase implements ITimeAwareGraphDatabase {
+public abstract class AbstractGreycatDatabase implements ITimeAwareGraphDatabase {
 
-	private static final class NodeKey {
-		public final long world, time, id;
-
-		public NodeKey(long world, long time, long id) {
-			this.world = world;
-			this.time = time;
-			this.id = id;
-		}
-
-		public NodeKey(GreycatNode gn) {
-			this(gn.getWorld(), gn.getTime(), gn.getId());
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + (int) (id ^ (id >>> 32));
-			result = prime * result + (int) (time ^ (time >>> 32));
-			result = prime * result + (int) (world ^ (world >>> 32));
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
+	protected static final class NodeKey {
+			public final long world, time, id;
+	
+			public NodeKey(long world, long time, long id) {
+				this.world = world;
+				this.time = time;
+				this.id = id;
+			}
+	
+			public NodeKey(GreycatNode gn) {
+				this(gn.getWorld(), gn.getTime(), gn.getId());
+			}
+	
+			@Override
+			public int hashCode() {
+				final int prime = 31;
+				int result = 1;
+				result = prime * result + (int) (id ^ (id >>> 32));
+				result = prime * result + (int) (time ^ (time >>> 32));
+				result = prime * result + (int) (world ^ (world >>> 32));
+				return result;
+			}
+	
+			@Override
+			public boolean equals(Object obj) {
+				if (this == obj)
+					return true;
+				if (obj == null)
+					return false;
+				if (getClass() != obj.getClass())
+					return false;
+				NodeKey other = (NodeKey) obj;
+				if (id != other.id)
+					return false;
+				if (time != other.time)
+					return false;
+				if (world != other.world)
+					return false;
 				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			NodeKey other = (NodeKey) obj;
-			if (id != other.id)
-				return false;
-			if (time != other.time)
-				return false;
-			if (world != other.world)
-				return false;
-			return true;
+			}
 		}
-	}
+
+	protected abstract Graph createGraph();
 
 	protected static final class NodeCacheWrapper {
 		public final Node node;
-
+	
 		/** This node is currently in use - do not allow the cache to free it upon LRU removal. */
 		public boolean inUse = false;
-
+	
 		public NodeCacheWrapper(Node n) {
 			this.node = n;
 		}
@@ -128,44 +127,55 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 	 * proper save, we will go through the DB and do some garbage collection.
 	 */
 	protected static final String SOFT_DELETED_KEY = "h_softDeleted";
-
 	/**
 	 * Greycat doesn't seem to have node labels by itself, but we can easily emulate
 	 * this with a custom index.
 	 */
 	protected static final String NODE_LABEL_IDX = "h_nodeLabel";
-
 	/**
 	 * In batch mode, we save every time we reach an X number of dirty nodes.
 	 */
 	protected static final int SAVE_EVERY = 10_000;
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(GreycatDatabase.class);
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractGreycatDatabase.class);
 	private Cache<NodeKey, NodeCacheWrapper> nodeCache;
 	protected File storageFolder;
-
 	private File tempFolder;
 	private IConsole console;
 	private Graph graph;
-	private NodeIndex nodeLabelIndex, softDeleteIndex;
+	private NodeIndex nodeLabelIndex;
+	private NodeIndex softDeleteIndex;
 	private Mode mode = Mode.TX_MODE;
 	protected GreycatLuceneIndexer luceneIndexer;
-
 	/**
 	 * Keeps nodes modified so far, so we can free them after we save.
 	 */
 	private Set<GreycatNode> currentDirtyNodes = new HashSet<>();
-
 	/**
 	 * Keeps nodes opened right now, so we can avoid doing a periodic
 	 * save in the middle of some modifications.
 	 */
 	private Set<GreycatNode> currentOpenNodes = new HashSet<>();
-	
-
 	private long world = 0;
 	private long time = 0;
+
+	private static void deleteRecursively(File f) throws IOException {
+		if (!f.exists()) return;
+	
+		Files.walkFileTree(f.toPath(), new SimpleFileVisitor<Path>() {
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+				Files.delete(file);
+				return FileVisitResult.CONTINUE;
+			}
+	
+			@Override
+			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+				Files.delete(dir);
+				return FileVisitResult.CONTINUE;
+			}
+	
+		});
+	}
 
 	public long getWorld() {
 		return world;
@@ -195,19 +205,19 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 		this.storageFolder = parentFolder;
 		this.tempFolder = new File(storageFolder, "temp");
 		this.console = c;
-
+	
 		reconnect();
 	}
 
 	@Override
 	public void shutdown() throws Exception {
 		shutdownHelpers();
-
+	
 		if (graph != null) {
 			graph.disconnect(result -> {
 				console.println("Disconnected from GreyCat graph");
 			});
-
+	
 			graph = null;
 		}
 	}
@@ -215,7 +225,7 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 	@Override
 	public void delete() throws Exception {
 		shutdownHelpers();
-
+	
 		if (graph != null) {
 			CompletableFuture<Boolean> done = new CompletableFuture<>();
 			graph.disconnect(result -> {
@@ -239,30 +249,15 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 			nodeCache.invalidateAll();
 			nodeCache = null;
 		}
-
+	
 		if (luceneIndexer != null) {
 			luceneIndexer.shutdown();
 			luceneIndexer = null;
 		}
 	}
 
-	private static void deleteRecursively(File f) throws IOException {
-		if (!f.exists()) return;
-
-		Files.walkFileTree(f.toPath(), new SimpleFileVisitor<Path>() {
-			@Override
-			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-				Files.delete(file);
-				return FileVisitResult.CONTINUE;
-			}
-
-			@Override
-			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-				Files.delete(dir);
-				return FileVisitResult.CONTINUE;
-			}
-
-		});
+	public AbstractGreycatDatabase() {
+		super();
 	}
 
 	@Override
@@ -336,13 +331,13 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 					IntStream.range(0, ids.length).iterator(),
 					i -> getNodeById(ids[i]));
 			}
-
+	
 			@Override
 			public int size() {
 				final long[] ids = getRawIdentifiers(label, time);
 				return ids.length;
 			}
-
+	
 			private long[] getRawIdentifiers(String label, long time) {
 				greycat.Query query = graph.newQuery();
 				query.setTime(time);
@@ -350,7 +345,7 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 				query.add(NODE_LABEL_IDX, label);
 				return nodeLabelIndex.selectByQuery(query);
 			}
-
+	
 			@Override
 			public GreycatNode getSingle() {
 				long[] ids = getRawIdentifiers(label, time);
@@ -364,12 +359,12 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 		final Node node = graph.newNode(world, time);
 		node.set(NODE_LABEL_IDX, Type.STRING, label);
 		nodeLabelIndex.update(node);
-
+	
 		final GreycatNode n = new GreycatNode(this, node);
 		if (props != null) {
 			n.setProperties(props);
 		}
-
+	
 		return n;
 	}
 
@@ -404,23 +399,23 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 
 	protected void save() {
 		final CompletableFuture<Boolean> result = new CompletableFuture<>();
-
+	
 		// First stage save
 		graph.save(saved -> {
 			softDeleteIndex.find(results -> {
-
+	
 				Semaphore sem = new Semaphore(-results.length + 1);
 				for (Node n : results) {
 					hardDelete(new GreycatNode(this, n), dropped -> sem.release());
 				}
-
+	
 				// Wait until all nodes have been dropped
 				try {
 					sem.acquire();
 				} catch (InterruptedException e) {
 					LOGGER.error(e.getMessage(), e);
 				}
-
+	
 				if (results.length > 0) {
 					// Second stage (for fully dropping those nodes)
 					graph.save(savedAgain -> result.complete(savedAgain));
@@ -430,14 +425,14 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 			}, world, time);
 		});
 		result.join();
-
+	
 		// Free nodes after having saved them 
 		for (GreycatNode dirtyNode : currentDirtyNodes) {
 			dirtyNode.free();
 			nodeCache.invalidate(new NodeKey(dirtyNode));
 		}
 		currentDirtyNodes.clear();
-
+	
 		// useful for finding GreyCat Node leaks
 		//System.out.println("-- SAVED: available is " + graph.space().available());
 	}
@@ -464,7 +459,7 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 		if (id instanceof String) {
 			id = Long.valueOf((String) id);
 		}
-
+	
 		return new GreycatNode(this, world, time, (long)id);
 	}
 
@@ -510,18 +505,18 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 
 	public boolean reconnect() {
 		CompletableFuture<Boolean> connected = new CompletableFuture<>();
-
+	
 		if (nodeCache != null) {
 			nodeCache.invalidateAll();
 		}
-
+	
 		if (graph != null) {
 			try {
 				luceneIndexer.rollback();
 			} catch (IOException e) {
 				LOGGER.error("Could not rollback Lucene", e);
 			}
-
+	
 			/*
 			 * Only disconnect storage - we want to release locks on the storage *without*
 			 * saving. Seems to be the only simple way to do a rollback to the latest saved
@@ -538,7 +533,7 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 			}
 			connect(connected);
 		}
-
+	
 		try {
 			return connected.get();
 		} catch (InterruptedException | ExecutionException e) {
@@ -560,12 +555,9 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 				}
 			})
 			.build();
-
-		this.graph = new GraphBuilder()
-			.withMemorySize(1_000_000)
-			.withStorage(createStorage())
-			.build();
-
+	
+		this.graph = createGraph();
+	
 		exitBatchMode();
 		graph.connect((connected) -> {
 			if (connected) {
@@ -583,18 +575,9 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 		});
 	}
 
-	protected Storage createStorage() {
-		if (System.getProperty("os.name").startsWith("Windows")) {
-			LOGGER.warn("RocksJava for Windows lacks Snappy/LZ4 compression - falling back to no compression");
-			return new UncompressedRocksDBStorage(storageFolder.getAbsolutePath());
-		} else {
-			return new RocksDBStorage(storageFolder.getAbsolutePath());
-		}
-	}
-
 	protected void hardDelete(GreycatNode gn, Callback<?> callback) {
 		unlink(gn);
-
+	
 		try (GreycatNode.NodeReader rn = gn.getNodeReader()) {
 			final Node node = rn.get();
 			node.drop(callback);
@@ -608,13 +591,13 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 	 */
 	protected void softDelete(GreycatNode gn) {
 		unlink(gn);
-
+	
 		// Soft delete, to make definitive after next save
 		try (GreycatNode.NodeReader rn = gn.getNodeReader()) {
 			final Node node = rn.get();
 			node.set(SOFT_DELETED_KEY, Type.BOOL, true);
 			softDeleteIndex.update(node);
-
+	
 			rn.markDirty();
 		}
 	}
@@ -627,7 +610,7 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 		for (IGraphEdge e : gn.getEdges()) {
 			e.delete();
 		}
-
+	
 		try (NodeReader rn = gn.getNodeReader()) {
 			final Node n = rn.get();
 			softDeleteIndex.unindex(n);
@@ -660,4 +643,5 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 			return null;
 		}
 	}
+
 }

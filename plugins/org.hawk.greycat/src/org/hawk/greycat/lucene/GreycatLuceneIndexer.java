@@ -50,8 +50,7 @@ import org.apache.lucene.search.WildcardQuery;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
-import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
-import org.hawk.greycat.GreycatDatabase;
+import org.hawk.greycat.AbstractGreycatDatabase;
 import org.hawk.greycat.GreycatNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -613,12 +612,12 @@ public class GreycatLuceneIndexer {
 	}
 
 
-	private final GreycatDatabase database;
+	private final AbstractGreycatDatabase database;
 	private final Cache<String, GreycatLuceneNodeIndex> nodeIndexCache =
 		CacheBuilder.newBuilder().maximumSize(100).build();
 	private final SoftTxLucene lucene;
 
-	public GreycatLuceneIndexer(GreycatDatabase db, File dir) throws IOException {
+	public GreycatLuceneIndexer(AbstractGreycatDatabase db, File dir) throws IOException {
 		this.database = db;
 		this.lucene = new SoftTxLucene(dir);
 	}

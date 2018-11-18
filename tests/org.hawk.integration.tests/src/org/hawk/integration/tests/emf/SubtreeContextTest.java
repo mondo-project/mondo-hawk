@@ -18,6 +18,7 @@ package org.hawk.integration.tests.emf;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeFalse;
 
 import java.io.File;
 import java.io.IOException;
@@ -154,6 +155,9 @@ public class SubtreeContextTest extends ModelIndexingTest {
 
 	@Before
 	public void setUp() throws Throwable {
+		// Skip for deprecated backends - it is an expensive test
+		assumeFalse(db.getClass().isAnnotationPresent(Deprecated.class));
+		
 		indexer.registerMetamodels(new File("resources/metamodels/Ecore.ecore"),
 				new File("resources/metamodels/JDTAST.ecore"));
 

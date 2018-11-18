@@ -4,7 +4,7 @@
    <extension
          point="org.hawk.core.BackEndExtensionPoint">
       <Backend
-            store="org.hawk.greycat.GreycatDatabase">
+            store="org.hawk.greycat.RocksDBGreycatDatabase">
       </Backend>
    </extension>
    <extension

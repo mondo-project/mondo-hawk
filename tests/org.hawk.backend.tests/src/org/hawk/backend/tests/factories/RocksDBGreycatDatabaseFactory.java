@@ -17,12 +17,14 @@
 package org.hawk.backend.tests.factories;
 
 import org.hawk.core.graph.IGraphDatabase;
-import org.hawk.greycat.GreycatDatabase;
+import org.hawk.greycat.RocksDBGreycatDatabase;
 
-public final class GreycatDatabaseFactory implements IGraphDatabaseFactory {
+@SuppressWarnings("deprecation")
+public final class RocksDBGreycatDatabaseFactory implements IGraphDatabaseFactory {
+
 	@Override
 	public IGraphDatabase create() {
-		return new GreycatDatabase();
+		return new RocksDBGreycatDatabase();
 	}
 
 	@Override

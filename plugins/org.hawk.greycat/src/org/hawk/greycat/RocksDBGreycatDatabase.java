@@ -20,7 +20,17 @@ import greycat.Graph;
 import greycat.GraphBuilder;
 import greycat.leveldb.LevelDBStorage;
 
-public class LevelDBGreycatDatabase extends AbstractGreycatDatabase {
+/**
+ * <p>Version of the Greycat backend, which uses the RocksDB storage layer
+ * with Snappy compression on Linux/Mac, and no compression on Windows.</p>
+ * 
+ * <p>This storage layer has bad performance in the subtree tests for the
+ * time being. The LevelDB storage layer has much better performance for
+ * traversing the graph - please use that for now.</p>
+ */
+@Deprecated
+public class RocksDBGreycatDatabase extends AbstractGreycatDatabase {
+
 	@Override
 	protected Graph createGraph() {
 		return new GraphBuilder()
@@ -28,4 +38,11 @@ public class LevelDBGreycatDatabase extends AbstractGreycatDatabase {
 			.withStorage(new LevelDBStorage(storageFolder.getAbsolutePath()))
 			.build();
 	}
+
+	@Override
+	public String getType() {
+		// For backwards compatibiltiy only
+		return "org.hawk.greycat.GreycatDatabase";
+	}
+
 }

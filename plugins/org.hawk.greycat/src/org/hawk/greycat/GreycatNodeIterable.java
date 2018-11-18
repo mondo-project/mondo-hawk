@@ -33,9 +33,9 @@ public class GreycatNodeIterable implements IGraphIterable<GreycatNode> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GreycatNodeIterable.class);
 
 	private final Callable<Node[]> nodesGenerator;
-	private final GreycatDatabase db;
+	private final AbstractGreycatDatabase db;
 
-	public GreycatNodeIterable(GreycatDatabase db, Callable<Node[]> nodesGenerator) {
+	public GreycatNodeIterable(AbstractGreycatDatabase db, Callable<Node[]> nodesGenerator) {
 		this.db = db;
 		this.nodesGenerator = nodesGenerator;
 	}

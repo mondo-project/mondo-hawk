@@ -30,7 +30,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.hawk.backend.tests.factories.GreycatDatabaseFactory;
+import org.hawk.backend.tests.factories.RocksDBGreycatDatabaseFactory;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.backend.tests.factories.LevelDBGreycatDatabaseFactory;
 import org.hawk.core.IModelIndexer;
@@ -74,7 +74,7 @@ public class NodeHistoryTest extends ModelIndexingTest {
 	@Parameters(name = "{0}")
     public static Iterable<Object[]> params() {
     	return Arrays.asList(
-    		new Object[] { new GreycatDatabaseFactory(), new EMFModelSupportFactory() },
+    		new Object[] { new RocksDBGreycatDatabaseFactory(), new EMFModelSupportFactory() },
     		new Object[] { new LevelDBGreycatDatabaseFactory(), new EMFModelSupportFactory() }
     	);
     }
