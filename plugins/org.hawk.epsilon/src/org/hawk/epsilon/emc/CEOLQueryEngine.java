@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.hawk.epsilon.emc;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,6 +29,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import org.hawk.core.graph.IGraphEdge;
+import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.epsilon.emc.pgetters.CGraphPropertyGetter;
@@ -44,6 +46,101 @@ import org.slf4j.LoggerFactory;
 public class CEOLQueryEngine extends EOLQueryEngine {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CEOLQueryEngine.class);
+
+	protected class IGraphIterablesCollection implements Collection<GraphNodeWrapper> {
+		private final List<IGraphIterable<ModelElementNode>> iterables;
+		private Set<GraphNodeWrapper> elements;
+
+		protected IGraphIterablesCollection(List<IGraphIterable<ModelElementNode>> iterables) {
+			this.iterables = iterables;
+		}
+
+		@Override
+		public int size() {
+			int total = 0;
+			for (IGraphIterable<ModelElementNode> graphIterable : iterables) {
+				total += graphIterable.size();
+			}
+			return total;
+		}
+
+		@Override
+		public boolean isEmpty() {
+			for (IGraphIterable<ModelElementNode> graphIterable : iterables) {
+				if (graphIterable.size() > 0) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		@Override
+		public boolean contains(Object o) {
+			return getElements().contains(o);
+		}
+
+		private Set<GraphNodeWrapper> getElements() {
+			if (elements == null) {
+				elements = new HashSet<>();
+				for (IGraphIterable<ModelElementNode> iterable : iterables) {
+					for (ModelElementNode e : iterable) {
+						elements.add(new GraphNodeWrapper(e.getNode(), CEOLQueryEngine.this));
+					}
+				}
+			}
+			return elements;
+		}
+
+		@Override
+		public Iterator<GraphNodeWrapper> iterator() {
+			return getElements().iterator();
+		}
+
+		@Override
+		public Object[] toArray() {
+			return getElements().toArray();
+		}
+
+		@Override
+		public <T> T[] toArray(T[] a) {
+			return getElements().toArray(a);
+		}
+
+		@Override
+		public boolean add(GraphNodeWrapper e) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean remove(Object o) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean containsAll(Collection<?> c) {
+			return getElements().containsAll(c);
+		}
+
+		@Override
+		public boolean addAll(Collection<? extends GraphNodeWrapper> c) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean removeAll(Collection<?> c) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean retainAll(Collection<?> c) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void clear() {
+			throw new UnsupportedOperationException();
+		}
+	}
 
 	private interface AllOf {
 		void addAllOf(IGraphNode typeNode, final String typeorkind, Collection<Object> nodes);
@@ -312,13 +409,35 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 	 */
 	@Override
 	public Collection<?> allContents() {
-		final Set<GraphNodeWrapper> allContents = new HashSet<GraphNodeWrapper>();
+		final Set<IGraphNode> files = fileSupplier.get();
+		if (files.isEmpty()) {
+			return Collections.emptyList();
+		}
 
-		for (IGraphNode rawFileNode : fileSupplier.get()) {
-			final FileNode f = new FileNode(rawFileNode);
-			for (ModelElementNode me : f.getModelElements()) {
-				GraphNodeWrapper wrapper = new GraphNodeWrapper(me.getNode(), this);
-				allContents.add(wrapper);
+		final Iterator<IGraphNode> itFiles = files.iterator();
+		final FileNode firstFile = new FileNode(itFiles.next());
+		final Iterable<ModelElementNode> firstFileElements = firstFile.getModelElements();
+
+		if (firstFileElements instanceof IGraphIterable) {
+			// Backend supports a more efficient #size operation: expose it through the console
+			final List<IGraphIterable<ModelElementNode>> iterables = new ArrayList<>();
+			iterables.add((IGraphIterable<ModelElementNode>) firstFileElements);
+			while (itFiles.hasNext()) {
+				final FileNode fn = new FileNode(itFiles.next());
+				iterables.add((IGraphIterable<ModelElementNode>) fn.getModelElements());
+			}
+			return new IGraphIterablesCollection(iterables);
+		}
+
+		// Backend does not support the more efficient #size operation		
+		final Set<GraphNodeWrapper> allContents = new HashSet<>();
+		for (ModelElementNode elem : firstFileElements) {
+			allContents.add(new GraphNodeWrapper(elem.getNode(), this));
+		}
+		while (itFiles.hasNext()) {
+			final FileNode fn = new FileNode(itFiles.next());
+			for (ModelElementNode elem : fn.getModelElements()) {
+				allContents.add(new GraphNodeWrapper(elem.getNode(), this));
 			}
 		}
 

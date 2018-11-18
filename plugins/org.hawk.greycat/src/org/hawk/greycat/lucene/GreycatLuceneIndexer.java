@@ -50,6 +50,7 @@ import org.apache.lucene.search.WildcardQuery;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.greycat.GreycatDatabase;
 import org.hawk.greycat.GreycatNode;
 import org.slf4j.Logger;
@@ -127,16 +128,16 @@ public class GreycatLuceneIndexer {
 			super(searcher);
 		}
 		
-		public Iterator<IGraphNode> getNodeIterator() {
+		public Iterator<GreycatNode> getNodeIterator() {
 			final Iterator<Integer> itIdentifiers = docIds.iterator();
-			return new Iterator<IGraphNode>() {
+			return new Iterator<GreycatNode>() {
 				@Override
 				public boolean hasNext() {
 					return itIdentifiers.hasNext();
 				}
 
 				@Override
-				public IGraphNode next() {
+				public GreycatNode next() {
 					int docId = itIdentifiers.next();
 					try {
 						return getNodeByDocument(searcher.doc(docId));
@@ -149,7 +150,7 @@ public class GreycatLuceneIndexer {
 		}
 	}
 
-	protected final class LuceneGraphIterable implements IGraphIterable<IGraphNode> {
+	protected final class LuceneGraphIterable implements IGraphIterable<GreycatNode> {
 		private final Query query;
 
 		protected LuceneGraphIterable(Query query) {
@@ -157,7 +158,7 @@ public class GreycatLuceneIndexer {
 		}
 
 		@Override
-		public Iterator<IGraphNode> iterator() {
+		public Iterator<GreycatNode> iterator() {
 			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 			try {
 				final NodeListCollector lc = new NodeListCollector(searcher);
@@ -184,7 +185,7 @@ public class GreycatLuceneIndexer {
 		}
 
 		@Override
-		public IGraphNode getSingle() {
+		public GreycatNode getSingle() {
 			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
 			try {
@@ -204,7 +205,7 @@ public class GreycatLuceneIndexer {
 	 * Implements a node index as a collection of documents, with a single document
 	 * representing the existence of the index itself.
 	 */
-	protected final class GreycatLuceneNodeIndex implements IGraphNodeIndex {
+	public final class GreycatLuceneNodeIndex implements IGraphNodeIndex {
 		private final String name;
 
 		private static final String NODE_DOCTYPE = "node";
@@ -368,7 +369,7 @@ public class GreycatLuceneIndexer {
 		}
 
 		@Override
-		public IGraphIterable<IGraphNode> query(String key, Number from, Number to, boolean fromInclusive, boolean toInclusive) {
+		public IGraphIterable<GreycatNode> query(String key, Number from, Number to, boolean fromInclusive, boolean toInclusive) {
 				Query query;
 				if (from instanceof Float || to instanceof Double) {
 					final double dFrom = from.doubleValue(), dTo = to.doubleValue();
@@ -388,7 +389,7 @@ public class GreycatLuceneIndexer {
 		}
 
 		@Override
-		public IGraphIterable<IGraphNode> query(String key, Object valueExpr) {
+		public IGraphIterable<GreycatNode> query(String key, Object valueExpr) {
 			final String sValueExpr = valueExpr.toString();
 
 			Query valueQuery = null;
@@ -432,7 +433,7 @@ public class GreycatLuceneIndexer {
 		}
 
 		@Override
-		public IGraphIterable<IGraphNode> get(String key, Object valueExpr) {
+		public IGraphIterable<GreycatNode> get(String key, Object valueExpr) {
 			final Query valueQuery = getValueQuery(key, valueExpr);
 			final Query query = getIndexQueryBuilder()
 				.add(valueQuery, Occur.MUST)
@@ -613,7 +614,7 @@ public class GreycatLuceneIndexer {
 
 
 	private final GreycatDatabase database;
-	private final Cache<String, IGraphNodeIndex> nodeIndexCache =
+	private final Cache<String, GreycatLuceneNodeIndex> nodeIndexCache =
 		CacheBuilder.newBuilder().maximumSize(100).build();
 	private final SoftTxLucene lucene;
 
@@ -622,7 +623,7 @@ public class GreycatLuceneIndexer {
 		this.lucene = new SoftTxLucene(dir);
 	}
 
-	public IGraphNodeIndex getIndex(String name) throws Exception {
+	public GreycatLuceneNodeIndex getIndex(String name) throws Exception {
 		return nodeIndexCache.get(name, () -> {
 			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 

@@ -88,7 +88,7 @@ public class TimeAwareBackendTest extends TemporaryDatabaseTest {
 
 		// same instant, check we have it
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			IGraphIterable<IGraphNode> iterable = db.getMetamodelIndex().query("key", "foo");
+			IGraphIterable<? extends IGraphNode> iterable = db.getMetamodelIndex().query("key", "foo");
 			assertEquals(1, iterable.size());
 			assertEquals(nodeId, iterable.getSingle().getId());
 			assertTrue(iterable.iterator().hasNext());
@@ -100,7 +100,7 @@ public class TimeAwareBackendTest extends TemporaryDatabaseTest {
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			IGraphNode n1T1 = db.getNodeById(nodeId);
 			((ITimeAwareGraphNode)n1T1).end();
-			IGraphIterable<IGraphNode> iterable = db.getMetamodelIndex().query("key", "foo");
+			IGraphIterable<? extends IGraphNode> iterable = db.getMetamodelIndex().query("key", "foo");
 			assertEquals(1, iterable.size());
 			assertEquals(nodeId, iterable.getSingle().getId());
 			assertTrue(iterable.iterator().hasNext());
@@ -110,7 +110,7 @@ public class TimeAwareBackendTest extends TemporaryDatabaseTest {
 		// should not appear from instant 2 onwards
 		taDB.setTime(2L);
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			IGraphIterable<IGraphNode> iterable = db.getMetamodelIndex().query("key", "foo");
+			IGraphIterable<? extends IGraphNode> iterable = db.getMetamodelIndex().query("key", "foo");
 			assertEquals(0, iterable.size());
 			assertFalse(iterable.iterator().hasNext());
 			try {
@@ -125,7 +125,7 @@ public class TimeAwareBackendTest extends TemporaryDatabaseTest {
 		// move to past, should still have it
 		taDB.setTime(0L);
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			IGraphIterable<IGraphNode> iterable = db.getMetamodelIndex().query("key", "foo");
+			IGraphIterable<? extends IGraphNode> iterable = db.getMetamodelIndex().query("key", "foo");
 			assertEquals(1, iterable.size());
 			assertEquals(nodeId, iterable.getSingle().getId());
 			assertTrue(iterable.iterator().hasNext());
@@ -155,7 +155,7 @@ public class TimeAwareBackendTest extends TemporaryDatabaseTest {
 			db.getMetamodelIndex().add(n2, Collections.singletonMap("file", "abc.xmi"));
 			nodeId = n2.getId();
 
-			IGraphIterable<IGraphNode> iterable = db.getMetamodelIndex().query("file", "abc.xmi");
+			IGraphIterable<? extends IGraphNode> iterable = db.getMetamodelIndex().query("file", "abc.xmi");
 			assertEquals(1, iterable.size());
 			assertEquals(nodeId, iterable.iterator().next().getId());
 			assertEquals(nodeId, iterable.getSingle().getId());

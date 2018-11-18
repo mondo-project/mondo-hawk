@@ -22,12 +22,12 @@ public interface IGraphNodeIndex {
 
 	String getName();
 
-	IGraphIterable<IGraphNode> query(String key, Object valueOrPattern);
+	IGraphIterable<? extends IGraphNode> query(String key, Object valueOrPattern);
 
-	IGraphIterable<IGraphNode> query(String key, Number from, Number to,
+	IGraphIterable<? extends IGraphNode> query(String key, Number from, Number to,
 			boolean fromInclusive, boolean toInclusive);
 
-	IGraphIterable<IGraphNode> get(String key, Object exactValue);
+	IGraphIterable<? extends IGraphNode> get(String key, Object exactValue);
 
 	/**
 	 * Associates a node with the index using a certain set of key-value pairs.

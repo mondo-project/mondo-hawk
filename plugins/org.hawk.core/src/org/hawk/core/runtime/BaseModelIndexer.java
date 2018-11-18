@@ -852,7 +852,7 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 	}
 
 	private IGraphNode getTypeNode(String mmURI, String typeName) {
-		final Iterator<IGraphNode> itMetamodelNode = graph.getMetamodelIndex().get("id", mmURI).iterator();
+		final Iterator<? extends IGraphNode> itMetamodelNode = graph.getMetamodelIndex().get("id", mmURI).iterator();
 		if (!itMetamodelNode.hasNext()) {
 			throw new NoSuchElementException(String.format("Metamodel %s could not be found", mmURI));
 		}

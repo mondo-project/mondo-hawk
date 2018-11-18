@@ -125,17 +125,14 @@ public class MetamodelUtils {
 					}
 				}
 			} else {
-				IGraphIterable<IGraphNode> eps = epackagedictionary.query("id",
-						"*");
+				IGraphIterable<? extends IGraphNode> eps = epackagedictionary.query("id", "*");
 				for (IGraphNode epp : eps) {
 					for (IGraphEdge r : epp.getIncomingWithType("epackage")) {
-
 						cl = r.getStartNode();
 						if (cl.getProperty(IModelIndexer.IDENTIFIER_PROPERTY).equals(metaClassName)) {
 							ret = cl;
 						}
 					}
-
 				}
 			}
 			tx.success();

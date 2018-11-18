@@ -25,11 +25,13 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
+import java.util.stream.IntStream;
 
 import org.hawk.core.IConsole;
 import org.hawk.core.IModelIndexer;
@@ -39,9 +41,9 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphDatabase;
-import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.greycat.GreycatNode.NodeReader;
 import org.hawk.greycat.lucene.GreycatLuceneIndexer;
+import org.hawk.greycat.lucene.GreycatLuceneIndexer.GreycatLuceneNodeIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +51,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
+import com.google.common.collect.Iterators;
 
 import greycat.Callback;
 import greycat.Graph;
@@ -263,7 +266,7 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 	}
 
 	@Override
-	public IGraphNodeIndex getOrCreateNodeIndex(String name) {
+	public GreycatLuceneNodeIndex getOrCreateNodeIndex(String name) {
 		try {
 			return luceneIndexer.getIndex(name);
 		} catch (Exception e) {
@@ -314,24 +317,46 @@ public class GreycatDatabase implements ITimeAwareGraphDatabase {
 	}
 
 	@Override
-	public IGraphIterable<ITimeAwareGraphNode> allNodes(String label) {
+	public IGraphIterable<GreycatNode> allNodes(String label) {
 		return allNodes(label, this.time);
 	}
 
 	@Override
-	public IGraphIterable<ITimeAwareGraphNode> allNodes(String label, long time) {
+	public IGraphIterable<GreycatNode> allNodes(String label, long time) {
 		/*
-		 * TODO: Model.allContents.size() can be VERY slow on big graphs - Greycat will
-		 * fetch everything rather than just the IDs and doing the rest on demand, like
-		 * Neo4j.
+		 * TODO: Model.allContents.size() can be VERY slow on big graphs if we use
+		 * find() straight away - Greycat will fetch everything rather than just
+		 * the IDs and doing the rest on demand, like Neo4j.
 		 */
-		return new GreycatNodeIterable(this, () -> {
-			CompletableFuture<Node[]> nodes = new CompletableFuture<>();
-			nodeLabelIndex.find(result -> {
-				nodes.complete(result);
-			}, world, time, label);
-			return nodes.get();
-		});
+		return new IGraphIterable<GreycatNode>() {
+			@Override
+			public Iterator<GreycatNode> iterator() {
+				final long[] ids = getRawIdentifiers(label, time);
+				return Iterators.transform(
+					IntStream.range(0, ids.length).iterator(),
+					i -> getNodeById(ids[i]));
+			}
+
+			@Override
+			public int size() {
+				final long[] ids = getRawIdentifiers(label, time);
+				return ids.length;
+			}
+
+			private long[] getRawIdentifiers(String label, long time) {
+				greycat.Query query = graph.newQuery();
+				query.setTime(time);
+				query.setWorld(world);
+				query.add(NODE_LABEL_IDX, label);
+				return nodeLabelIndex.selectByQuery(query);
+			}
+
+			@Override
+			public GreycatNode getSingle() {
+				long[] ids = getRawIdentifiers(label, time);
+				return getNodeById(ids[0]);
+			}
+		};
 	}
 
 	@Override

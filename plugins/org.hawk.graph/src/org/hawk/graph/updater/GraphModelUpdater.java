@@ -200,7 +200,7 @@ public class GraphModelUpdater implements IModelUpdater {
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
 			IGraphNodeIndex filedictionary = graph.getFileIndex();
-			IGraphIterable<IGraphNode> fileNodes = filedictionary.query("id", c.getLocation() + "*");
+			IGraphIterable<? extends IGraphNode> fileNodes = filedictionary.query("id", c.getLocation() + "*");
 
 			// Construct a simulated VcsRepositoryDelta with a "-deleted" revision
 			final VcsRepositoryDelta delta = new VcsRepositoryDelta();
@@ -312,7 +312,7 @@ public class GraphModelUpdater implements IModelUpdater {
 					for (VcsCommitItem r : reposItems) {
 						String rev = "-2";
 						try {
-							IGraphIterable<IGraphNode> ret = filedictionary
+							IGraphIterable<? extends IGraphNode> ret = filedictionary
 									.get("id",
 											repositoryURL
 													+ FILEINDEX_REPO_SEPARATOR

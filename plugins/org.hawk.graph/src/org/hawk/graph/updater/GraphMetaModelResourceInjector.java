@@ -107,7 +107,7 @@ public class GraphMetaModelResourceInjector {
 					// add the element
 					if (child instanceof IHawkPackage) {
 
-						Iterator<IGraphNode> it = epackagedictionary.get("id", ((IHawkPackage) child).getNsURI())
+						Iterator<? extends IGraphNode> it = epackagedictionary.get("id", ((IHawkPackage) child).getNsURI())
 								.iterator();
 
 						if (!it.hasNext()) {
@@ -647,7 +647,7 @@ public class GraphMetaModelResourceInjector {
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
 			listener.changeStart();
-			IGraphIterable<IGraphNode> ep = graph.getMetamodelIndex().get("id", metamodeluri);
+			IGraphIterable<? extends IGraphNode> ep = graph.getMetamodelIndex().get("id", metamodeluri);
 
 			IGraphNode packagenode = null;
 
@@ -864,7 +864,7 @@ public class GraphMetaModelResourceInjector {
 			listener.changeStart();
 
 			IGraphNode packagenode = null;
-			IGraphIterable<IGraphNode> ep = graph.getMetamodelIndex().get("id", metamodelUri);
+			IGraphIterable<? extends IGraphNode> ep = graph.getMetamodelIndex().get("id", metamodelUri);
 
 			if (ep.size() == 1) {
 				packagenode = ep.getSingle();
@@ -943,7 +943,7 @@ public class GraphMetaModelResourceInjector {
 
 		try (IGraphTransaction t = graph.beginTransaction()) {
 			listener.changeStart();
-			IGraphIterable<IGraphNode> ep = graph.getMetamodelIndex().get("id", metamodelUri);
+			IGraphIterable<? extends IGraphNode> ep = graph.getMetamodelIndex().get("id", metamodelUri);
 
 			IGraphNode packagenode = null;
 

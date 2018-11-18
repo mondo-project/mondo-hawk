@@ -596,7 +596,7 @@ public class GraphModelBatchInjector {
 	private IGraphNode getFromFragmentIndex(IHawkObject eObject) {
 		IGraphNode node = null;
 
-		final Iterator<IGraphNode> itr = fragmentIdx.get("id", eObject.getUriFragment()).iterator();
+		final Iterator<? extends IGraphNode> itr = fragmentIdx.get("id", eObject.getUriFragment()).iterator();
 		while (itr.hasNext()) {
 			if (node == null)
 				node = itr.next();

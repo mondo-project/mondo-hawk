@@ -125,7 +125,7 @@ public class DirtyDerivedFeaturesListener implements IGraphChangeListener {
 			// Do a quick check first if there are *any* derived attributes:
 			// repeated checks are very expensive in Neo4j due to Lucene query
 			// parsing.
-			IGraphIterable<IGraphNode> anyResults = idx.query("*", "*");
+			IGraphIterable<? extends IGraphNode> anyResults = idx.query("*", "*");
 			if (anyResults.iterator().hasNext()) {
 				for (Entry<String, String> e : pending) {
 					for (IGraphNode n : idx.query(e.getKey(), e.getValue())) {

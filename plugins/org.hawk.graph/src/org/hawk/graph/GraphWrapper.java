@@ -152,7 +152,7 @@ public class GraphWrapper {
 	 *             No metamodel node with that namespace URI exists.
 	 */
 	public MetamodelNode getMetamodelNodeByNsURI(String nsURI) {
-		final Iterator<IGraphNode> metamodelNode = graph.getMetamodelIndex().query("id", nsURI).iterator();
+		final Iterator<? extends IGraphNode> metamodelNode = graph.getMetamodelIndex().query("id", nsURI).iterator();
 		if (!metamodelNode.hasNext()) {
 			throw new NoSuchElementException("No metamodel node exists with URI " + nsURI);
 		}
@@ -163,12 +163,12 @@ public class GraphWrapper {
 	 * Returns an iterable of all metamodel nodes.
 	 */
 	public Iterable<MetamodelNode> getMetamodelNodes() {
-		final IGraphIterable<IGraphNode> metamodelNodes = graph.getMetamodelIndex().query("*", "*");
+		final IGraphIterable<? extends IGraphNode> metamodelNodes = graph.getMetamodelIndex().query("*", "*");
 		return new Iterable<MetamodelNode>() {
 
 			@Override
 			public Iterator<MetamodelNode> iterator() {
-				final Iterator<IGraphNode> itMN = metamodelNodes.iterator();
+				final Iterator<? extends IGraphNode> itMN = metamodelNodes.iterator();
 				return new Iterator<MetamodelNode>(){
 
 					@Override

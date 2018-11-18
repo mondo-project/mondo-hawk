@@ -89,7 +89,7 @@ public class VCSManagerIndex {
 	 * it if it does not exist already.
 	 */
 	public RepositoryNode getOrCreateRepositoryNode(String repoURI) {
-		IGraphIterable<IGraphNode> iNode = idx.get(URI_PROPERTY, repoURI);
+		IGraphIterable<? extends IGraphNode> iNode = idx.get(URI_PROPERTY, repoURI);
 		if (iNode.size() > 0) {
 			return new RepositoryNode(iNode.getSingle());
 		} else {
@@ -104,7 +104,7 @@ public class VCSManagerIndex {
 	 * Deletes the {@link RepositoryNode} associated with a URI, if it exists.
 	 */
 	public void removeRepositoryNode(String repoURI) {
-		IGraphIterable<IGraphNode> iNode = idx.get(URI_PROPERTY, repoURI);
+		IGraphIterable<? extends IGraphNode> iNode = idx.get(URI_PROPERTY, repoURI);
 		if (iNode.size() > 0) {
 			IGraphNode node = iNode.getSingle();
 			idx.remove(node);

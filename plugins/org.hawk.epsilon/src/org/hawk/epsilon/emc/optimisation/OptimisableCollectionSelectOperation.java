@@ -312,7 +312,7 @@ public class OptimisableCollectionSelectOperation extends SelectOperation {
 				IGraphNodeIndex index = graph.getOrCreateNodeIndex(indexname);
 
 				//
-				IGraphIterable<IGraphNode> hits = null;
+				IGraphIterable<? extends IGraphNode> hits = null;
 
 				if (ast instanceof EqualsOperatorExpression && !(ast instanceof NotEqualsOperatorExpression)) {
 					if (attributevalue instanceof Integer)

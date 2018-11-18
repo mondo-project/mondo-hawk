@@ -112,7 +112,7 @@ public class DeletionUtils {
 		// track nodes with multiple sources (singletons)
 		boolean isOrphan = true;
 
-		Iterator<IGraphNode> singletonMatches = fragmentIndex.get(
+		Iterator<? extends IGraphNode> singletonMatches = fragmentIndex.get(
 				"id",
 				referencedModelElement.getProperty(IModelIndexer.IDENTIFIER_PROPERTY))
 				.iterator();

@@ -20,6 +20,7 @@ import java.util.Iterator;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphEdge;
+import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.graph.updater.GraphModelBatchInjector;
@@ -28,6 +29,29 @@ import org.hawk.graph.updater.GraphModelBatchInjector;
  * Read-only abstraction of a file within the graph populated by this updater.
  */
 public class FileNode {
+	protected static class EdgeIterator implements Iterator<ModelElementNode> {
+		private final Iterator<IGraphEdge> it;
+
+		protected EdgeIterator(Iterator<IGraphEdge> it) {
+			this.it = it;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return it.hasNext();
+		}
+
+		@Override
+		public ModelElementNode next() {
+			return new ModelElementNode(it.next().getStartNode());
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+	}
+
 	public static final String FILE_NODE_LABEL = "file";
 	public static final String PROP_REPOSITORY = "repository";
 
@@ -51,31 +75,34 @@ public class FileNode {
 
 	/**
 	 * Returns all the {@link ModelElementNode}s representing model elements for
-	 * this file node.
+	 * this file node. Tries to reuse the more efficient IGraphIterable 
 	 */
 	public Iterable<ModelElementNode> getModelElements() {
+		final Iterable<IGraphEdge> incomingWithType = node.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE);
+
+		if (incomingWithType instanceof IGraphIterable) {
+			return new IGraphIterable<ModelElementNode>() {
+				@Override
+				public Iterator<ModelElementNode> iterator() {
+					return new EdgeIterator(incomingWithType.iterator());
+				}
+
+				@Override
+				public int size() {
+					return ((IGraphIterable<?>) incomingWithType).size();
+				}
+
+				@Override
+				public ModelElementNode getSingle() {
+					return new ModelElementNode(incomingWithType.iterator().next().getStartNode());
+				}
+			};
+		}
+
 		return new Iterable<ModelElementNode>() {
 			@Override
 			public Iterator<ModelElementNode> iterator() {
-				final Iterable<IGraphEdge> incomingWithType = node.getIncomingWithType(ModelElementNode.EDGE_LABEL_FILE);
-				final Iterator<IGraphEdge> it = incomingWithType.iterator();
-
-				return new Iterator<ModelElementNode>() {
-					@Override
-					public boolean hasNext() {
-						return it.hasNext();
-					}
-
-					@Override
-					public ModelElementNode next() {
-						return new ModelElementNode(it.next().getStartNode());
-					}
-
-					@Override
-					public void remove() {
-						throw new UnsupportedOperationException();
-					}
-				};
+				return new EdgeIterator(incomingWithType.iterator());
 			}
 		};
 	}
@@ -96,13 +123,13 @@ public class FileNode {
 	public Iterable<ModelElementNode> getRootModelElements() {
 		final IGraphNodeIndex rootDictionary = node.getGraph()
 			.getOrCreateNodeIndex(GraphModelBatchInjector.ROOT_DICT_NAME);
-		final Iterable<IGraphNode> roots = rootDictionary
+		final Iterable<? extends IGraphNode> roots = rootDictionary
 			.get(GraphModelBatchInjector.ROOT_DICT_FILE_KEY, node.getId().toString());
 
 		return new Iterable<ModelElementNode>() {
 			@Override
 			public Iterator<ModelElementNode> iterator() {
-				final Iterator<IGraphNode> it = roots.iterator();
+				final Iterator<? extends IGraphNode> it = roots.iterator();
 
 				return new Iterator<ModelElementNode>() {
 					@Override

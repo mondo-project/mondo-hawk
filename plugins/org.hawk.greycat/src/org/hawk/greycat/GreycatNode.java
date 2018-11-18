@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,9 +28,13 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
+import org.hawk.core.graph.EmptyIGraphIterable;
 import org.hawk.core.graph.IGraphDatabase.Mode;
 import org.hawk.core.graph.IGraphEdge;
+import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.greycat.GreycatDatabase.NodeCacheWrapper;
 import org.slf4j.Logger;
@@ -37,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Iterators;
 
 import greycat.Constants;
 import greycat.Graph;
@@ -52,6 +58,19 @@ import greycat.struct.StringArray;
 import greycat.struct.StringIntMap;
 
 public class GreycatNode implements ITimeAwareGraphNode {
+
+	protected static class StreamIterable<T> implements Iterable<T> {
+		private Stream<T> stream;
+
+		protected StreamIterable(Stream<T> stream) {
+			this.stream = stream;
+		}
+
+		@Override
+		public Iterator<T> iterator() {
+			return stream.iterator();
+		}
+	}
 
 	private enum Direction {
 		IN {
@@ -630,44 +649,89 @@ public class GreycatNode implements ITimeAwareGraphNode {
 	}
 
 	@Override
-	public Iterable<IGraphEdge> getEdgesWithType(String type) {
+	public IGraphIterable<IGraphEdge> getEdgesWithType(String type) {
 		try (NodeReader rn = getNodeReader()) {
-			return getEdgesWithType(rn, getEdgesWithType(rn, new ArrayList<>(), Direction.IN, type), Direction.OUT, type);
+			final IGraphIterable<IGraphEdge> inEdges = getEdgesWithType(rn, Direction.IN, type);
+			final IGraphIterable<IGraphEdge> outEdges = getEdgesWithType(rn, Direction.OUT, type);
+
+			return new IGraphIterable<IGraphEdge>() {
+				@Override
+				public Iterator<IGraphEdge> iterator() {
+					return Iterators.concat(inEdges.iterator(), outEdges.iterator());
+				}
+
+				@Override
+				public int size() {
+					return inEdges.size() + outEdges.size();
+				}
+
+				@Override
+				public IGraphEdge getSingle() {
+					if (inEdges.size() > 0) {
+						return inEdges.getSingle();
+					} else {
+						return outEdges.getSingle();
+					}
+				}
+			};
 		}
 	}
 
 	@Override
-	public Iterable<IGraphEdge> getOutgoingWithType(String type) {
+	public IGraphIterable<IGraphEdge> getOutgoingWithType(String type) {
 		try (NodeReader rn = getNodeReader()) {
-			return getEdgesWithType(rn, new ArrayList<>(), Direction.OUT, type);
+			return getEdgesWithType(rn, Direction.OUT, type);
 		}
 	}
 
 	@Override
-	public Iterable<IGraphEdge> getIncomingWithType(String type) {
+	public IGraphIterable<IGraphEdge> getIncomingWithType(String type) {
 		try (NodeReader rn = getNodeReader()) {
-			return getEdgesWithType(rn, new ArrayList<>(), Direction.IN, type);
+			return getEdgesWithType(rn, Direction.IN, type);
 		}
 	}
 
-	protected List<IGraphEdge> getEdgesWithType(final NodeReader rn, final List<IGraphEdge> results, final Direction dir, String type) {
+	protected IGraphIterable<IGraphEdge> getEdgesWithType(final NodeReader rn, final Direction dir, String type) {
 		final int relationPosition = db.getGraph().resolver().stringToHash(dir.getPrefix() + type, false);
 		final Relation relation = (Relation) rn.get().getAt(relationPosition);
-
-		if (relation != null) {
-			final int relSize = relation.size();
-			for (int i = 0; i < relSize; i++) {
-				/*
-				 * Do NOT preload all target nodes, unlike traverse - doing so balloons memory
-				 * usage in some cases (e.g. going from the file node to the instance nodes).
-				 */
-				final long nodeId = relation.get(i);
-				final GreycatNode target = new GreycatNode(getGraph(), world, time, nodeId);
-				results.add(dir.convertToEdge(type, this, target));
-			}
+		if (relation == null) {
+			return new EmptyIGraphIterable<>();
 		}
 
-		return results;
+		/*
+		 * Do NOT preload all target nodes, unlike traverse - doing so balloons memory
+		 * usage in some cases (e.g. going from the file node to the instance nodes).
+		 *
+		 * Streaming the results should reduce the impact of this call - we may need only
+		 * the first few elements anyway.
+		 */
+		final int nEdges = relation.size();
+
+		return new IGraphIterable<IGraphEdge>() {
+			@Override
+			public Iterator<IGraphEdge> iterator() {
+				return Iterators.transform(
+					IntStream.range(0, nEdges).iterator(),
+					i -> {
+						final long nodeId = relation.get(i);
+						final GreycatNode target = new GreycatNode(getGraph(), world, time, nodeId);
+						return dir.convertToEdge(type, GreycatNode.this, target);
+					}
+				);
+			}
+
+			@Override
+			public int size() {
+				return relation.size();
+			}
+
+			@Override
+			public IGraphEdge getSingle() {
+				final long nodeId = relation.get(0);
+				final GreycatNode target = new GreycatNode(getGraph(), world, time, nodeId);
+				return dir.convertToEdge(type, GreycatNode.this, target);
+			}
+		};
 	}
 
 	@Override

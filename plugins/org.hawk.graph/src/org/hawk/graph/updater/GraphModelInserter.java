@@ -829,7 +829,7 @@ public class GraphModelInserter {
 		final List<ProxyReferenceList> proxyReferenceLists = new ArrayList<>();
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			IGraphNodeIndex proxyDictionary = graph.getOrCreateNodeIndex(GraphModelBatchInjector.PROXY_DICT_NAME);
-			IGraphIterable<IGraphNode> proxies = proxyDictionary.query(GraphModelUpdater.PROXY_REFERENCE_PREFIX, "*");
+			IGraphIterable<? extends IGraphNode> proxies = proxyDictionary.query(GraphModelUpdater.PROXY_REFERENCE_PREFIX, "*");
 			for (IGraphNode n : proxies) {
 				for (String propertyKey : n.getPropertyKeys()) {
 					if (propertyKey.startsWith(GraphModelUpdater.PROXY_REFERENCE_PREFIX)) {
@@ -934,7 +934,7 @@ public class GraphModelInserter {
 			for (Iterator<ProxyReference> itPendingRefs = refs.iterator(); itPendingRefs.hasNext();) {
 				ProxyReference ref = itPendingRefs.next();
 				final String fragment = ref.getTarget().getFragment();
-				Iterator<IGraphNode> targetNodes = fragDictionary.get("id", fragment).iterator();
+				Iterator<? extends IGraphNode> targetNodes = fragDictionary.get("id", fragment).iterator();
 
 				if (targetNodes.hasNext()) {
 					final IGraphNode sourceNode = graph.getNodeById(ref.getList().getSourceNodeID());
@@ -958,7 +958,7 @@ public class GraphModelInserter {
 	}
 
 	public int resolveDerivedAttributeProxies(String type) throws Exception {
-		IGraphIterable<IGraphNode> allUnresolved = null;
+		IGraphIterable<? extends IGraphNode> allUnresolved = null;
 		IGraphNodeIndex derivedProxyDictionary = null;
 		int size = 0;
 
@@ -984,12 +984,12 @@ public class GraphModelInserter {
 		return derivedLeft;
 	}
 
-	protected void processDerivedFeatureNodes(final String type, final Iterable<IGraphNode> derivedFeatureNodes, final int nNodes)
+	protected void processDerivedFeatureNodes(final String type, final Iterable<? extends IGraphNode> derivedFeatureNodes, final int nNodes)
 			throws InvalidQueryException, QueryExecutionException, Exception {
 		final long startMillis = System.currentTimeMillis();
 		final IQueryEngine q = indexer.getKnownQueryLanguages().get(type);
 
-		Iterator<IGraphNode> itUnresolved;
+		Iterator<? extends IGraphNode> itUnresolved;
 		try (IGraphTransaction tx = graph.beginTransaction()) {
 			itUnresolved = derivedFeatureNodes.iterator();
 			tx.success();
@@ -1100,7 +1100,7 @@ public class GraphModelInserter {
 
 		try {
 			final String idSameRepo = repositoryURL + GraphModelUpdater.FILEINDEX_REPO_SEPARATOR + file;
-			final IGraphIterable<IGraphNode> itNodes = filedictionary.get("id", idSameRepo);
+			final IGraphIterable<? extends IGraphNode> itNodes = filedictionary.get("id", idSameRepo);
 			if (itNodes.size() > 0) {
 				fileNode = itNodes.getSingle();
 			} else {

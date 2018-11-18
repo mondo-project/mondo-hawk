@@ -517,7 +517,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 		try (IGraphTransaction t = beginTransaction()) {
 
-			IGraphIterable<IGraphNode> mmnodes = metamodelindex.query("*", "*");
+			IGraphIterable<? extends IGraphNode> mmnodes = metamodelindex.query("*", "*");
 
 			for (IGraphNode n : mmnodes)
 				ret.add(n.getProperty(IModelIndexer.IDENTIFIER_PROPERTY)

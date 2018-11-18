@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.hawk.epsilon.emc;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -51,6 +52,7 @@ import org.hawk.core.IModelIndexer;
 import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
+import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
@@ -85,6 +87,115 @@ import org.slf4j.LoggerFactory;
  * compatibility.
  */
 public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
+
+	protected class IGraphIterableCollection implements Collection<GraphNodeWrapper> {
+		private final IGraphIterable<? extends IGraphNode> iterableNodes;
+
+		protected IGraphIterableCollection(IGraphIterable<? extends IGraphNode> iterableNodes) {
+			this.iterableNodes = iterableNodes;
+		}
+
+		@Override
+		public int size() {
+			return iterableNodes.size();
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return iterableNodes.size() > 0;
+		}
+
+		@Override
+		public boolean contains(Object o) {
+			for (final Iterator<GraphNodeWrapper> itN = iterator(); itN.hasNext(); ) {
+				if (itN.next().equals(o)) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		@Override
+		public Iterator<GraphNodeWrapper> iterator() {
+			final Iterator<? extends IGraphNode> itNodes = iterableNodes.iterator();
+			return new Iterator<GraphNodeWrapper>() {
+				@Override
+				public boolean hasNext() {
+					return itNodes.hasNext();
+				}
+
+				@Override
+				public GraphNodeWrapper next() {
+					return new GraphNodeWrapper(itNodes.next(), EOLQueryEngine.this);
+				}
+			};
+		}
+
+		@Override
+		public Object[] toArray() {
+			return toArray(new Object[size()]);
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public <T> T[] toArray(T[] a) {
+			if (a.length < size()) {
+				final T[] result = (T[]) Array.newInstance(a.getClass().getComponentType(), size());
+				return toArray(result);
+			}
+
+			int i = 0;
+			for (final Iterator<GraphNodeWrapper> itN = iterator(); itN.hasNext(); i++) {
+				final GraphNodeWrapper n = itN.next();
+				a[i] = (T) n;
+			}
+			while (i < a.length) {
+				a[i++] = null;
+			}
+
+			return a;
+		}
+
+		@Override
+		public boolean add(GraphNodeWrapper e) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean remove(Object o) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean containsAll(Collection<?> c) {
+			for (Object e : c) {
+				if (!contains(e)) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		@Override
+		public boolean addAll(Collection<? extends GraphNodeWrapper> c) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean removeAll(Collection<?> c) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean retainAll(Collection<?> c) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void clear() {
+			throw new UnsupportedOperationException();
+		}
+	}
 
 	/**
 	 * Allows a query to be cancelled by the user according to an arbitrary binary flag.
@@ -133,14 +244,9 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 	 */
 	@Override
 	public Collection<?> allContents() {
-		final Set<Object> allContents = new HashSet<Object>();
-
-		for (IGraphNode node : graph.allNodes(ModelElementNode.OBJECT_VERTEX_LABEL)) {
-			GraphNodeWrapper wrapper = new GraphNodeWrapper(node, this);
-			allContents.add(wrapper);
-		}
+		final IGraphIterable<? extends IGraphNode> iterableNodes = graph.allNodes(ModelElementNode.OBJECT_VERTEX_LABEL);
+		final Collection<GraphNodeWrapper> allContents = new IGraphIterableCollection(iterableNodes);
 		broadcastAllOfXAccess(allContents);
-
 		return allContents;
 	}
 
@@ -266,7 +372,7 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 			final String type = typeName.substring(idxColon + MMURI_TYPE_SEPARATOR.length()); 
 			return getTypeNodes(epackage, type);
 		} else {
-			final Iterator<IGraphNode> packs = metamodeldictionary.query("id", "*").iterator();
+			final Iterator<? extends IGraphNode> packs = metamodeldictionary.query("id", "*").iterator();
 			final List<IGraphNode> candidates = new LinkedList<IGraphNode>();
 
 			while (packs.hasNext()) {
@@ -301,7 +407,7 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 	}
 
 	protected List<IGraphNode> getTypeNodes(String mmURI, String type) {
-		Iterator<IGraphNode> itPack = metamodeldictionary.get("id", mmURI).iterator();
+		Iterator<? extends IGraphNode> itPack = metamodeldictionary.get("id", mmURI).iterator();
 		if (!itPack.hasNext()) {
 			throw new NoSuchElementException("Could not find the metamodel node for " + mmURI);
 		}
@@ -316,20 +422,19 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 		return Collections.emptyList();
 	}
 
-	private void broadcastAllOfXAccess(Iterable<Object> ret) {
-
-		// TODO can optimise by not keeping all the nodes of type/kind but the
-		// concept of type/kind and only update the attr if a new node is added
-		// or one is removed
-
+	private void broadcastAllOfXAccess(Iterable<?> ret) {
+		/*
+		 * TODO can optimise by not keeping all the nodes of type/kind but the
+		 * concept of type/kind and only update the attr if a new node is added
+		 * or one is removed.
+		 */
 		if (((GraphPropertyGetter) propertyGetter).getBroadcastStatus()) {
-
-			for (Object n : ret)
-				((GraphPropertyGetter) propertyGetter).getAccessListener().accessed(((GraphNodeWrapper) n).getId() + "",
-						"property_unused_type_or_kind");
-
+			for (Object n : ret) {
+				final AccessListener accessListener = ((GraphPropertyGetter) propertyGetter).getAccessListener();
+				final String sID = ((GraphNodeWrapper) n).getId() + "";
+				accessListener.accessed(sID, "property_unused_type_or_kind");
+			}
 		}
-
 	}
 
 	@Override

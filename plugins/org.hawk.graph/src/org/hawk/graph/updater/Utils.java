@@ -105,7 +105,7 @@ public class Utils {
 
 			IGraphNodeIndex fi = graph.getFileIndex();
 			fi.flush();
-			final Iterator<IGraphNode> itFile = fi.get("id", fullFileID).iterator();
+			final Iterator<? extends IGraphNode> itFile = fi.get("id", fullFileID).iterator();
 
 			if (itFile.hasNext()) {
 				ret = itFile.next();
