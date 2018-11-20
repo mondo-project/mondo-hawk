@@ -198,6 +198,7 @@ public class NodeHistoryTest extends ModelIndexingTest {
 		requestSVNIndex();
 
 		waitForSync(() -> {
+			assertEquals(0, timeAwareEOL("return Model.allInstances.collect(t|t.label).size;"));
 			assertEquals(0, timeAwareEOL("return Model.allInstances.size;"));
 			assertEquals(1, timeAwareEOL("return Model.allInstancesNow.size;"));
 			return null;

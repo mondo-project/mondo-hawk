@@ -319,37 +319,50 @@ public abstract class AbstractGreycatDatabase implements ITimeAwareGraphDatabase
 	@Override
 	public IGraphIterable<GreycatNode> allNodes(String label, long time) {
 		/*
-		 * TODO: Model.allContents.size() can be VERY slow on big graphs if we use
-		 * find() straight away - Greycat will fetch everything rather than just
-		 * the IDs and doing the rest on demand, like Neo4j.
+		 * NOTE: Model.allContents.size() can be VERY slow on big graphs.
+		 * Greycat's node indices only consider attribute values and do not
+		 * use time/world for lookups. Instead, they look up all the nodes
+		 * that *ever* had that value and then resolve if they are alive at
+		 * the desired world+time combinations. Check CoreQuery#hash in the
+		 * Greycat source code to verify this.
+		 *
+		 * This version splits up the process into raw ID lookup + resolution:
+		 * size() and full iteration will be as expensive as usual, but it
+		 * should be cheaper to retrieve only the first few elements, and the
+		 * Guava cache in this class will still be used.
+		 *
+		 * TODO: switch to 'virtual label node' + edges, which would be
+		 * properly time-aware.
 		 */
 		return new IGraphIterable<GreycatNode>() {
 			@Override
 			public Iterator<GreycatNode> iterator() {
 				final long[] ids = getRawIdentifiers(label, time);
-				return Iterators.transform(
-					IntStream.range(0, ids.length).iterator(),
-					i -> getNodeById(ids[i]));
+				return Iterators.filter(
+					Iterators.transform(
+						IntStream.range(0, ids.length).iterator(),
+						i -> new GreycatNode(AbstractGreycatDatabase.this, world, time, ids[i])
+					),
+					n -> n.isAlive()
+				);
+			}
+
+			@Override
+			public int size() {
+				return Iterators.size(iterator());
 			}
 	
 			@Override
-			public int size() {
-				final long[] ids = getRawIdentifiers(label, time);
-				return ids.length;
+			public GreycatNode getSingle() {
+				return iterator().next();
 			}
-	
+			
 			private long[] getRawIdentifiers(String label, long time) {
 				greycat.Query query = graph.newQuery();
 				query.setTime(time);
 				query.setWorld(world);
 				query.add(NODE_LABEL_IDX, label);
 				return nodeLabelIndex.selectByQuery(query);
-			}
-	
-			@Override
-			public GreycatNode getSingle() {
-				long[] ids = getRawIdentifiers(label, time);
-				return getNodeById(ids[0]);
 			}
 		};
 	}
