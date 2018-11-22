@@ -5,8 +5,10 @@ jdk:
 jobs:
   include:
     - stage: build
+      name: "Tycho"
       script: bash ./deploy.sh
     - script: mvn -B --quiet -f pom-plain.xml install
+      name: "Plain Maven"
 env:
   global:
   - GH_REF: github.com/mondo-project/mondo-hawk.git
