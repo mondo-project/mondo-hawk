@@ -136,6 +136,11 @@ public class RemoteOrientDatabase extends OrientDatabase {
 	}
 
 	@Override
+	public String getHumanReadableName() {
+		return "Remote " + super.getHumanReadableName();
+	}
+	
+	@Override
 	protected boolean exists(ODatabaseDocumentTx db) {
 		/*
 		 * The database is always created during the {@link #run(File, IConsole)}

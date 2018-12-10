@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Aston University.
+ * Copyright (c) 2011-2015 The University of York.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -13,24 +13,16 @@
  *
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
+ *     Beatriz Sanchez - some UI updates
  ******************************************************************************/
-package org.hawk.greycat;
+package org.hawk.ui2.preferences;
 
-import greycat.Graph;
-import greycat.GraphBuilder;
-import greycat.leveldb.LevelDBStorage;
-
-public class LevelDBGreycatDatabase extends AbstractGreycatDatabase {
-	@Override
-	protected Graph createGraph() {
-		return new GraphBuilder()
-			.withMemorySize(1_000_000)
-			.withStorage(new LevelDBStorage(storageFolder.getAbsolutePath()))
-			.build();
-	}
+/**
+ * Constant definitions for plug-in preferences
+ */
+public class HawkPreferenceConstants {
 	
-	@Override
-	public String getHumanReadableName() {
-		return "Level DB " + super.getHumanReadableName();
-	}
+	public static final String MODEL_PLUGINS = "modelPlugins";
+	public static final String METAMODEL_PLUGINS = "metamodelPlugins";
+	
 }

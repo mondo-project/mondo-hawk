@@ -596,7 +596,7 @@ public class OrientDatabase implements IGraphDatabase {
 
 	@Override
 	public String getHumanReadableName() {
-		return "OrientDB";
+		return "OrientDB Database";
 	}
 
 	@Override

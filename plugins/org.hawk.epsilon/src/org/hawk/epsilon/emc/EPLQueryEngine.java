@@ -71,4 +71,9 @@ public class EPLQueryEngine extends EOLQueryEngine {
 			return ret;
 		}
 	}
+	
+	@Override
+	public String getHumanReadableName() {
+		return "EPL Query Engine";
+	}
 }

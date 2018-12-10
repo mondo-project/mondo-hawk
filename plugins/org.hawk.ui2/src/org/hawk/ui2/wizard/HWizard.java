@@ -72,7 +72,7 @@ public class HWizard extends Wizard implements INewWizard {
 			final String name = page.getHawkName();
 			final String folder = page.getContainerName();
 			final String dbType = page.getDBID();
-			final List<String> plugins = page.getPlugins();
+			final List<String> plugins = page.getSelectedAdvancedPlugins();
 			final String location = page.getLocation();
 			final IHawkFactory factory = page.getFactory();
 			final int maxDelay = page.getMaxDelay();
@@ -119,17 +119,22 @@ public class HWizard extends Wizard implements INewWizard {
 	 * @param dbType
 	 * @param factoryId
 	 */
+	private HModel result;
+	
+	public HModel getResult() {
+		return result;	
+	}
+	
 	private void doFinish(String name, File storageFolder, String location,
 			String dbType, List<String> plugins, IProgressMonitor monitor,
 			ICredentialsStore credStore, IHawkFactory factory, int minDelay,
 			int maxDelay,boolean isNew) throws Exception {
 
 		// set up a new Hawk with the selected plugins
-		HModel hm;
-
+		
 		if (isNew) {
 			System.out.println("creating new hawk...");
-			hm = HModel.create(factory, name, storageFolder, location, dbType,
+			result = HModel.create(factory, name, storageFolder, location, dbType,
 					plugins, HUIManager.getInstance(), credStore, minDelay,
 					maxDelay);
 		} else {
@@ -139,15 +144,15 @@ public class HWizard extends Wizard implements INewWizard {
 					storageFolder.getCanonicalPath(), location, factory
 							.getClass().getName(), plugins);
 			final HUIManager manager = HUIManager.getInstance();
-			hm = HModel.load(hc, manager);
-			manager.addHawk(hm);
+			result = HModel.load(hc, manager);
+			manager.addHawk(result);
 		}
 
 		monitor.beginTask("Creating ", 2);
 		monitor.worked(1);
 		monitor.setTaskName("Opening Hawk interface...");
 		HView.updateAsync(getShell().getDisplay());
-		HUIManager.getInstance().saveHawkToMetadata(hm);
+		HUIManager.getInstance().saveHawkToMetadata(result);
 		monitor.worked(1);
 	}
 

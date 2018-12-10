@@ -30,5 +30,10 @@ public class ThriftRemoteTimeAwareHawkFactory extends ThriftRemoteHawkFactory {
 	protected String getFactoryName() {
 		return TimeAwareHawkFactory.class.getCanonicalName();
 	}
+	
+	@Override
+	public String getHumanReadableName() {
+		return "Time Aware " + super.getHumanReadableName();
+	}
 
 }

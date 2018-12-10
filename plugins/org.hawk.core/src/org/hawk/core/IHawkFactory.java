@@ -110,5 +110,10 @@ public interface IHawkFactory extends IHawkPlugin {
 	default Category getCategory() {
 		return Category.INDEX_FACTORY;
 	}
-
+	
+	/**
+	 * Indicates whether the instance is remote (<code>true</code>) or not (<code>false</code>).
+	 */
+	boolean isRemote();
+	
 }

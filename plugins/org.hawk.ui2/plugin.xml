@@ -30,4 +30,31 @@
             id="hawk.ui.view.HawkView">
       </view>
    </extension>
+      <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.hawk.ui2.preferences.HawkPreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.hawk.ui2.preferences.HawkPreferencePage"
+            id="org.hawk.ui.preferences.HawkPreferencePage"
+            name="Hawk">
+      </page>
+      <page
+            category="org.hawk.ui.preferences.HawkPreferencePage"
+            class="org.hawk.ui2.preferences.HawkInstancePluginConfigurationPreferencePage"
+            id="org.hawk.ui.preferences.HawkPluginConfigurationPreferencePage"
+            name="Plugin Manager">
+      </page>
+      <page
+            category="org.hawk.ui.preferences.HawkPreferencePage"
+            class="org.hawk.ui2.preferences.HawkInstanceManagerPreferencePage"
+            id="org.hawk.ui.preferences.HawkInstancesPreferencePage"
+            name="Instance Manager">
+      </page>
+   </extension>
+   
 </plugin>

@@ -122,11 +122,19 @@ public interface IModelIndexer {
 
 	void addVCSManager(IVcsManager vcs, boolean persist);
 
+	void removeVCSManager(IVcsManager vcs) throws Exception;
+	
 	void addModelUpdater(IModelUpdater updater);
 
+	void removeModelUpdater(IModelUpdater updater) throws Exception;
+	
 	void addMetaModelResourceFactory(IMetaModelResourceFactory metaModelParser);
+	
+	void removeMetaModelResourceFactory(IMetaModelResourceFactory metaModelParser);
 
 	void addModelResourceFactory(IModelResourceFactory modelParser);
+
+	void removeModelResourceFactory(IModelResourceFactory modelParser);
 
 	boolean addGraphChangeListener(IGraphChangeListener changeListener);
 
@@ -238,8 +246,6 @@ public interface IModelIndexer {
 	ICredentialsStore getCredentialsStore();
 
 	String getDerivedAttributeExecutionEngine();
-
-	void removeVCSManager(IVcsManager vcs) throws Exception;
 
 	/**
 	 * Sets the periodic synchronisation of Hawk's index. This interval will

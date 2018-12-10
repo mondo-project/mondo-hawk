@@ -61,11 +61,6 @@ final class LocalHawkResourceUpdater implements IGraphChangeListener {
 	}
 
 	@Override
-	public String getName() {
-		return "Local Hawk resource " + resource.getURI();
-	}
-
-	@Override
 	public void setModelIndexer(IModelIndexer m) {
 		// ignore
 	}
@@ -217,4 +212,10 @@ final class LocalHawkResourceUpdater implements IGraphChangeListener {
 			updatedNodes.add(elementNode);
 		}
 	}
+
+	@Override
+	public String getName() {
+		return "Local Hawk resource " + resource.getURI();
+	}
+
 }

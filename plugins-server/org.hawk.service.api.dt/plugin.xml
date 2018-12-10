@@ -4,9 +4,10 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
+            category="org.hawk.ui.preferences.HawkPreferencePage"
             class="org.hawk.service.api.dt.ui.HawkServersPreferencePage"
             id="org.hawk.service.api.dt.page"
-            name="Hawk Servers">
+            name="Servers">
       </page>
    </extension>
 

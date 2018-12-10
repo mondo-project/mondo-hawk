@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.hawk.core.IVcsManager;
 import org.hawk.osgiserver.HModel;
-import org.hawk.ui2.dialog.HConfigDialog.ClassNameLabelProvider;
+import org.hawk.ui2.dialog.HConfigDialog.VCSLabelProvider;
 
 final class HVCSDialog extends TitleAreaDialog {
 	private final class UpdateDialogModifyListener implements ModifyListener {
@@ -61,11 +61,13 @@ final class HVCSDialog extends TitleAreaDialog {
 	private Button btnVCSBrowse;
 	private Text txtUser;
 	private Text txtPass;
+	private List<IVcsManager> availableVCS;
 
 	public HVCSDialog(Shell parentShell, HModel hawkModel, IVcsManager managerToEdit) {
 		super(parentShell);
 		this.hawkModel = hawkModel;
 		this.managerToEdit = managerToEdit;
+		this.availableVCS = hawkModel.getVCSInstances();
 	}
 
 	@Override
@@ -101,9 +103,9 @@ final class HVCSDialog extends TitleAreaDialog {
 		final Label lblType = new Label(container, SWT.NONE);
 		lblType.setText("Type:");
 		cmbVCSType = new ComboViewer(container, SWT.READ_ONLY);
-		cmbVCSType.setLabelProvider(new ClassNameLabelProvider());
+		cmbVCSType.setLabelProvider(new VCSLabelProvider());
 		cmbVCSType.setContentProvider(new ArrayContentProvider());
-		final List<IVcsManager> availableVCS = hawkModel.getVCSInstances();
+		
 		cmbVCSType.setInput(availableVCS.toArray());
 		final GridData cmbVCSTypeLayoutData = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		cmbVCSTypeLayoutData.horizontalSpan = 2;

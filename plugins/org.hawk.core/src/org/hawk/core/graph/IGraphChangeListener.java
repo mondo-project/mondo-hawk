@@ -19,7 +19,6 @@ package org.hawk.core.graph;
 import org.hawk.core.IHawkPlugin;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
-import org.hawk.core.IHawkPlugin.Category;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
@@ -54,6 +53,10 @@ public interface IGraphChangeListener extends IHawkPlugin {
 
 	@Deprecated
 	String getName();
+
+	default String getType() {
+		return getClass().getName();
+	}
 
 	void setModelIndexer(IModelIndexer m);
 

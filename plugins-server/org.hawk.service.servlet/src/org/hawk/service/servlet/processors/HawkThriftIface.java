@@ -768,7 +768,6 @@ public final class HawkThriftIface implements Hawk.Iface {
 			p.setName(hp.getType());
 			plugins.add(p);
 		}
-
 		return plugins;
 	}
 

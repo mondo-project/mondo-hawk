@@ -1206,4 +1206,26 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 		return updatersOK;
 	}
 	
+	@Override
+	public void removeMetaModelResourceFactory(IMetaModelResourceFactory metaModelParser) {
+		metamodelParsers.remove(metaModelParser.getType());
+		requestImmediateSync();
+	}
+
+	@Override
+	public void removeModelResourceFactory(IModelResourceFactory modelParser) {
+		modelParsers.remove(modelParser.getType());
+		requestImmediateSync();
+	}
+
+	@Override
+	public void removeModelUpdater(IModelUpdater updater) throws Exception {
+		if (updaters.size()>1) {
+			updaters.remove(updater);
+			requestImmediateSync();
+		} else {
+			throw new Exception("Cannot remove updater, as hawk requires at least one");
+		}
+	}
+
 }

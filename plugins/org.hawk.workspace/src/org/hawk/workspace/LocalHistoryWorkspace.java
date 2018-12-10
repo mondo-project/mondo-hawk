@@ -41,7 +41,7 @@ public class LocalHistoryWorkspace extends Workspace {
 
 	@Override
 	public String getHumanReadableName() {
-		return "Workspace driver - local history based";
+		return "Workspace Driver - Local History Based";
 	}
 	
 }

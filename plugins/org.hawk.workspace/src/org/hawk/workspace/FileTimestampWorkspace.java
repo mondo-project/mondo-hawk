@@ -35,7 +35,7 @@ public class FileTimestampWorkspace extends Workspace {
 
 	@Override
 	public String getHumanReadableName() {
-		return "Workspace driver - file lastModified based";
+		return "Workspace Driver - File Last Modified";
 	}
 
 }

@@ -91,4 +91,9 @@ public class TimeAwareModelUpdater extends GraphModelUpdater {
 	protected DeletionUtils createDeletionUtils() {
 		return new SoftDeletionUtils(indexer.getGraph());
 	}
+	
+	@Override
+	public String getHumanReadableName() {
+		return "Default Hawk Time Aware Model Updater (v1.0)";
+	}
 }

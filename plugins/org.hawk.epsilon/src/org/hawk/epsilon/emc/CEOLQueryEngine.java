@@ -467,4 +467,9 @@ public class CEOLQueryEngine extends EOLQueryEngine {
 	public boolean isTraversalScopingEnabled() {
 		return isTraversalScopingEnabled;
 	}
+	
+	@Override
+	public String getHumanReadableName() {
+		return "CEOL Query Engine";
+	}
 }

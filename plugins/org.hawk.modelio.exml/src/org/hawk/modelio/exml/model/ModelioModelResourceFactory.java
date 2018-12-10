@@ -56,7 +56,7 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 
 	@Override
 	public String getHumanReadableName() {
-		return "Modelio exml-based model factory";
+		return "Modelio Exml-Based Model Factory";
 	}
 
 	@Override

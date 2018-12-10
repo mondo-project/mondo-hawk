@@ -158,7 +158,7 @@ public class DirtyDerivedFeaturesListener implements IGraphChangeListener {
 
 	@Override
 	public String getName() {
-		return "Internal listener for finding dirty attributes";
+		return "Internal Listener For Finding Dirty Attributes";
 	}
 
 	@Override

@@ -277,7 +277,7 @@ public class GraphModelUpdater implements IModelUpdater {
 
 	@Override
 	public String getName() {
-		return "Default Hawk GraphModelUpdater (v1.0)";
+		return "Default Hawk Graph Model Updater (v1.0)";
 	}
 
 	@Override
@@ -354,4 +354,5 @@ public class GraphModelUpdater implements IModelUpdater {
 	protected DeletionUtils createDeletionUtils() {
 		return new DeletionUtils(indexer.getGraph());
 	}
+
 }

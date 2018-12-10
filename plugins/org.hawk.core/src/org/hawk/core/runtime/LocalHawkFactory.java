@@ -104,6 +104,11 @@ public class LocalHawkFactory implements IHawkFactory {
 	}
 
 	@Override
+	public boolean isRemote() {
+		return false;
+	}
+
+	@Override
 	public String getHumanReadableName() {
 		return "Local Hawk Factory";
 	}

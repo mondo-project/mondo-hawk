@@ -21,7 +21,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,11 +39,16 @@ import org.hawk.core.IHawk;
 import org.hawk.core.IHawkFactory;
 import org.hawk.core.IHawkPlugin;
 import org.hawk.core.IMetaModelIntrospector;
+import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.IMetaModelUpdater;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
+import org.hawk.core.IModelResourceFactory;
+import org.hawk.core.IModelUpdater;
 import org.hawk.core.IVcsManager;
+import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.util.HawkConfig;
 import org.hawk.core.util.HawksConfig;
 import org.osgi.framework.FrameworkUtil;
@@ -57,17 +61,31 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class HManager {
 
+	private static final String METAMODEL_UPDATER_CLASS_ATTRIBUTE = "metamodelupdater";
+	private static final String METAMODEL_UPDATER_EXTENSION_POINT = "org.hawk.core.MetaModelUpdaterExtensionPoint";
+	/** EXTENSION POINTS */
+	public static final String BACK_END_EXTENSION_POINT = "org.hawk.core.BackEndExtensionPoint";
+	public static final String MODEL_EXTENSION_POINT = "org.hawk.core.ModelExtensionPoint";
+	public static final String MODEL_UPDATER_EXTENSION_POINT = "org.hawk.core.ModelUpdaterExtensionPoint";
+	public static final String META_MODEL_EXTENSION_POINT = "org.hawk.core.MetaModelExtensionPoint";
+	public static final String VCS_EXTENSION_POINT = "org.hawk.core.VCSExtensionPoint";
+	public static final String INDEXER_INTROSPECTION_EXTENSION_POINT = "org.hawk.core.IndexerIntrospectionExtensionPoint";
+	public static final String HAWK_FACTORY_EXTENSION_POINT = "org.hawk.core.HawkFactoryExtensionPoint";
+	public static final String QUERY_EXTENSION_POINT = "org.hawk.core.QueryExtensionPoint";
+	public static final String GRAPH_CHANGE_LISTENER_EXTENSION_POINT = "org.hawk.core.GraphChangeListenerExtensionPoint";
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(HManager.class);
 
+	/** CLASS ATTRIBUTES */
 	public static final String BACKEND_CLASS_ATTRIBUTE = "store";
-	public static final String MUPDATER_CLASS_ATTRIBUTE = "ModelUpdater";
-	public static final String MPARSER_CLASS_ATTRIBUTE = "ModelParser";
-	public static final String MMPARSER_CLASS_ATTRIBUTE = "MetaModelParser";
-	public static final String VCSMANAGER_CLASS_ATTRIBUTE = "VCSManager";
+	public static final String MODEL_PARSER_CLASS_ATTRIBUTE = "ModelParser";
+	public static final String MODEL_UPDATER_CLASS_ATTRIBUTE = "ModelUpdater";
+	public static final String METAMODEL_PARSER_CLASS_ATTRIBUTE = "MetaModelParser";
+	public static final String VCS_MANAGER_CLASS_ATTRIBUTE = "VCSManager";
+	public static final String INDEXER_INTROSPECTOR_CLASS_ATTRIBUTE = "introspector";
 	public static final String HAWKFACTORY_CLASS_ATTRIBUTE = "class";
-	public static final String QUERYLANG_CLASS_ATTRIBUTE = "query_language";
-	public static final String GCHANGEL_CLASS_ATTRIBUTE = "class";
-	public static final String INTROSPECTOR_CLASS_ATTRIBUTE = "introspector";
+	public static final String QUERY_LANG_CLASS_ATTRIBUTE = "query_language";
+	public static final String GRAPH_CHANGE_LISTENER_CLASS_ATTRIBUTE = "class";
 
 	private static HManager inst;
 
@@ -127,6 +145,20 @@ public class HManager {
 		}
 		return els;
 	}
+	
+	@SuppressWarnings("unchecked")
+	private static <T> Map<String,T> getInstanceMapFromConfiguration(String extensionPoint, String attribute) {
+		final Map<String, T> ids = new HashMap<>();
+		for (IConfigurationElement elem : getConfigurationElementsFor(extensionPoint)) {
+			try {
+				ids.put(elem.getAttribute(attribute),
+						(T) elem.createExecutableExtension(attribute));
+			} catch (InvalidRegistryObjectException | CoreException e) {
+				LOGGER.error(e.getMessage(), e);
+			}
+		}
+		return ids;
+	}
 
 	protected Set<HModel> all = new HashSet<HModel>();
 
@@ -135,12 +167,12 @@ public class HManager {
 	public HManager() {
 		try {
 			getBackends();
-			createExecutableExtensions(VCSMANAGER_CLASS_ATTRIBUTE, getVCS());
-			createExecutableExtensions(MMPARSER_CLASS_ATTRIBUTE, getMmps());
-			createExecutableExtensions(MPARSER_CLASS_ATTRIBUTE, getMps());
-			createExecutableExtensions(MUPDATER_CLASS_ATTRIBUTE, getUps());
+			createExecutableExtensions(VCS_MANAGER_CLASS_ATTRIBUTE, getVCS());
+			createExecutableExtensions(METAMODEL_PARSER_CLASS_ATTRIBUTE, getMmps());
+			createExecutableExtensions(MODEL_PARSER_CLASS_ATTRIBUTE, getMps());
+			createExecutableExtensions(MODEL_UPDATER_CLASS_ATTRIBUTE, getUps());
 			createExecutableExtensions(HAWKFACTORY_CLASS_ATTRIBUTE, getHawkFactories());
-			createExecutableExtensions(INTROSPECTOR_CLASS_ATTRIBUTE, getIntrospectors());
+			createExecutableExtensions(INDEXER_INTROSPECTOR_CLASS_ATTRIBUTE, getIntrospectors());
 			getLanguages();
 		} catch (Exception e) {
 			HModel.getConsole().printerrln(e);
@@ -165,25 +197,6 @@ public class HManager {
 				+ hawk.getDatabaseType());
 	}
 
-	/**
-	 * Creates a new instance of the specified VCSManager.
-	 * 
-	 * @throws CoreException
-	 *             There was an exception while creating the VCSManager.
-	 * @throws NoSuchElementException
-	 *             No VCSManager with that name exists.
-	 */
-	public IVcsManager createVCSManager(String s) throws CoreException {
-		for (IConfigurationElement i : getVCS()) {
-			if (i.getAttribute(VCSMANAGER_CLASS_ATTRIBUTE).equals(s)) {
-				return (IVcsManager) i
-						.createExecutableExtension(VCSMANAGER_CLASS_ATTRIBUTE);
-			}
-		}
-		throw new NoSuchElementException(
-				"cannot instantiate this type of manager: " + s);
-	}
-
 	public void delete(HModel o, boolean exists) throws BackingStoreException {
 		if (all.contains(o)) {
 			if (exists) {
@@ -197,22 +210,12 @@ public class HManager {
 		}
 	}
 
-	public List<IConfigurationElement> getBackends() {
-		return getConfigurationElementsFor("org.hawk.core.BackEndExtensionPoint");
-	}
-
 	public Object[] getElements(Object parent) {
 		if (firstRun)
 			loadHawksFromMetadata();
 		return all.toArray();
 	}
 
-	public IGraphDatabase getGraphByIndexerName(String indexerName) {
-		for (HModel hm : all)
-			if (hm.getName().equals(indexerName))
-				return hm.getGraph();
-		return null;
-	}
 
 	public Set<HModel> getHawks() {
 		if (firstRun)
@@ -240,7 +243,7 @@ public class HManager {
 				name.add(hm.getName());
 		return name;
 	}
-
+	
 	public Collection<String> getLocalIndexerNames() {
 		ArrayList<String> name = new ArrayList<String>();
 		for (HModel hm : all)
@@ -248,24 +251,76 @@ public class HManager {
 				name.add(hm.getName());
 		return name;
 	}
+	
+	/** GRAPH BACKEND */
+	
+	public IGraphDatabase createBackendGraph(IHawk hawk) throws Exception {
+		for (IConfigurationElement i : getBackends()) {
+			if (i.getAttribute(BACKEND_CLASS_ATTRIBUTE).equals(hawk.getDatabaseType())) {
+				return (IGraphDatabase) i.createExecutableExtension(BACKEND_CLASS_ATTRIBUTE);
+			}
+		}
+		throw new Exception("cannot instantiate this type of graph: "
+				+ hawk.getDatabaseType());
+	}
 
+	public List<IConfigurationElement> getBackends() {
+		return getConfigurationElementsFor(BACK_END_EXTENSION_POINT);
+	}
+
+	public IGraphDatabase getGraphByIndexerName(String indexerName) {
+		for (HModel hm : all)
+			if (hm.getName().equals(indexerName))
+				return hm.getGraph();
+		return null;
+	}
+	
 	public Set<String> getIndexTypes() {
 		return getAttributeFor(BACKEND_CLASS_ATTRIBUTE, getBackends());
 	}
+	
+	public Map<String, IGraphDatabase> getBackendInstances() {
+		return HManager.<IGraphDatabase>getInstanceMapFromConfiguration(
+				BACK_END_EXTENSION_POINT, BACKEND_CLASS_ATTRIBUTE);
+	}
 
+	/** QUERY LANGUAGES */
+	
 	public List<IConfigurationElement> getLanguages() {
-		return getConfigurationElementsFor("org.hawk.core.QueryExtensionPoint");
+		return getConfigurationElementsFor(QUERY_EXTENSION_POINT);
 	}
 
 	public Set<String> getLanguageTypes() {
-		return getAttributeFor(QUERYLANG_CLASS_ATTRIBUTE, getLanguages());
+		return getAttributeFor(QUERY_LANG_CLASS_ATTRIBUTE, getLanguages());
+	}
+	
+	public Map<String, IQueryEngine> getQueryLanguageInstances() {
+		return HManager.<IQueryEngine>getInstanceMapFromConfiguration(
+				QUERY_EXTENSION_POINT, QUERY_LANG_CLASS_ATTRIBUTE);
 	}
 
+	/** METAMODEL PARSER */
+	
+	public Set<String> getMetaModelTypes() {
+		return getAttributeFor(METAMODEL_PARSER_CLASS_ATTRIBUTE, getMmps());
+	}
+
+	public List<IConfigurationElement> getMmps() {
+		return getConfigurationElementsFor(META_MODEL_EXTENSION_POINT);
+	}	
+	
+	public Map<String, IMetaModelResourceFactory> getMetamodelParserInstances() {
+		return HManager.<IMetaModelResourceFactory>getInstanceMapFromConfiguration(
+				META_MODEL_EXTENSION_POINT, METAMODEL_PARSER_CLASS_ATTRIBUTE);
+	}
+	
+	/** METAMODEL UPDATER */
+	
 	public IMetaModelUpdater getMetaModelUpdater() throws CoreException {
 
 		IConfigurationElement[] e = Platform.getExtensionRegistry()
 				.getConfigurationElementsFor(
-						"org.hawk.core.MetaModelUpdaterExtensionPoint");
+						METAMODEL_UPDATER_EXTENSION_POINT);
 
 		IConfigurationElement i = null;
 		for (IConfigurationElement ii : e) {
@@ -277,43 +332,55 @@ public class HManager {
 		}
 
 		if (i != null)
-			return (IMetaModelUpdater) i
-					.createExecutableExtension("metamodelupdater");
+			return (IMetaModelUpdater) i.createExecutableExtension(METAMODEL_UPDATER_CLASS_ATTRIBUTE);
 		else
 			return null;
 
 	}
-
-	public Set<String> getMetaModelTypes() {
-		return getAttributeFor(MMPARSER_CLASS_ATTRIBUTE, getMmps());
+	
+	public Map<String, IMetaModelUpdater> getMetamodelUpdaterInstances() {
+		return HManager.<IMetaModelUpdater>getInstanceMapFromConfiguration(
+				METAMODEL_UPDATER_EXTENSION_POINT, METAMODEL_UPDATER_CLASS_ATTRIBUTE);
 	}
-
-	public List<IConfigurationElement> getMmps() {
-		return getConfigurationElementsFor("org.hawk.core.MetaModelExtensionPoint");
-	}
-
+	
+	/** MODEL PARSERS */
+	
 	public Set<String> getModelTypes() {
-		return getAttributeFor(MPARSER_CLASS_ATTRIBUTE, getMps());
+		return getAttributeFor(MODEL_PARSER_CLASS_ATTRIBUTE, getMps());
 	}
 
 	public List<IConfigurationElement> getMps() {
-		return getConfigurationElementsFor("org.hawk.core.ModelExtensionPoint");
+		return getConfigurationElementsFor(MODEL_EXTENSION_POINT);
 	}
 
+	public Map<String, IModelResourceFactory> getModelParserInstances() {
+		return HManager.<IModelResourceFactory>getInstanceMapFromConfiguration(
+				MODEL_EXTENSION_POINT, MODEL_PARSER_CLASS_ATTRIBUTE);
+	}
+	
+	/** MODEL UPDATERS */
+	
 	public Set<String> getUpdaterTypes() {
-		return getAttributeFor(MUPDATER_CLASS_ATTRIBUTE, getUps());
+		return getAttributeFor(MODEL_UPDATER_CLASS_ATTRIBUTE, getUps());
 	}
 
 	public List<IConfigurationElement> getUps() {
-		return getConfigurationElementsFor("org.hawk.core.ModelUpdaterExtensionPoint");
+		return getConfigurationElementsFor(MODEL_UPDATER_EXTENSION_POINT);
+	}
+	
+	public Map<String, IModelUpdater> getModelUpdaterInstances() {
+		return HManager.<IModelUpdater>getInstanceMapFromConfiguration(
+				MODEL_UPDATER_EXTENSION_POINT, MODEL_UPDATER_CLASS_ATTRIBUTE);
 	}
 
+	/** VCS MANAGERS **/
+
 	public List<IConfigurationElement> getVCS() {
-		return getConfigurationElementsFor("org.hawk.core.VCSExtensionPoint");
+		return getConfigurationElementsFor(VCS_EXTENSION_POINT);
 	}
 
 	public Set<String> getVCSTypes() {
-		return getAttributeFor(VCSMANAGER_CLASS_ATTRIBUTE, getVCS());
+		return getAttributeFor(VCS_MANAGER_CLASS_ATTRIBUTE, getVCS());
 	}
 
 	/**
@@ -325,22 +392,22 @@ public class HManager {
 		List<IHawkPlugin> backends = createExecutableExtensions(BACKEND_CLASS_ATTRIBUTE, getBackends());
 		all.addAll(backends);
 
-		List<IHawkPlugin> gcl = createExecutableExtensions(GCHANGEL_CLASS_ATTRIBUTE, getGraphChangeListeners());
+		List<IHawkPlugin> gcl = createExecutableExtensions(GRAPH_CHANGE_LISTENER_CLASS_ATTRIBUTE, getGraphChangeListeners());
 		all.addAll(gcl);
 
 		List<IHawkPlugin> factories = createExecutableExtensions(HAWKFACTORY_CLASS_ATTRIBUTE, getHawkFactories());
 		all.addAll(factories);
 
-		List<IHawkPlugin> mmParsers = createExecutableExtensions(MMPARSER_CLASS_ATTRIBUTE, getMmps());
+		List<IHawkPlugin> mmParsers = createExecutableExtensions(METAMODEL_PARSER_CLASS_ATTRIBUTE, getMmps());
 		all.addAll(mmParsers);
 
-		List<IHawkPlugin> mParsers = createExecutableExtensions(MPARSER_CLASS_ATTRIBUTE, getMps());
+		List<IHawkPlugin> mParsers = createExecutableExtensions(MODEL_PARSER_CLASS_ATTRIBUTE, getMps());
 		all.addAll(mParsers);
 
-		List<IHawkPlugin> mUpdaters = createExecutableExtensions(MUPDATER_CLASS_ATTRIBUTE, getUps());
+		List<IHawkPlugin> mUpdaters = createExecutableExtensions(MODEL_UPDATER_CLASS_ATTRIBUTE, getUps());
 		all.addAll(mUpdaters);
 
-		List<IHawkPlugin> queryEngines = createExecutableExtensions(QUERYLANG_CLASS_ATTRIBUTE, getLanguages());
+		List<IHawkPlugin> queryEngines = createExecutableExtensions(QUERY_LANG_CLASS_ATTRIBUTE, getLanguages());
 		all.addAll(queryEngines);
 
 		all.addAll(getVCSInstances());
@@ -349,33 +416,58 @@ public class HManager {
 	}
 
 	public List<IVcsManager> getVCSInstances() {
-		return createExecutableExtensions(VCSMANAGER_CLASS_ATTRIBUTE, getVCS());
-	}
+		return createExecutableExtensions(VCS_MANAGER_CLASS_ATTRIBUTE, getVCS());
 
-	public List<IConfigurationElement> getHawkFactories() {
-		return getConfigurationElementsFor("org.hawk.core.HawkFactoryExtensionPoint");
 	}
+	
+	public Map<String, IVcsManager> getVcsManagerInstances() {
+		return HManager.<IVcsManager>getInstanceMapFromConfiguration(
+				VCS_EXTENSION_POINT, VCS_MANAGER_CLASS_ATTRIBUTE);
+	}
+	
+	/**
+	 * Creates a new instance of the specified VCSManager.
+	 * 
+	 * @throws CoreException
+	 *             There was an exception while creating the VCSManager.
+	 * @throws NoSuchElementException
+	 *             No VCSManager with that name exists.
+	 */
+	public IVcsManager createVCSManager(String s) throws CoreException {
+		for (IConfigurationElement i : getVCS()) {
+			if (i.getAttribute(VCS_MANAGER_CLASS_ATTRIBUTE).equals(s)) {
+				return (IVcsManager) i
+						.createExecutableExtension(VCS_MANAGER_CLASS_ATTRIBUTE);
+			}
+		}
+		throw new NoSuchElementException(
+				"cannot instantiate this type of manager: " + s);
+	}
+	
+	/** GRAPH CHANGE LISTENERS **/
 
 	public List<IConfigurationElement> getGraphChangeListeners() {
-		return getConfigurationElementsFor("org.hawk.core.GraphChangeListenerExtensionPoint");
+		return getConfigurationElementsFor(GRAPH_CHANGE_LISTENER_EXTENSION_POINT);
 	}
 
 	public Set<String> getGraphChangeListenerTypes() {
-		return getAttributeFor(GCHANGEL_CLASS_ATTRIBUTE, getGraphChangeListeners());
+		return getAttributeFor(GRAPH_CHANGE_LISTENER_CLASS_ATTRIBUTE, getGraphChangeListeners());
+	}
+	
+	public Map<String, IGraphChangeListener> getGraphChangeListenerInstances() {
+		return HManager.<IGraphChangeListener>getInstanceMapFromConfiguration(
+				GRAPH_CHANGE_LISTENER_EXTENSION_POINT, GRAPH_CHANGE_LISTENER_CLASS_ATTRIBUTE);
+	}
+	
+	/** HAWK FACTORIES */
+	
+	public List<IConfigurationElement> getHawkFactories() {
+		return getConfigurationElementsFor(HAWK_FACTORY_EXTENSION_POINT);
 	}
 
 	public Map<String, IHawkFactory> getHawkFactoryInstances() {
-		final Map<String, IHawkFactory> ids = new HashMap<>();
-		for (IConfigurationElement elem : getHawkFactories()) {
-			try {
-				ids.put(elem.getAttribute(HAWKFACTORY_CLASS_ATTRIBUTE),
-						(IHawkFactory) elem
-								.createExecutableExtension(HAWKFACTORY_CLASS_ATTRIBUTE));
-			} catch (InvalidRegistryObjectException | CoreException e) {
-				LOGGER.error(e.getMessage(), e);
-			}
-		}
-		return ids;
+		return HManager.<IHawkFactory>getInstanceMapFromConfiguration(
+				HAWK_FACTORY_EXTENSION_POINT, HAWKFACTORY_CLASS_ATTRIBUTE);
 	}
 
 	public IHawkFactory createHawkFactory(String factoryClass)
@@ -390,15 +482,22 @@ public class HManager {
 		return null;
 	}
 
+	/** METAMODEL INTROSPECTOR **/
+	
 	public List<IConfigurationElement> getIntrospectors() {
-		return getConfigurationElementsFor("org.hawk.core.IndexerIntrospectionExtensionPoint");
+		return getConfigurationElementsFor(INDEXER_INTROSPECTION_EXTENSION_POINT);
+	}
+	
+	public Map<String,IMetaModelIntrospector> getIntrospectorInstances() {
+		return HManager.<IMetaModelIntrospector>getInstanceMapFromConfiguration(
+				INDEXER_INTROSPECTION_EXTENSION_POINT, INDEXER_INTROSPECTOR_CLASS_ATTRIBUTE);
 	}
 
 	public IMetaModelIntrospector getIntrospectorFor(IModelIndexer idx) {
 		for (IConfigurationElement conf : getIntrospectors()) {
 			try {
 				IMetaModelIntrospector.Factory impl = (IMetaModelIntrospector.Factory)
-					conf.createExecutableExtension(INTROSPECTOR_CLASS_ATTRIBUTE);
+					conf.createExecutableExtension(INDEXER_INTROSPECTOR_CLASS_ATTRIBUTE);
 				if (impl.canIntrospect(idx)) {
 					return impl.createFor(idx);
 				}
@@ -408,6 +507,8 @@ public class HManager {
 		}
 		return null;
 	}
+	
+	/** ACTIONS **/
 	
 	public boolean stopAllRunningInstances(ShutdownRequestType reqType) {
 		HModel.getConsole().println("Shutting down hawk:");

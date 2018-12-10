@@ -140,6 +140,11 @@ public class ThriftRemoteHawkFactory implements IHawkFactory {
 	}
 
 	@Override
+	public boolean isRemote() {
+		return true;
+	}
+
+	@Override
 	public String getHumanReadableName() {
 		return "Thrift-based remote Hawk";
 	}

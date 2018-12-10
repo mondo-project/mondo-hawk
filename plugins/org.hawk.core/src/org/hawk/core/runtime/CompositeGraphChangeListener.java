@@ -228,7 +228,7 @@ public class CompositeGraphChangeListener extends LinkedHashSet<IGraphChangeList
 
 	@Override
 	public String getName() {
-		final StringBuffer sbuf = new StringBuffer("composite(");
+		final StringBuffer sbuf = new StringBuffer("Composite(");
 		boolean first = false;
 		for (IGraphChangeListener l : this) {
 			if (first) {
@@ -236,7 +236,7 @@ public class CompositeGraphChangeListener extends LinkedHashSet<IGraphChangeList
 			} else {
 				sbuf.append(", ");
 			}
-			sbuf.append(l.getName());
+			sbuf.append(l.getHumanReadableName());
 		}
 		sbuf.append(")");
 		return sbuf.toString();

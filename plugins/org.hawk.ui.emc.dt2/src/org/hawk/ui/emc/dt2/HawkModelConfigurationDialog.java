@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.hawk.core.query.IQueryEngine;
+import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.util.HUIManager;
 
 public class HawkModelConfigurationDialog extends
@@ -155,8 +156,11 @@ public class HawkModelConfigurationDialog extends
 
 		// NB only local hawks can be used in this case, for remote ones we need
 		// to use the custom hawk option in the hawk UI query dialog
-		for (String i : HUIManager.getInstance().getLocalIndexerNames())
-			selectIndexer.add(i);
+		
+		/*for (String i : HUIManager.getInstance().getLocalIndexerNames())
+			selectIndexer.add(i);*/
+		for (HModel i : (HModel[]) HUIManager.getInstance().getElements(null))
+			selectIndexer.add(i.getName());
 
 	}
 

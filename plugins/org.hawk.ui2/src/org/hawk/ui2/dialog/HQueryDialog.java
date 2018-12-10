@@ -66,6 +66,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.hawk.core.IStateListener;
 import org.hawk.core.query.IQueryEngine;
+import org.hawk.osgiserver.HManager;
 import org.hawk.osgiserver.HModel;
 import org.hawk.osgiserver.HModelSchedulingRule;
 import org.hawk.ui2.Activator;
@@ -107,7 +108,9 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 			if (currentQueryMonitor == null) {
 				final String query = queryLanguage.getText().trim();
 				if (!query.isEmpty()) {
-					runQuery(query);
+					String ql = queryLanguageInstances.values().stream()
+							.filter(qlang-> qlang.getHumanReadableName().equals(query)).map(elem-> elem.getType()).findFirst().get();
+					runQuery(ql);
 				}
 			} else {
 				currentQueryMonitor.setCanceled(true);
@@ -149,7 +152,7 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 			}
 		}
 
-		protected void runQuery(final String query) {
+		protected void runQuery(final String queryLang) {
 			final Map<String, Object> context = createContext();
 			final String queryText = queryField.getText();
 			resultField.setText("");
@@ -181,11 +184,11 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 					Object result = null;
 					try {
 						if (queryText.startsWith(QUERY_IS_EDITOR)) {
-							result = index.query(queryText.substring(QUERY_IS_EDITOR.length()), query, context);
+							result = index.query(queryText.substring(QUERY_IS_EDITOR.length()), queryLang, context);
 						} else if (queryText.startsWith(QUERY_IS_FILE)) {
-							result = index.query(new File(queryText.substring(QUERY_IS_FILE.length())), query, context);
+							result = index.query(new File(queryText.substring(QUERY_IS_FILE.length())), queryLang, context);
 						} else {
-							result = index.query(queryText, query, context);
+							result = index.query(queryText, queryLang, context);
 						}
 						final Object endResult = result;
 						Display.getDefault().syncExec(() -> {
@@ -298,6 +301,7 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 	private Button useDerivedForSubtreeButton;
 	private Button fileFirstButton;
 	private TabFolder tabFolder;
+	private Map<String, IQueryEngine> queryLanguageInstances;
 
 	public HQueryDialog(Shell parentShell, HModel in) {
 		super(parentShell);
@@ -327,6 +331,8 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		setTitle("Query Hawk index");
 		setMessage("Enter a query (either as text or as a file) and click [Run Query] to get a result.");
 
+		queryLanguageInstances = HManager.getInstance().getQueryLanguageInstances();
+		
 		final Composite container = new Composite(parent, SWT.NONE);
 		final FormLayout formLayout = new FormLayout();
 		container.setLayout(formLayout);
@@ -538,7 +544,7 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		List<String> languages = new ArrayList<>(index.getKnownQueryLanguages());
 		Collections.sort(languages);
 		for (String s : languages) {
-			queryLanguage.add(s);
+			queryLanguage.add(queryLanguageInstances.get(s).getHumanReadableName());
 		}
 		if (queryLanguage.getItems().length > 0) {
 			queryLanguage.select(0);
@@ -549,6 +555,7 @@ public class HQueryDialog extends TitleAreaDialog implements IStateListener {
 		queryLanguageFD.top = new FormAttachment(resultField, 10);
 		
 		queryLanguage.setLayoutData(queryLanguageFD);
+		
 	}
 
 	protected void createQueryArea(final Composite container) {

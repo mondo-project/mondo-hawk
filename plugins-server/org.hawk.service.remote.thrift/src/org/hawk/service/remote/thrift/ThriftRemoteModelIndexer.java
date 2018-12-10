@@ -1010,4 +1010,21 @@ public class ThriftRemoteModelIndexer implements IModelIndexer, IMetaModelIntros
 		}
 	}
 
+	@Override
+	public void removeMetaModelResourceFactory(IMetaModelResourceFactory metaModelParser) {
+		console.printerrln("Cannot remove metamodel resource factories to " + this.getClass().getName());
+	}
+
+	@Override
+	public void removeModelResourceFactory(IModelResourceFactory modelParser) {
+		console.printerrln("Cannot remove model resource factories to " + this.getClass().getName());
+
+	}
+
+	@Override
+	public void removeModelUpdater(IModelUpdater updater) throws Exception {
+		console.printerrln("Cannot remove model updaters to " + this.getClass().getName());
+
+	}
+
 }

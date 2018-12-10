@@ -120,6 +120,6 @@ public class TimeAwareEOLQueryEngine extends EOLQueryEngine {
 
 	@Override
 	public String getHumanReadableName() {
-		return "Time-aware EOL query engine";
+		return "Time Aware " + super.getHumanReadableName();
 	}
 }

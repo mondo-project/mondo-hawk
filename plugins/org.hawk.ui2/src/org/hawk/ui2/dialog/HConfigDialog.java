@@ -68,10 +68,10 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 
 	private static final String DEFAULT_MESSAGE = "Manage metamodels, locations and indexed/derived attributes in the indexer.";
 
-	static final class ClassNameLabelProvider extends LabelProvider {
+	static final class VCSLabelProvider extends LabelProvider {
 		@Override
 		public String getText(Object element) {
-			return element.getClass().getName();
+			return ((IVcsManager) element).getHumanReadableName();
 		}
 	}
 
