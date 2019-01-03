@@ -18,7 +18,7 @@ package org.hawk.greycat;
 
 import greycat.Graph;
 import greycat.GraphBuilder;
-import greycat.leveldb.LevelDBStorage;
+import greycat.rocksdb.RocksDBStorage;
 
 /**
  * <p>Version of the Greycat backend, which uses the RocksDB storage layer
@@ -35,7 +35,7 @@ public class RocksDBGreycatDatabase extends AbstractGreycatDatabase {
 	protected Graph createGraph() {
 		return new GraphBuilder()
 			.withMemorySize(1_000_000)
-			.withStorage(new LevelDBStorage(storageFolder.getAbsolutePath()))
+			.withStorage(new RocksDBStorage(storageFolder.getAbsolutePath()))
 			.build();
 	}
 
