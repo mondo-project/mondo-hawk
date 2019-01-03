@@ -1,4 +1,18 @@
 /**
+ * Copyright (c) 2017-2018 Aston University.
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * This Source Code may also be made available under the following Secondary
+ * Licenses when the conditions for such availability set forth in the Eclipse
+ * Public License, v. 2.0 are satisfied: GNU General Public License, version 3.
+ * 
+ * SPDX-License-Identifier: EPL-2.0 OR GPL-3.0
+ * 
+ * Contributors:
+ *     Antonio Garcia-Dominguez - initial API and implementation
  */
 package org.hawk.integration.tests.mm.Tree.impl;
 
@@ -55,7 +69,7 @@ public class TreePackageImpl extends EPackageImpl implements TreePackage {
 
 	/**
 	 * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
-	 * 
+	 *
 	 * <p>This method is used to initialize {@link TreePackage#eINSTANCE} when that field is accessed.
 	 * Clients should not invoke it directly. Instead, they should simply access that field to obtain the package.
 	 * <!-- begin-user-doc -->
@@ -69,7 +83,8 @@ public class TreePackageImpl extends EPackageImpl implements TreePackage {
 		if (isInited) return (TreePackage)EPackage.Registry.INSTANCE.getEPackage(TreePackage.eNS_URI);
 
 		// Obtain or create and register package
-		TreePackageImpl theTreePackage = (TreePackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof TreePackageImpl ? EPackage.Registry.INSTANCE.get(eNS_URI) : new TreePackageImpl());
+		Object registeredTreePackage = EPackage.Registry.INSTANCE.get(eNS_URI);
+		TreePackageImpl theTreePackage = registeredTreePackage instanceof TreePackageImpl ? (TreePackageImpl)registeredTreePackage : new TreePackageImpl();
 
 		isInited = true;
 
@@ -82,7 +97,6 @@ public class TreePackageImpl extends EPackageImpl implements TreePackage {
 		// Mark meta-data to indicate it can't be changed
 		theTreePackage.freeze();
 
-  
 		// Update the registry and return the package
 		EPackage.Registry.INSTANCE.put(TreePackage.eNS_URI, theTreePackage);
 		return theTreePackage;
