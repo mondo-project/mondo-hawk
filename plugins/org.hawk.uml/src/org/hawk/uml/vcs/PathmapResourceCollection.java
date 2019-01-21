@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Collection;
+import java.util.Date;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -95,7 +96,7 @@ public abstract class PathmapResourceCollection implements IVcsManager {
 				VcsCommit commit = new VcsCommit();
 				commit.setAuthor(getHumanReadableName() + " - no authors recorded");
 				commit.setDelta(delta);
-				commit.setJavaDate(null);
+				commit.setJavaDate(new Date());
 				commit.setMessage(getHumanReadableName() + " - no messages recorded");
 				commit.setRevision(currentRevision);
 				delta.getCommits().add(commit);

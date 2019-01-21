@@ -28,7 +28,9 @@ import java.util.List;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsChangeType;
+import org.hawk.core.VcsCommit;
 import org.hawk.core.VcsCommitItem;
+import org.hawk.core.VcsRepositoryDelta;
 import org.hawk.core.util.DefaultConsole;
 import org.junit.Before;
 import org.junit.Rule;
@@ -95,6 +97,26 @@ public class LocalFileTest {
 		final String revision2 = delta2.get(0).getCommit().getRevision();
 
 		assertEquals(0, vcs.getDelta(revision2).size());
+	}
+	
+	@Test
+	public void laterVersionWithDelta() throws Exception {
+		final List<VcsCommitItem> delta1 = vcs.getDelta(LocalFile.FIRST_REV);
+		final String revision1 = delta1.get(0).getCommit().getRevision();
+
+		// If we write too soon before the next check, the lack of granularity of
+		// lastModified may result in us missing changes!
+		synchronized(this) {
+			Thread.sleep(1_000);
+		}
+		
+		write("somethingelse");
+		final VcsRepositoryDelta delta2 = vcs.getDelta(LocalFile.FIRST_REV, revision1);
+		assertEquals(1, delta2.getCommits().size());
+		final VcsCommit firstCommit = delta2.getCommits().get(0);
+		assertNotNull(firstCommit.getJavaDate());
+		assertEquals(1, firstCommit.getItems().size());
+		assertEquals(VcsChangeType.UPDATED, firstCommit.getItems().get(0).getChangeType());
 	}
 		
 }

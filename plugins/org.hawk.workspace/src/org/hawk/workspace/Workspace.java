@@ -25,6 +25,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -190,7 +191,7 @@ public class Workspace implements IVcsManager {
 		VcsCommit commit = new VcsCommit();
 		commit.setAuthor("i am a workspace driver - no authors recorded");
 		commit.setDelta(delta);
-		commit.setJavaDate(null);
+		commit.setJavaDate(new Date());
 		commit.setMessage("i am a workspace driver - no messages recorded");
 		commit.setRevision(f.getModificationStamp() + "");
 		delta.getCommits().add(commit);

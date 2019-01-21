@@ -21,6 +21,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
+import java.util.Date;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsChangeType;
@@ -101,7 +103,7 @@ public class LocalFile extends FileBasedLocation {
 		VcsCommit commit = new VcsCommit();
 		commit.setAuthor("i am a local file driver - no authors recorded");
 		commit.setDelta(delta);
-		commit.setJavaDate(null);
+		commit.setJavaDate(new Date());
 		commit.setMessage("i am a local file driver - no messages recorded");
 		delta.getCommits().add(commit);
 

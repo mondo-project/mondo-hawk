@@ -29,6 +29,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.Instant;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -208,7 +210,7 @@ public class LocalFolder extends FileBasedLocation {
 			VcsCommit commit = new VcsCommit();
 			commit.setAuthor("i am a local folder driver - no authors recorded");
 			commit.setDelta(delta);
-			commit.setJavaDate(null);
+			commit.setJavaDate(new Date());
 			commit.setMessage("i am a local folder driver - no messages recorded");
 			final String currentlatest = getRevisionFromFileMetadata(f);
 			commit.setRevision(currentlatest);
@@ -220,22 +222,14 @@ public class LocalFolder extends FileBasedLocation {
 
 			Path path = f.toPath();
 
+			// Don't decode it to ensure consistency with other managers
 			String relativepath = makeRelative(repositoryURL,
-
-					// dont decode it to ensure consistency with other managers
-					// URLDecoder.decode(
 					f.toPath().toUri().toString()
-			// .replace("+", "%2B"),
-			// "UTF-8")
 			);
 
 			c.setPath(relativepath.startsWith("/") ? relativepath : "/" + relativepath);
-
-			// c.setPath(rootLocation.relativize(Paths.get(f.getPath())).toString());
 			commit.getItems().add(c);
-
 			recordedModifiedDates.remove(path.toString());
-
 		}
 
 		previousFiles.clear();
@@ -255,7 +249,7 @@ public class LocalFolder extends FileBasedLocation {
 				VcsCommit commit = new VcsCommit();
 				commit.setAuthor("i am a local folder driver - no authors recorded");
 				commit.setDelta(delta);
-				commit.setJavaDate(null);
+				commit.setJavaDate(new Date());
 				commit.setMessage("i am a local folder driver - no messages recorded");
 				commit.setRevision(latestRev);
 				delta.getCommits().add(commit);

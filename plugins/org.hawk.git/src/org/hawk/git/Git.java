@@ -28,7 +28,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.Instant;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -233,7 +235,7 @@ public class Git implements IVcsManager {
 			VcsCommit commit = new VcsCommit();
 			commit.setAuthor("i am a local git repo driver - no authors recorded");
 			commit.setDelta(delta);
-			commit.setJavaDate(null);
+			commit.setJavaDate(Date.from(Instant.now()));
 			commit.setMessage("i am a local git repo driver - no messages recorded");
 			final String currentlatest = getRevisionFromFileMetadata(f);
 			commit.setRevision(currentlatest);
@@ -279,7 +281,7 @@ public class Git implements IVcsManager {
 				VcsCommit commit = new VcsCommit();
 				commit.setAuthor("i am a local git repo driver - no authors recorded");
 				commit.setDelta(delta);
-				commit.setJavaDate(null);
+				commit.setJavaDate(new Date());
 				commit.setMessage("i am a local git repo driver - no messages recorded");
 				commit.setRevision(latestRev);
 				delta.getCommits().add(commit);
