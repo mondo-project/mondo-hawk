@@ -121,6 +121,9 @@ public class GreycatNode implements ITimeAwareGraphNode {
 			} else {
 				_cacheWrapper = db.lookup(world, time, id);
 				_cacheWrapper.inUse = true;
+				if (_cacheWrapper.node == null) {
+					LOGGER.warn("Could not reload node {}:{}:{}", world, time, id);
+				}
 				_node = _cacheWrapper.node;
 			}
 
