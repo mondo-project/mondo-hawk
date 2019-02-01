@@ -18,6 +18,7 @@ package org.hawk.service.remote.thrift;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.thrift.transport.TTransportException;
@@ -25,15 +26,63 @@ import org.hawk.core.IConsole;
 import org.hawk.core.ICredentialsStore;
 import org.hawk.core.IHawk;
 import org.hawk.core.IHawkFactory;
+import org.hawk.core.IHawkPlugin;
 import org.hawk.core.IStateListener;
 import org.hawk.core.IStateListener.HawkState;
 import org.hawk.service.api.Hawk;
 import org.hawk.service.api.HawkInstance;
+import org.hawk.service.api.HawkPlugin;
 import org.hawk.service.api.dt.http.LazyCredentials;
 import org.hawk.service.api.utils.APIUtils;
 import org.hawk.service.api.utils.APIUtils.ThriftProtocol;
 
 public class ThriftRemoteHawkFactory implements IHawkFactory {
+
+	protected class IHawkPluginAdapter implements IHawkPlugin {
+		private final HawkPlugin tp;
+
+		protected IHawkPluginAdapter(HawkPlugin tp) {
+			this.tp = tp;
+		}
+
+		@Override
+		public String getType() {
+			return tp.getName();
+		}
+
+		@Override
+		public String getHumanReadableName() {
+			return tp.getDescription();
+		}
+
+		@Override
+		public Category getCategory() {
+			switch (tp.getType()) {
+			case BACKEND:
+				return Category.BACKEND;
+			case GRAPH_CHANGE_LISTENER:
+				return Category.GRAPH_CHANGE_LISTENER;
+			case INDEX_FACTORY:
+				return Category.INDEX_FACTORY;
+			case METAMODEL_INTROSPECTOR:
+				return Category.METAMODEL_INTROSPECTOR;
+			case METAMODEL_RESOURCE_FACTORY:
+				return Category.METAMODEL_RESOURCE_FACTORY;
+			case METAMODEL_UPDATER:
+				return Category.METAMODEL_UPDATER;
+			case MODEL_RESOURCE_FACTORY:
+				return Category.MODEL_RESOURCE_FACTORY;
+			case MODEL_UPDATER:
+				return Category.MODEL_UPDATER;
+			case QUERY_ENGINE:
+				return Category.QUERY_ENGINE;
+			case VCS_MANAGER:
+				return Category.VCS_MANAGER;
+			default:
+				throw new IllegalArgumentException("Unknown category " + tp.getType());
+			}
+		}
+	}
 
 	@Override
 	public IHawk create(String name, File parentFolder, String location, ICredentialsStore credStore, IConsole console, List<String> enabledPlugins) throws Exception {
@@ -102,9 +151,15 @@ public class ThriftRemoteHawkFactory implements IHawkFactory {
 	}
 
 	@Override
-	public List<String> listPlugins(String location) throws Exception {
+	public List<IHawkPlugin> listPlugins(String location) throws Exception {
 		final Hawk.Client client = getClient(location);
-		return client.listPlugins();
+		final List<HawkPlugin> thriftPlugins = client.listPluginDetails();
+
+		final List<IHawkPlugin> plugins = new ArrayList<>(thriftPlugins.size());
+		for (HawkPlugin tp : thriftPlugins) {
+			plugins.add(new IHawkPluginAdapter(tp));
+		}
+		return plugins;
 	}
 
 	@Override

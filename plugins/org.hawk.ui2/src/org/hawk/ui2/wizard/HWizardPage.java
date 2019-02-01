@@ -57,6 +57,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Text;
 import org.hawk.core.IHawkFactory;
+import org.hawk.core.IHawkPlugin;
 import org.hawk.core.runtime.ModelIndexerImpl;
 import org.hawk.osgiserver.HManager;
 import org.hawk.ui2.Activator;
@@ -424,11 +425,14 @@ public class HWizardPage extends WizardPage {
 	protected void updatePlugins() {
 		try {
 			final IHawkFactory factory = factories.get(getFactoryID());
-			List<String> plugins = factory
-					.listPlugins(locationText.getText());
+			List<IHawkPlugin> plugins = factory.listPlugins(locationText.getText());
+			List<String> pluginNames = new ArrayList<>();
 			if (plugins == null) {
-				plugins = new ArrayList<>();
-				plugins.addAll(HUIManager.getInstance().getAvailablePlugins());
+				pluginNames.addAll(HUIManager.getInstance().getAvailablePlugins());
+			} else {
+				for (IHawkPlugin p : plugins) {
+					pluginNames.add(p.getType());
+				}
 			}
 
 			final List<String> oldInput = (List<String>) pluginTable.getInput();
@@ -436,7 +440,7 @@ public class HWizardPage extends WizardPage {
 			if (!oldInput.equals(plugins)) {
 				pluginTable.setInput(plugins);
 				pluginTable.setAllChecked(true);
-				for (String newElem : plugins) {
+				for (String newElem : pluginNames) {
 					// Keep unchecked values across switches
 					if (oldInput.contains(newElem) && !oldChecked.contains(newElem)) {
 						pluginTable.setChecked(newElem, false);

@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.hawk.core.IHawkPlugin;
 import org.hawk.core.IModelIndexer;
+import org.hawk.core.IHawkPlugin.Category;
 import org.hawk.core.graph.IGraphNode;
 
 public interface IQueryEngine extends IHawkPlugin {
@@ -169,6 +170,11 @@ public interface IQueryEngine extends IHawkPlugin {
 			throw new QueryExecutionException(e);
 		}
 		return query(m, code.toString(), context);
+	}
+
+	@Override
+	default Category getCategory() {
+		return Category.QUERY_ENGINE;
 	}
 
 }

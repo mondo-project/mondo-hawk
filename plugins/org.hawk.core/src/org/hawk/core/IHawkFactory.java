@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 The University of York.
+ * Copyright (c) 2015-2019 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -85,7 +85,7 @@ public interface IHawkFactory extends IHawkPlugin {
 	 * <code>null</code> if we should know about them in some other way
 	 * (e.g. using OSGi configuration elements).
 	 */
-	List<String> listPlugins(String location) throws Exception;
+	List<IHawkPlugin> listPlugins(String location) throws Exception;
 
 	/**
 	 * Indicates whether the created instance should be customized with the
@@ -105,4 +105,10 @@ public interface IHawkFactory extends IHawkPlugin {
 	 * storage folder (<code>true</code>) or not (<code>false</code>).
 	 */
 	boolean instancesUseLocation();
+
+	@Override
+	default Category getCategory() {
+		return Category.INDEX_FACTORY;
+	}
+
 }

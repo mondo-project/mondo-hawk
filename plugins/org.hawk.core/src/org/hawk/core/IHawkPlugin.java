@@ -22,6 +22,19 @@ package org.hawk.core;
  */
 public interface IHawkPlugin {
 
+	enum Category {
+		BACKEND,
+		METAMODEL_INTROSPECTOR,
+		METAMODEL_RESOURCE_FACTORY,
+		METAMODEL_UPDATER,
+		MODEL_RESOURCE_FACTORY,
+		MODEL_UPDATER,
+		INDEX_FACTORY,
+		GRAPH_CHANGE_LISTENER,
+		VCS_MANAGER,
+		QUERY_ENGINE;
+	}
+
 	/**
 	 * Returns a unique identifier for the plugin. Useful for configuration files.
 	 */
@@ -29,6 +42,15 @@ public interface IHawkPlugin {
 		return getClass().getCanonicalName();
 	}
 
+	/**
+	 * Returns a human-friendly description of the plugin. May be localized.
+	 */
 	String getHumanReadableName();
 
+	/**
+	 * Returns the category of plugin that this implementation belongs to. This
+	 * method is useful for remote instances, which will use dummy implementations
+	 * that do not implement the base interface of that category of plugin.
+	 */
+	Category getCategory();
 }

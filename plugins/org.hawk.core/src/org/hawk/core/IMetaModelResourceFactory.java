@@ -47,4 +47,9 @@ public interface IMetaModelResourceFactory extends IHawkPlugin {
 	/** saves a package into string format, so it can be loaded by parseFromString */
 	String dumpPackageToString(IHawkPackage ePackage) throws Exception;
 
+	@Override
+	default Category getCategory() {
+		return Category.METAMODEL_RESOURCE_FACTORY;
+	}
+	
 }

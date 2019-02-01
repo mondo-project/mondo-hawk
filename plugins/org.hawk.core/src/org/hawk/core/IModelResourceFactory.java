@@ -20,6 +20,7 @@ package org.hawk.core;
 import java.io.File;
 import java.util.Collection;
 
+import org.hawk.core.IHawkPlugin.Category;
 import org.hawk.core.model.IHawkModelResource;
 
 /**
@@ -62,5 +63,10 @@ public interface IModelResourceFactory extends IHawkPlugin {
 	 *         supported extensions, including the extension separator.
 	 */
 	Collection<String> getModelExtensions();
+
+	@Override
+	default Category getCategory() {
+		return Category.MODEL_RESOURCE_FACTORY;
+	}
 
 }

@@ -23,6 +23,7 @@ import org.hawk.core.IConsole;
 import org.hawk.core.ICredentialsStore;
 import org.hawk.core.IHawk;
 import org.hawk.core.IHawkFactory;
+import org.hawk.core.IHawkPlugin;
 
 public class TimeAwareHawkFactory implements IHawkFactory {
 
@@ -44,7 +45,7 @@ public class TimeAwareHawkFactory implements IHawkFactory {
 	}
 
 	@Override
-	public List<String> listPlugins(String location) throws Exception {
+	public List<IHawkPlugin> listPlugins(String location) throws Exception {
 		// ask elsewhere
 		return null;
 	}

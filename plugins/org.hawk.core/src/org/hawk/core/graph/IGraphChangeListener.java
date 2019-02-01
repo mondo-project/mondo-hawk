@@ -19,6 +19,7 @@ package org.hawk.core.graph;
 import org.hawk.core.IHawkPlugin;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
+import org.hawk.core.IHawkPlugin.Category;
 import org.hawk.core.model.IHawkClass;
 import org.hawk.core.model.IHawkObject;
 import org.hawk.core.model.IHawkPackage;
@@ -137,5 +138,10 @@ public interface IGraphChangeListener extends IHawkPlugin {
 	 */
 	void referenceRemoval(VcsCommitItem s, IGraphNode source,
 			IGraphNode destination, String edgelabel, boolean isTransient);
+
+	@Override
+	default Category getCategory() {
+		return Category.GRAPH_CHANGE_LISTENER;
+	}
 
 }

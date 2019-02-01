@@ -24,6 +24,7 @@ import org.hawk.core.IConsole;
 import org.hawk.core.ICredentialsStore;
 import org.hawk.core.IHawk;
 import org.hawk.core.IHawkFactory;
+import org.hawk.core.IHawkPlugin;
 import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.util.HawkProperties;
 
@@ -97,7 +98,7 @@ public class LocalHawkFactory implements IHawkFactory {
 	}
 
 	@Override
-	public List<String> listPlugins(String location) throws Exception {
+	public List<IHawkPlugin> listPlugins(String location) throws Exception {
 		// We can't say from here: ask elsewhere!
 		return null;
 	}

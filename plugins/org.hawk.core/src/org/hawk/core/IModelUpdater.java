@@ -18,6 +18,7 @@ package org.hawk.core;
 
 import java.util.Set;
 
+import org.hawk.core.IHawkPlugin.Category;
 import org.hawk.core.model.IHawkModelResource;
 
 /**
@@ -66,5 +67,10 @@ public interface IModelUpdater extends IHawkPlugin {
 	void updateProxies();
 
 	public boolean deleteAll(IVcsManager vcs) throws Exception;
+
+	@Override
+	default Category getCategory() {
+		return Category.MODEL_UPDATER;
+	}
 
 }

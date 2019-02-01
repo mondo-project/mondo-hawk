@@ -21,6 +21,7 @@ package org.hawk.core;
 import java.io.File;
 import java.util.Collection;
 
+import org.hawk.core.IHawkPlugin.Category;
 import org.hawk.core.model.IHawkObject;
 
 public interface IVcsManager extends IHawkPlugin {
@@ -146,4 +147,10 @@ public interface IVcsManager extends IHawkPlugin {
 	 * contained files until thawed.
 	 */
 	void setFrozen(boolean frozen);
+
+	@Override
+	default Category getCategory() {
+		return Category.VCS_MANAGER;
+	}
+
 }

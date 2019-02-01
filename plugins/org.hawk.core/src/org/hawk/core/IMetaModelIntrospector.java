@@ -19,6 +19,8 @@ package org.hawk.core;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.hawk.core.IHawkPlugin.Category;
+
 /**
  * Generic interface for a service that lists the available metamodels, types
  * and attributes for specific combinations of indexer + updater. The updater
@@ -42,6 +44,12 @@ public interface IMetaModelIntrospector {
 		 * caller has checked {@link #canIntrospect(IModelIndexer)} first.
 		 */
 		IMetaModelIntrospector createFor(IModelIndexer idx);
+
+		@Override
+		default Category getCategory() {
+			return Category.METAMODEL_INTROSPECTOR;
+		}
+		
 	}
 
 	/**
@@ -70,4 +78,5 @@ public interface IMetaModelIntrospector {
 	 */
 	List<String> getAttributes(String metamodelURI, String typeName) throws NoSuchElementException;
 
+	
 }
