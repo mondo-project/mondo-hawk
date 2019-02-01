@@ -35,4 +35,8 @@ public class ThriftRemoteMetaModelIntrospectorFactory implements IMetaModelIntro
 		return (ThriftRemoteModelIndexer) idx;
 	}
 
+	@Override
+	public String getHumanReadableName() {
+		return "Thrift-based remote metamodel introspector factory";
+	}
 }

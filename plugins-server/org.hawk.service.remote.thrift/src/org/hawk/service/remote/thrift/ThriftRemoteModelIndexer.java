@@ -245,6 +245,11 @@ public class ThriftRemoteModelIndexer implements IModelIndexer, IMetaModelIntros
 		public void setDefaultNamespaces(String defaultNamespaces) {
 			this.defaultNamespaces = defaultNamespaces;
 		}
+
+		@Override
+		public String getHumanReadableName() {
+			return "Thrift-based remote query engine";
+		}
 	}
 
 	/**

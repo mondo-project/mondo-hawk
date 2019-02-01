@@ -949,4 +949,9 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 		}
 	}
 
+	@Override
+	public String getHumanReadableName() {
+		return "EOL Query Engine";
+	}
+
 }

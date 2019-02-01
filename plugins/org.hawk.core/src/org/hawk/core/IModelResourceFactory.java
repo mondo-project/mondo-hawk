@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2017 The University of York, Aston University.
+ * Copyright (c) 2011-2019 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -13,7 +13,7 @@
  *
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
- *     Antonio Garcia-Dominguez - add IFileImporter to parse
+ *     Antonio Garcia-Dominguez - add IFileImporter to parse, IHawkPlugin
  ******************************************************************************/
 package org.hawk.core;
 
@@ -27,17 +27,7 @@ import org.hawk.core.model.IHawkModelResource;
  *
  * @author Kostas Barmpis, Antonio Garcia-Dominguez
  */
-public interface IModelResourceFactory {
-
-	/**
-	 * Returns a string that uniquely identifies this factory.
-	 */
-	String getType();
-
-	/**
-	 * Returns a human friendly description of this factory.
-	 */
-	String getHumanReadableName();
+public interface IModelResourceFactory extends IHawkPlugin {
 
 	/**
 	 * Parses a single model file.

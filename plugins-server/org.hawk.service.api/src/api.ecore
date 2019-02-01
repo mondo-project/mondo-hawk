@@ -120,6 +120,11 @@
         <details key="d" value="Lists all the Hawk plugins that can be enabled or disabled: metamodel parsers, model parsers and graph change listeners."/>
       </eAnnotations>
     </eOperations>
+    <eOperations name="listPluginDetails" upperBound="-1" eType="#//HawkPlugin">
+      <eAnnotations source="doc">
+        <details key="d" value="Lists all the Hawk plugins that can be enabled or disabled, with details about each of them"/>
+      </eAnnotations>
+    </eOperations>
     <eOperations name="listInstances" upperBound="-1" eType="#//HawkInstance">
       <eAnnotations source="doc">
         <details key="d" value="Lists the details of all Hawk instances"/>
@@ -872,6 +877,44 @@
         <details key="d" value="Short message about the current status of the server"/>
       </eAnnotations>
     </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HawkPlugin">
+    <eAnnotations source="doc">
+      <details key="d" value="Details about a Hawk plugin installed on the server"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Unique identifier"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Human-friendly description"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//HawkPluginType"
+        containment="true">
+      <eAnnotations source="doc">
+        <details key="d" value="Plugin type"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="HawkPluginType">
+    <eAnnotations source="doc">
+      <details key="d" value="Hawk plugin types"/>
+    </eAnnotations>
+    <eLiterals name="BACKEND"/>
+    <eLiterals name="METAMODEL_INTROSPECTOR" value="1"/>
+    <eLiterals name="METAMODEL_RESOURCE_FACTORY" value="2"/>
+    <eLiterals name="METAMODEL_UPDATER" value="3"/>
+    <eLiterals name="MODEL_RESOURCE_FACTORY" value="4"/>
+    <eLiterals name="MODEL_UPDATER" value="5"/>
+    <eLiterals name="INDEX_FACTORY" value="6"/>
+    <eLiterals name="GRAPH_CHANGE_LISTENER" value="7"/>
+    <eLiterals name="VCS_MANAGER" value="8"/>
+    <eLiterals name="QUERY_ENGINE" value="9"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="HawkChangeEvent">
     <eAnnotations source="doc">

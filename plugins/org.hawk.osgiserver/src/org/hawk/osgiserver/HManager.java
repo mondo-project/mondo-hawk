@@ -58,6 +58,7 @@ public class HManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HManager.class);
 
+	public static final String BACKEND_CLASS_ATTRIBUTE = "store";
 	public static final String MUPDATER_CLASS_ATTRIBUTE = "ModelUpdater";
 	public static final String MPARSER_CLASS_ATTRIBUTE = "ModelParser";
 	public static final String MMPARSER_CLASS_ATTRIBUTE = "MetaModelParser";
@@ -148,8 +149,8 @@ public class HManager {
 
 	public IGraphDatabase createGraph(IHawk hawk) throws Exception {
 		for (IConfigurationElement i : getBackends()) {
-			if (i.getAttribute("store").equals(hawk.getDatabaseType())) {
-				return (IGraphDatabase) i.createExecutableExtension("store");
+			if (i.getAttribute(BACKEND_CLASS_ATTRIBUTE).equals(hawk.getDatabaseType())) {
+				return (IGraphDatabase) i.createExecutableExtension(BACKEND_CLASS_ATTRIBUTE);
 			}
 		}
 		throw new Exception("cannot instantiate this type of graph: "
@@ -241,7 +242,7 @@ public class HManager {
 	}
 
 	public Set<String> getIndexTypes() {
-		return getAttributeFor("store", getBackends());
+		return getAttributeFor(BACKEND_CLASS_ATTRIBUTE, getBackends());
 	}
 
 	public List<IConfigurationElement> getLanguages() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Aston University.
+ * Copyright (c) 2018-2019 Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -28,7 +28,7 @@ import java.util.NoSuchElementException;
  */
 public interface IMetaModelIntrospector {
 
-	public interface Factory {
+	public interface Factory extends IHawkPlugin {
 		/**
 		 * Returns <code>true</code> if this implementation can introspect the provided
 		 * {@link IModelIndexer}.

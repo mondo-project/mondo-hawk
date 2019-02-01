@@ -23,7 +23,7 @@ import java.util.Collection;
 
 import org.hawk.core.model.IHawkObject;
 
-public interface IVcsManager {
+public interface IVcsManager extends IHawkPlugin {
 
 	/**
 	 * Returns an identifier for the last revision available at this location.
@@ -109,15 +109,6 @@ public interface IVcsManager {
 	 * time to be able to support remote instances.
 	 */
 	void setCredentials(String username, String password, ICredentialsStore credStore);
-
-	/**
-	 * Returns a unique identifier for this manager, to be used from configuration
-	 * files.
-	 */
-	String getType();
-
-	/** Returns a human-friendly description of this manager, to be used from UI. */
-	String getHumanReadableName();
 
 	/**
 	 * Returns <code>true</code> if the implementation supports authentication.

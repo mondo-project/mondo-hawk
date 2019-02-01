@@ -184,4 +184,9 @@ public class OrientSQLQueryEngine implements IQueryEngine {
 			throw new InvalidQueryException(ex);
 		}
 	}
+
+	@Override
+	public String getHumanReadableName() {
+		return "Orient SQL query engine";
+	}
 }

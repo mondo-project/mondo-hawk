@@ -102,4 +102,9 @@ public class LocalHawkFactory implements IHawkFactory {
 		return null;
 	}
 
+	@Override
+	public String getHumanReadableName() {
+		return "Local Hawk Factory";
+	}
+
 }

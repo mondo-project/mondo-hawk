@@ -22,8 +22,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hawk.core.IConsole;
+import org.hawk.core.IHawkPlugin;
 
-public interface IGraphDatabase {
+public interface IGraphDatabase extends IHawkPlugin {
 
 	/**
 	 * Returns the path to the main directory storing the database.
@@ -109,10 +110,6 @@ public interface IGraphDatabase {
 	IGraphNode getNodeById(Object id);
 
 	boolean nodeIndexExists(String name);
-
-	String getType();
-
-	String getHumanReadableName();
 
 	String getTempDir();
 

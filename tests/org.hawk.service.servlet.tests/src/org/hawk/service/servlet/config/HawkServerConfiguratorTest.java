@@ -77,26 +77,25 @@ public class HawkServerConfiguratorTest {
 	}
 
 	@Test
-	public void testHawkServerConfigurator_instance1() {		
+	public void testHawkServerConfigurator_instance1() throws Exception {		
 		testhawkInstance(xmlFileName_1);
-		
 	}
-	
+
 	@Test
-	public void testHawkServerConfigurator_instance2() {
+	public void testHawkServerConfigurator_instance2() throws Exception {
 		testhawkInstance(xmlFileName_2);
 	}
 
-	private void testhawkInstance(String xmlFileName) {
-		ConfigFileParser parser = new ConfigFileParser();
-		HawkInstanceConfig config = parser.parse(new File(SERVERCONFIG_PATH, xmlFileName));
-
+	private void testhawkInstance(String xmlFileName) throws Exception {
+		final ConfigFileParser parser = new ConfigFileParser();
+		final HawkInstanceConfig config = parser.parse(new File(SERVERCONFIG_PATH, xmlFileName));
 		final HModel instance = manager.getHawkByName(config.getName());
 
 		assertTrue(instance.isRunning());
 		assertEquals(config.getName(), instance.getName());
 		assertEquals(config.getBackend(), instance.getDbType());
 		assertArrayEquals(config.getPlugins().toArray(), instance.getEnabledPlugins().toArray());
+		assertTrue(hawkIface.listPluginDetails().size() > 0);
 
 		finishedRetrievingInstanceInfo = false;
 		instance.configurePolling(0, 0);
@@ -133,12 +132,10 @@ public class HawkServerConfiguratorTest {
 		assertTrue(metamodels.contains("modelio://Modeliosoft.Infrastructure/2.1.00"));
 		
 		// derived attributes
-		System.out.println("***********getDerivedAttributes size: " + derivedAttributes.size());
 		assertTrue(derivedAttributes.size() > 0);
 		assertTrue(derivedAttributes.contains(config.getDerivedAttributes().get(0)));
 
 		// indexed attributes
-		System.out.println("***********getIndexedAttributes size: " + indexedAttributes.size());
 		assertEquals(indexedAttributes.size(), config.getIndexedAttributes().size());
 		assertTrue(indexedAttributes.contains(config.getIndexedAttributes().get(0)));
 	}

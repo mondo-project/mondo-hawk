@@ -8,6 +8,19 @@ enum CommitItemChangeType {
 		/* File was updated. */ UPDATED 
 }
 
+enum HawkPluginType {
+		/*  */ BACKEND 
+		/*  */ GRAPH_CHANGE_LISTENER 
+		/*  */ INDEX_FACTORY 
+		/*  */ METAMODEL_INTROSPECTOR 
+		/*  */ METAMODEL_RESOURCE_FACTORY 
+		/*  */ METAMODEL_UPDATER 
+		/*  */ MODEL_RESOURCE_FACTORY 
+		/*  */ MODEL_UPDATER 
+		/*  */ QUERY_ENGINE 
+		/*  */ VCS_MANAGER 
+}
+
 enum HawkState {
 		/* The instance is running and monitoring the indexed locations. */ RUNNING 
 		/* The instance is stopped and is not monitoring any indexed locations. */ STOPPED 
@@ -70,6 +83,12 @@ exception HawkInstanceNotRunning {
 }
 
 exception HawkMetamodelNotFound {
+}
+
+struct HawkPlugin {
+	 /* Unique identifier. */ 1: required string name,
+	 /* Human-friendly description. */ 2: required string description,
+	 /* Plugin type. */ 3: required HawkPluginType type,
 }
 
 struct HawkStateEvent {
@@ -401,8 +420,8 @@ service Hawk {
 	/* Factory to be used: if not set, the standard LocalHawkFactory is used. */ 6:  string indexFactory,
   )
   throws (
-	1: HawkFactoryNotFound err1 /* No Hawk factory exists with that name. */
-	)
+	1: HawkFactoryNotFound err1 /* No Hawk factory exists with that name. */ 
+	) 
 	
   /* Lists the names of the available storage backends. Auth needed: Yes */
   list<string> listBackends(
@@ -410,6 +429,10 @@ service Hawk {
 	
   /* Lists all the Hawk plugins that can be enabled or disabled: metamodel parsers, model parsers and graph change listeners. Auth needed: Yes */
   list<string> listPlugins(
+  )
+	
+  /* Lists all the Hawk plugins that can be enabled or disabled, with details about each of them. Auth needed: Yes */
+  list<HawkPlugin> listPluginDetails(
   )
 	
   /* Lists the details of all Hawk instances. Auth needed: Yes */

@@ -155,4 +155,9 @@ public class TimelineEOLQueryEngine implements IQueryEngine {
 		return results;
 	}
 
+	@Override
+	public String getHumanReadableName() {
+		return "Timeline EOL query engine";
+	}
+
 }

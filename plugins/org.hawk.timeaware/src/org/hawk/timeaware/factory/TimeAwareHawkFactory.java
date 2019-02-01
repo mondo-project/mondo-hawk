@@ -64,4 +64,9 @@ public class TimeAwareHawkFactory implements IHawkFactory {
 		return true;
 	}
 
+	@Override
+	public String getHumanReadableName() {
+		return "Time-aware local Hawk";
+	}
+
 }

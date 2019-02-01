@@ -422,17 +422,6 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 	}
 
-	// @Override
-	// public Map<?, ?> getConfig() {
-	//
-	// return ((EmbeddedGraphDatabase) graph).getConfig().getParams();
-	// }
-
-	@Override
-	public String getType() {
-		return "org.hawk.neo4j_v2.Neo4JDatabase";
-	}
-
 	@Override
 	public String getHumanReadableName() {
 		return "Neo4J (Version 2) Graph Database";
@@ -440,9 +429,7 @@ public class Neo4JDatabase implements IGraphDatabase {
 
 	@Override
 	public String getTempDir() {
-
 		return tempdir;
-
 	}
 
 	public Mode currentMode() {

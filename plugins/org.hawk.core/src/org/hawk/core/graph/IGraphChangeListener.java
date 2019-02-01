@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 The University of York.
+ * Copyright (c) 2015-2018 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.hawk.core.graph;
 
+import org.hawk.core.IHawkPlugin;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.model.IHawkClass;
@@ -42,8 +43,15 @@ import org.hawk.core.model.IHawkPackage;
  * changes (such as registering a metamodel).</li>
  * </ul>
  */
-public interface IGraphChangeListener {
+public interface IGraphChangeListener extends IHawkPlugin {
 
+	// Temporary adapter while we move IGraphChangeListener to the IHawkPlugin interface
+	@Override
+	default String getHumanReadableName() {
+		return getName();
+	}
+
+	@Deprecated
 	String getName();
 
 	void setModelIndexer(IModelIndexer m);

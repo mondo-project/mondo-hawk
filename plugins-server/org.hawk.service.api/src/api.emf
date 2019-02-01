@@ -74,6 +74,9 @@ class Hawk {
 	@doc(d="Lists all the Hawk plugins that can be enabled or disabled: metamodel parsers, model parsers and graph change listeners.")
 	op String[*] listPlugins();
 
+	@doc(d="Lists all the Hawk plugins that can be enabled or disabled, with details about each of them")
+	op HawkPlugin[*] listPluginDetails();
+
 	@doc(d="Lists the details of all Hawk instances")
 	op HawkInstance[*] listInstances();
 
@@ -372,6 +375,28 @@ class HawkStateEvent {
 	@doc(d="Timestamp for this state change") val long timestamp;
 	@doc(d="State of the Hawk instance") val HawkState state;
 	@doc(d="Short message about the current status of the server") val String message;
+}
+
+@doc(d="Details about a Hawk plugin installed on the server")
+class HawkPlugin {
+	@doc(d="Unique identifier") val String name;
+	@doc(d="Human-friendly description") val String description;
+	@doc(d="Plugin type") val HawkPluginType type;
+}
+
+// DO NOT CHANGE ORDER: THIS WOULD BREAK COMPATIBILITY WITH OLD CLIENTS
+@doc(d="Hawk plugin types")
+enum HawkPluginType {
+	BACKEND;
+	METAMODEL_INTROSPECTOR;
+	METAMODEL_RESOURCE_FACTORY;
+	METAMODEL_UPDATER;
+	MODEL_RESOURCE_FACTORY;
+	MODEL_UPDATER;
+	INDEX_FACTORY;
+	GRAPH_CHANGE_LISTENER;
+	VCS_MANAGER;
+	QUERY_ENGINE;
 }
 
 @doc(d="Serialized form of a change in the indexed models of a Hawk instance")

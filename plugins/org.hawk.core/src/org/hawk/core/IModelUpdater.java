@@ -25,7 +25,7 @@ import org.hawk.core.model.IHawkModelResource;
  * @author kb
  * 
  */
-public interface IModelUpdater {
+public interface IModelUpdater extends IHawkPlugin {
 
 	public boolean caresAboutResources();
 
@@ -52,6 +52,12 @@ public interface IModelUpdater {
 	public void updateIndexedAttribute(String metamodeluri, String typename,
 			String attributename);
 
+	@Override
+	default String getHumanReadableName() {
+		return getName();
+	}
+
+	@Deprecated
 	public String getName();
 
 	public Set<VcsCommitItem> compareWithLocalFiles(

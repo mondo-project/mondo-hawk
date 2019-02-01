@@ -118,4 +118,8 @@ public class TimeAwareEOLQueryEngine extends EOLQueryEngine {
 		return runQuery(module);
 	}
 
+	@Override
+	public String getHumanReadableName() {
+		return "Time-aware EOL query engine";
+	}
 }

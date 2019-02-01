@@ -107,4 +107,9 @@ public class ThriftRemoteHawkFactory implements IHawkFactory {
 		return client.listPlugins();
 	}
 
+	@Override
+	public String getHumanReadableName() {
+		return "Thrift-based remote Hawk";
+	}
+
 }

@@ -53,6 +53,11 @@ public class GraphMetaModelIntrospector implements IMetaModelIntrospector {
 		public IMetaModelIntrospector createFor(IModelIndexer idx) {
 			return new GraphMetaModelIntrospector(idx);
 		}
+
+		@Override
+		public String getHumanReadableName() {
+			return "Local metamodel introspector factory";
+		}
 	}
 
 	private final IModelIndexer indexer;

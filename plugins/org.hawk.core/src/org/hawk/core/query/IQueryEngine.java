@@ -26,10 +26,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.hawk.core.IHawkPlugin;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphNode;
 
-public interface IQueryEngine {
+public interface IQueryEngine extends IHawkPlugin {
 
 	/**
 	 * If true, contextful getAllOf will start from the files in
@@ -118,8 +119,6 @@ public interface IQueryEngine {
 	IAccessListener calculateDerivedAttributes(IModelIndexer m,
 			Iterable<IGraphNode> nodes) throws InvalidQueryException,
 			QueryExecutionException;
-
-	String getType();
 
 	List<String> validate(String derivationlogic);
 

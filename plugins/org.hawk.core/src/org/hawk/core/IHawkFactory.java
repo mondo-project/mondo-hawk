@@ -27,7 +27,7 @@ import org.hawk.core.IStateListener.HawkState;
  * contribute different implementations of {@link IHawk} (which may introduce
  * their own dependencies).
  */
-public interface IHawkFactory {
+public interface IHawkFactory extends IHawkPlugin {
 
 	/**
 	 * Basic information about existing instances. This should only have

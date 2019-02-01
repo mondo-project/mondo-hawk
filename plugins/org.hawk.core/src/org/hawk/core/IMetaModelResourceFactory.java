@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2015 The University of York.
+ * Copyright (c) 2011-2019 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -13,6 +13,7 @@
  *
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
+ *     Antonio Garcia-Dominguez - extend from IHawkPlugin
  ******************************************************************************/
 package org.hawk.core;
 
@@ -23,13 +24,9 @@ import java.util.Set;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.model.IHawkPackage;
 
-public interface IMetaModelResourceFactory {
+public interface IMetaModelResourceFactory extends IHawkPlugin {
 
 	String DUMPED_PKG_PREFIX = "resource_from_epackage_";
-
-	String getType();
-
-	String getHumanReadableName();
 
 	/** adds a new metamodel resource to hawk, from a file */
 	IHawkMetaModelResource parse(File f) throws Exception;
