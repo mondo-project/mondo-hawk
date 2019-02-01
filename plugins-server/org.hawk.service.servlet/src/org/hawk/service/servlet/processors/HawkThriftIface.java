@@ -34,6 +34,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -47,8 +48,6 @@ import org.apache.activemq.artemis.api.core.client.ClientSessionFactory;
 import org.apache.activemq.artemis.api.core.client.ServerLocator;
 import org.apache.activemq.artemis.core.remoting.impl.invm.InVMConnectorFactory;
 import org.apache.thrift.TException;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -92,7 +91,7 @@ import org.hawk.service.api.HawkInstanceNotFound;
 import org.hawk.service.api.HawkInstanceNotRunning;
 import org.hawk.service.api.HawkMetamodelNotFound;
 import org.hawk.service.api.HawkPlugin;
-import org.hawk.service.api.HawkPluginType;
+import org.hawk.service.api.HawkPluginCategory;
 import org.hawk.service.api.HawkQueryOptions;
 import org.hawk.service.api.HawkTypeNotFound;
 import org.hawk.service.api.IndexedAttributeSpec;
@@ -753,41 +752,24 @@ public final class HawkThriftIface implements Hawk.Iface {
 
 	@Override
 	public List<String> listPlugins() throws TException {
-		return HManager.getInstance().getAvailablePlugins();
+		return HManager.getInstance().getAvailablePlugins()
+			.stream().map(p -> p.getType()).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<HawkPlugin> listPluginDetails() throws TException {
-		final HManager hm = HManager.getInstance();
-		
+		List<IHawkPlugin> hawkPlugins = HManager.getInstance().getAvailablePlugins();
+
 		final List<HawkPlugin> plugins = new ArrayList<>();
-		addPluginsOfType(plugins, HManager.BACKEND_CLASS_ATTRIBUTE, HawkPluginType.BACKEND, hm.getBackends());
-		addPluginsOfType(plugins, HManager.GCHANGEL_CLASS_ATTRIBUTE, HawkPluginType.GRAPH_CHANGE_LISTENER, hm.getGraphChangeListeners());
-		addPluginsOfType(plugins, HManager.HAWKFACTORY_CLASS_ATTRIBUTE, HawkPluginType.INDEX_FACTORY, hm.getHawkFactories());
-		addPluginsOfType(plugins, HManager.INTROSPECTOR_CLASS_ATTRIBUTE, HawkPluginType.METAMODEL_INTROSPECTOR, hm.getIntrospectors());
-		addPluginsOfType(plugins, HManager.MMPARSER_CLASS_ATTRIBUTE, HawkPluginType.METAMODEL_RESOURCE_FACTORY, hm.getMmps());
-		addPluginsOfType(plugins, HManager.MPARSER_CLASS_ATTRIBUTE, HawkPluginType.MODEL_RESOURCE_FACTORY, hm.getMps());
-		addPluginsOfType(plugins, HManager.MUPDATER_CLASS_ATTRIBUTE, HawkPluginType.MODEL_UPDATER, hm.getUps());
-		addPluginsOfType(plugins, HManager.QUERYLANG_CLASS_ATTRIBUTE, HawkPluginType.QUERY_ENGINE, hm.getLanguages());
-		addPluginsOfType(plugins, HManager.VCSMANAGER_CLASS_ATTRIBUTE, HawkPluginType.VCS_MANAGER, hm.getVCS());
+		for (IHawkPlugin hp : hawkPlugins) {
+			HawkPlugin p = new HawkPlugin();
+			p.setDescription(hp.getHumanReadableName());
+			p.setCategory(HawkPluginCategory.valueOf(hp.getCategory().name()));
+			p.setName(hp.getType());
+			plugins.add(p);
+		}
 
 		return plugins;
-	}
-
-	private void addPluginsOfType(final List<HawkPlugin> plugins, final String attr, final HawkPluginType type,
-			final List<IConfigurationElement> configElements) {
-		for (IConfigurationElement backend : configElements) {
-			try {
-				HawkPlugin plugin = new HawkPlugin();
-				IHawkPlugin db = (IHawkPlugin) backend.createExecutableExtension(attr);
-				plugin.setName(attr);
-				plugin.setDescription(db.getHumanReadableName());
-				plugin.setType(type);
-				plugins.add(plugin);
-			} catch (CoreException e) {
-				LOGGER.error(e.getMessage(), e);
-			}
-		}
 	}
 
 	@Override

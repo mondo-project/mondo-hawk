@@ -31,6 +31,7 @@ import org.apache.thrift.TException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osgi.service.datalocation.Location;
+import org.hawk.core.IHawkPlugin;
 import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.util.DerivedAttributeParameters;
 import org.hawk.core.util.IndexedAttributeParameters;
@@ -250,13 +251,25 @@ public class HawkServerConfigurator  {
 	}
 
 	private void addMissingPlugins(HModel hawkInstance, HawkInstanceConfig config) throws Exception {
-		List<String> availableplugins = manager.getAvailablePlugins();
-		List<String> existingplugins = hawkInstance.getEnabledPlugins();
-		List<String> missingPlugins = new ArrayList<String>();
+		final List<String> availablePlugins = new ArrayList<>();
+		for (IHawkPlugin hp : manager.getAvailablePlugins()) {
+			switch (hp.getCategory()) {
+			case GRAPH_CHANGE_LISTENER:
+			case METAMODEL_RESOURCE_FACTORY:
+			case MODEL_RESOURCE_FACTORY:
+			case MODEL_UPDATER:
+				availablePlugins.add(hp.getType());
+				break;
+			default:
+				break;
+			}
+		}
 
+		final List<String> existingPlugins = hawkInstance.getEnabledPlugins();
+		final List<String> missingPlugins = new ArrayList<String>();
 		for (String plugin : config.getPlugins()) {
-			if(availableplugins.contains(plugin)) {
-				if (!existingplugins.contains(plugin)) {
+			if(availablePlugins.contains(plugin)) {
+				if (!existingPlugins.contains(plugin)) {
 					missingPlugins.add(plugin);
 				}
 			} else {

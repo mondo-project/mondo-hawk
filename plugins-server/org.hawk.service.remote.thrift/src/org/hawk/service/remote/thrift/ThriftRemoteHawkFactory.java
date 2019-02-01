@@ -57,30 +57,7 @@ public class ThriftRemoteHawkFactory implements IHawkFactory {
 
 		@Override
 		public Category getCategory() {
-			switch (tp.getType()) {
-			case BACKEND:
-				return Category.BACKEND;
-			case GRAPH_CHANGE_LISTENER:
-				return Category.GRAPH_CHANGE_LISTENER;
-			case INDEX_FACTORY:
-				return Category.INDEX_FACTORY;
-			case METAMODEL_INTROSPECTOR:
-				return Category.METAMODEL_INTROSPECTOR;
-			case METAMODEL_RESOURCE_FACTORY:
-				return Category.METAMODEL_RESOURCE_FACTORY;
-			case METAMODEL_UPDATER:
-				return Category.METAMODEL_UPDATER;
-			case MODEL_RESOURCE_FACTORY:
-				return Category.MODEL_RESOURCE_FACTORY;
-			case MODEL_UPDATER:
-				return Category.MODEL_UPDATER;
-			case QUERY_ENGINE:
-				return Category.QUERY_ENGINE;
-			case VCS_MANAGER:
-				return Category.VCS_MANAGER;
-			default:
-				throw new IllegalArgumentException("Unknown category " + tp.getType());
-			}
+			return Category.valueOf(tp.getCategory().name());
 		}
 	}
 

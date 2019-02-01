@@ -426,14 +426,24 @@ public class HWizardPage extends WizardPage {
 		try {
 			final IHawkFactory factory = factories.get(getFactoryID());
 			List<IHawkPlugin> plugins = factory.listPlugins(locationText.getText());
-			List<String> pluginNames = new ArrayList<>();
 			if (plugins == null) {
-				pluginNames.addAll(HUIManager.getInstance().getAvailablePlugins());
-			} else {
-				for (IHawkPlugin p : plugins) {
+				plugins = HUIManager.getInstance().getAvailablePlugins();
+			}
+
+			List<String> pluginNames = new ArrayList<>();
+			for (IHawkPlugin p : plugins) {
+				switch (p.getCategory()) {
+				case METAMODEL_RESOURCE_FACTORY:
+				case MODEL_RESOURCE_FACTORY:
+				case MODEL_UPDATER:
+				case GRAPH_CHANGE_LISTENER:
 					pluginNames.add(p.getType());
+					break;
+				default:
+					break;
 				}
 			}
+			Collections.sort(pluginNames);
 
 			final List<String> oldInput = (List<String>) pluginTable.getInput();
 			final List<Object> oldChecked = Arrays.asList(pluginTable.getCheckedElements());

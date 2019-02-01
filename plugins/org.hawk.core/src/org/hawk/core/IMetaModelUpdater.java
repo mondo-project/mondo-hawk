@@ -21,7 +21,7 @@ import java.util.Set;
 
 import org.hawk.core.model.IHawkMetaModelResource;
 
-public interface IMetaModelUpdater {
+public interface IMetaModelUpdater extends IHawkPlugin {
 
 	/**
 	 * @return <code>true</code> if insertion was successful, <code>false</code> otherwise.
@@ -39,7 +39,13 @@ public interface IMetaModelUpdater {
 	boolean addIndexedAttribute(String metamodeluri, String typename,
 			String attributename, IModelIndexer indexer);
 
+	@Deprecated
 	String getName();
+
+	@Override
+	default String getHumanReadableName() {
+		return getName();
+	}
 
 	Set<String> removeMetamodels(IModelIndexer indexer,
 			String[] mmuris);
@@ -52,4 +58,9 @@ public interface IMetaModelUpdater {
 			String typeName, String attributeName,
 			IModelIndexer modelIndexerImpl);
 
+	@Override
+	default Category getCategory() {
+		return Category.METAMODEL_UPDATER;
+	}
+	
 }

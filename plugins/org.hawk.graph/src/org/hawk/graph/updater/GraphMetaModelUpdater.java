@@ -97,5 +97,4 @@ public class GraphMetaModelUpdater implements IMetaModelUpdater {
 				metamodelUri, typeName, attributeName, indexer.getGraph(),
 				indexer.getCompositeGraphChangeListener());
 	}
-
 }

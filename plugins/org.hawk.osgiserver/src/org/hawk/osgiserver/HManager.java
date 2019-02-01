@@ -38,10 +38,11 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.hawk.core.ICredentialsStore;
 import org.hawk.core.IHawk;
 import org.hawk.core.IHawkFactory;
+import org.hawk.core.IHawkPlugin;
+import org.hawk.core.IMetaModelIntrospector;
 import org.hawk.core.IMetaModelUpdater;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
-import org.hawk.core.IMetaModelIntrospector;
 import org.hawk.core.IVcsManager;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.util.HawkConfig;
@@ -92,11 +93,18 @@ public class HManager {
 		return InstanceScope.INSTANCE.getNode(bundleName);
 	}
 
-	private static void createExecutableExtensions(final String propertyName,
-			final List<IConfigurationElement> elements) throws CoreException {
+	@SuppressWarnings("unchecked")
+	private static <T> List<T> createExecutableExtensions(final String propertyName,
+			final List<IConfigurationElement> elements) {
+		final List<T> exts = new ArrayList<>();
 		for (IConfigurationElement i : elements) {
-			i.createExecutableExtension(propertyName);
+			try {
+				exts.add((T) i.createExecutableExtension(propertyName));
+			} catch (CoreException e) {
+				LOGGER.error(e.getMessage(), e);
+			}
 		}
+		return exts;
 	}
 
 	private static Set<String> getAttributeFor(final String attributeName,
@@ -309,34 +317,39 @@ public class HManager {
 	}
 
 	/**
-	 * Returns a sorted list with all the possible plugins that can be
-	 * enabled/disabled.
+	 * Returns a list with all the plugins available to Hawk.
 	 */
-	public List<String> getAvailablePlugins() {
-		List<String> all = new ArrayList<String>();
-		all.addAll(getMetaModelTypes());
-		all.addAll(getModelTypes());
+	public List<IHawkPlugin> getAvailablePlugins() {
+		List<IHawkPlugin> all = new ArrayList<>();
+		
+		List<IHawkPlugin> backends = createExecutableExtensions(BACKEND_CLASS_ATTRIBUTE, getBackends());
+		all.addAll(backends);
 
-		// So far we only have one choice for it, and it doesn't make sense to enable/disable it
-		//		all.addAll(getLanguageTypes());
+		List<IHawkPlugin> gcl = createExecutableExtensions(GCHANGEL_CLASS_ATTRIBUTE, getGraphChangeListeners());
+		all.addAll(gcl);
 
-		all.addAll(getUpdaterTypes());
-		all.addAll(getGraphChangeListenerTypes());
-		Collections.sort(all);
+		List<IHawkPlugin> factories = createExecutableExtensions(HAWKFACTORY_CLASS_ATTRIBUTE, getHawkFactories());
+		all.addAll(factories);
+
+		List<IHawkPlugin> mmParsers = createExecutableExtensions(MMPARSER_CLASS_ATTRIBUTE, getMmps());
+		all.addAll(mmParsers);
+
+		List<IHawkPlugin> mParsers = createExecutableExtensions(MPARSER_CLASS_ATTRIBUTE, getMps());
+		all.addAll(mParsers);
+
+		List<IHawkPlugin> mUpdaters = createExecutableExtensions(MUPDATER_CLASS_ATTRIBUTE, getUps());
+		all.addAll(mUpdaters);
+
+		List<IHawkPlugin> queryEngines = createExecutableExtensions(QUERYLANG_CLASS_ATTRIBUTE, getLanguages());
+		all.addAll(queryEngines);
+
+		all.addAll(getVCSInstances());
+
 		return all;
 	}
 
 	public List<IVcsManager> getVCSInstances() {
-		final List<IVcsManager> instances = new ArrayList<>();
-		for (IConfigurationElement elem : getVCS()) {
-			try {
-				instances.add((IVcsManager) elem
-						.createExecutableExtension(VCSMANAGER_CLASS_ATTRIBUTE));
-			} catch (CoreException e) {
-				LOGGER.error(e.getMessage(), e);
-			}
-		}
-		return instances;
+		return createExecutableExtensions(VCSMANAGER_CLASS_ATTRIBUTE, getVCS());
 	}
 
 	public List<IConfigurationElement> getHawkFactories() {
