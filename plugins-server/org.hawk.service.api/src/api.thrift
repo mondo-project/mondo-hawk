@@ -8,7 +8,7 @@ enum CommitItemChangeType {
 		/* File was updated. */ UPDATED 
 }
 
-enum HawkPluginType {
+enum HawkPluginCategory {
 		/*  */ BACKEND 
 		/*  */ GRAPH_CHANGE_LISTENER 
 		/*  */ INDEX_FACTORY 
@@ -88,7 +88,7 @@ exception HawkMetamodelNotFound {
 struct HawkPlugin {
 	 /* Unique identifier. */ 1: required string name,
 	 /* Human-friendly description. */ 2: required string description,
-	 /* Plugin type. */ 3: required HawkPluginType type,
+	 /* Plugin category. */ 3: required HawkPluginCategory category,
 }
 
 struct HawkStateEvent {

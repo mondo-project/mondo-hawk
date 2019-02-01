@@ -894,16 +894,16 @@
         <details key="d" value="Human-friendly description"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//HawkPluginType"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="category" eType="#//HawkPluginCategory"
         containment="true">
       <eAnnotations source="doc">
-        <details key="d" value="Plugin type"/>
+        <details key="d" value="Plugin category"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="HawkPluginType">
+  <eClassifiers xsi:type="ecore:EEnum" name="HawkPluginCategory">
     <eAnnotations source="doc">
-      <details key="d" value="Hawk plugin types"/>
+      <details key="d" value="Hawk plugin categories"/>
     </eAnnotations>
     <eLiterals name="BACKEND"/>
     <eLiterals name="METAMODEL_INTROSPECTOR" value="1"/>

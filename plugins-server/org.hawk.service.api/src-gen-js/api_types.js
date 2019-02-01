@@ -12,7 +12,7 @@ CommitItemChangeType = {
   'UNKNOWN' : 3,
   'UPDATED' : 4
 };
-HawkPluginType = {
+HawkPluginCategory = {
   'BACKEND' : 0,
   'GRAPH_CHANGE_LISTENER' : 1,
   'INDEX_FACTORY' : 2,
@@ -727,7 +727,7 @@ HawkMetamodelNotFound.prototype.write = function(output) {
 HawkPlugin = function(args) {
   this.name = null;
   this.description = null;
-  this.type = null;
+  this.category = null;
   if (args) {
     if (args.name !== undefined && args.name !== null) {
       this.name = args.name;
@@ -739,10 +739,10 @@ HawkPlugin = function(args) {
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field description is unset!');
     }
-    if (args.type !== undefined && args.type !== null) {
-      this.type = args.type;
+    if (args.category !== undefined && args.category !== null) {
+      this.category = args.category;
     } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field type is unset!');
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field category is unset!');
     }
   }
 };
@@ -776,7 +776,7 @@ HawkPlugin.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.type = input.readI32().value;
+        this.category = input.readI32().value;
       } else {
         input.skip(ftype);
       }
@@ -802,9 +802,9 @@ HawkPlugin.prototype.write = function(output) {
     output.writeString(this.description);
     output.writeFieldEnd();
   }
-  if (this.type !== null && this.type !== undefined) {
-    output.writeFieldBegin('type', Thrift.Type.I32, 3);
-    output.writeI32(this.type);
+  if (this.category !== null && this.category !== undefined) {
+    output.writeFieldBegin('category', Thrift.Type.I32, 3);
+    output.writeI32(this.category);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

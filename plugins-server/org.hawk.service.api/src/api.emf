@@ -381,12 +381,13 @@ class HawkStateEvent {
 class HawkPlugin {
 	@doc(d="Unique identifier") val String name;
 	@doc(d="Human-friendly description") val String description;
-	@doc(d="Plugin type") val HawkPluginType type;
+	@doc(d="Plugin category") val HawkPluginCategory category;
 }
 
-// DO NOT CHANGE ORDER: THIS WOULD BREAK COMPATIBILITY WITH OLD CLIENTS
-@doc(d="Hawk plugin types")
-enum HawkPluginType {
+// DO NOT CHANGE ORDER: THIS WOULD BREAK COMPATIBILITY WITH OLD CLIENTS.
+// THESE NAMES SHOULD MATCH EXACTLY THOSE IN IHawkPlugin#Category.
+@doc(d="Hawk plugin categories")
+enum HawkPluginCategory {
 	BACKEND;
 	METAMODEL_INTROSPECTOR;
 	METAMODEL_RESOURCE_FACTORY;

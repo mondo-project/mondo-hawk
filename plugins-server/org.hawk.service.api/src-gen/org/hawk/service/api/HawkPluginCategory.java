@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.HashMap;
 import org.apache.thrift.TEnum;
 
-public enum HawkPluginType implements org.apache.thrift.TEnum {
+public enum HawkPluginCategory implements org.apache.thrift.TEnum {
   BACKEND(0),
   GRAPH_CHANGE_LISTENER(1),
   INDEX_FACTORY(2),
@@ -25,7 +25,7 @@ public enum HawkPluginType implements org.apache.thrift.TEnum {
 
   private final int value;
 
-  private HawkPluginType(int value) {
+  private HawkPluginCategory(int value) {
     this.value = value;
   }
 
@@ -40,7 +40,7 @@ public enum HawkPluginType implements org.apache.thrift.TEnum {
    * Find a the enum type by its integer value, as defined in the Thrift IDL.
    * @return null if the value is not found.
    */
-  public static HawkPluginType findByValue(int value) { 
+  public static HawkPluginCategory findByValue(int value) { 
     switch (value) {
       case 0:
         return BACKEND;

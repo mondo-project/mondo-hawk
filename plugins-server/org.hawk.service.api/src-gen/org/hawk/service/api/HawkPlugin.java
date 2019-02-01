@@ -40,7 +40,7 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
 
   private static final org.apache.thrift.protocol.TField NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("name", org.apache.thrift.protocol.TType.STRING, (short)1);
   private static final org.apache.thrift.protocol.TField DESCRIPTION_FIELD_DESC = new org.apache.thrift.protocol.TField("description", org.apache.thrift.protocol.TType.STRING, (short)2);
-  private static final org.apache.thrift.protocol.TField TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("type", org.apache.thrift.protocol.TType.I32, (short)3);
+  private static final org.apache.thrift.protocol.TField CATEGORY_FIELD_DESC = new org.apache.thrift.protocol.TField("category", org.apache.thrift.protocol.TType.I32, (short)3);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -52,9 +52,9 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
   public String description; // required
   /**
    * 
-   * @see HawkPluginType
+   * @see HawkPluginCategory
    */
-  public HawkPluginType type; // required
+  public HawkPluginCategory category; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -62,9 +62,9 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
     DESCRIPTION((short)2, "description"),
     /**
      * 
-     * @see HawkPluginType
+     * @see HawkPluginCategory
      */
-    TYPE((short)3, "type");
+    CATEGORY((short)3, "category");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -83,8 +83,8 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
           return NAME;
         case 2: // DESCRIPTION
           return DESCRIPTION;
-        case 3: // TYPE
-          return TYPE;
+        case 3: // CATEGORY
+          return CATEGORY;
         default:
           return null;
       }
@@ -132,8 +132,8 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.DESCRIPTION, new org.apache.thrift.meta_data.FieldMetaData("description", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-        new org.apache.thrift.meta_data.EnumMetaData(org.apache.thrift.protocol.TType.ENUM, HawkPluginType.class)));
+    tmpMap.put(_Fields.CATEGORY, new org.apache.thrift.meta_data.FieldMetaData("category", org.apache.thrift.TFieldRequirementType.REQUIRED, 
+        new org.apache.thrift.meta_data.EnumMetaData(org.apache.thrift.protocol.TType.ENUM, HawkPluginCategory.class)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(HawkPlugin.class, metaDataMap);
   }
@@ -144,12 +144,12 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
   public HawkPlugin(
     String name,
     String description,
-    HawkPluginType type)
+    HawkPluginCategory category)
   {
     this();
     this.name = name;
     this.description = description;
-    this.type = type;
+    this.category = category;
   }
 
   /**
@@ -162,8 +162,8 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
     if (other.isSetDescription()) {
       this.description = other.description;
     }
-    if (other.isSetType()) {
-      this.type = other.type;
+    if (other.isSetCategory()) {
+      this.category = other.category;
     }
   }
 
@@ -175,7 +175,7 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
   public void clear() {
     this.name = null;
     this.description = null;
-    this.type = null;
+    this.category = null;
   }
 
   public String getName() {
@@ -228,33 +228,33 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
 
   /**
    * 
-   * @see HawkPluginType
+   * @see HawkPluginCategory
    */
-  public HawkPluginType getType() {
-    return this.type;
+  public HawkPluginCategory getCategory() {
+    return this.category;
   }
 
   /**
    * 
-   * @see HawkPluginType
+   * @see HawkPluginCategory
    */
-  public HawkPlugin setType(HawkPluginType type) {
-    this.type = type;
+  public HawkPlugin setCategory(HawkPluginCategory category) {
+    this.category = category;
     return this;
   }
 
-  public void unsetType() {
-    this.type = null;
+  public void unsetCategory() {
+    this.category = null;
   }
 
-  /** Returns true if field type is set (has been assigned a value) and false otherwise */
-  public boolean isSetType() {
-    return this.type != null;
+  /** Returns true if field category is set (has been assigned a value) and false otherwise */
+  public boolean isSetCategory() {
+    return this.category != null;
   }
 
-  public void setTypeIsSet(boolean value) {
+  public void setCategoryIsSet(boolean value) {
     if (!value) {
-      this.type = null;
+      this.category = null;
     }
   }
 
@@ -276,11 +276,11 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
       }
       break;
 
-    case TYPE:
+    case CATEGORY:
       if (value == null) {
-        unsetType();
+        unsetCategory();
       } else {
-        setType((HawkPluginType)value);
+        setCategory((HawkPluginCategory)value);
       }
       break;
 
@@ -295,8 +295,8 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
     case DESCRIPTION:
       return getDescription();
 
-    case TYPE:
-      return getType();
+    case CATEGORY:
+      return getCategory();
 
     }
     throw new IllegalStateException();
@@ -313,8 +313,8 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
       return isSetName();
     case DESCRIPTION:
       return isSetDescription();
-    case TYPE:
-      return isSetType();
+    case CATEGORY:
+      return isSetCategory();
     }
     throw new IllegalStateException();
   }
@@ -350,12 +350,12 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
         return false;
     }
 
-    boolean this_present_type = true && this.isSetType();
-    boolean that_present_type = true && that.isSetType();
-    if (this_present_type || that_present_type) {
-      if (!(this_present_type && that_present_type))
+    boolean this_present_category = true && this.isSetCategory();
+    boolean that_present_category = true && that.isSetCategory();
+    if (this_present_category || that_present_category) {
+      if (!(this_present_category && that_present_category))
         return false;
-      if (!this.type.equals(that.type))
+      if (!this.category.equals(that.category))
         return false;
     }
 
@@ -376,10 +376,10 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
     if (present_description)
       list.add(description);
 
-    boolean present_type = true && (isSetType());
-    list.add(present_type);
-    if (present_type)
-      list.add(type.getValue());
+    boolean present_category = true && (isSetCategory());
+    list.add(present_category);
+    if (present_category)
+      list.add(category.getValue());
 
     return list.hashCode();
   }
@@ -412,12 +412,12 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetType()).compareTo(other.isSetType());
+    lastComparison = Boolean.valueOf(isSetCategory()).compareTo(other.isSetCategory());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetType()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.type, other.type);
+    if (isSetCategory()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.category, other.category);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -458,11 +458,11 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
     }
     first = false;
     if (!first) sb.append(", ");
-    sb.append("type:");
-    if (this.type == null) {
+    sb.append("category:");
+    if (this.category == null) {
       sb.append("null");
     } else {
-      sb.append(this.type);
+      sb.append(this.category);
     }
     first = false;
     sb.append(")");
@@ -477,8 +477,8 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
     if (description == null) {
       throw new org.apache.thrift.protocol.TProtocolException("Required field 'description' was not present! Struct: " + toString());
     }
-    if (type == null) {
-      throw new org.apache.thrift.protocol.TProtocolException("Required field 'type' was not present! Struct: " + toString());
+    if (category == null) {
+      throw new org.apache.thrift.protocol.TProtocolException("Required field 'category' was not present! Struct: " + toString());
     }
     // check for sub-struct validity
   }
@@ -533,10 +533,10 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 3: // TYPE
+          case 3: // CATEGORY
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.type = org.hawk.service.api.HawkPluginType.findByValue(iprot.readI32());
-              struct.setTypeIsSet(true);
+              struct.category = org.hawk.service.api.HawkPluginCategory.findByValue(iprot.readI32());
+              struct.setCategoryIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -566,9 +566,9 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
         oprot.writeString(struct.description);
         oprot.writeFieldEnd();
       }
-      if (struct.type != null) {
-        oprot.writeFieldBegin(TYPE_FIELD_DESC);
-        oprot.writeI32(struct.type.getValue());
+      if (struct.category != null) {
+        oprot.writeFieldBegin(CATEGORY_FIELD_DESC);
+        oprot.writeI32(struct.category.getValue());
         oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();
@@ -590,7 +590,7 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
       TTupleProtocol oprot = (TTupleProtocol) prot;
       oprot.writeString(struct.name);
       oprot.writeString(struct.description);
-      oprot.writeI32(struct.type.getValue());
+      oprot.writeI32(struct.category.getValue());
     }
 
     @Override
@@ -600,8 +600,8 @@ public class HawkPlugin implements org.apache.thrift.TBase<HawkPlugin, HawkPlugi
       struct.setNameIsSet(true);
       struct.description = iprot.readString();
       struct.setDescriptionIsSet(true);
-      struct.type = org.hawk.service.api.HawkPluginType.findByValue(iprot.readI32());
-      struct.setTypeIsSet(true);
+      struct.category = org.hawk.service.api.HawkPluginCategory.findByValue(iprot.readI32());
+      struct.setCategoryIsSet(true);
     }
   }
 
