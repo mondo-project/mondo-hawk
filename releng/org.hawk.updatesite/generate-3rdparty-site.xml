@@ -19,30 +19,13 @@
 		<p2.mirror source="http://eclipse.svnkit.com/1.8.x/">
 			<destination kind="metadata" location="file://${sitedir}" name="SVNKit" append="true" />
 			<destination kind="artifact" location="file://${sitedir}" name="SVNKit" append="true" />
-			<iu id="net.java.dev.jna.feature.group" version="4.1.0.v06022015_1911"/>
-			<iu id="org.tmatesoft.svnkit.feature.group" version="1.8.11.r10483_v20150925_0010"/>
+			<iu id="net.java.dev.jna.feature.group" />
+			<iu id="org.tmatesoft.svnkit.feature.group" />
 		</p2.mirror>
 		<delete dir="${sitedir}" includes="*.jar"/>
 
-		<!-- ktable is LGPL, should be fine -->
-		<eclipse.convertPath resourcepath="/RCPTARGET/ktable/plugins/" property="ktable_plugins" />
-
-		<!-- Nebula and UML2 are Eclipse projects -->
-		<eclipse.convertPath resourcepath="/RCPTARGET/nebula-incubator/plugins/" property="nebi_plugins" />
-		<eclipse.convertPath resourcepath="/RCPTARGET/nebula-nattable/plugins/" property="nebt_plugins" />
-		<eclipse.convertPath resourcepath="/RCPTARGET/nebula/plugins/" property="neb_plugins" />
-		<eclipse.convertPath resourcepath="/RCPTARGET/uml2_3.2/plugins/" property="uml_plugins" />
-
 		<!-- Thrift is an Apache project (ASL 2.0) -->
 		<get src="${thrifturl}" dest="${sitedir}/plugins/${thriftfname}"/>
-
-		<copy todir="${sitedir}/plugins">
-			<fileset dir="${ktable_plugins}" includes="*.jar"/>
-			<fileset dir="${nebi_plugins}" includes="*.jar"/>
-			<fileset dir="${nebt_plugins}" includes="*.jar"/>
-			<fileset dir="${neb_plugins}" includes="*.jar"/>
-			<fileset dir="${uml_plugins}" includes="*.jar"/>
-		</copy>
 
 		<eclipse.publish.featuresAndBundles
 			repository="file:/${sitedir}/"
