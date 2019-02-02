@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<site>
-   <feature url="features/org.hawk.neo4jv2.feature_1.2.0.qualifier.jar" id="org.hawk.neo4jv2.feature" version="1.2.0.qualifier">
-      <category name="hawk.backends"/>
-   </feature>
-   <category-def name="hawk.backends" label="Hawk Backends (GPL)"/>
-</site>
