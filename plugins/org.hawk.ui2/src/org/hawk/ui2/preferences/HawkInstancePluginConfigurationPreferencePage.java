@@ -17,9 +17,9 @@
  ******************************************************************************/
 package org.hawk.ui2.preferences;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.ICheckStateProvider;
@@ -32,9 +32,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.hawk.core.IMetaModelResourceFactory;
-import org.hawk.core.IModelResourceFactory;
-import org.hawk.core.graph.IGraphChangeListener;
+import org.hawk.core.IHawkPlugin;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.util.HUIManager;
 
@@ -46,6 +44,7 @@ public class HawkInstancePluginConfigurationPreferencePage extends PreferencePag
 
 	public HawkInstancePluginConfigurationPreferencePage() {
 		super("Instance Configuration");
+		setDescription("You may enable plugins but not disable them");
 	}
 
 	@Override
@@ -58,9 +57,10 @@ public class HawkInstancePluginConfigurationPreferencePage extends PreferencePag
 		initializeDialogUnits(parent);
 
 		/** ----- */
-		combo = new Combo(parent, SWT.READ_ONLY);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.horizontalSpan = 2;
+
+		combo = new Combo(parent, SWT.READ_ONLY);
 		combo.setLayoutData(gd);
 		Set<HModel> hawks = HUIManager.getInstance().getHawks();
 		for (HModel db : hawks) {
@@ -70,28 +70,30 @@ public class HawkInstancePluginConfigurationPreferencePage extends PreferencePag
 
 		pluginBlock = new HawkPluginSelectionBlock();
 		pluginBlock.createControl(parent);
-		pluginBlock.getMetamodelTableViewer().setCheckStateProvider(new TypedCheckStateProvider(IMetaModelResourceFactory.class));
-		pluginBlock.getGraphChangeListenerTableViewer().setCheckStateProvider(new TypedCheckStateProvider(IGraphChangeListener.class));
-		pluginBlock.getModelTableViewer().setCheckStateProvider(new TypedCheckStateProvider(IModelResourceFactory.class));
-
-		
+		pluginBlock.getMetamodelTableViewer().setCheckStateProvider(new TypedCheckStateProvider());
+		pluginBlock.getGraphChangeListenerTableViewer().setCheckStateProvider(new TypedCheckStateProvider());
+		pluginBlock.getModelTableViewer().setCheckStateProvider(new TypedCheckStateProvider());
 
 		combo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				pluginBlock.update();
+				updatePlugins();
 			}
 		});
 
-		pluginBlock.update();
-		getSelectedHawkInstance();
-
+		updatePlugins();
+		
 		return parent;
 	}
 
+	private void updatePlugins(){
+		List<IHawkPlugin> plugins = getSelectedHawkInstance().getManager().getAvailablePlugins();
+		pluginBlock.update(plugins);
+	}
+	
 	@Override
 	protected void performDefaults() {
-		pluginBlock.update();
+		updatePlugins();
 	}
 
 	@Override
@@ -103,47 +105,30 @@ public class HawkInstancePluginConfigurationPreferencePage extends PreferencePag
 	@Override
 	protected void performApply() {
 		try {
-			HModel hawk = getSelectedHawkInstance();
-			hawk.addPlugins(getAdditionalPluginsFromChecked());
-			// hawk.removePlugins(getPluginsToRemoveFromUnchecked());
-			HUIManager.getInstance().saveHawkToMetadata(hawk, true);
+			List<String> additionalPlugins = getAdditionalPluginsFromChecked();
+			if (!additionalPlugins.isEmpty()) {
+				HModel hawk = getSelectedHawkInstance();
+				hawk.addPlugins(additionalPlugins);
+				HUIManager.getInstance().saveHawkToMetadata(hawk, true);
+				updatePlugins();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		pluginBlock.update();
 	}
 
 	public HModel getSelectedHawkInstance() {
 		return HUIManager.getInstance().getHawkByName(combo.getItem(combo.getSelectionIndex()));
 	}
 
-	
 	private List<String> getAdditionalPluginsFromChecked() {
-		List<String> result = new ArrayList<>();
 		List<String> enabledPlugins = getSelectedHawkInstance().getEnabledPlugins();
-		pluginBlock.getAllChecked().stream().forEach(type -> {
-			if (!enabledPlugins.contains(type)) {
-				result.add(type);
-			}
-		});
-		return result;
+		return pluginBlock.getAllChecked().stream()
+				.filter(p -> !enabledPlugins.contains(p))
+				.collect(Collectors.toList());
 	}
-
-	// FIXME
-	private List<String> getPluginsToRemoveFromUnchecked() {
-		List<String> enabled = new ArrayList<>(getSelectedHawkInstance().getEnabledPlugins());
-		enabled.removeAll(pluginBlock.getAllChecked());
-		return enabled;
-	}
-
 
 	class TypedCheckStateProvider implements ICheckStateProvider {
-
-		private Class<?> clazz;
-
-		public TypedCheckStateProvider(Class<?> clazz) {
-			this.clazz = clazz;
-		}
 
 		@Override
 		public boolean isGrayed(Object element) {
@@ -152,13 +137,8 @@ public class HawkInstancePluginConfigurationPreferencePage extends PreferencePag
 
 		@Override
 		public boolean isChecked(Object element) {
-			try {
-				String plugin = (String) clazz.getMethod("getType").invoke(clazz.cast(element));
-				return getSelectedHawkInstance().getEnabledPlugins().contains(plugin);
-			} catch (Exception e) {
-				e.printStackTrace();
-				return false;
-			}
+			return getSelectedHawkInstance().getEnabledPlugins().contains(((IHawkPlugin)element).getType());
+			
 		}
 	}
 

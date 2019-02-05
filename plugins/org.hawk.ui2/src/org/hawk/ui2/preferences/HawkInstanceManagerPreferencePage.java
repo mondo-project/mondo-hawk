@@ -53,9 +53,6 @@ public class HawkInstanceManagerPreferencePage extends PreferencePage implements
 		
 		Label DescriptionLabel = new Label(parent, SWT.WRAP);
 		DescriptionLabel.setText("Add, remove or edit Hawk instances.");
-		//label.setAlignment(1);
-		//SWTFactory.createWrapLabel(ancestor, JREMessages.JREsPreferencePage_2, 1, 300);
-		//new Label(parent, SWT.SEPARATOR | SWT.VERTICAL);	
 		
 		hawkBlock = new HawkInstanceBlock();
 		hawkBlock.createControl(parent);
