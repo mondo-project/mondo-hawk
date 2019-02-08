@@ -447,8 +447,8 @@ public class HWizardPage extends WizardPage {
 
 			final List<String> oldInput = (List<String>) pluginTable.getInput();
 			final List<Object> oldChecked = Arrays.asList(pluginTable.getCheckedElements());
-			if (!oldInput.equals(plugins)) {
-				pluginTable.setInput(plugins);
+			if (!oldInput.equals(pluginNames)) {
+				pluginTable.setInput(pluginNames);
 				pluginTable.setAllChecked(true);
 				for (String newElem : pluginNames) {
 					// Keep unchecked values across switches
