@@ -13,6 +13,12 @@ The Neo4j backend can be installed from this GPLv3-licensed site. If you use thi
 
     http://mondo-project.github.io/mondo-hawk/gpl/
 
+There are client libraries targeting Java, JavaScript and C++ for talking with a Hawk server:
+
+* The Java library is available under `plugins-server`, in the `api` project.
+* The C++ library can be downloaded from [here](https://github.com/mondo-project/mondo-hawk/blob/gh-pages/hawk-thrift-cpp-1.2.0.tar.gz?raw=true).
+* The JS library can be downloaded from [here](https://github.com/mondo-project/mondo-hawk/blob/gh-pages/hawk-thrift-js-1.2.0.tar.gz?raw=true).
+
 The [wiki](https://github.com/mondo-project/mondo-hawk/wiki) contains various resources for users and developers, including a user manual and links to screencasts and scientific papers.
 
 If you have questions, please visit the official [Eclipse Hawk](https://www.eclipse.org/forums/index.php/sf/thread/442/sub/0/?SQ=c1bf1ac983010df5037be417b0a8d5a1) forum.

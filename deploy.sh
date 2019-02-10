@@ -23,6 +23,8 @@ deploy_updates() {
     # If the tip comes from Travis, amend it. Otherwise, add a new commit.
     rm -rf hawk-updates/${VERSION}
     cp -r ../releng/org.hawk.updatesite/target/repository hawk-updates/${VERSION}
+    tar czf hawk-thrift-js-${VERSION}.tar.gz ../plugins-server/org.hawk.service.api/src-gen-js
+    tar czf hawk-thrift-cpp-${VERSION}.tar.gz ../plugins-server/org.hawk.service.api/src-gen-cpp
     git add --all .
     if git log --format=%an HEAD~.. | grep -q "Travis CI"; then
 	      COMMIT_FLAGS="--amend"
