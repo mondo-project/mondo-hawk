@@ -1042,13 +1042,14 @@ public class GraphModelInserter {
 	}
 
 	public void updateDerivedAttributes(String type, Set<IGraphNode> nodesToBeUpdated) throws Exception {
-
 		final IGraphChangeListener listener = indexer.getCompositeGraphChangeListener();
 
-		// This is done outside any other tx, as we need to be able to break up
-		// derivation into smaller tx
-		IQueryEngine q = indexer.getKnownQueryLanguages().get(type);
-		IAccessListener accessListener = q.calculateDerivedAttributes(
+		// This is done outside any other tx, as we need to be able to break up into smaller tx
+		final IQueryEngine q = indexer.getKnownQueryLanguages().get(type);
+		if (q == null) {
+			throw new IllegalArgumentException("Cannot derive attributes - query engine " + type + " is disabled");
+		}
+		final IAccessListener accessListener = q.calculateDerivedAttributes(
 				indexer, new ReloadNodeCollectionIterable(nodesToBeUpdated));
 
 		try (IGraphTransaction tx = graph.beginTransaction()) {
