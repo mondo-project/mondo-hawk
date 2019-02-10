@@ -270,13 +270,20 @@ public class HWizardPage extends WizardPage {
 	}
 
 	private List<String> getBackendNames() {
-		return backends.values().stream().map(IHawkPlugin::getHumanReadableName)
-				.collect(Collectors.toList());
+		final List<String> backendNames = backends.values().stream()
+			.map(IHawkPlugin::getHumanReadableName)
+			.collect(Collectors.toList());
+		Collections.sort(backendNames);
+		return backendNames;
 	}
-	
+
 	private List<String> getUpdaterNames() {
-		return updaters.values().stream().map(IHawkPlugin::getHumanReadableName)
-				.collect(Collectors.toList());
+		final List<String> updaterNames = updaters.values().stream()
+			.map(IHawkPlugin::getHumanReadableName)
+			.collect(Collectors.toList());
+
+		Collections.sort(updaterNames);
+		return updaterNames;
 	}
 
 	private void initialize() {
