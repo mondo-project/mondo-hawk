@@ -31,14 +31,15 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Layout;
 import org.hawk.core.IHawkPlugin;
 import org.hawk.core.IHawkPlugin.Category;
-import org.hawk.osgiserver.HManager;
 import org.hawk.ui2.util.HUIManager;
 
 public class HawkPluginSelectionBlock {
@@ -59,83 +60,56 @@ public class HawkPluginSelectionBlock {
 		control = new Composite(parent, SWT.NONE);
 		Font font = parent.getFont();
 		control.setFont(font);
+
 		GridLayout layout = new GridLayout();
-		layout.numColumns = 3;
+		layout.numColumns = 2;
 		layout.verticalSpacing = 9;
 		layout.horizontalSpacing = 1;
 		control.setLayout(layout);
 
-		GridData labelGd = new GridData(GridData.FILL_BOTH);
-		labelGd.horizontalSpan = 3;
-
-		// METAMODEL PARSER
-		Label label = new Label(control, SWT.NULL);
-		label.setText("&Metamodel plugins:");
-		label.setLayoutData(labelGd);
-		
-		Composite tableComposite = getTableComposite(control);
-		metamodelTableViewer = newTableViewer(tableComposite);
-		metamodelTableViewer.setLabelProvider(new TypedLabelProvider());
-		metamodelTableViewer.setContentProvider(new TypedContentProvider(Category.METAMODEL_RESOURCE_FACTORY));
-		metamodelTableViewer.setInput(HManager.getInstance().getMetamodelParserInstances().values().toArray());
-		metamodelTableViewer.setAllChecked(true);
-
-		addSelectionButtons(metamodelTableViewer, control);
-
-		// MODEL PARSER
-
-		label = new Label(control, SWT.NULL);
-		label.setText("&Model plugins:");
-		label.setLayoutData(labelGd);
-
-		tableComposite = getTableComposite(control);
-		modelTableViewer = newTableViewer(tableComposite);
-		modelTableViewer.setLabelProvider(new TypedLabelProvider());
-		modelTableViewer.setContentProvider(new TypedContentProvider(Category.MODEL_RESOURCE_FACTORY));
-		modelTableViewer.setInput(HManager.getInstance().getModelParserInstances().values().toArray());
-		modelTableViewer.setAllChecked(true);
-
-		addSelectionButtons(modelTableViewer, control);
-		
-		// GRAPH CHANGE LISTENERS
-
-		
-		label = new Label(control, SWT.NULL);
-		label.setText("&Graph change listeners plugins:");
-		label.setLayoutData(labelGd);
-
-		tableComposite = getTableComposite(control);
-		graphChangeListenerTableViewer = newTableViewer(tableComposite);
-		graphChangeListenerTableViewer.setLabelProvider(new TypedLabelProvider());
-		graphChangeListenerTableViewer.setContentProvider(new TypedContentProvider(Category.GRAPH_CHANGE_LISTENER));
-		graphChangeListenerTableViewer.setInput(HManager.getInstance().getModelParserInstances().values().toArray());
-		graphChangeListenerTableViewer.setAllChecked(false);
-
-		addSelectionButtons(graphChangeListenerTableViewer, control);
-		
 		GridData data = new GridData(GridData.FILL_BOTH);
-		data.horizontalSpan = 1;
 		control.setLayoutData(data);
+
+		final boolean allChecked = true;
+		metamodelTableViewer = createPluginTableBlock("&Metamodel parsers:", Category.METAMODEL_RESOURCE_FACTORY, allChecked);
+		modelTableViewer = createPluginTableBlock("&Model parsers:", Category.MODEL_RESOURCE_FACTORY, allChecked);
+		graphChangeListenerTableViewer = createPluginTableBlock("&Graph change listeners:", Category.GRAPH_CHANGE_LISTENER, !allChecked);
+	}
+
+	private CheckboxTableViewer createPluginTableBlock(final String labelText, final Category category, boolean allChecked) {
+		final GridData labelGd = new GridData(GridData.FILL_BOTH);
+		labelGd.horizontalSpan = 2;
+
+		final Label label = new Label(control, SWT.NULL);
+		label.setText(labelText);
+		label.setLayoutData(labelGd);
+
+		final Composite tableComposite = getTableComposite(control);
+		final CheckboxTableViewer tableViewer = newTableViewer(tableComposite);
+		tableViewer.setLabelProvider(new TypedLabelProvider());
+		tableViewer.setContentProvider(new TypedContentProvider(category));
+		tableViewer.setInput(plugins);
+		tableViewer.setAllChecked(allChecked);
+
+		addSelectionButtons(tableViewer, control);
+		return tableViewer;
 	}
 
 	private Composite getTableComposite(Composite control) {
 		Composite cTable = new Composite(control, SWT.NULL);
-		GridData gd = new GridData(SWT.FILL, SWT.TOP , true, true);
+		GridData gd = new GridData(SWT.FILL, SWT.TOP, true, true);
 		cTable.setLayoutData(gd);
+
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		cTable.setLayout(layout);
+
 		return cTable;
 	}
 	
 	private Composite getButtonComposite(Composite control) {
 		Composite cTable = new Composite(control, SWT.NULL);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.makeColumnsEqualWidth = true;
-		GridData gd = new GridData(SWT.FILL, SWT.FILL_WINDING, true, true);
-		cTable.setLayoutData(gd);
-		//cTable.setLayout(new FillLayout(SWT.VERTICAL));
+		Layout layout = new FillLayout(SWT.VERTICAL);
 		cTable.setLayout(layout);
 		return cTable;
 	}
@@ -178,10 +152,16 @@ public class HawkPluginSelectionBlock {
 	}
 
 	public void update(List<IHawkPlugin> plugins) {
-		this.plugins = (plugins!= null) ? plugins : Collections.emptyList();
+		this.plugins.clear();
+		this.plugins.addAll(plugins);
+
 		this.metamodelTableViewer.refresh();
 		this.modelTableViewer.refresh();
 		this.graphChangeListenerTableViewer.refresh();
+		this.queryEngineTableViewer.refresh();
+
+		this.metamodelTableViewer.setAllChecked(true);
+		this.modelTableViewer.setAllChecked(true);
 	}
 
 	public List<String> getAllChecked() {
@@ -229,10 +209,10 @@ public class HawkPluginSelectionBlock {
 	}
 
 	private CheckboxTableViewer newTableViewer(Composite composite) {
-		CheckboxTableViewer modelTableViewer = CheckboxTableViewer.newCheckList(composite,
-				SWT.BORDER | SWT.V_SCROLL | SWT.FILL);
+		CheckboxTableViewer modelTableViewer = CheckboxTableViewer.newCheckList(composite, SWT.BORDER | SWT.V_SCROLL | SWT.FILL);
 		modelTableViewer.setUseHashlookup(true);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.heightHint = 80;
 		modelTableViewer.getTable().setLayoutData(gd);
 		modelTableViewer.getTable().setHeaderVisible(false);
 		return modelTableViewer;
