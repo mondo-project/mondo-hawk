@@ -14,7 +14,7 @@
  * Contributors:
  *     Konstantinos Barmpis - initial API and implementation
  *     Antonio Garcia-Dominguez - use explicit HManager instances, add support for
- *                                remote locations
+ *                                remote locations, use lambdas to simplify code
  ******************************************************************************/
 package org.hawk.osgiserver;
 
@@ -26,18 +26,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.function.Consumer;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.hawk.core.IConsole;
 import org.hawk.core.ICredentialsStore;
 import org.hawk.core.IHawk;
 import org.hawk.core.IHawkFactory;
+import org.hawk.core.IHawkPlugin;
+import org.hawk.core.IMetaModelIntrospector;
 import org.hawk.core.IMetaModelResourceFactory;
 import org.hawk.core.IMetaModelUpdater;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
-import org.hawk.core.IMetaModelIntrospector;
 import org.hawk.core.IModelResourceFactory;
 import org.hawk.core.IModelUpdater;
 import org.hawk.core.IStateListener;
@@ -56,11 +59,10 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class HModel implements IStateListener {
-	private HawkState status;
-
 	public static String DEFAULT_INFO = "Sleeping...";
 
 	private String info = DEFAULT_INFO;
+	private HawkState status;
 
 	protected void setStatus(HawkState status) {
 		if (this.status != status) {
@@ -87,8 +89,9 @@ public class HModel implements IStateListener {
 	private static IConsole CONSOLE = new SLF4JConsole();
 
 	public static IConsole getConsole() {
-		if (CONSOLE == null)
+		if (CONSOLE == null) {
 			CONSOLE = new SLF4JConsole();
+		}
 		return CONSOLE;
 	}
 
@@ -97,12 +100,29 @@ public class HModel implements IStateListener {
 	}
 
 	/**
-	 * Creates a new Hawk instance in a local folder, and saves its metadata
-	 * into the {@link HManager}.
+	 * Creates a new Hawk instance in a local folder, and saves its metadata into
+	 * the {@link HManager}.
 	 *
-	 * @throws IllegalArgumentException
-	 *             The minimum and maximum delays are not valid or not
-	 *             consistent with each other.
+	 * @param hawkFactory   Factory which should create the indexer.
+	 * @param name          Name of the Hawk index.
+	 * @param storageFolder Folder to use to store preferences and embedded DB (if
+	 *                      any).
+	 * @param location      URL of the remote Hawk server (if using a remote
+	 *                      instance).
+	 * @param dbType        Value of {@link IGraphDatabase#getType()} which
+	 *                      identifies the backend to use.
+	 * @param plugins       Values of {@link IHawkPlugin#getType()} which identify
+	 *                      the plugins to use.
+	 * @param manager       Manager associated with this Hawk index.
+	 * @param credStore     Credentials store (for storing remote VCS
+	 *                      usernames/passwords).
+	 * @param minDelay      Minimum delay between VCS checks in milliseconds (0
+	 *                      disables this behaviour, requiring manual syncing).
+	 * @param maxDelay      Maximum delay between VCS checks in milliseconds (0
+	 *                      disables this behaviour, requiring manual syncing).
+	 *
+	 * @throws IllegalArgumentException The minimum and maximum delays are not valid
+	 *                                  or not consistent with each other.
 	 */
 	public static HModel create(IHawkFactory hawkFactory, String name, File storageFolder, String location,
 			String dbType, List<String> plugins, HManager manager, ICredentialsStore credStore, int minDelay,
@@ -140,7 +160,7 @@ public class HModel implements IStateListener {
 
 			// hard coded metamodel updater?
 			IMetaModelUpdater metaModelUpdater = manager.getMetaModelUpdater();
-			console.println("Setting up hawk's metamodel updater:\n" + metaModelUpdater.getName());
+			console.println("Setting up hawk's metamodel updater:\n" + metaModelUpdater.getType());
 			hm.hawk.getModelIndexer().setMetaModelUpdater(metaModelUpdater);
 			hm.hawk.getModelIndexer().init(minDelay, maxDelay);
 
@@ -251,105 +271,87 @@ public class HModel implements IStateListener {
 			disablePlugins(plugins);
 		}
 	}
-	
+
 	private void enablePlugins() throws Exception {
-		if (hawkFactory.instancesAreExtensible()) {
-			final IConsole console = getConsole();
-			// set up plugins
-			// first get all of type (static callto HawkOSGIConfigManager)
-			// check each one has the an ID that was selected
-			// create VCS
-			// call m.add
-			console.println("adding metamodel resource factories:");
-			for (IConfigurationElement mmparse : manager.getMmps()) {
-				IMetaModelResourceFactory f = (IMetaModelResourceFactory) mmparse
-						.createExecutableExtension(HManager.METAMODEL_PARSER_CLASS_ATTRIBUTE);
-				if (enabledPlugins == null || enabledPlugins.contains(f.getClass().getName())) {
-					this.hawk.getModelIndexer().addMetaModelResourceFactory(f);
-					console.println(f.getHumanReadableName());
-				}
-			}
-			console.println("adding model resource factories:");
-			for (IConfigurationElement mparse : manager.getMps()) {
-				IModelResourceFactory f = (IModelResourceFactory) mparse.createExecutableExtension(HManager.MODEL_PARSER_CLASS_ATTRIBUTE);
-				if (enabledPlugins == null || enabledPlugins.contains(f.getClass().getName())) {
-					this.hawk.getModelIndexer().addModelResourceFactory(f);
-					console.println(f.getHumanReadableName());
-				}
-			}
-			console.println("adding query engines:");
-			for (IConfigurationElement ql : manager.getLanguages()) {
-				IQueryEngine q = (IQueryEngine) ql.createExecutableExtension(HManager.QUERY_LANG_CLASS_ATTRIBUTE);
-				// So far we only have one choice (EOL) and it doesn't make sense to disable it - see HManager#getAvailablePlugins()
-//				if (enabledPlugins == null || enabledPlugins.contains(q.getClass().getName())) {
-					this.hawk.getModelIndexer().addQueryEngine(q);
-					console.println(q.getType());
-//				}
-			}
+		if (!hawkFactory.instancesAreExtensible()) {
+			return;
+		}
+		final IConsole console = getConsole();
+		final IModelIndexer indexer = this.hawk.getModelIndexer();
 
-			console.println("adding model updaters:");
-			for (IConfigurationElement updater : manager.getUps()) {
-				IModelUpdater u = (IModelUpdater) updater.createExecutableExtension(HManager.MODEL_UPDATER_CLASS_ATTRIBUTE);
-				if (enabledPlugins == null || enabledPlugins.contains(u.getClass().getName())) {
-					this.hawk.getModelIndexer().addModelUpdater(u);
-					console.println(u.getHumanReadableName());
-				}
-			}
+		console.println("adding metamodel resource factories:");
+		enablePlugins(manager.getMmps(), HManager.METAMODEL_PARSER_CLASS_ATTRIBUTE,
+			IMetaModelResourceFactory.class, indexer::addMetaModelResourceFactory);
 
-			console.println("adding graph change listeners:");
-			for (IConfigurationElement listener : manager.getGraphChangeListeners()) {
-				IGraphChangeListener l = (IGraphChangeListener) listener.createExecutableExtension(HManager.GRAPH_CHANGE_LISTENER_CLASS_ATTRIBUTE);
-				if (enabledPlugins == null || enabledPlugins.contains(l.getClass().getName())) {
-					l.setModelIndexer(this.hawk.getModelIndexer());
-					this.hawk.getModelIndexer().addGraphChangeListener(l);
-					console.println(l.getHumanReadableName());
-				}
+		console.println("adding model resource factories:");
+		enablePlugins(manager.getMps(), HManager.MODEL_PARSER_CLASS_ATTRIBUTE,
+				IModelResourceFactory.class, indexer::addModelResourceFactory);
+
+		console.println("adding query engines:");
+		enablePlugins(manager.getLanguages(), HManager.QUERY_LANG_CLASS_ATTRIBUTE,
+				IQueryEngine.class, indexer::addQueryEngine);
+
+		console.println("adding model updaters:");
+		enablePlugins(manager.getUps(), HManager.MODEL_UPDATER_CLASS_ATTRIBUTE,
+				IModelUpdater.class, indexer::addModelUpdater);
+
+		console.println("adding graph change listeners:");
+		enablePlugins(manager.getGraphChangeListeners(), HManager.GRAPH_CHANGE_LISTENER_CLASS_ATTRIBUTE,
+				IGraphChangeListener.class, indexer::addGraphChangeListener);
+	}
+
+	private <T extends IHawkPlugin> void enablePlugins(final List<IConfigurationElement> elems, final String attribute, final Class<T> klass, final Consumer<T> addMethod) throws CoreException {
+		final IConsole console = getConsole();
+
+		for (IConfigurationElement elem : elems) {
+			@SuppressWarnings("unchecked")
+			final T f = (T) elem.createExecutableExtension(attribute);
+
+			if (enabledPlugins == null || enabledPlugins.contains(f.getType())) {
+				addMethod.accept(f);
+				console.println(f.getHumanReadableName());
 			}
 		}
 	}
-	
+
 	private void disablePlugins(List<String> plugins) throws Exception {
 		if (hawkFactory.instancesAreExtensible() && plugins != null) {
 			final IConsole console = getConsole();
 			console.println("removing metamodel resource factories:");
-			for (IConfigurationElement mmparse : manager.getMmps()) {
-				IMetaModelResourceFactory f = (IMetaModelResourceFactory) mmparse
-						.createExecutableExtension(HManager.METAMODEL_PARSER_CLASS_ATTRIBUTE);
-				if (plugins.contains(f.getClass().getName())) {
-					this.hawk.getModelIndexer().removeMetaModelResourceFactory(f);
-					console.println(f.getHumanReadableName());
-				}
-			}
+
+			final IModelIndexer indexer = this.hawk.getModelIndexer();
+			disablePlugins(plugins, IMetaModelResourceFactory.class,
+				indexer.getMetaModelParsers(), indexer::removeMetaModelResourceFactory);
+
 			console.println("removing model resource factories:");
-			for (IConfigurationElement mparse : manager.getMps()) {
-				IModelResourceFactory f = (IModelResourceFactory) mparse.createExecutableExtension(HManager.MODEL_PARSER_CLASS_ATTRIBUTE);
-				if (plugins.contains(f.getClass().getName())) {
-					this.hawk.getModelIndexer().removeModelResourceFactory(f);
-					console.println(f.getHumanReadableName());
-				}
-			}
+			disablePlugins(plugins, IModelResourceFactory.class,
+				indexer.getModelParsers(), indexer::removeModelResourceFactory);
 
 			console.println("removing model updaters:");
-			for (IConfigurationElement updater : manager.getUps()) {
-				IModelUpdater u = (IModelUpdater) updater.createExecutableExtension(HManager.MODEL_UPDATER_CLASS_ATTRIBUTE);
-				if (plugins.contains(u.getClass().getName())) {
-					this.hawk.getModelIndexer().removeModelUpdater(u);
-					console.println(u.getHumanReadableName());
-				}
-			}
+			disablePlugins(plugins, IModelUpdater.class,
+				hawk.getModelIndexer().getModelUpdaters(),
+				indexer::removeModelUpdater);
 
 			console.println("removing graph change listeners:");
-			for (IConfigurationElement listener : manager.getGraphChangeListeners()) {
-				IGraphChangeListener l = (IGraphChangeListener) listener.createExecutableExtension(HManager.GRAPH_CHANGE_LISTENER_CLASS_ATTRIBUTE);
-				if (plugins.contains(l.getClass().getName())) {
-					l.setModelIndexer(this.hawk.getModelIndexer());
-					this.hawk.getModelIndexer().removeGraphChangeListener(l);
-					console.println(l.getHumanReadableName());
-				}
+			disablePlugins(plugins, IGraphChangeListener.class,
+				indexer.getCompositeGraphChangeListener(),
+				hawk.getModelIndexer()::removeGraphChangeListener);
+		}
+	}
+
+	@FunctionalInterface
+	private interface FlakyConsumer <T> {
+		void accept(T t) throws Exception;
+	}
+
+	private <T extends IHawkPlugin> void disablePlugins(List<String> pluginTypesToRemove, Class<T> klass, Collection<T> plugins, FlakyConsumer<T> remover) throws Exception {
+		for (T t : new ArrayList<>(plugins)) {
+			if (pluginTypesToRemove.contains(t.getType())) {
+				remover.accept(t);
 			}
 		}
 	}
-	
+
 	public void addDerivedAttribute(String metamodeluri, String typename, String attributename, String attributetype,
 			Boolean isMany, Boolean isOrdered, Boolean isUnique, String derivationlanguage, String derivationlogic)
 					throws Exception {
