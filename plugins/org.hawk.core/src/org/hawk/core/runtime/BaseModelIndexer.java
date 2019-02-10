@@ -72,6 +72,8 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public abstract class BaseModelIndexer implements IModelIndexer {
 
+	private static final String DEFAULT_DERIVED_QUERY_ENGINE = "org.hawk.epsilon.emc.EOLQueryEngine";
+
 	private final class RunUpdateTask extends TimerTask {
 		@Override
 		public void run() {
@@ -990,11 +992,10 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 
 	@Override
 	public String getDerivedAttributeExecutionEngine() {
-		// TODO we should honor the derivation language info that we already ask the user for
-		if (getKnownQueryLanguages().keySet().contains("org.hawk.epsilon.emc.EOLQueryEngine"))
-			return "org.hawk.epsilon.emc.EOLQueryEngine";
-		else
-			return "error: default derived attribute engine (EOLQueryEngine) not added to Hawk. Derived attributes cannot be calculated!";
+		if (!getKnownQueryLanguages().keySet().contains(DEFAULT_DERIVED_QUERY_ENGINE)) {
+			LOGGER.warn("Default derived attribute engine ({}) disabled - will not be able to derive features");
+		}
+		return DEFAULT_DERIVED_QUERY_ENGINE;
 	}
 
 	@Override
