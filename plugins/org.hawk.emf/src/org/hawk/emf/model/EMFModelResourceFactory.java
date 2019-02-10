@@ -57,8 +57,8 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 				"C:/Users/kb/Desktop/workspace/org.hawk.emf/src/org/hawk/emf/model/examples/single/0/set0.xmi"));
 	}
 
-	String type = "org.hawk.emf.metamodel.EMFModelParser";
-	String hrn = "EMF Model Resource Factory";
+	private static final String TYPE = "org.hawk.emf.metamodel.EMFModelParser";
+	private static final String HUMAN_READABLE_NAME = "EMF Model Resource Factory";
 
 	Set<String> modelExtensions;
 
@@ -79,12 +79,12 @@ public class EMFModelResourceFactory implements IModelResourceFactory {
 
 	@Override
 	public String getType() {
-		return type;
+		return TYPE;
 	}
 
 	@Override
 	public String getHumanReadableName() {
-		return hrn;
+		return HUMAN_READABLE_NAME;
 	}
 
 	@Override

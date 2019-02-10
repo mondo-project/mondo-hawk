@@ -482,11 +482,6 @@ public abstract class AbstractGreycatDatabase implements ITimeAwareGraphDatabase
 	}
 
 	@Override
-	public String getType() {
-		return getClass().getCanonicalName();
-	}
-
-	@Override
 	public String getHumanReadableName() {
 		return "GreyCat Database";
 	}

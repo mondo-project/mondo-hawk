@@ -48,11 +48,6 @@ public class ModelioMetaModelResourceFactory implements IMetaModelResourceFactor
 	}
 
 	@Override
-	public String getType() {
-		return getClass().getName();
-	}
-
-	@Override
 	public String getHumanReadableName() {
 		return "Modelio Metamodel Resource Factory";
 	}

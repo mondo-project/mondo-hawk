@@ -112,11 +112,6 @@ public class OrientSQLQueryEngine implements IQueryEngine {
 	}
 
 	@Override
-	public String getType() {
-		return getClass().getName();
-	}
-
-	@Override
 	public List<String> validate(String derivationlogic) {
 		OCommandSQL cmd = new OCommandSQL(derivationlogic);
 		try {

@@ -419,11 +419,6 @@ public class SvnPrevManager implements IVcsManager {
 	}
 
 	@Override
-	public String getType() {
-		return getClass().getName();
-	}
-
-	@Override
 	public String getHumanReadableName() {
 		return "SVN Prev Monitor";
 	}

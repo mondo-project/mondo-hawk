@@ -170,11 +170,6 @@ public abstract class PathmapResourceCollection implements IVcsManager {
 	}
 
 	@Override
-	public String getType() {
-		return getClass().getName();
-	}
-
-	@Override
 	public boolean isAuthSupported() {
 		return false;
 	}

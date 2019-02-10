@@ -30,8 +30,8 @@ import org.osgi.framework.Constants;
 
 public class ManifestModelResourceFactory implements IModelResourceFactory {
 
-	private String type = "org.hawk.manifest.metamodel.ManifestModelParser";
-	private String hrn = "Manifest Model Resource Factory";
+	private static final String TYPE = "org.hawk.manifest.metamodel.ManifestModelParser";
+	private static final String HUMAN_READABLE_NAME = "Manifest Model Resource Factory";
 
 	private Set<String> modelExtensions;
 
@@ -42,12 +42,12 @@ public class ManifestModelResourceFactory implements IModelResourceFactory {
 
 	@Override
 	public String getType() {
-		return type;
+		return TYPE;
 	}
 
 	@Override
 	public String getHumanReadableName() {
-		return hrn;
+		return HUMAN_READABLE_NAME;
 	}
 
 	@Override

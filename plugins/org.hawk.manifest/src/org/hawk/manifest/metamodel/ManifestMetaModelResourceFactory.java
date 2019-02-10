@@ -31,8 +31,8 @@ import org.hawk.core.model.IHawkPackage;
 public class ManifestMetaModelResourceFactory implements
 		IMetaModelResourceFactory {
 
-	private final String type = "org.hawk.manifest.metamodel.ManifestMetaModelParser";
-	private final String hrn = "Manifest Metamodel Resource Factory";
+	private static final String TYPE = "org.hawk.manifest.metamodel.ManifestMetaModelParser";
+	private static final String HUMAN_READABLE_NAME = "Manifest Metamodel Resource Factory";
 	private final Set<String> metamodelExtensions = new HashSet<>();
 
 	public static void main(String[] a) {
@@ -60,12 +60,12 @@ public class ManifestMetaModelResourceFactory implements
 
 	@Override
 	public String getType() {
-		return type;
+		return TYPE;
 	}
 
 	@Override
 	public String getHumanReadableName() {
-		return hrn;
+		return HUMAN_READABLE_NAME;
 	}
 
 	@Override

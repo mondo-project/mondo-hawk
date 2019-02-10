@@ -50,11 +50,6 @@ public class ModelioModelResourceFactory implements IModelResourceFactory {
 	}
 
 	@Override
-	public String getType() {
-		return getClass().getName();
-	}
-
-	@Override
 	public String getHumanReadableName() {
 		return "Modelio Model Factory";
 	}

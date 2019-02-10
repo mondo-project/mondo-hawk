@@ -34,11 +34,6 @@ import org.hawk.uml.metamodel.UMLWrapperFactory;
 public class UMLModelResourceFactory implements IModelResourceFactory {
 
 	@Override
-	public String getType() {
-		return getClass().getCanonicalName();
-	}
-
-	@Override
 	public String getHumanReadableName() {
 		return "UML Model Resource Factory";
 	}

@@ -81,11 +81,6 @@ public class TimeAwareEOLQueryEngine extends EOLQueryEngine {
 	}
 
 	@Override
-	public String getType() {
-		return getClass().getCanonicalName();
-	}
-
-	@Override
 	public Object query(IModelIndexer m, String query, Map<String, Object> context)
 			throws InvalidQueryException, QueryExecutionException {
 		final HawkState currentState = m.getCompositeStateListener().getCurrentState();

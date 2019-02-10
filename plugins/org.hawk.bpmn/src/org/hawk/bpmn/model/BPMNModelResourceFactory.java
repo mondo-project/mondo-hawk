@@ -43,8 +43,8 @@ public class BPMNModelResourceFactory implements IModelResourceFactory {
 
 	}
 
-	String type = "org.hawk.emf.metamodel.BPMNModelParser";
-	String hrn = "BPMN Model Resource Factory";
+	private static final String TYPE = "org.hawk.emf.metamodel.BPMNModelParser";
+	private static final String HUMAN_READABLE_NAME = "BPMN Model Resource Factory";
 
 	Set<String> modelExtensions;
 
@@ -56,12 +56,12 @@ public class BPMNModelResourceFactory implements IModelResourceFactory {
 
 	@Override
 	public String getType() {
-		return type;
+		return TYPE;
 	}
 
 	@Override
 	public String getHumanReadableName() {
-		return hrn;
+		return HUMAN_READABLE_NAME;
 	}
 
 	@Override

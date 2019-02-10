@@ -76,11 +76,6 @@ public class UMLMetaModelResourceFactory implements IMetaModelResourceFactory {
 	}
 
 	@Override
-	public String getType() {
-		return getClass().getCanonicalName();
-	}
-
-	@Override
 	public String getHumanReadableName() {
 		return "UML Metamodel Resource Factory";
 	}

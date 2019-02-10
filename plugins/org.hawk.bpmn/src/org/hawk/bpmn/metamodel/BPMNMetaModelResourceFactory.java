@@ -50,8 +50,8 @@ import org.hawk.core.model.IHawkPackage;
 
 public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 
-	String type = "org.hawk.emf.metamodel.BPMNMetaModelParser";
-	String hrn = "BPMN Metamodel Resource Factory";
+	private static final String TYPE = "org.hawk.emf.metamodel.BPMNMetaModelParser";
+	private static final String HUMAN_READABLE_NAME = "BPMN Metamodel Resource Factory";
 
 	ResourceSet resourceSet;
 
@@ -71,12 +71,12 @@ public class BPMNMetaModelResourceFactory implements IMetaModelResourceFactory {
 
 	@Override
 	public String getType() {
-		return type;
+		return TYPE;
 	}
 
 	@Override
 	public String getHumanReadableName() {
-		return hrn;
+		return HUMAN_READABLE_NAME;
 	}
 
 	@Override

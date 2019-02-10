@@ -54,10 +54,6 @@ public interface IGraphChangeListener extends IHawkPlugin {
 	@Deprecated
 	String getName();
 
-	default String getType() {
-		return getClass().getName();
-	}
-
 	void setModelIndexer(IModelIndexer m);
 
 	/**

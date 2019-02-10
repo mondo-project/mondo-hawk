@@ -202,11 +202,6 @@ public class Git implements IVcsManager {
 	}
 
 	@Override
-	public String getType() {
-		return getClass().getName();
-	}
-
-	@Override
 	public String getHumanReadableName() {
 		return "Git Monitor";
 	}

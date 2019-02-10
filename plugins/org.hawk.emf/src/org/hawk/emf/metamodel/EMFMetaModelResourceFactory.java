@@ -53,7 +53,6 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 	 */
 	public static final String PROPERTY_EXTRA_EXTENSIONS = "org.hawk.emf.metamodel.extraExtensions";
 
-	private final String hrn = "EMF Metamodel Resource Factory";
 	private final Set<String> metamodelExtensions;
 	private final ResourceSet resourceSet;
 
@@ -88,17 +87,13 @@ public class EMFMetaModelResourceFactory implements IMetaModelResourceFactory {
 	}
 
 	@Override
-	public String getType() {
-		return getClass().getName();
-	}
-
-	@Override
 	public String getHumanReadableName() {
-		return hrn;
+		return "EMF Metamodel Resource Factory";
 	}
 
 	@Override
 	public void shutdown() {
+		// nothing to do
 	}
 
 	@Override

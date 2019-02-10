@@ -74,11 +74,6 @@ public class TimelineEOLQueryEngine implements IQueryEngine {
 	}
 
 	@Override
-	public String getType() {
-		return getClass().getCanonicalName();
-	}
-
-	@Override
 	public List<String> validate(String derivationlogic) {
 		return new TimeAwareEOLQueryEngine().validate(derivationlogic);
 	}

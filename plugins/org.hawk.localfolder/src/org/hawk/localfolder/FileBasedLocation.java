@@ -94,11 +94,6 @@ public abstract class FileBasedLocation implements IVcsManager {
 	}
 
 	@Override
-	public String getType() {
-		return getClass().getName();
-	}
-
-	@Override
 	public String getFirstRevision() throws Exception {
 		return FIRST_REV;
 	}
