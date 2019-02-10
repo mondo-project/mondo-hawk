@@ -50,6 +50,12 @@ public class HawkPluginSelectionBlock {
 	private CheckboxTableViewer modelTableViewer;
 	private CheckboxTableViewer graphChangeListenerTableViewer;
 
+	/*
+	 * Turns out that we do need to enable/disable query engines: these
+	 * are required to compute derived properties!
+	 */
+	private CheckboxTableViewer queryEngineTableViewer;
+
 	private List<IHawkPlugin> plugins;
 	
 	public HawkPluginSelectionBlock() {
@@ -74,6 +80,7 @@ public class HawkPluginSelectionBlock {
 		metamodelTableViewer = createPluginTableBlock("&Metamodel parsers:", Category.METAMODEL_RESOURCE_FACTORY, allChecked);
 		modelTableViewer = createPluginTableBlock("&Model parsers:", Category.MODEL_RESOURCE_FACTORY, allChecked);
 		graphChangeListenerTableViewer = createPluginTableBlock("&Graph change listeners:", Category.GRAPH_CHANGE_LISTENER, !allChecked);
+		queryEngineTableViewer = createPluginTableBlock("&Query engines:", Category.QUERY_ENGINE, allChecked);
 	}
 
 	private CheckboxTableViewer createPluginTableBlock(final String labelText, final Category category, boolean allChecked) {
@@ -147,6 +154,10 @@ public class HawkPluginSelectionBlock {
 		return graphChangeListenerTableViewer;
 	}
 
+	public CheckboxTableViewer getQueryEngineTableViewer() {
+		return queryEngineTableViewer;
+	}
+
 	public Composite getControl() {
 		return control;
 	}
@@ -162,6 +173,7 @@ public class HawkPluginSelectionBlock {
 
 		this.metamodelTableViewer.setAllChecked(true);
 		this.modelTableViewer.setAllChecked(true);
+		this.queryEngineTableViewer.setAllChecked(true);
 	}
 
 	public List<String> getAllChecked() {
@@ -169,6 +181,7 @@ public class HawkPluginSelectionBlock {
 		checked.addAll(getCheckedList(metamodelTableViewer));
 		checked.addAll(getCheckedList(modelTableViewer));
 		checked.addAll(getCheckedList(graphChangeListenerTableViewer));
+		checked.addAll(getCheckedList(queryEngineTableViewer));
 		return checked;
 	}
 

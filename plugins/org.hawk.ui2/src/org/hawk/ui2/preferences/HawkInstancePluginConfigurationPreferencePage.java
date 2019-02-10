@@ -76,6 +76,7 @@ public class HawkInstancePluginConfigurationPreferencePage extends PreferencePag
 		pluginBlock.getMetamodelTableViewer().setCheckStateProvider(new TypedCheckStateProvider());
 		pluginBlock.getGraphChangeListenerTableViewer().setCheckStateProvider(new TypedCheckStateProvider());
 		pluginBlock.getModelTableViewer().setCheckStateProvider(new TypedCheckStateProvider());
+		pluginBlock.getQueryEngineTableViewer().setCheckStateProvider(new TypedCheckStateProvider());
 
 		combo.addSelectionListener(new SelectionAdapter() {
 			@Override
