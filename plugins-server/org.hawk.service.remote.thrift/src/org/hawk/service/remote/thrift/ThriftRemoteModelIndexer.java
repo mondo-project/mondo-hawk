@@ -438,7 +438,8 @@ public class ThriftRemoteModelIndexer implements IModelIndexer, IMetaModelIntros
 		}
 	}
 
-	private final String name, location, factory;
+	private final String name, location;
+	private final ThriftRemoteHawkFactory factory;
 	private final ThreadLocal<Client> client;
 	private final IConsole console;
 
@@ -452,7 +453,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer, IMetaModelIntros
 	private final CompositeStateListener stateListener = new CompositeStateListener();
 	private Consumer artemisConsumer;
 
-	public ThriftRemoteModelIndexer(String name, String location, String factory, File parentFolder, Supplier<Client> clientSupplier,
+	public ThriftRemoteModelIndexer(String name, String location, ThriftRemoteHawkFactory factory, File parentFolder, Supplier<Client> clientSupplier,
 			ICredentialsStore credStore, IConsole console, List<String> enabledPlugins) throws IOException {
 		this.name = name;
 		this.location = location;
@@ -614,7 +615,7 @@ public class ThriftRemoteModelIndexer implements IModelIndexer, IMetaModelIntros
 		try {
 			client.get().startInstance(name);
 		} catch (HawkInstanceNotFound ex) {
-			client.get().createInstance(name, dbType, minDelay, maxDelay, enabledPlugins, factory);
+			client.get().createInstance(name, dbType, minDelay, maxDelay, enabledPlugins, factory.getType());
 		}
 		connectToArtemis();
 	}

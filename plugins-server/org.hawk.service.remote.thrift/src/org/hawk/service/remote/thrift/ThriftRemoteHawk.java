@@ -40,7 +40,7 @@ public class ThriftRemoteHawk implements IHawk {
 	private ThriftRemoteModelIndexer indexer;
 	private File folder;
 
-	public ThriftRemoteHawk(String name, String location, String factory, File parentFolder, ICredentialsStore credStore, IConsole console, ThriftProtocol thriftProtocol, List<String> enabledPlugins) throws TTransportException, IOException, URISyntaxException {
+	public ThriftRemoteHawk(String name, String location, ThriftRemoteHawkFactory factory, File parentFolder, ICredentialsStore credStore, IConsole console, ThriftProtocol thriftProtocol, List<String> enabledPlugins) throws TTransportException, IOException, URISyntaxException {
 		this.folder = parentFolder;
 
 		// Do an early check on the URI (rather than from the Client supplier)
