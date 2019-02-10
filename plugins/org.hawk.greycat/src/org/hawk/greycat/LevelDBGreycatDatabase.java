@@ -31,6 +31,6 @@ public class LevelDBGreycatDatabase extends AbstractGreycatDatabase {
 	
 	@Override
 	public String getHumanReadableName() {
-		return "Level DB " + super.getHumanReadableName();
+		return "LevelDB " + super.getHumanReadableName();
 	}
 }

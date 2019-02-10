@@ -33,7 +33,7 @@ public class ThriftRemoteTimeAwareHawkFactory extends ThriftRemoteHawkFactory {
 	
 	@Override
 	public String getHumanReadableName() {
-		return "Time Aware " + super.getHumanReadableName();
+		return "Time-aware " + super.getHumanReadableName();
 	}
 
 }

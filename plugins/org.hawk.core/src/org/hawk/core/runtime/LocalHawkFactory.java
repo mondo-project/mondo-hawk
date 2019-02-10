@@ -110,7 +110,7 @@ public class LocalHawkFactory implements IHawkFactory {
 
 	@Override
 	public String getHumanReadableName() {
-		return "Local Hawk Factory";
+		return "Local Hawk";
 	}
 
 }
