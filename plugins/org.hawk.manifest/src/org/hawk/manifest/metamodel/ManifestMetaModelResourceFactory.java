@@ -36,12 +36,11 @@ public class ManifestMetaModelResourceFactory implements
 	private final Set<String> metamodelExtensions = new HashSet<>();
 
 	public static void main(String[] a) {
-
-		Object o = new ManifestMetaModelResourceFactory().getStaticMetamodels();
-
+		new ManifestMetaModelResourceFactory().getStaticMetamodels();
 	}
 
 	public ManifestMetaModelResourceFactory() {
+		// nothing to do
 	}
 
 	public Map<String, IHawkClassifier> getTypes() {

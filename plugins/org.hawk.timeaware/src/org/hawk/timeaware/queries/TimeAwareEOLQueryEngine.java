@@ -27,16 +27,12 @@ import org.hawk.core.IModelIndexer;
 import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphDatabase;
-import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.epsilon.emc.pgetters.GraphPropertyGetter;
 import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
-import org.hawk.graph.GraphWrapper;
-import org.hawk.graph.MetamodelNode;
 import org.hawk.graph.ModelElementNode;
-import org.hawk.graph.TypeNode;
 
 /**
  * Variant of {@link EOLQueryEngine} that exposes the time-aware nature of the

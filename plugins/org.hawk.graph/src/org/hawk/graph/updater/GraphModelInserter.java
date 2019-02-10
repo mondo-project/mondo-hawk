@@ -1063,7 +1063,6 @@ public class GraphModelInserter {
 			IGraphNodeIndex derivedAccessDictionary = graph.getOrCreateNodeIndex(DERIVED_ACCESS_IDXNAME);
 			for (IAccess a : accessListener.getAccesses()) {
 				IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
-
 				if (sourceNode != null) {
 					derivedAccessDictionary.remove(sourceNode);
 				}
@@ -1071,7 +1070,6 @@ public class GraphModelInserter {
 
 			for (IAccess a : accessListener.getAccesses()) {
 				IGraphNode sourceNode = graph.getNodeById(a.getSourceObjectID());
-
 				if (sourceNode != null) {
 					derivedAccessDictionary.add(sourceNode, a.getAccessObjectID(), a.getProperty());
 				}

@@ -81,7 +81,9 @@ public class HWizardPage extends WizardPage {
 		}
 	}
 
-	private static final String hawkConnectWarning = "Index storage folder must be empty -- Hawk will try to connect to an existing Hawk in this location";
+	private static final String HAWK_CONNECT_WARNING =
+		"Index storage folder must be empty -- "
+		+ "Hawk will try to connect to an existing Hawk in this location";
 
 	private Text minDelayText;
 	private Text maxDelayText;
@@ -101,6 +103,8 @@ public class HWizardPage extends WizardPage {
 	
 	private HawkPluginSelectionBlock pluginSelectionBlock;
 
+	private String basePath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile().toString();
+
 	public HWizardPage(ISelection selection) {
 		super("wizardPage");
 		setTitle("New Hawk Instance");
@@ -111,7 +115,6 @@ public class HWizardPage extends WizardPage {
 	 * @see IDialogPage#createControl(Composite)
 	 */
 	public void createControl(Composite parent) {
-
 		hminstance = HUIManager.getInstance();
 
 		TabFolder tabFolder = new TabFolder(parent, SWT.BORDER);
@@ -124,7 +127,6 @@ public class HWizardPage extends WizardPage {
 		TabItem advancedTab = new TabItem(tabFolder, SWT.NULL);
 		advancedTab.setText("Advanced");
 		advancedTab.setControl(createAdvancedConfig(tabFolder));
-		
 	}
 
 	private Composite createAdvancedConfig(Composite parent) {
@@ -139,7 +141,6 @@ public class HWizardPage extends WizardPage {
 		
 		return container;
 	}
-
 	
 	private Composite createBaseConfig(Composite parent) {
 		Composite container = new Composite(parent, SWT.NULL);
@@ -168,8 +169,9 @@ public class HWizardPage extends WizardPage {
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 2;
 		factoryNameText.setLayoutData(gd);
-		final List<String> sortedFactories = factories.values().stream().map(IHawkFactory::getHumanReadableName)
-				.collect(Collectors.toList());
+		final List<String> sortedFactories = factories.values().stream()
+			.map(IHawkFactory::getHumanReadableName)
+			.collect(Collectors.toList());
 		Collections.sort(sortedFactories);
 		for (String factory : sortedFactories) {
 			factoryNameText.add(factory);
@@ -283,8 +285,6 @@ public class HWizardPage extends WizardPage {
 		folderText.setText(basePath + File.separator + "myhawk");
 	}
 
-	private String basePath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile().toString();
-
 	/**
 	 * Uses the standard container selection dialog to choose the new value for the
 	 * container field.
@@ -336,7 +336,7 @@ public class HWizardPage extends WizardPage {
 			File f = new File(getContainerName());
 			// must not already exist
 			if (f.exists() && f.isDirectory() && f.listFiles().length > 0) {
-				updateStatus(hawkConnectWarning);
+				updateStatus(HAWK_CONNECT_WARNING);
 				return;
 			}
 			// must be writable
@@ -386,13 +386,10 @@ public class HWizardPage extends WizardPage {
 
 	private void updatePlugins() {
 		// plugins in advanced tab (model, metamodel and graph listeners)
-		
 		if (pluginSelectionBlock != null) {			
 			pluginSelectionBlock.update(getAvailablePlugins());
 		}
-		// updater plugins
 		update(updaterNameText, Category.MODEL_UPDATER);
-		// backend plugins
 		update(backendNameText, Category.BACKEND);
 	}
 
@@ -403,8 +400,8 @@ public class HWizardPage extends WizardPage {
 
 	private void updateStatus(String message) {
 		setErrorMessage(message);
-		setPageComplete(message == null || message.equals(hawkConnectWarning));
-		isNew = message == null ? true : !message.equals(hawkConnectWarning);
+		setPageComplete(message == null || message.equals(HAWK_CONNECT_WARNING));
+		isNew = message == null ? true : !message.equals(HAWK_CONNECT_WARNING);
 	}
 
 	protected void update(Combo combo, Category category) {
