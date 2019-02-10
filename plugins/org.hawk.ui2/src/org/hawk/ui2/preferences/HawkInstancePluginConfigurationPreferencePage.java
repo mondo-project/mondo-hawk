@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.hawk.ui2.preferences;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -66,7 +67,9 @@ public class HawkInstancePluginConfigurationPreferencePage extends PreferencePag
 		for (HModel db : hawks) {
 			combo.add(db.getName());
 		}
-		combo.select(0);
+		if (!hawks.isEmpty()) {
+			combo.select(0);
+		}
 
 		pluginBlock = new HawkPluginSelectionBlock();
 		pluginBlock.createControl(parent);
@@ -87,7 +90,11 @@ public class HawkInstancePluginConfigurationPreferencePage extends PreferencePag
 	}
 
 	private void updatePlugins(){
-		List<IHawkPlugin> plugins = getSelectedHawkInstance().getManager().getAvailablePlugins();
+		final HModel hawkInstance = getSelectedHawkInstance();
+		final List<IHawkPlugin> plugins = hawkInstance == null
+			? Collections.emptyList()
+			: hawkInstance.getManager().getAvailablePlugins();
+
 		pluginBlock.update(plugins);
 	}
 	
@@ -118,27 +125,40 @@ public class HawkInstancePluginConfigurationPreferencePage extends PreferencePag
 	}
 
 	public HModel getSelectedHawkInstance() {
-		return HUIManager.getInstance().getHawkByName(combo.getItem(combo.getSelectionIndex()));
+		final int idx = combo.getSelectionIndex();
+		if (idx == -1) {
+			return null;
+		} else {
+			return HUIManager.getInstance().getHawkByName(combo.getItem(idx));
+		}
 	}
 
 	private List<String> getAdditionalPluginsFromChecked() {
-		List<String> enabledPlugins = getSelectedHawkInstance().getEnabledPlugins();
+		final HModel selectedHawk = getSelectedHawkInstance();
+		if (selectedHawk == null) {
+			return Collections.emptyList();
+		}
+
+		final List<String> enabledPlugins = selectedHawk.getEnabledPlugins();
 		return pluginBlock.getAllChecked().stream()
 				.filter(p -> !enabledPlugins.contains(p))
 				.collect(Collectors.toList());
 	}
 
 	class TypedCheckStateProvider implements ICheckStateProvider {
-
 		@Override
 		public boolean isGrayed(Object element) {
-			return false;
+			return getSelectedHawkInstance() == null;
 		}
 
 		@Override
 		public boolean isChecked(Object element) {
-			return getSelectedHawkInstance().getEnabledPlugins().contains(((IHawkPlugin)element).getType());
-			
+			HModel instance = getSelectedHawkInstance();
+			if (instance == null) {
+				return false;
+			} else {
+				return instance.getEnabledPlugins().contains(((IHawkPlugin)element).getType());
+			}
 		}
 	}
 
