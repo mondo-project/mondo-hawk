@@ -442,7 +442,9 @@ public class HWizardPage extends WizardPage {
 		try {
 			final IHawkFactory factory = getSelectedFactory();
 			plugins = factory.listPlugins(remoteLocationText.getText());
-			plugins = HUIManager.getInstance().getAvailablePlugins();
+			if (plugins == null) {
+				plugins = HManager.getInstance().getAvailablePlugins();
+			}
 		} catch (Exception e) {
 			plugins = Collections.emptyList();
 		}
