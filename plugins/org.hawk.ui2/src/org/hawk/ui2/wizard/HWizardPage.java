@@ -59,17 +59,18 @@ import org.hawk.core.IHawkPlugin.Category;
 import org.hawk.core.IModelUpdater;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.runtime.ModelIndexerImpl;
+import org.hawk.osgiserver.HManager;
 import org.hawk.ui2.Activator;
 import org.hawk.ui2.preferences.HawkPluginSelectionBlock;
 import org.hawk.ui2.util.HUIManager;
 
 public class HWizardPage extends WizardPage {
-
 	private static final Pattern PATTERN = Pattern.compile("[^A-Za-z0-9_]");
 
 	private final class DialogChangeSelectionListener extends SelectionAdapter {
 		@Override
 		public void widgetSelected(SelectionEvent e) {
+			updatePlugins();
 			dialogChanged();
 		}
 	}
@@ -310,8 +311,6 @@ public class HWizardPage extends WizardPage {
 		folderText.setEnabled(!factory.isRemote());
 		remoteLocationText.setEnabled(factory.isRemote());
 		
-		updatePlugins();
-
 		// name empty or valid chars in indexername
 		if (getHawkName().trim().equals("")) {
 			updateStatus("Hawk name must not be empty.");
