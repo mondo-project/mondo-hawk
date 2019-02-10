@@ -195,9 +195,11 @@ public interface IModelIndexer {
 	 */
 	boolean isRunning();
 
-	IModelResourceFactory getModelParser(String type);
+	Collection<IModelResourceFactory> getModelParsers();
 
 	Set<String> getKnownMetaModelParserTypes();
+
+	Collection<IMetaModelResourceFactory> getMetaModelParsers();
 
 	IMetaModelResourceFactory getMetaModelParser(String metaModelType);
 

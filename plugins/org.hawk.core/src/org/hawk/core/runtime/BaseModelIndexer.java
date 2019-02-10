@@ -519,6 +519,11 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 	}
 
 	@Override
+	public Collection<IMetaModelResourceFactory> getMetaModelParsers() {
+		return metamodelParsers.values();
+	}
+
+	@Override
 	public IMetaModelResourceFactory getMetaModelParser(String type) {
 		if (type == null) {
 			console.printerrln("null type given to getMetaModelParser(type), returning null");
@@ -530,13 +535,8 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 	}
 
 	@Override
-	public IModelResourceFactory getModelParser(String type) {
-		if (type == null)
-			console.printerrln("null type given to getModelParser(type), returning null");
-		else
-			return modelParsers.get(type);
-	
-		return null;
+	public Collection<IModelResourceFactory> getModelParsers() {
+		return modelParsers.values();
 	}
 
 	public IMetaModelResourceFactory getMetaModelParserFromFilename(String name) {

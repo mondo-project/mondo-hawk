@@ -656,14 +656,20 @@ public class ThriftRemoteModelIndexer implements IModelIndexer, IMetaModelIntros
 	}
 
 	@Override
-	public IModelResourceFactory getModelParser(String type) {
-		console.printerrln("Cannot access model parsers in " + this.getClass().getName());
-		return null;
+	public Collection<IModelResourceFactory> getModelParsers() {
+		LOGGER.warn("Cannot access model parsers in {}", this.getClass().getName());
+		return Collections.emptyList();
+	}
+
+	@Override
+	public Collection<IMetaModelResourceFactory> getMetaModelParsers() {
+		LOGGER.warn("Cannot access metamodel parsers in {}", this.getClass().getName());
+		return Collections.emptyList();
 	}
 
 	@Override
 	public IMetaModelResourceFactory getMetaModelParser(String metaModelType) {
-		console.printerrln("Cannot access metamodel parsers in " + this.getClass().getName());
+		LOGGER.warn("Cannot access metamodel parsers in {}", this.getClass().getName());
 		return null;
 	}
 
