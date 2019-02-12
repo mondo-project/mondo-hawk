@@ -141,7 +141,7 @@ public class HModel implements IStateListener {
 			hm.hawk.setDatabaseType(dbType);
 		}
 		if (hm.getModelUpdaters() != null && hm.getModelUpdaters().isEmpty()) {
-			throw new IllegalArgumentException("Must at least add one updater");
+			throw new IllegalArgumentException("Must add at least one updater");
 		}
 
 		// TODO use plugins list to enable only these plugins
