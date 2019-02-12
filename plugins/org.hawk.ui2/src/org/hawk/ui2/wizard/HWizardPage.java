@@ -315,7 +315,6 @@ public class HWizardPage extends WizardPage {
 	 */
 	private void dialogChanged() {
 		IHawkFactory factory = getSelectedFactory();
-		folderText.setEnabled(!factory.isRemote());
 		remoteLocationText.setEnabled(factory.isRemote());
 		
 		// name empty or valid chars in indexername
@@ -338,19 +337,17 @@ public class HWizardPage extends WizardPage {
 			updateStatus("Index storage folder must be specified");
 			return;
 		}
-		if (!factory.isRemote()) {
-			File f = new File(getContainerName());
-			// must not already exist
-			if (f.exists() && f.isDirectory() && f.listFiles().length > 0) {
+		File f = new File(getContainerName());
+		if (f.exists()) {
+			if (f.isDirectory() && f.listFiles().length > 0) {
 				updateStatus(HAWK_CONNECT_WARNING);
 				return;
-			}
-			// must be writable
-			if (!f.getParentFile().exists() && !f.getParentFile().canWrite()) {
-				updateStatus("Index storage folder must be writeable");
+			} else {
+				updateStatus("A file already exists in the specified path - please use a different path");
 				return;
 			}
-			
+		} else if (!f.getParentFile().canWrite()) {
+			updateStatus("Index storage folder cannot be created");
 		}
 
 		// check back-end is chosen
