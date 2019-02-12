@@ -68,6 +68,7 @@ struct File {
 }
 
 exception HawkFactoryNotFound {
+	 /*  */ 1: required string factoryName,
 }
 
 struct HawkInstance {
@@ -77,12 +78,15 @@ struct HawkInstance {
 }
 
 exception HawkInstanceNotFound {
+	 /*  */ 1: required string instanceName,
 }
 
 exception HawkInstanceNotRunning {
+	 /*  */ 1: required string instanceName,
 }
 
 exception HawkMetamodelNotFound {
+	 /*  */ 1: required string metamodelURI,
 }
 
 struct HawkPlugin {
@@ -106,6 +110,7 @@ struct HawkSynchronizationStartEvent {
 }
 
 exception HawkTypeNotFound {
+	 /*  */ 1: required string typeName,
 }
 
 struct IndexedAttributeSpec {
@@ -199,9 +204,11 @@ struct Subscription {
 }
 
 exception UnknownQueryLanguage {
+	 /*  */ 1: required string queryLanguage,
 }
 
 exception UnknownRepositoryType {
+	 /*  */ 1: required string repositoryType,
 }
 
 exception UserExists {

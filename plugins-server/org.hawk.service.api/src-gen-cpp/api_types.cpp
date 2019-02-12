@@ -823,6 +823,10 @@ HawkFactoryNotFound::~HawkFactoryNotFound() throw() {
 }
 
 
+void HawkFactoryNotFound::__set_factoryName(const std::string& val) {
+  this->factoryName = val;
+}
+
 uint32_t HawkFactoryNotFound::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
@@ -835,6 +839,7 @@ uint32_t HawkFactoryNotFound::read(::apache::thrift::protocol::TProtocol* iprot)
 
   using ::apache::thrift::protocol::TProtocolException;
 
+  bool isset_factoryName = false;
 
   while (true)
   {
@@ -842,12 +847,27 @@ uint32_t HawkFactoryNotFound::read(::apache::thrift::protocol::TProtocol* iprot)
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    xfer += iprot->skip(ftype);
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->factoryName);
+          isset_factoryName = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
     xfer += iprot->readFieldEnd();
   }
 
   xfer += iprot->readStructEnd();
 
+  if (!isset_factoryName)
+    throw TProtocolException(TProtocolException::INVALID_DATA);
   return xfer;
 }
 
@@ -856,6 +876,10 @@ uint32_t HawkFactoryNotFound::write(::apache::thrift::protocol::TProtocol* oprot
   apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
   xfer += oprot->writeStructBegin("HawkFactoryNotFound");
 
+  xfer += oprot->writeFieldBegin("factoryName", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString(this->factoryName);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -863,20 +887,20 @@ uint32_t HawkFactoryNotFound::write(::apache::thrift::protocol::TProtocol* oprot
 
 void swap(HawkFactoryNotFound &a, HawkFactoryNotFound &b) {
   using ::std::swap;
-  (void) a;
-  (void) b;
+  swap(a.factoryName, b.factoryName);
 }
 
 HawkFactoryNotFound::HawkFactoryNotFound(const HawkFactoryNotFound& other11) : TException() {
-  (void) other11;
+  factoryName = other11.factoryName;
 }
 HawkFactoryNotFound& HawkFactoryNotFound::operator=(const HawkFactoryNotFound& other12) {
-  (void) other12;
+  factoryName = other12.factoryName;
   return *this;
 }
 void HawkFactoryNotFound::printTo(std::ostream& out) const {
   using ::apache::thrift::to_string;
   out << "HawkFactoryNotFound(";
+  out << "factoryName=" << to_string(factoryName);
   out << ")";
 }
 
@@ -1030,6 +1054,10 @@ HawkInstanceNotFound::~HawkInstanceNotFound() throw() {
 }
 
 
+void HawkInstanceNotFound::__set_instanceName(const std::string& val) {
+  this->instanceName = val;
+}
+
 uint32_t HawkInstanceNotFound::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
@@ -1042,6 +1070,7 @@ uint32_t HawkInstanceNotFound::read(::apache::thrift::protocol::TProtocol* iprot
 
   using ::apache::thrift::protocol::TProtocolException;
 
+  bool isset_instanceName = false;
 
   while (true)
   {
@@ -1049,12 +1078,27 @@ uint32_t HawkInstanceNotFound::read(::apache::thrift::protocol::TProtocol* iprot
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    xfer += iprot->skip(ftype);
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->instanceName);
+          isset_instanceName = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
     xfer += iprot->readFieldEnd();
   }
 
   xfer += iprot->readStructEnd();
 
+  if (!isset_instanceName)
+    throw TProtocolException(TProtocolException::INVALID_DATA);
   return xfer;
 }
 
@@ -1063,6 +1107,10 @@ uint32_t HawkInstanceNotFound::write(::apache::thrift::protocol::TProtocol* opro
   apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
   xfer += oprot->writeStructBegin("HawkInstanceNotFound");
 
+  xfer += oprot->writeFieldBegin("instanceName", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString(this->instanceName);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -1070,20 +1118,20 @@ uint32_t HawkInstanceNotFound::write(::apache::thrift::protocol::TProtocol* opro
 
 void swap(HawkInstanceNotFound &a, HawkInstanceNotFound &b) {
   using ::std::swap;
-  (void) a;
-  (void) b;
+  swap(a.instanceName, b.instanceName);
 }
 
 HawkInstanceNotFound::HawkInstanceNotFound(const HawkInstanceNotFound& other16) : TException() {
-  (void) other16;
+  instanceName = other16.instanceName;
 }
 HawkInstanceNotFound& HawkInstanceNotFound::operator=(const HawkInstanceNotFound& other17) {
-  (void) other17;
+  instanceName = other17.instanceName;
   return *this;
 }
 void HawkInstanceNotFound::printTo(std::ostream& out) const {
   using ::apache::thrift::to_string;
   out << "HawkInstanceNotFound(";
+  out << "instanceName=" << to_string(instanceName);
   out << ")";
 }
 
@@ -1103,6 +1151,10 @@ HawkInstanceNotRunning::~HawkInstanceNotRunning() throw() {
 }
 
 
+void HawkInstanceNotRunning::__set_instanceName(const std::string& val) {
+  this->instanceName = val;
+}
+
 uint32_t HawkInstanceNotRunning::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
@@ -1115,6 +1167,7 @@ uint32_t HawkInstanceNotRunning::read(::apache::thrift::protocol::TProtocol* ipr
 
   using ::apache::thrift::protocol::TProtocolException;
 
+  bool isset_instanceName = false;
 
   while (true)
   {
@@ -1122,12 +1175,27 @@ uint32_t HawkInstanceNotRunning::read(::apache::thrift::protocol::TProtocol* ipr
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    xfer += iprot->skip(ftype);
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->instanceName);
+          isset_instanceName = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
     xfer += iprot->readFieldEnd();
   }
 
   xfer += iprot->readStructEnd();
 
+  if (!isset_instanceName)
+    throw TProtocolException(TProtocolException::INVALID_DATA);
   return xfer;
 }
 
@@ -1136,6 +1204,10 @@ uint32_t HawkInstanceNotRunning::write(::apache::thrift::protocol::TProtocol* op
   apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
   xfer += oprot->writeStructBegin("HawkInstanceNotRunning");
 
+  xfer += oprot->writeFieldBegin("instanceName", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString(this->instanceName);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -1143,20 +1215,20 @@ uint32_t HawkInstanceNotRunning::write(::apache::thrift::protocol::TProtocol* op
 
 void swap(HawkInstanceNotRunning &a, HawkInstanceNotRunning &b) {
   using ::std::swap;
-  (void) a;
-  (void) b;
+  swap(a.instanceName, b.instanceName);
 }
 
 HawkInstanceNotRunning::HawkInstanceNotRunning(const HawkInstanceNotRunning& other18) : TException() {
-  (void) other18;
+  instanceName = other18.instanceName;
 }
 HawkInstanceNotRunning& HawkInstanceNotRunning::operator=(const HawkInstanceNotRunning& other19) {
-  (void) other19;
+  instanceName = other19.instanceName;
   return *this;
 }
 void HawkInstanceNotRunning::printTo(std::ostream& out) const {
   using ::apache::thrift::to_string;
   out << "HawkInstanceNotRunning(";
+  out << "instanceName=" << to_string(instanceName);
   out << ")";
 }
 
@@ -1176,6 +1248,10 @@ HawkMetamodelNotFound::~HawkMetamodelNotFound() throw() {
 }
 
 
+void HawkMetamodelNotFound::__set_metamodelURI(const std::string& val) {
+  this->metamodelURI = val;
+}
+
 uint32_t HawkMetamodelNotFound::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
@@ -1188,6 +1264,7 @@ uint32_t HawkMetamodelNotFound::read(::apache::thrift::protocol::TProtocol* ipro
 
   using ::apache::thrift::protocol::TProtocolException;
 
+  bool isset_metamodelURI = false;
 
   while (true)
   {
@@ -1195,12 +1272,27 @@ uint32_t HawkMetamodelNotFound::read(::apache::thrift::protocol::TProtocol* ipro
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    xfer += iprot->skip(ftype);
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->metamodelURI);
+          isset_metamodelURI = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
     xfer += iprot->readFieldEnd();
   }
 
   xfer += iprot->readStructEnd();
 
+  if (!isset_metamodelURI)
+    throw TProtocolException(TProtocolException::INVALID_DATA);
   return xfer;
 }
 
@@ -1209,6 +1301,10 @@ uint32_t HawkMetamodelNotFound::write(::apache::thrift::protocol::TProtocol* opr
   apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
   xfer += oprot->writeStructBegin("HawkMetamodelNotFound");
 
+  xfer += oprot->writeFieldBegin("metamodelURI", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString(this->metamodelURI);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -1216,20 +1312,20 @@ uint32_t HawkMetamodelNotFound::write(::apache::thrift::protocol::TProtocol* opr
 
 void swap(HawkMetamodelNotFound &a, HawkMetamodelNotFound &b) {
   using ::std::swap;
-  (void) a;
-  (void) b;
+  swap(a.metamodelURI, b.metamodelURI);
 }
 
 HawkMetamodelNotFound::HawkMetamodelNotFound(const HawkMetamodelNotFound& other20) : TException() {
-  (void) other20;
+  metamodelURI = other20.metamodelURI;
 }
 HawkMetamodelNotFound& HawkMetamodelNotFound::operator=(const HawkMetamodelNotFound& other21) {
-  (void) other21;
+  metamodelURI = other21.metamodelURI;
   return *this;
 }
 void HawkMetamodelNotFound::printTo(std::ostream& out) const {
   using ::apache::thrift::to_string;
   out << "HawkMetamodelNotFound(";
+  out << "metamodelURI=" << to_string(metamodelURI);
   out << ")";
 }
 
@@ -1689,6 +1785,10 @@ HawkTypeNotFound::~HawkTypeNotFound() throw() {
 }
 
 
+void HawkTypeNotFound::__set_typeName(const std::string& val) {
+  this->typeName = val;
+}
+
 uint32_t HawkTypeNotFound::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
@@ -1701,6 +1801,7 @@ uint32_t HawkTypeNotFound::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   using ::apache::thrift::protocol::TProtocolException;
 
+  bool isset_typeName = false;
 
   while (true)
   {
@@ -1708,12 +1809,27 @@ uint32_t HawkTypeNotFound::read(::apache::thrift::protocol::TProtocol* iprot) {
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    xfer += iprot->skip(ftype);
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->typeName);
+          isset_typeName = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
     xfer += iprot->readFieldEnd();
   }
 
   xfer += iprot->readStructEnd();
 
+  if (!isset_typeName)
+    throw TProtocolException(TProtocolException::INVALID_DATA);
   return xfer;
 }
 
@@ -1722,6 +1838,10 @@ uint32_t HawkTypeNotFound::write(::apache::thrift::protocol::TProtocol* oprot) c
   apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
   xfer += oprot->writeStructBegin("HawkTypeNotFound");
 
+  xfer += oprot->writeFieldBegin("typeName", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString(this->typeName);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -1729,20 +1849,20 @@ uint32_t HawkTypeNotFound::write(::apache::thrift::protocol::TProtocol* oprot) c
 
 void swap(HawkTypeNotFound &a, HawkTypeNotFound &b) {
   using ::std::swap;
-  (void) a;
-  (void) b;
+  swap(a.typeName, b.typeName);
 }
 
 HawkTypeNotFound::HawkTypeNotFound(const HawkTypeNotFound& other32) : TException() {
-  (void) other32;
+  typeName = other32.typeName;
 }
 HawkTypeNotFound& HawkTypeNotFound::operator=(const HawkTypeNotFound& other33) {
-  (void) other33;
+  typeName = other33.typeName;
   return *this;
 }
 void HawkTypeNotFound::printTo(std::ostream& out) const {
   using ::apache::thrift::to_string;
   out << "HawkTypeNotFound(";
+  out << "typeName=" << to_string(typeName);
   out << ")";
 }
 
@@ -3969,6 +4089,10 @@ UnknownQueryLanguage::~UnknownQueryLanguage() throw() {
 }
 
 
+void UnknownQueryLanguage::__set_queryLanguage(const std::string& val) {
+  this->queryLanguage = val;
+}
+
 uint32_t UnknownQueryLanguage::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
@@ -3981,6 +4105,7 @@ uint32_t UnknownQueryLanguage::read(::apache::thrift::protocol::TProtocol* iprot
 
   using ::apache::thrift::protocol::TProtocolException;
 
+  bool isset_queryLanguage = false;
 
   while (true)
   {
@@ -3988,12 +4113,27 @@ uint32_t UnknownQueryLanguage::read(::apache::thrift::protocol::TProtocol* iprot
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    xfer += iprot->skip(ftype);
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->queryLanguage);
+          isset_queryLanguage = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
     xfer += iprot->readFieldEnd();
   }
 
   xfer += iprot->readStructEnd();
 
+  if (!isset_queryLanguage)
+    throw TProtocolException(TProtocolException::INVALID_DATA);
   return xfer;
 }
 
@@ -4002,6 +4142,10 @@ uint32_t UnknownQueryLanguage::write(::apache::thrift::protocol::TProtocol* opro
   apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
   xfer += oprot->writeStructBegin("UnknownQueryLanguage");
 
+  xfer += oprot->writeFieldBegin("queryLanguage", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString(this->queryLanguage);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -4009,20 +4153,20 @@ uint32_t UnknownQueryLanguage::write(::apache::thrift::protocol::TProtocol* opro
 
 void swap(UnknownQueryLanguage &a, UnknownQueryLanguage &b) {
   using ::std::swap;
-  (void) a;
-  (void) b;
+  swap(a.queryLanguage, b.queryLanguage);
 }
 
 UnknownQueryLanguage::UnknownQueryLanguage(const UnknownQueryLanguage& other119) : TException() {
-  (void) other119;
+  queryLanguage = other119.queryLanguage;
 }
 UnknownQueryLanguage& UnknownQueryLanguage::operator=(const UnknownQueryLanguage& other120) {
-  (void) other120;
+  queryLanguage = other120.queryLanguage;
   return *this;
 }
 void UnknownQueryLanguage::printTo(std::ostream& out) const {
   using ::apache::thrift::to_string;
   out << "UnknownQueryLanguage(";
+  out << "queryLanguage=" << to_string(queryLanguage);
   out << ")";
 }
 
@@ -4042,6 +4186,10 @@ UnknownRepositoryType::~UnknownRepositoryType() throw() {
 }
 
 
+void UnknownRepositoryType::__set_repositoryType(const std::string& val) {
+  this->repositoryType = val;
+}
+
 uint32_t UnknownRepositoryType::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
@@ -4054,6 +4202,7 @@ uint32_t UnknownRepositoryType::read(::apache::thrift::protocol::TProtocol* ipro
 
   using ::apache::thrift::protocol::TProtocolException;
 
+  bool isset_repositoryType = false;
 
   while (true)
   {
@@ -4061,12 +4210,27 @@ uint32_t UnknownRepositoryType::read(::apache::thrift::protocol::TProtocol* ipro
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    xfer += iprot->skip(ftype);
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->repositoryType);
+          isset_repositoryType = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
     xfer += iprot->readFieldEnd();
   }
 
   xfer += iprot->readStructEnd();
 
+  if (!isset_repositoryType)
+    throw TProtocolException(TProtocolException::INVALID_DATA);
   return xfer;
 }
 
@@ -4075,6 +4239,10 @@ uint32_t UnknownRepositoryType::write(::apache::thrift::protocol::TProtocol* opr
   apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
   xfer += oprot->writeStructBegin("UnknownRepositoryType");
 
+  xfer += oprot->writeFieldBegin("repositoryType", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString(this->repositoryType);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -4082,20 +4250,20 @@ uint32_t UnknownRepositoryType::write(::apache::thrift::protocol::TProtocol* opr
 
 void swap(UnknownRepositoryType &a, UnknownRepositoryType &b) {
   using ::std::swap;
-  (void) a;
-  (void) b;
+  swap(a.repositoryType, b.repositoryType);
 }
 
 UnknownRepositoryType::UnknownRepositoryType(const UnknownRepositoryType& other121) : TException() {
-  (void) other121;
+  repositoryType = other121.repositoryType;
 }
 UnknownRepositoryType& UnknownRepositoryType::operator=(const UnknownRepositoryType& other122) {
-  (void) other122;
+  repositoryType = other122.repositoryType;
   return *this;
 }
 void UnknownRepositoryType::printTo(std::ostream& out) const {
   using ::apache::thrift::to_string;
   out << "UnknownRepositoryType(";
+  out << "repositoryType=" << to_string(repositoryType);
   out << ")";
 }
 

@@ -521,6 +521,14 @@ File.prototype.write = function(output) {
 };
 
 HawkFactoryNotFound = function(args) {
+  this.factoryName = null;
+  if (args) {
+    if (args.factoryName !== undefined && args.factoryName !== null) {
+      this.factoryName = args.factoryName;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field factoryName is unset!');
+    }
+  }
 };
 Thrift.inherits(HawkFactoryNotFound, Thrift.TException);
 HawkFactoryNotFound.prototype.name = 'HawkFactoryNotFound';
@@ -535,7 +543,21 @@ HawkFactoryNotFound.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.factoryName = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -544,6 +566,11 @@ HawkFactoryNotFound.prototype.read = function(input) {
 
 HawkFactoryNotFound.prototype.write = function(output) {
   output.writeStructBegin('HawkFactoryNotFound');
+  if (this.factoryName !== null && this.factoryName !== undefined) {
+    output.writeFieldBegin('factoryName', Thrift.Type.STRING, 1);
+    output.writeString(this.factoryName);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -638,6 +665,14 @@ HawkInstance.prototype.write = function(output) {
 };
 
 HawkInstanceNotFound = function(args) {
+  this.instanceName = null;
+  if (args) {
+    if (args.instanceName !== undefined && args.instanceName !== null) {
+      this.instanceName = args.instanceName;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field instanceName is unset!');
+    }
+  }
 };
 Thrift.inherits(HawkInstanceNotFound, Thrift.TException);
 HawkInstanceNotFound.prototype.name = 'HawkInstanceNotFound';
@@ -652,7 +687,21 @@ HawkInstanceNotFound.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.instanceName = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -661,12 +710,25 @@ HawkInstanceNotFound.prototype.read = function(input) {
 
 HawkInstanceNotFound.prototype.write = function(output) {
   output.writeStructBegin('HawkInstanceNotFound');
+  if (this.instanceName !== null && this.instanceName !== undefined) {
+    output.writeFieldBegin('instanceName', Thrift.Type.STRING, 1);
+    output.writeString(this.instanceName);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
 };
 
 HawkInstanceNotRunning = function(args) {
+  this.instanceName = null;
+  if (args) {
+    if (args.instanceName !== undefined && args.instanceName !== null) {
+      this.instanceName = args.instanceName;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field instanceName is unset!');
+    }
+  }
 };
 Thrift.inherits(HawkInstanceNotRunning, Thrift.TException);
 HawkInstanceNotRunning.prototype.name = 'HawkInstanceNotRunning';
@@ -681,7 +743,21 @@ HawkInstanceNotRunning.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.instanceName = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -690,12 +766,25 @@ HawkInstanceNotRunning.prototype.read = function(input) {
 
 HawkInstanceNotRunning.prototype.write = function(output) {
   output.writeStructBegin('HawkInstanceNotRunning');
+  if (this.instanceName !== null && this.instanceName !== undefined) {
+    output.writeFieldBegin('instanceName', Thrift.Type.STRING, 1);
+    output.writeString(this.instanceName);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
 };
 
 HawkMetamodelNotFound = function(args) {
+  this.metamodelURI = null;
+  if (args) {
+    if (args.metamodelURI !== undefined && args.metamodelURI !== null) {
+      this.metamodelURI = args.metamodelURI;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field metamodelURI is unset!');
+    }
+  }
 };
 Thrift.inherits(HawkMetamodelNotFound, Thrift.TException);
 HawkMetamodelNotFound.prototype.name = 'HawkMetamodelNotFound';
@@ -710,7 +799,21 @@ HawkMetamodelNotFound.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.metamodelURI = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -719,6 +822,11 @@ HawkMetamodelNotFound.prototype.read = function(input) {
 
 HawkMetamodelNotFound.prototype.write = function(output) {
   output.writeStructBegin('HawkMetamodelNotFound');
+  if (this.metamodelURI !== null && this.metamodelURI !== undefined) {
+    output.writeFieldBegin('metamodelURI', Thrift.Type.STRING, 1);
+    output.writeString(this.metamodelURI);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -1011,6 +1119,14 @@ HawkSynchronizationStartEvent.prototype.write = function(output) {
 };
 
 HawkTypeNotFound = function(args) {
+  this.typeName = null;
+  if (args) {
+    if (args.typeName !== undefined && args.typeName !== null) {
+      this.typeName = args.typeName;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field typeName is unset!');
+    }
+  }
 };
 Thrift.inherits(HawkTypeNotFound, Thrift.TException);
 HawkTypeNotFound.prototype.name = 'HawkTypeNotFound';
@@ -1025,7 +1141,21 @@ HawkTypeNotFound.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.typeName = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -1034,6 +1164,11 @@ HawkTypeNotFound.prototype.read = function(input) {
 
 HawkTypeNotFound.prototype.write = function(output) {
   output.writeStructBegin('HawkTypeNotFound');
+  if (this.typeName !== null && this.typeName !== undefined) {
+    output.writeFieldBegin('typeName', Thrift.Type.STRING, 1);
+    output.writeString(this.typeName);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -2546,6 +2681,14 @@ Subscription.prototype.write = function(output) {
 };
 
 UnknownQueryLanguage = function(args) {
+  this.queryLanguage = null;
+  if (args) {
+    if (args.queryLanguage !== undefined && args.queryLanguage !== null) {
+      this.queryLanguage = args.queryLanguage;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field queryLanguage is unset!');
+    }
+  }
 };
 Thrift.inherits(UnknownQueryLanguage, Thrift.TException);
 UnknownQueryLanguage.prototype.name = 'UnknownQueryLanguage';
@@ -2560,7 +2703,21 @@ UnknownQueryLanguage.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.queryLanguage = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -2569,12 +2726,25 @@ UnknownQueryLanguage.prototype.read = function(input) {
 
 UnknownQueryLanguage.prototype.write = function(output) {
   output.writeStructBegin('UnknownQueryLanguage');
+  if (this.queryLanguage !== null && this.queryLanguage !== undefined) {
+    output.writeFieldBegin('queryLanguage', Thrift.Type.STRING, 1);
+    output.writeString(this.queryLanguage);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
 };
 
 UnknownRepositoryType = function(args) {
+  this.repositoryType = null;
+  if (args) {
+    if (args.repositoryType !== undefined && args.repositoryType !== null) {
+      this.repositoryType = args.repositoryType;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field repositoryType is unset!');
+    }
+  }
 };
 Thrift.inherits(UnknownRepositoryType, Thrift.TException);
 UnknownRepositoryType.prototype.name = 'UnknownRepositoryType';
@@ -2589,7 +2759,21 @@ UnknownRepositoryType.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.repositoryType = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -2598,6 +2782,11 @@ UnknownRepositoryType.prototype.read = function(input) {
 
 UnknownRepositoryType.prototype.write = function(output) {
   output.writeStructBegin('UnknownRepositoryType');
+  if (this.repositoryType !== null && this.repositoryType !== undefined) {
+    output.writeFieldBegin('repositoryType', Thrift.Type.STRING, 1);
+    output.writeString(this.repositoryType);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;

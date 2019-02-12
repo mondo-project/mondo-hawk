@@ -498,19 +498,34 @@ enum CommitItemChangeType {
 }
 
 @doc(d="No Hawk instance exists with that name.")
-class HawkInstanceNotFound {}
+class HawkInstanceNotFound {
+  @doc(d="Name provided by the client.")
+  attr String instanceName;
+}
 
 @doc(d="No Hawk factory exists with that name.")
-class HawkFactoryNotFound {}
+class HawkFactoryNotFound {
+  @doc(d="Name provided by the client.")
+  attr String factoryName;
+}
 
 @doc(d="The selected Hawk instance is not running.")
-class HawkInstanceNotRunning {}
+class HawkInstanceNotRunning {
+  @doc(d="Name provided by the client.")
+  attr String instanceName;
+}
 
 @doc(d="The selected Hawk instance does not have a metamodel with that URI.")
-class HawkMetamodelNotFound {}
+class HawkMetamodelNotFound {
+  @doc(d="URI provided by the client.")
+  attr String metamodelURI;
+}
 
 @doc(d="The selected Hawk instance does not have a type with that name.")
-class HawkTypeNotFound {}
+class HawkTypeNotFound {
+  @doc(d="Name provided by the client.")
+  attr String typeName;
+}
 
 @doc(d="The provided metamodel is not valid (e.g. unparsable or inconsistent).")
 class InvalidMetamodel {
@@ -518,10 +533,16 @@ class InvalidMetamodel {
 }
 
 @doc(d="The specified query language is not supported by the operation.")
-class UnknownQueryLanguage {}
+class UnknownQueryLanguage {
+  @doc(d="Query language requested by the client.")
+  attr String queryLanguage;
+}
 
 @doc(d="The specified repository type is not supported by the operation.")
-class UnknownRepositoryType {}
+class UnknownRepositoryType {
+  @doc(d="Repository type provided by the client.")
+  attr String repositoryType;
+}
 
 @doc(d="The specified query is not valid")
 class InvalidQuery {

@@ -1243,26 +1243,51 @@
     <eAnnotations source="doc">
       <details key="d" value="No Hawk instance exists with that name."/>
     </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="instanceName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Name provided by the client."/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="HawkFactoryNotFound">
     <eAnnotations source="doc">
       <details key="d" value="No Hawk factory exists with that name."/>
     </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="factoryName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Name provided by the client."/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="HawkInstanceNotRunning">
     <eAnnotations source="doc">
       <details key="d" value="The selected Hawk instance is not running."/>
     </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="instanceName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Name provided by the client."/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="HawkMetamodelNotFound">
     <eAnnotations source="doc">
       <details key="d" value="The selected Hawk instance does not have a metamodel with that URI."/>
     </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="metamodelURI" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="URI provided by the client."/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="HawkTypeNotFound">
     <eAnnotations source="doc">
       <details key="d" value="The selected Hawk instance does not have a type with that name."/>
     </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Name provided by the client."/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InvalidMetamodel">
     <eAnnotations source="doc">
@@ -1278,11 +1303,21 @@
     <eAnnotations source="doc">
       <details key="d" value="The specified query language is not supported by the operation."/>
     </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="queryLanguage" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Query language requested by the client."/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="UnknownRepositoryType">
     <eAnnotations source="doc">
       <details key="d" value="The specified repository type is not supported by the operation."/>
     </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="repositoryType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="doc">
+        <details key="d" value="Repository type provided by the client."/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InvalidQuery">
     <eAnnotations source="doc">

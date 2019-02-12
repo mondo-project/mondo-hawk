@@ -474,13 +474,18 @@ class HawkFactoryNotFound : public ::apache::thrift::TException {
 
   HawkFactoryNotFound(const HawkFactoryNotFound&);
   HawkFactoryNotFound& operator=(const HawkFactoryNotFound&);
-  HawkFactoryNotFound() {
+  HawkFactoryNotFound() : factoryName() {
   }
 
   virtual ~HawkFactoryNotFound() throw();
+  std::string factoryName;
 
-  bool operator == (const HawkFactoryNotFound & /* rhs */) const
+  void __set_factoryName(const std::string& val);
+
+  bool operator == (const HawkFactoryNotFound & rhs) const
   {
+    if (!(factoryName == rhs.factoryName))
+      return false;
     return true;
   }
   bool operator != (const HawkFactoryNotFound &rhs) const {
@@ -561,13 +566,18 @@ class HawkInstanceNotFound : public ::apache::thrift::TException {
 
   HawkInstanceNotFound(const HawkInstanceNotFound&);
   HawkInstanceNotFound& operator=(const HawkInstanceNotFound&);
-  HawkInstanceNotFound() {
+  HawkInstanceNotFound() : instanceName() {
   }
 
   virtual ~HawkInstanceNotFound() throw();
+  std::string instanceName;
 
-  bool operator == (const HawkInstanceNotFound & /* rhs */) const
+  void __set_instanceName(const std::string& val);
+
+  bool operator == (const HawkInstanceNotFound & rhs) const
   {
+    if (!(instanceName == rhs.instanceName))
+      return false;
     return true;
   }
   bool operator != (const HawkInstanceNotFound &rhs) const {
@@ -598,13 +608,18 @@ class HawkInstanceNotRunning : public ::apache::thrift::TException {
 
   HawkInstanceNotRunning(const HawkInstanceNotRunning&);
   HawkInstanceNotRunning& operator=(const HawkInstanceNotRunning&);
-  HawkInstanceNotRunning() {
+  HawkInstanceNotRunning() : instanceName() {
   }
 
   virtual ~HawkInstanceNotRunning() throw();
+  std::string instanceName;
 
-  bool operator == (const HawkInstanceNotRunning & /* rhs */) const
+  void __set_instanceName(const std::string& val);
+
+  bool operator == (const HawkInstanceNotRunning & rhs) const
   {
+    if (!(instanceName == rhs.instanceName))
+      return false;
     return true;
   }
   bool operator != (const HawkInstanceNotRunning &rhs) const {
@@ -635,13 +650,18 @@ class HawkMetamodelNotFound : public ::apache::thrift::TException {
 
   HawkMetamodelNotFound(const HawkMetamodelNotFound&);
   HawkMetamodelNotFound& operator=(const HawkMetamodelNotFound&);
-  HawkMetamodelNotFound() {
+  HawkMetamodelNotFound() : metamodelURI() {
   }
 
   virtual ~HawkMetamodelNotFound() throw();
+  std::string metamodelURI;
 
-  bool operator == (const HawkMetamodelNotFound & /* rhs */) const
+  void __set_metamodelURI(const std::string& val);
+
+  bool operator == (const HawkMetamodelNotFound & rhs) const
   {
+    if (!(metamodelURI == rhs.metamodelURI))
+      return false;
     return true;
   }
   bool operator != (const HawkMetamodelNotFound &rhs) const {
@@ -852,13 +872,18 @@ class HawkTypeNotFound : public ::apache::thrift::TException {
 
   HawkTypeNotFound(const HawkTypeNotFound&);
   HawkTypeNotFound& operator=(const HawkTypeNotFound&);
-  HawkTypeNotFound() {
+  HawkTypeNotFound() : typeName() {
   }
 
   virtual ~HawkTypeNotFound() throw();
+  std::string typeName;
 
-  bool operator == (const HawkTypeNotFound & /* rhs */) const
+  void __set_typeName(const std::string& val);
+
+  bool operator == (const HawkTypeNotFound & rhs) const
   {
+    if (!(typeName == rhs.typeName))
+      return false;
     return true;
   }
   bool operator != (const HawkTypeNotFound &rhs) const {
@@ -1718,13 +1743,18 @@ class UnknownQueryLanguage : public ::apache::thrift::TException {
 
   UnknownQueryLanguage(const UnknownQueryLanguage&);
   UnknownQueryLanguage& operator=(const UnknownQueryLanguage&);
-  UnknownQueryLanguage() {
+  UnknownQueryLanguage() : queryLanguage() {
   }
 
   virtual ~UnknownQueryLanguage() throw();
+  std::string queryLanguage;
 
-  bool operator == (const UnknownQueryLanguage & /* rhs */) const
+  void __set_queryLanguage(const std::string& val);
+
+  bool operator == (const UnknownQueryLanguage & rhs) const
   {
+    if (!(queryLanguage == rhs.queryLanguage))
+      return false;
     return true;
   }
   bool operator != (const UnknownQueryLanguage &rhs) const {
@@ -1755,13 +1785,18 @@ class UnknownRepositoryType : public ::apache::thrift::TException {
 
   UnknownRepositoryType(const UnknownRepositoryType&);
   UnknownRepositoryType& operator=(const UnknownRepositoryType&);
-  UnknownRepositoryType() {
+  UnknownRepositoryType() : repositoryType() {
   }
 
   virtual ~UnknownRepositoryType() throw();
+  std::string repositoryType;
 
-  bool operator == (const UnknownRepositoryType & /* rhs */) const
+  void __set_repositoryType(const std::string& val);
+
+  bool operator == (const UnknownRepositoryType & rhs) const
   {
+    if (!(repositoryType == rhs.repositoryType))
+      return false;
     return true;
   }
   bool operator != (const UnknownRepositoryType &rhs) const {

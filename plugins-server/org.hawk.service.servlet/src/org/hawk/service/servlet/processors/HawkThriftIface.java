@@ -266,14 +266,14 @@ public final class HawkThriftIface implements Hawk.Iface {
 		if (model.isRunning()) {
 			return model;
 		} else {
-			throw new HawkInstanceNotRunning();
+			throw new HawkInstanceNotRunning(name);
 		}
 	}
 
 	private HModel getHawkByName(String name) throws HawkInstanceNotFound {
 		final HModel model = HManager.getInstance().getHawkByName(name);
 		if (model == null) {
-			throw new HawkInstanceNotFound();
+			throw new HawkInstanceNotFound(name);
 		}
 		return model;
 	}
@@ -504,7 +504,7 @@ public final class HawkThriftIface implements Hawk.Iface {
 			final String password = credentials != null ? credentials.password : null;
 			model.addVCS(repo.uri, repo.type, username, password, repo.isFrozen);
 		} catch (NoSuchElementException ex) {
-			throw new UnknownRepositoryType();
+			throw new UnknownRepositoryType(repo.type);
 		}
 	}
 
@@ -736,7 +736,9 @@ public final class HawkThriftIface implements Hawk.Iface {
 				} else {
 					factory = manager.getHawkFactoryInstances().get(factoryName);
 					if (factory == null) {
-						throw new HawkFactoryNotFound();
+						throw new HawkFactoryNotFound(
+							String.format("Could not find factory with ID '%s'", factoryName)
+						);
 					}
 				}
 
@@ -984,7 +986,7 @@ public final class HawkThriftIface implements Hawk.Iface {
 		try {
 			return model.getIntrospector().getTypes(metamodelURI);
 		} catch (NoSuchElementException ex) {
-			throw new HawkMetamodelNotFound();
+			throw new HawkMetamodelNotFound(metamodelURI);
 		}
 	}
 
@@ -994,12 +996,12 @@ public final class HawkThriftIface implements Hawk.Iface {
 		final HModel model = getRunningHawkByName(hawkInstanceName);
 
 		if (!model.getIndexer().getKnownMMUris().contains(metamodelURI)) {
-			throw new HawkMetamodelNotFound();
+			throw new HawkMetamodelNotFound(metamodelURI);
 		}
 		try {
 			return model.getIntrospector().getAttributes(metamodelURI, typeName);
 		} catch (NoSuchElementException ex) {
-			throw new HawkTypeNotFound();
+			throw new HawkTypeNotFound(typeName);
 		}
 	}
 
