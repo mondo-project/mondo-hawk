@@ -615,7 +615,8 @@ public class ThriftRemoteModelIndexer implements IModelIndexer, IMetaModelIntros
 		try {
 			client.get().startInstance(name);
 		} catch (HawkInstanceNotFound ex) {
-			client.get().createInstance(name, dbType, minDelay, maxDelay, enabledPlugins, factory.getType());
+			final String factoryName = factory.getFactoryName();
+			client.get().createInstance(name, dbType, minDelay, maxDelay, enabledPlugins, factoryName);
 		}
 		connectToArtemis();
 	}
