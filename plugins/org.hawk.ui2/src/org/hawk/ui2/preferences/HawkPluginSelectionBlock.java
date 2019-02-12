@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.IToolTipProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
@@ -63,7 +64,10 @@ public class HawkPluginSelectionBlock {
 	}
 
 	public void createControl(Composite parent) {
-		control = new Composite(parent, SWT.NONE);
+		ScrolledComposite scrolled = new ScrolledComposite(parent, SWT.V_SCROLL);
+	    scrolled.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		control = new Composite(scrolled, SWT.NONE);
+
 		Font font = parent.getFont();
 		control.setFont(font);
 
@@ -81,11 +85,17 @@ public class HawkPluginSelectionBlock {
 		modelTableViewer = createPluginTableBlock("&Model parsers:", Category.MODEL_RESOURCE_FACTORY, allChecked);
 		graphChangeListenerTableViewer = createPluginTableBlock("&Graph change listeners:", Category.GRAPH_CHANGE_LISTENER, !allChecked);
 		queryEngineTableViewer = createPluginTableBlock("&Query engines:", Category.QUERY_ENGINE, allChecked);
+
+		scrolled.setContent(control);
+		scrolled.setExpandHorizontal(true);
+		scrolled.setExpandVertical(true);
+		scrolled.setMinSize(control.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 
 	private CheckboxTableViewer createPluginTableBlock(final String labelText, final Category category, boolean allChecked) {
 		final GridData labelGd = new GridData(GridData.FILL_BOTH);
 		labelGd.horizontalSpan = 2;
+		labelGd.minimumHeight = 20;
 
 		final Label label = new Label(control, SWT.NULL);
 		label.setText(labelText);
@@ -105,6 +115,7 @@ public class HawkPluginSelectionBlock {
 	private Composite getTableComposite(Composite control) {
 		Composite cTable = new Composite(control, SWT.NULL);
 		GridData gd = new GridData(SWT.FILL, SWT.TOP, true, true);
+		gd.heightHint = 120;
 		cTable.setLayoutData(gd);
 
 		GridLayout layout = new GridLayout();
@@ -224,8 +235,8 @@ public class HawkPluginSelectionBlock {
 	private CheckboxTableViewer newTableViewer(Composite composite) {
 		CheckboxTableViewer modelTableViewer = CheckboxTableViewer.newCheckList(composite, SWT.BORDER | SWT.V_SCROLL | SWT.FILL);
 		modelTableViewer.setUseHashlookup(true);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.heightHint = 80;
+		GridData gd = new GridData(GridData.FILL_BOTH);
+		gd.minimumHeight = 80;
 		modelTableViewer.getTable().setLayoutData(gd);
 		modelTableViewer.getTable().setHeaderVisible(false);
 		return modelTableViewer;

@@ -35,6 +35,7 @@ import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -144,7 +145,10 @@ public class HWizardPage extends WizardPage {
 	}
 	
 	private Composite createBaseConfig(Composite parent) {
-		Composite container = new Composite(parent, SWT.NULL);
+		ScrolledComposite scrolled = new ScrolledComposite(parent, SWT.V_SCROLL);
+	    scrolled.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+
+	    Composite container = new Composite(scrolled, SWT.NULL);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
 		layout.verticalSpacing = 9;
@@ -264,9 +268,15 @@ public class HWizardPage extends WizardPage {
 
 		initialize();
 		dialogChanged();
-		setControl(container);
-		
-		return container;
+
+	    scrolled.setContent(container);
+		scrolled.setExpandHorizontal(true);
+		scrolled.setExpandVertical(true);
+		scrolled.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+
+		setControl(scrolled);
+
+		return scrolled;
 	}
 
 	private List<String> getBackendNames() {
