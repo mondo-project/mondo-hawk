@@ -68,7 +68,7 @@ struct File {
 }
 
 exception HawkFactoryNotFound {
-	 /*  */ 1: required string factoryName,
+	 /* Name provided by the client. */ 1: optional string factoryName,
 }
 
 struct HawkInstance {
@@ -78,15 +78,15 @@ struct HawkInstance {
 }
 
 exception HawkInstanceNotFound {
-	 /*  */ 1: required string instanceName,
+	 /* Name provided by the client. */ 1: optional string instanceName,
 }
 
 exception HawkInstanceNotRunning {
-	 /*  */ 1: required string instanceName,
+	 /* Name provided by the client. */ 1: optional string instanceName,
 }
 
 exception HawkMetamodelNotFound {
-	 /*  */ 1: required string metamodelURI,
+	 /* URI provided by the client. */ 1: optional string metamodelURI,
 }
 
 struct HawkPlugin {
@@ -110,7 +110,7 @@ struct HawkSynchronizationStartEvent {
 }
 
 exception HawkTypeNotFound {
-	 /*  */ 1: required string typeName,
+	 /* Name provided by the client. */ 1: optional string typeName,
 }
 
 struct IndexedAttributeSpec {
@@ -204,11 +204,11 @@ struct Subscription {
 }
 
 exception UnknownQueryLanguage {
-	 /*  */ 1: required string queryLanguage,
+	 /* Query language requested by the client. */ 1: optional string queryLanguage,
 }
 
 exception UnknownRepositoryType {
-	 /*  */ 1: required string repositoryType,
+	 /* Repository type provided by the client. */ 1: optional string repositoryType,
 }
 
 exception UserExists {

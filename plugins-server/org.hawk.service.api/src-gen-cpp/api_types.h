@@ -468,6 +468,10 @@ inline std::ostream& operator<<(std::ostream& out, const File& obj)
   return out;
 }
 
+typedef struct _HawkFactoryNotFound__isset {
+  _HawkFactoryNotFound__isset() : factoryName(false) {}
+  bool factoryName :1;
+} _HawkFactoryNotFound__isset;
 
 class HawkFactoryNotFound : public ::apache::thrift::TException {
  public:
@@ -480,11 +484,15 @@ class HawkFactoryNotFound : public ::apache::thrift::TException {
   virtual ~HawkFactoryNotFound() throw();
   std::string factoryName;
 
+  _HawkFactoryNotFound__isset __isset;
+
   void __set_factoryName(const std::string& val);
 
   bool operator == (const HawkFactoryNotFound & rhs) const
   {
-    if (!(factoryName == rhs.factoryName))
+    if (__isset.factoryName != rhs.__isset.factoryName)
+      return false;
+    else if (__isset.factoryName && !(factoryName == rhs.factoryName))
       return false;
     return true;
   }
@@ -560,6 +568,10 @@ inline std::ostream& operator<<(std::ostream& out, const HawkInstance& obj)
   return out;
 }
 
+typedef struct _HawkInstanceNotFound__isset {
+  _HawkInstanceNotFound__isset() : instanceName(false) {}
+  bool instanceName :1;
+} _HawkInstanceNotFound__isset;
 
 class HawkInstanceNotFound : public ::apache::thrift::TException {
  public:
@@ -572,11 +584,15 @@ class HawkInstanceNotFound : public ::apache::thrift::TException {
   virtual ~HawkInstanceNotFound() throw();
   std::string instanceName;
 
+  _HawkInstanceNotFound__isset __isset;
+
   void __set_instanceName(const std::string& val);
 
   bool operator == (const HawkInstanceNotFound & rhs) const
   {
-    if (!(instanceName == rhs.instanceName))
+    if (__isset.instanceName != rhs.__isset.instanceName)
+      return false;
+    else if (__isset.instanceName && !(instanceName == rhs.instanceName))
       return false;
     return true;
   }
@@ -602,6 +618,10 @@ inline std::ostream& operator<<(std::ostream& out, const HawkInstanceNotFound& o
   return out;
 }
 
+typedef struct _HawkInstanceNotRunning__isset {
+  _HawkInstanceNotRunning__isset() : instanceName(false) {}
+  bool instanceName :1;
+} _HawkInstanceNotRunning__isset;
 
 class HawkInstanceNotRunning : public ::apache::thrift::TException {
  public:
@@ -614,11 +634,15 @@ class HawkInstanceNotRunning : public ::apache::thrift::TException {
   virtual ~HawkInstanceNotRunning() throw();
   std::string instanceName;
 
+  _HawkInstanceNotRunning__isset __isset;
+
   void __set_instanceName(const std::string& val);
 
   bool operator == (const HawkInstanceNotRunning & rhs) const
   {
-    if (!(instanceName == rhs.instanceName))
+    if (__isset.instanceName != rhs.__isset.instanceName)
+      return false;
+    else if (__isset.instanceName && !(instanceName == rhs.instanceName))
       return false;
     return true;
   }
@@ -644,6 +668,10 @@ inline std::ostream& operator<<(std::ostream& out, const HawkInstanceNotRunning&
   return out;
 }
 
+typedef struct _HawkMetamodelNotFound__isset {
+  _HawkMetamodelNotFound__isset() : metamodelURI(false) {}
+  bool metamodelURI :1;
+} _HawkMetamodelNotFound__isset;
 
 class HawkMetamodelNotFound : public ::apache::thrift::TException {
  public:
@@ -656,11 +684,15 @@ class HawkMetamodelNotFound : public ::apache::thrift::TException {
   virtual ~HawkMetamodelNotFound() throw();
   std::string metamodelURI;
 
+  _HawkMetamodelNotFound__isset __isset;
+
   void __set_metamodelURI(const std::string& val);
 
   bool operator == (const HawkMetamodelNotFound & rhs) const
   {
-    if (!(metamodelURI == rhs.metamodelURI))
+    if (__isset.metamodelURI != rhs.__isset.metamodelURI)
+      return false;
+    else if (__isset.metamodelURI && !(metamodelURI == rhs.metamodelURI))
       return false;
     return true;
   }
@@ -866,6 +898,10 @@ inline std::ostream& operator<<(std::ostream& out, const HawkSynchronizationStar
   return out;
 }
 
+typedef struct _HawkTypeNotFound__isset {
+  _HawkTypeNotFound__isset() : typeName(false) {}
+  bool typeName :1;
+} _HawkTypeNotFound__isset;
 
 class HawkTypeNotFound : public ::apache::thrift::TException {
  public:
@@ -878,11 +914,15 @@ class HawkTypeNotFound : public ::apache::thrift::TException {
   virtual ~HawkTypeNotFound() throw();
   std::string typeName;
 
+  _HawkTypeNotFound__isset __isset;
+
   void __set_typeName(const std::string& val);
 
   bool operator == (const HawkTypeNotFound & rhs) const
   {
-    if (!(typeName == rhs.typeName))
+    if (__isset.typeName != rhs.__isset.typeName)
+      return false;
+    else if (__isset.typeName && !(typeName == rhs.typeName))
       return false;
     return true;
   }
@@ -1737,6 +1777,10 @@ inline std::ostream& operator<<(std::ostream& out, const Subscription& obj)
   return out;
 }
 
+typedef struct _UnknownQueryLanguage__isset {
+  _UnknownQueryLanguage__isset() : queryLanguage(false) {}
+  bool queryLanguage :1;
+} _UnknownQueryLanguage__isset;
 
 class UnknownQueryLanguage : public ::apache::thrift::TException {
  public:
@@ -1749,11 +1793,15 @@ class UnknownQueryLanguage : public ::apache::thrift::TException {
   virtual ~UnknownQueryLanguage() throw();
   std::string queryLanguage;
 
+  _UnknownQueryLanguage__isset __isset;
+
   void __set_queryLanguage(const std::string& val);
 
   bool operator == (const UnknownQueryLanguage & rhs) const
   {
-    if (!(queryLanguage == rhs.queryLanguage))
+    if (__isset.queryLanguage != rhs.__isset.queryLanguage)
+      return false;
+    else if (__isset.queryLanguage && !(queryLanguage == rhs.queryLanguage))
       return false;
     return true;
   }
@@ -1779,6 +1827,10 @@ inline std::ostream& operator<<(std::ostream& out, const UnknownQueryLanguage& o
   return out;
 }
 
+typedef struct _UnknownRepositoryType__isset {
+  _UnknownRepositoryType__isset() : repositoryType(false) {}
+  bool repositoryType :1;
+} _UnknownRepositoryType__isset;
 
 class UnknownRepositoryType : public ::apache::thrift::TException {
  public:
@@ -1791,11 +1843,15 @@ class UnknownRepositoryType : public ::apache::thrift::TException {
   virtual ~UnknownRepositoryType() throw();
   std::string repositoryType;
 
+  _UnknownRepositoryType__isset __isset;
+
   void __set_repositoryType(const std::string& val);
 
   bool operator == (const UnknownRepositoryType & rhs) const
   {
-    if (!(repositoryType == rhs.repositoryType))
+    if (__isset.repositoryType != rhs.__isset.repositoryType)
+      return false;
+    else if (__isset.repositoryType && !(repositoryType == rhs.repositoryType))
       return false;
     return true;
   }

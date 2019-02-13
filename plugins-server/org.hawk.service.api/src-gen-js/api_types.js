@@ -525,8 +525,6 @@ HawkFactoryNotFound = function(args) {
   if (args) {
     if (args.factoryName !== undefined && args.factoryName !== null) {
       this.factoryName = args.factoryName;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field factoryName is unset!');
     }
   }
 };
@@ -669,8 +667,6 @@ HawkInstanceNotFound = function(args) {
   if (args) {
     if (args.instanceName !== undefined && args.instanceName !== null) {
       this.instanceName = args.instanceName;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field instanceName is unset!');
     }
   }
 };
@@ -725,8 +721,6 @@ HawkInstanceNotRunning = function(args) {
   if (args) {
     if (args.instanceName !== undefined && args.instanceName !== null) {
       this.instanceName = args.instanceName;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field instanceName is unset!');
     }
   }
 };
@@ -781,8 +775,6 @@ HawkMetamodelNotFound = function(args) {
   if (args) {
     if (args.metamodelURI !== undefined && args.metamodelURI !== null) {
       this.metamodelURI = args.metamodelURI;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field metamodelURI is unset!');
     }
   }
 };
@@ -1123,8 +1115,6 @@ HawkTypeNotFound = function(args) {
   if (args) {
     if (args.typeName !== undefined && args.typeName !== null) {
       this.typeName = args.typeName;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field typeName is unset!');
     }
   }
 };
@@ -2685,8 +2675,6 @@ UnknownQueryLanguage = function(args) {
   if (args) {
     if (args.queryLanguage !== undefined && args.queryLanguage !== null) {
       this.queryLanguage = args.queryLanguage;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field queryLanguage is unset!');
     }
   }
 };
@@ -2741,8 +2729,6 @@ UnknownRepositoryType = function(args) {
   if (args) {
     if (args.repositoryType !== undefined && args.repositoryType !== null) {
       this.repositoryType = args.repositoryType;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field repositoryType is unset!');
     }
   }
 };

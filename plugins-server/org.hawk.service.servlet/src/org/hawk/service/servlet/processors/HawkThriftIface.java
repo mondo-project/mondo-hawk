@@ -266,14 +266,18 @@ public final class HawkThriftIface implements Hawk.Iface {
 		if (model.isRunning()) {
 			return model;
 		} else {
-			throw new HawkInstanceNotRunning(name);
+			final HawkInstanceNotRunning e = new HawkInstanceNotRunning();
+			e.setInstanceName(name);
+			throw e;
 		}
 	}
 
 	private HModel getHawkByName(String name) throws HawkInstanceNotFound {
 		final HModel model = HManager.getInstance().getHawkByName(name);
 		if (model == null) {
-			throw new HawkInstanceNotFound(name);
+			HawkInstanceNotFound e = new HawkInstanceNotFound();
+			e.setInstanceName(name);
+			throw e;
 		}
 		return model;
 	}
@@ -504,7 +508,9 @@ public final class HawkThriftIface implements Hawk.Iface {
 			final String password = credentials != null ? credentials.password : null;
 			model.addVCS(repo.uri, repo.type, username, password, repo.isFrozen);
 		} catch (NoSuchElementException ex) {
-			throw new UnknownRepositoryType(repo.type);
+			final UnknownRepositoryType e = new UnknownRepositoryType();
+			e.setRepositoryType(repo.type);
+			throw e;
 		}
 	}
 
@@ -736,9 +742,9 @@ public final class HawkThriftIface implements Hawk.Iface {
 				} else {
 					factory = manager.getHawkFactoryInstances().get(factoryName);
 					if (factory == null) {
-						throw new HawkFactoryNotFound(
-							String.format("Could not find factory with ID '%s'", factoryName)
-						);
+						HawkFactoryNotFound e = new HawkFactoryNotFound();
+						e.setFactoryName(factoryName);
+						throw e;
 					}
 				}
 
@@ -986,7 +992,9 @@ public final class HawkThriftIface implements Hawk.Iface {
 		try {
 			return model.getIntrospector().getTypes(metamodelURI);
 		} catch (NoSuchElementException ex) {
-			throw new HawkMetamodelNotFound(metamodelURI);
+			final HawkMetamodelNotFound e = new HawkMetamodelNotFound();
+			e.setMetamodelURI(metamodelURI);
+			throw e;
 		}
 	}
 
@@ -996,12 +1004,16 @@ public final class HawkThriftIface implements Hawk.Iface {
 		final HModel model = getRunningHawkByName(hawkInstanceName);
 
 		if (!model.getIndexer().getKnownMMUris().contains(metamodelURI)) {
-			throw new HawkMetamodelNotFound(metamodelURI);
+			final HawkMetamodelNotFound e = new HawkMetamodelNotFound();
+			e.setMetamodelURI(metamodelURI);
+			throw e;
 		}
 		try {
 			return model.getIntrospector().getAttributes(metamodelURI, typeName);
 		} catch (NoSuchElementException ex) {
-			throw new HawkTypeNotFound(typeName);
+			final HawkTypeNotFound e = new HawkTypeNotFound();
+			e.setTypeName(typeName);
+			throw e;
 		}
 	}
 
