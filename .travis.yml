@@ -14,7 +14,7 @@ env:
     - HAWK_BACKEND_TESTS_ONLY=LevelDBGreycatDatabaseFactory
     - HAWK_BACKEND_TESTS_ONLY=RocksDBGreycatDatabaseFactory
 
-script: 'mvn -T2 clean install -DfailIfNoTests=false'
+script: 'mvn -T2 --quiet clean install -DfailIfNoTests=false'
 jobs:
   include:
     - stage: deploy
