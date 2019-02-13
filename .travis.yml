@@ -3,23 +3,28 @@ language: java
 install: '/bin/true'
 jdk:
   - oraclejdk8
+
+env:
+  global:
+    - GH_REF: github.com/mondo-project/mondo-hawk.git
+    - secure: VVIImU18QtJ188EXreRhzqwY/LATjtHt2ACxVLwCZri+yOIgKE+Mkz6C4cbQ5j0OJkEAsxr9zr6N6x2DLFBrEqm39QTqSMihi4Mo27sEtvyRER5lMu5o67er/wUfMN4sPa7VgVD09nR+kzEzg6nWNYZ69jbOcTy+rJZK/GL5jIeR0PXFh+K3vQ56nkPwNNv1fygGDlgoOgzu5wdZSbmFWbMlPwUR8wbjJ0rRq9MyekU/Dj8dYWTu/s7gpmus+StstyD1yDK50W2tGfSPWKRtU8Hqp7RR0Z7NV9Acb4JPWOfHuiEuV8rl1Z28Cjpm1GtomIT0UUMX/bECk7Ooj5JcE6Dq/ukeGIRuRcDluBqCagcJLwj4cokjpwEeuNyHlX3kDh+RERmHXJOT2st7mEEO5+4SmdQa0q/XutOSSkR5j3/FnbexMc4rq85YTb92oMXPmX+GlD27Ayf/cVTseHk0jpX6aGbEU49idWcim5hSkWMeTYVdzo+ZiJWCI4qMX1yX1BcmRiWVgEG8woH9DA2/szHTnoCU3ve3EGX5332o3FYlhLro2h8jwHR4hW31HszMekfA5k5oTqYuU0if2ws7V5dkpVyzg+D8nAPEkk+wpDoCj8IlPXP0745TJbH6aM+gy/Clq+OueyHxbUTMhIuHgGLBLyHWltNxI1peHZE3eyg=
+  matrix:
+    - HAWK_BACKEND_TESTS_ONLY=Neo4JDatabaseFactory
+    - HAWK_BACKEND_TESTS_ONLY=OrientDatabaseFactory
+    - HAWK_BACKEND_TESTS_ONLY=LevelDBDatabaseFactory
+    - HAWK_BACKEND_TESTS_ONLY=RocksDBDatabaseFactory
+
+script: 'mvn -T2 clean install -DfailIfNoTests=false'
 jobs:
   include:
-    - stage: test-backend
-      name: "Testing"
-      script: 'mvn -T2 clean install -DfailIfNoTests=false'
-      env:
-        - HAWK_BACKEND_TESTS_ONLY=Neo4JDatabaseFactory
-        - HAWK_BACKEND_TESTS_ONLY=OrientDatabaseFactory
-        - HAWK_BACKEND_TESTS_ONLY=LevelDBDatabaseFactory
-        - HAWK_BACKEND_TESTS_ONLY=RocksDBDatabaseFactory
     - stage: deploy
       name: "Deployment"
       script: 'bash ./deploy.sh'
+      env:
+        matrix: []
       if: branch = master AND type = push
-    - script: 'mvn -B --quiet -f pom-plain.xml install'
+    - stage: deploy
+      script: 'mvn -B --quiet -f pom-plain.xml install'
       name: "Plain Maven"
-env:
-  global:
-  - GH_REF: github.com/mondo-project/mondo-hawk.git
-  - secure: VVIImU18QtJ188EXreRhzqwY/LATjtHt2ACxVLwCZri+yOIgKE+Mkz6C4cbQ5j0OJkEAsxr9zr6N6x2DLFBrEqm39QTqSMihi4Mo27sEtvyRER5lMu5o67er/wUfMN4sPa7VgVD09nR+kzEzg6nWNYZ69jbOcTy+rJZK/GL5jIeR0PXFh+K3vQ56nkPwNNv1fygGDlgoOgzu5wdZSbmFWbMlPwUR8wbjJ0rRq9MyekU/Dj8dYWTu/s7gpmus+StstyD1yDK50W2tGfSPWKRtU8Hqp7RR0Z7NV9Acb4JPWOfHuiEuV8rl1Z28Cjpm1GtomIT0UUMX/bECk7Ooj5JcE6Dq/ukeGIRuRcDluBqCagcJLwj4cokjpwEeuNyHlX3kDh+RERmHXJOT2st7mEEO5+4SmdQa0q/XutOSSkR5j3/FnbexMc4rq85YTb92oMXPmX+GlD27Ayf/cVTseHk0jpX6aGbEU49idWcim5hSkWMeTYVdzo+ZiJWCI4qMX1yX1BcmRiWVgEG8woH9DA2/szHTnoCU3ve3EGX5332o3FYlhLro2h8jwHR4hW31HszMekfA5k5oTqYuU0if2ws7V5dkpVyzg+D8nAPEkk+wpDoCj8IlPXP0745TJbH6aM+gy/Clq+OueyHxbUTMhIuHgGLBLyHWltNxI1peHZE3eyg=
+      env:
+        matrix: []
