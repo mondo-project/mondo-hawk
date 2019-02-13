@@ -62,6 +62,8 @@ import com.github.peterwippermann.junit4.parameterizedsuite.ParameterizedSuite;
 })
 public class BackendTestSuite {
 
+	private static final boolean EMPTY_IS_OKAY = true;
+
 	public static final String USE_ONLY_ENV = "HAWK_BACKEND_TESTS_ONLY";
 	public static final String SKIP_BACKEND_ENV = "HAWK_BACKEND_TESTS_SKIP";
 
@@ -100,17 +102,17 @@ public class BackendTestSuite {
 		// factories.add(new RemoteOrientDatabaseFactory()); // TODO enable when server is available
 		factories.add(new RocksDBGreycatDatabaseFactory());
 		factories.add(new LevelDBGreycatDatabaseFactory());
-		return filterFactories(factories);
+		return filterFactories(factories, !EMPTY_IS_OKAY);
 	}
 
 	public static Object[][] timeAwareBackends() {
 		final List<IGraphDatabaseFactory> factories = new ArrayList<>();
 		factories.add(new RocksDBGreycatDatabaseFactory());
 		factories.add(new LevelDBGreycatDatabaseFactory());
-		return filterFactories(factories);
+		return filterFactories(factories, EMPTY_IS_OKAY);
 	}
 
-	private static Object[][] filterFactories(List<IGraphDatabaseFactory> factories) {
+	private static Object[][] filterFactories(List<IGraphDatabaseFactory> factories, boolean emptyIsOK) {
 		final String skipBackends = System.getenv(SKIP_BACKEND_ENV);
 		if (skipBackends != null) {
 			return new Object[0][];
@@ -127,7 +129,7 @@ public class BackendTestSuite {
 			if (factories.size() > 1) {
 				throw new IllegalArgumentException(USE_ONLY_ENV + " was set, but more than one factory matched it");
 			}
-			if (factories.isEmpty()) {
+			if (factories.isEmpty() && emptyIsOK != EMPTY_IS_OKAY) {
 				throw new IllegalArgumentException(USE_ONLY_ENV + " was set, but no factories matched it");
 			}
 		}
