@@ -25,12 +25,11 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.hawk.backend.tests.BackendTestSuite;
 import org.hawk.backend.tests.LogbackOnlyErrorsRule;
 import org.hawk.backend.tests.RedirectSystemErrorRule;
 import org.hawk.backend.tests.TemporaryDatabaseTest;
-import org.hawk.backend.tests.factories.RocksDBGreycatDatabaseFactory;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
-import org.hawk.backend.tests.factories.LevelDBGreycatDatabaseFactory;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
@@ -62,12 +61,9 @@ public class TimeAwareBackendTest extends TemporaryDatabaseTest {
 	@Rule
 	public LogbackOnlyErrorsRule logRule = new LogbackOnlyErrorsRule();
 
-	@Parameters(name="Parameters are {0}")
+	@Parameters(name="{0}")
 	public static Object[] params() {
-		return new Object[][] {
-			{new RocksDBGreycatDatabaseFactory()},
-			{new LevelDBGreycatDatabaseFactory()},
-		};
+		return BackendTestSuite.timeAwareBackends();
 	}
 
 	@Override

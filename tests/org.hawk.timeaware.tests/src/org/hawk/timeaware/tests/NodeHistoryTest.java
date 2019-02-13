@@ -30,9 +30,8 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.hawk.backend.tests.factories.RocksDBGreycatDatabaseFactory;
+import org.hawk.backend.tests.BackendTestSuite;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
-import org.hawk.backend.tests.factories.LevelDBGreycatDatabaseFactory;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
@@ -73,10 +72,14 @@ public class NodeHistoryTest extends ModelIndexingTest {
 
 	@Parameters(name = "{0}")
     public static Iterable<Object[]> params() {
-    	return Arrays.asList(
-    		new Object[] { new RocksDBGreycatDatabaseFactory(), new EMFModelSupportFactory() },
-    		new Object[] { new LevelDBGreycatDatabaseFactory(), new EMFModelSupportFactory() }
-    	);
+    	Object[][] baseParams = BackendTestSuite.timeAwareBackends();
+
+    	Object[][] params = new Object[baseParams.length][];
+    	for (int i = 0; i < baseParams.length; i++) {
+    		params[i] = new Object[] { baseParams[i][0], new EMFModelSupportFactory() };
+    	}
+
+    	return Arrays.asList(params);
     }
 
 	public NodeHistoryTest(IGraphDatabaseFactory dbFactory, IModelSupportFactory modelSupportFactory) {
