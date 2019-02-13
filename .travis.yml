@@ -5,9 +5,18 @@ jdk:
   - oraclejdk8
 jobs:
   include:
-    - stage: build
-      name: "Tycho"
+    - stage: test-backend
+      name: "Testing"
+      script: 'mvn -T2 clean install -DfailIfNoTests=false'
+      env:
+        - HAWK_BACKEND_TESTS_ONLY=Neo4JDatabaseFactory
+        - HAWK_BACKEND_TESTS_ONLY=OrientDatabaseFactory
+        - HAWK_BACKEND_TESTS_ONLY=LevelDBDatabaseFactory
+        - HAWK_BACKEND_TESTS_ONLY=RocksDBDatabaseFactory
+    - stage: deploy
+      name: "Deployment"
       script: 'bash ./deploy.sh'
+      if: branch = master AND type = push
     - script: 'mvn -B --quiet -f pom-plain.xml install'
       name: "Plain Maven"
 env:

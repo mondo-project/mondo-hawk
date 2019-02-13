@@ -38,8 +38,8 @@ deploy_updates() {
 # Exit immediately if something goes wrong
 set -o errexit
 
-# Run the regular build
-mvn --quiet clean install
+# Run the regular build, skip tests (these were run in a previous stage)
+mvn --quiet clean install -DskipTests
 
 # Only continue deploying to update site for non-PR commits to the master branch
 if [[ "$TRAVIS_BRANCH" == 'master' && "$TRAVIS_PULL_REQUEST" == 'false' ]]; then
