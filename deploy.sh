@@ -11,7 +11,7 @@ upload_to_bintray() {
     VERSION=$(get_version)
     for f in "$@"; do
         curl -X PUT -T "$f" -u "$BINTRAY_API_USER:$BINTRAY_API_KEY" \
-             "https://api.bintray.com/content/$BINTRAY_API_USER/generic/hawk/$VERSION/$(basename "$f");publish=1;override=1" >/dev/null 2>&1 \
+             "https://api.bintray.com/content/$BINTRAY_API_USER/generic/hawk/$VERSION/$(basename "$f");publish=1;override=1" \
             || echo "upload failed"
     done
 }
@@ -47,10 +47,7 @@ deploy_updates() {
 }
 
 deploy_products() {
-    pwd
-    pushd out
-    upload_to_bintray ../releng/org.hawk.service.server.product/target/products/hawk-server-nogpl-*.zip
-    popd
+    upload_to_bintray releng/org.hawk.service.server.product/target/products/hawk-server-nogpl-*.zip
 }
 
 # Exit immediately if something goes wrong
