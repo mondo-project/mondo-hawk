@@ -1,30 +1,30 @@
 sudo: required
 language: java
-install: '/bin/true'
+install: "/bin/true"
 jdk:
-  - oraclejdk8
-
+- oraclejdk8
 env:
   global:
-    - GH_REF: github.com/mondo-project/mondo-hawk.git
-    - secure: VVIImU18QtJ188EXreRhzqwY/LATjtHt2ACxVLwCZri+yOIgKE+Mkz6C4cbQ5j0OJkEAsxr9zr6N6x2DLFBrEqm39QTqSMihi4Mo27sEtvyRER5lMu5o67er/wUfMN4sPa7VgVD09nR+kzEzg6nWNYZ69jbOcTy+rJZK/GL5jIeR0PXFh+K3vQ56nkPwNNv1fygGDlgoOgzu5wdZSbmFWbMlPwUR8wbjJ0rRq9MyekU/Dj8dYWTu/s7gpmus+StstyD1yDK50W2tGfSPWKRtU8Hqp7RR0Z7NV9Acb4JPWOfHuiEuV8rl1Z28Cjpm1GtomIT0UUMX/bECk7Ooj5JcE6Dq/ukeGIRuRcDluBqCagcJLwj4cokjpwEeuNyHlX3kDh+RERmHXJOT2st7mEEO5+4SmdQa0q/XutOSSkR5j3/FnbexMc4rq85YTb92oMXPmX+GlD27Ayf/cVTseHk0jpX6aGbEU49idWcim5hSkWMeTYVdzo+ZiJWCI4qMX1yX1BcmRiWVgEG8woH9DA2/szHTnoCU3ve3EGX5332o3FYlhLro2h8jwHR4hW31HszMekfA5k5oTqYuU0if2ws7V5dkpVyzg+D8nAPEkk+wpDoCj8IlPXP0745TJbH6aM+gy/Clq+OueyHxbUTMhIuHgGLBLyHWltNxI1peHZE3eyg=
+  - GH_REF: github.com/mondo-project/mondo-hawk.git
+  - secure: VVIImU18QtJ188EXreRhzqwY/LATjtHt2ACxVLwCZri+yOIgKE+Mkz6C4cbQ5j0OJkEAsxr9zr6N6x2DLFBrEqm39QTqSMihi4Mo27sEtvyRER5lMu5o67er/wUfMN4sPa7VgVD09nR+kzEzg6nWNYZ69jbOcTy+rJZK/GL5jIeR0PXFh+K3vQ56nkPwNNv1fygGDlgoOgzu5wdZSbmFWbMlPwUR8wbjJ0rRq9MyekU/Dj8dYWTu/s7gpmus+StstyD1yDK50W2tGfSPWKRtU8Hqp7RR0Z7NV9Acb4JPWOfHuiEuV8rl1Z28Cjpm1GtomIT0UUMX/bECk7Ooj5JcE6Dq/ukeGIRuRcDluBqCagcJLwj4cokjpwEeuNyHlX3kDh+RERmHXJOT2st7mEEO5+4SmdQa0q/XutOSSkR5j3/FnbexMc4rq85YTb92oMXPmX+GlD27Ayf/cVTseHk0jpX6aGbEU49idWcim5hSkWMeTYVdzo+ZiJWCI4qMX1yX1BcmRiWVgEG8woH9DA2/szHTnoCU3ve3EGX5332o3FYlhLro2h8jwHR4hW31HszMekfA5k5oTqYuU0if2ws7V5dkpVyzg+D8nAPEkk+wpDoCj8IlPXP0745TJbH6aM+gy/Clq+OueyHxbUTMhIuHgGLBLyHWltNxI1peHZE3eyg=
+  - secure: S5zrbwAbUeCKx57l9hmk/knKmoE4HEA2+w/VXqfTIIqw71TnHOfX3P4huweyEuAGWRWD8wYWKZTJKxDmAOdf6Jf2eANceBjbXzc6NhdmrmaTGnyl22WQ51VHeFDdaJ5uGHQEYinCj+svd3ljTNdBTYsD5yAaUqItKptTc37BMfFBVFtbMEDuD/68E0Jwh/gvCH0jGS3uuxWQxLH2eQdUAORVKtK+LrsJWBF2NoyX3JRr0nsLfM+W5nKlDJI7ZR358EuvgbZ+budPy8A1MRKbu+lIh6CJjfOHYl3deSmGCrfvf1eMaMEsJRT9MMh1p6yf3jkWDYaQVxJAzr8gilq9p4krgWc97R/PdfnvB/I08BCYzixBj7QMlcv2jnbuFaVN+mclDjt+jzJ7jvupHbTbljuQMM6Jy74zCeLSv9gaAsfYVb4o56EhqybQvXSOlli6Jh2gm3j2EbbXRZtD2OOqHEx5kScUJy/iUj0NUrY8SJVliQbZuoJg9w8mXpaBVoO7nNoykfYFi2CsXWLVCdlggii0lf9PRH4dEneKRhRskz/rJAApOep6GpouE1HPGmSXx/d19yBkDNK7gNw7BXDIn6LiEx9n/qIuLyJhMZX6a5ein0paAnG1FiBdBj3zmryWJ9jU7nH3IuzqbCs+vq0VyzzSx8mP1kv1U3gTS4NI4vE=
+  - secure: F3YOdXKVbkfkrIe3HSxkcAt43T0FAKamnfiLoND4fnwwsYCwkfv2An5g6bp8nUWOda9m8fa9AUeQG1cWcbMVQ5xXfGmJlOu/nnPL2LzpK/iOSmfPT1w0i5c8+qbRxtcG4jwIphZBY5Mv5nly4b8tkb6KODPXJOS5WrXaVUNFP4zHOYXIh2Y0vlT3gcx4ODrbg5MD/sZyxeWdUYSMS8gLy84R0j6bas/rWqa5+0W2hMWBb5f/LpektMolORGACnAdrXQx6lpfsbbhzaVe7n4Bsga53AR0kkvxRDq9FOiPGqljBZVAhfyORbrzqAIjjqGXaQ3xgCqukbb1wAYq+uhwgZAqUHFq3GE4YoeuQe+3KEHfbOKpKsG1geUnTTTI9o17K4YGn4Ze/Y1kKECeCDcVwYPNzqRGv5FLLPi02fHAG7/thG/2+WzzSYzWzF8iwQyiic8KaVZIOeNk74YUAX8Zk1OLl/Vp+YlufIJ9fIYWmCWuYJ9eeuWI63+eR09i4Sc7k98bXRESMaYxpJBUBm1cFMzLF9lwqQwBVegpEfelY7DfpJ7xYjzEvfYn456hA1A2uj/xqJWzSql2GpOwKo1yimWWK0/UaewhOr/kDi3Z+B73YsESn9XRJHl8TGxmAI1Oz0zHeO7GxtuHS5wAPx8PGvLpfJDKkQBWJvM02KgJOso=
   matrix:
-    - HAWK_BACKEND_TESTS_ONLY=Neo4JDatabaseFactory
-    - HAWK_BACKEND_TESTS_ONLY=OrientDatabaseFactory
-    - HAWK_BACKEND_TESTS_ONLY=LevelDBGreycatDatabaseFactory
-    - HAWK_BACKEND_TESTS_ONLY=RocksDBGreycatDatabaseFactory
-
-script: 'mvn -T2 --quiet clean install -DfailIfNoTests=false'
+  - HAWK_BACKEND_TESTS_ONLY=Neo4JDatabaseFactory
+  - HAWK_BACKEND_TESTS_ONLY=OrientDatabaseFactory
+  - HAWK_BACKEND_TESTS_ONLY=LevelDBGreycatDatabaseFactory
+  - HAWK_BACKEND_TESTS_ONLY=RocksDBGreycatDatabaseFactory
+script: mvn -T2 --quiet clean install -DfailIfNoTests=false
 jobs:
   include:
-    - stage: deploy
-      name: "Deployment"
-      script: 'bash ./deploy.sh'
-      env:
-        matrix: []
-      if: branch = master AND type = push
-    - stage: deploy
-      script: 'mvn -B --quiet -f pom-plain.xml install'
-      name: "Plain Maven"
-      env:
-        matrix: []
+  - stage: deploy
+    name: Deployment
+    script: bash ./deploy.sh
+    env:
+      matrix: []
+    if: branch = master AND type = push
+  - stage: deploy
+    script: mvn -B --quiet -f pom-plain.xml install
+    name: Plain Maven
+    env:
+      matrix: []

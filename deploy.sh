@@ -7,6 +7,15 @@ get_version() {
 	      | sed -re 's/ *([0-9]+)[.]([0-9]+)[.].*/\1.\2.0/'
 }
 
+upload_to_bintray() {
+    VERSION=$(get_version)
+    for f in "$@"; do
+        curl -X PUT -T "$f" -u "$BINTRAY_API_USER:$BINTRAY_API_KEY" \
+             "https://api.bintray.com/content/$BINTRAY_API_USER/generic/hawk/$VERSION/$(basename "$f");publish=1;override=1" >/dev/null 2>&1 \
+            || echo "upload failed"
+    done
+}
+
 deploy_updates() {
     # Clone the last two commits of the gh-pages branch
     rm -rf out || true
@@ -35,6 +44,11 @@ deploy_updates() {
     git push --force "https://${GH_TOKEN}@${GH_REF}" gh-pages &>/dev/null
 }
 
+deploy_products() {
+    cd out
+    upload_to_bintray ../releng/org.hawk.service.server.product/target/products/hawk-server-nogpl-*.zip
+}
+
 # Exit immediately if something goes wrong
 set -o errexit
 
@@ -43,5 +57,5 @@ mvn --quiet clean install -DskipTests
 
 # Only continue deploying to update site for non-PR commits to the master branch
 if [[ "$TRAVIS_BRANCH" == 'master' && "$TRAVIS_PULL_REQUEST" == 'false' ]]; then
-    deploy_updates
+    deploy_updates && deploy_products
 fi
