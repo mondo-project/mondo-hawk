@@ -20,7 +20,7 @@ deploy_updates() {
     # Clone the last two commits of the gh-pages branch
     rm -rf out || true
     git clone -b gh-pages --depth 2 --single-branch https://github.com/mondo-project/mondo-hawk.git out
-    cd out
+    pushd out
 
     # Indicate clearly that this commit comes from Travis
     git config user.name "Travis CI"
@@ -42,11 +42,15 @@ deploy_updates() {
 
     # Force push to the gh-pages branch
     git push --force "https://${GH_TOKEN}@${GH_REF}" gh-pages &>/dev/null
+
+    popd
 }
 
 deploy_products() {
-    cd out
+    pwd
+    pushd out
     upload_to_bintray ../releng/org.hawk.service.server.product/target/products/hawk-server-nogpl-*.zip
+    popd
 }
 
 # Exit immediately if something goes wrong
