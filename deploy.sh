@@ -47,7 +47,9 @@ deploy_updates() {
 }
 
 deploy_products() {
-    upload_to_bintray releng/org.hawk.service.server.product/target/products/hawk-server-nogpl-*.zip
+    pushd out
+    upload_to_bintray ../releng/org.hawk.service.server.product/target/products/hawk-server-nogpl_*.zip
+    popd
 }
 
 # Exit immediately if something goes wrong
