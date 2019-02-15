@@ -7,18 +7,18 @@ get_version() {
 	      | sed -re 's/ *([0-9]+)[.]([0-9]+)[.].*/\1.\2.0/'
 }
 
-# Usage: bintray METHOD PATH ARGS...
+# Usage: bintray METHOD URL_PATH ARGS...
 #
-# PATH should start with a slash.
+# URL_PATH should start with a slash.
 # METHOD should be GET, POST, PUT, DELETE...
 bintray() {
     METHOD="$1"
-    PATH="$2"
+    URL_PATH="$2"
     shift 2
 
     curl -X "$METHOD" -u "$BINTRAY_API_USER:$BINTRAY_API_KEY" \
-         "$@" "https://api.bintray.com$PATH" > /dev/null 2>&1 \
-        || echo "$METHOD invocation to $PATH failed"
+         "$@" "https://api.bintray.com${URL_PATH}" > /dev/null 2>&1 \
+        || echo "$METHOD invocation to ${URL_PATH} failed"
 }
 
 delete_version() {
