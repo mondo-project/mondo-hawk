@@ -86,7 +86,7 @@ public class ModelioProxyResolutionTest extends ModelIndexingTest {
 	public void setup() throws Throwable {
 		super.setup();
 		indexer.registerMetamodels(new File(ModelioModelSupportFactory.METAMODEL_PATH, "metamodel_descriptor.xml"));
-		updater = (GraphModelUpdater) indexer.getModelUpdaters().get(0);
+		updater = (GraphModelUpdater) indexer.getModelUpdaters().iterator().next();
 	}
 
 	@Test

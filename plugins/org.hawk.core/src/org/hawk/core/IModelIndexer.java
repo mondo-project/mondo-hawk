@@ -93,18 +93,9 @@ public interface IModelIndexer {
 	Set<IVcsManager> getRunningVCSManagers();
 
 	/**
-	 * @return running model updaters
-	 * @deprecated Please use {@link #getModelUpdaters()} instead.
+	 * Returns a collection with all the available model updaters.
 	 */
-	@Deprecated
-	default List<IModelUpdater> getUpdaters() {
-		return getModelUpdaters();
-	}
-
-	/**
-	 * Returns a list with all the available model updaters.
-	 */
-	List<IModelUpdater> getModelUpdaters();
+	Collection<IModelUpdater> getModelUpdaters();
 
 	/**
 	 * 

@@ -22,18 +22,19 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Queue;
 import java.util.Set;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -148,12 +149,12 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 	protected final ICredentialsStore credStore;
 
 	protected IGraphDatabase graph = null;
-	protected List<IVcsManager> monitors = new ArrayList<>();
-	protected List<IModelUpdater> updaters = new LinkedList<>();
+	protected Queue<IVcsManager> monitors = new ConcurrentLinkedQueue<>();
+	protected Queue<IModelUpdater> updaters = new ConcurrentLinkedQueue<>();
 	protected IMetaModelUpdater metamodelupdater = null;
-	protected Map<String, IModelResourceFactory> modelParsers = new HashMap<>();
-	protected Map<String, IMetaModelResourceFactory> metamodelParsers = new HashMap<>();
-	protected Map<String, IQueryEngine> knownQueryLanguages = new HashMap<>();
+	protected Map<String, IModelResourceFactory> modelParsers = new ConcurrentHashMap<>();
+	protected Map<String, IMetaModelResourceFactory> metamodelParsers = new ConcurrentHashMap<>();
+	protected Map<String, IQueryEngine> knownQueryLanguages = new ConcurrentHashMap<>();
 	protected IConsole console;
 
 	private int maxDelay = DEFAULT_MAXDELAY;
@@ -345,7 +346,7 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 	}
 
 	@Override
-	public List<IModelUpdater> getModelUpdaters() {
+	public Collection<IModelUpdater> getModelUpdaters() {
 		return updaters;
 	}
 
@@ -396,7 +397,7 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 			monitor.shutdown();
 		}
 
-		monitors = new ArrayList<>();
+		monitors.clear();
 		running = false;
 		stateListener.state(HawkState.STOPPED);
 	}

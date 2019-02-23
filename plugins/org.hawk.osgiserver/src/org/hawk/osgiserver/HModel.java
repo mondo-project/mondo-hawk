@@ -498,7 +498,7 @@ public class HModel implements IStateListener {
 		return hawk.getModelIndexer().getIndexedAttributes();
 	}
 
-	public List<IModelUpdater> getModelUpdaters() {
+	public Collection<IModelUpdater> getModelUpdaters() {
 		return hawk.getModelIndexer().getModelUpdaters();
 	}
 
