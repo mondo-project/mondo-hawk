@@ -41,6 +41,7 @@ import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphDatabase;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeIndex;
 import org.hawk.greycat.GreycatNode.NodeReader;
 import org.hawk.greycat.lucene.GreycatLuceneIndexer;
 import org.hawk.greycat.lucene.GreycatLuceneIndexer.GreycatLuceneNodeIndex;
@@ -261,7 +262,7 @@ public abstract class AbstractGreycatDatabase implements ITimeAwareGraphDatabase
 	}
 
 	@Override
-	public GreycatLuceneNodeIndex getOrCreateNodeIndex(String name) {
+	public ITimeAwareGraphNodeIndex getOrCreateNodeIndex(String name) {
 		try {
 			return luceneIndexer.getIndex(name);
 		} catch (Exception e) {
@@ -271,12 +272,12 @@ public abstract class AbstractGreycatDatabase implements ITimeAwareGraphDatabase
 	}
 
 	@Override
-	public IGraphNodeIndex getMetamodelIndex() {
+	public ITimeAwareGraphNodeIndex getMetamodelIndex() {
 		return getOrCreateNodeIndex("_hawkMetamodelIndex");
 	}
 
 	@Override
-	public IGraphNodeIndex getFileIndex() {
+	public ITimeAwareGraphNodeIndex getFileIndex() {
 		return getOrCreateNodeIndex("_hawkFileIndex");
 	}
 

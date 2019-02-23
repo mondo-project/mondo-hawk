@@ -49,7 +49,7 @@ import org.apache.lucene.search.TotalHitCountCollector;
 import org.apache.lucene.search.WildcardQuery;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
-import org.hawk.core.graph.IGraphNodeIndex;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeIndex;
 import org.hawk.greycat.AbstractGreycatDatabase;
 import org.hawk.greycat.GreycatNode;
 import org.slf4j.Logger;
@@ -123,8 +123,11 @@ public class GreycatLuceneIndexer {
 	}
 
 	protected final class NodeListCollector extends ListCollector {
-		protected NodeListCollector(IndexSearcher searcher) {
+		private final Long timepoint;
+
+		protected NodeListCollector(IndexSearcher searcher, Long timepoint) {
 			super(searcher);
+			this.timepoint = timepoint;
 		}
 		
 		public Iterator<GreycatNode> getNodeIterator() {
@@ -139,7 +142,9 @@ public class GreycatLuceneIndexer {
 				public GreycatNode next() {
 					int docId = itIdentifiers.next();
 					try {
-						return getNodeByDocument(searcher.doc(docId));
+						final Document document = searcher.doc(docId);
+						final GreycatNode node = getNodeByDocument(document);
+						return timepoint == null ? node : node.travelInTime(timepoint);
 					} catch (IOException e) {
 						LOGGER.error("Could not retrieve document with ID " + docId, e);
 						throw new NoSuchElementException();
@@ -151,16 +156,18 @@ public class GreycatLuceneIndexer {
 
 	protected final class LuceneGraphIterable implements IGraphIterable<GreycatNode> {
 		private final Query query;
+		private final Long timepoint;
 
-		protected LuceneGraphIterable(Query query) {
+		protected LuceneGraphIterable(Query query, Long timepoint) {
 			this.query = query;
+			this.timepoint = timepoint;
 		}
 
 		@Override
 		public Iterator<GreycatNode> iterator() {
 			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 			try {
-				final NodeListCollector lc = new NodeListCollector(searcher);
+				final NodeListCollector lc = new NodeListCollector(searcher, timepoint);
 				searcher.search(query, lc);
 				return lc.getNodeIterator();
 			} catch (IOException e) {
@@ -190,7 +197,13 @@ public class GreycatLuceneIndexer {
 			try {
 				TopDocs results = searcher.search(query, 1);
 				if (results.totalHits > 0) {
-					return getNodeByDocument(searcher.doc(results.scoreDocs[0].doc));
+					final Document document = searcher.doc(results.scoreDocs[0].doc);
+					final GreycatNode node = getNodeByDocument(document);
+					if (timepoint == null) {
+						return node;
+					} else {
+						return node.travelInTime(timepoint);
+					}
 				}
 			} catch (IOException e) {
 				LOGGER.error("Failed to obtain single result", e);
@@ -202,15 +215,28 @@ public class GreycatLuceneIndexer {
 	
 	/**
 	 * Implements a node index as a collection of documents, with a single document
-	 * representing the existence of the index itself.
+	 * representing the existence of the index itself. The default timepoint can be
+	 * optionally specified upon creation: if not set, we will refer to the
+	 * database's current time.
 	 */
-	public final class GreycatLuceneNodeIndex implements IGraphNodeIndex {
+	public final class GreycatLuceneNodeIndex implements ITimeAwareGraphNodeIndex {
 		private final String name;
+
+		/**
+		 * Timepoint which may override the current graph time, if not <code>null</code>.
+		 * If <code>null</code> (the default), the current graph timepoint will be used.
+		 */
+		private final Long timepoint;
 
 		private static final String NODE_DOCTYPE = "node";
 		
 		public GreycatLuceneNodeIndex(String name) {
+			this(name, null);
+		}
+
+		public GreycatLuceneNodeIndex(String name, Long timepoint) {
 			this.name = name;
+			this.timepoint = timepoint;
 		}
 
 		@Override
@@ -381,10 +407,10 @@ public class GreycatLuceneIndexer {
 				// Also filter by index and timepoint (using database for now)
 				query = getIndexQueryBuilder()
 					.add(query, Occur.MUST)
-					.add(findValidDocumentsAtTimepoint(database.getTime()), Occur.MUST)
+					.add(findValidDocumentsAtTimepoint(getTimepoint()), Occur.MUST)
 					.build();
 
-				return new LuceneGraphIterable(query);
+				return new LuceneGraphIterable(query, timepoint);
 		}
 
 		@Override
@@ -417,13 +443,13 @@ public class GreycatLuceneIndexer {
 			}
 
 			final Builder builder = getIndexQueryBuilder()
-				.add(findValidDocumentsAtTimepoint(database.getTime()), Occur.MUST);
+				.add(findValidDocumentsAtTimepoint(getTimepoint()), Occur.MUST);
 			if (valueQuery != null) {
 				builder.add(valueQuery, Occur.MUST);
 			}
 			final Query query = builder.build();
 
-			return new LuceneGraphIterable(query);
+			return new LuceneGraphIterable(query, timepoint);
 		}
 
 		@Override
@@ -436,9 +462,9 @@ public class GreycatLuceneIndexer {
 			final Query valueQuery = getValueQuery(key, valueExpr);
 			final Query query = getIndexQueryBuilder()
 				.add(valueQuery, Occur.MUST)
-				.add(findValidDocumentsAtTimepoint(database.getTime()), Occur.MUST)
+				.add(findValidDocumentsAtTimepoint(getTimepoint()), Occur.MUST)
 				.build();
-			return new LuceneGraphIterable(query);
+			return new LuceneGraphIterable(query, timepoint);
 		}
 
 		private Query getValueQuery(String key, Object valueExpr) {
@@ -597,6 +623,19 @@ public class GreycatLuceneIndexer {
 			}
 
 			return minFrom == null ? Long.MAX_VALUE : minFrom - 1;
+		}
+
+		@Override
+		public GreycatLuceneNodeIndex travelInTime(long timepoint) {
+			return new GreycatLuceneNodeIndex(name, timepoint);
+		}
+
+		private long getTimepoint() {
+			if (timepoint == null) {
+				return database.getTime();
+			} else {
+				return timepoint;
+			}
 		}
 
 		protected Query findNodeQuery(final GreycatNode n) {

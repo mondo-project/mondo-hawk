@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphIterable;
-import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.IGraphNodeIndex;
 
 /**
  * Abstraction for a graph database that understands the concept of time as a
@@ -36,7 +36,7 @@ public interface ITimeAwareGraphDatabase extends IGraphDatabase {
 	/**
 	 * Returns all the nodes of a certain type, at a certain timepoint.
 	 */
-	IGraphIterable<? extends IGraphNode> allNodes(String label, long time);
+	IGraphIterable<? extends ITimeAwareGraphNode> allNodes(String label, long time);
 
 	/**
 	 * Returns the currently active timepoint.
@@ -63,4 +63,11 @@ public interface ITimeAwareGraphDatabase extends IGraphDatabase {
 
 	@Override
 	IGraphIterable<? extends ITimeAwareGraphNode> allNodes(String label);
+
+	@Override
+	ITimeAwareGraphNodeIndex getFileIndex();
+
+	@Override
+	ITimeAwareGraphNodeIndex getOrCreateNodeIndex(String name);
+
 }
