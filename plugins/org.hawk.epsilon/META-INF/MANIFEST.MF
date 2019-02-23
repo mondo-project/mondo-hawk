@@ -11,6 +11,7 @@ Require-Bundle: org.hawk.core,
  org.slf4j.api;bundle-version="1.7.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.hawk.epsilon.emc,
+ org.hawk.epsilon.emc.contextful,
  org.hawk.epsilon.emc.optimisation,
  org.hawk.epsilon.emc.pgetters,
  org.hawk.epsilon.emc.tracking,

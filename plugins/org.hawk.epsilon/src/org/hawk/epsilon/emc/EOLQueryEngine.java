@@ -60,6 +60,7 @@ import org.hawk.core.query.IQueryEngine;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
 import org.hawk.core.util.Utils;
+import org.hawk.epsilon.emc.contextful.CEOLQueryEngine;
 import org.hawk.epsilon.emc.optimisation.OptimisableCollection;
 import org.hawk.epsilon.emc.pgetters.GraphPropertyGetter;
 import org.hawk.epsilon.emc.tracking.AccessListener;
@@ -225,8 +226,8 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 	private static final String ANY_TYPE = new EolAnyType().getName();
 	
 	/* TODO: these two should not have to be static.*/
-	protected static IModelIndexer indexer = null;
-	protected static IGraphDatabase graph = null;
+	protected IModelIndexer indexer = null;
+	protected IGraphDatabase graph = null;
 
 	protected IGraphNodeIndex metamodeldictionary;
 	protected Set<String> defaultNamespaces = null;
@@ -422,7 +423,7 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 		return Collections.emptyList();
 	}
 
-	private void broadcastAllOfXAccess(Iterable<?> ret) {
+	protected void broadcastAllOfXAccess(Iterable<?> ret) {
 		/*
 		 * TODO can optimise by not keeping all the nodes of type/kind but the
 		 * concept of type/kind and only update the attr if a new node is added
@@ -800,7 +801,6 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 
 	protected Object contextlessQuery(IModelIndexer m, String query, Map<String, Object> context)
 			throws QueryExecutionException, InvalidQueryException {
-		final long trueStart = System.currentTimeMillis();
 		String defaultnamespaces = null;
 		if (context != null)
 			defaultnamespaces = (String) context.get(PROPERTY_DEFAULTNAMESPACES);
@@ -819,17 +819,15 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 
 		final IEolModule module = createModule();
 		parseQuery(query, context, q, module);
-		return runQuery(module);
+		return q.runQuery(module);
 	}
 
 	protected Object contextfulQuery(IModelIndexer m, String query, Map<String, Object> context)
 			throws QueryExecutionException, InvalidQueryException {
-		final long trueStart = System.currentTimeMillis();
-
 		CEOLQueryEngine q = new CEOLQueryEngine();
-		q.setContext(context);
 		try {
 			q.load(m);
+			q.setContext(context);
 		} catch (EolModelLoadingException e) {
 			throw new QueryExecutionException("Loading of EOLQueryEngine failed");
 		}
@@ -837,7 +835,7 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 
 		final IEolModule module = createModule();
 		parseQuery(query, context, q, module);
-		return runQuery(module);
+		return q.runQuery(module);
 	}
 
 	// IQueryEngine part //////////////////////////////////////////////////////

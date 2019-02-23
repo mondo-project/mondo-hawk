@@ -32,7 +32,7 @@ import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
-import org.hawk.epsilon.emc.CEOLQueryEngine;
+import org.hawk.epsilon.emc.contextful.CEOLQueryEngine;
 import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.syncValidationListener.SyncValidationListener;
