@@ -27,27 +27,13 @@ import java.util.concurrent.Callable;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.hawk.backend.tests.BackendTestSuite;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
-import org.hawk.core.IModelIndexer;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
-import org.hawk.core.security.FileBasedCredentialsStore;
-import org.hawk.graph.updater.GraphModelUpdater;
-import org.hawk.integration.tests.ModelIndexingTest;
 import org.hawk.integration.tests.emf.EMFModelSupportFactory;
-import org.hawk.svn.SvnManager;
 import org.hawk.svn.tests.rules.TemporarySVNRepository;
-import org.hawk.timeaware.graph.TimeAwareIndexer;
-import org.hawk.timeaware.graph.TimeAwareModelUpdater;
-import org.hawk.timeaware.queries.TimeAwareEOLQueryEngine;
-import org.hawk.timeaware.queries.TimelineEOLQueryEngine;
 import org.hawk.timeaware.tests.tree.Tree.Tree;
-import org.hawk.timeaware.tests.tree.Tree.TreeFactory;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,16 +45,9 @@ import org.tmatesoft.svn.core.SVNException;
  * Tests for the time-aware indexing of model element nodes.
  */
 @RunWith(Parameterized.class)
-public class NodeHistoryTest extends ModelIndexingTest {
+public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 	@Rule
 	public TemporarySVNRepository svnRepository = new TemporarySVNRepository();
-
-	private final TreeFactory treeFactory = TreeFactory.eINSTANCE;
-	private ResourceSet rsTree;
-
-	private TimeAwareEOLQueryEngine timeAwareQueryEngine;
-
-	private TimelineEOLQueryEngine timelineQueryEngine;
 
 	@Parameters(name = "{0}")
     public static Iterable<Object[]> params() {
@@ -86,22 +65,9 @@ public class NodeHistoryTest extends ModelIndexingTest {
 		super(dbFactory, modelSupportFactory);
 	}
 
-	@Before
-	public void setUp() throws Exception {
-		indexer.registerMetamodels(new File("../org.hawk.integration.tests/resources/metamodels/Ecore.ecore"));
-		indexer.registerMetamodels(new File("../org.hawk.integration.tests/resources/metamodels/XMLType.ecore"));
+	@Override
+	protected void setUpMetamodels() throws Exception {
 		indexer.registerMetamodels(new File("resources/metamodels/Tree.ecore"));
-
-		rsTree = new ResourceSetImpl();
-		rsTree.getResourceFactoryRegistry()
-			.getExtensionToFactoryMap()
-			.put("*", new XMIResourceFactoryImpl());
-
-		timeAwareQueryEngine = new TimeAwareEOLQueryEngine();
-		indexer.addQueryEngine(timeAwareQueryEngine);
-		
-		timelineQueryEngine = new TimelineEOLQueryEngine();
-		indexer.addQueryEngine(timelineQueryEngine);
 	}
 
 	@Test
@@ -207,22 +173,9 @@ public class NodeHistoryTest extends ModelIndexingTest {
 			return null;
 		});
 	}
-	
-	@Override
-	protected GraphModelUpdater createModelUpdater() {
-		return new TimeAwareModelUpdater();
-	}
-
-	@Override
-	protected IModelIndexer createIndexer(File indexerFolder, FileBasedCredentialsStore credStore) {
-		return new TimeAwareIndexer("test", indexerFolder, credStore, console);
-	}
 
 	private void requestSVNIndex() throws Exception {
-		final SvnManager vcs = new SvnManager();
-		vcs.init(svnRepository.getRepositoryURL().toString(), indexer);
-		vcs.run();
-		indexer.addVCSManager(vcs, true);
+		requestSVNIndex(svnRepository);
 	}
 
 	protected Object timeAwareEOL(final String eolQuery) throws InvalidQueryException, QueryExecutionException {
