@@ -23,7 +23,6 @@ import java.util.Set;
 
 import org.hawk.core.IConsole;
 import org.hawk.core.IHawkPlugin;
-import org.hawk.core.IHawkPlugin.Category;
 
 public interface IGraphDatabase extends IHawkPlugin {
 

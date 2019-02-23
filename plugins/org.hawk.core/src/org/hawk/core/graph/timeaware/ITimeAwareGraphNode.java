@@ -162,5 +162,4 @@ public interface ITimeAwareGraphNode extends IGraphNode {
 				.collect(Collectors.toList());
 	}
 
-
 }
