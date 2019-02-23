@@ -310,17 +310,7 @@ public class GreycatNode implements ITimeAwareGraphNode {
 
 	@Override
 	public GreycatNode travelInTime(long time) {
-		try (NodeReader rn = getNodeReader()) {
-			final Node n = rn.get();
-
-			final CompletableFuture<Node> completable = new CompletableFuture<Node>();
-			n.travelInTime(time, (node) -> {
-				completable.complete(node);
-			});
-			final Node on = completable.join();
-
-			return on == null ? null : new GreycatNode(db, on);
-		}
+		return new GreycatNode(db, world, time, id);
 	}
 
 	public String getNodeLabel() {

@@ -56,21 +56,32 @@ public class GraphWrapper {
 	}
 
 	/**
-	 * Returns all the file nodes with repository URLs that match the
-	 * <code>repositoryPattern</code> and at least one of the
-	 * <code>patterns</code>.
-	 *
-	 * @param rplist
-	 *            Pattern for the repository URL. <code>null</code> or
-	 *            <code>"*"</code> will access all repositories.
-	 * @param filePatterns
-	 *            Patterns for the files. Having <code>"*"</code> as an element
-	 *            or passing a null or empty {@link Iterable} will return all
-	 *            files in the selected repository or repositories. If a file
-	 *            pattern has URI-invalid characters (e.g. spaces), it will be
-	 *            URI-encoded first.
+	 * Convenience version of
+	 * {@link #getFileNodes(IGraphNodeIndex, Iterable, Iterable)} which passes the
+	 * database's default file index configuration.
 	 */
 	public Set<FileNode> getFileNodes(Iterable<String> repoPatterns, Iterable<String> filePatterns) {
+		final IGraphNodeIndex fileIndex = graph.getFileIndex();
+		return getFileNodes(fileIndex, repoPatterns, filePatterns);
+	}
+
+	/**
+	 * Returns all the file nodes with repository URLs within the specified file
+	 * index (usually from {@link IGraphDatabase#getFileIndex()}) that match the
+	 * <code>repositoryPattern</code> and at least one of the <code>patterns</code>.
+	 *
+	 * @param fileIndex    File index that can retrieve all available files through
+	 *                     glob patterns.
+	 * @param rplist       Pattern for the repository URL. <code>null</code> or
+	 *                     <code>"*"</code> will access all repositories.
+	 * @param filePatterns Patterns for the files. Having <code>"*"</code> as an
+	 *                     element or passing a null or empty {@link Iterable} will
+	 *                     return all files in the selected repository or
+	 *                     repositories. If a file pattern has URI-invalid
+	 *                     characters (e.g. spaces), it will be URI-encoded first.
+	 */
+	public Set<FileNode> getFileNodes(final IGraphNodeIndex fileIndex, Iterable<String> repoPatterns,
+			Iterable<String> filePatterns) {
 		if (repoPatterns == null || !repoPatterns.iterator().hasNext()) {
 			repoPatterns = Arrays.asList("*");
 		}
@@ -79,7 +90,6 @@ public class GraphWrapper {
 		}
 
 		final Set<FileNode> files = new LinkedHashSet<>();
-		final IGraphNodeIndex fileIndex = graph.getFileIndex();
 		for (String repo : repoPatterns) {
 			for (String file : filePatterns) {
 				String fullPattern;

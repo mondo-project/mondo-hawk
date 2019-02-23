@@ -67,7 +67,7 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 
 	@Override
 	protected void setUpMetamodels() throws Exception {
-		indexer.registerMetamodels(new File("resources/metamodels/Tree.ecore"));
+		indexer.registerMetamodels(new File(TREE_MM_PATH));
 	}
 
 	@Test

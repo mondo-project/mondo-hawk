@@ -16,7 +16,10 @@
  ******************************************************************************/
 package org.hawk.timeaware.tests;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
+import java.util.Collections;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -27,6 +30,7 @@ import org.hawk.core.IModelIndexer;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
 import org.hawk.core.security.FileBasedCredentialsStore;
+import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.graph.updater.GraphModelUpdater;
 import org.hawk.integration.tests.ModelIndexingTest;
 import org.hawk.svn.SvnManager;
@@ -42,6 +46,8 @@ import org.junit.Before;
  * Base class for all time-aware model indexing tests.
  */
 public abstract class AbstractTimeAwareModelIndexingTest extends ModelIndexingTest {
+
+	public static final String TREE_MM_PATH = "resources/metamodels/Tree.ecore";
 
 	protected final TreeFactory treeFactory = TreeFactory.eINSTANCE;
 
@@ -95,6 +101,13 @@ public abstract class AbstractTimeAwareModelIndexingTest extends ModelIndexingTe
 
 	protected Object timeAwareEOL(final String eolQuery) throws InvalidQueryException, QueryExecutionException {
 		return timeAwareEOL(eolQuery, null);
+	}
+
+	protected Object timeAwareEOLInRepository(final String eolQuery, TemporarySVNRepository svnRepository) throws InvalidQueryException, QueryExecutionException {
+		return timeAwareEOL(eolQuery,
+				Collections.singletonMap(
+					EOLQueryEngine.PROPERTY_REPOSITORYCONTEXT,
+					svnRepository.getRepositoryURL().toString()));
 	}
 
 	protected Object timeAwareEOL(final String eolQuery, Map<String, Object> context) throws InvalidQueryException, QueryExecutionException {
