@@ -155,6 +155,11 @@ public class TimeAwareEOLQueryEngine extends EOLQueryEngine {
 	}
 
 	@Override
+	public String getType() {
+		return getClass().getCanonicalName();
+	}
+
+	@Override
 	protected GraphPropertyGetter createContextlessPropertyGetter() {
 		return new TimeAwareGraphPropertyGetter(graph, this);
 	}
