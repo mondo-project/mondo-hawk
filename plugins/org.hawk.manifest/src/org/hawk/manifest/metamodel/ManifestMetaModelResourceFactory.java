@@ -58,7 +58,7 @@ public class ManifestMetaModelResourceFactory implements
 	}
 
 	@Override
-	public String getType() {
+	public final String getType() {
 		return TYPE;
 	}
 

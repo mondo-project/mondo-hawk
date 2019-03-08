@@ -40,7 +40,7 @@ public class RocksDBGreycatDatabase extends AbstractGreycatDatabase {
 	}
 
 	@Override
-	public String getType() {
+	public final String getType() {
 		// For backwards compatibiltiy only
 		return "org.hawk.greycat.GreycatDatabase";
 	}

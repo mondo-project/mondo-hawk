@@ -41,7 +41,7 @@ public class ManifestModelResourceFactory implements IModelResourceFactory {
 	}
 
 	@Override
-	public String getType() {
+	public final String getType() {
 		return TYPE;
 	}
 

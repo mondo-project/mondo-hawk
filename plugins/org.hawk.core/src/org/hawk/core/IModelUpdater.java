@@ -28,10 +28,6 @@ import org.hawk.core.model.IHawkModelResource;
  */
 public interface IModelUpdater extends IHawkPlugin {
 
-	default String getType() {
-		return getClass().getName();
-	}
-	
 	public boolean caresAboutResources();
 
 	/**

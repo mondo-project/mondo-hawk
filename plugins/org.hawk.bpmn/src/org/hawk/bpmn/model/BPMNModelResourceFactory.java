@@ -55,7 +55,7 @@ public class BPMNModelResourceFactory implements IModelResourceFactory {
 	}
 
 	@Override
-	public String getType() {
+	public final String getType() {
 		return TYPE;
 	}
 

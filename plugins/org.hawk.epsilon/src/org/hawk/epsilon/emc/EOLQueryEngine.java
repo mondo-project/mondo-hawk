@@ -758,6 +758,10 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 
 	@Override
 	public String getType() {
+		/*
+		 * This *must* be overridden in subclasses, otherwise Hawk may pick the wrong
+		 * query engine! It happened in GH issue #78.
+		 */
 		return TYPE;
 	}
 
