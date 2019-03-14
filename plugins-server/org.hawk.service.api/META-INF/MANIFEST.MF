@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.hawk.service.api
 Bundle-Version: 1.2.0.qualifier
 Bundle-Vendor: University of York, Aston University
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.apache.thrift;bundle-version="0.9.2",
+Require-Bundle: org.apache.thrift;bundle-version="[0.9.3,0.9.3]",
  org.slf4j.api;bundle-version="1.7.2",
  org.apache.httpcomponents.httpclient;bundle-version="4.3.6";resolution:=optional,
  org.apache.httpcomponents.httpcore;bundle-version="4.3.3";resolution:=optional,
