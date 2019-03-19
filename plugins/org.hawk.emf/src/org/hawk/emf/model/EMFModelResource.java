@@ -114,11 +114,6 @@ public class EMFModelResource implements IHawkModelResource {
 		return allContents;
 	}
 
-	@Override
-	public String getType() {
-		return parser.getType();
-	}
-
 	public Resource getResource() {
 		return res;
 	}

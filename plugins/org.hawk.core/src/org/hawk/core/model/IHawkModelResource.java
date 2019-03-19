@@ -20,9 +20,6 @@ import java.util.Set;
 
 public interface IHawkModelResource extends IHawkResource {
 
-	// type of resource factory used to get this model resource
-	String getType();
-
 	Iterable<IHawkObject> getAllContents();
 
 	Set<IHawkObject> getAllContentsSet();

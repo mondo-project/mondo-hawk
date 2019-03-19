@@ -61,11 +61,6 @@ public class ModelioModelResource implements IHawkModelResource {
 	}
 
 	@Override
-	public String getType() {
-		return getClass().getName();
-	}
-
-	@Override
 	public Iterable<IHawkObject> getAllContents() {
 		return new Iterable<IHawkObject>() {
 			@Override

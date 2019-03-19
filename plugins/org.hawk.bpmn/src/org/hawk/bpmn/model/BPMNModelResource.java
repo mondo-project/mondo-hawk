@@ -84,11 +84,6 @@ public class BPMNModelResource implements IHawkModelResource {
 
 	}
 
-	@Override
-	public String getType() {
-		return parser.getType();
-	}
-
 	public Resource getResource() {
 		return res;
 	}

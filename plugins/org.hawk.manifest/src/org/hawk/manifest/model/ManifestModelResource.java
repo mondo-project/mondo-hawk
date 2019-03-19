@@ -159,11 +159,6 @@ public class ManifestModelResource implements IHawkModelResource {
 	}
 
 	@Override
-	public String getType() {
-		return parser.getType();
-	}
-
-	@Override
 	public Iterable<IHawkObject> getAllContents() {
 		return allContents;
 	}
