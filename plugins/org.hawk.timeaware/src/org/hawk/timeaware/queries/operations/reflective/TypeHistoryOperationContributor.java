@@ -14,7 +14,7 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.timeaware.queries;
+package org.hawk.timeaware.queries.operations.reflective;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +28,8 @@ import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.epsilon.emc.wrappers.TypeNodeWrapper;
 import org.hawk.graph.TypeNode;
+import org.hawk.timeaware.queries.RiskyFunction;
+import org.hawk.timeaware.queries.TimeAwareEOLQueryEngine;
 
 public class TypeHistoryOperationContributor extends OperationContributor {
 	private EOLQueryEngine model;

@@ -14,7 +14,7 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.timeaware.queries;
+package org.hawk.timeaware.queries.operations.reflective;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,7 @@ import org.eclipse.epsilon.eol.execute.operations.contributors.OperationContribu
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
+import org.hawk.timeaware.queries.RiskyFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +72,7 @@ public class TimeAwareNodeHistoryOperationContributor extends OperationContribut
 		}
 		return results;
 	}
-	
+
 	private ITimeAwareGraphNode castTarget(Object target) {
 		return (ITimeAwareGraphNode) ((GraphNodeWrapper)target).getNode();
 	}

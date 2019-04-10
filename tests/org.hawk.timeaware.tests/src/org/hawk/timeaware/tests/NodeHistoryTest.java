@@ -17,9 +17,10 @@
 package org.hawk.timeaware.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.tmatesoft.svn.core.SVNException;
 
 /**
  * Tests for the time-aware indexing of model element nodes.
@@ -92,7 +92,7 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 		});
 	}
 
-	private void twoCommitTree() throws IOException, SVNException, Exception {
+	private void twoCommitTree() throws Exception {
 		final File fTree = new File(svnRepository.getCheckoutDirectory(), "root.xmi");
 		Resource rTree = rsTree.createResource(URI.createFileURI(fTree.getAbsolutePath()));
 
@@ -170,6 +170,59 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 			assertEquals(0, timeAwareEOL("return Model.allInstances.collect(t|t.label).size;"));
 			assertEquals(0, timeAwareEOL("return Model.allInstances.size;"));
 			assertEquals(1, timeAwareEOL("return Model.allInstancesNow.size;"));
+			return null;
+		});
+	}
+
+	private Tree keepAddingChildren() throws Exception {
+		final File fTree = new File(svnRepository.getCheckoutDirectory(), "m.xmi");
+		Resource rTree = rsTree.createResource(URI.createFileURI(fTree.getAbsolutePath()));
+
+		Tree tRoot = treeFactory.createTree();
+		tRoot.setLabel("Root");
+		rTree.getContents().add(tRoot);
+		rTree.save(null);
+		svnRepository.add(fTree);
+		svnRepository.commit("Create root");
+
+		for (String childLabel : Arrays.asList("T1", "T2", "T3")) {
+			Tree t1 = treeFactory.createTree();
+			t1.setLabel(childLabel);
+			tRoot.getChildren().add(t1);
+			rTree.save(null);
+			svnRepository.commit("Add " + childLabel);
+		}
+
+		requestSVNIndex();
+		return tRoot;
+	}
+
+	@Test
+	public void alwaysTrue() throws Throwable {
+		keepAddingChildren();
+		waitForSync(() -> {
+			assertTrue((boolean) timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|t.label='Root').always(v|v.label = 'Root');"
+			));
+			return null;
+		});
+	}
+
+	@Test
+	public void onceFalse() throws Throwable {
+		Tree tRoot = keepAddingChildren();
+		tRoot.setLabel("SomethingElse");
+		tRoot.eResource().save(null);
+		svnRepository.commit("Changed label");
+		indexer.requestImmediateSync();
+		
+		waitForSync(() -> {
+			assertFalse((boolean) timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|t.label='SomethingElse').always(v|v.label = 'Root');"
+			));
+			assertFalse((boolean) timeAwareEOL(
+				"return Tree.latest.prev.all.selectOne(t|t.label='Root').always(v|v.label = 'Root');"
+			));
 			return null;
 		});
 	}

@@ -27,14 +27,15 @@ import java.util.function.Function;
 
 import org.eclipse.epsilon.eol.IEolModule;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
+import org.eclipse.epsilon.eol.execute.operations.contributors.OperationContributorRegistry;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IStateListener.HawkState;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphTransaction;
-import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeIndex;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphDatabase;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeIndex;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
 import org.hawk.epsilon.emc.EOLQueryEngine;
@@ -46,6 +47,8 @@ import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.graph.FileNode;
 import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.ModelElementNode;
+import org.hawk.timeaware.queries.operations.reflective.TimeAwareNodeHistoryOperationContributor;
+import org.hawk.timeaware.queries.operations.reflective.TypeHistoryOperationContributor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -221,8 +224,11 @@ public class TimeAwareEOLQueryEngine extends EOLQueryEngine {
 		}
 
 		final IEolModule module = createModule();
-		module.getContext().getOperationContributorRegistry().add(new TimeAwareNodeHistoryOperationContributor(q));
-		module.getContext().getOperationContributorRegistry().add(new TypeHistoryOperationContributor(q));
+		module.getContext().setOperationFactory(new TimeAwareEOLOperationFactory(q));
+
+		final OperationContributorRegistry opcRegistry = module.getContext().getOperationContributorRegistry();
+		opcRegistry.add(new TimeAwareNodeHistoryOperationContributor(q));
+		opcRegistry.add(new TypeHistoryOperationContributor(q));
 		parseQuery(query, context, q, module);
 		return q.runQuery(module);
 	}
