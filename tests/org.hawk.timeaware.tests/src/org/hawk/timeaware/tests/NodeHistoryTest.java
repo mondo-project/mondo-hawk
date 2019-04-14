@@ -204,6 +204,28 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 			assertTrue((boolean) timeAwareEOL(
 				"return Tree.latest.all.selectOne(t|t.label='Root').always(v|v.label = 'Root');"
 			));
+			assertTrue((boolean) timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|t.label='Root').never(v|v.label <> 'Root');"
+			));
+			assertTrue((boolean) timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|t.label='Root').eventually(v|v.children.size > 2);"
+			));
+			assertFalse((boolean) timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|t.label='Root').eventually(v|v.children.size > 3);"
+			));
+			assertTrue((boolean) timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|t.label='Root').eventuallyAtMost(v | v.children.size > 2, 2);"
+			));
+			assertFalse((boolean) timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|t.label='Root').eventuallyAtMost(v | v.children.size > 0, 2);"
+			));
+			assertFalse((boolean) timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|t.label='Root').eventuallyAtLeast(v | v.children.size > 2, 2);"
+			));
+			assertTrue((boolean) timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|t.label='Root').eventuallyAtLeast(v | v.children.size > 0, 2);"
+			));
+
 			return null;
 		});
 	}
@@ -223,6 +245,35 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 			assertFalse((boolean) timeAwareEOL(
 				"return Tree.latest.prev.all.selectOne(t|t.label='Root').always(v|v.label = 'Root');"
 			));
+
+			assertFalse((boolean) timeAwareEOL(
+				"return Tree.latest.prev.all.selectOne(t|t.label='Root').never(v|v.label = 'Root');"
+			));
+			assertFalse((boolean) timeAwareEOL(
+				"return Tree.latest.prev.all.selectOne(t|t.label='Root').never(v|v.label <> 'Root');"
+			));
+
+			assertTrue((boolean) timeAwareEOL(
+				"return Tree.latest.prev.all.selectOne(t|t.label='Root').eventually(v|v.label <> 'Root');"
+			));
+			assertTrue((boolean) timeAwareEOL(
+				"return Tree.latest.prev.all.selectOne(t|t.label='Root').eventually(v|v.label = 'Root');"
+			));
+
+			assertTrue((boolean) timeAwareEOL(
+				"return Tree.latest.prev.all.selectOne(t|t.label='Root').eventuallyAtMost(v|v.label <> 'Root', 1);"
+			));
+			assertFalse((boolean) timeAwareEOL(
+				"return Tree.latest.prev.all.selectOne(t|t.label='Root').eventuallyAtMost(v|v.label = 'Root', 2);"
+			));
+
+			assertFalse((boolean) timeAwareEOL(
+				"return Tree.latest.prev.all.selectOne(t|t.label='Root').eventuallyAtLeast(v|v.label <> 'Root', 2);"
+			));
+			assertTrue((boolean) timeAwareEOL(
+				"return Tree.latest.prev.all.selectOne(t|t.label='Root').eventuallyAtLeast(v|v.label = 'Root', 2);"
+			));
+			
 			return null;
 		});
 	}

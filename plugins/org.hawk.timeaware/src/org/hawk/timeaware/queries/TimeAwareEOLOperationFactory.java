@@ -18,7 +18,13 @@ package org.hawk.timeaware.queries;
 
 import org.eclipse.epsilon.eol.execute.operations.EolOperationFactory;
 import org.hawk.epsilon.emc.EOLQueryEngine;
-import org.hawk.timeaware.queries.operations.declarative.AlwaysOperation;
+import org.hawk.timeaware.queries.operations.declarative.AlwaysReducer;
+import org.hawk.timeaware.queries.operations.declarative.BoundedVersionQuantifierOperation;
+import org.hawk.timeaware.queries.operations.declarative.EventuallyAtLeastReducer;
+import org.hawk.timeaware.queries.operations.declarative.EventuallyAtMostReducer;
+import org.hawk.timeaware.queries.operations.declarative.EventuallyReducer;
+import org.hawk.timeaware.queries.operations.declarative.NeverReducer;
+import org.hawk.timeaware.queries.operations.declarative.VersionQuantifierOperation;
 
 /**
  * Extended version of the EOL operation factory, adding a new set of first-order
@@ -35,7 +41,16 @@ public class TimeAwareEOLOperationFactory extends EolOperationFactory {
 	@Override
 	protected void createCache() {
 		super.createCache();
-		operationCache.put("always", new AlwaysOperation(containerModel));
+		operationCache.put("always",
+			new VersionQuantifierOperation(containerModel, new AlwaysReducer()));
+		operationCache.put("never",
+			new VersionQuantifierOperation(containerModel, new NeverReducer()));
+		operationCache.put("eventually",
+			new VersionQuantifierOperation(containerModel, new EventuallyReducer()));
+		operationCache.put("eventuallyAtMost",
+			new BoundedVersionQuantifierOperation(containerModel, (count -> new EventuallyAtMostReducer(count))));
+		operationCache.put("eventuallyAtLeast",
+			new BoundedVersionQuantifierOperation(containerModel, (count -> new EventuallyAtLeastReducer(count))));
 	}
 
 }

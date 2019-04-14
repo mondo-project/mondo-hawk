@@ -33,16 +33,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * First-order operation that returns a Boolean value. Returns true
- * if the predicate is true for all versions in scope.
+ * First-order operation that returns a Boolean value from evaluating
+ * a predicate on the versions of a node. The specific quantifier depends
+ * on the {@link IShortCircuitReducer} used.
  */
-public class AlwaysOperation extends FirstOrderOperation {
+public class VersionQuantifierOperation extends FirstOrderOperation {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AlwaysOperation.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(VersionQuantifierOperation.class);
+
 	private final EOLQueryEngine containerModel;
+	private final IShortCircuitReducer reducer;
 
-	public AlwaysOperation(EOLQueryEngine containerModel) {
+	public VersionQuantifierOperation(EOLQueryEngine containerModel, IShortCircuitReducer reducer) {
 		this.containerModel = containerModel;
+		this.reducer = reducer;
 	}
 
 	@Override
@@ -77,16 +81,19 @@ public class AlwaysOperation extends FirstOrderOperation {
 					Object bodyResult = context.getExecutorFactory().execute(expression, context);
 					scope.leaveLocal(expression);
 
-					if (bodyResult instanceof Boolean && !((boolean) bodyResult)){
-						return false;
+					if (bodyResult instanceof Boolean) {
+						Boolean bResult = reducer.reduce((boolean) bodyResult);
+						if (bResult != null) {
+							return bResult;
+						}
 					}
 				}
 			}
 		} catch (Exception ex) {
 			throw new EolInternalException(ex, expression);
 		}
-		
-		return true;
+
+		return reducer.reduce();
 	}
 
 	@Override
