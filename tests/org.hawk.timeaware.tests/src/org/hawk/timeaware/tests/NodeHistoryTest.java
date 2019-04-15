@@ -324,6 +324,34 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 	}
 
 	@Test
+	public void before() throws Throwable {
+		Tree tRoot = keepAddingChildren();
+		Tree tFourthChild = TreeFactory.eINSTANCE.createTree();
+		tFourthChild.setLabel("T4");
+		tRoot.getChildren().add(tFourthChild);
+		tRoot.eResource().save(null);
+		svnRepository.commit("Added fourth child");
+		indexer.requestImmediateSync();
+
+		waitForSync(() -> {
+			assertEquals(".before is a open end range, i.e. excludes matching version", 1, (int) timeAwareEOL(
+				"return Tree.earliest.next.all.selectOne(t|t.label='Root').before(v|v.children.size > 1).latest.children.size;"
+			));
+			assertNull(".before with no match returns null", timeAwareEOL(
+				"return Tree.earliest.next.all.selectOne(t|t.label='Root').before(v|v.children.size > 5);"
+			));
+			assertEquals(".after + .before works", 1, (int) timeAwareEOL(
+				"return Tree.earliest.next.all.selectOne(t|t.label='Root').after(v|v.children.size.println('after for ' + v.time + ': ') > 0).before(v|v.children.size.println('before for ' + v.time + ': ') > 2).versions.size;"
+			));
+			assertEquals(".after + .before can give an empty range", 0, (int) timeAwareEOL(
+				"return Tree.earliest.next.all.selectOne(t|t.label='Root').after(v|v.children.size > 0).before(v|v.children.size > 1).versions.size;"
+			));
+
+			return null;
+		});
+	}
+
+	@Test
 	public void onceFalse() throws Throwable {
 		Tree tRoot = keepAddingChildren();
 		tRoot.setLabel("SomethingElse");

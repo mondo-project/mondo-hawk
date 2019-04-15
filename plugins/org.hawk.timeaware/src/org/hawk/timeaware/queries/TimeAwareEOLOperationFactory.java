@@ -114,6 +114,28 @@ public class TimeAwareEOLOperationFactory extends EolOperationFactory {
 			new VersionRangeOperation(this::getContainerModel,
 				(original, version) -> new EndingTimeAwareNodeWrapper(original, version.getTime())
 			));
+
+		/*
+		 * First-order operation that returns a version of the current node which
+		 * will only report versions before (excluding) the first timepoint for
+		 * which the predicate is true. This implements an open ending range.
+		 *
+		 * If no such timepoint exists, the operation will return an undefined value,
+		 * which can be checked against with <code>isDefined()</code>.
+		 */
+		operationCache.put("before",
+			new VersionRangeOperation(this::getContainerModel, (original, version) -> {
+				try {
+					final long prevInstant = version.getPreviousInstant();
+					if (prevInstant != ITimeAwareGraphNode.NO_SUCH_INSTANT) {
+						return new EndingTimeAwareNodeWrapper(original, prevInstant);
+					}
+				} catch (Exception e) {
+					LOGGER.error("Could not retrieve previous instant for before", e);
+				}
+
+				return null;
+			}));
 	}
 
 }
