@@ -39,6 +39,7 @@ import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.integration.tests.emf.EMFModelSupportFactory;
 import org.hawk.svn.tests.rules.TemporarySVNRepository;
 import org.hawk.timeaware.tests.tree.Tree.Tree;
+import org.hawk.timeaware.tests.tree.Tree.TreeFactory;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -297,7 +298,31 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 			return null;
 		});
 	}
-	
+
+	@Test
+	public void until() throws Throwable {
+		Tree tRoot = keepAddingChildren();
+		Tree tFourthChild = TreeFactory.eINSTANCE.createTree();
+		tFourthChild.setLabel("T4");
+		tRoot.getChildren().add(tFourthChild);
+		tRoot.eResource().save(null);
+		svnRepository.commit("Added fourth child");
+		indexer.requestImmediateSync();
+
+		waitForSync(() -> {
+			assertEquals(".until is a closed end range, i.e. includes matching version", 2, (int) timeAwareEOL(
+				"return Tree.earliest.next.all.selectOne(t|t.label='Root').until(v|v.children.size > 1).latest.children.size;"
+			));
+			assertNull(".until with no match returns null", timeAwareEOL(
+				"return Tree.earliest.next.all.selectOne(t|t.label='Root').until(v|v.children.size > 5);"
+			));
+			assertEquals(".since + .until works", 2, (int) timeAwareEOL(
+				"return Tree.earliest.next.all.selectOne(t|t.label='Root').since(v|v.children.size > 1).until(v|v.children.size > 2).versions.size;"
+			));
+			return null;
+		});
+	}
+
 	@Test
 	public void onceFalse() throws Throwable {
 		Tree tRoot = keepAddingChildren();

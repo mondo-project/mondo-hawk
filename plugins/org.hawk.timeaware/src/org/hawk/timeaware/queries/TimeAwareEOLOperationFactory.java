@@ -22,6 +22,7 @@ import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.timeaware.queries.operations.declarative.AlwaysReducer;
 import org.hawk.timeaware.queries.operations.declarative.BoundedVersionQuantifierOperation;
+import org.hawk.timeaware.queries.operations.declarative.EndingTimeAwareNodeWrapper;
 import org.hawk.timeaware.queries.operations.declarative.EventuallyAtLeastReducer;
 import org.hawk.timeaware.queries.operations.declarative.EventuallyAtMostReducer;
 import org.hawk.timeaware.queries.operations.declarative.EventuallyReducer;
@@ -100,6 +101,19 @@ public class TimeAwareEOLOperationFactory extends EolOperationFactory {
 					return null;
 				}
 		));
+
+		/*
+		 * First-order operation that returns a version of the current node which
+		 * will only report versions up to and including the first timepoint for
+		 * which the predicate is true. This implements a closed ending range.
+		 *
+		 * If no such timepoint exists, the operation will return an undefined value,
+		 * which can be checked against with <code>.isDefined()</code>.
+		 */
+		operationCache.put("until",
+			new VersionRangeOperation(this::getContainerModel,
+				(original, version) -> new EndingTimeAwareNodeWrapper(original, version.getTime())
+			));
 	}
 
 }

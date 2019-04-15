@@ -21,64 +21,66 @@ import java.util.List;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 
 /**
- * Node wrapper which only exposes the versions starting at the current
- * timepoint of the wrapped node.
+ * Node wrapper which only exposes the versions of the wrapped node up to and including the
+ * specified timepoint.
  */
-public class StartingTimeAwareNodeWrapper extends AbstractTimeAwareNodeWrapper {
+public class EndingTimeAwareNodeWrapper extends AbstractTimeAwareNodeWrapper {
 
-	// TODO add unwrapping step and unwrapping tests in the quantifiers (e.g. combine when+always and nested until)
+	private final long toInclusive;
 
-	public StartingTimeAwareNodeWrapper(ITimeAwareGraphNode original) {
+	public EndingTimeAwareNodeWrapper(ITimeAwareGraphNode original, long toInclusive) {
 		super(original);
+		this.toInclusive = toInclusive;
 	}
 
 	@Override
 	public List<Long> getAllInstants() throws Exception {
-		return original.getInstantsBetween(original.getTime(), original.getLatestInstant());
+		return original.getInstantsUpTo(toInclusive);
 	}
 
 	@Override
 	public long getEarliestInstant() throws Exception {
-		return original.getTime();
+		return original.getEarliestInstant();
 	}
 
 	@Override
 	public long getPreviousInstant() throws Exception {
-		return ITimeAwareGraphNode.NO_SUCH_INSTANT;
+		return original.getPreviousInstant();
 	}
 
 	@Override
 	public long getLatestInstant() throws Exception {
-		return original.getLatestInstant();
+		return Math.min(toInclusive, original.getLatestInstant());
 	}
 
 	@Override
 	public long getNextInstant() throws Exception {
-		return original.getNextInstant();
+		return Math.min(toInclusive, original.getNextInstant());
 	}
 
 	@Override
 	public ITimeAwareGraphNode travelInTime(long time) {
-		final long actualTime = Math.max(time, original.getTime());
+		final long actualTime = Math.min(time, this.toInclusive);
 		return original.travelInTime(actualTime);
 	}
 
 	@Override
 	public List<Long> getInstantsBetween(long fromInclusive, long toInclusive) {
-		final long actualFromTime = Math.max(fromInclusive, original.getTime());
-		final long actualToTime = Math.max(actualFromTime, toInclusive);
+		final long actualFromTime = Math.min(fromInclusive, this.toInclusive);
+		final long actualToTime = Math.min(toInclusive, this.toInclusive);
 		return original.getInstantsBetween(actualFromTime, actualToTime);
 	}
 
 	@Override
 	public List<Long> getInstantsFrom(long fromInclusive) {
-		final long actualFromTime = Math.max(fromInclusive, original.getTime());
+		final long actualFromTime = Math.min(fromInclusive, this.toInclusive);
 		return original.getInstantsFrom(actualFromTime);
 	}
 
 	@Override
 	public List<Long> getInstantsUpTo(long toInclusive) {
-		return original.getInstantsBetween(original.getTime(), toInclusive);
+		final long actualToTime = Math.min(toInclusive, this.toInclusive);
+		return original.getInstantsUpTo(actualToTime);
 	}
 
 }
