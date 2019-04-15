@@ -261,6 +261,12 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 			assertTrue((boolean) timeAwareEOL(
 				"return Tree.latest.all.selectOne(t|t.label='Root').eventuallyAtLeast(v | v.children.size > 0, 2);"
 			));
+			assertTrue((boolean) timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|t.label='Root').since(v|v.children.size > 1).always(v | v.children.size>1);"
+			));
+			assertFalse((boolean) timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|t.label='Root').since(v|v.children.size > 1).eventually(v | v.children.size<1);"
+			));
 
 			return null;
 		});
@@ -309,7 +315,24 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 			assertTrue((boolean) timeAwareEOL(
 				"return Tree.latest.prev.all.selectOne(t|t.label='Root').eventuallyAtLeast(v|v.label = 'Root', 2);"
 			));
-			
+
+			assertNotNull(timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|t.latest.label='SomethingElse').earliest.since(v|v.label <> 'Root');"
+			));
+			assertFalse((boolean) timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|t.label='Root').earliest.since(v|v.label <> 'Root').eventually(v|v.label = 'Root');"
+			));
+			assertTrue((boolean) timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|t.label='Root').earliest.since(v|v.label <> 'Root').never(v|v.label.println('Label at ' + v.time + ': ') = 'Root');"
+			));
+			assertTrue((boolean) timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|t.label='Root').earliest.since(v|v.label <> 'Root').always(v|v.children.size > 1);"
+			));
+
+			assertFalse(".since can be chained", (boolean) timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|t.latest.label='SomethingElse').earliest.since(v|v.label <> 'Root').since(v|v.children.size = 0).isDefined();"
+			));
+
 			return null;
 		});
 	}
