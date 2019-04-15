@@ -24,7 +24,8 @@ import org.hawk.timeaware.queries.operations.declarative.EventuallyAtLeastReduce
 import org.hawk.timeaware.queries.operations.declarative.EventuallyAtMostReducer;
 import org.hawk.timeaware.queries.operations.declarative.EventuallyReducer;
 import org.hawk.timeaware.queries.operations.declarative.NeverReducer;
-import org.hawk.timeaware.queries.operations.declarative.SinceOperation;
+import org.hawk.timeaware.queries.operations.declarative.VersionRangeOperation;
+import org.hawk.timeaware.queries.operations.declarative.StartingTimeAwareNodeWrapper;
 import org.hawk.timeaware.queries.operations.declarative.VersionQuantifierOperation;
 
 /**
@@ -57,7 +58,22 @@ public class TimeAwareEOLOperationFactory extends EolOperationFactory {
 		operationCache.put("eventuallyAtLeast",
 			new BoundedVersionQuantifierOperation(this::getContainerModel, (count -> new EventuallyAtLeastReducer(count))));
 
-		operationCache.put("since", new SinceOperation(this::getContainerModel));
+		/*
+		 * First-order operation that makes the target time-aware node travel to the
+		 * first timepoint since the current timepoint where a particular predicate was
+		 * true, if it exists. The returned time-aware node will only report the
+		 * versions since that moment: any past history will be ignored.
+		 *
+		 * This means that if you want to search through the entire history of a node,
+		 * you will have to use <code>node.earliest.since(...)</code>. This is done to
+		 * make it easier to restrict the scope of the search in long histories.
+		 *
+		 * If no such timepoint exists, the operation will return an undefined value,
+		 * which can be checked against with <code>.isDefined()</code>.
+		 */
+		operationCache.put("since",
+			new VersionRangeOperation(this::getContainerModel,
+				(original, match) -> new StartingTimeAwareNodeWrapper(match)));
 	}
 
 }
