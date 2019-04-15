@@ -24,6 +24,7 @@ import org.hawk.timeaware.queries.operations.declarative.EventuallyAtLeastReduce
 import org.hawk.timeaware.queries.operations.declarative.EventuallyAtMostReducer;
 import org.hawk.timeaware.queries.operations.declarative.EventuallyReducer;
 import org.hawk.timeaware.queries.operations.declarative.NeverReducer;
+import org.hawk.timeaware.queries.operations.declarative.SinceOperation;
 import org.hawk.timeaware.queries.operations.declarative.VersionQuantifierOperation;
 
 /**
@@ -38,19 +39,25 @@ public class TimeAwareEOLOperationFactory extends EolOperationFactory {
 		this.containerModel = model;
 	}
 
+	public EOLQueryEngine getContainerModel() {
+		return containerModel;
+	}
+
 	@Override
 	protected void createCache() {
 		super.createCache();
 		operationCache.put("always",
-			new VersionQuantifierOperation(containerModel, new AlwaysReducer()));
+			new VersionQuantifierOperation(this::getContainerModel, new AlwaysReducer()));
 		operationCache.put("never",
-			new VersionQuantifierOperation(containerModel, new NeverReducer()));
+			new VersionQuantifierOperation(this::getContainerModel, new NeverReducer()));
 		operationCache.put("eventually",
-			new VersionQuantifierOperation(containerModel, new EventuallyReducer()));
+			new VersionQuantifierOperation(this::getContainerModel, new EventuallyReducer()));
 		operationCache.put("eventuallyAtMost",
-			new BoundedVersionQuantifierOperation(containerModel, (count -> new EventuallyAtMostReducer(count))));
+			new BoundedVersionQuantifierOperation(this::getContainerModel, (count -> new EventuallyAtMostReducer(count))));
 		operationCache.put("eventuallyAtLeast",
-			new BoundedVersionQuantifierOperation(containerModel, (count -> new EventuallyAtLeastReducer(count))));
+			new BoundedVersionQuantifierOperation(this::getContainerModel, (count -> new EventuallyAtLeastReducer(count))));
+
+		operationCache.put("since", new SinceOperation(this::getContainerModel));
 	}
 
 }

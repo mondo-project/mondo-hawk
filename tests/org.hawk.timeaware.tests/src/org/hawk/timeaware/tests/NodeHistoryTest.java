@@ -18,6 +18,7 @@ package org.hawk.timeaware.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -30,8 +31,10 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.hawk.backend.tests.BackendTestSuite;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
+import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.integration.tests.emf.EMFModelSupportFactory;
 import org.hawk.svn.tests.rules.TemporarySVNRepository;
 import org.hawk.timeaware.tests.tree.Tree.Tree;
@@ -198,6 +201,39 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 	}
 
 	@Test
+	public void rangesAreBothInclusive() throws Throwable {
+		keepAddingChildren();
+		waitForSync(() -> {
+			GraphNodeWrapper gnw = (GraphNodeWrapper) timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|t.latest.label = 'Root');"
+			);
+
+			ITimeAwareGraphNode taNode = (ITimeAwareGraphNode) gnw.getNode();
+			final long earliestInstant = taNode.getEarliestInstant();
+			final long latestInstant = taNode.getLatestInstant();
+
+			final List<ITimeAwareGraphNode> allVersions = taNode.getAllVersions();
+			assertEquals(earliestInstant, allVersions.get(allVersions.size() - 1).getTime());
+			assertEquals(latestInstant, allVersions.get(0).getTime());
+
+			final List<ITimeAwareGraphNode> versionsUpTo = taNode.getVersionsUpTo(latestInstant);
+			assertEquals(earliestInstant, versionsUpTo.get(versionsUpTo.size() - 1).getTime());
+			assertEquals(latestInstant, versionsUpTo.get(0).getTime());
+
+			final List<ITimeAwareGraphNode> versionsFrom = taNode.getVersionsFrom(earliestInstant);
+			assertEquals(earliestInstant, versionsFrom.get(versionsFrom.size() - 1).getTime());
+			assertEquals(latestInstant, versionsFrom.get(0).getTime());
+	
+			final List<ITimeAwareGraphNode> versionsBW = taNode.getVersionsBetween(earliestInstant, latestInstant);
+			assertEquals(earliestInstant, versionsBW.get(versionsFrom.size() - 1).getTime());
+			assertEquals(latestInstant, versionsBW.get(0).getTime());
+			
+			return null;
+		});
+		
+	}
+
+	@Test
 	public void alwaysTrue() throws Throwable {
 		keepAddingChildren();
 		waitForSync(() -> {
@@ -240,7 +276,7 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 		
 		waitForSync(() -> {
 			assertFalse((boolean) timeAwareEOL(
-				"return Tree.latest.all.selectOne(t|t.label='SomethingElse').always(v|v.label = 'Root');"
+				"return Tree.latest.all.selectOne(t|t.latest.label='SomethingElse').always(v|v.label = 'Root');"
 			));
 			assertFalse((boolean) timeAwareEOL(
 				"return Tree.latest.prev.all.selectOne(t|t.label='Root').always(v|v.label = 'Root');"

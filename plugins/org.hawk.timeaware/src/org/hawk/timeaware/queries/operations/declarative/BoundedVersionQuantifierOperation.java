@@ -18,6 +18,7 @@ package org.hawk.timeaware.queries.operations.declarative;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.eclipse.epsilon.eol.dom.Expression;
 import org.eclipse.epsilon.eol.dom.NameExpression;
@@ -33,10 +34,10 @@ import org.hawk.epsilon.emc.EOLQueryEngine;
 public class BoundedVersionQuantifierOperation extends AbstractOperation {
 
 	private final Function<Integer, IShortCircuitReducer> reducerLambda;
-	private final EOLQueryEngine model;
+	private final Supplier<EOLQueryEngine> modelSupplier;
 
-	public BoundedVersionQuantifierOperation(EOLQueryEngine containerModel, Function<Integer, IShortCircuitReducer> reducerLambda) {
-		this.model = containerModel;
+	public BoundedVersionQuantifierOperation(Supplier<EOLQueryEngine> containerModel, Function<Integer, IShortCircuitReducer> reducerLambda) {
+		this.modelSupplier = containerModel;
 		this.reducerLambda = reducerLambda;
 	}
 
@@ -61,7 +62,7 @@ public class BoundedVersionQuantifierOperation extends AbstractOperation {
 		}
 		final int count = ((Number)countResult).intValue();
 
-		return new VersionQuantifierOperation(model, reducerLambda.apply(count))
+		return new VersionQuantifierOperation(modelSupplier, reducerLambda.apply(count))
 			.execute(target, operationNameExpression, iterators, expressions, context);
 	}
 

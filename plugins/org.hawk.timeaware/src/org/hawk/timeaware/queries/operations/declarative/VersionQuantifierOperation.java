@@ -17,6 +17,7 @@
 package org.hawk.timeaware.queries.operations.declarative;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.eclipse.epsilon.eol.dom.Expression;
 import org.eclipse.epsilon.eol.exceptions.EolInternalException;
@@ -41,11 +42,11 @@ public class VersionQuantifierOperation extends FirstOrderOperation {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(VersionQuantifierOperation.class);
 
-	private final EOLQueryEngine containerModel;
+	private final Supplier<EOLQueryEngine> containerModelSupplier;
 	private final IShortCircuitReducer reducer;
 
-	public VersionQuantifierOperation(EOLQueryEngine containerModel, IShortCircuitReducer reducer) {
-		this.containerModel = containerModel;
+	public VersionQuantifierOperation(Supplier<EOLQueryEngine> containerModelSupplier, IShortCircuitReducer reducer) {
+		this.containerModelSupplier = containerModelSupplier;
 		this.reducer = reducer;
 	}
 
@@ -72,8 +73,8 @@ public class VersionQuantifierOperation extends FirstOrderOperation {
 			final FrameStack scope = context.getFrameStack();
 
 			for (ITimeAwareGraphNode version : versions) {
-				GraphNodeWrapper listItem = new GraphNodeWrapper(version, containerModel);
-				
+				GraphNodeWrapper listItem = new GraphNodeWrapper(version, containerModelSupplier.get());
+
 				if (iterator.getType()==null || iterator.getType().isKind(listItem)){
 					scope.enterLocal(FrameType.UNPROTECTED, expression);
 
