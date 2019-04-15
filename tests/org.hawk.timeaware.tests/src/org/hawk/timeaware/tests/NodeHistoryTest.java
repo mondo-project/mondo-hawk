@@ -19,6 +19,7 @@ package org.hawk.timeaware.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -71,6 +72,17 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 	@Override
 	protected void setUpMetamodels() throws Exception {
 		indexer.registerMetamodels(new File(TREE_MM_PATH));
+	}
+
+	@Test
+	public void travelToMissingTimepointReturnsNull() throws Throwable {
+		twoCommitTree();
+		waitForSync(() -> {
+			GraphNodeWrapper gnw = (GraphNodeWrapper) timeAwareEOL("return Tree.latest.prev.all.first;");
+			assertNotNull(gnw.getNode());
+			assertNull(((ITimeAwareGraphNode) gnw.getNode()).travelInTime(ITimeAwareGraphNode.NO_SUCH_INSTANT));
+			return null;
+		});
 	}
 
 	@Test

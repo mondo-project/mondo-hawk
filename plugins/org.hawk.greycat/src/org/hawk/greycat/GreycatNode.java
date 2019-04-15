@@ -310,6 +310,9 @@ public class GreycatNode implements ITimeAwareGraphNode {
 
 	@Override
 	public GreycatNode travelInTime(long time) {
+		if (time == NO_SUCH_INSTANT) {
+			return null;
+		}
 		return new GreycatNode(db, world, time, id);
 	}
 
