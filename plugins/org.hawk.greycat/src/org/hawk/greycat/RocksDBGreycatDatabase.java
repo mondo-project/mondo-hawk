@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Aston University.
+ * Copyright (c) 2018-2019 Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -26,9 +26,8 @@ import greycat.rocksdb.RocksDBStorage;
  * 
  * <p>This storage layer has bad performance in the subtree tests for the
  * time being. The LevelDB storage layer has much better performance for
- * traversing the graph - please use that for now.</p>
+ * traversing the graph - please use that instead in those cases.</p>
  */
-@Deprecated
 public class RocksDBGreycatDatabase extends AbstractGreycatDatabase {
 
 	@Override
@@ -47,7 +46,7 @@ public class RocksDBGreycatDatabase extends AbstractGreycatDatabase {
 	
 	@Override
 	public String getHumanReadableName() {
-		return "RocksDB " + super.getHumanReadableName() + " (Deprecated)";
+		return "RocksDB " + super.getHumanReadableName();
 	}
 
 }
