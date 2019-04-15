@@ -16,7 +16,9 @@
  ******************************************************************************/
 package org.hawk.timeaware.queries;
 
+
 import org.eclipse.epsilon.eol.execute.operations.EolOperationFactory;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.timeaware.queries.operations.declarative.AlwaysReducer;
 import org.hawk.timeaware.queries.operations.declarative.BoundedVersionQuantifierOperation;
@@ -24,15 +26,19 @@ import org.hawk.timeaware.queries.operations.declarative.EventuallyAtLeastReduce
 import org.hawk.timeaware.queries.operations.declarative.EventuallyAtMostReducer;
 import org.hawk.timeaware.queries.operations.declarative.EventuallyReducer;
 import org.hawk.timeaware.queries.operations.declarative.NeverReducer;
-import org.hawk.timeaware.queries.operations.declarative.VersionRangeOperation;
 import org.hawk.timeaware.queries.operations.declarative.StartingTimeAwareNodeWrapper;
 import org.hawk.timeaware.queries.operations.declarative.VersionQuantifierOperation;
+import org.hawk.timeaware.queries.operations.declarative.VersionRangeOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Extended version of the EOL operation factory, adding a new set of first-order
  * operations over the versions of types and nodes.
  */
 public class TimeAwareEOLOperationFactory extends EolOperationFactory {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(TimeAwareEOLOperationFactory.class);
 
 	private final EOLQueryEngine containerModel;
 
@@ -74,6 +80,26 @@ public class TimeAwareEOLOperationFactory extends EolOperationFactory {
 		operationCache.put("since",
 			new VersionRangeOperation(this::getContainerModel,
 				(original, match) -> new StartingTimeAwareNodeWrapper(match)));
+
+		/*
+		 * Variant of .since which does not include the matching version, implementing
+		 * an exclusive starting range.
+		 */
+		operationCache.put("after",
+			new VersionRangeOperation(this::getContainerModel,
+				(original, version) -> {
+					try {
+						ITimeAwareGraphNode nextVersion = version.getNext();
+						if (nextVersion != null) {
+							return new StartingTimeAwareNodeWrapper(nextVersion);
+						}
+					} catch (Exception e) {
+						LOGGER.error(e.getMessage(), e);
+					}
+
+					return null;
+				}
+		));
 	}
 
 }

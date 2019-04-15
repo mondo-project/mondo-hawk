@@ -285,6 +285,20 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 	}
 
 	@Test
+	public void after() throws Throwable {
+		keepAddingChildren();
+		waitForSync(() -> {
+			assertEquals(".after is an open left range, i.e. excludes matching version", 2, (int) timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|t.label='Root').earliest.after(v|v.children.size > 0).children.size;"
+			));
+			assertNull(".after with no match returns null", timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|t.label='Root').after(v|v.children.size > 5);"
+			));
+			return null;
+		});
+	}
+	
+	@Test
 	public void onceFalse() throws Throwable {
 		Tree tRoot = keepAddingChildren();
 		tRoot.setLabel("SomethingElse");

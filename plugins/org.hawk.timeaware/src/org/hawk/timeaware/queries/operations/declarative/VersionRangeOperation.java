@@ -99,7 +99,12 @@ public class VersionRangeOperation extends FirstOrderOperation {
 					scope.leaveLocal(expression);
 
 					if (bodyResult instanceof Boolean && (boolean)bodyResult) {
-						return new GraphNodeWrapper(nodeWrapper.wrap(taNode, version), containerModelSupplier.get());
+						final ITimeAwareGraphNode wrapped = nodeWrapper.wrap(taNode, version);
+						if (wrapped == null) {
+							return null;
+						} else {
+							return new GraphNodeWrapper(wrapped, containerModelSupplier.get());
+						}
 					}
 				}
 			}
