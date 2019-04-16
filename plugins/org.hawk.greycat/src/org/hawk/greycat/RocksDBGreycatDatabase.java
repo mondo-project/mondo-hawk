@@ -28,6 +28,7 @@ import greycat.rocksdb.RocksDBStorage;
  * time being. The LevelDB storage layer has much better performance for
  * traversing the graph - please use that instead in those cases.</p>
  */
+@Deprecated
 public class RocksDBGreycatDatabase extends AbstractGreycatDatabase {
 
 	@Override
@@ -46,7 +47,7 @@ public class RocksDBGreycatDatabase extends AbstractGreycatDatabase {
 	
 	@Override
 	public String getHumanReadableName() {
-		return "RocksDB " + super.getHumanReadableName();
+		return "RocksDB " + super.getHumanReadableName() + " (deprecated)";
 	}
 
 }
