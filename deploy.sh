@@ -81,8 +81,9 @@ set -o errexit
 export VERSION=$(get_version)
 echo "Detected version $VERSION of Hawk"
 
-# Run the regular build, skip tests (these were run in a previous stage)
-mvn --quiet clean install -DskipTests
+# Run the regular build, skip tests and product builds (these were run in a previous stage)
+mvn --quiet -pl '!:org.hawk.updatesite,!:org.hawk.service.server.product,!:org.hawk.service.cli.product' \
+	clean install -DskipTests
 
 # Only continue deploying to update site for non-PR commits to the master branch
 if [[ "$TRAVIS_BRANCH" == 'master' && "$TRAVIS_PULL_REQUEST" == 'false' ]]; then
