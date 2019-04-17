@@ -30,6 +30,7 @@ import org.hawk.timeaware.queries.operations.declarative.NeverReducer;
 import org.hawk.timeaware.queries.operations.declarative.StartingTimeAwareNodeWrapper;
 import org.hawk.timeaware.queries.operations.declarative.VersionQuantifierOperation;
 import org.hawk.timeaware.queries.operations.declarative.VersionRangeOperation;
+import org.hawk.timeaware.queries.operations.declarative.WhenOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,6 +137,8 @@ public class TimeAwareEOLOperationFactory extends EolOperationFactory {
 
 				return null;
 			}));
+
+		operationCache.put("when", new WhenOperation(this::getContainerModel));
 	}
 
 }

@@ -352,6 +352,35 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 	}
 
 	@Test
+	public void whenPoints() throws Throwable {
+		Tree tRoot = keepAddingChildren();
+		tRoot.getChildren().remove(2);
+		tRoot.eResource().save(null);
+		svnRepository.commit("Removed third child");
+		indexer.requestImmediateSync();
+
+		waitForSync(() -> {
+			assertEquals(".when with all versions", 5, (int) timeAwareEOL(
+				"return Tree.earliest.next.all.selectOne(t|t.label='Root').when(v|v.children.size >= 0).versions.size;"
+			));
+			assertFalse(".when with no versions returns null", (boolean) timeAwareEOL(
+				"return Tree.earliest.next.all.selectOne(t|t.label='Root').when(v|v.children.size > 5).isDefined();"
+			));
+			assertEquals(".when with some contiguous versions", 2, (int) timeAwareEOL(
+				"return Tree.earliest.next.all.selectOne(t|t.label='Root').when(v|v.children.size < 2).versions.size;"
+			));
+			assertEquals(".when with one version", 1, (int) timeAwareEOL(
+				"return Tree.earliest.next.all.selectOne(t|t.label='Root').when(v|v.children.size = 3).versions.size;"
+			));
+			assertEquals(".when with some non-contiguous versions", 2, (int) timeAwareEOL(
+				"return Tree.earliest.next.all.selectOne(t|t.label='Root').when(v|v.children.size = 2).versions.size;"
+			));
+
+			return null;
+		});
+	}
+
+	@Test
 	public void onceFalse() throws Throwable {
 		Tree tRoot = keepAddingChildren();
 		tRoot.setLabel("SomethingElse");

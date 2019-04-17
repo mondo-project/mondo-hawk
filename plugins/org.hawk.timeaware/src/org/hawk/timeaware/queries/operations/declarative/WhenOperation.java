@@ -16,8 +16,9 @@
  ******************************************************************************/
 package org.hawk.timeaware.queries.operations.declarative;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.function.Supplier;
 
 import org.eclipse.epsilon.eol.dom.Expression;
@@ -36,32 +37,21 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>
- * Generic EOL declarative operation which tries to find a timepoint matching
- * a predicate from the current timepoint of the target node, and passes
- * the original and matching nodes to a wrapper for decoration. The wrapper
- * will usually limit the range of versions available to the returned node.
- * </p>
- * 
- * <p>
- * If no such timepoint exists, the operation will return an undefined value,
- * which can be checked against with <code>.isDefined()</code>.
+ * Generic EOL declarative operation which will return a modified version of the
+ * target node at the earliest timepoint since the current timepoint that
+ * matches a certain predicate. The modified version of the target node will
+ * only report the versions of the target node since the current timepoint that
+ * match that predicate.
  * </p>
  */
-public class VersionRangeOperation extends FirstOrderOperation {
+public class WhenOperation extends FirstOrderOperation {
 
-	@FunctionalInterface
-	public interface IRangeBasedNodeWrapper {
-		ITimeAwareGraphNode wrap(ITimeAwareGraphNode original, ITimeAwareGraphNode predicateMatch);
-	}
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(VersionRangeOperation.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WhenOperation.class);
 
 	private final Supplier<EOLQueryEngine> containerModelSupplier;
-	private final IRangeBasedNodeWrapper nodeWrapper;
 
-	public VersionRangeOperation(Supplier<EOLQueryEngine> containerModelSupplier, IRangeBasedNodeWrapper nodeWrapper) {
+	public WhenOperation(Supplier<EOLQueryEngine> containerModelSupplier) {
 		this.containerModelSupplier = containerModelSupplier;
-		this.nodeWrapper = nodeWrapper;
 	}
 
 	@Override
@@ -87,8 +77,10 @@ public class VersionRangeOperation extends FirstOrderOperation {
 			final List<ITimeAwareGraphNode> versions = taNode.getVersionsBetween(taNode.getTime(), latestInstant);
 			final FrameStack scope = context.getFrameStack();
 
-			for (ListIterator<ITimeAwareGraphNode> itVersion = versions.listIterator(versions.size()); itVersion.hasPrevious(); ) {
-				final ITimeAwareGraphNode version = itVersion.previous();
+			final List<Long> matchingVersions = new ArrayList<>();
+			
+			for (Iterator<ITimeAwareGraphNode> itVersion = versions.iterator(); itVersion.hasNext(); ) {
+				final ITimeAwareGraphNode version = itVersion.next();
 				final GraphNodeWrapper listItem = new GraphNodeWrapper(version, containerModelSupplier.get());
 
 				if (iterator.getType()==null || iterator.getType().isKind(listItem)){
@@ -99,14 +91,15 @@ public class VersionRangeOperation extends FirstOrderOperation {
 					scope.leaveLocal(expression);
 
 					if (bodyResult instanceof Boolean && (boolean)bodyResult) {
-						final ITimeAwareGraphNode wrapped = nodeWrapper.wrap(taNode, version);
-						if (wrapped == null) {
-							return null;
-						} else {
-							return new GraphNodeWrapper(wrapped, containerModelSupplier.get());
-						}
+						matchingVersions.add(version.getTime());
 					}
 				}
+			}
+
+			if (!matchingVersions.isEmpty()) {
+				return new GraphNodeWrapper(
+					new WhenNodeWrapper(taNode.travelInTime(matchingVersions.get(matchingVersions.size() - 1)), matchingVersions),
+					containerModelSupplier.get());
 			}
 		} catch (Exception ex) {
 			throw new EolInternalException(ex, expression);
