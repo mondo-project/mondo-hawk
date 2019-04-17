@@ -17,10 +17,8 @@
 package org.hawk.timeaware.queries.operations.declarative;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.slf4j.Logger;
@@ -34,47 +32,67 @@ public class WhenNodeWrapper extends AbstractTimeAwareNodeWrapper {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WhenNodeWrapper.class);
 
-	private List<Long> matchingVersions;
+	private final List<Long> matchingVersions;
+	private final int matchingVersionPosition;
 
 	/**
 	 * Creates a new wrapper, which only exposes some versions from its current
-	 * version onwards.
+	 * version onwards. This version assumes the wrapped node is the oldest among
+	 * the matching versions.
 	 * 
 	 * @param original         Node to be wrapped.
 	 * @param matchingVersions Timepoints to be exposed, from newest to oldest.
 	 */
 	public WhenNodeWrapper(ITimeAwareGraphNode original, List<Long> matchingVersions) {
-		super(original);
+		this(original, matchingVersions, matchingVersions.size() - 1);
+	}
 
+	/**
+	 * Creates a new wrapper, which only exposes some versions of itself. The wrapped
+	 * node is in a certain <code>position</code> of the matching versions (the first one
+	 * is the newest one).
+	 */
+	protected WhenNodeWrapper(ITimeAwareGraphNode original, List<Long> matchingVersions, int position) {
+		super(original);
 		this.matchingVersions = matchingVersions;
+		this.matchingVersionPosition = position;
 
 		assert !matchingVersions.isEmpty() : "At least one matching version should exist";
-		assert matchingVersions.get(matchingVersions.size()	- 1) == original.getTime() : "Matching versions should be from newest to oldest, and the wrapped node should be the oldest matching version";
+		assert matchingVersions.get(position) == original.getTime() : "Wrapped node should have the expected time from its position in the matched timepoints list";
 	}
 
 	@Override
-	public List<Long> getAllInstants() throws Exception {
+	public List<Long> getAllInstants() {
 		return matchingVersions;
 	}
 
 	@Override
-	public long getEarliestInstant() throws Exception {
+	public long getEarliestInstant() {
 		return matchingVersions.get(matchingVersions.size() - 1);
 	}
 
 	@Override
-	public long getPreviousInstant() throws Exception {
-		return ITimeAwareGraphNode.NO_SUCH_INSTANT;
+	public long getPreviousInstant() {
+		// Versions go from newest to oldest, so +1 is older, -1 is newer
+		if (matchingVersionPosition + 1 < matchingVersions.size()) {
+			return matchingVersionPosition + 1;
+		} else {
+			return ITimeAwareGraphNode.NO_SUCH_INSTANT;
+		}
 	}
 
 	@Override
-	public long getLatestInstant() throws Exception {
+	public long getLatestInstant() {
 		return matchingVersions.get(0);
 	}
 
 	@Override
-	public long getNextInstant() throws Exception {
-		return matchingVersions.get(1);
+	public long getNextInstant() {
+		if (matchingVersionPosition > 0) {
+			return matchingVersions.get(matchingVersionPosition - 1);
+		} else {
+			return ITimeAwareGraphNode.NO_SUCH_INSTANT;
+		}
 	}
 
 	@Override
@@ -84,20 +102,21 @@ public class WhenNodeWrapper extends AbstractTimeAwareNodeWrapper {
 				return null;
 			}
 
-			// Find the latest version before that time
-			long matchingTime = getEarliestInstant();
+			// Find the latest version before or equal to that time
+			int position = matchingVersions.size() - 1;
 			if (matchingVersions.size() > 1) {
-				for (ListIterator<Long> itTimepoint = matchingVersions.listIterator(matchingVersions.size()); itTimepoint.hasPrevious(); ) {
-					final long candidate = itTimepoint.previous();
-					if (candidate < time) {
-						matchingTime = candidate;
+				for (int i = matchingVersions.size() - 2; i >= 0; i--) {
+					final long candidate = matchingVersions.get(i);
+					if (candidate <= time) {
+						position = i;
 					} else {
 						break;
 					}
 				}
 			}
 
-			return original.travelInTime(matchingTime);
+			final long timepoint = matchingVersions.get(position);
+			return new WhenNodeWrapper(original.travelInTime(timepoint), matchingVersions, position);
 		} catch (Exception ex) {
 			LOGGER.error("Could not travel in time", ex);
 		}
@@ -107,14 +126,14 @@ public class WhenNodeWrapper extends AbstractTimeAwareNodeWrapper {
 
 	@Override
 	public List<Long> getInstantsBetween(long fromInclusive, long toInclusive) {
-		final ListIterator<Long> itInstants = matchingVersions.listIterator(matchingVersions.size());
 		final List<Long> results = new ArrayList<>();
+		final Iterator<Long> itInstants = matchingVersions.iterator();
 
-		while (itInstants.hasPrevious()) {
+		while (itInstants.hasNext()) {
 			final long instant = itInstants.next();
-			if (instant < fromInclusive) {
-				// not there yet, but keep looking
-			} else if (instant <= toInclusive) {
+			if (instant > toInclusive) {
+				// too recent, skip
+			} else if (instant >= fromInclusive) {
 				results.add(instant);
 			} else {
 				// after the end of the range, stop
@@ -127,32 +146,85 @@ public class WhenNodeWrapper extends AbstractTimeAwareNodeWrapper {
 
 	@Override
 	public List<Long> getInstantsFrom(long fromInclusive) {
-		int iEarliestMatching = matchingVersions.size();
-
-		for (ListIterator<Long> itInstant = matchingVersions.listIterator(matchingVersions.size()); itInstant.hasPrevious(); ) {
-			if (itInstant.previous() >= fromInclusive) {
-				return matchingVersions.subList(0, iEarliestMatching);
-			} else {
-				--iEarliestMatching;
-			}
-		}
-
-		return Collections.emptyList();
+		return getInstantsBetween(fromInclusive, getLatestInstant());
 	}
 
 	@Override
 	public List<Long> getInstantsUpTo(long toInclusive) {
-		int iLatestMatching = 0;
-
-		for (Iterator<Long> itInstant = matchingVersions.iterator(); itInstant.hasNext(); ) {
-			if (itInstant.next() <= toInclusive) {
-				return matchingVersions.subList(iLatestMatching, matchingVersions.size());
-			} else {
-				++iLatestMatching;
-			}
-		}
-
-		return Collections.emptyList();
+		return getInstantsBetween(getEarliestInstant(), toInclusive);
 	}
 
+	@Override
+	public List<ITimeAwareGraphNode> getAllVersions() throws Exception {
+		final List<ITimeAwareGraphNode> taNodes = new ArrayList<>(matchingVersions.size());
+		for (int i = 0; i < matchingVersions.size(); i++) {
+			final ITimeAwareGraphNode version = original.travelInTime(matchingVersions.get(i));
+			final WhenNodeWrapper wrapped = new WhenNodeWrapper(version, matchingVersions, i);
+			taNodes.add(wrapped);
+		}
+		return taNodes;
+	}
+
+	@Override
+	public ITimeAwareGraphNode getEarliest() throws Exception {
+		final ITimeAwareGraphNode version = original.travelInTime(getEarliestInstant());
+		return new WhenNodeWrapper(version, matchingVersions, matchingVersions.size() - 1);
+	}
+
+	@Override
+	public ITimeAwareGraphNode getPrevious() {
+		if (matchingVersionPosition + 1 < matchingVersions.size()) {
+			final ITimeAwareGraphNode version = original.travelInTime(matchingVersions.get(matchingVersionPosition + 1));
+			return new WhenNodeWrapper(version, matchingVersions, matchingVersionPosition + 1);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public ITimeAwareGraphNode getLatest() {
+		final ITimeAwareGraphNode version = original.travelInTime(getLatestInstant());
+		return new WhenNodeWrapper(version, matchingVersions, 0);
+	}
+
+	@Override
+	public ITimeAwareGraphNode getNext() throws Exception {
+		if (matchingVersionPosition > 0) {
+			final ITimeAwareGraphNode version = original.travelInTime(matchingVersions.get(matchingVersionPosition - 1));
+			return new WhenNodeWrapper(version, matchingVersions, matchingVersionPosition - 1);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public List<ITimeAwareGraphNode> getVersionsBetween(long fromInclusive, long toInclusive) throws Exception {
+		final List<ITimeAwareGraphNode> results = new ArrayList<>();
+
+		for (int i = 0; i < matchingVersions.size(); ++i) {
+			final long instant = matchingVersions.get(i);
+			if (instant > toInclusive) {
+				// too recent, skip
+			} else if (instant >= fromInclusive) {
+				final ITimeAwareGraphNode version = original.travelInTime(instant);
+				results.add(new WhenNodeWrapper(version, matchingVersions, i));
+			} else {
+				// after the end of the range, stop
+				break;
+			}
+		}
+		
+		return results;
+	}
+
+	@Override
+	public List<ITimeAwareGraphNode> getVersionsFrom(long fromInclusive) throws Exception {
+		return getVersionsBetween(fromInclusive, getLatestInstant());
+	}
+
+	@Override
+	public List<ITimeAwareGraphNode> getVersionsUpTo(long toInclusive) throws Exception {
+		return getVersionsBetween(getEarliestInstant(), toInclusive);
+	}
+	
 }

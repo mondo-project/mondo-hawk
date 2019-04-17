@@ -22,6 +22,11 @@ import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 
+/**
+ * Base class for a set of node wrappers that are designed to limit the
+ * historical scope of the original node, and preserve this scope over the basic
+ * version traversal primitives (next/prev/earliest/latest/...).
+ */
 public abstract class AbstractTimeAwareNodeWrapper implements ITimeAwareGraphNode {
 
 	/**
@@ -113,5 +118,5 @@ public abstract class AbstractTimeAwareNodeWrapper implements ITimeAwareGraphNod
 	public void end() {
 		original.end();
 	}
-
+	
 }

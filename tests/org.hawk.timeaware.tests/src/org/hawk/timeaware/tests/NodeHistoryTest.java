@@ -243,7 +243,7 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 			
 			return null;
 		});
-		
+
 	}
 
 	@Test
@@ -343,8 +343,8 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 			assertEquals(".after + .before works", 1, (int) timeAwareEOL(
 				"return Tree.earliest.next.all.selectOne(t|t.label='Root').after(v|v.children.size.println('after for ' + v.time + ': ') > 0).before(v|v.children.size.println('before for ' + v.time + ': ') > 2).versions.size;"
 			));
-			assertEquals(".after + .before can give an empty range", 0, (int) timeAwareEOL(
-				"return Tree.earliest.next.all.selectOne(t|t.label='Root').after(v|v.children.size > 0).before(v|v.children.size > 1).versions.size;"
+			assertFalse(".after + .before can give an undefined node", (boolean) timeAwareEOL(
+				"return Tree.earliest.next.all.selectOne(t|t.label='Root').after(v|v.children.size > 0).before(v|v.children.size > 1).isDefined();"
 			));
 
 			return null;
@@ -374,6 +374,9 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 			));
 			assertEquals(".when with some non-contiguous versions", 2, (int) timeAwareEOL(
 				"return Tree.earliest.next.all.selectOne(t|t.label='Root').when(v|v.children.size = 2).versions.size;"
+			));
+			assertEquals(".when with non-contiguous versions + back and forth", 2, (int) timeAwareEOL(
+				"return Tree.earliest.next.all.selectOne(t|t.label='Root').when(v|v.children.size = 2).next.prev.children.size;"
 			));
 
 			return null;

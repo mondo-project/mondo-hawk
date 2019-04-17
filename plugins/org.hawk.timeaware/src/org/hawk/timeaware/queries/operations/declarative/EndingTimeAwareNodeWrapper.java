@@ -24,7 +24,7 @@ import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
  * Node wrapper which only exposes the versions of the wrapped node up to and including the
  * specified timepoint.
  */
-public class EndingTimeAwareNodeWrapper extends AbstractTimeAwareNodeWrapper {
+public class EndingTimeAwareNodeWrapper extends AbstractSingleWrapTimeAwareNodeWrapper {
 
 	private final long toInclusive;
 
@@ -81,6 +81,11 @@ public class EndingTimeAwareNodeWrapper extends AbstractTimeAwareNodeWrapper {
 	public List<Long> getInstantsUpTo(long toInclusive) {
 		final long actualToTime = Math.min(toInclusive, this.toInclusive);
 		return original.getInstantsUpTo(actualToTime);
+	}
+
+	@Override
+	protected ITimeAwareGraphNode wrap(ITimeAwareGraphNode n) {
+		return new EndingTimeAwareNodeWrapper(n, toInclusive);
 	}
 
 }
