@@ -51,7 +51,7 @@ public abstract class AbstractTimeAwareNodeWrapper implements ITimeAwareGraphNod
 
 	@Override
 	public Object getProperty(String name) {
-		return original;
+		return original.getProperty(name);
 	}
 
 	@Override
