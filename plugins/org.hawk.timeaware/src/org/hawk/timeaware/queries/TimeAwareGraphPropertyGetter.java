@@ -26,6 +26,7 @@ import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.epsilon.emc.pgetters.GraphPropertyGetter;
 import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
+import org.hawk.timeaware.queries.operations.declarative.StartingTimeAwareNodeWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +71,8 @@ class TimeAwareGraphPropertyGetter extends GraphPropertyGetter {
 				}
 			case "time":
 				return taNode.getTime();
+			case "sinceThen":
+				return new GraphNodeWrapper(new StartingTimeAwareNodeWrapper(taNode), model);
 			}
 		} catch (Exception ex) {
 			LOGGER.error(ex.getMessage(), ex);

@@ -352,6 +352,29 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 	}
 
 	@Test
+	public void sinceThen() throws Throwable {
+		keepAddingChildren();
+
+		waitForSync(() -> {
+			assertFalse("Type node - Without .sinceThen, always uses all versions", (boolean) timeAwareEOL(
+				"return Tree.earliest.next.always(v|v.all.size > 0);"
+			));
+			assertTrue("Type node - With .sinceThen, scope is limited to that version onwards", (boolean) timeAwareEOL(
+				"return Tree.earliest.next.sinceThen.always(v|v.all.size > 0);"
+			));
+
+			assertFalse("Model element - Without .sinceThen, always uses all versions", (boolean) timeAwareEOL(
+				"return Tree.earliest.next.all.selectOne(t|t.label = 'Root').next.always(v|v.children.size > 0);"
+			));
+			assertTrue("Model element - With .sinceThen, scope is limited to that version onwards", (boolean) timeAwareEOL(
+				"return Tree.earliest.next.all.selectOne(t|t.label = 'Root').next.sinceThen.always(v|v.children.size.println('Number of children at ' + v.time + ': ') > 0);"
+			));
+
+			return null;
+		});
+	}
+
+	@Test
 	public void whenPoints() throws Throwable {
 		Tree tRoot = keepAddingChildren();
 		tRoot.getChildren().remove(2);

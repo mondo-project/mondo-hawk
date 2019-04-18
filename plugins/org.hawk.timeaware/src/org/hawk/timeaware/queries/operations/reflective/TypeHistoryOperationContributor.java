@@ -30,6 +30,7 @@ import org.hawk.epsilon.emc.wrappers.TypeNodeWrapper;
 import org.hawk.graph.TypeNode;
 import org.hawk.timeaware.queries.RiskyFunction;
 import org.hawk.timeaware.queries.TimeAwareEOLQueryEngine;
+import org.hawk.timeaware.queries.operations.declarative.StartingTimeAwareNodeWrapper;
 
 public class TypeHistoryOperationContributor extends OperationContributor {
 	private EOLQueryEngine model;
@@ -60,6 +61,17 @@ public class TypeHistoryOperationContributor extends OperationContributor {
 	public TypeNodeWrapper getearliest() throws Exception {
 		return getTypeNodeVersionWrappers(
 			(taNode) -> Collections.singletonList(taNode.getEarliest())
+		).get(0);
+	}
+
+	/**
+	 * Provides the <code>.sinceThen</code> property, which returns a version of the
+	 * type node that limits its history to versions from the current timepoint
+	 * (included) onwards.
+	 */
+	public TypeNodeWrapper getsinceThen() throws Exception {
+		return getTypeNodeVersionWrappers(
+			(taNode) -> Collections.singletonList(new StartingTimeAwareNodeWrapper(taNode))
 		).get(0);
 	}
 
