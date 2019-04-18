@@ -22,75 +22,35 @@ import java.util.function.Supplier;
 
 import org.eclipse.epsilon.eol.dom.Expression;
 import org.eclipse.epsilon.eol.exceptions.EolInternalException;
-import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.execute.context.FrameStack;
 import org.eclipse.epsilon.eol.execute.context.FrameType;
 import org.eclipse.epsilon.eol.execute.context.IEolContext;
 import org.eclipse.epsilon.eol.execute.context.Variable;
-import org.eclipse.epsilon.eol.execute.operations.declarative.FirstOrderOperation;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.epsilon.emc.EOLQueryEngine;
-import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
-import org.hawk.epsilon.emc.wrappers.TypeNodeWrapper;
-import org.hawk.graph.TypeNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * First-order operation that returns a Boolean value from evaluating
  * a predicate on the versions of a node. The specific quantifier depends
  * on the {@link IShortCircuitReducer} used.
  */
-public class VersionQuantifierOperation extends FirstOrderOperation {
+public class VersionQuantifierOperation extends TimeAwareNodeFirstOrderOperation {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(VersionQuantifierOperation.class);
-
-	private final Supplier<EOLQueryEngine> containerModelSupplier;
 	private final IShortCircuitReducer reducer;
 
 	public VersionQuantifierOperation(Supplier<EOLQueryEngine> containerModelSupplier, IShortCircuitReducer reducer) {
-		this.containerModelSupplier = containerModelSupplier;
+		super(containerModelSupplier);
 		this.reducer = reducer;
 	}
 
-	@Override
-	public Object execute(Object target, Variable iterator, Expression expression, IEolContext context) throws EolRuntimeException {
-		if (target == null) {
-			LOGGER.warn("always called on null value, returning false");
-			return false;
-		}
-
-		Function<ITimeAwareGraphNode, Object> varWrapper;
-		ITimeAwareGraphNode taNode;
-		if (target instanceof GraphNodeWrapper) {
-			final GraphNodeWrapper gnw = (GraphNodeWrapper)target;
-			if (gnw.getNode() instanceof ITimeAwareGraphNode) {
-				taNode = (ITimeAwareGraphNode) gnw.getNode();
-				varWrapper = (n) -> new GraphNodeWrapper(n, containerModelSupplier.get());
-			} else {
-				LOGGER.warn("always called on non-timeaware node {}, returning false", target.getClass().getName());
-				return false;
-			}
-		} else if (target instanceof TypeNodeWrapper) {
-			final TypeNodeWrapper tnw = (TypeNodeWrapper) target;
-			if (tnw.getNode() instanceof ITimeAwareGraphNode) {
-				taNode = (ITimeAwareGraphNode) tnw.getNode();
-				varWrapper = (n) -> new TypeNodeWrapper(new TypeNode(n), containerModelSupplier.get());
-			} else {
-				LOGGER.warn("always called on non-timeaware node {}, returning false", target.getClass().getName());
-				return false;
-			}
-		} else {
-			LOGGER.warn("always called on non-node {}, returning false", target.getClass().getName());
-			return false;
-		}
-		
+	protected Object execute(Variable iterator, Expression expression, IEolContext context,
+			Function<ITimeAwareGraphNode, Object> versionWrapper, ITimeAwareGraphNode taNode) throws EolInternalException {
 		try {
 			final List<ITimeAwareGraphNode> versions = taNode.getAllVersions();
 			final FrameStack scope = context.getFrameStack();
 
 			for (ITimeAwareGraphNode version : versions) {
-				Object listItem = varWrapper.apply(version);
+				Object listItem = versionWrapper.apply(version);
 
 				if (iterator.getType()==null || iterator.getType().isKind(listItem)){
 					scope.enterLocal(FrameType.UNPROTECTED, expression);

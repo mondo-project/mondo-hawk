@@ -19,21 +19,17 @@ package org.hawk.timeaware.queries.operations.declarative;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.eclipse.epsilon.eol.dom.Expression;
 import org.eclipse.epsilon.eol.exceptions.EolInternalException;
-import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.execute.context.FrameStack;
 import org.eclipse.epsilon.eol.execute.context.FrameType;
 import org.eclipse.epsilon.eol.execute.context.IEolContext;
 import org.eclipse.epsilon.eol.execute.context.Variable;
-import org.eclipse.epsilon.eol.execute.operations.declarative.FirstOrderOperation;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.epsilon.emc.EOLQueryEngine;
-import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -44,33 +40,16 @@ import org.slf4j.LoggerFactory;
  * match that predicate.
  * </p>
  */
-public class WhenOperation extends FirstOrderOperation {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(WhenOperation.class);
-
-	private final Supplier<EOLQueryEngine> containerModelSupplier;
+public class WhenOperation extends TimeAwareNodeFirstOrderOperation {
 
 	public WhenOperation(Supplier<EOLQueryEngine> containerModelSupplier) {
-		this.containerModelSupplier = containerModelSupplier;
+		super(containerModelSupplier);
 	}
 
 	@Override
-	public Object execute(Object target, Variable iterator, Expression expression, IEolContext context) throws EolRuntimeException {
-		if (target == null) {
-			LOGGER.warn("always called on null value, returning false");
-			return false;
-		}
-		if (!(target instanceof GraphNodeWrapper)) {
-			LOGGER.warn("always called on non-node {}, returning false", target.getClass().getName());
-			return false;
-		}
-		final GraphNodeWrapper gnw = (GraphNodeWrapper)target;
-
-		if (!(gnw.getNode() instanceof ITimeAwareGraphNode)) {
-			LOGGER.warn("always called on non-timeaware node {}, returning false", target.getClass().getName());
-			return false;
-		}
-		final ITimeAwareGraphNode taNode = (ITimeAwareGraphNode) gnw.getNode();
+	protected Object execute(Variable iterator, Expression expression, IEolContext context,
+			Function<ITimeAwareGraphNode, Object> versionWrapper, ITimeAwareGraphNode taNode)
+			throws EolInternalException {
  
 		try {
 			final long latestInstant = taNode.getLatestInstant();
@@ -81,7 +60,7 @@ public class WhenOperation extends FirstOrderOperation {
 			
 			for (Iterator<ITimeAwareGraphNode> itVersion = versions.iterator(); itVersion.hasNext(); ) {
 				final ITimeAwareGraphNode version = itVersion.next();
-				final GraphNodeWrapper listItem = new GraphNodeWrapper(version, containerModelSupplier.get());
+				final Object listItem = versionWrapper.apply(version);
 
 				if (iterator.getType()==null || iterator.getType().isKind(listItem)){
 					scope.enterLocal(FrameType.UNPROTECTED, expression);
@@ -97,9 +76,10 @@ public class WhenOperation extends FirstOrderOperation {
 			}
 
 			if (!matchingVersions.isEmpty()) {
-				return new GraphNodeWrapper(
-					new WhenNodeWrapper(taNode.travelInTime(matchingVersions.get(matchingVersions.size() - 1)), matchingVersions),
-					containerModelSupplier.get());
+				final Long oldestMatchingVersion = matchingVersions.get(matchingVersions.size() - 1);
+				final ITimeAwareGraphNode oldestMatchingNode = taNode.travelInTime(oldestMatchingVersion);
+				final WhenNodeWrapper scopedNode = new WhenNodeWrapper(oldestMatchingNode, matchingVersions);
+				return versionWrapper.apply(scopedNode);
 			}
 		} catch (Exception ex) {
 			throw new EolInternalException(ex, expression);

@@ -18,21 +18,17 @@ package org.hawk.timeaware.queries.operations.declarative;
 
 import java.util.List;
 import java.util.ListIterator;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.eclipse.epsilon.eol.dom.Expression;
 import org.eclipse.epsilon.eol.exceptions.EolInternalException;
-import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.execute.context.FrameStack;
 import org.eclipse.epsilon.eol.execute.context.FrameType;
 import org.eclipse.epsilon.eol.execute.context.IEolContext;
 import org.eclipse.epsilon.eol.execute.context.Variable;
-import org.eclipse.epsilon.eol.execute.operations.declarative.FirstOrderOperation;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.epsilon.emc.EOLQueryEngine;
-import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -47,41 +43,24 @@ import org.slf4j.LoggerFactory;
  * which can be checked against with <code>.isDefined()</code>.
  * </p>
  */
-public class VersionRangeOperation extends FirstOrderOperation {
+public class VersionRangeOperation extends TimeAwareNodeFirstOrderOperation {
 
 	@FunctionalInterface
-	public interface IRangeBasedNodeWrapper {
-		ITimeAwareGraphNode wrap(ITimeAwareGraphNode original, ITimeAwareGraphNode predicateMatch);
+	public interface IRangeBasedNodeScoper {
+		ITimeAwareGraphNode scope(ITimeAwareGraphNode original, ITimeAwareGraphNode predicateMatch);
 	}
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(VersionRangeOperation.class);
+	private final IRangeBasedNodeScoper nodeScoper;
 
-	private final Supplier<EOLQueryEngine> containerModelSupplier;
-	private final IRangeBasedNodeWrapper nodeWrapper;
-
-	public VersionRangeOperation(Supplier<EOLQueryEngine> containerModelSupplier, IRangeBasedNodeWrapper nodeWrapper) {
-		this.containerModelSupplier = containerModelSupplier;
-		this.nodeWrapper = nodeWrapper;
+	public VersionRangeOperation(Supplier<EOLQueryEngine> containerModelSupplier, IRangeBasedNodeScoper nodeScoper) {
+		super(containerModelSupplier);
+		this.nodeScoper = nodeScoper;
 	}
 
 	@Override
-	public Object execute(Object target, Variable iterator, Expression expression, IEolContext context) throws EolRuntimeException {
-		if (target == null) {
-			LOGGER.warn("always called on null value, returning false");
-			return false;
-		}
-		if (!(target instanceof GraphNodeWrapper)) {
-			LOGGER.warn("always called on non-node {}, returning false", target.getClass().getName());
-			return false;
-		}
-		final GraphNodeWrapper gnw = (GraphNodeWrapper)target;
-
-		if (!(gnw.getNode() instanceof ITimeAwareGraphNode)) {
-			LOGGER.warn("always called on non-timeaware node {}, returning false", target.getClass().getName());
-			return false;
-		}
-		final ITimeAwareGraphNode taNode = (ITimeAwareGraphNode) gnw.getNode();
- 
+	protected Object execute(Variable iterator, Expression expression, IEolContext context,
+			Function<ITimeAwareGraphNode, Object> versionWrapper, ITimeAwareGraphNode taNode)
+			throws EolInternalException {
 		try {
 			final long latestInstant = taNode.getLatestInstant();
 			final List<ITimeAwareGraphNode> versions = taNode.getVersionsBetween(taNode.getTime(), latestInstant);
@@ -89,7 +68,7 @@ public class VersionRangeOperation extends FirstOrderOperation {
 
 			for (ListIterator<ITimeAwareGraphNode> itVersion = versions.listIterator(versions.size()); itVersion.hasPrevious(); ) {
 				final ITimeAwareGraphNode version = itVersion.previous();
-				final GraphNodeWrapper listItem = new GraphNodeWrapper(version, containerModelSupplier.get());
+				final Object listItem = versionWrapper.apply(version);
 
 				if (iterator.getType()==null || iterator.getType().isKind(listItem)){
 					scope.enterLocal(FrameType.UNPROTECTED, expression);
@@ -99,11 +78,11 @@ public class VersionRangeOperation extends FirstOrderOperation {
 					scope.leaveLocal(expression);
 
 					if (bodyResult instanceof Boolean && (boolean)bodyResult) {
-						final ITimeAwareGraphNode wrapped = nodeWrapper.wrap(taNode, version);
-						if (wrapped == null) {
+						final ITimeAwareGraphNode scoped = nodeScoper.scope(taNode, version);
+						if (scoped == null) {
 							return null;
 						} else {
-							return new GraphNodeWrapper(wrapped, containerModelSupplier.get());
+							return versionWrapper.apply(scoped);
 						}
 					}
 				}
