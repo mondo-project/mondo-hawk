@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Aston University.
+ * Copyright (c) 2018-2019 Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -71,6 +71,24 @@ public class TypeHistoryOperationContributor extends OperationContributor {
 		return getTypeNodeVersionWrappers((taNode) -> taNode.getAllVersions());
 	}
 
+	public TypeNodeWrapper getnext() throws Exception {
+		List<TypeNodeWrapper> wrappers = getTypeNodeVersionWrappers((taNode) -> Collections.singletonList(taNode.getNext()));
+		return wrappers.isEmpty() ? null : wrappers.get(0);
+	}
+
+	public TypeNodeWrapper getprevious() throws Exception {
+		List<TypeNodeWrapper> wrappers = getTypeNodeVersionWrappers((taNode) -> Collections.singletonList(taNode.getPrevious()));
+		return wrappers.isEmpty() ? null : wrappers.get(0);
+	}
+
+	public TypeNodeWrapper getprev() throws Exception {
+		return getprevious();
+	}
+
+	public long gettime() throws Exception {
+		return getTargetTimeAwareNode().getTime();
+	}
+
 	public List<TypeNodeWrapper> getVersionsBetween(long fromInclusive, long toInclusive) throws Exception {
 		return getTypeNodeVersionWrappers((taNode) -> taNode.getVersionsBetween(fromInclusive, toInclusive));
 	}
@@ -86,6 +104,20 @@ public class TypeHistoryOperationContributor extends OperationContributor {
 	private List<TypeNodeWrapper> getTypeNodeVersionWrappers(RiskyFunction<ITimeAwareGraphNode, List<ITimeAwareGraphNode>> lambda)
 		throws EolRuntimeException, Exception
 	{
+		ITimeAwareGraphNode taNode = getTargetTimeAwareNode();
+
+		List<TypeNodeWrapper> ret = new ArrayList<>();
+		for (ITimeAwareGraphNode typeNodeVersion : lambda.call(taNode)) {
+			if (typeNodeVersion != null) {
+				TypeNode typeNode = new TypeNode(typeNodeVersion);
+				ret.add(new TypeNodeWrapper(typeNode, model));
+			}
+		}
+
+		return ret;
+	}
+
+	protected ITimeAwareGraphNode getTargetTimeAwareNode() throws EolRuntimeException {
 		ITimeAwareGraphNode taNode;
 		if (target instanceof EolModelElementType) {
 			final EolModelElementType eolType = (EolModelElementType) target;
@@ -98,14 +130,7 @@ public class TypeHistoryOperationContributor extends OperationContributor {
 		} else {
 			throw new IllegalArgumentException("Unsupported target " + target);
 		}
-
-		List<TypeNodeWrapper> ret = new ArrayList<>();
-		for (ITimeAwareGraphNode typeNodeVersion : lambda.call(taNode)) {
-			TypeNode typeNode = new TypeNode(typeNodeVersion);
-			ret.add(new TypeNodeWrapper(typeNode, model));
-		}
-
-		return ret;
+		return taNode;
 	}
 
 	private void checkTypeIsPrecise(final EolModelElementType eolType, final List<IGraphNode> typeNodes)

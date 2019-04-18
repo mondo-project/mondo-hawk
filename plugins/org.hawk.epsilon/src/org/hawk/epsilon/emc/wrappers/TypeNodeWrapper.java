@@ -100,42 +100,4 @@ public class TypeNodeWrapper implements IGraphTypeNodeReference {
 		return String.format("TNW|id:%s|type:%s", getId(), getTypeName());
 	}
 
-	/* TIME AWARE OPERATIONS - FOR USE WITHIN EOL */
-
-	public TypeNodeWrapper getnext() throws Exception {
-		if (typeNode.getNode() instanceof ITimeAwareGraphNode) {
-			final ITimeAwareGraphNode taNode = (ITimeAwareGraphNode)typeNode.getNode();
-			final ITimeAwareGraphNode next = taNode.getNext();
-			if (next == null) {
-				return null;
-			}
-
-			return new TypeNodeWrapper(new TypeNode(next), model);
-		}
-		throw new UnsupportedOperationException("Node of type " + typeNode.getClass().getName() + " is not time aware");
-	}
-
-	public TypeNodeWrapper getprevious() throws Exception {
-		if (typeNode.getNode() instanceof ITimeAwareGraphNode) {
-			final ITimeAwareGraphNode taNode = (ITimeAwareGraphNode)typeNode.getNode();
-			final ITimeAwareGraphNode prev = taNode.getPrevious();
-			if (prev == null) {
-				return null;
-			}
-			return new TypeNodeWrapper(new TypeNode(prev), model);
-		}
-		throw new UnsupportedOperationException("Node of type " + typeNode.getClass().getName() + " is not time aware");
-	}
-
-	public TypeNodeWrapper getprev() throws Exception {
-		return getprevious();
-	}
-
-	public long gettime() throws Exception {
-		if (typeNode.getNode() instanceof ITimeAwareGraphNode) {
-			return ((ITimeAwareGraphNode)typeNode.getNode()).getTime();
-		}
-		throw new UnsupportedOperationException("Node of type " + typeNode.getClass().getName() + " is not time aware");
-	}
-
 }
