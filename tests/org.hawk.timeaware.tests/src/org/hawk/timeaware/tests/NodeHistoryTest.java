@@ -460,6 +460,106 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 	}
 
 	@Test
+	public void unscope() throws Throwable {
+		/*
+		 * This test uses a combination of .when, .afterThen, .untilThen
+		 * and .unscoped to check properties inside all intervals that match
+		 * a condition.
+		 */
+		final File fTree = new File(svnRepository.getCheckoutDirectory(), "m.xmi");
+		Resource rTree = rsTree.createResource(URI.createFileURI(fTree.getAbsolutePath()));
+
+		Tree tRoot = treeFactory.createTree();
+		tRoot.setLabel("Empty");
+		rTree.getContents().add(tRoot);
+		rTree.save(null);
+		svnRepository.add(fTree);
+		svnRepository.commit("Create root");
+
+		// First interval
+		Tree t1A = treeFactory.createTree(); t1A.setLabel("T1A");
+		tRoot.setLabel("NotEmpty");
+		tRoot.getChildren().add(t1A);
+		rTree.save(null);
+		svnRepository.commit("First non-empty interval, commit 1");
+		Tree t1B = treeFactory.createTree(); t1B.setLabel("T1B");
+		tRoot.getChildren().add(t1B);
+		rTree.save(null);
+		svnRepository.commit("First non-empty interval, commit 2");
+
+		// Intermediate gap, empty node
+		tRoot.setLabel("Empty");
+		tRoot.getChildren().clear();
+		rTree.save(null);
+		svnRepository.commit("Gap revision, empty root");
+
+		// Second interval
+		tRoot.setLabel("NotEmpty");
+		Tree t1C = treeFactory.createTree(); t1C.setLabel("T1C");
+		tRoot.getChildren().add(t1C);
+		rTree.save(null);
+		svnRepository.commit("Second non-empty interval, commit 1");
+		tRoot.getChildren().add(t1A);
+		tRoot.getChildren().remove(t1C);
+		rTree.save(null);
+		svnRepository.commit("Third non-empty interval, commit 2");
+
+		/*
+		 * Final gap, empty node (would need .weakBefore/.weakUntil or tweaked .until
+		 * condition without it).
+		 */
+		tRoot.setLabel("Empty");
+		tRoot.getChildren().clear();
+		rTree.save(null);
+		svnRepository.commit("Final gap revision, empty root");
+
+		requestSVNIndex();
+
+		// END OF TEST SETUP
+
+		waitForSync(() -> {
+			assertEquals("There are three versions with an empty root node", 3, (int)timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|not t.eContainer.isDefined())"
+				+ ".earliest.when(v|v.children.isEmpty).versions.size;"
+			));
+			assertTrue("Root element labels are not empty when they say so - .when version", (boolean)timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|not t.eContainer.isDefined())"
+				+ ".earliest.when(v|v.label = 'NotEmpty')"
+				+ ".always(v|not v.children.isEmpty);"
+			));
+			assertTrue("Interval version without .unscope would give null value", (boolean)timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|not t.eContainer.isDefined())"
+				+ ".earliest.when(v|v.label = 'NotEmpty' and v.prev.label = 'Empty')"
+				+ ".always(v | not v.sinceThen.before(v|v.label = 'Empty').isDefined());"
+			));
+			assertTrue("Root element labels are not empty when they say so - interval version with .unscope, .sinceThen and .before", (boolean)timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|not t.eContainer.isDefined())"
+				+ ".earliest.when(v|v.label.println('label: ') = 'NotEmpty' and v.prev.label = 'Empty')"
+				+ ".always(v| v.unscoped.sinceThen.before(v | v.label = 'Empty')"
+					+ ".always(v | v.children.size.println('Children of ' + v.label + ' at ' + v.time + ': ') > 0)"
+				+ ");"
+			));
+			assertTrue("Root element labels are not empty when they say so - interval version with .unscope, .sinceThen and .until", (boolean)timeAwareEOL(
+				"return Tree.latest.all.selectOne(t|not t.eContainer.isDefined())"
+				+ ".earliest.when(v|v.label = 'NotEmpty' and v.prev.label = 'Empty')"
+				+ ".always(v| v.unscoped.sinceThen.until(v | not v.next.isDefined() or v.next.label = 'Empty')"
+					+ ".always(v | v.children.size.println('Children of ' + v.label + ' at ' + v.time + ': ') > 0)"
+				+ ");"
+			));
+
+			assertTrue("Type node - scoped .always returns true", (boolean) timeAwareEOL(
+				"return Tree.earliest.next.sinceThen.always(v|v.all.size > 0);"
+			));
+			assertFalse("Type node - unscoped .always returns true", (boolean) timeAwareEOL(
+				"return Tree.earliest.next.sinceThen.unscoped.always(v|v.all.size > 0);"
+			));
+			
+			return null;
+		});
+
+	}
+
+	@Test
 	public void onceFalse() throws Throwable {
 		Tree tRoot = keepAddingChildren();
 		tRoot.setLabel("SomethingElse");

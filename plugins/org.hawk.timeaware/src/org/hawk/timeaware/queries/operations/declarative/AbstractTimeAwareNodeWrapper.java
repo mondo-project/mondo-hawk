@@ -27,7 +27,7 @@ import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
  * historical scope of the original node, and preserve this scope over the basic
  * version traversal primitives (next/prev/earliest/latest/...).
  */
-public abstract class AbstractTimeAwareNodeWrapper implements ITimeAwareGraphNode {
+public abstract class AbstractTimeAwareNodeWrapper implements IScopingTimeAwareGraphNode {
 
 	/**
 	 * The original time aware graph node that is being wrapped. This may
@@ -117,6 +117,15 @@ public abstract class AbstractTimeAwareNodeWrapper implements ITimeAwareGraphNod
 	@Override
 	public void end() {
 		original.end();
+	}
+
+	@Override
+	public ITimeAwareGraphNode unscope() {
+		if (original instanceof IScopingTimeAwareGraphNode) {
+			return ((IScopingTimeAwareGraphNode)original).unscope();
+		} else {
+			return original;
+		}
 	}
 	
 }

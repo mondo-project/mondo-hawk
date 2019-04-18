@@ -31,6 +31,7 @@ import org.hawk.graph.TypeNode;
 import org.hawk.timeaware.queries.RiskyFunction;
 import org.hawk.timeaware.queries.TimeAwareEOLQueryEngine;
 import org.hawk.timeaware.queries.operations.declarative.EndingTimeAwareNodeWrapper;
+import org.hawk.timeaware.queries.operations.declarative.IScopingTimeAwareGraphNode;
 import org.hawk.timeaware.queries.operations.declarative.StartingTimeAwareNodeWrapper;
 
 public class TypeHistoryOperationContributor extends OperationContributor {
@@ -115,6 +116,23 @@ public class TypeHistoryOperationContributor extends OperationContributor {
 			final EndingTimeAwareNodeWrapper scoped = new EndingTimeAwareNodeWrapper(prevVersion);
 			return new TypeNodeWrapper(new TypeNode(scoped), model);
 		}
+	}
+
+	/**
+	 * Returns a version of the current type node without any history scoping.
+	 * Has no effect on nodes without a scope.
+	 */
+	public TypeNodeWrapper unscoped() throws Exception {
+		final ITimeAwareGraphNode taNode = getTargetTimeAwareNode();
+		ITimeAwareGraphNode unscoped;
+		if (taNode instanceof IScopingTimeAwareGraphNode) {
+			IScopingTimeAwareGraphNode scoped = (IScopingTimeAwareGraphNode) taNode;
+			unscoped = scoped.unscope();
+		} else {
+			unscoped = taNode;
+		}
+
+		return new TypeNodeWrapper(new TypeNode(unscoped), model);
 	}
 
 	/**

@@ -27,6 +27,7 @@ import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.epsilon.emc.pgetters.GraphPropertyGetter;
 import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.timeaware.queries.operations.declarative.EndingTimeAwareNodeWrapper;
+import org.hawk.timeaware.queries.operations.declarative.IScopingTimeAwareGraphNode;
 import org.hawk.timeaware.queries.operations.declarative.StartingTimeAwareNodeWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,6 +98,15 @@ class TimeAwareGraphPropertyGetter extends GraphPropertyGetter {
 						final EndingTimeAwareNodeWrapper scoped = new EndingTimeAwareNodeWrapper(prevVersion);
 						return new GraphNodeWrapper(scoped, model);
 					}
+				}
+			case "unscoped": {
+					ITimeAwareGraphNode unscoped;
+					if (taNode instanceof IScopingTimeAwareGraphNode) {
+						unscoped = ((IScopingTimeAwareGraphNode)taNode).unscope();
+					} else {
+						unscoped = taNode;
+					}
+					return new GraphNodeWrapper(unscoped, model);
 				}
 			}
 		} catch (Exception ex) {

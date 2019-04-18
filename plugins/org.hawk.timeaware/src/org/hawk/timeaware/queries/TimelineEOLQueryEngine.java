@@ -42,24 +42,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Variant of the {@link TimeAwareEOLQueryEngine} which runs the same query over the full
- * history of the index, reporting a sequence of timepoint/instant + result pairs.
+ * Variant of the {@link TimeAwareEOLQueryEngine} which runs the same query over
+ * the full history of the index, reporting a sequence of timepoint/instant +
+ * result pairs.
  *
- * Note that it is still possible to escape the specific timepoint set by the query engine
- * by using the .latest/.earliest properties. This query engine is mostly to allow old (not
- * time-aware) queries to be evaluated over the history of a model.
+ * Note that it is still possible to escape the specific timepoint set by the
+ * query engine by using the .latest/.earliest properties. This query engine is
+ * mostly to allow old (not time-aware) queries to be evaluated over the history
+ * of a model.
  *
- * Since this query engine manipulates the shared state of the graph (the current time),
- * we cannot have two timeline queries happen at the same time. Synchronisation is used to
- * enforce this.
+ * Since this query engine manipulates the shared state of the graph (the
+ * current time), we cannot have two timeline queries happen at the same time.
+ * Synchronisation is used to enforce this.
  *
- * TODO: right now we can only find points when type nodes changed (instances were created
- * or deleted). We should take advantage of repository nodes instead to compute the various
- * timepoints.
+ * TODO: right now we can only find points when type nodes changed (instances
+ * were created or deleted). We should take advantage of repository nodes
+ * instead to compute the various timepoints.
  *
- * TODO: allow customizing range of timepoints/instants to use.
+ * TODO: refactor temporal quantifiers / scoping so they are part of the regular
+ * time-aware Java API and not just part of the time-aware EOL query engine.
  *
- * TODO: have engine keep its own time, rather than relying on the time set on the backend.
+ * TODO: have engine keep its own time, rather than relying on the time set on
+ * the backend.
  */
 public class TimelineEOLQueryEngine implements IQueryEngine {
 
