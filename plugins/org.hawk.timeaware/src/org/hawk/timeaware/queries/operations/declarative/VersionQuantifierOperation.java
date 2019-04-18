@@ -17,6 +17,7 @@
 package org.hawk.timeaware.queries.operations.declarative;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.eclipse.epsilon.eol.dom.Expression;
@@ -30,6 +31,8 @@ import org.eclipse.epsilon.eol.execute.operations.declarative.FirstOrderOperatio
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
+import org.hawk.epsilon.emc.wrappers.TypeNodeWrapper;
+import org.hawk.graph.TypeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,24 +59,38 @@ public class VersionQuantifierOperation extends FirstOrderOperation {
 			LOGGER.warn("always called on null value, returning false");
 			return false;
 		}
-		if (!(target instanceof GraphNodeWrapper)) {
+
+		Function<ITimeAwareGraphNode, Object> varWrapper;
+		ITimeAwareGraphNode taNode;
+		if (target instanceof GraphNodeWrapper) {
+			final GraphNodeWrapper gnw = (GraphNodeWrapper)target;
+			if (gnw.getNode() instanceof ITimeAwareGraphNode) {
+				taNode = (ITimeAwareGraphNode) gnw.getNode();
+				varWrapper = (n) -> new GraphNodeWrapper(n, containerModelSupplier.get());
+			} else {
+				LOGGER.warn("always called on non-timeaware node {}, returning false", target.getClass().getName());
+				return false;
+			}
+		} else if (target instanceof TypeNodeWrapper) {
+			final TypeNodeWrapper tnw = (TypeNodeWrapper) target;
+			if (tnw.getNode() instanceof ITimeAwareGraphNode) {
+				taNode = (ITimeAwareGraphNode) tnw.getNode();
+				varWrapper = (n) -> new TypeNodeWrapper(new TypeNode(n), containerModelSupplier.get());
+			} else {
+				LOGGER.warn("always called on non-timeaware node {}, returning false", target.getClass().getName());
+				return false;
+			}
+		} else {
 			LOGGER.warn("always called on non-node {}, returning false", target.getClass().getName());
 			return false;
 		}
-		final GraphNodeWrapper gnw = (GraphNodeWrapper)target;
-
-		if (!(gnw.getNode() instanceof ITimeAwareGraphNode)) {
-			LOGGER.warn("always called on non-timeaware node {}, returning false", target.getClass().getName());
-			return false;
-		}
-		final ITimeAwareGraphNode taNode = (ITimeAwareGraphNode) gnw.getNode();
 		
 		try {
 			final List<ITimeAwareGraphNode> versions = taNode.getAllVersions();
 			final FrameStack scope = context.getFrameStack();
 
 			for (ITimeAwareGraphNode version : versions) {
-				GraphNodeWrapper listItem = new GraphNodeWrapper(version, containerModelSupplier.get());
+				Object listItem = varWrapper.apply(version);
 
 				if (iterator.getType()==null || iterator.getType().isKind(listItem)){
 					scope.enterLocal(FrameType.UNPROTECTED, expression);
