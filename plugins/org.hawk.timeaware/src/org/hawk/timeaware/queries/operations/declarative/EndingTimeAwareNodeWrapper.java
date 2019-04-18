@@ -28,6 +28,10 @@ public class EndingTimeAwareNodeWrapper extends AbstractSingleWrapTimeAwareNodeW
 
 	private final long toInclusive;
 
+	public EndingTimeAwareNodeWrapper(ITimeAwareGraphNode original) {
+		this(original, original.getTime());
+	}
+
 	public EndingTimeAwareNodeWrapper(ITimeAwareGraphNode original, long toInclusive) {
 		super(original);
 		this.toInclusive = toInclusive;

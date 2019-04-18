@@ -30,6 +30,7 @@ import org.hawk.epsilon.emc.wrappers.TypeNodeWrapper;
 import org.hawk.graph.TypeNode;
 import org.hawk.timeaware.queries.RiskyFunction;
 import org.hawk.timeaware.queries.TimeAwareEOLQueryEngine;
+import org.hawk.timeaware.queries.operations.declarative.EndingTimeAwareNodeWrapper;
 import org.hawk.timeaware.queries.operations.declarative.StartingTimeAwareNodeWrapper;
 
 public class TypeHistoryOperationContributor extends OperationContributor {
@@ -76,6 +77,17 @@ public class TypeHistoryOperationContributor extends OperationContributor {
 	}
 
 	/**
+	 * Provides the <code>.sinceThen</code> property, which returns a version of the
+	 * type node that limits its history to versions up to the current timepoint
+	 * (included), meaning a right-closed interval.
+	 */
+	public TypeNodeWrapper getuntilThen() throws Exception {
+		return getTypeNodeVersionWrappers(
+			(taNode) -> Collections.singletonList(new EndingTimeAwareNodeWrapper(taNode))
+		).get(0);
+	}
+
+	/**
 	 * Provides the <code>.afterThen</code> property, which returns a version of the
 	 * type node that limits its history to versions after the current timepoint
 	 * onwards (left-open interval).
@@ -86,6 +98,21 @@ public class TypeHistoryOperationContributor extends OperationContributor {
 			return null;
 		} else {
 			final StartingTimeAwareNodeWrapper scoped = new StartingTimeAwareNodeWrapper(nextVersion);
+			return new TypeNodeWrapper(new TypeNode(scoped), model);
+		}
+	}
+
+	/**
+	 * Provides the <code>.beforeThen</code> property, which returns a version of the
+	 * type node that limits its history to versions before the current timepoint
+	 * onwards (right-open interval).
+	 */
+	public TypeNodeWrapper getbeforeThen() throws Exception {
+		ITimeAwareGraphNode prevVersion = getTargetTimeAwareNode().getPrevious();
+		if (prevVersion == null) {
+			return null;
+		} else {
+			final EndingTimeAwareNodeWrapper scoped = new EndingTimeAwareNodeWrapper(prevVersion);
 			return new TypeNodeWrapper(new TypeNode(scoped), model);
 		}
 	}

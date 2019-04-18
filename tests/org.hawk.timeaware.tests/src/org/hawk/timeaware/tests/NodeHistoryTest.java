@@ -398,6 +398,36 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 	}
 
 	@Test
+	public void untilThen() throws Throwable {
+		keepAddingChildren();
+
+		waitForSync(() -> {
+			assertTrue("Positive combination of .sinceThen + .untilThen", (boolean) timeAwareEOL(
+				"return Tree.earliest.next.sinceThen.latest.prev.untilThen.always(v|v.all.size > 0 and v.all.size < 4);"
+			));
+			assertFalse("Negative combination of .sinceThen + .untilThen", (boolean) timeAwareEOL(
+				"return Tree.earliest.next.sinceThen.latest.untilThen.always(v|v.all.size > 0 and v.all.size < 4);"
+			));
+			return null;
+		});
+	}
+
+	@Test
+	public void beforeThen() throws Throwable {
+		keepAddingChildren();
+
+		waitForSync(() -> {
+			assertTrue("Positive combination of .afterThen + .beforeThen", (boolean) timeAwareEOL(
+				"return Tree.earliest.afterThen.latest.beforeThen.always(v|v.all.size > 0 and v.all.size < 4);"
+			));
+			assertFalse("Negative combination of .sinceThen + .beforeThen", (boolean) timeAwareEOL(
+				"return Tree.earliest.sinceThen.latest.beforeThen.always(v|v.all.size > 0 and v.all.size < 4);"
+			));
+			return null;
+		});
+	}
+
+	@Test
 	public void whenPoints() throws Throwable {
 		Tree tRoot = keepAddingChildren();
 		tRoot.getChildren().remove(2);
