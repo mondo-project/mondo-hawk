@@ -67,12 +67,27 @@ public class TypeHistoryOperationContributor extends OperationContributor {
 	/**
 	 * Provides the <code>.sinceThen</code> property, which returns a version of the
 	 * type node that limits its history to versions from the current timepoint
-	 * (included) onwards.
+	 * (included) onwards (left-closed interval).
 	 */
 	public TypeNodeWrapper getsinceThen() throws Exception {
 		return getTypeNodeVersionWrappers(
 			(taNode) -> Collections.singletonList(new StartingTimeAwareNodeWrapper(taNode))
 		).get(0);
+	}
+
+	/**
+	 * Provides the <code>.afterThen</code> property, which returns a version of the
+	 * type node that limits its history to versions after the current timepoint
+	 * onwards (left-open interval).
+	 */
+	public TypeNodeWrapper getafterThen() throws Exception {
+		ITimeAwareGraphNode nextVersion = getTargetTimeAwareNode().getNext();
+		if (nextVersion == null) {
+			return null;
+		} else {
+			final StartingTimeAwareNodeWrapper scoped = new StartingTimeAwareNodeWrapper(nextVersion);
+			return new TypeNodeWrapper(new TypeNode(scoped), model);
+		}
 	}
 
 	/**

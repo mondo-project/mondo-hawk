@@ -367,7 +367,30 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 				"return Tree.earliest.next.all.selectOne(t|t.label = 'Root').next.always(v|v.children.size > 0);"
 			));
 			assertTrue("Model element - With .sinceThen, scope is limited to that version onwards", (boolean) timeAwareEOL(
-				"return Tree.earliest.next.all.selectOne(t|t.label = 'Root').next.sinceThen.always(v|v.children.size.println('Number of children at ' + v.time + ': ') > 0);"
+				"return Tree.earliest.next.all.selectOne(t|t.label = 'Root').next.sinceThen.always(v|v.children.size > 0);"
+			));
+
+			return null;
+		});
+	}
+
+	@Test
+	public void afterThen() throws Throwable {
+		keepAddingChildren();
+
+		waitForSync(() -> {
+			assertFalse("Type node - Without .afterThen, always uses all versions", (boolean) timeAwareEOL(
+				"return Tree.earliest.next.always(v|v.all.size > 1);"
+			));
+			assertTrue("Type node - With .afterThen, scope is limited to that version onwards", (boolean) timeAwareEOL(
+				"return Tree.earliest.next.afterThen.always(v|v.all.size > 1);"
+			));
+
+			assertFalse("Model element - Without .afterThen, always uses all versions", (boolean) timeAwareEOL(
+				"return Tree.earliest.next.all.selectOne(t|t.label = 'Root').next.always(v|v.children.size > 1);"
+			));
+			assertTrue("Model element - With .sinceThen, scope is limited to that version onwards", (boolean) timeAwareEOL(
+				"return Tree.earliest.next.all.selectOne(t|t.label = 'Root').next.afterThen.always(v|v.children.size > 1);"
 			));
 
 			return null;

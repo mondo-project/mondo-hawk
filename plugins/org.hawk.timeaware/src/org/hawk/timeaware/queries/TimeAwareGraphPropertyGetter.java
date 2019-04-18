@@ -71,8 +71,19 @@ class TimeAwareGraphPropertyGetter extends GraphPropertyGetter {
 				}
 			case "time":
 				return taNode.getTime();
-			case "sinceThen":
-				return new GraphNodeWrapper(new StartingTimeAwareNodeWrapper(taNode), model);
+			case "sinceThen": {
+					final StartingTimeAwareNodeWrapper scoped = new StartingTimeAwareNodeWrapper(taNode);
+					return new GraphNodeWrapper(scoped, model);
+				}
+			case "afterThen": {
+					ITimeAwareGraphNode nextVersion = taNode.getNext();
+					if (nextVersion == null) {
+						return null;
+					} else {
+						final StartingTimeAwareNodeWrapper scoped = new StartingTimeAwareNodeWrapper(nextVersion);
+						return new GraphNodeWrapper(scoped, model);
+					}
+				}
 			}
 		} catch (Exception ex) {
 			LOGGER.error(ex.getMessage(), ex);
