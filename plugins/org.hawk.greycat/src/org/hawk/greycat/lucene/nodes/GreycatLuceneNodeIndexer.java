@@ -14,42 +14,37 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.greycat.lucene;
+package org.hawk.greycat.lucene.nodes;
+
+import static org.hawk.greycat.lucene.DocumentUtils.ATTRIBUTE_PREFIX;
+import static org.hawk.greycat.lucene.DocumentUtils.FIELDS_FIELD;
+import static org.hawk.greycat.lucene.DocumentUtils.addAttributes;
+import static org.hawk.greycat.lucene.DocumentUtils.addRawField;
+import static org.hawk.greycat.lucene.DocumentUtils.copy;
+import static org.hawk.greycat.lucene.DocumentUtils.copyField;
+import static org.hawk.greycat.lucene.DocumentUtils.replaceRawField;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.NoSuchElementException;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.DoublePoint;
-import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.LongPoint;
-import org.apache.lucene.document.NumericDocValuesField;
-import org.apache.lucene.document.StoredField;
-import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BooleanQuery.Builder;
-import org.apache.lucene.search.CollectionTerminatedException;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.SimpleCollector;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
-import org.apache.lucene.search.SortedNumericSortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.TotalHitCountCollector;
@@ -60,13 +55,11 @@ import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeIndex;
 import org.hawk.greycat.AbstractGreycatDatabase;
 import org.hawk.greycat.GreycatNode;
-import org.hawk.greycat.lucene.IntervalCollector.Interval;
-import org.hawk.greycat.lucene.SoftTxLucene.SearcherCloseable;
+import org.hawk.greycat.lucene.AbstractLuceneIndexer;
+import org.hawk.greycat.lucene.ListCollector;
+import org.hawk.greycat.lucene.nodes.GreycatLuceneNodeIndexer.GreycatLuceneNodeIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 /**
  * <p>Integration between Greycat and Apache Lucene, to allow it to have the type
@@ -86,16 +79,12 @@ import com.google.common.cache.CacheBuilder;
  * <p>TODO: add support for multiple worlds to this index. This may require keeping track
  * of how worlds branch off from each other.</p>
  */
-public class GreycatLuceneIndexer {
+public class GreycatLuceneNodeIndexer extends AbstractLuceneIndexer<GreycatLuceneNodeIndex> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(GreycatLuceneNodeIndex.class);
+	static final Logger LOGGER = LoggerFactory.getLogger(GreycatLuceneNodeIndex.class);
 
-	private static final String ATTRIBUTE_PREFIX = "a_";
+	/** Universally unique document field. Useful for deletion of documents. */
 	private static final String UUID_FIELD = "h_id";
-	private static final String INDEX_FIELD   = "h_index";
-	private static final String DOCTYPE_FIELD = "h_doctype";
-	private static final String FIELDS_FIELD = "h_fields";
-	private static final String INDEX_DOCTYPE = "indexdecl";
 
 	/** Node ID, given by Greycat. */
 	private static final String NODEID_FIELD   = "h_nodeid";
@@ -112,25 +101,6 @@ public class GreycatLuceneIndexer {
 	 * entry is overridden or removed later.
 	 */
 	private static final String VALIDTO_FIELD = "h_to";
-
-	protected class MatchExistsCollector extends SimpleCollector {
-		private boolean matchFound = false;
-
-		@Override
-		public boolean needsScores() {
-			return false;
-		}
-
-		@Override
-		public void collect(int doc) throws IOException {
-			matchFound = true;
-			throw new CollectionTerminatedException();
-		}
-
-		public boolean isMatchFound() {
-			return matchFound;
-		}
-	}
 
 	protected final class NodeListCollector extends ListCollector {
 		private final Long timepoint;
@@ -749,72 +719,8 @@ public class GreycatLuceneIndexer {
 	}
 
 
-	private final AbstractGreycatDatabase database;
-	private final Cache<String, GreycatLuceneNodeIndex> nodeIndexCache =
-		CacheBuilder.newBuilder().maximumSize(100).build();
-	private final SoftTxLucene lucene;
-
-	public GreycatLuceneIndexer(AbstractGreycatDatabase db, File dir) throws IOException {
-		this.database = db;
-		this.lucene = new SoftTxLucene(dir);
-	}
-
-	public GreycatLuceneNodeIndex getIndex(String name) throws Exception {
-		return nodeIndexCache.get(name, () -> {
-			try (SearcherCloseable sc = lucene.getSearcher()) {
-				final IndexSearcher searcher = sc.get();
-
-				final Query query = new BooleanQuery.Builder()
-						.add(new TermQuery(new Term(INDEX_FIELD, name)), Occur.FILTER)
-						.add(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), Occur.FILTER).build();
-
-				final TotalHitCountCollector thc = new TotalHitCountCollector();
-				searcher.search(query, thc);
-				if (thc.getTotalHits() == 0) {
-					Document doc = new Document();
-					doc.add(new StringField(INDEX_FIELD, name, Store.YES));
-					doc.add(new StringField(DOCTYPE_FIELD, INDEX_DOCTYPE, Store.YES));
-					lucene.update(new Term(INDEX_FIELD, name), null, doc);
-				}
-
-				return new GreycatLuceneNodeIndex(name);
-			}
-		});
-	}
-
-	public Set<String> getIndexNames() {
-		try (SearcherCloseable sc = lucene.getSearcher()) {
-			final IndexSearcher searcher = sc.get();
-			final ListCollector lc = new ListCollector(searcher);
-			searcher.search(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), lc);
-
-			final Set<String> names = new HashSet<>();
-			for (Document doc : lc.getDocuments()) {
-				names.add(doc.getField(INDEX_FIELD).stringValue());
-			}
-			return names;
-		} catch (IOException e) {
-			LOGGER.error("Could not list index name", e.getMessage());
-			return Collections.emptySet();
-		} 
-	}
-
-	public boolean indexExists(String name) {
-		try (SearcherCloseable sc = lucene.getSearcher()) {
-			final IndexSearcher searcher = sc.get();
-
-			Query query = new BooleanQuery.Builder()
-				.add(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), Occur.FILTER)
-				.add(new TermQuery(new Term(INDEX_FIELD, name)), Occur.FILTER)
-				.build();
-
-			final TotalHitCountCollector collector = new TotalHitCountCollector();
-			searcher.search(query, collector);
-			return collector.getTotalHits() > 0;
-		} catch (IOException e) {
-			LOGGER.error(String.format("Could not check if %s exists", name), e);
-			return false;
-		}
+	public GreycatLuceneNodeIndexer(AbstractGreycatDatabase db, File dir) throws IOException {
+		super(db, dir);
 	}
 
 	/**
@@ -837,122 +743,6 @@ public class GreycatLuceneIndexer {
 				"Could not remove node %s in world %d from time %d onwards",
 				gn.getId(), gn.getWorld(), gn.getTime()
 			), e);
-		}
-	}
-
-	/**
-	 * Commits all changes to the index. This is a soft-commit: real Lucene
-	 * commits are only done periodically in the background, when the rollback
-	 * log is empty.
-	 * 
-	 * @throws IOException
-	 *             Failed to commit the changes.
-	 */
-	public void commit() throws IOException {
-		lucene.commit();
-	}
-
-	/**
-	 * Rolls back all changes to the index. This is a soft-rollback: changes that
-	 * have not been committed yet are undone in memory.
-	 *
-	 * @throws IOException
-	 *             Failed to roll back the changes.
-	 */
-	public void rollback() throws IOException {
-		lucene.rollback();
-	}
-
-	/**
-	 * Commits all pending changes and shuts down Lucene.
-	 */
-	public void shutdown() {
-		lucene.shutdown();
-	}
-
-	protected static void replaceRawField(Document document, final String fieldName, final Object value) {
-		document.removeFields(fieldName);
-		addRawField(document, fieldName, value);
-	}
-
-	protected static void addAttributes(final Document updated, Map<String, Object> values) {
-		for (Entry<String, Object> entry : values.entrySet()) {
-			final String attributeFieldName = ATTRIBUTE_PREFIX + entry.getKey();
-			addRawField(updated, attributeFieldName, entry.getValue());
-		}
-	}
-	
-	protected static void addRawField(Document document, final String fieldName, final Object value) {
-		/*
-		 * Point classes are very useful for fast range queries, but they do not store
-		 * the value in the document. We need to add a StoredField so we can use the
-		 * full version of remove (key, value and node).
-		 *
-		 * TODO: do we get these back after a soft rollback? We need tests for this.
-		 */
-
-		// add check to avoid having the same field multiple times
-		IndexableField[] existing = document.getFields(fieldName);
-		for (IndexableField f : existing) {
-			if (f.numericValue() == null) {
-				if (f.stringValue().equals(value)) {
-					return;
-				}
-			} else if (f.numericValue().equals(value)) {
-				// nothing to do - same string present!
-				return;
-			}
-		}
-
-		if (value instanceof Float || value instanceof Double) {
-			final double doubleValue = ((Number)value).doubleValue();
-			document.add(new DoublePoint(fieldName, doubleValue));
-			document.add(new StoredField(fieldName, doubleValue));
-		} else if (value instanceof Number) {
-			final long longValue = ((Number)value).longValue();
-			if (document.getFields(fieldName).length == 0) {
-				// Can only have one docvalue per field!
-				document.add(new NumericDocValuesField(fieldName, longValue));
-			}
-			document.add(new LongPoint(fieldName, longValue));
-			document.add(new StoredField(fieldName, longValue));
-		} else {
-			document.add(new StringField(fieldName, value.toString(), Store.YES));
-		}
-
-		if (fieldName.startsWith(ATTRIBUTE_PREFIX)) {
-			document.add(new StringField(FIELDS_FIELD, fieldName.substring(ATTRIBUTE_PREFIX.length()), Store.YES));
-		}
-	}
-
-	/**
-	 * Copies and recreates an entire document, including IntPoint and DoublePoint fields.
-	 */
-	protected static Document copy(Document doc) {
-		if (doc == null) {
-			return null;
-		}
-
-		final Document newDoc = new Document();
-		for (IndexableField f : doc.getFields()) {
-			copyField(f, newDoc);
-		}
-
-		return newDoc;
-	}
-
-	/**
-	 * Copies an existing field into a document, as long as it is not the `meta`
-	 * {@link #FIELDS_FIELD} that is used to indicate that an attribute has been
-	 * set.
-	 */
-	protected static void copyField(IndexableField field, final Document copy) {
-		if (!FIELDS_FIELD.equals(field.name())) {
-			if (field.numericValue() instanceof Number) {
-				addRawField(copy, field.name(), field.numericValue());
-			} else {
-				addRawField(copy, field.name(), field.stringValue());
-			}
 		}
 	}
 
@@ -999,5 +789,10 @@ public class GreycatLuceneIndexer {
 			replaceRawField(revisedDoc, VALIDTO_FIELD, gn.getTime() - 1);
 			lucene.update(new Term(UUID_FIELD, doc.get(UUID_FIELD)), doc, revisedDoc);
 		}
+	}
+
+	@Override
+	protected GreycatLuceneNodeIndex createIndexInstance(String name) {
+		return new GreycatLuceneNodeIndex(name);
 	}
 }

@@ -303,7 +303,9 @@ public class GreycatNode implements ITimeAwareGraphNode {
 				in.delete();
 			}
 
-			db.luceneIndexer.remove(travelInTime(time + 1));
+			db.luceneNodeIndexer.remove(travelInTime(time + 1));
+			// version indexer is not affected - only specific versions are added
+
 			rn.get().end();
 		}
 	}

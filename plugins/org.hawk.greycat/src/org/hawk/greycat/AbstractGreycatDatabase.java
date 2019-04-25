@@ -38,13 +38,14 @@ import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
-import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeVersionIndex;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeVersionIndexFactory;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphDatabase;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeIndex;
 import org.hawk.greycat.GreycatNode.NodeReader;
-import org.hawk.greycat.lucene.GreycatLuceneIndexer;
-import org.hawk.greycat.lucene.GreycatLuceneIndexer.GreycatLuceneNodeIndex;
+import org.hawk.greycat.lucene.nodes.GreycatLuceneNodeIndexer;
+import org.hawk.greycat.lucene.versions.GreycatLuceneVersionIndexer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,7 @@ import greycat.Type;
  * Base version of the Greycat support in Hawk, which can use any of the
  * Greycat storage backends.
  */
-public abstract class AbstractGreycatDatabase implements ITimeAwareGraphDatabase {
+public abstract class AbstractGreycatDatabase implements ITimeAwareGraphDatabase, ITimeAwareGraphNodeVersionIndexFactory {
 
 	protected static final class NodeKey {
 			public final long world, time, id;
@@ -146,16 +147,21 @@ public abstract class AbstractGreycatDatabase implements ITimeAwareGraphDatabase
 	private NodeIndex nodeLabelIndex;
 	private NodeIndex softDeleteIndex;
 	private Mode mode = Mode.TX_MODE;
-	protected GreycatLuceneIndexer luceneIndexer;
+
+	protected GreycatLuceneNodeIndexer luceneNodeIndexer;
+	protected GreycatLuceneVersionIndexer luceneVersionIndexer;
+
 	/**
 	 * Keeps nodes modified so far, so we can free them after we save.
 	 */
 	private Set<GreycatNode> currentDirtyNodes = new HashSet<>();
+
 	/**
 	 * Keeps nodes opened right now, so we can avoid doing a periodic
 	 * save in the middle of some modifications.
 	 */
 	private Set<GreycatNode> currentOpenNodes = new HashSet<>();
+
 	private long world = 0;
 	private long time = 0;
 
@@ -251,9 +257,14 @@ public abstract class AbstractGreycatDatabase implements ITimeAwareGraphDatabase
 			nodeCache = null;
 		}
 	
-		if (luceneIndexer != null) {
-			luceneIndexer.shutdown();
-			luceneIndexer = null;
+		if (luceneNodeIndexer != null) {
+			luceneNodeIndexer.shutdown();
+			luceneNodeIndexer = null;
+		}
+
+		if (luceneVersionIndexer != null) {
+			luceneVersionIndexer.shutdown();
+			luceneVersionIndexer = null;
 		}
 	}
 
@@ -264,9 +275,19 @@ public abstract class AbstractGreycatDatabase implements ITimeAwareGraphDatabase
 	@Override
 	public ITimeAwareGraphNodeIndex getOrCreateNodeIndex(String name) {
 		try {
-			return luceneIndexer.getIndex(name);
+			return luceneNodeIndexer.getNodeIndex(name);
 		} catch (Exception e) {
-			LOGGER.error("Failed to get index " + name, e);
+			LOGGER.error("Failed to get node index " + name, e);
+			return null;
+		}
+	}
+
+	@Override
+	public ITimeAwareGraphNodeVersionIndex getOrCreateVersionIndex(String name) {
+		try {
+			return luceneVersionIndexer.getNodeIndex(name);
+		} catch (Exception e) {
+			LOGGER.error("Failed to get node index " + name, e);
 			return null;
 		}
 	}
@@ -297,7 +318,7 @@ public abstract class AbstractGreycatDatabase implements ITimeAwareGraphDatabase
 	@Override
 	public void enterBatchMode() {
 		if (mode == Mode.TX_MODE) {
-			commitLuceneIndex();
+			commitLuceneIndices();
 			save();
 			mode = Mode.NO_TX_MODE;
 		}
@@ -306,7 +327,7 @@ public abstract class AbstractGreycatDatabase implements ITimeAwareGraphDatabase
 	@Override
 	public void exitBatchMode() {
 		if (mode == Mode.NO_TX_MODE) {
-			commitLuceneIndex();
+			commitLuceneIndices();
 			save();
 			mode = Mode.TX_MODE;
 		}
@@ -479,7 +500,12 @@ public abstract class AbstractGreycatDatabase implements ITimeAwareGraphDatabase
 
 	@Override
 	public boolean nodeIndexExists(String name) {
-		return luceneIndexer.indexExists(name);
+		return luceneNodeIndexer.indexExists(name);
+	}
+
+	@Override
+	public boolean versionIndexExists(String name) {
+		return luceneVersionIndexer.indexExists(name);
 	}
 
 	@Override
@@ -499,7 +525,7 @@ public abstract class AbstractGreycatDatabase implements ITimeAwareGraphDatabase
 
 	@Override
 	public Set<String> getNodeIndexNames() {
-		return luceneIndexer.getIndexNames();
+		return luceneNodeIndexer.getIndexNames();
 	}
 
 	@Override
@@ -521,11 +547,17 @@ public abstract class AbstractGreycatDatabase implements ITimeAwareGraphDatabase
 	
 		if (graph != null) {
 			try {
-				luceneIndexer.rollback();
+				luceneNodeIndexer.rollback();
 			} catch (IOException e) {
-				LOGGER.error("Could not rollback Lucene", e);
+				LOGGER.error("Could not rollback Lucene node indexes", e);
 			}
-	
+
+			try {
+				luceneVersionIndexer.rollback();
+			} catch (IOException e) {
+				LOGGER.error("Could not rollback Lucene version indexes", e);
+			}
+
 			/*
 			 * Only disconnect storage - we want to release locks on the storage *without*
 			 * saving. Seems to be the only simple way to do a rollback to the latest saved
@@ -536,7 +568,8 @@ public abstract class AbstractGreycatDatabase implements ITimeAwareGraphDatabase
 			});
 		} else {
 			try {
-				this.luceneIndexer = new GreycatLuceneIndexer(this, new File(storageFolder, "lucene"));
+				this.luceneNodeIndexer = new GreycatLuceneNodeIndexer(this, new File(storageFolder, "lucene"));
+				this.luceneVersionIndexer = new GreycatLuceneVersionIndexer(this, new File(storageFolder, "versionIndex"));
 			} catch (IOException e) {
 				LOGGER.error("Could not set up Lucene indexing", e);
 			}
@@ -624,13 +657,15 @@ public abstract class AbstractGreycatDatabase implements ITimeAwareGraphDatabase
 			final Node n = rn.get();
 			softDeleteIndex.unindex(n);
 			nodeLabelIndex.unindex(n);
-			luceneIndexer.remove(gn);
+			luceneNodeIndexer.remove(gn);
+			luceneVersionIndexer.remove(gn);
 		}
 	}
 
-	protected void commitLuceneIndex() {
+	protected void commitLuceneIndices() {
 		try {
-			luceneIndexer.commit();
+			luceneNodeIndexer.commit();
+			luceneVersionIndexer.commit();
 		} catch (IOException ex) {
 			LOGGER.error("Failed to commit Lucene index", ex);
 		}

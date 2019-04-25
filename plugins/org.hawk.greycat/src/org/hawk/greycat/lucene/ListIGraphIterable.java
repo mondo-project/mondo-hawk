@@ -22,7 +22,7 @@ import java.util.List;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 
-final class ListIGraphIterable implements IGraphIterable<IGraphNode> {
+public class ListIGraphIterable implements IGraphIterable<IGraphNode> {
 	private final List<IGraphNode> nodes;
 
 	protected ListIGraphIterable(List<IGraphNode> nodes) {

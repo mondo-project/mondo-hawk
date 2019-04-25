@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Aston University.
+ * Copyright (c) 2018-2019 Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -17,27 +17,12 @@
 package org.hawk.greycat.lucene;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.LeafReaderContext;
-import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.CollectionTerminatedException;
 import org.apache.lucene.search.SimpleCollector;
 
-public class ListCollector extends SimpleCollector {
-	protected final List<Integer> docIds = new ArrayList<>();
-	protected final IndexSearcher searcher;
-	private int docBase;
-
-	public ListCollector(IndexSearcher searcher) {
-		this.searcher = searcher;
-	}
-
-	@Override
-	protected void doSetNextReader(LeafReaderContext context) throws IOException {
-		this.docBase = context.docBase;
-	}
+public class MatchExistsCollector extends SimpleCollector {
+	private boolean matchFound = false;
 
 	@Override
 	public boolean needsScores() {
@@ -45,16 +30,12 @@ public class ListCollector extends SimpleCollector {
 	}
 
 	@Override
-	public void collect(int doc) {
-		docIds.add(docBase + doc);
+	public void collect(int doc) throws IOException {
+		matchFound = true;
+		throw new CollectionTerminatedException();
 	}
 
-	public List<Document> getDocuments() throws IOException {
-		List<Document> result = new ArrayList<>();
-		for (int docId : docIds) {
-			final Document document = searcher.doc(docId);
-			result.add(document);
-		}
-		return result;
+	public boolean isMatchFound() {
+		return matchFound;
 	}
 }

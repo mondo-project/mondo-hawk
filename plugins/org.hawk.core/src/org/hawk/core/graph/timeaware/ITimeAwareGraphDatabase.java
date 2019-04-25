@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphIterable;
-import org.hawk.core.graph.IGraphNodeIndex;
 
 /**
  * Abstraction for a graph database that understands the concept of time as a

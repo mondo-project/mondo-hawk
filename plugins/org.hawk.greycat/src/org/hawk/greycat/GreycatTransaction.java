@@ -28,7 +28,7 @@ public class GreycatTransaction implements IGraphTransaction {
 
 	@Override
 	public void success() {
-		db.commitLuceneIndex();
+		db.commitLuceneIndices();
 		db.save();
 	}
 
