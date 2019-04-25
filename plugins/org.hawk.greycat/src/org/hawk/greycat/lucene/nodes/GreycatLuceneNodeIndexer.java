@@ -83,9 +83,6 @@ public class GreycatLuceneNodeIndexer extends AbstractLuceneIndexer<GreycatLucen
 
 	static final Logger LOGGER = LoggerFactory.getLogger(GreycatLuceneNodeIndex.class);
 
-	/** Universally unique document field. Useful for deletion of documents. */
-	private static final String UUID_FIELD = "h_id";
-
 	/** Node ID, given by Greycat. */
 	private static final String NODEID_FIELD   = "h_nodeid";
 
@@ -151,7 +148,7 @@ public class GreycatLuceneNodeIndexer extends AbstractLuceneIndexer<GreycatLucen
 				searcher.search(query, lc);
 				return lc.getNodeIterator();
 			} catch (IOException e) {
-				LOGGER.error("Failed to obtain result", e);
+				LOGGER.error("Failed to obtain results", e);
 				return Collections.emptyIterator();
 			}
 		}
@@ -536,13 +533,7 @@ public class GreycatLuceneNodeIndexer extends AbstractLuceneIndexer<GreycatLucen
 
 		@Override
 		public void delete() {
-			// This operation is NOT time-aware: it will drop the entire index in one go.
-			try {
-				lucene.delete(new TermQuery(new Term(INDEX_FIELD, name)));
-				nodeIndexCache.invalidate(name);
-			} catch (IOException e) {
-				LOGGER.error("Could not delete index " + name, e);
-			}
+			GreycatLuceneNodeIndexer.this.deleteIndex(name);
 		}
 
 		@Override

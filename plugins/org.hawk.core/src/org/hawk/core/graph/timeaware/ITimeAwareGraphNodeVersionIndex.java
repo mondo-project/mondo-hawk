@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.hawk.core.graph.timeaware;
 
-import java.util.Iterator;
-
 /**
  * Interface for a component that keeps track of versions of interest of various
  * nodes, according to a label. For instance, this could be an index of all node
@@ -29,37 +27,40 @@ import java.util.Iterator;
 public interface ITimeAwareGraphNodeVersionIndex {
 
 	/** Adds the current version of the node to the index. */
-	void add(ITimeAwareGraphNode n);
+	void addVersion(ITimeAwareGraphNode n);
 
 	/** Removes the current version of the node from the index. */
-	void remove(ITimeAwareGraphNode n);
+	void removeVersion(ITimeAwareGraphNode n);
+	
+	/** Removes all versions of the node from the index. */
+	void removeAllVersions(ITimeAwareGraphNode n);
 
-	/** Returns all the versions of this node that appear in the index. */
-	Iterator<ITimeAwareGraphNode> getAllVersions(ITimeAwareGraphNode n);
-
-	/**
-	 * Returns all the versions of this node that appear in the index, at the
-	 * current or later timepoints.
-	 */
-	Iterator<ITimeAwareGraphNode> getVersionsSince(ITimeAwareGraphNode n);
-
-	/**
-	 * Returns all the versions of this node that appear in the index, strictly
-	 * after the current timepoint.
-	 */
-	Iterator<ITimeAwareGraphNode> getVersionsAfter(ITimeAwareGraphNode n);
+	/** Returns all the versions of this node that appear in the index, from oldest to newest. */
+	Iterable<ITimeAwareGraphNode> getAllVersions(ITimeAwareGraphNode n);
 
 	/**
 	 * Returns all the versions of this node that appear in the index, at the
-	 * current or prior timepoints.
+	 * current or later timepoints, from oldest to newest.
 	 */
-	Iterator<ITimeAwareGraphNode> getVersionsUntil(ITimeAwareGraphNode n);
+	Iterable<ITimeAwareGraphNode> getVersionsSince(ITimeAwareGraphNode n);
 
 	/**
 	 * Returns all the versions of this node that appear in the index, strictly
-	 * before the current timepoint.
+	 * after the current timepoint, from oldest to newest.
 	 */
-	Iterator<ITimeAwareGraphNode> getVersionsBefore(ITimeAwareGraphNode n);
+	Iterable<ITimeAwareGraphNode> getVersionsAfter(ITimeAwareGraphNode n);
+
+	/**
+	 * Returns all the versions of this node that appear in the index, at the
+	 * current or prior timepoints, from oldest to newest.
+	 */
+	Iterable<ITimeAwareGraphNode> getVersionsUntil(ITimeAwareGraphNode n);
+
+	/**
+	 * Returns all the versions of this node that appear in the index, strictly
+	 * before the current timepoint, from oldest to newest.
+	 */
+	Iterable<ITimeAwareGraphNode> getVersionsBefore(ITimeAwareGraphNode n);
 
 	/** Ensures the current contents of the index are written to disk. */
 	void flush();

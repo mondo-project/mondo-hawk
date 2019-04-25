@@ -48,6 +48,8 @@ public abstract class AbstractLuceneIndexer<T> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractLuceneIndexer.class);
 
+	/** Universally unique document field. Useful for deletion / rollback of documents. */
+	protected static final String UUID_FIELD = "h_id";
 	protected static final String INDEX_FIELD   = "h_index";
 	protected static final String DOCTYPE_FIELD = "h_doctype";
 	protected static final String INDEX_DOCTYPE = "indexdecl";
@@ -120,6 +122,16 @@ public abstract class AbstractLuceneIndexer<T> {
 		} catch (IOException e) {
 			LOGGER.error(String.format("Could not check if %s exists", name), e);
 			return false;
+		}
+	}
+
+	protected void deleteIndex(String name) {
+		// This operation is NOT time-aware: it will drop the entire index in one go.
+		try {
+			lucene.delete(new TermQuery(new Term(INDEX_FIELD, name)));
+			nodeIndexCache.invalidate(name);
+		} catch (IOException e) {
+			LOGGER.error("Could not delete index " + name, e);
 		}
 	}
 
