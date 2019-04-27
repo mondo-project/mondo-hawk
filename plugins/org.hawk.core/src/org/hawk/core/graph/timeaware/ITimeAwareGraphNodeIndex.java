@@ -34,8 +34,15 @@ public interface ITimeAwareGraphNodeIndex extends IGraphNodeIndex {
 
 	/**
 	 * Returns all the timepoints of a node which have a certain value
-	 * associated with a query.
+	 * associated with a query, from latest to earliest.
 	 */
 	List<Long> getVersions(ITimeAwareGraphNode n, String key, Object exactValue);
+
+	/**
+	 * Returns the earliest timepoint since the current timepoint of <code>taNode</code>
+	 * for which the key was equal to the specified value, or <code>null</code> if it
+	 * does not exist.
+	 */
+	Long getFirstVersionSince(ITimeAwareGraphNode taNode, String key, Object exactValue);
 
 }

@@ -14,7 +14,7 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.timeaware.queries.operations.scopes;
+package org.hawk.timeaware.queries.operations.scopes.predicates;
 
 import java.util.List;
 import java.util.ListIterator;
