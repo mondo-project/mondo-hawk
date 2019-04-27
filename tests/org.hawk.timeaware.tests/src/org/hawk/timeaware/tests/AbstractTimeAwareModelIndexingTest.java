@@ -29,11 +29,13 @@ import org.hawk.core.query.InvalidQueryException;
 import org.hawk.core.query.QueryExecutionException;
 import org.hawk.core.security.FileBasedCredentialsStore;
 import org.hawk.epsilon.emc.EOLQueryEngine;
+import org.hawk.graph.updater.GraphMetaModelUpdater;
 import org.hawk.graph.updater.GraphModelUpdater;
 import org.hawk.integration.tests.ModelIndexingTest;
 import org.hawk.svn.SvnManager;
 import org.hawk.svn.tests.rules.TemporarySVNRepository;
 import org.hawk.timeaware.graph.TimeAwareIndexer;
+import org.hawk.timeaware.graph.TimeAwareMetaModelUpdater;
 import org.hawk.timeaware.graph.TimeAwareModelUpdater;
 import org.hawk.timeaware.queries.TimeAwareEOLQueryEngine;
 import org.hawk.timeaware.queries.TimelineEOLQueryEngine;
@@ -52,6 +54,8 @@ public abstract class AbstractTimeAwareModelIndexingTest extends ModelIndexingTe
 	protected ResourceSet rsTree;
 	protected TimeAwareEOLQueryEngine timeAwareQueryEngine;
 	protected TimelineEOLQueryEngine timelineQueryEngine;
+	protected TimeAwareMetaModelUpdater tammUpdater;
+	protected TimeAwareModelUpdater taUpdater;
 
 	public AbstractTimeAwareModelIndexingTest(IGraphDatabaseFactory dbFactory, IModelSupportFactory msFactory) {
 		super(dbFactory, msFactory);
@@ -80,9 +84,15 @@ public abstract class AbstractTimeAwareModelIndexingTest extends ModelIndexingTe
 	 */
 	protected abstract void setUpMetamodels() throws Exception;
 
+	protected GraphMetaModelUpdater createMetaModelUpdater() {
+		tammUpdater = new TimeAwareMetaModelUpdater();
+		return tammUpdater;
+	}
+
 	@Override
 	protected GraphModelUpdater createModelUpdater() {
-		return new TimeAwareModelUpdater();
+		taUpdater = new TimeAwareModelUpdater();
+		return taUpdater;
 	}
 
 	@Override

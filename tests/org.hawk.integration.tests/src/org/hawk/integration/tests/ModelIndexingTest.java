@@ -35,9 +35,11 @@ import org.hawk.backend.tests.LogbackOnlyErrorsRule;
 import org.hawk.backend.tests.RedirectSystemErrorRule;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.core.IMetaModelResourceFactory;
+import org.hawk.core.IMetaModelUpdater;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.IModelIndexer.ShutdownRequestType;
 import org.hawk.core.IModelResourceFactory;
+import org.hawk.core.IModelUpdater;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.query.InvalidQueryException;
@@ -151,18 +153,22 @@ public class ModelIndexingTest {
 
 		queryEngine = new EOLQueryEngine();
 		indexer.addQueryEngine(queryEngine);
-		indexer.setMetaModelUpdater(new GraphMetaModelUpdater());
+		indexer.setMetaModelUpdater(createMetaModelUpdater());
 		indexer.addModelUpdater(createModelUpdater());
 		indexer.setDB(db, true);
 
 		indexer.init(0, 0);
 	}
 
+	protected IMetaModelUpdater createMetaModelUpdater() {
+		return new GraphMetaModelUpdater();
+	}
+
 	protected IModelIndexer createIndexer(final File indexerFolder, final FileBasedCredentialsStore credStore) {
 		return new ModelIndexerImpl("test", indexerFolder, credStore, console);
 	}
 
-	protected GraphModelUpdater createModelUpdater() {
+	protected IModelUpdater createModelUpdater() {
 		return new GraphModelUpdater();
 	}
 

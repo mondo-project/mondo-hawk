@@ -26,5 +26,11 @@
             query_language="org.hawk.timeaware.queries.TimelineEOLQueryEngine">
       </query>
    </extension>
+   <extension
+         point="org.hawk.core.MetaModelUpdaterExtensionPoint">
+      <metamodel
+            metamodelupdater="org.hawk.timeaware.graph.TimeAwareMetaModelUpdater">
+      </metamodel>
+   </extension>
 
 </plugin>

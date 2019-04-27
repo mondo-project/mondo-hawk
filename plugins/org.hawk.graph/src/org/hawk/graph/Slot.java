@@ -36,7 +36,7 @@ public class Slot {
 
 	private final TypeNode typeNode;
 	private final String propertyName, propertyType;
-	private final boolean isAttribute, isReference, isMixed, isDerived, isIndexed;
+	private final boolean isAttribute, isReference, isMixed, isDerived, isIndexed, isVersionAnnotator;
 	private final boolean isMany, isOrdered, isUnique;
 
 	// Only valid if this is derived
@@ -51,13 +51,15 @@ public class Slot {
 		this.isReference = "r".equals(propertyMetadata[0]);
 		this.isMixed = "m".equals(propertyMetadata[0]);
 		this.isDerived = "d".equals(propertyMetadata[0]);
+		this.isVersionAnnotator = "va".equals(propertyMetadata[0]);
+
 		this.isMany = "t".equals(propertyMetadata[1]);
 		this.isOrdered = "t".equals(propertyMetadata[2]);
 		this.isUnique = "t".equals(propertyMetadata[3]);
 		this.isIndexed = isAttribute && "t".equals(propertyMetadata[5]);
 		this.propertyType = propertyMetadata[4];
 
-		if (isDerived) {
+		if (isDerived || isVersionAnnotator) {
 			this.derivationLanguage = propertyMetadata[5];
 			this.derivationLogic = propertyMetadata[6];
 		} else {
@@ -120,6 +122,10 @@ public class Slot {
 
 	public boolean isIndexed() {
 		return isIndexed;
+	}
+
+	public boolean isVersionAnnotator() {
+		return isVersionAnnotator;
 	}
 
 	public String getType() {

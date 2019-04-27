@@ -50,10 +50,10 @@ public class TimeAwareModelUpdater extends GraphModelUpdater {
 
 					/*
 					 * end() means that the node is still alive at this precise moment, while
-					 * delete() means that the node is not available from this moment. We only
-					 * need to end this at the timepoint straight before this one.
+					 * delete() means that the node is not available from this moment. We only need
+					 * to end this at the timepoint straight before this one.
 					 */
-					ITimeAwareGraphNode taModelElement = (ITimeAwareGraphNode)modelElement;
+					ITimeAwareGraphNode taModelElement = (ITimeAwareGraphNode) modelElement;
 					if (taModelElement.getTime() > 0) {
 						taModelElement.travelInTime(taModelElement.getTime() - 1).end();
 					} else {
@@ -91,9 +91,10 @@ public class TimeAwareModelUpdater extends GraphModelUpdater {
 	protected DeletionUtils createDeletionUtils() {
 		return new SoftDeletionUtils(indexer.getGraph());
 	}
-	
+
 	@Override
 	public String getHumanReadableName() {
 		return "Default Hawk Time Aware Model Updater (v1.0)";
 	}
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015-2016 The University of York.
+ * Copyright (c) 2015-2019 The University of York, Aston University.
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -19,6 +19,7 @@ package org.hawk.graph;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphEdge;
@@ -56,6 +57,18 @@ public class MetamodelNode {
 					}};
 			}
 		};
+	}
+
+	/**
+	 * Returns the type node in this metamodel node with the specified name.
+	 */
+	public TypeNode getTypeNode(String typeName) {
+		for (TypeNode t : getTypes()) {
+			if (t.getTypeName().equals(typeName)) {
+				return t;
+			}
+		}
+		throw new NoSuchElementException("Type " + typeName + " does not exist in metamodel " + getUri());
 	}
 
 	public IGraphNode getNode() {
