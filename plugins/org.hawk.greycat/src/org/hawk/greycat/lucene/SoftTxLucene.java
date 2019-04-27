@@ -29,12 +29,12 @@ import java.util.stream.Collectors;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
@@ -59,42 +59,15 @@ final class SoftTxLucene {
 		void undoWork() throws IOException;
 	}
 
-	public class IndexSearcherCloseable implements AutoCloseable {
-
-		private IndexSearcher searcher;
-
-		public IndexSearcherCloseable(boolean forceRefresh) throws IOException {
-			if (forceRefresh) {
-				searchManager.maybeRefreshBlocking();
-			}
-			this.searcher = searchManager.acquire();
-		}
-
-		@Override
-		public void close() throws IOException {
-			if (searcher != null) {
-				searchManager.release(searcher);
-				searcher = null;
-			}
-		}
-
-		public IndexSearcher getSearcher() {
-			return searcher;
-		}
-
-	}
-
 	private final List<IUndoable> rollbackLog = new LinkedList<>();
 	private final ScheduledExecutorService executor;
-	private final SearcherManager searchManager;
 
 	public SoftTxLucene(File dir) throws IOException {
 		this.storage = new MMapDirectory(dir.toPath());
 		this.analyzer = new CaseInsensitiveWhitespaceAnalyzer();
 		this.writer = new IndexWriter(storage, new IndexWriterConfig(analyzer));
 		this.reader = DirectoryReader.open(writer);
-		this.searchManager = new SearcherManager(writer, null);
-		
+
 		this.executor = Executors.newScheduledThreadPool(1);
 		executor.scheduleWithFixedDelay(() -> {
 			synchronized (rollbackLog) {
@@ -105,24 +78,20 @@ final class SoftTxLucene {
 					LOGGER.error("Periodic commit of Lucene at " + storage + " failed", e);
 				}
 			}
-		}, 10, 10, TimeUnit.SECONDS); 
+		}, 60, 60, TimeUnit.SECONDS); 
 	}
 
-	public IndexSearcherCloseable getSearcher(boolean forceRefresh) {
-		try {
-			return new IndexSearcherCloseable(forceRefresh);
-		} catch (IOException e) {
-			LOGGER.error(e.getMessage(), e);
-			return null;
-		}
-	}
-
-	public IndexSearcherCloseable getSearcher() {
-		return getSearcher(false);
+	public IndexReader getReader() {
+		return reader;
 	}
 
 	private void refreshReader() throws IOException {
-		searchManager.maybeRefresh();
+		DirectoryReader newReader = DirectoryReader.openIfChanged(reader);
+		if (newReader != null && reader != newReader) {
+			DirectoryReader oldReader = reader;
+			reader = newReader;
+			oldReader.close();
+		}
 	}
 
 	public void flush() {

@@ -61,7 +61,6 @@ import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeIndex;
 import org.hawk.greycat.AbstractGreycatDatabase;
 import org.hawk.greycat.GreycatNode;
 import org.hawk.greycat.lucene.IntervalCollector.Interval;
-import org.hawk.greycat.lucene.SoftTxLucene.IndexSearcherCloseable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -175,8 +174,8 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public Iterator<GreycatNode> iterator() {
-			try (IndexSearcherCloseable sc = lucene.getSearcher()) {
-				final IndexSearcher searcher = sc.getSearcher();
+			try {
+				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 				final NodeListCollector lc = new NodeListCollector(searcher, timepoint);
 				searcher.search(query, lc);
 				return lc.getNodeIterator();
@@ -188,8 +187,8 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public int size() {
-			try (IndexSearcherCloseable sc = lucene.getSearcher()) {
-				final IndexSearcher searcher = sc.getSearcher();
+			try {
+				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 				final TotalHitCountCollector collector = new TotalHitCountCollector();
 				searcher.search(query, collector);
 				return collector.getTotalHits();
@@ -201,8 +200,8 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public GreycatNode getSingle() {
-			try (IndexSearcherCloseable sc = lucene.getSearcher()) {
-				final IndexSearcher searcher = sc.getSearcher();
+			try {
+				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 				TopDocs results = searcher.search(query, 1);
 				if (results.totalHits > 0) {
 					final Document document = searcher.doc(results.scoreDocs[0].doc);
@@ -249,8 +248,8 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public void remove(IGraphNode n, String key, Object value) {
-			try (IndexSearcherCloseable sc = lucene.getSearcher()) {
-				final IndexSearcher searcher = sc.getSearcher();
+			try {
+				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 				final GreycatNode gn = (GreycatNode) n;
 
 				/*
@@ -483,8 +482,8 @@ public class GreycatLuceneIndexer {
 				.add(LongPoint.newExactQuery(NODEID_FIELD, (long) gn.getId()), Occur.MUST)
 				.build();
 
-			try (IndexSearcherCloseable sc = lucene.getSearcher()) {
-				final IndexSearcher searcher = sc.getSearcher();
+			try {
+				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
 				/*
 				 * The index is structured in intervals, NOT in specific timepoints - this means
@@ -522,8 +521,8 @@ public class GreycatLuceneIndexer {
 				.add(LongPoint.newRangeQuery(VALIDFROM_FIELD, gn.getTime(), Long.MAX_VALUE), Occur.MUST)
 				.build();
 
-			try (IndexSearcherCloseable sc = lucene.getSearcher()) {
-				final IndexSearcher searcher = sc.getSearcher();
+			try {
+				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
 				final Sort sort = new Sort(new SortedNumericSortField(VALIDFROM_FIELD, SortField.Type.LONG));
 				final ScoreDoc[] hits = searcher.search(query, 1, sort).scoreDocs;
@@ -589,8 +588,8 @@ public class GreycatLuceneIndexer {
 			}
 			final GreycatNode gn = (GreycatNode)n;
 
-			try (IndexSearcherCloseable sc = lucene.getSearcher()) {
-				final IndexSearcher searcher = sc.getSearcher();
+			try {
+				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
 				// We want to find the currently valid document for this node and update it
 				final Query latestVersionQuery = getIndexQueryBuilder()
@@ -742,30 +741,29 @@ public class GreycatLuceneIndexer {
 
 	public GreycatLuceneNodeIndex getIndex(String name) throws Exception {
 		return nodeIndexCache.get(name, () -> {
-			try (IndexSearcherCloseable sc = lucene.getSearcher()) {
-				final IndexSearcher searcher = sc.getSearcher();
+			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
-				final Query query = new BooleanQuery.Builder()
-						.add(new TermQuery(new Term(INDEX_FIELD, name)), Occur.MUST)
-						.add(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), Occur.MUST).build();
+			final Query query = new BooleanQuery.Builder()
+				.add(new TermQuery(new Term(INDEX_FIELD, name)), Occur.MUST)
+				.add(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), Occur.MUST)
+				.build();
 
-				final TotalHitCountCollector thc = new TotalHitCountCollector();
-				searcher.search(query, thc);
-				if (thc.getTotalHits() == 0) {
-					Document doc = new Document();
-					doc.add(new StringField(INDEX_FIELD, name, Store.YES));
-					doc.add(new StringField(DOCTYPE_FIELD, INDEX_DOCTYPE, Store.YES));
-					lucene.update(new Term(INDEX_FIELD, name), null, doc);
-				}
-
-				return new GreycatLuceneNodeIndex(name);
+			final TotalHitCountCollector thc = new TotalHitCountCollector();
+			searcher.search(query, thc);
+			if (thc.getTotalHits() == 0) {
+				Document doc = new Document();
+				doc.add(new StringField(INDEX_FIELD, name, Store.YES));
+				doc.add(new StringField(DOCTYPE_FIELD, INDEX_DOCTYPE, Store.YES));
+				lucene.update(new Term(INDEX_FIELD, name), null, doc);
 			}
+
+			return new GreycatLuceneNodeIndex(name);
 		});
 	}
 
 	public Set<String> getIndexNames() {
-		try (IndexSearcherCloseable sc = lucene.getSearcher()) {
-			final IndexSearcher searcher = sc.getSearcher();
+		try {
+			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 			final ListCollector lc = new ListCollector(searcher);
 			searcher.search(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), lc);
 
@@ -781,8 +779,8 @@ public class GreycatLuceneIndexer {
 	}
 
 	public boolean indexExists(String name) {
-		try (IndexSearcherCloseable sc = lucene.getSearcher()) {
-			final IndexSearcher searcher = sc.getSearcher();
+		try {
+			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
 			Query query = new BooleanQuery.Builder()
 				.add(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), Occur.FILTER)
@@ -941,13 +939,11 @@ public class GreycatLuceneIndexer {
 	}
 
 	protected void invalidateAtTimepoint(GreycatNode gn, final Query queryToRevise) throws IOException {
-		try (IndexSearcherCloseable sc = lucene.getSearcher()) {
-			final IndexSearcher searcher = sc.getSearcher();
-			final ListCollector lc = new ListCollector(searcher);
-			searcher.search(queryToRevise, lc);
-			for (Document doc : lc.getDocuments()) {
-				invalidateAtTimepoint(gn, doc);
-			}
+		final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
+		final ListCollector lc = new ListCollector(searcher);
+		searcher.search(queryToRevise, lc);
+		for (Document doc : lc.getDocuments()) {
+			invalidateAtTimepoint(gn, doc);
 		}
 	}
 
