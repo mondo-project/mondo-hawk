@@ -22,13 +22,17 @@ import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeIndex;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.timeaware.queries.operations.scopes.StartingTimeAwareNodeWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Variant of <code>since</code> which uses a predefined derived Boolean attribute.
+ * Variant of <code>after</code> which uses a predefined derived Boolean attribute.
  */
-public class SinceAnnotatedOperation extends AbstractAnnotatedOperation {
+public class AfterAnnotatedOperation extends AbstractAnnotatedOperation {
 
-	public SinceAnnotatedOperation(Supplier<EOLQueryEngine> containerModelSupplier) {
+	private static final Logger LOGGER = LoggerFactory.getLogger(AfterAnnotatedOperation.class);
+
+	public AfterAnnotatedOperation(Supplier<EOLQueryEngine> containerModelSupplier) {
 		super(containerModelSupplier);
 	}
 
@@ -39,7 +43,17 @@ public class SinceAnnotatedOperation extends AbstractAnnotatedOperation {
 			return null;
 		}
 
-		return new StartingTimeAwareNodeWrapper(taNode.travelInTime(firstVersion));
+		final ITimeAwareGraphNode node = taNode.travelInTime(firstVersion);
+		try {
+			ITimeAwareGraphNode next = node.getNext();
+			if (next != null) {
+				return new StartingTimeAwareNodeWrapper(next);
+			}
+		} catch (Exception e) {
+			LOGGER.error("Could not fetch next version", e);
+		}
+
+		return null;
 	}
 
 }

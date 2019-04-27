@@ -134,6 +134,22 @@ public class DerivedAttributeHistoryTest extends AbstractTimeAwareModelIndexingT
 		});
 	}
 
+	@Test
+	public void afterAnnotated() throws Throwable {
+		twoDerivedAttributes();
+
+		waitForSync(new Callable<Object>(){
+			@Override
+			public Object call() throws Exception {
+				assertEquals(3, timeAwareEOL("return Tree.earliest.next.all.first.earliest.afterAnnotated('Important').versions.size;"));
+				assertFalse((boolean) timeAwareEOL("return Tree.earliest.next.all.first.earliest.next.afterAnnotated('Important').isDefined();"));
+				assertEquals(1, timeAwareEOL("return Tree.earliest.next.all.first.earliest.afterAnnotated('HasChildren').versions.size;"));
+
+				return null;
+			}
+		});
+	}
+	
 	private void twoDerivedAttributes() throws Exception, IOException, SVNException {
 		indexer.getMetaModelUpdater().addDerivedAttribute(
 			TreePackage.eNS_URI, "Tree", "Important", "Boolean",
