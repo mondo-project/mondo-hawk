@@ -21,17 +21,18 @@ import org.eclipse.epsilon.eol.execute.operations.EolOperationFactory;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.timeaware.queries.operations.patterns.AlwaysReducer;
+import org.hawk.timeaware.queries.operations.patterns.BoundedVersionQuantifierOperation;
 import org.hawk.timeaware.queries.operations.patterns.EventuallyAtLeastReducer;
 import org.hawk.timeaware.queries.operations.patterns.EventuallyAtMostReducer;
 import org.hawk.timeaware.queries.operations.patterns.EventuallyReducer;
 import org.hawk.timeaware.queries.operations.patterns.NeverReducer;
 import org.hawk.timeaware.queries.operations.patterns.VersionQuantifierOperation;
-import org.hawk.timeaware.queries.operations.scopes.BoundedVersionQuantifierOperation;
 import org.hawk.timeaware.queries.operations.scopes.EndingTimeAwareNodeWrapper;
 import org.hawk.timeaware.queries.operations.scopes.StartingTimeAwareNodeWrapper;
-import org.hawk.timeaware.queries.operations.scopes.VersionRangeOperation;
-import org.hawk.timeaware.queries.operations.scopes.WhenAnnotatedOperation;
-import org.hawk.timeaware.queries.operations.scopes.WhenOperation;
+import org.hawk.timeaware.queries.operations.scopes.annotations.SinceAnnotatedOperation;
+import org.hawk.timeaware.queries.operations.scopes.annotations.WhenAnnotatedOperation;
+import org.hawk.timeaware.queries.operations.scopes.predicates.VersionRangeOperation;
+import org.hawk.timeaware.queries.operations.scopes.predicates.WhenOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -142,6 +143,7 @@ public class TimeAwareEOLOperationFactory extends EolOperationFactory {
 		operationCache.put("when", new WhenOperation(this::getContainerModel));
 
 		operationCache.put("whenAnnotated", new WhenAnnotatedOperation(this::getContainerModel));
+		operationCache.put("sinceAnnotated", new SinceAnnotatedOperation(this::getContainerModel));
 	}
 
 }

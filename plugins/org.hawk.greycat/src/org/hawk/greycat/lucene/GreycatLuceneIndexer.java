@@ -33,6 +33,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.DoublePoint;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.LongPoint;
+import org.apache.lucene.document.NumericDocValuesField;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.IndexableField;
@@ -44,7 +45,11 @@ import org.apache.lucene.search.CollectionTerminatedException;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.SimpleCollector;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.SortedNumericSortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.TotalHitCountCollector;
@@ -508,6 +513,39 @@ public class GreycatLuceneIndexer {
 			}
 		}
 
+		@Override
+		public Long getFirstVersionSince(ITimeAwareGraphNode gn, String key, Object valueExpr) {
+			final Query valueQuery = getValueQuery(key, valueExpr);
+			final Query query = getIndexQueryBuilder()
+				.add(valueQuery, Occur.MUST)
+				.add(LongPoint.newExactQuery(NODEID_FIELD, (long) gn.getId()), Occur.MUST)
+				.add(LongPoint.newRangeQuery(VALIDFROM_FIELD, gn.getTime(), Long.MAX_VALUE), Occur.MUST)
+				.build();
+
+			try (IndexSearcherCloseable sc = lucene.getSearcher()) {
+				final IndexSearcher searcher = sc.getSearcher();
+
+				final Sort sort = new Sort(new SortedNumericSortField(VALIDFROM_FIELD, SortField.Type.LONG));
+				final ScoreDoc[] hits = searcher.search(query, 1, sort).scoreDocs;
+				if (hits.length == 0) {
+					return null;
+				}
+
+				final Document doc = searcher.doc(hits[0].doc);
+				final long from = doc.getField(VALIDFROM_FIELD).numericValue().longValue();
+				final long to = doc.getField(VALIDFROM_FIELD).numericValue().longValue();
+				final List<Long> versions = gn.getInstantsBetween(from, to);
+				if (versions.isEmpty()) {
+					return null;
+				}
+
+				return versions.get(versions.size() - 1);
+			} catch (IOException e) {
+				LOGGER.error("Failed to obtain result", e);
+				return null;
+			}
+		}
+
 		private Query getValueQuery(String key, Object valueExpr) {
 			Query valueQuery;
 			if (valueExpr instanceof Float || valueExpr instanceof Double) {
@@ -839,6 +877,7 @@ public class GreycatLuceneIndexer {
 			document.add(new StoredField(fieldName, doubleValue));
 		} else if (value instanceof Number) {
 			final long longValue = ((Number)value).longValue();
+			document.add(new NumericDocValuesField(fieldName, longValue));
 			document.add(new LongPoint(fieldName, longValue));
 			document.add(new StoredField(fieldName, longValue));
 		} else {

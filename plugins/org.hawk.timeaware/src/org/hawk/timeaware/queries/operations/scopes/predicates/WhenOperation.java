@@ -14,7 +14,7 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.timeaware.queries.operations.scopes;
+package org.hawk.timeaware.queries.operations.scopes.predicates;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,6 +31,7 @@ import org.eclipse.epsilon.eol.execute.context.Variable;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.timeaware.queries.operations.TimeAwareNodeFirstOrderOperation;
+import org.hawk.timeaware.queries.operations.scopes.WhenNodeWrapper;
 
 /**
  * <p>

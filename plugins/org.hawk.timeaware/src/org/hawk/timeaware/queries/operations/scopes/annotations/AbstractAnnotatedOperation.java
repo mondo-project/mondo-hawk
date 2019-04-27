@@ -14,7 +14,7 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.timeaware.queries.operations.scopes;
+package org.hawk.timeaware.queries.operations.scopes.annotations;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -34,16 +34,13 @@ import org.hawk.graph.Slot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Variant of <code>.when</code> which uses a predefined derived Boolean attribute.
- */
-public class WhenAnnotatedOperation extends AbstractOperation {
+public abstract class AbstractAnnotatedOperation extends AbstractOperation {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(WhenAnnotatedOperation.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAnnotatedOperation.class);
 
 	private final Supplier<EOLQueryEngine> modelSupplier;
 
-	public WhenAnnotatedOperation(Supplier<EOLQueryEngine> containerModelSupplier) {
+	public AbstractAnnotatedOperation(Supplier<EOLQueryEngine> containerModelSupplier) {
 		this.modelSupplier = containerModelSupplier;
 	}
 
@@ -53,7 +50,7 @@ public class WhenAnnotatedOperation extends AbstractOperation {
 			LOGGER.warn("expected to receive the name of the derived attribute, returning null");
 			return null;
 		}
-
+	
 		ITimeAwareGraphNode taNode;
 		if (target instanceof GraphNodeWrapper) {
 			final GraphNodeWrapper gnw = (GraphNodeWrapper)target;
@@ -73,35 +70,32 @@ public class WhenAnnotatedOperation extends AbstractOperation {
 			
 		final Expression labelExpression = expressions.get(0);
 		final String derivedAttrName = "" + context.getExecutorFactory().execute(labelExpression, context);
-		final WhenNodeWrapper whenWrapper = whenAnnotated(taNode, derivedAttrName);
-		if (whenWrapper == null) {
-			return null;
-		} else {
-			return new GraphNodeWrapper(whenWrapper, modelSupplier.get());
-		}
-	}
 
-	private WhenNodeWrapper whenAnnotated(ITimeAwareGraphNode taNode, String derivedAttrName) {
 		final Slot slot = new ModelElementNode(taNode).getTypeNode().getSlot(derivedAttrName);
 		if (slot == null) {
 			LOGGER.warn("slot does not exist, returning null");
 			return null;
 		}
-
 		final String idxName = slot.getNodeIndexName();
 		final ITimeAwareGraphNodeIndex index = (ITimeAwareGraphNodeIndex) taNode.getGraph().getOrCreateNodeIndex(idxName);
 		
-		final List<Long> versions = index.getVersions(taNode, derivedAttrName, true);
-		if (versions.isEmpty()) {
+		final ITimeAwareGraphNode wrapper = useAnnotations(index, taNode, derivedAttrName);
+		if (wrapper == null) {
 			return null;
+		} else {
+			return new GraphNodeWrapper(wrapper, modelSupplier.get());
 		}
-
-		final Long earliestTimepoint = versions.get(versions.size() - 1);
-		return new WhenNodeWrapper(taNode.travelInTime(earliestTimepoint), versions);
 	}
 
 	@Override
 	public boolean isOverridable() {
 		return false;
 	}
+
+	/**
+	 * Uses the available derived Boolean attribute to find relevant versions.
+	 */
+	protected abstract ITimeAwareGraphNode useAnnotations(
+		ITimeAwareGraphNodeIndex index, ITimeAwareGraphNode taNode, String derivedAttrName);
+
 }

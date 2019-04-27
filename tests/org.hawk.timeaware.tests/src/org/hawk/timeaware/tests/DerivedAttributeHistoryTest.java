@@ -21,6 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 
@@ -39,6 +40,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.tmatesoft.svn.core.SVNException;
 
 /**
  * Tests for derived attributes over the history of a node.
@@ -72,15 +74,7 @@ public class DerivedAttributeHistoryTest extends AbstractTimeAwareModelIndexingT
 
 	@Test
 	public void computedForAllVersions() throws Throwable {
-		indexer.getMetaModelUpdater().addDerivedAttribute(
-			TreePackage.eNS_URI, "Tree", "Important", "Boolean",
-			false, false, false,
-			EOLQueryEngine.TYPE,
-			"return self.label = 'NowYouSeeMe';",
-			indexer
-		);
-
-		twoCommitTree();
+		oneDerivedAttribute();
 		requestSVNIndex(svnRepository);
 		
 		waitForSync(new Callable<Object>(){
@@ -104,6 +98,43 @@ public class DerivedAttributeHistoryTest extends AbstractTimeAwareModelIndexingT
 
 	@Test
 	public void whenComposability() throws Throwable {
+		twoDerivedAttributes();
+
+		waitForSync(new Callable<Object>(){
+			@Override
+			public Object call() throws Exception {
+				// whenAnnotated
+				assertEquals(2,
+					timeAwareEOL("return Tree.earliest.next.all.first.whenAnnotated('Important').versions.size;"));
+				assertEquals(2,
+						timeAwareEOL("return Tree.earliest.next.all.first.whenAnnotated('HasChildren').versions.size;"));
+				assertEquals(1,
+						timeAwareEOL("return Tree.earliest.next.all.first.whenAnnotated('Important').whenAnnotated('HasChildren').versions.size;"));
+				assertEquals(1,
+						timeAwareEOL("return Tree.earliest.next.all.first.whenAnnotated('HasChildren').whenAnnotated('Important').versions.size;"));
+
+				return null;
+			}
+		});
+	}
+
+	@Test
+	public void sinceAnnotated() throws Throwable {
+		twoDerivedAttributes();
+
+		waitForSync(new Callable<Object>(){
+			@Override
+			public Object call() throws Exception {
+				assertEquals(4, timeAwareEOL("return Tree.earliest.next.all.first.earliest.sinceAnnotated('Important').versions.size;"));
+				assertEquals(1, timeAwareEOL("return Tree.earliest.next.all.first.earliest.next.sinceAnnotated('Important').versions.size;"));
+				assertEquals(2, timeAwareEOL("return Tree.earliest.next.all.first.earliest.sinceAnnotated('HasChildren').versions.size;"));
+
+				return null;
+			}
+		});
+	}
+
+	private void twoDerivedAttributes() throws Exception, IOException, SVNException {
 		indexer.getMetaModelUpdater().addDerivedAttribute(
 			TreePackage.eNS_URI, "Tree", "Important", "Boolean",
 			false, false, false,
@@ -119,7 +150,7 @@ public class DerivedAttributeHistoryTest extends AbstractTimeAwareModelIndexingT
 			indexer
 		);
 
-		Tree tRoot = twoCommitTree();
+		Tree tRoot = oneDerivedAttribute();
 		Tree tChild = TreeFactory.eINSTANCE.createTree();
 		tChild.setLabel("Child");
 		tRoot.getChildren().add(tChild);
@@ -131,25 +162,17 @@ public class DerivedAttributeHistoryTest extends AbstractTimeAwareModelIndexingT
 		svnRepository.commit("Change label back");
 
 		requestSVNIndex(svnRepository);
-
-		waitForSync(new Callable<Object>(){
-			@Override
-			public Object call() throws Exception {
-				assertEquals(2,
-					timeAwareEOL("return Tree.earliest.next.all.first.whenAnnotated('Important').versions.size;"));
-				assertEquals(2,
-						timeAwareEOL("return Tree.earliest.next.all.first.whenAnnotated('HasChildren').versions.size;"));
-				assertEquals(1,
-						timeAwareEOL("return Tree.earliest.next.all.first.whenAnnotated('Important').whenAnnotated('HasChildren').versions.size;"));
-				assertEquals(1,
-						timeAwareEOL("return Tree.earliest.next.all.first.whenAnnotated('HasChildren').whenAnnotated('Important').versions.size;"));
-
-				return null;
-			}
-		});
 	}
 	
-	private Tree twoCommitTree() throws Exception {
+	private Tree oneDerivedAttribute() throws Exception {
+		indexer.getMetaModelUpdater().addDerivedAttribute(
+			TreePackage.eNS_URI, "Tree", "Important", "Boolean",
+			false, false, false,
+			EOLQueryEngine.TYPE,
+			"return self.label = 'NowYouSeeMe';",
+			indexer
+		);
+
 		final File fTree = new File(svnRepository.getCheckoutDirectory(), "root.xmi");
 		rTree = rsTree.createResource(URI.createFileURI(fTree.getAbsolutePath()));
 
