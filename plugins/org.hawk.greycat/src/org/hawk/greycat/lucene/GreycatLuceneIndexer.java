@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
@@ -49,6 +50,7 @@ import org.apache.lucene.search.TotalHitCountCollector;
 import org.apache.lucene.search.WildcardQuery;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeIndex;
 import org.hawk.greycat.AbstractGreycatDatabase;
 import org.hawk.greycat.GreycatNode;
@@ -171,7 +173,7 @@ public class GreycatLuceneIndexer {
 				searcher.search(query, lc);
 				return lc.getNodeIterator();
 			} catch (IOException e) {
-				LOGGER.error("Failed to obtain single result", e);
+				LOGGER.error("Failed to obtain result", e);
 				return Collections.emptyIterator();
 			}
 		}
@@ -185,7 +187,7 @@ public class GreycatLuceneIndexer {
 				searcher.search(query, collector);
 				return collector.getTotalHits();
 			} catch (IOException e) {
-				LOGGER.error("Failed to obtain single result", e);
+				LOGGER.error("Failed to obtain size", e);
 				return 0;
 			}
 		}
@@ -465,6 +467,28 @@ public class GreycatLuceneIndexer {
 				.add(findValidDocumentsAtTimepoint(getTimepoint()), Occur.MUST)
 				.build();
 			return new LuceneGraphIterable(query, timepoint);
+		}
+
+		@Override
+		public List<Long> getVersions(ITimeAwareGraphNode gn, String key, Object valueExpr) {
+			final Query valueQuery = getValueQuery(key, valueExpr);
+			final Query query = getIndexQueryBuilder()
+				.add(valueQuery, Occur.MUST)
+				.add(LongPoint.newExactQuery(NODEID_FIELD, (long) gn.getId()), Occur.MUST)
+				.build();
+
+			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
+			try {
+				final FieldCollector<Long> fc = new FieldCollector<>(searcher, VALIDFROM_FIELD, f -> f.numericValue().longValue());
+				searcher.search(query, fc);
+
+				List<Long> timepoints = fc.getValues();
+				Collections.sort(timepoints, (a, b) -> -Long.compare(a, b));
+				return timepoints;
+			} catch (IOException e) {
+				LOGGER.error("Failed to obtain result", e);
+				return Collections.emptyList();
+			}
 		}
 
 		private Query getValueQuery(String key, Object valueExpr) {

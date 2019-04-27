@@ -140,6 +140,8 @@ public class TimeAwareEOLOperationFactory extends EolOperationFactory {
 			}));
 
 		operationCache.put("when", new WhenOperation(this::getContainerModel));
+
+		operationCache.put("whenAnnotated", new WhenAnnotatedOperation(this::getContainerModel));
 	}
 
 }
