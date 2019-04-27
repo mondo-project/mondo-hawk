@@ -126,22 +126,19 @@ public class WhenNodeWrapper extends AbstractTimeAwareNodeWrapper {
 
 	@Override
 	public List<Long> getInstantsBetween(long fromInclusive, long toInclusive) {
-		final List<Long> results = new ArrayList<>();
-		final Iterator<Long> itInstants = matchingVersions.iterator();
-
-		while (itInstants.hasNext()) {
-			final long instant = itInstants.next();
-			if (instant > toInclusive) {
-				// too recent, skip
-			} else if (instant >= fromInclusive) {
-				results.add(instant);
-			} else {
-				// after the end of the range, stop
-				break;
-			}
-		}
+		int iStart = 0, iEnd = matchingVersions.size();
 		
-		return results;
+		while (iStart < matchingVersions.size() && matchingVersions.get(iStart) > toInclusive) {
+			// too recent, skip
+			iStart++;
+		}
+
+		while (iEnd > 0 && matchingVersions.get(iEnd - 1) < fromInclusive) {
+			// too early, skip
+			iEnd--;
+		}
+
+		return matchingVersions.subList(iStart, iEnd);
 	}
 
 	@Override
