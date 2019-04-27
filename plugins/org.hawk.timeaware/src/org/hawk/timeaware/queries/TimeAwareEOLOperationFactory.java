@@ -30,7 +30,9 @@ import org.hawk.timeaware.queries.operations.patterns.VersionQuantifierOperation
 import org.hawk.timeaware.queries.operations.scopes.EndingTimeAwareNodeWrapper;
 import org.hawk.timeaware.queries.operations.scopes.StartingTimeAwareNodeWrapper;
 import org.hawk.timeaware.queries.operations.scopes.annotations.AfterAnnotatedOperation;
+import org.hawk.timeaware.queries.operations.scopes.annotations.BeforeAnnotatedOperation;
 import org.hawk.timeaware.queries.operations.scopes.annotations.SinceAnnotatedOperation;
+import org.hawk.timeaware.queries.operations.scopes.annotations.UntilAnnotatedOperation;
 import org.hawk.timeaware.queries.operations.scopes.annotations.WhenAnnotatedOperation;
 import org.hawk.timeaware.queries.operations.scopes.predicates.VersionRangeOperation;
 import org.hawk.timeaware.queries.operations.scopes.predicates.WhenOperation;
@@ -143,9 +145,15 @@ public class TimeAwareEOLOperationFactory extends EolOperationFactory {
 
 		operationCache.put("when", new WhenOperation(this::getContainerModel));
 
+		/*
+		 * Versions of these operations which use Boolean derived attributes in a
+		 * time-aware node index.
+		 */
 		operationCache.put("whenAnnotated", new WhenAnnotatedOperation(this::getContainerModel));
 		operationCache.put("sinceAnnotated", new SinceAnnotatedOperation(this::getContainerModel));
 		operationCache.put("afterAnnotated", new AfterAnnotatedOperation(this::getContainerModel));
+		operationCache.put("untilAnnotated", new UntilAnnotatedOperation(this::getContainerModel));
+		operationCache.put("beforeAnnotated", new BeforeAnnotatedOperation(this::getContainerModel));
 	}
 
 }

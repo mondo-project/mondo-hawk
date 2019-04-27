@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.hawk.timeaware.queries.operations.scopes;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
@@ -27,8 +28,6 @@ import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 public class StartingTimeAwareNodeWrapper extends AbstractSingleWrapTimeAwareNodeWrapper {
 
 	private final long fromInclusive;
-
-	// TODO add unwrapping step and unwrapping tests in the quantifiers (e.g. combine when+always and nested until)
 
 	public StartingTimeAwareNodeWrapper(ITimeAwareGraphNode original) {
 		this(original, original.getTime());
@@ -72,14 +71,17 @@ public class StartingTimeAwareNodeWrapper extends AbstractSingleWrapTimeAwareNod
 	@Override
 	public ITimeAwareGraphNode travelInTime(long time) {
 		final long actualTime = Math.max(time, fromInclusive);
-		return original.travelInTime(actualTime);
+		return wrap(original.travelInTime(actualTime));
 	}
 
 	@Override
 	public List<Long> getInstantsBetween(long fromInclusive, long toInclusive) {
+		if (this.fromInclusive > toInclusive) {
+			return Collections.emptyList();
+		}
+
 		final long actualFromTime = Math.max(fromInclusive, this.fromInclusive);
-		final long actualToTime = Math.max(actualFromTime, toInclusive);
-		return original.getInstantsBetween(actualFromTime, actualToTime);
+		return original.getInstantsBetween(actualFromTime, toInclusive);
 	}
 
 	@Override

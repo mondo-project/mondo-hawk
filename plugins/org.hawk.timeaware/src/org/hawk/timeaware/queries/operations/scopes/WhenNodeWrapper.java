@@ -17,7 +17,6 @@
 package org.hawk.timeaware.queries.operations.scopes;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
@@ -27,6 +26,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Node wrapper that only exposes a specific list of versions of that node,
  * starting at the wrapped version.
+ *
+ * TODO: optimize range search in {@link #getInstantsBetween(long, long)} with a
+ * better data structure than a list.
  */
 public class WhenNodeWrapper extends AbstractTimeAwareNodeWrapper {
 

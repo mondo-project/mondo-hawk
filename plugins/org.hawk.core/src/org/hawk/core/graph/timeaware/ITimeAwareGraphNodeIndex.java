@@ -43,6 +43,6 @@ public interface ITimeAwareGraphNodeIndex extends IGraphNodeIndex {
 	 * for which the key was equal to the specified value, or <code>null</code> if it
 	 * does not exist.
 	 */
-	Long getFirstVersionSince(ITimeAwareGraphNode taNode, String key, Object exactValue);
+	Long getEarliestVersionSince(ITimeAwareGraphNode taNode, String key, Object exactValue);
 
 }

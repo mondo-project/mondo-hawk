@@ -34,7 +34,7 @@ public class SinceAnnotatedOperation extends AbstractAnnotatedOperation {
 
 	@Override
 	protected ITimeAwareGraphNode useAnnotations(ITimeAwareGraphNodeIndex index, ITimeAwareGraphNode taNode, String derivedAttrName) {
-		final Long firstVersion = index.getFirstVersionSince(taNode, derivedAttrName, true);
+		final Long firstVersion = index.getEarliestVersionSince(taNode, derivedAttrName, true);
 		if (firstVersion == null) {
 			return null;
 		}
