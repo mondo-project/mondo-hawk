@@ -893,9 +893,10 @@ public class GreycatNode implements ITimeAwareGraphNode {
 
 			/*
 			 * FIXME Greycat says that in timepoints(...), both ends are inclusive, but our
-			 * unit tests say otherwise. This is a temporal fix.
+			 * unit tests say otherwise. This is a temporal fix, with some caution around
+			 * overflow.
 			 */
-			n.timepoints(fromInclusive, toInclusive + 1, (value) -> {
+			n.timepoints(fromInclusive, toInclusive < Constants.END_OF_TIME ? toInclusive + 1 : toInclusive, (value) -> {
 				result.complete(value);
 			});
 
@@ -938,9 +939,10 @@ public class GreycatNode implements ITimeAwareGraphNode {
 			final Node n = rn.get();
 
 			CompletableFuture<long[]> result = new CompletableFuture<>();
-			n.timepoints(Constants.BEGINNING_OF_TIME, getTime() - 1, (value) -> {
-				result.complete(value);
-			});
+			n.timepoints(Constants.BEGINNING_OF_TIME,
+				getTime() > Constants.BEGINNING_OF_TIME ? getTime() - 1 : getTime(),
+				(value) -> result.complete(value)
+			);
 
 			/*
 			 * We assume timepoints(...) produces elements from newest to oldest. The
