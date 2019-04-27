@@ -14,7 +14,7 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.timeaware.tests;
+package org.hawk.timeaware.tests.annotators;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -31,16 +31,15 @@ import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.integration.tests.emf.EMFModelSupportFactory;
 import org.hawk.integration.tests.mm.Tree.TreePackage;
 import org.hawk.timeaware.graph.TimeAwareMetaModelUpdater;
-import org.hawk.timeaware.graph.TimeAwareModelUpdater;
-import org.hawk.timeaware.graph.VersionAnnotator;
+import org.hawk.timeaware.graph.annotators.VersionAnnotatorSpec;
+import org.hawk.timeaware.tests.AbstractTimeAwareModelIndexingTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests for basic CRUD of version annotators in the
- * {@link TimeAwareModelUpdater}.
+ * Tests for management of version annotators in the {@link TimeAwareMetaModelUpdater}.
  */
 @RunWith(Parameterized.class)
 public class VersionAnnotatorCRUDTest extends AbstractTimeAwareModelIndexingTest {
@@ -68,7 +67,7 @@ public class VersionAnnotatorCRUDTest extends AbstractTimeAwareModelIndexingTest
 
 	@Test
 	public void createListOne() {
-		final VersionAnnotator annotator = new VersionAnnotator.Builder()
+		final VersionAnnotatorSpec annotator = new VersionAnnotatorSpec.Builder()
 			.metamodelURI(TreePackage.eNS_URI)
 			.typeName("Tree")
 			.label("Important")
@@ -97,7 +96,7 @@ public class VersionAnnotatorCRUDTest extends AbstractTimeAwareModelIndexingTest
 
 	@Test(expected=IllegalArgumentException.class)
 	public void cannotOverrideExistingSlot() {
-		final VersionAnnotator annotator = new VersionAnnotator.Builder()
+		final VersionAnnotatorSpec annotator = new VersionAnnotatorSpec.Builder()
 				.metamodelURI(TreePackage.eNS_URI)
 				.typeName("Tree")
 				.label("parent")

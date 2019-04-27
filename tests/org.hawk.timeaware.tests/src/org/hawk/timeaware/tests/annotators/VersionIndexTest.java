@@ -14,15 +14,15 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.timeaware.tests;
+package org.hawk.timeaware.tests.annotators;
 
-import static org.junit.Assert.assertEquals;
+import static org.hawk.timeaware.tests.annotators.TestUtils.assertEmpty;
+import static org.hawk.timeaware.tests.annotators.TestUtils.assertHasNodes;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 import java.util.Collections;
-import java.util.Iterator;
 
 import org.hawk.backend.tests.BackendTestSuite;
 import org.hawk.backend.tests.LogbackOnlyErrorsRule;
@@ -197,27 +197,6 @@ public class VersionIndexTest extends TemporaryDatabaseTest {
 
 		idx.removeVersion(n1T0);
 		assertHasNodes(idx.getAllVersions(n1T0), n1T6);
-	}
-
-	// TODO add test about multiple indices not bothering each other on adds / deletes
-
-	private static void assertHasNodes(Iterable<ITimeAwareGraphNode> iterable, ITimeAwareGraphNode... expectedNodes) {
-		final Iterator<ITimeAwareGraphNode> itVersions = iterable.iterator();
-
-		for (int i = 0; i < expectedNodes.length; i++) {
-			assertTrue("Element " + i + " exists", itVersions.hasNext());
-
-			final ITimeAwareGraphNode expectedNode = expectedNodes[i];
-			final ITimeAwareGraphNode actualNode = itVersions.next();
-			assertEquals("Element " + i + " has the same ID", expectedNode.getId(), actualNode.getId());
-			assertEquals("Element " + i + " has the same time", expectedNode.getTime(), actualNode.getTime());
-		}
-		
-		assertFalse("There are exactly " + expectedNodes.length + " elements", itVersions.hasNext());
-	}
-
-	private static void assertEmpty(Iterable<ITimeAwareGraphNode> iterable) {
-		assertFalse(iterable.iterator().hasNext());
 	}
 
 }

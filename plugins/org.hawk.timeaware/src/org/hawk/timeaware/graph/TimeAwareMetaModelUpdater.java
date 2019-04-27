@@ -32,6 +32,8 @@ import org.hawk.graph.MetamodelNode;
 import org.hawk.graph.Slot;
 import org.hawk.graph.TypeNode;
 import org.hawk.graph.updater.GraphMetaModelUpdater;
+import org.hawk.timeaware.graph.annotators.VersionAnnotator;
+import org.hawk.timeaware.graph.annotators.VersionAnnotatorSpec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +54,7 @@ public class TimeAwareMetaModelUpdater extends GraphMetaModelUpdater {
 	 * The version annotator information is stored as an additional slot in the type
 	 * node.
 	 */
-	public void addVersionAnnotator(IModelIndexer indexer, VersionAnnotator definition) {
+	public void addVersionAnnotator(IModelIndexer indexer, VersionAnnotatorSpec definition) {
 		try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
 			final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
 			final MetamodelNode mmNode = gw.getMetamodelNodeByNsURI(definition.getMetamodelURI());
@@ -75,9 +77,7 @@ public class TimeAwareMetaModelUpdater extends GraphMetaModelUpdater {
 			indexer.getGraph().getOrCreateNodeIndex(VA_TYPES_IDXNAME)
 				.add(tNode.getNode(), VA_TYPES_IDXKEY, definition.getVersionLabel());
 
-			// TODO: create node index
-
-			// TODO: annotate versions that currently exist
+			new VersionAnnotator(indexer).annotateFullHistory(definition); 
 
 			tx.success();
 		} catch (RuntimeException e) {
@@ -126,8 +126,8 @@ public class TimeAwareMetaModelUpdater extends GraphMetaModelUpdater {
 	/**
 	 * Lists all available version annotators for a type.
 	 */
-	public Collection<VersionAnnotator> listVersionAnnotators(IModelIndexer indexer, String metamodel, String typeName) {
-		final Set<VersionAnnotator> results = new HashSet<>();
+	public Collection<VersionAnnotatorSpec> listVersionAnnotators(IModelIndexer indexer, String metamodel, String typeName) {
+		final Set<VersionAnnotatorSpec> results = new HashSet<>();
 
 		final IGraphDatabase graph = indexer.getGraph();
 		try (IGraphTransaction tx = graph.beginTransaction()) {
@@ -137,7 +137,7 @@ public class TimeAwareMetaModelUpdater extends GraphMetaModelUpdater {
 
 			for (Slot slot : tNode.getSlots().values()) {
 				if (slot.isVersionAnnotator()) {
-					results.add(VersionAnnotator.from(tNode, slot));
+					results.add(VersionAnnotatorSpec.from(tNode, slot));
 				}
 			}
 
@@ -152,8 +152,8 @@ public class TimeAwareMetaModelUpdater extends GraphMetaModelUpdater {
 	/**
 	 * Lists all available version annotators.
 	 */
-	public Collection<VersionAnnotator> listVersionAnnotators(IModelIndexer indexer) {
-		final Set<VersionAnnotator> results = new HashSet<>();
+	public Collection<VersionAnnotatorSpec> listVersionAnnotators(IModelIndexer indexer) {
+		final Set<VersionAnnotatorSpec> results = new HashSet<>();
 
 		final IGraphDatabase graph = indexer.getGraph();
 		try (IGraphTransaction tx = graph.beginTransaction()) {
@@ -166,7 +166,7 @@ public class TimeAwareMetaModelUpdater extends GraphMetaModelUpdater {
 				final TypeNode typeNode = new TypeNode(node);
 				for (Slot slot : typeNode.getSlots().values()) {
 					if (slot.isVersionAnnotator()) {
-						results.add(VersionAnnotator.from(typeNode, slot));
+						results.add(VersionAnnotatorSpec.from(typeNode, slot));
 					}
 				}
 			}

@@ -12,4 +12,5 @@ Require-Bundle: org.slf4j.api;bundle-version="1.7.2",
  org.eclipse.epsilon.eol.engine;bundle-version="1.5.0"
 Export-Package: org.hawk.timeaware.factory,
  org.hawk.timeaware.graph,
+ org.hawk.timeaware.graph.annotators,
  org.hawk.timeaware.queries

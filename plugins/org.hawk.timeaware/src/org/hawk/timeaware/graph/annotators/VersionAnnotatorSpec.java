@@ -14,7 +14,7 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.timeaware.graph;
+package org.hawk.timeaware.graph.annotators;
 
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeVersionIndex;
 import org.hawk.graph.Slot;
@@ -30,7 +30,7 @@ import org.hawk.graph.TypeNode;
  * Creating instances of this class is done through a fluent API, to avoid
  * constructors with too many unnamed arguments.
  */
-public class VersionAnnotator {
+public class VersionAnnotatorSpec {
 
 	private final String metamodelURI;
 	private final String typeName;
@@ -38,7 +38,7 @@ public class VersionAnnotator {
 	private final String expressionLanguage;
 	private final String expression;
 
-	private VersionAnnotator(String metamodelURI, String typeName, String versionLabel, String expressionLanguage, String expression) {
+	private VersionAnnotatorSpec(String metamodelURI, String typeName, String versionLabel, String expressionLanguage, String expression) {
 		this.metamodelURI = metamodelURI;
 		this.typeName = typeName;
 		this.versionLabel = versionLabel;
@@ -46,7 +46,7 @@ public class VersionAnnotator {
 		this.expression = expression;
 	}
 
-	public static VersionAnnotator from(TypeNode typeNode, Slot slot) {
+	public static VersionAnnotatorSpec from(TypeNode typeNode, Slot slot) {
 		return new Builder()
 			.metamodelURI(typeNode.getMetamodelURI())
 			.typeName(typeNode.getTypeName())
@@ -84,7 +84,7 @@ public class VersionAnnotator {
 			return this;
 		}
 
-		public VersionAnnotator build() {
+		public VersionAnnotatorSpec build() {
 			if (this.metamodelURI == null) {
 				throw new IllegalStateException("Metamodel URI is required");
 			}
@@ -95,7 +95,7 @@ public class VersionAnnotator {
 				throw new IllegalStateException("Label is required");
 			}
 
-			return new VersionAnnotator(
+			return new VersionAnnotatorSpec(
 				metamodelURI, typeName, versionLabel,
 				expressionLanguage, expression
 			);
@@ -148,7 +148,7 @@ public class VersionAnnotator {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		VersionAnnotator other = (VersionAnnotator) obj;
+		VersionAnnotatorSpec other = (VersionAnnotatorSpec) obj;
 		if (expression == null) {
 			if (other.expression != null)
 				return false;
