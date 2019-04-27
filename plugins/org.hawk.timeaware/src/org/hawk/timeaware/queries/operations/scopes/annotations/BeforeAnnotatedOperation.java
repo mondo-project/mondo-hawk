@@ -21,18 +21,18 @@ import java.util.function.Supplier;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeIndex;
 import org.hawk.epsilon.emc.EOLQueryEngine;
-import org.hawk.timeaware.queries.operations.scopes.StartingTimeAwareNodeWrapper;
+import org.hawk.timeaware.queries.operations.scopes.EndingTimeAwareNodeWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Variant of <code>after</code> which uses a predefined derived Boolean attribute.
+ * Variant of <code>before</code> which uses a predefined derived Boolean attribute.
  */
-public class AfterAnnotatedOperation extends AbstractAnnotatedOperation {
+public class BeforeAnnotatedOperation extends AbstractAnnotatedOperation {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AfterAnnotatedOperation.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BeforeAnnotatedOperation.class);
 
-	public AfterAnnotatedOperation(Supplier<EOLQueryEngine> containerModelSupplier) {
+	public BeforeAnnotatedOperation(Supplier<EOLQueryEngine> containerModelSupplier) {
 		super(containerModelSupplier);
 	}
 
@@ -43,14 +43,13 @@ public class AfterAnnotatedOperation extends AbstractAnnotatedOperation {
 			return null;
 		}
 
-		final ITimeAwareGraphNode node = taNode.travelInTime(firstVersion);
 		try {
-			ITimeAwareGraphNode next = node.getNext();
-			if (next != null) {
-				return new StartingTimeAwareNodeWrapper(next);
+			final long prevInstant = taNode.travelInTime(firstVersion).getPreviousInstant();
+			if (prevInstant != ITimeAwareGraphNode.NO_SUCH_INSTANT) {
+				return new EndingTimeAwareNodeWrapper(taNode, prevInstant);
 			}
 		} catch (Exception e) {
-			LOGGER.error("Could not fetch next version", e);
+			LOGGER.error("Could not fetch previous instant", e);
 		}
 
 		return null;

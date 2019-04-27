@@ -149,15 +149,42 @@ public class DerivedAttributeHistoryTest extends AbstractTimeAwareModelIndexingT
 			}
 		});
 	}
+
+	@Test
+	public void untilAnnotated() throws Throwable {
+		twoDerivedAttributes();
+
+		waitForSync(new Callable<Object>(){
+			@Override
+			public Object call() throws Exception {
+				assertEquals(1, timeAwareEOL("return Tree.earliest.next.all.first.earliest.untilAnnotated('Important').versions.size;"));
+				assertEquals(3, timeAwareEOL("return Tree.earliest.next.all.first.earliest.next.sinceThen.untilAnnotated('Important').versions.size;"));
+				assertEquals(3, timeAwareEOL("return Tree.earliest.next.all.first.earliest.untilAnnotated('HasChildren').versions.size;"));
+
+				assertEquals(1, timeAwareEOL("return Tree.earliest.next.all.first.earliest.untilAnnotated('HasChildren').untilAnnotated('Important').versions.size;"));
+				assertFalse((boolean) timeAwareEOL("return Tree.earliest.next.all.first.earliest.untilAnnotated('Important').untilAnnotated('HasChildren').isDefined();"));
+
+				return null;
+			}
+		});
+	}
+
+	@Test
+	public void beforeAnnotated() throws Throwable {
+		twoDerivedAttributes();
+
+		waitForSync(new Callable<Object>(){
+			@Override
+			public Object call() throws Exception {
+				assertFalse((boolean) timeAwareEOL("return Tree.earliest.next.all.first.earliest.beforeAnnotated('Important').isDefined();"));
+				assertEquals(2, timeAwareEOL("return Tree.earliest.next.all.first.earliest.next.sinceThen.beforeAnnotated('Important').versions.size;"));
+				assertEquals(2, timeAwareEOL("return Tree.earliest.next.all.first.earliest.beforeAnnotated('HasChildren').versions.size;"));
+				return null;
+			}
+		});
+	}
 	
 	private void twoDerivedAttributes() throws Exception, IOException, SVNException {
-		indexer.getMetaModelUpdater().addDerivedAttribute(
-			TreePackage.eNS_URI, "Tree", "Important", "Boolean",
-			false, false, false,
-			EOLQueryEngine.TYPE,
-			"return self.label = 'NowYouSeeMe';",
-			indexer
-		);
 		indexer.getMetaModelUpdater().addDerivedAttribute(
 			TreePackage.eNS_URI, "Tree", "HasChildren", "Boolean",
 			false, false, false,

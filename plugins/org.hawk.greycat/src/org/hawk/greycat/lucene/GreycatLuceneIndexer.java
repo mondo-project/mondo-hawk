@@ -514,7 +514,7 @@ public class GreycatLuceneIndexer {
 		}
 
 		@Override
-		public Long getFirstVersionSince(ITimeAwareGraphNode gn, String key, Object valueExpr) {
+		public Long getEarliestVersionSince(ITimeAwareGraphNode gn, String key, Object valueExpr) {
 			final Query valueQuery = getValueQuery(key, valueExpr);
 			final Query query = getIndexQueryBuilder()
 				.add(valueQuery, Occur.MUST)
@@ -533,7 +533,7 @@ public class GreycatLuceneIndexer {
 
 				final Document doc = searcher.doc(hits[0].doc);
 				final long from = doc.getField(VALIDFROM_FIELD).numericValue().longValue();
-				final long to = doc.getField(VALIDFROM_FIELD).numericValue().longValue();
+				final long to = doc.getField(VALIDTO_FIELD).numericValue().longValue();
 				final List<Long> versions = gn.getInstantsBetween(from, to);
 				if (versions.isEmpty()) {
 					return null;

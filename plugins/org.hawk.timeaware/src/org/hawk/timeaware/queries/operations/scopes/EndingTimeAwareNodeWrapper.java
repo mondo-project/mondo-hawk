@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.hawk.timeaware.queries.operations.scopes;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
@@ -65,14 +66,17 @@ public class EndingTimeAwareNodeWrapper extends AbstractSingleWrapTimeAwareNodeW
 	@Override
 	public ITimeAwareGraphNode travelInTime(long time) {
 		final long actualTime = Math.min(time, this.toInclusive);
-		return original.travelInTime(actualTime);
+		return wrap(original.travelInTime(actualTime));
 	}
 
 	@Override
 	public List<Long> getInstantsBetween(long fromInclusive, long toInclusive) {
-		final long actualFromTime = Math.min(fromInclusive, this.toInclusive);
+		if (this.toInclusive < fromInclusive) {
+			return Collections.emptyList();
+		}
+
 		final long actualToTime = Math.min(toInclusive, this.toInclusive);
-		return original.getInstantsBetween(actualFromTime, actualToTime);
+		return original.getInstantsBetween(fromInclusive, actualToTime);
 	}
 
 	@Override
