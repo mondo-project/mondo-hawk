@@ -63,8 +63,11 @@ public class WhenAnnotatedOperation extends AbstractOperation {
 				LOGGER.warn("called on non-timeaware node {}, returning null", target.getClass().getName());
 				return null;
 			}
-		} else {
+		} else if (target != null) {
 			LOGGER.warn("called on non-node {}, returning null", target.getClass().getName());
+			return null;
+		} else {
+			LOGGER.warn("called on undefined value, returning null");
 			return null;
 		}
 			
@@ -87,9 +90,14 @@ public class WhenAnnotatedOperation extends AbstractOperation {
 
 		final String idxName = slot.getNodeIndexName();
 		final ITimeAwareGraphNodeIndex index = (ITimeAwareGraphNodeIndex) taNode.getGraph().getOrCreateNodeIndex(idxName);
+		
+		final List<Long> versions = index.getVersions(taNode, derivedAttrName, true);
+		if (versions.isEmpty()) {
+			return null;
+		}
 
-		List<Long> versions = index.getVersions(taNode, derivedAttrName, true);
-		return new WhenNodeWrapper(taNode, versions);
+		final Long earliestTimepoint = versions.get(versions.size() - 1);
+		return new WhenNodeWrapper(taNode.travelInTime(earliestTimepoint), versions);
 	}
 
 	@Override

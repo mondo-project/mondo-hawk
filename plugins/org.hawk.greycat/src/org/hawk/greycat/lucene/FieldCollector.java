@@ -27,17 +27,40 @@ import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.SimpleCollector;
 
-class FieldCollector<T> extends SimpleCollector {
+class IntervalCollector<T> extends SimpleCollector {
 	protected final List<Integer> docIds = new ArrayList<>();
 	protected final IndexSearcher searcher;
 	private int docBase;
 
-	private final String fieldName;
+	private final String fieldFrom, fieldTo;
 	private Function<IndexableField, T> extractor;
 
-	protected FieldCollector(IndexSearcher searcher, String fieldName, Function<IndexableField, T> extractor) {
+	public static final class Interval<T> {
+		private final T from, to;
+
+		public Interval(T from, T to) {
+			this.from = from;
+			this.to = to;
+		}
+
+		public T getFrom() {
+			return from;
+		}
+
+		public T getTo() {
+			return to;
+		}
+
+		@Override
+		public String toString() {
+			return "Interval [from=" + from + ", to=" + to + "]";
+		}
+	}
+
+	protected IntervalCollector(IndexSearcher searcher, String fieldFrom, String fieldTo, Function<IndexableField, T> extractor) {
 		this.searcher = searcher;
-		this.fieldName = fieldName;
+		this.fieldFrom = fieldFrom;
+		this.fieldTo = fieldTo;
 		this.extractor = extractor;
 	}
 
@@ -56,11 +79,13 @@ class FieldCollector<T> extends SimpleCollector {
 		docIds.add(docBase + doc);
 	}
 
-	public List<T> getValues() throws IOException {
-		List<T> result = new ArrayList<>();
+	public List<Interval<T>> getValues() throws IOException {
+		List<Interval<T>> result = new ArrayList<>();
 		for (int docId : docIds) {
 			final Document document = searcher.doc(docId);
-			result.add(extractor.apply(document.getField(fieldName)));
+			T from = extractor.apply(document.getField(fieldFrom));
+			T to = extractor.apply(document.getField(fieldTo));
+			result.add(new Interval<T>(from, to));
 		}
 		return result;
 	}

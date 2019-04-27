@@ -30,9 +30,10 @@ import org.hawk.backend.tests.BackendTestSuite;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.integration.tests.emf.EMFModelSupportFactory;
-import org.hawk.integration.tests.mm.Tree.TreePackage;
 import org.hawk.svn.tests.rules.TemporarySVNRepository;
 import org.hawk.timeaware.tests.tree.Tree.Tree;
+import org.hawk.timeaware.tests.tree.Tree.TreeFactory;
+import org.hawk.timeaware.tests.tree.Tree.TreePackage;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +47,7 @@ import org.junit.runners.Parameterized.Parameters;
 public class DerivedAttributeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 	@Rule
 	public TemporarySVNRepository svnRepository = new TemporarySVNRepository();
+	private Resource rTree;
 
 	@Parameters(name = "{0}")
     public static Iterable<Object[]> params() {
@@ -79,6 +81,8 @@ public class DerivedAttributeHistoryTest extends AbstractTimeAwareModelIndexingT
 		);
 
 		twoCommitTree();
+		requestSVNIndex(svnRepository);
+		
 		waitForSync(new Callable<Object>(){
 			@Override
 			public Object call() throws Exception {
@@ -98,9 +102,56 @@ public class DerivedAttributeHistoryTest extends AbstractTimeAwareModelIndexingT
 		});
 	}
 
-	private void twoCommitTree() throws Exception {
+	@Test
+	public void whenComposability() throws Throwable {
+		indexer.getMetaModelUpdater().addDerivedAttribute(
+			TreePackage.eNS_URI, "Tree", "Important", "Boolean",
+			false, false, false,
+			EOLQueryEngine.TYPE,
+			"return self.label = 'NowYouSeeMe';",
+			indexer
+		);
+		indexer.getMetaModelUpdater().addDerivedAttribute(
+			TreePackage.eNS_URI, "Tree", "HasChildren", "Boolean",
+			false, false, false,
+			EOLQueryEngine.TYPE,
+			"return self.children.size > 0;",
+			indexer
+		);
+
+		Tree tRoot = twoCommitTree();
+		Tree tChild = TreeFactory.eINSTANCE.createTree();
+		tChild.setLabel("Child");
+		tRoot.getChildren().add(tChild);
+		rTree.save(null);
+		svnRepository.commit("Add child node");
+
+		tRoot.setLabel("NowYouSeeMe");
+		rTree.save(null);
+		svnRepository.commit("Change label back");
+
+		requestSVNIndex(svnRepository);
+
+		waitForSync(new Callable<Object>(){
+			@Override
+			public Object call() throws Exception {
+				assertEquals(2,
+					timeAwareEOL("return Tree.earliest.next.all.first.whenAnnotated('Important').versions.size;"));
+				assertEquals(2,
+						timeAwareEOL("return Tree.earliest.next.all.first.whenAnnotated('HasChildren').versions.size;"));
+				assertEquals(1,
+						timeAwareEOL("return Tree.earliest.next.all.first.whenAnnotated('Important').whenAnnotated('HasChildren').versions.size;"));
+				assertEquals(1,
+						timeAwareEOL("return Tree.earliest.next.all.first.whenAnnotated('HasChildren').whenAnnotated('Important').versions.size;"));
+
+				return null;
+			}
+		});
+	}
+	
+	private Tree twoCommitTree() throws Exception {
 		final File fTree = new File(svnRepository.getCheckoutDirectory(), "root.xmi");
-		Resource rTree = rsTree.createResource(URI.createFileURI(fTree.getAbsolutePath()));
+		rTree = rsTree.createResource(URI.createFileURI(fTree.getAbsolutePath()));
 
 		Tree t = treeFactory.createTree();
 		t.setLabel("NowYouSeeMe");
@@ -113,7 +164,7 @@ public class DerivedAttributeHistoryTest extends AbstractTimeAwareModelIndexingT
 		rTree.save(null);
 		svnRepository.commit("Second commit - change label");
 
-		requestSVNIndex(svnRepository);
+		return t;
 	}
 
 }
