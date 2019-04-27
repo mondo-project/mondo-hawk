@@ -14,33 +14,36 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.timeaware.queries.operations.declarative;
+package org.hawk.timeaware.queries.operations.patterns;
 
 /**
- * Reducer which evaluates all expressions, and then counts how many times the
- * expression evaluated to <code>true</code>. The number of times should be
- * greater than zero (so it did happen), and less than or equal to the bound.  
+ * Reducer which stops as soon as the expression has evaluated to <code>true</code>
+ * a minimum number of times. If the expression has not evaluated that number of
+ * times before the elements run out, it will reduce to <code>false</code>.
  */
-public class EventuallyAtMostReducer implements IShortCircuitReducer {
+public class EventuallyAtLeastReducer implements IShortCircuitReducer {
 
-	private final int maxCount;
+	private final int minCount;
 	private int currentCount;
 
-	public EventuallyAtMostReducer(int maxCount) {
-		this.maxCount = maxCount;
+	public EventuallyAtLeastReducer(int minCount) {
+		this.minCount = minCount;
 	}
 
 	@Override
 	public Boolean reduce(boolean element) {
 		if (element) {
 			currentCount++;
+			if (currentCount >= minCount) {
+				return true;
+			}
 		}
 		return null;
 	}
 
 	@Override
 	public boolean reduce() {
-		return currentCount > 0 && currentCount <= maxCount;
+		return currentCount >= minCount;
 	}
 
 }

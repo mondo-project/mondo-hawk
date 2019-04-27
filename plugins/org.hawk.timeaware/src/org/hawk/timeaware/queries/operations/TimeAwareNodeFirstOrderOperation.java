@@ -14,7 +14,7 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.timeaware.queries.operations.declarative;
+package org.hawk.timeaware.queries.operations;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -54,7 +54,7 @@ public abstract class TimeAwareNodeFirstOrderOperation extends FirstOrderOperati
 	@Override
 	public Object execute(Object target, Variable iterator, Expression expression, IEolContext context) throws EolRuntimeException {
 		if (target == null) {
-			LOGGER.warn("always called on null value, returning false");
+			LOGGER.warn("called on null value, returning false");
 			return false;
 		}
 	
@@ -66,7 +66,7 @@ public abstract class TimeAwareNodeFirstOrderOperation extends FirstOrderOperati
 				taNode = (ITimeAwareGraphNode) gnw.getNode();
 				varWrapper = (n) -> new GraphNodeWrapper(n, containerModelSupplier.get());
 			} else {
-				LOGGER.warn("always called on non-timeaware node {}, returning false", target.getClass().getName());
+				LOGGER.warn("called on non-timeaware node {}, returning false", target.getClass().getName());
 				return false;
 			}
 		} else if (target instanceof TypeNodeWrapper) {
@@ -75,11 +75,11 @@ public abstract class TimeAwareNodeFirstOrderOperation extends FirstOrderOperati
 				taNode = (ITimeAwareGraphNode) tnw.getNode();
 				varWrapper = (n) -> new TypeNodeWrapper(new TypeNode(n), containerModelSupplier.get());
 			} else {
-				LOGGER.warn("always called on non-timeaware node {}, returning false", target.getClass().getName());
+				LOGGER.warn("called on non-timeaware node {}, returning false", target.getClass().getName());
 				return false;
 			}
 		} else {
-			LOGGER.warn("always called on non-node {}, returning false", target.getClass().getName());
+			LOGGER.warn("called on non-node {}, returning false", target.getClass().getName());
 			return false;
 		}
 		

@@ -14,88 +14,82 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.timeaware.queries.operations.declarative;
+package org.hawk.timeaware.queries.operations.scopes;
 
 import java.util.List;
 
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 
 /**
- * Node wrapper which only exposes the versions starting at a certain timepoint.
- * If only given a node, it will be from the timepoint of that node.
+ * Node wrapper which only exposes the versions of the wrapped node up to and including the
+ * specified timepoint.
  */
-public class StartingTimeAwareNodeWrapper extends AbstractSingleWrapTimeAwareNodeWrapper {
+public class EndingTimeAwareNodeWrapper extends AbstractSingleWrapTimeAwareNodeWrapper {
 
-	private final long fromInclusive;
+	private final long toInclusive;
 
-	// TODO add unwrapping step and unwrapping tests in the quantifiers (e.g. combine when+always and nested until)
-
-	public StartingTimeAwareNodeWrapper(ITimeAwareGraphNode original) {
+	public EndingTimeAwareNodeWrapper(ITimeAwareGraphNode original) {
 		this(original, original.getTime());
 	}
 
-	public StartingTimeAwareNodeWrapper(ITimeAwareGraphNode original, long fromInclusive) {
+	public EndingTimeAwareNodeWrapper(ITimeAwareGraphNode original, long toInclusive) {
 		super(original);
-		this.fromInclusive = fromInclusive;
+		this.toInclusive = toInclusive;
 	}
 
 	@Override
 	public List<Long> getAllInstants() throws Exception {
-		return original.getInstantsBetween(fromInclusive, original.getLatestInstant());
+		return original.getInstantsUpTo(toInclusive);
 	}
 
 	@Override
 	public long getEarliestInstant() throws Exception {
-		return fromInclusive;
+		return original.getEarliestInstant();
 	}
 
 	@Override
 	public long getPreviousInstant() throws Exception {
-		final long prev = original.getPreviousInstant();
-		if (prev == ITimeAwareGraphNode.NO_SUCH_INSTANT || prev < fromInclusive) {
-			return ITimeAwareGraphNode.NO_SUCH_INSTANT;
-		} else {
-			return prev;
-		}
+		return original.getPreviousInstant();
 	}
 
 	@Override
 	public long getLatestInstant() throws Exception {
-		return original.getLatestInstant();
+		return Math.min(toInclusive, original.getLatestInstant());
 	}
 
 	@Override
 	public long getNextInstant() throws Exception {
-		return original.getNextInstant();
+		return Math.min(toInclusive, original.getNextInstant());
 	}
 
 	@Override
 	public ITimeAwareGraphNode travelInTime(long time) {
-		final long actualTime = Math.max(time, fromInclusive);
+		final long actualTime = Math.min(time, this.toInclusive);
 		return original.travelInTime(actualTime);
 	}
 
 	@Override
 	public List<Long> getInstantsBetween(long fromInclusive, long toInclusive) {
-		final long actualFromTime = Math.max(fromInclusive, this.fromInclusive);
-		final long actualToTime = Math.max(actualFromTime, toInclusive);
+		final long actualFromTime = Math.min(fromInclusive, this.toInclusive);
+		final long actualToTime = Math.min(toInclusive, this.toInclusive);
 		return original.getInstantsBetween(actualFromTime, actualToTime);
 	}
 
 	@Override
 	public List<Long> getInstantsFrom(long fromInclusive) {
-		final long actualFromTime = Math.max(fromInclusive, this.fromInclusive);
+		final long actualFromTime = Math.min(fromInclusive, this.toInclusive);
 		return original.getInstantsFrom(actualFromTime);
 	}
 
 	@Override
 	public List<Long> getInstantsUpTo(long toInclusive) {
-		return original.getInstantsBetween(this.fromInclusive, toInclusive);
+		final long actualToTime = Math.min(toInclusive, this.toInclusive);
+		return original.getInstantsUpTo(actualToTime);
 	}
 
 	@Override
 	protected ITimeAwareGraphNode wrap(ITimeAwareGraphNode n) {
-		return new StartingTimeAwareNodeWrapper(n, this.fromInclusive);
+		return new EndingTimeAwareNodeWrapper(n, toInclusive);
 	}
-	
+
 }

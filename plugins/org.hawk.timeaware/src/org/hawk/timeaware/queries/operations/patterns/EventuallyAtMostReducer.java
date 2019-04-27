@@ -14,21 +14,33 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.timeaware.queries.operations.declarative;
+package org.hawk.timeaware.queries.operations.patterns;
 
-public interface IShortCircuitReducer {
-	/**
-	 * Takes the result of evaluating the expression on the next element, and
-	 * returns either <code>true</code> or <code>false</code> (which shortcircuits
-	 * the evaluation), or <code>null</code>, signalling that more elements must be
-	 * evaluated.
-	 */
-	Boolean reduce(boolean element);
+/**
+ * Reducer which evaluates all expressions, and then counts how many times the
+ * expression evaluated to <code>true</code>. The number of times should be
+ * greater than zero (so it did happen), and less than or equal to the bound.  
+ */
+public class EventuallyAtMostReducer implements IShortCircuitReducer {
 
-	/**
-	 * Returns the final conclusion once no more elements are available. This should
-	 * only be invoked after {@link #reduce(Boolean)} has been invoked for all the
-	 * elements.
-	 */
-	boolean reduce();
+	private final int maxCount;
+	private int currentCount;
+
+	public EventuallyAtMostReducer(int maxCount) {
+		this.maxCount = maxCount;
+	}
+
+	@Override
+	public Boolean reduce(boolean element) {
+		if (element) {
+			currentCount++;
+		}
+		return null;
+	}
+
+	@Override
+	public boolean reduce() {
+		return currentCount > 0 && currentCount <= maxCount;
+	}
+
 }
