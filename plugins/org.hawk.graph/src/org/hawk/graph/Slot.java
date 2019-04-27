@@ -21,11 +21,19 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 
+import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.IGraphTransaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Read-only abstraction of the known metadata about a slot (an attribute or a
  * reference) in the graph populated by this updater.
  */
 public class Slot {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(Slot.class);
+
 	private final TypeNode typeNode;
 	private final String propertyName, propertyType;
 	private final boolean isAttribute, isReference, isMixed, isDerived, isIndexed;
@@ -116,6 +124,30 @@ public class Slot {
 
 	public String getType() {
 		return propertyType;
+	}
+
+	/**
+	 * Returns the full name of the node index that tracks this slot in all instances
+	 * of this type, if any.
+	 */
+	public String getNodeIndexName() {
+		if (!isDerived && !isIndexed) {
+			return null;
+		}
+		
+		String result = null;
+		final IGraphDatabase graph = typeNode.getNode().getGraph();
+		try (IGraphTransaction ignored = graph.beginTransaction()) {
+			final String indexname = String.format("%s##%s##%s", typeNode.getMetamodelURI(), typeNode.getTypeName(), this.propertyName);
+			if (graph.nodeIndexExists(indexname)) {
+				result = indexname;
+			}
+			ignored.success();
+		} catch (Exception e) {
+			LOGGER.warn("Error while locating the index for this derived property", e);
+		}
+
+		return result;
 	}
 
 	@Override

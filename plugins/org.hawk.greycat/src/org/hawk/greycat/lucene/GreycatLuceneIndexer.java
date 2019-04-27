@@ -18,9 +18,11 @@ package org.hawk.greycat.lucene;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
@@ -49,9 +51,11 @@ import org.apache.lucene.search.TotalHitCountCollector;
 import org.apache.lucene.search.WildcardQuery;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeIndex;
 import org.hawk.greycat.AbstractGreycatDatabase;
 import org.hawk.greycat.GreycatNode;
+import org.hawk.greycat.lucene.IntervalCollector.Interval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -165,36 +169,34 @@ public class GreycatLuceneIndexer {
 
 		@Override
 		public Iterator<GreycatNode> iterator() {
-			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 			try {
+				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 				final NodeListCollector lc = new NodeListCollector(searcher, timepoint);
 				searcher.search(query, lc);
 				return lc.getNodeIterator();
 			} catch (IOException e) {
-				LOGGER.error("Failed to obtain single result", e);
+				LOGGER.error("Failed to obtain result", e);
 				return Collections.emptyIterator();
 			}
 		}
 
 		@Override
 		public int size() {
-			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
-
 			try {
+				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 				final TotalHitCountCollector collector = new TotalHitCountCollector();
 				searcher.search(query, collector);
 				return collector.getTotalHits();
 			} catch (IOException e) {
-				LOGGER.error("Failed to obtain single result", e);
+				LOGGER.error("Failed to obtain size", e);
 				return 0;
 			}
 		}
 
 		@Override
 		public GreycatNode getSingle() {
-			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
-
 			try {
+				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 				TopDocs results = searcher.search(query, 1);
 				if (results.totalHits > 0) {
 					final Document document = searcher.doc(results.scoreDocs[0].doc);
@@ -467,6 +469,44 @@ public class GreycatLuceneIndexer {
 			return new LuceneGraphIterable(query, timepoint);
 		}
 
+		@Override
+		public List<Long> getVersions(ITimeAwareGraphNode gn, String key, Object valueExpr) {
+			final Query valueQuery = getValueQuery(key, valueExpr);
+			final Query query = getIndexQueryBuilder()
+				.add(valueQuery, Occur.MUST)
+				.add(LongPoint.newExactQuery(NODEID_FIELD, (long) gn.getId()), Occur.MUST)
+				.build();
+
+			try {
+				final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
+
+				/*
+				 * The index is structured in intervals, NOT in specific timepoints - this means
+				 * that a specific interval may contain multiple timepoints. We can ask the node
+				 * for those timepoints - this also ensures composability in whenAnnotated('...')
+				 * operations.
+				 */
+				final IntervalCollector<Long> fc = new IntervalCollector<>(
+					searcher, VALIDFROM_FIELD, VALIDTO_FIELD, f -> f.numericValue().longValue()
+				);
+				searcher.search(query, fc);
+
+				final List<Interval<Long>> intervals = fc.getValues();
+				Collections.sort(intervals, (a, b) -> -Long.compare(a.getFrom(), b.getFrom()));
+
+				final List<Long> timepoints = new ArrayList<>();
+				for (Interval<Long> interval : intervals) {
+					List<Long> intervalTimepoints = gn.getInstantsBetween(interval.getFrom(), interval.getTo());
+					timepoints.addAll(intervalTimepoints);
+				}
+
+				return timepoints;
+			} catch (IOException e) {
+				LOGGER.error("Failed to obtain result", e);
+				return Collections.emptyList();
+			}
+		}
+
 		private Query getValueQuery(String key, Object valueExpr) {
 			Query valueQuery;
 			if (valueExpr instanceof Float || valueExpr instanceof Double) {
@@ -667,7 +707,8 @@ public class GreycatLuceneIndexer {
 
 			final Query query = new BooleanQuery.Builder()
 				.add(new TermQuery(new Term(INDEX_FIELD, name)), Occur.MUST)
-				.add(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), Occur.MUST).build();
+				.add(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), Occur.MUST)
+				.build();
 
 			final TotalHitCountCollector thc = new TotalHitCountCollector();
 			searcher.search(query, thc);

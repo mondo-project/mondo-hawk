@@ -16,10 +16,13 @@
  ******************************************************************************/
 package org.hawk.core.graph.timeaware;
 
+import java.util.List;
+
 import org.hawk.core.graph.IGraphNodeIndex;
 
 /**
- * Variant of a node index which can travel in time.
+ * Variant of a node index which can travel in time and do queries over the
+ * timeline of a node.
  */
 public interface ITimeAwareGraphNodeIndex extends IGraphNodeIndex {
 
@@ -28,5 +31,11 @@ public interface ITimeAwareGraphNodeIndex extends IGraphNodeIndex {
 	 * certain timepoint rather than the current timepoint of the graph.
 	 */
 	ITimeAwareGraphNodeIndex travelInTime(long timepoint);
+
+	/**
+	 * Returns all the timepoints of a node which have a certain value
+	 * associated with a query.
+	 */
+	List<Long> getVersions(ITimeAwareGraphNode n, String key, Object exactValue);
 
 }
