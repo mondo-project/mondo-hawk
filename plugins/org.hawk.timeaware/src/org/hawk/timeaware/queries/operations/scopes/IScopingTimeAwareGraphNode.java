@@ -14,36 +14,20 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.timeaware.queries.operations.declarative;
+package org.hawk.timeaware.queries.operations.scopes;
+
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 
 /**
- * Reducer which stops as soon as the expression has evaluated to <code>true</code>
- * a minimum number of times. If the expression has not evaluated that number of
- * times before the elements run out, it will reduce to <code>false</code>.
+ * Time-aware graph node that operates within a limited scope, and allows users
+ * to escape that scope on demand.
  */
-public class EventuallyAtLeastReducer implements IShortCircuitReducer {
+public interface IScopingTimeAwareGraphNode extends ITimeAwareGraphNode {
 
-	private final int minCount;
-	private int currentCount;
-
-	public EventuallyAtLeastReducer(int minCount) {
-		this.minCount = minCount;
-	}
-
-	@Override
-	public Boolean reduce(boolean element) {
-		if (element) {
-			currentCount++;
-			if (currentCount >= minCount) {
-				return true;
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public boolean reduce() {
-		return currentCount >= minCount;
-	}
+	/**
+	 * Returns a version of the graph node in the same timepoint, but without
+	 * any scoping of its history.
+	 */
+	ITimeAwareGraphNode unscope();
 
 }

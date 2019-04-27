@@ -14,20 +14,20 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.timeaware.queries.operations.declarative;
-
-import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
+package org.hawk.timeaware.queries.operations.patterns;
 
 /**
- * Time-aware graph node that operates within a limited scope, and allows users
- * to escape that scope on demand.
+ * Reducer which immediately returns <code>true</code> if the expression ever
+ * evaluates to <code>true</code>, and otherwise returns <code>false</code>.
  */
-public interface IScopingTimeAwareGraphNode extends ITimeAwareGraphNode {
+public class EventuallyReducer implements IShortCircuitReducer {
+	@Override
+	public Boolean reduce(boolean element) {
+		return element ? true : null;
+	}
 
-	/**
-	 * Returns a version of the graph node in the same timepoint, but without
-	 * any scoping of its history.
-	 */
-	ITimeAwareGraphNode unscope();
-
+	@Override
+	public boolean reduce() {
+		return false;
+	}
 }

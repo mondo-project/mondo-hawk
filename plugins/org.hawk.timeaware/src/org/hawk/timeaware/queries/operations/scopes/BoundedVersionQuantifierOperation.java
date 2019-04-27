@@ -14,7 +14,7 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.timeaware.queries.operations.declarative;
+package org.hawk.timeaware.queries.operations.scopes;
 
 import java.util.List;
 import java.util.function.Function;
@@ -30,6 +30,8 @@ import org.eclipse.epsilon.eol.types.EolModelElementType;
 import org.eclipse.epsilon.eol.types.EolNoType;
 import org.eclipse.epsilon.eol.types.EolType;
 import org.hawk.epsilon.emc.EOLQueryEngine;
+import org.hawk.timeaware.queries.operations.patterns.IShortCircuitReducer;
+import org.hawk.timeaware.queries.operations.patterns.VersionQuantifierOperation;
 
 public class BoundedVersionQuantifierOperation extends AbstractOperation {
 

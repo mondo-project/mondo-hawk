@@ -14,7 +14,7 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.timeaware.queries.operations.declarative;
+package org.hawk.timeaware.queries.operations.patterns;
 
 /**
  * Reducer which immediately returns <code>false</code> if the expression ever

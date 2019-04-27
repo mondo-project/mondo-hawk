@@ -14,20 +14,21 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.timeaware.queries.operations.declarative;
+package org.hawk.timeaware.queries.operations.patterns;
 
-/**
- * Reducer which immediately returns <code>true</code> if the expression ever
- * evaluates to <code>true</code>, and otherwise returns <code>false</code>.
- */
-public class EventuallyReducer implements IShortCircuitReducer {
-	@Override
-	public Boolean reduce(boolean element) {
-		return element ? true : null;
-	}
+public interface IShortCircuitReducer {
+	/**
+	 * Takes the result of evaluating the expression on the next element, and
+	 * returns either <code>true</code> or <code>false</code> (which shortcircuits
+	 * the evaluation), or <code>null</code>, signalling that more elements must be
+	 * evaluated.
+	 */
+	Boolean reduce(boolean element);
 
-	@Override
-	public boolean reduce() {
-		return false;
-	}
+	/**
+	 * Returns the final conclusion once no more elements are available. This should
+	 * only be invoked after {@link #reduce(Boolean)} has been invoked for all the
+	 * elements.
+	 */
+	boolean reduce();
 }

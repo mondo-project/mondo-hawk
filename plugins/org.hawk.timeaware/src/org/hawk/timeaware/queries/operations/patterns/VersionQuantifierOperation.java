@@ -14,7 +14,7 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.timeaware.queries.operations.declarative;
+package org.hawk.timeaware.queries.operations.patterns;
 
 import java.util.List;
 import java.util.function.Function;
@@ -28,6 +28,7 @@ import org.eclipse.epsilon.eol.execute.context.IEolContext;
 import org.eclipse.epsilon.eol.execute.context.Variable;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.epsilon.emc.EOLQueryEngine;
+import org.hawk.timeaware.queries.operations.TimeAwareNodeFirstOrderOperation;
 
 /**
  * First-order operation that returns a Boolean value from evaluating

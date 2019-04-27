@@ -25,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.eclipse.emf.common.util.URI;
@@ -33,8 +32,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.hawk.backend.tests.BackendTestSuite;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
-import org.hawk.core.query.InvalidQueryException;
-import org.hawk.core.query.QueryExecutionException;
 import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.integration.tests.emf.EMFModelSupportFactory;
 import org.hawk.svn.tests.rules.TemporarySVNRepository;
@@ -627,15 +624,4 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 		requestSVNIndex(svnRepository);
 	}
 
-	protected Object timeAwareEOL(final String eolQuery) throws InvalidQueryException, QueryExecutionException {
-		return timeAwareEOL(eolQuery, null);
-	}
-
-	protected Object timeAwareEOL(final String eolQuery, Map<String, Object> context) throws InvalidQueryException, QueryExecutionException {
-		return timeAwareQueryEngine.query(indexer, eolQuery, context);
-	}
-
-	protected Object timelineEOL(final String eolQuery) throws InvalidQueryException, QueryExecutionException {
-		return timelineQueryEngine.query(indexer, eolQuery, null);
-	}
 }

@@ -30,9 +30,9 @@ import org.hawk.epsilon.emc.wrappers.TypeNodeWrapper;
 import org.hawk.graph.TypeNode;
 import org.hawk.timeaware.queries.RiskyFunction;
 import org.hawk.timeaware.queries.TimeAwareEOLQueryEngine;
-import org.hawk.timeaware.queries.operations.declarative.EndingTimeAwareNodeWrapper;
-import org.hawk.timeaware.queries.operations.declarative.IScopingTimeAwareGraphNode;
-import org.hawk.timeaware.queries.operations.declarative.StartingTimeAwareNodeWrapper;
+import org.hawk.timeaware.queries.operations.scopes.EndingTimeAwareNodeWrapper;
+import org.hawk.timeaware.queries.operations.scopes.IScopingTimeAwareGraphNode;
+import org.hawk.timeaware.queries.operations.scopes.StartingTimeAwareNodeWrapper;
 
 public class TypeHistoryOperationContributor extends OperationContributor {
 	private EOLQueryEngine model;

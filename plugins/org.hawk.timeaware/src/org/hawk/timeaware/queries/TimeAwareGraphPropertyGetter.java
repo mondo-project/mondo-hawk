@@ -26,9 +26,9 @@ import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.epsilon.emc.pgetters.GraphPropertyGetter;
 import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
-import org.hawk.timeaware.queries.operations.declarative.EndingTimeAwareNodeWrapper;
-import org.hawk.timeaware.queries.operations.declarative.IScopingTimeAwareGraphNode;
-import org.hawk.timeaware.queries.operations.declarative.StartingTimeAwareNodeWrapper;
+import org.hawk.timeaware.queries.operations.scopes.EndingTimeAwareNodeWrapper;
+import org.hawk.timeaware.queries.operations.scopes.IScopingTimeAwareGraphNode;
+import org.hawk.timeaware.queries.operations.scopes.StartingTimeAwareNodeWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
