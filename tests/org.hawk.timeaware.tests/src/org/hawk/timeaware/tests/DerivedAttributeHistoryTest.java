@@ -98,7 +98,7 @@ public class DerivedAttributeHistoryTest extends AbstractTimeAwareModelIndexingT
 
 	@Test
 	public void whenComposability() throws Throwable {
-		twoDerivedAttributes();
+		twoDerivedAttributeRepository();
 
 		waitForSync(new Callable<Object>(){
 			@Override
@@ -120,7 +120,7 @@ public class DerivedAttributeHistoryTest extends AbstractTimeAwareModelIndexingT
 
 	@Test
 	public void sinceAnnotated() throws Throwable {
-		twoDerivedAttributes();
+		twoDerivedAttributeRepository();
 
 		waitForSync(new Callable<Object>(){
 			@Override
@@ -136,7 +136,7 @@ public class DerivedAttributeHistoryTest extends AbstractTimeAwareModelIndexingT
 
 	@Test
 	public void afterAnnotated() throws Throwable {
-		twoDerivedAttributes();
+		twoDerivedAttributeRepository();
 
 		waitForSync(new Callable<Object>(){
 			@Override
@@ -152,7 +152,7 @@ public class DerivedAttributeHistoryTest extends AbstractTimeAwareModelIndexingT
 
 	@Test
 	public void untilAnnotated() throws Throwable {
-		twoDerivedAttributes();
+		twoDerivedAttributeRepository();
 
 		waitForSync(new Callable<Object>(){
 			@Override
@@ -171,7 +171,7 @@ public class DerivedAttributeHistoryTest extends AbstractTimeAwareModelIndexingT
 
 	@Test
 	public void beforeAnnotated() throws Throwable {
-		twoDerivedAttributes();
+		twoDerivedAttributeRepository();
 
 		waitForSync(new Callable<Object>(){
 			@Override
@@ -183,8 +183,76 @@ public class DerivedAttributeHistoryTest extends AbstractTimeAwareModelIndexingT
 			}
 		});
 	}
+
+	@Test
+	public void revRefNavDerived() throws Throwable {
+		indexer.getMetaModelUpdater().addDerivedAttribute(
+			TreePackage.eNS_URI, "Tree", "parentLabel", "String",
+			false, false, false,
+			EOLQueryEngine.TYPE,
+			"var parent = self.revRefNav_children.first; "
+			+ "if (parent.isDefined()) return parent.label; else return '';",
+			indexer
+		);
+
+		parentLabelRepository();
+
+		waitForSync(() -> {
+			assertEquals("Root2", timeAwareEOL("return Tree.latest.all.selectOne(l|l.latest.label='Child').latest.parentLabel;"));
+			assertEquals(3, timeAwareEOL("return Tree.latest.all.selectOne(l|l.latest.label='Child').versions.size;"));
+			return null;
+		});
+	}
+
+	@Test
+	public void eContainerDerived() throws Throwable {
+		indexer.getMetaModelUpdater().addDerivedAttribute(
+			TreePackage.eNS_URI, "Tree", "parentLabel", "String",
+			false, false, false,
+			EOLQueryEngine.TYPE,
+			"var parent = self.eContainer; "
+			+ "if (parent.isDefined()) return parent.label; else return '';",
+			indexer
+		);
+
+		parentLabelRepository();
+
+		waitForSync(() -> {
+			assertEquals("Root2", timeAwareEOL("return Tree.latest.all.selectOne(l|l.latest.label='Child').latest.parentLabel;"));
+			assertEquals(3, timeAwareEOL("return Tree.latest.all.selectOne(l|l.latest.label='Child').versions.size;"));
+			return null;
+		});
+	}
+
+	private void parentLabelRepository() throws Exception {
+		final File fTree = new File(svnRepository.getCheckoutDirectory(), "root.xmi");
+		rTree = rsTree.createResource(URI.createFileURI(fTree.getAbsolutePath()));
 	
-	private void twoDerivedAttributes() throws Exception, IOException, SVNException {
+		Tree root = treeFactory.createTree();
+		root.setLabel("Root");
+		rTree.getContents().add(root);
+		rTree.save(null);
+		svnRepository.add(fTree);
+		svnRepository.commit("First commit");
+	
+		Tree child = treeFactory.createTree();
+		child.setLabel("Child");
+		root.getChildren().add(child);
+		rTree.save(null);
+		svnRepository.commit("Second commit - add child");
+	
+		root.setLabel("Root1");
+		rTree.save(null);
+		svnRepository.commit("Third commit - change label 1");
+	
+		root.setLabel("Root2");
+		rTree.save(null);
+		svnRepository.commit("Third commit - change label 2");
+	
+		requestSVNIndex(svnRepository);
+	}
+
+	private void twoDerivedAttributeRepository() throws Exception, IOException, SVNException {
 		indexer.getMetaModelUpdater().addDerivedAttribute(
 			TreePackage.eNS_URI, "Tree", "HasChildren", "Boolean",
 			false, false, false,

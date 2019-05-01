@@ -96,6 +96,13 @@ public class GraphModelInserter {
 	}
 
 	/**
+	 * Timestamp of the last time we derived features on a node. Used to make sure
+	 * new node versions are created when an attribute is derived in time-aware
+	 * backends.
+	 */
+	public static final String LAST_DERIVED_TSTAMP_NODEPROP = "h_lastDerived";
+
+	/**
 	 * Name of the node index used to track property accesses during derived feature computation.
 	 */
 	public static final String DERIVED_ACCESS_IDXNAME = "derivedaccessdictionary";
