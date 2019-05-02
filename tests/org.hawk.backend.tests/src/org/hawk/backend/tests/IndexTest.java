@@ -569,7 +569,14 @@ public class IndexTest extends TemporaryDatabaseTest {
 	}
 
 	@Test
-	public void addOverridesPriorValue() throws Exception {
+	public void addPreservesPriorValue() throws Exception {
+		/*
+		 * IMPORTANT - Don't pull an Antonio and think that a single (node, key) pair
+		 * should only be associated with one value. Derived attribute acces indices
+		 * need to track all the attributes (values) that a (node = source node, key =
+		 * accessed node) accessed!
+		 */
+
 		IGraphNodeIndex idxRoots;
 		IGraphNode x;
 		try (IGraphTransaction tx = db.beginTransaction()) {
@@ -581,11 +588,15 @@ public class IndexTest extends TemporaryDatabaseTest {
 		}
 
 		try (IGraphTransaction tx = db.beginTransaction()) {
-			assertEquals(0, idxRoots.query("a", "1").size());
+			assertEquals(1, idxRoots.query("a", "1").size());
 			assertEquals(1, idxRoots.query("a", "2").size());
 			tx.success();
 		}
 	}
+
+	/*
+	 * TODO test adding multiple values and removing one value.
+	 */
 
 	@Test
 	public void deleteRecreate() throws Exception {

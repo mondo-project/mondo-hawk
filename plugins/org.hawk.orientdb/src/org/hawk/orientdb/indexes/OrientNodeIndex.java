@@ -179,11 +179,9 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 				postponed.add(new PostponedIndexAdd(idx, idxKey, identity));
 				graph.addPostponedIndex(this);
 			} else {
-				remove(field, (OrientNode) n);
 				idx.put(idxKey, identity);
 			}
 
-			orientNode.removeIndexField(idx.getName(), field);
 			orientNode.addIndexKey(idx.getName(), field, valueExpr);
 		}
 	}

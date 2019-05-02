@@ -666,12 +666,9 @@ public class GreycatLuceneIndexer {
 			
 			for (IndexableField oldField : oldDocument.getFields()) {
 				final String rawOldFieldName = oldField.name();
-				if (rawOldFieldName.startsWith(ATTRIBUTE_PREFIX)) {
-					final String oldFieldName = rawOldFieldName.substring(ATTRIBUTE_PREFIX.length());
-					if (!values.containsKey(oldFieldName)) {
-						copyField(oldField, updatedDocument);
-					}
-				} else if (rawOldFieldName.equals(UUID_FIELD) || rawOldFieldName.equals(VALIDTO_FIELD)) {
+				if (rawOldFieldName.startsWith(ATTRIBUTE_PREFIX)
+					|| rawOldFieldName.equals(UUID_FIELD)
+					|| rawOldFieldName.equals(VALIDTO_FIELD)) {
 					copyField(oldField, updatedDocument);
 				}
 			}
@@ -875,7 +872,10 @@ public class GreycatLuceneIndexer {
 			document.add(new StoredField(fieldName, doubleValue));
 		} else if (value instanceof Number) {
 			final long longValue = ((Number)value).longValue();
-			document.add(new NumericDocValuesField(fieldName, longValue));
+			if (document.getFields(fieldName).length == 0) {
+				// Can only have one docvalue per field!
+				document.add(new NumericDocValuesField(fieldName, longValue));
+			}
 			document.add(new LongPoint(fieldName, longValue));
 			document.add(new StoredField(fieldName, longValue));
 		} else {

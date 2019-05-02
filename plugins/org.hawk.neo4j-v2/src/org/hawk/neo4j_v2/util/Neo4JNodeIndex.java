@@ -119,7 +119,6 @@ public class Neo4JNodeIndex implements IGraphNodeIndex {
 
 		if (index != null) {
 			final Node node = graph.getGraph().getNodeById((long) n.getId());
-			index.remove(node, s);
 			index.add(node, s, wrappedValue);
 		} else {
 			Map<String, Object> m = new HashMap<>();
