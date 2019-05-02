@@ -866,6 +866,19 @@ public class GreycatLuceneIndexer {
 		 *
 		 * TODO: do we get these back after a soft rollback? We need tests for this.
 		 */
+
+		// add check to avoid having the same field multiple times
+		IndexableField[] existing = document.getFields(fieldName);
+		for (IndexableField f : existing) {
+			if (f.numericValue() == null && f.stringValue().equals(value)) {
+				// nothing to do - same number present!
+				return;
+			} else if (f.stringValue().equals(value)) {
+				// nothing to do - same string present!
+				return;
+			}
+		}
+
 		if (value instanceof Float || value instanceof Double) {
 			final double doubleValue = ((Number)value).doubleValue();
 			document.add(new DoublePoint(fieldName, doubleValue));
