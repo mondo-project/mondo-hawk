@@ -250,7 +250,7 @@ public class OrientNodeIndex extends AbstractOrientIndex implements IGraphNodeIn
 
 	@Override
 	public void flush() {
-		graph.getGraph().commit();
+		// nothing to do here
 	}
 
 	@Override
