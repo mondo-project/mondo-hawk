@@ -593,13 +593,13 @@ public final class HawkThriftIface implements Hawk.Iface {
 		final HModel model = getRunningHawkByName(name);
 
 		try {
-			if (spec.getAttributeName().startsWith("SPEC_")) {
+			if (spec.attributeName.startsWith("SPEC_")) {
 				// ONLY TEMPORARY WHILE UI IS CREATED
 				new TimeAwareMetaModelUpdater().addVersionAnnotator(model.getIndexer(),
 					new VersionAnnotatorSpec.Builder()
 						.metamodelURI(spec.metamodelUri)
 						.typeName(spec.typeName)
-						.label(spec.attributeName)
+						.label(spec.attributeName.replaceFirst("SPEC_", ""))
 						.expression(spec.derivationLogic)
 						.language(spec.derivationLanguage)
 						.build()

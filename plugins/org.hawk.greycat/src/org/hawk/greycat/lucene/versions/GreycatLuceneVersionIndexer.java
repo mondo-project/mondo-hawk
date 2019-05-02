@@ -29,6 +29,7 @@ import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.StringField;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
@@ -64,10 +65,15 @@ public class GreycatLuceneVersionIndexer extends AbstractLuceneIndexer<GreycatLu
 				@Override
 				public int compare(Integer o1, Integer o2) {
 					try {
-						final Document doc1 = searcher.doc(o1);
-						final Document doc2 = searcher.doc(o2);
-						return Integer.compare((int) doc1.getField(NODETIME_FIELD).numericValue(),
-								(int) doc2.getField(NODETIME_FIELD).numericValue());
+						final IndexableField doc1 = searcher.doc(o1).getField(NODETIME_FIELD);
+						final IndexableField doc2 = searcher.doc(o2).getField(NODETIME_FIELD);
+						if (doc1 == null) {
+							return (doc2 == null) ? 0 : -1;
+						} else if (doc2 == null) {
+							return 1;
+						} else {
+							return Long.compare((long) doc1.numericValue(), (long) doc2.numericValue());
+						}
 					} catch (IOException e) {
 						LOGGER.error("Could not sort documents", e);
 						return 0;
@@ -124,11 +130,13 @@ public class GreycatLuceneVersionIndexer extends AbstractLuceneIndexer<GreycatLu
 				final IndexSearcher searcher = sc.get();
 				final NodeVersionCollector nvc = new NodeVersionCollector(searcher);
 
-				final Query fullQuery = new BooleanQuery.Builder()
-					.add(new TermQuery(new Term(INDEX_FIELD, indexName)), Occur.FILTER)
-					.add(LongPoint.newExactQuery(NODEID_FIELD, (long)node.getId()), Occur.MUST)
-					.add(query, Occur.MUST)
-					.build();
+				final BooleanQuery.Builder builder = new BooleanQuery.Builder();
+				builder.add(new TermQuery(new Term(INDEX_FIELD, indexName)), Occur.FILTER);
+				builder.add(LongPoint.newExactQuery(NODEID_FIELD, (long)node.getId()), Occur.FILTER);
+				if (query != null) {
+					builder.add(query, Occur.FILTER);
+				}
+				final Query fullQuery = builder.build();
 
 				searcher.search(fullQuery, nvc);
 				return nvc.getNodeIterator();
@@ -157,9 +165,9 @@ public class GreycatLuceneVersionIndexer extends AbstractLuceneIndexer<GreycatLu
 			Document doc = new Document();
 
 			final String newUUID = UUID.randomUUID().toString();
-			doc.add(new StringField(UUID_FIELD, newUUID, Store.NO));
-			doc.add(new StringField(INDEX_FIELD, name, Store.NO));
-			doc.add(new StringField(DOCTYPE_FIELD, "node", Store.NO));
+			doc.add(new StringField(UUID_FIELD, newUUID, Store.YES));
+			doc.add(new StringField(INDEX_FIELD, name, Store.YES));
+			doc.add(new StringField(DOCTYPE_FIELD, "node", Store.YES));
 			doc.add(new LongPoint(NODETIME_FIELD, n.getTime()));
 			doc.add(new StoredField(NODETIME_FIELD, n.getTime()));
 			doc.add(new LongPoint(NODEID_FIELD, (long) n.getId()));
@@ -203,8 +211,7 @@ public class GreycatLuceneVersionIndexer extends AbstractLuceneIndexer<GreycatLu
 
 		@Override
 		public LuceneVersionIterable getAllVersions(ITimeAwareGraphNode n) {
-			final Query queryToFind = LongPoint.newExactQuery(NODEID_FIELD, (long) n.getId());
-			return new LuceneVersionIterable(queryToFind, name, n);
+			return new LuceneVersionIterable(null, name, n);
 		}
 
 		@Override
