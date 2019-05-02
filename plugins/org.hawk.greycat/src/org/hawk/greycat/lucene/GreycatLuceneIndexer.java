@@ -598,21 +598,43 @@ public class GreycatLuceneIndexer {
 					.build();
 
 				final TopDocs results = searcher.search(latestVersionQuery, 1);
-				long validTo;
+				Long validTo = null;
 				if (results.totalHits > 0) {
-					validTo = extendCurrentDocument(gn, values, searcher, results);
+					final Document oldDocument = searcher.doc(results.scoreDocs[0].doc);
+					if (!differenceFound(oldDocument, values)) {
+						validTo = extendCurrentDocument(gn, values, searcher, results);
+					}
 				} else {
 					validTo = addNewDocument(gn, values, searcher);
 				}
 
 				// If this document does not last forever, we need to update future documents too.
 				// No need to manipulate lifespans in this case.
-				if (validTo < Long.MAX_VALUE) {
+				if (validTo != null && validTo < Long.MAX_VALUE) {
 					extendFutureDocuments(gn, values, searcher, validTo);
 				}
 			} catch (IOException e) {
 				LOGGER.error(e.getMessage(), e);
 			}
+		}
+
+		private boolean differenceFound(Document oldDocument, Map<String, Object> values) {
+			for (Entry<String, Object> e : values.entrySet()) {
+				boolean matched = false;
+				for (IndexableField f : oldDocument.getFields(ATTRIBUTE_PREFIX + e.getKey())) {
+					if (f.numericValue() == null) {
+						matched = matched || f.stringValue().equals(e.getValue());
+					} else {
+						matched = matched || f.numericValue().equals(e.getValue());
+					}
+				}
+				if (!matched) {
+					return true;
+				}
+			}
+
+			// All fields have equivalent values - no need to do anything
+			return false;
 		}
 
 		private void extendFutureDocuments(final GreycatNode gn, Map<String, Object> values,
@@ -870,10 +892,11 @@ public class GreycatLuceneIndexer {
 		// add check to avoid having the same field multiple times
 		IndexableField[] existing = document.getFields(fieldName);
 		for (IndexableField f : existing) {
-			if (f.numericValue() == null && f.stringValue().equals(value)) {
-				// nothing to do - same number present!
-				return;
-			} else if (f.stringValue().equals(value)) {
+			if (f.numericValue() == null) {
+				if (f.stringValue().equals(value)) {
+					return;
+				}
+			} else if (f.numericValue().equals(value)) {
 				// nothing to do - same string present!
 				return;
 			}
