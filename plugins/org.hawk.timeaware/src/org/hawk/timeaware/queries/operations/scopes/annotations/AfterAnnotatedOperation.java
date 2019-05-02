@@ -16,10 +16,11 @@
  ******************************************************************************/
 package org.hawk.timeaware.queries.operations.scopes.annotations;
 
+import java.util.Iterator;
 import java.util.function.Supplier;
 
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
-import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeIndex;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeVersionIndex;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.timeaware.queries.operations.scopes.StartingTimeAwareNodeWrapper;
 import org.slf4j.Logger;
@@ -37,20 +38,14 @@ public class AfterAnnotatedOperation extends AbstractAnnotatedOperation {
 	}
 
 	@Override
-	protected ITimeAwareGraphNode useAnnotations(ITimeAwareGraphNodeIndex index, ITimeAwareGraphNode taNode, String derivedAttrName) {
-		final Long firstVersion = index.getEarliestVersionSince(taNode, derivedAttrName, true);
-		if (firstVersion == null) {
-			return null;
-		}
-
-		final ITimeAwareGraphNode node = taNode.travelInTime(firstVersion);
-		try {
-			ITimeAwareGraphNode next = node.getNext();
-			if (next != null) {
-				return new StartingTimeAwareNodeWrapper(next);
+	protected ITimeAwareGraphNode useAnnotations(ITimeAwareGraphNodeVersionIndex index, ITimeAwareGraphNode taNode, String derivedAttrName) {
+		final Iterator<ITimeAwareGraphNode> versionsAfter = index.getVersionsAfter(taNode).iterator();
+		if (versionsAfter.hasNext()) {
+			try {
+				return new StartingTimeAwareNodeWrapper(versionsAfter.next());
+			} catch (Exception e) {
+				LOGGER.error("Could not fetch next version", e);
 			}
-		} catch (Exception e) {
-			LOGGER.error("Could not fetch next version", e);
 		}
 
 		return null;

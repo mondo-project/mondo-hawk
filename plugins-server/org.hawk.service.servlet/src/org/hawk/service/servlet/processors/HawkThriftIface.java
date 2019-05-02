@@ -119,6 +119,8 @@ import org.hawk.service.servlet.artemis.ArtemisProducerStateListener;
 import org.hawk.service.servlet.servlets.HawkThriftTupleServlet;
 import org.hawk.service.servlet.utils.HawkModelElementEncoder;
 import org.hawk.service.servlet.utils.HawkModelElementTypeEncoder;
+import org.hawk.timeaware.graph.TimeAwareMetaModelUpdater;
+import org.hawk.timeaware.graph.annotators.VersionAnnotatorSpec;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.prefs.BackingStoreException;
 import org.slf4j.Logger;
@@ -591,10 +593,23 @@ public final class HawkThriftIface implements Hawk.Iface {
 		final HModel model = getRunningHawkByName(name);
 
 		try {
-			model.addDerivedAttribute(
-				spec.metamodelUri, spec.typeName, spec.attributeName, spec.attributeType,
-				spec.isMany, spec.isOrdered, spec.isUnique,
-				spec.derivationLanguage, spec.derivationLogic);
+			if (spec.getAttributeName().startsWith("SPEC_")) {
+				// ONLY TEMPORARY WHILE UI IS CREATED
+				new TimeAwareMetaModelUpdater().addVersionAnnotator(model.getIndexer(),
+					new VersionAnnotatorSpec.Builder()
+						.metamodelURI(spec.metamodelUri)
+						.typeName(spec.typeName)
+						.label(spec.attributeName)
+						.expression(spec.derivationLogic)
+						.language(spec.derivationLanguage)
+						.build()
+				);
+			} else {
+				model.addDerivedAttribute(
+					spec.metamodelUri, spec.typeName, spec.attributeName, spec.attributeType,
+					spec.isMany, spec.isOrdered, spec.isUnique,
+					spec.derivationLanguage, spec.derivationLogic);
+			}
 		} catch (Exception ex) {
 			throw new TException(ex);
 		}

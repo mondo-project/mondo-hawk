@@ -16,10 +16,11 @@
  ******************************************************************************/
 package org.hawk.timeaware.queries.operations.scopes.annotations;
 
+import java.util.Iterator;
 import java.util.function.Supplier;
 
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
-import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeIndex;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeVersionIndex;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.timeaware.queries.operations.scopes.EndingTimeAwareNodeWrapper;
 
@@ -33,13 +34,18 @@ public class UntilAnnotatedOperation extends AbstractAnnotatedOperation {
 	}
 
 	@Override
-	protected ITimeAwareGraphNode useAnnotations(ITimeAwareGraphNodeIndex index, ITimeAwareGraphNode taNode, String derivedAttrName) {
-		final Long firstVersion = index.getEarliestVersionSince(taNode, derivedAttrName, true);
-		if (firstVersion == null) {
-			return null;
+	protected ITimeAwareGraphNode useAnnotations(ITimeAwareGraphNodeVersionIndex index, ITimeAwareGraphNode taNode, String derivedAttrName) {
+		Iterator<ITimeAwareGraphNode> itVersions = index.getVersionsUntil(taNode).iterator();
+		ITimeAwareGraphNode newestUntil = null;
+		while (itVersions.hasNext()) {
+			newestUntil = itVersions.next();
 		}
 
-		return new EndingTimeAwareNodeWrapper(taNode, firstVersion);
+		if (newestUntil == null) {
+			return null;
+		} else {
+			return new EndingTimeAwareNodeWrapper(taNode, newestUntil.getTime());
+		}
 	}
 
 }

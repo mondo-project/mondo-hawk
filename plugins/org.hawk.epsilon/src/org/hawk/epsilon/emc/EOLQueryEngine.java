@@ -931,7 +931,13 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 			final Map<String, Object> args = (Map<String, Object>) context.get(PROPERTY_ARGUMENTS);
 			if (args != null) {
 				for (Entry<String, Object> entry : args.entrySet()) {
-					module.getContext().getFrameStack().putGlobal(new Variable(entry.getKey(), entry.getValue(), null));
+					final String key = entry.getKey();
+					Object value = entry.getValue();
+					if (value instanceof IGraphNode) {
+						value = new GraphNodeWrapper((IGraphNode) value, this);
+					}
+
+					module.getContext().getFrameStack().putGlobal(new Variable(key, value, null));
 				}
 			}
 		}

@@ -16,43 +16,36 @@
  ******************************************************************************/
 package org.hawk.timeaware.queries.operations.scopes.annotations;
 
+import java.util.Iterator;
 import java.util.function.Supplier;
 
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
-import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeIndex;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeVersionIndex;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.timeaware.queries.operations.scopes.EndingTimeAwareNodeWrapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Variant of <code>before</code> which uses a predefined derived Boolean attribute.
  */
 public class BeforeAnnotatedOperation extends AbstractAnnotatedOperation {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BeforeAnnotatedOperation.class);
-
 	public BeforeAnnotatedOperation(Supplier<EOLQueryEngine> containerModelSupplier) {
 		super(containerModelSupplier);
 	}
 
 	@Override
-	protected ITimeAwareGraphNode useAnnotations(ITimeAwareGraphNodeIndex index, ITimeAwareGraphNode taNode, String derivedAttrName) {
-		final Long firstVersion = index.getEarliestVersionSince(taNode, derivedAttrName, true);
-		if (firstVersion == null) {
+	protected ITimeAwareGraphNode useAnnotations(ITimeAwareGraphNodeVersionIndex index, ITimeAwareGraphNode taNode, String derivedAttrName) {
+		Iterator<ITimeAwareGraphNode> itVersions = index.getVersionsBefore(taNode).iterator();
+		ITimeAwareGraphNode newestBefore = null;
+		while (itVersions.hasNext()) {
+			newestBefore = itVersions.next();
+		}
+
+		if (newestBefore == null) {
 			return null;
+		} else {
+			return new EndingTimeAwareNodeWrapper(taNode, newestBefore.getTime());
 		}
-
-		try {
-			final long prevInstant = taNode.travelInTime(firstVersion).getPreviousInstant();
-			if (prevInstant != ITimeAwareGraphNode.NO_SUCH_INSTANT) {
-				return new EndingTimeAwareNodeWrapper(taNode, prevInstant);
-			}
-		} catch (Exception e) {
-			LOGGER.error("Could not fetch previous instant", e);
-		}
-
-		return null;
 	}
 
 }

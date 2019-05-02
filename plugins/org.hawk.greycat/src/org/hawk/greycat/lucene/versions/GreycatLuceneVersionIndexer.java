@@ -19,6 +19,7 @@ package org.hawk.greycat.lucene.versions;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -59,7 +60,23 @@ public class GreycatLuceneVersionIndexer extends AbstractLuceneIndexer<GreycatLu
 		}
 
 		public Iterator<ITimeAwareGraphNode> getNodeIterator() {
+			Collections.sort(docIds, new Comparator<Integer>() {
+				@Override
+				public int compare(Integer o1, Integer o2) {
+					try {
+						final Document doc1 = searcher.doc(o1);
+						final Document doc2 = searcher.doc(o2);
+						return Integer.compare((int) doc1.getField(NODETIME_FIELD).numericValue(),
+								(int) doc2.getField(NODETIME_FIELD).numericValue());
+					} catch (IOException e) {
+						LOGGER.error("Could not sort documents", e);
+						return 0;
+					}
+				}
+			});
+
 			final Iterator<Integer> itIdentifiers = docIds.iterator();
+			
 			return new Iterator<ITimeAwareGraphNode>() {
 				@Override
 				public boolean hasNext() {

@@ -16,10 +16,11 @@
  ******************************************************************************/
 package org.hawk.timeaware.queries.operations.scopes.annotations;
 
+import java.util.Iterator;
 import java.util.function.Supplier;
 
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
-import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeIndex;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeVersionIndex;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.timeaware.queries.operations.scopes.StartingTimeAwareNodeWrapper;
 
@@ -33,13 +34,14 @@ public class SinceAnnotatedOperation extends AbstractAnnotatedOperation {
 	}
 
 	@Override
-	protected ITimeAwareGraphNode useAnnotations(ITimeAwareGraphNodeIndex index, ITimeAwareGraphNode taNode, String derivedAttrName) {
-		final Long firstVersion = index.getEarliestVersionSince(taNode, derivedAttrName, true);
-		if (firstVersion == null) {
+	protected ITimeAwareGraphNode useAnnotations(ITimeAwareGraphNodeVersionIndex index, ITimeAwareGraphNode taNode, String derivedAttrName) {
+		final Iterator<ITimeAwareGraphNode> versionsSince = index.getVersionsSince(taNode).iterator();
+
+		if (versionsSince.hasNext()) {
+			return new StartingTimeAwareNodeWrapper(versionsSince.next());
+		} else {
 			return null;
 		}
-
-		return new StartingTimeAwareNodeWrapper(taNode.travelInTime(firstVersion));
 	}
 
 }

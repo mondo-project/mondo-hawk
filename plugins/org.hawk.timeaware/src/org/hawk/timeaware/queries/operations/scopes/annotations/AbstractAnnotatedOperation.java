@@ -26,11 +26,12 @@ import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.execute.context.IEolContext;
 import org.eclipse.epsilon.eol.execute.operations.AbstractOperation;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
-import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeIndex;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeVersionIndex;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeVersionIndexFactory;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.graph.ModelElementNode;
-import org.hawk.graph.Slot;
+import org.hawk.graph.TypeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,13 +72,11 @@ public abstract class AbstractAnnotatedOperation extends AbstractOperation {
 		final Expression labelExpression = expressions.get(0);
 		final String derivedAttrName = "" + context.getExecutorFactory().execute(labelExpression, context);
 
-		final Slot slot = new ModelElementNode(taNode).getTypeNode().getSlot(derivedAttrName);
-		if (slot == null) {
-			LOGGER.warn("slot does not exist, returning null");
-			return null;
-		}
-		final String idxName = slot.getNodeIndexName();
-		final ITimeAwareGraphNodeIndex index = (ITimeAwareGraphNodeIndex) taNode.getGraph().getOrCreateNodeIndex(idxName);
+		final TypeNode tn = new ModelElementNode(taNode).getTypeNode();
+		final String idxName = String.format("%s##%s##%s",  tn.getMetamodelURI(), tn.getTypeName(), derivedAttrName);
+		
+		final ITimeAwareGraphNodeVersionIndex index =
+			((ITimeAwareGraphNodeVersionIndexFactory) taNode.getGraph()).getOrCreateVersionIndex(idxName);
 		
 		final ITimeAwareGraphNode wrapper = useAnnotations(index, taNode, derivedAttrName);
 		if (wrapper == null) {
@@ -96,6 +95,6 @@ public abstract class AbstractAnnotatedOperation extends AbstractOperation {
 	 * Uses the available derived Boolean attribute to find relevant versions.
 	 */
 	protected abstract ITimeAwareGraphNode useAnnotations(
-		ITimeAwareGraphNodeIndex index, ITimeAwareGraphNode taNode, String derivedAttrName);
+			ITimeAwareGraphNodeVersionIndex index, ITimeAwareGraphNode taNode, String derivedAttrName);
 
 }

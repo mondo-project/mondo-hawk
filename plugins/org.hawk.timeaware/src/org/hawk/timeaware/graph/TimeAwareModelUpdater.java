@@ -16,12 +16,28 @@
  ******************************************************************************/
 package org.hawk.timeaware.graph;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.hawk.core.VcsCommitItem;
 import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphNode;
+import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphDatabase;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
+import org.hawk.core.model.IHawkModelResource;
+import org.hawk.graph.GraphWrapper;
+import org.hawk.graph.MetamodelNode;
+import org.hawk.graph.ModelElementNode;
+import org.hawk.graph.TypeNode;
 import org.hawk.graph.updater.DeletionUtils;
 import org.hawk.graph.updater.GraphModelInserter;
 import org.hawk.graph.updater.GraphModelUpdater;
+import org.hawk.timeaware.graph.annotators.VersionAnnotator;
+import org.hawk.timeaware.graph.annotators.VersionAnnotatorSpec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,6 +101,48 @@ public class TimeAwareModelUpdater extends GraphModelUpdater {
 				return 0;
 			}
 		};
+	}
+
+	@Override
+	public boolean updateStore(VcsCommitItem f, IHawkModelResource res) {
+		boolean success = super.updateStore(f, res);
+
+		if (success) {
+			try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
+				final VersionAnnotator ann = new VersionAnnotator(indexer);
+				final long time = ((ITimeAwareGraphDatabase) indexer.getGraph()).getTime();
+				final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
+
+				for (VersionAnnotatorSpec spec : new TimeAwareMetaModelUpdater().listVersionAnnotators(indexer)) {
+					final MetamodelNode mn = gw.getMetamodelNodeByNsURI(spec.getMetamodelURI());
+					final TypeNode tn = mn.getTypeNode(spec.getTypeName());
+					final TypeNode timedTN = new TypeNode(((ITimeAwareGraphNode) tn.getNode()).travelInTime(time));
+
+					for (ModelElementNode instance : timedTN.getAll()) {
+						ITimeAwareGraphNode taInstance = ((ITimeAwareGraphNode) instance.getNode()).travelInTime(time);
+						ann.annotateVersion(spec, taInstance);
+					}
+				}
+				tx.success();
+			} catch (Exception e) {
+				LOGGER.error("Could not annotate nodes", e);
+				success = false;
+			}
+		}
+
+		return success;
+	}
+
+	protected Map<String, List<VersionAnnotatorSpec>> collectSpecifications(
+			final Collection<VersionAnnotatorSpec> annotators) {
+		final Map<String, List<VersionAnnotatorSpec>> specMap = new HashMap<>();
+		for (VersionAnnotatorSpec spec : annotators) {
+			specMap.computeIfAbsent(
+				String.format("%s##%s", spec.getMetamodelURI(), spec.getTypeName()),
+				(ignore) -> new ArrayList<VersionAnnotatorSpec>()
+			).add(spec);
+		}
+		return specMap;
 	}
 
 	@Override

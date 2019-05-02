@@ -27,6 +27,7 @@ import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeVersionIndexFactory;
 import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.MetamodelNode;
 import org.hawk.graph.Slot;
@@ -55,6 +56,11 @@ public class TimeAwareMetaModelUpdater extends GraphMetaModelUpdater {
 	 * node.
 	 */
 	public void addVersionAnnotator(IModelIndexer indexer, VersionAnnotatorSpec definition) {
+		if (!(indexer.getGraph() instanceof ITimeAwareGraphNodeVersionIndexFactory)) {
+			LOGGER.error("Indexer is not compatible, ignoring");
+			return;
+		}
+		
 		try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
 			final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
 			final MetamodelNode mmNode = gw.getMetamodelNodeByNsURI(definition.getMetamodelURI());

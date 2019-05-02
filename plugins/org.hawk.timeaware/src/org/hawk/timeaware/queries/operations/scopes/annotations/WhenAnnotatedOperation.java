@@ -16,11 +16,12 @@
  ******************************************************************************/
 package org.hawk.timeaware.queries.operations.scopes.annotations;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
-import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeIndex;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeVersionIndex;
 import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.timeaware.queries.operations.scopes.WhenNodeWrapper;
 import org.hawk.timeaware.queries.operations.scopes.predicates.WhenOperation;
@@ -35,14 +36,18 @@ public class WhenAnnotatedOperation extends AbstractAnnotatedOperation {
 	}
 
 	@Override
-	protected ITimeAwareGraphNode useAnnotations(ITimeAwareGraphNodeIndex index, ITimeAwareGraphNode taNode, String derivedAttrName) {
-		final List<Long> versions = index.getVersions(taNode, derivedAttrName, true);
-		if (versions.isEmpty()) {
-			return null;
+	protected ITimeAwareGraphNode useAnnotations(ITimeAwareGraphNodeVersionIndex index, ITimeAwareGraphNode taNode, String derivedAttrName) {
+		final List<Long> versions = new ArrayList<>();
+		for (ITimeAwareGraphNode version : index.getAllVersions(taNode)) {
+			versions.add(version.getTime());
 		}
 
-		final Long earliestTimepoint = versions.get(versions.size() - 1);
-		return new WhenNodeWrapper(taNode.travelInTime(earliestTimepoint), versions);
+		if (versions.isEmpty()) {
+			return null;
+		} else {
+			final Long earliestTimepoint = versions.get(versions.size() - 1);
+			return new WhenNodeWrapper(taNode.travelInTime(earliestTimepoint), versions);
+		}
 	}
 
 }

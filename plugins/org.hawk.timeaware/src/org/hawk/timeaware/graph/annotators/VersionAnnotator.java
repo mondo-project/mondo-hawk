@@ -16,16 +16,31 @@
  ******************************************************************************/
 package org.hawk.timeaware.graph.annotators;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.epsilon.common.parse.problem.ParseProblem;
+import org.eclipse.epsilon.eol.EolModule;
+import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
+import org.eclipse.epsilon.eol.execute.context.Variable;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphDatabase;
-import org.hawk.core.graph.IGraphNodeIndex;
 import org.hawk.core.graph.IGraphTransaction;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeVersionIndex;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeVersionIndexFactory;
+import org.hawk.core.query.InvalidQueryException;
+import org.hawk.core.query.QueryExecutionException;
+import org.hawk.epsilon.emc.EOLQueryEngine;
+import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.graph.GraphWrapper;
 import org.hawk.graph.MetamodelNode;
 import org.hawk.graph.ModelElementNode;
 import org.hawk.graph.TypeNode;
 import org.hawk.timeaware.graph.TimeAwareMetaModelUpdater;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Contains the actual implementations of the version annotation algorithms,
@@ -37,16 +52,16 @@ import org.hawk.timeaware.graph.TimeAwareMetaModelUpdater;
  */
 public class VersionAnnotator {
 
-	/**
-	 * Name of a node index which keeps track of which model element nodes were
-	 * annotated for which label.
-	 */
-	private static final String LASTANN_IDXNAME = "lastAnnotated";
+	private static final Logger LOGGER = LoggerFactory.getLogger(VersionAnnotator.class);
+	private static final String ANNOTATION_PREFIX = "ann_";
+	private static final Map<String, EolModule> CACHED_MODULES = new HashMap<>();
 
 	private final IModelIndexer indexer;
+	private final ITimeAwareGraphNodeVersionIndexFactory factory;
 
-	public VersionAnnotator(IModelIndexer indexer) {
+	public VersionAnnotator(IModelIndexer indexer) throws EolModelLoadingException {
 		this.indexer = indexer;
+		this.factory = (ITimeAwareGraphNodeVersionIndexFactory) indexer.getGraph();
 	}
 
 	/**
@@ -64,7 +79,8 @@ public class VersionAnnotator {
 	 * had been registered from the start, in which case we could use property
 	 * access logs to find and annotate this intermediate timepoint.
 	 *
-	 * TODO: optimize by detecting changes through history.
+	 * TODO: optimize by detecting changes through history. Derived attribute access
+	 * logs could be made history-less, perhaps?
 	 */
 	public void annotateFullHistory(VersionAnnotatorSpec spec) throws Exception {
 		final IGraphDatabase graph = indexer.getGraph();
@@ -74,20 +90,72 @@ public class VersionAnnotator {
 			final TypeNode tNode = mmNode.getTypeNode(spec.getTypeName());
 			final ITimeAwareGraphNode taTNode = (ITimeAwareGraphNode) tNode.getNode();
 
-			final IGraphNodeIndex lastAnnotated = indexer.getGraph().getOrCreateNodeIndex(LASTANN_IDXNAME);
-
 			for (ITimeAwareGraphNode typeVersion : taTNode.getAllVersions()) {
 				final TypeNode tnVersion = new TypeNode(typeVersion);
-				for (ModelElementNode instance : tnVersion.getAll()) {
-					
-					
-					// TODO
+				final String propName = ANNOTATION_PREFIX + spec.getVersionLabel();
+				LOGGER.info("Annotating version {} of type {}::{}", typeVersion.getTime(), spec.getMetamodelURI(),
+						spec.getTypeName());
+
+				instances: for (ModelElementNode instance : tnVersion.getAll()) {
+					ITimeAwareGraphNode taInstanceNode = (ITimeAwareGraphNode) instance.getNode();
+
+					for (ITimeAwareGraphNode instanceVersion : taInstanceNode.getAllVersions()) {
+						if (instanceVersion.getPropertyKeys().contains(propName)) {
+							// This instance has already been visited
+							continue instances;
+						}
+
+						annotateVersion(spec, instanceVersion);
+					}
 				}
 			}
-			
 
 			tx.success();
 		}
+	}
+
+	public void annotateVersion(VersionAnnotatorSpec spec, ITimeAwareGraphNode instanceVersion)
+			throws InvalidQueryException, QueryExecutionException {
+		try {
+			LOGGER.info("Annotating version {} of node {} (type {})", instanceVersion.getTime(),
+					instanceVersion.getId(), new ModelElementNode(instanceVersion).getTypeNode().getTypeName());
+
+			final EolModule currentModule = new EolModule();
+			final EOLQueryEngine model = new EOLQueryEngine();
+			model.load(indexer);
+			currentModule.getContext().getModelRepository().addModel(model);
+
+			currentModule.parse(spec.getExpression());
+			List<ParseProblem> pps = currentModule.getParseProblems();
+			for (ParseProblem p : pps) {
+				LOGGER.error("Parsing problem: {}", p);
+			}
+			if (!pps.isEmpty()) {
+				return;
+			}
+
+			GraphNodeWrapper gnw = new GraphNodeWrapper(instanceVersion, model);
+			currentModule.getContext().getFrameStack().put(Variable.createReadOnlyVariable("self", gnw));
+			final Object result = currentModule.execute();
+
+			if (result instanceof Boolean) {
+				final String propName = ANNOTATION_PREFIX + spec.getVersionLabel();
+				final ITimeAwareGraphNodeVersionIndex idx = getVersionIndex(spec);
+
+				final boolean bResult = (boolean) result;
+				instanceVersion.setProperty(propName, bResult);
+				if (bResult) {
+					idx.addVersion(instanceVersion);
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error while annotating with label " + spec.getVersionLabel(), e);
+		}
+	}
+
+	protected ITimeAwareGraphNodeVersionIndex getVersionIndex(VersionAnnotatorSpec spec) {
+		return factory.getOrCreateVersionIndex(
+				String.format("%s##%s##%s", spec.getMetamodelURI(), spec.getTypeName(), spec.getVersionLabel()));
 	}
 
 }
