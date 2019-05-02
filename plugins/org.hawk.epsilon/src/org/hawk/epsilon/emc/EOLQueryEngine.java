@@ -747,6 +747,7 @@ public class EOLQueryEngine extends AbstractHawkModel implements IQueryEngine {
 					}
 
 					// TODO: need to test how this works with derived edges
+					idxNodeByDerivedValue.remove(elementNode, s, null);
 					idxNodeByDerivedValue.add(elementNode, s, derived);
 
 					// Note: this is needed in order to mark the node as "dirty" to some time-aware backends.
