@@ -81,7 +81,7 @@ public class VersionAnnotator {
 				for (ModelElementNode instance : tnVersion.getAll()) {
 					
 					
-					if (instance.getNode().getPropertyKeys().contains( ) .getSlotValue(slot))
+					// TODO
 				}
 			}
 			

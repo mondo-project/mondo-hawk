@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -45,6 +46,10 @@ import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.SortedNumericSortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.TotalHitCountCollector;
@@ -57,7 +62,9 @@ import org.hawk.greycat.AbstractGreycatDatabase;
 import org.hawk.greycat.GreycatNode;
 import org.hawk.greycat.lucene.AbstractLuceneIndexer;
 import org.hawk.greycat.lucene.ListCollector;
+import org.hawk.greycat.lucene.SoftTxLucene.SearcherCloseable;
 import org.hawk.greycat.lucene.nodes.GreycatLuceneNodeIndexer.GreycatLuceneNodeIndex;
+import org.hawk.greycat.lucene.nodes.IntervalCollector.Interval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

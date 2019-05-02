@@ -40,6 +40,7 @@ import org.hawk.greycat.AbstractGreycatDatabase;
 import org.hawk.greycat.GreycatNode;
 import org.hawk.greycat.lucene.AbstractLuceneIndexer;
 import org.hawk.greycat.lucene.ListCollector;
+import org.hawk.greycat.lucene.SoftTxLucene.SearcherCloseable;
 import org.hawk.greycat.lucene.versions.GreycatLuceneVersionIndexer.GreycatLuceneVersionIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,8 +103,8 @@ public class GreycatLuceneVersionIndexer extends AbstractLuceneIndexer<GreycatLu
 
 		@Override
 		public Iterator<ITimeAwareGraphNode> iterator() {
-			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
-			try {
+			try (SearcherCloseable sc = lucene.getSearcher()) {
+				final IndexSearcher searcher = sc.get();
 				final NodeVersionCollector nvc = new NodeVersionCollector(searcher);
 
 				final Query fullQuery = new BooleanQuery.Builder()

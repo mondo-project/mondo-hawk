@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
@@ -47,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * Implements "soft" transactions within Lucene. This class is NOT thread-safe: only one
  * thread is assumed to be accessing this Lucene index at a time.
  */
-final class SoftTxLucene {
+public final class SoftTxLucene {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SoftTxLucene.class);
 
 	private final Directory storage;
@@ -91,7 +90,6 @@ final class SoftTxLucene {
 		this.storage = new MMapDirectory(dir.toPath());
 		this.analyzer = new CaseInsensitiveWhitespaceAnalyzer();
 		this.writer = new IndexWriter(storage, new IndexWriterConfig(analyzer));
-		final DirectoryReader reader = DirectoryReader.open(writer);
 		this.searchManager = new SearcherManager(writer, true, false, null);
 		
 		this.executor = Executors.newScheduledThreadPool(1);
@@ -163,7 +161,7 @@ final class SoftTxLucene {
 
 			@Override
 			public void doWork() throws IOException {
-				prevDocument = GreycatLuceneIndexer.copy(oldDocument);
+				prevDocument = DocumentUtils.copy(oldDocument);
 				writer.updateDocument(term, newDocument);
 				refreshReader();
 			}
@@ -188,7 +186,7 @@ final class SoftTxLucene {
 
 			@Override
 			public void doWork() throws IOException {
-				oldDocument = GreycatLuceneIndexer.copy(getDocument(term));
+				oldDocument = DocumentUtils.copy(getDocument(term));
 				writer.deleteDocuments(term);
 				refreshReader();
 			}
@@ -214,7 +212,7 @@ final class SoftTxLucene {
 				try (SearcherCloseable sc = new SearcherCloseable()) {
 					final ListCollector lc = new ListCollector(sc.get());
 					sc.get().search(query, lc);
-					oldDocuments = lc.getDocuments().stream().map(d -> GreycatLuceneIndexer.copy(d)).collect(Collectors.toList());
+					oldDocuments = lc.getDocuments().stream().map(d -> DocumentUtils.copy(d)).collect(Collectors.toList());
 					writer.deleteDocuments(query);
 				}
 			}

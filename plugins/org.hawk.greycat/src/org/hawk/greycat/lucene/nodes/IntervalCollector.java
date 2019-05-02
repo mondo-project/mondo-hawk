@@ -14,7 +14,7 @@
  * Contributors:
  *     Antonio Garcia-Dominguez - initial API and implementation
  ******************************************************************************/
-package org.hawk.greycat.lucene;
+package org.hawk.greycat.lucene.nodes;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -33,6 +33,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TotalHitCountCollector;
 import org.hawk.greycat.AbstractGreycatDatabase;
+import org.hawk.greycat.lucene.SoftTxLucene.SearcherCloseable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,22 +66,24 @@ public abstract class AbstractLuceneIndexer<T> {
 
 	public T getNodeIndex(String name) throws Exception {
 		return nodeIndexCache.get(name, () -> {
-			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
-	
-			final Query query = new BooleanQuery.Builder()
-				.add(new TermQuery(new Term(INDEX_FIELD, name)), Occur.MUST)
-				.add(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), Occur.MUST).build();
-	
-			final TotalHitCountCollector thc = new TotalHitCountCollector();
-			searcher.search(query, thc);
-			if (thc.getTotalHits() == 0) {
-				Document doc = new Document();
-				doc.add(new StringField(INDEX_FIELD, name, Store.YES));
-				doc.add(new StringField(DOCTYPE_FIELD, INDEX_DOCTYPE, Store.YES));
-				lucene.update(new Term(INDEX_FIELD, name), null, doc);
-			}
+			try (SearcherCloseable sc = lucene.getSearcher()) {
+				final IndexSearcher searcher = sc.get();
 
-			return createIndexInstance(name);
+				final Query query = new BooleanQuery.Builder()
+						.add(new TermQuery(new Term(INDEX_FIELD, name)), Occur.MUST)
+						.add(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), Occur.MUST).build();
+
+				final TotalHitCountCollector thc = new TotalHitCountCollector();
+				searcher.search(query, thc);
+				if (thc.getTotalHits() == 0) {
+					Document doc = new Document();
+					doc.add(new StringField(INDEX_FIELD, name, Store.YES));
+					doc.add(new StringField(DOCTYPE_FIELD, INDEX_DOCTYPE, Store.YES));
+					lucene.update(new Term(INDEX_FIELD, name), null, doc);
+				}
+
+				return createIndexInstance(name);
+			}
 		});
 	}
 
@@ -91,8 +94,8 @@ public abstract class AbstractLuceneIndexer<T> {
 	protected abstract T createIndexInstance(String name);
 
 	public Set<String> getIndexNames() {
-		try {
-			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
+		try (SearcherCloseable sc = lucene.getSearcher()) {
+			final IndexSearcher searcher = sc.get();
 			final ListCollector lc = new ListCollector(searcher);
 			searcher.search(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), lc);
 	
@@ -108,8 +111,8 @@ public abstract class AbstractLuceneIndexer<T> {
 	}
 
 	public boolean indexExists(String name) {
-		try {
-			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
+		try (SearcherCloseable sc = lucene.getSearcher()) {
+			final IndexSearcher searcher = sc.get();
 	
 			Query query = new BooleanQuery.Builder()
 				.add(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), Occur.FILTER)

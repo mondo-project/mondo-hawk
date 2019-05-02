@@ -57,6 +57,20 @@ public final class DocumentUtils {
 		 *
 		 * TODO: do we get these back after a soft rollback? We need tests for this.
 		 */
+
+		// add check to avoid having the same field multiple times
+		IndexableField[] existing = document.getFields(fieldName);
+		for (IndexableField f : existing) {
+			if (f.numericValue() == null) {
+				if (f.stringValue().equals(value)) {
+					return;
+				}
+			} else if (f.numericValue().equals(value)) {
+				// nothing to do - same string present!
+				return;
+			}
+		}
+
 		if (value instanceof Float || value instanceof Double) {
 			final double doubleValue = ((Number)value).doubleValue();
 			document.add(new DoublePoint(fieldName, doubleValue));
