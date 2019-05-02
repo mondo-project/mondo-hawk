@@ -97,6 +97,7 @@ final class SoftTxLucene {
 	public void flush() {
 		try {
 			writer.flush();
+			refreshReader();
 		} catch (IOException e) {
 			LOGGER.error("Failed to flush index", e);
 		}

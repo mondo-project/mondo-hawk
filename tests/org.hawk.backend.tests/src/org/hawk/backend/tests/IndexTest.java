@@ -617,6 +617,7 @@ public class IndexTest extends TemporaryDatabaseTest {
 
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			idxRoots = db.getOrCreateNodeIndex("roots");
+			idxRoots.flush();
 			assertEquals(0, idxRoots.query("a", "*").size());
 			idxRoots.add(x, "a", "2");
 			tx.success();
@@ -714,6 +715,7 @@ public class IndexTest extends TemporaryDatabaseTest {
 		try (IGraphTransaction tx = db.beginTransaction()) {
 			assertEquals(2, db.getMetamodelIndex().query("b", "*").size());
 			db.getMetamodelIndex().delete();
+			db.getMetamodelIndex().flush();			
 			assertEquals(0, db.getMetamodelIndex().query("b", "*").size());
 			tx.failure();
 		}

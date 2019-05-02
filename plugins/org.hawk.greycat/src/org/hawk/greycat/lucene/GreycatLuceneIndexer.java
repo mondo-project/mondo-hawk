@@ -260,10 +260,10 @@ public class GreycatLuceneIndexer {
 				 * the number of documents to be changed.
 				 */
 				final Builder queryBuilder = getIndexQueryBuilder()
-					.add(LongPoint.newExactQuery(NODEID_FIELD, gn.getId()), Occur.MUST)
-					.add(LongPoint.newRangeQuery(VALIDTO_FIELD, gn.getTime(), Long.MAX_VALUE), Occur.MUST);
+					.add(LongPoint.newExactQuery(NODEID_FIELD, gn.getId()), Occur.FILTER)
+					.add(LongPoint.newRangeQuery(VALIDTO_FIELD, gn.getTime(), Long.MAX_VALUE), Occur.FILTER);
 				if (key != null && value != null) {
-					queryBuilder.add(getValueQuery(key, value), Occur.MUST);
+					queryBuilder.add(getValueQuery(key, value), Occur.FILTER);
 				}
 				final Query query = queryBuilder.build();
 				final ListCollector collector = new ListCollector(searcher);
@@ -385,14 +385,14 @@ public class GreycatLuceneIndexer {
 
 				// All documents for this node starting in the future must be deleted
 				final Query queryToDelete = getIndexQueryBuilder()
-					.add(findNodeQuery(gn), Occur.MUST)
-					.add(LongPoint.newRangeQuery(VALIDFROM_FIELD, gn.getTime() + 1, Long.MAX_VALUE), Occur.MUST)
+					.add(findNodeQuery(gn), Occur.FILTER)
+					.add(LongPoint.newRangeQuery(VALIDFROM_FIELD, gn.getTime() + 1, Long.MAX_VALUE), Occur.FILTER)
 					.build();
 				lucene.delete(queryToDelete);
 
 				// Currently valid documents must be invalidated from this timepoint
 				final Query queryToInvalidate = getIndexQueryBuilder()
-					.add(findValidNodeDocuments(gn), Occur.MUST)
+					.add(findValidNodeDocuments(gn), Occur.FILTER)
 					.build();
 				invalidateAtTimepoint(gn, queryToInvalidate);
 			} catch (IOException e) {
@@ -413,8 +413,8 @@ public class GreycatLuceneIndexer {
 
 				// Also filter by index and timepoint (using database for now)
 				query = getIndexQueryBuilder()
-					.add(query, Occur.MUST)
-					.add(findValidDocumentsAtTimepoint(getTimepoint()), Occur.MUST)
+					.add(query, Occur.FILTER)
+					.add(findValidDocumentsAtTimepoint(getTimepoint()), Occur.FILTER)
 					.build();
 
 				return new LuceneGraphIterable(query, timepoint);
@@ -450,9 +450,9 @@ public class GreycatLuceneIndexer {
 			}
 
 			final Builder builder = getIndexQueryBuilder()
-				.add(findValidDocumentsAtTimepoint(getTimepoint()), Occur.MUST);
+				.add(findValidDocumentsAtTimepoint(getTimepoint()), Occur.FILTER);
 			if (valueQuery != null) {
-				builder.add(valueQuery, Occur.MUST);
+				builder.add(valueQuery, Occur.FILTER);
 			}
 			final Query query = builder.build();
 
@@ -468,8 +468,8 @@ public class GreycatLuceneIndexer {
 		public IGraphIterable<GreycatNode> get(String key, Object valueExpr) {
 			final Query valueQuery = getValueQuery(key, valueExpr);
 			final Query query = getIndexQueryBuilder()
-				.add(valueQuery, Occur.MUST)
-				.add(findValidDocumentsAtTimepoint(getTimepoint()), Occur.MUST)
+				.add(valueQuery, Occur.FILTER)
+				.add(findValidDocumentsAtTimepoint(getTimepoint()), Occur.FILTER)
 				.build();
 			return new LuceneGraphIterable(query, timepoint);
 		}
@@ -478,8 +478,8 @@ public class GreycatLuceneIndexer {
 		public List<Long> getVersions(ITimeAwareGraphNode gn, String key, Object valueExpr) {
 			final Query valueQuery = getValueQuery(key, valueExpr);
 			final Query query = getIndexQueryBuilder()
-				.add(valueQuery, Occur.MUST)
-				.add(LongPoint.newExactQuery(NODEID_FIELD, (long) gn.getId()), Occur.MUST)
+				.add(valueQuery, Occur.FILTER)
+				.add(LongPoint.newExactQuery(NODEID_FIELD, (long) gn.getId()), Occur.FILTER)
 				.build();
 
 			try {
@@ -516,9 +516,9 @@ public class GreycatLuceneIndexer {
 		public Long getEarliestVersionSince(ITimeAwareGraphNode gn, String key, Object valueExpr) {
 			final Query valueQuery = getValueQuery(key, valueExpr);
 			final Query query = getIndexQueryBuilder()
-				.add(valueQuery, Occur.MUST)
-				.add(LongPoint.newExactQuery(NODEID_FIELD, (long) gn.getId()), Occur.MUST)
-				.add(LongPoint.newRangeQuery(VALIDFROM_FIELD, gn.getTime(), Long.MAX_VALUE), Occur.MUST)
+				.add(valueQuery, Occur.FILTER)
+				.add(LongPoint.newExactQuery(NODEID_FIELD, (long) gn.getId()), Occur.FILTER)
+				.add(LongPoint.newRangeQuery(VALIDFROM_FIELD, gn.getTime(), Long.MAX_VALUE), Occur.FILTER)
 				.build();
 
 			try {
@@ -593,8 +593,8 @@ public class GreycatLuceneIndexer {
 
 				// We want to find the currently valid document for this node and update it
 				final Query latestVersionQuery = getIndexQueryBuilder()
-					.add(findNodeQuery(gn), Occur.MUST)
-					.add(findValidDocumentsAtTimepoint(gn.getTime()), Occur.MUST)
+					.add(findNodeQuery(gn), Occur.FILTER)
+					.add(findValidDocumentsAtTimepoint(gn.getTime()), Occur.FILTER)
 					.build();
 
 				final TopDocs results = searcher.search(latestVersionQuery, 1);
@@ -640,8 +640,8 @@ public class GreycatLuceneIndexer {
 		private void extendFutureDocuments(final GreycatNode gn, Map<String, Object> values,
 				final IndexSearcher searcher, long validTo) throws IOException {
 			final Query allFutureQuery = getIndexQueryBuilder()
-				.add(findNodeQuery(gn), Occur.MUST)
-				.add(LongPoint.newRangeQuery(VALIDFROM_FIELD, validTo + 1, Long.MAX_VALUE), Occur.MUST)
+				.add(findNodeQuery(gn), Occur.FILTER)
+				.add(LongPoint.newRangeQuery(VALIDFROM_FIELD, validTo + 1, Long.MAX_VALUE), Occur.FILTER)
 				.build();
 
 			final ListCollector lc = new ListCollector(searcher);
@@ -703,8 +703,8 @@ public class GreycatLuceneIndexer {
 
 		private long computeValidToForNewDocument(final GreycatNode gn, final IndexSearcher searcher) throws IOException {
 			final Query afterStartQuery = getIndexQueryBuilder()
-				.add(findNodeQuery(gn), Occur.MUST)
-				.add(LongPoint.newRangeQuery(VALIDFROM_FIELD, gn.getTime() + 1, Long.MAX_VALUE), Occur.MUST)
+				.add(findNodeQuery(gn), Occur.FILTER)
+				.add(LongPoint.newRangeQuery(VALIDFROM_FIELD, gn.getTime() + 1, Long.MAX_VALUE), Occur.FILTER)
 				.build();
 
 			final ListCollector lc = new ListCollector(searcher);
@@ -763,8 +763,8 @@ public class GreycatLuceneIndexer {
 			final IndexSearcher searcher = new IndexSearcher(lucene.getReader());
 
 			final Query query = new BooleanQuery.Builder()
-				.add(new TermQuery(new Term(INDEX_FIELD, name)), Occur.MUST)
-				.add(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), Occur.MUST)
+				.add(new TermQuery(new Term(INDEX_FIELD, name)), Occur.FILTER)
+				.add(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), Occur.FILTER)
 				.build();
 
 			final TotalHitCountCollector thc = new TotalHitCountCollector();
@@ -803,7 +803,7 @@ public class GreycatLuceneIndexer {
 
 			Query query = new BooleanQuery.Builder()
 				.add(new TermQuery(new Term(DOCTYPE_FIELD, INDEX_DOCTYPE)), Occur.FILTER)
-				.add(new TermQuery(new Term(INDEX_FIELD, name)), Occur.MUST)
+				.add(new TermQuery(new Term(INDEX_FIELD, name)), Occur.FILTER)
 				.build();
 
 			final TotalHitCountCollector collector = new TotalHitCountCollector();
@@ -822,8 +822,8 @@ public class GreycatLuceneIndexer {
 		try {
 			// To be removed - all documents on the node valid after this timepoint
 			final Query queryToDelete = new BooleanQuery.Builder()
-				.add(LongPoint.newExactQuery(NODEID_FIELD, gn.getId()), Occur.MUST)
-				.add(LongPoint.newRangeQuery(VALIDFROM_FIELD, gn.getTime() + 1, Long.MAX_VALUE), Occur.MUST)
+				.add(LongPoint.newExactQuery(NODEID_FIELD, gn.getId()), Occur.FILTER)
+				.add(LongPoint.newRangeQuery(VALIDFROM_FIELD, gn.getTime() + 1, Long.MAX_VALUE), Occur.FILTER)
 				.build();
 			lucene.delete(queryToDelete);
 
@@ -962,15 +962,15 @@ public class GreycatLuceneIndexer {
 
 	protected Query findValidNodeDocuments(GreycatNode gn) {
 		return new BooleanQuery.Builder()
-			.add(LongPoint.newExactQuery(NODEID_FIELD, gn.getId()), Occur.MUST)
-			.add(findValidDocumentsAtTimepoint(gn.getTime()), Occur.MUST)
+			.add(LongPoint.newExactQuery(NODEID_FIELD, gn.getId()), Occur.FILTER)
+			.add(findValidDocumentsAtTimepoint(gn.getTime()), Occur.FILTER)
 			.build();
 	}
 
 	protected Query findValidDocumentsAtTimepoint(final long time) {
 		return new BooleanQuery.Builder()
-			.add(LongPoint.newRangeQuery(VALIDFROM_FIELD, Long.MIN_VALUE, time), Occur.MUST)
-			.add(LongPoint.newRangeQuery(VALIDTO_FIELD, time, Long.MAX_VALUE), Occur.MUST)
+			.add(LongPoint.newRangeQuery(VALIDFROM_FIELD, Long.MIN_VALUE, time), Occur.FILTER)
+			.add(LongPoint.newRangeQuery(VALIDTO_FIELD, time, Long.MAX_VALUE), Occur.FILTER)
 			.build();
 	}
 
