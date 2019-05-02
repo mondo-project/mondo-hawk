@@ -601,7 +601,7 @@ public class GreycatLuceneIndexer {
 				Long validTo = null;
 				if (results.totalHits > 0) {
 					final Document oldDocument = searcher.doc(results.scoreDocs[0].doc);
-					if (!differenceFound(oldDocument, values)) {
+					if (differenceFound(oldDocument, values)) {
 						validTo = extendCurrentDocument(gn, values, searcher, results);
 					}
 				} else {
