@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.hawk.greycat.lucene;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -29,12 +30,12 @@ import java.util.stream.Collectors;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
@@ -52,7 +53,6 @@ final class SoftTxLucene {
 	private final Directory storage;
 	private final Analyzer analyzer;
 	private final IndexWriter writer;
-	private DirectoryReader reader;
 
 	private interface IUndoable {
 		void doWork() throws IOException;
@@ -61,13 +61,39 @@ final class SoftTxLucene {
 
 	private final List<IUndoable> rollbackLog = new LinkedList<>();
 	private final ScheduledExecutorService executor;
+	private final SearcherManager searchManager;
+
+	public class SearcherCloseable implements Closeable {
+		private IndexSearcher searcher;
+
+		public SearcherCloseable() throws IOException {
+			this.searcher = searchManager.acquire();
+		}
+
+		public IndexSearcher get() {
+			return searcher;
+		}
+
+		@Override
+		public void close() {
+			if (searcher != null) {
+				try {
+					searchManager.release(searcher);
+				} catch (IOException e) {
+					LOGGER.error(e.getMessage(), e);
+				}
+				searcher = null;
+			}
+		}
+	}
 
 	public SoftTxLucene(File dir) throws IOException {
 		this.storage = new MMapDirectory(dir.toPath());
 		this.analyzer = new CaseInsensitiveWhitespaceAnalyzer();
 		this.writer = new IndexWriter(storage, new IndexWriterConfig(analyzer));
-		this.reader = DirectoryReader.open(writer);
-
+		final DirectoryReader reader = DirectoryReader.open(writer);
+		this.searchManager = new SearcherManager(writer, true, false, null);
+		
 		this.executor = Executors.newScheduledThreadPool(1);
 		executor.scheduleWithFixedDelay(() -> {
 			synchronized (rollbackLog) {
@@ -78,26 +104,21 @@ final class SoftTxLucene {
 					LOGGER.error("Periodic commit of Lucene at " + storage + " failed", e);
 				}
 			}
-		}, 60, 60, TimeUnit.SECONDS); 
+		}, 30, 30, TimeUnit.SECONDS); 
 	}
 
-	public IndexReader getReader() {
-		return reader;
+	public SearcherCloseable getSearcher() throws IOException {
+		return new SearcherCloseable();
 	}
 
 	private void refreshReader() throws IOException {
-		DirectoryReader newReader = DirectoryReader.openIfChanged(reader);
-		if (newReader != null && reader != newReader) {
-			DirectoryReader oldReader = reader;
-			reader = newReader;
-			oldReader.close();
-		}
+		searchManager.maybeRefresh();
 	}
 
 	public void flush() {
 		try {
 			writer.flush();
-			refreshReader();
+			searchManager.maybeRefreshBlocking();
 		} catch (IOException e) {
 			LOGGER.error("Failed to flush index", e);
 		}
@@ -108,7 +129,6 @@ final class SoftTxLucene {
 			executor.shutdown();
 			executor.awaitTermination(300, TimeUnit.SECONDS);
 
-			reader.close();
 			writer.close();
 			storage.close();
 		} catch (IOException e) {
@@ -191,12 +211,12 @@ final class SoftTxLucene {
 
 			@Override
 			public void doWork() throws IOException {
-				final IndexSearcher searcher = new IndexSearcher(reader);
-				final ListCollector lc = new ListCollector(searcher);
-				searcher.search(query, lc);
-				oldDocuments = lc.getDocuments().stream().map(d -> GreycatLuceneIndexer.copy(d)).collect(Collectors.toList());
-				writer.deleteDocuments(query);
-				refreshReader();
+				try (SearcherCloseable sc = new SearcherCloseable()) {
+					final ListCollector lc = new ListCollector(sc.get());
+					sc.get().search(query, lc);
+					oldDocuments = lc.getDocuments().stream().map(d -> GreycatLuceneIndexer.copy(d)).collect(Collectors.toList());
+					writer.deleteDocuments(query);
+				}
 			}
 
 			@Override
@@ -209,10 +229,12 @@ final class SoftTxLucene {
 	}
 
 	private Document getDocument(Term term) throws IOException {
-		final IndexSearcher searcher = new IndexSearcher(reader);
-		final TopDocs topDocs = searcher.search(new TermQuery(term), 1);
-		if (topDocs.totalHits > 0) {
-			 return reader.document(topDocs.scoreDocs[0].doc);
+		try (SearcherCloseable sc = new SearcherCloseable()) {
+			final IndexSearcher searcher = sc.get();
+			final TopDocs topDocs = searcher.search(new TermQuery(term), 1);
+			if (topDocs.totalHits > 0) {
+				return searcher.doc(topDocs.scoreDocs[0].doc);
+			}
 		}
 		return null;
 	}
