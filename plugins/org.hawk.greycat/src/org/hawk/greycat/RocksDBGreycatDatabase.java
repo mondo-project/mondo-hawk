@@ -40,12 +40,6 @@ public class RocksDBGreycatDatabase extends AbstractGreycatDatabase {
 	}
 
 	@Override
-	public final String getType() {
-		// For backwards compatibiltiy only
-		return "org.hawk.greycat.GreycatDatabase";
-	}
-	
-	@Override
 	public String getHumanReadableName() {
 		return "RocksDB " + super.getHumanReadableName() + " (deprecated)";
 	}
