@@ -185,6 +185,15 @@ public class TimeAwareEOLQueryEngine extends EOLQueryEngine {
 	}
 
 	/**
+	 * Version of {@link #allInstancesAt(long)} required to work around a limitation
+	 * in Epsilon's reflective operation lookup, which does not seem to consider the
+	 * promotion of integer values into long values.
+	 */
+	public Collection<?> allInstancesAt(int timepoint) {
+		return allInstancesAt((long) timepoint);
+	}
+
+	/**
 	 * Returns all the instances in the model at this current moment, by visiting
 	 * the type nodes at the current point in time.
 	 */

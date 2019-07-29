@@ -114,6 +114,12 @@ public abstract class AbstractTimeAwareModelIndexingTest extends ModelIndexingTe
 		return timeAwareQueryEngine.query(indexer, eolQuery, context);
 	}
 
+	protected Object timeAwareEOL(final String eolQuery, final String argumentName, final Object argumentValue) throws InvalidQueryException, QueryExecutionException {
+		return timeAwareEOL(eolQuery,
+			Collections.singletonMap(EOLQueryEngine.PROPERTY_ARGUMENTS,
+				Collections.singletonMap(argumentName, argumentValue)));		
+	}
+
 	protected Object timelineEOL(final String eolQuery) throws InvalidQueryException, QueryExecutionException {
 		return timelineQueryEngine.query(indexer, eolQuery, null);
 	}

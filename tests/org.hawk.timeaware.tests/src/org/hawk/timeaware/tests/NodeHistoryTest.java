@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -32,6 +33,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.hawk.backend.tests.BackendTestSuite;
 import org.hawk.backend.tests.factories.IGraphDatabaseFactory;
 import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
+import org.hawk.epsilon.emc.EOLQueryEngine;
 import org.hawk.epsilon.emc.wrappers.GraphNodeWrapper;
 import org.hawk.integration.tests.emf.EMFModelSupportFactory;
 import org.hawk.svn.tests.rules.TemporarySVNRepository;
@@ -159,8 +161,20 @@ public class NodeHistoryTest extends AbstractTimeAwareModelIndexingTest {
 		waitForSync(() -> {
 			List<List<Object>> results = (List<List<Object>>) timelineEOL("return Tree.all.size;");
 			assertEquals(0, results.get(0).get(1));
+			assertEquals(0, (int) timeAwareEOL("return Model.allInstancesAt(t).size;", "t", results.get(0).get(0)));
+
+			/*
+			 * This is required since Epsilon does not consider type promotions for
+			 * reflective operation access (from int to long).
+			 */
+			assertEquals(0, (int) timeAwareEOL("return Model.allInstancesAt(" + results.get(0).get(0) + ").size;"));
+
 			assertEquals(1, results.get(1).get(1));
+			assertEquals(1, (int) timeAwareEOL("return Model.allInstancesAt(t).size;", "t", results.get(1).get(0)));
+
 			assertEquals(0, results.get(2).get(1));
+			assertEquals(0, (int) timeAwareEOL("return Model.allInstancesAt(t).size;", "t", results.get(2).get(0)));
+
 			return null;
 		});
 	}
