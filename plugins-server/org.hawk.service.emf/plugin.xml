@@ -8,5 +8,12 @@
             type="hawkmodel">
       </parser>
    </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <file-association
+            content-type="org.eclipse.emf.compare.content.type"
+            file-extensions="hawkmodel">
+      </file-association>
+   </extension>
 
 </plugin>
