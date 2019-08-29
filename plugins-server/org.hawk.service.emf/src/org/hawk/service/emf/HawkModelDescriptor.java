@@ -135,7 +135,7 @@ public class HawkModelDescriptor {
 	public static final ThriftProtocol DEFAULT_TPROTOCOL = ThriftProtocol.TUPLE;
 	public static final String DEFAULT_CLIENTID = System.getProperty("user.name");
 	public static final SubscriptionDurability DEFAULT_DURABILITY = SubscriptionDurability.DEFAULT;
-	public static final String DEFAULT_DEFAULT_NAMESPACES = "http://buildingsmart.ifc2x3tc1.ecore";
+	public static final String DEFAULT_DEFAULT_NAMESPACES = "";
 
 	// Empty strings mean entire model - no actual query performed
 	public static final String DEFAULT_QUERY_LANGUAGE = "";
