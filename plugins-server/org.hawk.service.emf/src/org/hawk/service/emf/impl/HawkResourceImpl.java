@@ -26,6 +26,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -705,7 +706,7 @@ public class HawkResourceImpl extends ResourceImpl implements HawkResource {
 			// Make sure we have a list, even if the original query did not produce a list
 			QueryResult results = client.query(descriptor.getHawkInstance(), query, queryLanguage, opts);
 			if (!results.isSetVList()) {
-				results = new QueryResult(_Fields.V_LIST, results);
+				results = new QueryResult(_Fields.V_LIST, Collections.singletonList(results));
 			}
 
 			elems = new ArrayList<>();
