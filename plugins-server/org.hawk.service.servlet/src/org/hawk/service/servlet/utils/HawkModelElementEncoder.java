@@ -469,7 +469,7 @@ public class HawkModelElementEncoder {
 	protected void encodeReference(ModelElementNode meNode, final ModelElement me, Map.Entry<String, Object> ref)
 			throws Exception {
 		if (useContainment && meNode.isContainment(ref.getKey())) {
-			final ContainerSlot slot = encodeContainerSlot(ref);
+			final ContainerSlot slot = encodeContainerSlot(meNode, ref);
 			if (!slot.isSetElements() || slot.elements.isEmpty())
 				return;
 			me.addToContainers(slot);
@@ -477,14 +477,14 @@ public class HawkModelElementEncoder {
 			// skip this container reference: we're already using containment, so
 			// we assume we'll have the parent encoded as well.
 		} else {
-			final ReferenceSlot slot = encodeReferenceSlot(ref);
+			final ReferenceSlot slot = encodeReferenceSlot(meNode, ref);
 			if (slot.ids.isEmpty())
 				return;
 			me.addToReferences(slot);
 		}
 	}
 
-	private ContainerSlot encodeContainerSlot(Entry<String, Object> slotEntry) throws Exception {
+	private ContainerSlot encodeContainerSlot(ModelElementNode sourceNode, Entry<String, Object> slotEntry) throws Exception {
 		assert slotEntry.getValue() != null;
 
 		ContainerSlot s = new ContainerSlot();
@@ -493,7 +493,7 @@ public class HawkModelElementEncoder {
 		Object value = slotEntry.getValue();
 		if (value instanceof Collection) {
 			for (Object o : (Collection<?>)value) {
-				final ModelElementNode meNode = graph.getModelElementNodeById(o);
+				ModelElementNode meNode = graph.getModelElementNodeById(sourceNode, o);
 				final ModelElement me = encode(meNode);
 				if (me != null) {
 					s.addToElements(me);
@@ -501,7 +501,7 @@ public class HawkModelElementEncoder {
 				}
 			}
 		} else {
-			final ModelElementNode meNode = graph.getModelElementNodeById(value);
+			final ModelElementNode meNode = graph.getModelElementNodeById(sourceNode, value);
 			final ModelElement me = encode(meNode);
 			if (me != null) {
 				s.addToElements(me);
@@ -512,32 +512,32 @@ public class HawkModelElementEncoder {
 		return s;
 	}
 
-	private ReferenceSlot encodeReferenceSlot(Entry<String, Object> slotEntry) throws Exception {
+	private ReferenceSlot encodeReferenceSlot(ModelElementNode sourceNode, Entry<String, Object> slotEntry) throws Exception {
 		assert slotEntry.getValue() != null;
 
-		ReferenceSlot s = new ReferenceSlot();
-		s.name = slotEntry.getKey();
+		ReferenceSlot slot = new ReferenceSlot();
+		slot.name = slotEntry.getKey();
 
 		final Object value = slotEntry.getValue();
-		s.ids = new ArrayList<>();
+		slot.ids = new ArrayList<>();
 		if (value instanceof Collection) {
 			for (Object o : (Collection<?>)value) {
-				addToReferenceIds(o, s);
+				addToReferenceIds(sourceNode, o, slot);
 			}
 		} else {
-			addToReferenceIds(value, s);
+			addToReferenceIds(sourceNode, value, slot);
 		}
 
-		return s;
+		return slot;
 	}
 
-	private void addToReferenceIds(Object o, ReferenceSlot s) throws Exception {
+	private void addToReferenceIds(ModelElementNode sourceNode, Object o, ReferenceSlot s) throws Exception {
 		ModelElementNode meNode;
 		if (o instanceof IGraphNode) {
 			meNode = new ModelElementNode((IGraphNode)o);
 		} else {
 			final String referenceId = o.toString();
-			meNode = graph.getModelElementNodeById(referenceId);
+			meNode = graph.getModelElementNodeById(sourceNode, referenceId);
 		}
 
 		if (isEncodable(meNode)) {

@@ -22,5 +22,10 @@ Require-Bundle: org.junit;bundle-version="4.0.0",
  org.eclipse.emf.ecore.xmi;bundle-version="2.11.1",
  org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
- org.hawk.epsilon;bundle-version="1.2.0"
+ org.hawk.epsilon;bundle-version="1.2.0",
+ org.hawk.service.servlet;bundle-version="1.2.0",
+ org.hawk.service.api;bundle-version="1.2.0",
+ javax.servlet;bundle-version="3.1.0",
+ org.hawk.service.artemis.server;bundle-version="1.2.0",
+ org.apache.thrift;bundle-version="0.9.3"
 Bundle-ActivationPolicy: lazy

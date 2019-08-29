@@ -31,6 +31,7 @@ import org.hawk.core.graph.IGraphDatabase;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
 import org.hawk.graph.updater.GraphModelUpdater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,6 +138,26 @@ public class GraphWrapper {
 		final IGraphNode rawNode = graph.getNodeById(id);
 		if (rawNode == null) {
 			throw new NoSuchElementException("No node exists with id " + id);
+		}
+		return new ModelElementNode(rawNode);
+	}
+
+	/**
+	 * Retrieves a {@link ModelElementNode} referenced from another node. Will
+	 * make sure to reuse the same context, i.e. same world/timepoint if we are
+	 * working within a time-aware graph.
+	 */
+	public ModelElementNode getModelElementNodeById(ModelElementNode ctx, Object id) {
+		final IGraphNode ctxNode = ctx.getNode();
+		final IGraphNode rawNode = graph.getNodeById(id);
+		if (rawNode == null) {
+			throw new NoSuchElementException("No node exists with id " + id);
+		}
+
+		if (ctxNode instanceof ITimeAwareGraphNode) {
+			ITimeAwareGraphNode ctxTANode = (ITimeAwareGraphNode) ctxNode;
+			ITimeAwareGraphNode rawTANode = (ITimeAwareGraphNode) rawNode;
+			return new ModelElementNode(rawTANode.travelInTime(ctxTANode.getTime()));
 		}
 		return new ModelElementNode(rawNode);
 	}

@@ -22,3 +22,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.servlet;version="2.6.0",
  javax.servlet.http;version="2.6.0"
+Export-Package: org.hawk.service.servlet.utils
