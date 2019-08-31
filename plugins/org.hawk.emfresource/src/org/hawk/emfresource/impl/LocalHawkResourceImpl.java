@@ -564,7 +564,8 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 				for (FileNode fileNode : gw.getFileNodes(repositoryPatterns, filePatterns)) {
 					for (ModelElementNode elem : fileNode.getRootModelElements()) {
 						if (!elem.isContained()) {
-							createOrUpdateEObject(elem);
+							EObject eob = createOrUpdateEObject(elem);
+							getContents().add(eob);							
 						}
 					}
 				}
@@ -771,10 +772,6 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			if (!ids.isEmpty()) {
 				lazyResolver.putLazyReference(eob, ref, ids);
 			}
-		}
-
-		if (existing == null) {
-			addToResource(me, eob);
 		}
 		return eob;
 	}
