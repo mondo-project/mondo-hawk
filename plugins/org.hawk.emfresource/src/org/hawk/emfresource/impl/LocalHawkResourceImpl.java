@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
@@ -80,21 +81,10 @@ import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 /**
- * <p>EMF driver that reads a local model from a Hawk index. Available options:</p>
- * <ul>
- * <li>{@link #OPTION_SPLIT}</li>
- * </ul>
+ * EMF driver that reads a local model from a Hawk index. Options are passed
+ * through the constructor.
  */
 public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource {
-
-	/**
-	 * Option key for {@link #load(Map)}: the value should be a <code>Boolean</code>.
-	 * If the value is unset or not <code>false</code>, the contents of the resource
-	 * will be split across several surrogate {@link HawkFileResourceImpl} instances
-	 * that have the same URI as the originally indexed models. If the value is set
-	 * to <code>true</code>, this behavior will be disabled.
-	 */
-	public static final String OPTION_SPLIT = "split";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalHawkResourceImpl.class);
 
@@ -237,6 +227,13 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	private final Map<String, HawkFileResourceImpl> uriToResource = new HashMap<>();
 	private final Map<String, FileNode> uriToFileNode = new HashMap<>();
 
+	/**
+	 * Responsible for creating {@link GraphWrapper} instances in this object. This
+	 * way, a time-aware graph wrapper can be provided through composition rather
+	 * than through inheritance.
+	 */
+	private final Function<IModelIndexer, GraphWrapper> graphWrapperProvider;
+
 	private LazyResolver lazyResolver;
 	private IGraphChangeListener changeListener;
 	private LazyEObjectFactory eobFactory;
@@ -250,11 +247,15 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	private List<String> filePatterns;
 
 	public LocalHawkResourceImpl() {
-		// for Exeed
 		this.isSplit = true;
+		this.graphWrapperProvider = idx -> new GraphWrapper(idx.getGraph());
 	}
 
 	public LocalHawkResourceImpl(final URI uri, final IModelIndexer indexer, boolean isSplit, final List<String> repoPatterns, final List<String> filePatterns) {
+		this(uri, indexer, idx -> new GraphWrapper(idx.getGraph()), isSplit, repoPatterns, filePatterns);
+	}
+
+	public LocalHawkResourceImpl(final URI uri, final IModelIndexer indexer, final Function<IModelIndexer, GraphWrapper> graphProvider, boolean isSplit, final List<String> repoPatterns, final List<String> filePatterns) {
 		super(uri);
 
 		if (indexer == null) {
@@ -265,7 +266,8 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		this.isSplit = isSplit;
 		this.repositoryPatterns = repoPatterns;
 		this.filePatterns = filePatterns;
-	}
+		this.graphWrapperProvider = graphProvider;
+	}	
 
 	@Override
 	public void load(final Map<?, ?> options) throws IOException {
@@ -286,7 +288,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	public boolean hasChildren(final EObject o) {
 		final String nodeId = eObjectToNodeIdCache.getIfPresent(o);
 
-		final GraphWrapper gW = new GraphWrapper(this.indexer.getGraph());
+		final GraphWrapper gW = graphWrapperProvider.apply(indexer);
 		try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
 			ModelElementNode node = gW.getModelElementNodeById(nodeId);
 			final boolean ret = node.hasChildren();
@@ -347,8 +349,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 		@SuppressWarnings("unused") EList<EObject> fetched = null;
 		if (!toBeFetched.isEmpty()) {
 			try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
-				final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
-
+				final GraphWrapper gw = graphWrapperProvider.apply(indexer);
 				final List<ModelElementNode> elems = new ArrayList<>();
 				for (String id : toBeFetched) {
 					elems.add(gw.getModelElementNodeById(id));
@@ -371,7 +372,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	@Override
 	public EList<EObject> fetchNodes(final EClass eClass, boolean fetchAttributes) throws Exception {
 		try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
-			final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
+			final GraphWrapper gw = graphWrapperProvider.apply(indexer);
 			final MetamodelNode mn = gw.getMetamodelNodeByNsURI(eClass.getEPackage().getNsURI());
 			for (TypeNode tn : mn.getTypes()) {
 				if (eClass.getName().equals(tn.getTypeName())) {
@@ -468,7 +469,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 	@Override
 	public Map<EClass, List<EStructuralFeature>> fetchTypesWithEClassifier(final EClassifier dataType) throws Exception {
 		try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
-			final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
+			final GraphWrapper gw = graphWrapperProvider.apply(indexer);
 
 			final Map<EClass, List<EStructuralFeature>> candidateTypes = new IdentityHashMap<>();
 			for (MetamodelNode mn : gw.getMetamodelNodes()) {
@@ -558,7 +559,7 @@ public class LocalHawkResourceImpl extends ResourceImpl implements HawkResource 
 			lazyResolver = new LazyResolver(this);
 			eobFactory = new LazyEObjectFactory(getResourceSet().getPackageRegistry(), new LazyReferenceResolver());
 
-			final GraphWrapper gw = new GraphWrapper(indexer.getGraph());
+			final GraphWrapper gw = graphWrapperProvider.apply(indexer);
 			try (IGraphTransaction tx = indexer.getGraph().beginTransaction()) {
 				for (FileNode fileNode : gw.getFileNodes(repositoryPatterns, filePatterns)) {
 					for (ModelElementNode elem : fileNode.getRootModelElements()) {
