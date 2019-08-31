@@ -104,5 +104,12 @@
          </and>
       </definition>
    </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <file-association
+            content-type="org.eclipse.emf.compare.content.type"
+            file-extensions="localhawkmodel">
+      </file-association>
+   </extension>
 
 </plugin>
