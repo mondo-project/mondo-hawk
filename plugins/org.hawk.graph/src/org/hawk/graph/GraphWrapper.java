@@ -50,7 +50,7 @@ public class GraphWrapper {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GraphWrapper.class);
 
-	private final IGraphDatabase graph;
+	protected final IGraphDatabase graph;
 
 	public GraphWrapper(IGraphDatabase graph) {
 		this.graph = graph;
