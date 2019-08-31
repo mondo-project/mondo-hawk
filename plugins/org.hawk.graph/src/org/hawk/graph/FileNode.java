@@ -23,6 +23,8 @@ import org.hawk.core.graph.IGraphEdge;
 import org.hawk.core.graph.IGraphIterable;
 import org.hawk.core.graph.IGraphNode;
 import org.hawk.core.graph.IGraphNodeIndex;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNode;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphNodeIndex;
 import org.hawk.graph.updater.GraphModelBatchInjector;
 
 /**
@@ -121,8 +123,21 @@ public class FileNode {
 	}
 
 	public Iterable<ModelElementNode> getRootModelElements() {
-		final IGraphNodeIndex rootDictionary = node.getGraph()
+		IGraphNodeIndex rootDictionary = node.getGraph()
 			.getOrCreateNodeIndex(GraphModelBatchInjector.ROOT_DICT_NAME);
+
+		/*
+		 * TODO Make time-aware nodes expose a version of getGraph()
+		 * which implicitly returns indices at the right timepoint.
+		 *
+		 * This would require a large restructuring of the Greycat
+		 * backend at this point, but it may be needed in the future.
+		 */
+		if (rootDictionary instanceof ITimeAwareGraphNodeIndex) {
+			ITimeAwareGraphNodeIndex taDict = (ITimeAwareGraphNodeIndex) rootDictionary;
+			rootDictionary = taDict.travelInTime(((ITimeAwareGraphNode) node).getTime());
+		}
+
 		final Iterable<? extends IGraphNode> roots = rootDictionary
 			.get(GraphModelBatchInjector.ROOT_DICT_FILE_KEY, node.getId().toString());
 
