@@ -52,6 +52,7 @@ public class NewDescriptorWizard extends Wizard implements INewWizard {
 		createFilePage.setSplit(selectHawkPage.isSplit());
 		createFilePage.setRepositoryPatterns(selectHawkPage.getRepositoryPatterns());
 		createFilePage.setFilePatterns(selectHawkPage.getFilePatterns());
+		createFilePage.setTimepoint(selectHawkPage.getTimepoint());
 		return createFilePage.createNewFile() != null;
 	}
 }

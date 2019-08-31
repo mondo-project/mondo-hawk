@@ -30,6 +30,7 @@ public class CreateDescriptorFilePage extends WizardNewFileCreationPage {
 	private String selectedInstance;
 	private boolean isSplit;
 	private List<String> repositoryPatterns, filePatterns;
+	private Long timepoint;
 
 	public CreateDescriptorFilePage(IStructuredSelection currentSelection) {
 		super("Create new local Hawk model descriptor", currentSelection);
@@ -55,6 +56,13 @@ public class CreateDescriptorFilePage extends WizardNewFileCreationPage {
 		if (!isSplit) {
 			sbuf.append(System.lineSeparator());
 			sbuf.append(LocalHawkResourceFactoryImpl.OPTION_UNSPLIT);
+		}
+
+		if (timepoint != null) {
+			sbuf.append(System.lineSeparator());
+			sbuf.append(LocalHawkResourceFactoryImpl.OPTION_TIMEPOINT);
+			sbuf.append(LocalHawkResourceFactoryImpl.KEYVAL_SEPARATOR);
+			sbuf.append(timepoint);
 		}
 
 		byte[] bytes;
@@ -110,4 +118,13 @@ public class CreateDescriptorFilePage extends WizardNewFileCreationPage {
 	public void setFilePatterns(List<String> filePatterns) {
 		this.filePatterns = filePatterns;
 	}
+
+	public Long getTimepoint() {
+		return timepoint;
+	}
+
+	public void setTimepoint(Long timepoint) {
+		this.timepoint = timepoint;
+	}
+	
 }

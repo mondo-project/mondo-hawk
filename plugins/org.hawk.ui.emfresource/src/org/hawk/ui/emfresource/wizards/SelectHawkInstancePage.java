@@ -41,6 +41,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.hawk.core.graph.IGraphDatabase;
+import org.hawk.core.graph.timeaware.ITimeAwareGraphDatabase;
 import org.hawk.osgiserver.HManager;
 import org.hawk.osgiserver.HModel;
 import org.hawk.ui2.util.HUIManager;
@@ -51,6 +53,8 @@ public class SelectHawkInstancePage extends WizardPage {
 	private boolean isSplit = true;
 	private String sRepoPatterns = "*";
 	private String sFilePatterns = "*";
+	private Long timepoint;
+	private Text txtTimepoint;
 
 	public SelectHawkInstancePage() {
 		super("Create new local Hawk model descriptor");
@@ -83,8 +87,19 @@ public class SelectHawkInstancePage extends WizardPage {
 					final IStructuredSelection ssel = (IStructuredSelection) sel;
 					if (ssel.isEmpty()) {
 						selectedInstance = null;
+						txtTimepoint.setEnabled(false);
+						txtTimepoint.setText("");
 					} else {
 						selectedInstance = (String) ssel.getFirstElement();
+
+						IGraphDatabase selectedGraph = HUIManager.getInstance().getHawkByName(selectedInstance).getGraph();
+						if (selectedGraph instanceof ITimeAwareGraphDatabase) {
+							txtTimepoint.setEnabled(true);
+							txtTimepoint.setText("0");
+						} else {
+							txtTimepoint.setEnabled(false);
+							txtTimepoint.setText("");
+						}
 					}
 					checkComplete();
 				}
@@ -134,6 +149,33 @@ public class SelectHawkInstancePage extends WizardPage {
 		});
 		txtFiles.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
+		final Label lblTimepoint = new Label(container, SWT.NONE);
+		lblTimepoint.setText("Timepoint:");
+		txtTimepoint = new Text(container, SWT.BORDER);
+		txtTimepoint.setText("");
+		txtTimepoint.setToolTipText("Non-negative integer with the graph timepoint to be loaded. Only applicable for time-aware backends.");
+		txtTimepoint.setEnabled(false);
+		txtTimepoint.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				try {
+					if (txtTimepoint.getText().trim().length() > 0) {
+						timepoint = Long.parseLong(txtTimepoint.getText());
+					} else {
+						timepoint = null;
+					}
+				} catch (NumberFormatException ex) {
+					setErrorMessage("Timepoint is not a valid number");
+
+					// This means the timepoint is not a valid number
+					timepoint = -1L;
+				} finally {
+					checkComplete();
+				}
+			}
+		});
+		txtTimepoint.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
 		setControl(container);
 		setPageComplete(false);
 	}
@@ -168,9 +210,14 @@ public class SelectHawkInstancePage extends WizardPage {
 		return Arrays.asList(sFilePatterns.split(","));
 	}
 
+	public Long getTimepoint() {
+		return timepoint;
+	}
+
 	protected void checkComplete() {
 		setPageComplete(selectedInstance != null
 			&& sRepoPatterns.length() > 0
-			&& sFilePatterns.length() > 0);
+			&& sFilePatterns.length() > 0
+			&& (timepoint == null || timepoint >= 0));
 	}
 }
