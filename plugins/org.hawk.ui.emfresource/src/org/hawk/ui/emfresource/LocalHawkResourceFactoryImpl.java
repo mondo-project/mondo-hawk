@@ -29,6 +29,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Factory;
 import org.hawk.emfresource.impl.LocalHawkResourceImpl;
 import org.hawk.osgiserver.HModel;
+import org.hawk.timeaware.graph.DefaultTimeGraphWrapper;
 import org.hawk.ui2.util.HUIManager;
 
 public class LocalHawkResourceFactoryImpl implements Factory {
@@ -36,6 +37,7 @@ public class LocalHawkResourceFactoryImpl implements Factory {
 	public static final String OPTION_UNSPLIT = "unsplit";
 	public static final String OPTION_RPATTERNS = "repos";
 	public static final String OPTION_FPATTERNS = "files";
+	public static final String OPTION_TIMEPOINT = "timepoint";
 	public static final String KEYVAL_SEPARATOR = "=";
 	public static final String PATTERN_SEPARATOR = ",";
 
@@ -45,6 +47,7 @@ public class LocalHawkResourceFactoryImpl implements Factory {
 		boolean isSplit = true;
 		List<String> repoPatterns = Arrays.asList("*");
 		List<String> filePatterns = repoPatterns;
+		Long timepoint = null;
 
 		if ("hawk+local".equals(uri.scheme())) {
 			hawkInstance = uri.host();
@@ -67,6 +70,8 @@ public class LocalHawkResourceFactoryImpl implements Factory {
 						repoPatterns = Arrays.asList(parts[1].split(PATTERN_SEPARATOR));
 					} else if (parts.length == 2 && parts[0].equals(OPTION_FPATTERNS)) {
 						filePatterns = Arrays.asList(parts[1].split(PATTERN_SEPARATOR));
+					} else if (parts.length == 2 && parts[0].equals(OPTION_TIMEPOINT)) {
+						timepoint = Long.parseLong(parts[1].trim());
 					}
 				}
 			} catch (IOException e) {
@@ -83,7 +88,16 @@ public class LocalHawkResourceFactoryImpl implements Factory {
 		if (!hawkModel.isRunning()) {
 			hawkModel.start(manager);
 		}
-		return new LocalHawkResourceImpl(uri, hawkModel.getIndexer(), isSplit, repoPatterns, filePatterns);
+
+		if (timepoint == null) {
+			return new LocalHawkResourceImpl(uri, hawkModel.getIndexer(),
+				isSplit, repoPatterns, filePatterns);
+		} else {
+			final long fTimepoint = timepoint;
+			return new LocalHawkResourceImpl(uri, hawkModel.getIndexer(),
+				idx -> new DefaultTimeGraphWrapper(idx.getGraph(), fTimepoint),
+				isSplit, repoPatterns, filePatterns);
+		}
 	}
 
 	protected LocalHawkResourceImpl createEmptyResource(URI uri) {
