@@ -4,6 +4,7 @@ Bundle-Name: Hawk Git Plugin
 Bundle-SymbolicName: org.hawk.git;singleton:=true
 Bundle-Version: 1.2.0.qualifier
 Bundle-Vendor: University of York
-Require-Bundle: org.hawk.core
+Require-Bundle: org.hawk.core,
+ org.slf4j.api;bundle-version="1.7.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.hawk.git

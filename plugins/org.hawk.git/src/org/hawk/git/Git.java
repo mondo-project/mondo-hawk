@@ -44,9 +44,12 @@ import org.hawk.core.VcsChangeType;
 import org.hawk.core.VcsCommit;
 import org.hawk.core.VcsCommitItem;
 import org.hawk.core.VcsRepositoryDelta;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Git implements IVcsManager {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(Git.class);
 	private static final String FIRST_REV = "0";
 
 	private final class LastModifiedFileVisitor implements FileVisitor<Path> {
@@ -127,7 +130,7 @@ public class Git implements IVcsManager {
 		try {
 			path = Paths.get(new URI(vcsloc));
 		} catch (URISyntaxException | IllegalArgumentException ex) {
-			ex.printStackTrace();
+			LOGGER.debug("VCS location {} did not parse as an URI, parsing as path", vcsloc);
 			path = Paths.get(vcsloc);
 		}
 
