@@ -301,7 +301,11 @@ public final class HawkThriftIface implements Hawk.Iface {
 		}
 
 		final java.io.File[] fArray = files.toArray(new java.io.File[files.size()]);
-		model.registerMeta(fArray);
+		try {
+			model.registerMeta(fArray);
+		} catch (Exception e) {
+			throw new InvalidMetamodel(e.getMessage());
+		}
 	}
 
 	@Override

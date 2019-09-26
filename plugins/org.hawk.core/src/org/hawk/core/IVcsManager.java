@@ -37,9 +37,9 @@ public interface IVcsManager extends IHawkPlugin {
 	String getFirstRevision() throws Exception;
 
 	/**
-	 * Returns the set of changed items on this revision.
+	 * Returns the set of changed items from this revision.
 	 */
-	Collection<VcsCommitItem> getDelta(String endRevision) throws Exception;
+	Collection<VcsCommitItem> getDelta(String startRevision) throws Exception;
 
 	/**
 	 * Returns the set of changed items between these revisions.

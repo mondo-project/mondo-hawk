@@ -155,7 +155,11 @@ public class HawkServerConfigurator  {
 				@Override
 				public Void call() {
 					// add metamodels, Do it first before adding attributes or repositories
-					addMetamodels(hModel, config);
+					try { 
+						addMetamodels(hModel, config);
+					} catch (Exception e) {
+						LOGGER.error("Configuring Hawk instance: Exception when adding metamodels");
+					}
 
 					// add repositories, don't delete any
 					addMissingRepositories(hModel, config);
@@ -241,7 +245,7 @@ public class HawkServerConfigurator  {
 	}
 	}
 
-	private void addMetamodels(HModel hawkInstance, HawkInstanceConfig config) {
+	private void addMetamodels(HModel hawkInstance, HawkInstanceConfig config) throws Exception {
 		for (MetamodelParameters params : config.getMetamodels()) {
 			if(params.getLocation() != null && !params.getLocation().isEmpty()) {
 				File file = new File(params.getLocation());

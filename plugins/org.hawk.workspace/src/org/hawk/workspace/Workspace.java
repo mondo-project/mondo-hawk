@@ -280,8 +280,8 @@ public class Workspace implements IVcsManager {
 	}
 
 	@Override
-	public Collection<VcsCommitItem> getDelta(String string) throws Exception {
-		return getDelta(string, getCurrentRevision()).getCompactedCommitItems();
+	public Collection<VcsCommitItem> getDelta(String startRevision) throws Exception {
+		return getDelta(startRevision, getCurrentRevision()).getCompactedCommitItems();
 	}
 
 	@Override

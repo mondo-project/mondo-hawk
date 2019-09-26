@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -61,6 +62,7 @@ import org.hawk.core.IVcsManager;
 import org.hawk.core.util.IndexedAttributeParameters;
 import org.hawk.osgiserver.HModel;
 import org.hawk.osgiserver.HModelSchedulingRule;
+import org.hawk.ui2.Activator;
 import org.hawk.ui2.view.HView;
 import org.osgi.framework.FrameworkUtil;
 
@@ -321,8 +323,7 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 			}
 
 			if (!error) {
-				hawkModel.registerMeta(metaModelFiles);
-				updateMetamodelList();
+				registerMetamodels(metaModelFiles);
 			}
 		}
 	}
@@ -346,9 +347,20 @@ public class HConfigDialog extends TitleAreaDialog implements IStateListener {
 				files[i] = ((IFile)iFiles[i]).getLocation().toFile();
 			}
 
-			hawkModel.registerMeta(files);
-			updateMetamodelList();
+			registerMetamodels(files);
 		}
+	}
+
+	protected void registerMetamodels(File[] files) {
+		try {
+			hawkModel.registerMeta(files);
+		} catch (Exception e) {
+			ErrorDialog.openError(getShell(),
+				"Could not register metamodel",
+				"There was a problem while registering the metamodel",
+				new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Failed to register metamodel", e));
+		}
+		updateMetamodelList();
 	}
 	
 	protected String[] getKnownMetamodelFilePatterns() {
