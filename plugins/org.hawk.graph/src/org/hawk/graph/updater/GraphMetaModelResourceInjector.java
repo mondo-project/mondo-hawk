@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.hawk.core.FailedMetamodelRegistrationException;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.graph.IGraphChangeListener;
 import org.hawk.core.graph.IGraphDatabase;
@@ -282,11 +283,11 @@ public class GraphMetaModelResourceInjector {
 
 			for (IHawkMetaModelResource metamodelResource : metamodels) {
 				Set<IHawkObject> children = metamodelResource.getAllContents();
-
 				for (IHawkObject child : children) {
 					// add the element
-					if (child instanceof IHawkPackage)
+					if (child instanceof IHawkPackage) {
 						addEPackage((IHawkPackage) child, metamodelResource);
+					}
 				}
 			}
 
@@ -298,85 +299,65 @@ public class GraphMetaModelResourceInjector {
 		}
 
 		Iterator<IHawkPackage> it = addedepackages.iterator();
-		while (it.hasNext()) {
+		FailedMetamodelRegistrationException failure = null;
+		while (it.hasNext() && failure == null) {
 			IHawkPackage epackage = it.next();
 
-			boolean success = false;
 			try (IGraphTransaction t = graph.beginTransaction()) {
 				listener.changeStart();
-				success = addEClasses(epackage);
-
-				if (success) {
+				try {
+					addEClasses(epackage);
 					t.success();
-
 					listener.changeSuccess();
-				} else {
+				} catch (FailedMetamodelRegistrationException ex) {
 					it.remove();
 					t.failure();
 					listener.changeFailure();
+					
+					failure = ex;
 				}
 			} catch (Exception e) {
 				LOGGER.error(e.getMessage(), e);
 				listener.changeFailure();
 			}
 
-			if (!success) {
-				try (IGraphTransaction t2 = graph.beginTransaction()) {
+			if (failure == null) {
+				try (IGraphTransaction t = graph.beginTransaction()) {
+					final IGraphIterable<IGraphNode> itNodes = (IGraphIterable<IGraphNode>) epackagedictionary.get("id", epackage.getNsURI());
+					IGraphNode epackagenode = itNodes.getSingle();
+
+					// add resource to package
+					final String s = epackage.getResource().getMetaModelResourceFactory().dumpPackageToString(epackage);
+					epackagenode.setProperty(IModelIndexer.METAMODEL_RESOURCE_PROPERTY, s);
+
+					t.success();
+				}
+			} else {
+				try (IGraphTransaction t = graph.beginTransaction()) {
 					IGraphNode ePackageNode = epackagedictionary.get("id", epackage.getNsURI()).iterator().next();
 					new DeletionUtils(graph).delete(ePackageNode);
-					t2.success();
-
-				} catch (Exception e) {
-					LOGGER.error(e.getMessage(), e);
+					t.success();
 				}
+				throw failure;
 			}
-		}
-
-		try (IGraphTransaction t = graph.beginTransaction()) {
-
-			for (IHawkPackage ePackage : addedepackages) {
-
-				IGraphNode epackagenode = ((IGraphIterable<IGraphNode>) epackagedictionary.get("id",
-						ePackage.getNsURI())).getSingle();
-
-				// add resource to package
-				final String s = ePackage.getResource().getMetaModelResourceFactory().dumpPackageToString(ePackage);
-
-				epackagenode.setProperty(IModelIndexer.METAMODEL_RESOURCE_PROPERTY, s);
-
-			}
-
-			t.success();
 		}
 
 		return objectCount;
 	}
 
-	private boolean addEClasses(IHawkPackage ePackage) {
-
-		boolean success = true;
-
+	private void addEClasses(IHawkPackage ePackage) throws FailedMetamodelRegistrationException {
 		for (IHawkClassifier child : ePackage.getClasses()) {
-
-			if (!success)
-				break;
-
 			if (child instanceof IHawkClass) {
-				success = success && addMetaClass((IHawkClass) child);
+				addMetaClass((IHawkClass) child);
 			} else if (child instanceof IHawkDataType) {
 				// FIXME need to handle datatypes?
-				// System.err.println("datatype! (" + child.getName() +
-				// ") -- handle it.");
 			} else {
 				LOGGER.error("Unknown classifier: ({}): {}", child.getName(), child.getClass());
 			}
 		}
-
-		return success;
 	}
 
 	private void addEPackage(IHawkPackage ePackage, IHawkMetaModelResource metamodelResource) throws IOException {
-
 		final String uri = ePackage.getNsURI();
 		if (uri == null) {
 			LOGGER.warn("ePackage {} has null nsURI, ignoring", ePackage);
@@ -384,7 +365,6 @@ public class GraphMetaModelResourceInjector {
 		}
 
 		if (epackagedictionary.get("id", uri).iterator().hasNext() == false) {
-
 			Map<String, Object> map4 = new HashMap<>();
 			map4.put(IModelIndexer.IDENTIFIER_PROPERTY, uri);
 			map4.put(IModelIndexer.METAMODEL_TYPE_PROPERTY, metamodelResource.getMetaModelResourceFactory().getType());
@@ -407,7 +387,6 @@ public class GraphMetaModelResourceInjector {
 			// else
 			// do not and warn users
 		}
-
 	}
 
 	/**
@@ -427,17 +406,12 @@ public class GraphMetaModelResourceInjector {
 	 * @param id
 	 * @return the Node
 	 */
-	private boolean createEClassNode(IHawkClass eClass, String id) {
-
-		boolean success = true;
-
+	private void createEClassNode(IHawkClass eClass, String id) throws FailedMetamodelRegistrationException {
 		Map<String, Object> map = new HashMap<>();
 		map.put(IModelIndexer.IDENTIFIER_PROPERTY, id);
 
 		IGraphNode node = graph.createNode(new HashMap<String, Object>(), "eclass");
-
-		IGraphNode metamodelNode = ((IGraphIterable<IGraphNode>) epackagedictionary.get("id", eClass.getPackageNSURI()))
-				.getSingle();
+		IGraphNode metamodelNode = ((IGraphIterable<IGraphNode>) epackagedictionary.get("id", eClass.getPackageNSURI())).getSingle();
 
 		graph.createRelationship(node, metamodelNode, "epackage");
 
@@ -445,18 +419,15 @@ public class GraphMetaModelResourceInjector {
 			final String uri = e.getPackageNSURI();
 
 			if (epackagedictionary.get("id", uri).iterator().hasNext() == false) {
-				LOGGER.error(
-						"EClass {} has supertype {} which is in a package not registered yet, "
+				throw new FailedMetamodelRegistrationException(String.format(
+						"EClass %s has supertype %s which is in a package not registered yet, "
 						+ "reverting all changes to this package registration, please register "
-						+ "package with URI {} first",
-						eClass.getName(), e.getName() == null ? e.getUri() : e.getName(), uri);
-
-				return false;
+						+ "package with URI %s first",
+						eClass.getName(), e.getName() == null ? e.getUri() : e.getName(), uri));
 			} else {
 
 				// dependency to package
 				if (!uri.equals(eClass.getPackageNSURI())) {
-
 					IGraphNode supertypeepackage = ((IGraphIterable<IGraphNode>) epackagedictionary.get("id", uri))
 							.getSingle();
 
@@ -488,11 +459,12 @@ public class GraphMetaModelResourceInjector {
 			}
 
 			if (epackagedictionary.get("id", uri).iterator().hasNext() == false) {
-				LOGGER.error("EAttribute {} has type {} which is in a package not registered yet, "
-						+ "reverting all changes to this package registration, please register package "
-						+ "with URI: {} first",
-						e.getName(), (e.getType().getName() == null ? e.getType().getUri() : e.getType().getName()), uri);
-				return false;
+				throw new FailedMetamodelRegistrationException(String.format(
+						"EAttribute %s has type %s which is in a package not registered yet, "
+								+ "reverting all changes to this package registration, please register package "
+								+ "with URI: %s first",
+						e.getName(), (e.getType().getName() == null ? e.getType().getUri() : e.getType().getName()),
+						uri));
 			} else {
 				// dependency to package
 				if (!uri.equals(eClass.getPackageNSURI())) {
@@ -540,11 +512,10 @@ public class GraphMetaModelResourceInjector {
 			final String uri = r.getType().getPackageNSURI();
 
 			if (epackagedictionary.get("id", uri).iterator().hasNext() == false) {
-				LOGGER.error(
+				throw new FailedMetamodelRegistrationException(String.format(
 					"EReference {} has type {} which is in a package not registered yet, reverting all changes "
 					+ "to this package registration, please register package with uri: {} first",
-					r.getName(), (r.getType().getName() == null ? r.getType().getUri() : r.getType().getName()), uri);
-				return false;
+					r.getName(), (r.getType().getName() == null ? r.getType().getUri() : r.getType().getName()), uri));
 			} else {
 				// dependency to package
 				if (!uri.equals(eClass.getPackageNSURI())) {
@@ -599,20 +570,19 @@ public class GraphMetaModelResourceInjector {
 		}
 
 		listener.classAddition(eClass, node);
-
-		return success;
 	}
 
 	/**
 	 * Creates a node with the eClass parameters, adds it to the metatracker and
-	 * to the metacdictionary index
+	 * to the metadictionary index.
 	 * 
 	 * @param eClass
+	 * @throws FailedMetamodelRegistrationException 
 	 */
-	private boolean addMetaClass(IHawkClass eClass) {
+	private void addMetaClass(IHawkClass eClass) throws FailedMetamodelRegistrationException {
 		String id = eClass.getName();
 		objectCount++;
-		return createEClassNode(eClass, id);
+		createEClassNode(eClass, id);
 	}
 
 	public int getUnset() {

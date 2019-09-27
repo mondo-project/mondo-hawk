@@ -197,7 +197,6 @@ public class LocalFolder extends FileBasedLocation {
 
 	@Override
 	public VcsRepositoryDelta getDelta(String startRevision, String endRevision) throws Exception {
-
 		VcsRepositoryDelta delta = new VcsRepositoryDelta();
 		delta.setManager(this);
 

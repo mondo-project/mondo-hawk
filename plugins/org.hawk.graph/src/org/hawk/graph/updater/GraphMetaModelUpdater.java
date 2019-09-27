@@ -18,28 +18,26 @@ package org.hawk.graph.updater;
 
 import java.util.Set;
 
+import org.hawk.core.FailedMetamodelRegistrationException;
 import org.hawk.core.IMetaModelUpdater;
 import org.hawk.core.IModelIndexer;
 import org.hawk.core.model.IHawkMetaModelResource;
 import org.hawk.core.runtime.CompositeGraphChangeListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class GraphMetaModelUpdater implements IMetaModelUpdater {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(GraphMetaModelUpdater.class);
-
 	@Override
-	public boolean insertMetamodels(Set<IHawkMetaModelResource> set,
-			IModelIndexer indexer) {
+	public void insertMetamodels(Set<IHawkMetaModelResource> set, IModelIndexer indexer)
+			throws FailedMetamodelRegistrationException
+	{
 		try {
 			new GraphMetaModelResourceInjector(indexer, set,
-					(CompositeGraphChangeListener) indexer
-							.getCompositeGraphChangeListener());
-			return true;
-		} catch (Exception e) {
-			LOGGER.error("Metamodel insertion failed", e);
-			return false;
+				(CompositeGraphChangeListener) indexer
+						.getCompositeGraphChangeListener());
+		} catch (FailedMetamodelRegistrationException ex) {
+			throw ex;
+		} catch (Exception ex) {
+			throw new FailedMetamodelRegistrationException(ex);
 		}
 	}
 

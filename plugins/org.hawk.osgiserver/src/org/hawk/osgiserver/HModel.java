@@ -542,14 +542,8 @@ public class HModel implements IStateListener {
 		return manager;
 	}
 
-	public boolean registerMeta(File... f) {
-		try {
-			hawk.getModelIndexer().registerMetamodels(f);
-		} catch (Exception e) {
-			getConsole().printerrln(e);
-			return false;
-		}
-		return true;
+	public void registerMeta(File... f) throws Exception {
+		hawk.getModelIndexer().registerMetamodels(f);
 	}
 
 	public void removeHawkFromMetadata(HawkConfig config) throws BackingStoreException {

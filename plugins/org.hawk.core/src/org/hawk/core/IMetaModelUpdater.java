@@ -26,8 +26,8 @@ public interface IMetaModelUpdater extends IHawkPlugin {
 	/**
 	 * @return <code>true</code> if insertion was successful, <code>false</code> otherwise.
 	 */
-	boolean insertMetamodels(Set<IHawkMetaModelResource> set,
-			IModelIndexer indexer);
+	void insertMetamodels(Set<IHawkMetaModelResource> set,
+			IModelIndexer indexer) throws FailedMetamodelRegistrationException;
 
 	void run();
 

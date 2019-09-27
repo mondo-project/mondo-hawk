@@ -489,12 +489,10 @@ public abstract class BaseModelIndexer implements IModelIndexer {
 	
 		}
 
-		// if metamodels added successfully
-		if (metamodelupdater.insertMetamodels(set, this)) {
-			// reset repositories as models may be parsable in them
-			for (IVcsManager s : monitors) {
-				resetRepository(s.getLocation());
-			}
+		// reset repositories as models may be parsable in them
+		metamodelupdater.insertMetamodels(set, this);
+		for (IVcsManager s : monitors) {
+			resetRepository(s.getLocation());
 		}
 		stateListener.info("Added metamodel(s).");
 	}
