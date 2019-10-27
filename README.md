@@ -1,6 +1,14 @@
 mondo-hawk
 ==========
 
+*NOTE*: this project has been migrated to the Eclipse Foundation infrastructure. Please visit the official project website:
+
+https://www.eclipse.org/hawk/
+
+Old text
+===
+
+
 Public repository for the prototype of the Hawk scalable model indexing system, under the Eclipse 2.0 license with GNU GPL 3.0 as secondary license.
 
 [![Travis status](https://api.travis-ci.org/mondo-project/mondo-hawk.svg?branch=master)](https://travis-ci.org/mondo-project/mondo-hawk)
